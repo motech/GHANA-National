@@ -35,6 +35,11 @@
             <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.savage7.maven.plugins</groupId>
+            <artifactId>maven-external-dependency-plugin</artifactId>
+            <version>0.5-SONATYPE-r116</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -43,24 +48,42 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>wagon-maven-plugin</artifactId>
-                        <version>1.0-beta-3</version>
+                        <groupId>com.savage7.maven.plugins</groupId>
+                        <artifactId>maven-external-dependency-plugin</artifactId>
+                        <version>0.5-SONATYPE-r116</version>
+                        <inherited>false</inherited>
                         <configuration>
-                            <serverId>central</serverId>
+                            <stagingDirectory>
+                                ${project.build.directory}/dependencies/
+                            </stagingDirectory>
+                            <createChecksum>true</createChecksum>
+                            <skipChecksumVerification>false</skipChecksumVerification>
+                            <force>false</force>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>motech-mforms</groupId>
+                                    <artifactId>motech-mforms-tiny</artifactId>
+                                    <version>0.7.0</version>
+                                    <packaging>jar</packaging>
+                                    <downloadUrl>http://motech.rcg.usm.maine.edu/mForms/{artifactId}-{version}.jar</downloadUrl>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>http-download-jar</id>
+                                <id>clean-external-dependencies</id>
+                                <phase>clean</phase>
+                                <goals>
+                                    <goal>clean-external</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>resolve-install-external-dependencies</id>
                                 <phase>test</phase>
                                 <goals>
-                                    <goal>download-single</goal>
+                                    <goal>resolve-external</goal>
+                                    <goal>install-external</goal>
                                 </goals>
-                                <configuration>
-                                    <url>http://motech.rcg.usm.maine.edu/mForms/</url>
-                                    <fromFile>motech-mforms-tiny-0.7.0.jar</fromFile>
-                                    <toDir>${project.build.directory}</toDir>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -70,12 +93,11 @@
                         <version>1.1.1</version>
                         <dependencies>
                             <dependency>
-                                <artifactId>motech-mforms-tiny</artifactId>
                                 <groupId>motech-mforms</groupId>
-                                <version>1.0.0</version>
-                                <scope>system</scope>
-                                <systemPath>${project.build.directory}/motech-mforms-tiny.jar</systemPath>
+                                <artifactId>motech-mforms-tiny</artifactId>
+                                <version>0.7.0</version>
                             </dependency>
+
                         </dependencies>
                         <executions>
                             <execution>

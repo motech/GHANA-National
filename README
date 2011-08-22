@@ -1,1 +1,4 @@
-test!
+
+Dev build
+1) Run motech-mforms MIDlet via
+    mvn test -P emulator
