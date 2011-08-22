@@ -51,14 +51,14 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <id>http-download-single</id>
+                                <id>http-download-jar</id>
                                 <phase>test</phase>
                                 <goals>
                                     <goal>download-single</goal>
                                 </goals>
                                 <configuration>
-                                    <url>http://localhost:8000</url>
-                                    <fromFile>motech-mforms-tiny.jar</fromFile>
+                                    <url>http://motech.rcg.usm.maine.edu/mForms/</url>
+                                    <fromFile>motech-mforms-tiny-0.7.0.jar</fromFile>
                                     <toDir>${project.build.directory}</toDir>
                                 </configuration>
                             </execution>
@@ -71,8 +71,8 @@
                         <dependencies>
                             <dependency>
                                 <artifactId>motech-mforms-tiny</artifactId>
-                                <groupId>org.fcitmuk.epihandy.forms</groupId>
-                                <version>1.0</version>
+                                <groupId>motech-mforms</groupId>
+                                <version>1.0.0</version>
                                 <scope>system</scope>
                                 <systemPath>${project.build.directory}/motech-mforms-tiny.jar</systemPath>
                             </dependency>
@@ -83,8 +83,11 @@
                                 <goals>
                                     <goal>java</goal>
                                 </goals>
+
                                 <configuration>
                                     <mainClass>org.me4se.MIDletRunner</mainClass>
+                                    <classpathScope>test</classpathScope>
+                                    <includePluginDependencies>true</includePluginDependencies>
                                     <arguments>
                                         <argument>org.fcitmuk.epihandy.forms.MainForm</argument>
                                         <argument>-width</argument>
