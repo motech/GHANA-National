@@ -21,7 +21,6 @@
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
-    <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
@@ -30,6 +29,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: log4j:log4j:1.2.16" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openxdata:protocol-api:1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.openxdata:mforms-proto:1.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openxdata:epihandy-xforms-server:0.9.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-core:3.0.5.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-asm:3.0.5.RELEASE" level="project" />
@@ -77,6 +81,7 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.jcraft:jsch:0.1.23" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-archiver:1.1" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-io:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.jcraft:jzlib:1.0.7" level="project" />
   </component>
 </module>
 
