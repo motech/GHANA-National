@@ -13,13 +13,14 @@
     </http>
 
     <authentication-manager>
-        <authentication-provider>
-            <user-service>
-                <user name="rod" password="koala" authorities="admin, user"/>
-                <user name="dianne" password="emu" authorities="user"/>
-                <user name="scott" password="wombat" authorities="user"/>
-                <user name="peter" password="opal" authorities="user"/>
-            </user-service>
-        </authentication-provider>
+        <authentication-provider ref="authenticationProvider"/>
     </authentication-manager>
+
+    <beans:bean name="authenticationProvider" class="org.motechproject.security.AuthenticationProvider">
+        <beans:constructor-arg>
+            <beans:list>
+                <beans:ref bean="allSuperAdmins"/>
+            </beans:list>
+        </beans:constructor-arg>
+    </beans:bean>
 </beans:beans>
