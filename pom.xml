@@ -132,11 +132,6 @@
             <version>${spring.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test-mvc</artifactId>
-            <version>1.0.0.BUILD-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>net.sourceforge.me4se</groupId>
             <artifactId>me4se</artifactId>
             <scope>test</scope>
