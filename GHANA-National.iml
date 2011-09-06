@@ -75,7 +75,6 @@
     <orderEntry type="library" name="Maven: joda-time:joda-time:2.0" level="project" />
     <orderEntry type="library" name="Maven: org.mockito:mockito-all:1.8.5" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.8.1" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-test-mvc:1.0.0.BUILD-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.me4se:me4se:2.1.4-SNAPSHOT-20040926" level="project" />
     <orderEntry type="library" name="Maven: com.savage7.maven.plugins:maven-external-dependency-plugin:0.5-SONATYPE-r116" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:1.5.6" level="project" />
