@@ -9,4 +9,15 @@
     </context:component-scan>
 
 
+    <!--suppress SpringModelInspection -->
+    <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource">
+        <property name="fallbackToSystemLocale" value="false"/>
+        <property name="basenames">
+            <list>
+                <value>WEB-INF/i18n/messages</value>
+            </list>
+        </property>
+    </bean>
+
+
 </beans>

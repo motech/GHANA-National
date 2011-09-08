@@ -14,9 +14,9 @@ import java.io.IOException;
 public class AdminController {
     private Logger log = Logger.getLogger("AdminController");
 
-    @RequestMapping(value = "/admin/home", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin", method = RequestMethod.GET)
     public void hello(HttpServletRequest request, HttpServletResponse response) {
-        ServletOutputStream outputStream = null;
+        ServletOutputStream outputStream;
         try {
             outputStream = response.getOutputStream();
             outputStream.print("HEllo dude!");
