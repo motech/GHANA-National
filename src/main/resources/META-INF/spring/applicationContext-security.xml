@@ -7,7 +7,7 @@
                     http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
     <http use-expressions="true">
-        <intercept-url pattern="/admin/**" access="hasRole('admin')"/>
+        <intercept-url pattern="/admin/**" access="hasRole('SUPER_ADMIN')"/>
         <form-login/>
         <logout logout-url="/logout" logout-success-url="/hello"/>
     </http>
@@ -20,6 +20,8 @@
         <beans:constructor-arg>
             <beans:list>
                 <beans:ref bean="allSuperAdmins"/>
+                <beans:ref bean="allFacilityAdmins"/>
+                <beans:ref bean="allCallCenterAdmins"/>
             </beans:list>
         </beans:constructor-arg>
     </beans:bean>

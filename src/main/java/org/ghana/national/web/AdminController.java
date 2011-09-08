@@ -19,7 +19,7 @@ public class AdminController {
         ServletOutputStream outputStream;
         try {
             outputStream = response.getOutputStream();
-            outputStream.print("HEllo dude!");
+            outputStream.print("HEllo admin!");
         } catch (IOException e) {
             e.printStackTrace();
         }

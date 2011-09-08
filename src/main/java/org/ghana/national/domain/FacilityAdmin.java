@@ -3,20 +3,20 @@ package org.ghana.national.domain;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 
-@TypeDiscriminator("doc.type === 'SUPER_ADMIN'")
-public class SuperAdmin extends User {
+@TypeDiscriminator("doc.type === 'FACILITY_ADMIN'")
+public class FacilityAdmin extends User {
     @JsonProperty("type")
-    final String type = "SUPER_ADMIN";
-
-    private SuperAdmin() {
-    }
+    final String type = "FACILITY_ADMIN";
 
     @Override
     protected String getAuthority() {
         return type;
     }
 
-    public SuperAdmin(String username) {
+    private FacilityAdmin() {
+    }
+
+    public FacilityAdmin(String username) {
         super(username);
     }
 }
