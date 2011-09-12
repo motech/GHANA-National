@@ -16,7 +16,7 @@ public class CallCenterAdmin extends User {
     private CallCenterAdmin() {
     }
 
-    public CallCenterAdmin(String username) {
-        super(username);
+    public CallCenterAdmin(String username, String password) {
+        super(username, password);
     }
 }

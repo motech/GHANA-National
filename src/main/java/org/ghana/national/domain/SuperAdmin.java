@@ -16,7 +16,7 @@ public class SuperAdmin extends User {
         return type;
     }
 
-    public SuperAdmin(String username) {
-        super(username);
+    public SuperAdmin(String username, String password) {
+        super(username, password);
     }
 }

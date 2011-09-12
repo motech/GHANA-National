@@ -9,14 +9,18 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public abstract class User extends MotechAuditableDataObject implements UserDetails {
-    String username;
-    boolean accountNonExpired;
-    boolean accountNonLocked;
-    boolean isCredentialsNonExpired;
-    boolean isEnabled;
+    private String username;
+    private transient String password;
 
-    public User(String username) {
+    private String digestedPassword;
+    private boolean accountNonExpired;
+    private boolean accountNonLocked;
+    private boolean isCredentialsNonExpired;
+    private boolean isEnabled;
+
+    public User(String username, String password) {
         this.username = username;
+        this.password = password;
         this.accountNonExpired = true;
         this.accountNonLocked = true;
         this.isCredentialsNonExpired = true;
@@ -38,8 +42,9 @@ public abstract class User extends MotechAuditableDataObject implements UserDeta
 
     protected abstract String getAuthority();
 
+    @JsonIgnore
     public String getPassword() {
-        return null;
+        return password;
     }
 
     public String getUsername() {
@@ -80,5 +85,13 @@ public abstract class User extends MotechAuditableDataObject implements UserDeta
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public String getDigestedPassword() {
+        return digestedPassword;
+    }
+
+    public void setDigestedPassword(String digestedPassword) {
+        this.digestedPassword = digestedPassword;
     }
 }

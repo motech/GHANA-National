@@ -3,6 +3,8 @@ package org.ghana.national.dao;
 import org.ghana.national.domain.CallCenterAdmin;
 import org.ghana.national.domain.FacilityAdmin;
 import org.ghana.national.domain.SuperAdmin;
+import org.ghana.national.domain.User;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,9 +36,9 @@ public class AllUsersTest {
 
     @Before
     public void setUp() {
-        superAdmin = new SuperAdmin("admin");
-        callCenterAdmin = new CallCenterAdmin("call");
-        facilityAdmin = new FacilityAdmin("facility");
+        superAdmin = new SuperAdmin("admin", "admin");
+        callCenterAdmin = new CallCenterAdmin("call", "call");
+        facilityAdmin = new FacilityAdmin("facility", "facility");
         allSuperAdmins.add(superAdmin);
         allCallCenterAdmins.add(callCenterAdmin);
         allFacilityAdmins.add(facilityAdmin);
@@ -47,6 +49,13 @@ public class AllUsersTest {
         allSuperAdmins.remove(superAdmin);
         allCallCenterAdmins.remove(callCenterAdmin);
         allFacilityAdmins.remove(facilityAdmin);
+    }
+
+    @Test
+    public void shouldEncryptPasswordWhileAddingAUser() {
+        assertPasswordIsEncrypted(allCallCenterAdmins.findByUsername(callCenterAdmin.getUsername()), callCenterAdmin.getPassword());
+        assertPasswordIsEncrypted(allFacilityAdmins.findByUsername(facilityAdmin.getUsername()), facilityAdmin.getPassword());
+        assertPasswordIsEncrypted(allSuperAdmins.findByUsername(superAdmin.getUsername()), superAdmin.getPassword());
     }
 
     @Test
@@ -65,20 +74,33 @@ public class AllUsersTest {
 
     }
 
+    @Test
+    public void shouldLoadUserDetailsForAnAuthenticatedUser() {
+        UserDetails superAdminUserDetails = allSuperAdmins.getAuthenticatedUser(superAdmin.getUsername(), superAdmin.getPassword());
+        assertUser(superAdminUserDetails.getUsername(), superAdminUserDetails);
+
+        UserDetails callCenterAdminDetails = allCallCenterAdmins.getAuthenticatedUser(callCenterAdmin.getUsername(), callCenterAdmin.getPassword());
+        assertUser(callCenterAdminDetails.getUsername(), callCenterAdminDetails);
+
+        UserDetails facilityAdminDetails = allFacilityAdmins.getAuthenticatedUser(facilityAdmin.getUsername(), facilityAdmin.getPassword());
+        assertUser(facilityAdminDetails.getUsername(), facilityAdminDetails);
+    }
+
+    @Test
+    public void shouldMatchTheProvidedPasswordForUserAuthentication() {
+        assertThat(allSuperAdmins.getAuthenticatedUser(superAdmin.getUsername(), "bad password"), is(nullValue()));
+        assertThat(allFacilityAdmins.getAuthenticatedUser(facilityAdmin.getUsername(), "bad password"), is(nullValue()));
+        assertThat(allCallCenterAdmins.getAuthenticatedUser(callCenterAdmin.getUsername(), "bad password"), is(nullValue()));
+    }
+
     private void assertUser(String userName, UserDetails user) {
         assertThat(user, is(notNullValue()));
         assertThat(user.getUsername(), is(equalTo(userName)));
     }
 
-    @Test
-    public void shouldLoadUserDetailsForAnAuthenticatedUser() {
-        UserDetails superAdminUserDetails = allSuperAdmins.getAuthenticatedUser(superAdmin.getUsername(), "password");
-        assertUser(superAdminUserDetails.getUsername(), superAdminUserDetails);
-
-        UserDetails callCenterAdminDetails = allCallCenterAdmins.getAuthenticatedUser(callCenterAdmin.getUsername(), "password");
-        assertUser(callCenterAdminDetails.getUsername(), callCenterAdminDetails);
-
-        UserDetails facilityAdminDetails = allFacilityAdmins.getAuthenticatedUser(facilityAdmin.getUsername(), "password");
-        assertUser(facilityAdminDetails.getUsername(), facilityAdminDetails);
+    private void assertPasswordIsEncrypted(User user, String plainPassword) {
+        assertThat(user.getPassword(), is(nullValue()));
+        assertThat(user.getDigestedPassword(), is(notNullValue()));
+        assertThat(new StrongPasswordEncryptor().checkPassword(plainPassword, user.getDigestedPassword()), is(true));
     }
 }

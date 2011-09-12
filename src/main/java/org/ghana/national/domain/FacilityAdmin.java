@@ -16,7 +16,7 @@ public class FacilityAdmin extends User {
     private FacilityAdmin() {
     }
 
-    public FacilityAdmin(String username) {
-        super(username);
+    public FacilityAdmin(String username, String password) {
+        super(username, password);
     }
 }

@@ -114,6 +114,16 @@
             <artifactId>motech-platform-common</artifactId>
             <version>${motech-platform.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jzlib</artifactId>
+            <version>1.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jasypt</groupId>
+            <artifactId>jasypt</artifactId>
+            <version>1.7</version>
+        </dependency>
         <!--test dependencies-->
         <dependency>
             <groupId>junit</groupId>
@@ -142,11 +152,6 @@
             <groupId>com.savage7.maven.plugins</groupId>
             <artifactId>maven-external-dependency-plugin</artifactId>
             <version>0.5-SONATYPE-r116</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jzlib</artifactId>
-            <version>1.0.7</version>
         </dependency>
     </dependencies>
     <build>
