@@ -76,6 +76,13 @@
     <orderEntry type="library" name="Maven: org.mockito:mockito-all:1.8.5" level="project" />
     <orderEntry type="library" name="Maven: com.jcraft:jzlib:1.0.7" level="project" />
     <orderEntry type="library" name="Maven: org.jasypt:jasypt:1.7" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tiles:tiles-core:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tiles:tiles-api:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-digester:commons-digester:2.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tiles:tiles-jsp:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tiles:tiles-servlet:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tiles:tiles-template:2.2.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.8.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.sourceforge.me4se:me4se:2.1.4-SNAPSHOT-20040926" level="project" />
     <orderEntry type="library" name="Maven: com.savage7.maven.plugins:maven-external-dependency-plugin:0.5-SONATYPE-r116" level="project" />
