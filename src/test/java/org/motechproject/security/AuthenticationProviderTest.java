@@ -30,7 +30,7 @@ public class AuthenticationProviderTest {
     }
 
     @Test(expected = InvalidCredentialsException.class)
-    public void shouldRaiseInvalidCredentialsExceptionForEmptyUserName() {
+    public void shouldRaiseInvalidCredentialsExceptionForEmptyUsername() {
         new AuthenticationProvider(new ArrayList<SecurityGroup>()).retrieveUser("", authentication);
     }
 
@@ -47,14 +47,14 @@ public class AuthenticationProviderTest {
     }
 
     @Test(expected = InvalidCredentialsException.class)
-    public void shouldRaiseInvalidCredentialsExceptionForUserNameAndPasswordMismatch() {
+    public void shouldRaiseInvalidCredentialsExceptionForUsernameAndPasswordMismatch() {
         when(authentication.getCredentials()).thenReturn("password");
         when(securityGroup.getAuthenticatedUser(anyString(), anyString())).thenReturn(null);
         new AuthenticationProvider(asList(securityGroup)).retrieveUser("foo", authentication);
     }
 
     @Test
-    public void shouldAuthenticateForAValidUserNameAndPasswordCombination() {
+    public void shouldAuthenticateForAValidUsernameAndPasswordCombination() {
         when(authentication.getCredentials()).thenReturn("password");
         when(securityGroup.getAuthenticatedUser("username", "password")).thenReturn(user);
         UserDetails authenticatedUser = new AuthenticationProvider(asList(securityGroup)).retrieveUser("username", authentication);

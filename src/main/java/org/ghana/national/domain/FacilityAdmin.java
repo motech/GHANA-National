@@ -3,10 +3,10 @@ package org.ghana.national.domain;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 
-@TypeDiscriminator("doc.type === 'FACILITY_ADMIN'")
+@TypeDiscriminator("doc.type === 'FacilityAdmin'")
 public class FacilityAdmin extends User {
     @JsonProperty("type")
-    final String type = "FACILITY_ADMIN";
+    final String type = FacilityAdmin.class.getSimpleName();
 
     @Override
     protected String getAuthority() {

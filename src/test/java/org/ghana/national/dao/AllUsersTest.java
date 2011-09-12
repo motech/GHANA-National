@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -50,9 +51,18 @@ public class AllUsersTest {
 
     @Test
     public void shouldLoadAUserBasedOnUsernameAndHashedPassword() {
-        assertUser(superAdmin.getUsername(), allSuperAdmins.findByUserNameAndPassword(superAdmin.getUsername(), "bar"));
-        assertUser(callCenterAdmin.getUsername(), allCallCenterAdmins.findByUserNameAndPassword(callCenterAdmin.getUsername(), "bar"));
-        assertUser(facilityAdmin.getUsername(), allFacilityAdmins.findByUserNameAndPassword(facilityAdmin.getUsername(), "bar"));
+        assertUser(callCenterAdmin.getUsername(), allCallCenterAdmins.findByUsername(callCenterAdmin.getUsername()));
+        assertThat(allSuperAdmins.findByUsername(callCenterAdmin.getUsername()), is(nullValue()));
+        assertThat(allFacilityAdmins.findByUsername(callCenterAdmin.getUsername()), is(nullValue()));
+
+        assertUser(facilityAdmin.getUsername(), allFacilityAdmins.findByUsername(facilityAdmin.getUsername()));
+        assertThat(allSuperAdmins.findByUsername(facilityAdmin.getUsername()), is(nullValue()));
+        assertThat(allCallCenterAdmins.findByUsername(facilityAdmin.getUsername()), is(nullValue()));
+
+        assertUser(superAdmin.getUsername(), allSuperAdmins.findByUsername(superAdmin.getUsername()));
+        assertThat(allCallCenterAdmins.findByUsername(superAdmin.getUsername()), is(nullValue()));
+        assertThat(allFacilityAdmins.findByUsername(superAdmin.getUsername()), is(nullValue()));
+
     }
 
     private void assertUser(String userName, UserDetails user) {
