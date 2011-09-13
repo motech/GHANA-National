@@ -7,6 +7,7 @@
     <groupId>GHANA-National</groupId>
     <artifactId>GHANA-National</artifactId>
     <version>1.0</version>
+    <packaging>war</packaging>
     <properties>
         <spring.version>3.0.5.RELEASE</spring.version>
         <org.ektorp.version>1.1.1</org.ektorp.version>
@@ -176,6 +177,27 @@
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.1.10</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven2-plugin</artifactId>
+                <version>1.1.2</version>
+                <configuration>
+                    <container>
+                        <containerId>jetty7x</containerId>
+                        <type>embedded</type>
+                    </container>
+                    <configuration>
+                        <type>standalone</type>
+                        <deployables>
+                            <deployable>
+                                <groupId>GHANA-National</groupId>
+                                <artifactId>GHANA-National</artifactId>
+                                <type>war</type>
+                            </deployable>
+                        </deployables>
+                    </configuration>
+                </configuration>
             </plugin>
         </plugins>
     </build>
