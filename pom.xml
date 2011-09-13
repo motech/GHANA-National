@@ -11,6 +11,14 @@
         <spring.version>3.0.5.RELEASE</spring.version>
         <org.ektorp.version>1.1.1</org.ektorp.version>
         <motech-platform.version>0.2-SNAPSHOT</motech-platform.version>
+        <jbehave.core.version>3.4.1</jbehave.core.version>
+        <jbehave.web.version>3.3.4</jbehave.web.version>
+        <jbehave.site.version>3.1.1</jbehave.site.version>
+        <meta.filter></meta.filter>
+        <threads>1</threads>
+        <skip>false</skip>
+        <stories>**/Stories.java</stories>
+
     </properties>
     <repositories>
         <repository>
@@ -166,14 +174,56 @@
         <dependency>
             <groupId>org.jbehave</groupId>
             <artifactId>jbehave-core</artifactId>
-            <version>3.4.1</version>
+            <version>${jbehave.core.version}</version>
+            <classifier>resources</classifier>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jbehave.site</groupId>
+            <artifactId>jbehave-site-resources</artifactId>
+            <version>${jbehave.site.version}</version>
+            <type>zip</type>
         </dependency>
         <dependency>
             <groupId>org.jbehave.web</groupId>
             <artifactId>jbehave-web-selenium</artifactId>
-            <scope>test</scope>
-            <version>3.3.4</version>
+            <version>${jbehave.web.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jbehave</groupId>
+                    <artifactId>jbehave-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-remote-control</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-support</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-support</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-spring</artifactId>
+            <version>${jbehave.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium.fluent</groupId>
+            <artifactId>fluent-selenium</artifactId>
+            <version>1.0-alpha-2</version>
+        </dependency>
+
         <!--maven plugins-->
         <dependency>
             <groupId>com.savage7.maven.plugins</groupId>
@@ -191,30 +241,47 @@
             <plugin>
                 <groupId>org.jbehave</groupId>
                 <artifactId>jbehave-maven-plugin</artifactId>
-                <version>3.4.5</version>
+                <version>${jbehave.core.version}</version>
                 <executions>
                     <execution>
-                        <id>run-stories-as-embeddables</id>
+                        <id>unpack-view-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack-view-resources</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>embeddable-stories</id>
                         <phase>integration-test</phase>
                         <configuration>
                             <includes>
-                                <include>**/*Story.java</include>
+                                <include>${stories}</include>
                             </includes>
-                            <metaFilters>
-                                <metaFilter>+author *</metaFilter>
-                                <metaFilter>-skip</metaFilter>
-                            </metaFilters>
-                            <systemProperties>
-                                <property>
-                                    <name>java.awt.headless</name>
-                                    <value>true</value>
-                                </property>
-                            </systemProperties>
+                            <excludes/>
+                            <scope>test</scope>
+                            <generateViewAfterStories>true</generateViewAfterStories>
                             <ignoreFailureInStories>true</ignoreFailureInStories>
                             <ignoreFailureInView>false</ignoreFailureInView>
+                            <threads>${threads}</threads>
+                            <skip>${skip}</skip>
+                            <metaFilters>
+                                <metaFilter>${meta.filter}</metaFilter>
+                            </metaFilters>
                         </configuration>
                         <goals>
                             <goal>run-stories-as-embeddables</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report-stepdocs</id>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <includes>
+                                <include>${stories}</include>
+                            </includes>
+                        </configuration>
+                        <goals>
+                            <goal>report-stepdocs-as-embeddables</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -226,6 +293,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
         </plugins>
     </build>
     <profiles>
