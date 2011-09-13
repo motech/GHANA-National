@@ -36,6 +36,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.apache.tiles:tiles-core:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tiles:tiles-api:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-digester:commons-digester:2.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tiles:tiles-jsp:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tiles:tiles-servlet:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tiles:tiles-template:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.16" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openxdata:protocol-api:1.2" level="project" />
