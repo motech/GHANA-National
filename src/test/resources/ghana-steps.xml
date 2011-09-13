@@ -11,7 +11,7 @@
      <constructor-arg ref="driverProvider"/>
   </bean>
 
-  <bean id="etsySteps" class="org.ghana.national.steps.LoginSteps">
+  <bean id="loginSteps" class="org.ghana.national.steps.LoginSteps">
      <constructor-arg ref="pageFactory"/>
   </bean>
 

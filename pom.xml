@@ -18,7 +18,6 @@
         <threads>1</threads>
         <skip>false</skip>
         <stories>**/Stories.java</stories>
-
     </properties>
     <repositories>
         <repository>
@@ -223,7 +222,6 @@
             <artifactId>fluent-selenium</artifactId>
             <version>1.0-alpha-2</version>
         </dependency>
-
         <!--maven plugins-->
         <dependency>
             <groupId>com.savage7.maven.plugins</groupId>
@@ -293,7 +291,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
         </plugins>
     </build>
     <profiles>
@@ -352,7 +349,6 @@
                                 <artifactId>motech-mforms-tiny</artifactId>
                                 <version>0.7.0</version>
                             </dependency>
-
                         </dependencies>
                         <executions>
                             <execution>
@@ -360,7 +356,6 @@
                                 <goals>
                                     <goal>java</goal>
                                 </goals>
-
                                 <configuration>
                                     <mainClass>org.me4se.MIDletRunner</mainClass>
                                     <classpathScope>test</classpathScope>
