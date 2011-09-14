@@ -1,4 +1,8 @@
-<div id="menu" xmlns:jsp="http://java.sun.com/JSP/Page" >
+<div id="menu" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <ol>
+        <spring:url value="/admin/facilities/new" var="new_facility_url"/>
+        <li><a href="${new_facility_url}">Create Facility</a></li>
+    </ol>
 </div>

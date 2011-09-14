@@ -5,4 +5,7 @@
     <definition extends="default" name="admin/dashboard">
         <put-attribute name="body" value="/WEB-INF/views/admin/dashboard.jspx"/>
     </definition>
+    <definition extends="default" name="admin/facilities/new">
+        <put-attribute name="body" value="/WEB-INF/views/admin/facilities/new.jspx"/>
+    </definition>
 </tiles-definitions>
