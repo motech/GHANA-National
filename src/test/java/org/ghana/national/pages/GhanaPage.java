@@ -14,11 +14,11 @@ public class GhanaPage extends WebDriverPage {
     }
 
     protected String url() {
-        return format("%s/%s", "http://localhost:8080/GHANA-National", page);
+        return format("%s/%s", "http://localhost:8080/GHANA-National-1.0", page);
     }
 
     protected String url(String page) {
-        return format("%s/%s", "http://localhost:8080/GHANA-National", page);
+        return format("%s/%s", "http://localhost:8080/GHANA-National-1.0", page);
     }
 
     public void go() {
