@@ -25,6 +25,11 @@
             <id>sonatype-repo</id>
             <url>https://repository.sonatype.org/content/groups/forge/</url>
         </repository>
+         <repository>
+            <id>motech.nexus</id>
+            <name>Motech Snapshots Repository</name>
+            <url>http://nexus.motechproject.org/content/repositories/snapshots</url>
+        </repository>
         <repository>
             <id>openxdata-repo</id>
             <url>https://nexus.openxdata.org/content/groups/public/</url>
