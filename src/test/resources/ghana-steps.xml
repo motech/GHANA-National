@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="driverProvider" class="org.jbehave.web.selenium.FirefoxWebDriverProvider"/>
+    <bean id="driverProvider" class="org.jbehave.web.selenium.PropertyWebDriverProvider"/>
 
     <bean id="pageFactory" class="org.ghana.national.pages.PageFactory">
         <constructor-arg ref="driverProvider"/>
