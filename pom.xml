@@ -448,5 +448,40 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>qa-deploy</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven2-plugin</artifactId>
+                        <configuration>
+                            <container>
+                                <containerId>tomcat6x</containerId>
+                                <type>remote</type>
+                            </container>
+                            <deployer>
+                                <type>remote</type>
+                                <deployable>
+                                    <groupId>GHANA-National</groupId>
+                                    <artifactId>GHANA-National</artifactId>
+                                    <type>war</type>
+                                </deployable>
+                            </deployer>
+                            <configuration>
+                                <type>runtime</type>
+                                <properties>
+                                    <cargo.remote.username>tom</cargo.remote.username>
+                                    <cargo.remote.password>cat</cargo.remote.password>
+                                    <cargo.hostname>sifynode43.thoughtworks.com</cargo.hostname>
+                                    <cargo.servlet.port>8080</cargo.servlet.port>
+                                    <cargo.tomcat.manager.url>http://sifynode43.thoughtworks.com:8080/manager</cargo.tomcat.manager.url>
+                                </properties>
+                            </configuration>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
