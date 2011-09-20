@@ -2,6 +2,7 @@ package org.ghana.national.mrs;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.util.DatabaseUpdateException;
@@ -14,6 +15,7 @@ import java.util.Properties;
 
 import static org.openmrs.api.context.Context.*;
 
+@Ignore("work in progress - puneet")
 public class PatientTest {
     @Before
     public void setUp() throws InputRequiredException, DatabaseUpdateException, IOException {
