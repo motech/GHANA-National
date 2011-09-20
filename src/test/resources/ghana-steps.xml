@@ -14,6 +14,10 @@
         <constructor-arg ref="pageFactory"/>
     </bean>
 
+    <bean id="dashboardSteps" class="org.ghana.national.steps.DashboardSteps">
+        <constructor-arg ref="pageFactory"/>
+    </bean>
+
     <bean id="lifecycleSteps" class="org.ghana.national.steps.LifecycleSteps">
         <constructor-arg ref="driverProvider"/>
         <constructor-arg ref="pageFactory"/>

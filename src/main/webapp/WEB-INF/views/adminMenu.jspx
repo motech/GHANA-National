@@ -3,6 +3,10 @@
     <jsp:output omit-xml-declaration="yes"/>
     <ol>
         <spring:url value="/admin/facilities/new" var="new_facility_url"/>
+        <spring:url value="/security/password/reset" var="password_reset_url"/>
+        <spring:url value="/logout" var="logout_url"/>
         <li><a href="${new_facility_url}">Create Facility</a></li>
+        <li><a href="${password_reset_url}">Reset Password</a></li>
+        <li><a href="${logout_url}">Logout</a></li>
     </ol>
 </div>

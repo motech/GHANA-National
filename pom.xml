@@ -15,7 +15,7 @@
         <jbehave.core.version>3.4.1</jbehave.core.version>
         <jbehave.web.version>3.3.4</jbehave.web.version>
         <jbehave.site.version>3.1.1</jbehave.site.version>
-        <meta.filter/>
+        <meta.filter></meta.filter>
         <threads>1</threads>
         <skip>false</skip>
         <stories>**/Stories.java</stories>
@@ -352,7 +352,7 @@
                             <excludes/>
                             <scope>test</scope>
                             <generateViewAfterStories>true</generateViewAfterStories>
-                            <ignoreFailureInStories>true</ignoreFailureInStories>
+                            <ignoreFailureInStories>false</ignoreFailureInStories>
                             <ignoreFailureInView>false</ignoreFailureInView>
                             <threads>${threads}</threads>
                             <skip>${skip}</skip>

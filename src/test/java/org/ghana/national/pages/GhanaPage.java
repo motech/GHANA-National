@@ -2,6 +2,7 @@ package org.ghana.national.pages;
 
 import org.jbehave.web.selenium.WebDriverPage;
 import org.jbehave.web.selenium.WebDriverProvider;
+import org.openqa.selenium.By;
 
 import static java.lang.String.format;
 
@@ -28,6 +29,10 @@ public class
 
     protected void go(String page) {
         get(url(page));
+    }
+
+    public void follow(String linkName) {
+        findElement(By.linkText(linkName)).click();
     }
 
     public boolean isCurrent() {
