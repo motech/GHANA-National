@@ -48,6 +48,11 @@
             <name>Motech Maven Repository</name>
             <url>http://nexus.motechproject.org/content/repositories/public</url>
         </repository>
+        <repository>
+            <id>searls-repo</id>
+            <name>Searls Maven Repository</name>
+            <url>http://searls-maven-repository.googlecode.com/svn/trunk</url>
+        </repository>
     </repositories>
     <dependencies>
         <!--app dependencies-->
@@ -411,6 +416,22 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.searls</groupId>
+                <artifactId>jasmine-maven-plugin</artifactId>
+                <version>1.0.2-beta-5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- configuration properties will go here -->
+                    <jsSrcDir>${project.basedir}/src/main/webapp/js</jsSrcDir>
+                </configuration>
             </plugin>
         </plugins>
     </build>
