@@ -32,7 +32,7 @@ public class Stories extends JUnitStories {
         SeleniumContext seleniumContext = new SeleniumContext();
         SeleniumStepMonitor stepMonitor = new SeleniumStepMonitor(contextView, seleniumContext,
                 crossReference.getStepMonitor());
-        Format[] formats = new Format[]{new SeleniumContextOutput(seleniumContext), CONSOLE, WEB_DRIVER_HTML};
+        Format[] formats = new Format[]{new SeleniumContextOutput(seleniumContext), CONSOLE, WEB_DRIVER_HTML, Format.XML};
         StoryReporterBuilder reporterBuilder = new StoryReporterBuilder()
                 .withCodeLocation(codeLocationFromClass(Stories.class)).withFailureTrace(true)
                 .withFailureTraceCompression(true).withDefaultFormats().withFormats(formats)
