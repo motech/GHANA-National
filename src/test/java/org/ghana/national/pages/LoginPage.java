@@ -20,6 +20,6 @@ public class LoginPage extends GhanaPage {
     }
 
     public void logout() {
-        get(url("logout"));
+        go("logout");
     }
 }
