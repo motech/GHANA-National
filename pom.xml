@@ -6,7 +6,7 @@
 
     <groupId>GHANA-National</groupId>
     <artifactId>GHANA-National</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <properties>
         <spring.version>3.0.5.RELEASE</spring.version>
@@ -522,7 +522,8 @@
                                     <cargo.remote.password>cat</cargo.remote.password>
                                     <cargo.hostname>sifynode43.thoughtworks.com</cargo.hostname>
                                     <cargo.servlet.port>8080</cargo.servlet.port>
-                                    <cargo.tomcat.manager.url>http://sifynode43.thoughtworks.com:8080/manager</cargo.tomcat.manager.url>
+                                    <cargo.tomcat.manager.url>http://sifynode43.thoughtworks.com:8080/manager
+                                    </cargo.tomcat.manager.url>
                                 </properties>
                             </configuration>
                         </configuration>
