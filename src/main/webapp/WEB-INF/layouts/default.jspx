@@ -21,9 +21,14 @@
     <script src="${formly_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
 </head>
 <body>
+<div id="page-wrap">
     <tiles:insertAttribute name="header"/>
     <tiles:insertAttribute name="menu"/>
-    <tiles:insertAttribute name="body"/>
+
+    <div id="main-content">
+        <tiles:insertAttribute name="body"/>
+    </div>
     <tiles:insertAttribute name="footer"/>
+</div>
 </body>
 </html>
