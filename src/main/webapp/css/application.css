@@ -3,3 +3,7 @@ body, div, td {
     font-size: 12px;
     color: #666;
 }
+
+form {
+    width: 500px;
+}

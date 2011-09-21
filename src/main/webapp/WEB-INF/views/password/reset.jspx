@@ -3,56 +3,31 @@
      xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:message var="title" code="change_password_title" htmlEscape="false"/>
 
     <spring:message code="field_required" var="field_required" htmlEscape="false"/>
-    <spring:message code="change_password_confirm_mismatch" var="pwd_confirm_mismatch" htmlEscape="false"/>
-    <spring:message code="change_password_invalid" var="pwd_new_invalid" htmlEscape="false"/>
+    <spring:url value="/resources/js/passwordReset.js" var="password_reset_url"/>
 
+    <script src="${password_reset_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
 
     <h2>${fn:escapeXml(title)}</h2>
     <c:if test="${not empty errors}">
-        <div class="errors">
-            <p>
-                <spring:message code="change_password_failed"/>
-            </p>
-        </div>
     </c:if>
     <spring:url value="/security/changePassword" var="form_url"/>
 
-    <form id="changePasswordForm" name="changePasswordForm" action="${fn:escapeXml(form_url)}" method="POST">
-        <div>
-            <label for="j_oldPassword">
-                <spring:message code="change_password_old"/>
-            </label>
-            <input id="j_oldPassword" type='password' name='j_oldPassword' style="width:150px;"/>
-            <span id="oldPasswordValidateError" class="error-inline"/>
-        </div>
-        <br/>
+    <div id="errors"/>
+    <form id="passwordResetForm" name="passwordResetForm" action="${fn:escapeXml(form_url)}" method="POST"
+          title="Password Reset" subtitle="for the greater good...">
+        <spring:message code="button_submit" var="submit_label" htmlEscape="false"/>
+        <spring:message code="button_reset" var="reset_label" htmlEscape="false"/>
+        <spring:message code="change_password_old" var="old_password_label" htmlEscape="false"/>
+        <spring:message code="change_password_new" var="password_label" htmlEscape="false"/>
+        <spring:message code="change_password_confirm" var="confirm_password_label" htmlEscape="false"/>
 
-        <div>
-            <label for="j_newPassword">
-                <spring:message code="change_password_new"/>
-            </label>
-            <input id="j_newPassword" type='password' name='j_newPassword' style="width:150px"/>
-            <span id="newPasswordValidateError" class="error-inline"/>
-        </div>
-        <br/>
-
-        <div>
-            <label for="j_newPasswordConfirm">
-                <spring:message code="change_password_confirm"/>
-            </label>
-            <input id="j_newPasswordConfirm" type='password' name='j_newPasswordConfirm' style="width:150px"/>
-            <span id="newPasswordConfirmValidateError" class="error-inline"/>
-        </div>
-        <br/>
-
-        <div class="submit">
-            <spring:message code="button_submit" var="submit_label" htmlEscape="false"/>
-            <input id="proceed" type="submit" value="${fn:escapeXml(submit_label)}"/>
-            <spring:message code="button_reset" var="reset_label" htmlEscape="false"/>
-            <input id="reset" type="reset" value="${fn:escapeXml(reset_label)}"/>
-        </div>
+        <input type="password" name="OldPassword" require="true" label="${fn:escapeXml(old_password_label)}" place="${fn:escapeXml(old_password_label)}"/><br/>
+        <input type="password" name="Password" require="true" label="${fn:escapeXml(password_label)}" place="${fn:escapeXml(password_label)}"/><br/>
+        <input type="password" name="PasswordMatch" match="Password" label="${fn:escapeXml(password_label)}" place="${fn:escapeXml(confirm_password_label)}"/><br/>
+        <input type="submit" value="${fn:escapeXml(submit_label)}"/><input type="reset" value="${fn:escapeXml(reset_label)}"/><br/>
     </form>
+
+
 </div>
