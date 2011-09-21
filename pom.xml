@@ -441,6 +441,9 @@
                 <configuration>
                     <!-- configuration properties will go here -->
                     <jsSrcDir>${project.basedir}/src/main/webapp/js</jsSrcDir>
+                    <sourceIncludes>
+                        <include>jquery-1.6.3.min.js</include>
+                    </sourceIncludes>
                 </configuration>
             </plugin>
             <plugin>

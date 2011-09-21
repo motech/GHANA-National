@@ -12,7 +12,7 @@
     <h2>${fn:escapeXml(title)}</h2>
     <c:if test="${not empty errors}">
     </c:if>
-    <spring:url value="/security/changePassword" var="form_url"/>
+    <spring:url value="/security/password/reset" var="form_url"/>
 
     <div id="errors"/>
     <form id="passwordResetForm" name="passwordResetForm" action="${fn:escapeXml(form_url)}" method="POST"
@@ -23,9 +23,9 @@
         <spring:message code="change_password_new" var="password_label" htmlEscape="false"/>
         <spring:message code="change_password_confirm" var="confirm_password_label" htmlEscape="false"/>
 
-        <input type="password" name="OldPassword" require="true" label="${fn:escapeXml(old_password_label)}" place="${fn:escapeXml(old_password_label)}"/><br/>
-        <input type="password" name="Password" require="true" label="${fn:escapeXml(password_label)}" place="${fn:escapeXml(password_label)}"/><br/>
-        <input type="password" name="PasswordMatch" match="Password" label="${fn:escapeXml(password_label)}" place="${fn:escapeXml(confirm_password_label)}"/><br/>
+        <input type="password" name="currentPassword" require="true" label="${fn:escapeXml(old_password_label)}" place="${fn:escapeXml(old_password_label)}"/><br/>
+        <input type="password" name="newPassword" require="true" label="${fn:escapeXml(password_label)}" place="${fn:escapeXml(password_label)}"/><br/>
+        <input type="password" name="newPasswordConfirmation" match="Password" label="${fn:escapeXml(password_label)}" place="${fn:escapeXml(confirm_password_label)}"/><br/>
         <input type="submit" value="${fn:escapeXml(submit_label)}"/><input type="reset" value="${fn:escapeXml(reset_label)}"/><br/>
     </form>
 

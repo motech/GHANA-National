@@ -11,6 +11,7 @@
         <intercept-url pattern="/callcenter/**" access="hasAnyRole('SuperAdmin','CallCenterAdmin')"
                        requires-channel="any"/>
         <intercept-url pattern="/facility/**" access="hasAnyRole('SuperAdmin','FacilityAdmin')" requires-channel="any"/>
+        <intercept-url pattern="/security/**" access="hasAnyRole('SuperAdmin','FacilityAdmin', 'CallCenterAdmin')" requires-channel="any"/>
         <form-login/>
         <logout logout-url="/logout" logout-success-url="/hello"/>
     </http>

@@ -94,4 +94,8 @@ public abstract class User extends MotechAuditableDataObject implements UserDeta
     public void setDigestedPassword(String digestedPassword) {
         this.digestedPassword = digestedPassword;
     }
+
+    public void setPassword(String newPassword) {
+        this.password = newPassword;
+    }
 }
