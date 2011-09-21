@@ -327,7 +327,7 @@
                         <type>standalone</type>
                         <deployables>
                             <deployable>
-                                <groupId>GHANA-National</groupId>
+                                <groupId>org.motechproject</groupId>
                                 <artifactId>GHANA-National</artifactId>
                                 <type>war</type>
                             </deployable>
@@ -531,7 +531,7 @@
                             <deployer>
                                 <type>remote</type>
                                 <deployable>
-                                    <groupId>GHANA-National</groupId>
+                                    <groupId>org.motechproject</groupId>
                                     <artifactId>GHANA-National</artifactId>
                                     <type>war</type>
                                 </deployable>
