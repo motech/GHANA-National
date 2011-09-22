@@ -1,5 +1,6 @@
 package org.ghana.national.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 
@@ -9,7 +10,8 @@ public class CallCenterAdmin extends User {
     final String type = CallCenterAdmin.class.getSimpleName();
 
     @Override
-    protected String getAuthority() {
+    @JsonIgnore
+    public String getAuthority() {
         return type;
     }
 

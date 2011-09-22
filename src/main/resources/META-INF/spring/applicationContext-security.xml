@@ -12,7 +12,7 @@
                        requires-channel="any"/>
         <intercept-url pattern="/facility/**" access="hasAnyRole('SuperAdmin','FacilityAdmin')" requires-channel="any"/>
         <intercept-url pattern="/security/**" access="hasAnyRole('SuperAdmin','FacilityAdmin', 'CallCenterAdmin')" requires-channel="any"/>
-        <form-login/>
+        <form-login authentication-success-handler-ref="authenticationSuccessHandler"/>
         <logout logout-url="/logout" logout-success-url="/hello"/>
     </http>
 
@@ -29,4 +29,5 @@
             </beans:list>
         </beans:constructor-arg>
     </beans:bean>
+    <beans:bean id="authenticationSuccessHandler" class="org.ghana.national.web.security.LoginSuccessHandler"/>
 </beans:beans>

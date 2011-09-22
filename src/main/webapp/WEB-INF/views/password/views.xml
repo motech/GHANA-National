@@ -6,7 +6,7 @@
     <put-attribute name="body" value="/WEB-INF/views/password/reset.jspx"/>
   </definition>
 
-  <definition extends="default" name="password/change/success">
+  <definition extends="default" name="password/success">
     <put-attribute name="body" value="/WEB-INF/views/password/success.jspx"/>
   </definition>
 </tiles-definitions>

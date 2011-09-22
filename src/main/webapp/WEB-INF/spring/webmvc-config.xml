@@ -12,7 +12,6 @@
     <mvc:annotation-driven/>
     <!--suppress SpringModelInspection -->
     <mvc:resources location="/" mapping="/resources/**"/>
-
     <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource">
         <property name="fallbackToSystemLocale" value="false"/>
         <property name="basenames">

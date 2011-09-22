@@ -40,7 +40,7 @@ public abstract class User extends MotechAuditableDataObject implements UserDeta
         return Arrays.asList(grantedAuthority);
     }
 
-    protected abstract String getAuthority();
+    public abstract String getAuthority();
 
     @JsonIgnore
     public String getPassword() {

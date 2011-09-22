@@ -21,4 +21,5 @@
         <constructor-arg ref="couchDbInstance"/>
         <constructor-arg value="ghana-national"/>
     </bean>
+    <bean id="encryptor" class="org.jasypt.util.password.StrongPasswordEncryptor"/>
 </beans>
