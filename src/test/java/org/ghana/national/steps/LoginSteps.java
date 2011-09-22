@@ -3,6 +3,7 @@ package org.ghana.national.steps;
 import org.ghana.national.pages.AdminDashboardPage;
 import org.ghana.national.pages.LoginPage;
 import org.ghana.national.pages.PageFactory;
+import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 
@@ -28,6 +29,7 @@ public class LoginSteps {
     }
 
     @Then("the $page page should be displayed")
+    @Alias(value = "the $page page is displayed")
     public void displaysPage(String page) {
         assertThat(pageFactory.getPage(page).isCurrent(), is(true));
     }

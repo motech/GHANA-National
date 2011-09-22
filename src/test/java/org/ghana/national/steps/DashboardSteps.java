@@ -13,7 +13,7 @@ public class DashboardSteps {
         this.adminDashBoard = pageFactory.getAdminDashBoard();
     }
 
-    @Then("And I follow $linkName link")
+    @Then("I follow $linkName link")
     public void followLink(String linkName) {
         adminDashBoard.follow(linkName);
     }

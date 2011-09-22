@@ -14,6 +14,7 @@ public class PageFactory {
         this.webDriverProvider = webDriverProvider;
         pages.put("adminDashboard", new AdminDashboardPage(webDriverProvider));
         pages.put("login" ,new LoginPage(webDriverProvider));
+        pages.put("resetPassword" ,new ResetPasswordPage(webDriverProvider));
     }
 
     public AdminDashboardPage getAdminDashBoard() {

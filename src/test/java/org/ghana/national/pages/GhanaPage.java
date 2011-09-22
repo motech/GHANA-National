@@ -3,6 +3,7 @@ package org.ghana.national.pages;
 import org.jbehave.web.selenium.WebDriverPage;
 import org.jbehave.web.selenium.WebDriverProvider;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import static java.lang.String.format;
 
@@ -42,4 +43,10 @@ public class
     public void hasErrorText(String error) {
 
     }
+
+    protected WebElement inputField(String name) {
+        return findElement(By.name(name));
+    }
+
+
 }
