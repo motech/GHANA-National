@@ -291,6 +291,11 @@
             <artifactId>hibernate-validator-annotation-processor</artifactId>
             <version>4.1.0.Final</version>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
     </dependencies>
     <build>
         <filters>
