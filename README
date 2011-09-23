@@ -1,4 +1,14 @@
-
 Dev build
 1) Run motech-mforms MIDlet via
     mvn test -P emulator
+2) To run jbehave stories with htmlunit
+    mvn verify -Dbrowser=htmlunit
+
+3) To jun app
+    mvn jetty:run           => app runs at http://localhost:8080/GHANA-National
+                               app is run directly from the code(webapp) folder
+
+    mvn cargo:run           => app runs at localhost:8080/GHANA-National-1.0-SNAPSHOT
+                                app runs via a war deploy to local jetty
+4) to deploy to an env
+    mvn cargo:deploy -P deploy -Dcargo.hostname=somehost -Dcargo.remote.username=someuser -Dcargo.remote.password=somepassword
