@@ -22,4 +22,10 @@
         <constructor-arg value="ghana-national"/>
     </bean>
     <bean id="encryptor" class="org.jasypt.util.password.StrongPasswordEncryptor"/>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+        <property name="location" value="classpath:openmrs.properties"/>
+    </bean>
+
 </beans>
