@@ -2,8 +2,10 @@ package org.ghana.national.openmrs;
 
 import org.apache.log4j.Logger;
 import org.openmrs.api.context.ServiceContext;
+import org.openmrs.module.OpenmrsCoreModuleException;
 import org.openmrs.util.DatabaseUpdateException;
 import org.openmrs.util.InputRequiredException;
+import org.openmrs.util.OpenmrsUtil;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -34,10 +36,16 @@ public class Context {
         logger.warn(format("connecting to openmrs instance at %s", url));
         Properties properties = new Properties();
         properties.setProperty(AUTO_UPDATE_DATABASE_RUNTIME_PROPERTY, String.valueOf(true));
-        properties.setProperty(APPLICATION_DATA_DIRECTORY_RUNTIME_PROPERTY, getClass().getClassLoader().getResource("openmrs-data").toURI().getPath());
+        String path = getClass().getClassLoader().getResource("openmrs-data").toURI().getPath();
+        logger.warn(format("openmrs data folder is  set to %s", path));
+        properties.setProperty(APPLICATION_DATA_DIRECTORY_RUNTIME_PROPERTY, path);
+        try{
         startup(url, user, password, properties);
         openSession();
         authenticate(openmrsUser, openmrsPassword);
+        } catch (OpenmrsCoreModuleException e){
+            logger.warn(format("openmrs data folder is  actually set to %s", OpenmrsUtil.getApplicationDataDirectory()));
+        }
     }
 
     public ServiceContext getServiceContext(){
