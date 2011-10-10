@@ -4,10 +4,9 @@ import org.ektorp.CouchDbConnector;
 import org.ghana.national.domain.User;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.motechproject.dao.MotechAuditableRepository;
-import org.motechproject.security.SecurityGroup;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public abstract class AllUsers<T extends User> extends MotechAuditableRepository<T> implements SecurityGroup {
+public abstract class AllUsers<T extends User> extends MotechAuditableRepository<T> {
 
     protected AllUsers(Class<T> type, CouchDbConnector db) {
         super(type, db);

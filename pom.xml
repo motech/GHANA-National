@@ -15,7 +15,7 @@
         <jbehave.core.version>3.4.1</jbehave.core.version>
         <jbehave.web.version>3.3.4</jbehave.web.version>
         <jbehave.site.version>3.1.1</jbehave.site.version>
-        <meta.filter></meta.filter>
+        <meta.filter/>
         <threads>1</threads>
         <skip>false</skip>
         <stories>**/Stories.java</stories>
@@ -39,10 +39,6 @@
         <repository>
             <id>sourceforge-files</id>
             <url>http://globalplatform.sourceforge.net/repo/m2-repository/</url>
-        </repository>
-        <repository>
-            <id>openmrs-repo</id>
-            <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
         </repository>
         <repository>
             <id>motech-repo</id>
@@ -76,16 +72,6 @@
             <groupId>org.openxdata</groupId>
             <artifactId>mforms-proto</artifactId>
             <version>1.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openmrs.api</groupId>
-            <artifactId>openmrs-api</artifactId>
-            <version>1.8.2</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.13</version>
         </dependency>
         <dependency>
             <groupId>ca.uhn.hapi</groupId>
@@ -151,6 +137,11 @@
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-common</artifactId>
+            <version>${motech-platform.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-openmrs-api</artifactId>
             <version>${motech-platform.version}</version>
         </dependency>
         <dependency>
@@ -347,7 +338,7 @@
                 <configuration>
                     <driver>com.mysql.jdbc.Driver</driver>
                     <username>root</username>
-                    <password></password>
+                    <password/>
                     <url>jdbc:mysql://localhost:3306</url>
                 </configuration>
                 <executions>
@@ -374,7 +365,7 @@
                         <configuration>
                             <autocommit>true</autocommit>
                             <srcFiles>
-                                <srcFile>${project.basedir}/build/sql/openmrs-1.5.0.10342.sql</srcFile>
+                                <srcFile>${project.basedir}/build/sql/openmrs-1.8.sql</srcFile>
                             </srcFiles>
                         </configuration>
                     </execution>

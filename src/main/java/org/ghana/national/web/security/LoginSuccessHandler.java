@@ -1,6 +1,6 @@
 package org.ghana.national.web.security;
 
-import org.ghana.national.domain.User;
+import org.motechproject.mrs.security.MRSUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
@@ -14,7 +14,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        User user = (User) authentication.getPrincipal();
+        MRSUser user = (MRSUser) authentication.getPrincipal();
         request.getSession().setAttribute(LOGGED_IN_USER, user);
         super.onAuthenticationSuccess(request, response, authentication);
     }

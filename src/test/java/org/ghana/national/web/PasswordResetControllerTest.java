@@ -1,19 +1,15 @@
 package org.ghana.national.web;
 
-import org.ghana.national.dao.AllCallCenterAdmins;
-import org.ghana.national.dao.AllFacilityAdmins;
-import org.ghana.national.dao.AllSuperAdmins;
-import org.ghana.national.domain.SuperAdmin;
-import org.ghana.national.domain.User;
 import org.ghana.national.web.form.PasswordResetForm;
 import org.ghana.national.web.security.LoginSuccessHandler;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.CustomTypeSafeMatcher;
-import org.jasypt.util.password.PasswordEncryptor;
-import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.mrs.security.MRSUser;
+import org.motechproject.mrs.services.MRSException;
+import org.motechproject.mrs.services.UserService;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -31,20 +27,14 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PasswordResetControllerTest {
     @Mock
-    private AllSuperAdmins superAdmins;
-    @Mock
-    private AllCallCenterAdmins callCenterAdmins;
-    @Mock
-    private AllFacilityAdmins facilityAdmins;
-    @Mock
-    private PasswordEncryptor encryptor;
+    private UserService userService;
 
     private PasswordResetController passwordResetController;
 
     @Before
     public void setUp() {
         initMocks(this);
-        passwordResetController = new PasswordResetController(superAdmins, callCenterAdmins, facilityAdmins, encryptor);
+        passwordResetController = new PasswordResetController(userService);
     }
 
     @Test
@@ -67,11 +57,11 @@ public class PasswordResetControllerTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
         HttpSession session = mock(HttpSession.class);
-        User authenticatedUser = mock(User.class);
+        MRSUser authenticatedUser = mock(MRSUser.class);
 
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(authenticatedUser);
-        when(authenticatedUser.getDigestedPassword()).thenReturn(new StrongPasswordEncryptor().encryptPassword("oldPassword"));
+        doThrow(mock(MRSException.class)).when(userService).changeCurrentUserPassword("p1","p2");
         PasswordResetForm passwordResetForm = new PasswordResetForm() {{
             setCurrentPassword("old");
             setNewPassword("new");
@@ -84,19 +74,15 @@ public class PasswordResetControllerTest {
     }
 
     @Test
-    public void shouldChangePasswordForSuperAdmin() {
+    public void shouldChangePasswordForMRSUser() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpSession session = mock(HttpSession.class);
-        SuperAdmin superAdmin = mock(SuperAdmin.class);
+        MRSUser mrsUser = mock(MRSUser.class);
 
 
 
         when(request.getSession()).thenReturn(session);
-        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(superAdmin);
-        when(superAdmin.getDigestedPassword()).thenReturn("oldEncryptedDigest");
-        when(superAdmin.getAuthority()).thenReturn(SuperAdmin.class.getSimpleName());
-        when(encryptor.checkPassword("oldPassword","oldEncryptedDigest")).thenReturn(true);
-        when(encryptor.encryptPassword("newPassword")).thenReturn("newEncryptedDigest");
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(mrsUser);
 
         PasswordResetForm passwordResetForm = new PasswordResetForm() {{
             setCurrentPassword("oldPassword");
@@ -106,8 +92,7 @@ public class PasswordResetControllerTest {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(passwordResetForm, "passwordResetForm");
 
         String viewName = passwordResetController.changePassword(passwordResetForm, bindingResult, request);
-        verify(superAdmin, times(1)).setDigestedPassword("newEncryptedDigest");
-        verify(superAdmins, times(1)).update(superAdmin);
+        verify(userService).changeCurrentUserPassword("oldPassword","newPassword");
         assertEquals("password/success", viewName);
     }
 }

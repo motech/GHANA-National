@@ -5,7 +5,7 @@
                     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                     http://www.springframework.org/schema/security 
                     http://www.springframework.org/schema/security/spring-security-3.0.xsd">
-
+    <beans:import resource="classpath*:applicationOpenmrsAPI.xml"/>
     <http use-expressions="true">
         <intercept-url pattern="/admin/**" access="hasRole('SuperAdmin')" requires-channel="any"/>
         <intercept-url pattern="/callcenter/**" access="hasAnyRole('SuperAdmin','CallCenterAdmin')"
@@ -17,17 +17,8 @@
     </http>
 
     <authentication-manager>
-        <authentication-provider ref="authenticationProvider"/>
+        <authentication-provider ref="openMRSAuthenticationProvider"/>
     </authentication-manager>
 
-    <beans:bean name="authenticationProvider" class="org.motechproject.security.AuthenticationProvider">
-        <beans:constructor-arg>
-            <beans:list>
-                <beans:ref bean="allSuperAdmins"/>
-                <beans:ref bean="allFacilityAdmins"/>
-                <beans:ref bean="allCallCenterAdmins"/>
-            </beans:list>
-        </beans:constructor-arg>
-    </beans:bean>
     <beans:bean id="authenticationSuccessHandler" class="org.ghana.national.web.security.LoginSuccessHandler"/>
 </beans:beans>
