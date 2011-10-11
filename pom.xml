@@ -349,7 +349,7 @@
                 <configuration>
                     <driver>com.mysql.jdbc.Driver</driver>
                     <username>root</username>
-                    <password>p@ssw0rd</password>
+                    <password/>
                     <url>jdbc:mysql://localhost:3306</url>
                 </configuration>
                 <executions>
