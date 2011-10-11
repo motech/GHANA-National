@@ -9,7 +9,7 @@ As an Super Admin User I want to manage the facilities in the regio hierarchy so
 
 Scenario: Create a facility
 
-Given the admin user logs in with password admin
+Given the admin user logs in with password P@ssw0rd
 And the user follows the link to create a facility
 When the user submits a form for a new facility with details
 |name|country|region|district|sub-district|phone numbers|
