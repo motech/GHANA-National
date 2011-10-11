@@ -169,6 +169,17 @@
             <groupId>org.apache.tiles</groupId>
             <artifactId>tiles-jsp</artifactId>
             <version>2.2.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-digester</groupId>
+                    <artifactId>commons-digester</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+            <version>1.8</version>
         </dependency>
         <!--test dependencies-->
         <dependency>
@@ -338,7 +349,7 @@
                 <configuration>
                     <driver>com.mysql.jdbc.Driver</driver>
                     <username>root</username>
-                    <password/>
+                    <password>p@ssw0rd</password>
                     <url>jdbc:mysql://localhost:3306</url>
                 </configuration>
                 <executions>
