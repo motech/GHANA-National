@@ -27,5 +27,4 @@
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location" value="classpath:openmrs.properties"/>
     </bean>
-    <beans:import resource="classpath*:applicationOpenmrsAPI.xml"/>
 </beans>
