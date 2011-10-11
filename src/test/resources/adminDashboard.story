@@ -9,7 +9,7 @@ As an Super Admin User I want to Login/Logout of the Web application So that I c
 
 Scenario: Successful Login
 
-Given the admin user logs in with password admin
+Given the admin user logs in with password P@ssw0rd
 Then the adminDashboard page should be displayed
 
 Scenario: Failed Login
