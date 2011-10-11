@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
+
+import static ch.lambdaj.Lambda.extract;
+import static ch.lambdaj.Lambda.on;
 
 @Controller
 @RequestMapping(value = "/admin/facilities")
@@ -26,17 +28,15 @@ public class FacilitiesController {
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newFacilityForm() {
-        List<Facility> facilities = facilityService.getFacilities();
         return "admin/facilities/new";
     }
 
     private void populateLocation(List<Facility> facilities) {
-        Set<String> countries = new TreeSet<String>();
+        List<String> countries = extract(facilities, on(Facility.class).getCountry());
         Map<String, TreeSet<String>> regions = new HashMap<String, TreeSet<String>>();
         Map<String, TreeSet<String>> districts = new HashMap<String, TreeSet<String>>();
         Map<String, TreeSet<String>> provinces = new HashMap<String, TreeSet<String>>();
         for (Facility facility : facilities) {
-            countries.add(facility.getCountry());
             populate(regions, facility.getCountry(), facility.getRegion());
             populate(districts, facility.getRegion(), facility.getCountyDistrict());
             populate(provinces, facility.getCountyDistrict(), facility.getStateProvince());
