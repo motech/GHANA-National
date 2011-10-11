@@ -6,6 +6,7 @@ import org.ghana.national.web.security.LoginSuccessHandler;
 import org.motechproject.mrs.security.MRSUser;
 import org.motechproject.mrs.services.MRSException;
 import org.motechproject.mrs.services.UserService;
+import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,9 +22,13 @@ import javax.validation.Valid;
 @RequestMapping(value = "/security/password/reset")
 public class PasswordResetController {
     private Logger log = Logger.getLogger("PasswordResetController");
-    private UserService userService;
 
     @Autowired
+    private UserService userService;
+
+    protected PasswordResetController() {
+    }
+
     public PasswordResetController(UserService userService) {
         this.userService = userService;
     }
@@ -34,6 +39,7 @@ public class PasswordResetController {
         return "password/reset";
     }
 
+    @ApiSession
     @RequestMapping(method = RequestMethod.POST)
     public String changePassword(@Valid PasswordResetForm passwordResetForm, BindingResult bindingResult, HttpServletRequest request) {
         MRSUser user = (MRSUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);

@@ -23,11 +23,17 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/test-annotations" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/target/generated-sources/annotations" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/target/GHANA-National-1.0-SNAPSHOT" />
+      <excludeFolder url="file://$MODULE_DIR$/target/cargo" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target/jasmine" />
       <excludeFolder url="file://$MODULE_DIR$/target/jbehave" />
+      <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
+      <excludeFolder url="file://$MODULE_DIR$/target/surefire" />
+      <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
       <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/work" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -78,6 +84,10 @@
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.6.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.mockito:mockito-all:1.8.5" level="project" />
     <orderEntry type="library" name="Maven: joda-time:joda-time:2.0" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.lambdaj:lambdaj:2.2" level="project" />
+    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-all:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.objenesis:objenesis:1.2" level="project" />
+    <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.2" level="project" />
     <orderEntry type="library" name="Maven: org.motechproject:motech-openmrs-api:0.3-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.motechproject:motech-mrs-api:0.3-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.openmrs.api:openmrs-api:1.8.2" level="project" />
@@ -94,7 +104,6 @@
     <orderEntry type="library" name="Maven: asm:asm-tree:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: asm:asm:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: asm:asm-util:2.2.3" level="project" />
-    <orderEntry type="library" name="Maven: cglib:cglib-nodep:2.2" level="project" />
     <orderEntry type="library" name="Maven: org.openmrs.simpleframework:simple-xml:1.6.1-mod" level="project" />
     <orderEntry type="library" name="Maven: stax:stax-api:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: stax:stax:1.2.0" level="project" />
@@ -124,7 +133,6 @@
     <orderEntry type="library" name="Maven: com.thoughtworks.paranamer:paranamer:2.3" level="project" />
     <orderEntry type="library" name="Maven: xpp3:xpp3_min:1.1.4c" level="project" />
     <orderEntry type="library" name="Maven: junit:junit-dep:4.8.2" level="project" />
-    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-all:1.1" level="project" />
     <orderEntry type="library" name="Maven: org.jbehave.web:jbehave-web-selenium:3.3.4" level="project" />
     <orderEntry type="library" name="Maven: org.seleniumhq.selenium:selenium-java:2.5.0" level="project" />
     <orderEntry type="library" name="Maven: org.seleniumhq.selenium:selenium-android-driver:2.5.0" level="project" />

@@ -61,7 +61,7 @@ public class PasswordResetControllerTest {
 
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(authenticatedUser);
-        doThrow(mock(MRSException.class)).when(userService).changeCurrentUserPassword("p1","p2");
+        doThrow(mock(MRSException.class)).when(userService).changeCurrentUserPassword("old","new");
         PasswordResetForm passwordResetForm = new PasswordResetForm() {{
             setCurrentPassword("old");
             setNewPassword("new");

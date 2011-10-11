@@ -364,6 +364,14 @@
                         </goals>
                         <configuration>
                             <autocommit>true</autocommit>
+                            <sqlCommand>
+                                create database openmrs_test default charset utf8;
+                                grant all on openmrs_test.* to 'openmrs'@'localhost' identified by
+                                'password';
+                                grant all on openmrs_test.* to 'openmrs'@'%' identified by 'password';
+                                flush privileges;
+                                use openmrs_test;
+                            </sqlCommand>
                             <srcFiles>
                                 <srcFile>${project.basedir}/build/sql/openmrs-1.8.sql</srcFile>
                             </srcFiles>

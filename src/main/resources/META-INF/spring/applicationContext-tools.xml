@@ -7,9 +7,7 @@
     <bean id="seedLoader" class="org.ghana.national.tools.seed.SeedLoader">
         <constructor-arg>
             <list>
-                <ref bean="superAdminSeed"/>
-                <ref bean="callCenterAdminSeed"/>
-                <ref bean="facilityAdminSeed"/>
+                <ref bean="exampleCouchDbSeed"/>
             </list>
         </constructor-arg>
     </bean>
