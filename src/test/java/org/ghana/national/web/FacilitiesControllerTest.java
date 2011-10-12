@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.is;
 public class FacilitiesControllerTest {
     @Test
     public void shouldRenderForm() {
-        assertThat(new FacilitiesController().newFacilityForm(), is(equalTo("admin/facilities/new")));
+        assertThat(new FacilitiesController().newFacilityForm(), is(equalTo("common/facilities/new")));
     }
 
 }

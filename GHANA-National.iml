@@ -93,8 +93,8 @@
     <orderEntry type="library" name="Maven: org.motechproject:motech-openmrs-api:0.3-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.motechproject:motech-mrs-api:0.3-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.openmrs.api:openmrs-api:1.8.2" level="project" />
-    <orderEntry type="library" name="Maven: commons-collections:commons-collections:2.1" level="project" />
-    <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.6" level="project" />
+    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.azeckoski:reflectutils:0.9.14" level="project" />
     <orderEntry type="library" name="Maven: org.apache.velocity:velocity:1.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-orm:3.0.5.RELEASE" level="project" />
@@ -123,7 +123,7 @@
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.13" level="project" />
     <orderEntry type="library" name="Maven: com.jcraft:jzlib:1.0.7" level="project" />
     <orderEntry type="library" name="Maven: org.jasypt:jasypt:1.7" level="project" />
-    <orderEntry type="library" name="Maven: commons-digester:commons-digester:1.6" level="project" />
+    <orderEntry type="library" name="Maven: commons-digester:commons-digester:1.8" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tiles:tiles-core:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tiles:tiles-api:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tiles:tiles-jsp:2.2.1" level="project" />

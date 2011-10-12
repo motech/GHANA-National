@@ -69,7 +69,7 @@ public class PasswordResetControllerTest {
         }};
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(passwordResetForm, "passwordResetForm");
         String viewName = passwordResetController.changePassword(passwordResetForm, bindingResult, request);
-        assertThat("password/reset", is(equalTo(viewName)));
+        assertThat(viewName, is(equalTo("password/reset")));
         assertThat(bindingResult.getFieldError("currentPassword"), is(notNullValue()));
     }
 
