@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping(value = "/callcenter")
-public class CallcenterController extends DummyController{
+public class CallcenterController extends DashboardController {
 }
 
 

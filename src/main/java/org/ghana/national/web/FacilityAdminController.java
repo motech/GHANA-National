@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping(value = "/facility")
-public class FacilityAdminController extends DummyController{
+public class FacilityAdminController extends DashboardController {
 }
 
 

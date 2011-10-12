@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class FacilitiesController {
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newFacilityForm(){
-        return "admin/facilities/new";
+        return "common/facilities/new";
     }
 }
