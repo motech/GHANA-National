@@ -7,3 +7,9 @@ target
 .*#
 .DS_Store
 logs
+*.ipr
+*.iws
+*.iml
+.classpath
+.project
+.settings/

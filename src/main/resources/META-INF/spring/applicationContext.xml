@@ -29,4 +29,6 @@
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location" value="classpath:openmrs.properties"/>
     </bean>
+
+    <bean class="org.motechproject.mrs.services.Facility" id="facility" scope="reqest" />
 </beans>

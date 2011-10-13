@@ -1,5 +1,57 @@
-<div id="body" xmlns:jsp="http://java.sun.com/JSP/Page">
+<div id="body" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:spring="http://www.springframework.org/tags">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <h1>new form</h1>
+    <spring:url value="/resources/js/createFacility.js" var="password_reset_url"/>
+    <script src="${password_reset_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <spring:url value="/admin/facilities/save" var="form_url"/>
+    <form:form id="createFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Facility" commandName="facility">
+        <div>
+            <label for="facility" class="formLabel">Name:</label>
+            <form:input path="name" size="20"/>
+        </div>
+        <div>
+            <label for="countries" class="formLabel">Country:</label>
+            <form:select id="countries" path="country">
+                <option value="0">select country</option>
+                <c:forEach items="${countries}" var="country">
+                    <option value="${country}">${country}</option>
+                </c:forEach>
+            </form:select>
+        </div>
+        <div class="hide">
+            <label for="regions" class="formLabel">Region:</label>
+            <form:select id="regions" path="region">
+                <option value="0">select region</option>
+                <c:forEach items="${regions}" var="countryRegions">
+                    <c:forEach items="${countryRegions.value}" var="region">
+                        <option value="${countryRegions.key}">${region}</option>
+                    </c:forEach>
+                </c:forEach>
+            </form:select>
+        </div>
+        <div  class="hide">
+            <label for="districts" class="formLabel">District:</label>
+            <form:select id="districts" path="countyDistrict">
+                <option value="0">select district</option>
+                <c:forEach items="${districts}" var="regionDistricts">
+                    <c:forEach items="${regionDistricts.value}" var="district">
+                        <option value="${regionDistricts.key}">${district}</option>
+                    </c:forEach>
+                </c:forEach>
+            </form:select>
+        </div>
+        <div  class="hide">
+            <label for="sub-districts" class="formLabel">Sub-District:</label>
+            <form:select id="sub-districts" path="stateProvince">
+                <option value="0">select sub-district</option>
+                <c:forEach items="${provinces}" var="districtProvinces">
+                    <c:forEach items="${districtProvinces.value}" var="province">
+                        <option value="${districtProvinces.key}">${province}</option>
+                    </c:forEach>
+                </c:forEach>
+            </form:select>
+        </div>
+ </form:form>
 </div>

@@ -1,6 +1,9 @@
 package org.ghana.national.web;
 
+import ch.lambdaj.group.Group;
 import org.apache.commons.lang.StringUtils;
+import org.ghana.national.tools.Utility;
+import org.ghana.national.web.form.CreateFacilityForm;
 import org.motechproject.mrs.services.Facility;
 import org.motechproject.mrs.services.FacilityService;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -10,13 +13,19 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
 
 import static ch.lambdaj.Lambda.extract;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.map;
 import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.select;
+import static ch.lambdaj.Lambda.selectDistinct;
+import static ch.lambdaj.group.Groups.by;
+import static ch.lambdaj.group.Groups.group;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.Is.is;
 
 @Controller
 @RequestMapping(value = "/admin/facilities")
@@ -27,35 +36,22 @@ public class FacilitiesController {
 
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
-    public String newFacilityForm(){
+    public String newFacilityForm(ModelMap modelMap) {
+        populateLocation(facilityService.getFacilities(), modelMap);
         return "common/facilities/new";
     }
 
-    private void populateLocation(List<Facility> facilities) {
-        List<String> countries = extract(facilities, on(Facility.class).getCountry());
-        Map<String, TreeSet<String>> regions = new HashMap<String, TreeSet<String>>();
-        Map<String, TreeSet<String>> districts = new HashMap<String, TreeSet<String>>();
-        Map<String, TreeSet<String>> provinces = new HashMap<String, TreeSet<String>>();
-        for (Facility facility : facilities) {
-            populate(regions, facility.getCountry(), facility.getRegion());
-            populate(districts, facility.getRegion(), facility.getCountyDistrict());
-            populate(provinces, facility.getCountyDistrict(), facility.getStateProvince());
-        }
-        ModelMap modelMap = new ModelMap();
-        modelMap.addAttribute("countries", countries);
-        modelMap.addAttribute("regions", regions);
-        modelMap.addAttribute("districts", districts);
-        modelMap.addAttribute("provinces", provinces);
-    }
+    ModelMap populateLocation(List<Facility> facilities, ModelMap modelMap) {
+        List<Facility> withValidCountryNames = select(facilities, having(on(Facility.class).getCountry(), is(not(equalTo(StringUtils.EMPTY)))));
+        final Group<Facility> byCountryRegion = group(withValidCountryNames, by(on(Facility.class).getCountry()), by(on(Facility.class).getRegion()));
+        final Group<Facility> byRegionDistrict = group(withValidCountryNames, by(on(Facility.class).getRegion()), by(on(Facility.class).getCountyDistrict()));
+        final Group<Facility> byDistrictProvince = group(withValidCountryNames, by(on(Facility.class).getCountyDistrict()), by(on(Facility.class).getStateProvince()));
 
-    private void populate(Map<String, TreeSet<String>> map, String key, String value) {
-        if (StringUtils.isBlank(key) || StringUtils.isBlank(value)) return;
-        if (map.containsKey(key)) {
-            map.get(key).add(value);
-            return;
-        }
-        TreeSet<String> values = new TreeSet<String>();
-        values.add(value);
-        map.put(key, values);
+        modelMap.addAttribute("facility", new CreateFacilityForm());
+        modelMap.addAttribute("countries", extract(selectDistinct(withValidCountryNames, "country"), on(Facility.class).getCountry()));
+        modelMap.addAttribute("regions", Utility.reverseKeyValues(map(byCountryRegion.keySet(), Utility.mapConverter(byCountryRegion))));
+        modelMap.addAttribute("districts", Utility.reverseKeyValues(map(byRegionDistrict.keySet(), Utility.mapConverter(byRegionDistrict))));
+        modelMap.addAttribute("provinces", Utility.reverseKeyValues(map(byDistrictProvince.keySet(), Utility.mapConverter(byDistrictProvince))));
+        return modelMap;
     }
 }

@@ -1,5 +1,6 @@
 <html xmlns:tiles="http://tiles.apache.org/tags-tiles" xmlns:jsp="http://java.sun.com/JSP/Page"
       xmlns:spring="http://www.springframework.org/tags">
+
 <jsp:output omit-xml-declaration="yes"/>
 <jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat"/>
 
@@ -13,12 +14,14 @@
     <title><tiles:insertAttribute name="title" ignore="true"/></title>
     <spring:url value="/resources/js/jquery-1.6.3.min.js" var="jquery_url"/>
     <spring:url value="/resources/js/formly.min.js" var="formly_url"/>
+    <spring:url value="/resources/js/modernizr.custom.js" var="modernizr_url"/>
     <spring:url value="/resources/css/application.css" var="css_url"/>
     <spring:url value="/resources/css/formly.min.css" var="formly_css_url"/>
     <link rel="stylesheet" type="text/css" media="screen" href="${css_url}"></link>
     <link rel="stylesheet" type="text/css" media="screen" href="${formly_css_url}"></link>
     <script src="${jquery_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${formly_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <script src="${modernizr_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
 </head>
 <body>
 <div id="page-wrap">

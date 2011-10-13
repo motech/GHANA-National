@@ -71,3 +71,14 @@ nav ul li a:active, nav ul li a.current {
     position: relative;
     top: 1px;
 }
+
+.formLabel {
+    display: block;
+    float: left;
+    width: 100px;
+    margin-top: 15px;
+}
+
+.hide {
+    display: none;
+}
