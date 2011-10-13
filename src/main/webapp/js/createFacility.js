@@ -1,13 +1,19 @@
 var Field = function(elementId) {
 this.id = elementId;
-    this.node = $('#' + this.id)
+    this.node = $('#' + this.id);
+    this.alertNode = $('#' + this.id + 'Error');
     this.options = this.node.find('option');
+}
+
+Field.prototype.hideAlert = function(){
+    this.alertNode.hide();
 }
 
 Field.prototype.hasADependent = function(dependent) {
     this.dependent = dependent;
     var field = this;
     this.node.change(function() {
+        field.hideAlert();
         field.populateDependentWithOriginalValues();
         field.showOrHideDependsBasedOnSelection();
     });
@@ -21,7 +27,9 @@ Field.prototype.populateDependentWithOriginalValues = function() {
 Field.prototype.showOrHideDependsBasedOnSelection = function() {
     var field = this;
     function getDependentOptionsForSelectedValue() {
-        return field.dependent.node.find('option').filter(function() {return this.value == field.node.find('option:selected').text()})
+        return field.dependent.node.find('option').filter(function() {
+            return $(this).attr('parent') == field.node.find('option:selected').text() && $(this).text() != '';
+        })
     }
 
     var dependentOptions = getDependentOptionsForSelectedValue();
@@ -45,22 +53,41 @@ Field.prototype.hideDependents = function() {
 }
 
 Field.prototype.getDefaultValue = function() {
-    return this.node.find('option[value="0"]');
+    return this.node.find('option[parent=select]');
 }
 
 Field.prototype.showDependent = function(dependentOptions) {
     if(this.hasDependent()) {
+        this.dependent.hideAlert();
         this.dependent.hideDependents();
         var dependentDefaultOption = this.dependent.getDefaultValue();
         this.dependent.node.html(dependentOptions);
         this.dependent.node.prepend(dependentDefaultOption);
-        this.dependent.node.val(dependentDefaultOption.val());
+        this.dependent.node.find('option:first').attr('selected', 'selected');
         this.dependent.node.parent().show();
     }
 }
 
 $(document).ready(function() {
+    var facilityLocationHasBeenSelected = function(){
+        var locations = ['countries', 'regions', 'districts', 'sub-districts'];
+        $.each(locations, function(index) {
+            var location = $('#' + locations[index]);
+            if (location.is(":visible") && location.find('option:selected').attr('parent') == 'select'){
+                $('#' + locations[index] + 'Error').show();
+                return false;
+            }
+        });
+        return true;
+    }
+
     $("#createFacilityForm").formly({'onBlur':false, 'theme':'Light'});
     new Field('countries').hasADependent(new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts'))));
+
+    $('#submitNewFacility').click(function() {
+        if(facilityLocationHasBeenSelected()){
+            $('#createFacilityForm').submit();
+        }
+    });
 });
 

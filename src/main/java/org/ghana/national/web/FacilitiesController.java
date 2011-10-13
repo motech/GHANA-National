@@ -10,9 +10,11 @@ import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static ch.lambdaj.Lambda.extract;
@@ -47,11 +49,17 @@ public class FacilitiesController {
         final Group<Facility> byRegionDistrict = group(withValidCountryNames, by(on(Facility.class).getRegion()), by(on(Facility.class).getCountyDistrict()));
         final Group<Facility> byDistrictProvince = group(withValidCountryNames, by(on(Facility.class).getCountyDistrict()), by(on(Facility.class).getStateProvince()));
 
-        modelMap.addAttribute("facility", new CreateFacilityForm());
+        modelMap.addAttribute("createFacilityForm", new CreateFacilityForm());
         modelMap.addAttribute("countries", extract(selectDistinct(withValidCountryNames, "country"), on(Facility.class).getCountry()));
         modelMap.addAttribute("regions", Utility.reverseKeyValues(map(byCountryRegion.keySet(), Utility.mapConverter(byCountryRegion))));
         modelMap.addAttribute("districts", Utility.reverseKeyValues(map(byRegionDistrict.keySet(), Utility.mapConverter(byRegionDistrict))));
         modelMap.addAttribute("provinces", Utility.reverseKeyValues(map(byDistrictProvince.keySet(), Utility.mapConverter(byDistrictProvince))));
         return modelMap;
+    }
+
+    @ApiSession
+    @RequestMapping(value="create", method = RequestMethod.POST)
+    public String createFacilityForm(@Valid CreateFacilityForm createFacilityForm, BindingResult bindingResult) {
+        return bindingResult.hasErrors() ? "common/facilities/new" : "common/facilities/success";
     }
 }

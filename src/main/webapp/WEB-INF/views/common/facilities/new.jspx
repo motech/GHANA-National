@@ -3,55 +3,67 @@
      xmlns:spring="http://www.springframework.org/tags">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:url value="/resources/js/createFacility.js" var="password_reset_url"/>
-    <script src="${password_reset_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
-    <spring:url value="/admin/facilities/save" var="form_url"/>
-    <form:form id="createFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Facility" commandName="facility">
+    <spring:url value="/resources/js/createFacility.js" var="create_facility_url"/>
+    <script src="${create_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <spring:url value="/admin/facilities/create" var="form_url"/>
+    <form:form id="createFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Facility" commandName="createFacilityForm">
+        <spring:message code="facility_label" var="facility_label" htmlEscape="false"/>
+
         <div>
             <label for="facility" class="formLabel">Name:</label>
-            <form:input path="name" size="20"/>
+            <form:input path="name" size="20" require="true" label="${fn:escapeXml(facility_label)}" />
         </div>
         <div>
             <label for="countries" class="formLabel">Country:</label>
-            <form:select id="countries" path="country">
-                <option value="0">select country</option>
+            <form:select id="countries" path="country" >
+                <option parent="select" value="">select country</option>
                 <c:forEach items="${countries}" var="country">
-                    <option value="${country}">${country}</option>
+                    <option parent="${country}" value="${country}">${country}</option>
                 </c:forEach>
             </form:select>
+            <span id='countriesError' class='alertText formlyInvalid formlyAlert hide'>Please select a country</span>
         </div>
         <div class="hide">
             <label for="regions" class="formLabel">Region:</label>
-            <form:select id="regions" path="region">
-                <option value="0">select region</option>
+            <form:select id="regions" path="region" >
+                <option parent="select" value="">select region</option>
                 <c:forEach items="${regions}" var="countryRegions">
                     <c:forEach items="${countryRegions.value}" var="region">
-                        <option value="${countryRegions.key}">${region}</option>
+                        <option parent="${countryRegions.key}" value="${region}">${region}</option>
                     </c:forEach>
                 </c:forEach>
             </form:select>
+            <span id='regionsError' class='alertText formlyInvalid formlyAlert hide'>Please select a region</span>
         </div>
         <div  class="hide">
             <label for="districts" class="formLabel">District:</label>
-            <form:select id="districts" path="countyDistrict">
-                <option value="0">select district</option>
+            <form:select id="districts" path="countyDistrict" >
+                <option parent="select" value="">select district</option>
                 <c:forEach items="${districts}" var="regionDistricts">
                     <c:forEach items="${regionDistricts.value}" var="district">
-                        <option value="${regionDistricts.key}">${district}</option>
+                        <option parent="${regionDistricts.key}" value="${district}">${district}</option>
                     </c:forEach>
                 </c:forEach>
             </form:select>
+            <span id='districtsError' class='alertText formlyInvalid formlyAlert hide'>Please select a district</span>
         </div>
-        <div  class="hide">
+        <div class="hide">
             <label for="sub-districts" class="formLabel">Sub-District:</label>
             <form:select id="sub-districts" path="stateProvince">
-                <option value="0">select sub-district</option>
+                <option parent="select" value="">select sub-district</option>
                 <c:forEach items="${provinces}" var="districtProvinces">
                     <c:forEach items="${districtProvinces.value}" var="province">
-                        <option value="${districtProvinces.key}">${province}</option>
+                        <option parent="${districtProvinces.key}" value="${province}">${province}</option>
                     </c:forEach>
                 </c:forEach>
             </form:select>
+            <span id='sub-districtsError' class='alertText formlyInvalid formlyAlert hide'>Please select a sub-district</span>
         </div>
- </form:form>
+
+        <input type="submit" id="submitNewFacility" value="Submit"/>
+
+        <div class="formlyAlerts">
+            <form:errors path="name" element="div" cssClass="formlyInvalid formlyAlert" cssStyle="display: block;"/>
+        </div>
+</form:form>
 </div>

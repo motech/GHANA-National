@@ -79,6 +79,11 @@ nav ul li a:active, nav ul li a.current {
     margin-top: 15px;
 }
 
+.alertText {
+    margin-left: 10px;
+    display: inline;
+}
+
 .hide {
     display: none;
 }

@@ -17,8 +17,8 @@
     <spring:url value="/resources/js/modernizr.custom.js" var="modernizr_url"/>
     <spring:url value="/resources/css/application.css" var="css_url"/>
     <spring:url value="/resources/css/formly.min.css" var="formly_css_url"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="${css_url}"></link>
     <link rel="stylesheet" type="text/css" media="screen" href="${formly_css_url}"></link>
+    <link rel="stylesheet" type="text/css" media="screen" href="${css_url}"></link>
     <script src="${jquery_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${formly_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${modernizr_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
