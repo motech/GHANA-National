@@ -70,15 +70,15 @@ Field.prototype.showDependent = function(dependentOptions) {
 
 $(document).ready(function() {
     var facilityLocationHasBeenSelected = function(){
-        var locations = ['countries', 'regions', 'districts', 'sub-districts'];
-        $.each(locations, function(index) {
-            var location = $('#' + locations[index]);
-            if (location.is(":visible") && location.find('option:selected').attr('parent') == 'select'){
-                $('#' + locations[index] + 'Error').show();
+    var isValid = true;
+        $('.locationAlert').each(function(index) {
+            if ($(this).prev().is(":visible") && $(this).prev().find('option:selected').attr('parent') == 'select'){
+                $(this).show();
+                isValid = false;
                 return false;
             }
         });
-        return true;
+        return isValid;
     }
 
     $("#createFacilityForm").formly({'onBlur':false, 'theme':'Light'});

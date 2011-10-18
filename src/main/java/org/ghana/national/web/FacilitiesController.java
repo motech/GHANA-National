@@ -8,14 +8,17 @@ import org.motechproject.mrs.services.Facility;
 import org.motechproject.mrs.services.FacilityService;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 
 import static ch.lambdaj.Lambda.extract;
 import static ch.lambdaj.Lambda.having;
@@ -34,13 +37,19 @@ import static org.hamcrest.core.Is.is;
 public class FacilitiesController {
 
     @Autowired
+    MessageSource messageSource;
+
+    @Autowired
     FacilityService facilityService;
+
+    final static String NEW_FACILITY = "common/facilities/new";
+    final static String SUCCESS = "common/facilities/success";
 
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newFacilityForm(ModelMap modelMap) {
         populateLocation(facilityService.getFacilities(), modelMap);
-        return "common/facilities/new";
+        return NEW_FACILITY;
     }
 
     ModelMap populateLocation(List<Facility> facilities, ModelMap modelMap) {
@@ -58,8 +67,18 @@ public class FacilitiesController {
     }
 
     @ApiSession
-    @RequestMapping(value="create", method = RequestMethod.POST)
-    public String createFacilityForm(@Valid CreateFacilityForm createFacilityForm, BindingResult bindingResult) {
-        return bindingResult.hasErrors() ? "common/facilities/new" : "common/facilities/success";
+    @RequestMapping(value = "create", method = RequestMethod.POST)
+    public String createFacilityForm(@Valid CreateFacilityForm createFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
+        final List<Facility> facilities = facilityService.getFacilities(createFacilityForm.getName());
+        populateLocation(facilityService.getFacilities(), modelMap);
+        if (!createFacilityForm.isIn(facilities)) {
+            facilityService.saveFacility(new Facility(createFacilityForm.getName(), createFacilityForm.getCountry(),
+                    createFacilityForm.getRegion(), createFacilityForm.getCountyDistrict(), createFacilityForm.getStateProvince()));
+            return SUCCESS;
+        }
+
+        bindingResult.addError(new FieldError("createFacilityForm", "name", messageSource.getMessage("facility_already_exists", null, Locale.getDefault())));
+        modelMap.mergeAttributes(bindingResult.getModel());
+        return NEW_FACILITY;
     }
 }

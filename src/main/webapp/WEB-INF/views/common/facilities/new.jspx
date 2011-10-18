@@ -7,60 +7,72 @@
     <script src="${create_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/facilities/create" var="form_url"/>
     <form:form id="createFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Facility" commandName="createFacilityForm">
-        <spring:message code="facility_label" var="facility_label" htmlEscape="false"/>
+        <spring:message code="facility_name" var="facility_name" htmlEscape="false"/>
+        <spring:message code="facility_country" var="facility_country" htmlEscape="false"/>
+        <spring:message code="facility_region" var="facility_region" htmlEscape="false"/>
+        <spring:message code="facility_district" var="facility_district" htmlEscape="false"/>
+        <spring:message code="facility_sub_district" var="facility_sub_district" htmlEscape="false"/>
+        <spring:message code="facility_country_req_msg" var="facility_country_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_region_req_msg" var="facility_region_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_district_req_msg" var="facility_district_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_sub_district_req_msg" var="facility_sub_district_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_country_select" var="facility_country_select" htmlEscape="false"/>
+        <spring:message code="facility_region_select" var="facility_region_select" htmlEscape="false"/>
+        <spring:message code="facility_district_select" var="facility_district_select" htmlEscape="false"/>
+        <spring:message code="facility_sub_district_select" var="facility_sub_district_select" htmlEscape="false"/>
 
         <div>
-            <label for="facility" class="formLabel">Name:</label>
-            <form:input path="name" size="20" require="true" label="${fn:escapeXml(facility_label)}" />
+            <label for="facility" class="formLabel">${fn:escapeXml(facility_name)}:</label>
+            <form:input path="name" size="20" require="true" label="${fn:escapeXml(facility_name)}" />
         </div>
         <div>
-            <label for="countries" class="formLabel">Country:</label>
+            <label for="countries" class="formLabel">${fn:escapeXml(facility_country)}:</label>
             <form:select id="countries" path="country" >
-                <option parent="select" value="">select country</option>
+                <option parent="select" value="">${fn:escapeXml(facility_country_select)}</option>
                 <c:forEach items="${countries}" var="country">
                     <option parent="${country}" value="${country}">${country}</option>
                 </c:forEach>
             </form:select>
-            <span id='countriesError' class='alertText formlyInvalid formlyAlert hide'>Please select a country</span>
+            <span id='countriesError' class='locationAlert alertText formlyInvalid formlyAlert hide'>${fn:escapeXml(facility_country_req_msg)}</span>
         </div>
         <div class="hide">
-            <label for="regions" class="formLabel">Region:</label>
+            <label for="regions" class="formLabel">${fn:escapeXml(facility_region)}:</label>
             <form:select id="regions" path="region" >
-                <option parent="select" value="">select region</option>
+                <option parent="select" value="">${fn:escapeXml(facility_region_select)}</option>
                 <c:forEach items="${regions}" var="countryRegions">
                     <c:forEach items="${countryRegions.value}" var="region">
                         <option parent="${countryRegions.key}" value="${region}">${region}</option>
                     </c:forEach>
                 </c:forEach>
             </form:select>
-            <span id='regionsError' class='alertText formlyInvalid formlyAlert hide'>Please select a region</span>
+            <span id='regionsError' class='locationAlert alertText formlyInvalid formlyAlert hide'>${fn:escapeXml(facility_region_req_msg)}</span>
         </div>
         <div  class="hide">
-            <label for="districts" class="formLabel">District:</label>
+            <label for="districts" class="formLabel">${fn:escapeXml(facility_district)}:</label>
             <form:select id="districts" path="countyDistrict" >
-                <option parent="select" value="">select district</option>
+                <option parent="select" value="">${fn:escapeXml(facility_district_select)}</option>
                 <c:forEach items="${districts}" var="regionDistricts">
                     <c:forEach items="${regionDistricts.value}" var="district">
                         <option parent="${regionDistricts.key}" value="${district}">${district}</option>
                     </c:forEach>
                 </c:forEach>
             </form:select>
-            <span id='districtsError' class='alertText formlyInvalid formlyAlert hide'>Please select a district</span>
+            <span id='districtsError' class='locationAlert alertText formlyInvalid formlyAlert hide'>${fn:escapeXml(facility_district_req_msg)}</span>
         </div>
         <div class="hide">
-            <label for="sub-districts" class="formLabel">Sub-District:</label>
+            <label for="sub-districts" class="formLabel">${fn:escapeXml(facility_sub_district)}:</label>
             <form:select id="sub-districts" path="stateProvince">
-                <option parent="select" value="">select sub-district</option>
+                <option parent="select" value="">${fn:escapeXml(facility_sub_district_select)}</option>
                 <c:forEach items="${provinces}" var="districtProvinces">
                     <c:forEach items="${districtProvinces.value}" var="province">
                         <option parent="${districtProvinces.key}" value="${province}">${province}</option>
                     </c:forEach>
                 </c:forEach>
             </form:select>
-            <span id='sub-districtsError' class='alertText formlyInvalid formlyAlert hide'>Please select a sub-district</span>
+            <span id='sub-districtsError' class='locationAlert alertText formlyInvalid formlyAlert hide'>${fn:escapeXml(facility_sub_district_req_message)}</span>
         </div>
 
-        <input type="submit" id="submitNewFacility" value="Submit"/>
+        <input type="button" id="submitNewFacility" value="Submit"/>
 
         <div class="formlyAlerts">
             <form:errors path="name" element="div" cssClass="formlyInvalid formlyAlert" cssStyle="display: block;"/>

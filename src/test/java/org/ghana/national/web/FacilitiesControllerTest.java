@@ -1,23 +1,35 @@
 package org.ghana.national.web;
 
+import org.ghana.national.tools.Constants;
+import org.ghana.national.web.form.CreateFacilityForm;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.mrs.services.Facility;
 import org.motechproject.mrs.services.FacilityService;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -41,15 +53,66 @@ public class FacilitiesControllerTest {
         assertThat(facilitiesController.newFacilityForm(new ModelMap()), is(equalTo("common/facilities/new")));
     }
 
+    @Test
+    public void testSaveFacilityWhenValid() {
+        final BindingResult mockBindingResult = mock(BindingResult.class);
+        final String facility = "facility";
+        final String country = "country";
+        final String region = "region";
+        final String county = "county";
+        final String province = "province";
+        when(mockFacilityService.getFacilities(facility)).thenReturn(Collections.<Facility>emptyList());
+
+        final FacilitiesController spyFacilitiesController = spy(facilitiesController);
+        ModelMap modelMap = new ModelMap();
+        final String result = spyFacilitiesController.createFacilityForm(new CreateFacilityForm(facility, country, region, county, province), mockBindingResult, modelMap);
+        assertThat(result, is(equalTo("common/facilities/success")));
+        verify(spyFacilitiesController).populateLocation(anyListOf(Facility.class), eq(modelMap));
+        assertNotNull(modelMap.get(Constants.CREATE_FACILITY_FORM));
+        assertNotNull(modelMap.get(Constants.COUNTRIES));
+        assertNotNull(modelMap.get(Constants.REGIONS));
+        assertNotNull(modelMap.get(Constants.PROVINCES));
+        assertNotNull(modelMap.get(Constants.DISTRICTS));
+    }
+
+    @Test
+    public void testSaveFacilityWhenInValid() {
+        final BindingResult mockBindingResult = mock(BindingResult.class);
+        final ModelMap modelMap = new ModelMap();
+        final String facility = "facility";
+        final String country = "country";
+        final String region = "region";
+        final String county = "county";
+        final String province = "province";
+        when(mockFacilityService.getFacilities(facility)).thenReturn(Arrays.asList(new Facility(facility, country, region, county, province)));
+        final FacilitiesController spyFacilitiesController = spy(facilitiesController);
+
+        final String result = spyFacilitiesController.createFacilityForm(new CreateFacilityForm(facility, country, region, county, province), mockBindingResult, modelMap);
+
+        final ArgumentCaptor<FieldError> captor = ArgumentCaptor.forClass(FieldError.class);
+        verify(mockBindingResult).addError(captor.capture());
+        final FieldError actualFieldError = captor.getValue();
+        assertThat(result, is(equalTo("common/facilities/new")));
+        assertThat(actualFieldError.getObjectName(), is(equalTo(Constants.CREATE_FACILITY_FORM)));
+        assertThat(actualFieldError.getField(), is(equalTo("name")));
+        assertThat(actualFieldError.getDefaultMessage(), is(equalTo("Facility already exists.")));
+        verify(spyFacilitiesController).populateLocation(anyListOf(Facility.class), eq(modelMap));
+        assertNotNull(modelMap.get(Constants.CREATE_FACILITY_FORM));
+        assertNotNull(modelMap.get(Constants.COUNTRIES));
+        assertNotNull(modelMap.get(Constants.REGIONS));
+        assertNotNull(modelMap.get(Constants.PROVINCES));
+        assertNotNull(modelMap.get(Constants.DISTRICTS));
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void testPopulateFacilities() {
         List<Facility> facilities = populateData();
         ModelMap modelMap = facilitiesController.populateLocation(facilities, new ModelMap());
         assertThat((List<String>) modelMap.get("countries"), is(equalTo(Arrays.asList("Utopia"))));
-        assertThat((Map<String, TreeSet<String>>) modelMap.get("regions"), is(equalTo(regions())));
-        assertThat((Map<String, TreeSet<String>>) modelMap.get("districts"), is(equalTo(districts())));
-        assertThat((Map<String, TreeSet<String>>) modelMap.get("provinces"), is(equalTo(provinces())));
+        assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.REGIONS), is(equalTo(regions())));
+        assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.DISTRICTS), is(equalTo(districts())));
+        assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.PROVINCES), is(equalTo(provinces())));
     }
 
     static Map<String, TreeSet<String>> regions() {
