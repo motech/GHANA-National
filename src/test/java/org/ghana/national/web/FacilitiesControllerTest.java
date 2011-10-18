@@ -8,6 +8,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.mrs.services.Facility;
 import org.motechproject.mrs.services.FacilityService;
+import org.springframework.context.MessageSource;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -39,12 +41,15 @@ public class FacilitiesControllerTest {
 
     @Mock
     FacilityService mockFacilityService;
+    @Mock
+    MessageSource mockMessageSource;
 
     @Before
     public void setUp() {
         initMocks(this);
         facilitiesController = new FacilitiesController();
         ReflectionTestUtils.setField(facilitiesController, "facilityService", mockFacilityService);
+        ReflectionTestUtils.setField(facilitiesController, "messageSource", mockMessageSource);
     }
 
     @Test
@@ -84,7 +89,9 @@ public class FacilitiesControllerTest {
         final String region = "region";
         final String county = "county";
         final String province = "province";
+        final String message = "Facility already exists.";
         when(mockFacilityService.getFacilities(facility)).thenReturn(Arrays.asList(new Facility(facility, country, region, county, province)));
+        when(mockMessageSource.getMessage("facility_already_exists", null, Locale.getDefault())).thenReturn(message);
         final FacilitiesController spyFacilitiesController = spy(facilitiesController);
 
         final String result = spyFacilitiesController.createFacilityForm(new CreateFacilityForm(facility, country, region, county, province), mockBindingResult, modelMap);
@@ -95,7 +102,7 @@ public class FacilitiesControllerTest {
         assertThat(result, is(equalTo("common/facilities/new")));
         assertThat(actualFieldError.getObjectName(), is(equalTo(Constants.CREATE_FACILITY_FORM)));
         assertThat(actualFieldError.getField(), is(equalTo("name")));
-        assertThat(actualFieldError.getDefaultMessage(), is(equalTo("Facility already exists.")));
+        assertThat(actualFieldError.getDefaultMessage(), is(equalTo(message)));
         verify(spyFacilitiesController).populateLocation(anyListOf(Facility.class), eq(modelMap));
         assertNotNull(modelMap.get(Constants.CREATE_FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
