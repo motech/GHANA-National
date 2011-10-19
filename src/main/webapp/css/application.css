@@ -4,6 +4,11 @@ body, div, td {
     color: #666;
 }
 
+h1 {
+    font-size: 14px;
+    color: #003366;
+}
+
 form {
     width: 500px;
 }
@@ -22,7 +27,8 @@ nav ul {
     list-style: none;
     padding: 3px 10px;
     height: 20px;
-    background: #8FABC7
+    background: #8FABC7;
+    border-radius: 5px;
 }
 
 nav ul li {
@@ -34,9 +40,9 @@ nav ul li a {
     display: block;
     float: left;
     padding: 1px 10px;
-    font: 14px/16px "Lucida Grande", "Verdana", sans-serif;
+    font: 14px/14px "Lucida Grande", "Verdana", sans-serif;
     text-decoration: none;
-    margin: 0 5px 0 0;
+    margin: 2px 5px 0 0;
     color: white;
     font-size: 1em;
 }
@@ -66,6 +72,6 @@ nav ul li a:active, nav ul li a.current {
     display: none;
 }
 
-.motech-img{
+.motech-img {
     margin-left: 3px;
 }
