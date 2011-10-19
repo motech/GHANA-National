@@ -61,7 +61,7 @@ public class CreateFacilityFormTest {
     }
 
     @Test
-    public void testIfAFacilityIsNotDuplicateWheSubDistrictIsUnique() {
+    public void testIfAFacilityIsNotDuplicateWhenSubDistrictIsUnique() {
         final CreateFacilityForm facilityForm = new CreateFacilityForm(facility.getName(), facility.getCountry(), facility.getRegion(), facility.getCountyDistrict(), "new province");
         assertFalse(facilityForm.isDuplicate(facility));
     }
