@@ -2,6 +2,7 @@ package org.ghana.national.web;
 
 import ch.lambdaj.group.Group;
 import org.apache.commons.lang.StringUtils;
+import org.ghana.national.tools.Constants;
 import org.ghana.national.tools.Utility;
 import org.ghana.national.web.form.CreateFacilityForm;
 import org.motechproject.mrs.services.Facility;
@@ -58,11 +59,11 @@ public class FacilitiesController {
         final Group<Facility> byRegionDistrict = group(withValidCountryNames, by(on(Facility.class).getRegion()), by(on(Facility.class).getCountyDistrict()));
         final Group<Facility> byDistrictProvince = group(withValidCountryNames, by(on(Facility.class).getCountyDistrict()), by(on(Facility.class).getStateProvince()));
 
-        modelMap.addAttribute("createFacilityForm", new CreateFacilityForm());
-        modelMap.addAttribute("countries", extract(selectDistinct(withValidCountryNames, "country"), on(Facility.class).getCountry()));
-        modelMap.addAttribute("regions", Utility.reverseKeyValues(map(byCountryRegion.keySet(), Utility.mapConverter(byCountryRegion))));
-        modelMap.addAttribute("districts", Utility.reverseKeyValues(map(byRegionDistrict.keySet(), Utility.mapConverter(byRegionDistrict))));
-        modelMap.addAttribute("provinces", Utility.reverseKeyValues(map(byDistrictProvince.keySet(), Utility.mapConverter(byDistrictProvince))));
+        modelMap.addAttribute(Constants.CREATE_FACILITY_FORM, new CreateFacilityForm());
+        modelMap.addAttribute(Constants.COUNTRIES, extract(selectDistinct(withValidCountryNames, "country"), on(Facility.class).getCountry()));
+        modelMap.addAttribute(Constants.REGIONS, Utility.reverseKeyValues(map(byCountryRegion.keySet(), Utility.mapConverter(byCountryRegion))));
+        modelMap.addAttribute(Constants.DISTRICTS, Utility.reverseKeyValues(map(byRegionDistrict.keySet(), Utility.mapConverter(byRegionDistrict))));
+        modelMap.addAttribute(Constants.PROVINCES, Utility.reverseKeyValues(map(byDistrictProvince.keySet(), Utility.mapConverter(byDistrictProvince))));
         return modelMap;
     }
 
@@ -77,7 +78,7 @@ public class FacilitiesController {
             return SUCCESS;
         }
 
-        bindingResult.addError(new FieldError("createFacilityForm", "name", messageSource.getMessage("facility_already_exists", null, Locale.getDefault())));
+        bindingResult.addError(new FieldError(Constants.CREATE_FACILITY_FORM, "name", messageSource.getMessage("facility_already_exists", null, Locale.getDefault())));
         modelMap.mergeAttributes(bindingResult.getModel());
         return NEW_FACILITY;
     }
