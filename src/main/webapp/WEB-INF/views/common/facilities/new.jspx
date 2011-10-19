@@ -69,7 +69,7 @@
                     </c:forEach>
                 </c:forEach>
             </form:select>
-            <span id='sub-districtsError' class='locationAlert alertText formlyInvalid formlyAlert hide'>${fn:escapeXml(facility_sub_district_req_message)}</span>
+            <span id='sub-districtsError' class='locationAlert alertText formlyInvalid formlyAlert hide'>${fn:escapeXml(facility_sub_district_req_msg)}</span>
         </div>
 
         <input type="button" id="submitNewFacility" value="Submit"/>
