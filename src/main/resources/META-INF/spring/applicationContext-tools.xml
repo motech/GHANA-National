@@ -7,9 +7,7 @@
     <bean id="couchDB" class="org.ghana.national.tools.CouchDB"/>
     <bean id="seedLoader" class="org.ghana.national.tools.seed.SeedLoader">
         <constructor-arg>
-            <list>
-                <ref bean="exampleCouchDbSeed"/>
-            </list>
+            <list/>
         </constructor-arg>
     </bean>
 </beans>
