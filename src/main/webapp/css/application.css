@@ -11,12 +11,7 @@ form {
 #page-wrap {
     width: auto;
     margin: 40px auto 5px;
-    background: #FFD840;
     padding: 5px;
-    background: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#ccc));
-    background: -moz-linear-gradient(top, #eee, #ccc);
-    -webkit-border-radius: 16px;
-    -moz-border-radius: 16px;
 }
 
 #main-content {
@@ -24,50 +19,33 @@ form {
 }
 nav ul {
     list-style: none;
-    background: #e69f01;
     padding: 5px 10px;
-    height: 25px;
+    height: 20px;
+    background: #8FABC7
 }
 
 nav ul li {
-
     display: inline;
+
 }
 
 nav ul li a {
     display: block;
     float: left;
-    border-top: 1px solid #FFE373;
-    background: #f5972f;
-    background: -webkit-gradient(linear, left top, left bottom, from(#FFD840), to(#FFE373));
-    background: -moz-linear-gradient(top, #FFD840, #FFE373);
-    height: 17px;
-    padding: 3px 10px;
-
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
-    -webkit-box-shadow: rgba(0, 0, 0, 1) 0 1px 3px;
-    -moz-box-shadow: rgba(0, 0, 0, 1) 0 1px 0;
-    text-shadow: rgba(0, 0, 0, .4) 0 1px 0;
-    -webkit-text-stroke: 1px transparent;
+    height: 15px;
+    padding: 1px 10px;
     font: bold 11px/16px "Lucida Grande", "Verdana", sans-serif;
-    color: #A68400;
     text-decoration: none;
     margin: 0 5px 0 0;
+    color: white;
+    font-size: 1em;
 }
 
 nav ul li a:hover {
-    border-top: 1px solid #dec563;
-    background: #e38d2d;
-    background: -webkit-gradient(linear, left top, left bottom, from(#FFC840), to(#FFB600));
-    background: -moz-linear-gradient(top, #FFC840, #c2a42f);
     color: rgba(100, 100, 100, .85);
 }
 
 nav ul li a:active, nav ul li a.current {
-    border-top-color: #FFCB00;
-    background: #FFA100;
     position: relative;
     top: 1px;
 }
