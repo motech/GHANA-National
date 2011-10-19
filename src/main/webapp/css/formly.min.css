@@ -104,14 +104,15 @@
     border-radius: 4px;
     -khtml-border-radius: 4px;
     margin: 5px 0px;
+    font-size: 12px;
 }
 
 .formlyWrapper-Light input[type="submit"], .formlyWrapper-Light input[type="reset"], .formlyWrapper-Light input[type="button"] {
     border: 3px solid #eee;
-    -moz-border-radius: 20px;
-    -webkit-border-radius: 20px;
-    border-radius: 20px;
-    -khtml-border-radius: 20px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    -khtml-border-radius: 15px;
     background: #fff;
     color: #232d3d;
     font-size: 12px;
@@ -144,7 +145,7 @@
 
 .formlyWrapper-Light h1 {
     font-size: 16px;
-    color: #d53c35;
+    color: #003366;
 }
 
 .formlyWrapper-Light h2 {

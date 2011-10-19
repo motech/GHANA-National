@@ -6,14 +6,11 @@
 
     <spring:message code="field_required" var="field_required" htmlEscape="false"/>
     <spring:url value="/resources/js/passwordReset.js" var="password_reset_url"/>
-
     <script src="${password_reset_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
-
-    <h2>${fn:escapeXml(title)}</h2>
     <spring:url value="/security/password/reset" var="form_url"/>
 
     <form:form id="passwordResetForm" action="${fn:escapeXml(form_url)}" method="POST"
-               title="Password Reset" subtitle="for the greater good..." commandName="passwordResetForm">
+               title="Password Reset" commandName="passwordResetForm">
         <spring:message code="button_submit" var="submit_label" htmlEscape="false"/>
         <spring:message code="button_reset" var="reset_label" htmlEscape="false"/>
         <spring:message code="change_password_old" var="old_password_label" htmlEscape="false"/>

@@ -9,17 +9,18 @@ form {
 }
 
 #page-wrap {
-    width: auto;
+    width: 90%;
     margin: 40px auto 5px;
     padding: 5px;
 }
 
 #main-content {
-    padding: 14px;
+
 }
+
 nav ul {
     list-style: none;
-    padding: 5px 10px;
+    padding: 3px 10px;
     height: 20px;
     background: #8FABC7
 }
@@ -32,9 +33,8 @@ nav ul li {
 nav ul li a {
     display: block;
     float: left;
-    height: 15px;
     padding: 1px 10px;
-    font: bold 11px/16px "Lucida Grande", "Verdana", sans-serif;
+    font: 14px/16px "Lucida Grande", "Verdana", sans-serif;
     text-decoration: none;
     margin: 0 5px 0 0;
     color: white;
@@ -64,4 +64,8 @@ nav ul li a:active, nav ul li a.current {
 
 .hide {
     display: none;
+}
+
+.motech-img{
+    margin-left: 3px;
 }
