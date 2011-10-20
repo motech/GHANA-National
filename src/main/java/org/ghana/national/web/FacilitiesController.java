@@ -53,20 +53,6 @@ public class FacilitiesController {
         return NEW_FACILITY;
     }
 
-    ModelMap populateLocation(List<Facility> facilities, ModelMap modelMap) {
-        List<Facility> withValidCountryNames = select(facilities, having(on(Facility.class).getCountry(), is(not(equalTo(StringUtils.EMPTY)))));
-        final Group<Facility> byCountryRegion = group(withValidCountryNames, by(on(Facility.class).getCountry()), by(on(Facility.class).getRegion()));
-        final Group<Facility> byRegionDistrict = group(withValidCountryNames, by(on(Facility.class).getRegion()), by(on(Facility.class).getCountyDistrict()));
-        final Group<Facility> byDistrictProvince = group(withValidCountryNames, by(on(Facility.class).getCountyDistrict()), by(on(Facility.class).getStateProvince()));
-
-        modelMap.addAttribute(Constants.CREATE_FACILITY_FORM, new CreateFacilityForm());
-        modelMap.addAttribute(Constants.COUNTRIES, extract(selectDistinct(withValidCountryNames, "country"), on(Facility.class).getCountry()));
-        modelMap.addAttribute(Constants.REGIONS, Utility.reverseKeyValues(map(byCountryRegion.keySet(), Utility.mapConverter(byCountryRegion))));
-        modelMap.addAttribute(Constants.DISTRICTS, Utility.reverseKeyValues(map(byRegionDistrict.keySet(), Utility.mapConverter(byRegionDistrict))));
-        modelMap.addAttribute(Constants.PROVINCES, Utility.reverseKeyValues(map(byDistrictProvince.keySet(), Utility.mapConverter(byDistrictProvince))));
-        return modelMap;
-    }
-
     @ApiSession
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createFacilityForm(@Valid CreateFacilityForm createFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
@@ -81,5 +67,19 @@ public class FacilitiesController {
         bindingResult.addError(new FieldError(Constants.CREATE_FACILITY_FORM, "name", messageSource.getMessage("facility_already_exists", null, Locale.getDefault())));
         modelMap.mergeAttributes(bindingResult.getModel());
         return NEW_FACILITY;
+    }
+
+    ModelMap populateLocation(List<Facility> facilities, ModelMap modelMap) {
+        List<Facility> withValidCountryNames = select(facilities, having(on(Facility.class).getCountry(), is(not(equalTo(StringUtils.EMPTY)))));
+        final Group<Facility> byCountryRegion = group(withValidCountryNames, by(on(Facility.class).getCountry()), by(on(Facility.class).getRegion()));
+        final Group<Facility> byRegionDistrict = group(withValidCountryNames, by(on(Facility.class).getRegion()), by(on(Facility.class).getCountyDistrict()));
+        final Group<Facility> byDistrictProvince = group(withValidCountryNames, by(on(Facility.class).getCountyDistrict()), by(on(Facility.class).getStateProvince()));
+
+        modelMap.addAttribute(Constants.CREATE_FACILITY_FORM, new CreateFacilityForm());
+        modelMap.addAttribute(Constants.COUNTRIES, extract(selectDistinct(withValidCountryNames, "country"), on(Facility.class).getCountry()));
+        modelMap.addAttribute(Constants.REGIONS, Utility.reverseKeyValues(map(byCountryRegion.keySet(), Utility.mapConverter(byCountryRegion))));
+        modelMap.addAttribute(Constants.DISTRICTS, Utility.reverseKeyValues(map(byRegionDistrict.keySet(), Utility.mapConverter(byRegionDistrict))));
+        modelMap.addAttribute(Constants.PROVINCES, Utility.reverseKeyValues(map(byDistrictProvince.keySet(), Utility.mapConverter(byDistrictProvince))));
+        return modelMap;
     }
 }
