@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.springframework.context.MessageSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
@@ -25,15 +24,12 @@ public class FacilityServiceTest {
     FacilityService facilityService;
     @Mock
     private AllFacilities mockAllFacilities;
-    @Mock
-    private MessageSource mockMessageSource;
 
     @Before
     public void init() {
         initMocks(this);
         facilityService = new FacilityService(mockAllFacilities);
         ReflectionTestUtils.setField(facilityService, "allFacilities", mockAllFacilities);
-        ReflectionTestUtils.setField(facilityService, "messageSource", mockMessageSource);
     }
 
     @Test

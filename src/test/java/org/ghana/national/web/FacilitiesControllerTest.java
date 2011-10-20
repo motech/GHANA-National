@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.springframework.context.MessageSource;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -38,12 +40,15 @@ public class FacilitiesControllerTest {
     FacilitiesController facilitiesController;
     @Mock
     FacilityService mockFacilityService;
+    @Mock
+    MessageSource mockMessageSource;
 
     @Before
     public void setUp() {
         initMocks(this);
         facilitiesController = new FacilitiesController();
         ReflectionTestUtils.setField(facilitiesController, "facilityService", mockFacilityService);
+        ReflectionTestUtils.setField(facilitiesController, "messageSource", mockMessageSource);
     }
 
     @Test
@@ -85,7 +90,8 @@ public class FacilitiesControllerTest {
         final String province = "province";
         final String message = "Facility already exists.";
         final FacilitiesController spyFacilitiesController = spy(facilitiesController);
-        doThrow(new FacilityAlreadyFoundException(message)).when(mockFacilityService).create(facility, country, region, district, province);
+        doThrow(new FacilityAlreadyFoundException()).when(mockFacilityService).create(facility, country, region, district, province);
+        when(mockMessageSource.getMessage("facility_already_exists", null, Locale.getDefault())).thenReturn(message);
 
         final String result = spyFacilitiesController.createFacility(new CreateFacilityForm(facility, country, region, district, province), mockBindingResult, modelMap);
 

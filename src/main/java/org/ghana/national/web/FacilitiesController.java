@@ -10,6 +10,7 @@ import org.ghana.national.tools.Utility;
 import org.ghana.national.web.form.CreateFacilityForm;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 
 import static ch.lambdaj.Lambda.extract;
 import static ch.lambdaj.Lambda.having;
@@ -38,7 +40,11 @@ public class FacilitiesController {
     @Autowired
     FacilityService facilityService;
 
+    @Autowired
+    private MessageSource messageSource ;
+
     final static String NEW_FACILITY = "common/facilities/new";
+
     final static String SUCCESS = "common/facilities/success";
 
     @ApiSession
@@ -56,16 +62,16 @@ public class FacilitiesController {
                     createFacilityForm.getCountyDistrict(), createFacilityForm.getStateProvince());
             populateFacilityData(facilityService.facilities(), modelMap);
         } catch (FacilityAlreadyFoundException e) {
-            handleExistingFacilityError(bindingResult, modelMap, e.getMessage());
+            handleExistingFacilityError(bindingResult, modelMap, messageSource.getMessage("facility_already_exists", null, Locale.getDefault()));
             return NEW_FACILITY;
         }
         return SUCCESS;
     }
 
     private void handleExistingFacilityError(BindingResult bindingResult, ModelMap modelMap, String message) {
+        populateFacilityData(facilityService.facilities(), modelMap);
         bindingResult.addError(new FieldError(Constants.CREATE_FACILITY_FORM, "name", message));
         modelMap.mergeAttributes(bindingResult.getModel());
-        populateFacilityData(facilityService.facilities(), modelMap);
     }
 
     ModelMap populateFacilityData(List<Facility> facilities, ModelMap modelMap) {
