@@ -1,5 +1,6 @@
 package org.ghana.national.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.model.MotechAuditableDataObject;
@@ -19,7 +20,11 @@ public class Facility extends MotechAuditableDataObject {
     @JsonProperty
     private Integer mrsFacilityId;
 
+    @JsonIgnore
     private org.motechproject.mrs.model.Facility mrsFacility;
+
+    public Facility() {
+    }
 
     public Facility(org.motechproject.mrs.model.Facility mrsFacility) {
         this.mrsFacility = mrsFacility;
@@ -30,7 +35,7 @@ public class Facility extends MotechAuditableDataObject {
         return this;
     }
 
-    public Integer getPhoneNumber() {
+    public Integer phoneNumber() {
         return phoneNumber;
     }
 
@@ -66,10 +71,6 @@ public class Facility extends MotechAuditableDataObject {
         return this;
     }
 
-    public String getFacilityId() {
-        return mrsFacility.getId();
-    }
-
     public org.motechproject.mrs.model.Facility mrsFacility() {
         return mrsFacility;
     }
@@ -92,6 +93,15 @@ public class Facility extends MotechAuditableDataObject {
 
     public String district() {
         return mrsFacility.getCountyDistrict();
+    }
+
+    public Integer mrsFacilityId() {
+        return mrsFacilityId;
+    }
+
+    public Facility mrsFacilityId(Integer mrsFacilityId) {
+        this.mrsFacilityId = mrsFacilityId;
+        return this;
     }
 }
 

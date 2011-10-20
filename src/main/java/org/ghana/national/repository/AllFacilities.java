@@ -23,7 +23,8 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
 
     @Override
     public void add(Facility facility) {
-        facilityAdapter.saveFacility(facility.mrsFacility());
+        final org.motechproject.mrs.model.Facility savedFacility = facilityAdapter.saveFacility(facility.mrsFacility());
+        facility.mrsFacilityId(Integer.parseInt(savedFacility.getId()));
         super.add(facility);
     }
 

@@ -3,7 +3,7 @@ package org.ghana.national.service;
 import org.apache.commons.lang.StringUtils;
 import org.ghana.national.domain.Facility;
 import org.ghana.national.exception.FacilityAlreadyFoundException;
-import org.ghana.national.repository.AllFacilities;
+import org.ghana.national.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
