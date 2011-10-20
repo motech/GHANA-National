@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class FacilityRepository extends MotechAuditableRepository<Facility> {
+public class AllFacilities extends MotechAuditableRepository<Facility> {
 
     @Autowired
-    protected FacilityRepository(@Qualifier("couchDbConnector") CouchDbConnector db) {
+    protected AllFacilities(@Qualifier("couchDbConnector") CouchDbConnector db) {
         super(Facility.class, db);
     }
 }

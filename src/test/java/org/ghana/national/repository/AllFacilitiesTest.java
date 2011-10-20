@@ -2,6 +2,7 @@ package org.ghana.national.repository;
 
 import org.ektorp.CouchDbConnector;
 import org.ghana.national.domain.Facility;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,14 @@ import static org.hamcrest.Matchers.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext.xml"})
-public class FacilityRepositoryTest extends AbstractJUnit4SpringContextTests {
+public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
 
     @Qualifier("couchDbConnector")
     @Autowired
     protected CouchDbConnector dbConnector;
 
     @Autowired
-    private FacilityRepository facilityRepository;
+    private AllFacilities facilityRepository;
 
     @Test
     public void shouldSaveAFacility() {
@@ -41,5 +42,13 @@ public class FacilityRepositoryTest extends AbstractJUnit4SpringContextTests {
         assertThat(facility.getFacilityId(), is(equalTo(sampleFacility.getFacilityId())));
         assertThat(facility.getMotechFacilityId(), is(equalTo(sampleFacility.getMotechFacilityId())));
         assertThat(facility.getPhoneNumber(), is(equalTo(sampleFacility.getPhoneNumber())));
+    }
+
+    @After
+    public void tearDown() {
+        List<Facility> all = facilityRepository.getAll();
+        for (Facility facility : all)
+            facilityRepository.remove(facility);
+
     }
 }
