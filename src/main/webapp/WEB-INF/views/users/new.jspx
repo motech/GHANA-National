@@ -3,7 +3,7 @@
      xmlns:spring="http://www.springframework.org/tags">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:url value="/resources/js/createUser.js" var="create_user_url"/>
+    <spring:url value="/resources/js/create-user.js" var="create_user_url"/>
     <script src="${create_user_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/users/create" var="form_url"/>
 
@@ -14,7 +14,6 @@
         <spring:message code="user_phone" var="user_phone" htmlEscape="false"/>
         <spring:message code="user_email" var="user_email" htmlEscape="false"/>
         <spring:message code="user_role" var="user_role" htmlEscape="false"/>
-
         <div>
             <label class="formLabel" for="user_first_name">${fn:escapeXml(user_first_name)}:</label>
             <form:input id="user_first_name" path="firstName" size="20" require="true" label="${fn:escapeXml(user_first_name)}" />
