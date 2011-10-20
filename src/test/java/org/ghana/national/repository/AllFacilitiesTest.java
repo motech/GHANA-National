@@ -49,6 +49,5 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         List<Facility> all = facilityRepository.getAll();
         for (Facility facility : all)
             facilityRepository.remove(facility);
-
     }
 }
