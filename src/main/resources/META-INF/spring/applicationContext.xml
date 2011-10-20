@@ -30,5 +30,4 @@
         <property name="location" value="classpath:openmrs.properties"/>
     </bean>
 
-    <!--<bean class="org.motechproject.mrs.services.Facility" id="facility" scope="request" />-->
 </beans>
