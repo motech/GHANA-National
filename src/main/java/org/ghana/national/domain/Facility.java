@@ -17,22 +17,81 @@ public class Facility extends MotechAuditableDataObject {
     @JsonProperty
     private Integer additionalPhoneNumber3;
     @JsonProperty
-    private String facilityId;
-    @JsonProperty
-    private Integer motechFacilityId;
+    private Integer mrsFacilityId;
 
-    public Facility() {
+    private org.motechproject.mrs.model.Facility mrsFacility;
+
+    public Facility(org.motechproject.mrs.model.Facility mrsFacility) {
+        this.mrsFacility = mrsFacility;
     }
 
-    public Facility(Integer phoneNumber, Integer additionalPhoneNumber1, Integer additionalPhoneNumber2,
-                    Integer additionalPhoneNumber3, String facilityId, Integer motechFacilityId) {
+    public Facility mrsFacility(org.motechproject.mrs.model.Facility mrsFacility) {
+        this.mrsFacility = mrsFacility;
+        return this;
+    }
+
+    public Integer getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public Facility phoneNumber(Integer phoneNumber) {
         this.phoneNumber = phoneNumber;
-        this.additionalPhoneNumber1 = additionalPhoneNumber1;
-        this.additionalPhoneNumber2 = additionalPhoneNumber2;
-        this.additionalPhoneNumber3 = additionalPhoneNumber3;
-        this.facilityId = facilityId;
-        this.motechFacilityId = motechFacilityId;
+        return this;
     }
 
+    public Integer additionalPhoneNumber1() {
+        return additionalPhoneNumber1;
+    }
 
+    public Facility additionalPhoneNumber1(Integer additionalPhoneNumber1) {
+        this.additionalPhoneNumber1 = additionalPhoneNumber1;
+        return this;
+    }
+
+    public Integer additionalPhoneNumber2() {
+        return additionalPhoneNumber2;
+    }
+
+    public Facility additionalPhoneNumber2(Integer additionalPhoneNumber2) {
+        this.additionalPhoneNumber2 = additionalPhoneNumber2;
+        return this;
+    }
+
+    public Integer additionalPhoneNumber3() {
+        return additionalPhoneNumber3;
+    }
+
+    public Facility additionalPhoneNumber3(Integer additionalPhoneNumber3) {
+        this.additionalPhoneNumber3 = additionalPhoneNumber3;
+        return this;
+    }
+
+    public String getFacilityId() {
+        return mrsFacility.getId();
+    }
+
+    public org.motechproject.mrs.model.Facility mrsFacility() {
+        return mrsFacility;
+    }
+
+    public String name() {
+        return mrsFacility.getName();
+    }
+
+    public String country() {
+        return mrsFacility.getCountry();
+    }
+
+    public String region() {
+        return mrsFacility.getRegion();
+    }
+
+    public String province() {
+        return mrsFacility.getStateProvince();
+    }
+
+    public String district() {
+        return mrsFacility.getCountyDistrict();
+    }
 }
+

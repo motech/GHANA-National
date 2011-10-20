@@ -2,7 +2,7 @@ package org.ghana.national.tools;
 
 import ch.lambdaj.function.convert.Converter;
 import ch.lambdaj.group.Group;
-import org.motechproject.mrs.services.Facility;
+import org.ghana.national.domain.Facility;
 
 import java.util.HashMap;
 import java.util.Map;
