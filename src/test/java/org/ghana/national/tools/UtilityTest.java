@@ -3,7 +3,6 @@ package org.ghana.national.tools;
 import ch.lambdaj.function.convert.Converter;
 import ch.lambdaj.group.Group;
 import org.ghana.national.domain.Facility;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-@Ignore
 public class UtilityTest {
 
     @Test

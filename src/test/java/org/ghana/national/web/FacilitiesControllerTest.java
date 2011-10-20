@@ -1,15 +1,14 @@
 package org.ghana.national.web;
 
 import org.ghana.national.domain.Facility;
+import org.ghana.national.exception.FacilityAlreadyFoundException;
 import org.ghana.national.service.FacilityService;
 import org.ghana.national.tools.Constants;
 import org.ghana.national.web.form.CreateFacilityForm;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.springframework.context.MessageSource;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -29,25 +27,22 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@Ignore
 public class FacilitiesControllerTest {
     FacilitiesController facilitiesController;
     @Mock
     FacilityService mockFacilityService;
-    @Mock
-    MessageSource mockMessageSource;
 
     @Before
     public void setUp() {
         initMocks(this);
         facilitiesController = new FacilitiesController();
-        ReflectionTestUtils.setField(facilitiesController, "messageSource", mockMessageSource);
         ReflectionTestUtils.setField(facilitiesController, "facilityService", mockFacilityService);
     }
 
@@ -58,19 +53,20 @@ public class FacilitiesControllerTest {
     }
 
     @Test
-    public void testSaveFacilityWhenValid() {
+    public void shouldSaveAFacilityWhenValid() {
         final BindingResult mockBindingResult = mock(BindingResult.class);
         final String facility = "facility";
         final String country = "country";
         final String region = "region";
         final String county = "county";
         final String province = "province";
-
         final FacilitiesController spyFacilitiesController = spy(facilitiesController);
         ModelMap modelMap = new ModelMap();
-        final String result = spyFacilitiesController.createFacilityForm(new CreateFacilityForm(facility, country, region, county, province), mockBindingResult, modelMap);
+        when(mockFacilityService.facilities()).thenReturn(Arrays.asList(new Facility()));
+        final String result = spyFacilitiesController.createFacility(new CreateFacilityForm(facility, country, region, county, province), mockBindingResult, modelMap);
+
         assertThat(result, is(equalTo("common/facilities/success")));
-        verify(spyFacilitiesController).populateLocation(anyListOf(Facility.class), eq(modelMap));
+        verify(spyFacilitiesController).populateFacilityData(anyListOf(Facility.class), eq(modelMap));
         assertNotNull(modelMap.get(Constants.CREATE_FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));
@@ -79,19 +75,19 @@ public class FacilitiesControllerTest {
     }
 
     @Test
-    public void testSaveFacilityWhenInValid() {
+    public void testSaveFacilityWhenInValid() throws FacilityAlreadyFoundException {
         final BindingResult mockBindingResult = mock(BindingResult.class);
         final ModelMap modelMap = new ModelMap();
         final String facility = "facility";
         final String country = "country";
         final String region = "region";
-        final String county = "county";
+        final String district = "district";
         final String province = "province";
         final String message = "Facility already exists.";
-        when(mockMessageSource.getMessage("facility_already_exists", null, Locale.getDefault())).thenReturn(message);
         final FacilitiesController spyFacilitiesController = spy(facilitiesController);
+        doThrow(new FacilityAlreadyFoundException(message)).when(mockFacilityService).create(facility, country, region, district, province);
 
-        final String result = spyFacilitiesController.createFacilityForm(new CreateFacilityForm(facility, country, region, county, province), mockBindingResult, modelMap);
+        final String result = spyFacilitiesController.createFacility(new CreateFacilityForm(facility, country, region, district, province), mockBindingResult, modelMap);
 
         final ArgumentCaptor<FieldError> captor = ArgumentCaptor.forClass(FieldError.class);
         verify(mockBindingResult).addError(captor.capture());
@@ -100,7 +96,7 @@ public class FacilitiesControllerTest {
         assertThat(actualFieldError.getObjectName(), is(equalTo(Constants.CREATE_FACILITY_FORM)));
         assertThat(actualFieldError.getField(), is(equalTo("name")));
         assertThat(actualFieldError.getDefaultMessage(), is(equalTo(message)));
-        verify(spyFacilitiesController).populateLocation(anyListOf(Facility.class), eq(modelMap));
+        verify(spyFacilitiesController).populateFacilityData(anyListOf(Facility.class), eq(modelMap));
         assertNotNull(modelMap.get(Constants.CREATE_FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));
@@ -112,7 +108,7 @@ public class FacilitiesControllerTest {
     @Test
     public void testPopulateFacilities() {
         List<Facility> facilities = populateData();
-        ModelMap modelMap = facilitiesController.populateLocation(facilities, new ModelMap());
+        ModelMap modelMap = facilitiesController.populateFacilityData(facilities, new ModelMap());
         assertThat((List<String>) modelMap.get("countries"), is(equalTo(Arrays.asList("Utopia"))));
         assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.REGIONS), is(equalTo(regions())));
         assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.DISTRICTS), is(equalTo(districts())));

@@ -4,7 +4,6 @@ import ch.lambdaj.group.Group;
 import org.apache.commons.lang.StringUtils;
 import org.ghana.national.domain.Facility;
 import org.ghana.national.exception.FacilityAlreadyFoundException;
-import org.ghana.national.repository.AllFacilities;
 import org.ghana.national.service.FacilityService;
 import org.ghana.national.tools.Constants;
 import org.ghana.national.tools.Utility;
@@ -39,33 +38,37 @@ public class FacilitiesController {
     @Autowired
     FacilityService facilityService;
 
-
     final static String NEW_FACILITY = "common/facilities/new";
     final static String SUCCESS = "common/facilities/success";
 
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newFacilityForm(ModelMap modelMap) {
-        populateLocation(facilityService.facilities(), modelMap);
+        populateFacilityData(facilityService.facilities(), modelMap);
         return NEW_FACILITY;
     }
 
     @ApiSession
     @RequestMapping(value = "create", method = RequestMethod.POST)
-    public String createFacilityForm(@Valid CreateFacilityForm createFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
-        final FacilityService facilityService = new FacilityService(new AllFacilities(null, null));
+    public String createFacility(@Valid CreateFacilityForm createFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
         try {
             facilityService.create(createFacilityForm.getName(), createFacilityForm.getCountry(), createFacilityForm.getRegion(),
                     createFacilityForm.getCountyDistrict(), createFacilityForm.getStateProvince());
+            populateFacilityData(facilityService.facilities(), modelMap);
         } catch (FacilityAlreadyFoundException e) {
-            bindingResult.addError(new FieldError(Constants.CREATE_FACILITY_FORM, "name", e.getMessage()));
-            modelMap.mergeAttributes(bindingResult.getModel());
+            handleExistingFacilityError(bindingResult, modelMap, e.getMessage());
             return NEW_FACILITY;
         }
         return SUCCESS;
     }
 
-    ModelMap populateLocation(List<Facility> facilities, ModelMap modelMap) {
+    private void handleExistingFacilityError(BindingResult bindingResult, ModelMap modelMap, String message) {
+        bindingResult.addError(new FieldError(Constants.CREATE_FACILITY_FORM, "name", message));
+        modelMap.mergeAttributes(bindingResult.getModel());
+        populateFacilityData(facilityService.facilities(), modelMap);
+    }
+
+    ModelMap populateFacilityData(List<Facility> facilities, ModelMap modelMap) {
         List<Facility> withValidCountryNames = select(facilities, having(on(Facility.class).country(), is(not(equalTo(StringUtils.EMPTY)))));
         final Group<Facility> byCountryRegion = group(withValidCountryNames, by(on(Facility.class).country()), by(on(Facility.class).region()));
         final Group<Facility> byRegionDistrict = group(withValidCountryNames, by(on(Facility.class).region()), by(on(Facility.class).district()));
