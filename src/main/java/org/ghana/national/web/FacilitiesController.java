@@ -43,9 +43,8 @@ public class FacilitiesController {
     @Autowired
     private MessageSource messageSource ;
 
-    final static String NEW_FACILITY = "common/facilities/new";
-
-    final static String SUCCESS = "common/facilities/success";
+    final static String NEW_FACILITY = "facilities/new";
+    final static String SUCCESS = "facilities/success";
 
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)

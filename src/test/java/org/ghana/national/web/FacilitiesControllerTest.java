@@ -54,7 +54,7 @@ public class FacilitiesControllerTest {
     @Test
     public void shouldRenderForm() {
         when(mockFacilityService.facilities()).thenReturn(Arrays.asList(new Facility(new org.motechproject.mrs.model.Facility("facility"))));
-        assertThat(facilitiesController.newFacilityForm(new ModelMap()), is(equalTo("common/facilities/new")));
+        assertThat(facilitiesController.newFacilityForm(new ModelMap()), is(equalTo("facilities/new")));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class FacilitiesControllerTest {
         when(mockFacilityService.facilities()).thenReturn(Arrays.asList(new Facility()));
         final String result = spyFacilitiesController.createFacility(new CreateFacilityForm(facility, country, region, county, province), mockBindingResult, modelMap);
 
-        assertThat(result, is(equalTo("common/facilities/success")));
+        assertThat(result, is(equalTo("facilities/success")));
         verify(spyFacilitiesController).populateFacilityData(anyListOf(Facility.class), eq(modelMap));
         assertNotNull(modelMap.get(Constants.CREATE_FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
@@ -98,7 +98,7 @@ public class FacilitiesControllerTest {
         final ArgumentCaptor<FieldError> captor = ArgumentCaptor.forClass(FieldError.class);
         verify(mockBindingResult).addError(captor.capture());
         final FieldError actualFieldError = captor.getValue();
-        assertThat(result, is(equalTo("common/facilities/new")));
+        assertThat(result, is(equalTo("facilities/new")));
         assertThat(actualFieldError.getObjectName(), is(equalTo(Constants.CREATE_FACILITY_FORM)));
         assertThat(actualFieldError.getField(), is(equalTo("name")));
         assertThat(actualFieldError.getDefaultMessage(), is(equalTo(message)));
