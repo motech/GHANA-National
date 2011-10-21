@@ -282,11 +282,11 @@
             <version>4.1.2</version>
         </dependency>
         <!--maven plugins-->
-        <dependency>
-            <groupId>com.savage7.maven.plugins</groupId>
-            <artifactId>maven-external-dependency-plugin</artifactId>
-            <version>0.5-SONATYPE-r116</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.savage7.maven.plugins</groupId>-->
+            <!--<artifactId>maven-external-dependency-plugin</artifactId>-->
+            <!--<version>0.5-SONATYPE-r116</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
