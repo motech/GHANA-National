@@ -10,13 +10,13 @@ public class Facility extends MotechAuditableDataObject {
     @JsonProperty("type")
     private String type = "Facility";
     @JsonProperty
-    private Integer phoneNumber;
+    private String phoneNumber;
     @JsonProperty
-    private Integer additionalPhoneNumber1;
+    private String additionalPhoneNumber1;
     @JsonProperty
-    private Integer additionalPhoneNumber2;
+    private String additionalPhoneNumber2;
     @JsonProperty
-    private Integer additionalPhoneNumber3;
+    private String additionalPhoneNumber3;
     @JsonProperty
     private Integer mrsFacilityId;
 
@@ -35,38 +35,38 @@ public class Facility extends MotechAuditableDataObject {
         return this;
     }
 
-    public Integer phoneNumber() {
+    public String phoneNumber() {
         return phoneNumber;
     }
 
-    public Facility phoneNumber(Integer phoneNumber) {
+    public Facility phoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
         return this;
     }
 
-    public Integer additionalPhoneNumber1() {
+    public String additionalPhoneNumber1() {
         return additionalPhoneNumber1;
     }
 
-    public Facility additionalPhoneNumber1(Integer additionalPhoneNumber1) {
+    public Facility additionalPhoneNumber1(String additionalPhoneNumber1) {
         this.additionalPhoneNumber1 = additionalPhoneNumber1;
         return this;
     }
 
-    public Integer additionalPhoneNumber2() {
+    public String additionalPhoneNumber2() {
         return additionalPhoneNumber2;
     }
 
-    public Facility additionalPhoneNumber2(Integer additionalPhoneNumber2) {
+    public Facility additionalPhoneNumber2(String additionalPhoneNumber2) {
         this.additionalPhoneNumber2 = additionalPhoneNumber2;
         return this;
     }
 
-    public Integer additionalPhoneNumber3() {
+    public String additionalPhoneNumber3() {
         return additionalPhoneNumber3;
     }
 
-    public Facility additionalPhoneNumber3(Integer additionalPhoneNumber3) {
+    public Facility additionalPhoneNumber3(String additionalPhoneNumber3) {
         this.additionalPhoneNumber3 = additionalPhoneNumber3;
         return this;
     }

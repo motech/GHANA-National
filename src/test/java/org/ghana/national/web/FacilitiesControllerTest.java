@@ -1,5 +1,6 @@
 package org.ghana.national.web;
 
+import org.apache.commons.lang.StringUtils;
 import org.ghana.national.domain.Facility;
 import org.ghana.national.exception.FacilityAlreadyFoundException;
 import org.ghana.national.service.FacilityService;
@@ -60,15 +61,10 @@ public class FacilitiesControllerTest {
     @Test
     public void shouldSaveAFacilityWhenValid() {
         final BindingResult mockBindingResult = mock(BindingResult.class);
-        final String facility = "facility";
-        final String country = "country";
-        final String region = "region";
-        final String county = "county";
-        final String province = "province";
         final FacilitiesController spyFacilitiesController = spy(facilitiesController);
         ModelMap modelMap = new ModelMap();
         when(mockFacilityService.facilities()).thenReturn(Arrays.asList(new Facility()));
-        final String result = spyFacilitiesController.createFacility(new CreateFacilityForm(facility, country, region, county, province), mockBindingResult, modelMap);
+        final String result = spyFacilitiesController.createFacility(new CreateFacilityForm(), mockBindingResult, modelMap);
 
         assertThat(result, is(equalTo("facilities/success")));
         verify(spyFacilitiesController).populateFacilityData(anyListOf(Facility.class), eq(modelMap));
@@ -90,10 +86,20 @@ public class FacilitiesControllerTest {
         final String province = "province";
         final String message = "Facility already exists.";
         final FacilitiesController spyFacilitiesController = spy(facilitiesController);
-        doThrow(new FacilityAlreadyFoundException()).when(mockFacilityService).create(facility, country, region, district, province);
+        doThrow(new FacilityAlreadyFoundException()).when(mockFacilityService).create(facility, country, region, district, province, StringUtils.EMPTY,StringUtils.EMPTY,StringUtils.EMPTY,StringUtils.EMPTY);
         when(mockMessageSource.getMessage("facility_already_exists", null, Locale.getDefault())).thenReturn(message);
 
-        final String result = spyFacilitiesController.createFacility(new CreateFacilityForm(facility, country, region, district, province), mockBindingResult, modelMap);
+        final CreateFacilityForm createFacilityForm = new CreateFacilityForm();
+        createFacilityForm.setName(facility);
+        createFacilityForm.setCountry(country);
+        createFacilityForm.setRegion(region);
+        createFacilityForm.setCountyDistrict(district);
+        createFacilityForm.setStateProvince(province);
+        createFacilityForm.setPhoneNumber(StringUtils.EMPTY);
+        createFacilityForm.setAdditionalPhoneNumber1(StringUtils.EMPTY);
+        createFacilityForm.setAdditionalPhoneNumber2(StringUtils.EMPTY);
+        createFacilityForm.setAdditionalPhoneNumber3(StringUtils.EMPTY);
+        final String result = spyFacilitiesController.createFacility(createFacilityForm, mockBindingResult, modelMap);
 
         final ArgumentCaptor<FieldError> captor = ArgumentCaptor.forClass(FieldError.class);
         verify(mockBindingResult).addError(captor.capture());

@@ -6,7 +6,8 @@
     <spring:url value="/resources/js/createFacility.js" var="create_facility_url"/>
     <script src="${create_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/facilities/create" var="form_url"/>
-    <form:form id="createFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Facility" commandName="createFacilityForm">
+    <form:form id="createFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Facility"
+               commandName="createFacilityForm">
         <spring:message code="facility_name" var="facility_name" htmlEscape="false"/>
         <spring:message code="facility_country" var="facility_country" htmlEscape="false"/>
         <spring:message code="facility_region" var="facility_region" htmlEscape="false"/>
@@ -20,24 +21,30 @@
         <spring:message code="facility_region_select" var="facility_region_select" htmlEscape="false"/>
         <spring:message code="facility_district_select" var="facility_district_select" htmlEscape="false"/>
         <spring:message code="facility_sub_district_select" var="facility_sub_district_select" htmlEscape="false"/>
+        <spring:message code="facility_phone_number" var="facility_phone_number" htmlEscape="false"/>
+        <spring:message code="facility_add_phone_number1" var="facility_add_phone_number1" htmlEscape="false"/>
+        <spring:message code="facility_add_phone_number2" var="facility_add_phone_number2" htmlEscape="false"/>
+        <spring:message code="facility_add_phone_number3" var="facility_add_phone_number3" htmlEscape="false"/>
 
         <div>
-            <label for="facility" class="formLabel">${fn:escapeXml(facility_name)}:</label>
-            <form:input path="name" size="20" require="true" label="${fn:escapeXml(facility_name)}" />
+            <label for="name" class="formLabel">${fn:escapeXml(facility_name)}:</label>
+            <form:input path="name" size="20" require="true" label="${fn:escapeXml(facility_name)}"/>
         </div>
         <div>
             <label for="countries" class="formLabel">${fn:escapeXml(facility_country)}:</label>
-            <form:select id="countries" path="country" >
+            <form:select id="countries" path="country">
                 <option parent="select" value="">${fn:escapeXml(facility_country_select)}</option>
                 <c:forEach items="${countries}" var="country">
                     <option parent="${country}" value="${country}">${country}</option>
                 </c:forEach>
             </form:select>
-            <span id='countriesError' class='locationAlert alertText formlyInvalid formlyAlert hide'>${fn:escapeXml(facility_country_req_msg)}</span>
+            <span id='countriesError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(facility_country_req_msg)}
+            </span>
         </div>
         <div class="hide">
             <label for="regions" class="formLabel">${fn:escapeXml(facility_region)}:</label>
-            <form:select id="regions" path="region" >
+            <form:select id="regions" path="region">
                 <option parent="select" value="">${fn:escapeXml(facility_region_select)}</option>
                 <c:forEach items="${regions}" var="countryRegions">
                     <c:forEach items="${countryRegions.value}" var="region">
@@ -45,11 +52,13 @@
                     </c:forEach>
                 </c:forEach>
             </form:select>
-            <span id='regionsError' class='locationAlert alertText formlyInvalid formlyAlert hide'>${fn:escapeXml(facility_region_req_msg)}</span>
+            <span id='regionsError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(facility_region_req_msg)}
+            </span>
         </div>
-        <div  class="hide">
+        <div class="hide">
             <label for="districts" class="formLabel">${fn:escapeXml(facility_district)}:</label>
-            <form:select id="districts" path="countyDistrict" >
+            <form:select id="districts" path="countyDistrict">
                 <option parent="select" value="">${fn:escapeXml(facility_district_select)}</option>
                 <c:forEach items="${districts}" var="regionDistricts">
                     <c:forEach items="${regionDistricts.value}" var="district">
@@ -57,7 +66,9 @@
                     </c:forEach>
                 </c:forEach>
             </form:select>
-            <span id='districtsError' class='locationAlert alertText formlyInvalid formlyAlert hide'>${fn:escapeXml(facility_district_req_msg)}</span>
+            <span id='districtsError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(facility_district_req_msg)}
+            </span>
         </div>
         <div class="hide">
             <label for="sub-districts" class="formLabel">${fn:escapeXml(facility_sub_district)}:</label>
@@ -69,7 +80,26 @@
                     </c:forEach>
                 </c:forEach>
             </form:select>
-            <span id='sub-districtsError' class='locationAlert alertText formlyInvalid formlyAlert hide'>${fn:escapeXml(facility_sub_district_req_msg)}</span>
+            <span id='sub-districtsError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(facility_sub_district_req_msg)}
+            </span>
+        </div>
+
+        <div>
+            <label for="phoneNumber" class="formLabel">${fn:escapeXml(facility_phone_number)}:</label>
+            <form:input path="phoneNumber" label="${fn:escapeXml(facility_phone_number)}" size="10" require="true"/>
+        </div>
+        <div>
+            <label for="additionalPhoneNumber1" class="formLabel">${fn:escapeXml(facility_add_phone_number1)}:</label>
+            <form:input path="additionalPhoneNumber1" label="${fn:escapeXml(facility_add_phone_number1)}" size="10"/>
+        </div>
+        <div>
+            <label for="additionalPhoneNumber2" class="formLabel">${fn:escapeXml(facility_add_phone_number2)}:</label>
+            <form:input path="additionalPhoneNumber2" label="${fn:escapeXml(facility_add_phone_number2)}" size="10"/>
+        </div>
+        <div>
+            <label for="additionalPhoneNumber3" class="formLabel">${fn:escapeXml(facility_add_phone_number3)}:</label>
+            <form:input path="additionalPhoneNumber3" label="${fn:escapeXml(facility_add_phone_number3)}" size="10"/>
         </div>
 
         <input type="button" id="submitNewFacility" value="Submit"/>
@@ -77,5 +107,5 @@
         <div class="formlyAlerts">
             <form:errors path="name" element="div" cssClass="formlyInvalid formlyAlert" cssStyle="display: block;"/>
         </div>
-</form:form>
+    </form:form>
 </div>

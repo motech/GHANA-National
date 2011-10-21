@@ -6,16 +6,12 @@ public class CreateFacilityForm {
     private String region;
     private String countyDistrict;
     private String stateProvince;
+    private String phoneNumber;
+    private String additionalPhoneNumber1;
+    private String additionalPhoneNumber2;
+    private String additionalPhoneNumber3;
 
     public CreateFacilityForm() {
-    }
-
-    public CreateFacilityForm(String name, String country, String region, String countyDistrict, String stateProvince) {
-        this.name = name;
-        this.country = country;
-        this.region = region;
-        this.countyDistrict = countyDistrict;
-        this.stateProvince = stateProvince;
     }
 
     public String getName() {
@@ -56,5 +52,37 @@ public class CreateFacilityForm {
 
     public void setStateProvince(String stateProvince) {
         this.stateProvince = stateProvince;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getAdditionalPhoneNumber1() {
+        return additionalPhoneNumber1;
+    }
+
+    public void setAdditionalPhoneNumber1(String additionalPhoneNumber1) {
+        this.additionalPhoneNumber1 = additionalPhoneNumber1;
+    }
+
+    public String getAdditionalPhoneNumber2() {
+        return additionalPhoneNumber2;
+    }
+
+    public void setAdditionalPhoneNumber2(String additionalPhoneNumber2) {
+        this.additionalPhoneNumber2 = additionalPhoneNumber2;
+    }
+
+    public String getAdditionalPhoneNumber3() {
+        return additionalPhoneNumber3;
+    }
+
+    public void setAdditionalPhoneNumber3(String additionalPhoneNumber3) {
+        this.additionalPhoneNumber3 = additionalPhoneNumber3;
     }
 }

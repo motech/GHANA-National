@@ -47,10 +47,10 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void shouldSaveAFacility() throws Exception {
         final String facilityName = "name";
-        final int phoneNumber = 1234567890;
-        Integer additionalPhone1 = 12345;
-        Integer additionalPhone2 = 321234;
-        Integer additionalPhone3 = 33344;
+        final String phoneNumber = "0123456789";
+        String additionalPhone1 = "12345";
+        String additionalPhone2 = "321234";
+        String additionalPhone3 = "33344";
         final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(facilityName);
         Facility facility = new Facility(mrsFacility)
                 .phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhone1).additionalPhoneNumber2(additionalPhone2)

@@ -19,27 +19,26 @@ public class FacilityService {
         this.allFacilities = allFacilities;
     }
 
-    public void create(String name, String country, String region, String district, String province) throws FacilityAlreadyFoundException {
+    public void create(String name, String country, String region, String district, String province, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) throws FacilityAlreadyFoundException {
         final List<Facility> facilities = allFacilities.facilitiesByName(name);
-        if (isIn(facilities, new org.motechproject.mrs.model.Facility(name, country, region, district, province))) {
+        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(name, country, region, district, province);
+        if (isDuplicate(facilities, mrsFacility)) {
             throw new FacilityAlreadyFoundException();
         }
-        final Facility facility = new Facility(new org.motechproject.mrs.model.Facility(name, country, region, district, province));
+        final Facility facility = new Facility(mrsFacility).phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber1).
+                additionalPhoneNumber2(additionalPhoneNumber2).additionalPhoneNumber3(additionalPhoneNumber3);
         allFacilities.add(facility);
     }
 
-    private boolean isDuplicate(org.motechproject.mrs.model.Facility thatMrsFacility, org.motechproject.mrs.model.Facility mrsFacility) {
-        return (thatMrsFacility != null
-                && StringUtils.equals(thatMrsFacility.getName(), mrsFacility.getName())
-                && StringUtils.equals(thatMrsFacility.getStateProvince(), mrsFacility.getStateProvince())
-                && StringUtils.equals(thatMrsFacility.getCountyDistrict(), mrsFacility.getCountyDistrict())
-                && StringUtils.equals(thatMrsFacility.getRegion(), mrsFacility.getRegion())
-                && StringUtils.equals(thatMrsFacility.getCountry(), mrsFacility.getCountry()));
-    }
-
-    private boolean isIn(List<Facility> facilities, org.motechproject.mrs.model.Facility mrsFacility) {
+    private boolean isDuplicate(List<Facility> facilities, org.motechproject.mrs.model.Facility mrsFacility) {
         for (Facility facility : facilities) {
-            if (this.isDuplicate(facility.mrsFacility(), mrsFacility)) {
+            org.motechproject.mrs.model.Facility thatMrsFacility = facility.mrsFacility();
+            if ((thatMrsFacility != null
+                    && StringUtils.equals(thatMrsFacility.getName(), mrsFacility.getName())
+                    && StringUtils.equals(thatMrsFacility.getStateProvince(), mrsFacility.getStateProvince())
+                    && StringUtils.equals(thatMrsFacility.getCountyDistrict(), mrsFacility.getCountyDistrict())
+                    && StringUtils.equals(thatMrsFacility.getRegion(), mrsFacility.getRegion())
+                    && StringUtils.equals(thatMrsFacility.getCountry(), mrsFacility.getCountry()))) {
                 return true;
             }
         }

@@ -41,7 +41,7 @@ public class FacilitiesController {
     FacilityService facilityService;
 
     @Autowired
-    private MessageSource messageSource ;
+    private MessageSource messageSource;
 
     final static String NEW_FACILITY = "facilities/new";
     final static String SUCCESS = "facilities/success";
@@ -58,7 +58,9 @@ public class FacilitiesController {
     public String createFacility(@Valid CreateFacilityForm createFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
         try {
             facilityService.create(createFacilityForm.getName(), createFacilityForm.getCountry(), createFacilityForm.getRegion(),
-                    createFacilityForm.getCountyDistrict(), createFacilityForm.getStateProvince());
+                                    createFacilityForm.getCountyDistrict(), createFacilityForm.getStateProvince(), createFacilityForm.getPhoneNumber(),
+                                    createFacilityForm.getAdditionalPhoneNumber1(), createFacilityForm.getAdditionalPhoneNumber2(),
+                                    createFacilityForm.getAdditionalPhoneNumber3());
             populateFacilityData(facilityService.facilities(), modelMap);
         } catch (FacilityAlreadyFoundException e) {
             handleExistingFacilityError(bindingResult, modelMap, messageSource.getMessage("facility_already_exists", null, Locale.getDefault()));
