@@ -2,7 +2,7 @@ package org.ghana.national.web.security;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.mrs.security.MRSUser;
+import org.motechproject.mrs.security.MRSSecurityUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.WebAttributes;
@@ -18,7 +18,7 @@ public class LoginSuccessHandlerTest {
 
     private HttpServletRequest servletRequest;
     private Authentication authentication;
-    private MRSUser user;
+    private MRSSecurityUser user;
     private HttpSession httpSession;
     private HttpServletResponse response;
 
@@ -27,7 +27,7 @@ public class LoginSuccessHandlerTest {
     public void setUp() {
         servletRequest = mock(HttpServletRequest.class);
         authentication = mock(Authentication.class);
-        user = mock(MRSUser.class);
+        user = mock(MRSSecurityUser.class);
         httpSession = mock(HttpSession.class);
         response = mock(HttpServletResponse.class);
     }

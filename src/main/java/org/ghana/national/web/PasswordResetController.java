@@ -3,9 +3,9 @@ package org.ghana.national.web;
 import org.apache.log4j.Logger;
 import org.ghana.national.web.form.PasswordResetForm;
 import org.ghana.national.web.security.LoginSuccessHandler;
-import org.motechproject.mrs.security.MRSUser;
+import org.motechproject.mrs.security.MRSSecurityUser;
 import org.motechproject.mrs.services.MRSException;
-import org.motechproject.mrs.services.UserService;
+import org.motechproject.mrs.services.MRSUserAdaptor;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,12 +24,12 @@ public class PasswordResetController {
     private Logger log = Logger.getLogger("PasswordResetController");
 
     @Autowired
-    private UserService userService;
+    private MRSUserAdaptor userService;
 
     protected PasswordResetController() {
     }
 
-    public PasswordResetController(UserService userService) {
+    public PasswordResetController(MRSUserAdaptor userService) {
         this.userService = userService;
     }
 
@@ -42,7 +42,7 @@ public class PasswordResetController {
     @ApiSession
     @RequestMapping(method = RequestMethod.POST)
     public String changePassword(@Valid PasswordResetForm passwordResetForm, BindingResult bindingResult, HttpServletRequest request) {
-        MRSUser user = (MRSUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
+        MRSSecurityUser user = (MRSSecurityUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
         try {
             userService.changeCurrentUserPassword(passwordResetForm.getCurrentPassword(), passwordResetForm.getNewPassword());
         } catch (MRSException e) {
