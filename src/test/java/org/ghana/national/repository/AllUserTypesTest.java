@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -24,8 +25,10 @@ public class AllUserTypesTest extends AbstractJUnit4SpringContextTests {
         UserType userType = new UserType("test", "desc");
 
         allUserTypes.add(userType);
+
         List<UserType> all = allUserTypes.getAll();
-        assertTrue(all.contains(userType));
+        assertEquals(1,all.size());
+        assertEquals("test",all.get(0).name());
     }
 
     @After

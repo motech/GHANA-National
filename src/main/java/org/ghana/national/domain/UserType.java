@@ -36,19 +36,5 @@ public class UserType extends MotechAuditableDataObject {
     public String name() {
         return name;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserType userType = (UserType) o;
-        if (name != null ? !name.equals(userType.name) : userType.name != null) return false;
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return name != null ? name.hashCode() : 0;
-    }
 }
 

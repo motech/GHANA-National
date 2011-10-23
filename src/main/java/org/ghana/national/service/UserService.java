@@ -5,6 +5,7 @@ import org.ghana.national.exception.UserAlreadyFoundException;
 import org.ghana.national.repository.AllUserTypes;
 import org.motechproject.mrs.model.User;
 import org.motechproject.mrs.services.MRSUserAdaptor;
+import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +17,16 @@ public class UserService {
     private MRSUserAdaptor userAdaptor;
     private AllUserTypes allUserTypes;
 
+    public UserService() {
+    }
+
     @Autowired
     public UserService(AllUserTypes allUserTypes, MRSUserAdaptor userAdaptor) {
         this.allUserTypes = allUserTypes;
         this.userAdaptor = userAdaptor;
     }
 
+    @ApiSession
     public String saveUser(User user) throws UserAlreadyFoundException {
         return userAdaptor.saveUser(user);
     }
