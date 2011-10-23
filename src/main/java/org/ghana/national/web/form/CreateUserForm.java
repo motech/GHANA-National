@@ -1,5 +1,14 @@
 package org.ghana.national.web.form;
 
+import org.apache.commons.lang.StringUtils;
+import org.ghana.national.domain.UserType;
+
+import java.util.Arrays;
+
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 public class CreateUserForm {
     private String firstName;
     private String middleName;
@@ -55,4 +64,5 @@ public class CreateUserForm {
     public void setRole(String role) {
         this.role = role;
     }
+
 }

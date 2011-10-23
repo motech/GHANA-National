@@ -5,4 +5,7 @@
     <definition extends="default" name="users/new">
         <put-attribute name="body" value="/WEB-INF/views/users/new.jspx"/>
     </definition>
+    <definition extends="default" name="users/success">
+        <put-attribute name="body" value="/WEB-INF/views/users/success.jspx"/>
+    </definition>
 </tiles-definitions>
