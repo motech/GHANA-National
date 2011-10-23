@@ -394,6 +394,7 @@
                             </sqlCommand>
                             <srcFiles>
                                 <srcFile>${project.basedir}/build/sql/openmrs-1.8.sql</srcFile>
+                                <srcFile>${project.basedir}/build/sql/1.insert_email_person_attribute_type_table.sql</srcFile>
                             </srcFiles>
                         </configuration>
                     </execution>
