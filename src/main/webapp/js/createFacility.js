@@ -83,7 +83,8 @@ $(document).ready(function() {
     }
 
     $('.phoneNo').blur(function() {
-        var isPhoneNumberValid = (( this.value.length == 10) ? this.value.match(/^0[0-9]*/) : false);
+        var util = new $.Utilities();
+        var isPhoneNumberValid = util.isPhoneNoValid(this.value);
         if (!isPhoneNumberValid) {
             alert("Phone Number should be numeric and start with zero ");
             this.value = "";
