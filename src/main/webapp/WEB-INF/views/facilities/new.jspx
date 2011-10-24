@@ -6,7 +6,6 @@
     <spring:url value="/resources/js/createFacility.js" var="create_facility_url"/>
     <spring:url value="/resources/js/utilities.js" var="utilities_url"/>
     <script src="${create_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
-    <script src="${utilities_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/facilities/create" var="form_url"/>
     <form:form id="createFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Facility"
                commandName="createFacilityForm">
@@ -27,6 +26,7 @@
         <spring:message code="facility_add_phone_number1" var="facility_add_phone_number1" htmlEscape="false"/>
         <spring:message code="facility_add_phone_number2" var="facility_add_phone_number2" htmlEscape="false"/>
         <spring:message code="facility_add_phone_number3" var="facility_add_phone_number3" htmlEscape="false"/>
+        <spring:message code="facility_phone_number_req_msg" var="facility_phone_number_req_msg" htmlEscape="false"/>
 
         <div>
             <label for="name" class="formLabel">${fn:escapeXml(facility_name)}:</label>
@@ -89,19 +89,23 @@
 
         <div class="phoneNo">
             <label for="phoneNumber" class="formLabel">${fn:escapeXml(facility_phone_number)}:</label>
-            <form:input path="phoneNumber" label="${fn:escapeXml(facility_phone_number)}" size="10" require="true"/>
+            <form:input path="phoneNumber" label="${fn:escapeXml(facility_phone_number)}" require="true" maxlength="10" cssClass="phoneNo"/>
+            <span id="phoneNumberError" class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(facility_phone_number_req_msg)}
+            </span>
         </div>
+
         <div class="phoneNo">
             <label for="additionalPhoneNumber1" class="formLabel">${fn:escapeXml(facility_add_phone_number1)}:</label>
-            <form:input path="additionalPhoneNumber1" label="${fn:escapeXml(facility_add_phone_number1)}" size="10"/>
+            <form:input path="additionalPhoneNumber1" label="${fn:escapeXml(facility_add_phone_number1)}" maxlength="10" cssClass="phoneNo"/>
         </div>
         <div class="phoneNo">
             <label for="additionalPhoneNumber2" class="formLabel">${fn:escapeXml(facility_add_phone_number2)}:</label>
-            <form:input path="additionalPhoneNumber2" label="${fn:escapeXml(facility_add_phone_number2)}" size="10"/>
+            <form:input path="additionalPhoneNumber2" label="${fn:escapeXml(facility_add_phone_number2)}" maxlength="10" cssClass="phoneNo"/>
         </div>
         <div class="phoneNo">
             <label for="additionalPhoneNumber3" class="formLabel">${fn:escapeXml(facility_add_phone_number3)}:</label>
-            <form:input path="additionalPhoneNumber3" label="${fn:escapeXml(facility_add_phone_number3)}" size="10"/>
+            <form:input path="additionalPhoneNumber3" label="${fn:escapeXml(facility_add_phone_number3)}" maxlength="10" cssClass="phoneNo"/>
         </div>
 
         <input type="button" id="submitNewFacility" value="Submit"/>

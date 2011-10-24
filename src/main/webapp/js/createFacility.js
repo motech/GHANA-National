@@ -1,11 +1,11 @@
 var Field = function(elementId) {
-this.id = elementId;
+    this.id = elementId;
     this.node = $('#' + this.id);
     this.alertNode = $('#' + this.id + 'Error');
     this.options = this.node.find('option');
 }
 
-Field.prototype.hideAlert = function(){
+Field.prototype.hideAlert = function() {
     this.alertNode.hide();
 }
 
@@ -26,6 +26,7 @@ Field.prototype.populateDependentWithOriginalValues = function() {
 
 Field.prototype.showOrHideDependsBasedOnSelection = function() {
     var field = this;
+
     function getDependentOptionsForSelectedValue() {
         return field.dependent.node.find('option').filter(function() {
             return $(this).attr('parent') == field.node.find('option:selected').text() && $(this).text() != '';
@@ -33,9 +34,9 @@ Field.prototype.showOrHideDependsBasedOnSelection = function() {
     }
 
     var dependentOptions = getDependentOptionsForSelectedValue();
-    if(dependentOptions.length > 0) {
+    if (dependentOptions.length > 0) {
         this.showDependent(dependentOptions);
-    }else {
+    } else {
         this.hideDependents();
     }
 }
@@ -46,7 +47,7 @@ Field.prototype.hasDependent = function() {
 
 Field.prototype.hideDependents = function() {
     var field = this;
-    while(field.hasDependent()) {
+    while (field.hasDependent()) {
         var field = field.dependent;
         field.node.parent().hide();
     }
@@ -57,7 +58,7 @@ Field.prototype.getDefaultValue = function() {
 }
 
 Field.prototype.showDependent = function(dependentOptions) {
-    if(this.hasDependent()) {
+    if (this.hasDependent()) {
         this.dependent.hideAlert();
         this.dependent.hideDependents();
         var dependentDefaultOption = this.dependent.getDefaultValue();
@@ -69,10 +70,10 @@ Field.prototype.showDependent = function(dependentOptions) {
 }
 
 $(document).ready(function() {
-    var facilityLocationHasBeenSelected = function(){
-    var isValid = true;
+    var facilityLocationHasBeenSelected = function() {
+        var isValid = true;
         $('.locationAlert').each(function(index) {
-            if ($(this).prev().is(":visible") && $(this).prev().find('option:selected').attr('parent') == 'select'){
+            if ($(this).prev().is(":visible") && $(this).prev().find('option:selected').attr('parent') == 'select') {
                 $(this).show();
                 isValid = false;
                 return false;
@@ -81,11 +82,19 @@ $(document).ready(function() {
         return isValid;
     }
 
+    $('.phoneNo').blur(function() {
+        var isPhoneNumberValid = (( this.value.length == 10) ? this.value.match(/^0[0-9]*/) : false);
+        if (!isPhoneNumberValid) {
+            alert("Phone Number should be numeric and start with zero ");
+            this.value = "";
+        }
+    })
+
     $("#createFacilityForm").formly({'onBlur':false, 'theme':'Light'});
     new Field('countries').hasADependent(new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts'))));
 
     $('#submitNewFacility').click(function() {
-        if(facilityLocationHasBeenSelected()){
+        if (facilityLocationHasBeenSelected()) {
             $('#createFacilityForm').submit();
         }
     });
