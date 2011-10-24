@@ -1,9 +1,11 @@
 package org.ghana.national.web;
 
+import org.ghana.national.domain.Constants;
 import org.ghana.national.exception.UserAlreadyFoundException;
 import org.ghana.national.service.UserService;
 import org.ghana.national.web.form.CreateUserForm;
 import org.motechproject.mrs.model.User;
+import org.motechproject.mrs.model.UserAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -14,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Locale;
 
 @Controller
@@ -48,12 +48,12 @@ public class UserController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createUser(@Valid CreateUserForm createUserForm, BindingResult bindingResult, ModelMap model) {
         User user = new User();
-        user.firstName(createUserForm.getFirstName())
-                .middleName(createUserForm.getMiddleName())
-                .lastName(createUserForm.getLastName())
-                .email(createUserForm.getEmail())
-                .phoneNumber(createUserForm.getPhoneNumber())
-                .role(createUserForm.getRole());
+        user.firstName(createUserForm.getFirstName()).middleName(createUserForm.getMiddleName()).lastName(createUserForm.getLastName());
+        user.addAttribute(new UserAttribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, createUserForm.getEmail()));
+        user.addAttribute(new UserAttribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, createUserForm.getPhoneNumber()));
+        user.addAttribute(new UserAttribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, createUserForm.getRole()));
+        user.securityRole(Constants.SECURITY_ROLE_PROVIDER);
+
         try {
             String userId = userService.saveUser(user);
             model.put(USER_ID, userId);

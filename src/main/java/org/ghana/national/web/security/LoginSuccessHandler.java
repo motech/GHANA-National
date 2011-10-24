@@ -30,9 +30,9 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
     }
 
     private String getDashboard(MRSSecurityUser user) {
-        if(hasRole(user, "System Developer")) return "admin";
-        else if(hasRole(user, "Create/Edit MoTeCH Data")) return "callcenter";
-        else  return "facility";
+        if (hasRole(user, "System Developer")) return "admin";
+        else if (hasRole(user, "Create/Edit MoTeCH Data")) return "callcenter";
+        else return "facility";
     }
 
     private boolean hasRole(MRSSecurityUser user, final String role) {
