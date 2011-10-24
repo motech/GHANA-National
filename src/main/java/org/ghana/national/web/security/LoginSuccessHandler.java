@@ -1,6 +1,6 @@
 package org.ghana.national.web.security;
 
-import org.motechproject.mrs.security.MRSUser;
+import org.motechproject.mrs.security.MRSSecurityUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.WebAttributes;
@@ -21,7 +21,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        MRSUser user = (MRSUser) authentication.getPrincipal();
+        MRSSecurityUser user = (MRSSecurityUser) authentication.getPrincipal();
         request.getSession().setAttribute(LOGGED_IN_USER, user);
         if (getRedirectUrl(request) == null) {
             response.sendRedirect(getDashboard(user));
@@ -29,13 +29,13 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
         super.onAuthenticationSuccess(request, response, authentication);
     }
 
-    private String getDashboard(MRSUser user) {
+    private String getDashboard(MRSSecurityUser user) {
         if(hasRole(user, "System Developer")) return "admin";
         else if(hasRole(user, "Create/Edit MoTeCH Data")) return "callcenter";
         else  return "facility";
     }
 
-    private boolean hasRole(MRSUser user, final String role) {
+    private boolean hasRole(MRSSecurityUser user, final String role) {
         Collection<GrantedAuthority> authorities = user.getAuthorities();
         List<String> roles = new ArrayList<String>();
         for (GrantedAuthority authority : authorities) {

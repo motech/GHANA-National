@@ -13,13 +13,15 @@ public class UserTypeSeed extends Seed{
 
     @Override
     protected void load() {
-        allUserTypes.add(new UserType("Facility Admin","Facility Administrator"));
-        allUserTypes.add(new UserType("Call Centre Admin","Call Centre Administrator"));
-        allUserTypes.add(new UserType("CHO","Community Health Operator"));
-        allUserTypes.add(new UserType("CHN","Community Heath Nurse"));
-        allUserTypes.add(new UserType("CHV","Community Heath Volunteer"));
-        allUserTypes.add(new UserType("HPO","Health Promotion Officer"));
-        allUserTypes.add(new UserType("FA","Field Agent"));
-        allUserTypes.add(new UserType("MMA","Mobile Midwife"));
+        allUserTypes.add(new UserType(UserType.SUPER_ADMIN,"Super Administrator"));
+        allUserTypes.add(new UserType(UserType.FACILITY_ADMIN,"Facility Administrator"));
+        allUserTypes.add(new UserType(UserType.CALL_CENTER_ADMIN,"CallCentre Administrator"));
+        allUserTypes.add(new UserType(UserType.HEALTH_CARE_ADMIN,"HealthCare Administrator"));
+        allUserTypes.add(new UserType(UserType.COMMUNITY_HEALTH_OPERATOR,"Community Health Operator"));
+        allUserTypes.add(new UserType(UserType.COMMUNITY_HEALTH_NURSE,"Community Heath Nurse"));
+        allUserTypes.add(new UserType(UserType.COMMUNITY_HEALTH_VOLUNTEER,"Community Heath Volunteer"));
+        allUserTypes.add(new UserType(UserType.HEALTH_PROMOTION_OFFICER,"Health Promotion Officer"));
+        allUserTypes.add(new UserType(UserType.FIELD_AGENT,"Field Agent"));
+        allUserTypes.add(new UserType(UserType.MOBILE_MIDWIFE,"Mobile Midwife"));
     }
 }

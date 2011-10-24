@@ -5,11 +5,11 @@ import org.ghana.national.domain.Facility;
 import org.ghana.national.exception.FacilityAlreadyFoundException;
 import org.ghana.national.repository.AllFacilities;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 public class FacilityService {
 
     private AllFacilities allFacilities;

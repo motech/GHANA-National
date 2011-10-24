@@ -1,0 +1,6 @@
+<div xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:output omit-xml-declaration="yes"/>
+    <div>${userName} with Id ${userId} created successfully</div>
+</div>
+
+

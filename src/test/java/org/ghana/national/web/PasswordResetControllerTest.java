@@ -7,9 +7,9 @@ import org.hamcrest.CustomTypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.mrs.security.MRSUser;
+import org.motechproject.mrs.security.MRSSecurityUser;
 import org.motechproject.mrs.services.MRSException;
-import org.motechproject.mrs.services.UserService;
+import org.motechproject.mrs.services.MRSUserAdaptor;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -27,7 +27,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PasswordResetControllerTest {
     @Mock
-    private UserService userService;
+    private MRSUserAdaptor userService;
 
     private PasswordResetController passwordResetController;
 
@@ -57,7 +57,7 @@ public class PasswordResetControllerTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
         HttpSession session = mock(HttpSession.class);
-        MRSUser authenticatedUser = mock(MRSUser.class);
+        MRSSecurityUser authenticatedUser = mock(MRSSecurityUser.class);
 
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(authenticatedUser);
@@ -77,7 +77,7 @@ public class PasswordResetControllerTest {
     public void shouldChangePasswordForMRSUser() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpSession session = mock(HttpSession.class);
-        MRSUser mrsUser = mock(MRSUser.class);
+        MRSSecurityUser mrsUser = mock(MRSSecurityUser.class);
 
 
 
