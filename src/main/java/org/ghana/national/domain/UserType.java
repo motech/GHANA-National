@@ -4,6 +4,10 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.model.MotechAuditableDataObject;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
+
 
 @TypeDiscriminator("doc.type === 'UserType'")
 public class UserType extends MotechAuditableDataObject {
@@ -50,6 +54,11 @@ public class UserType extends MotechAuditableDataObject {
             for (Role role : values())
                 if (role.key.equalsIgnoreCase(key)) return role.securityRole;
             return null;
+        }
+
+        public static Boolean isAdmin(String roleName) {
+            List<String> allAdmins = asList(SUPER_ADMIN.key(), FACILITY_ADMIN.key(), CALL_CENTER_ADMIN.key(), HEALTH_CARE_ADMIN.key());
+            return allAdmins.contains(roleName);
         }
 
         public String key() {

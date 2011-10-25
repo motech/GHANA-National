@@ -54,6 +54,8 @@ public class UserController {
         user.addAttribute(new UserAttribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, createUserForm.getPhoneNumber()));
         user.addAttribute(new UserAttribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, createUserForm.getRole()));
         user.securityRole(UserType.Role.securityRoleFor(createUserForm.getRole()));
+        if (UserType.Role.isAdmin(createUserForm.getRole())) user.id(createUserForm.getEmail());
+
         try {
             String userId = userService.saveUser(user);
             model.put(USER_ID, userId);
