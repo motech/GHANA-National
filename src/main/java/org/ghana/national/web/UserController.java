@@ -2,9 +2,9 @@ package org.ghana.national.web;
 
 import org.ghana.national.domain.Constants;
 import org.ghana.national.domain.UserType;
-import org.ghana.national.exception.UserAlreadyFoundException;
 import org.ghana.national.service.UserService;
 import org.ghana.national.web.form.CreateUserForm;
+import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.User;
 import org.motechproject.mrs.model.UserAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +27,9 @@ public class UserController {
 
     public static final String USER_ID = "userId";
     public static final String USER_NAME = "userName";
-    public static final String FIRST_NAME = "firstName";
+    public static final String EMAIL = "email";
     public static final String CREATE_USER_FORM = "createUserForm";
-    public static final String USER_ALREADY_EXISTS = "user_already_exists";
+    public static final String USER_ALREADY_EXISTS = "user_email_already_exists";
     public static final String NEW_USER_VIEW = "users/new";
     public static final String CREATE_USER_SUCCESS_VIEW = "users/success";
 
@@ -60,8 +60,9 @@ public class UserController {
             String userId = userService.saveUser(user);
             model.put(USER_ID, userId);
             model.put(USER_NAME, user.fullName());
-        } catch (UserAlreadyFoundException e) {
-            bindingResult.addError(new FieldError(CREATE_USER_FORM, FIRST_NAME, messageSource.getMessage(USER_ALREADY_EXISTS, null, Locale.getDefault())));
+        } catch (UserAlreadyExistsException e) {
+            bindingResult.addError(new FieldError(CREATE_USER_FORM, EMAIL, messageSource.getMessage(USER_ALREADY_EXISTS, null, Locale.getDefault())));
+            model.addAttribute("roles", userService.fetchAllRoles());
             model.mergeAttributes(bindingResult.getModel());
             return NEW_USER_VIEW;
         }

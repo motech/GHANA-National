@@ -1,11 +1,11 @@
 package org.ghana.national.service;
 
 import org.ghana.national.domain.UserType;
-import org.ghana.national.exception.UserAlreadyFoundException;
 import org.ghana.national.repository.AllUserTypes;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.User;
 import org.motechproject.mrs.services.MRSUserAdaptor;
 
@@ -43,7 +43,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void shouldSaveUser() throws UserAlreadyFoundException {
+    public void shouldSaveUser() throws UserAlreadyExistsException {
         User user = new User();
         service.saveUser(user);
         verify(userAdaptor).saveUser(user);

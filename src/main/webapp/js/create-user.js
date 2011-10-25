@@ -8,6 +8,7 @@ $.UserFormValidator = function() {
         $("#phone_error").html('').hide();
         $("#email_error").html('').hide();
         $("#role_error").html('').hide();
+        $("#firstName.errors").html('').hide();
     };
 
     this.validate = function() {

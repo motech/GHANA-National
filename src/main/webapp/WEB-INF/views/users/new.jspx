@@ -54,7 +54,7 @@
         <input type="button" id="submitNewUser" value="Submit"/>
 
         <div class="formlyAlerts">
-            <form:errors path="firstName" element="div" cssClass="formlyInvalid formlyAlert"
+            <form:errors path="email" element="div" cssClass="formlyInvalid formlyAlert"
                          cssStyle="display: block;"/>
         </div>
     </form:form>

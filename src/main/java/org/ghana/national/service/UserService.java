@@ -1,8 +1,8 @@
 package org.ghana.national.service;
 
 import org.ghana.national.domain.UserType;
-import org.ghana.national.exception.UserAlreadyFoundException;
 import org.ghana.national.repository.AllUserTypes;
+import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.User;
 import org.motechproject.mrs.services.MRSUserAdaptor;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -27,7 +27,7 @@ public class UserService {
     }
 
     @ApiSession
-    public String saveUser(User user) throws UserAlreadyFoundException {
+    public String saveUser(User user) throws UserAlreadyExistsException {
         return userAdaptor.saveUser(user);
     }
 

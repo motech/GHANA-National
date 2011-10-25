@@ -1,16 +1,14 @@
 package org.ghana.national.web;
 
-import com.sun.mail.iap.Argument;
 import org.ghana.national.domain.Constants;
 import org.ghana.national.domain.UserType;
-import org.ghana.national.exception.UserAlreadyFoundException;
 import org.ghana.national.service.UserService;
 import org.ghana.national.web.form.CreateUserForm;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.User;
 import org.motechproject.mrs.model.UserAttribute;
 import org.springframework.context.MessageSource;
@@ -18,7 +16,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import javax.xml.ws.Service;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -58,7 +55,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldAddNewUser() throws UserAlreadyFoundException {
+    public void shouldAddNewUser() throws UserAlreadyExistsException {
         CreateUserForm form = new CreateUserForm();
         form.setEmail("jack@daniels.com");
         form.setFirstName("Jack");
@@ -94,7 +91,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldReturnErrorMessageIfUserAlreadyExists() throws UserAlreadyFoundException {
+    public void shouldReturnErrorMessageIfUserAlreadyExists() throws UserAlreadyExistsException {
         CreateUserForm form = new CreateUserForm();
         form.setEmail("jack@daniels.com");
         form.setFirstName("Jack");
@@ -105,15 +102,18 @@ public class UserControllerTest {
 
         BindingResult bindingResult = mock(BindingResult.class);
         ModelMap model = mock(ModelMap.class);
+        List<String> roles = Arrays.asList("role1");
         Map<String, Object> boundModel = new HashMap<String, Object>();
 
-        when(userService.saveUser(any(User.class))).thenThrow(new UserAlreadyFoundException());
+        when(userService.saveUser(any(User.class))).thenThrow(new UserAlreadyExistsException());
         when(bindingResult.getModel()).thenReturn(boundModel);
+        when(userService.fetchAllRoles()).thenReturn(roles);
 
         String view = controller.createUser(form, bindingResult, model);
 
         assertEquals(UserController.NEW_USER_VIEW, view);
         verify(model).mergeAttributes(boundModel);
+        verify(model).addAttribute("roles", roles);
         verify(bindingResult).addError(any(FieldError.class));
     }
 
