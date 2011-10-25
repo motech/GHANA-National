@@ -6,22 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserTypeSeed extends Seed{
+public class UserTypeSeed extends Seed {
 
     @Autowired
     private AllUserTypes allUserTypes;
 
     @Override
     protected void load() {
-        allUserTypes.add(new UserType(UserType.SUPER_ADMIN,"Super Administrator"));
-        allUserTypes.add(new UserType(UserType.FACILITY_ADMIN,"Facility Administrator"));
-        allUserTypes.add(new UserType(UserType.CALL_CENTER_ADMIN,"CallCentre Administrator"));
-        allUserTypes.add(new UserType(UserType.HEALTH_CARE_ADMIN,"HealthCare Administrator"));
-        allUserTypes.add(new UserType(UserType.COMMUNITY_HEALTH_OPERATOR,"Community Health Operator"));
-        allUserTypes.add(new UserType(UserType.COMMUNITY_HEALTH_NURSE,"Community Heath Nurse"));
-        allUserTypes.add(new UserType(UserType.COMMUNITY_HEALTH_VOLUNTEER,"Community Heath Volunteer"));
-        allUserTypes.add(new UserType(UserType.HEALTH_PROMOTION_OFFICER,"Health Promotion Officer"));
-        allUserTypes.add(new UserType(UserType.FIELD_AGENT,"Field Agent"));
-        allUserTypes.add(new UserType(UserType.MOBILE_MIDWIFE,"Mobile Midwife"));
+        allUserTypes.add(new UserType(UserType.Role.SUPER_ADMIN.key(), "Super Administrator"));
+        allUserTypes.add(new UserType(UserType.Role.FACILITY_ADMIN.key(), "Facility Administrator"));
+        allUserTypes.add(new UserType(UserType.Role.CALL_CENTER_ADMIN.key(), "CallCentre Administrator"));
+        allUserTypes.add(new UserType(UserType.Role.HEALTH_CARE_ADMIN.key(), "HealthCare Administrator"));
+        allUserTypes.add(new UserType(UserType.Role.COMMUNITY_HEALTH_OPERATOR.key(), "Community Health Operator"));
+        allUserTypes.add(new UserType(UserType.Role.COMMUNITY_HEALTH_NURSE.key(), "Community Heath Nurse"));
+        allUserTypes.add(new UserType(UserType.Role.COMMUNITY_HEALTH_VOLUNTEER.key(), "Community Heath Volunteer"));
+        allUserTypes.add(new UserType(UserType.Role.HEALTH_PROMOTION_OFFICER.key(), "Health Promotion Officer"));
+        allUserTypes.add(new UserType(UserType.Role.FIELD_AGENT.key(), "Field Agent"));
+        allUserTypes.add(new UserType(UserType.Role.MOBILE_MIDWIFE.key(), "Mobile Midwife"));
     }
 }

@@ -1,6 +1,7 @@
 package org.ghana.national.web;
 
 import org.ghana.national.domain.Constants;
+import org.ghana.national.domain.UserType;
 import org.ghana.national.exception.UserAlreadyFoundException;
 import org.ghana.national.service.UserService;
 import org.ghana.national.web.form.CreateUserForm;
@@ -52,8 +53,7 @@ public class UserController {
         user.addAttribute(new UserAttribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, createUserForm.getEmail()));
         user.addAttribute(new UserAttribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, createUserForm.getPhoneNumber()));
         user.addAttribute(new UserAttribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, createUserForm.getRole()));
-        user.securityRole(Constants.SECURITY_ROLE_PROVIDER);
-
+        user.securityRole(UserType.Role.securityRoleFor(createUserForm.getRole()));
         try {
             String userId = userService.saveUser(user);
             model.put(USER_ID, userId);
@@ -65,6 +65,4 @@ public class UserController {
         }
         return CREATE_USER_SUCCESS_VIEW;
     }
-
-
 }

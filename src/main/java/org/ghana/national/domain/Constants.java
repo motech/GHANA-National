@@ -2,6 +2,7 @@ package org.ghana.national.domain;
 
 public class Constants {
     //security roles
+    public static final String SECURITY_ROLE_SUPER = "System Developer";
     public static final String SECURITY_ROLE_PROVIDER = "Provider";
 
     //person attributes
