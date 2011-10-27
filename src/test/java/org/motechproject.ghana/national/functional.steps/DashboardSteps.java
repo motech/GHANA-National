@@ -1,8 +1,8 @@
-package org.motechproject.ghana.national.steps;
+package org.motechproject.ghana.national.functional.steps;
 
 import org.jbehave.core.annotations.Then;
-import org.motechproject.ghana.national.pages.AdminDashboardPage;
-import org.motechproject.ghana.national.pages.PageFactory;
+import org.motechproject.ghana.national.functional.pages.AdminDashboardPage;
+import org.motechproject.ghana.national.functional.pages.PageFactory;
 
 public class DashboardSteps {
     private PageFactory pageFactory;

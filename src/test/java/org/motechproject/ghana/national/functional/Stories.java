@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national;
+package org.motechproject.ghana.national.functional;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.StoryControls;
@@ -27,8 +27,8 @@ public class Stories extends JUnitStories {
     public Stories() {
         CrossReference crossReference = new CrossReference().withJsonOnly().withOutputAfterEachStory(true)
                 .excludingStoriesWithNoExecutedScenarios(true);
-        PropertyWebDriverProvider.Browser browser = PropertyWebDriverProvider.Browser.valueOf(PropertyWebDriverProvider.Browser.class, System.getProperty("browser", "firefox").toUpperCase(Locale.getDefault()));
-        ContextView contextView = browser.equals(PropertyWebDriverProvider.Browser.HTMLUNIT) ? new ContextView.NULL() : new LocalFrameContextView().sized(640, 120);
+        PropertyWebDriverProvider.Browser browser = PropertyWebDriverProvider.Browser.valueOf(PropertyWebDriverProvider.Browser.class, System.getProperty("browser", "htmlunit").toUpperCase(Locale.getDefault()));
+        ContextView contextView = browser.equals(PropertyWebDriverProvider.Browser.FIREFOX) ? new LocalFrameContextView().sized(640, 120) : new ContextView.NULL();
         SeleniumContext seleniumContext = new SeleniumContext();
         SeleniumStepMonitor stepMonitor = new SeleniumStepMonitor(contextView, seleniumContext,
                 crossReference.getStepMonitor());

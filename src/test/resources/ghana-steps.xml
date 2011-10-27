@@ -6,19 +6,19 @@
 
     <bean id="driverProvider" class="org.jbehave.web.selenium.PropertyWebDriverProvider"/>
 
-    <bean id="pageFactory" class="org.motechproject.ghana.national.pages.PageFactory">
+    <bean id="pageFactory" class="org.motechproject.ghana.national.functional.pages.PageFactory">
         <constructor-arg ref="driverProvider"/>
     </bean>
 
-    <bean id="loginSteps" class="org.motechproject.ghana.national.steps.LoginSteps">
+    <bean id="loginSteps" class="org.motechproject.ghana.national.functional.steps.LoginSteps">
         <constructor-arg ref="pageFactory"/>
     </bean>
 
-    <bean id="dashboardSteps" class="org.motechproject.ghana.national.steps.DashboardSteps">
+    <bean id="dashboardSteps" class="org.motechproject.ghana.national.functional.steps.DashboardSteps">
         <constructor-arg ref="pageFactory"/>
     </bean>
 
-    <bean id="lifecycleSteps" class="org.motechproject.ghana.national.steps.LifecycleSteps">
+    <bean id="lifecycleSteps" class="org.motechproject.ghana.national.functional.steps.LifecycleSteps">
         <constructor-arg ref="driverProvider"/>
         <constructor-arg ref="pageFactory"/>
     </bean>

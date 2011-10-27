@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.pages;
+package org.motechproject.ghana.national.functional.pages;
 
 import org.jbehave.web.selenium.WebDriverProvider;
 

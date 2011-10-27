@@ -1,11 +1,11 @@
-package org.motechproject.ghana.national.steps;
+package org.motechproject.ghana.national.functional.steps;
 
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
-import org.motechproject.ghana.national.pages.AdminDashboardPage;
-import org.motechproject.ghana.national.pages.LoginPage;
-import org.motechproject.ghana.national.pages.PageFactory;
+import org.motechproject.ghana.national.functional.pages.AdminDashboardPage;
+import org.motechproject.ghana.national.functional.pages.LoginPage;
+import org.motechproject.ghana.national.functional.pages.PageFactory;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;

@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.pages;
+package org.motechproject.ghana.national.functional.pages;
 
 import org.jbehave.web.selenium.WebDriverPage;
 import org.jbehave.web.selenium.WebDriverProvider;
@@ -7,8 +7,7 @@ import org.openqa.selenium.WebElement;
 
 import static java.lang.String.format;
 
-public class
-        GhanaPage extends WebDriverPage {
+public class GhanaPage extends WebDriverPage {
     private String page;
 
     public GhanaPage(WebDriverProvider driverProvider, String page) {
