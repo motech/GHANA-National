@@ -4,9 +4,11 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <spring:url value="/resources/js/create-facility.js" var="create_facility_url"/>
+    <spring:url value="/resources/js/facility-fields.js" var="facility_field_url"/>
     <script src="${create_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/resources/js/create-patient.js" var="create_patient_url"/>
     <script src="${create_patient_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <script src="${facility_field_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/patient/create" var="form_url"/>
 
     <form:form id="createPatientForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Patient"
