@@ -1,14 +1,22 @@
 var formValidator = new FormValidator();
 function FormValidator() {
     this.validatePhoneNumbers = function(form) {
-        var isValid = true;
         form.find('.jsPhone').each(function() {
           if(this.value != "" && !utilities.isPhoneNoValid(this.value)) {
-                $("#" + this.id + "Error").show();
-                isValid = false;
-                return false;
-            }
+            $("#" + this.id + "Error").show();
+          }
         });
-        return isValid;
+    },
+
+    this.validateRequiredFields = function(form) {
+        form.find('.jsRequire').each(function() {
+          if(utilities.isNull(this.value)) {
+            $("#" + this.id + "Error").show();
+          }
+        });
+    }
+
+    this.hasErrors = function(form) {
+        return form.find('.formlyInvalid').is(':visible');
     }
 }

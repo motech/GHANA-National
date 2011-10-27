@@ -11,13 +11,20 @@ $(document).ready(function() {
         return isValid;
     }
 
+    var validate = function(facilityForm) {
+        hasSelectedValidItem();
+        formValidator.validatePhoneNumbers(facilityForm);
+        formValidator.validateRequiredFields(facilityForm);
+        return formValidator.hasErrors(facilityForm);
+    }
+
     $("#createFacilityForm").formly({'onBlur':false, 'theme':'Light'});
     new Field('countries').hasADependent(new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts'))));
 
     $('#submitNewFacility').click(function() {
         utilities.clearMessages();
         var facilityForm = $('#createFacilityForm');
-        if (hasSelectedValidItem() && formValidator.validatePhoneNumbers(facilityForm)) {
+        if (!validate(facilityForm)) {
             facilityForm.submit();
         }
     });

@@ -4,8 +4,8 @@ function Utilities() {
         return (( phoneNo.length == 10) ? phoneNo.match(/^0[0-9]*/) : false);
     },
 
-    this.isNotNull = function(id) {
-        return $(id).val().length == 0;
+    this.isNull = function(value) {
+        return value == undefined || value == "" || value.length == 0;
     },
 
     this.clearMessages = function() {
