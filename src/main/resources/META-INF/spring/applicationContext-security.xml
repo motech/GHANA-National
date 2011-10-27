@@ -17,5 +17,5 @@
         <authentication-provider ref="openMRSAuthenticationProvider"/>
     </authentication-manager>
 
-    <beans:bean id="authenticationSuccessHandler" class="org.ghana.national.web.security.LoginSuccessHandler"/>
+    <beans:bean id="authenticationSuccessHandler" class="org.motechproject.ghana.national.web.security.LoginSuccessHandler"/>
 </beans:beans>

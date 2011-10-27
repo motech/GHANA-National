@@ -485,7 +485,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.ghana.national.tools.RecreateDB</mainClass>
+                            <mainClass>org.motechproject.ghana.national.tools.RecreateDB</mainClass>
                         </configuration>
                     </execution>
                     <execution>
@@ -495,7 +495,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.ghana.national.tools.seed.SetupSeedData</mainClass>
+                            <mainClass>org.motechproject.ghana.national.tools.seed.SetupSeedData</mainClass>
                         </configuration>
                     </execution>
                 </executions>
@@ -567,7 +567,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.ghana.national.tools.RecreateDB</mainClass>
+                            <mainClass>org.motechproject.ghana.national.tools.RecreateDB</mainClass>
                         </configuration>
                     </execution>
                     <execution>
@@ -577,7 +577,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.ghana.national.tools.seed.SetupSeedData</mainClass>
+                            <mainClass>org.motechproject.ghana.national.tools.seed.SetupSeedData</mainClass>
                         </configuration>
                     </execution>
                 </executions>
