@@ -3,7 +3,7 @@
      xmlns:spring="http://www.springframework.org/tags">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:url value="/resources/js/createFacility.js" var="create_facility_url"/>
+    <spring:url value="/resources/js/create-facility.js" var="create_facility_url"/>
     <script src="${create_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/facilities/create" var="form_url"/>
     <form:form id="createFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Facility"

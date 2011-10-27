@@ -5,7 +5,7 @@
     <jsp:output omit-xml-declaration="yes"/>
 
     <spring:message code="field_required" var="field_required" htmlEscape="false"/>
-    <spring:url value="/resources/js/passwordReset.js" var="password_reset_url"/>
+    <spring:url value="/resources/js/password-reset.js" var="password_reset_url"/>
     <script src="${password_reset_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/security/password/reset" var="form_url"/>
 
