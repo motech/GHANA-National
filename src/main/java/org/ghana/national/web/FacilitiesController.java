@@ -1,12 +1,8 @@
 package org.ghana.national.web;
 
-import ch.lambdaj.group.Group;
-import org.apache.commons.lang.StringUtils;
-import org.ghana.national.domain.Facility;
 import org.ghana.national.exception.FacilityAlreadyFoundException;
 import org.ghana.national.service.FacilityService;
 import org.ghana.national.tools.Constants;
-import org.ghana.national.tools.Utility;
 import org.ghana.national.web.form.CreateFacilityForm;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,20 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Locale;
-
-import static ch.lambdaj.Lambda.extract;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.map;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.select;
-import static ch.lambdaj.Lambda.selectDistinct;
-import static ch.lambdaj.group.Groups.by;
-import static ch.lambdaj.group.Groups.group;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.core.Is.is;
 
 @Controller
 @RequestMapping(value = "/admin/facilities")
@@ -49,7 +32,8 @@ public class FacilitiesController {
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newFacilityForm(ModelMap modelMap) {
-        populateFacilityData(facilityService.facilities(), modelMap);
+        modelMap.put(Constants.CREATE_FACILITY_FORM, new CreateFacilityForm());
+        modelMap.mergeAttributes(facilityService.populateFacilityData());
         return NEW_FACILITY;
     }
 
@@ -61,7 +45,7 @@ public class FacilitiesController {
                                     createFacilityForm.getCountyDistrict(), createFacilityForm.getStateProvince(), createFacilityForm.getPhoneNumber(),
                                     createFacilityForm.getAdditionalPhoneNumber1(), createFacilityForm.getAdditionalPhoneNumber2(),
                                     createFacilityForm.getAdditionalPhoneNumber3());
-            populateFacilityData(facilityService.facilities(), modelMap);
+            modelMap.mergeAttributes(facilityService.populateFacilityData());
         } catch (FacilityAlreadyFoundException e) {
             handleExistingFacilityError(bindingResult, modelMap, messageSource.getMessage("facility_already_exists", null, Locale.getDefault()));
             return NEW_FACILITY;
@@ -70,22 +54,9 @@ public class FacilitiesController {
     }
 
     private void handleExistingFacilityError(BindingResult bindingResult, ModelMap modelMap, String message) {
-        populateFacilityData(facilityService.facilities(), modelMap);
+        modelMap.mergeAttributes(facilityService.populateFacilityData());
         bindingResult.addError(new FieldError(Constants.CREATE_FACILITY_FORM, "name", message));
         modelMap.mergeAttributes(bindingResult.getModel());
     }
 
-    ModelMap populateFacilityData(List<Facility> facilities, ModelMap modelMap) {
-        List<Facility> withValidCountryNames = select(facilities, having(on(Facility.class).country(), is(not(equalTo(StringUtils.EMPTY)))));
-        final Group<Facility> byCountryRegion = group(withValidCountryNames, by(on(Facility.class).country()), by(on(Facility.class).region()));
-        final Group<Facility> byRegionDistrict = group(withValidCountryNames, by(on(Facility.class).region()), by(on(Facility.class).district()));
-        final Group<Facility> byDistrictProvince = group(withValidCountryNames, by(on(Facility.class).district()), by(on(Facility.class).province()));
-
-        modelMap.addAttribute(Constants.CREATE_FACILITY_FORM, new CreateFacilityForm());
-        modelMap.addAttribute(Constants.COUNTRIES, extract(selectDistinct(withValidCountryNames, "country"), on(Facility.class).country()));
-        modelMap.addAttribute(Constants.REGIONS, Utility.reverseKeyValues(map(byCountryRegion.keySet(), Utility.mapConverter(byCountryRegion))));
-        modelMap.addAttribute(Constants.DISTRICTS, Utility.reverseKeyValues(map(byRegionDistrict.keySet(), Utility.mapConverter(byRegionDistrict))));
-        modelMap.addAttribute(Constants.PROVINCES, Utility.reverseKeyValues(map(byDistrictProvince.keySet(), Utility.mapConverter(byDistrictProvince))));
-        return modelMap;
-    }
 }

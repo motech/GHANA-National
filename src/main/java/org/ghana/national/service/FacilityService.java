@@ -1,13 +1,30 @@
 package org.ghana.national.service;
 
+import ch.lambdaj.group.Group;
 import org.apache.commons.lang.StringUtils;
 import org.ghana.national.domain.Facility;
 import org.ghana.national.exception.FacilityAlreadyFoundException;
 import org.ghana.national.repository.AllFacilities;
+import org.ghana.national.tools.Constants;
+import org.ghana.national.tools.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static ch.lambdaj.Lambda.extract;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.map;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.select;
+import static ch.lambdaj.Lambda.selectDistinct;
+import static ch.lambdaj.group.Groups.by;
+import static ch.lambdaj.group.Groups.group;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.Is.is;
 
 @Service
 public class FacilityService {
@@ -47,5 +64,20 @@ public class FacilityService {
 
     public List<Facility> facilities() {
         return allFacilities.facilities();
+    }
+
+    public Map<String, Object> populateFacilityData() {
+        List<Facility> facilities = facilities();
+        final HashMap<String, Object> modelMap = new HashMap<String, Object>();
+        List<Facility> withValidCountryNames = select(facilities, having(on(Facility.class).country(), is(not(equalTo(StringUtils.EMPTY)))));
+        final Group<Facility> byCountryRegion = group(withValidCountryNames, by(on(Facility.class).country()), by(on(Facility.class).region()));
+        final Group<Facility> byRegionDistrict = group(withValidCountryNames, by(on(Facility.class).region()), by(on(Facility.class).district()));
+        final Group<Facility> byDistrictProvince = group(withValidCountryNames, by(on(Facility.class).district()), by(on(Facility.class).province()));
+
+        modelMap.put(Constants.COUNTRIES, extract(selectDistinct(withValidCountryNames, "country"), on(Facility.class).country()));
+        modelMap.put(Constants.REGIONS, Utility.reverseKeyValues(map(byCountryRegion.keySet(), Utility.mapConverter(byCountryRegion))));
+        modelMap.put(Constants.DISTRICTS, Utility.reverseKeyValues(map(byRegionDistrict.keySet(), Utility.mapConverter(byRegionDistrict))));
+        modelMap.put(Constants.PROVINCES, Utility.reverseKeyValues(map(byDistrictProvince.keySet(), Utility.mapConverter(byDistrictProvince))));
+        return modelMap;
     }
 }
