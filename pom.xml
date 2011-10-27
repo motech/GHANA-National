@@ -329,6 +329,7 @@
             </resource>
         </resources>
         <plugins>
+            <!--PROPERTIES READ-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -357,8 +358,8 @@
                 </dependencies>
                 <configuration>
                     <driver>com.mysql.jdbc.Driver</driver>
-                    <username>root</username>
-                    <password/>
+                    <username>${mysql.user}</username>
+                    <password>${mysql.password}</password>
                     <url>jdbc:mysql://localhost:3306</url>
                 </configuration>
                 <executions>
@@ -596,6 +597,7 @@
                                 <file>
                                     target/${project.artifactId}-${project.version}/WEB-INF/classes/deploy.properties
                                 </file>
+                                <file>${project.basedir}/maven.properties</file>
                             </files>
                         </configuration>
                     </execution>
