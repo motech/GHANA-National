@@ -16,6 +16,7 @@
     <spring:url value="/resources/js/lib/formly.min.js" var="formly_url"/>
     <spring:url value="/resources/js/lib/modernizr.custom.js" var="modernizr_url"/>
     <spring:url value="/resources/js/utilities.js" var="utilities_url"/>
+    <spring:url value="/resources/js/form-validations.js" var="form_validations_url"/>
     <spring:url value="/resources/css/application.css" var="css_url"/>
     <spring:url value="/resources/css/formly.min.css" var="formly_css_url"/>
     <link rel="stylesheet" type="text/css" media="screen" href="${formly_css_url}"></link>
@@ -24,6 +25,7 @@
     <script src="${formly_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${modernizr_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${utilities_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <script src="${form_validations_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
 </head>
 <body>
 <div id="page-wrap">

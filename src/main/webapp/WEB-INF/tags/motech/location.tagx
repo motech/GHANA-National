@@ -1,13 +1,12 @@
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-          xmlns:spring="http://www.springframework.org/tags" xmlns:form="http://www.springframework.org/tags/form"
-          xmlns:c="http://java.sun.com/jsp/jstl/core" version="2.0">
+          xmlns:form="http://www.springframework.org/tags/form" xmlns:c="http://java.sun.com/jsp/jstl/core" version="2.0">
     <jsp:output omit-xml-declaration="yes"/>
-    <jsp:directive.attribute name="id" type="java.lang.String" required="true" rtexprvalue="true" description="The id for the dropdown" />
-    <jsp:directive.attribute name="path" type="java.lang.String" required="true" rtexprvalue="true" description="The form attribute to which the values are mapped." />
-    <jsp:directive.attribute name="label" type="java.lang.String" required="true" rtexprvalue="true" description="The form attribute to which the values are mapped." />
-    <jsp:directive.attribute name="defaultValue" type="java.lang.String" required="true" rtexprvalue="true" description="The form attribute to which the values are mapped." />
-    <jsp:directive.attribute name="errorMsg" type="java.lang.String" required="true" rtexprvalue="true" description="The form attribute to which the values are mapped." />
-    <jsp:directive.attribute name="locations" type="java.util.Map" required="true" rtexprvalue="true" description="The form attribute to which the values are mapped." />
+    <jsp:directive.attribute name="id" type="java.lang.String" required="true" rtexprvalue="true"/>
+    <jsp:directive.attribute name="path" type="java.lang.String" required="true" rtexprvalue="true"/>
+    <jsp:directive.attribute name="label" type="java.lang.String" required="true" rtexprvalue="true"/>
+    <jsp:directive.attribute name="defaultValue" type="java.lang.String" required="true" rtexprvalue="true"/>
+    <jsp:directive.attribute name="errorMsg" type="java.lang.String" required="true" rtexprvalue="true"/>
+    <jsp:directive.attribute name="locations" type="java.util.Map" required="true" rtexprvalue="true"/>
 
     <label for="${id}" class="formLabel">${fn:escapeXml(label)}:</label>
     <form:select id="${id}" path="${path}">

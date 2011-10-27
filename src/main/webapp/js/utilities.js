@@ -6,7 +6,7 @@ function Utilities() {
 
     this.isNotNull = function(id) {
         return $(id).val().length == 0;
-    }
+    },
 
     this.clearMessages = function() {
         $('.alertText').hide();

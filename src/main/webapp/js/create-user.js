@@ -74,7 +74,6 @@ $.UserFormValidator = function() {
     };
 };
 
-
 $.UserForm = function() {
     var validator = new $.UserFormValidator();
 

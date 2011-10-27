@@ -1,0 +1,15 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:form="http://www.springframework.org/tags/form" version="2.0"
+         xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <jsp:output omit-xml-declaration="yes"/>
+    <jsp:directive.attribute name="path" type="java.lang.String" required="true" rtexprvalue="true"/>
+    <jsp:directive.attribute name="label" type="java.lang.String" required="true" rtexprvalue="true"/>
+    <jsp:directive.attribute name="errorMsg" type="java.lang.String" required="true" rtexprvalue="true"/>
+    <jsp:directive.attribute name="required" type="java.lang.String" rtexprvalue="true"/>
+
+    <label for="${path}" class="formLabel">${fn:escapeXml(label)}:</label>
+    <form:input path="${path}" label="${fn:escapeXml(label)}" require="${required}" maxlength="10"
+                cssClass="jsPhone"/>
+    <span id="${path}Error" class='locationAlert alertText formlyInvalid formlyAlert hide'>
+        ${fn:escapeXml(errorMsg)}
+    </span>
+</jsp:root>
