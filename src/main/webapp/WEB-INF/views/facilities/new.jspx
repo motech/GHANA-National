@@ -26,6 +26,7 @@
         <spring:message code="facility_add_phone_number2" var="facility_add_phone_number2" htmlEscape="false"/>
         <spring:message code="facility_add_phone_number3" var="facility_add_phone_number3" htmlEscape="false"/>
         <spring:message code="facility_phone_number_req_msg" var="facility_phone_number_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_phone_number_incorrect_msg" var="facility_phone_number_incorrect_msg" htmlEscape="false"/>
 
         <div>
             <label for="name" class="formLabel">${fn:escapeXml(facility_name)}:</label>
@@ -59,7 +60,7 @@
                              locations="${provinces}"/>
         </div>
 
-        <div class="phoneNo">
+        <div>
             <label for="phoneNumber" class="formLabel">${fn:escapeXml(facility_phone_number)}:</label>
             <form:input path="phoneNumber" label="${fn:escapeXml(facility_phone_number)}" require="true" maxlength="10"
                         cssClass="phoneNo"/>
@@ -68,20 +69,29 @@
             </span>
         </div>
 
-        <div class="phoneNo">
+        <div>
             <label for="additionalPhoneNumber1" class="formLabel">${fn:escapeXml(facility_add_phone_number1)}:</label>
             <form:input path="additionalPhoneNumber1" label="${fn:escapeXml(facility_add_phone_number1)}" maxlength="10"
                         cssClass="phoneNo"/>
+            <span id="additionalPhoneNumber1Error" class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(facility_phone_number_incorrect_msg)}
+            </span>
         </div>
-        <div class="phoneNo">
+        <div>
             <label for="additionalPhoneNumber2" class="formLabel">${fn:escapeXml(facility_add_phone_number2)}:</label>
             <form:input path="additionalPhoneNumber2" label="${fn:escapeXml(facility_add_phone_number2)}" maxlength="10"
                         cssClass="phoneNo"/>
+            <span id="additionalPhoneNumber2Error" class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(facility_phone_number_incorrect_msg)}
+            </span>
         </div>
-        <div class="phoneNo">
+        <div>
             <label for="additionalPhoneNumber3" class="formLabel">${fn:escapeXml(facility_add_phone_number3)}:</label>
             <form:input path="additionalPhoneNumber3" label="${fn:escapeXml(facility_add_phone_number3)}" maxlength="10"
                         cssClass="phoneNo"/>
+            <span id="additionalPhoneNumber3Error" class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(facility_phone_number_incorrect_msg)}
+            </span>
         </div>
 
         <input type="button" id="submitNewFacility" value="Submit"/>

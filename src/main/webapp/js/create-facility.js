@@ -82,20 +82,26 @@ $(document).ready(function() {
         return isValid;
     }
 
-    $('.phoneNo').blur(function() {
-        var util = new $.Utilities();
-        var isPhoneNumberValid = util.isPhoneNoValid(this.value);
-        if (!isPhoneNumberValid) {
-            alert("Phone Number should be numeric and start with zero ");
-            this.value = "";
-        }
-    })
+    var validateForm = function() {
+        utilities.clearMessages();
+        var isValid = true;
+        $('.phoneNo').each(function(index) {
+            if(this.value != "") {
+                if (!utilities.isPhoneNoValid(this.value)) {
+                    $("#" + this.id + "Error").show();
+                    isValid = false;
+                    return false;
+                }
+            }
+        });
+        return isValid;
+    }
 
     $("#createFacilityForm").formly({'onBlur':false, 'theme':'Light'});
     new Field('countries').hasADependent(new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts'))));
 
     $('#submitNewFacility').click(function() {
-        if (facilityLocationHasBeenSelected()) {
+        if (facilityLocationHasBeenSelected() && validateForm()) {
             $('#createFacilityForm').submit();
         }
     });
