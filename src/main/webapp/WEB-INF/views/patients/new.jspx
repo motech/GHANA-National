@@ -133,10 +133,17 @@
         </div>
         <div class="form-field">
             <label class="formLabel" for="insured">${fn:escapeXml(patient_insured)}:</label>
-            <form:input path="insured" cssClass="jsRequire" size="20" label="${fn:escapeXml(patient_insured)}"/>
-            <span id='insuredError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
-                ${fn:escapeXml(patient_insured)} ${fn:escapeXml(required_msg)}
-            </span>
+            <div class="radio">
+                <form:radiobutton cssClass="jsRequire" path="insured" value="${fn:escapeXml(yes)}"
+                                  label="${fn:escapeXml(yes)}"/>
+                <form:radiobutton cssClass="jsRequire" path="insured" value="${fn:escapeXml(no)}"
+                                  label="${fn:escapeXml(no)}"/>
+            </div>
+            <div class="radioError">
+                <span id='insuredError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(patient_insured)} ${fn:escapeXml(required_msg)}
+                </span>
+            </div>
         </div>
         <div class="form-field">
             <label class="formLabel" for="nhisNumber">${fn:escapeXml(patient_nhis_number)}:</label>
