@@ -53,21 +53,21 @@
     </repositories>
     <dependencies>
         <!--app dependencies-->
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>idgen-core</artifactId>
-            <version>1.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>openmrs</groupId>
-            <artifactId>web-openmrs-api</artifactId>
-            <version>1.5.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.directwebremoting</groupId>
-            <artifactId>dwr</artifactId>
-            <version>3.0.M1</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.openmrs.module</groupId>-->
+            <!--<artifactId>idgen-core</artifactId>-->
+            <!--<version>1.5.1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>openmrs</groupId>-->
+            <!--<artifactId>web-openmrs-api</artifactId>-->
+            <!--<version>1.5.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.directwebremoting</groupId>-->
+            <!--<artifactId>dwr</artifactId>-->
+            <!--<version>3.0.M1</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -306,24 +306,24 @@
             <artifactId>hibernate-validator-annotation-processor</artifactId>
             <version>4.1.0.Final</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>javax.servlet</groupId>-->
-        <!--<artifactId>jstl</artifactId>-->
-        <!--<version>1.2</version>-->
-        <!--&lt;!&ndash;<scope>test</scope>&ndash;&gt;-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>javax.servlet.jsp</groupId>-->
-        <!--<artifactId>jsp-api</artifactId>-->
-        <!--<version>2.0</version>-->
-        <!--&lt;!&ndash;<scope>test</scope>&ndash;&gt;-->
-        <!--</dependency>-->
-        <!-- Javaee API -->
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>6.0</version>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jstl</artifactId>
+        <version>1.2</version>
+        <scope>provided</scope>
         </dependency>
+        <dependency>
+        <groupId>javax.servlet.jsp</groupId>
+        <artifactId>jsp-api</artifactId>
+        <version>2.0</version>
+        <scope>provided</scope>
+        </dependency>
+        <!-- Javaee API -->
+        <!--<dependency>-->
+            <!--<groupId>javax</groupId>-->
+            <!--<artifactId>javaee-api</artifactId>-->
+            <!--<version>6.0</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>

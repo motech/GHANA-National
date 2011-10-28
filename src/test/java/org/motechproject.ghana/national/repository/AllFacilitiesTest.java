@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.mrs.services.MRSFacilityAdapter;
+import org.motechproject.mrs.services.MRSFacilityAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -33,7 +33,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
     protected CouchDbConnector dbConnector;
 
     @Mock
-    MRSFacilityAdapter mockMrsFacilityAdapter;
+    MRSFacilityAdaptor mockMrsFacilityAdaptor;
 
     @Autowired
     private AllFacilities allFacilities;
@@ -41,7 +41,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
     @Before
     public void init() {
         initMocks(this);
-        ReflectionTestUtils.setField(allFacilities, "facilityAdapter", mockMrsFacilityAdapter);
+        ReflectionTestUtils.setField(allFacilities, "facilityAdaptor", mockMrsFacilityAdaptor);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         final int initialSize = allFacilities.getAll().size();
 
         final String facilityId = "12";
-        when(mockMrsFacilityAdapter.saveFacility(mrsFacility)).thenReturn(new org.motechproject.mrs.model.Facility(facilityId, facilityName,
+        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(new org.motechproject.mrs.model.Facility(facilityId, facilityName,
                 "country", "region", "district", "province"));
 
         allFacilities.add(facility);
@@ -83,7 +83,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         final String province = "Province 1";
         final org.motechproject.mrs.model.Facility facility = new org.motechproject.mrs.model.Facility(
                 facilityName, country, region, district, province);
-        when(mockMrsFacilityAdapter.getFacilities(facilityName)).thenReturn(Arrays.asList(facility));
+        when(mockMrsFacilityAdaptor.getFacilities(facilityName)).thenReturn(Arrays.asList(facility));
         final List<Facility> actualFacilities = allFacilities.facilitiesByName(facilityName);
         final Facility actualFacility = actualFacilities.iterator().next();
         assertThat(actualFacilities.size(), is(equalTo(1)));
@@ -103,7 +103,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         final String province = "Province 1";
         final org.motechproject.mrs.model.Facility facility = new org.motechproject.mrs.model.Facility(
                 facilityName, country, region, district, province);
-        when(mockMrsFacilityAdapter.getFacilities()).thenReturn(Arrays.asList(facility));
+        when(mockMrsFacilityAdaptor.getFacilities()).thenReturn(Arrays.asList(facility));
         final List<Facility> actualFacilities = allFacilities.facilities();
         final Facility actualFacility = actualFacilities.iterator().next();
         assertThat(actualFacilities.size(), is(equalTo(1)));
