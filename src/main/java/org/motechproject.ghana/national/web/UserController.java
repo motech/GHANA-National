@@ -50,12 +50,12 @@ public class UserController {
     public String createUser(@Valid CreateUserForm createUserForm, BindingResult bindingResult, ModelMap model) {
         User user = new User();
         user.firstName(createUserForm.getFirstName()).middleName(createUserForm.getMiddleName()).lastName(createUserForm.getLastName());
-        user.addAttribute(new UserAttribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, createUserForm.getEmail()));
-        user.addAttribute(new UserAttribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, createUserForm.getPhoneNumber()));
-        user.addAttribute(new UserAttribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, createUserForm.getRole()));
+        addAttribute(user, Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, createUserForm.getEmail());
+        addAttribute(user, Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, createUserForm.getPhoneNumber());
+        addAttribute(user, Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, createUserForm.getRole());
+
         user.securityRole(UserType.Role.securityRoleFor(createUserForm.getRole()));
         if (UserType.Role.isAdmin(createUserForm.getRole())) user.id(createUserForm.getEmail());
-
         try {
             String userId = userService.saveUser(user);
             model.put(USER_ID, userId);
@@ -67,5 +67,9 @@ public class UserController {
             return NEW_USER_VIEW;
         }
         return CREATE_USER_SUCCESS_VIEW;
+    }
+
+    private void addAttribute(User user, String name, String value) {
+        user.addAttribute(new UserAttribute(name, value));
     }
 }
