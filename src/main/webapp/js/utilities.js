@@ -6,9 +6,5 @@ function Utilities() {
 
     this.isNull = function(value) {
         return value == undefined || value == "" || value.length == 0;
-    },
-
-    this.clearMessages = function() {
-        $('.alertText').hide();
     }
 }

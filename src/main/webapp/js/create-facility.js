@@ -13,6 +13,7 @@ $(document).ready(function() {
 
     var validate = function(facilityForm) {
         hasSelectedValidItem();
+        formValidator.clearMessages(facilityForm);
         formValidator.validatePhoneNumbers(facilityForm);
         formValidator.validateRequiredFields(facilityForm);
         return formValidator.hasErrors(facilityForm);
@@ -22,7 +23,6 @@ $(document).ready(function() {
     new Field('countries').hasADependent(new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts'))));
 
     $('#submitNewFacility').click(function() {
-        utilities.clearMessages();
         var facilityForm = $('#createFacilityForm');
         if (!validate(facilityForm)) {
             facilityForm.submit();

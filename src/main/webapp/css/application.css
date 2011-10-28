@@ -76,3 +76,20 @@ nav ul li a:active, nav ul li a.current {
     margin-left: 3px;
     margin-bottom: 5px;
 }
+
+.radio {
+    width:155px;
+    float: left;
+    padding: 10px 0;
+}
+
+.form-field {
+    height: 40px;
+}
+
+.radioError {
+    display: block;
+    float: left;
+    height: 20px;
+    padding: 10px 0;
+}
