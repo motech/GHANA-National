@@ -3,11 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.motechproject</groupId>
-    <artifactId>GHANA-National</artifactId>
+    <artifactId>ghana-national</artifactId>
+    <name>ghana-national</name>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>pom</packaging>
+    <modules>
+        <module>ghana-national-core</module>
+        <module>ghana-national-xforms</module>
+        <module>ghana-national-web</module>
+    </modules>
     <properties>
         <spring.version>3.0.5.RELEASE</spring.version>
         <org.ektorp.version>1.1.1</org.ektorp.version>
@@ -52,26 +57,30 @@
         </repository>
     </repositories>
     <dependencies>
-        <!--app dependencies-->
-        <!--<dependency>-->
-            <!--<groupId>org.openmrs.module</groupId>-->
-            <!--<artifactId>idgen-core</artifactId>-->
-            <!--<version>1.5.1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>openmrs</groupId>-->
-            <!--<artifactId>web-openmrs-api</artifactId>-->
-            <!--<version>1.5.0</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.directwebremoting</groupId>-->
-            <!--<artifactId>dwr</artifactId>-->
-            <!--<version>3.0.M1</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.openxdata</groupId>
+            <artifactId>protocol-api</artifactId>
+            <version>1.2</version>
+        </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.16</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        <dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.1</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -82,12 +91,6 @@
             <groupId>ca.uhn.hapi</groupId>
             <artifactId>hapi</artifactId>
             <version>0.5</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -163,32 +166,6 @@
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt</artifactId>
             <version>1.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tiles</groupId>
-            <artifactId>tiles-core</artifactId>
-            <version>2.2.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>commons-digester</artifactId>
-                    <groupId>commons-digester</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tiles</groupId>
-            <artifactId>tiles-jsp</artifactId>
-            <version>2.2.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-digester</groupId>
-                    <artifactId>commons-digester</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>commons-digester</groupId>
@@ -306,333 +283,138 @@
             <artifactId>hibernate-validator-annotation-processor</artifactId>
             <version>4.1.0.Final</version>
         </dependency>
-        <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>jstl</artifactId>
-        <version>1.2</version>
-        <scope>provided</scope>
-        </dependency>
-        <dependency>
-        <groupId>javax.servlet.jsp</groupId>
-        <artifactId>jsp-api</artifactId>
-        <version>2.0</version>
-        <scope>provided</scope>
-        </dependency>
-        <!-- Javaee API -->
-        <!--<dependency>-->
-            <!--<groupId>javax</groupId>-->
-            <!--<artifactId>javaee-api</artifactId>-->
-            <!--<version>6.0</version>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>taglibs</groupId>
-            <artifactId>standard</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openxdata</groupId>
-            <artifactId>protocol-api</artifactId>
-            <version>1.2</version>
-        </dependency>
     </dependencies>
     <build>
-        <filters>
-            <filter>src/main/resources/${environment}/deploy.properties</filter>
-        </filters>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <excludes>
-                    <exclude>**/*.omod</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>**/*.omod</include>
-                </includes>
-            </resource>
-        </resources>
-        <plugins>
-            <!--PROPERTIES READ-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
-                <version>6.1.10</version>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>sql-maven-plugin</artifactId>
-                <version>1.5</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>mysql</groupId>
-                        <artifactId>mysql-connector-java</artifactId>
-                        <version>5.1.13</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <driver>com.mysql.jdbc.Driver</driver>
-                    <username>${mysql.user}</username>
-                    <password>${mysql.password}</password>
-                    <url>jdbc:mysql://localhost:3306</url>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>drop-db</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <configuration>
-                            <autocommit>true</autocommit>
-                            <sqlCommand>
-                                drop database openmrs_test;
-                            </sqlCommand>
-                            <onError>continue</onError>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>create-db</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <configuration>
-                            <autocommit>true</autocommit>
-                            <sqlCommand>
-                                create database openmrs_test default charset utf8;
-                                grant all on openmrs_test.* to 'openmrs'@'localhost' identified by
-                                'password';
-                                grant all on openmrs_test.* to 'openmrs'@'%' identified by 'password';
-                                flush privileges;
-                                use openmrs_test;
-                            </sqlCommand>
-                            <srcFiles>
-                                <srcFile>${project.basedir}/build/sql/openmrs-1.8.sql</srcFile>
-                                <srcFile>${project.basedir}/build/sql/1.insert_email_person_attribute_type_table.sql
-                                </srcFile>
-                            </srcFiles>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.cargo</groupId>
-                <artifactId>cargo-maven2-plugin</artifactId>
-                <version>1.1.2</version>
-                <executions>
-                    <execution>
-                        <id>start-container</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>stop-container</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <container>
-                        <containerId>jetty7x</containerId>
-                        <type>embedded</type>
-                        <timeout>240000</timeout>
-                    </container>
+        <pluginManagement>
+            <plugins>
+                <!--COMPILER -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.3.2</version>
                     <configuration>
-                        <type>standalone</type>
-                        <deployables>
-                            <deployable>
-                                <groupId>org.motechproject</groupId>
-                                <artifactId>GHANA-National</artifactId>
-                                <type>war</type>
-                            </deployable>
-                        </deployables>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                        <encoding>UTF-8</encoding>
                     </configuration>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.9</version>
-                <configuration>
-                    <argLine>-XX:MaxPermSize=1024M</argLine>
-                    <printSummary>true</printSummary>
-                    <excludes>
-                        <exclude>**/*IntegrationTest.java</exclude>
-                        <exclude>**/repository/*Test.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.9</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <includes>
-                        <include>**/*IntegrationTest.java</include>
-                        <include>**/repository/*Test.java</include>
-                    </includes>
-                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>recreate-db</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>org.motechproject.ghana.national.tools.RecreateDB</mainClass>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>seed-db</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>org.motechproject.ghana.national.tools.seed.SetupSeedData</mainClass>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.jbehave</groupId>
-                <artifactId>jbehave-maven-plugin</artifactId>
-                <version>${jbehave.core.version}</version>
-                <executions>
-                    <execution>
-                        <id>unpack-view-resources</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>unpack-view-resources</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>embeddable-stories</id>
-                        <phase>integration-test</phase>
-                        <configuration>
-                            <includes>
-                                <include>${stories}</include>
-                            </includes>
-                            <excludes/>
-                            <scope>test</scope>
-                            <generateViewAfterStories>true</generateViewAfterStories>
-                            <ignoreFailureInStories>false</ignoreFailureInStories>
-                            <ignoreFailureInView>false</ignoreFailureInView>
-                            <threads>${threads}</threads>
-                            <skip>${skip}</skip>
-                            <metaFilters>
-                                <metaFilter>${meta.filter}</metaFilter>
-                            </metaFilters>
-                        </configuration>
-                        <goals>
-                            <goal>run-stories-as-embeddables</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report-stepdocs</id>
-                        <phase>integration-test</phase>
-                        <configuration>
-                            <includes>
-                                <include>${stories}</include>
-                            </includes>
-                        </configuration>
-                        <goals>
-                            <goal>report-stepdocs-as-embeddables</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                        <version>1.2.16</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>recreate-db</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>org.motechproject.ghana.national.tools.RecreateDB</mainClass>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>seed-db</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>org.motechproject.ghana.national.tools.seed.SetupSeedData</mainClass>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>
-                                    target/${project.artifactId}-${project.version}/WEB-INF/classes/deploy.properties
-                                </file>
-                                <file>${project.basedir}/maven.properties</file>
-                            </files>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+                </plugin>
+                <!--READ PROPERTIES FILE-->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>properties-maven-plugin</artifactId>
+                    <version>1.0-alpha-2</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>read-project-properties</goal>
+                            </goals>
+                            <configuration>
+                                <files>
+                                    <file>${project.basedir}/maven.properties</file>
+                                </files>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!--MYSQL RECREATION OF OPENMRS SCHEMA-->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>sql-maven-plugin</artifactId>
+                    <version>1.5</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>mysql</groupId>
+                            <artifactId>mysql-connector-java</artifactId>
+                            <version>5.1.13</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <driver>com.mysql.jdbc.Driver</driver>
+                        <username>${mysql.user}</username>
+                        <password>${mysql.password}</password>
+                        <url>jdbc:mysql://localhost:3306</url>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>drop-db</id>
+                            <phase>pre-integration-test</phase>
+                            <goals>
+                                <goal>execute</goal>
+                            </goals>
+                            <configuration>
+                                <autocommit>true</autocommit>
+                                <sqlCommand>
+                                    drop database openmrs_test;
+                                </sqlCommand>
+                                <onError>continue</onError>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>create-db</id>
+                            <phase>pre-integration-test</phase>
+                            <goals>
+                                <goal>execute</goal>
+                            </goals>
+                            <configuration>
+                                <autocommit>true</autocommit>
+                                <sqlCommand>
+                                    create database openmrs_test default charset utf8;
+                                    grant all on openmrs_test.* to 'openmrs'@'localhost' identified by
+                                    'password';
+                                    grant all on openmrs_test.* to 'openmrs'@'%' identified by 'password';
+                                    flush privileges;
+                                    use openmrs_test;
+                                </sqlCommand>
+                                <srcFiles>
+                                    <srcFile>${project.basedir}/build/sql/openmrs-1.8.sql</srcFile>
+                                    <srcFile>${project.basedir}/build/sql/1.insert_email_person_attribute_type_table.sql
+                                    </srcFile>
+                                </srcFiles>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!--SUREFIRE FOR UNIT TESTS-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.9</version>
+                    <configuration>
+                        <argLine>-XX:MaxPermSize=1024M</argLine>
+                        <printSummary>true</printSummary>
+                        <excludes>
+                            <exclude>**/*IntegrationTest.java</exclude>
+                            <exclude>**/repository/*Test.java</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+                <!--FAILSAFE FOR INTEGRATION TESTS-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.9</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <printSummary>true</printSummary>
+                        <includes>
+                            <include>**/*IntegrationTest.java</include>
+                            <include>**/repository/*Test.java</include>
+                        </includes>
+                        <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
+    <!--PROFILES-->
     <profiles>
         <profile>
             <id>emulator</id>
@@ -714,44 +496,7 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>deploy</id>
-            <build>
-                <plugins>
-
-                    <plugin>
-                        <groupId>org.codehaus.cargo</groupId>
-                        <artifactId>cargo-maven2-plugin</artifactId>
-                        <version>1.1.2</version>
-                        <configuration>
-                            <container>
-                                <containerId>tomcat6x</containerId>
-                                <type>remote</type>
-                            </container>
-                            <deployer>
-                                <type>remote</type>
-                            </deployer>
-                            <configuration>
-                                <type>runtime</type>
-                                <deployables>
-                                    <deployable>
-                                        <groupId>org.motechproject</groupId>
-                                        <artifactId>GHANA-National</artifactId>
-                                        <type>war</type>
-                                    </deployable>
-                                </deployables>
-                                <properties>
-                                    <cargo.remote.username>${cargo.remote.username}</cargo.remote.username>
-                                    <cargo.remote.password>${cargo.remote.password}</cargo.remote.password>
-                                    <cargo.hostname>${cargo.hostname}</cargo.hostname>
-                                    <cargo.servlet.port>8080</cargo.servlet.port>
-                                </properties>
-                            </configuration>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+        <!--BUILD-NODE-->
         <profile>
             <id>buildNode</id>
             <repositories>
