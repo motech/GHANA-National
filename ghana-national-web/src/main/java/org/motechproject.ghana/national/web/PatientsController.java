@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.web;
 
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.CreatePatientForm;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -30,7 +29,7 @@ public class PatientsController {
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newPatientForm(ModelMap modelMap) {
         modelMap.put(CREATE_PATIENT_FORM, new CreatePatientForm());
-        modelMap.mergeAttributes(facilityService.populateFacilityData());
+        modelMap.mergeAttributes(facilityService.locationMap());
         return NEW_PATIENT;
     }
 }

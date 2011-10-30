@@ -66,7 +66,7 @@ public class FacilityService {
         return allFacilities.facilities();
     }
 
-    public Map<String, Object> populateFacilityData() {
+    public Map<String, Object> locationMap() {
         List<Facility> facilities = facilities();
         final HashMap<String, Object> modelMap = new HashMap<String, Object>();
         List<Facility> withValidCountryNames = select(facilities, having(on(Facility.class).country(), is(not(equalTo(StringUtils.EMPTY)))));

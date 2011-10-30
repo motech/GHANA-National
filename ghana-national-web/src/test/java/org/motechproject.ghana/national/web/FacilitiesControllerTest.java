@@ -11,7 +11,6 @@ import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.CreateFacilityForm;
 import org.springframework.context.MessageSource;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -63,11 +62,11 @@ public class FacilitiesControllerTest {
             put(Constants.PROVINCES, new Object());
             put(Constants.DISTRICTS, new Object());
         }};
-        when(mockFacilityService.populateFacilityData()).thenReturn(map);
+        when(mockFacilityService.locationMap()).thenReturn(map);
         final String result = spyFacilitiesController.createFacility(new CreateFacilityForm(), mockBindingResult, modelMap);
 
         assertThat(result, is(equalTo("facilities/success")));
-        verify(mockFacilityService).populateFacilityData();
+        verify(mockFacilityService).locationMap();
         assertNotNull(modelMap.get(FacilitiesController.CREATE_FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));
@@ -107,7 +106,7 @@ public class FacilitiesControllerTest {
             put(Constants.PROVINCES, new Object());
             put(Constants.DISTRICTS, new Object());
         }};
-        when(mockFacilityService.populateFacilityData()).thenReturn(map);
+        when(mockFacilityService.locationMap()).thenReturn(map);
 
         final String result = spyFacilitiesController.createFacility(createFacilityForm, mockBindingResult, modelMap);
 
@@ -118,7 +117,7 @@ public class FacilitiesControllerTest {
         assertThat(actualFieldError.getObjectName(), is(equalTo(FacilitiesController.CREATE_FACILITY_FORM)));
         assertThat(actualFieldError.getField(), is(equalTo("name")));
         assertThat(actualFieldError.getDefaultMessage(), is(equalTo(message)));
-        verify(mockFacilityService).populateFacilityData();
+        verify(mockFacilityService).locationMap();
         assertNotNull(modelMap.get(FacilitiesController.CREATE_FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));

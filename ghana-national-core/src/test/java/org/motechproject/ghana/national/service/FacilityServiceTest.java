@@ -9,7 +9,6 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.repository.AllFacilities;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +87,7 @@ public class FacilityServiceTest {
     public void testPopulateFacilities() {
         List<Facility> facilities = populateData();
         when(mockAllFacilities.facilities()).thenReturn(facilities);
-        Map modelMap = facilityService.populateFacilityData();
+        Map modelMap = facilityService.locationMap();
         assertThat((List<String>) modelMap.get("countries"), is(equalTo(Arrays.asList("Utopia"))));
         assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.REGIONS), is(equalTo(regions())));
         assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.DISTRICTS), is(equalTo(districts())));

@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.web;
 
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.CreateFacilityForm;
@@ -21,13 +20,8 @@ import java.util.Locale;
 @RequestMapping(value = "/admin/facilities")
 public class FacilitiesController {
     public static final String CREATE_FACILITY_FORM = "createFacilityForm";
-
-    public static final String COUNTRIES = "countries";
-    public static final String REGIONS = "regions";
-    public static final String DISTRICTS = "districts";
-    public static final String PROVINCES = "provinces";
-    final static String SUCCESS = "facilities/success";
-    final static String NEW_FACILITY = "facilities/new";
+    public static final String SUCCESS = "facilities/success";
+    public static final String NEW_FACILITY = "facilities/new";
 
     private FacilityService facilityService;
     private MessageSource messageSource;
@@ -45,7 +39,7 @@ public class FacilitiesController {
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newFacilityForm(ModelMap modelMap) {
         modelMap.put(CREATE_FACILITY_FORM, new CreateFacilityForm());
-        modelMap.mergeAttributes(facilityService.populateFacilityData());
+        modelMap.mergeAttributes(facilityService.locationMap());
         return NEW_FACILITY;
     }
 
@@ -57,7 +51,7 @@ public class FacilitiesController {
                     createFacilityForm.getCountyDistrict(), createFacilityForm.getStateProvince(), createFacilityForm.getPhoneNumber(),
                     createFacilityForm.getAdditionalPhoneNumber1(), createFacilityForm.getAdditionalPhoneNumber2(),
                     createFacilityForm.getAdditionalPhoneNumber3());
-            modelMap.mergeAttributes(facilityService.populateFacilityData());
+            modelMap.mergeAttributes(facilityService.locationMap());
         } catch (FacilityAlreadyFoundException e) {
             handleExistingFacilityError(bindingResult, modelMap, messageSource.getMessage("facility_already_exists", null, Locale.getDefault()));
             return NEW_FACILITY;
@@ -66,7 +60,7 @@ public class FacilitiesController {
     }
 
     private void handleExistingFacilityError(BindingResult bindingResult, ModelMap modelMap, String message) {
-        modelMap.mergeAttributes(facilityService.populateFacilityData());
+        modelMap.mergeAttributes(facilityService.locationMap());
         bindingResult.addError(new FieldError(CREATE_FACILITY_FORM, "name", message));
         modelMap.mergeAttributes(bindingResult.getModel());
     }

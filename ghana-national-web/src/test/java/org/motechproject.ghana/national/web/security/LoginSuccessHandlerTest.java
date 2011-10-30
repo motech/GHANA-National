@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
 
-@Ignore
 public class LoginSuccessHandlerTest {
     private HttpServletRequest servletRequest;
     private Authentication authentication;

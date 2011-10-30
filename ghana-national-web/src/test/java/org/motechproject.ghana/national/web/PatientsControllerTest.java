@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.service.FacilityService;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 
 import java.util.HashMap;
@@ -29,11 +28,11 @@ public class PatientsControllerTest {
     public void shouldRenderPageToCreateAPatient() {
         final ModelMap modelMap = new ModelMap();
         final String key = "key";
-        when(mockFacilityService.populateFacilityData()).thenReturn(new HashMap<String, Object>() {{
+        when(mockFacilityService.locationMap()).thenReturn(new HashMap<String, Object>() {{
             put(key, new Object());
         }});
         patientsController.newPatientForm(modelMap);
-        verify(mockFacilityService).populateFacilityData();
+        verify(mockFacilityService).locationMap();
         assertNotNull(modelMap.get(key));
     }
 }
