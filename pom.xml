@@ -177,7 +177,7 @@
             <artifactId>lambdaj</artifactId>
             <version>2.2</version>
         </dependency>
-        <!--test dependencies-->
+        <!--TEST DEPENDENCIES-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -194,6 +194,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.me4se</groupId>
@@ -267,6 +268,18 @@
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
             <version>2.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jsp-impl</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jstl-impl</artifactId>
+            <version>1.2</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
