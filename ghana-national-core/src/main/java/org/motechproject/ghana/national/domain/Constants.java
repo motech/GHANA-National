@@ -10,11 +10,8 @@ public class Constants {
     public static final String PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER = "Phone Number";
     public static final String PERSON_ATTRIBUTE_TYPE_STAFF_TYPE = "Staff Type";
 
-    public static final String CREATE_FACILITY_FORM = "createFacilityForm";
-    public static final String CREATE_PATIENT_FORM = "createPatientForm";
     public static final String COUNTRIES = "countries";
     public static final String REGIONS = "regions";
     public static final String DISTRICTS = "districts";
     public static final String PROVINCES = "provinces";
-
 }

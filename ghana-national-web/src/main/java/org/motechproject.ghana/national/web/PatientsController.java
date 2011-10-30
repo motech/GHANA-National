@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping(value = "/admin/patients")
 public class PatientsController {
     public static final String NEW_PATIENT = "patients/new";
+    public static final String CREATE_PATIENT_FORM = "createPatientForm";
+
     private FacilityService facilityService;
 
     public PatientsController() {
@@ -27,7 +29,7 @@ public class PatientsController {
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newPatientForm(ModelMap modelMap) {
-        modelMap.put(Constants.CREATE_PATIENT_FORM, new CreatePatientForm());
+        modelMap.put(CREATE_PATIENT_FORM, new CreatePatientForm());
         modelMap.mergeAttributes(facilityService.populateFacilityData());
         return NEW_PATIENT;
     }

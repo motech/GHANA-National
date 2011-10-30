@@ -57,7 +57,7 @@ public class FacilitiesControllerTest {
         ModelMap modelMap = new ModelMap();
         when(mockFacilityService.facilities()).thenReturn(Arrays.asList(new Facility()));
         final HashMap<String, Object> map = new HashMap<String, Object>() {{
-            put(Constants.CREATE_FACILITY_FORM, new Object());
+            put(FacilitiesController.CREATE_FACILITY_FORM, new Object());
             put(Constants.COUNTRIES, new Object());
             put(Constants.REGIONS, new Object());
             put(Constants.PROVINCES, new Object());
@@ -68,7 +68,7 @@ public class FacilitiesControllerTest {
 
         assertThat(result, is(equalTo("facilities/success")));
         verify(mockFacilityService).populateFacilityData();
-        assertNotNull(modelMap.get(Constants.CREATE_FACILITY_FORM));
+        assertNotNull(modelMap.get(FacilitiesController.CREATE_FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));
         assertNotNull(modelMap.get(Constants.PROVINCES));
@@ -101,7 +101,7 @@ public class FacilitiesControllerTest {
         createFacilityForm.setAdditionalPhoneNumber3(StringUtils.EMPTY);
 
         final HashMap<String, Object> map = new HashMap<String, Object>() {{
-            put(Constants.CREATE_FACILITY_FORM, new Object());
+            put(FacilitiesController.CREATE_FACILITY_FORM, new Object());
             put(Constants.COUNTRIES, new Object());
             put(Constants.REGIONS, new Object());
             put(Constants.PROVINCES, new Object());
@@ -115,11 +115,11 @@ public class FacilitiesControllerTest {
         verify(mockBindingResult).addError(captor.capture());
         final FieldError actualFieldError = captor.getValue();
         assertThat(result, is(equalTo("facilities/new")));
-        assertThat(actualFieldError.getObjectName(), is(equalTo(Constants.CREATE_FACILITY_FORM)));
+        assertThat(actualFieldError.getObjectName(), is(equalTo(FacilitiesController.CREATE_FACILITY_FORM)));
         assertThat(actualFieldError.getField(), is(equalTo("name")));
         assertThat(actualFieldError.getDefaultMessage(), is(equalTo(message)));
         verify(mockFacilityService).populateFacilityData();
-        assertNotNull(modelMap.get(Constants.CREATE_FACILITY_FORM));
+        assertNotNull(modelMap.get(FacilitiesController.CREATE_FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));
         assertNotNull(modelMap.get(Constants.PROVINCES));
