@@ -1,0 +1,28 @@
+[
+    {
+        "name" : "FieldAgentForms",
+        "forms" : [
+            {
+                "name" : "ClientQuery",
+                "fileName" :  "ClientQuery.xml"
+            },
+            {
+                "name" : "DeliveryNotification",
+                "fileName" :  "DeliveryNotification.xml"
+            }
+        ]
+    } ,
+    {
+        "name" : "NurseDataEntry",
+        "forms" : [
+            {
+                "name" : "ANCVisit",
+                "fileName" :  "ANCVisit.xml"
+            },
+            {
+                "name" : "Delivery",
+                "fileName" :  "Delivery.xml"
+            }
+        ]
+    }
+]
