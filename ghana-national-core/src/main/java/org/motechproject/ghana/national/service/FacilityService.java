@@ -39,7 +39,7 @@ public class FacilityService {
     public void create(String name, String country, String region, String district, String province, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) throws FacilityAlreadyFoundException {
         final List<Facility> facilities = allFacilities.facilitiesByName(name);
         final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(name, country, region, district, province);
-        if (isDuplicate(facilities, mrsFacility)) {
+        if (isDuplicate(facilities, mrsFacility, phoneNumber)) {
             throw new FacilityAlreadyFoundException();
         }
         final Facility facility = new Facility(mrsFacility).phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber1).
@@ -47,15 +47,19 @@ public class FacilityService {
         allFacilities.add(facility);
     }
 
-    private boolean isDuplicate(List<Facility> facilities, org.motechproject.mrs.model.Facility mrsFacility) {
+    private boolean isDuplicate(List<Facility> facilities, org.motechproject.mrs.model.Facility mrsFacility, String phoneNumber) {
         for (Facility facility : facilities) {
             org.motechproject.mrs.model.Facility thatMrsFacility = facility.mrsFacility();
+            boolean isFacilityNotUnique = false;
             if ((thatMrsFacility != null
                     && StringUtils.equals(thatMrsFacility.getName(), mrsFacility.getName())
                     && StringUtils.equals(thatMrsFacility.getStateProvince(), mrsFacility.getStateProvince())
                     && StringUtils.equals(thatMrsFacility.getCountyDistrict(), mrsFacility.getCountyDistrict())
                     && StringUtils.equals(thatMrsFacility.getRegion(), mrsFacility.getRegion())
                     && StringUtils.equals(thatMrsFacility.getCountry(), mrsFacility.getCountry()))) {
+                isFacilityNotUnique = true;
+            }
+            if (isFacilityNotUnique || StringUtils.equals(facility.phoneNumber(), phoneNumber)) {
                 return true;
             }
         }

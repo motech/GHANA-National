@@ -66,7 +66,7 @@ public class FacilityServiceTest {
     }
 
     @Test(expected = FacilityAlreadyFoundException.class)
-    public void ShouldNotCreateAFacilityWhenAlreadyExists() throws FacilityAlreadyFoundException {
+    public void ShouldNotCreateAFacilityIfAlreadyExists() throws FacilityAlreadyFoundException {
         String facilityName = "name";
         String country = "country";
         String region = "region";
@@ -74,6 +74,18 @@ public class FacilityServiceTest {
         String province = "province";
         when(mockAllFacilities.facilitiesByName(facilityName)).thenReturn(Arrays.asList(new Facility(new org.motechproject.mrs.model.Facility(facilityName, country, region, district, province))));
         facilityService.create(facilityName, country, region, district, province, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
+    }
+
+    @Test(expected = FacilityAlreadyFoundException.class)
+    public void ShouldNotCreateFacilityIfPhoneNumberAlreadyExists() throws FacilityAlreadyFoundException {
+        String facilityName = "name";
+        String country = "country";
+        String region = "region";
+        String district = "district";
+        String province = "province";
+        String testPhoneNumber = "0123456789";
+        when(mockAllFacilities.facilitiesByName(facilityName)).thenReturn(Arrays.asList(new Facility().phoneNumber(testPhoneNumber)));
+        facilityService.create(facilityName, country, region, district, province, testPhoneNumber, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
     @Test
