@@ -177,7 +177,7 @@
             <artifactId>lambdaj</artifactId>
             <version>2.2</version>
         </dependency>
-        <!--test dependencies-->
+        <!--TEST DEPENDENCIES-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -194,6 +194,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.me4se</groupId>
@@ -269,6 +270,18 @@
             <version>2.9</version>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jsp-impl</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jstl-impl</artifactId>
+            <version>1.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.1.2</version>
@@ -306,7 +319,7 @@
                     <argLine>-XX:MaxPermSize=1024M</argLine>
                     <printSummary>true</printSummary>
                     <excludes>
-                        <exclude>**/*IntegrationTest.java</exclude>
+                        <exclude>**/*IT.java</exclude>
                         <exclude>**/repository/*Test.java</exclude>
                     </excludes>
                 </configuration>
@@ -327,7 +340,7 @@
                 <configuration>
                     <printSummary>true</printSummary>
                     <includes>
-                        <include>**/*IntegrationTest.java</include>
+                        <include>**/*IT.java</include>
                         <include>**/repository/*Test.java</include>
                     </includes>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
