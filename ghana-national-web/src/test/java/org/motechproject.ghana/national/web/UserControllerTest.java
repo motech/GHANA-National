@@ -9,8 +9,8 @@ import org.motechproject.ghana.national.domain.UserType;
 import org.motechproject.ghana.national.service.UserService;
 import org.motechproject.ghana.national.web.form.CreateUserForm;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
+import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.User;
-import org.motechproject.mrs.model.UserAttribute;
 import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -93,7 +93,7 @@ public class UserControllerTest {
     }
 
     private String getAttrValue(User user, String name) {
-        for (UserAttribute userAttribute : user.attributes())
+        for (Attribute userAttribute : user.attributes())
             if (userAttribute.name().equalsIgnoreCase(name)) return userAttribute.value();
         return null;
     }
