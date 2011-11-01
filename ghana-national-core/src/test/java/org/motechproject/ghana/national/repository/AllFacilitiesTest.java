@@ -1,8 +1,11 @@
 package org.motechproject.ghana.national.repository;
 
+import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
+import org.ektorp.ViewQuery;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -77,21 +80,34 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void shouldGetAllFacilitiesByName() {
         final String facilityName = "name";
-        final String country = "Utopia";
-        final String region = "Region 1";
-        final String district = "District 1";
-        final String province = "Province 1";
-        final org.motechproject.mrs.model.Facility facility = new org.motechproject.mrs.model.Facility(
+        final String country = "country";
+        final String region = "region";
+        final String district = "district";
+        final String province = "province";
+        final String phoneNumber = "0123456789";
+        final String mrsFacilityId = "12";
+
+        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(mrsFacilityId,
                 facilityName, country, region, district, province);
-        when(mockMrsFacilityAdaptor.getFacilities(facilityName)).thenReturn(Arrays.asList(facility));
+        Facility facility = new Facility(mrsFacility)
+                .phoneNumber(phoneNumber);
+
+        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(new org.motechproject.mrs.model.Facility(mrsFacilityId, facilityName,
+                "country", "region", "district", "province"));
+        allFacilities.add(facility);
+
+        when(mockMrsFacilityAdaptor.getFacilities(facilityName)).thenReturn(Arrays.asList(mrsFacility));
+
+        final int initialSize = allFacilities.getAll().size();
         final List<Facility> actualFacilities = allFacilities.facilitiesByName(facilityName);
         final Facility actualFacility = actualFacilities.iterator().next();
-        assertThat(actualFacilities.size(), is(equalTo(1)));
+        assertThat(actualFacilities.size(), is(equalTo(1 + initialSize)));
         assertThat(actualFacility.name(), is(equalTo(facilityName)));
         assertThat(actualFacility.country(), is(equalTo(country)));
         assertThat(actualFacility.region(), is(equalTo(region)));
         assertThat(actualFacility.province(), is(equalTo(province)));
         assertThat(actualFacility.district(), is(equalTo(district)));
+        assertThat(actualFacility.phoneNumber(), is(equalTo(phoneNumber)));
     }
 
     @Test
