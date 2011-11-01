@@ -14,7 +14,7 @@
     <import resource="classpath*:applicationContext-core.xml"/>
     <util:properties id="couchdbProperties" location="classpath:couchdb.properties"/>
 
-    <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean" />
+    <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean"/>
 
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg ref="httpClient"/>
@@ -24,4 +24,21 @@
         <constructor-arg value="ghana-national-test"/>
         <constructor-arg ref="couchDbInstance"/>
     </bean>
+    
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.gmail.com"/>
+        <property name="port" value="587"/>
+        <property name="username" value="username"/>
+        <property name="password" value="password"/>
+
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+
+    </bean>
+
+
 </beans>

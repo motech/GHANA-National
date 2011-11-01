@@ -27,6 +27,11 @@
             <version>3.0.M1</version>
         </dependency>
         <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.3</version>
+        </dependency>
+        <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-openmrs-api</artifactId>
             <version>${motech-platform.version}</version>
