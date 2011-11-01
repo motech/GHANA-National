@@ -32,4 +32,9 @@ public class PatientsController {
         modelMap.mergeAttributes(facilityService.locationMap());
         return NEW_PATIENT;
     }
+
+    //TODO: Check if the patient type is mother or child and save accordingly.
+    /*
+   * if child, fetch mother using mother's motech id if available. & validate if it exists.
+   * */
 }

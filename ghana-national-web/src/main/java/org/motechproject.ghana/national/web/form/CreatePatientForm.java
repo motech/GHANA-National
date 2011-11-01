@@ -19,6 +19,7 @@ public class CreatePatientForm {
     private String subDistrict;
     private String facility;
     private String address;
+    private String parentId;
 
     public String getRegistrationMode() {
         return registrationMode;
@@ -162,5 +163,13 @@ public class CreatePatientForm {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 }
