@@ -148,16 +148,6 @@
             <version>${motech-platform.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.motechproject</groupId>
-            <artifactId>motech-openmrs-api</artifactId>
-            <version>${motech-platform.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject</groupId>
-            <artifactId>motech-mobileforms-api</artifactId>
-            <version>${motech-platform.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jzlib</artifactId>
             <version>1.0.7</version>

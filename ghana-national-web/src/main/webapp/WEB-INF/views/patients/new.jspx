@@ -3,9 +3,9 @@
      xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:url value="/resources/js/create-facility.js" var="create_facility_url"/>
+    <!--<spring:url value="/resources/js/create-facility.js" var="create_facility_url"/>-->
     <spring:url value="/resources/js/facility-fields.js" var="facility_field_url"/>
-    <script src="${create_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <!--<script src="${create_facility_url}" type="text/javascript">&lt;!&ndash; required for FF3 and Opera &ndash;&gt;</script>-->
     <spring:url value="/resources/js/create-patient.js" var="create_patient_url"/>
     <script src="${create_patient_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${facility_field_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
@@ -18,6 +18,7 @@
         <spring:message code="patient_registration_mode_2" var="patient_registration_mode_2" htmlEscape="false"/>
         <spring:message code="patient_motech_id" var="patient_motech_id" htmlEscape="false"/>
         <spring:message code="patient_type" var="patient_type" htmlEscape="false"/>
+        <spring:message code="patient_mothers_motech_id" var="patient_mothers_motech_id" htmlEscape="false"/>
         <spring:message code="patient_first_name" var="patient_first_name" htmlEscape="false"/>
         <spring:message code="patient_middle_name" var="patient_middle_name" htmlEscape="false"/>
         <spring:message code="patient_last_name" var="patient_last_name" htmlEscape="false"/>
@@ -38,6 +39,10 @@
         <spring:message code="no" var="no" htmlEscape="false"/>
         <spring:message code="patient_male" var="male" htmlEscape="false"/>
         <spring:message code="patient_female" var="female" htmlEscape="false"/>
+        <spring:message code="patient_type" var="patient_type" htmlEscape="false"/>
+        <spring:message code="patient_type_other" var="patient_type_other" htmlEscape="false"/>
+        <spring:message code="patient_type_mother" var="patient_type_mother" htmlEscape="false"/>
+        <spring:message code="patient_type_child" var="patient_type_child" htmlEscape="false"/>
 
         <spring:message code="facility_region" var="facility_region" htmlEscape="false"/>
         <spring:message code="facility_district" var="facility_district" htmlEscape="false"/>
@@ -49,6 +54,7 @@
         <spring:message code="facility_country_select" var="facility_country_select" htmlEscape="false"/>
         <spring:message code="facility_region_select" var="facility_region_select" htmlEscape="false"/>
         <spring:message code="facility_district_select" var="facility_district_select" htmlEscape="false"/>
+        <spring:message code="facility_facility_select" var="facility_facility_select" htmlEscape="false"/>
         <spring:message code="facility_sub_district_select" var="facility_sub_district_select" htmlEscape="false"/>
         <spring:message code="required_msg" var="required_msg" htmlEscape="false"/>
 
@@ -67,6 +73,29 @@
         <div class="form-field">
             <label class="formLabel" for="motechId">${fn:escapeXml(patient_motech_id)}:</label>
             <form:input path="motechId" size="20" label="${fn:escapeXml(patient_motech_id)}"/>
+        </div>
+
+        <div class="form-field">
+            <label class="formLabel" for="typeOfPatient">${fn:escapeXml(patient_type)}:</label>
+            <form:select path="typeOfPatient" label="${fn:escapeXml(patient_type)}">
+                <option value="${fn:escapeXml(patient_type_other)}">
+                    ${fn:escapeXml(patient_type_other)}
+                </option>
+                <option value="${fn:escapeXml(patient_type_mother)}">
+                    ${fn:escapeXml(patient_type_mother)}
+                </option>
+                <option value="${fn:escapeXml(patient_type_child)}">
+                    ${fn:escapeXml(patient_type_child)}
+                </option>
+            </form:select>
+        </div>
+
+        <div class="form-field hide">
+            <label class="formLabel" for="parentId">${fn:escapeXml(patient_mothers_motech_id)}:</label>
+            <form:input path="parentId" size="20" label="${fn:escapeXml(patient_mothers_motech_id)}"/>
+            <span id='parentIdError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_mothers_motech_id)} ${fn:escapeXml(required_msg)}
+            </span>
         </div>
 
         <div class="form-field">
@@ -170,7 +199,19 @@
         </div>
         <div class="hide form-field">
             <label class="formLabel" for="facility">${fn:escapeXml(patient_facility)}:</label>
-            <form:input path="facility" size="20" label="${fn:escapeXml(patient_facility)}"/>
+            <!--<form:input path="facility" size="20" label="${fn:escapeXml(patient_facility)}"/>-->
+            <!--<motech:location id="facilities" path="facility" label="${patient_facility}"-->
+                             <!--defaultValue="${facility_name_select}" errorMsg="${facility_name_req_msg}"-->
+                             <!--locations="${facilities}"/>-->
+
+            <form:select id="facilities" path="facility">
+                <option parent="select" value="">${fn:escapeXml(facility_facility_select)}</option>
+                <c:forEach items="${facilities}" var="facility">
+                    <c:forEach items="${facility.value}" var="value">
+                        <option parent="${facility.key}" value="${value}">${value}</option>
+                    </c:forEach>
+                </c:forEach>
+            </form:select>
         </div>
         <div class="form-field">
             <label class="formLabel" for="address">${fn:escapeXml(patient_address)}:</label>

@@ -1,3 +1,29 @@
+function showFacility(element) {
+    if(!$('#facilities')) {
+        return;
+    }
+    if(element.find('option:selected').attr('parent') != 'select') {
+        $('#facilities').parent().show();
+        $('#facilities :selected').attr('selected',false);
+        $('#facilities').find('option').each(function(index) {
+            if(index > 0)
+                $(this).hide();
+        });
+
+        var filteredFacilities = $('#facilities').find('option').each(function() {
+            if($(this).attr('parent') == element.find('option:selected').text()) {
+                $(this).show();
+            }
+        });
+    }
+}
+
+function hideFacility() {
+    if($('#facilities')) {
+        $('#facilities').parent().hide();
+    }
+}
+
 var Field = function(elementId) {
     this.id = elementId;
     this.node = $('#' + this.id);
@@ -30,14 +56,16 @@ Field.prototype.showOrHideDependsBasedOnSelection = function() {
     function getDependentOptionsForSelectedValue() {
         return field.dependent.node.find('option').filter(function() {
             return $(this).attr('parent') == field.node.find('option:selected').text() && $(this).text() != '';
-        })
+        });
     }
 
     var dependentOptions = getDependentOptionsForSelectedValue();
+    hideFacility();
     if (dependentOptions.length > 0) {
         this.showDependent(dependentOptions);
     } else {
         this.hideDependents();
+        showFacility(field.node);
     }
 }
 

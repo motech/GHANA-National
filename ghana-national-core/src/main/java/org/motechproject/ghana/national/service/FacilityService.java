@@ -72,6 +72,22 @@ public class FacilityService {
 
     public Map<String, Object> locationMap() {
         List<Facility> facilities = facilities();
+
+        final HashMap<String, String> facilityMap = new HashMap<String, String>();
+        for (Facility facility : facilities) {
+            if (facility.province() != null) {
+                facilityMap.put(facility.province(), facility.name());
+                continue;
+            }
+            if (facility.district() != null) {
+                facilityMap.put(facility.district(), facility.name());
+                continue;
+            }
+            if (facility.region() != null) {
+                facilityMap.put(facility.region(), facility.name());
+            }
+        }
+
         final HashMap<String, Object> modelMap = new HashMap<String, Object>();
         List<Facility> withValidCountryNames = select(facilities, having(on(Facility.class).country(), is(not(equalTo(StringUtils.EMPTY)))));
         final Group<Facility> byCountryRegion = group(withValidCountryNames, by(on(Facility.class).country()), by(on(Facility.class).region()));
@@ -82,6 +98,7 @@ public class FacilityService {
         modelMap.put(Constants.REGIONS, Utility.reverseKeyValues(map(byCountryRegion.keySet(), Utility.mapConverter(byCountryRegion))));
         modelMap.put(Constants.DISTRICTS, Utility.reverseKeyValues(map(byRegionDistrict.keySet(), Utility.mapConverter(byRegionDistrict))));
         modelMap.put(Constants.PROVINCES, Utility.reverseKeyValues(map(byDistrictProvince.keySet(), Utility.mapConverter(byDistrictProvince))));
+        modelMap.put("facilities", facilityMap);
         return modelMap;
     }
 }
