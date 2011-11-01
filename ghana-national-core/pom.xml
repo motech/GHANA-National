@@ -26,5 +26,10 @@
             <artifactId>dwr</artifactId>
             <version>3.0.M1</version>
         </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-openmrs-api</artifactId>
+            <version>${motech-platform.version}</version>
+        </dependency>
     </dependencies>
 </project>

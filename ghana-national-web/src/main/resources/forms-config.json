@@ -24,5 +24,18 @@
                 "fileName" :  "Delivery.xml"
             }
         ]
+    },
+    {
+        "name" : "NurseQuery",
+        "forms" : [
+            {
+                "name" : "ClientQuery",
+                "fileName" :  "ClientQuery.xml"
+            },
+            {
+                "name" : "GeneralQuery",
+                "fileName" :  "GeneralQuery.xml"
+            }
+        ]
     }
 ]
