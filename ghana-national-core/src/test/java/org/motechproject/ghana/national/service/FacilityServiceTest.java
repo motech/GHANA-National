@@ -104,13 +104,13 @@ public class FacilityServiceTest {
         assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.REGIONS), is(equalTo(regions())));
         assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.DISTRICTS), is(equalTo(districts())));
         assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.PROVINCES), is(equalTo(provinces())));
+        assertThat((Map<String, String>) modelMap.get("facilities"), is(equalTo(facilities())));
     }
 
     static Map<String, TreeSet<String>> regions() {
         return new HashMap<String, TreeSet<String>>() {{
             put("Utopia", new TreeSet<String>() {{
                 add("Region 1");
-                add("Region 2");
                 add("Region 3");
                 add("Region 4");
             }});
@@ -121,19 +121,12 @@ public class FacilityServiceTest {
         return new HashMap<String, TreeSet<String>>() {{
             put("Region 1", new TreeSet<String>() {{
                 add("District 1");
-                add("District 2");
-            }});
-            put("Region 2", new TreeSet<String>() {{
-                add("District 4");
-                add("District 3");
             }});
             put("Region 3", new TreeSet<String>() {{
-                add("District 5");
                 add("District 6");
-                add("District 7");
             }});
             put("Region 4", new TreeSet<String>() {{
-                add("null");
+                add("");
             }});
         }};
     }
@@ -144,25 +137,20 @@ public class FacilityServiceTest {
                 add("Province 1");
                 add("Province 2");
             }});
-            put("District 4", new TreeSet<String>() {{
-                add("Province 6");
-            }});
-            put("District 5", new TreeSet<String>() {{
-                add("Province 7");
-            }});
-            put("District 2", new TreeSet<String>() {{
-                add("Province 3");
-            }});
-            put("District 3", new TreeSet<String>() {{
-                add("Province 4");
-                add("Province 5");
-            }});
+
             put("District 6", new TreeSet<String>() {{
-                add("null");
+                add("");
             }});
-            put("District 7", new TreeSet<String>() {{
-                add("Province 8");
-            }});
+
+        }};
+    }
+
+    static Map<String, String> facilities() {
+        return new HashMap<String, String>() {{
+            put("Facility 1", "Province 1");
+            put("Facility 2", "Province 2");
+            put("Facility 3", "District 6");
+            put("Facility 4", "Region 4");
         }};
     }
 
@@ -170,15 +158,8 @@ public class FacilityServiceTest {
         List<Facility> facilities = new ArrayList<Facility>();
         facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 1", "Utopia", "Region 1", "District 1", "Province 1")));
         facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 2", "Utopia", "Region 1", "District 1", "Province 2")));
-        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 3", "Utopia", "Region 1", "District 2", "Province 3")));
-        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 4", "Utopia", "Region 2", "District 3", "Province 4")));
-        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 5", "Utopia", "Region 2", "District 3", "Province 5")));
-        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 6", "Utopia", "Region 2", "District 4", "Province 6")));
-        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 7", "Utopia", "Region 3", "District 5", "Province 7")));
-        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 8", "Utopia", "Region 3", "District 7", "Province 8")));
-        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 9", "Utopia", "Region 3", "District 6", "null")));
-        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 9", "Utopia", "Region 4", "null", "null")));
-        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Unknown Location", "", "null", "null", "")));
+        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 3", "Utopia", "Region 3", "District 6", null)));
+        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 4", "Utopia", "Region 4", null, null)));
         return facilities;
     }
 }

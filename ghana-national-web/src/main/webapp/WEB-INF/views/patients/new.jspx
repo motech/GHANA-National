@@ -199,18 +199,14 @@
         </div>
         <div class="hide form-field">
             <label class="formLabel" for="facility">${fn:escapeXml(patient_facility)}:</label>
-            <!--<form:input path="facility" size="20" label="${fn:escapeXml(patient_facility)}"/>-->
-            <!--<motech:location id="facilities" path="facility" label="${patient_facility}"-->
-                             <!--defaultValue="${facility_name_select}" errorMsg="${facility_name_req_msg}"-->
-                             <!--locations="${facilities}"/>-->
-
-            <form:select id="facilities" path="facility">
-                <option parent="select" value="">${fn:escapeXml(facility_facility_select)}</option>
+            <select class="hide" id="facilities">
                 <c:forEach items="${facilities}" var="facility">
-                    <c:forEach items="${facility.value}" var="value">
-                        <option parent="${facility.key}" value="${value}">${value}</option>
-                    </c:forEach>
+                    <option parent="${facility.value}" value="${facility.key}">${facility.key}</option>
                 </c:forEach>
+            </select>
+
+            <form:select id="facilitiesList" path="facility">
+                <option parent="select" value="">${fn:escapeXml(facility_facility_select)}</option>
             </form:select>
         </div>
         <div class="form-field">

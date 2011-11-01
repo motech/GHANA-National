@@ -76,15 +76,15 @@ public class FacilityService {
         final HashMap<String, String> facilityMap = new HashMap<String, String>();
         for (Facility facility : facilities) {
             if (facility.province() != null) {
-                facilityMap.put(facility.province(), facility.name());
+                facilityMap.put(facility.name(), facility.province());
                 continue;
             }
             if (facility.district() != null) {
-                facilityMap.put(facility.district(), facility.name());
+                facilityMap.put(facility.name(), facility.district());
                 continue;
             }
             if (facility.region() != null) {
-                facilityMap.put(facility.region(), facility.name());
+                facilityMap.put(facility.name(), facility.region());
             }
         }
 

@@ -3,18 +3,13 @@ function showFacility(element) {
         return;
     }
     if(element.find('option:selected').attr('parent') != 'select') {
-        $('#facilities').parent().show();
-        $('#facilities :selected').attr('selected',false);
-        $('#facilities').find('option').each(function(index) {
-            if(index > 0)
-                $(this).hide();
+        $('#facilitiesList').parent().show();
+         $('#facilitiesList').html($('#facilitiesList :first-child'));
+        var filteredFacilities = $('#facilities').find('option').filter(function() {
+            return ($(this).attr('parent') == element.find('option:selected').text());
         });
 
-        var filteredFacilities = $('#facilities').find('option').each(function() {
-            if($(this).attr('parent') == element.find('option:selected').text()) {
-                $(this).show();
-            }
-        });
+        $('#facilitiesList').append(filteredFacilities);
     }
 }
 
