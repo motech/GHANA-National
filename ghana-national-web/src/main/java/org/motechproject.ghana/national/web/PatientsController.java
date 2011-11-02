@@ -33,6 +33,12 @@ public class PatientsController {
         return NEW_PATIENT;
     }
 
+    @ApiSession
+    @RequestMapping(value = "create", method = RequestMethod.POST)
+    public String createPatient(CreatePatientForm createPatientForm, ModelMap modelMap) {
+        return NEW_PATIENT;
+    }
+
     //TODO: Check if the patient type is mother or child and save accordingly.
     /*
    * if child, fetch mother using mother's motech id if available. & validate if it exists.
