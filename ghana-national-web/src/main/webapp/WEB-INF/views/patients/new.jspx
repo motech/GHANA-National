@@ -9,7 +9,7 @@
     <spring:url value="/resources/js/create-patient.js" var="create_patient_url"/>
     <script src="${create_patient_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${facility_field_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
-    <spring:url value="/admin/patient/create" var="form_url"/>
+    <spring:url value="/admin/patients/create" var="form_url"/>
 
     <form:form id="createPatientForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Patient"
                commandName="createPatientForm">
@@ -199,15 +199,15 @@
         </div>
         <div class="hide form-field">
             <label class="formLabel" for="facility">${fn:escapeXml(patient_facility)}:</label>
-            <select class="hide" id="facilities">
+            <form:select path="facility" id="facilities">
                 <c:forEach items="${facilities}" var="facility">
                     <option parent="${facility.value}" value="${facility.key}">${facility.key}</option>
                 </c:forEach>
-            </select>
-
-            <form:select id="facilitiesList" path="facility">
-                <option parent="select" value="">${fn:escapeXml(facility_facility_select)}</option>
             </form:select>
+
+            <!--<form:select id="facilitiesList" path="facility">-->
+                <!--<option parent="select" value="">${fn:escapeXml(facility_facility_select)}</option>-->
+            <!--</form:select>-->
         </div>
         <div class="form-field">
             <label class="formLabel" for="address">${fn:escapeXml(patient_address)}:</label>

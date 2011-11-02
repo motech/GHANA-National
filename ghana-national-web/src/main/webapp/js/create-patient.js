@@ -14,7 +14,7 @@ $(document).ready(function() {
     }
 
     $('#sub-districts').change(function() {
-        showFacility($(this));
+        facilities.show($(this));
     });
 
     $('#submitNewPatient').click(function() {

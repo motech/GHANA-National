@@ -1,23 +1,33 @@
-function showFacility(element) {
-    if(!$('#facilities')) {
-        return;
+var facilities = (function(){
+    var availableFacilities;
+    return {
+         initializeSelectBoxWithTheCompleteFacilityList : function(){
+            if(availableFacilities){
+                $('#facilities').html(availableFacilities);
+            } else{
+                availableFacilities = $('#facilities').html(availableFacilities);
+            }
+         },
+         show : function (element) {
+            if(!$('#facilities')) {
+                return;
+            }
+            if(element.find('option:selected').attr('parent') != 'select') {
+                facilities.initializeSelectBoxWithTheCompleteFacilityList();
+                $('#facilities').html($('#facilities').find('option').filter(function() {
+                    return ($(this).attr('parent') == element.find('option:selected').text());
+                }));
+                $('#facilities').parent().show();
+            }
+        },
+        hide :  function (field) {
+            if($('#facilities')) {
+                $('#facilities').parent().hide();
+            }
+        }
     }
-    if(element.find('option:selected').attr('parent') != 'select') {
-        $('#facilitiesList').parent().show();
-         $('#facilitiesList').html($('#facilitiesList :first-child'));
-        var filteredFacilities = $('#facilities').find('option').filter(function() {
-            return ($(this).attr('parent') == element.find('option:selected').text());
-        });
 
-        $('#facilitiesList').append(filteredFacilities);
-    }
-}
-
-function hideFacility() {
-    if($('#facilities')) {
-        $('#facilities').parent().hide();
-    }
-}
+}());
 
 var Field = function(elementId) {
     this.id = elementId;
@@ -55,12 +65,12 @@ Field.prototype.showOrHideDependsBasedOnSelection = function() {
     }
 
     var dependentOptions = getDependentOptionsForSelectedValue();
-    hideFacility();
+    facilities.hide(field);
     if (dependentOptions.length > 0) {
         this.showDependent(dependentOptions);
     } else {
         this.hideDependents();
-        showFacility(field.node);
+        facilities.show(field.node);
     }
 }
 
