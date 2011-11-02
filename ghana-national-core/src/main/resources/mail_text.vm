@@ -1,7 +1,0 @@
-#if(${staff.getSystemId()})
-    ${staff.getGivenName()} ${staff.getFamilyName()} with Staff id ${staff.getSystemId()} reported the following issue: ${case.description}
-#else
-    Issue Reported : ${case.description}
-#end
-
-
