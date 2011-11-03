@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.repository.AllFacilities;
+import org.motechproject.ghana.national.vo.FacilityVO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,7 +105,7 @@ public class FacilityServiceTest {
         assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.REGIONS), is(equalTo(regions())));
         assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.DISTRICTS), is(equalTo(districts())));
         assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.PROVINCES), is(equalTo(provinces())));
-        assertThat((Map<String, String>) modelMap.get("facilities"), is(equalTo(facilities())));
+        assertThat((List<FacilityVO>) modelMap.get("facilities"), is(equalTo(facilities())));
     }
 
     static Map<String, TreeSet<String>> regions() {
@@ -145,12 +146,12 @@ public class FacilityServiceTest {
         }};
     }
 
-    static Map<String, String> facilities() {
-        return new HashMap<String, String>() {{
-            put("Facility 1", "Province 1");
-            put("Facility 2", "Province 2");
-            put("Facility 3", "District 6");
-            put("Facility 4", "Region 4");
+    static List<FacilityVO> facilities() {
+        return new ArrayList<FacilityVO>() {{
+            add(new FacilityVO(null,"Facility 1", "Province 1"));
+            add(new FacilityVO(null,"Facility 2", "Province 2"));
+            add(new FacilityVO(null,"Facility 3", "District 6"));
+            add(new FacilityVO(null,"Facility 4", "Region 4"));
         }};
     }
 

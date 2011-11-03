@@ -7,9 +7,11 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.tools.Utility;
+import org.motechproject.ghana.national.vo.FacilityVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,21 +75,6 @@ public class FacilityService {
     public Map<String, Object> locationMap() {
         List<Facility> facilities = facilities();
 
-        final HashMap<String, String> facilityMap = new HashMap<String, String>();
-        for (Facility facility : facilities) {
-            if (facility.province() != null) {
-                facilityMap.put(facility.name(), facility.province());
-                continue;
-            }
-            if (facility.district() != null) {
-                facilityMap.put(facility.name(), facility.district());
-                continue;
-            }
-            if (facility.region() != null) {
-                facilityMap.put(facility.name(), facility.region());
-            }
-        }
-
         final HashMap<String, Object> modelMap = new HashMap<String, Object>();
         List<Facility> withValidCountryNames = select(facilities, having(on(Facility.class).country(), is(not(equalTo(StringUtils.EMPTY)))));
         final Group<Facility> byCountryRegion = group(withValidCountryNames, by(on(Facility.class).country()), by(on(Facility.class).region()));
@@ -98,7 +85,25 @@ public class FacilityService {
         modelMap.put(Constants.REGIONS, Utility.reverseKeyValues(map(byCountryRegion.keySet(), Utility.mapConverter(byCountryRegion))));
         modelMap.put(Constants.DISTRICTS, Utility.reverseKeyValues(map(byRegionDistrict.keySet(), Utility.mapConverter(byRegionDistrict))));
         modelMap.put(Constants.PROVINCES, Utility.reverseKeyValues(map(byDistrictProvince.keySet(), Utility.mapConverter(byDistrictProvince))));
-        modelMap.put("facilities", facilityMap);
+        modelMap.put("facilities", facilityVOs(facilities));
         return modelMap;
+    }
+
+    private List<FacilityVO> facilityVOs(List<Facility> facilities) {
+        List<FacilityVO> facilityVOs = new ArrayList<FacilityVO>();
+        for (Facility facility : facilities) {
+            if (facility.province() != null) {
+                facilityVOs.add(new FacilityVO(facility.getId(), facility.name(), facility.province()));
+                continue;
+            }
+            if (facility.district() != null) {
+                facilityVOs.add(new FacilityVO(facility.getId(), facility.name(), facility.district()));
+                continue;
+            }
+            if (facility.region() != null) {
+                facilityVOs.add(new FacilityVO(facility.getId(), facility.name(), facility.region()));
+            }
+        }
+        return facilityVOs;
     }
 }
