@@ -13,7 +13,6 @@
     <context:component-scan base-package="org.motechproject.ghana.national"/>
 
     <util:properties id="couchdbProperties" location="classpath:couchdb.properties"/>
-    <util:properties id="emailProperties" location="classpath:emailtemplates/email.properties"/>
 
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>
@@ -29,40 +28,6 @@
         <property name="location" value="classpath:openmrs.properties"/>
     </bean>
 
-    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="10.16.1.15"/>
-        <property name="port" value="25"/>
-        <property name="username" value="karthis@thoughtworks.com"/>
-        <property name="password" value="Nature123*"/>
-
-        <property name="javaMailProperties">
-            <props>
-                <prop key="mail.smtp.auth">true</prop>
-                <prop key="mail.smtp.starttls.enable">true</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="emailTemplateService" class="org.motechproject.ghana.national.service.EmailTemplateService">
-        <constructor-arg value="karthis@thoughtworks.com"/>
-        <constructor-arg value="emailtemplates/mail_subject.vm"/>
-        <constructor-arg value="emailtemplates/mail_text.vm"/>
-
-        <property name="velocityEngine" ref="velocityEngine"/>
-        <property name="emailService" ref="emailService"/>
-    </bean>
-
-
-    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
-        <property name="resourceLoaderPath" value="classpath:emailtemplates"/>
-
-        <property name="velocityProperties">
-            <value>
-                resource.loader=class
-                class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
-            </value>
-        </property>
-    </bean>
-
+    <beans:import resource="classpath:emailtemplates/email-template.xml"/>
 
 </beans>

@@ -1,0 +1,42 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
+
+    <util:properties id="emailProperties" location="classpath:emailtemplates/email.properties"/>
+
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="#{emailProperties.mailSmtpHost}"/>
+        <property name="port" value="#{emailProperties.mailSmtpPort}"/>
+        <property name="username" value="#{emailProperties.smtpUserName}"/>
+        <property name="password" value="#{emailProperties.smtpPassword}"/>
+
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">#{emailProperties.smtpAuthEnable}</prop>
+                <prop key="mail.smtp.starttls.enable">#{emailProperties.mailSmtpStarttlsEnable}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="emailTemplateService" class="org.motechproject.ghana.national.service.EmailTemplateService">
+        <constructor-arg value="#{emailProperties.motechAdminFromAddress}"/>
+        <constructor-arg value="#{emailProperties.mailSubjectTemplate}"/>
+        <constructor-arg value="#{emailProperties.mailTextTemplate}"/>
+
+        <property name="velocityEngine" ref="velocityEngine"/>
+        <property name="emailService" ref="emailService"/>
+    </bean>
+
+
+    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="resourceLoaderPath" value="classpath:emailtemplates"/>
+
+        <property name="velocityProperties">
+            <value>
+                resource.loader=class
+                class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+            </value>
+        </property>
+    </bean>
+</beans>
