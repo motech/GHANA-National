@@ -60,18 +60,21 @@
         <div class="form-field">
             <label class="formLabel" for="registrationMode">${fn:escapeXml(patient_registration_mode)}:</label>
             <form:select path="registrationMode" label="${fn:escapeXml(patient_registration_mode)}">
-                <option value="${fn:escapeXml(patient_registration_mode_1)}">
+                <option value="auto_generated">
                     ${fn:escapeXml(patient_registration_mode_1)}
                 </option>
-                <option value="${fn:escapeXml(patient_registration_mode_2)}">
+                <option value="user_pre_printed">
                     ${fn:escapeXml(patient_registration_mode_2)}
                 </option>
             </form:select>
         </div>
 
-        <div class="form-field">
+        <div class="form-field hide">
             <label class="formLabel" for="motechId">${fn:escapeXml(patient_motech_id)}:</label>
-            <form:input path="motechId" size="20" label="${fn:escapeXml(patient_motech_id)}"/>
+            <form:input path="motechId" cssClass="jsRequire" size="20" label="${fn:escapeXml(patient_motech_id)}"/>
+            <span id='motechIdError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_motech_id)} ${fn:escapeXml(required_msg)}
+            </span>
         </div>
 
         <div class="form-field">
@@ -92,7 +95,7 @@
         <div class="form-field hide">
             <label class="formLabel" for="parentId">${fn:escapeXml(patient_mothers_motech_id)}:</label>
             <form:input path="parentId" size="20" label="${fn:escapeXml(patient_mothers_motech_id)}"/>
-            <span id='parentIdError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+            <span id='parentIdError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_mothers_motech_id)} ${fn:escapeXml(required_msg)}
             </span>
         </div>
@@ -100,7 +103,7 @@
         <div class="form-field">
             <label class="formLabel" for="firstName">${fn:escapeXml(patient_first_name)}:</label>
             <form:input path="firstName" size="20" cssClass="jsRequire" label="${fn:escapeXml(patient_first_name)}"/>
-            <span id='firstNameError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+            <span id='firstNameError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_first_name)} ${fn:escapeXml(required_msg)}
             </span>
         </div>
@@ -113,7 +116,7 @@
         <div class="form-field">
             <label class="formLabel" for="lastName">${fn:escapeXml(patient_last_name)}:</label>
             <form:input path="lastName" size="20" cssClass="jsRequire" label="${fn:escapeXml(patient_last_name)}"/>
-            <span id='lastNameError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+            <span id='lastNameError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_last_name)} ${fn:escapeXml(required_msg)}
             </span>
         </div>
@@ -125,7 +128,7 @@
             <label class="formLabel" for="dateOfBirth">${fn:escapeXml(patient_date_of_birth)}:</label>
             <form:input path="dateOfBirth" cssClass="jsRequire" size="20"
                         label="${fn:escapeXml(patient_date_of_birth)}"/>
-            <span id='dateOfBirthError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+            <span id='dateOfBirthError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_date_of_birth)} ${fn:escapeXml(required_msg)}
             </span>
         </div>
@@ -139,7 +142,7 @@
                                   label="${fn:escapeXml(no)}"/>
             </div>
             <div class="radioError">
-                <span id='estimatedDateOfBirthError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                <span id='estimatedDateOfBirthError' class='alertText formlyInvalid formlyAlert hide'>
                     ${fn:escapeXml(patient_date_of_birth_estimated)} ${fn:escapeXml(required_msg)}
                 </span>
             </div>
@@ -153,7 +156,7 @@
                                   label="${fn:escapeXml(female)}"/>
             </div>
             <div class="radioError">
-                <span id='sexError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                <span id='sexError' class='alertText formlyInvalid formlyAlert hide'>
 
                     ${fn:escapeXml(patient_sex)} ${fn:escapeXml(required_msg)}
                 </span>
@@ -168,7 +171,7 @@
                                   label="${fn:escapeXml(no)}"/>
             </div>
             <div class="radioError">
-                <span id='insuredError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                <span id='insuredError' class='alertText formlyInvalid formlyAlert hide'>
                     ${fn:escapeXml(patient_insured)} ${fn:escapeXml(required_msg)}
                 </span>
             </div>
@@ -185,6 +188,9 @@
             <motech:location id="regions" path="region" label="${facility_region}"
                              defaultValue="${facility_region_select}" errorMsg="${facility_region_req_msg}"
                              locations="${regions}"/>
+            <span id='facilityIdError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_facility)} ${fn:escapeXml(required_msg)}
+            </span>
         </div>
         <div class="hide form-field">
             <motech:location id="districts" path="district" label="${facility_district}"
@@ -198,7 +204,8 @@
         </div>
         <div class="hide form-field">
             <label class="formLabel" for="facility">${fn:escapeXml(patient_facility)}:</label>
-            <form:select path="facilityId" id="facilities">
+            <form:select path="facilityId" cssClass="jsRequire" id="facilities">
+                <option value="" parent="select">Select Facility</option>
                 <c:forEach items="${facilities}" var="facility">
                     <option parent="${facility.parent}" value="${facility.id}">${facility.name}</option>
                 </c:forEach>
