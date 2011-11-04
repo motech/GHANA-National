@@ -1,6 +1,8 @@
 package org.motechproject.ghana.national.web;
 
+import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.web.form.CreatePatientForm;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,18 +13,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping(value = "/admin/patients")
-public class PatientsController {
+public class PatientController {
     public static final String NEW_PATIENT = "patients/new";
     public static final String CREATE_PATIENT_FORM = "createPatientForm";
 
     private FacilityService facilityService;
+    private PatientService patientService;
 
-    public PatientsController() {
+    public PatientController() {
     }
 
     @Autowired
-    public PatientsController(FacilityService facilityService) {
+    public PatientController(FacilityService facilityService, PatientService patientService) {
         this.facilityService = facilityService;
+        this.patientService = patientService;
     }
 
     @ApiSession
@@ -36,11 +40,11 @@ public class PatientsController {
     @ApiSession
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createPatient(CreatePatientForm createPatientForm, ModelMap modelMap) {
+        try {
+            patientService.registerPatient(createPatientForm.getPatient(), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
+        } catch (ParentNotFoundException e) {
+            e.printStackTrace();
+        }
         return NEW_PATIENT;
     }
-
-    //TODO: Check if the patient type is mother or child and save accordingly.
-    /*
-   * if child, fetch mother using mother's motech id if available. & validate if it exists.
-   * */
 }

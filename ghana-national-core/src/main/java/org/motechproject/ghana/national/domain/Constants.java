@@ -14,4 +14,5 @@ public class Constants {
     public static final String REGIONS = "regions";
     public static final String DISTRICTS = "districts";
     public static final String PROVINCES = "provinces";
+    public static final String FACILITIES = "facilities";
 }

@@ -1,25 +1,33 @@
 package org.motechproject.ghana.national.web.form;
 
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientAttributes;
+import org.motechproject.ghana.national.domain.PatientType;
+import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.Facility;
+
+import java.util.Date;
+
 public class CreatePatientForm {
     private String registrationMode;
     private String motechId;
-    private String typeOfPatient;
+    private String parentId;
+    private PatientType typeOfPatient;
     private String firstName;
     private String middleName;
     private String lastName;
     private String preferredName;
-    private String dateOfBirth;
-    private String estimatedDateOfBirth;
+    private Date dateOfBirth;
+    private Boolean estimatedDateOfBirth;
     private String sex;
-    private String insured;
+    private Boolean insured;
     private String nhisNumber;
-    private String nhisExpirationDate;
+    private Date nhisExpirationDate;
     private String region;
     private String district;
     private String subDistrict;
-    private String facility;
+    private String facilityId;
     private String address;
-    private String parentId;
 
     public String getRegistrationMode() {
         return registrationMode;
@@ -37,11 +45,11 @@ public class CreatePatientForm {
         this.motechId = motechId;
     }
 
-    public String getTypeOfPatient() {
+    public PatientType getTypeOfPatient() {
         return typeOfPatient;
     }
 
-    public void setTypeOfPatient(String typeOfPatient) {
+    public void setTypeOfPatient(PatientType typeOfPatient) {
         this.typeOfPatient = typeOfPatient;
     }
 
@@ -77,19 +85,19 @@ public class CreatePatientForm {
         this.preferredName = preferredName;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getEstimatedDateOfBirth() {
+    public Boolean getEstimatedDateOfBirth() {
         return estimatedDateOfBirth;
     }
 
-    public void setEstimatedDateOfBirth(String estimatedDateOfBirth) {
+    public void setEstimatedDateOfBirth(Boolean estimatedDateOfBirth) {
         this.estimatedDateOfBirth = estimatedDateOfBirth;
     }
 
@@ -101,11 +109,11 @@ public class CreatePatientForm {
         this.sex = sex;
     }
 
-    public String getInsured() {
+    public Boolean getInsured() {
         return insured;
     }
 
-    public void setInsured(String insured) {
+    public void setInsured(Boolean insured) {
         this.insured = insured;
     }
 
@@ -117,11 +125,11 @@ public class CreatePatientForm {
         this.nhisNumber = nhisNumber;
     }
 
-    public String getNhisExpirationDate() {
+    public Date getNhisExpirationDate() {
         return nhisExpirationDate;
     }
 
-    public void setNhisExpirationDate(String nhisExpirationDate) {
+    public void setNhisExpirationDate(Date nhisExpirationDate) {
         this.nhisExpirationDate = nhisExpirationDate;
     }
 
@@ -149,12 +157,12 @@ public class CreatePatientForm {
         this.subDistrict = subDistrict;
     }
 
-    public String getFacility() {
-        return facility;
+    public String getFacilityId() {
+        return facilityId;
     }
 
-    public void setFacility(String facility) {
-        this.facility = facility;
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
     }
 
     public String getAddress() {
@@ -171,5 +179,15 @@ public class CreatePatientForm {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public Patient getPatient() {
+        org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(this.getFirstName(),
+                this.getMiddleName(), this.getLastName(), this.getPreferredName(), this.getDateOfBirth(), this.getSex(),
+                this.getAddress(), new Facility(this.getFacilityId()));
+        new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), this.getNhisExpirationDate().toString());
+        new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), this.getNhisNumber());
+        new Attribute(PatientAttributes.INSURED.getAttribute(), this.getInsured().toString());
+        return new Patient(mrsPatient);
     }
 }

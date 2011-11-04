@@ -1,11 +1,8 @@
 package org.motechproject.ghana.national.repository;
 
-import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
-import org.ektorp.ViewQuery;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -95,13 +92,11 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(new org.motechproject.mrs.model.Facility(mrsFacilityId, facilityName,
                 "country", "region", "district", "province"));
         allFacilities.add(facility);
-
         when(mockMrsFacilityAdaptor.getFacilities(facilityName)).thenReturn(Arrays.asList(mrsFacility));
 
-        final int initialSize = allFacilities.getAll().size();
         final List<Facility> actualFacilities = allFacilities.facilitiesByName(facilityName);
+
         final Facility actualFacility = actualFacilities.iterator().next();
-        assertThat(actualFacilities.size(), is(equalTo(1 + initialSize)));
         assertThat(actualFacility.name(), is(equalTo(facilityName)));
         assertThat(actualFacility.country(), is(equalTo(country)));
         assertThat(actualFacility.region(), is(equalTo(region)));
@@ -128,6 +123,29 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         assertThat(actualFacility.region(), is(equalTo(region)));
         assertThat(actualFacility.province(), is(equalTo(province)));
         assertThat(actualFacility.district(), is(equalTo(district)));
+    }
+
+    @Test
+    public void shouldFetchFacilitiesGivenAListOfMRSFacilityIds() {
+        final org.motechproject.mrs.model.Facility anyFacility1 = new org.motechproject.mrs.model.Facility("1", "name", "country", "region", "district", "province");
+        final org.motechproject.mrs.model.Facility anyFacility2 = new org.motechproject.mrs.model.Facility("2", "name", "country", "region", "district", "province");
+        final org.motechproject.mrs.model.Facility anyFacility3 = new org.motechproject.mrs.model.Facility("3", "name", "country", "region", "district", "province");
+        final org.motechproject.mrs.model.Facility anyFacility4 = new org.motechproject.mrs.model.Facility("4", "name", "country", "region", "district", "province");
+        final Facility facility1 = new Facility(new org.motechproject.mrs.model.Facility("1", "name1", "country", "region", "district", "province"));
+        final Facility facility2 = new Facility(new org.motechproject.mrs.model.Facility("2", "name2", "country", "region", "district", "province"));
+        final Facility facility3 = new Facility(new org.motechproject.mrs.model.Facility("3", "name3", "country", "region", "district", "province"));
+        final Facility facility4 = new Facility(new org.motechproject.mrs.model.Facility("4", "name4", "country", "region", "district", "province"));
+        when(mockMrsFacilityAdaptor.saveFacility(facility1.mrsFacility())).thenReturn(anyFacility1);
+        when(mockMrsFacilityAdaptor.saveFacility(facility2.mrsFacility())).thenReturn(anyFacility2);
+        when(mockMrsFacilityAdaptor.saveFacility(facility3.mrsFacility())).thenReturn(anyFacility3);
+        when(mockMrsFacilityAdaptor.saveFacility(facility4.mrsFacility())).thenReturn(anyFacility4);
+        allFacilities.add(facility1);
+        allFacilities.add(facility2);
+        allFacilities.add(facility3);
+        allFacilities.add(facility4);
+
+        final List<Facility> byFacilityIds = allFacilities.findByFacilityIds(Arrays.asList(1, 2));
+        assertThat(byFacilityIds.size(), is(2));
     }
 
     @After

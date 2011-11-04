@@ -18,6 +18,15 @@ public class Utility {
         };
     }
 
+    public static Converter<String, Integer> stringToIntegerConverter() {
+        return new Converter<String, Integer>() {
+            @Override
+            public Integer convert(String s) {
+                return Integer.parseInt(s);
+            }
+        };
+    }
+
     public static <K, V> HashMap<V, K> reverseKeyValues(Map<K, V> map) {
         HashMap<V, K> reversed = new HashMap<V, K>();
         for (Map.Entry<K, V> entry : map.entrySet()) {
