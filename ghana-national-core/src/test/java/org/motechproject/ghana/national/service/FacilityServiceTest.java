@@ -101,11 +101,11 @@ public class FacilityServiceTest {
         List<Facility> facilities = populateData();
         when(mockAllFacilities.facilities()).thenReturn(facilities);
         Map modelMap = facilityService.locationMap();
-        assertThat((List<String>) modelMap.get("countries"), is(equalTo(Arrays.asList("Utopia"))));
+        assertThat((List<String>) modelMap.get(Constants.COUNTRIES), is(equalTo(Arrays.asList("Utopia"))));
         assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.REGIONS), is(equalTo(regions())));
         assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.DISTRICTS), is(equalTo(districts())));
         assertThat((Map<String, TreeSet<String>>) modelMap.get(Constants.PROVINCES), is(equalTo(provinces())));
-        assertThat((List<FacilityVO>) modelMap.get("facilities"), is(equalTo(facilities())));
+        assertThat((List<FacilityVO>) modelMap.get(Constants.FACILITIES), is(equalTo(facilities())));
     }
 
     static Map<String, TreeSet<String>> regions() {

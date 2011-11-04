@@ -85,7 +85,7 @@ public class FacilityService {
         modelMap.put(Constants.REGIONS, Utility.reverseKeyValues(map(byCountryRegion.keySet(), Utility.mapConverter(byCountryRegion))));
         modelMap.put(Constants.DISTRICTS, Utility.reverseKeyValues(map(byRegionDistrict.keySet(), Utility.mapConverter(byRegionDistrict))));
         modelMap.put(Constants.PROVINCES, Utility.reverseKeyValues(map(byDistrictProvince.keySet(), Utility.mapConverter(byDistrictProvince))));
-        modelMap.put("facilities", facilityVOs(facilities));
+        modelMap.put(Constants.FACILITIES, facilityVOs(facilities));
         return modelMap;
     }
 

@@ -6,6 +6,10 @@ $(document).ready(function() {
         ($(this).val() == 'CHILD') ? $('#parentId').parent().show() : $('#parentId').parent().hide();
     });
 
+    $('#registrationMode').change(function() {
+        ($(this).val() == 'user_pre_printed') ? $('#motechId').parent().show() : $('#motechId   ').parent().hide();
+    });
+
     $("#createPatientForm").formly({'onBlur':false, 'theme':'Light'});
     new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts')));
 

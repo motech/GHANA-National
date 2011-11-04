@@ -5,6 +5,6 @@ function Utilities() {
     },
 
     this.isNull = function(value) {
-        return value == undefined || value == "" || value.length == 0;
+        return value == undefined || $.trim(value) == "";
     }
 }

@@ -2,11 +2,10 @@ var facilities = (function(){
     var availableFacilities;
     return {
          initializeSelectBoxWithTheCompleteFacilityList : function(){
-            if(availableFacilities){
-                $('#facilities').html(availableFacilities);
-            } else{
-                availableFacilities = $('#facilities').html(availableFacilities);
+            if(!availableFacilities){
+                availableFacilities = $('#facilities').html();
             }
+            $('#facilities').html(availableFacilities);
          },
          show : function (element) {
             if(!$('#facilities')) {
@@ -17,11 +16,14 @@ var facilities = (function(){
                 $('#facilities').html($('#facilities').find('option').filter(function() {
                     return ($(this).attr('parent') == element.find('option:selected').text());
                 }));
+                $('#facilities').prepend('<option value="" parent="select">Select Facility</option>');
+                $('#facilities').find('option:first').html('Select Facility');
                 $('#facilities').parent().show();
             }
         },
         hide :  function (field) {
             if($('#facilities')) {
+                $('#facilities').find('option:first').html('Select Facility');
                 $('#facilities').parent().hide();
             }
         }
