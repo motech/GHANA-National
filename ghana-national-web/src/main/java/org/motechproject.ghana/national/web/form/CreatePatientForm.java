@@ -8,6 +8,8 @@ import org.motechproject.mrs.model.Facility;
 
 import java.util.Date;
 
+import static org.motechproject.ghana.national.tools.Utility.safeToString;
+
 public class CreatePatientForm {
     private String registrationMode;
     private String motechId;
@@ -185,9 +187,9 @@ public class CreatePatientForm {
         org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(this.getFirstName(),
                 this.getMiddleName(), this.getLastName(), this.getPreferredName(), this.getDateOfBirth(), this.getSex(),
                 this.getAddress(), new Facility(this.getFacilityId()));
-        new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), this.getNhisExpirationDate().toString());
+        new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), safeToString(this.getNhisExpirationDate()));
         new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), this.getNhisNumber());
-        new Attribute(PatientAttributes.INSURED.getAttribute(), this.getInsured().toString());
+        new Attribute(PatientAttributes.INSURED.getAttribute(), safeToString(this.getInsured()));
         return new Patient(mrsPatient);
     }
 }

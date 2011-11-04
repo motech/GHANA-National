@@ -34,4 +34,9 @@ public class Utility {
         }
         return reversed;
     }
+
+
+    public static String safeToString(Object object) {
+        return object == null ? null : object.toString();
+    }
 }

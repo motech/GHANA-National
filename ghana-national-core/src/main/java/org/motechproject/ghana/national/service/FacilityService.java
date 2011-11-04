@@ -93,15 +93,15 @@ public class FacilityService {
         List<FacilityVO> facilityVOs = new ArrayList<FacilityVO>();
         for (Facility facility : facilities) {
             if (facility.province() != null) {
-                facilityVOs.add(new FacilityVO(facility.getId(), facility.name(), facility.province()));
+                facilityVOs.add(new FacilityVO(facility.mrsFacility().getId(), facility.name(), facility.province()));
                 continue;
             }
             if (facility.district() != null) {
-                facilityVOs.add(new FacilityVO(facility.getId(), facility.name(), facility.district()));
+                facilityVOs.add(new FacilityVO(facility.mrsFacility().getId(), facility.name(), facility.district()));
                 continue;
             }
             if (facility.region() != null) {
-                facilityVOs.add(new FacilityVO(facility.getId(), facility.name(), facility.region()));
+                facilityVOs.add(new FacilityVO(facility.mrsFacility().getId(), facility.name(), facility.region()));
             }
         }
         return facilityVOs;
