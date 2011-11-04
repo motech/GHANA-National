@@ -1,7 +1,9 @@
 $(document).ready(function() {
 
+    $('#dateOfBirth').datepicker({dateFormat: "dd/mm/yy"});
+    $('#nhisExpirationDate').datepicker({dateFormat: "dd/mm/yy"});
     $('#typeOfPatient').change(function() {
-        ($(this).val() == 'Child') ? $('#parentId').parent().show() : $('#parentId').parent().hide();
+        ($(this).val() == 'CHILD') ? $('#parentId').parent().show() : $('#parentId').parent().hide();
     });
 
     $("#createPatientForm").formly({'onBlur':false, 'theme':'Light'});

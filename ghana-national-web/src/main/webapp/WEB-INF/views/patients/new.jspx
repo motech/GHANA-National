@@ -3,12 +3,11 @@
      xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <!--<spring:url value="/resources/js/create-facility.js" var="create_facility_url"/>-->
     <spring:url value="/resources/js/facility-fields.js" var="facility_field_url"/>
-    <!--<script src="${create_facility_url}" type="text/javascript">&lt;!&ndash; required for FF3 and Opera &ndash;&gt;</script>-->
     <spring:url value="/resources/js/create-patient.js" var="create_patient_url"/>
-    <script src="${create_patient_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
-    <script src="${facility_field_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+
+    <script src="${create_patient_url}" type="text/javascript"><!--closing tag needed--></script>
+    <script src="${facility_field_url}" type="text/javascript"><!--closing tag needed--></script>
     <spring:url value="/admin/patients/create" var="form_url"/>
 
     <form:form id="createPatientForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Patient"
@@ -78,7 +77,7 @@
         <div class="form-field">
             <label class="formLabel" for="typeOfPatient">${fn:escapeXml(patient_type)}:</label>
             <form:select path="typeOfPatient" label="${fn:escapeXml(patient_type)}">
-                <option value="${fn:escapeXml(patient_type_other)}">
+                <option value="${typeOfPatient.MOTHER}">
                     ${fn:escapeXml(patient_type_other)}
                 </option>
                 <option value="${fn:escapeXml(patient_type_mother)}">
@@ -134,9 +133,9 @@
             <label class="formLabel" for="estimatedDateOfBirth">${fn:escapeXml(patient_date_of_birth_estimated)}:
             </label>
             <div class="radio">
-                <form:radiobutton cssClass="jsRequire" path="estimatedDateOfBirth" value="${fn:escapeXml(yes)}"
+                <form:radiobutton cssClass="jsRequire" path="estimatedDateOfBirth" value="true"
                                   label="${fn:escapeXml(yes)}"/>
-                <form:radiobutton cssClass="jsRequire" path="estimatedDateOfBirth" value="${fn:escapeXml(no)}"
+                <form:radiobutton cssClass="jsRequire" path="estimatedDateOfBirth" value="false"
                                   label="${fn:escapeXml(no)}"/>
             </div>
             <div class="radioError">
@@ -163,9 +162,9 @@
         <div class="form-field">
             <label class="formLabel" for="insured">${fn:escapeXml(patient_insured)}:</label>
             <div class="radio">
-                <form:radiobutton cssClass="jsRequire" path="insured" value="${fn:escapeXml(yes)}"
+                <form:radiobutton cssClass="jsRequire" path="insured" value="true"
                                   label="${fn:escapeXml(yes)}"/>
-                <form:radiobutton cssClass="jsRequire" path="insured" value="${fn:escapeXml(no)}"
+                <form:radiobutton cssClass="jsRequire" path="insured" value="false"
                                   label="${fn:escapeXml(no)}"/>
             </div>
             <div class="radioError">
@@ -201,7 +200,7 @@
             <label class="formLabel" for="facility">${fn:escapeXml(patient_facility)}:</label>
             <form:select path="facilityId" id="facilities">
                 <c:forEach items="${facilities}" var="facility">
-                    <option parent="${facility.parent}" value="${facility.key}">${facility.name}</option>
+                    <option parent="${facility.parent}" value="${facility.id}">${facility.name}</option>
                 </c:forEach>
             </form:select>
         </div>
