@@ -21,7 +21,7 @@ public class EmailTemplateServiceIT extends AbstractJUnit4SpringContextTests {
     private EmailTemplateService emailTemplateService;
 
     @Test
-//    @Ignore("This test is an integration test to be tested once all the smtp setup is done")
+    @Ignore("This test is an integration test to be tested once all the smtp setup is done")
     public void shouldSendEmailWithTemplates() {
 
         final String toEmailId = "karthis@thoughtworks.com";
