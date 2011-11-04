@@ -22,7 +22,7 @@ public class EmailTemplateService {
         this.textTemplate = textTemplate;
     }
 
-    public void sendEmailUsingTemplates(String userName, String staffId, String password) {
+    public String sendEmailUsingTemplates(String userName, String staffId, String password) {
         final String toEmailId = userName;
         final String staffIdentification = staffId;
         final String defaultPassword = password;
@@ -33,7 +33,8 @@ public class EmailTemplateService {
             put("password", defaultPassword);
 
         }};
-        emailService.send(new Email(userName, motechFromAddress, renderWith(subjectTemplate, emailData), renderWith(textTemplate, emailData)));
+        String emailSentStatus = emailService.send(new Email(userName, motechFromAddress, renderWith(subjectTemplate, emailData), renderWith(textTemplate, emailData)));
+        return emailSentStatus;
     }
 
     private String renderWith(String template, Map data) {

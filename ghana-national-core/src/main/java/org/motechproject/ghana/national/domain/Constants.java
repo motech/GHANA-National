@@ -15,4 +15,6 @@ public class Constants {
     public static final String DISTRICTS = "districts";
     public static final String PROVINCES = "provinces";
     public static final String FACILITIES = "facilities";
+    public static final String EMAIL_SUCCESS = "email_success";
+    public static final String EMAIL_FAILURE = "email_failure";
 }
