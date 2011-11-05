@@ -6,11 +6,13 @@
                     http://www.springframework.org/schema/security 
                     http://www.springframework.org/schema/security/spring-security-3.0.xsd">
     <http use-expressions="true">
+        <form-login login-page="/login.jsp" authentication-success-handler-ref="authenticationSuccessHandler" authentication-failure-url="/login.jsp?login_error=1"/>
+        <intercept-url pattern="/login*" filters="none"/>
         <intercept-url pattern="/admin/**" access="hasRole('System Developer')" requires-channel="any"/>
         <intercept-url pattern="/callcenter/**" access="hasAnyRole('System Developer','Create/Edit MoTeCH Data','Provider')" requires-channel="any"/>
         <intercept-url pattern="/facility/**" access="hasAnyRole('System Developer','MoTeCH View Only','Provider')" requires-channel="any"/>
         <intercept-url pattern="/security/**" access="hasAnyRole('System Developer','MoTeCH View Only', 'Create/Edit MoTeCH Data')" requires-channel="any"/>
-        <form-login authentication-success-handler-ref="authenticationSuccessHandler"/>
+        <!--<form-login authentication-success-handler-ref="authenticationSuccessHandler"/>-->
         <logout logout-url="/logout" logout-success-url="/spring_security_login"/>
     </http>
     <authentication-manager>
