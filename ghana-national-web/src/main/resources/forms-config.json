@@ -4,11 +4,15 @@
         "forms" : [
             {
                 "name" : "ClientQuery",
-                "fileName" :  "ClientQuery.xml"
+                "fileName" :  "ClientQuery.xml",
+                "bean":"org.motechproject.ghana.national.bean.ClientQueryForm",
+                "validator": "org.motechproject.ghana.national.validator.ClientQueryFormValidator"
             },
             {
                 "name" : "DeliveryNotification",
-                "fileName" :  "DeliveryNotification.xml"
+                "fileName" :  "DeliveryNotification.xml",
+                "bean":"org.motechproject.ghana.national.bean.DeliveryNotificationForm",
+                "validator": "org.motechproject.ghana.national.validator.DeliveryNotificationFormValidator"
             }
         ]
     } ,
@@ -17,11 +21,15 @@
         "forms" : [
             {
                 "name" : "ANCVisit",
-                "fileName" :  "ANCVisit.xml"
+                "fileName" :  "ANCVisit.xml",
+                "bean":"org.motechproject.ghana.national.bean.ANCVisitForm",
+                "validator": "org.motechproject.ghana.national.validator.ANCVisitFormValidator"
             },
             {
                 "name" : "Delivery",
-                "fileName" :  "Delivery.xml"
+                "fileName" :  "Delivery.xml",
+                "bean":"org.motechproject.ghana.national.bean.DeliveryForm",
+                "validator": "org.motechproject.ghana.national.validator.DeliveryFormValidator"
             }
         ]
     },
@@ -30,11 +38,15 @@
         "forms" : [
             {
                 "name" : "ClientQuery",
-                "fileName" :  "ClientQuery.xml"
+                "fileName" :  "ClientQuery.xml" ,
+                "bean":"org.motechproject.ghana.national.bean.ClientQueryForm",
+                "validator": "org.motechproject.ghana.national.validator.ClientQueryFormValidator"
             },
             {
                 "name" : "GeneralQuery",
-                "fileName" :  "GeneralQuery.xml"
+                "fileName" :  "GeneralQuery.xml" ,
+                "bean":"org.motechproject.ghana.national.bean.GeneralQueryForm",
+                "validator": "org.motechproject.ghana.national.validator.GeneralQueryFormValidator"
             }
         ]
     }
