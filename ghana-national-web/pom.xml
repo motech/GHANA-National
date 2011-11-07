@@ -97,19 +97,40 @@
         </resources>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.1.1</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <buildNumber>${BUILD_NUMBER}</buildNumber>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
+                <!-- INSERTS HUDSON BUILD NUMBER AS A HTML COMMENT IN THE FOOTER -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>insert-build-number</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>org.motechproject.ghana.national.tools.BuildNumber</mainClass>
+                            <arguments>
+                                <argument>pre</argument>
+                            </arguments>
+                            <classpathScope>test</classpathScope>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>remove-build-number</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>org.motechproject.ghana.national.tools.BuildNumber</mainClass>
+                            <arguments>
+                                <argument>post</argument>
+                            </arguments>
+                            <classpathScope>test</classpathScope>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <!--JETTY-->
             <plugin>
