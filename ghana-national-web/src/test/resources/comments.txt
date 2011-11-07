@@ -1,3 +1,0 @@
-how are we making things idempotent
-keep functional tests in separate folder
-writing functional tests as part of story
