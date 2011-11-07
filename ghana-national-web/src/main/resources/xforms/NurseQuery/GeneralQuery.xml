@@ -8,6 +8,7 @@
         <formname/>
         <sender/>
         <formtype>query</formtype>
+        <formname>GeneralQuery</formname>
       </gen-query>
     </xf:instance>
     <xf:bind id="chpsid" nodeset="/gen-query/chpsid" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
