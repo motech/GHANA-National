@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.tools;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -20,33 +21,24 @@ public class BuildNumber {
         if (!file.exists()) return;
         FileWriter writer = null;
         try {
-            if (args[0].equals("pre")) {
-                writer = new FileWriter(file, true);
-                insert(writer);
-            } else {
-                //content has to be stored before creating the writer.
-                final List<String> content = FileUtils.readLines(file);
-                writer = new FileWriter(file, false);
-                remove(writer, content);
-            }
+            final List<String> content = FileUtils.readLines(file);
+            writer = new FileWriter(file, false);
+            IOUtils.writeLines(content.subList(0, content.size() - 1), IOUtils.LINE_SEPARATOR, writer);
+            IOUtils.write(args[0].equals("pre") ? insert() : remove(), writer);
         } finally {
-            if (writer != null) {
-                writer.close();
-            }
+            IOUtils.closeQuietly(writer);
         }
     }
 
-    private static void remove(FileWriter writer, List<String> strings) throws IOException {
-        for (int i = 0; i < strings.size() - 1; i++) {
-            writer.write(strings.get(i) + "\n");
-        }
+    private static String remove() throws IOException {
+        return "<!-- ${build_number} -->";
     }
 
-    private static void insert(FileWriter writer) throws IOException {
+    private static String insert() throws IOException {
         String buildNumber = System.getProperty("BUILD_NUMBER");
         if (StringUtils.isEmpty(buildNumber)) {
-            buildNumber = "dev";
+            buildNumber = "${build_number}";
         }
-        writer.append("\n<!--").append(buildNumber).append("-->");
+       return "<!-- " + buildNumber + " -->";
     }
 }
