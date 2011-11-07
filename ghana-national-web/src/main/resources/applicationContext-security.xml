@@ -12,7 +12,7 @@
         <intercept-url pattern="/callcenter/**" access="hasAnyRole('System Developer','Create/Edit MoTeCH Data','Provider')" requires-channel="any"/>
         <intercept-url pattern="/facility/**" access="hasAnyRole('System Developer','MoTeCH View Only','Provider')" requires-channel="any"/>
         <intercept-url pattern="/security/**" access="hasAnyRole('System Developer','MoTeCH View Only', 'Create/Edit MoTeCH Data')" requires-channel="any"/>
-        <logout logout-url="/logout" logout-success-url="/login"/>
+        <logout logout-url="/logout" logout-success-url="/login.jsp"/>
     </http>
     <authentication-manager>
         <authentication-provider ref="openMRSAuthenticationProvider"/>
