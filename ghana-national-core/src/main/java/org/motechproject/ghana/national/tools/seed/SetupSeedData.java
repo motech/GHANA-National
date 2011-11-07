@@ -1,15 +1,14 @@
-package org.motechproject.ghana.national.tools;
+package org.motechproject.ghana.national.tools.seed;
 
-import org.motechproject.ghana.national.tools.CouchDB;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class RecreateDB {
+public class SetupSeedData {
     public static final String APPLICATION_CONTEXT_XML = "applicationContext-tools.xml";
 
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML);
-        CouchDB couchDB = context.getBean(CouchDB.class);
-        couchDB.recreate();
+        SeedLoader seedLoader = (SeedLoader) context.getBean("seedLoader");
+        seedLoader.load();
     }
 }

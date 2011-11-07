@@ -8,7 +8,7 @@
     <bean id="seedLoader" class="org.motechproject.ghana.national.tools.seed.SeedLoader">
         <constructor-arg>
             <list>
-               <ref bean="userTypeSeed"/>
+                <ref bean="userTypeSeed"/>
             </list>
         </constructor-arg>
     </bean>

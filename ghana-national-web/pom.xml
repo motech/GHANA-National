@@ -95,115 +95,7 @@
                 </includes>
             </resource>
         </resources>
-        <!--PLUGINS-->
         <plugins>
-            <!--READ PROPERTIES-->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>../build/maven.properties</file>
-                            </files>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--MYSQL RECREATION-->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>sql-maven-plugin</artifactId>
-                <version>1.5</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>mysql</groupId>
-                        <artifactId>mysql-connector-java</artifactId>
-                        <version>5.1.13</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <driver>com.mysql.jdbc.Driver</driver>
-                    <username>${mysql.user}</username>
-                    <password>${mysql.password}</password>
-                    <url>jdbc:mysql://localhost:3306</url>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>drop-db</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <configuration>
-                            <autocommit>true</autocommit>
-                            <sqlCommand>
-                                drop database openmrs_test;
-                            </sqlCommand>
-                            <onError>continue</onError>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>create-db</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <configuration>
-                            <autocommit>true</autocommit>
-                            <sqlCommand>
-                                create database openmrs_test default charset utf8;
-                                grant all on openmrs_test.* to 'openmrs'@'localhost' identified by
-                                'password';
-                                grant all on openmrs_test.* to 'openmrs'@'%' identified by 'password';
-                                flush privileges;
-                                use openmrs_test;
-                            </sqlCommand>
-                            <srcFiles>
-                                <srcFile>../build/sql/0.openmrs-1.8.sql</srcFile>
-                                <srcFile>../build/sql/1.insert_email_person_attribute_type_table.sql
-                                </srcFile>
-                            </srcFiles>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--COUCHDB RECREATION-->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>recreate-db</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>org.motechproject.ghana.national.tools.RecreateDB</mainClass>
-                            <classpathScope>test</classpathScope>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>seed-db</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>org.motechproject.ghana.national.tools.seed.SetupSeedData</mainClass>
-                            <classpathScope>test</classpathScope>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <!--JETTY-->
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
@@ -236,7 +128,6 @@
             </plugin>
         </plugins>
     </build>
-
     <!--PROFILES-->
     <profiles>
         <profile>
