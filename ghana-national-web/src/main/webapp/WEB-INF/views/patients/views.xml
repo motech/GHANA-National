@@ -5,5 +5,8 @@
     <definition extends="default" name="patients/new">
         <put-attribute name="body" value="/WEB-INF/views/patients/new.jspx"/>
     </definition>
+    <definition extends="default" name="patients/success">
+        <put-attribute name="body" value="/WEB-INF/views/patients/success.jspx"/>
+    </definition>
 </tiles-definitions>
 

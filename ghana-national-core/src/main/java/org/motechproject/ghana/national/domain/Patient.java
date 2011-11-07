@@ -10,9 +10,7 @@ public class Patient extends MotechAuditableDataObject {
     @JsonProperty("type")
     private String type = "Patient";
     @JsonProperty
-    private Integer mrsFacilityId;
-    @JsonProperty
-    private Integer mrsPatientId;
+    private String mrsPatientId;
     @JsonIgnore
     private org.motechproject.mrs.model.Patient mrsPatient;
 
@@ -25,5 +23,14 @@ public class Patient extends MotechAuditableDataObject {
 
     public org.motechproject.mrs.model.Patient mrsPatient() {
         return mrsPatient;
+    }
+
+    public Patient mrsPatientId(String mrsPatientId) {
+        this.mrsPatientId = mrsPatientId;
+        return this;
+    }
+
+    public String mrsPatientId() {
+        return mrsPatientId;
     }
 }

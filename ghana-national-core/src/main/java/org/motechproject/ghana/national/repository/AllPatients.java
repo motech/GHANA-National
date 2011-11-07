@@ -20,8 +20,8 @@ public class AllPatients extends MotechAuditableRepository<Patient> {
 
     @Override
     public void add(Patient patient) {
-        patientAdaptor.savePatient(patient.mrsPatient());
-        super.add(patient);
+        final org.motechproject.mrs.model.Patient savedPatient = patientAdaptor.savePatient(patient.mrsPatient());
+        super.add(patient.mrsPatientId(savedPatient.getId()));
     }
 
     public Patient patientById(String id) {

@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
 
 import java.util.HashMap;
@@ -20,11 +21,13 @@ public class PatientControllerTest {
     FacilityService mockFacilityService;
     @Mock
     PatientService mockPatientService;
+    @Mock
+    MessageSource mockMessageSource;
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientController = new PatientController(mockFacilityService, mockPatientService);
+        patientController = new PatientController(mockFacilityService, mockPatientService, mockMessageSource);
     }
 
     @Test

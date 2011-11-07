@@ -219,6 +219,7 @@
         <input type="button" id="submitNewPatient" value="Submit"/>
 
         <div class="formlyAlerts">
+            <form:errors path="parentId" element="div" cssClass="formlyInvalid formlyAlert" cssStyle="display: block;"/>
         </div>
     </form:form>
 </div>
