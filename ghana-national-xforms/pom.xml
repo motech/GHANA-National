@@ -22,5 +22,10 @@
             <artifactId>motech-mobileforms-api</artifactId>
             <version>${motech-platform.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-platform-server-api</artifactId>
+            <version>${motech-platform.version}</version>
+        </dependency>
     </dependencies>
 </project>
