@@ -7,6 +7,7 @@ import org.motechproject.mrs.model.User;
 import org.motechproject.mrs.services.MRSUserAdaptor;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,5 +36,15 @@ public class UserService {
         List<String> roles = new ArrayList<String>();
         for (UserType userType : allUserTypes.getAll()) roles.add(userType.name());
         return roles;
+    }
+
+    public String changePasswordByEmailId(String emailId){
+        String password ="";
+        try{
+            password = userAdaptor.setNewPasswordForUser(emailId);
+        }catch(UsernameNotFoundException e){
+            password = "";
+        }
+        return password;
     }
 }

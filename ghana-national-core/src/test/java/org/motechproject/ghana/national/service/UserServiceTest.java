@@ -48,4 +48,12 @@ public class UserServiceTest {
         service.saveUser(user);
         verify(userAdaptor).saveUser(user);
     }
+
+    @Test
+    public void shouldChangePasswordGivenEmailId() throws UserAlreadyExistsException {
+        final String emailId = "a@a.com";
+        service.changePasswordByEmailId(emailId);
+        verify(userAdaptor).setNewPasswordForUser(emailId);
+    }
+
 }
