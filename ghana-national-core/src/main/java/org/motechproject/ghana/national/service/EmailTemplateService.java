@@ -22,14 +22,12 @@ public class EmailTemplateService {
         this.textTemplate = textTemplate;
     }
 
-    public String sendEmailUsingTemplates(String userName, String staffId, String password) {
+    public String sendEmailUsingTemplates(String userName, String password) {
         final String toEmailId = userName;
-        final String staffIdentification = staffId;
         final String defaultPassword = password;
 
         Map emailData = new HashMap() {{
             put("userName", toEmailId);
-            put("staffId", staffIdentification);
             put("password", defaultPassword);
 
         }};

@@ -32,19 +32,22 @@ public class UserService {
         return userAdaptor.saveUser(user);
     }
 
-    public List<String> fetchAllRoles() {
-        List<String> roles = new ArrayList<String>();
-        for (UserType userType : allUserTypes.getAll()) roles.add(userType.name());
-        return roles;
-    }
-
+    @ApiSession
     public String changePasswordByEmailId(String emailId){
         String password ="";
         try{
+            System.out.println("--------------------1--- inside userservice-------");
             password = userAdaptor.setNewPasswordForUser(emailId);
+            System.out.println("--------------------2--- inside userservice-------"+password);
         }catch(UsernameNotFoundException e){
             password = "";
         }
         return password;
+    }
+
+    public List<String> fetchAllRoles() {
+        List<String> roles = new ArrayList<String>();
+        for (UserType userType : allUserTypes.getAll()) roles.add(userType.name());
+        return roles;
     }
 }
