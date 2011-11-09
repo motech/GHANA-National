@@ -36,7 +36,6 @@ public class UserService {
     public String changePasswordByEmailId(String emailId){
         String password ="";
         try{
-            System.out.println("-------changePasswordByemailID-----------");
             password = userAdaptor.setNewPasswordForUser(emailId);
         }catch(UsernameNotFoundException e){
             password = "";
