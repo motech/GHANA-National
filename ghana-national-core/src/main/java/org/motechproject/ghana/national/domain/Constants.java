@@ -21,4 +21,5 @@ public class Constants {
     public static final String FORGOT_PASSWORD_SUCCESS = "Your Password is sent via email successfully";
     public static final String FORGOT_PASSWORD_FAILURE = "Your Password is not sent to you via email successfully.Please try again.";
     public static final String FORGOT_PASSWORD_USER_NOT_FOUND = "User Name not found. Please register!!!";
+    public static final String FORGOT_PASSWORD_MESSAGE = "message";
 }

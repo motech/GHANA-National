@@ -31,18 +31,18 @@ public class ForgotPasswordController {
 
     @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
     public ModelAndView changePasswordAndSendEmail(HttpServletRequest request) throws Exception {
-        ModelAndView modelAndView = new ModelAndView("redirect:forgotPasswordStatus.jsp");
+        ModelAndView modelAndView = new ModelAndView("redirect:/forgotPasswordStatus.jsp");
         String emailId = request.getParameter("emailId");
 
         String newPassword = userService.changePasswordByEmailId(emailId);
         if (!newPassword.equals("")) {
             String emailSentStatus = emailTemplateService.sendEmailUsingTemplates(emailId, newPassword);
             if (emailSentStatus.equals(Constants.EMAIL_SUCCESS))
-                modelAndView.addObject("message", Constants.FORGOT_PASSWORD_SUCCESS);
+                modelAndView.addObject(Constants.FORGOT_PASSWORD_MESSAGE, Constants.FORGOT_PASSWORD_SUCCESS);
             else
-                modelAndView.addObject("message", Constants.FORGOT_PASSWORD_FAILURE);
+                modelAndView.addObject(Constants.FORGOT_PASSWORD_MESSAGE, Constants.FORGOT_PASSWORD_FAILURE);
         } else {
-            modelAndView.addObject("message", Constants.FORGOT_PASSWORD_USER_NOT_FOUND);
+            modelAndView.addObject(Constants.FORGOT_PASSWORD_MESSAGE, Constants.FORGOT_PASSWORD_USER_NOT_FOUND);
         }
 
         return modelAndView;

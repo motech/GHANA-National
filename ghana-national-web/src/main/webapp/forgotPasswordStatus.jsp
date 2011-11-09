@@ -4,7 +4,7 @@
 
 
 <div>
-    <b>
+    <b>  Hello
         <c:out value="${message}"/>
 
     </b>
