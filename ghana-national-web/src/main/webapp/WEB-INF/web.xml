@@ -34,14 +34,14 @@
         <servlet-name>mobileformsDownload</servlet-name>
         <url-pattern>/formdownload</url-pattern>
     </servlet-mapping>
-     <servlet>
-        <servlet-name>mobileformsUpload</servlet-name>
-        <servlet-class>org.motechproject.mobileforms.api.web.FormUploadServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>mobileformsUpload</servlet-name>
-        <url-pattern>/formupload</url-pattern>
-    </servlet-mapping>
+     <!--<servlet>-->
+        <!--<servlet-name>mobileformsUpload</servlet-name>-->
+        <!--<servlet-class>org.motechproject.mobileforms.api.web.FormUploadServlet</servlet-class>-->
+    <!--</servlet>-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>mobileformsUpload</servlet-name>-->
+        <!--<url-pattern>/formupload</url-pattern>-->
+    <!--</servlet-mapping>-->
     <servlet>
         <servlet-name>ghanaNational</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
