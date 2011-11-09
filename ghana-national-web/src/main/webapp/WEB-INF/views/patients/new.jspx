@@ -13,8 +13,12 @@
     <form:form id="createPatientForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Patient"
                commandName="createPatientForm">
         <spring:message code="patient_registration_mode" var="patient_registration_mode" htmlEscape="false"/>
-        <spring:message code="patient_registration_mode_1" var="patient_registration_mode_1" htmlEscape="false"/>
-        <spring:message code="patient_registration_mode_2" var="patient_registration_mode_2" htmlEscape="false"/>
+        <spring:message code="patient_registration_mode_1_label" var="patient_registration_mode_1" htmlEscape="false"/>
+        <spring:message code="patient_registration_mode_2_label" var="patient_registration_mode_2" htmlEscape="false"/>
+        <spring:message code="patient_registration_mode_1_value" var="patient_registration_mode_1_value"
+                        htmlEscape="false"/>
+        <spring:message code="patient_registration_mode_2_value" var="patient_registration_mode_2_value"
+                        htmlEscape="false"/>
         <spring:message code="patient_motech_id" var="patient_motech_id" htmlEscape="false"/>
         <spring:message code="patient_type" var="patient_type" htmlEscape="false"/>
         <spring:message code="patient_mothers_motech_id" var="patient_mothers_motech_id" htmlEscape="false"/>
@@ -60,10 +64,10 @@
         <div class="form-field">
             <label class="formLabel" for="registrationMode">${fn:escapeXml(patient_registration_mode)}:</label>
             <form:select path="registrationMode" label="${fn:escapeXml(patient_registration_mode)}">
-                <option value="auto_generated">
+                <option value="${fn:escapeXml(patient_registration_mode_1_value)}">
                     ${fn:escapeXml(patient_registration_mode_1)}
                 </option>
-                <option value="user_pre_printed">
+                <option value="${fn:escapeXml(patient_registration_mode_2_value)}">
                     ${fn:escapeXml(patient_registration_mode_2)}
                 </option>
             </form:select>
@@ -80,7 +84,7 @@
         <div class="form-field">
             <label class="formLabel" for="typeOfPatient">${fn:escapeXml(patient_type)}:</label>
             <form:select path="typeOfPatient" label="${fn:escapeXml(patient_type)}">
-                <option value="${typeOfPatient.MOTHER}">
+                <option value="${fn:escapeXml(patient_type_other)}">
                     ${fn:escapeXml(patient_type_other)}
                 </option>
                 <option value="${fn:escapeXml(patient_type_mother)}">

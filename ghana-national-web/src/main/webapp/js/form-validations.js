@@ -12,7 +12,7 @@ function FormValidator() {
         form.find('.jsRequire').each(function() {
             var val = $(this).val();
             if($(this).attr('type') == 'radio') {
-                val = $("input[@name='" + this.name + "']:checked").val();
+                val = $("input[name='" + this.name + "']:checked").val();
             }
             if(utilities.isNull(val)) {
                 $("#" + this.name + "Error").removeClass('hide');

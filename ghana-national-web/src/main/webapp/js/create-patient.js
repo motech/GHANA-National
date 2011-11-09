@@ -7,7 +7,7 @@ $(document).ready(function() {
     });
 
     $('#registrationMode').change(function() {
-        ($(this).val() == 'user_pre_printed') ? $('#motechId').parent().show() : $('#motechId   ').parent().hide();
+        ($(this).val() == 'USER_DEFINED') ? $('#motechId').parent().show() : $('#motechId').parent().hide();
     });
 
     $("#createPatientForm").formly({'onBlur':false, 'theme':'Light'});
