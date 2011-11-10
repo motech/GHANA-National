@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -28,7 +29,7 @@ public class UserService {
     }
 
     @ApiSession
-    public String saveUser(User user) throws UserAlreadyExistsException {
+    public HashMap saveUser(User user) throws UserAlreadyExistsException {
         return userAdaptor.saveUser(user);
     }
 
