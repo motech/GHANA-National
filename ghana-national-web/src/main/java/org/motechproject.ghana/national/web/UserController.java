@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @Autowired
-    public UserController(UserService userService, MessageSource messageSource,EmailTemplateService emailTemplateService) {
+    public UserController(UserService userService, MessageSource messageSource, EmailTemplateService emailTemplateService) {
         this.userService = userService;
         this.messageSource = messageSource;
         this.emailTemplateService = emailTemplateService;
@@ -67,7 +67,8 @@ public class UserController {
             HashMap userData = userService.saveUser(user);
             model.put(USER_ID, userData.get("userLoginId"));
             model.put(USER_NAME, user.fullName());
-            emailTemplateService.sendEmailUsingTemplates((String)userData.get("userLoginId"),(String)userData.get("password"));
+            if (createUserForm.getRole().equals("Super Admin") || createUserForm.getRole().equals("Facility Admin") || createUserForm.getRole().equals("CallCenter Admin"))
+                emailTemplateService.sendEmailUsingTemplates((String) userData.get("userLoginId"), (String) userData.get("password"));
         } catch (UserAlreadyExistsException e) {
             bindingResult.addError(new FieldError(CREATE_USER_FORM, EMAIL, messageSource.getMessage(USER_ALREADY_EXISTS, null, Locale.getDefault())));
             model.addAttribute("roles", userService.fetchAllRoles());
