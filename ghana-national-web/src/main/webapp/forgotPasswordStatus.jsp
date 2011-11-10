@@ -4,7 +4,7 @@
 
 
 <div>
-    <b>  Hello            123
+    <b>  Hello, an email has been sent to your account.
         <c:out value="${requestScope.message}"/>
     </b>
 

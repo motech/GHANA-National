@@ -37,7 +37,7 @@ public class UserService {
         String password ="";
         try{
             password = userAdaptor.setNewPasswordForUser(emailId);
-        }catch(UsernameNotFoundException e){
+        }catch(Exception e){
             password = "";
         }
         return password;
