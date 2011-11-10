@@ -32,7 +32,6 @@ public class UserService {
         return userAdaptor.saveUser(user);
     }
 
-    @ApiSession
     public String changePasswordByEmailId(String emailId){
         String password ="";
         try{

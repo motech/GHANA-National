@@ -6,7 +6,7 @@
                     http://www.springframework.org/schema/security 
                     http://www.springframework.org/schema/security/spring-security-3.0.xsd">
     <http use-expressions="true">
-        <form-login login-page="/login.jsp" authentication-success-handler-ref="authenticationSuccessHandler" authentication-failure-url="/login.jsp?login_error=1"/>
+        <form-login login-page="/login.jsp"  authentication-success-handler-ref="authenticationSuccessHandler" authentication-failure-url="/login.jsp?login_error=1"/>
         <intercept-url pattern="/login*" filters="none"/>
         <intercept-url pattern="/admin/**" access="hasRole('System Developer')" requires-channel="any"/>
         <intercept-url pattern="/callcenter/**" access="hasAnyRole('System Developer','Create/Edit MoTeCH Data','Provider')" requires-channel="any"/>

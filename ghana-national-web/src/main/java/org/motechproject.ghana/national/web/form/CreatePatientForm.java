@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.web.form;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.domain.PatientType;
+import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.Facility;
 
@@ -11,7 +12,7 @@ import java.util.Date;
 import static org.motechproject.ghana.national.tools.Utility.safeToString;
 
 public class CreatePatientForm {
-    private String registrationMode;
+    private RegistrationType registrationMode;
     private String motechId;
     private String parentId;
     private PatientType typeOfPatient;
@@ -31,11 +32,11 @@ public class CreatePatientForm {
     private String facilityId;
     private String address;
 
-    public String getRegistrationMode() {
+    public RegistrationType getRegistrationMode() {
         return registrationMode;
     }
 
-    public void setRegistrationMode(String registrationMode) {
+    public void setRegistrationMode(RegistrationType registrationMode) {
         this.registrationMode = registrationMode;
     }
 
@@ -184,9 +185,18 @@ public class CreatePatientForm {
     }
 
     public Patient getPatient() {
-        org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(this.getFirstName(),
-                this.getMiddleName(), this.getLastName(), this.getPreferredName(), this.getDateOfBirth(), this.getSex(),
-                this.getAddress(), new Facility(this.getFacilityId()));
+        org.motechproject.mrs.model.Patient mrsPatient = null;
+        if (RegistrationType.USER_DEFINED.equals(this.getRegistrationMode())) {
+            mrsPatient = new org.motechproject.mrs.model.Patient(this.getMotechId(), this.getFirstName(),
+                    this.getMiddleName(), this.getLastName(), this.getPreferredName(), this.getDateOfBirth(), this.getSex(),
+                    this.getAddress(), new Facility(this.getFacilityId()));
+
+        } else {
+            mrsPatient = new org.motechproject.mrs.model.Patient(this.getFirstName(),
+                    this.getMiddleName(), this.getLastName(), this.getPreferredName(), this.getDateOfBirth(), this.getSex(),
+                    this.getAddress(), new Facility(this.getFacilityId()));
+
+        }
         new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), safeToString(this.getNhisExpirationDate()));
         new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), this.getNhisNumber());
         new Attribute(PatientAttributes.INSURED.getAttribute(), safeToString(this.getInsured()));

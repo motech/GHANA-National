@@ -7,8 +7,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
-    <beans:import resource="classpath*:applicationContext-core.xml"/>
+    <context:property-placeholder location="classpath*:*.properties"/>
     <beans:import resource="classpath*:applicationContext-xforms.xml"/>
+    <beans:import resource="classpath*:applicationContext-core.xml"/>
     <beans:import resource="classpath*:applicationContext-security.xml"/>
     <context:annotation-config/>
     <context:spring-configured/>
@@ -27,7 +28,13 @@
     </bean>
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location" value="classpath:openmrs.properties"/>
+        <property name="locations">
+            <list>
+                <value>classpath:openmrs.properties</value>
+                <value>classpath:activemq.properties</value>
+            </list>
+        </property>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
     </bean>
 
 </beans>
