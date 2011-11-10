@@ -6,8 +6,6 @@
 <div>
     <b>  Hello            123
         <c:out value="${requestScope.message}"/>
-        ${model.message}
-
     </b>
 
 </div>
