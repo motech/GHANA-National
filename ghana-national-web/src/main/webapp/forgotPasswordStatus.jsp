@@ -4,8 +4,9 @@
 
 
 <div>
-    <b>  Hello
-        <c:out value="${message}"/>
+    <b>  Hello            123
+        <c:out value="${requestScope.message}"/>
+        ${model.message}
 
     </b>
 

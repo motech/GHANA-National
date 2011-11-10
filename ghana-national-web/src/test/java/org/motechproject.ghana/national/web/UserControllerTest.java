@@ -6,6 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.UserType;
+import org.motechproject.ghana.national.service.EmailTemplateService;
 import org.motechproject.ghana.national.service.UserService;
 import org.motechproject.ghana.national.web.form.CreateUserForm;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
@@ -38,11 +39,13 @@ public class UserControllerTest {
     private UserService userService;
     @Mock
     private MessageSource messageSource;
+    @Mock
+    EmailTemplateService emailTemplateService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new UserController(userService, messageSource);
+        controller = new UserController(userService, messageSource,emailTemplateService);
     }
 
     @Test
@@ -75,7 +78,11 @@ public class UserControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         ModelMap model = mock(ModelMap.class);
         String userId = "1234";
-        when(userService.saveUser(any(User.class))).thenReturn(userId);
+        HashMap test = new HashMap(){{
+            put("userLoginId","1234");
+            put("password","P@ssw0rd");
+        }};
+        when(userService.saveUser(any(User.class))).thenReturn(test);
 
         String view = controller.createUser(form, bindingResult, model);
 

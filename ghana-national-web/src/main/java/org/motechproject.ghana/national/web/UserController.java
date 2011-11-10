@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.UserType;
+import org.motechproject.ghana.national.service.EmailTemplateService;
 import org.motechproject.ghana.national.service.UserService;
 import org.motechproject.ghana.national.web.form.CreateUserForm;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.Locale;
 
 @Controller
@@ -32,14 +34,16 @@ public class UserController {
     public static final String USER_ALREADY_EXISTS = "user_email_already_exists";
     public static final String NEW_USER_VIEW = "users/new";
     public static final String CREATE_USER_SUCCESS_VIEW = "users/success";
+    private EmailTemplateService emailTemplateService;
 
     public UserController() {
     }
 
     @Autowired
-    public UserController(UserService userService, MessageSource messageSource) {
+    public UserController(UserService userService, MessageSource messageSource,EmailTemplateService emailTemplateService) {
         this.userService = userService;
         this.messageSource = messageSource;
+        this.emailTemplateService = emailTemplateService;
     }
 
     @RequestMapping(value = "new", method = RequestMethod.GET)
@@ -60,9 +64,10 @@ public class UserController {
         user.securityRole(UserType.Role.securityRoleFor(createUserForm.getRole()));
         if (UserType.Role.isAdmin(createUserForm.getRole())) user.id(createUserForm.getEmail());
         try {
-            String userId = userService.saveUser(user);
-            model.put(USER_ID, userId);
+            HashMap userData = userService.saveUser(user);
+            model.put(USER_ID, userData.get("userLoginId"));
             model.put(USER_NAME, user.fullName());
+            emailTemplateService.sendEmailUsingTemplates((String)userData.get("userLoginId"),(String)userData.get("password"));
         } catch (UserAlreadyExistsException e) {
             bindingResult.addError(new FieldError(CREATE_USER_FORM, EMAIL, messageSource.getMessage(USER_ALREADY_EXISTS, null, Locale.getDefault())));
             model.addAttribute("roles", userService.fetchAllRoles());
