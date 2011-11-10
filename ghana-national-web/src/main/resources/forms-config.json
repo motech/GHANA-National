@@ -30,6 +30,12 @@
                 "fileName" :  "Delivery.xml",
                 "bean":"org.motechproject.ghana.national.bean.DeliveryForm",
                 "validator": "org.motechproject.ghana.national.validator.DeliveryFormValidator"
+            },
+            {
+                "name" : "registerPatient-jf",
+                "fileName" :  "RegisterClient.xml",
+                "bean":"org.motechproject.ghana.national.bean.RegisterClientForm",
+                "validator": "org.motechproject.ghana.national.validator.RegisterClientFormValidator"
             }
         ]
     },
