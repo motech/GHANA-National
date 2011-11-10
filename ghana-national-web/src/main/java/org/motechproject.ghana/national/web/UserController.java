@@ -59,15 +59,16 @@ public class UserController {
         user.firstName(createUserForm.getFirstName()).middleName(createUserForm.getMiddleName()).lastName(createUserForm.getLastName());
         user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, createUserForm.getEmail()));
         user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, createUserForm.getPhoneNumber()));
-        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, createUserForm.getRole()));
+        String roleOfStaff = createUserForm.getRole();
+        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
 
-        user.securityRole(UserType.Role.securityRoleFor(createUserForm.getRole()));
-        if (UserType.Role.isAdmin(createUserForm.getRole())) user.id(createUserForm.getEmail());
+        user.securityRole(UserType.Role.securityRoleFor(roleOfStaff));
+        if (UserType.Role.isAdmin(roleOfStaff)) user.id(createUserForm.getEmail());
         try {
             HashMap userData = userService.saveUser(user);
             model.put(USER_ID, userData.get("userLoginId"));
             model.put(USER_NAME, user.fullName());
-            if (createUserForm.getRole().equals("Super Admin") || createUserForm.getRole().equals("Facility Admin") || createUserForm.getRole().equals("CallCenter Admin"))
+            if (roleOfStaff.equals("Super Admin") || roleOfStaff.equals("Facility Admin") || roleOfStaff.equals("CallCenter Admin"))
                 emailTemplateService.sendEmailUsingTemplates((String) userData.get("userLoginId"), (String) userData.get("password"));
         } catch (UserAlreadyExistsException e) {
             bindingResult.addError(new FieldError(CREATE_USER_FORM, EMAIL, messageSource.getMessage(USER_ALREADY_EXISTS, null, Locale.getDefault())));
