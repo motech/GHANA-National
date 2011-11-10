@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class DeliveryNotificationFormValidator implements FormValidator{
+public class DeliveryNotificationFormValidator extends FormValidator{
     @Override
     public List<FormError> validate(FormBean formBean) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.

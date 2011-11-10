@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public class ClientQueryFormValidator implements FormValidator {
+public class ClientQueryFormValidator extends FormValidator {
 
     @Override
     public List<FormError> validate(FormBean formBean) {
