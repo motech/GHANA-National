@@ -91,11 +91,6 @@ public class FacilitiesController {
                     put(4, searchFacilityForm.getRegion());
                     put(5, searchFacilityForm.getCountry());
                 }};
-//                String name = searchFacilityForm.getName();
-//                String stateProvince = searchFacilityForm.getStateProvince();
-//                String countyDistrict = searchFacilityForm.getCountyDistrict();
-//                String region = searchFacilityForm.getRegion();
-//                String country = searchFacilityForm.getCountry();
                 Map searchFieldsCombination = new HashMap();
                 for (int i = 1; i <= 5; i++) {
                     if (!searchFields.get(i).equals(""))
@@ -111,6 +106,7 @@ public class FacilitiesController {
                             || StringUtils.equals(thatMrsFacility.getCountry(), searchValue)) {
 
                         requestedFacilities.add(searchFacility);
+                        break;
                     }
                 }
             } catch (Exception e) {
