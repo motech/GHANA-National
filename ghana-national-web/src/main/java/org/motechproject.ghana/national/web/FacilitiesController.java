@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/admin/facilities")
@@ -78,7 +76,7 @@ public class FacilitiesController {
 
     @ApiSession
     @RequestMapping(value = "searchFacilities", method = RequestMethod.POST)
-    public String searchFacility(@Valid SearchFacilityForm searchFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
+    public String searchFacility(@Valid final SearchFacilityForm searchFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
         List<Facility> allFacilities = facilityService.facilities();
         List<Facility> requestedFacilities = new ArrayList<Facility>();
 
@@ -86,15 +84,34 @@ public class FacilitiesController {
             org.motechproject.mrs.model.Facility thatMrsFacility = searchFacility.mrsFacility();
 
             try {
-                if (StringUtils.equals(thatMrsFacility.getName(), searchFacilityForm.getName()))
-//                        || StringUtils.equals(thatMrsFacility.getStateProvince(), searchFacilityForm.getStateProvince())
-//                        || StringUtils.equals(thatMrsFacility.getCountyDistrict(), searchFacilityForm.getCountyDistrict())
-//                        || StringUtils.equals(thatMrsFacility.getRegion(), searchFacilityForm.getRegion())
-//                        || StringUtils.equals(thatMrsFacility.getCountry(), searchFacilityForm.getCountry())
-//                        || searchFacility.phoneNumber() == searchFacilityForm.getPhoneNumber()
-//                        || searchFacility.mrsFacilityId() == searchFacilityForm.getId()) {
-                {
-                    requestedFacilities.add(searchFacility);
+                Map searchFields = new HashMap() {{
+                    put(1, searchFacilityForm.getName());
+                    put(2, searchFacilityForm.getStateProvince());
+                    put(3, searchFacilityForm.getCountyDistrict());
+                    put(4, searchFacilityForm.getRegion());
+                    put(5, searchFacilityForm.getCountry());
+                }};
+//                String name = searchFacilityForm.getName();
+//                String stateProvince = searchFacilityForm.getStateProvince();
+//                String countyDistrict = searchFacilityForm.getCountyDistrict();
+//                String region = searchFacilityForm.getRegion();
+//                String country = searchFacilityForm.getCountry();
+                Map searchFieldsCombination = new HashMap();
+                for (int i = 1; i <= 5; i++) {
+                    if (!searchFields.get(i).equals(""))
+                        searchFieldsCombination.put(i, searchFields.get(i));
+                }
+
+                for (int i = 0; i < searchFieldsCombination.size(); i++) {
+                    String searchValue = (String) searchFieldsCombination.get(i);
+                    if (StringUtils.equals(thatMrsFacility.getName(), searchValue)
+                            || StringUtils.equals(thatMrsFacility.getStateProvince(), searchValue)
+                            || StringUtils.equals(thatMrsFacility.getCountyDistrict(), searchValue)
+                            || StringUtils.equals(thatMrsFacility.getRegion(), searchValue)
+                            || StringUtils.equals(thatMrsFacility.getCountry(), searchValue)) {
+
+                        requestedFacilities.add(searchFacility);
+                    }
                 }
             } catch (Exception e) {
             }

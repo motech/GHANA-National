@@ -77,14 +77,26 @@
         </div>
 
         <div>
-            <c:if ${requestedFacilities}>
+            <h4>* Please click on the facility id to edit the facility</h4>
             <table border="2" padding="3" cellpadding="20">
-            <c:forEach var="facility" items="${requestedFacilities}">
-                <tr border="3" padding = "2">
-                    <td><c:out value="${facility.mrsFacility.name}"/></td>
+                <tr>
+                     <td>ID</td>
+                     <td>Name</td>
+                     <td>Region</td>
+                     <td>District</td>
+                     <td>Province</td>
                 </tr>
-            </c:forEach>
+                <c:forEach var="facility" items="${requestedFacilities}">
+                    <tr border="3" padding="2">
+                        <td><a href=""><c:out value="${facility.mrsFacility.id}"/></a></td>
+                        <td><c:out value="${facility.mrsFacility.name}"/></td>
+                        <td><c:out value="${facility.mrsFacility.region}"/></td>
+                        <td><c:out value="${facility.mrsFacility.countyDistrict}"/></td>
+                        <td><c:out value="${facility.mrsFacility.stateProvince}"/></td>
+                    </tr>
+                </c:forEach>
             </table>
+
         </div>
     </form:form>
 </div>
