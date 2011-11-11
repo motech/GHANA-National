@@ -103,5 +103,13 @@ public class Facility extends MotechAuditableDataObject {
         this.mrsFacilityId = mrsFacilityId;
         return this;
     }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public org.motechproject.mrs.model.Facility getMrsFacility() {
+        return mrsFacility;
+    }
 }
 

@@ -30,7 +30,6 @@ public class FacilitiesController {
     public static final String SUCCESS = "facilities/success";
     public static final String NEW_FACILITY = "facilities/new";
     public static final String SEARCH_FACILITY = "facilities/search";
-    private static final String SEARCH_RESULTS = "facilities/searchResults";
 
     private FacilityService facilityService;
     private MessageSource messageSource;
@@ -83,25 +82,25 @@ public class FacilitiesController {
         List<Facility> allFacilities = facilityService.facilities();
         List<Facility> requestedFacilities = new ArrayList<Facility>();
 
-        for (Facility facility : allFacilities) {
-            org.motechproject.mrs.model.Facility thatMrsFacility = facility.mrsFacility();
+        for (Facility searchFacility : allFacilities) {
+            org.motechproject.mrs.model.Facility thatMrsFacility = searchFacility.mrsFacility();
 
             try {
-                if (StringUtils.equals(thatMrsFacility.getName(), searchFacilityForm.getName())
-                        || StringUtils.equals(thatMrsFacility.getStateProvince(), searchFacilityForm.getStateProvince())
-                        || StringUtils.equals(thatMrsFacility.getCountyDistrict(), searchFacilityForm.getCountyDistrict())
-                        || StringUtils.equals(thatMrsFacility.getRegion(), searchFacilityForm.getRegion())
-                        || StringUtils.equals(thatMrsFacility.getCountry(), searchFacilityForm.getCountry())
-                        || facility.phoneNumber() == searchFacilityForm.getPhoneNumber()
-                        || facility.mrsFacilityId() == searchFacilityForm.getId()) {
-
-                    requestedFacilities.add(facility);
+                if (StringUtils.equals(thatMrsFacility.getName(), searchFacilityForm.getName()))
+//                        || StringUtils.equals(thatMrsFacility.getStateProvince(), searchFacilityForm.getStateProvince())
+//                        || StringUtils.equals(thatMrsFacility.getCountyDistrict(), searchFacilityForm.getCountyDistrict())
+//                        || StringUtils.equals(thatMrsFacility.getRegion(), searchFacilityForm.getRegion())
+//                        || StringUtils.equals(thatMrsFacility.getCountry(), searchFacilityForm.getCountry())
+//                        || searchFacility.phoneNumber() == searchFacilityForm.getPhoneNumber()
+//                        || searchFacility.mrsFacilityId() == searchFacilityForm.getId()) {
+                {
+                    requestedFacilities.add(searchFacility);
                 }
             } catch (Exception e) {
             }
         }
         modelMap.put("requestedFacilities", requestedFacilities);
-        return SEARCH_RESULTS;
+        return SEARCH_FACILITY;
     }
 
 

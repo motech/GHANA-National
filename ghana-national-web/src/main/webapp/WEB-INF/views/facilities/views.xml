@@ -11,8 +11,5 @@
     <definition extends="default" name="facilities/success">
         <put-attribute name="body" value="/WEB-INF/views/facilities/success.jspx"/>
     </definition>
-    <definition extends="default" name="facilities/searchResults">
-        <put-attribute name="body" value="/WEB-INF/views/facilities/searchResults.jspx"/>
-    </definition>
 </tiles-definitions>
 

@@ -1,0 +1,90 @@
+<div id="body" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <spring:url value="/resources/js/facility-fields.js" var="facility_field_url"/>
+    <spring:url value="/resources/js/search-facility.js" var="search_facility_url"/>
+    <script src="${facility_field_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <script src="${search_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <spring:url value="/admin/facilities/searchFacilities" var="form_url"/>
+    <form:form id="searchFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search a Facility"
+               commandName="searchFacilityForm">
+        <spring:message code="facility_id" var="facility_id" htmlEscape="false"/>
+        <spring:message code="facility_name" var="facility_name" htmlEscape="false"/>
+        <spring:message code="facility_country" var="facility_country" htmlEscape="false"/>
+        <spring:message code="facility_region" var="facility_region" htmlEscape="false"/>
+        <spring:message code="facility_district" var="facility_district" htmlEscape="false"/>
+        <spring:message code="facility_sub_district" var="facility_sub_district" htmlEscape="false"/>
+        <spring:message code="facility_country_req_msg" var="facility_country_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_region_req_msg" var="facility_region_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_district_req_msg" var="facility_district_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_sub_district_req_msg" var="facility_sub_district_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_country_select" var="facility_country_select" htmlEscape="false"/>
+        <spring:message code="facility_region_select" var="facility_region_select" htmlEscape="false"/>
+        <spring:message code="facility_district_select" var="facility_district_select" htmlEscape="false"/>
+        <spring:message code="facility_sub_district_select" var="facility_sub_district_select" htmlEscape="false"/>
+        <spring:message code="facility_phone_number" var="facility_phone_number" htmlEscape="false"/>
+        <spring:message code="facility_add_phone_number1" var="facility_add_phone_number1" htmlEscape="false"/>
+        <spring:message code="facility_add_phone_number2" var="facility_add_phone_number2" htmlEscape="false"/>
+        <spring:message code="facility_add_phone_number3" var="facility_add_phone_number3" htmlEscape="false"/>
+        <spring:message code="facility_name_req_msg" var="facility_name_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_phone_number_incorrect_msg" var="facility_phone_number_incorrect_msg"
+                        htmlEscape="false"/>
+
+
+        <div>
+            <label for="id" class="formLabel">${fn:escapeXml(facility_id)}:</label>
+            <form:input path="id" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_id)}"/>
+        </div>
+        <div>
+            <label for="name" class="formLabel">${fn:escapeXml(facility_name)}:</label>
+            <form:input path="name" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_name)}"/>
+        </div>
+        <div>
+            <label for="countries" class="formLabel">${fn:escapeXml(facility_country)}:</label>
+            <form:select id="countries" path="country">
+                <option parent="select" value="">${fn:escapeXml(facility_country_select)}</option>
+                <c:forEach items="${countries}" var="country">
+                    <option parent="${country}" value="${country}">${country}</option>
+                </c:forEach>
+            </form:select>
+        </div>
+        <div class="hide">
+            <motech:location id="regions" path="region" label="${facility_region}"
+                             defaultValue="${facility_region_select}" errorMsg="${facility_region_req_msg}"
+                             locations="${regions}"/>
+        </div>
+        <div class="hide">
+            <motech:location id="districts" path="countyDistrict" label="${facility_district}"
+                             defaultValue="${facility_district_select}" errorMsg="${facility_district_req_msg}"
+                             locations="${districts}"/>
+        </div>
+        <div class="hide">
+            <motech:location id="sub-districts" path="stateProvince" label="${facility_sub_district}"
+                             defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
+                             locations="${provinces}"/>
+        </div>
+        <div>
+            <motech:phone path="phoneNumber" label="${facility_phone_number}"
+                          errorMsg="${facility_phone_number_incorrect_msg}" required="true"/>
+        </div>
+
+        <input type="button" id="searchFacility" value="Search"/>
+
+        <div class="formlyAlerts">
+            <form:errors path="name" element="div" cssClass="formlyInvalid formlyAlert" cssStyle="display: block;"/>
+        </div>
+
+        <div>
+            <c:if ${requestedFacilities}>
+            <table border="2" padding="3" cellpadding="20">
+            <c:forEach var="facility" items="${requestedFacilities}">
+                <tr border="3" padding = "2">
+                    <td><c:out value="${facility.mrsFacility.name}"/></td>
+                </tr>
+            </c:forEach>
+            </table>
+        </div>
+    </form:form>
+</div>
