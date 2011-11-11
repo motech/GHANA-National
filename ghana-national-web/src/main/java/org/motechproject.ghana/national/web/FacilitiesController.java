@@ -10,13 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -28,9 +30,11 @@ public class FacilitiesController {
     public static final String SUCCESS = "facilities/success";
     public static final String NEW_FACILITY = "facilities/new";
     public static final String SEARCH_FACILITY = "facilities/search";
+    private static final String SEARCH_RESULTS = "facilities/searchResults";
 
     private FacilityService facilityService;
     private MessageSource messageSource;
+
 
     public FacilitiesController() {
     }
@@ -74,27 +78,30 @@ public class FacilitiesController {
     }
 
     @ApiSession
-    @RequestMapping(value = "searchResults", method = RequestMethod.POST)
-    public ModelMap searchFacility(@Valid SearchFacilityForm searchFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
+    @RequestMapping(value = "searchFacilities", method = RequestMethod.POST)
+    public String searchFacility(@Valid SearchFacilityForm searchFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
         List<Facility> allFacilities = facilityService.facilities();
-        List<Facility> requestedFacilities = null;
+        List<Facility> requestedFacilities = new ArrayList<Facility>();
 
         for (Facility facility : allFacilities) {
             org.motechproject.mrs.model.Facility thatMrsFacility = facility.mrsFacility();
-            if ((thatMrsFacility != null
-                    && (StringUtils.substringMatch(thatMrsFacility.getName(), 0, searchFacilityForm.getName())
-                    || StringUtils.substringMatch(thatMrsFacility.getStateProvince(), 0, searchFacilityForm.getStateProvince())
-                    || StringUtils.substringMatch(thatMrsFacility.getCountyDistrict(), 0, searchFacilityForm.getCountyDistrict())
-                    || StringUtils.substringMatch(thatMrsFacility.getRegion(), 0, searchFacilityForm.getRegion())
-                    || StringUtils.substringMatch(thatMrsFacility.getCountry(), 0, searchFacilityForm.getCountry())))
-                    || facility.phoneNumber() == searchFacilityForm.getPhoneNumber()
-                    || facility.mrsFacilityId() == searchFacilityForm.getId()) {
 
-                requestedFacilities.add(facility);
+            try {
+                if (StringUtils.equals(thatMrsFacility.getName(), searchFacilityForm.getName())
+                        || StringUtils.equals(thatMrsFacility.getStateProvince(), searchFacilityForm.getStateProvince())
+                        || StringUtils.equals(thatMrsFacility.getCountyDistrict(), searchFacilityForm.getCountyDistrict())
+                        || StringUtils.equals(thatMrsFacility.getRegion(), searchFacilityForm.getRegion())
+                        || StringUtils.equals(thatMrsFacility.getCountry(), searchFacilityForm.getCountry())
+                        || facility.phoneNumber() == searchFacilityForm.getPhoneNumber()
+                        || facility.mrsFacilityId() == searchFacilityForm.getId()) {
+
+                    requestedFacilities.add(facility);
+                }
+            } catch (Exception e) {
             }
         }
-        modelMap.put("requestedFacilities",requestedFacilities);
-        return modelMap;
+        modelMap.put("requestedFacilities", requestedFacilities);
+        return SEARCH_RESULTS;
     }
 
 
