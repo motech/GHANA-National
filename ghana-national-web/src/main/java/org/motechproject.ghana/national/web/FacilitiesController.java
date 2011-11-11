@@ -75,7 +75,7 @@ public class FacilitiesController {
 
     @ApiSession
     @RequestMapping(value = "searchResults", method = RequestMethod.POST)
-    public void searchFacility(@Valid SearchFacilityForm searchFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
+    public ModelMap searchFacility(@Valid SearchFacilityForm searchFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
         List<Facility> allFacilities = facilityService.facilities();
         List<Facility> requestedFacilities = null;
 
@@ -94,6 +94,7 @@ public class FacilitiesController {
             }
         }
         modelMap.put("requestedFacilities",requestedFacilities);
+        return modelMap;
     }
 
 
