@@ -8,5 +8,8 @@
     <definition extends="default" name="facilities/success">
         <put-attribute name="body" value="/WEB-INF/views/facilities/success.jspx"/>
     </definition>
+    <!--<definition extends="default" name="facilities/search">-->
+        <!--<put-attribute name="body" value="/WEB-INF/views/facilities/search.jspx"/>-->
+    <!--</definition>-->
 </tiles-definitions>
 
