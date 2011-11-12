@@ -80,35 +80,41 @@ public class FacilitiesController {
         List<Facility> allFacilities = facilityService.facilities();
         List<Facility> requestedFacilities = new ArrayList<Facility>();
 
+        Map searchFields = new HashMap() {{
+            put(1, searchFacilityForm.getName());
+            put(2, searchFacilityForm.getStateProvince());
+            put(3, searchFacilityForm.getCountyDistrict());
+            put(4, searchFacilityForm.getRegion());
+            put(5, searchFacilityForm.getCountry());
+        }};
+        Map searchFieldsCombination = new HashMap();
+        int mapCount = 1;
+        for (int i = 1; i <= 5; i++) {
+            if (!searchFields.get(i).equals("")) {
+                searchFieldsCombination.put(i, searchFields.get(i));
+                mapCount++;
+            } else
+                searchFieldsCombination.put(i, "fieldNotRequiredForSearch");
+        }
         for (Facility searchFacility : allFacilities) {
             org.motechproject.mrs.model.Facility thatMrsFacility = searchFacility.mrsFacility();
 
             try {
-                Map searchFields = new HashMap() {{
-                    put(1, searchFacilityForm.getName());
-                    put(2, searchFacilityForm.getStateProvince());
-                    put(3, searchFacilityForm.getCountyDistrict());
-                    put(4, searchFacilityForm.getRegion());
-                    put(5, searchFacilityForm.getCountry());
-                }};
-                Map searchFieldsCombination = new HashMap();
-                for (int i = 1; i <= 5; i++) {
-                    if (!searchFields.get(i).equals(""))
-                        searchFieldsCombination.put(i, searchFields.get(i));
-                }
-
-                for (int i = 0; i < searchFieldsCombination.size(); i++) {
-                    String searchValue = (String) searchFieldsCombination.get(i);
+                int combinationFieldSize = 1;
+                int fieldIndex;
+                for (fieldIndex = 1; fieldIndex <= 5; fieldIndex++) {
+                    String searchValue = (String) searchFieldsCombination.get(fieldIndex);
                     if (StringUtils.equals(thatMrsFacility.getName(), searchValue)
                             || StringUtils.equals(thatMrsFacility.getStateProvince(), searchValue)
                             || StringUtils.equals(thatMrsFacility.getCountyDistrict(), searchValue)
                             || StringUtils.equals(thatMrsFacility.getRegion(), searchValue)
                             || StringUtils.equals(thatMrsFacility.getCountry(), searchValue)) {
 
-                        requestedFacilities.add(searchFacility);
-                        break;
+                        combinationFieldSize++;
                     }
                 }
+                if (combinationFieldSize == mapCount)
+                    requestedFacilities.add(searchFacility);
             } catch (Exception e) {
             }
         }
