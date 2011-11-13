@@ -2,7 +2,7 @@ package org.motechproject.ghana.national.web.form;
 
 public class SearchFacilityForm {
 
-    private Integer id;
+    private String facilityID;
     private String name;
     private String country;
     private String region;
@@ -16,8 +16,12 @@ public class SearchFacilityForm {
     public SearchFacilityForm() {
     }
 
-    public Integer getId() {
-        return id;
+    public String getFacilityID() {
+        return facilityID;
+    }
+
+    public void setFacilityID(String facilityID) {
+        this.facilityID = facilityID;
     }
 
     public String getName() {

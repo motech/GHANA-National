@@ -79,32 +79,32 @@ public class FacilitiesController {
     public String searchFacility(@Valid final SearchFacilityForm searchFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
         List<Facility> allFacilities = facilityService.facilities();
         List<Facility> requestedFacilities = new ArrayList<Facility>();
-
         Map searchFields = new HashMap() {{
-            put(1, searchFacilityForm.getName());
-            put(2, searchFacilityForm.getStateProvince());
-            put(3, searchFacilityForm.getCountyDistrict());
-            put(4, searchFacilityForm.getRegion());
-            put(5, searchFacilityForm.getCountry());
+            put(1, searchFacilityForm.getFacilityID());
+            put(2, searchFacilityForm.getName());
+            put(3, searchFacilityForm.getStateProvince());
+            put(4, searchFacilityForm.getCountyDistrict());
+            put(5, searchFacilityForm.getRegion());
+            put(6, searchFacilityForm.getCountry());
         }};
-        Map searchFieldsCombination = new HashMap();
         int mapCount = 1;
-        for (int i = 1; i <= 5; i++) {
-            if (!searchFields.get(i).equals("")) {
-                searchFieldsCombination.put(i, searchFields.get(i));
+        Map searchFieldsCombination = new HashMap();
+        for (int loopCounter = 1; loopCounter <= 6; loopCounter++) {
+            if (!searchFields.get(loopCounter).equals("")) {
+                searchFieldsCombination.put(loopCounter, searchFields.get(loopCounter));
                 mapCount++;
             } else
-                searchFieldsCombination.put(i, "fieldNotRequiredForSearch");
+                searchFieldsCombination.put(loopCounter, "fieldNotRequiredForSearch");
         }
         for (Facility searchFacility : allFacilities) {
             org.motechproject.mrs.model.Facility thatMrsFacility = searchFacility.mrsFacility();
-
             try {
                 int combinationFieldSize = 1;
                 int fieldIndex;
-                for (fieldIndex = 1; fieldIndex <= 5; fieldIndex++) {
+                for (fieldIndex = 1; fieldIndex <= searchFields.size(); fieldIndex++) {
                     String searchValue = (String) searchFieldsCombination.get(fieldIndex);
-                    if (StringUtils.equals(thatMrsFacility.getName(), searchValue)
+                    if (StringUtils.equals(thatMrsFacility.getId(), searchValue)
+                            || StringUtils.equals(thatMrsFacility.getName(), searchValue)
                             || StringUtils.equals(thatMrsFacility.getStateProvince(), searchValue)
                             || StringUtils.equals(thatMrsFacility.getCountyDistrict(), searchValue)
                             || StringUtils.equals(thatMrsFacility.getRegion(), searchValue)

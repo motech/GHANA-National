@@ -1,7 +1,9 @@
 package org.motechproject.ghana.national.web;
 
+import ca.uhn.hl7v2.model.v23.datatype.MO;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -10,6 +12,7 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.CreateFacilityForm;
+import org.motechproject.ghana.national.web.form.SearchFacilityForm;
 import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -19,6 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -36,11 +40,15 @@ public class FacilitiesControllerTest {
     FacilityService mockFacilityService;
     @Mock
     MessageSource mockMessageSource;
+    @Mock
+    BindingResult mockBindingResult;
+    FacilityService facilityService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        facilitiesController = new FacilitiesController(mockFacilityService,mockMessageSource);
+        facilitiesController = new FacilitiesController(mockFacilityService, mockMessageSource);
+        mockBindingResult = mock(BindingResult.class);
     }
 
     @Test
@@ -76,7 +84,6 @@ public class FacilitiesControllerTest {
 
     @Test
     public void testSaveFacilityWhenInValid() throws FacilityAlreadyFoundException {
-        final BindingResult mockBindingResult = mock(BindingResult.class);
         final ModelMap modelMap = new ModelMap();
         final String facility = "facility";
         final String country = "country";
@@ -123,5 +130,31 @@ public class FacilitiesControllerTest {
         assertNotNull(modelMap.get(Constants.REGIONS));
         assertNotNull(modelMap.get(Constants.PROVINCES));
         assertNotNull(modelMap.get(Constants.DISTRICTS));
+    }
+
+    @Test
+    public void shouldSearchForFacility() throws FacilityAlreadyFoundException {
+        final String id = "id";
+        final String name = "name";
+        final String country = "country";
+        final String region = "region";
+        final String district = "district";
+        final String province = "province";
+        final SearchFacilityForm searchFacilityForm = new SearchFacilityForm();
+        searchFacilityForm.setFacilityID(id);
+        searchFacilityForm.setName(name);
+        searchFacilityForm.setCountry(country);
+        searchFacilityForm.setRegion(region);
+        searchFacilityForm.setCountyDistrict(district);
+        searchFacilityForm.setStateProvince(province);
+        searchFacilityForm.setPhoneNumber(StringUtils.EMPTY);
+        searchFacilityForm.setAdditionalPhoneNumber1(StringUtils.EMPTY);
+        searchFacilityForm.setAdditionalPhoneNumber2(StringUtils.EMPTY);
+        searchFacilityForm.setAdditionalPhoneNumber3(StringUtils.EMPTY);
+        mockFacilityService.facilities();
+        ModelMap modelMap = new ModelMap();
+        facilitiesController.searchFacility(searchFacilityForm, mockBindingResult, modelMap);
+        assertNotNull(modelMap.get("requestedFacilities"));
+
     }
 }

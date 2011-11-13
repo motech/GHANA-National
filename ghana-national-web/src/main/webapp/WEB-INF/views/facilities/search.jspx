@@ -34,8 +34,8 @@
 
 
         <div>
-            <label for="id" class="formLabel">${fn:escapeXml(facility_id)}:</label>
-            <form:input path="id" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_id)}"/>
+            <label for="facilityID" class="formLabel">${fn:escapeXml(facility_id)}:</label>
+            <form:input path="facilityID" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_id)}"/>
         </div>
         <div>
             <label for="name" class="formLabel">${fn:escapeXml(facility_name)}:</label>
@@ -65,10 +65,6 @@
                              defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
                              locations="${provinces}"/>
         </div>
-        <div>
-            <motech:phone path="phoneNumber" label="${facility_phone_number}"
-                          errorMsg="${facility_phone_number_incorrect_msg}" required="true"/>
-        </div>
 
         <input type="button" id="searchFacility" value="Search"/>
 
@@ -81,16 +77,18 @@
                 <h4>* Please click on the facility id to edit the facility</h4>
                 <table border="2" padding="3" cellpadding="20">
                     <tr>
-                        <td>ID</td>
-                        <td>Name</td>
-                        <td>Region</td>
-                        <td>District</td>
-                        <td>Province</td>
+                        <td><b>ID</b></td>
+                        <td><b>Name</b></td>
+                        <td><b>Country</b></td>
+                        <td><b>Region</b></td>
+                        <td><b>District</b></td>
+                        <td><b>Province</b></td>
                     </tr>
                     <c:forEach var="facility" items="${requestedFacilities}">
                         <tr border="3" padding="2">
                             <td><a href=""><c:out value="${facility.mrsFacility.id}"/></a></td>
                             <td><c:out value="${facility.mrsFacility.name}"/></td>
+                            <td><c:out value="${facility.mrsFacility.country}"/></td>
                             <td><c:out value="${facility.mrsFacility.region}"/></td>
                             <td><c:out value="${facility.mrsFacility.countyDistrict}"/></td>
                             <td><c:out value="${facility.mrsFacility.stateProvince}"/></td>
