@@ -193,7 +193,7 @@
         </div>
         <div class="form-field">
             <label class="formLabel" for="nhisExpirationDate">${fn:escapeXml(patient_nhis_expiration_date)}:</label>
-            <form:input path="nhisExpirationDate" size="20" label="${fn:escapeXml(patient_nhis_expiration_date)}" cssClass="jsDate jsBefore"/>
+            <form:input path="nhisExpirationDate" size="20" label="${fn:escapeXml(patient_nhis_expiration_date)}" cssClass="jsDate"/>
             <span id='nhisExpirationDateError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_nhis_expiration_date)} ${fn:escapeXml(required_msg)}
             </span>
