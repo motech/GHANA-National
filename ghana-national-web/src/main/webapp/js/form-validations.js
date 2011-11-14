@@ -26,12 +26,15 @@ function FormValidator() {
 
     this.clearMessages = function(form) {
         form.find('.alertText').addClass('hide');
+        form.find('input, textarea').each(function() {
+            $(this).val(jQuery.trim($(this).val()));
+        });
     }
 
     this.validateDate = function(form) {
         form.find('.jsDate').each(function() {
             var val = $(this).val();
-            var re = /\b\d{1,2}[\/-]\d{1,2}[\/-]\d{4}\b/;
+            var re = /\b\d{1,2}[\/]\d{1,2}[\/]\d{4}\b/;
             if(utilities.isNull(val)) {
                 return;
             }
