@@ -87,16 +87,18 @@ public class FacilitiesController {
             put(5, searchFacilityForm.getRegion());
             put(6, searchFacilityForm.getCountry());
         }};
-        int mapCount = 1;
+        int fieldsForSearch = 1;
+        int fieldIndex;
         Map searchFieldsCombination = new HashMap();
         for (int loopCounter = 1; loopCounter <= 6; loopCounter++) {
             if (!searchFields.get(loopCounter).equals("")) {
                 searchFieldsCombination.put(loopCounter, searchFields.get(loopCounter));
-                mapCount++;
-            } else
+                fieldsForSearch++;
+            } else {
                 searchFieldsCombination.put(loopCounter, "fieldNotRequiredForSearch");
+            }
         }
-        if (mapCount == 1) {
+        if (fieldsForSearch == 1) {
             modelMap.put("requestedFacilities", requestedFacilities);
             modelMap.mergeAttributes(facilityService.locationMap());
             return SEARCH_FACILITY;
@@ -105,7 +107,6 @@ public class FacilitiesController {
             org.motechproject.mrs.model.Facility thatMrsFacility = searchFacility.mrsFacility();
             try {
                 int combinationFieldSize = 1;
-                int fieldIndex;
                 for (fieldIndex = 1; fieldIndex <= searchFields.size(); fieldIndex++) {
                     String searchValue = (String) searchFieldsCombination.get(fieldIndex);
                     if (StringUtils.equals(thatMrsFacility.getId(), searchValue)
@@ -118,7 +119,7 @@ public class FacilitiesController {
                         combinationFieldSize++;
                     }
                 }
-                if (combinationFieldSize == mapCount)
+                if (combinationFieldSize == fieldsForSearch)
                     requestedFacilities.add(searchFacility);
             } catch (Exception e) {
             }
