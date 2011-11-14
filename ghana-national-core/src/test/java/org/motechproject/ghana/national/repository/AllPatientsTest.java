@@ -79,7 +79,7 @@ public class AllPatientsTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void shouldReturnNullIfFetchPatientByIdIsNull() {
         final String patientId = "1";
-        when(mockMrsPatientAdaptor.getPatient(patientId)).thenReturn(null);
+        when(mockMrsPatientAdaptor.getPatientByMotechId(patientId)).thenReturn(null);
         final Patient actualPatient = allPatients.patientById(patientId);
         assertNull(actualPatient);
     }
@@ -88,7 +88,7 @@ public class AllPatientsTest extends AbstractJUnit4SpringContextTests {
     public void shouldFetchPatientById() {
         final String patientId = "1";
         org.motechproject.mrs.model.Patient patient = new org.motechproject.mrs.model.Patient(null, null, null, null, null, null, null, null);
-        when(mockMrsPatientAdaptor.getPatient(patientId)).thenReturn(patient);
+        when(mockMrsPatientAdaptor.getPatientByMotechId(patientId)).thenReturn(patient);
         final Patient actualPatient = allPatients.patientById(patientId);
         assertThat(actualPatient.mrsPatient(), is(patient));
     }

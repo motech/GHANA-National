@@ -12,6 +12,9 @@
 
     <form:form id="createPatientForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Patient"
                commandName="createPatientForm">
+        <div class="formlyAlerts">
+            <form:errors path="parentId" element="div" cssClass="formlyInvalid formlyAlert" cssStyle="display: block;"/>
+        </div>
         <spring:message code="patient_registration_mode" var="patient_registration_mode" htmlEscape="false"/>
         <spring:message code="patient_registration_mode_1_label" var="patient_registration_mode_1" htmlEscape="false"/>
         <spring:message code="patient_registration_mode_2_label" var="patient_registration_mode_2" htmlEscape="false"/>
@@ -193,7 +196,8 @@
         </div>
         <div class="form-field">
             <label class="formLabel" for="nhisExpirationDate">${fn:escapeXml(patient_nhis_expiration_date)}:</label>
-            <form:input path="nhisExpirationDate" size="20" label="${fn:escapeXml(patient_nhis_expiration_date)}" cssClass="jsDate"/>
+            <form:input path="nhisExpirationDate" size="20" label="${fn:escapeXml(patient_nhis_expiration_date)}"
+                        cssClass="jsDate"/>
             <span id='nhisExpirationDateError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_nhis_expiration_date)} ${fn:escapeXml(required_msg)}
             </span>
@@ -234,9 +238,5 @@
         </div>
 
         <input type="button" id="submitNewPatient" value="Submit"/>
-
-        <div class="formlyAlerts">
-            <form:errors path="parentId" element="div" cssClass="formlyInvalid formlyAlert" cssStyle="display: block;"/>
-        </div>
     </form:form>
 </div>

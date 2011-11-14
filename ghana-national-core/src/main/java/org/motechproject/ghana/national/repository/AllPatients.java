@@ -25,7 +25,7 @@ public class AllPatients extends MotechAuditableRepository<Patient> {
     }
 
     public Patient patientById(String id) {
-        org.motechproject.mrs.model.Patient mrsPatient = patientAdaptor.getPatient(id);
+        org.motechproject.mrs.model.Patient mrsPatient = patientAdaptor.getPatientByMotechId(id);
         return (mrsPatient != null) ? new Patient(mrsPatient) : null;
     }
 }
