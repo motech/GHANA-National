@@ -81,7 +81,7 @@ public class FacilitiesController {
         List<Facility> requestedFacilities = new ArrayList<Facility>();
         Map searchFields = new HashMap() {{
             put(1, searchFacilityForm.getFacilityID());
-            put(2, searchFacilityForm.getName());
+            put(2, searchFacilityForm.getName().toLowerCase());
             put(3, searchFacilityForm.getStateProvince());
             put(4, searchFacilityForm.getCountyDistrict());
             put(5, searchFacilityForm.getRegion());
@@ -104,7 +104,7 @@ public class FacilitiesController {
                 for (fieldIndex = 1; fieldIndex <= searchFields.size(); fieldIndex++) {
                     String searchValue = (String) searchFieldsCombination.get(fieldIndex);
                     if (StringUtils.equals(thatMrsFacility.getId(), searchValue)
-                            || StringUtils.equals(thatMrsFacility.getName(), searchValue)
+                            || StringUtils.contains(searchValue,StringUtils.substring(thatMrsFacility.getName(),0,2).toLowerCase())
                             || StringUtils.equals(thatMrsFacility.getStateProvince(), searchValue)
                             || StringUtils.equals(thatMrsFacility.getCountyDistrict(), searchValue)
                             || StringUtils.equals(thatMrsFacility.getRegion(), searchValue)
