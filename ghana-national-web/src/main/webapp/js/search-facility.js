@@ -14,7 +14,6 @@ $(document).ready(function() {
     var validate = function(facilityForm) {
         hasSelectedValidItem();
         formValidator.clearMessages(facilityForm);
-        formValidator.validatePhoneNumbers(facilityForm);
     }
 
     $("#searchFacilityForm").formly({'onBlur':false, 'theme':'Light'});
