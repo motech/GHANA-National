@@ -96,6 +96,9 @@
                     </c:forEach>
                 </table>
             </c:if>
+            <c:if test="${empty requestedFacilities}">
+                <h4>* Please select atleast one field to search for a facility</h4>
+            </c:if>
         </div>
     </form:form>
 </div>

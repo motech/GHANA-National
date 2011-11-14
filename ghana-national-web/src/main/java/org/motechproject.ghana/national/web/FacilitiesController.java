@@ -96,6 +96,11 @@ public class FacilitiesController {
             } else
                 searchFieldsCombination.put(loopCounter, "fieldNotRequiredForSearch");
         }
+        if (mapCount == 1) {
+            modelMap.put("requestedFacilities", requestedFacilities);
+            modelMap.mergeAttributes(facilityService.locationMap());
+            return SEARCH_FACILITY;
+        }
         for (Facility searchFacility : allFacilities) {
             org.motechproject.mrs.model.Facility thatMrsFacility = searchFacility.mrsFacility();
             try {
@@ -104,7 +109,7 @@ public class FacilitiesController {
                 for (fieldIndex = 1; fieldIndex <= searchFields.size(); fieldIndex++) {
                     String searchValue = (String) searchFieldsCombination.get(fieldIndex);
                     if (StringUtils.equals(thatMrsFacility.getId(), searchValue)
-                            || StringUtils.equals(StringUtils.substring(searchValue,0,3),StringUtils.substring(thatMrsFacility.getName(),0,3).toLowerCase())
+                            || StringUtils.equals(StringUtils.substring(searchValue, 0, 3), StringUtils.substring(thatMrsFacility.getName(), 0, 3).toLowerCase())
                             || StringUtils.equals(thatMrsFacility.getStateProvince(), searchValue)
                             || StringUtils.equals(thatMrsFacility.getCountyDistrict(), searchValue)
                             || StringUtils.equals(thatMrsFacility.getRegion(), searchValue)
@@ -119,6 +124,7 @@ public class FacilitiesController {
             }
         }
         modelMap.put("requestedFacilities", requestedFacilities);
+        modelMap.mergeAttributes(facilityService.locationMap());
         return SEARCH_FACILITY;
     }
 
