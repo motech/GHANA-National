@@ -1,0 +1,62 @@
+<div id="body" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:spring="http://www.springframework.org/tags">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <spring:url value="/resources/js/search-user.js" var="search_user_url"/>
+    <script src="${search_user_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <spring:url value="/admin/users/search" var="form_url"/>
+
+    <form:form id="searchUserForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search a staff member"
+               commandName="searchUserForm">
+        <spring:message code="user_first_name" var="user_first_name" htmlEscape="false"/>
+        <spring:message code="user_middle_name" var="user_middle_name" htmlEscape="false"/>
+        <spring:message code="user_last_name" var="user_last_name" htmlEscape="false"/>
+        <spring:message code="user_phone" var="user_phone" htmlEscape="false"/>
+        <spring:message code="user_email" var="user_email" htmlEscape="false"/>
+        <spring:message code="user_role" var="user_role" htmlEscape="false"/>
+        <spring:message code="user_role_select" var="user_role_select" htmlEscape="false"/>
+
+        <div>
+            <label class="formLabel" for="user_first_name">${fn:escapeXml(user_first_name)}:</label>
+            <form:input id="user_first_name" path="firstName" size="20" label="${fn:escapeXml(user_first_name)}"/>
+            <span id='firstName_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <div>
+            <label class="formLabel" for="user_middle_name">${fn:escapeXml(user_middle_name)}:</label>
+            <form:input id="user_middle_name" path="middleName" size="20" label="${fn:escapeXml(user_middle_name)}"/>
+            <span id='middleName_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <div>
+            <label class="formLabel" for="user_last_name">${fn:escapeXml(user_last_name)}:</label>
+            <form:input id="user_last_name" path="lastName" size="20" label="${fn:escapeXml(user_last_name)}"/>
+            <span id='lastName_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <div>
+            <label class="formLabel" for="user_phone">${fn:escapeXml(user_phone)}:</label>
+            <form:input id="user_phone" path="phoneNumber" size="20" label="${fn:escapeXml(user_phone)}"/>
+            <span id='phone_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <div>
+            <label class="formLabel" for="user_email">${fn:escapeXml(user_email)}:</label>
+            <form:input id="user_email" path="email" size="20" label="${fn:escapeXml(user_email)}"/>
+            <span id='email_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <div>
+            <label class="formLabel" for="user_role">${fn:escapeXml(user_role)}:</label>
+            <form:select id="user_role" path="role">
+                <option parent="select" value="">${fn:escapeXml(user_role_select)}</option>
+                <c:forEach items="${roles}" var="role">
+                    <option value="${role}">${role}</option>
+                </c:forEach>
+            </form:select>
+            <span id='role_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <input type="button" id="searchUser" value="Search"/>
+
+        <div class="formlyAlerts">
+            <form:errors path="email" element="div" cssClass="formlyInvalid formlyAlert"
+                         cssStyle="display: block;"/>
+        </div>
+    </form:form>
+</div>
