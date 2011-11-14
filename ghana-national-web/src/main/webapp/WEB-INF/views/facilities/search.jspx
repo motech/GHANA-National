@@ -52,17 +52,17 @@
         </div>
         <div class="hide">
             <motech:location id="regions" path="region" label="${facility_region}"
-                             defaultValue="${facility_region_select}" errorMsg="${facility_region_req_msg}"
+                             defaultValue="${facility_region_select}" errorMsg=""
                              locations="${regions}"/>
         </div>
         <div class="hide">
             <motech:location id="districts" path="countyDistrict" label="${facility_district}"
-                             defaultValue="${facility_district_select}" errorMsg="${facility_district_req_msg}"
+                             defaultValue="${facility_district_select}" errorMsg=""
                              locations="${districts}"/>
         </div>
         <div class="hide">
             <motech:location id="sub-districts" path="stateProvince" label="${facility_sub_district}"
-                             defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
+                             defaultValue="${facility_sub_district_select}" errorMsg=""
                              locations="${provinces}"/>
         </div>
 
@@ -95,9 +95,6 @@
                         </tr>
                     </c:forEach>
                 </table>
-            </c:if>
-            <c:if test="${empty requestedFacilities}">
-                <h4>* Please select atleast one field to search for a facility</h4>
             </c:if>
         </div>
     </form:form>
