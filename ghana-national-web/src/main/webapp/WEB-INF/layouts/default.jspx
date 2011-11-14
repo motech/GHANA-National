@@ -21,6 +21,7 @@
     <spring:url value="/resources/css/lib/formly.min.css" var="formly_css_url"/>
     <spring:url value="/resources/css/lib/jquery-ui-1.8.16.datepicker.css" var="datepicker_css_url"/>
     <spring:url value="/resources/js/lib/jquery-ui-1.8.16.datepicker.min.js" var="datepicker_url"/>
+    <spring:url value="/resources/js/lib/jquery.ui.datepicker.validation.js" var="datepicker_validation_url"/>
 
     <link rel="stylesheet" type="text/css" media="screen" href="${formly_css_url}"></link>
     <link rel="stylesheet" type="text/css" media="screen" href="${css_url}"></link>
@@ -31,6 +32,7 @@
     <script src="${utilities_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${form_validations_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${datepicker_url}" type="text/javascript"><!--closing tag needed--></script>
+    <script src="${datepicker_validation_url}" type="text/javascript"><!--closing tag needed--></script>
 </head>
 <body>
 <div id="page-wrap">

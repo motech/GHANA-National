@@ -60,6 +60,7 @@
         <spring:message code="facility_facility_select" var="facility_facility_select" htmlEscape="false"/>
         <spring:message code="facility_sub_district_select" var="facility_sub_district_select" htmlEscape="false"/>
         <spring:message code="required_msg" var="required_msg" htmlEscape="false"/>
+        <spring:message code="incorrect_msg" var="incorrect_msg" htmlEscape="false"/>
 
         <div class="form-field">
             <label class="formLabel" for="registrationMode">${fn:escapeXml(patient_registration_mode)}:</label>
@@ -130,10 +131,13 @@
         </div>
         <div class="form-field">
             <label class="formLabel" for="dateOfBirth">${fn:escapeXml(patient_date_of_birth)}:</label>
-            <form:input path="dateOfBirth" cssClass="jsRequire" size="20"
+            <form:input path="dateOfBirth" cssClass="jsRequire jsDate jsBefore" size="20"
                         label="${fn:escapeXml(patient_date_of_birth)}"/>
             <span id='dateOfBirthError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_date_of_birth)} ${fn:escapeXml(required_msg)}
+            </span>
+            <span id='dateOfBirthDateError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_date_of_birth)} ${fn:escapeXml(incorrect_msg)}
             </span>
         </div>
         <div class="form-field">
@@ -183,10 +187,19 @@
         <div class="form-field">
             <label class="formLabel" for="nhisNumber">${fn:escapeXml(patient_nhis_number)}:</label>
             <form:input path="nhisNumber" size="20" label="${fn:escapeXml(patient_nhis_number)}"/>
+            <span id='nhisNumberError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_nhis_number)} ${fn:escapeXml(required_msg)}
+            </span>
         </div>
         <div class="form-field">
             <label class="formLabel" for="nhisExpirationDate">${fn:escapeXml(patient_nhis_expiration_date)}:</label>
-            <form:input path="nhisExpirationDate" size="20" label="${fn:escapeXml(patient_nhis_expiration_date)}"/>
+            <form:input path="nhisExpirationDate" size="20" label="${fn:escapeXml(patient_nhis_expiration_date)}" cssClass="jsDate jsBefore"/>
+            <span id='nhisExpirationDateError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_nhis_expiration_date)} ${fn:escapeXml(required_msg)}
+            </span>
+            <span id='nhisExpirationDateDateError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_nhis_expiration_date)} ${fn:escapeXml(incorrect_msg)}
+            </span>
         </div>
         <div class="form-field">
             <motech:location id="regions" path="region" label="${facility_region}"
