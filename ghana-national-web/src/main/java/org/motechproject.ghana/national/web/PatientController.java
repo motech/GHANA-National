@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
+import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -64,10 +65,13 @@ public class PatientController {
         try {
             patientService.registerPatient(createPatientForm.getPatient(), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
         } catch (ParentNotFoundException e) {
-            handleError(result, modelMap,messageSource.getMessage("patient_parent_not_found", null, Locale.getDefault()));
+            handleError(result, modelMap, messageSource.getMessage("patient_parent_not_found", null, Locale.getDefault()));
             return NEW_PATIENT;
         } catch (PatientIdNotUniqueException e) {
-            handleError(result, modelMap,messageSource.getMessage("patient_id_duplicate", null, Locale.getDefault()));
+            handleError(result, modelMap, messageSource.getMessage("patient_id_duplicate", null, Locale.getDefault()));
+            return NEW_PATIENT;
+        } catch (PatientIdIncorrectFormatException e) {
+            handleError(result, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
             return NEW_PATIENT;
         }
         return SUCCESS;

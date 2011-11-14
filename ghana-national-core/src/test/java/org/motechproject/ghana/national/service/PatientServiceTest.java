@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
+import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.openmrs.api.IdentifierNotUniqueException;
@@ -30,7 +31,7 @@ public class PatientServiceTest {
     }
 
     @Test
-    public void shouldNotTryToValidateParentIfParentIdIsNotSet() throws ParentNotFoundException, PatientIdNotUniqueException {
+    public void shouldNotTryToValidateParentIfParentIdIsNotSet() throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         Patient patient = mock(Patient.class);
         final String parentId = "";
         patientService.registerPatient(patient, PatientType.CHILD, parentId);
@@ -38,7 +39,7 @@ public class PatientServiceTest {
     }
 
     @Test(expected = ParentNotFoundException.class)
-    public void shouldThrowParentNotFoundExceptionWhenNotFound() throws ParentNotFoundException, PatientIdNotUniqueException {
+    public void shouldThrowParentNotFoundExceptionWhenNotFound() throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         Patient patient = mock(Patient.class);
         final String parentId = "11";
         when(mockAllPatients.patientById(parentId)).thenReturn(null);
@@ -46,7 +47,7 @@ public class PatientServiceTest {
     }
 
     @Test
-    public void shouldRegisterAPatientWithParentIfFound() throws ParentNotFoundException, PatientIdNotUniqueException {
+    public void shouldRegisterAPatientWithParentIfFound() throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         Patient patient = mock(Patient.class);
         Patient mother = mock(Patient.class);
         final String parentId = "11";
@@ -57,7 +58,7 @@ public class PatientServiceTest {
     }
 
     @Test(expected = PatientIdNotUniqueException.class)
-    public void shouldThrowPatientIdNotUniqueExceptionWhenOpenMRSThrowsCorrespondingException() throws ParentNotFoundException, PatientIdNotUniqueException {
+    public void shouldThrowPatientIdNotUniqueExceptionWhenOpenMRSThrowsCorrespondingException() throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         Patient patient = mock(Patient.class);
         Patient mother = mock(Patient.class);
         final String parentId = "11";
