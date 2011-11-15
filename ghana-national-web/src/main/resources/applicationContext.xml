@@ -17,6 +17,7 @@
 
     <util:properties id="couchdbProperties" location="classpath:couchdb.properties"/>
 
+
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>
             <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean"/>
