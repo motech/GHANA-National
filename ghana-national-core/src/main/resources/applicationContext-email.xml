@@ -3,7 +3,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
-    <util:properties id="emailProperties" location="classpath:emailtemplates/email.properties"/>
+    <util:properties id="emailProperties" location="classpath:email.properties"/>
 
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="#{emailProperties.mailSmtpHost}"/>
