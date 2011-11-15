@@ -1,23 +1,18 @@
 package org.motechproject.ghana.national.service;
 
 
-import org.motechproject.mrs.services.MRSIdentifierAdaptor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.logging.Logger;
 
 @Service
 public class IdentifierService {
-    private MRSIdentifierAdaptor identifierAdaptor;
+    private Logger log = Logger.getLogger(IdentifierService.class.getName());
 
-    public IdentifierService() {
-    }
+//    @Value("#{mobileFormsProperties['forms.xml.form.name']}")
+//    private String url;
 
-    @Autowired
-    public IdentifierService(MRSIdentifierAdaptor identifierAdaptor) {
-        this.identifierAdaptor = identifierAdaptor;
-    }
 
-    public MRSIdentifierAdaptor getIdentifierAdaptor() {
-        return identifierAdaptor;
-    }
+
 }

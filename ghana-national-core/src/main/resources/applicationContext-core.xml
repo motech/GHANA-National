@@ -26,6 +26,6 @@
         <constructor-arg value="ghana-national"/>
     </bean>
 
-    <beans:import resource="classpath:emailtemplates/email-template.xml"/>
+    <beans:import resource="classpath:applicationContext-email.xml"/>
 
 </beans>
