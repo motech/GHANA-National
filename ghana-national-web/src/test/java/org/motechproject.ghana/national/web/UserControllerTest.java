@@ -93,14 +93,14 @@ public class UserControllerTest {
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userService).saveUser(captor.capture());
         User captured = captor.getValue();
-        assertEquals("jack@daniels.com", captured.id());
+        assertEquals("jack@daniels.com", captured.getId());
         assertEquals(form.getRole(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
         assertEquals(form.getEmail(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_EMAIL));
         assertEquals(form.getPhoneNumber(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER));
     }
 
     private String getAttrValue(User user, String name) {
-        for (Attribute userAttribute : user.attributes())
+        for (Attribute userAttribute : user.getAttributes())
             if (userAttribute.name().equalsIgnoreCase(name)) return userAttribute.value();
         return null;
     }

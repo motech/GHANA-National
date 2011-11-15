@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.web;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.internal.compiler.impl.Constant;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.UserType;
@@ -73,7 +74,7 @@ public class UserController {
         try {
             HashMap userData = userService.saveUser(user);
             model.put(USER_ID, userData.get("userLoginId"));
-            model.put(USER_NAME, user.fullName());
+            model.put(USER_NAME, user.getFullName());
             if (roleOfStaff.equals("Super Admin") || roleOfStaff.equals("Facility Admin") || roleOfStaff.equals("CallCenter Admin"))
                 emailTemplateService.sendEmailUsingTemplates((String) userData.get("userLoginId"), (String) userData.get("password"));
         } catch (UserAlreadyExistsException e) {
@@ -85,29 +86,29 @@ public class UserController {
         return CREATE_USER_SUCCESS_VIEW;
     }
 
-    @ApiSession
     @RequestMapping(value = "search", method = RequestMethod.GET)
     public String searchFacilityForm(ModelMap modelMap) {
         modelMap.put(SEARCH_USER_FORM, new SearchUserForm());
+        modelMap.addAttribute("roles", userService.fetchAllRoles());
         return SEARCH_USER;
     }
 
-    @ApiSession
     @RequestMapping(value = "searchUsers", method = RequestMethod.POST)
     public String searchFacility(@Valid final SearchUserForm searchUserForm, BindingResult bindingResult, ModelMap modelMap) {
-        List<User> allUsers= userService.getAllUsers();
-        List<User> requestedUsers = new ArrayList<User>();
+        List<User> allUsers = userService.getAllUsers();
+        List<List<String>> requestedUsers = new ArrayList<List<String>>();
         Map searchFields = new HashMap() {{
-            put(1, searchUserForm.getStaffId());
+            put(1, searchUserForm.getStaffID());
             put(2, searchUserForm.getFirstName().toLowerCase());
             put(3, searchUserForm.getMiddleName().toLowerCase());
             put(4, searchUserForm.getLastName().toLowerCase());
-            put(5, searchUserForm.getRole());
+            put(5, searchUserForm.getPhoneNumber());
+            put(6, searchUserForm.getRole());
         }};
         int fieldsForSearch = 1;
         int fieldIndex;
         Map searchFieldsCombination = new HashMap();
-        for (int loopCounter = 1; loopCounter <= 5; loopCounter++) {
+        for (int loopCounter = 1; loopCounter <= 6; loopCounter++) {
             if (!searchFields.get(loopCounter).equals("")) {
                 searchFieldsCombination.put(loopCounter, searchFields.get(loopCounter));
                 fieldsForSearch++;
@@ -115,29 +116,51 @@ public class UserController {
                 searchFieldsCombination.put(loopCounter, "fieldNotRequiredForSearch");
             }
         }
-//        if (fieldsForSearch == 1) {
-//            modelMap.put("requestedUsers", requestedUsers);
-//            return SEARCH_USER;
-//        }
+        if (fieldsForSearch == 1) {
+            modelMap.put("requestedUsers", requestedUsers);
+            return SEARCH_USER;
+        }
         for (User searchUser : allUsers) {
+            List<Attribute> attributes = searchUser.getAttributes();
+            Map<String, String> userAttributes = new HashMap();
+            for (Attribute attribute : attributes) {
+                String attributeKey = attribute.name();
+                if (attributeKey.equals(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER) || attributeKey.equals(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE))
+                    userAttributes.put(attributeKey, attribute.value());
+            }
             try {
                 int combinationFieldSize = 1;
                 for (fieldIndex = 1; fieldIndex <= searchFields.size(); fieldIndex++) {
                     String searchValue = (String) searchFieldsCombination.get(fieldIndex);
-                    if (StringUtils.equals(searchUser.id(), searchValue)
-                            || StringUtils.equals(StringUtils.substring(searchValue, 0, 3), StringUtils.substring(searchUser.firstName(), 0, 3).toLowerCase())
-                            || StringUtils.equals(StringUtils.substring(searchValue, 0, 3), StringUtils.substring(searchUser.middleName(), 0, 3).toLowerCase())
-                            || StringUtils.equals(StringUtils.substring(searchValue, 0, 3), StringUtils.substring(searchUser.lastName(), 0, 3).toLowerCase())){
+                    String substring = StringUtils.substring(searchValue, 0, 3);
+                    if (StringUtils.equals(searchUser.getId(), searchValue)
+                            || StringUtils.equals(substring, StringUtils.substring(searchUser.getFirstName(), 0, 3).toLowerCase())
+                            || StringUtils.equals(substring, StringUtils.substring(searchUser.getFirstName(), 0, 3).toLowerCase())
+                            || StringUtils.equals(substring, StringUtils.substring(searchUser.getMiddleName(), 0, 3).toLowerCase())
+                            || StringUtils.equals(substring, StringUtils.substring(searchUser.getLastName(), 0, 3).toLowerCase())
+                            || StringUtils.equals(substring, StringUtils.substring(userAttributes.get(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER), 0, 3))
+                            || StringUtils.equals(searchValue, userAttributes.get(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE))) {
 
                         combinationFieldSize++;
                     }
                 }
-                if (combinationFieldSize == fieldsForSearch)
-                    requestedUsers.add(searchUser);
+                if (combinationFieldSize == fieldsForSearch) {
+                    List<String> userDataList = new ArrayList<String>();
+                    userDataList.add(searchUser.getId());
+                    userDataList.add(searchUser.getFirstName());
+                    userDataList.add(searchUser.getMiddleName());
+                    userDataList.add(searchUser.getLastName());
+                    userDataList.add(userAttributes.get(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER));
+                    userDataList.add(userAttributes.get(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
+                    requestedUsers.add(userDataList);
+                }
+
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         modelMap.put("requestedUsers", requestedUsers);
+        modelMap.addAttribute("roles", userService.fetchAllRoles());
         return SEARCH_USER;
     }
 }

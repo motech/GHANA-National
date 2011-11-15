@@ -1,7 +1,7 @@
 package org.motechproject.ghana.national.web.form;
 
 public class SearchUserForm {
-    private String staffId;
+    private String staffID;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -9,12 +9,12 @@ public class SearchUserForm {
     private String phoneNumber;
     private String role;
 
-    public String getStaffId() {
-        return staffId;
+    public String getStaffID() {
+        return staffID;
     }
 
-    public void setStaffId(String id) {
-        this.staffId = id;
+    public void setStaffID(String id) {
+        this.staffID = id;
     }
 
     public String getFirstName() {

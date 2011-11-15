@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.repository.AllUserTypes;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.User;
 import org.motechproject.mrs.services.MRSUserAdaptor;
+import org.motechproject.openmrs.services.OpenMRSUserAdaptor;
 
 import java.util.Arrays;
 import java.util.List;

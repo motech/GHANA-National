@@ -20,7 +20,6 @@ import java.util.List;
 public class UserService {
     private MRSUserAdaptor userAdaptor;
     private AllUserTypes allUserTypes;
-    private OpenMRSUserAdaptor openMRSUserAdaptor;
 
     public UserService() {
     }
@@ -52,16 +51,8 @@ public class UserService {
         return roles;
     }
 
+    @ApiSession
     public List<User> getAllUsers() {
-        final List<org.openmrs.User> openMRSUsers = openMRSUserAdaptor.getAllUsers();
-        final ArrayList<User> users = new ArrayList<User>();
-        Integer id;
-
-        for (org.openmrs.User user : openMRSUsers) {
-            final User mrsUser = new User();
-            mrsUser.id(Integer.toString(user.getId())).firstName(user.getName()).middleName(user.getPersonName().getMiddleName()).lastName(user.getPersonName().getFamilyName());
-            users.add(mrsUser);
-        }
-        return users;
+        return userAdaptor.getAllUsers();
     }
 }
