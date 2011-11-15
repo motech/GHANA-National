@@ -8,3 +8,12 @@ function Utilities() {
         return value == undefined || $.trim(value) == "";
     }
 }
+
+$(document).ready(function() {
+    $('#menu ul li').hover(function(){
+            $(this).children('ul').css('display','block');
+        },
+    function() {
+        $(this).children('ul').css('display','none');
+    });
+});

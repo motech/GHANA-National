@@ -30,7 +30,4 @@ public class EmailTemplateServiceIT extends AbstractJUnit4SpringContextTests {
         String emailSentStatus = emailTemplateService.sendEmailUsingTemplates(toEmailId, password);
         assertThat(emailSentStatus,is(equalTo(Constants.EMAIL_SUCCESS)));
     }
-
-
-
 }

@@ -39,7 +39,7 @@
         </div>
         <div>
             <label for="name" class="formLabel">${fn:escapeXml(facility_name)}:</label>
-            <form:input path="name" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_name)}"/>
+            <form:input path="name" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_name)}"/> <span class="input-description"> * Please enter atleast 3 characters to enable the search</span>
         </div>
         <div>
             <label for="countries" class="formLabel">${fn:escapeXml(facility_country)}:</label>
@@ -82,7 +82,7 @@
                         <td><b>Country</b></td>
                         <td><b>Region</b></td>
                         <td><b>District</b></td>
-                        <td><b>Province</b></td>
+                        <td><b>Sub-District</b></td>
                     </tr>
                     <c:forEach var="facility" items="${requestedFacilities}">
                         <tr border="3" padding="2">

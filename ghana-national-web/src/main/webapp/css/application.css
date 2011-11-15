@@ -29,10 +29,13 @@ nav ul {
     height: 20px;
     background: #8FABC7;
     border-radius: 5px;
+    position: relative;
 }
 
 nav ul li {
-    display: inline;
+    display: block;
+    float: left;
+    overflow: hidden;
 
 }
 
@@ -42,7 +45,7 @@ nav ul li a {
     padding: 1px 10px;
     font: 14px/14px "Lucida Grande", "Verdana", sans-serif;
     text-decoration: none;
-    margin: 2px 5px 0 0;
+    margin: 0 5px 0 0;
     color: white;
     font-size: 1em;
 }
@@ -54,6 +57,20 @@ nav ul li a:hover {
 nav ul li a:active, nav ul li a.current {
     position: relative;
     top: 1px;
+}
+
+#menu ul li ul li {
+    /*clear: both;*/
+    /*float: none;*/
+    padding-bottom: 5px;
+}
+
+#menu ul li ul {
+    display: none;
+    position: absolute;
+    top: 1.5em;
+    overflow: hidden;
+    float: none;
 }
 
 .formLabel {
@@ -92,4 +109,9 @@ nav ul li a:active, nav ul li a.current {
     float: left;
     height: 20px;
     padding: 10px 0;
+}
+
+.input-description {
+    font-style: italic;
+    font-size: 0.9em;
 }
