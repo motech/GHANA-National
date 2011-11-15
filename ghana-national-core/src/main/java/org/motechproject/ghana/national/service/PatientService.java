@@ -23,7 +23,7 @@ public class PatientService {
 
     public void registerPatient(Patient patient, PatientType typeOfPatient, String parentId)
             throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
-        if (PatientType.CHILD.equals(typeOfPatient) && StringUtils.isNotEmpty(parentId)) {
+        if (PatientType.CHILD_UNDER_FIVE.equals(typeOfPatient) && StringUtils.isNotEmpty(parentId)) {
             Patient mother = allPatients.patientById(parentId);
             if (mother == null) {
                 throw new ParentNotFoundException();

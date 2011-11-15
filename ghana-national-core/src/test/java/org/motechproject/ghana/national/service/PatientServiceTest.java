@@ -34,7 +34,7 @@ public class PatientServiceTest {
     public void shouldNotTryToValidateParentIfParentIdIsNotSet() throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         Patient patient = mock(Patient.class);
         final String parentId = "";
-        patientService.registerPatient(patient, PatientType.CHILD, parentId);
+        patientService.registerPatient(patient, PatientType.CHILD_UNDER_FIVE, parentId);
         verify(mockAllPatients, times(0)).patientById(parentId);
     }
 
@@ -43,7 +43,7 @@ public class PatientServiceTest {
         Patient patient = mock(Patient.class);
         final String parentId = "11";
         when(mockAllPatients.patientById(parentId)).thenReturn(null);
-        patientService.registerPatient(patient, PatientType.CHILD, parentId);
+        patientService.registerPatient(patient, PatientType.CHILD_UNDER_FIVE, parentId);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class PatientServiceTest {
         Patient mother = mock(Patient.class);
         final String parentId = "11";
         when(mockAllPatients.patientById(parentId)).thenReturn(mother);
-        patientService.registerPatient(patient, PatientType.CHILD, parentId);
+        patientService.registerPatient(patient, PatientType.CHILD_UNDER_FIVE, parentId);
 
         verify(mockAllPatients).add(patient);
     }
@@ -64,6 +64,6 @@ public class PatientServiceTest {
         final String parentId = "11";
         when(mockAllPatients.patientById(parentId)).thenReturn(mother);
         doThrow(new IdentifierNotUniqueException()).when(mockAllPatients).add(patient);
-        patientService.registerPatient(patient, PatientType.CHILD, parentId);
+        patientService.registerPatient(patient, PatientType.CHILD_UNDER_FIVE, parentId);
     }
 }
