@@ -19,7 +19,8 @@
         <spring:message code="user_role_select" var="user_role_select" htmlEscape="false"/>
 
 
-        <span class="input-description"> * Please enter atleast one field to enable search</span>
+        <div class="input-description"> * Please enter atleast one field to enable search</div>
+
         <div>
             <label class="formLabel" for="staff_id">${fn:escapeXml(staff_id)}:</label>
             <form:input id="staff_id" path="staffID" size="20" label="${fn:escapeXml(staff_id)}"/>

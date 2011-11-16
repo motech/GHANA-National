@@ -108,7 +108,7 @@ public class FacilitiesController {
                 int combinationFieldSize = 1;
                 for (int fieldIndex = 1; fieldIndex <= searchFields.size(); fieldIndex++) {
                     String searchValue = (String) searchFieldsCombination.get(fieldIndex);
-                    combinationFieldSize = compareSearchFields(thatMrsFacility, combinationFieldSize, searchValue);
+                    combinationFieldSize = compareSearchFields(thatMrsFacility, combinationFieldSize, searchValue.toLowerCase());
                 }
                 if (combinationFieldSize == numberOfFieldsForSearch)
                     requestedFacilities.add(searchFacility);

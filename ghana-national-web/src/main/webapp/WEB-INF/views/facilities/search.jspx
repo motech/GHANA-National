@@ -33,7 +33,7 @@
                         htmlEscape="false"/>
 
 
-        <span class="input-description"> * Please enter atleast one field to enable search</span>
+        <div class="input-description"> * Please enter atleast one field to enable search</div>
         <div>
             <label for="facilityID" class="formLabel">${fn:escapeXml(facility_id)}:</label>
             <form:input path="facilityID" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_id)}"/>
