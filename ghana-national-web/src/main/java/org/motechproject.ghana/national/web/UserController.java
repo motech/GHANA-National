@@ -160,8 +160,8 @@ public class UserController {
                 || searchUser.getFirstName().toLowerCase().startsWith(searchValue)
                 || searchUser.getMiddleName().toLowerCase().startsWith(searchValue)
                 || searchUser.getLastName().toLowerCase().startsWith(searchValue)
-                || StringUtils.equals(searchValue, StringUtils.substring(userAttributes.get(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER), 0, 3))
-                || StringUtils.equals(searchValue, userAttributes.get(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE))) {
+                || userAttributes.get(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER).startsWith(searchValue)
+                || StringUtils.equals(searchValue, userAttributes.get(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE).toLowerCase())) {
 
             combinationFieldSize++;
         }
