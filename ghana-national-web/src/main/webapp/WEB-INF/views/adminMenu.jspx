@@ -17,7 +17,7 @@
             <li><a href="#">Search</a>
                 <ul>
                     <li><a href="${search_facility_url}">Search Facility</a></li>
-                    <li><a href="${search_users_url}">Search Users</a></li>
+                    <li><a href="${search_users_url}">Search Staff</a></li>
                 </ul>
             </li>
             <li><a href="${logout_url}">Logout</a></li>

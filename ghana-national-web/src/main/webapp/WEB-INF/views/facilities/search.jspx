@@ -8,7 +8,7 @@
     <script src="${facility_field_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${search_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/facilities/searchFacilities" var="form_url"/>
-    <form:form id="searchFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search a Facility"
+    <form:form id="searchFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search for a Facility"
                commandName="searchFacilityForm">
         <spring:message code="facility_id" var="facility_id" htmlEscape="false"/>
         <spring:message code="facility_name" var="facility_name" htmlEscape="false"/>
@@ -33,13 +33,14 @@
                         htmlEscape="false"/>
 
 
+        <span class="input-description"> * Please enter atleast one field to enable search</span>
         <div>
             <label for="facilityID" class="formLabel">${fn:escapeXml(facility_id)}:</label>
             <form:input path="facilityID" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_id)}"/>
         </div>
         <div>
             <label for="name" class="formLabel">${fn:escapeXml(facility_name)}:</label>
-            <form:input path="name" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_name)}"/> <span class="input-description"> * Please enter atleast 3 characters to enable the search</span>
+            <form:input path="name" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_name)}"/>
         </div>
         <div>
             <label for="countries" class="formLabel">${fn:escapeXml(facility_country)}:</label>
