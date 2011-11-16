@@ -22,11 +22,19 @@ public class IdentifierService {
     private Logger log = LoggerFactory.getLogger(IdentifierService.class);
     private static final String ID_GENERATOR = "generator";
     private static final String ID_TYPE = "type";
+    private static final String USER = "user";
+    private static final String PASSWORD = "password";
 
     private HttpClient httpClient;
 
     @Value("#{ghanaNationalProperties['omod.identifier.service.url']}")
     private String url;
+
+    @Value("#{ghanaNationalProperties['omod.user.name']}")
+    private String user;
+
+    @Value("#{ghanaNationalProperties['omod.user.password']}")
+    private String password;
 
     public IdentifierService() {
         httpClient = new HttpClient();
@@ -47,7 +55,13 @@ public class IdentifierService {
     private String callOmodService(String generatorName, String idTypeName) {
         try {
             GetMethod getMethod = new GetMethod(url);
-            getMethod.setQueryString(new NameValuePair[]{new NameValuePair(ID_GENERATOR, generatorName), new NameValuePair(ID_TYPE, idTypeName)});
+            getMethod.setQueryString(
+                    new NameValuePair[]{
+                            new NameValuePair(ID_GENERATOR, generatorName),
+                            new NameValuePair(ID_TYPE, idTypeName),
+                            new NameValuePair(USER, user),
+                            new NameValuePair(PASSWORD, password)
+                    });
             httpClient.executeMethod(getMethod);
             String generatedId = getMethod.getResponseBodyAsString();
             log.info("Generated Id for Type-" + idTypeName + " is " + generatedId);

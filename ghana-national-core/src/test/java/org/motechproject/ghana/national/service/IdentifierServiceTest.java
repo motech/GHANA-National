@@ -28,6 +28,8 @@ public class IdentifierServiceTest {
         identifierService = new IdentifierService();
         ReflectionTestUtils.setField(identifierService, "url", "url");
         ReflectionTestUtils.setField(identifierService, "httpClient", httpClient);
+        ReflectionTestUtils.setField(identifierService, "user", "user");
+        ReflectionTestUtils.setField(identifierService, "password", "password");
     }
 
     @Test
@@ -37,7 +39,7 @@ public class IdentifierServiceTest {
         ArgumentCaptor<HttpMethod> captor = ArgumentCaptor.forClass(HttpMethod.class);
         verify(httpClient).executeMethod(captor.capture());
         GetMethod getMethod = (GetMethod) captor.getValue();
-        assertEquals("generator=MoTeCH+Facility+ID+Generator&type=MoTeCH+Facility+Id", getMethod.getQueryString());
+        assertEquals("generator=MoTeCH+Facility+ID+Generator&type=MoTeCH+Facility+Id&user=user&password=password", getMethod.getQueryString());
     }
 
     @Test
@@ -47,7 +49,7 @@ public class IdentifierServiceTest {
         ArgumentCaptor<HttpMethod> captor = ArgumentCaptor.forClass(HttpMethod.class);
         verify(httpClient).executeMethod(captor.capture());
         GetMethod getMethod = (GetMethod) captor.getValue();
-        assertEquals("generator=MoTeCH+Staff+ID+Generator&type=MoTeCH+Staff+Id", getMethod.getQueryString());
+        assertEquals("generator=MoTeCH+Staff+ID+Generator&type=MoTeCH+Staff+Id&user=user&password=password", getMethod.getQueryString());
     }
 
     @Test
@@ -57,7 +59,7 @@ public class IdentifierServiceTest {
         ArgumentCaptor<HttpMethod> captor = ArgumentCaptor.forClass(HttpMethod.class);
         verify(httpClient).executeMethod(captor.capture());
         GetMethod getMethod = (GetMethod) captor.getValue();
-        assertEquals("generator=MoTeCH+ID+Generator&type=MoTeCH+Id", getMethod.getQueryString());
+        assertEquals("generator=MoTeCH+ID+Generator&type=MoTeCH+Id&user=user&password=password", getMethod.getQueryString());
     }
 }
 

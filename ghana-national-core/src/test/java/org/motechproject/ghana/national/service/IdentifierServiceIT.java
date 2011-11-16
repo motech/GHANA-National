@@ -15,13 +15,22 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
 public class IdentifierServiceIT {
+
     @Autowired
     private IdentifierService identifierService;
 
     @Test
-    @Ignore("just to test and verify with omod up and running")
+//    @Ignore("just to test and verify with omod up and running")
     public void shouldGenerateIDForAnIDTypeAndGenerator() throws IOException {
-        String generatedId = identifierService.newFacilityId();
-        assertTrue(StringUtils.isNotBlank(generatedId));
+
+        String facilityId = identifierService.newFacilityId();
+        String patientId = identifierService.newPatientId();
+        String staffId = identifierService.newStaffId();
+
+        System.out.println("IDs: Facility=" + facilityId + "|Staff=" + staffId + "|Patient=" + patientId);
+
+        assertTrue(StringUtils.isNotBlank(facilityId));
+        assertTrue(StringUtils.isNotBlank(staffId));
+        assertTrue(StringUtils.isNotBlank(patientId));
     }
 }
