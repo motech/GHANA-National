@@ -20,7 +20,7 @@ public class IdentifierServiceIT {
     private IdentifierService identifierService;
 
     @Test
-//    @Ignore("just to test and verify with omod up and running")
+    @Ignore("just to test and verify with omod up and running")
     public void shouldGenerateIDForAnIDTypeAndGenerator() throws IOException {
 
         String facilityId = identifierService.newFacilityId();
