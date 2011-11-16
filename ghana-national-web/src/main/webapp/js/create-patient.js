@@ -3,7 +3,7 @@ $(document).ready(function() {
     $('#dateOfBirth').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#nhisExpirationDate').datepicker({dateFormat: "dd/mm/yy", buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:2100', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#typeOfPatient').change(function() {
-        ($(this).val() == 'CHILD') ? $('#parentId').parent().show() : $('#parentId').parent().hide();
+        ($(this).val() == 'CHILD_UNDER_FIVE') ? $('#parentId').parent().show() : $('#parentId').parent().hide();
     });
 
     $('#registrationMode').change(function() {
