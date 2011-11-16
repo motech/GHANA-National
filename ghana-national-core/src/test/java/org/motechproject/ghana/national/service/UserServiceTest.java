@@ -57,4 +57,11 @@ public class UserServiceTest {
         verify(userAdaptor).setNewPasswordForUser(emailId);
     }
 
+    @Test
+    public void shouldGetAllUsers(){
+        service.getAllUsers();
+        verify(userAdaptor).getAllUsers();
+    }
+
+
 }

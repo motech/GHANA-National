@@ -94,7 +94,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "searchUsers", method = RequestMethod.POST)
-    public String searchFacility(@Valid final SearchUserForm searchUserForm, BindingResult bindingResult, ModelMap modelMap) {
+    public String searchUsers(@Valid final SearchUserForm searchUserForm, BindingResult bindingResult, ModelMap modelMap) {
         List<User> allUsers = userService.getAllUsers();
         List<List<String>> requestedUsers = new ArrayList<List<String>>();
         Map searchFields = new HashMap() {{
