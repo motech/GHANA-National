@@ -7,7 +7,7 @@
     <script src="${search_user_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/users/searchUsers" var="form_url"/>
 
-    <form:form id="searchUserForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search a staff member"
+    <form:form id="searchUserForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search for staff member"
                commandName="searchUserForm">
         <spring:message code="staff_id" var="staff_id" htmlEscape="false"/>
         <spring:message code="user_first_name" var="user_first_name" htmlEscape="false"/>
@@ -18,6 +18,8 @@
         <spring:message code="user_role" var="user_role" htmlEscape="false"/>
         <spring:message code="user_role_select" var="user_role_select" htmlEscape="false"/>
 
+
+        <div class="input-description"> * Please enter atleast one field to enable search</div>
 
         <div>
             <label class="formLabel" for="staff_id">${fn:escapeXml(staff_id)}:</label>

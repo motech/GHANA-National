@@ -87,18 +87,17 @@ public class FacilitiesController {
             put(5, searchFacilityForm.getRegion());
             put(6, searchFacilityForm.getCountry());
         }};
-        int fieldsForSearch = 1;
-        int fieldIndex;
+        int numberOfFieldsForSearch = 1;
         Map searchFieldsCombination = new HashMap();
         for (int loopCounter = 1; loopCounter <= 6; loopCounter++) {
             if (!searchFields.get(loopCounter).equals("")) {
                 searchFieldsCombination.put(loopCounter, searchFields.get(loopCounter));
-                fieldsForSearch++;
+                numberOfFieldsForSearch++;
             } else {
                 searchFieldsCombination.put(loopCounter, "fieldNotRequiredForSearch");
             }
         }
-        if (fieldsForSearch == 1) {
+        if (numberOfFieldsForSearch == 1) {
             modelMap.put("requestedFacilities", requestedFacilities);
             modelMap.mergeAttributes(facilityService.locationMap());
             return SEARCH_FACILITY;
@@ -107,19 +106,11 @@ public class FacilitiesController {
             org.motechproject.mrs.model.Facility thatMrsFacility = searchFacility.mrsFacility();
             try {
                 int combinationFieldSize = 1;
-                for (fieldIndex = 1; fieldIndex <= searchFields.size(); fieldIndex++) {
+                for (int fieldIndex = 1; fieldIndex <= searchFields.size(); fieldIndex++) {
                     String searchValue = (String) searchFieldsCombination.get(fieldIndex);
-                    if (StringUtils.equals(thatMrsFacility.getId(), searchValue)
-                            || StringUtils.equals(StringUtils.substring(searchValue, 0, 3), StringUtils.substring(thatMrsFacility.getName(), 0, 3).toLowerCase())
-                            || StringUtils.equals(thatMrsFacility.getStateProvince(), searchValue)
-                            || StringUtils.equals(thatMrsFacility.getCountyDistrict(), searchValue)
-                            || StringUtils.equals(thatMrsFacility.getRegion(), searchValue)
-                            || StringUtils.equals(thatMrsFacility.getCountry(), searchValue)) {
-
-                        combinationFieldSize++;
-                    }
+                    combinationFieldSize = compareSearchFields(thatMrsFacility, combinationFieldSize, searchValue.toLowerCase());
                 }
-                if (combinationFieldSize == fieldsForSearch)
+                if (combinationFieldSize == numberOfFieldsForSearch)
                     requestedFacilities.add(searchFacility);
             } catch (Exception e) {
             }
@@ -127,6 +118,19 @@ public class FacilitiesController {
         modelMap.put("requestedFacilities", requestedFacilities);
         modelMap.mergeAttributes(facilityService.locationMap());
         return SEARCH_FACILITY;
+    }
+
+    private int compareSearchFields(org.motechproject.mrs.model.Facility thatMrsFacility, int combinationFieldSize, String searchValue) {
+        if (StringUtils.equals(thatMrsFacility.getId(), searchValue)
+                || thatMrsFacility.getName().toLowerCase().startsWith(searchValue)
+                || thatMrsFacility.getStateProvince().toLowerCase().startsWith(searchValue)
+                || thatMrsFacility.getRegion().toLowerCase().startsWith(searchValue)
+                || thatMrsFacility.getCountyDistrict().toLowerCase().startsWith(searchValue)
+                || thatMrsFacility.getCountry().toLowerCase().startsWith(searchValue)) {
+
+            combinationFieldSize++;
+        }
+        return combinationFieldSize;
     }
 
 

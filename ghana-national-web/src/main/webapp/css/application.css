@@ -29,19 +29,17 @@ nav ul {
     height: 20px;
     background: #8FABC7;
     border-radius: 5px;
-    position: relative;
 }
 
 nav ul li {
     display: block;
     float: left;
-    overflow: hidden;
-
+    position: relative;
+    padding-bottom: 10px;
 }
 
 nav ul li a {
     display: block;
-    float: left;
     padding: 1px 10px;
     font: 14px/14px "Lucida Grande", "Verdana", sans-serif;
     text-decoration: none;
@@ -60,17 +58,18 @@ nav ul li a:active, nav ul li a.current {
 }
 
 #menu ul li ul li {
-    /*clear: both;*/
-    /*float: none;*/
     padding-bottom: 5px;
+    display: block;
+    float: none;
 }
 
 #menu ul li ul {
     display: none;
     position: absolute;
-    top: 1.5em;
+    top: 2em;
+    left: -10px;
+    height: auto;
     overflow: hidden;
-    float: none;
 }
 
 .formLabel {
@@ -113,5 +112,7 @@ nav ul li a:active, nav ul li a.current {
 
 .input-description {
     font-style: italic;
-    font-size: 0.9em;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    font-weight: bold;
 }

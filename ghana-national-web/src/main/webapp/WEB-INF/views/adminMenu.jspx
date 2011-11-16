@@ -16,8 +16,8 @@
             <li><a href="${users_url}">Create Staff</a></li>
             <li><a href="#">Search</a>
                 <ul>
-                    <li><a href="${search_facility_url}">Search Facility</a></li>
-                    <li><a href="${search_users_url}">Search Users</a></li>
+                    <li><a href="${search_facility_url}">Facility</a></li>
+                    <li><a href="${search_users_url}">Staff</a></li>
                 </ul>
             </li>
             <li><a href="${logout_url}">Logout</a></li>
