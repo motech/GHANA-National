@@ -31,15 +31,18 @@ public class FacilityServiceTest {
     FacilityService facilityService;
     @Mock
     private AllFacilities mockAllFacilities;
+    @Mock
+    private IdentifierService mockIdentifierService;
 
     @Before
     public void init() {
         initMocks(this);
-        facilityService = new FacilityService(mockAllFacilities);
+        facilityService = new FacilityService(mockAllFacilities, mockIdentifierService);
     }
 
     @Test
     public void shouldCreateAFacility() throws FacilityAlreadyFoundException {
+        String id = "12345678";
         String facilityName = "name";
         String country = "country";
         String region = "region";
@@ -50,11 +53,13 @@ public class FacilityServiceTest {
         String additionalPhoneNumber2 = "3";
         String additionalPhoneNumber3 = "4";
         when(mockAllFacilities.facilitiesByName(facilityName)).thenReturn(Collections.<Facility>emptyList());
+        when(mockIdentifierService.newFacilityId()).thenReturn(id);
         facilityService.create(facilityName, country, region, district, province, phoneNumber, additionalPhoneNumber1, additionalPhoneNumber2, additionalPhoneNumber3);
         final ArgumentCaptor<Facility> captor = ArgumentCaptor.forClass(Facility.class);
         verify(mockAllFacilities).add(captor.capture());
 
         final Facility savedFacility = captor.getValue();
+        assertThat(savedFacility.mrsFacilityId(), is(equalTo(Integer.parseInt(id))));
         assertThat(savedFacility.name(), is(equalTo(facilityName)));
         assertThat(savedFacility.region(), is(equalTo(region)));
         assertThat(savedFacility.district(), is(equalTo(district)));
