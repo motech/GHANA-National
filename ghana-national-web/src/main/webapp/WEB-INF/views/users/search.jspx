@@ -57,23 +57,28 @@
                          cssStyle="display: block;"/>
         </div>
 
-        <div>
+        <div id="search-results">
             <c:if test="${not empty requestedUsers}">
                 <h4>* Please click on the staff id to edit the staff information</h4>
-                <table border="2" padding="3" cellpadding="20">
+                <table>
                     <tr>
-                        <td><b>Staff Id</b></td>
-                        <td><b>First Name</b></td>
-                        <td><b>Middle Name</b></td>
-                        <td><b>Last Name</b></td>
-                        <td><b>Phone Number</b></td>
-                        <td><b>Role</b></td>
+                        <th>Staff Id</th>
+                        <th>First Name</th>
+                        <th>Middle Name</th>
+                        <th>Last Name</th>
+                        <th>Phone Number</th>
+                        <th>Role</th>
+                        <th>Action</th>
                     </tr>
                     <c:forEach var="user" items="${requestedUsers}">
-                        <tr border="3" padding="2">
+                        <tr>
                             <c:forEach var="attribute" items="${user}">
                                 <td><c:out value="${attribute}" /></td>
                             </c:forEach>
+                            <td class="action">
+                                <div class="edit"><a href="#" title="Edit"> </a></div>
+                                <div class="delete"><a href="#" title="Delete"> </a></div>
+                            </td>
                         </tr>
                     </c:forEach>
                 </table>

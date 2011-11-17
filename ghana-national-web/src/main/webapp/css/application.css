@@ -116,3 +116,41 @@ nav ul li a:active, nav ul li a.current {
     margin-bottom: 10px;
     font-weight: bold;
 }
+
+/* SEARCH RESULTS */
+
+#search-results table {
+    border-collapse: collapse;
+    border: 1px solid gray;
+}
+
+#search-results table tr td,
+#search-results table tr th {
+    padding: 7px 21px;
+    border: 1px solid gray;
+}
+
+#search-results table tr th {
+    background-color: gray;
+    color: #ffffff;
+}
+
+#search-results table tr td.action div {
+    display: block;
+    float: left;
+}
+
+#search-results table tr td.action div a {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+#search-results table tr td.action .edit {
+    background: url("../images/pencil-icon.png");
+}
+
+#search-results table tr td.action .delete {
+    background: url("../images/trash-can-icon.png");
+}
+

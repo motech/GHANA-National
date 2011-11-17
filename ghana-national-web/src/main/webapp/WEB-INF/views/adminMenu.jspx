@@ -10,16 +10,29 @@
             <spring:url value="/security/password/reset" var="password_reset_url"/>
             <spring:url value="/logout" var="logout_url"/>
             <spring:url value="/admin/users/new" var="users_url"/>
-            <li><a href="${new_facility_url}">Create Facility</a></li>
-            <li><a href="${new_patient_url}">Create Patient</a></li>
-            <li><a href="${password_reset_url}">Reset Password</a></li>
-            <li><a href="${users_url}">Create Staff</a></li>
-            <li><a href="#">Search</a>
+            <li>
+                <a href="#">Facility</a>
                 <ul>
-                    <li><a href="${search_facility_url}">Facility</a></li>
-                    <li><a href="${search_users_url}">Staff</a></li>
+                    <li><a href="${new_facility_url}">New</a></li>
+                    <li><a href="${search_facility_url}">Search</a></li>
                 </ul>
             </li>
+            <li>
+                <a href="#">Patient</a>
+                <ul>
+                    <li><a href="${new_patient_url}">New</a></li>
+                    <li><a href="#">Search</a></li>
+                </ul>
+
+            </li>
+            <li>
+                <a href="#">Staff</a>
+                <ul>
+                    <li><a href="${users_url}">New</a></li>
+                    <li><a href="${search_users_url}">Search</a></li>
+                </ul>
+            </li>
+            <li><a href="${password_reset_url}">Reset Password</a></li>
             <li><a href="${logout_url}">Logout</a></li>
         </ul>
     </nav>
