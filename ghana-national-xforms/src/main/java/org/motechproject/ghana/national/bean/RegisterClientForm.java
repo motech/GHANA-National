@@ -1,12 +1,13 @@
 package org.motechproject.ghana.national.bean;
 
 import org.motechproject.ghana.national.domain.PatientType;
+import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.mobileforms.api.domain.FormBean;
 
 import java.util.Date;
 
-public class RegisterClientForm extends FormBean{
-    private String registrationMode;
+public class RegisterClientForm extends FormBean {
+    private RegistrationType registrationMode;
     private String motechId;
     private String motherMotechId;
     private PatientType registrantType;
@@ -52,10 +53,6 @@ public class RegisterClientForm extends FormBean{
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public String getRegistrationMode() {
-        return registrationMode;
     }
 
     public String getMotechId() {
@@ -134,10 +131,6 @@ public class RegisterClientForm extends FormBean{
         return sender;
     }
 
-    public void setRegistrationMode(String registrationMode) {
-        this.registrationMode = registrationMode;
-    }
-
     public void setMotechId(String motechId) {
         this.motechId = motechId;
     }
@@ -212,5 +205,13 @@ public class RegisterClientForm extends FormBean{
 
     public void setSender(String sender) {
         this.sender = sender;
+    }
+
+    public RegistrationType getRegistrationMode() {
+        return registrationMode;
+    }
+
+    public void setRegistrationMode(RegistrationType registrationMode) {
+        this.registrationMode = registrationMode;
     }
 }

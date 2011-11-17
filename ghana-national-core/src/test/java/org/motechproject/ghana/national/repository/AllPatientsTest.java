@@ -58,7 +58,8 @@ public class AllPatientsTest extends AbstractJUnit4SpringContextTests {
         final String gender = "male";
         final String address = "address";
         final String patientId = "1000";
-        final org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(first, middle, last, preferred, dateOfBirth, gender, address, facility);
+        Boolean birthDateEstimated = true;
+        final org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(first, middle, last, preferred, dateOfBirth, birthDateEstimated, gender, address, facility);
         final Patient patient = new Patient(mrsPatient);
         org.motechproject.mrs.model.Patient savedPatient = mock(org.motechproject.mrs.model.Patient.class);
         when(savedPatient.getId()).thenReturn(patientId);
@@ -87,7 +88,7 @@ public class AllPatientsTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void shouldFetchPatientById() {
         final String patientId = "1";
-        org.motechproject.mrs.model.Patient patient = new org.motechproject.mrs.model.Patient(null, null, null, null, null, null, null, null);
+        org.motechproject.mrs.model.Patient patient = new org.motechproject.mrs.model.Patient(null, null, null, null, null, null, null, null, null);
         when(mockMrsPatientAdaptor.getPatientByMotechId(patientId)).thenReturn(patient);
         final Patient actualPatient = allPatients.patientById(patientId);
         assertThat(actualPatient.mrsPatient(), is(patient));

@@ -7,7 +7,9 @@ import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.Facility;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static org.motechproject.ghana.national.tools.Utility.safeToString;
 
@@ -185,21 +187,15 @@ public class CreatePatientForm {
     }
 
     public Patient getPatient() {
-        org.motechproject.mrs.model.Patient mrsPatient = null;
-        if (RegistrationType.USER_DEFINED.equals(this.getRegistrationMode())) {
-            mrsPatient = new org.motechproject.mrs.model.Patient(this.getMotechId(), this.getFirstName(),
-                    this.getMiddleName(), this.getLastName(), this.getPreferredName(), this.getDateOfBirth(), this.getSex(),
-                    this.getAddress(), new Facility(this.getFacilityId()));
+        List<Attribute> attributes = Arrays.asList(
+                new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), safeToString(this.getNhisExpirationDate())),
+                new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), this.getNhisNumber()),
+                new Attribute(PatientAttributes.INSURED.getAttribute(), safeToString(this.getInsured())));
 
-        } else {
-            mrsPatient = new org.motechproject.mrs.model.Patient(this.getFirstName(),
-                    this.getMiddleName(), this.getLastName(), this.getPreferredName(), this.getDateOfBirth(), this.getSex(),
-                    this.getAddress(), new Facility(this.getFacilityId()));
+        org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(this.getMotechId(), this.getFirstName(),
+                this.getMiddleName(), this.getLastName(), this.getPreferredName(), this.getDateOfBirth(), this.getEstimatedDateOfBirth(), this.getSex(),
+                this.getAddress(), attributes, new Facility(this.getFacilityId()));
 
-        }
-        new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), safeToString(this.getNhisExpirationDate()));
-        new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), this.getNhisNumber());
-        new Attribute(PatientAttributes.INSURED.getAttribute(), safeToString(this.getInsured()));
         return new Patient(mrsPatient);
     }
 }

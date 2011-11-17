@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
+import org.motechproject.MotechException;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
@@ -8,7 +9,7 @@ import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.Facility;
-import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,17 +33,16 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.registerPatient-jf")
-    @ApiSession
-    public void handleFormEvent(MotechEvent motechEvent) {
-        RegisterClientForm registerClientForm = (RegisterClientForm) motechEvent.getParameters().get(FORM_BEAN);
-        
-        org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient( registerClientForm.getFirstName(),
-                registerClientForm.getMiddleName(), registerClientForm.getLastName(), registerClientForm.getPrefferedName(), registerClientForm.getDateOfBirth(),
-                registerClientForm.getSex(), registerClientForm.getAddress(),  new Facility(registerClientForm.getFacilityId()));
+    @LoginAsAdmin
+    public void handleFormEvent(MotechEvent event) {
+        RegisterClientForm registerClientForm = (RegisterClientForm) event.getParameters().get(FORM_BEAN);
+        org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(registerClientForm.getMotechId(), registerClientForm.getFirstName(),
+                registerClientForm.getMiddleName(), registerClientForm.getLastName(), registerClientForm.getPrefferedName(), registerClientForm.getDateOfBirth(), registerClientForm.getEstimatedBirthDate(),
+                registerClientForm.getSex(), registerClientForm.getAddress(), getPatientAttributes(registerClientForm), new Facility(registerClientForm.getFacilityId()));
         try {
             patientService.registerPatient(new Patient(mrsPatient), registerClientForm.getRegistrantType(), registerClientForm.getMotherMotechId());
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            throw new MotechException("Exception while saving patient", e);
         }
     }
 
