@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.handlers;
 
-import org.motechproject.MotechException;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
@@ -35,14 +34,15 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.registerPatient-jf")
     @LoginAsAdmin
     public void handleFormEvent(MotechEvent event) {
-        RegisterClientForm registerClientForm = (RegisterClientForm) event.getParameters().get(FORM_BEAN);
-        org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(registerClientForm.getMotechId(), registerClientForm.getFirstName(),
-                registerClientForm.getMiddleName(), registerClientForm.getLastName(), registerClientForm.getPrefferedName(), registerClientForm.getDateOfBirth(), registerClientForm.getEstimatedBirthDate(),
-                registerClientForm.getSex(), registerClientForm.getAddress(), getPatientAttributes(registerClientForm), new Facility(registerClientForm.getFacilityId()));
         try {
+            RegisterClientForm registerClientForm = (RegisterClientForm) event.getParameters().get(FORM_BEAN);
+            org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(registerClientForm.getMotechId(), registerClientForm.getFirstName(),
+                    registerClientForm.getMiddleName(), registerClientForm.getLastName(), registerClientForm.getPrefferedName(), registerClientForm.getDateOfBirth(), registerClientForm.getEstimatedBirthDate(),
+                    registerClientForm.getSex(), registerClientForm.getAddress(), getPatientAttributes(registerClientForm), new Facility(registerClientForm.getFacilityId()));
+
             patientService.registerPatient(new Patient(mrsPatient), registerClientForm.getRegistrantType(), registerClientForm.getMotherMotechId());
         } catch (Exception e) {
-            throw new MotechException("Exception while saving patient", e);
+            log.error("Exception while saving patient", e);
         }
     }
 
