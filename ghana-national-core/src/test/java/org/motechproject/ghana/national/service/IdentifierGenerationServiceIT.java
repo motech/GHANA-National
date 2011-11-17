@@ -14,10 +14,10 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class IdentifierServiceIT {
+public class IdentifierGenerationServiceIT {
 
     @Autowired
-    private IdentifierService identifierService;
+    private IdentifierGenerationService identifierService;
 
     @Test
     @Ignore("just to test and verify with omod up and running")
