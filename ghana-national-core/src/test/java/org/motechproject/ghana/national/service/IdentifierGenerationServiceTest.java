@@ -15,9 +15,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class IdentifierServiceTest {
+public class IdentifierGenerationServiceTest {
 
-    private IdentifierService identifierService;
+    private IdentifierGenerationService identifierService;
 
     @Mock
     private HttpClient httpClient;
@@ -25,7 +25,7 @@ public class IdentifierServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        identifierService = new IdentifierService();
+        identifierService = new IdentifierGenerationService();
         ReflectionTestUtils.setField(identifierService, "url", "url");
         ReflectionTestUtils.setField(identifierService, "httpClient", httpClient);
         ReflectionTestUtils.setField(identifierService, "user", "user");

@@ -16,12 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static ch.lambdaj.Lambda.extract;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.map;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.select;
-import static ch.lambdaj.Lambda.selectDistinct;
+import static ch.lambdaj.Lambda.*;
 import static ch.lambdaj.group.Groups.by;
 import static ch.lambdaj.group.Groups.group;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -43,7 +38,7 @@ public class FacilityService {
     public void create(String name, String country, String region, String district, String province, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) throws FacilityAlreadyFoundException {
         final List<Facility> facilities = allFacilities.facilitiesByName(name);
         String id = identifierService.newFacilityId();
-        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(id,name, country, region, district, province);
+        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(id, name, country, region, district, province);
         if (isDuplicate(facilities, mrsFacility, phoneNumber)) {
             throw new FacilityAlreadyFoundException();
         }
