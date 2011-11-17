@@ -138,6 +138,7 @@ nav ul li a:active, nav ul li a.current {
 #search-results table tr td.action div {
     display: block;
     float: left;
+    margin: 0 5px;
 }
 
 #search-results table tr td.action div a {
