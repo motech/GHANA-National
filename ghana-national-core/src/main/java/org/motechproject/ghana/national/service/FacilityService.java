@@ -27,23 +27,22 @@ import static org.hamcrest.core.Is.is;
 public class FacilityService {
 
     private AllFacilities allFacilities;
-    private IdentifierService identifierService;
+    private IdentifierGenerationService identifierGenerationService;
 
     @Autowired
-    public FacilityService(AllFacilities allFacilities, IdentifierService identifierService) {
+    public FacilityService(AllFacilities allFacilities, IdentifierGenerationService identifierGenerationService) {
         this.allFacilities = allFacilities;
-        this.identifierService = identifierService;
+        this.identifierGenerationService = identifierGenerationService;
     }
 
     public void create(String name, String country, String region, String district, String province, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) throws FacilityAlreadyFoundException {
         final List<Facility> facilities = allFacilities.facilitiesByName(name);
-        String id = identifierService.newFacilityId();
-        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(id, name, country, region, district, province);
+        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(name, country, region, district, province);
         if (isDuplicate(facilities, mrsFacility, phoneNumber)) {
             throw new FacilityAlreadyFoundException();
         }
         final Facility facility = new Facility(mrsFacility).phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber1).
-                additionalPhoneNumber2(additionalPhoneNumber2).additionalPhoneNumber3(additionalPhoneNumber3).mrsFacilityId(Integer.parseInt(id));
+                additionalPhoneNumber2(additionalPhoneNumber2).additionalPhoneNumber3(additionalPhoneNumber3).motechId(Integer.parseInt(identifierGenerationService.newFacilityId()));
         allFacilities.add(facility);
     }
 
