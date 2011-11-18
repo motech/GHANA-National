@@ -86,8 +86,10 @@ public class UserControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         ModelMap model = mock(ModelMap.class);
         String userId = "1234";
-        HashMap test = new HashMap() {{
-            put("userLoginId", "1234");
+        final org.openmrs.User openMRSuser= new org.openmrs.User();
+        openMRSuser.setSystemId("1234");
+        Map test = new HashMap() {{
+            put("openMRSUser", openMRSuser);
             put("password", "P@ssw0rd");
         }};
         when(userService.saveUser(any(User.class))).thenReturn(test);
@@ -95,7 +97,7 @@ public class UserControllerTest {
         String view = controller.createUser(form, bindingResult, model);
 
         assertEquals(UserController.CREATE_USER_SUCCESS_VIEW, view);
-        verify(model).put("userId", userId);
+        verify(model).put("userId","1234");
         verify(model).put("userName", "Jack H Daniels");
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);

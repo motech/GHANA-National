@@ -62,6 +62,7 @@ public class UserController {
 
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createUser(@Valid CreateUserForm createUserForm, BindingResult bindingResult, ModelMap model) {
+        Map userData;
         User user = new User();
         user.firstName(createUserForm.getFirstName()).middleName(createUserForm.getMiddleName()).lastName(createUserForm.getLastName());
         user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, createUserForm.getEmail()));
@@ -72,8 +73,9 @@ public class UserController {
         user.securityRole(UserType.Role.securityRoleFor(roleOfStaff));
         if (UserType.Role.isAdmin(roleOfStaff)) user.id(createUserForm.getEmail());
         try {
-            HashMap userData = userService.saveUser(user);
-            model.put(USER_ID, userData.get("userLoginId"));
+            userData = userService.saveUser(user);
+            org.openmrs.User openMRSUser = (org.openmrs.User) userData.get("openMRSUser");
+            model.put(USER_ID, openMRSUser.getSystemId());
             model.put(USER_NAME, user.getFullName());
             if (roleOfStaff.equals("Super Admin") || roleOfStaff.equals("Facility Admin") || roleOfStaff.equals("CallCenter Admin"))
                 emailTemplateService.sendEmailUsingTemplates((String) userData.get("userLoginId"), (String) userData.get("password"));
