@@ -1,19 +1,16 @@
 package org.motechproject.ghana.national.web;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jdt.internal.compiler.impl.Constant;
 import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.UserType;
 import org.motechproject.ghana.national.service.EmailTemplateService;
+import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.UserService;
 import org.motechproject.ghana.national.web.form.CreateUserForm;
-import org.motechproject.ghana.national.web.form.SearchFacilityForm;
 import org.motechproject.ghana.national.web.form.SearchUserForm;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.User;
-import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -31,6 +28,7 @@ import java.util.*;
 public class UserController {
     private UserService userService;
     private MessageSource messageSource;
+    private IdentifierGenerationService identifierGenerationService;
 
     public static final String USER_ID = "userId";
     public static final String USER_NAME = "userName";
@@ -47,10 +45,11 @@ public class UserController {
     }
 
     @Autowired
-    public UserController(UserService userService, MessageSource messageSource, EmailTemplateService emailTemplateService) {
+    public UserController(UserService userService, MessageSource messageSource, EmailTemplateService emailTemplateService,IdentifierGenerationService identifierGenerationService) {
         this.userService = userService;
         this.messageSource = messageSource;
         this.emailTemplateService = emailTemplateService;
+        this.identifierGenerationService = identifierGenerationService;
     }
 
     @RequestMapping(value = "new", method = RequestMethod.GET)
@@ -71,7 +70,12 @@ public class UserController {
         user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
 
         user.securityRole(UserType.Role.securityRoleFor(roleOfStaff));
-        if (UserType.Role.isAdmin(roleOfStaff)) user.id(createUserForm.getEmail());
+        if (UserType.Role.isAdmin(roleOfStaff)){
+            user.id(createUserForm.getEmail());
+        }else{
+            user.id(identifierGenerationService.newStaffId());
+        }
+
         try {
             userData = userService.saveUser(user);
             org.openmrs.User openMRSUser = (org.openmrs.User) userData.get("openMRSUser");
