@@ -23,7 +23,7 @@ public class BuildNumber {
         try {
             final List<String> content = FileUtils.readLines(file);
             writer = new FileWriter(file, false);
-            IOUtils.writeLines(content.subList(0, content.size() - 1), IOUtils.LINE_SEPARATOR, writer);
+            IOUtils.writeLines(content.subList(0, content.size() - 2), IOUtils.LINE_SEPARATOR, writer);
             IOUtils.write(args[0].equals("pre") ? insert() : remove(), writer);
         } finally {
             IOUtils.closeQuietly(writer);
@@ -31,7 +31,7 @@ public class BuildNumber {
     }
 
     private static String remove() throws IOException {
-        return "<!-- ${build_number} -->";
+        return "<![CDATA[<!-- ${build_number} -->]]>\n</div>";
     }
 
     private static String insert() throws IOException {
@@ -39,6 +39,6 @@ public class BuildNumber {
         if (StringUtils.isEmpty(buildNumber)) {
             buildNumber = "${build_number}";
         }
-       return "<!-- " + buildNumber + " -->";
+       return "<![CDATA[<!-- " + buildNumber + " -->]]>\n</div>";
     }
 }
