@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.web;
 
-import ca.uhn.hl7v2.model.Message;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
@@ -40,7 +39,7 @@ public class PatientController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         dateFormat.setLenient(false);
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
