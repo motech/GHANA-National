@@ -186,13 +186,14 @@ public class CreatePatientForm {
         this.parentId = parentId;
     }
 
-    public Patient getPatient() {
+    public Patient getPatient(String patientID) {
         List<Attribute> attributes = Arrays.asList(
                 new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), safeToString(this.getNhisExpirationDate())),
                 new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), this.getNhisNumber()),
                 new Attribute(PatientAttributes.INSURED.getAttribute(), safeToString(this.getInsured())));
-
-        org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(this.getMotechId(), this.getFirstName(),
+        if (patientID.equals(""))
+            patientID = this.getMotechId();
+        org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(patientID, this.getFirstName(),
                 this.getMiddleName(), this.getLastName(), this.getPreferredName(), this.getDateOfBirth(), this.getEstimatedDateOfBirth(), this.getSex(),
                 this.getAddress(), attributes, new Facility(this.getFacilityId()));
 

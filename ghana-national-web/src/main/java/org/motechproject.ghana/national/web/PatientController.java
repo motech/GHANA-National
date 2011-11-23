@@ -1,9 +1,12 @@
 package org.motechproject.ghana.national.web;
 
+import ca.uhn.hl7v2.model.Message;
+import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.web.form.CreatePatientForm;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -33,6 +36,7 @@ public class PatientController {
     private FacilityService facilityService;
     private PatientService patientService;
     private MessageSource messageSource;
+    IdentifierGenerationService identifierGenerationService;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -45,10 +49,11 @@ public class PatientController {
     }
 
     @Autowired
-    public PatientController(FacilityService facilityService, PatientService patientService, MessageSource messageSource) {
+    public PatientController(FacilityService facilityService, PatientService patientService, IdentifierGenerationService identifierGenerationService, MessageSource messageSource) {
         this.facilityService = facilityService;
         this.patientService = patientService;
         this.messageSource = messageSource;
+        this.identifierGenerationService = identifierGenerationService;
     }
 
     @ApiSession
@@ -63,7 +68,12 @@ public class PatientController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createPatient(CreatePatientForm createPatientForm, BindingResult result, ModelMap modelMap) {
         try {
-            patientService.registerPatient(createPatientForm.getPatient(), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
+            RegistrationType registrationMode = RegistrationType.AUTO_GENERATE_ID;
+            String patientID = "";
+            if (createPatientForm.getRegistrationMode().equals(registrationMode)) {
+                patientID = identifierGenerationService.newPatientId();
+            }
+            patientService.registerPatient(createPatientForm.getPatient(patientID), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
         } catch (ParentNotFoundException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_parent_not_found", null, Locale.getDefault()));
             return NEW_PATIENT;
