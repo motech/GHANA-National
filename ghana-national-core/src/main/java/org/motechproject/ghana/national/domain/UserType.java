@@ -30,12 +30,17 @@ public class UserType extends MotechAuditableDataObject {
         return name;
     }
 
+    public String description() {
+        return description;
+    }
+
     public enum Role {
         SUPER_ADMIN("Super Admin", Constants.SECURITY_ROLE_SUPER),
         FACILITY_ADMIN("Facility Admin", Constants.SECURITY_ROLE_PROVIDER),
         CALL_CENTER_ADMIN("CallCenter Admin", Constants.SECURITY_ROLE_PROVIDER),
         HEALTH_CARE_ADMIN("HeathCare Admin", Constants.SECURITY_ROLE_PROVIDER),
         HEALTH_PROMOTION_OFFICER("HPO", Constants.SECURITY_ROLE_PROVIDER),
+        HEALTH_EXTENSION_WORKER("HEW", Constants.SECURITY_ROLE_PROVIDER),
         COMMUNITY_HEALTH_OPERATOR("CHO", Constants.SECURITY_ROLE_PROVIDER),
         COMMUNITY_HEALTH_NURSE("CHN", Constants.SECURITY_ROLE_PROVIDER),
         COMMUNITY_HEALTH_VOLUNTEER("CHV", Constants.SECURITY_ROLE_PROVIDER),

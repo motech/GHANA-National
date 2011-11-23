@@ -8,10 +8,10 @@ import org.motechproject.ghana.national.repository.AllUserTypes;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.User;
 import org.motechproject.mrs.services.MRSUserAdaptor;
-import org.motechproject.openmrs.services.OpenMRSUserAdaptor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -38,9 +38,10 @@ public class UserServiceTest {
         List<UserType> userTypes = Arrays.asList(new UserType("name", "desc"));
         when(allUserTypes.getAll()).thenReturn(userTypes);
 
-        List<String> roles = service.fetchAllRoles();
+        Map<String,String> roles = service.fetchAllRoles();
         assertEquals(1, roles.size());
-        assertTrue(roles.contains("name"));
+        assertTrue(roles.containsKey("name"));
+        assertTrue(roles.containsValue("desc"));
     }
 
     @Test

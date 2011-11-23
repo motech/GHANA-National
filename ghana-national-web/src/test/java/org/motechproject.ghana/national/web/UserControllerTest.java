@@ -52,7 +52,7 @@ public class UserControllerTest {
     @Test
     public void shouldReturnNewUserForm() {
         ModelMap model = mock(ModelMap.class);
-        List<String> roles = new ArrayList<String>();
+        Map<String,String> roles = new HashMap<String,String>();
 
         when(userService.fetchAllRoles()).thenReturn(roles);
 
@@ -157,7 +157,8 @@ public class UserControllerTest {
 
 
         ModelMap model = mock(ModelMap.class);
-        List<String> roles = Arrays.asList("role1");
+        Map<String,String> roles = new HashMap<String, String>();
+        roles.put("role1","role1");
         Map<String, Object> boundModel = new HashMap<String, Object>();
 
         when(userService.saveUser(any(User.class))).thenThrow(new UserAlreadyExistsException());

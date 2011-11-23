@@ -17,6 +17,7 @@ public class UserTypeSeed extends Seed {
         allUserTypes.add(new UserType(UserType.Role.FACILITY_ADMIN.key(), "Facility Administrator"));
         allUserTypes.add(new UserType(UserType.Role.CALL_CENTER_ADMIN.key(), "CallCentre Administrator"));
         allUserTypes.add(new UserType(UserType.Role.HEALTH_CARE_ADMIN.key(), "HealthCare Administrator"));
+        allUserTypes.add(new UserType(UserType.Role.HEALTH_EXTENSION_WORKER.key(), "Health Extension Worker"));
         allUserTypes.add(new UserType(UserType.Role.COMMUNITY_HEALTH_OPERATOR.key(), "Community Health Operator"));
         allUserTypes.add(new UserType(UserType.Role.COMMUNITY_HEALTH_NURSE.key(), "Community Heath Nurse"));
         allUserTypes.add(new UserType(UserType.Role.COMMUNITY_HEALTH_VOLUNTEER.key(), "Community Heath Volunteer"));
