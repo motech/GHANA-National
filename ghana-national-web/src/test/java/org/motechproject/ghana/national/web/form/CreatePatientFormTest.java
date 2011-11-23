@@ -60,7 +60,7 @@ public class CreatePatientFormTest {
         form.setSubDistrict(subDistrict);
         form.setTypeOfPatient(patientType);
 
-        Patient patient = form.getPatient();
+        Patient patient = form.getPatient(motechId);
 
         assertThat(patient.mrsPatientId(), is(equalTo(null)));
 
