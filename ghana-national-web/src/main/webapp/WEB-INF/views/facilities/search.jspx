@@ -73,26 +73,33 @@
             <form:errors path="name" element="div" cssClass="formlyInvalid formlyAlert" cssStyle="display: block;"/>
         </div>
 
-        <div>
+        <div id="search-results">
+            <c:if test="${null ne requestedFacilities and empty requestedFacilities}">
+                <span class="error-message">There were no search results that matched your search terms.</span>
+            </c:if>
             <c:if test="${not empty requestedFacilities}">
                 <h4>* Please click on the facility id to edit the facility</h4>
-                <table border="2" padding="3" cellpadding="20">
+                <table>
                     <tr>
-                        <td><b>ID</b></td>
-                        <td><b>Name</b></td>
-                        <td><b>Country</b></td>
-                        <td><b>Region</b></td>
-                        <td><b>District</b></td>
-                        <td><b>Sub-District</b></td>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Country</th>
+                        <th>Region</th>
+                        <th>District</th>
+                        <th>Sub-District</th>
+                        <th>Edit</th>
                     </tr>
                     <c:forEach var="facility" items="${requestedFacilities}">
-                        <tr border="3" padding="2">
-                            <td><a href=""><c:out value="${facility.mrsFacility.id}"/></a></td>
+                        <tr>
+                            <td><c:out value="${facility.mrsFacility.id}"/></td>
                             <td><c:out value="${facility.mrsFacility.name}"/></td>
                             <td><c:out value="${facility.mrsFacility.country}"/></td>
                             <td><c:out value="${facility.mrsFacility.region}"/></td>
                             <td><c:out value="${facility.mrsFacility.countyDistrict}"/></td>
                             <td><c:out value="${facility.mrsFacility.stateProvince}"/></td>
+                            <td class="action">
+                                <div class="edit"><a href="#" title="Edit"> </a></div>
+                            </td>
                         </tr>
                     </c:forEach>
                 </table>
