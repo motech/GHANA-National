@@ -58,6 +58,9 @@
         </div>
 
         <div id="search-results">
+            <c:if test="${null ne requestedUsers and empty requestedUsers}">
+                <span class="error-message">There were no search results that matched your search terms.</span>
+            </c:if>
             <c:if test="${not empty requestedUsers}">
                 <h4>* Please click on the staff id to edit the staff information</h4>
                 <table>
@@ -68,7 +71,7 @@
                         <th>Last Name</th>
                         <th>Phone Number</th>
                         <th>Role</th>
-                        <th>Action</th>
+                        <th>Edit</th>
                     </tr>
                     <c:forEach var="user" items="${requestedUsers}">
                         <tr>
@@ -77,7 +80,6 @@
                             </c:forEach>
                             <td class="action">
                                 <div class="edit"><a href="#" title="Edit"> </a></div>
-                                <div class="delete"><a href="#" title="Delete"> </a></div>
                             </td>
                         </tr>
                     </c:forEach>
