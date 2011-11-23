@@ -62,7 +62,6 @@
                 <span class="error-message">There were no search results that matched your search terms.</span>
             </c:if>
             <c:if test="${not empty requestedUsers}">
-                <h4>* Please click on the staff id to edit the staff information</h4>
                 <table>
                     <tr>
                         <th>Staff Id</th>
