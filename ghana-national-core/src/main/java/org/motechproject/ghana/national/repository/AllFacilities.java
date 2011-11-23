@@ -62,8 +62,7 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
             public Facility convert(org.motechproject.mrs.model.Facility mrsFacility) {
                 final Facility facility = (Facility) selectUnique(facilities, having(on(Facility.class).mrsFacilityId(),
                         is(Integer.valueOf(mrsFacility.getId()))));
-                return facility.mrsFacility(mrsFacility);
-
+                return (facility != null) ? facility.mrsFacility(mrsFacility) : new Facility(mrsFacility);
             }
         });
     }

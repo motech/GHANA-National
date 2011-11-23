@@ -106,6 +106,29 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
+    public void shouldReturnListOfFacilitiesByNameEvenIfTheRecordsAreMissingInCouchDb() {
+        final String facilityName = "name";
+        final String country = "country";
+        final String region = "region";
+        final String district = "district";
+        final String province = "province";
+        final String mrsFacilityId = "12";
+
+        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(mrsFacilityId,
+                facilityName, country, region, district, province);
+        when(mockMrsFacilityAdaptor.getFacilities(facilityName)).thenReturn(Arrays.asList(mrsFacility));
+
+        final List<Facility> actualFacilities = allFacilities.facilitiesByName(facilityName);
+
+        final Facility actualFacility = actualFacilities.iterator().next();
+        assertThat(actualFacility.name(), is(equalTo(facilityName)));
+        assertThat(actualFacility.country(), is(equalTo(country)));
+        assertThat(actualFacility.region(), is(equalTo(region)));
+        assertThat(actualFacility.province(), is(equalTo(province)));
+        assertThat(actualFacility.district(), is(equalTo(district)));
+    }
+
+    @Test
     public void shouldGetAllFacilities() {
         final String facilityName = "name";
         final String country = "Utopia";
