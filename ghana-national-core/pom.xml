@@ -121,8 +121,8 @@
                             </sqlCommand>
                             <srcFiles>
                                 <srcFile>../build/sql/0.openmrs-1.8.sql</srcFile>
-                                <srcFile>../build/sql/1.insert_email_person_attribute_type_table.sql
-                                </srcFile>
+                                <srcFile>../build/sql/1.insert_email_person_attribute_type_table.sql</srcFile>
+                                <srcFile>../build/sql/2.insert_training_facility.sql</srcFile>
                             </srcFiles>
                         </configuration>
                     </execution>
