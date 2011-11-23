@@ -67,9 +67,8 @@ public class PatientController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createPatient(CreatePatientForm createPatientForm, BindingResult result, ModelMap modelMap) {
         try {
-            RegistrationType registrationMode = RegistrationType.AUTO_GENERATE_ID;
             String patientID = "";
-            if (createPatientForm.getRegistrationMode().equals(registrationMode)) {
+            if (createPatientForm.getRegistrationMode().equals(RegistrationType.AUTO_GENERATE_ID)) {
                 patientID = identifierGenerationService.newPatientId();
             }
             patientService.registerPatient(createPatientForm.getPatient(patientID), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());

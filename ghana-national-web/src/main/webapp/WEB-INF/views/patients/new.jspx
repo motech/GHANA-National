@@ -50,6 +50,10 @@
         <spring:message code="patient_type_mother" var="patient_type_mother" htmlEscape="false"/>
         <spring:message code="patient_type_child" var="patient_type_child" htmlEscape="false"/>
 
+        <spring:message code="patient_type_other_display" var="patient_type_other_display" htmlEscape="false"/>
+        <spring:message code="patient_type_mother_display" var="patient_type_mother_display" htmlEscape="false"/>
+        <spring:message code="patient_type_child_display" var="patient_type_child_display" htmlEscape="false"/>
+
         <spring:message code="facility_region" var="facility_region" htmlEscape="false"/>
         <spring:message code="facility_district" var="facility_district" htmlEscape="false"/>
         <spring:message code="facility_sub_district" var="facility_sub_district" htmlEscape="false"/>
@@ -88,14 +92,14 @@
         <div class="form-field">
             <label class="formLabel" for="typeOfPatient">${fn:escapeXml(patient_type)}:</label>
             <form:select path="typeOfPatient" label="${fn:escapeXml(patient_type)}">
-                <option value="${fn:escapeXml(patient_type_other)}">
-                    ${fn:escapeXml(patient_type_other)}
-                </option>
                 <option value="${fn:escapeXml(patient_type_mother)}">
-                    ${fn:escapeXml(patient_type_mother)}
+                    ${fn:escapeXml(patient_type_mother_display)}
                 </option>
                 <option value="${fn:escapeXml(patient_type_child)}">
-                    ${fn:escapeXml(patient_type_child)}
+                    ${fn:escapeXml(patient_type_child_display)}
+                </option>
+                <option value="${fn:escapeXml(patient_type_other)}">
+                    ${fn:escapeXml(patient_type_other_display)}
                 </option>
             </form:select>
         </div>
