@@ -120,6 +120,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <!--<finalName>idgen-omod</finalName>-->
+        <finalName>idgen-omod</finalName>
     </build>
 </project>
