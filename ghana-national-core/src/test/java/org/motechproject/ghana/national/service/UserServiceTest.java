@@ -15,6 +15,9 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -59,10 +62,17 @@ public class UserServiceTest {
     }
 
     @Test
-    public void shouldGetAllUsers(){
+    public void shouldGetAllUsers() {
         service.getAllUsers();
         verify(userAdaptor).getAllUsers();
     }
 
+    @Test
+    public void shouldGetUserById() {
+        String userId = "124567";
+        User user = new User();
+        when(userAdaptor.getUserById(userId)).thenReturn(user);
+        assertThat(service.getUserById(userId), is(equalTo(user)));
+    }
 
 }

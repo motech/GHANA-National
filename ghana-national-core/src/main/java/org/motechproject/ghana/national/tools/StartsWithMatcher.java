@@ -26,7 +26,7 @@ public class StartsWithMatcher extends TypeSafeMatcher<String> {
     }
 
     @Factory
-    public static Matcher<String> startsWith(String string) {
+    public static Matcher<String> ignoreCaseStartsWith(String string) {
         return new StartsWithMatcher(string);
     }
 }

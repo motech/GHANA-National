@@ -11,11 +11,10 @@ import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.openmrs.api.IdentifierNotUniqueException;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientServiceTest {
@@ -65,5 +64,16 @@ public class PatientServiceTest {
         when(mockAllPatients.patientById(parentId)).thenReturn(mother);
         doThrow(new IdentifierNotUniqueException()).when(mockAllPatients).add(patient);
         patientService.registerPatient(patient, PatientType.CHILD_UNDER_FIVE, parentId);
+    }
+
+    @Test
+    public void shouldReturnGetAPatientById() {
+        String patientId = "10000";
+        Patient patient = mock(Patient.class);
+        when(mockAllPatients.patientById(patientId)).thenReturn(patient);
+        assertThat(patientService.getPatientById(patientId), is(equalTo(patient)));
+
+        when(mockAllPatients.patientById(patientId)).thenReturn(null);
+        assertThat(patientService.getPatientById(patientId), is(equalTo(null)));
     }
 }

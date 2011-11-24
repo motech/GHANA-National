@@ -3,33 +3,61 @@ package org.motechproject.ghana.national.bean;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
+import org.motechproject.mobileforms.api.validator.annotations.RegEx;
+import org.motechproject.mobileforms.api.validator.annotations.Required;
 
 import java.util.Date;
 
 public class RegisterClientForm extends FormBean {
+    public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
+    public static final String NAME_PATTERN = "[0-9.\\-\\s]*[a-zA-Z]?[a-zA-Z0-9.\\-\\s]*";
+    public static final String BOOLEAN_PATTERN = "([nN][aA]|[YynN])";
+    public static final String MOTECH_ID_PATTERN = "[0-9]{7}";
+
+    @Required
     private RegistrationType registrationMode;
+    @RegEx(pattern = MOTECH_ID_PATTERN)
     private String motechId;
+    @RegEx(pattern = MOTECH_ID_PATTERN)
     private String motherMotechId;
+    @Required
     private PatientType registrantType;
+    @Required @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
     private String firstName;
+    @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
     private String middleName;
+    @Required @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
     private String lastName;
+    @MaxLength(size = 50) @RegEx(pattern = NAME_PATTERN)
     private String prefferedName;
+    @Required
     private Date dateOfBirth;
+    @Required @RegEx(pattern = BOOLEAN_PATTERN)
     private Boolean estimatedBirthDate;
+    @RegEx(pattern = "[MmFf]")
     private String sex;
+    @Required @RegEx(pattern = BOOLEAN_PATTERN)
     private Boolean insured;
+    @MaxLength(size = 30) @RegEx(pattern = "[a-zA-Z0-9.,'/\\\\-\\_\\s]+")
     private String nhis;
     private Date nhisExpires;
     private String region;
     private String district;
     private String subDistrict;
+    @Required @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String facilityId;
+    @Required @MaxLength(size = 50)
     private String address;
     private String sender;
+    @RegEx(pattern = BOOLEAN_PATTERN)
     private Boolean enroll;
+    @Required @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String staffId;
+    @Required
     private Date date;
+    @RegEx(pattern = "0[0-9]{9}")
+    private String phoneNumber;
 
     public Boolean getEnroll() {
         return enroll;
@@ -213,5 +241,13 @@ public class RegisterClientForm extends FormBean {
 
     public void setRegistrationMode(RegistrationType registrationMode) {
         this.registrationMode = registrationMode;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 }

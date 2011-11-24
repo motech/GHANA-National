@@ -66,6 +66,7 @@ public class PatientRegistrationFormHandlerTest {
         RegistrationType registrationMode = RegistrationType.USE_PREPRINTED_ID;
         String sex = "M";
         String subDistrict = "SubDistrict";
+        String phoneNumber = "0123456789";
         PatientType patientType = PatientType.CHILD_UNDER_FIVE;
 
         registerClientForm.setAddress(address);
@@ -87,6 +88,7 @@ public class PatientRegistrationFormHandlerTest {
         registerClientForm.setSex(sex);
         registerClientForm.setSubDistrict(subDistrict);
         registerClientForm.setRegistrantType(patientType);
+        registerClientForm.setPhoneNumber(phoneNumber);
         parameters.put(PatientRegistrationFormHandler.FORM_BEAN, registerClientForm);
         MotechEvent event = new MotechEvent("subject", parameters);
 
@@ -118,6 +120,8 @@ public class PatientRegistrationFormHandlerTest {
                 equalTo(PatientAttributes.NHIS_NUMBER.getAttribute())))).value(), is(equalTo(nhisNumber)));
         assertThat(((Attribute) selectUnique(savedPatient.mrsPatient().getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.INSURED.getAttribute())))).value(), is(equalTo(insured.toString())));
+        assertThat(((Attribute) selectUnique(savedPatient.mrsPatient().getAttributes(), having(on(Attribute.class).name(),
+                equalTo(PatientAttributes.PHONE_NUMBER.getAttribute())))).value(), is(equalTo(phoneNumber)));
 
         assertThat(parentIdCaptor.getValue(), is(equalTo(registerClientForm.getMotherMotechId())));
         assertThat(patientTypeArgumentCaptor.getValue(), is(equalTo(patientType)));

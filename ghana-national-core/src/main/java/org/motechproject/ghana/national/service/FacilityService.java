@@ -5,7 +5,6 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.tools.StartsWithMatcher;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,6 +72,10 @@ public class FacilityService {
     }
 
     private List<Facility> filterFacilities(String field, String matcher, List<Facility> filteredFacilities) {
-        return (StringUtils.isNotEmpty(matcher)) ? filter(having(field, StartsWithMatcher.startsWith(matcher)), filteredFacilities) : filteredFacilities;
+        return (StringUtils.isNotEmpty(matcher)) ? filter(having(field, StartsWithMatcher.ignoreCaseStartsWith(matcher)), filteredFacilities) : filteredFacilities;
+    }
+
+    public Facility getFacility(String facilityId) {
+        return allFacilities.getFacility(facilityId);
     }
 }

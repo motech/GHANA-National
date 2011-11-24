@@ -16,6 +16,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -104,7 +105,7 @@ public class FacilityServiceTest {
         final Facility facility = new Facility(new org.motechproject.mrs.model.Facility(facilityName, country, region, district, province));
         when(mockAllFacilities.facilities()).thenReturn(Arrays.asList(facility));
 
-        List<Facility> actualFacilities = facilityService.searchFacilities("", "", "count", "", "", "");
+        List<Facility> actualFacilities = facilityService.searchFacilities("", "", "cOuNt", "", "", "");
         assertThat(actualFacilities.size(), is(equalTo(1)));
         assertThat(actualFacilities.get(0), is(facility));
     }
@@ -119,8 +120,19 @@ public class FacilityServiceTest {
         final Facility facility = new Facility(new org.motechproject.mrs.model.Facility(facilityName, country, region, district, province));
         when(mockAllFacilities.facilities()).thenReturn(Arrays.asList(facility));
 
-        List<Facility> actualFacilities = facilityService.searchFacilities("", "", "counter", "", "", "");
+        List<Facility> actualFacilities = facilityService.searchFacilities("", "", "coUnTer", "", "", "");
         assertThat(actualFacilities.size(), is(equalTo(0)));
+    }
+
+
+    @Test
+    public void shouldValidateIfFacilityExists() {
+        String facilityId = "0987654";
+        Facility facility = mock(Facility.class);
+        when(mockAllFacilities.getFacility(facilityId)).thenReturn(facility);
+        assertThat(facilityService.getFacility(facilityId), is(equalTo(facility)));
+        when(mockAllFacilities.getFacility(facilityId)).thenReturn(null);
+        assertThat(facilityService.getFacility(facilityId), is(equalTo(null)));
     }
 }
 
