@@ -13,23 +13,23 @@
             <li>
                 <a href="#">Facility</a>
                 <ul>
-                    <li><a href="${new_facility_url}">New</a></li>
-                    <li><a href="${search_facility_url}">Search</a></li>
+                    <li><a href="${new_facility_url}" id="newfacility">New</a></li>
+                    <li><a href="${search_facility_url}" id="searchfacility">Search</a></li>
                 </ul>
             </li>
             <li>
                 <a href="#">Patient</a>
                 <ul>
-                    <li><a href="${new_patient_url}">New</a></li>
-                    <li><a href="#">Search</a></li>
+                    <li><a href="${new_patient_url}" id="newpatient">New</a></li>
+                    <li><a href="#" id="searchpatient">Search</a></li>
                 </ul>
 
             </li>
             <li>
                 <a href="#">Staff</a>
                 <ul>
-                    <li><a href="${users_url}">New</a></li>
-                    <li><a href="${search_users_url}">Search</a></li>
+                    <li><a href="${users_url}" id="newstaff">New</a></li>
+                    <li><a href="${search_users_url}" id="searchstaff">Search</a></li>
                 </ul>
             </li>
             <li><a href="${password_reset_url}">Reset Password</a></li>
