@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
@@ -41,11 +42,13 @@ public class PatientControllerTest {
     MessageSource mockMessageSource;
     @Mock
     FacilityHelper mockFacilityHelper;
+    @Mock
+    MotechIdVerhoeffValidator motechIdVerhoeffValidator;
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientController = new PatientController(mockPatientService, mockIdentifierGenerationService, mockMessageSource, mockFacilityHelper);
+        patientController = new PatientController(mockPatientService, mockIdentifierGenerationService, mockMessageSource, mockFacilityHelper,motechIdVerhoeffValidator);
     }
 
     @Test

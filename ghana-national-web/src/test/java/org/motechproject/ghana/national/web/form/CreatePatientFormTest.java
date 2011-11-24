@@ -5,9 +5,14 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
+import org.motechproject.ghana.national.web.PatientController;
 import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.Facility;
+import org.openmrs.patient.UnallowedIdentifierException;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
@@ -15,11 +20,13 @@ import static ch.lambdaj.Lambda.selectUnique;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.motechproject.ghana.national.tools.Utility.safeToString;
 
 public class CreatePatientFormTest {
     @Test
     public void shouldCreateMrsPatientObjectGivenAFormPopulatedWithData() {
         final CreatePatientForm form = new CreatePatientForm();
+        final PatientController patientController = new PatientController();
         String address = "Address";
         Date dateofBirth = new Date(10, 10, 2011);
         String district = "District";
@@ -62,7 +69,7 @@ public class CreatePatientFormTest {
         form.setTypeOfPatient(patientType);
         form.setPhoneNumber(phoneNumber);
 
-        Patient patient = form.getPatient(motechId);
+        Patient patient = patientController.getPatient(form, motechId);
 
         assertThat(patient.mrsPatientId(), is(equalTo(null)));
 
