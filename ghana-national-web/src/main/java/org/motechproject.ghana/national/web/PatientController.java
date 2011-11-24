@@ -4,7 +4,7 @@ import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
-import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.web.form.CreatePatientForm;
@@ -32,7 +32,7 @@ public class PatientController {
     public static final String CREATE_PATIENT_FORM = "createPatientForm";
     public static final String SUCCESS = "patients/success";
 
-    private FacilityService facilityService;
+    private FacilityHelper facilityHelper;
     private PatientService patientService;
     private MessageSource messageSource;
     IdentifierGenerationService identifierGenerationService;
@@ -48,18 +48,19 @@ public class PatientController {
     }
 
     @Autowired
-    public PatientController(FacilityService facilityService, PatientService patientService, IdentifierGenerationService identifierGenerationService, MessageSource messageSource) {
-        this.facilityService = facilityService;
+    public PatientController(PatientService patientService, IdentifierGenerationService identifierGenerationService,
+                             MessageSource messageSource, FacilityHelper facilityHelper) {
         this.patientService = patientService;
         this.messageSource = messageSource;
         this.identifierGenerationService = identifierGenerationService;
+        this.facilityHelper = facilityHelper;
     }
 
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newPatientForm(ModelMap modelMap) {
         modelMap.put(CREATE_PATIENT_FORM, new CreatePatientForm());
-        modelMap.mergeAttributes(facilityService.locationMap());
+        modelMap.mergeAttributes(facilityHelper.locationMap());
         return NEW_PATIENT;
     }
 
@@ -86,7 +87,7 @@ public class PatientController {
     }
 
     private void handleError(BindingResult bindingResult, ModelMap modelMap, String message) {
-        modelMap.mergeAttributes(facilityService.locationMap());
+        modelMap.mergeAttributes(facilityHelper.locationMap());
         bindingResult.addError(new FieldError(CREATE_PATIENT_FORM, "parentId", message));
         modelMap.mergeAttributes(bindingResult.getModel());
     }

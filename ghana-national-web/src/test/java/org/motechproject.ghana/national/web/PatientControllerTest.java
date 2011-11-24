@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -38,23 +39,24 @@ public class PatientControllerTest {
     IdentifierGenerationService mockIdentifierGenerationService;
     @Mock
     MessageSource mockMessageSource;
-
+    @Mock
+    FacilityHelper mockFacilityHelper;
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientController = new PatientController(mockFacilityService, mockPatientService, mockIdentifierGenerationService, mockMessageSource);
+        patientController = new PatientController(mockPatientService, mockIdentifierGenerationService, mockMessageSource, mockFacilityHelper);
     }
 
     @Test
     public void shouldRenderPageToCreateAPatient() {
         final ModelMap modelMap = new ModelMap();
         final String key = "key";
-        when(mockFacilityService.locationMap()).thenReturn(new HashMap<String, Object>() {{
+        when(mockFacilityHelper.locationMap()).thenReturn(new HashMap<String, Object>() {{
             put(key, new Object());
         }});
         patientController.newPatientForm(modelMap);
-        verify(mockFacilityService).locationMap();
+        verify(mockFacilityHelper).locationMap();
         assertNotNull(modelMap.get(key));
     }
 
