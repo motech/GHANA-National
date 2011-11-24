@@ -12,6 +12,7 @@
         <module>ghana-national-core</module>
         <module>ghana-national-xforms</module>
         <module>ghana-national-web</module>
+        <module>idgen-omod</module>
     </modules>
     <properties>
         <spring.version>3.0.5.RELEASE</spring.version>
