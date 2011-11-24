@@ -3,7 +3,8 @@ package org.motechproject.ghana.national.domain;
 public enum PatientAttributes {
     INSURED("Insured"),
     NHIS_NUMBER("NHIS Number"),
-    NHIS_EXPIRY_DATE("NHIS Expiration Date");
+    NHIS_EXPIRY_DATE("NHIS Expiration Date"),
+    PHONE_NUMBER("Phone Number");
 
     private String attribute;
 

@@ -103,4 +103,8 @@ public class FacilityService {
         }
         return facilityVOs;
     }
+
+    public Facility getFacility(String facilityId) {
+        return allFacilities.getFacility(facilityId);
+    }
 }

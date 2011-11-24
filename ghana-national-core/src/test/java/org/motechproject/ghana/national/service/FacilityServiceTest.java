@@ -16,8 +16,7 @@ import java.util.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class FacilityServiceTest {
@@ -107,6 +106,17 @@ public class FacilityServiceTest {
         assertThat((List<FacilityVO>) modelMap.get(Constants.FACILITIES), is(equalTo(facilities())));
     }
 
+    @Test
+    public void shouldValidateIfFacilityExists() {
+        String facilityId = "0987654";
+        Facility facility = mock(Facility.class);
+        when(mockAllFacilities.getFacility(facilityId)).thenReturn(facility);
+        assertThat(facilityService.getFacility(facilityId), is(equalTo(facility)));
+
+        when(mockAllFacilities.getFacility(facilityId)).thenReturn(null);
+        assertThat(facilityService.getFacility(facilityId), is(equalTo(null)));
+    }
+
     static Map<String, TreeSet<String>> regions() {
         return new HashMap<String, TreeSet<String>>() {{
             put("Utopia", new TreeSet<String>() {{
@@ -147,10 +157,10 @@ public class FacilityServiceTest {
 
     static List<FacilityVO> facilities() {
         return new ArrayList<FacilityVO>() {{
-            add(new FacilityVO(null,"Facility 1", "Province 1"));
-            add(new FacilityVO(null,"Facility 2", "Province 2"));
-            add(new FacilityVO(null,"Facility 3", "District 6"));
-            add(new FacilityVO(null,"Facility 4", "Region 4"));
+            add(new FacilityVO(null, "Facility 1", "Province 1"));
+            add(new FacilityVO(null, "Facility 2", "Province 2"));
+            add(new FacilityVO(null, "Facility 3", "District 6"));
+            add(new FacilityVO(null, "Facility 4", "Region 4"));
         }};
     }
 

@@ -1,14 +1,18 @@
 package org.motechproject.ghana.national.service;
 
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.UserType;
 import org.motechproject.ghana.national.repository.AllUserTypes;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.User;
 import org.motechproject.mrs.services.MRSUserAdaptor;
 import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.services.OpenMRSUserAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,5 +55,10 @@ public class UserService {
     @ApiSession
     public List<User> getAllUsers() {
         return userAdaptor.getAllUsers();
+    }
+
+    @ApiSession
+    public User getUserById(String userId) {
+        return userAdaptor.getUserById(userId);
     }
 }

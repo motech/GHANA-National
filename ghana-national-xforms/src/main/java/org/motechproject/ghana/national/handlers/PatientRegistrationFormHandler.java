@@ -48,6 +48,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
 
     private List<Attribute> getPatientAttributes(RegisterClientForm registerClientForm) {
         List<Attribute> attributes = new ArrayList<Attribute>();
+        attributes.add(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), registerClientForm.getPhoneNumber()));
         attributes.add(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), safeToString(registerClientForm.getNhisExpires())));
         attributes.add(new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), registerClientForm.getNhis()));
         attributes.add(new Attribute(PatientAttributes.INSURED.getAttribute(), safeToString(registerClientForm.getInsured())));

@@ -38,6 +38,7 @@ public class CreatePatientFormTest {
         RegistrationType registrationMode = RegistrationType.USE_PREPRINTED_ID;
         String sex = "M";
         String subDistrict = "SubDistrict";
+        String phoneNumber = "0123456789";
         PatientType patientType = PatientType.CHILD_UNDER_FIVE;
 
         form.setAddress(address);
@@ -59,6 +60,7 @@ public class CreatePatientFormTest {
         form.setSex(sex);
         form.setSubDistrict(subDistrict);
         form.setTypeOfPatient(patientType);
+        form.setPhoneNumber(phoneNumber);
 
         Patient patient = form.getPatient(motechId);
 
@@ -83,5 +85,7 @@ public class CreatePatientFormTest {
                 equalTo(PatientAttributes.NHIS_NUMBER.getAttribute())))).value(), is(equalTo(nhisNumber)));
         assertThat(((Attribute) selectUnique(patient.mrsPatient().getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.INSURED.getAttribute())))).value(), is(equalTo(insured.toString())));
+        assertThat(((Attribute) selectUnique(patient.mrsPatient().getAttributes(), having(on(Attribute.class).name(),
+                equalTo(PatientAttributes.PHONE_NUMBER.getAttribute())))).value(), is(equalTo(phoneNumber)));
     }
 }
