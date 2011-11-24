@@ -21,7 +21,6 @@ public class VerhoeffValidator extends BaseHyphenatedIdentifierValidator {
 
     @Override
     protected int getCheckDigit(String undecoratedIdentifier) {
-        System.out.println("inside getCheckDigit"+undecoratedIdentifier);
         int checkDigit = calculateCheckDigit(undecoratedIdentifier, false);
         return inv_table[checkDigit];
     }
@@ -34,7 +33,6 @@ public class VerhoeffValidator extends BaseHyphenatedIdentifierValidator {
 
     @Override
     public String getValidIdentifier(String undecoratedIdentifier) throws UnallowedIdentifierException {
-        System.out.println("inside getValidGenerator"+undecoratedIdentifier);
         checkAllowedIdentifier(undecoratedIdentifier);
         int checkDigit = getCheckDigit(undecoratedIdentifier);
         return undecoratedIdentifier + checkDigit;
@@ -46,7 +44,6 @@ public class VerhoeffValidator extends BaseHyphenatedIdentifierValidator {
     }
 
     protected int calculateCheckDigit(String identifier, boolean includesCheckDigit) {
-        System.out.println("inside calculateCheckDigit"+identifier);
         int checkDigit = 0;
         int i = includesCheckDigit ? 0 : 1;
         for (int j = identifier.length() - 1; j >= 0; j--) {
@@ -57,7 +54,6 @@ public class VerhoeffValidator extends BaseHyphenatedIdentifierValidator {
             checkDigit = d_table[checkDigit][p_table[i % 8][number]];
             i++;
         }
-        System.out.println("checkdigit "+checkDigit);
         return checkDigit;
     }
 
