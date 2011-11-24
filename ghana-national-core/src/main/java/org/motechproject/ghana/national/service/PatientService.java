@@ -42,4 +42,9 @@ public class PatientService {
             throw new PatientIdIncorrectFormatException();
         }
     }
+
+    @ApiSession
+    public Patient getPatientById(String patientId) {
+        return allPatients.patientById(patientId);
+    }
 }

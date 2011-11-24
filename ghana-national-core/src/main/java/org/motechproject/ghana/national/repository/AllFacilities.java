@@ -67,6 +67,12 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
         });
     }
 
+    public Facility getFacility(String facilityId) {
+        org.motechproject.mrs.model.Facility mrsFacility = facilityAdaptor.getFacility(Integer.parseInt(facilityId));
+        return (mrsFacility != null) ? new Facility(mrsFacility) : null;
+    }
+
+
     @View(name = "find_by_facility_id", map = "function(doc) { if(doc.type === 'Facility') emit(doc.mrsFacilityId, doc) }")
     public List<Facility> findByFacilityIds(List<Integer> facilityIds) {
         ViewQuery viewQuery = createQuery("find_by_facility_id").keys(facilityIds);

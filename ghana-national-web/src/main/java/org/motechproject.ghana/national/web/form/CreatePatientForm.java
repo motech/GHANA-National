@@ -33,6 +33,7 @@ public class CreatePatientForm {
     private String subDistrict;
     private String facilityId;
     private String address;
+    private String phoneNumber;
 
     public RegistrationType getRegistrationMode() {
         return registrationMode;
@@ -188,6 +189,7 @@ public class CreatePatientForm {
 
     public Patient getPatient(String patientID) {
         List<Attribute> attributes = Arrays.asList(
+                new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), safeToString(this.getPhoneNumber())),
                 new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), safeToString(this.getNhisExpirationDate())),
                 new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), this.getNhisNumber()),
                 new Attribute(PatientAttributes.INSURED.getAttribute(), safeToString(this.getInsured())));
@@ -198,5 +200,13 @@ public class CreatePatientForm {
                 this.getAddress(), attributes, new Facility(this.getFacilityId()));
 
         return new Patient(mrsPatient);
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

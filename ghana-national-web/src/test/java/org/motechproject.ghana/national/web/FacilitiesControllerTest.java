@@ -1,15 +1,14 @@
 package org.motechproject.ghana.national.web;
 
-import ca.uhn.hl7v2.model.v23.datatype.MO;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
+import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.CreateFacilityForm;
 import org.motechproject.ghana.national.web.form.SearchFacilityForm;
@@ -22,7 +21,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -42,12 +40,13 @@ public class FacilitiesControllerTest {
     MessageSource mockMessageSource;
     @Mock
     BindingResult mockBindingResult;
-    FacilityService facilityService;
+    @Mock
+    FacilityHelper mockFacilityHelper;
 
     @Before
     public void setUp() {
         initMocks(this);
-        facilitiesController = new FacilitiesController(mockFacilityService, mockMessageSource);
+        facilitiesController = new FacilitiesController(mockFacilityService, mockMessageSource, mockFacilityHelper);
         mockBindingResult = mock(BindingResult.class);
     }
 
@@ -70,11 +69,11 @@ public class FacilitiesControllerTest {
             put(Constants.PROVINCES, new Object());
             put(Constants.DISTRICTS, new Object());
         }};
-        when(mockFacilityService.locationMap()).thenReturn(map);
+        when(mockFacilityHelper.locationMap()).thenReturn(map);
         final String result = spyFacilitiesController.createFacility(new CreateFacilityForm(), mockBindingResult, modelMap);
 
         assertThat(result, is(equalTo("facilities/success")));
-        verify(mockFacilityService).locationMap();
+        verify(mockFacilityHelper).locationMap();
         assertNotNull(modelMap.get(FacilitiesController.CREATE_FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));
@@ -113,7 +112,7 @@ public class FacilitiesControllerTest {
             put(Constants.PROVINCES, new Object());
             put(Constants.DISTRICTS, new Object());
         }};
-        when(mockFacilityService.locationMap()).thenReturn(map);
+        when(mockFacilityHelper.locationMap()).thenReturn(map);
 
         final String result = spyFacilitiesController.createFacility(createFacilityForm, mockBindingResult, modelMap);
 
@@ -124,7 +123,7 @@ public class FacilitiesControllerTest {
         assertThat(actualFieldError.getObjectName(), is(equalTo(FacilitiesController.CREATE_FACILITY_FORM)));
         assertThat(actualFieldError.getField(), is(equalTo("name")));
         assertThat(actualFieldError.getDefaultMessage(), is(equalTo(message)));
-        verify(mockFacilityService).locationMap();
+        verify(mockFacilityHelper).locationMap();
         assertNotNull(modelMap.get(FacilitiesController.CREATE_FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));
@@ -147,14 +146,10 @@ public class FacilitiesControllerTest {
         searchFacilityForm.setRegion(region);
         searchFacilityForm.setCountyDistrict(district);
         searchFacilityForm.setStateProvince(province);
-        searchFacilityForm.setPhoneNumber(StringUtils.EMPTY);
-        searchFacilityForm.setAdditionalPhoneNumber1(StringUtils.EMPTY);
-        searchFacilityForm.setAdditionalPhoneNumber2(StringUtils.EMPTY);
-        searchFacilityForm.setAdditionalPhoneNumber3(StringUtils.EMPTY);
-        mockFacilityService.facilities();
-        ModelMap modelMap = new ModelMap();
-        facilitiesController.searchFacility(searchFacilityForm, mockBindingResult, modelMap);
-        assertNotNull(modelMap.get("requestedFacilities"));
 
+        facilitiesController.searchFacility(searchFacilityForm, new ModelMap());
+
+        verify(mockFacilityService).searchFacilities(id, name, country, region, district, province);
+        verify(mockFacilityHelper).locationMap();
     }
 }

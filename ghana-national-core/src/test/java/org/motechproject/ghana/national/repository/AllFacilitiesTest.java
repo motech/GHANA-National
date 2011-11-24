@@ -97,11 +97,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         final List<Facility> actualFacilities = allFacilities.facilitiesByName(facilityName);
 
         final Facility actualFacility = actualFacilities.iterator().next();
-        assertThat(actualFacility.name(), is(equalTo(facilityName)));
-        assertThat(actualFacility.country(), is(equalTo(country)));
-        assertThat(actualFacility.region(), is(equalTo(region)));
-        assertThat(actualFacility.province(), is(equalTo(province)));
-        assertThat(actualFacility.district(), is(equalTo(district)));
+        assertFacility(actualFacility, facilityName, country, region, district, province);
         assertThat(actualFacility.phoneNumber(), is(equalTo(phoneNumber)));
     }
 
@@ -141,6 +137,10 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         final List<Facility> actualFacilities = allFacilities.facilities();
         final Facility actualFacility = actualFacilities.iterator().next();
         assertThat(actualFacilities.size(), is(equalTo(1)));
+        assertFacility(actualFacility, facilityName, country, region, district, province);
+    }
+
+    private void assertFacility(Facility actualFacility, String facilityName, String country, String region, String district, String province) {
         assertThat(actualFacility.name(), is(equalTo(facilityName)));
         assertThat(actualFacility.country(), is(equalTo(country)));
         assertThat(actualFacility.region(), is(equalTo(region)));
@@ -169,6 +169,27 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
 
         final List<Facility> byFacilityIds = allFacilities.findByFacilityIds(Arrays.asList(1, 2));
         assertThat(byFacilityIds.size(), is(2));
+    }
+
+    @Test
+    public void shouldGetFacilityById(){
+        String facilityId = "0987654";
+        String name = "name";
+        String province = "province";
+        String district = "district";
+        String region = "region";
+        String country = "country";
+
+        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(facilityId, name, country, region, district, province);
+        when(mockMrsFacilityAdaptor.getFacility(Integer.parseInt(facilityId))).thenReturn(mrsFacility);
+
+        Facility facility;
+        assertFacility(allFacilities.getFacility(facilityId), name, country, region, district, province);
+
+        when(mockMrsFacilityAdaptor.getFacility(Integer.parseInt(facilityId))).thenReturn(null);
+        facility = allFacilities.getFacility(facilityId);
+        assertThat(facility, is(equalTo(null)));
+
     }
 
     @After
