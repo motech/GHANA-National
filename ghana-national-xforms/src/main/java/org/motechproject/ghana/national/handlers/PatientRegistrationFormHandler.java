@@ -8,6 +8,7 @@ import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.Facility;
+import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.registerPatient-jf")
     @LoginAsAdmin
+    @ApiSession
     public void handleFormEvent(MotechEvent event) {
         try {
             RegisterClientForm registerClientForm = (RegisterClientForm) event.getParameters().get(FORM_BEAN);

@@ -7,7 +7,6 @@ import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.AllPatients;
-import org.motechproject.openmrs.advice.ApiSession;
 import org.openmrs.api.IdentifierNotUniqueException;
 import org.openmrs.api.InvalidCheckDigitException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,6 @@ public class PatientService {
         this.allPatients = allPatients;
     }
 
-    @ApiSession
     public void registerPatient(Patient patient, PatientType typeOfPatient, String parentId)
             throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         if (PatientType.CHILD_UNDER_FIVE.equals(typeOfPatient) && StringUtils.isNotEmpty(parentId)) {
@@ -43,7 +41,6 @@ public class PatientService {
         }
     }
 
-    @ApiSession
     public Patient getPatientById(String patientId) {
         return allPatients.patientById(patientId);
     }

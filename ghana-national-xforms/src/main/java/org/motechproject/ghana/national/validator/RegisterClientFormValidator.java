@@ -9,6 +9,8 @@ import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.UserService;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
+import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,8 +27,9 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     @Autowired
     private PatientService patientService;
 
-
     @Override
+    @LoginAsAdmin
+    @ApiSession
     public List<FormError> validate(RegisterClientForm formBean) {
         List<FormError> formErrors = super.validate(formBean);
         validateIfStaffExists(formErrors, formBean.getStaffId());

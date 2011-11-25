@@ -14,6 +14,11 @@
     <dependencies>
         <dependency>
             <groupId>org.motechproject</groupId>
+            <artifactId>idgen-omod</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
             <artifactId>ghana-national-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

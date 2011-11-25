@@ -2,24 +2,25 @@ package org.motechproject.ghana.national.bean;
 
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
+import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
+import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 
 import java.util.Date;
 
 public class RegisterClientForm extends FormBean {
     public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
     public static final String NAME_PATTERN = "[0-9.\\-\\s]*[a-zA-Z]?[a-zA-Z0-9.\\-\\s]*";
-    public static final String BOOLEAN_PATTERN = "([nN][aA]|[YynN])";
     public static final String MOTECH_ID_PATTERN = "[0-9]{7}";
 
     @Required
     private RegistrationType registrationMode;
-    @RegEx(pattern = MOTECH_ID_PATTERN)
+    @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
-    @RegEx(pattern = MOTECH_ID_PATTERN)
+    @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motherMotechId;
     @Required
     private PatientType registrantType;
@@ -33,11 +34,11 @@ public class RegisterClientForm extends FormBean {
     private String prefferedName;
     @Required
     private Date dateOfBirth;
-    @Required @RegEx(pattern = BOOLEAN_PATTERN)
+    @Required
     private Boolean estimatedBirthDate;
     @RegEx(pattern = "[MmFf]")
     private String sex;
-    @Required @RegEx(pattern = BOOLEAN_PATTERN)
+    @Required
     private Boolean insured;
     @MaxLength(size = 30) @RegEx(pattern = "[a-zA-Z0-9.,'/\\\\-\\_\\s]+")
     private String nhis;
@@ -50,7 +51,6 @@ public class RegisterClientForm extends FormBean {
     @Required @MaxLength(size = 50)
     private String address;
     private String sender;
-    @RegEx(pattern = BOOLEAN_PATTERN)
     private Boolean enroll;
     @Required @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String staffId;
