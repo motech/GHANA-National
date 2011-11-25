@@ -7,7 +7,7 @@ import org.motechproject.functional.pages.HomePage;
 import org.motechproject.functional.pages.LoginPage;
 import org.openqa.selenium.WebDriver;
 
-public class LoginTests {
+public class LoginTest {
 
     WebDriver driver = MyDriver.getDriverInstance();
     LoginPage loginPage = new LoginPage();

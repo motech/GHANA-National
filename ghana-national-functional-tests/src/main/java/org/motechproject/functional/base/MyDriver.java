@@ -19,7 +19,7 @@ public class MyDriver {
 
     public static WebDriver getDriverInstance() {
         if (driver == null) {
-            FirefoxBinary firefoxBinary = new FirefoxBinary(new File("c:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"));
+            FirefoxBinary firefoxBinary = new FirefoxBinary(new File("H:\\firefox7\\firefox.exe"));
             driver = new FirefoxDriver(firefoxBinary, new FirefoxProfile());
         }
         return driver;

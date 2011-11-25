@@ -1,12 +1,10 @@
 package org.motechproject.functional.pages;
 
 import org.motechproject.functional.base.MyDriver;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
 
@@ -15,8 +13,7 @@ public class CreateFacilityPage {
     HomePage homePage = new HomePage();
     LoginPage loginPage = new LoginPage();
 
-    // WebElement FacilityNameInput,CountryDropDown,PhoneNumberInput,PhoneNum1,PhoneNum2,PhoneNum3,
-    //         DistrictDropDown,SubDistDropDown,RegionDropDown;
+
     @FindBy(name = "country")
     @CacheLookup
     WebElement CountryDropDown;
@@ -58,30 +55,6 @@ public class CreateFacilityPage {
     @CacheLookup
     WebElement SubmitFacilityDetails;
 
-
-    // private WebElement name;
-
-    public boolean EnsureAllInputFieldsArePresentOnLoad() {
-
-
-        boolean AllFieldsPresent = true;
-        try {
-
-            PageFactory.initElements(driver, CreateFacilityPage.class);
-            //homePage.OpenCreateFacilityPage();
-            if (FacilityNameInput.isDisplayed() && CountryDropDown.isDisplayed() && PhoneNumberInput.isDisplayed()) {
-                // do nothing as required fields are present initially
-            }
-
-        } catch (NoSuchElementException e) {
-            AllFieldsPresent = false;
-        } catch (Exception e) {
-            System.out.println("Exception " + e.getMessage());
-            AllFieldsPresent = false;
-        }
-
-        return AllFieldsPresent;
-    }   // End EnsureAllInputFieldsArePresentOnLoad Method
 
     public boolean IsRegionDisplayed() {
         if (RegionDropDown.isDisplayed())

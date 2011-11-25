@@ -9,7 +9,7 @@ import org.motechproject.functional.pages.LoginPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 
-public class CreateFacilityTests {
+public class CreateFacilityTest {
 
     LoginPage loginPage = new LoginPage();
     HomePage homePage = new HomePage();
