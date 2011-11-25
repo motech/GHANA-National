@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.helper.FacilityHelper;
-import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
@@ -32,8 +31,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientControllerTest {
     PatientController patientController;
-    @Mock
-    FacilityService mockFacilityService;
     @Mock
     PatientService mockPatientService;
     @Mock

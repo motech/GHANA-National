@@ -32,14 +32,14 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PasswordResetControllerTest {
     @Mock
-    private MRSUserAdaptor userService;
+    private MRSUserAdaptor mockUserService;
 
     private PasswordResetController passwordResetController;
 
     @Before
     public void setUp() {
         initMocks(this);
-        passwordResetController = new PasswordResetController(userService);
+        passwordResetController = new PasswordResetController(mockUserService);
     }
 
     @Test
@@ -66,7 +66,7 @@ public class PasswordResetControllerTest {
 
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(authenticatedUser);
-        doThrow(mock(MRSException.class)).when(userService).changeCurrentUserPassword("old","new");
+        doThrow(mock(MRSException.class)).when(mockUserService).changeCurrentUserPassword("old", "new");
         PasswordResetForm passwordResetForm = new PasswordResetForm() {{
             setCurrentPassword("old");
             setNewPassword("new");
@@ -85,7 +85,6 @@ public class PasswordResetControllerTest {
         MRSSecurityUser mrsUser = mock(MRSSecurityUser.class);
 
 
-
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(mrsUser);
 
@@ -97,7 +96,7 @@ public class PasswordResetControllerTest {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(passwordResetForm, "passwordResetForm");
 
         String viewName = passwordResetController.changePassword(passwordResetForm, bindingResult, request);
-        verify(userService).changeCurrentUserPassword("oldPassword","newPassword");
+        verify(mockUserService).changeCurrentUserPassword("oldPassword", "newPassword");
         assertEquals("password/success", viewName);
     }
 }

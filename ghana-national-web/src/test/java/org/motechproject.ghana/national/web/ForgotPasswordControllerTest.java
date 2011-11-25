@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.web;
 
-import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -18,7 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class ForgotPasswordControllerTest extends TestCase {
+public class ForgotPasswordControllerTest {
 
     private ForgotPasswordController forgotPasswordController;
     @Mock
