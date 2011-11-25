@@ -22,9 +22,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Date;
 import java.util.HashMap;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.selectUnique;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.MockitoAnnotations.initMocks;
 

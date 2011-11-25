@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.web.security;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.mrs.security.MRSSecurityUser;
 import org.springframework.security.core.Authentication;
@@ -13,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class LoginSuccessHandlerTest {
     private HttpServletRequest servletRequest;
@@ -44,12 +45,14 @@ public class LoginSuccessHandlerTest {
     public void shouldRedirectSystemDeveloperToAdminIfNoSavedRequest() throws Exception {
         when(authentication.getPrincipal()).thenReturn(user);
         when(servletRequest.getSession()).thenReturn(httpSession);
-        when(user.getAuthorities()).thenReturn(new ArrayList<GrantedAuthority>(){{add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return "System Developer";
-            }
-        });}});
+        when(user.getAuthorities()).thenReturn(new ArrayList<GrantedAuthority>() {{
+            add(new GrantedAuthority() {
+                @Override
+                public String getAuthority() {
+                    return "System Developer";
+                }
+            });
+        }});
         when(httpSession.getAttribute(WebAttributes.SAVED_REQUEST)).thenReturn(null);
         when(servletRequest.getSession(false)).thenReturn(httpSession);
 
@@ -61,12 +64,14 @@ public class LoginSuccessHandlerTest {
     public void shouldRedirectCallcenterAdminToCallcenterIfNoSavedRequest() throws Exception {
         when(authentication.getPrincipal()).thenReturn(user);
         when(servletRequest.getSession()).thenReturn(httpSession);
-        when(user.getAuthorities()).thenReturn(new ArrayList<GrantedAuthority>(){{add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return "Create/Edit MoTeCH Data";
-            }
-        });}});
+        when(user.getAuthorities()).thenReturn(new ArrayList<GrantedAuthority>() {{
+            add(new GrantedAuthority() {
+                @Override
+                public String getAuthority() {
+                    return "Create/Edit MoTeCH Data";
+                }
+            });
+        }});
         when(httpSession.getAttribute(WebAttributes.SAVED_REQUEST)).thenReturn(null);
         when(servletRequest.getSession(false)).thenReturn(httpSession);
 
@@ -78,12 +83,14 @@ public class LoginSuccessHandlerTest {
     public void shouldRedirectFacilityUserToFacilityIfNoSavedRequest() throws Exception {
         when(authentication.getPrincipal()).thenReturn(user);
         when(servletRequest.getSession()).thenReturn(httpSession);
-        when(user.getAuthorities()).thenReturn(new ArrayList<GrantedAuthority>(){{add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return "MoTeCH View Only";
-            }
-        });}});
+        when(user.getAuthorities()).thenReturn(new ArrayList<GrantedAuthority>() {{
+            add(new GrantedAuthority() {
+                @Override
+                public String getAuthority() {
+                    return "MoTeCH View Only";
+                }
+            });
+        }});
         when(httpSession.getAttribute(WebAttributes.SAVED_REQUEST)).thenReturn(null);
         when(servletRequest.getSession(false)).thenReturn(httpSession);
 

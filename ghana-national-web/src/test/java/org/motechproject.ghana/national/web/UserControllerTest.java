@@ -21,20 +21,25 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class UserControllerTest {
 
-    private UserController controller;
+    UserController controller;
     @Mock
-    private UserService userService;
+    UserService userService;
     @Mock
-    private MessageSource messageSource;
+    MessageSource messageSource;
     @Mock
     EmailTemplateService emailTemplateService;
     @Mock
@@ -45,14 +50,14 @@ public class UserControllerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new UserController(userService, messageSource, emailTemplateService,identifierGenerationService);
+        controller = new UserController(userService, messageSource, emailTemplateService, identifierGenerationService);
         mockBindingResult = mock(BindingResult.class);
     }
 
     @Test
     public void shouldReturnNewUserForm() {
         ModelMap model = mock(ModelMap.class);
-        Map<String,String> roles = new HashMap<String,String>();
+        Map<String, String> roles = new HashMap<String, String>();
 
         when(userService.fetchAllRoles()).thenReturn(roles);
 
@@ -79,7 +84,7 @@ public class UserControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         ModelMap model = mock(ModelMap.class);
         String userId = "1234";
-        final org.openmrs.User openMRSuser= new org.openmrs.User();
+        final org.openmrs.User openMRSuser = new org.openmrs.User();
         openMRSuser.setSystemId("1234");
         Map test = new HashMap() {{
             put("openMRSUser", openMRSuser);
@@ -90,7 +95,7 @@ public class UserControllerTest {
         String view = controller.createUser(form, bindingResult, model);
 
         assertEquals(UserController.CREATE_USER_SUCCESS_VIEW, view);
-        verify(model).put("userId","1234");
+        verify(model).put("userId", "1234");
         verify(model).put("userName", "Jack H Daniels");
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
@@ -115,7 +120,7 @@ public class UserControllerTest {
 
         ModelMap model = mock(ModelMap.class);
         String userId = "1234";
-        final org.openmrs.User openMRSuser= new org.openmrs.User();
+        final org.openmrs.User openMRSuser = new org.openmrs.User();
         openMRSuser.setSystemId("1234");
         Map test = new HashMap() {{
             put("openMRSUser", openMRSuser);
@@ -127,7 +132,7 @@ public class UserControllerTest {
         String view = controller.createUser(form, mockBindingResult, model);
 
         assertEquals(UserController.CREATE_USER_SUCCESS_VIEW, view);
-        verify(model).put("userId","1234");
+        verify(model).put("userId", "1234");
         verify(model).put("userName", "Jack H Daniels");
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
@@ -137,7 +142,7 @@ public class UserControllerTest {
         assertEquals(form.getRole(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
         assertEquals(form.getEmail(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_EMAIL));
         assertEquals(form.getPhoneNumber(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER));
-        }
+    }
 
     private String getAttrValue(User user, String name) {
         for (Attribute userAttribute : user.getAttributes())
@@ -157,8 +162,8 @@ public class UserControllerTest {
 
 
         ModelMap model = mock(ModelMap.class);
-        Map<String,String> roles = new HashMap<String, String>();
-        roles.put("role1","role1");
+        Map<String, String> roles = new HashMap<String, String>();
+        roles.put("role1", "role1");
         Map<String, Object> boundModel = new HashMap<String, Object>();
 
         when(userService.saveUser(any(User.class))).thenThrow(new UserAlreadyExistsException());
