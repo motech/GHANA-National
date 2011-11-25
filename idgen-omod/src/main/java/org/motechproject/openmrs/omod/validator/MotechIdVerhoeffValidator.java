@@ -1,7 +1,9 @@
 package org.motechproject.openmrs.omod.validator;
 
 import org.openmrs.patient.UnallowedIdentifierException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MotechIdVerhoeffValidator extends VerhoeffValidator {
 
 	public static final String VERHOEFF_NAME = "MoTeCH ID Verhoeff Check Digit Validator";
@@ -10,12 +12,15 @@ public class MotechIdVerhoeffValidator extends VerhoeffValidator {
 
 	public static final int VERHOEFF_UNDECORATED_ID_LENGTH = VERHOEFF_ID_LENGTH - 1;
 
+    public MotechIdVerhoeffValidator() {
+    }
+
 	@Override
 	public String getName() {
 		return VERHOEFF_NAME;
 	}
 
-	@Override
+    @Override
 	public boolean isValid(String identifier)
 			throws UnallowedIdentifierException {
 
