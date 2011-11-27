@@ -8,11 +8,11 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
+        <module>ghana-national-idgen-omod</module>
         <module>ghana-national-core</module>
         <module>ghana-national-xforms</module>
         <module>ghana-national-web</module>
-        <module>idgen-omod</module>
-        <module>ghana-national-functional-tests</module>
+        <!--<module>ghana-national-functional-tests</module>-->
     </modules>
     <properties>
         <spring.version>3.0.5.RELEASE</spring.version>

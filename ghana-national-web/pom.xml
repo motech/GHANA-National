@@ -133,11 +133,57 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>create-and-move-openmrs-modules</id>
+                        <phase>pre-integration-test</phase>
+                        <configuration>
+                            <target>
+                                <condition property="openmrs.directory" value="${user.home}/.OpenMRS"
+                                           else="${user.home}/AppData/Roaming/OpenMRS">
+                                    <os family="unix"/>
+                                </condition>
+
+                                <echo message="removing and creating openmrs directory in ${openmrs.directory}"/>
+                                <delete dir="${openmrs.directory}"/>
+                                <mkdir dir="${openmrs.directory}"/>
+                                <mkdir dir="${openmrs.directory}/modules"/>
+                                <copy file="../ghana-national-core/src/main/resources/openmrs-data/openmrs-runtime.properties"
+                                      tofile="${openmrs.directory}/openmrs-runtime.properties"/>
+                                <copy file="../ghana-national-idgen-omod/target/idgen-omod.omod"
+                                      tofile="${openmrs.directory}/modules/idgen-omod.omod"/>
+                                <copy todir="${openmrs.directory}/modules">
+                                    <fileset
+                                            dir="../ghana-national-core/src/main/resources/openmrs-data/modules"/>
+                                </copy>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!--JETTY-->
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.1.10</version>
+                <configuration>
+                    <stopPort>8080</stopPort>
+                    <stopKey>foo</stopKey>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <contextHandlers>
+                        <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
+                            <war>build/openmrs/openmrs.war</war>
+                            <contextPath>/openmrs</contextPath>
+                        </contextHandler>
+                    </contextHandlers>
+                </configuration>
                 <executions>
                     <execution>
                         <id>start-jetty</id>

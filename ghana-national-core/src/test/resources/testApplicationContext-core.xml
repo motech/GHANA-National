@@ -24,5 +24,4 @@
         <constructor-arg value="ghana-national-test"/>
         <constructor-arg ref="couchDbInstance"/>
     </bean>
-    
 </beans>

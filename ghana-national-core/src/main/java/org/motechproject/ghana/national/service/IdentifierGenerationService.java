@@ -11,7 +11,12 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
-import static org.motechproject.ghana.national.domain.Constants.*;
+import static org.motechproject.ghana.national.domain.Constants.IDGEN_SEQ_ID_GEN_FACILITY_ID;
+import static org.motechproject.ghana.national.domain.Constants.IDGEN_SEQ_ID_GEN_PATIENT_ID;
+import static org.motechproject.ghana.national.domain.Constants.IDGEN_SEQ_ID_GEN_STAFF_ID;
+import static org.motechproject.ghana.national.domain.Constants.PATIENT_IDENTIFIER_TYPE_FACILITY_ID;
+import static org.motechproject.ghana.national.domain.Constants.PATIENT_IDENTIFIER_TYPE_PATIENT_ID;
+import static org.motechproject.ghana.national.domain.Constants.PATIENT_IDENTIFIER_TYPE_STAFF_ID;
 
 @Service
 public class IdentifierGenerationService {
