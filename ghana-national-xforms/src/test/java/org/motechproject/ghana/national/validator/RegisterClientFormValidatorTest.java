@@ -15,6 +15,7 @@ import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.UserService;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mrs.model.User;
+import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
@@ -41,6 +42,8 @@ public class RegisterClientFormValidatorTest {
     private FacilityService facilityService;
     @Mock
     private PatientService patientService;
+    @Mock
+    private MotechIdVerhoeffValidator motechIdVerhoeffValidator;
 
     @Before
     public void setUp() {
@@ -71,11 +74,11 @@ public class RegisterClientFormValidatorTest {
     public void shouldValidateIfThePrePrintedMotechIdIsAValidId() {
     }
 
-    @Ignore
     @Test
-    public void shouldValidateIfThePrePrintedMotechIdHasNotBeenAllocatedToAnotherUser() {
+    public void shouldValidateIfAPatientIsAvailableWithIdAsMothersMotechId() {
         String mothersMotechId = "100";
         when(registerClientForm.getMotherMotechId()).thenReturn(mothersMotechId);
+        when(registerClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
         Patient patientsMotherMock = mock(Patient.class);
         when(patientService.getPatientById(mothersMotechId)).thenReturn(patientsMotherMock);
         assertThat(registerClientFormValidator.validate(registerClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));

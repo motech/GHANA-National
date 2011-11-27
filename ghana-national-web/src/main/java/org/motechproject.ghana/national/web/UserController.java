@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.web.form.SearchUserForm;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.User;
+import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -52,6 +53,7 @@ public class UserController {
         this.identifierGenerationService = identifierGenerationService;
     }
 
+    @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newUser(ModelMap modelMap) {
         modelMap.addAttribute("createUserForm", new CreateUserForm());
@@ -59,6 +61,7 @@ public class UserController {
         return NEW_USER_VIEW;
     }
 
+    @ApiSession
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createUser(@Valid CreateUserForm createUserForm, BindingResult bindingResult, ModelMap model) {
         Map userData;
@@ -92,6 +95,7 @@ public class UserController {
         return CREATE_USER_SUCCESS_VIEW;
     }
 
+    @ApiSession
     @RequestMapping(value = "search", method = RequestMethod.GET)
     public String searchFacilityForm(ModelMap modelMap) {
         modelMap.put(SEARCH_USER_FORM, new SearchUserForm());
@@ -99,6 +103,7 @@ public class UserController {
         return SEARCH_USER;
     }
 
+    @ApiSession
     @RequestMapping(value = "searchUsers", method = RequestMethod.POST)
     public String searchUsers(@Valid final SearchUserForm searchUserForm, BindingResult bindingResult, ModelMap modelMap) {
         List<User> allUsers = userService.getAllUsers();
