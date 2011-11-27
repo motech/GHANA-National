@@ -8,7 +8,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>ghana-national-idgen-omod</module>
+        <module>idgen-omod</module>
         <module>ghana-national-core</module>
         <module>ghana-national-xforms</module>
         <module>ghana-national-web</module>
