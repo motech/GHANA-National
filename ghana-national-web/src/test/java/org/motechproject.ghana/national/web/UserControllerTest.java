@@ -179,7 +179,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldSearchForUser() throws FacilityAlreadyFoundException {
+    public void shouldSearchForUser(){
         String staffID = "1";
         String firstName = "TEST";
         String middleName = "TEST";
@@ -198,7 +198,7 @@ public class UserControllerTest {
 
         ModelMap modelMap = new ModelMap();
         controller.searchUsers(searchUserForm, mockBindingResult, modelMap);
-        Assert.assertNotNull(modelMap.get("requestedUsers"));
+        assertNotNull(modelMap.get("requestedUsers"));
 
     }
 

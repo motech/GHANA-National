@@ -94,8 +94,9 @@ public class PatientController {
         } catch (PatientIdIncorrectFormatException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
             return NEW_PATIENT;
-        } catch (UnallowedIdentifierException e){
+        } catch (UnallowedIdentifierException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
+            return NEW_PATIENT;
         }
         return SUCCESS;
     }
@@ -107,8 +108,11 @@ public class PatientController {
                 new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), createPatientForm.getNhisNumber()),
                 new Attribute(PatientAttributes.INSURED.getAttribute(), safeToString(createPatientForm.getInsured())));
         if (patientID.equals("")) {
-            if(motechIdVerhoeffValidator.isValid(createPatientForm.getMotechId()))
+            if (motechIdVerhoeffValidator.isValid(createPatientForm.getMotechId())) {
                 patientID = createPatientForm.getMotechId();
+            } else
+                throw new UnallowedIdentifierException("User Id is not allowed");
+
         }
         org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(patientID, createPatientForm.getFirstName(),
                 createPatientForm.getMiddleName(), createPatientForm.getLastName(), createPatientForm.getPreferredName(), createPatientForm.getDateOfBirth(), createPatientForm.getEstimatedDateOfBirth(), createPatientForm.getSex(),

@@ -1,17 +1,24 @@
 package org.motechproject.ghana.national.web;
 
+import ca.uhn.hl7v2.model.v23.datatype.MO;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.web.form.CreateFacilityForm;
+import org.motechproject.ghana.national.web.form.CreatePatientForm;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
+import org.openmrs.patient.UnallowedIdentifierException;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 
 import java.lang.reflect.Field;
@@ -20,13 +27,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientControllerTest {
@@ -41,11 +47,15 @@ public class PatientControllerTest {
     FacilityHelper mockFacilityHelper;
     @Mock
     MotechIdVerhoeffValidator motechIdVerhoeffValidator;
+    @Mock
+    BindingResult mockBindingResult;
+
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientController = new PatientController(mockPatientService, mockIdentifierGenerationService, mockMessageSource, mockFacilityHelper,motechIdVerhoeffValidator);
+        patientController = new PatientController(mockPatientService, mockIdentifierGenerationService, mockMessageSource, mockFacilityHelper, motechIdVerhoeffValidator);
+        mockBindingResult = mock(BindingResult.class);
     }
 
     @Test
@@ -72,5 +82,15 @@ public class PatientControllerTest {
         dateFormatField.setAccessible(true);
         SimpleDateFormat dateFormat = (SimpleDateFormat) ReflectionUtils.getField(dateFormatField, registeredEditor);
         assertThat(dateFormat.parse("23/11/2001"), is(new SimpleDateFormat("dd/MM/yyyy").parse("23/11/2001")));
+    }
+
+    @Test
+    public void shouldSaveUserForValidId() {
+        CreatePatientForm createPatientForm = new CreatePatientForm();
+        createPatientForm.setMotechId("1267");
+        createPatientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
+        ModelMap modelMap = new ModelMap();
+        String view = patientController.createPatient(createPatientForm, mockBindingResult, modelMap);
+        assertEquals(view,"patients/new");
     }
 }
