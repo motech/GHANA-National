@@ -1,8 +1,6 @@
 package org.motechproject.ghana.national.web;
 
-import ca.uhn.hl7v2.model.v23.datatype.MO;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -10,10 +8,8 @@ import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.web.form.CreateFacilityForm;
 import org.motechproject.ghana.national.web.form.CreatePatientForm;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
-import org.openmrs.patient.UnallowedIdentifierException;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
@@ -27,9 +23,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
