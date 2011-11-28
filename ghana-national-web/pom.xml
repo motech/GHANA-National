@@ -174,7 +174,7 @@
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.1.10</version>
                 <configuration>
-                    <stopPort>8080</stopPort>
+                    <stopPort>9999</stopPort>
                     <stopKey>foo</stopKey>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <contextHandlers>
@@ -202,10 +202,10 @@
                         <goals>
                             <goal>stop</goal>
                         </goals>
-                        <configuration>
-                            <stopPort>8080</stopPort>
-                            <stopKey>foo</stopKey>
-                        </configuration>
+                        <!--<configuration>-->
+                            <!--<stopPort>9999</stopPort>-->
+                            <!--<stopKey>foo</stopKey>-->
+                        <!--</configuration>-->
                     </execution>
                 </executions>
             </plugin>
