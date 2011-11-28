@@ -108,11 +108,9 @@ public class PatientController {
                 new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), createPatientForm.getNhisNumber()),
                 new Attribute(PatientAttributes.INSURED.getAttribute(), safeToString(createPatientForm.getInsured())));
         if (patientID.equals("")) {
-            if (motechIdVerhoeffValidator.isValid(createPatientForm.getMotechId())) {
-                patientID = createPatientForm.getMotechId();
-            } else
+            if (!motechIdVerhoeffValidator.isValid(createPatientForm.getMotechId()))
                 throw new UnallowedIdentifierException("User Id is not allowed");
-
+            patientID = createPatientForm.getMotechId();
         }
         org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(patientID, createPatientForm.getFirstName(),
                 createPatientForm.getMiddleName(), createPatientForm.getLastName(), createPatientForm.getPreferredName(), createPatientForm.getDateOfBirth(), createPatientForm.getEstimatedDateOfBirth(), createPatientForm.getSex(),
