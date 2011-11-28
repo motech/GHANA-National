@@ -14,7 +14,7 @@ public class MotechIdValidator implements FieldValidator<MotechId> {
         if (fieldValue != null) {
             VerhoeffValidator validator = getValidatorInstance(annotation.validator());
             if (fieldType == String.class) {
-                if (validator.isValid(String.valueOf(fieldValue))) {
+                if (!validator.isValid(String.valueOf(fieldValue))) {
                     return new FormError(fieldName, "is invalid");
                 }
             }
