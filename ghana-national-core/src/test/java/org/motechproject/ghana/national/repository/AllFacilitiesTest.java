@@ -52,9 +52,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         String additionalPhone2 = "321234";
         String additionalPhone3 = "33344";
         final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(facilityName);
-        Facility facility = new Facility(mrsFacility)
-                .phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhone1).additionalPhoneNumber2(additionalPhone2)
-                .additionalPhoneNumber3(additionalPhone3);
+        Facility facility = facility(phoneNumber, additionalPhone1, additionalPhone2, additionalPhone3, mrsFacility);
         final int initialSize = allFacilities.getAll().size();
 
         final String facilityId = "12";
@@ -172,7 +170,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void shouldGetFacilityById(){
+    public void shouldGetFacilityByMrsFacilityId() {
         String facilityId = "0987654";
         String name = "name";
         String province = "province";
@@ -181,6 +179,10 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         String country = "country";
 
         final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(facilityId, name, country, region, district, province);
+
+        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(mrsFacility);
+        allFacilities.add(facility("123460987", null, null, null, mrsFacility).motechId(Integer.parseInt(facilityId)));
+
         when(mockMrsFacilityAdaptor.getFacility(Integer.parseInt(facilityId))).thenReturn(mrsFacility);
 
         Facility facility;
@@ -189,7 +191,24 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         when(mockMrsFacilityAdaptor.getFacility(Integer.parseInt(facilityId))).thenReturn(null);
         facility = allFacilities.getFacility(facilityId);
         assertThat(facility, is(equalTo(null)));
+    }
 
+    @Test
+    public void shouldFindFacilityById() {
+        Integer facilityId = 1234;
+        String country = "Country";
+        org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(String.valueOf(facilityId), "facilityName", country, "Region", null, null);
+        String phoneNumber = "9911002288";
+        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(mrsFacility);
+        allFacilities.add(facility(phoneNumber, null, null, null, mrsFacility).motechId(facilityId));
+
+        assertThat(allFacilities.findByFacilityId(facilityId).phoneNumber(), is(phoneNumber));
+    }
+
+    private Facility facility(String phoneNumber, String additionalPhone1, String additionalPhone2, String additionalPhone3, org.motechproject.mrs.model.Facility mrsFacility) {
+        return new Facility(mrsFacility)
+                .phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhone1).additionalPhoneNumber2(additionalPhone2)
+                .additionalPhoneNumber3(additionalPhone3);
     }
 
     @After

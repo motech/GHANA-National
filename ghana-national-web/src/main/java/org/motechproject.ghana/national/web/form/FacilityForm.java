@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.web.form;
 
-public class CreateFacilityForm {
+public class FacilityForm {
     private String name;
     private String country;
     private String region;
@@ -11,7 +11,7 @@ public class CreateFacilityForm {
     private String additionalPhoneNumber2;
     private String additionalPhoneNumber3;
 
-    public CreateFacilityForm() {
+    public FacilityForm() {
     }
 
     public String getName() {

@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.web.form;
 
-public class SearchFacilityForm extends CreateFacilityForm{
+public class SearchFacilityForm extends FacilityForm {
 
     private String facilityID;
 

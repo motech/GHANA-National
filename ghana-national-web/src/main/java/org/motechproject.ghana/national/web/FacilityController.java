@@ -4,7 +4,7 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.FacilityService;
-import org.motechproject.ghana.national.web.form.CreateFacilityForm;
+import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.form.SearchFacilityForm;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,22 +22,24 @@ import java.util.Locale;
 
 @Controller
 @RequestMapping(value = "/admin/facilities")
-public class FacilitiesController {
+public class FacilityController {
     public static final String CREATE_FACILITY_FORM = "createFacilityForm";
     public static final String SEARCH_FACILITY_FORM = "searchFacilityForm";
     public static final String SUCCESS = "facilities/success";
     public static final String NEW_FACILITY = "facilities/new";
     public static final String SEARCH_FACILITY = "facilities/search";
+    static final String EDIT_FACILITY = "facilities/edit";
 
+    public static final String FACILITY_ID = "facilityId";
     private FacilityService facilityService;
     private MessageSource messageSource;
     private FacilityHelper facilityHelper;
 
-    public FacilitiesController() {
+    public FacilityController() {
     }
 
     @Autowired
-    public FacilitiesController(FacilityService facilityService, MessageSource messageSource, FacilityHelper facilityHelper) {
+    public FacilityController(FacilityService facilityService, MessageSource messageSource, FacilityHelper facilityHelper) {
         this.facilityService = facilityService;
         this.messageSource = messageSource;
         this.facilityHelper = facilityHelper;
@@ -46,14 +48,14 @@ public class FacilitiesController {
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newFacilityForm(ModelMap modelMap) {
-        modelMap.put(CREATE_FACILITY_FORM, new CreateFacilityForm());
+        modelMap.put(CREATE_FACILITY_FORM, new FacilityForm());
         modelMap.mergeAttributes(facilityHelper.locationMap());
         return NEW_FACILITY;
     }
 
     @ApiSession
     @RequestMapping(value = "create", method = RequestMethod.POST)
-    public String createFacility(@Valid CreateFacilityForm createFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
+    public String createFacility(@Valid FacilityForm createFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
         try {
             facilityService.create(createFacilityForm.getName(), createFacilityForm.getCountry(), createFacilityForm.getRegion(),
                     createFacilityForm.getCountyDistrict(), createFacilityForm.getStateProvince(), createFacilityForm.getPhoneNumber(),
@@ -84,6 +86,14 @@ public class FacilitiesController {
         modelMap.put("requestedFacilities", requestedFacilities);
         modelMap.mergeAttributes(facilityHelper.locationMap());
         return SEARCH_FACILITY;
+    }
+
+    @RequestMapping(value = "edit", method = RequestMethod.GET)
+    public String editFacilityForm(ModelMap modelMap) {
+        String facilityId = (String) modelMap.get(FACILITY_ID);
+        Facility facility = facilityService.getFacility(facilityId);
+
+        return EDIT_FACILITY;
     }
 
     private void handleExistingFacilityError(BindingResult bindingResult, ModelMap modelMap, String message) {

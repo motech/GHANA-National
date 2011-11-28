@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.repository;
 
 import ch.lambdaj.function.convert.Converter;
+import org.apache.commons.collections.CollectionUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
@@ -40,7 +41,7 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
     }
 
     public List<Facility> facilitiesByName(String name) {
-        return getFacilitiesWithAllinfo(facilityAdaptor.getFacilities(name));
+        return getFacilitiesWithAllInfo(facilityAdaptor.getFacilities(name));
     }
 
     public List<Facility> facilities() {
@@ -53,7 +54,7 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
         return facilities;
     }
 
-    private List<Facility> getFacilitiesWithAllinfo(List<org.motechproject.mrs.model.Facility> mrsFacilities) {
+    private List<Facility> getFacilitiesWithAllInfo(List<org.motechproject.mrs.model.Facility> mrsFacilities) {
         final List<String> facilityIdsAsString = extract(mrsFacilities, on(org.motechproject.mrs.model.Facility.class).getId());
         final List<Facility> facilities = findByFacilityIds(convert(facilityIdsAsString, Utility.stringToIntegerConverter()));
 
@@ -67,15 +68,21 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
         });
     }
 
-    public Facility getFacility(String facilityId) {
-        org.motechproject.mrs.model.Facility mrsFacility = facilityAdaptor.getFacility(Integer.parseInt(facilityId));
-        return (mrsFacility != null) ? new Facility(mrsFacility) : null;
+    public Facility getFacility(String mrsFacilityId) {
+        org.motechproject.mrs.model.Facility mrsFacility = facilityAdaptor.getFacility(Integer.parseInt(mrsFacilityId));
+        return (mrsFacility != null) ? findByFacilityId(Integer.parseInt(mrsFacilityId)).mrsFacility(mrsFacility) : null;
     }
 
+    @View(name = "find_by_facility_ids", map = "function(doc) { if(doc.type === 'Facility') emit(doc.mrsFacilityId, doc) }")
+    public List<Facility> findByFacilityIds(List<Integer> facilityIds) {
+        ViewQuery viewQuery = createQuery("find_by_facility_ids").keys(facilityIds);
+        return db.queryView(viewQuery, Facility.class);
+    }
 
     @View(name = "find_by_facility_id", map = "function(doc) { if(doc.type === 'Facility') emit(doc.mrsFacilityId, doc) }")
-    public List<Facility> findByFacilityIds(List<Integer> facilityIds) {
-        ViewQuery viewQuery = createQuery("find_by_facility_id").keys(facilityIds);
-        return db.queryView(viewQuery, Facility.class);
+    public Facility findByFacilityId(Integer facilityId) {
+        ViewQuery viewQuery = createQuery("find_by_facility_id").key(facilityId).includeDocs(true);
+        List<Facility> facilities = db.queryView(viewQuery, Facility.class);
+        return CollectionUtils.isEmpty(facilities) ? null : facilities.get(0);
     }
 }
