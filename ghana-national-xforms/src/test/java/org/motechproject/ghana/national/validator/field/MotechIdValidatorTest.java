@@ -45,8 +45,10 @@ public class MotechIdValidatorTest {
         VerhoeffValidator motechIdVerhoeffValidatorMock = mock(VerhoeffValidator.class);
 
         when(motechIdValidator.getValidatorInstance(validatorClass)).thenReturn(motechIdVerhoeffValidatorMock);
-        when(motechIdVerhoeffValidatorMock.isValid(fieldValue)).thenReturn(true);
-
+        when(motechIdVerhoeffValidatorMock.isValid(fieldValue)).thenReturn(false);
         assertThat(motechIdValidator.validate(fieldValue, fieldName, String.class, motechId), is(equalTo(new FormError(fieldName, "is invalid"))));
+
+        when(motechIdVerhoeffValidatorMock.isValid(fieldValue)).thenReturn(true);
+        assertThat(motechIdValidator.validate(fieldValue, fieldName, String.class, motechId), is(equalTo(null)));
     }
 }
