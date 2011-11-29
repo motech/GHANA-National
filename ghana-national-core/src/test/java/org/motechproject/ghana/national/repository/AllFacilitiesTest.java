@@ -202,7 +202,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(mrsFacility);
         allFacilities.add(facility(phoneNumber, null, null, null, mrsFacility).motechId(facilityId));
 
-        assertThat(allFacilities.findByFacilityId(facilityId).phoneNumber(), is(phoneNumber));
+        assertThat(allFacilities.findByMrsFacilityId(facilityId).phoneNumber(), is(phoneNumber));
     }
 
     private Facility facility(String phoneNumber, String additionalPhone1, String additionalPhone2, String additionalPhone3, org.motechproject.mrs.model.Facility mrsFacility) {

@@ -24,7 +24,7 @@ public class FacilityService {
         this.identifierGenerationService = identifierGenerationService;
     }
 
-    public void create(String name, String country, String region, String district, String province, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) throws FacilityAlreadyFoundException {
+    public String create(String name, String country, String region, String district, String province, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) throws FacilityAlreadyFoundException {
         final List<Facility> facilities = allFacilities.facilitiesByName(name);
         final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(name, country, region, district, province);
         if (isDuplicate(facilities, mrsFacility, phoneNumber)) {
@@ -33,6 +33,7 @@ public class FacilityService {
         final Facility facility = new Facility(mrsFacility).phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber1).
                 additionalPhoneNumber2(additionalPhoneNumber2).additionalPhoneNumber3(additionalPhoneNumber3).motechId(Integer.parseInt(identifierGenerationService.newFacilityId()));
         allFacilities.add(facility);
+        return String.valueOf(facility.mrsFacilityId());
     }
 
     public List<Facility> facilities() {

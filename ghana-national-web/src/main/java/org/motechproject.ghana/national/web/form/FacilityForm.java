@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.web.form;
 
 public class FacilityForm {
+    private String id;
     private String name;
     private String country;
     private String region;
@@ -84,5 +85,13 @@ public class FacilityForm {
 
     public void setAdditionalPhoneNumber3(String additionalPhoneNumber3) {
         this.additionalPhoneNumber3 = additionalPhoneNumber3;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

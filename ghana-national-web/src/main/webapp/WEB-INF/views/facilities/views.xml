@@ -2,14 +2,16 @@
 <!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
         "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
 <tiles-definitions>
-    <definition extends="default" name="facilities/search">
-        <put-attribute name="body" value="/WEB-INF/views/facilities/search.jspx"/>
-    </definition>
     <definition extends="default" name="facilities/new">
         <put-attribute name="body" value="/WEB-INF/views/facilities/new.jspx"/>
+    </definition>
+    <definition extends="default" name="facilities/edit">
+        <put-attribute name="body" value="/WEB-INF/views/facilities/edit.jspx"/>
+    </definition>
+    <definition extends="default" name="facilities/search">
+        <put-attribute name="body" value="/WEB-INF/views/facilities/search.jspx"/>
     </definition>
     <definition extends="default" name="facilities/success">
         <put-attribute name="body" value="/WEB-INF/views/facilities/success.jspx"/>
     </definition>
 </tiles-definitions>
-

@@ -16,11 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.convert;
-import static ch.lambdaj.Lambda.extract;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.selectUnique;
+import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.core.Is.is;
 
 @Repository
@@ -70,7 +66,7 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
 
     public Facility getFacility(String mrsFacilityId) {
         org.motechproject.mrs.model.Facility mrsFacility = facilityAdaptor.getFacility(Integer.parseInt(mrsFacilityId));
-        return (mrsFacility != null) ? findByFacilityId(Integer.parseInt(mrsFacilityId)).mrsFacility(mrsFacility) : null;
+        return (mrsFacility != null) ? findByMrsFacilityId(Integer.parseInt(mrsFacilityId)).mrsFacility(mrsFacility) : null;
     }
 
     @View(name = "find_by_facility_ids", map = "function(doc) { if(doc.type === 'Facility') emit(doc.mrsFacilityId, doc) }")
@@ -79,9 +75,9 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
         return db.queryView(viewQuery, Facility.class);
     }
 
-    @View(name = "find_by_facility_id", map = "function(doc) { if(doc.type === 'Facility') emit(doc.mrsFacilityId, doc) }")
-    public Facility findByFacilityId(Integer facilityId) {
-        ViewQuery viewQuery = createQuery("find_by_facility_id").key(facilityId).includeDocs(true);
+    @View(name = "find_by_mrs_facility_id", map = "function(doc) { if(doc.type === 'Facility') emit(doc.mrsFacilityId, doc) }")
+    public Facility findByMrsFacilityId(Integer facilityId) {
+        ViewQuery viewQuery = createQuery("find_by_mrs_facility_id").key(facilityId).includeDocs(true);
         List<Facility> facilities = db.queryView(viewQuery, Facility.class);
         return CollectionUtils.isEmpty(facilities) ? null : facilities.get(0);
     }
