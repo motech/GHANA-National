@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @Autowired
-    public UserController(UserService userService, MessageSource messageSource, EmailTemplateService emailTemplateService,IdentifierGenerationService identifierGenerationService) {
+    public UserController(UserService userService, MessageSource messageSource, EmailTemplateService emailTemplateService, IdentifierGenerationService identifierGenerationService) {
         this.userService = userService;
         this.messageSource = messageSource;
         this.emailTemplateService = emailTemplateService;
@@ -73,19 +73,19 @@ public class UserController {
         user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
 
         user.securityRole(UserType.Role.securityRoleFor(roleOfStaff));
-        if (UserType.Role.isAdmin(roleOfStaff)){
-            user.id(createUserForm.getEmail());
-        }else{
-            user.id(identifierGenerationService.newStaffId());
+        if (UserType.Role.isAdmin(roleOfStaff)) {
+            user.userName(createUserForm.getEmail());
         }
+        user.id(identifierGenerationService.newStaffId());
 
         try {
             userData = userService.saveUser(user);
             org.openmrs.User openMRSUser = (org.openmrs.User) userData.get("openMRSUser");
             model.put(USER_ID, openMRSUser.getSystemId());
             model.put(USER_NAME, user.getFullName());
-            if (roleOfStaff.equals("Super Admin") || roleOfStaff.equals("Facility Admin") || roleOfStaff.equals("CallCenter Admin"))
-                emailTemplateService.sendEmailUsingTemplates((String) userData.get("userLoginId"), (String) userData.get("password"));
+            if (UserType.Role.isAdmin(roleOfStaff)) {
+                emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUsername(), (String) userData.get("password"));
+            }
         } catch (UserAlreadyExistsException e) {
             bindingResult.addError(new FieldError(CREATE_USER_FORM, EMAIL, messageSource.getMessage(USER_ALREADY_EXISTS, null, Locale.getDefault())));
             model.addAttribute("roles", userService.fetchAllRoles());
@@ -108,7 +108,7 @@ public class UserController {
     public String searchUsers(@Valid final SearchUserForm searchUserForm, BindingResult bindingResult, ModelMap modelMap) {
         List<User> allUsers = userService.getAllUsers();
         List<List<String>> requestedUsers = new ArrayList<List<String>>();
-        Map<Integer,String> searchFields = new HashMap<Integer, String>() {{
+        Map<Integer, String> searchFields = new HashMap<Integer, String>() {{
             put(1, searchUserForm.getStaffID());
             put(2, searchUserForm.getFirstName().toLowerCase());
             put(3, searchUserForm.getMiddleName().toLowerCase());
@@ -118,7 +118,7 @@ public class UserController {
         }};
         int numberOfFieldsForSearch = 1;
 
-        Map<Integer,String> searchFieldsCombination = new HashMap<Integer, String>();
+        Map<Integer, String> searchFieldsCombination = new HashMap<Integer, String>();
         for (int loopCounter = 1; loopCounter <= 6; loopCounter++) {
             if (!searchFields.get(loopCounter).equals("")) {
                 searchFieldsCombination.put(loopCounter, searchFields.get(loopCounter));
@@ -134,7 +134,7 @@ public class UserController {
         }
         for (User searchUser : allUsers) {
             List<Attribute> attributes = searchUser.getAttributes();
-            Map<String, String> userAttributes = new HashMap<String,String>();
+            Map<String, String> userAttributes = new HashMap<String, String>();
             for (Attribute attribute : attributes) {
                 String attributeKey = attribute.name();
                 if (attributeKey.equals(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER) || attributeKey.equals(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE))
