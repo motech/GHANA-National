@@ -1,35 +1,46 @@
-package org.motechproject.functional.page;
+package org.motechproject.ghana.national.functional;
 
 import junit.framework.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.functional.base.MyDriver;
+import org.junit.runner.RunWith;
+import org.motechproject.functional.base.BaseWebDriver;
+import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.pages.CreateFacilityPage;
 import org.motechproject.functional.pages.HomePage;
 import org.motechproject.functional.pages.LoginPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class CreateFacilityTest {
 
-    LoginPage loginPage = new LoginPage();
-    HomePage homePage = new HomePage();
-    CreateFacilityPage createFacilityPage = new CreateFacilityPage();
-    WebDriver driver = MyDriver.getDriverInstance();
+    @Autowired
+    private LoginPage loginPage;
 
+    @Autowired
+    private HomePage homePage;
 
-    /*@Test
-    public void CheckIfAllRelevantFieldsAreDisplayedOnLoad() {
-        driver.navigate().to(MyDriver.URL);
-        loginPage.LoginAs("admin", "P@ssw0rd");
-        homePage.OpenCreateFacilityPage();
-        //createFacilityPage = PageFactory.initElements(driver, CreateFacilityPage.class);
-        Assert.assertTrue(createFacilityPage.EnsureAllInputFieldsArePresentOnLoad());
-        homePage.Logout();
+    @Autowired
+    private CreateFacilityPage createFacilityPage;
+
+    @Autowired
+    private WebDriverProvider driverProvider;
+
+    private WebDriver driver;
+
+    @Before
+    public void setUp() {
+        driver = driverProvider.getWebDriver();
     }
-*/
+
     @Test
     public void createFacilityWithValidValues() {
-        driver.navigate().to(MyDriver.URL);
+        driver.navigate().to(BaseWebDriver.URL);
         loginPage.LoginAs("admin", "P@ssw0rd");
         homePage.OpenCreateFacilityPage();
 
@@ -58,6 +69,4 @@ public class CreateFacilityTest {
         Assert.assertTrue(TestPassed);
         homePage.Logout();
     }
-
-
 }

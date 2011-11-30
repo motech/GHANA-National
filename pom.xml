@@ -261,6 +261,7 @@
                     <excludes>
                         <exclude>**/*IT.java</exclude>
                         <exclude>**/repository/*Test.java</exclude>
+                        <exclude>**/functional/*Test.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -282,6 +283,7 @@
                     <includes>
                         <include>**/*IT.java</include>
                         <include>**/repository/*Test.java</include>
+                        <include>**/functional/*Test.java</include>
                     </includes>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>

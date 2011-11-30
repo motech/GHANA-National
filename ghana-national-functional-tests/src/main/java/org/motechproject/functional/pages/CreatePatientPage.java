@@ -1,11 +1,11 @@
 package org.motechproject.functional.pages;
 
-import org.motechproject.functional.base.MyDriver;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CreatePatientPage {
 
     @FindBy(id = "motechId")
@@ -88,18 +88,8 @@ public class CreatePatientPage {
     @CacheLookup
     WebElement submitNewPatient;
 
-
-    WebDriver webDriver = MyDriver.getDriverInstance();
-    LoginPage loginPage = new LoginPage();
-    HomePage homePage = new HomePage();
-
-    /*public enum Patient_Type {PATIENT_MOTHER, CHILD_UNDER_FIVE, OTHER}
-
-    public enum Registration_Mode {AUTO_GENERATE_ID, USE_PREPRINTED_ID}
-*/
-
     public void SelectRegnMode() {
 
     }
 
-        }
+}

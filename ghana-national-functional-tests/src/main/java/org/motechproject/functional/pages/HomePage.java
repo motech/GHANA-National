@@ -1,52 +1,31 @@
 package org.motechproject.functional.pages;
 
-import org.motechproject.functional.base.MyDriver;
+import org.motechproject.functional.base.WebDriverProvider;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class HomePage {
-    // get a driver instance
 
-    WebDriver driver = MyDriver.getDriverInstance();
+    private WebDriver driver;
 
-    // Define home page links / elements
+    @Autowired
+    public HomePage(WebDriverProvider driverProvider) {
+        this.driver = driverProvider.getWebDriver();
+    }
 
     WebElement CreateFacilityLink, CreatePatientLink, ResetPassLink, CreateStaffLink, LogoutLink;
 
     public void Logout() {
         LogoutLink = driver.findElement(By.linkText("Logout"));
         LogoutLink.click();
-    } // end Logout
-
-    /* @isVefifyHomePageLinks()
-    Verify basic structure of home page by checking if links to required pages are present
-
-
-
-    public boolean isVerifyHomePageLinks() {
-        boolean VerifySuccess = true;
-        try {
-
-            CreateFacilityLink = driver.findElement(By.id("newfacility"));
-            //.linkText("Create Facility"));
-            CreatePatientLink = driver.findElement(By.id(("newpatient")));
-            ResetPassLink = driver.findElement(By.linkText("Reset Password"));
-            CreateStaffLink = driver.findElement(By.id("newstaff"));
-            LogoutLink = driver.findElement(By.linkText("Logout"));
-
-        } catch (NoSuchElementException e) {
-            VerifySuccess = false;
-        } catch (Exception e) {
-            VerifySuccess = false;
-            System.out.println("Message" + e.getMessage());
-        }
-        return VerifySuccess;
     }
 
-*/
     public boolean OpenCreateFacilityPage() {
         CreateFacilityLink = driver.findElement(By.id("newfacility"));
         try {
@@ -56,11 +35,8 @@ public class HomePage {
             builder.moveToElement(FacilityParentLink).build().perform();
             Thread.sleep(500);
             driver.findElement(By.id("newfacility")).click();
-            //builder.click(CreateFacilityLink).build().perform();
-            //CreateFacilityLink.click();
 
             System.out.print("Clicked on Facility Create Link");
-            //builder.contextClick(CreateFacilityLink);
 
         } catch (Exception e) {
             System.out.println("Exception Thrown ::::::" + e.getMessage());
@@ -91,22 +67,6 @@ public class HomePage {
         return true;
 
     }
-
-
-} // end HomePage
-
-/*public boolean clickLink(String LinkText) {
-
-        try {
-            WebElement Link = driver.findElement(By.linkText(LinkText));
-            Link.click();
-            return true;
-        } catch (NoSuchElementException e) {
-            System.out.println("Exception when clicking link " + LinkText + " " + e.getMessage());
-            return false;
-        }
-*//*
-
-    }*/
+}
 
 
