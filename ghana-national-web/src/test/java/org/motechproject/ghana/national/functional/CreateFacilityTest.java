@@ -2,9 +2,9 @@ package org.motechproject.ghana.national.functional;
 
 import junit.framework.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.functional.base.BaseWebDriver;
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.pages.CreateFacilityPage;
 import org.motechproject.functional.pages.HomePage;
@@ -38,9 +38,9 @@ public class CreateFacilityTest {
         driver = driverProvider.getWebDriver();
     }
 
+    @Ignore
     @Test
     public void createFacilityWithValidValues() {
-        driver.navigate().to(BaseWebDriver.URL);
         loginPage.LoginAs("admin", "P@ssw0rd");
         homePage.OpenCreateFacilityPage();
 

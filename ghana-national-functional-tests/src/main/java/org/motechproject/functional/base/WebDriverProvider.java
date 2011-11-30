@@ -12,14 +12,14 @@ public class WebDriverProvider {
     private static final String BROWSER = "browser";
     private static final String FIREFOX = "fireFoxWebDriver";
 
-    private Map<String, BaseWebDriver> webDrivers;
+    private WebDriver driver;
 
     @Autowired
     public WebDriverProvider(Map<String, BaseWebDriver> webDrivers) {
-        this.webDrivers = webDrivers;
+        driver = webDrivers.get(System.getProperty(BROWSER, FIREFOX)).getDriver();;
     }
 
     public WebDriver getWebDriver() {
-        return webDrivers.get(System.getProperty(BROWSER, FIREFOX)).getDriver();
+        return driver;
     }
 }

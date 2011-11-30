@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.functional.base.BaseWebDriver;
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.pages.HomePage;
 import org.motechproject.functional.pages.LoginPage;
@@ -34,20 +33,17 @@ public class LoginTest {
     }
     @Test
     public void abletoLoginwithRightUnamePass() {
-        driver.navigate().to(BaseWebDriver.URL);
         Assert.assertTrue(loginPage.LoginAs("admin", "P@ssw0rd"));
         homePage.Logout();
     }
 
     @Test
     public void shouldnotLoginwithInvalidUnamePass() {
-        driver.navigate().to(BaseWebDriver.URL);
         Assert.assertFalse(loginPage.LoginAs("blah", "blahblah"));
     }
 
     @Test
     public void shouldnotLoginwithEmptyPass() {
-        driver.navigate().to(BaseWebDriver.URL);
         Assert.assertFalse(loginPage.LoginAs("admin", ""));
     }
 }
