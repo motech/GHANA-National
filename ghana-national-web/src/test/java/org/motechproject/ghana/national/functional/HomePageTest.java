@@ -3,7 +3,6 @@ package org.motechproject.ghana.national.functional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.functional.base.BaseWebDriver;
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.pages.LoginPage;
 import org.openqa.selenium.WebDriver;
@@ -29,7 +28,6 @@ public class HomePageTest {
 
     @Test
     public void verifyHomePageLinks() {
-        driver.navigate().to(BaseWebDriver.URL);
         loginPage.LoginAs("admin", "P@ssw0rd");
     }
 }
