@@ -1,18 +1,24 @@
 package org.motechproject.functional.pages;
 
-import org.motechproject.functional.base.MyDriver;
+import org.motechproject.functional.base.WebDriverProvider;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class CreateFacilityPage {
-    WebDriver driver = MyDriver.getDriverInstance();
-    HomePage homePage = new HomePage();
-    LoginPage loginPage = new LoginPage();
 
+    private WebDriver driver;
+
+    @Autowired
+    private HomePage homePage;
+
+    @Autowired
+    private LoginPage loginPage;
 
     @FindBy(name = "country")
     @CacheLookup
@@ -54,6 +60,11 @@ public class CreateFacilityPage {
     @FindBy(id = "submitNewFacility")
     @CacheLookup
     WebElement SubmitFacilityDetails;
+
+    @Autowired
+    public CreateFacilityPage(WebDriverProvider webDriverProvider) {
+        this.driver = webDriverProvider.getWebDriver();
+    }
 
 
     public boolean IsRegionDisplayed() {
@@ -104,6 +115,22 @@ public class CreateFacilityPage {
             return true;
         else
             return false;
+    }
+
+    public HomePage getHomePage() {
+        return homePage;
+    }
+
+    public void setHomePage(HomePage homePage) {
+        this.homePage = homePage;
+    }
+
+    public LoginPage getLoginPage() {
+        return loginPage;
+    }
+
+    public void setLoginPage(LoginPage loginPage) {
+        this.loginPage = loginPage;
     }
 }
 

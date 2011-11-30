@@ -1,15 +1,20 @@
 package org.motechproject.functional.pages;
 
-import org.motechproject.functional.base.MyDriver;
+import org.motechproject.functional.base.WebDriverProvider;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class LoginPage {
-    WebDriver driver = MyDriver.getDriverInstance();
-    HomePage homePage = new HomePage();
+    private WebDriver driver;
 
+    @Autowired
+    public LoginPage(WebDriverProvider driverProvider) {
+        this.driver = driverProvider.getWebDriver();
+    }
 
     public boolean LoginAs(String UserName, String Password) {
         String src;
