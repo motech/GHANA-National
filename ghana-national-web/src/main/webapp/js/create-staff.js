@@ -74,21 +74,21 @@ $.UserFormValidator = function() {
     };
 };
 
-$.UserForm = function() {
+$.StaffForm = function() {
     var validator = new $.UserFormValidator();
 
     var submitForm = function() {
         if (validator.validate()) {
-            $('#createUserForm').submit();
+            $('#createStaffForm').submit();
         }
     };
     var bootstrap = function() {
-        $("#createUserForm").formly({'onBlur':false, 'theme':'Light'});
+        $("#createStaffForm").formly({'onBlur':false, 'theme':'Light'});
         $("#submitNewUser").click(submitForm);
     };
     $(bootstrap);
 };
 
 $(document).ready(function() {
-    new $.UserForm();
+    new $.StaffForm();
 });

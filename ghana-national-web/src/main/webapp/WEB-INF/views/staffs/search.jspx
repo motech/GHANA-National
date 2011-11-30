@@ -3,12 +3,12 @@
      xmlns:spring="http://www.springframework.org/tags">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:url value="/resources/js/search-user.js" var="search_user_url"/>
-    <script src="${search_user_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
-    <spring:url value="/admin/users/searchUsers" var="form_url"/>
+    <spring:url value="/resources/js/search-staff.js" var="search_staff_url"/>
+    <script src="${search_staff_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <spring:url value="/admin/staffs/searchStaffs" var="form_url"/>
 
-    <form:form id="searchUserForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search for staff member"
-               commandName="searchUserForm">
+    <form:form id="searchStaffForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search for staff member"
+               commandName="searchStaffForm">
         <spring:message code="staff_id" var="staff_id" htmlEscape="false"/>
         <spring:message code="user_first_name" var="user_first_name" htmlEscape="false"/>
         <spring:message code="user_middle_name" var="user_middle_name" htmlEscape="false"/>
@@ -19,7 +19,7 @@
         <spring:message code="user_role_select" var="user_role_select" htmlEscape="false"/>
 
 
-        <div class="input-description"> * Please enter atleast one field to enable search</div>
+        <div class="input-description">* Please enter atleast one field to enable search</div>
 
         <div>
             <label class="formLabel" for="staff_id">${fn:escapeXml(staff_id)}:</label>
@@ -50,7 +50,7 @@
                 </c:forEach>
             </form:select>
         </div>
-        <input type="button" id="searchUser" value="Search"/>
+        <input type="button" id="searchStaff" value="Search"/>
 
         <div class="formlyAlerts">
             <form:errors path="email" element="div" cssClass="formlyInvalid formlyAlert"
@@ -58,10 +58,10 @@
         </div>
 
         <div id="search-results">
-            <c:if test="${null ne requestedUsers and empty requestedUsers}">
+            <c:if test="${null ne requestedStaffs and empty requestedStaffs}">
                 <span class="error-message">There were no search results that matched your search terms.</span>
             </c:if>
-            <c:if test="${not empty requestedUsers}">
+            <c:if test="${not empty requestedStaffs}">
                 <table>
                     <tr>
                         <th>Staff Id</th>
@@ -72,13 +72,30 @@
                         <th>Role</th>
                         <th>Edit</th>
                     </tr>
-                    <c:forEach var="user" items="${requestedUsers}">
+                    <c:forEach var="user" items="${requestedStaffs}">
                         <tr>
-                            <c:forEach var="attribute" items="${user}">
-                                <td><c:out value="${attribute}" /></td>
-                            </c:forEach>
+                            <td>
+                                <c:out value="${user.staffID}"/>
+                            </td>
+                            <td>
+                                <c:out value="${user.firstName}"/>
+                            </td>
+                            <td>
+                                <c:out value="${user.middleName}"/>
+                            </td>
+                            <td>
+                                <c:out value="${user.lastName}"/>
+                            </td>
+                            <td>
+                                <c:out value="${user.phoneNumber}"/>
+                            </td>
+                            <td>
+                                <c:out value="${user.role}"/>
+                            </td>
                             <td class="action">
-                                <div class="edit"><a href="#" title="Edit"> </a></div>
+                                <div class="edit">
+                                    <a href="#" title="Edit"></a>
+                                </div>
                             </td>
                         </tr>
                     </c:forEach>

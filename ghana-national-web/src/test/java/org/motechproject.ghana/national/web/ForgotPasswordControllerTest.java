@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.service.EmailTemplateService;
-import org.motechproject.ghana.national.service.UserService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,12 +23,12 @@ public class ForgotPasswordControllerTest {
     @Mock
     private EmailTemplateService emailTemplateService;
     @Mock
-    private UserService userService;
+    private StaffService staffService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        forgotPasswordController = new ForgotPasswordController(userService, emailTemplateService);
+        forgotPasswordController = new ForgotPasswordController(staffService, emailTemplateService);
     }
 
     @Test
@@ -39,7 +39,7 @@ public class ForgotPasswordControllerTest {
 
         HttpServletRequest mockHttpRequest = mock(HttpServletRequest.class);
         when(mockHttpRequest.getParameter("emailId")).thenReturn(testEmailId);
-        when(userService.changePasswordByEmailId(testEmailId)).thenReturn(newPassword);
+        when(staffService.changePasswordByEmailId(testEmailId)).thenReturn(newPassword);
         when(emailTemplateService.sendEmailUsingTemplates(testEmailId, newPassword)).thenReturn(Constants.EMAIL_SUCCESS);
         ModelAndView actualModelAndView = forgotPasswordController.changePasswordAndSendEmail(mockHttpRequest);
 
@@ -55,7 +55,7 @@ public class ForgotPasswordControllerTest {
 
         HttpServletRequest mockHttpRequest = mock(HttpServletRequest.class);
         when(mockHttpRequest.getParameter("emailId")).thenReturn(testEmailId);
-        when(userService.changePasswordByEmailId(testEmailId)).thenReturn("");
+        when(staffService.changePasswordByEmailId(testEmailId)).thenReturn("");
         ModelAndView actualModelAndView = forgotPasswordController.changePasswordAndSendEmail(mockHttpRequest);
 
         assertThat(actualModelAndView.getView(), is(equalTo(expectedModelAndView.getView())));

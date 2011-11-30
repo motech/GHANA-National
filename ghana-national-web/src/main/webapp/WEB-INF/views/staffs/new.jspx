@@ -3,12 +3,12 @@
      xmlns:spring="http://www.springframework.org/tags">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:url value="/resources/js/create-user.js" var="create_user_url"/>
-    <script src="${create_user_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
-    <spring:url value="/admin/users/create" var="form_url"/>
+    <spring:url value="/resources/js/create-staff.js" var="create_staff_url"/>
+    <script src="${create_staff_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <spring:url value="/admin/staffs/create" var="form_url"/>
 
-    <form:form id="createUserForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Staff Member"
-               commandName="createUserForm">
+    <form:form id="createStaffForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Staff Member"
+               commandName="createStaffForm">
         <spring:message code="user_first_name" var="user_first_name" htmlEscape="false"/>
         <spring:message code="user_middle_name" var="user_middle_name" htmlEscape="false"/>
         <spring:message code="user_last_name" var="user_last_name" htmlEscape="false"/>

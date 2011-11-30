@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.validator;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -12,7 +11,7 @@ import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.service.UserService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mrs.model.User;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
@@ -35,107 +34,102 @@ public class RegisterClientFormValidatorTest {
     private RegisterClientFormValidator registerClientFormValidator;
 
     @Mock
-    private RegisterClientForm registerClientForm;
+    private RegisterClientForm mockRegisterClientForm;
     @Mock
-    private UserService userService;
+    private StaffService mockStaffService;
     @Mock
-    private FacilityService facilityService;
+    private FacilityService mockFacilityService;
     @Mock
-    private PatientService patientService;
+    private PatientService mockPatientService;
     @Mock
-    private MotechIdVerhoeffValidator motechIdVerhoeffValidator;
+    private MotechIdVerhoeffValidator mockMotechIdVerhoeffValidator;
 
     @Before
     public void setUp() {
         initMocks(this);
         registerClientFormValidator = new RegisterClientFormValidator();
-        ReflectionTestUtils.setField(registerClientFormValidator, "userService", userService);
-        ReflectionTestUtils.setField(registerClientFormValidator, "facilityService", facilityService);
-        ReflectionTestUtils.setField(registerClientFormValidator, "patientService", patientService);
+        ReflectionTestUtils.setField(registerClientFormValidator, "staffService", mockStaffService);
+        ReflectionTestUtils.setField(registerClientFormValidator, "facilityService", mockFacilityService);
+        ReflectionTestUtils.setField(registerClientFormValidator, "patientService", mockPatientService);
     }
 
     @Test
     public void shouldValidateIfTheStaffWhoSubmitsTheFormIsAlreadyRegistered() {
         String userId = "0987654";
-        when(registerClientForm.getStaffId()).thenReturn(userId);
+        when(mockRegisterClientForm.getStaffId()).thenReturn(userId);
 
-        when(userService.getUserById(userId)).thenReturn(new User());
+        when(mockStaffService.getUserById(userId)).thenReturn(new User());
 
-        List<FormError> formErrors = registerClientFormValidator.validate(registerClientForm);
+        List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm);
         assertThat(formErrors, not(hasItem(new FormError("staffId", NOT_FOUND))));
 
-        when(userService.getUserById(userId)).thenReturn(null);
-        formErrors = registerClientFormValidator.validate(registerClientForm);
+        when(mockStaffService.getUserById(userId)).thenReturn(null);
+        formErrors = registerClientFormValidator.validate(mockRegisterClientForm);
         assertThat(formErrors, hasItem(new FormError("staffId", NOT_FOUND)));
-    }
-
-    @Ignore
-    @Test
-    public void shouldValidateIfThePrePrintedMotechIdIsAValidId() {
     }
 
     @Test
     public void shouldValidateIfAPatientIsAvailableWithIdAsMothersMotechId() {
         String mothersMotechId = "100";
-        when(registerClientForm.getMotherMotechId()).thenReturn(mothersMotechId);
-        when(registerClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
+        when(mockRegisterClientForm.getMotherMotechId()).thenReturn(mothersMotechId);
+        when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
         Patient patientsMotherMock = mock(Patient.class);
-        when(patientService.getPatientById(mothersMotechId)).thenReturn(patientsMotherMock);
-        assertThat(registerClientFormValidator.validate(registerClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
+        when(mockPatientService.getPatientById(mothersMotechId)).thenReturn(patientsMotherMock);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
 
-        when(patientService.getPatientById(mothersMotechId)).thenReturn(null);
-        assertThat(registerClientFormValidator.validate(registerClientForm), hasItem(new FormError("motherMotechId", NOT_FOUND)));
+        when(mockPatientService.getPatientById(mothersMotechId)).thenReturn(null);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("motherMotechId", NOT_FOUND)));
     }
 
     @Test
     public void shouldReturnErrorIfPatientTypeIsChildAndMothersMotechIdIsNotPresent() {
-        when(registerClientForm.getMotherMotechId()).thenReturn(null);
-        when(registerClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
-        assertThat(registerClientFormValidator.validate(registerClientForm), hasItem(new FormError("motherMotechId", NOT_FOUND)));
-        verify(patientService, never()).getPatientById(Matchers.<String>any());
+        when(mockRegisterClientForm.getMotherMotechId()).thenReturn(null);
+        when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("motherMotechId", NOT_FOUND)));
+        verify(mockPatientService, never()).getPatientById(Matchers.<String>any());
     }
 
     @Test
     public void shouldNotReturnErrorIfPatientTypeIsNotChildAndMothersMotechIdIsNotPresent() {
-        when(registerClientForm.getMotherMotechId()).thenReturn(null);
-        when(registerClientForm.getRegistrantType()).thenReturn(PatientType.PREGNANT_MOTHER);
-        assertThat(registerClientFormValidator.validate(registerClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
-        verify(patientService, never()).getPatientById(Matchers.<String>any());
+        when(mockRegisterClientForm.getMotherMotechId()).thenReturn(null);
+        when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.PREGNANT_MOTHER);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
+        verify(mockPatientService, never()).getPatientById(Matchers.<String>any());
     }
 
     @Test
     public void shouldValidateTheMotechIdOfThePatientIfRegistrationModeIsPrePrintedId() {
         String motechId = "12345";
-        when(registerClientForm.getRegistrationMode()).thenReturn(RegistrationType.USE_PREPRINTED_ID);
+        when(mockRegisterClientForm.getRegistrationMode()).thenReturn(RegistrationType.USE_PREPRINTED_ID);
         Patient patientMock = mock(Patient.class);
-        when(patientService.getPatientById(motechId)).thenReturn(patientMock);
-        when(registerClientForm.getMotechId()).thenReturn(motechId);
-        assertThat(registerClientFormValidator.validate(registerClientForm), hasItem(new FormError("motechId", "in use")));
+        when(mockPatientService.getPatientById(motechId)).thenReturn(patientMock);
+        when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("motechId", "in use")));
 
-        when(patientService.getPatientById(motechId)).thenReturn(null);
-        when(registerClientForm.getMotechId()).thenReturn(motechId);
-        assertThat(registerClientFormValidator.validate(registerClientForm), not(hasItem(new FormError("motechId", "in use"))));
+        when(mockPatientService.getPatientById(motechId)).thenReturn(null);
+        when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motechId", "in use"))));
     }
 
     @Test
     public void shouldNotValidateMotechIdOfThePatientIfRegistrationModeIsNotPrePrintedId() {
         String motechId = "12345";
-        when(registerClientForm.getRegistrationMode()).thenReturn(RegistrationType.AUTO_GENERATE_ID);
-        when(registerClientForm.getMotechId()).thenReturn(motechId);
-        assertThat(registerClientFormValidator.validate(registerClientForm), not(hasItem(new FormError("motechId", NOT_FOUND))));
-        verify(patientService, never()).getPatientById(anyString());
+        when(mockRegisterClientForm.getRegistrationMode()).thenReturn(RegistrationType.AUTO_GENERATE_ID);
+        when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motechId", NOT_FOUND))));
+        verify(mockPatientService, never()).getPatientById(anyString());
     }
 
     @Test
     public void shouldValidateIfTheSelectedFacilityIsAvailable() {
         String facilityId = "0987653";
-        when(registerClientForm.getFacilityId()).thenReturn(facilityId);
+        when(mockRegisterClientForm.getFacilityId()).thenReturn(facilityId);
 
         Facility facilityMock = mock(Facility.class);
-        when(facilityService.getFacility(facilityId)).thenReturn(facilityMock);
-        assertThat(registerClientFormValidator.validate(registerClientForm), not(hasItem(new FormError("facilityId", NOT_FOUND))));
+        when(mockFacilityService.getFacility(facilityId)).thenReturn(facilityMock);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("facilityId", NOT_FOUND))));
 
-        when(facilityService.getFacility(facilityId)).thenReturn(null);
-        assertThat(registerClientFormValidator.validate(registerClientForm), hasItem(new FormError("facilityId", NOT_FOUND)));
+        when(mockFacilityService.getFacility(facilityId)).thenReturn(null);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("facilityId", NOT_FOUND)));
     }
 }

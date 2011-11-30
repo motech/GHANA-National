@@ -24,13 +24,13 @@ public class PasswordResetController {
     private Logger log = Logger.getLogger("PasswordResetController");
 
     @Autowired
-    private MRSUserAdaptor userService;
+    private MRSUserAdaptor mrsUserAdaptor;
 
     protected PasswordResetController() {
     }
 
-    public PasswordResetController(MRSUserAdaptor userService) {
-        this.userService = userService;
+    public PasswordResetController(MRSUserAdaptor mrsUserAdaptor) {
+        this.mrsUserAdaptor = mrsUserAdaptor;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -44,7 +44,7 @@ public class PasswordResetController {
     public String changePassword(@Valid PasswordResetForm passwordResetForm, BindingResult bindingResult, HttpServletRequest request) {
         MRSSecurityUser user = (MRSSecurityUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
         try {
-            userService.changeCurrentUserPassword(passwordResetForm.getCurrentPassword(), passwordResetForm.getNewPassword());
+            mrsUserAdaptor.changeCurrentUserPassword(passwordResetForm.getCurrentPassword(), passwordResetForm.getNewPassword());
         } catch (MRSException e) {
             bindingResult.addError(new FieldError("passwordResetForm", "currentPassword", e.getMessage()));
         }

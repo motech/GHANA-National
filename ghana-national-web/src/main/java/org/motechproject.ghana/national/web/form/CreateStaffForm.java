@@ -1,12 +1,24 @@
 package org.motechproject.ghana.national.web.form;
 
-public class CreateUserForm {
+public class CreateStaffForm {
     private String firstName;
     private String middleName;
     private String lastName;
     private String email;
     private String phoneNumber;
     private String role;
+
+    public CreateStaffForm() {
+    }
+
+    public CreateStaffForm(String firstName, String middleName, String lastName, String email, String phoneNumber, String role) {
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+    }
 
     public String getFirstName() {
         return firstName;

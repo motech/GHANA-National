@@ -6,7 +6,7 @@ import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.service.UserService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -21,7 +21,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
 
     public static final String NOT_FOUND = "not found";
     @Autowired
-    private UserService userService;
+    private StaffService staffService;
     @Autowired
     private FacilityService facilityService;
     @Autowired
@@ -53,7 +53,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     }
 
     private void validateIfStaffExists(List<FormError> formErrors, final String staffId) {
-        if (userService.getUserById(staffId) == null)
+        if (staffService.getUserById(staffId) == null)
             CollectionUtils.addIgnoreNull(formErrors, new FormError("staffId", NOT_FOUND));
     }
 

@@ -9,19 +9,19 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 
-@TypeDiscriminator("doc.type === 'UserType'")
-public class UserType extends MotechAuditableDataObject {
+@TypeDiscriminator("doc.type === 'StaffType'")
+public class StaffType extends MotechAuditableDataObject {
     @JsonProperty("type")
-    private String type = "UserType";
+    private String type = "StaffType";
     @JsonProperty
     private String name;
     @JsonProperty
     private String description;
 
-    public UserType() {
+    public StaffType() {
     }
 
-    public UserType(String name, String description) {
+    public StaffType(String name, String description) {
         this.name = name;
         this.description = description;
     }
