@@ -8,6 +8,7 @@
     <script src="${facility_field_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${search_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/facilities/searchFacilities" var="form_url"/>
+    <spring:url value="/admin/facilities/edit" var="edit_facility_url"/>
     <form:form id="searchFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search for a Facility"
                commandName="searchFacilityForm">
         <spring:message code="facility_id" var="facility_id" htmlEscape="false"/>
@@ -97,7 +98,7 @@
                             <td><c:out value="${facility.mrsFacility.countyDistrict}"/></td>
                             <td><c:out value="${facility.mrsFacility.stateProvince}"/></td>
                             <td class="action">
-                                <div class="edit"><a href="#" title="Edit"> </a></div>
+                                <div class="edit"><a href="${edit_facility_url}?facilityId=${facility.mrsFacility.id}" title="Edit"> </a></div>
                             </td>
                         </tr>
                     </c:forEach>

@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.web;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -14,6 +13,7 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.form.SearchFacilityForm;
 import org.springframework.context.MessageSource;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -26,12 +26,9 @@ import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.web.FacilityController.*;
 
 public class FacilityControllerTest {
     FacilityController facilityController;
@@ -58,24 +55,39 @@ public class FacilityControllerTest {
     }
 
     @Test
-    public void shouldSaveAFacilityWhenValid() {
+    public void shouldSaveAFacilityWhenValid() throws FacilityAlreadyFoundException {
+        Integer facilityId = 12345;
+        String name = "facility";
+        String region = "region";
+        String district = "district";
+        String country = "country";
+        String province = "province";
+        String addPhoneNumb2 = "addPhoneNumb2";
+        String addPhoneNumb3 = "addPhoneNumb3";
+        String addPhoneNumb1 = "addPhoneNumb1";
+        String phoneNumber = "phoneNumber";
         final BindingResult mockBindingResult = mock(BindingResult.class);
         final FacilityController spyFacilitiesController = spy(facilityController);
         ModelMap modelMap = new ModelMap();
-        when(mockFacilityService.facilities()).thenReturn(Arrays.asList(new Facility()));
+        Facility facility = facility(name, facilityId, region, district, country, province, phoneNumber, addPhoneNumb1, addPhoneNumb2, addPhoneNumb3);
+        when(mockFacilityService.facilities()).thenReturn(Arrays.asList(facility));
         final HashMap<String, Object> map = new HashMap<String, Object>() {{
-            put(FacilityController.CREATE_FACILITY_FORM, new Object());
+            put(CREATE_FACILITY_FORM, new Object());
             put(Constants.COUNTRIES, new Object());
             put(Constants.REGIONS, new Object());
             put(Constants.PROVINCES, new Object());
             put(Constants.DISTRICTS, new Object());
         }};
         when(mockFacilityHelper.locationMap()).thenReturn(map);
-        final String result = spyFacilitiesController.createFacility(new FacilityForm(), mockBindingResult, modelMap);
+        when(mockFacilityService.getFacility(String.valueOf(facilityId))).thenReturn(facility);
+        when(mockFacilityService.create(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(String.valueOf(facilityId));
+        FacilityForm facilityForm = createFacilityForm(name, country, region, district, province, phoneNumber, addPhoneNumb1, addPhoneNumb2, addPhoneNumb3);
+        final String result = spyFacilitiesController.createFacility(facilityForm, mockBindingResult, modelMap);
 
-        assertThat(result, is(equalTo("facilities/success")));
+        verify(mockFacilityService).create(name, country, region, district, province, phoneNumber, addPhoneNumb1, addPhoneNumb2, addPhoneNumb3);
+        assertThat(result, is(equalTo(EDIT_FACILITY_URL)));
         verify(mockFacilityHelper).locationMap();
-        assertNotNull(modelMap.get(FacilityController.CREATE_FACILITY_FORM));
+        assertNotNull(modelMap.get(CREATE_FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));
         assertNotNull(modelMap.get(Constants.PROVINCES));
@@ -83,7 +95,7 @@ public class FacilityControllerTest {
     }
 
     @Test
-    public void testSaveFacilityWhenInValid() throws FacilityAlreadyFoundException {
+    public void testNotSaveFacilityWhenInValid() throws FacilityAlreadyFoundException {
         final ModelMap modelMap = new ModelMap();
         final String facility = "facility";
         final String country = "country";
@@ -107,7 +119,7 @@ public class FacilityControllerTest {
         createFacilityForm.setAdditionalPhoneNumber3(StringUtils.EMPTY);
 
         final HashMap<String, Object> map = new HashMap<String, Object>() {{
-            put(FacilityController.CREATE_FACILITY_FORM, new Object());
+            put(CREATE_FACILITY_FORM, new Object());
             put(Constants.COUNTRIES, new Object());
             put(Constants.REGIONS, new Object());
             put(Constants.PROVINCES, new Object());
@@ -121,11 +133,11 @@ public class FacilityControllerTest {
         verify(mockBindingResult).addError(captor.capture());
         final FieldError actualFieldError = captor.getValue();
         assertThat(result, is(equalTo("facilities/new")));
-        assertThat(actualFieldError.getObjectName(), is(equalTo(FacilityController.CREATE_FACILITY_FORM)));
+        assertThat(actualFieldError.getObjectName(), is(equalTo(CREATE_FACILITY_FORM)));
         assertThat(actualFieldError.getField(), is(equalTo("name")));
         assertThat(actualFieldError.getDefaultMessage(), is(equalTo(message)));
         verify(mockFacilityHelper).locationMap();
-        assertNotNull(modelMap.get(FacilityController.CREATE_FACILITY_FORM));
+        assertNotNull(modelMap.get(CREATE_FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));
         assertNotNull(modelMap.get(Constants.PROVINCES));
@@ -155,38 +167,73 @@ public class FacilityControllerTest {
     }
 
     @Test
-    @Ignore
     public void shouldReturnDetailsOfFacilityToEdit() {
         String name = "Dummy Facility";
         String country = "Ghana";
         String region = "Western Ghana";
+        String province = "Province";
+        String district = "District";
         String phoneNumber = "0123456789";
+        String addPhoneNumber1 = "0123456787";
+        String addPhoneNumber2 = "0123456786";
+        String addPhoneNumber3 = "0123456783";
 
         ModelMap modelMap = new ModelMap();
         String facilityId = "123";
-        modelMap.addAttribute(FacilityController.FACILITY_ID, facilityId);
+        modelMap.addAttribute(FACILITY_ID, facilityId);
 
         Facility facility = mock(Facility.class);
         when(facility.country()).thenReturn(country);
         when(facility.phoneNumber()).thenReturn(phoneNumber);
         when(facility.region()).thenReturn(region);
         when(facility.name()).thenReturn(name);
+        when(facility.province()).thenReturn(province);
+        when(facility.additionalPhoneNumber1()).thenReturn(addPhoneNumber1);
+        when(facility.additionalPhoneNumber2()).thenReturn(addPhoneNumber2);
+        when(facility.additionalPhoneNumber3()).thenReturn(addPhoneNumber3);
+        when(facility.district()).thenReturn(district);
 
         when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
 
-        String editFormName = facilityController.editFacilityForm(modelMap);
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setParameter(FACILITY_ID, facilityId);
+        String editFormName = facilityController.editFacilityForm(modelMap, mockHttpServletRequest);
 
-        assertThat(editFormName, is(FacilityController.EDIT_FACILITY));
-        FacilityForm facilityForm = createFaciliy(name, country, region, phoneNumber);
-        assertThat((FacilityForm) modelMap.get("facilityForm"), is(equalTo(facilityForm)));
+        assertThat(editFormName, is(EDIT_FACILITY_URL));
+        FacilityForm expectedFacilityForm = createFacilityForm(name, country, region, district, province, phoneNumber, addPhoneNumber1, addPhoneNumber2, addPhoneNumber3);
+        FacilityForm facilityForm = (FacilityForm) modelMap.get(EDIT_FACILITY_FORM);
+
+        assertFacilityForm(expectedFacilityForm, facilityForm);
     }
 
-    private FacilityForm createFaciliy(String name, String country, String region, String phoneNumber) {
+    private void assertFacilityForm(FacilityForm expectedFacilityForm, FacilityForm facilityForm) {
+        assertThat(facilityForm.getName(), is(equalTo(expectedFacilityForm.getName())));
+        assertThat(facilityForm.getCountry(), is(equalTo(expectedFacilityForm.getCountry())));
+        assertThat(facilityForm.getRegion(), is(equalTo(expectedFacilityForm.getRegion())));
+        assertThat(facilityForm.getCountyDistrict(), is(equalTo(expectedFacilityForm.getCountyDistrict())));
+        assertThat(facilityForm.getStateProvince(), is(equalTo(expectedFacilityForm.getStateProvince())));
+        assertThat(facilityForm.getPhoneNumber(), is(equalTo(expectedFacilityForm.getPhoneNumber())));
+        assertThat(facilityForm.getAdditionalPhoneNumber1(), is(equalTo(expectedFacilityForm.getAdditionalPhoneNumber1())));
+        assertThat(facilityForm.getAdditionalPhoneNumber2(), is(equalTo(expectedFacilityForm.getAdditionalPhoneNumber2())));
+        assertThat(facilityForm.getAdditionalPhoneNumber3(), is(equalTo(expectedFacilityForm.getAdditionalPhoneNumber3())));
+    }
+
+    private Facility facility(String name, Integer facilityId, String region, String district, String country, String province, String phoneNumber, String addPhoneNumb1, String addPhoneNumb2, String addPhoneNumb3) {
+        org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(name, country, region, district, province);
+        return new Facility().motechId(2134).mrsFacility(mrsFacility).mrsFacilityId(facilityId).phoneNumber(phoneNumber).additionalPhoneNumber1(addPhoneNumb1).additionalPhoneNumber2(addPhoneNumb2).additionalPhoneNumber3(addPhoneNumb3);
+    }
+
+    private FacilityForm createFacilityForm(String name, String country, String region, String district, String province, String phoneNumber, String addPhoneNumber1, String addPhoneNumber2, String addPhoneNumber3) {
         FacilityForm facilityForm = new FacilityForm();
         facilityForm.setName(name);
         facilityForm.setCountry(country);
         facilityForm.setRegion(region);
+        facilityForm.setCountyDistrict(district);
+        facilityForm.setStateProvince(province);
         facilityForm.setPhoneNumber(phoneNumber);
+        facilityForm.setAdditionalPhoneNumber1(addPhoneNumber1);
+        facilityForm.setAdditionalPhoneNumber2(addPhoneNumber2);
+        facilityForm.setAdditionalPhoneNumber3(addPhoneNumber3);
         return facilityForm;
     }
 }

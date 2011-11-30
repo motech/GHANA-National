@@ -51,6 +51,10 @@
             <name>Searls Maven Repository</name>
             <url>http://searls-maven-repository.googlecode.com/svn/trunk</url>
         </repository>
+        <repository>
+            <id>openmrs-repo</id>
+            <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>

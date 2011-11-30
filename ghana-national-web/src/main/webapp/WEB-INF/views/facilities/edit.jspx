@@ -7,9 +7,9 @@
     <spring:url value="/resources/js/create-facility.js" var="create_facility_url"/>
     <script src="${facility_field_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${create_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
-    <spring:url value="/admin/facilities/create" var="form_url"/>
-    <form:form id="createFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Facility"
-               commandName="createFacilityForm">
+    <spring:url value="/admin/facilities/update" var="form_url"/>
+    <form:form id="facilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Edit a Facility"
+               commandName="editFacilityForm">
         <spring:message code="facility_name" var="facility_name" htmlEscape="false"/>
         <spring:message code="facility_country" var="facility_country" htmlEscape="false"/>
         <spring:message code="facility_region" var="facility_region" htmlEscape="false"/>
@@ -42,25 +42,23 @@
             <label for="countries" class="formLabel">${fn:escapeXml(facility_country)}:</label>
             <form:select id="countries" path="country">
                 <option parent="select" value="">${fn:escapeXml(facility_country_select)}</option>
-                <c:forEach items="${countries}" var="country">
-                    <option parent="${country}" value="${country}">${country}</option>
-                </c:forEach>
+                <form:options items="${countries}" />
             </form:select>
             <span id='countriesError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(facility_country_req_msg)}
             </span>
         </div>
-        <div class="hide">
+        <div >
             <motech:location id="regions" path="region" label="${facility_region}"
                              defaultValue="${facility_region_select}" errorMsg="${facility_region_req_msg}"
-                             locations="${regions}"/>
+                             locations="${regions}" />
         </div>
-        <div class="hide">
+        <div >
             <motech:location id="districts" path="countyDistrict" label="${facility_district}"
                              defaultValue="${facility_district_select}" errorMsg="${facility_district_req_msg}"
                              locations="${districts}"/>
         </div>
-        <div class="hide">
+        <div >
             <motech:location id="sub-districts" path="stateProvince" label="${facility_sub_district}"
                              defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
                              locations="${provinces}"/>
@@ -82,7 +80,8 @@
                           errorMsg="${facility_phone_number_incorrect_msg}"/>
         </div>
 
-        <input type="button" id="submitNewFacility" value="Submit"/>
+        <form:hidden path="id" />
+        <input type="button" id="submitFacility" value="Submit"/>
 
         <div class="formlyAlerts">
             <form:errors path="name" element="div" cssClass="formlyInvalid formlyAlert" cssStyle="display: block;"/>

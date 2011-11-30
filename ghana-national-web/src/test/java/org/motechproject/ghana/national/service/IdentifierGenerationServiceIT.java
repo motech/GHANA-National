@@ -7,7 +7,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.io.IOException;
 import java.util.ResourceBundle;
 
-import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 public class IdentifierGenerationServiceIT {
 
@@ -24,8 +25,8 @@ public class IdentifierGenerationServiceIT {
 
     @Test
     public void shouldGenerateIDForAnIDTypeAndGenerator() throws IOException {
-        assertNotNull(service.newFacilityId());
-        assertNotNull(service.newPatientId());
-        assertNotNull(service.newStaffId());
+        assertTrue(isNotEmpty(service.newFacilityId()));
+        assertTrue(isNotEmpty(service.newPatientId()));
+        assertTrue(isNotEmpty(service.newStaffId()));
     }
 }

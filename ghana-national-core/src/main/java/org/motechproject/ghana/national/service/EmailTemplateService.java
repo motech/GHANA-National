@@ -22,17 +22,13 @@ public class EmailTemplateService {
         this.textTemplate = textTemplate;
     }
 
-    public String sendEmailUsingTemplates(String userName, String password) {
-        final String toEmailId = userName;
-        final String defaultPassword = password;
-
-        Map emailData = new HashMap() {{
-            put("userName", toEmailId);
-            put("password", defaultPassword);
+    public String sendEmailUsingTemplates(final String userName, final String password) {
+        Map<String, String> emailData = new HashMap<String, String>() {{
+            put("userName", userName);
+            put("password", password);
 
         }};
-        String emailSentStatus = emailService.send(new Email(userName, motechFromAddress, renderWith(subjectTemplate, emailData), renderWith(textTemplate, emailData)));
-        return emailSentStatus;
+        return emailService.send(new Email(userName, motechFromAddress, renderWith(subjectTemplate, emailData), renderWith(textTemplate, emailData)));
     }
 
     private String renderWith(String template, Map data) {
