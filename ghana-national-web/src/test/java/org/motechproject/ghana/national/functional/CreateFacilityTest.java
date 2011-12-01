@@ -1,9 +1,5 @@
 package org.motechproject.ghana.national.functional;
 
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.pages.CreateFacilityPage;
@@ -14,10 +10,14 @@ import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:applicationContext-functional-tests.xml"})
-public class CreateFacilityTest {
+@ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
+public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private LoginPage loginPage;
@@ -33,19 +33,20 @@ public class CreateFacilityTest {
 
     private WebDriver driver;
 
-    @Before
+    @BeforeClass
     public void setUp() {
         driver = driverProvider.getWebDriver();
     }
 
-    @Ignore
+
     @Test
     public void createFacilityWithValidValues() {
         loginPage.LoginAs("admin", "P@ssw0rd");
         homePage.OpenCreateFacilityPage();
 
         boolean TestPassed = true;
-        createFacilityPage = PageFactory.initElements(driver, CreateFacilityPage.class);
+        //CreateFacilityPage createFacilityPage = new CreateFacilityPage(driverProvider);
+        PageFactory.initElements(driver, createFacilityPage);
         createFacilityPage.SetFacilityName("Test Facility" + Math.random() * 9000L);
         createFacilityPage.SelectCountry("Ghana");
         if (createFacilityPage.IsRegionDisplayed()) {
