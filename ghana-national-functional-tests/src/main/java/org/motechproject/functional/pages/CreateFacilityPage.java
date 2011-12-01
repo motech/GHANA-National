@@ -57,7 +57,7 @@ public class CreateFacilityPage {
     @CacheLookup
     WebElement RegionDropDown;
 
-    @FindBy(id = "submitNewFacility")
+    @FindBy(id = "submitFacility")
     @CacheLookup
     WebElement SubmitFacilityDetails;
 

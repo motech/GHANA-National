@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.functional;
 
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.pages.CreateFacilityPage;
@@ -38,14 +39,13 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
         driver = driverProvider.getWebDriver();
     }
 
-
+    @Ignore
     @Test
     public void createFacilityWithValidValues() {
         loginPage.LoginAs("admin", "P@ssw0rd");
         homePage.OpenCreateFacilityPage();
 
-        boolean TestPassed = true;
-        //CreateFacilityPage createFacilityPage = new CreateFacilityPage(driverProvider);
+        boolean TestPassed;
         PageFactory.initElements(driver, createFacilityPage);
         createFacilityPage.SetFacilityName("Test Facility" + Math.random() * 9000L);
         createFacilityPage.SelectCountry("Ghana");
