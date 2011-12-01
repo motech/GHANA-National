@@ -18,7 +18,7 @@
         <spring:message code="user_role_select" var="user_role_select" htmlEscape="false"/>
 
         <div>
-            <label class="formLabel" for="user_first_name">${fn:escapeXml(user_first_name)}:</label>
+            <label class="formLabel" for="user_first_name">${fn:escapeXml(user_first_name)} *:</label>
             <form:input id="user_first_name" path="firstName" size="20" label="${fn:escapeXml(user_first_name)}"/>
             <span id='firstName_error' class='formlyInvalid formlyAlert hide'></span>
         </div>
@@ -28,12 +28,12 @@
             <span id='middleName_error' class='formlyInvalid formlyAlert hide'></span>
         </div>
         <div>
-            <label class="formLabel" for="user_last_name">${fn:escapeXml(user_last_name)}:</label>
+            <label class="formLabel" for="user_last_name">${fn:escapeXml(user_last_name)} *:</label>
             <form:input id="user_last_name" path="lastName" size="20" label="${fn:escapeXml(user_last_name)}"/>
             <span id='lastName_error' class='formlyInvalid formlyAlert hide'></span>
         </div>
         <div>
-            <label class="formLabel" for="user_phone">${fn:escapeXml(user_phone)}:</label>
+            <label class="formLabel" for="user_phone">${fn:escapeXml(user_phone)} *:</label>
             <form:input id="user_phone" path="phoneNumber" size="20" label="${fn:escapeXml(user_phone)}"/>
             <span id='phone_error' class='formlyInvalid formlyAlert hide'></span>
         </div>
@@ -43,7 +43,7 @@
             <span id='email_error' class='formlyInvalid formlyAlert hide'></span>
         </div>
         <div>
-            <label class="formLabel" for="user_role">${fn:escapeXml(user_role)}:</label>
+            <label class="formLabel" for="user_role">${fn:escapeXml(user_role)} *:</label>
             <form:select id="user_role" path="role">
                 <option parent="select" value="">${fn:escapeXml(user_role_select)}</option>
                 <c:forEach items="${roles}" var="role">

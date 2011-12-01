@@ -9,10 +9,15 @@
     <label for="j_password">Password</label>
     <input type="password" name="j_password" id="j_password"/>
 
+    <br/>
+    <input type="submit" value="Login"/>
+    <br/>
     <c:url var="forgotPasswordURL" value="/forgotPassword">
         <c:param name="emailId" value="${j_username}"/>
     </c:url>
-    <a href="<c:out value="${forgotPasswordURL}"/>" onclick="this.href=this.href+document.getElementById('j_username').value">Forgot Password</a>
+    <a href="<c:out value="${forgotPasswordURL}"/>"
+       onclick="this.href=this.href+document.getElementById('j_username').value">Forgot Password</a>
+
     <br/>
-    <input type="submit" value="Login"/>
+    <span>Please enter your email address and then click the above link to receive the password</span>
 </form>
