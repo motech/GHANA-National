@@ -82,10 +82,23 @@ public class StaffServiceTest {
         final String middleName = "middleName";
         final User user1 = new User().id("123").firstName("firstName").middleName(middleName);
         user1.setAttributes(Arrays.asList(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, "0123456789")));
-        final List<User> expectedUsers = Arrays.asList(user1, new User().firstName("firstNm").id("1234"));
+        final List<User> expectedUsers = Arrays.asList(user1, new User().firstName("first").id("1234"));
         when(userAdaptor.getAllUsers()).thenReturn(expectedUsers);
         final List<User> actualUsers = service.searchStaff("123", "first", middleName, "", "01234", "");
         assertEquals(1, actualUsers.size());
+    }
+
+    @Test
+    public void shouldGiveSearchResultsSortedByFirstName() {
+        String firstName1 = "Khaarthi";
+        String firstName2 = "gha";
+        String middileName = "mm";
+        List<User> expectedUsers = Arrays.asList(new User().firstName(firstName1).middleName(middileName), new User().firstName(firstName2).middleName(middileName));
+        when(userAdaptor.getAllUsers()).thenReturn(expectedUsers);
+        final List<User> actualUsers = service.searchStaff(null, null, middileName, null, null, null);
+        assertEquals(2, actualUsers.size());
+        assertEquals(firstName2, actualUsers.get(0).getFirstName());
+        assertEquals(firstName1, actualUsers.get(1).getFirstName());
     }
 
     @Test

@@ -113,7 +113,7 @@
         </div>
 
         <div class="form-field">
-            <label class="formLabel" for="firstName">${fn:escapeXml(patient_first_name)}:</label>
+            <label class="formLabel" for="firstName">${fn:escapeXml(patient_first_name)} *:</label>
             <form:input path="firstName" size="20" cssClass="jsRequire" label="${fn:escapeXml(patient_first_name)}"/>
             <span id='firstNameError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_first_name)} ${fn:escapeXml(required_msg)}
@@ -126,7 +126,7 @@
         </div>
 
         <div class="form-field">
-            <label class="formLabel" for="lastName">${fn:escapeXml(patient_last_name)}:</label>
+            <label class="formLabel" for="lastName">${fn:escapeXml(patient_last_name)} *:</label>
             <form:input path="lastName" size="20" cssClass="jsRequire" label="${fn:escapeXml(patient_last_name)}"/>
             <span id='lastNameError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_last_name)} ${fn:escapeXml(required_msg)}
@@ -137,8 +137,8 @@
             <form:input path="preferredName" size="20" label="${fn:escapeXml(patient_preferred_name)}"/>
         </div>
         <div class="form-field">
-            <label class="formLabel" for="dateOfBirth">${fn:escapeXml(patient_date_of_birth)}:</label>
-            <form:input path="dateOfBirth" cssClass="jsRequire jsDate jsBefore" size="20"
+            <label class="formLabel" for="dateOfBirth">${fn:escapeXml(patient_date_of_birth)} *:</label>
+            <form:input readonly="true" path="dateOfBirth" cssClass="jsRequire jsDate jsBefore" size="20"
                         label="${fn:escapeXml(patient_date_of_birth)}"/>
             <span id='dateOfBirthError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_date_of_birth)} ${fn:escapeXml(required_msg)}
@@ -148,7 +148,7 @@
             </span>
         </div>
         <div class="form-field">
-            <label class="formLabel" for="estimatedDateOfBirth">${fn:escapeXml(patient_date_of_birth_estimated)}:
+            <label class="formLabel" for="estimatedDateOfBirth">${fn:escapeXml(patient_date_of_birth_estimated)} *:
             </label>
             <div class="radio">
                 <form:radiobutton cssClass="jsRequire" path="estimatedDateOfBirth" value="true"
@@ -163,7 +163,7 @@
             </div>
         </div>
         <div class="form-field">
-            <label class="formLabel" for="sex">${fn:escapeXml(patient_sex)}:</label>
+            <label class="formLabel" for="sex">${fn:escapeXml(patient_sex)} *:</label>
             <div class="radio">
                 <form:radiobutton cssClass="jsRequire" path="sex" value="${fn:escapeXml(male)}"
                                   label="${fn:escapeXml(male)}"/>
@@ -178,7 +178,7 @@
             </div>
         </div>
         <div class="form-field">
-            <label class="formLabel" for="insured">${fn:escapeXml(patient_insured)}:</label>
+            <label class="formLabel" for="insured">${fn:escapeXml(patient_insured)} *:</label>
             <div class="radio">
                 <form:radiobutton cssClass="jsRequire" path="insured" value="true"
                                   label="${fn:escapeXml(yes)}"/>
@@ -210,7 +210,7 @@
             </span>
         </div>
         <div class="form-field">
-            <motech:location id="regions" path="region" label="${facility_region}"
+            <motech:location id="regions" path="region" label="${facility_region} *"
                              defaultValue="${facility_region_select}" errorMsg="${facility_region_req_msg}"
                              locations="${regions}"/>
             <span id='facilityIdError' class='alertText formlyInvalid formlyAlert hide'>
@@ -218,17 +218,17 @@
             </span>
         </div>
         <div class="hide form-field">
-            <motech:location id="districts" path="district" label="${facility_district}"
+            <motech:location id="districts" path="district" label="${facility_district} *"
                              defaultValue="${facility_district_select}" errorMsg="${facility_district_req_msg}"
                              locations="${districts}"/>
         </div>
         <div class="hide form-field">
-            <motech:location id="sub-districts" path="subDistrict" label="${facility_sub_district}"
+            <motech:location id="sub-districts" path="subDistrict" label="${facility_sub_district} *"
                              defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
                              locations="${provinces}"/>
         </div>
         <div class="hide form-field">
-            <label class="formLabel" for="facility">${fn:escapeXml(patient_facility)}:</label>
+            <label class="formLabel" for="facility">${fn:escapeXml(patient_facility)} *:</label>
             <form:select path="facilityId" cssClass="jsRequire" id="facilities">
                 <option value="" parent="select">Select Facility</option>
                 <c:forEach items="${facilities}" var="facility">
@@ -238,7 +238,7 @@
         </div>
         <div class="form-field">
             <label class="formLabel" for="address">${fn:escapeXml(patient_address)}:</label>
-            <form:input path="address" cssClass="jsRequire" size="20" label="${fn:escapeXml(patient_address)}"/>
+            <form:textarea path="address" cssClass="jsRequire" size="200" label="${fn:escapeXml(patient_address)}"/>
         </div>
 
         <input type="button" id="submitNewPatient" value="Submit"/>

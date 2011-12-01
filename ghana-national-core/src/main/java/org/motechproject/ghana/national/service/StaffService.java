@@ -13,14 +13,9 @@ import org.motechproject.mrs.services.MRSUserAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static ch.lambdaj.Lambda.filter;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.equalTo;
 
 @Service
@@ -73,7 +68,9 @@ public class StaffService {
         filteredUsers = filterUsers(on(User.class).getMiddleName(), middleName, filteredUsers);
         filteredUsers = filterUsers(on(User.class).getLastName(), lastName, filteredUsers);
         filteredUsers = filterByAttribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, phoneNumber, filteredUsers);
-        return filterByAttribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role, filteredUsers);
+        filteredUsers = filterByAttribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role, filteredUsers);
+        Collections.sort(filteredUsers,new UserFirstNameComparator());
+        return filteredUsers;
     }
 
     private List<User> filterByAttribute(String searchAttribute, String searchCriteria, List<User> filteredUsers) {
@@ -89,5 +86,12 @@ public class StaffService {
 
     private List<User> filterUsers(String field, String matcher, List<User> filteredUsers) {
         return (StringUtils.isNotEmpty(matcher)) ? filter(having(field, StartsWithMatcher.ignoreCaseStartsWith(matcher)), filteredUsers) : filteredUsers;
+    }
+
+    private class UserFirstNameComparator implements Comparator<User> {
+        @Override
+        public int compare(User user1, User user2) {
+            return user2.getFirstName().compareTo(user1.getFirstName());
+        }
     }
 }
