@@ -10,6 +10,8 @@
     <spring:url value="/admin/facilities/update" var="form_url"/>
     <form:form id="facilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Edit a Facility"
                commandName="editFacilityForm">
+
+        <spring:message code="facility_id" var="facility_id" htmlEscape="false"/>
         <spring:message code="facility_name" var="facility_name" htmlEscape="false"/>
         <spring:message code="facility_country" var="facility_country" htmlEscape="false"/>
         <spring:message code="facility_region" var="facility_region" htmlEscape="false"/>
@@ -31,6 +33,10 @@
         <spring:message code="facility_phone_number_incorrect_msg" var="facility_phone_number_incorrect_msg"
                         htmlEscape="false"/>
 
+        <div>
+            <label for="id" class="formLabel">${fn:escapeXml(facility_id)}:</label>
+            <form:input path="id" size="20" cssClass="jsRequire" disabled="true"/>
+        </div>
         <div>
             <label for="name" class="formLabel">${fn:escapeXml(facility_name)}:</label>
             <form:input path="name" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_name)}"/>
@@ -80,7 +86,7 @@
                           errorMsg="${facility_phone_number_incorrect_msg}"/>
         </div>
 
-        <form:hidden path="id" />
+
         <input type="button" id="submitFacility" value="Submit"/>
 
         <div class="formlyAlerts">
