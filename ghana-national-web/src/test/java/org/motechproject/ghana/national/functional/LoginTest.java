@@ -11,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 
@@ -30,7 +30,7 @@ public class LoginTest extends AbstractTestNGSpringContextTests {
 
     private WebDriver driver;
 
-    @BeforeTest
+    @BeforeMethod
     public void setUp() {
         driver = driverProvider.getWebDriver();
     }

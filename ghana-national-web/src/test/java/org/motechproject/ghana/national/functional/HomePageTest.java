@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
@@ -21,7 +21,7 @@ public class HomePageTest {
 
     private WebDriver driver;
 
-    @BeforeTest
+    @BeforeMethod
     public void setUp() {
         driver = driverProvider.getWebDriver();
     }
