@@ -12,7 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,7 +33,7 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
 
     private WebDriver driver;
 
-    @BeforeClass
+    @BeforeTest
     public void setUp() {
         driver = driverProvider.getWebDriver();
     }
