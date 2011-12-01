@@ -18,6 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -209,6 +210,14 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         return new Facility(mrsFacility)
                 .phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhone1).additionalPhoneNumber2(additionalPhone2)
                 .additionalPhoneNumber3(additionalPhone3);
+    }
+
+    @Test
+    public void shouldSaveLocallyWithoutSavingToOpenMRSDB() {
+        Integer facilityId = 23;
+        final Facility facility = new Facility().mrsFacilityId(facilityId);
+        allFacilities.saveLocally(facility);
+        assertNotNull(allFacilities.findByMrsFacilityId(facilityId));
     }
 
     @After

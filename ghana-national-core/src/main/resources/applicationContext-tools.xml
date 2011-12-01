@@ -9,6 +9,7 @@
         <constructor-arg>
             <list>
                 <ref bean="staffTypeSeed"/>
+                <ref bean="facilityMigrationSeed"/>
             </list>
         </constructor-arg>
     </bean>

@@ -36,6 +36,10 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
         super.add(facility);
     }
 
+    public void saveLocally(Facility facility) {
+        super.add(facility);
+    }
+
     public List<Facility> facilitiesByName(String name) {
         return getFacilitiesWithAllInfo(facilityAdaptor.getFacilities(name));
     }

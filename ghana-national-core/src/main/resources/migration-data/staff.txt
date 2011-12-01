@@ -1,0 +1,11 @@
+Super Admin,SuperAdministrator
+Facility Admin,FacilityAdministrator
+CallCenter Admin,CallCentreAdministrator
+HeathCare Admin,HealthCareAdministrator
+HPO,HealthExtensionWorker
+HEW,CommunityHealthOperator
+CHO,CommunityHeathNurse
+CHN,CommunityHeathVolunteer
+CHV,HealthPromotionOfficer
+FA,FieldAgent
+MM,MobileMidwife
