@@ -238,7 +238,7 @@
         </div>
         <div class="form-field">
             <label class="formLabel" for="address">${fn:escapeXml(patient_address)}:</label>
-            <form:input path="address" cssClass="jsRequire" size="20" label="${fn:escapeXml(patient_address)}"/>
+            <form:textarea path="address" cssClass="jsRequire" size="200" label="${fn:escapeXml(patient_address)}"/>
         </div>
 
         <input type="button" id="submitNewPatient" value="Submit"/>
