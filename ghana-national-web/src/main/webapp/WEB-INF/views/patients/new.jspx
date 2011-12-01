@@ -138,7 +138,7 @@
         </div>
         <div class="form-field">
             <label class="formLabel" for="dateOfBirth">${fn:escapeXml(patient_date_of_birth)} *:</label>
-            <form:input path="dateOfBirth" cssClass="jsRequire jsDate jsBefore" size="20"
+            <form:input readonly="true" path="dateOfBirth" cssClass="jsRequire jsDate jsBefore" size="20"
                         label="${fn:escapeXml(patient_date_of_birth)}"/>
             <span id='dateOfBirthError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_date_of_birth)} ${fn:escapeXml(required_msg)}
