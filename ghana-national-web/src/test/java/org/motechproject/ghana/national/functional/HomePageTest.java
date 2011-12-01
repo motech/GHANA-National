@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.functional;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.pages.LoginPage;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
@@ -26,7 +26,7 @@ public class HomePageTest {
         driver = driverProvider.getWebDriver();
     }
 
-    @Test
+    @Test(enabled = false)
     public void verifyHomePageLinks() {
         loginPage.LoginAs("admin", "P@ssw0rd");
     }

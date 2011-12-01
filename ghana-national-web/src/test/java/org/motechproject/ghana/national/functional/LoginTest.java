@@ -35,18 +35,18 @@ public class LoginTest extends AbstractTestNGSpringContextTests {
         driver = driverProvider.getWebDriver();
     }
 
-    @Test
+    @Test(enabled = false)
     public void abletoLoginwithRightUnamePass() {
         Assert.assertTrue(loginPage.LoginAs("admin", "P@ssw0rd"));
         homePage.Logout();
     }
 
-    @Test
+    @Test(enabled = false)
     public void shouldnotLoginwithInvalidUnamePass() {
         Assert.assertFalse(loginPage.LoginAs("blah", "blahblah"));
     }
 
-    @Test
+    @Test(enabled = false)
     public void shouldnotLoginwithEmptyPass() {
         Assert.assertFalse(loginPage.LoginAs("admin", ""));
     }
