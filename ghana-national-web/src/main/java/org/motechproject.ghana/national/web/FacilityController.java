@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
+import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.FacilityForm;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,7 +34,7 @@ public class FacilityController {
     public static final String SEARCH_FACILITY_URL = "facilities/search";
     static final String EDIT_FACILITY_URL = "facilities/edit";
 
-    public static final String FACILITY_ID = "facilityId";
+    public static final String FACILITY_ID = "id";
     private FacilityService facilityService;
     private MessageSource messageSource;
     private FacilityHelper facilityHelper;
@@ -82,9 +84,15 @@ public class FacilityController {
     @ApiSession
     @RequestMapping(value = "searchFacilities", method = RequestMethod.POST)
     public String searchFacility(@Valid final SearchFacilityForm searchFacilityForm, ModelMap modelMap) {
-        final List<Facility> requestedFacilities = facilityService.searchFacilities(searchFacilityForm.getFacilityID(),
+        final List<Facility> searchResults = facilityService.searchFacilities(searchFacilityForm.getFacilityID(),
                 searchFacilityForm.getName(), searchFacilityForm.getCountry(), searchFacilityForm.getRegion(),
                 searchFacilityForm.getCountyDistrict(), searchFacilityForm.getStateProvince());
+        List<FacilityForm> requestedFacilities = new ArrayList<FacilityForm>();
+        for (Facility facility : searchResults) {
+             requestedFacilities.add(new FacilityForm(facility.mrsFacilityId(), facility.motechId(), facility.name(), facility.country(),
+                     facility.region(),facility.district(),facility.province(),facility.phoneNumber(),facility.additionalPhoneNumber1(),
+                     facility.additionalPhoneNumber2(), facility.additionalPhoneNumber3()));
+        }
         modelMap.put("requestedFacilities", requestedFacilities);
         modelMap.mergeAttributes(facilityHelper.locationMap());
         return SEARCH_FACILITY_URL;
@@ -95,6 +103,22 @@ public class FacilityController {
     public String editFacilityForm(ModelMap modelMap, HttpServletRequest httpServletRequest) {
         String facilityId = httpServletRequest.getParameter(FACILITY_ID);
         return getFacilityForId(modelMap, facilityId);
+    }
+
+    @ApiSession
+    @RequestMapping(value = "update", method = RequestMethod.POST)
+    public String updateFacility(@Valid FacilityForm updateFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
+        String facilityId = updateFacilityForm.getId();
+        try {
+            facilityService.update(updateFacilityForm.getId(), updateFacilityForm.getMotechId(), updateFacilityForm.getName(), updateFacilityForm.getCountry(), updateFacilityForm.getRegion(),
+                    updateFacilityForm.getCountyDistrict(), updateFacilityForm.getStateProvince(), updateFacilityForm.getPhoneNumber(),
+                    updateFacilityForm.getAdditionalPhoneNumber1(), updateFacilityForm.getAdditionalPhoneNumber2(),
+                    updateFacilityForm.getAdditionalPhoneNumber3());
+            return SUCCESS;
+        } catch (FacilityNotFoundException e) {
+            handleExistingFacilityError(bindingResult, modelMap, messageSource.getMessage("facility_does_not_exist", null, Locale.getDefault()));
+        }
+        return NEW_FACILITY_URL;
     }
 
     private String getFacilityForId(ModelMap modelMap, String facilityId) {
@@ -115,7 +139,8 @@ public class FacilityController {
         facilityForm.setName(facility.name());
         facilityForm.setRegion(facility.region());
         facilityForm.setStateProvince(facility.province());
-        facilityForm.setId(facility.motechId().toString());
+        facilityForm.setId(facility.mrsFacilityId());
+        facilityForm.setMotechId(facility.motechId());
         return facilityForm;
     }
 

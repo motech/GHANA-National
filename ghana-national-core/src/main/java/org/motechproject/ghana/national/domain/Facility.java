@@ -18,9 +18,9 @@ public class Facility extends MotechAuditableDataObject {
     @JsonProperty
     private String additionalPhoneNumber3;
     @JsonProperty
-    private Integer mrsFacilityId;
+    private String mrsFacilityId;
     @JsonProperty
-    private Integer motechId;
+    private String motechId;
 
     @JsonIgnore
     private org.motechproject.mrs.model.Facility mrsFacility;
@@ -97,11 +97,11 @@ public class Facility extends MotechAuditableDataObject {
         return mrsFacility.getCountyDistrict();
     }
 
-    public Integer mrsFacilityId() {
+    public String mrsFacilityId() {
         return mrsFacilityId;
     }
 
-    public Facility mrsFacilityId(Integer mrsFacilityId) {
+    public Facility mrsFacilityId(String mrsFacilityId) {
         this.mrsFacilityId = mrsFacilityId;
         return this;
     }
@@ -114,11 +114,11 @@ public class Facility extends MotechAuditableDataObject {
         return mrsFacility;
     }
 
-    public Integer motechId() {
+    public String motechId() {
         return motechId;
     }
 
-    public Facility motechId(Integer motechId) {
+    public Facility motechId(String motechId) {
         this.motechId = motechId;
         return this;
     }

@@ -70,7 +70,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         assertThat(actualFacility.additionalPhoneNumber1(), is(equalTo(additionalPhone1)));
         assertThat(actualFacility.additionalPhoneNumber2(), is(equalTo(additionalPhone2)));
         assertThat(actualFacility.additionalPhoneNumber3(), is(equalTo(additionalPhone3)));
-        assertThat(actualFacility.mrsFacilityId(), is(equalTo(Integer.parseInt(facilityId))));
+        assertThat(actualFacility.mrsFacilityId(), is(equalTo(facilityId)));
     }
 
     @Test
@@ -96,7 +96,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         final List<Facility> actualFacilities = allFacilities.facilitiesByName(facilityName);
 
         final Facility actualFacility = actualFacilities.iterator().next();
-        assertFacility(actualFacility, facilityName, country, region, district, province);
+        assertFacility(actualFacility, mrsFacilityId, facilityName, country, region, district, province);
         assertThat(actualFacility.phoneNumber(), is(equalTo(phoneNumber)));
     }
 
@@ -107,7 +107,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         final String region = "region";
         final String district = "district";
         final String province = "province";
-        final String mrsFacilityId = "12";
+        final String mrsFacilityId = "13";
 
         final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(mrsFacilityId,
                 facilityName, country, region, district, province);
@@ -125,26 +125,32 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void shouldGetAllFacilities() {
+        final String mrsFacilityId = "12345";
         final String facilityName = "name";
         final String country = "Utopia";
         final String region = "Region 1";
         final String district = "District 1";
         final String province = "Province 1";
-        final org.motechproject.mrs.model.Facility facility = new org.motechproject.mrs.model.Facility(
-                facilityName, country, region, district, province);
+        final org.motechproject.mrs.model.Facility facility = new org.motechproject.mrs.model.Facility(mrsFacilityId, facilityName, country, region, district, province);
+
+        when(mockMrsFacilityAdaptor.saveFacility(facility)).thenReturn(new org.motechproject.mrs.model.Facility(mrsFacilityId, facilityName,
+                country, region, district, province));
+        allFacilities.add(new Facility(facility));
+
         when(mockMrsFacilityAdaptor.getFacilities()).thenReturn(Arrays.asList(facility));
         final List<Facility> actualFacilities = allFacilities.facilities();
         final Facility actualFacility = actualFacilities.iterator().next();
         assertThat(actualFacilities.size(), is(equalTo(1)));
-        assertFacility(actualFacility, facilityName, country, region, district, province);
+        assertFacility(actualFacility, mrsFacilityId, facilityName, country, region, district, province);
     }
 
-    private void assertFacility(Facility actualFacility, String facilityName, String country, String region, String district, String province) {
+    private void assertFacility(Facility actualFacility, String facilityId, String facilityName, String country, String region, String district, String province) {
         assertThat(actualFacility.name(), is(equalTo(facilityName)));
         assertThat(actualFacility.country(), is(equalTo(country)));
         assertThat(actualFacility.region(), is(equalTo(region)));
         assertThat(actualFacility.province(), is(equalTo(province)));
         assertThat(actualFacility.district(), is(equalTo(district)));
+        assertThat(actualFacility.getMrsFacility().getId(), is(equalTo(facilityId)));
     }
 
     @Test
@@ -166,7 +172,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         allFacilities.add(facility3);
         allFacilities.add(facility4);
 
-        final List<Facility> byFacilityIds = allFacilities.findByFacilityIds(Arrays.asList(1, 2));
+        final List<Facility> byFacilityIds = allFacilities.findByFacilityIds(Arrays.asList("1", "2"));
         assertThat(byFacilityIds.size(), is(2));
     }
 
@@ -182,23 +188,23 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(facilityId, name, country, region, district, province);
 
         when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(mrsFacility);
-        allFacilities.add(facility("123460987", null, null, null, mrsFacility).motechId(Integer.parseInt(facilityId)));
+        allFacilities.add(facility("123460987", null, null, null, mrsFacility).motechId(facilityId));
 
-        when(mockMrsFacilityAdaptor.getFacility(Integer.parseInt(facilityId))).thenReturn(mrsFacility);
+        when(mockMrsFacilityAdaptor.getFacility(facilityId)).thenReturn(mrsFacility);
 
         Facility facility;
-        assertFacility(allFacilities.getFacility(facilityId), name, country, region, district, province);
+        assertFacility(allFacilities.getFacility(facilityId), facilityId, name, country, region, district, province);
 
-        when(mockMrsFacilityAdaptor.getFacility(Integer.parseInt(facilityId))).thenReturn(null);
+        when(mockMrsFacilityAdaptor.getFacility(facilityId)).thenReturn(null);
         facility = allFacilities.getFacility(facilityId);
         assertThat(facility, is(equalTo(null)));
     }
 
     @Test
     public void shouldFindFacilityById() {
-        Integer facilityId = 1234;
+        String facilityId = "1234";
         String country = "Country";
-        org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(String.valueOf(facilityId), "facilityName", country, "Region", null, null);
+        org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(facilityId, "facilityName", country, "Region", null, null);
         String phoneNumber = "9911002288";
         when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(mrsFacility);
         allFacilities.add(facility(phoneNumber, null, null, null, mrsFacility).motechId(facilityId));
@@ -214,10 +220,44 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void shouldSaveLocallyWithoutSavingToOpenMRSDB() {
-        Integer facilityId = 23;
+        String facilityId = "23";
         final Facility facility = new Facility().mrsFacilityId(facilityId);
         allFacilities.saveLocally(facility);
         assertNotNull(allFacilities.findByMrsFacilityId(facilityId));
+    }
+
+    @Test
+    public void shouldUpdateFacility() {
+        final String facilityId = "16";
+        final String facilityName = "name";
+        final String phoneNumber = "0123456789";
+        String additionalPhone1 = "12345";
+        String additionalPhone2 = "321234";
+        String additionalPhone3 = "33344";
+
+        final String updatedFacilityName = "name";
+        final String updatedPhoneNumber = "0123456789";
+        String updatedAdditionalPhone1 = "12345";
+        String updatedAdditionalPhone2 = "321234";
+        String updatedAdditionalPhone3 = "33344";
+
+        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(facilityName);
+        Facility facility = facility(phoneNumber, additionalPhone1, additionalPhone2, additionalPhone3, mrsFacility);
+
+         when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(new org.motechproject.mrs.model.Facility(facilityId, facilityName,
+                "country", "region", "district", "province"));
+        allFacilities.add(facility);
+
+        final org.motechproject.mrs.model.Facility updatedMRSFacility = new org.motechproject.mrs.model.Facility(updatedFacilityName);
+        facility.phoneNumber(updatedPhoneNumber)
+                .additionalPhoneNumber1(updatedAdditionalPhone1)
+                .additionalPhoneNumber2(updatedAdditionalPhone2)
+                .additionalPhoneNumber3(updatedAdditionalPhone3)
+                .mrsFacility(updatedMRSFacility);
+
+        allFacilities.update(facility);
+
+
     }
 
     @After

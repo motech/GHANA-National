@@ -23,7 +23,7 @@ public class FacilityMigrationSeed extends Seed {
             final List<String> lines = IOUtils.readLines(new FileReader(new File(this.getClass().getClassLoader().getResource("migration-data/facility.txt").toURI())));
             for (String line : lines) {
                 final String[] strings = line.split(",");
-                allFacilities.saveLocally(new Facility().mrsFacilityId(Integer.parseInt(strings[0])).motechId(Integer.parseInt(strings[1])));
+                allFacilities.saveLocally(new Facility().mrsFacilityId(strings[0]).motechId(strings[1]));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

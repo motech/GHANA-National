@@ -55,8 +55,8 @@ public class FacilityControllerTest {
     }
 
     @Test
-    public void shouldSaveAFacilityWhenValid() throws FacilityAlreadyFoundException {
-        Integer facilityId = 12345;
+    public void shouldSaveAFacilityWhenValidIdIsSet() throws FacilityAlreadyFoundException {
+        String facilityId = "12345";
         String name = "facility";
         String region = "region";
         String district = "district";
@@ -218,9 +218,9 @@ public class FacilityControllerTest {
         assertThat(facilityForm.getAdditionalPhoneNumber3(), is(equalTo(expectedFacilityForm.getAdditionalPhoneNumber3())));
     }
 
-    private Facility facility(String name, Integer facilityId, String region, String district, String country, String province, String phoneNumber, String addPhoneNumb1, String addPhoneNumb2, String addPhoneNumb3) {
+    private Facility facility(String name, String facilityId, String region, String district, String country, String province, String phoneNumber, String addPhoneNumb1, String addPhoneNumb2, String addPhoneNumb3) {
         org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(name, country, region, district, province);
-        return new Facility().motechId(2134).mrsFacility(mrsFacility).mrsFacilityId(facilityId).phoneNumber(phoneNumber).additionalPhoneNumber1(addPhoneNumb1).additionalPhoneNumber2(addPhoneNumb2).additionalPhoneNumber3(addPhoneNumb3);
+        return new Facility().motechId("2134").mrsFacility(mrsFacility).mrsFacilityId(facilityId).phoneNumber(phoneNumber).additionalPhoneNumber1(addPhoneNumb1).additionalPhoneNumber2(addPhoneNumb2).additionalPhoneNumber3(addPhoneNumb3);
     }
 
     private FacilityForm createFacilityForm(String name, String country, String region, String district, String province, String phoneNumber, String addPhoneNumber1, String addPhoneNumber2, String addPhoneNumber3) {
