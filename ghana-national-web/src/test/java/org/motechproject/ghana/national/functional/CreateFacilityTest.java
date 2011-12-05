@@ -42,11 +42,10 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
         driver = driverProvider.getWebDriver();
     }
 
-    @Test(enabled = false)
+    @Test
     public void createFacilityWithValidValues() {
         loginPage.LoginAs("admin", "P@ssw0rd");
         homePage.OpenCreateFacilityPage();
-
         boolean TestPassed;
         PageFactory.initElements(driver, createFacilityPage);
         createFacilityPage.SetFacilityName("Test Facility" + Math.random() * 9000L);
@@ -61,17 +60,9 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
         }
         createFacilityPage.SelectDistrict("Awutu Senya");
         createFacilityPage.SelectSubDistrict("Bawjiase");
-
         long number = (long) Math.floor(Math.random() * 900000000L) + 100000000L;
-
         createFacilityPage.SetPhoneNum("0" + number);
-
-        if (createFacilityPage.SubmitDetails())
-            TestPassed = true;
-        else
-            TestPassed = false;
-
-        Assert.assertTrue(TestPassed);
+        Assert.assertTrue(createFacilityPage.SubmitDetails());
         homePage.Logout();
     }
 }
