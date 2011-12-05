@@ -7,6 +7,8 @@ import org.motechproject.functional.pages.HomePage;
 import org.motechproject.functional.pages.LoginPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -18,6 +20,8 @@ import org.testng.annotations.Test;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
+
+    private Logger log = LoggerFactory.getLogger(CreateFacilityTest.class);
 
     @Autowired
     private LoginPage loginPage;
@@ -38,7 +42,7 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
         driver = driverProvider.getWebDriver();
     }
 
-    @Test(enabled = false)
+    @Test
     public void createFacilityWithValidValues() {
         loginPage.LoginAs("admin", "P@ssw0rd");
         homePage.OpenCreateFacilityPage();
@@ -50,8 +54,10 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
         if (createFacilityPage.IsRegionDisplayed()) {
             createFacilityPage.SetRegionName("Central Region");
         } else {
-            System.out.println("Region Drop down not appearing");
+            log.debug("Region Drop down not appearing when selecting Country Ghana");
             TestPassed = false;
+            homePage.Logout();
+            Assert.assertTrue(TestPassed);
         }
         createFacilityPage.SelectDistrict("Awutu Senya");
         createFacilityPage.SelectSubDistrict("Bawjiase");

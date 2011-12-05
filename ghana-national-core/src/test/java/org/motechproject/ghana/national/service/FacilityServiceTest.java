@@ -7,6 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
+import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.repository.AllFacilities;
 
 import java.util.Arrays;
@@ -38,6 +39,7 @@ public class FacilityServiceTest {
     @Test
     public void shouldCreateAFacility() throws FacilityAlreadyFoundException {
         String motechId = "12345678";
+        String facilityId = "23";
         String facilityName = "name";
         String country = "country";
         String region = "region";
@@ -54,7 +56,7 @@ public class FacilityServiceTest {
         verify(mockAllFacilities).add(captor.capture());
 
         final Facility savedFacility = captor.getValue();
-        assertThat(savedFacility.motechId(), is(equalTo(Integer.parseInt(motechId))));
+        assertThat(savedFacility.motechId(), is(equalTo(motechId)));
         assertThat(savedFacility.name(), is(equalTo(facilityName)));
         assertThat(savedFacility.region(), is(equalTo(region)));
         assertThat(savedFacility.district(), is(equalTo(district)));
@@ -64,6 +66,48 @@ public class FacilityServiceTest {
         assertThat(savedFacility.additionalPhoneNumber1(), is(equalTo(additionalPhoneNumber1)));
         assertThat(savedFacility.additionalPhoneNumber2(), is(equalTo(additionalPhoneNumber2)));
         assertThat(savedFacility.additionalPhoneNumber3(), is(equalTo(additionalPhoneNumber3)));
+    }
+
+    @Test
+    public void shouldUpdateAFacility() throws FacilityNotFoundException {
+        String facilityId = "12";
+        String motechId = "12345678";
+        String facilityName = "name";
+        String country = "country";
+        String region = "region";
+        String district = "district";
+        String province = "province";
+        String phoneNumber = "1";
+        String additionalPhoneNumber1 = "2";
+        String additionalPhoneNumber2 = "3";
+        String additionalPhoneNumber3 = "4";
+
+        Facility mockFacility = mock(Facility.class);
+
+        when(mockAllFacilities.getFacility(facilityId)).thenReturn(mockFacility);
+        facilityService.update(facilityId, motechId, facilityName, country, region, district, province, phoneNumber, additionalPhoneNumber1, additionalPhoneNumber2, additionalPhoneNumber3);
+        final ArgumentCaptor<Facility> captor = ArgumentCaptor.forClass(Facility.class);
+        verify(mockAllFacilities).update(captor.capture());
+
+        final Facility savedFacility = captor.getValue();
+        assertThat(savedFacility.motechId(), is(equalTo(motechId)));
+        assertThat(savedFacility.mrsFacility().getId(), is(equalTo(facilityId)));
+        assertThat(savedFacility.name(), is(equalTo(facilityName)));
+        assertThat(savedFacility.region(), is(equalTo(region)));
+        assertThat(savedFacility.district(), is(equalTo(district)));
+        assertThat(savedFacility.province(), is(equalTo(province)));
+        assertThat(savedFacility.country(), is(equalTo(country)));
+        assertThat(savedFacility.phoneNumber(), is(equalTo(phoneNumber)));
+        assertThat(savedFacility.additionalPhoneNumber1(), is(equalTo(additionalPhoneNumber1)));
+        assertThat(savedFacility.additionalPhoneNumber2(), is(equalTo(additionalPhoneNumber2)));
+        assertThat(savedFacility.additionalPhoneNumber3(), is(equalTo(additionalPhoneNumber3)));
+    }
+
+    @Test(expected = FacilityNotFoundException.class)
+    public void shouldNotUpdateFacilityIfFacilityIsNotFound() throws FacilityNotFoundException {
+        String facilityId = "123456";
+        when(mockAllFacilities.getFacility(facilityId)).thenReturn(null);
+        facilityService.update(facilityId,null, null, null, null, null, null, null, null, null, null);
     }
 
     @Test(expected = FacilityAlreadyFoundException.class)

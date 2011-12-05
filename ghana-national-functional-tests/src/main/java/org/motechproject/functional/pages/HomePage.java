@@ -5,7 +5,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,12 +30,11 @@ public class HomePage {
         try {
             WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
             FacilityParentLink.click();
-            Actions builder = new Actions(driver);
-            builder.moveToElement(FacilityParentLink).build().perform();
+
             Thread.sleep(500);
             driver.findElement(By.id("newfacility")).click();
 
-            System.out.print("Clicked on Facility Create Link");
+
 
         } catch (Exception e) {
             System.out.println("Exception Thrown ::::::" + e.getMessage());

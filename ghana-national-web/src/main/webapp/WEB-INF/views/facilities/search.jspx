@@ -87,18 +87,20 @@
                         <th>Region</th>
                         <th>District</th>
                         <th>Sub-District</th>
+                        <th>Phone number</th>
                         <th>Edit</th>
                     </tr>
                     <c:forEach var="facility" items="${requestedFacilities}">
                         <tr>
-                            <td><c:out value="${facility.mrsFacility.id}"/></td>
-                            <td><c:out value="${facility.mrsFacility.name}"/></td>
-                            <td><c:out value="${facility.mrsFacility.country}"/></td>
-                            <td><c:out value="${facility.mrsFacility.region}"/></td>
-                            <td><c:out value="${facility.mrsFacility.countyDistrict}"/></td>
-                            <td><c:out value="${facility.mrsFacility.stateProvince}"/></td>
+                            <td><c:out value="${facility.motechId}"/></td>
+                            <td><c:out value="${facility.name}"/></td>
+                            <td><c:out value="${facility.country}"/></td>
+                            <td><c:out value="${facility.region}"/></td>
+                            <td><c:out value="${facility.countyDistrict}"/></td>
+                            <td><c:out value="${facility.stateProvince}"/></td>
+                            <td><c:out value="${facility.phoneNumber}"/></td>
                             <td class="action">
-                                <div class="edit"><a href="${edit_facility_url}?facilityId=${facility.mrsFacility.id}" title="Edit"> </a></div>
+                                <div class="edit"><a href="${edit_facility_url}?id=${facility.id}" title="Edit"> </a></div>
                             </td>
                         </tr>
                     </c:forEach>

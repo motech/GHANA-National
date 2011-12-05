@@ -12,6 +12,26 @@ public class FacilityForm {
     private String additionalPhoneNumber2;
     private String additionalPhoneNumber3;
 
+    public String getMotechId() {
+        return motechId;
+    }
+
+    private String motechId;
+
+    public FacilityForm(String id, String motechId, String name, String country, String region, String countyDistrict, String stateProvince, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) {
+        this.id = id;
+        this.name = name;
+        this.country = country;
+        this.region = region;
+        this.countyDistrict = countyDistrict;
+        this.stateProvince = stateProvince;
+        this.phoneNumber = phoneNumber;
+        this.additionalPhoneNumber1 = additionalPhoneNumber1;
+        this.additionalPhoneNumber2 = additionalPhoneNumber2;
+        this.additionalPhoneNumber3 = additionalPhoneNumber3;
+        this.motechId = motechId;
+    }
+
     public FacilityForm() {
     }
 
@@ -93,5 +113,9 @@ public class FacilityForm {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setMotechId(String motechId) {
+        this.motechId = motechId;
     }
 }

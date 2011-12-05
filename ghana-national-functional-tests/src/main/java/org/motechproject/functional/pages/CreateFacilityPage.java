@@ -1,6 +1,7 @@
 package org.motechproject.functional.pages;
 
 import org.motechproject.functional.base.WebDriverProvider;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -61,6 +62,10 @@ public class CreateFacilityPage {
     @CacheLookup
     WebElement SubmitFacilityDetails;
 
+    @FindBy(id="facilityid")
+    @CacheLookup
+    WebElement facilityid;
+
     @Autowired
     public CreateFacilityPage(WebDriverProvider webDriverProvider) {
         this.driver = webDriverProvider.getWebDriver();
@@ -110,6 +115,8 @@ public class CreateFacilityPage {
     public boolean SubmitDetails() {
         SubmitFacilityDetails.click();
         String successmsg;
+
+        driver.findElement(By.id("facilityid"));
         successmsg = driver.getPageSource();
         if (successmsg.contains("Facility created successfully"))
             return true;

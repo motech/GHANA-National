@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.service;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
+import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.tools.StartsWithMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,23 +32,30 @@ public class FacilityService {
             throw new FacilityAlreadyFoundException();
         }
         final Facility facility = new Facility(mrsFacility).phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber1).
-                additionalPhoneNumber2(additionalPhoneNumber2).additionalPhoneNumber3(additionalPhoneNumber3).motechId(Integer.parseInt(identifierGenerationService.newFacilityId()));
-        allFacilities.add(facility);
-        return String.valueOf(facility.mrsFacilityId());
+                additionalPhoneNumber2(additionalPhoneNumber2).additionalPhoneNumber3(additionalPhoneNumber3).motechId(identifierGenerationService.newFacilityId());
+        return save(facility);
+    }
+
+    private String save(Facility facility) {
+        if(facility.mrsFacilityId() == null)
+            allFacilities.add(facility);
+        else
+            allFacilities.update(facility);
+        return facility.mrsFacilityId();
     }
 
     public List<Facility> facilities() {
         return allFacilities.facilities();
     }
 
-    public List<Facility> searchFacilities(String facilityId, String name, String country, String region, String district, String province) {
+    public List<Facility> searchFacilities(String motechId, String name, String country, String region, String district, String province) {
         List<Facility> filteredFacilities = facilities();
         filteredFacilities = filterFacilities(on(Facility.class).getMrsFacility().getCountry(), country, filteredFacilities);
         filteredFacilities = filterFacilities(on(Facility.class).getMrsFacility().getRegion(), region, filteredFacilities);
         filteredFacilities = filterFacilities(on(Facility.class).getMrsFacility().getCountyDistrict(), district, filteredFacilities);
         filteredFacilities = filterFacilities(on(Facility.class).getMrsFacility().getStateProvince(), province, filteredFacilities);
         filteredFacilities = filterFacilities(on(Facility.class).getMrsFacility().getName(), name, filteredFacilities);
-        filteredFacilities = filterFacilities(on(Facility.class).getMrsFacility().getId(), facilityId, filteredFacilities);
+        filteredFacilities = filterFacilities(on(Facility.class).motechId(), motechId, filteredFacilities);
         return filteredFacilities;
     }
 
@@ -76,5 +84,18 @@ public class FacilityService {
 
     public Facility getFacility(String facilityId) {
         return allFacilities.getFacility(facilityId);
+    }
+
+    public void update(String facilityId, String motechId, String name, String country, String region, String district, String province, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) throws FacilityNotFoundException {
+
+        Facility facility = allFacilities.getFacility(facilityId);
+        if (facility == null) {
+            throw new FacilityNotFoundException();
+        }
+
+        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(facilityId, name, country, region, district, province);
+        final Facility facilityToBeSaved = new Facility(mrsFacility).phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber1).
+                additionalPhoneNumber2(additionalPhoneNumber2).additionalPhoneNumber3(additionalPhoneNumber3).motechId(motechId).mrsFacilityId(facilityId);
+        save(facilityToBeSaved);
     }
 }

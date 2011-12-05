@@ -34,8 +34,9 @@
                         htmlEscape="false"/>
 
         <div>
-            <label for="id" class="formLabel">${fn:escapeXml(facility_id)}:</label>
-            <form:input path="id" size="20" cssClass="jsRequire" disabled="true"/>
+            <label for="motechId" class="formLabel">${fn:escapeXml(facility_id)}:</label>
+            <form:input path="motechId" size="20" cssClass="jsRequire" disabled="true"/>
+            <form:hidden path="id" />
         </div>
         <div>
             <label for="name" class="formLabel">${fn:escapeXml(facility_name)}:</label>
