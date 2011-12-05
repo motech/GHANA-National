@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CreateFacilityPage {
-
+    public String FACILITY_ID="";
     private WebDriver driver;
 
     @Autowired
@@ -62,7 +62,7 @@ public class CreateFacilityPage {
     @CacheLookup
     WebElement SubmitFacilityDetails;
 
-    @FindBy(id="facilityid")
+    @FindBy(id="id")
     @CacheLookup
     WebElement facilityid;
 
@@ -73,10 +73,7 @@ public class CreateFacilityPage {
 
 
     public boolean IsRegionDisplayed() {
-        if (RegionDropDown.isDisplayed())
-            return true;
-        else
-            return false;
+        return RegionDropDown.isDisplayed();
 
     }
 
@@ -113,14 +110,15 @@ public class CreateFacilityPage {
     }
 
     public boolean SubmitDetails() {
-        SubmitFacilityDetails.click();
-        String successmsg;
+              SubmitFacilityDetails.click();
 
-        driver.findElement(By.id("facilityid"));
-        successmsg = driver.getPageSource();
-        if (successmsg.contains("Facility created successfully"))
+    // if facility id is displayed in the next page then we presume facility created successfully
+        if (driver.findElement(By.id("id")).isDisplayed() )
+        {
+            this.FACILITY_ID=facilityid.getText();
+            System.out.println("facility id" + this.FACILITY_ID);
             return true;
-        else
+        }else
             return false;
     }
 

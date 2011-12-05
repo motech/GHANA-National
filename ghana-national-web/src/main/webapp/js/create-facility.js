@@ -28,5 +28,9 @@ $(document).ready(function() {
             facilityForm.submit();
         }
     });
+
+    $(".hidden-location").each(function() {
+        if ($(this).children('select :selected').attr('value') == undefined) $(this).addClass('hide');
+    });
 });
 

@@ -26,20 +26,15 @@ public class HomePage {
     }
 
     public boolean OpenCreateFacilityPage() {
-        CreateFacilityLink = driver.findElement(By.id("newfacility"));
+        WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
+        FacilityParentLink.click();
+
         try {
-            WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
-            FacilityParentLink.click();
-
-            Thread.sleep(500);
+            Thread.sleep(5000);
             driver.findElement(By.id("newfacility")).click();
-
-
-
         } catch (Exception e) {
-            System.out.println("Exception Thrown ::::::" + e.getMessage());
-            return false;
 
+            System.out.println("Exception " + e.getMessage()); return false;
         }
         return true;
     }
