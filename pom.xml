@@ -434,6 +434,9 @@
         <!--BUILD-NODE-->
         <profile>
             <id>buildNode</id>
+            <properties>
+                <display>:2</display>
+            </properties>
             <repositories>
                 <repository>
                     <id>motech.nexus</id>
