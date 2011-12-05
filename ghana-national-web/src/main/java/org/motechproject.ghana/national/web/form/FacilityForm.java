@@ -12,10 +12,6 @@ public class FacilityForm {
     private String additionalPhoneNumber2;
     private String additionalPhoneNumber3;
 
-    public String getMotechId() {
-        return motechId;
-    }
-
     private String motechId;
 
     public FacilityForm(String id, String motechId, String name, String country, String region, String countyDistrict, String stateProvince, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) {
@@ -36,7 +32,7 @@ public class FacilityForm {
     }
 
     public String getName() {
-        return name;
+        return name.trim();
     }
 
     public void setName(String name) {
@@ -44,7 +40,7 @@ public class FacilityForm {
     }
 
     public String getCountry() {
-        return country;
+        return country.trim();
     }
 
     public void setCountry(String country) {
@@ -52,7 +48,7 @@ public class FacilityForm {
     }
 
     public String getRegion() {
-        return region;
+        return region.trim();
     }
 
     public void setRegion(String region) {
@@ -60,7 +56,7 @@ public class FacilityForm {
     }
 
     public String getCountyDistrict() {
-        return countyDistrict;
+        return countyDistrict.trim();
     }
 
     public void setCountyDistrict(String countyDistrict) {
@@ -68,7 +64,7 @@ public class FacilityForm {
     }
 
     public String getStateProvince() {
-        return stateProvince;
+        return stateProvince.trim();
     }
 
     public void setStateProvince(String stateProvince) {
@@ -76,7 +72,7 @@ public class FacilityForm {
     }
 
     public String getPhoneNumber() {
-        return phoneNumber;
+        return phoneNumber.trim();
     }
 
     public void setPhoneNumber(String phoneNumber) {
@@ -84,7 +80,7 @@ public class FacilityForm {
     }
 
     public String getAdditionalPhoneNumber1() {
-        return additionalPhoneNumber1;
+        return additionalPhoneNumber1.trim();
     }
 
     public void setAdditionalPhoneNumber1(String additionalPhoneNumber1) {
@@ -92,7 +88,7 @@ public class FacilityForm {
     }
 
     public String getAdditionalPhoneNumber2() {
-        return additionalPhoneNumber2;
+        return additionalPhoneNumber2.trim();
     }
 
     public void setAdditionalPhoneNumber2(String additionalPhoneNumber2) {
@@ -100,7 +96,7 @@ public class FacilityForm {
     }
 
     public String getAdditionalPhoneNumber3() {
-        return additionalPhoneNumber3;
+        return additionalPhoneNumber3.trim();
     }
 
     public void setAdditionalPhoneNumber3(String additionalPhoneNumber3) {
@@ -108,7 +104,7 @@ public class FacilityForm {
     }
 
     public String getId() {
-        return id;
+        return id.trim();
     }
 
     public void setId(String id) {
@@ -117,5 +113,9 @@ public class FacilityForm {
 
     public void setMotechId(String motechId) {
         this.motechId = motechId;
+    }
+
+    public String getMotechId() {
+        return motechId.trim();
     }
 }
