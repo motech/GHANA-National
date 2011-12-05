@@ -15,8 +15,12 @@ public class FireFoxWebDriver extends BaseWebDriver {
     @Value("#{functionalTestProperties['firefox.loc']}")
     private String firefoxLocation;
 
+    @Value("#{functionalTestProperties['firefox.display']}")
+    private String firefoxDisplay;
+
     public WebDriver getDriver() {
         FirefoxBinary firefoxBinary = new FirefoxBinary(new File(firefoxLocation));
+        firefoxBinary.setEnvironmentProperty("DISPLAY", firefoxDisplay);
         return new FirefoxDriver(firefoxBinary, new FirefoxProfile());
     }
 }
