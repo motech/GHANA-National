@@ -10,8 +10,7 @@ import org.motechproject.ghana.national.helper.StaffHelper;
 import org.motechproject.ghana.national.service.EmailTemplateService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.StaffService;
-import org.motechproject.ghana.national.web.form.CreateStaffForm;
-import org.motechproject.ghana.national.web.form.SearchStaffForm;
+import org.motechproject.ghana.national.web.form.StaffForm;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.User;
@@ -67,17 +66,17 @@ public class StaffControllerTest {
 
         String view = controller.newUser(model);
 
-        assertEquals(StaffController.NEW_STAFF_VIEW, view);
-        ArgumentCaptor<CreateStaffForm> captor = ArgumentCaptor.forClass(CreateStaffForm.class);
+        assertEquals(StaffController.NEW_STAFF_URL, view);
+        ArgumentCaptor<StaffForm> captor = ArgumentCaptor.forClass(StaffForm.class);
         verify(model).addAttribute("roles", roles);
         verify(model).addAttribute(eq("createStaffForm"), captor.capture());
-        CreateStaffForm captured = captor.getValue();
+        StaffForm captured = captor.getValue();
         assertNotNull(captured);
     }
 
     @Test
     public void shouldAddNewAdminUser() throws UserAlreadyExistsException {
-        CreateStaffForm form = new CreateStaffForm();
+        StaffForm form = new StaffForm();
         final String email = "jack@daniels.com";
         form.setEmail(email);
         form.setFirstName("Jack");
@@ -98,7 +97,7 @@ public class StaffControllerTest {
 
         String view = controller.createUser(form, bindingResult, model);
 
-        assertEquals(StaffController.CREATE_STAFF_SUCCESS_VIEW, view);
+        assertEquals(StaffController.SUCCESS, view);
         verify(model).put("userId", "1234");
         verify(model).put("userName", "Jack H Daniels");
 
@@ -113,7 +112,7 @@ public class StaffControllerTest {
 
     @Test
     public void shouldAddNewNonAdminUser() throws UserAlreadyExistsException {
-        CreateStaffForm form = new CreateStaffForm();
+        StaffForm form = new StaffForm();
         form.setEmail("jack@daniels.com");
         form.setFirstName("Jack");
         form.setMiddleName("H");
@@ -134,7 +133,7 @@ public class StaffControllerTest {
 
         String view = controller.createUser(form, mockBindingResult, model);
 
-        assertEquals(StaffController.CREATE_STAFF_SUCCESS_VIEW, view);
+        assertEquals(StaffController.SUCCESS, view);
         verify(model).put("userId", "1234");
         verify(model).put("userName", "Jack H Daniels");
 
@@ -156,7 +155,7 @@ public class StaffControllerTest {
 
     @Test
     public void shouldReturnErrorMessageIfUserAlreadyExists() throws UserAlreadyExistsException {
-        CreateStaffForm form = new CreateStaffForm();
+        StaffForm form = new StaffForm();
         form.setEmail("jack@daniels.com");
         form.setFirstName("Jack");
         form.setMiddleName("H");
@@ -176,7 +175,7 @@ public class StaffControllerTest {
 
         String view = controller.createUser(form, mockBindingResult, model);
 
-        assertEquals(StaffController.NEW_STAFF_VIEW, view);
+        assertEquals(StaffController.NEW_STAFF_URL, view);
         verify(model).mergeAttributes(boundModel);
         verify(model).addAttribute("roles", roles);
         verify(mockBindingResult).addError(any(FieldError.class));
@@ -192,13 +191,13 @@ public class StaffControllerTest {
         String phoneNumber = "0987654321";
         String role = "System Developer";
 
-        SearchStaffForm searchStaffForm = new SearchStaffForm();
-        searchStaffForm.setStaffID(staffID);
-        searchStaffForm.setFirstName(firstName);
-        searchStaffForm.setMiddleName(middleName);
-        searchStaffForm.setLastName(lastName);
-        searchStaffForm.setPhoneNumber(phoneNumber);
-        searchStaffForm.setRole(role);
+        StaffForm staffForm = new StaffForm();
+        staffForm.setMotechId(staffID);
+        staffForm.setFirstName(firstName);
+        staffForm.setMiddleName(middleName);
+        staffForm.setLastName(lastName);
+        staffForm.setPhoneNumber(phoneNumber);
+        staffForm.setRole(role);
 
         ModelMap modelMap = new ModelMap();
         User user1 = new User();
@@ -211,15 +210,15 @@ public class StaffControllerTest {
         when(mockStaffHelper.getPhoneNumber(user1)).thenReturn(phoneNumber);
         when(mockStaffHelper.getRole(user1)).thenReturn(role);
 
-        controller.searchStaff(searchStaffForm, modelMap);
+        controller.searchStaff(staffForm, modelMap);
 
-        verify(mockStaffService).searchStaff(searchStaffForm.getStaffID(), searchStaffForm.getFirstName(), searchStaffForm.getMiddleName(),
-                searchStaffForm.getLastName(), searchStaffForm.getPhoneNumber(), searchStaffForm.getRole());
+        verify(mockStaffService).searchStaff(staffForm.getMotechId(), staffForm.getFirstName(), staffForm.getMiddleName(),
+                staffForm.getLastName(), staffForm.getPhoneNumber(), staffForm.getRole());
 
-        final List<SearchStaffForm> actualRequestedUsers = (List<SearchStaffForm>) modelMap.get(StaffController.REQUESTED_STAFFS);
+        final List<StaffForm> actualRequestedUsers = (List<StaffForm>) modelMap.get(StaffController.REQUESTED_STAFFS);
         assertEquals(1, actualRequestedUsers.size());
-        final SearchStaffForm form = actualRequestedUsers.get(0);
-        assertEquals(form.getStaffID(), staffID);
+        final StaffForm form = actualRequestedUsers.get(0);
+        assertEquals(form.getMotechId(), staffID);
         assertEquals(form.getEmail(), email);
         assertEquals(form.getFirstName(), firstName);
         assertEquals(form.getLastName(), lastName);

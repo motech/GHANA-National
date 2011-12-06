@@ -8,6 +8,9 @@
     <definition extends="default" name="staffs/new">
         <put-attribute name="body" value="/WEB-INF/views/staffs/new.jspx"/>
     </definition>
+    <definition extends="default" name="staffs/edit">
+        <put-attribute name="body" value="/WEB-INF/views/staffs/edit.jspx"/>
+    </definition>
     <definition extends="default" name="staffs/success">
         <put-attribute name="body" value="/WEB-INF/views/staffs/success.jspx"/>
     </definition>

@@ -5,10 +5,10 @@
     <jsp:output omit-xml-declaration="yes"/>
     <spring:url value="/resources/js/create-staff.js" var="create_staff_url"/>
     <script src="${create_staff_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
-    <spring:url value="/admin/staffs/create" var="form_url"/>
+    <spring:url value="/admin/staffs/update" var="form_url"/>
 
-    <form:form id="staffForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Staff Member"
-               commandName="createStaffForm">
+    <form:form id="staffForm" action="${fn:escapeXml(form_url)}" method="POST" title="Update a Staff Member"
+               commandName="editStaffForm">
         <spring:message code="user_first_name" var="user_first_name" htmlEscape="false"/>
         <spring:message code="user_middle_name" var="user_middle_name" htmlEscape="false"/>
         <spring:message code="user_last_name" var="user_last_name" htmlEscape="false"/>

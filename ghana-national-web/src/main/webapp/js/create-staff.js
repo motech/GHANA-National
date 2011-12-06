@@ -45,10 +45,10 @@ $.UserFormValidator = function() {
             $("#middleName_error").show();
         }
 
-        if ($("#user_phone").val().length == 0 || !phone_regex.test($("#user_phone").val())) {
+        if ($("#phoneNumber").val().length == 0 || !phone_regex.test($("#phoneNumber").val())) {
             isValid = false;
-            $("#phone_error").html("Please enter valid phone number");
-            $("#phone_error").show();
+            $("#phoneNumber").html("Please enter valid phone number");
+            $("#phoneNumber").show();
         }
 
         if (!name_reg.test($("#user_first_name").val())) {
@@ -79,11 +79,11 @@ $.StaffForm = function() {
 
     var submitForm = function() {
         if (validator.validate()) {
-            $('#createStaffForm').submit();
+            $('#staffForm').submit();
         }
     };
     var bootstrap = function() {
-        $("#createStaffForm").formly({'onBlur':false, 'theme':'Light'});
+        $("#staffForm").formly({'onBlur':false, 'theme':'Light'});
         $("#submitNewUser").click(submitForm);
     };
     $(bootstrap);

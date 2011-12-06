@@ -19,11 +19,11 @@ $(document).ready(function() {
         return formValidator.hasErrors(facilityForm);
     }
 
-    $("#facilityForm").formly({'onBlur':false, 'theme':'Light'});
+    $("#createFacilityForm").formly({'onBlur':false, 'theme':'Light'});
     new Field('countries').hasADependent(new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts'))));
 
     $('#submitFacility').click(function() {
-        var facilityForm = $('#facilityForm');
+        var facilityForm = $('#createFacilityForm');
         if (!validate(facilityForm)) {
             facilityForm.submit();
         }

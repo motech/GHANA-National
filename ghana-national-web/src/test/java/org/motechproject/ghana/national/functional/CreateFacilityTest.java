@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.functional;
 
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.pages.CreateFacilityPage;

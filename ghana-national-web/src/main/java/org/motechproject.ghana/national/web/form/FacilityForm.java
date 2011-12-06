@@ -1,18 +1,18 @@
 package org.motechproject.ghana.national.web.form;
 
 public class FacilityForm {
-    private String id;
-    private String name;
-    private String country;
-    private String region;
-    private String countyDistrict;
-    private String stateProvince;
-    private String phoneNumber;
-    private String additionalPhoneNumber1;
-    private String additionalPhoneNumber2;
-    private String additionalPhoneNumber3;
 
-    private String motechId;
+    private String id="";
+    private String name="";
+    private String country="";
+    private String region="";
+    private String countyDistrict="";
+    private String stateProvince="";
+    private String phoneNumber="";
+    private String additionalPhoneNumber1="";
+    private String additionalPhoneNumber2="";
+    private String additionalPhoneNumber3="";
+    private String motechId="";
 
     public FacilityForm(String id, String motechId, String name, String country, String region, String countyDistrict, String stateProvince, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) {
         this.id = id;
