@@ -3,6 +3,7 @@ package org.motechproject.functional.pages;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.Select;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -88,8 +89,34 @@ public class CreatePatientPage {
     @CacheLookup
     WebElement submitNewPatient;
 
-    public void SelectRegnMode() {
+    public enum  PATIENT_REGN_MODE {AUTO_GEN_ID,PRE_PRINTED_ID}
+    public enum  PATIENT_TYPE {PREGNANT_MOTHER,CHILD_UNDER_5,OTHER}
+
+    public void SetRegistrationMode(PATIENT_REGN_MODE patient_regn_mode) {
+        Select selectRegnMode = new Select(SelectRegnMode);
+        selectRegnMode.selectByValue(patient_regn_mode.toString());
+    }
+
+    public void SetPatientType(PATIENT_TYPE patient_type) {
+        Select selectPatientType = new Select(typeOfPatient);
+        selectPatientType.selectByValue(patient_type.toString());
+    }
+
+    public void SetPatientName(String patientname) {
+        firstName.sendKeys(patientname);
+    }
+
+    public void SetPatientMiddleName(String midname) {
+      middleName.sendKeys(midname);
+    }
+
+    public void SetPatientLastName(String lstname) {
+        lastName.sendKeys(lstname);
+    }
+
+    public void SetValue(WebElement elementName,String Value) {
 
     }
+
 
 }
