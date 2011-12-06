@@ -43,8 +43,7 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
         driver = driverProvider.getWebDriver();
     }
 
-    @Test
-    @Ignore
+    @Test(enabled=false)
     public void createFacilityWithValidValues() {
         loginPage.LoginAs("admin", "P@ssw0rd");
         homePage.OpenCreateFacilityPage();
