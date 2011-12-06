@@ -5,6 +5,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +23,7 @@ public class HomePage {
 
     WebElement CreateFacilityLink, CreatePatientLink, ResetPassLink, CreateStaffLink, LogoutLink;
 
+
     public void Logout() {
         LogoutLink = driver.findElement(By.linkText("Logout"));
         LogoutLink.click();
@@ -27,14 +31,24 @@ public class HomePage {
 
     public boolean OpenCreateFacilityPage() {
         WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
-        FacilityParentLink.click();
+
 
         try {
-            Thread.sleep(5000);
-            driver.findElement(By.id("newfacility")).click();
-        } catch (Exception e) {
+            Actions movetoMenu = new Actions(driver);
+            movetoMenu.moveToElement(FacilityParentLink).build().perform();
+            movetoMenu.click();
+            (new WebDriverWait(driver, 10)).until(new ExpectedCondition<Boolean>() {
+                public Boolean apply(WebDriver d) {
+                    //return d.findElement(By.id("newFacility")).isDisplayed();
+                    return d.findElement(By.id("newfacility")).isDisplayed();
+                }
+            });
 
-            System.out.println("Exception " + e.getMessage()); return false;
+            driver.findElement(By.id("newfacility")).click();
+        } catch(Exception e) {
+
+            System.out.println("Exception " + e.getMessage());
+            return false;
         }
         return true;
     }

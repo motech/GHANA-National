@@ -115,9 +115,10 @@ public class CreateFacilityPage {
     // if facility id is displayed in the next page then we presume facility created successfully
         if (driver.findElement(By.id("id")).isDisplayed() )
         {
-            this.FACILITY_ID=facilityid.getText();
+            /*todo Add methods to retrieve the facility id from the text box and store it */
+            /*this.FACILITY_ID=facilityid.getText();
             System.out.println("facility id" + this.FACILITY_ID);
-            return true;
+*/            return true;
         }else
             return false;
     }
