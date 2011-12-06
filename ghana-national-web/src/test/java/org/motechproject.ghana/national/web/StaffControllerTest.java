@@ -67,7 +67,7 @@ public class StaffControllerTest {
 
         String view = controller.newUser(model);
 
-        assertEquals(StaffController.NEW_STAFF_VIEW, view);
+        assertEquals(StaffController.NEW_STAFF_URL, view);
         ArgumentCaptor<CreateStaffForm> captor = ArgumentCaptor.forClass(CreateStaffForm.class);
         verify(model).addAttribute("roles", roles);
         verify(model).addAttribute(eq("createStaffForm"), captor.capture());
@@ -98,7 +98,7 @@ public class StaffControllerTest {
 
         String view = controller.createUser(form, bindingResult, model);
 
-        assertEquals(StaffController.CREATE_STAFF_SUCCESS_VIEW, view);
+        assertEquals(StaffController.SUCCESS, view);
         verify(model).put("userId", "1234");
         verify(model).put("userName", "Jack H Daniels");
 
@@ -134,7 +134,7 @@ public class StaffControllerTest {
 
         String view = controller.createUser(form, mockBindingResult, model);
 
-        assertEquals(StaffController.CREATE_STAFF_SUCCESS_VIEW, view);
+        assertEquals(StaffController.SUCCESS, view);
         verify(model).put("userId", "1234");
         verify(model).put("userName", "Jack H Daniels");
 
@@ -176,7 +176,7 @@ public class StaffControllerTest {
 
         String view = controller.createUser(form, mockBindingResult, model);
 
-        assertEquals(StaffController.NEW_STAFF_VIEW, view);
+        assertEquals(StaffController.NEW_STAFF_URL, view);
         verify(model).mergeAttributes(boundModel);
         verify(model).addAttribute("roles", roles);
         verify(mockBindingResult).addError(any(FieldError.class));

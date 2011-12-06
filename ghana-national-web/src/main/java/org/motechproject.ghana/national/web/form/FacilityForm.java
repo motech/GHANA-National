@@ -11,7 +11,6 @@ public class FacilityForm {
     private String additionalPhoneNumber1;
     private String additionalPhoneNumber2;
     private String additionalPhoneNumber3;
-
     private String motechId;
 
     public FacilityForm(String id, String motechId, String name, String country, String region, String countyDistrict, String stateProvince, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) {
