@@ -7,7 +7,7 @@
     <script src="${search_staff_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/staffs/searchStaffs" var="form_url"/>
 
-    <form:form id="searchStaffForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search for staff member"
+    <form:form id="staffForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search for staff member"
                commandName="searchStaffForm">
         <spring:message code="staff_id" var="staff_id" htmlEscape="false"/>
         <spring:message code="user_first_name" var="user_first_name" htmlEscape="false"/>
@@ -23,7 +23,7 @@
 
         <div>
             <label class="formLabel" for="staff_id">${fn:escapeXml(staff_id)}:</label>
-            <form:input id="staff_id" path="staffID" size="20" label="${fn:escapeXml(staff_id)}"/>
+            <form:input id="staff_id" path="motechId" size="20" label="${fn:escapeXml(staff_id)}"/>
         </div>
         <div>
             <label class="formLabel" for="user_first_name">${fn:escapeXml(user_first_name)}:</label>
@@ -75,7 +75,7 @@
                     <c:forEach var="user" items="${requestedStaffs}">
                         <tr>
                             <td>
-                                <c:out value="${user.staffID}"/>
+                                <c:out value="${user.motechId}"/>
                             </td>
                             <td>
                                 <c:out value="${user.firstName}"/>

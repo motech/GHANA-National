@@ -1,9 +1,9 @@
 $.StaffForm = function() {
     var submitForm = function() {
-            $('#searchStaffForm').submit();
+            $('#staffForm').submit();
     };
     var bootstrap = function() {
-        $("#searchStaffForm").formly({'onBlur':false, 'theme':'Light'});
+        $("#staffForm").formly({'onBlur':false, 'theme':'Light'});
         $("#searchStaff").click(submitForm);
     };
     $(bootstrap);

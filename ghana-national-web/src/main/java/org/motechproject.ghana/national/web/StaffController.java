@@ -7,7 +7,6 @@ import org.motechproject.ghana.national.service.EmailTemplateService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.web.form.StaffForm;
-import org.motechproject.ghana.national.web.form.SearchStaffForm;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.User;
@@ -145,23 +144,24 @@ public class StaffController {
 
     @ApiSession
     @RequestMapping(value = "search", method = RequestMethod.GET)
-    public String searchFacilityForm(ModelMap modelMap) {
-        modelMap.put(SEARCH_STAFF_FORM, new SearchStaffForm());
+    public String searchStaffForm(ModelMap modelMap) {
+        modelMap.put(SEARCH_STAFF_FORM, new StaffForm());
         modelMap.addAttribute("roles", staffService.fetchAllRoles());
         return SEARCH_STAFF;
     }
 
     @ApiSession
     @RequestMapping(value = "searchStaffs", method = RequestMethod.POST)
-    public String searchStaff(@Valid final SearchStaffForm searchStaffForm, ModelMap modelMap) {
-        final List<User> users = staffService.searchStaff(searchStaffForm.getStaffID(), searchStaffForm.getFirstName(),
-                searchStaffForm.getMiddleName(), searchStaffForm.getLastName(), searchStaffForm.getPhoneNumber(), searchStaffForm.getRole());
+    public String searchStaff(@Valid final StaffForm staffForm, ModelMap modelMap) {
+        final List<User> users = staffService.searchStaff(staffForm.getMotechId(), staffForm.getFirstName(),
+                staffForm.getMiddleName(), staffForm.getLastName(), staffForm.getPhoneNumber(), staffForm.getRole());
 
-        final ArrayList<SearchStaffForm> requestedUsers = new ArrayList<SearchStaffForm>();
+        final ArrayList<StaffForm> requestedUsers = new ArrayList<StaffForm>();
         for (User user : users) {
-            requestedUsers.add(new SearchStaffForm(user.getId(), user.getFirstName(), user.getMiddleName(), user.getLastName(),
+            requestedUsers.add(new StaffForm(user.getId(), user.getFirstName(), user.getMiddleName(), user.getLastName(),
                     staffHelper.getEmail(user), staffHelper.getPhoneNumber(user), staffHelper.getRole(user)));
         }
+        modelMap.put(SEARCH_STAFF_FORM, new StaffForm());
         modelMap.put(REQUESTED_STAFFS, requestedUsers);
         modelMap.addAttribute("roles", staffService.fetchAllRoles());
         return SEARCH_STAFF;
