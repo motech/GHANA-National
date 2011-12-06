@@ -10,7 +10,7 @@ import org.motechproject.ghana.national.helper.StaffHelper;
 import org.motechproject.ghana.national.service.EmailTemplateService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.StaffService;
-import org.motechproject.ghana.national.web.form.CreateStaffForm;
+import org.motechproject.ghana.national.web.form.StaffForm;
 import org.motechproject.ghana.national.web.form.SearchStaffForm;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
@@ -68,16 +68,16 @@ public class StaffControllerTest {
         String view = controller.newUser(model);
 
         assertEquals(StaffController.NEW_STAFF_URL, view);
-        ArgumentCaptor<CreateStaffForm> captor = ArgumentCaptor.forClass(CreateStaffForm.class);
+        ArgumentCaptor<StaffForm> captor = ArgumentCaptor.forClass(StaffForm.class);
         verify(model).addAttribute("roles", roles);
         verify(model).addAttribute(eq("createStaffForm"), captor.capture());
-        CreateStaffForm captured = captor.getValue();
+        StaffForm captured = captor.getValue();
         assertNotNull(captured);
     }
 
     @Test
     public void shouldAddNewAdminUser() throws UserAlreadyExistsException {
-        CreateStaffForm form = new CreateStaffForm();
+        StaffForm form = new StaffForm();
         final String email = "jack@daniels.com";
         form.setEmail(email);
         form.setFirstName("Jack");
@@ -113,7 +113,7 @@ public class StaffControllerTest {
 
     @Test
     public void shouldAddNewNonAdminUser() throws UserAlreadyExistsException {
-        CreateStaffForm form = new CreateStaffForm();
+        StaffForm form = new StaffForm();
         form.setEmail("jack@daniels.com");
         form.setFirstName("Jack");
         form.setMiddleName("H");
@@ -156,7 +156,7 @@ public class StaffControllerTest {
 
     @Test
     public void shouldReturnErrorMessageIfUserAlreadyExists() throws UserAlreadyExistsException {
-        CreateStaffForm form = new CreateStaffForm();
+        StaffForm form = new StaffForm();
         form.setEmail("jack@daniels.com");
         form.setFirstName("Jack");
         form.setMiddleName("H");

@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.web.form;
 
-public class SearchStaffForm extends CreateStaffForm {
+public class SearchStaffForm extends StaffForm {
     private String staffID;
 
     public String getStaffID() {

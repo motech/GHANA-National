@@ -7,7 +7,7 @@
     <script src="${create_staff_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/staffs/create" var="form_url"/>
 
-    <form:form id="createStaffForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Staff Member"
+    <form:form id="staffForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Staff Member"
                commandName="createStaffForm">
         <spring:message code="user_first_name" var="user_first_name" htmlEscape="false"/>
         <spring:message code="user_middle_name" var="user_middle_name" htmlEscape="false"/>

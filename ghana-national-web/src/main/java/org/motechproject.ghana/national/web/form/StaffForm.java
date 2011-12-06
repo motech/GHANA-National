@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.web.form;
 
-public class CreateStaffForm {
+public class StaffForm {
     private String firstName;
     private String middleName;
     private String lastName;
@@ -8,10 +8,10 @@ public class CreateStaffForm {
     private String phoneNumber;
     private String role;
 
-    public CreateStaffForm() {
+    public StaffForm() {
     }
 
-    public CreateStaffForm(String firstName, String middleName, String lastName, String email, String phoneNumber, String role) {
+    public StaffForm(String firstName, String middleName, String lastName, String email, String phoneNumber, String role) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;

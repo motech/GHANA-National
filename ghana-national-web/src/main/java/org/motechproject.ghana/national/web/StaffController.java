@@ -6,7 +6,7 @@ import org.motechproject.ghana.national.helper.StaffHelper;
 import org.motechproject.ghana.national.service.EmailTemplateService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.StaffService;
-import org.motechproject.ghana.national.web.form.CreateStaffForm;
+import org.motechproject.ghana.national.web.form.StaffForm;
 import org.motechproject.ghana.national.web.form.SearchStaffForm;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
@@ -68,25 +68,25 @@ public class StaffController {
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newUser(ModelMap modelMap) {
-        modelMap.addAttribute(CREATE_STAFF_FORM, new CreateStaffForm());
+        modelMap.addAttribute(CREATE_STAFF_FORM, new StaffForm());
         modelMap.addAttribute("roles", staffService.fetchAllRoles());
         return NEW_STAFF_URL;
     }
 
     @ApiSession
     @RequestMapping(value = "create", method = RequestMethod.POST)
-    public String createUser(@Valid CreateStaffForm createStaffForm, BindingResult bindingResult, ModelMap model) {
+    public String createUser(@Valid StaffForm staffForm, BindingResult bindingResult, ModelMap model) {
         Map userData;
         User user = new User();
-        user.firstName(createStaffForm.getFirstName()).middleName(createStaffForm.getMiddleName()).lastName(createStaffForm.getLastName());
-        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, createStaffForm.getEmail()));
-        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, createStaffForm.getPhoneNumber()));
-        String roleOfStaff = createStaffForm.getRole();
+        user.firstName(staffForm.getFirstName()).middleName(staffForm.getMiddleName()).lastName(staffForm.getLastName());
+        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, staffForm.getEmail()));
+        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, staffForm.getPhoneNumber()));
+        String roleOfStaff = staffForm.getRole();
         user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
 
         user.securityRole(StaffType.Role.securityRoleFor(roleOfStaff));
         if (StaffType.Role.isAdmin(roleOfStaff)) {
-            user.userName(createStaffForm.getEmail());
+            user.userName(staffForm.getEmail());
         }
         user.id(identifierGenerationService.newStaffId());
 
@@ -116,7 +116,7 @@ public class StaffController {
 
     @ApiSession
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public String updateFacility(@Valid CreateStaffForm updateStaffForm, BindingResult bindingResult, ModelMap modelMap) {
+    public String updateFacility(@Valid StaffForm updateStaffForm, BindingResult bindingResult, ModelMap modelMap) {
         try {
 //            staffService.update();
             return SUCCESS;
@@ -132,15 +132,15 @@ public class StaffController {
         return EDIT_STAFF_URL;
     }
 
-    private CreateStaffForm copyStaffValuesToForm(User user) {
-        CreateStaffForm createStaffForm = new CreateStaffForm();
-        createStaffForm.setFirstName(user.getFirstName());
-        createStaffForm.setMiddleName(user.getMiddleName());
-        createStaffForm.setLastName(user.getLastName());
-//        createStaffForm.setEmail(user.getAttributes().get(0));
-//        createStaffForm.setPhoneNumber(user.getAttributes().get(1).value());
-//        createStaffForm.setRole(user.getAttributes().get(2).value());
-        return createStaffForm;
+    private StaffForm copyStaffValuesToForm(User user) {
+        StaffForm staffForm = new StaffForm();
+        staffForm.setFirstName(user.getFirstName());
+        staffForm.setMiddleName(user.getMiddleName());
+        staffForm.setLastName(user.getLastName());
+//        staffForm.setEmail(user.getAttributes().get(0));
+//        staffForm.setPhoneNumber(user.getAttributes().get(1).value());
+//        staffForm.setRole(user.getAttributes().get(2).value());
+        return staffForm;
     }
 
     @ApiSession

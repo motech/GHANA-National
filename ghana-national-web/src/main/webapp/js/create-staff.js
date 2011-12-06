@@ -79,11 +79,11 @@ $.StaffForm = function() {
 
     var submitForm = function() {
         if (validator.validate()) {
-            $('#createStaffForm').submit();
+            $('#staffForm').submit();
         }
     };
     var bootstrap = function() {
-        $("#createStaffForm").formly({'onBlur':false, 'theme':'Light'});
+        $("#staffForm").formly({'onBlur':false, 'theme':'Light'});
         $("#submitNewUser").click(submitForm);
     };
     $(bootstrap);
