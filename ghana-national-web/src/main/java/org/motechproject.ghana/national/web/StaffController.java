@@ -14,6 +14,7 @@ import org.motechproject.mrs.model.User;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -21,6 +22,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,15 +39,18 @@ public class StaffController {
     private StaffHelper staffHelper;
 
     public static final String STAFF_ID = "userId";
+    public static final String STAFF_SEQUENTIAL_ID = "Id";
     public static final String STAFF_NAME = "userName";
     public static final String EMAIL = "email";
     public static final String CREATE_STAFF_FORM = "createStaffForm";
+    static final String EDIT_STAFF_FORM = "editStaffForm";
     public static final String STAFF_ALREADY_EXISTS = "user_email_already_exists";
-    public static final String NEW_STAFF_VIEW = "staffs/new";
-    public static final String CREATE_STAFF_SUCCESS_VIEW = "staffs/success";
+    public static final String NEW_STAFF_URL = "staffs/new";
     private EmailTemplateService emailTemplateService;
     public static final String SEARCH_STAFF_FORM = "searchStaffForm";
     public static final String SEARCH_STAFF = "staffs/search";
+    static final String EDIT_STAFF_URL = "staffs/edit";
+    public static final String SUCCESS = "staffs/success";
 
     public StaffController() {
     }
@@ -65,7 +70,7 @@ public class StaffController {
     public String newUser(ModelMap modelMap) {
         modelMap.addAttribute(CREATE_STAFF_FORM, new CreateStaffForm());
         modelMap.addAttribute("roles", staffService.fetchAllRoles());
-        return NEW_STAFF_VIEW;
+        return NEW_STAFF_URL;
     }
 
     @ApiSession
@@ -93,13 +98,49 @@ public class StaffController {
             if (StaffType.Role.isAdmin(roleOfStaff)) {
                 emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUsername(), (String) userData.get("password"));
             }
+            return getStaffForId(model,openMRSUser.getSystemId());
         } catch (UserAlreadyExistsException e) {
             bindingResult.addError(new FieldError(CREATE_STAFF_FORM, EMAIL, messageSource.getMessage(STAFF_ALREADY_EXISTS, null, Locale.getDefault())));
             model.addAttribute("roles", staffService.fetchAllRoles());
             model.mergeAttributes(bindingResult.getModel());
-            return NEW_STAFF_VIEW;
+            return NEW_STAFF_URL;
         }
-        return CREATE_STAFF_SUCCESS_VIEW;
+    }
+
+    @ApiSession
+    @RequestMapping(value = "edit", method = RequestMethod.GET)
+    public String editFacilityForm(ModelMap modelMap, HttpServletRequest httpServletRequest) {
+        String staffId = httpServletRequest.getParameter(STAFF_SEQUENTIAL_ID);
+        return getStaffForId(modelMap, staffId);
+    }
+
+    @ApiSession
+    @RequestMapping(value = "update", method = RequestMethod.POST)
+    public String updateFacility(@Valid CreateStaffForm updateStaffForm, BindingResult bindingResult, ModelMap modelMap) {
+        try {
+//            staffService.update();
+            return SUCCESS;
+        } catch (UsernameNotFoundException e) {
+        }
+        return NEW_STAFF_URL;
+    }
+
+    private String getStaffForId(ModelMap modelMap, String staffId) {
+        User user = staffService.getUserById(staffId);
+        modelMap.addAttribute(EDIT_STAFF_FORM, copyStaffValuesToForm(user));
+        modelMap.addAttribute("roles", staffService.fetchAllRoles());
+        return EDIT_STAFF_URL;
+    }
+
+    private CreateStaffForm copyStaffValuesToForm(User user) {
+        CreateStaffForm createStaffForm = new CreateStaffForm();
+        createStaffForm.setFirstName(user.getFirstName());
+        createStaffForm.setMiddleName(user.getMiddleName());
+        createStaffForm.setLastName(user.getLastName());
+//        createStaffForm.setEmail(user.getAttributes().get(0));
+//        createStaffForm.setPhoneNumber(user.getAttributes().get(1).value());
+//        createStaffForm.setRole(user.getAttributes().get(2).value());
+        return createStaffForm;
     }
 
     @ApiSession
