@@ -1,9 +1,9 @@
-package org.motechproject.ghana.national.tools.seed.data;
+package org.motechproject.ghana.national.web.tools.seed.data;
 
 import org.apache.commons.io.IOUtils;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.repository.AllFacilities;
-import org.motechproject.ghana.national.tools.seed.Seed;
+import org.motechproject.ghana.national.web.tools.seed.Seed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
