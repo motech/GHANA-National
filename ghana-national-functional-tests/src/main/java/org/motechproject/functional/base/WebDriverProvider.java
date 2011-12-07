@@ -8,9 +8,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Map;
 
 @Component
@@ -32,13 +29,7 @@ public class WebDriverProvider {
 
 
     public boolean WaitForElement_ID(final String elementid) {
-        File file = new File("/root/errorhtml.error");
-        FileWriter fileWriter = null;
-        try {
-            fileWriter = new FileWriter(file,true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         try {
 
             (new WebDriverWait(driver, 20)).until(new ExpectedCondition<Boolean>() {
@@ -47,21 +38,7 @@ public class WebDriverProvider {
                 }
             });
         } catch (ElementNotFoundException e) {
-            try {
-                fileWriter.write(e.toString());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
 
-
-            return false;
-        }
-        catch (Exception e) {
-                     try {
-                fileWriter.write(e.toString());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
         }
 
         return true;
