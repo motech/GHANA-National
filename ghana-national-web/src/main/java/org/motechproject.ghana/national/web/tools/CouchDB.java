@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.tools;
+package org.motechproject.ghana.national.web.tools;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.CouchDbInstance;

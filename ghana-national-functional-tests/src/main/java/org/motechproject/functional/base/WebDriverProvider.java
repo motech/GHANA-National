@@ -16,7 +16,7 @@ public class WebDriverProvider {
 
     @Autowired
     public WebDriverProvider(Map<String, BaseWebDriver> webDrivers) {
-        driver = webDrivers.get(System.getProperty(BROWSER, FIREFOX)).getDriver();;
+        driver = webDrivers.get(System.getProperty(BROWSER, FIREFOX)).getDriver();
     }
 
     public WebDriver getWebDriver() {
