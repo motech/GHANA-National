@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
 
 @Component
@@ -31,22 +32,36 @@ public class WebDriverProvider {
 
 
     public boolean WaitForElement_ID(final String elementid) {
+        File file = new File("/root/errorhtml.error");
+        FileWriter fileWriter = null;
         try {
-            File file = new File("./errorhtml.error");
-            FileWriter fileWriter = new FileWriter(file,true);
-            (new WebDriverWait(driver, 10)).until(new ExpectedCondition<Boolean>() {
+            fileWriter = new FileWriter(file,true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+
+            (new WebDriverWait(driver, 20)).until(new ExpectedCondition<Boolean>() {
                 public Boolean apply(WebDriver driver) {
                     return driver.findElement(By.id(elementid)).isDisplayed();
                 }
             });
         } catch (ElementNotFoundException e) {
-
+            try {
+                fileWriter.write(e.toString());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
 
 
             return false;
         }
         catch (Exception e) {
-
+                     try {
+                fileWriter.write(e.toString());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
 
         return true;
