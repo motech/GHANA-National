@@ -1,21 +1,21 @@
 package org.motechproject.functional.pages;
 
 import org.motechproject.functional.base.WebDriverProvider;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CreateFacilityPage {
-    public String FACILITY_ID="";
+    private String FACILITY_ID = "";
     private WebDriver driver;
+    private Logger log = LoggerFactory.getLogger(CreateFacilityPage.class);
 
     @Autowired
     private HomePage homePage;
@@ -64,7 +64,7 @@ public class CreateFacilityPage {
     @CacheLookup
     WebElement SubmitFacilityDetails;
 
-    @FindBy(id="id")
+    @FindBy(id = "id")
     @CacheLookup
     WebElement facilityid;
 
@@ -73,6 +73,8 @@ public class CreateFacilityPage {
         this.driver = webDriverProvider.getWebDriver();
     }
 
+    @Autowired
+    WebDriverProvider webDriverProvider;
 
     public boolean IsRegionDisplayed() {
         return RegionDropDown.isDisplayed();
@@ -112,16 +114,9 @@ public class CreateFacilityPage {
     }
 
     public boolean SubmitDetails() {
-              SubmitFacilityDetails.click();
-
-    // if facility id is displayed in the next page then we presume facility created successfully
-
-       return (new WebDriverWait(driver, 10)).until(new ExpectedCondition<Boolean>() {
-                public Boolean apply(WebDriver d) {
-                    return d.findElement(By.id("id")).isDisplayed();
-                }
-            });
-
+        SubmitFacilityDetails.click();
+        // if facility id is displayed in the next page then we presume facility created successfully
+        return webDriverProvider.WaitForElement_ID("id");
     }
 
     public HomePage getHomePage() {
