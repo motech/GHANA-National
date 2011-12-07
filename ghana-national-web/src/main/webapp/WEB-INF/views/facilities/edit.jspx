@@ -8,7 +8,7 @@
     <script src="${facility_field_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${create_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/facilities/update" var="form_url"/>
-    <form:form id="facilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Edit a Facility"
+    <form:form id="createFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Edit a Facility"
                commandName="editFacilityForm">
 
         <spring:message code="facility_id" var="facility_id" htmlEscape="false"/>
