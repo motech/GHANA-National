@@ -108,7 +108,6 @@ public class FacilityController {
     @ApiSession
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String updateFacility(@Valid FacilityForm updateFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
-        String facilityId = updateFacilityForm.getId();
         try {
             facilityService.update(updateFacilityForm.getId(), updateFacilityForm.getMotechId(), updateFacilityForm.getName(), updateFacilityForm.getCountry(), updateFacilityForm.getRegion(),
                     updateFacilityForm.getCountyDistrict(), updateFacilityForm.getStateProvince(), updateFacilityForm.getPhoneNumber(),

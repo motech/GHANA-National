@@ -23,7 +23,7 @@
 
         <div>
             <label class="formLabel" for="staff_id">${fn:escapeXml(staff_id)}:</label>
-            <form:input id="staff_id" path="motechId" size="20" label="${fn:escapeXml(staff_id)}"/>
+            <form:input id="staff_id" path="staffId" size="20" label="${fn:escapeXml(staff_id)}"/>
         </div>
         <div>
             <label class="formLabel" for="user_first_name">${fn:escapeXml(user_first_name)}:</label>
@@ -75,7 +75,7 @@
                     <c:forEach var="user" items="${requestedStaffs}">
                         <tr>
                             <td>
-                                <c:out value="${user.motechId}"/>
+                                <c:out value="${user.staffId}"/>
                             </td>
                             <td>
                                 <c:out value="${user.firstName}"/>

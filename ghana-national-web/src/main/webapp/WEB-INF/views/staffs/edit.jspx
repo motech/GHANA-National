@@ -9,6 +9,8 @@
 
     <form:form id="staffForm" action="${fn:escapeXml(form_url)}" method="POST" title="Update a Staff Member"
                commandName="editStaffForm">
+
+        <spring:message code="staff_id" var="staff_id" htmlEscape="false"/>
         <spring:message code="user_first_name" var="user_first_name" htmlEscape="false"/>
         <spring:message code="user_middle_name" var="user_middle_name" htmlEscape="false"/>
         <spring:message code="user_last_name" var="user_last_name" htmlEscape="false"/>
@@ -19,6 +21,11 @@
         <spring:message code="staff_phone_number_incorrect_msg" var="staff_phone_number_incorrect_msg" htmlEscape="false"/>
 
 
+        <div>
+            <label for="motechId" class="formLabel">${fn:escapeXml(staff_id)}:</label>
+            <form:input path="staffId" size="20" cssClass="jsRequire" disabled="true"/>
+            <form:hidden path="id" />
+        </div>
         <div>
             <label class="formLabel" for="user_first_name">${fn:escapeXml(user_first_name)} *:</label>
             <form:input id="user_first_name" path="firstName" size="20" label="${fn:escapeXml(user_first_name)}"/>

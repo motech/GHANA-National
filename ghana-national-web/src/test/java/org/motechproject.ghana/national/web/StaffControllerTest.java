@@ -10,11 +10,13 @@ import org.motechproject.ghana.national.helper.StaffHelper;
 import org.motechproject.ghana.national.service.EmailTemplateService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.StaffService;
+import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.form.StaffForm;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.User;
 import org.springframework.context.MessageSource;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -25,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.any;
@@ -48,7 +53,7 @@ public class StaffControllerTest {
     @Mock
     IdentifierGenerationService mockIdentifierGenerationService;
     @Mock
-    private StaffHelper mockStaffHelper;
+    StaffHelper mockStaffHelper;
 
     @Before
     public void setUp() {
@@ -192,7 +197,7 @@ public class StaffControllerTest {
         String role = "System Developer";
 
         StaffForm staffForm = new StaffForm();
-        staffForm.setMotechId(staffID);
+        staffForm.setstaffId(staffID);
         staffForm.setFirstName(firstName);
         staffForm.setMiddleName(middleName);
         staffForm.setLastName(lastName);
@@ -212,13 +217,13 @@ public class StaffControllerTest {
 
         controller.searchStaff(staffForm, modelMap);
 
-        verify(mockStaffService).searchStaff(staffForm.getMotechId(), staffForm.getFirstName(), staffForm.getMiddleName(),
+        verify(mockStaffService).searchStaff(staffForm.getstaffId(), staffForm.getFirstName(), staffForm.getMiddleName(),
                 staffForm.getLastName(), staffForm.getPhoneNumber(), staffForm.getRole());
 
         final List<StaffForm> actualRequestedUsers = (List<StaffForm>) modelMap.get(StaffController.REQUESTED_STAFFS);
         assertEquals(1, actualRequestedUsers.size());
         final StaffForm form = actualRequestedUsers.get(0);
-        assertEquals(form.getMotechId(), staffID);
+        assertEquals(form.getstaffId(), staffID);
         assertEquals(form.getEmail(), email);
         assertEquals(form.getFirstName(), firstName);
         assertEquals(form.getLastName(), lastName);
@@ -227,4 +232,55 @@ public class StaffControllerTest {
         assertEquals(form.getRole(), role);
     }
 
+
+    @Test
+    public void shouldReturnDetailsOfStaffToEdit() {
+        String staffId = "123";
+        String firstName = "fname";
+        String middleName = "maname";
+        String lastName = "lname";
+        String email = "test@gmail.com";
+        String phoneNumber = "0987654321";
+        String role = "CHV";
+        final String EDIT_STAFF_URL = "staffs/edit";
+        final String EDIT_STAFF_FORM = "editStaffForm";
+
+        ModelMap modelMap = new ModelMap();
+        modelMap.addAttribute("Id", staffId);
+
+        User user = mock(User.class);
+        when(mockStaffService.getUserById(staffId)).thenReturn(user);
+        when(user.getFirstName()).thenReturn(firstName);
+        when(user.getMiddleName()).thenReturn(middleName);
+        when(user.getLastName()).thenReturn(lastName);
+        when(user.getSecurityRole()).thenReturn(role);
+
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        mockHttpServletRequest.setParameter("Id", staffId);
+        String editFormName = controller.editStaffForm(modelMap, mockHttpServletRequest);
+
+        assertThat(editFormName, is(EDIT_STAFF_URL));
+        StaffForm expectedStaffForm = createStaffForm(staffId, firstName, middleName, lastName, email, phoneNumber, role);
+        StaffForm staffForm = (StaffForm) modelMap.get(EDIT_STAFF_FORM);
+
+        assertStaffForm(expectedStaffForm, staffForm);
+    }
+
+    private void assertStaffForm(StaffForm expectedStaffForm, StaffForm staffForm) {
+        assertThat(staffForm.getFirstName(), is(equalTo(expectedStaffForm.getFirstName())));
+    }
+
+    private StaffForm createStaffForm(String staffId, String firstName, String middleName, String lastName, String email, String phoneNumber, String role) {
+        StaffForm staffForm = new StaffForm();
+        staffForm.setstaffId(staffId);
+        staffForm.setFirstName(firstName);
+        staffForm.setMiddleName(middleName);
+        staffForm.setLastName(lastName);
+        staffForm.setEmail(email);
+        staffForm.setPhoneNumber(phoneNumber);
+        staffForm.setRole(role);
+        return staffForm;
+    }
 }
+
+

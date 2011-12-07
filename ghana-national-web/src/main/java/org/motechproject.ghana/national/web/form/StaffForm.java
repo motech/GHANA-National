@@ -1,7 +1,8 @@
 package org.motechproject.ghana.national.web.form;
 
 public class StaffForm {
-    private String motechId;
+    private String id;
+    private String staffId;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -12,14 +13,31 @@ public class StaffForm {
     public StaffForm() {
     }
 
-    public StaffForm(String motechId, String firstName, String middleName, String lastName, String email, String phoneNumber, String role) {
+    public StaffForm(String id, String staffId, String firstName, String middleName, String lastName, String email, String phoneNumber, String role) {
+        this.id = id;
+        this.staffId = staffId;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.role = role;
-        this.motechId = motechId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getstaffId() {
+        return staffId;
+    }
+
+    public void setstaffId(String staffId) {
+        this.staffId = staffId;
     }
 
     public String getFirstName() {
@@ -68,14 +86,6 @@ public class StaffForm {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public String getMotechId() {
-        return motechId;
-    }
-
-    public void setMotechId(String motechId) {
-        this.motechId = motechId;
     }
 
 }

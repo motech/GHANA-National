@@ -77,17 +77,12 @@ public class StaffController {
     public String createUser(@Valid StaffForm staffForm, BindingResult bindingResult, ModelMap model) {
         Map userData;
         User user = new User();
-        user.firstName(staffForm.getFirstName()).middleName(staffForm.getMiddleName()).lastName(staffForm.getLastName());
-        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, staffForm.getEmail()));
-        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, staffForm.getPhoneNumber()));
+        createUserFromFieldValues(user, staffForm);
         String roleOfStaff = staffForm.getRole();
-        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
-
-        user.securityRole(StaffType.Role.securityRoleFor(roleOfStaff));
         if (StaffType.Role.isAdmin(roleOfStaff)) {
             user.userName(staffForm.getEmail());
         }
-        user.id(identifierGenerationService.newStaffId());
+        user.systemId(identifierGenerationService.newStaffId());
 
         try {
             userData = staffService.saveUser(user);
@@ -97,7 +92,7 @@ public class StaffController {
             if (StaffType.Role.isAdmin(roleOfStaff)) {
                 emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUsername(), (String) userData.get("password"));
             }
-            return getStaffForId(model,openMRSUser.getSystemId());
+            return getStaffForId(model, openMRSUser.getSystemId());
         } catch (UserAlreadyExistsException e) {
             bindingResult.addError(new FieldError(CREATE_STAFF_FORM, EMAIL, messageSource.getMessage(STAFF_ALREADY_EXISTS, null, Locale.getDefault())));
             model.addAttribute("roles", staffService.fetchAllRoles());
@@ -108,7 +103,7 @@ public class StaffController {
 
     @ApiSession
     @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public String editFacilityForm(ModelMap modelMap, HttpServletRequest httpServletRequest) {
+    public String editStaffForm(ModelMap modelMap, HttpServletRequest httpServletRequest) {
         String staffId = httpServletRequest.getParameter(STAFF_SEQUENTIAL_ID);
         return getStaffForId(modelMap, staffId);
     }
@@ -116,12 +111,23 @@ public class StaffController {
     @ApiSession
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String updateFacility(@Valid StaffForm updateStaffForm, BindingResult bindingResult, ModelMap modelMap) {
+        User user = new User();
+        createUserFromFieldValues(user, updateStaffForm);
         try {
-//            staffService.update();
+            staffService.saveUser(user);
             return SUCCESS;
-        } catch (UsernameNotFoundException e) {
+        } catch (UserAlreadyExistsException e) {
         }
         return NEW_STAFF_URL;
+    }
+
+    private void createUserFromFieldValues(User user, StaffForm staffForm) {
+        user.firstName(staffForm.getFirstName()).middleName(staffForm.getMiddleName()).lastName(staffForm.getLastName());
+        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, staffForm.getEmail()));
+        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, staffForm.getPhoneNumber()));
+        String roleOfStaff = staffForm.getRole();
+        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
+        user.securityRole(StaffType.Role.securityRoleFor(roleOfStaff));
     }
 
     private String getStaffForId(ModelMap modelMap, String staffId) {
@@ -133,6 +139,8 @@ public class StaffController {
 
     private StaffForm copyStaffValuesToForm(User user) {
         StaffForm staffForm = new StaffForm();
+        staffForm.setId(user.getId());
+        staffForm.setstaffId(user.getSystemId());
         staffForm.setFirstName(user.getFirstName());
         staffForm.setMiddleName(user.getMiddleName());
         staffForm.setLastName(user.getLastName());
@@ -153,12 +161,12 @@ public class StaffController {
     @ApiSession
     @RequestMapping(value = "searchStaffs", method = RequestMethod.POST)
     public String searchStaff(@Valid final StaffForm staffForm, ModelMap modelMap) {
-        final List<User> users = staffService.searchStaff(staffForm.getMotechId(), staffForm.getFirstName(),
+        final List<User> users = staffService.searchStaff(staffForm.getstaffId(), staffForm.getFirstName(),
                 staffForm.getMiddleName(), staffForm.getLastName(), staffForm.getPhoneNumber(), staffForm.getRole());
 
         final ArrayList<StaffForm> requestedUsers = new ArrayList<StaffForm>();
         for (User user : users) {
-            requestedUsers.add(new StaffForm(user.getId(), user.getFirstName(), user.getMiddleName(), user.getLastName(),
+            requestedUsers.add(new StaffForm(user.getId(), user.getSystemId(), user.getFirstName(), user.getMiddleName(), user.getLastName(),
                     staffHelper.getEmail(user), staffHelper.getPhoneNumber(user), staffHelper.getRole(user)));
         }
         modelMap.put(SEARCH_STAFF_FORM, new StaffForm());

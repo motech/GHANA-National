@@ -73,16 +73,16 @@ public class StaffServiceTest {
     public void shouldGetUserById() {
         String userId = "124567";
         User user = new User();
-        when(userAdaptor.getUserById(userId)).thenReturn(user);
+        when(userAdaptor.getUserBySystemId(userId)).thenReturn(user);
         assertThat(service.getUserById(userId), is(equalTo(user)));
     }
 
     @Test
     public void shouldSearchForUsersWithRespectiveSearchCriteria() {
         final String middleName = "middleName";
-        final User user1 = new User().id("123").firstName("firstName").middleName(middleName);
+        final User user1 = new User().systemId("123").firstName("firstName").middleName(middleName);
         user1.setAttributes(Arrays.asList(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, "0123456789")));
-        final List<User> expectedUsers = Arrays.asList(user1, new User().firstName("first").id("1234"));
+        final List<User> expectedUsers = Arrays.asList(user1, new User().firstName("first").systemId("1234"));
         when(userAdaptor.getAllUsers()).thenReturn(expectedUsers);
         final List<User> actualUsers = service.searchStaff("123", "first", middleName, "", "01234", "");
         assertEquals(1, actualUsers.size());

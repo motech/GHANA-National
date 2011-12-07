@@ -3,7 +3,9 @@ package org.motechproject.ghana.national.service;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.StaffType;
+import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.repository.AllStaffTypes;
 import org.motechproject.ghana.national.tools.StartsWithMatcher;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
@@ -58,12 +60,12 @@ public class StaffService {
     }
 
     public User getUserById(String userId) {
-        return userAdaptor.getUserById(userId);
+        return userAdaptor.getUserBySystemId(userId);
     }
 
-    public List<User> searchStaff(String id, String firstName, String middleName, String lastName, String phoneNumber, String role) {
+    public List<User> searchStaff(String systemId, String firstName, String middleName, String lastName, String phoneNumber, String role) {
         List<User> filteredUsers = getAllUsers();
-        filteredUsers = filterUsers(on(User.class).getId(), id, filteredUsers);
+        filteredUsers = filterUsers(on(User.class).getSystemId(), systemId, filteredUsers);
         filteredUsers = filterUsers(on(User.class).getFirstName(), firstName, filteredUsers);
         filteredUsers = filterUsers(on(User.class).getMiddleName(), middleName, filteredUsers);
         filteredUsers = filterUsers(on(User.class).getLastName(), lastName, filteredUsers);
