@@ -49,7 +49,8 @@ public class HomePage {
                 return true;
             }
         } catch (Exception e) {
-            log.debug("Exception " + e.getMessage());
+            log.debug("Exception from HomePage" + e.getMessage());
+            System.out.println("Exception from HomePage" + e.getMessage());
             return false;
         }
         return true;
