@@ -13,7 +13,7 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.mobileforms.api.domain.FormError;
-import org.motechproject.mrs.model.User;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -58,7 +58,7 @@ public class RegisterClientFormValidatorTest {
         String userId = "0987654";
         when(mockRegisterClientForm.getStaffId()).thenReturn(userId);
 
-        when(mockStaffService.getUserById(userId)).thenReturn(new User());
+        when(mockStaffService.getUserById(userId)).thenReturn(new MRSUser());
 
         List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm);
         assertThat(formErrors, not(hasItem(new FormError("staffId", NOT_FOUND))));

@@ -3,14 +3,12 @@ package org.motechproject.ghana.national.service;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.StaffType;
-import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.repository.AllStaffTypes;
 import org.motechproject.ghana.national.tools.StartsWithMatcher;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
-import org.motechproject.mrs.model.User;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.mrs.services.MRSUserAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,11 +33,11 @@ public class StaffService {
         this.userAdaptor = userAdaptor;
     }
 
-    public Map saveUser(User user) throws UserAlreadyExistsException {
-        return userAdaptor.saveUser(user);
+    public Map saveUser(MRSUser mrsUser) throws UserAlreadyExistsException {
+        return userAdaptor.saveUser(mrsUser);
     }
-    public Map updateUser(User user) throws UserAlreadyExistsException {
-        return userAdaptor.updateUser(user);
+    public Map updateUser(MRSUser mrsUser) throws UserAlreadyExistsException {
+        return userAdaptor.updateUser(mrsUser);
     }
 
 
@@ -60,44 +58,44 @@ public class StaffService {
         return roles;
     }
 
-    public List<User> getAllUsers() {
+    public List<MRSUser> getAllUsers() {
         return userAdaptor.getAllUsers();
     }
 
-    public User getUserById(String userId) {
+    public MRSUser getUserById(String userId) {
         return userAdaptor.getUserBySystemId(userId);
     }
 
-    public List<User> searchStaff(String systemId, String firstName, String middleName, String lastName, String phoneNumber, String role) {
-        List<User> filteredUsers = getAllUsers();
-        filteredUsers = filterUsers(on(User.class).getSystemId(), systemId, filteredUsers);
-        filteredUsers = filterUsers(on(User.class).getFirstName(), firstName, filteredUsers);
-        filteredUsers = filterUsers(on(User.class).getMiddleName(), middleName, filteredUsers);
-        filteredUsers = filterUsers(on(User.class).getLastName(), lastName, filteredUsers);
-        filteredUsers = filterByAttribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, phoneNumber, filteredUsers);
-        filteredUsers = filterByAttribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role, filteredUsers);
-        Collections.sort(filteredUsers,new UserFirstNameComparator());
-        return filteredUsers;
+    public List<MRSUser> searchStaff(String systemId, String firstName, String middleName, String lastName, String phoneNumber, String role) {
+        List<MRSUser> filteredMRSUsers = getAllUsers();
+        filteredMRSUsers = filterUsers(on(MRSUser.class).getSystemId(), systemId, filteredMRSUsers);
+        filteredMRSUsers = filterUsers(on(MRSUser.class).getFirstName(), firstName, filteredMRSUsers);
+        filteredMRSUsers = filterUsers(on(MRSUser.class).getMiddleName(), middleName, filteredMRSUsers);
+        filteredMRSUsers = filterUsers(on(MRSUser.class).getLastName(), lastName, filteredMRSUsers);
+        filteredMRSUsers = filterByAttribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, phoneNumber, filteredMRSUsers);
+        filteredMRSUsers = filterByAttribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role, filteredMRSUsers);
+        Collections.sort(filteredMRSUsers,new UserFirstNameComparator());
+        return filteredMRSUsers;
     }
 
-    private List<User> filterByAttribute(String searchAttribute, String searchCriteria, List<User> filteredUsers) {
-        final ArrayList<User> filteredList = new ArrayList<User>();
-        for (User filteredUser : filteredUsers) {
-            final List<Attribute> attributeSearchResults = filter(having(on(Attribute.class).name(), equalTo(searchAttribute)), filteredUser.getAttributes());
+    private List<MRSUser> filterByAttribute(String searchAttribute, String searchCriteria, List<MRSUser> filteredMRSUsers) {
+        final ArrayList<MRSUser> filteredList = new ArrayList<MRSUser>();
+        for (MRSUser filteredMRSUser : filteredMRSUsers) {
+            final List<Attribute> attributeSearchResults = filter(having(on(Attribute.class).name(), equalTo(searchAttribute)), filteredMRSUser.getAttributes());
             if (CollectionUtils.isNotEmpty(attributeSearchResults) && attributeSearchResults.get(0).value().startsWith(searchCriteria)) {
-                filteredList.add(filteredUser);
+                filteredList.add(filteredMRSUser);
             }
         }
-        return (CollectionUtils.isEmpty(filteredList)) ? filteredUsers : filteredList;
+        return (CollectionUtils.isEmpty(filteredList)) ? filteredMRSUsers : filteredList;
     }
 
-    private List<User> filterUsers(String field, String matcher, List<User> filteredUsers) {
-        return (StringUtils.isNotEmpty(matcher)) ? filter(having(field, StartsWithMatcher.ignoreCaseStartsWith(matcher)), filteredUsers) : filteredUsers;
+    private List<MRSUser> filterUsers(String field, String matcher, List<MRSUser> filteredMRSUsers) {
+        return (StringUtils.isNotEmpty(matcher)) ? filter(having(field, StartsWithMatcher.ignoreCaseStartsWith(matcher)), filteredMRSUsers) : filteredMRSUsers;
     }
 
-    private class UserFirstNameComparator implements Comparator<User> {
+    private class UserFirstNameComparator implements Comparator<MRSUser> {
         @Override
-        public int compare(User user1, User user2) {
+        public int compare(MRSUser user1, MRSUser user2) {
             return user2.getFirstName().compareTo(user1.getFirstName());
         }
     }

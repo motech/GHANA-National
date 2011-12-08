@@ -3,7 +3,7 @@ package org.motechproject.ghana.national.web.form;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.StaffType;
 import org.motechproject.mrs.model.Attribute;
-import org.motechproject.mrs.model.User;
+import org.motechproject.mrs.model.MRSUser;
 
 import static org.motechproject.ghana.national.domain.StaffType.Role.isAdmin;
 
@@ -95,18 +95,18 @@ public class StaffForm {
         this.role = role;
     }
 
-    public User createUser() {
-        User user = new User().id(getId()).systemId(getStaffId()).firstName(getFirstName()).middleName(getMiddleName()).lastName(getLastName());
+    public MRSUser createUser() {
+        MRSUser mrsUser = new MRSUser().id(getId()).systemId(getStaffId()).firstName(getFirstName()).middleName(getMiddleName()).lastName(getLastName());
         String roleOfStaff = getRole();
 
-        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, getEmail()));
-        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, getPhoneNumber()));
-        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
-        user.securityRole(StaffType.Role.securityRoleFor(roleOfStaff));
+        mrsUser.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, getEmail()));
+        mrsUser.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, getPhoneNumber()));
+        mrsUser.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
+        mrsUser.securityRole(StaffType.Role.securityRoleFor(roleOfStaff));
 
         if (isAdmin(roleOfStaff)) {
-            user.userName(getEmail());
+            mrsUser.userName(getEmail());
         }
-        return user;
+        return mrsUser;
     }
 }

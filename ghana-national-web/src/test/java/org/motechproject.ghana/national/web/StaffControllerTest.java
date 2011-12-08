@@ -13,7 +13,7 @@ import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.web.form.StaffForm;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
-import org.motechproject.mrs.model.User;
+import org.motechproject.mrs.model.MRSUser;
 import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.ui.ModelMap;
@@ -97,7 +97,7 @@ public class StaffControllerTest {
             put("openMRSUser", openMRSuser);
             put("password", "P@ssw0rd");
         }};
-        when(mockStaffService.saveUser(any(User.class))).thenReturn(test);
+        when(mockStaffService.saveUser(any(MRSUser.class))).thenReturn(test);
 
         String view = controller.createUser(form, bindingResult, model);
 
@@ -105,9 +105,9 @@ public class StaffControllerTest {
         verify(model).put("userId", "1234");
         verify(model).put("userName", "Jack H Daniels");
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<MRSUser> captor = ArgumentCaptor.forClass(MRSUser.class);
         verify(mockStaffService).saveUser(captor.capture());
-        User captured = captor.getValue();
+        MRSUser captured = captor.getValue();
         assertEquals(form.getRole(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
         assertEquals(form.getEmail(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_EMAIL));
         assertEquals(form.getPhoneNumber(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER));
@@ -132,7 +132,7 @@ public class StaffControllerTest {
             put("openMRSUser", openMRSuser);
             put("password", "P@ssw0rd");
         }};
-        when(mockStaffService.saveUser(any(User.class))).thenReturn(test);
+        when(mockStaffService.saveUser(any(MRSUser.class))).thenReturn(test);
         when(mockIdentifierGenerationService.newStaffId()).thenReturn(userId);
 
         String view = controller.createUser(form, mockBindingResult, model);
@@ -141,9 +141,9 @@ public class StaffControllerTest {
         verify(model).put("userId", "1234");
         verify(model).put("userName", "Jack H Daniels");
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<MRSUser> captor = ArgumentCaptor.forClass(MRSUser.class);
         verify(mockStaffService).saveUser(captor.capture());
-        User captured = captor.getValue();
+        MRSUser captured = captor.getValue();
         assertEquals(userId, captured.getId());
         assertEquals(form.getRole(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
         assertEquals(form.getEmail(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_EMAIL));
@@ -151,8 +151,8 @@ public class StaffControllerTest {
         assertNull(captured.getUserName());
     }
 
-    private String getAttrValue(User user, String name) {
-        for (Attribute userAttribute : user.getAttributes())
+    private String getAttrValue(MRSUser mrsUser, String name) {
+        for (Attribute userAttribute : mrsUser.getAttributes())
             if (userAttribute.name().equalsIgnoreCase(name)) return userAttribute.value();
         return null;
     }
@@ -173,7 +173,7 @@ public class StaffControllerTest {
         roles.put("role1", "role1");
         Map<String, Object> boundModel = new HashMap<String, Object>();
 
-        when(mockStaffService.saveUser(any(User.class))).thenThrow(new UserAlreadyExistsException());
+        when(mockStaffService.saveUser(any(MRSUser.class))).thenThrow(new UserAlreadyExistsException());
         when(mockBindingResult.getModel()).thenReturn(boundModel);
         when(mockStaffService.fetchAllRoles()).thenReturn(roles);
 
@@ -204,7 +204,7 @@ public class StaffControllerTest {
         staffForm.setRole(role);
 
         ModelMap modelMap = new ModelMap();
-        User user1 = new User();
+        MRSUser user1 = new MRSUser();
         user1.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, phoneNumber));
         user1.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, email));
         user1.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role));
@@ -247,12 +247,12 @@ public class StaffControllerTest {
         ModelMap modelMap = new ModelMap();
         modelMap.addAttribute("Id", staffId);
 
-        User user = mock(User.class);
-        when(mockStaffService.getUserById(staffId)).thenReturn(user);
-        when(user.getFirstName()).thenReturn(firstName);
-        when(user.getMiddleName()).thenReturn(middleName);
-        when(user.getLastName()).thenReturn(lastName);
-        when(user.getSecurityRole()).thenReturn(role);
+        MRSUser mrsUser = mock(MRSUser.class);
+        when(mockStaffService.getUserById(staffId)).thenReturn(mrsUser);
+        when(mrsUser.getFirstName()).thenReturn(firstName);
+        when(mrsUser.getMiddleName()).thenReturn(middleName);
+        when(mrsUser.getLastName()).thenReturn(lastName);
+        when(mrsUser.getSecurityRole()).thenReturn(role);
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setParameter("Id", staffId);

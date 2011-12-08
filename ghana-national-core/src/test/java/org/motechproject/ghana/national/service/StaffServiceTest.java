@@ -8,7 +8,7 @@ import org.motechproject.ghana.national.domain.StaffType;
 import org.motechproject.ghana.national.repository.AllStaffTypes;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
-import org.motechproject.mrs.model.User;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.mrs.services.MRSUserAdaptor;
 
 import java.util.Arrays;
@@ -51,9 +51,9 @@ public class StaffServiceTest {
 
     @Test
     public void shouldSaveUser() throws UserAlreadyExistsException {
-        User user = new User();
-        service.saveUser(user);
-        verify(userAdaptor).saveUser(user);
+        MRSUser mrsUser = new MRSUser();
+        service.saveUser(mrsUser);
+        verify(userAdaptor).saveUser(mrsUser);
     }
 
     @Test
@@ -72,20 +72,20 @@ public class StaffServiceTest {
     @Test
     public void shouldGetUserById() {
         String userId = "124567";
-        User user = new User();
-        when(userAdaptor.getUserBySystemId(userId)).thenReturn(user);
-        assertThat(service.getUserById(userId), is(equalTo(user)));
+        MRSUser mrsUser = new MRSUser();
+        when(userAdaptor.getUserBySystemId(userId)).thenReturn(mrsUser);
+        assertThat(service.getUserById(userId), is(equalTo(mrsUser)));
     }
 
     @Test
     public void shouldSearchForUsersWithRespectiveSearchCriteria() {
         final String middleName = "middleName";
-        final User user1 = new User().systemId("123").firstName("firstName").middleName(middleName);
+        final MRSUser user1 = new MRSUser().systemId("123").firstName("firstName").middleName(middleName);
         user1.setAttributes(Arrays.asList(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, "0123456789")));
-        final List<User> expectedUsers = Arrays.asList(user1, new User().firstName("first").systemId("1234"));
-        when(userAdaptor.getAllUsers()).thenReturn(expectedUsers);
-        final List<User> actualUsers = service.searchStaff("123", "first", middleName, "", "01234", "");
-        assertEquals(1, actualUsers.size());
+        final List<MRSUser> expectedMRSUsers = Arrays.asList(user1, new MRSUser().firstName("first").systemId("1234"));
+        when(userAdaptor.getAllUsers()).thenReturn(expectedMRSUsers);
+        final List<MRSUser> actualMRSUsers = service.searchStaff("123", "first", middleName, "", "01234", "");
+        assertEquals(1, actualMRSUsers.size());
     }
 
     @Test
@@ -93,29 +93,29 @@ public class StaffServiceTest {
         String firstName1 = "Khaarthi";
         String firstName2 = "gha";
         String middileName = "mm";
-        List<User> expectedUsers = Arrays.asList(new User().firstName(firstName1).middleName(middileName), new User().firstName(firstName2).middleName(middileName));
-        when(userAdaptor.getAllUsers()).thenReturn(expectedUsers);
-        final List<User> actualUsers = service.searchStaff(null, null, middileName, null, null, null);
-        assertEquals(2, actualUsers.size());
-        assertEquals(firstName2, actualUsers.get(0).getFirstName());
-        assertEquals(firstName1, actualUsers.get(1).getFirstName());
+        List<MRSUser> expectedMRSUsers = Arrays.asList(new MRSUser().firstName(firstName1).middleName(middileName), new MRSUser().firstName(firstName2).middleName(middileName));
+        when(userAdaptor.getAllUsers()).thenReturn(expectedMRSUsers);
+        final List<MRSUser> actualMRSUsers = service.searchStaff(null, null, middileName, null, null, null);
+        assertEquals(2, actualMRSUsers.size());
+        assertEquals(firstName2, actualMRSUsers.get(0).getFirstName());
+        assertEquals(firstName1, actualMRSUsers.get(1).getFirstName());
     }
 
     @Test
     public void shouldSearchForUsersWithRespectiveRoles() {
-        final User user1 = new User().id("123").firstName("firstName").middleName("middleName");
+        final MRSUser user1 = new MRSUser().id("123").firstName("firstName").middleName("middleName");
         user1.setAttributes(Arrays.asList(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, "admin")));
-        final List<User> expectedUsers = Arrays.asList(user1, new User().firstName("firstNm").id("1234"));
-        when(userAdaptor.getAllUsers()).thenReturn(expectedUsers);
-        final List<User> actualUsers = service.searchStaff("", "", "", "", "", "admin");
-        assertEquals(1, actualUsers.size());
+        final List<MRSUser> expectedMRSUsers = Arrays.asList(user1, new MRSUser().firstName("firstNm").id("1234"));
+        when(userAdaptor.getAllUsers()).thenReturn(expectedMRSUsers);
+        final List<MRSUser> actualMRSUsers = service.searchStaff("", "", "", "", "", "admin");
+        assertEquals(1, actualMRSUsers.size());
     }
 
     @Test
     public void shouldReturnEmptyIfSearchDoesntReturnAnyResults() {
-        final List<User> expectedUsers = Arrays.asList(new User().firstName("firstNm").id("1234"));
-        when(userAdaptor.getAllUsers()).thenReturn(expectedUsers);
-        final List<User> actualUsers = service.searchStaff("123", "first", "middle", "", "01234", "");
-        assertEquals(0, actualUsers.size());
+        final List<MRSUser> expectedMRSUsers = Arrays.asList(new MRSUser().firstName("firstNm").id("1234"));
+        when(userAdaptor.getAllUsers()).thenReturn(expectedMRSUsers);
+        final List<MRSUser> actualMRSUsers = service.searchStaff("123", "first", "middle", "", "01234", "");
+        assertEquals(0, actualMRSUsers.size());
     }
 }
