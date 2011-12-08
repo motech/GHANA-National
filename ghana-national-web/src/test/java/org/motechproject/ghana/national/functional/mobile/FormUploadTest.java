@@ -1,53 +1,51 @@
 package org.motechproject.ghana.national.functional.mobile;
 
-import org.fcitmuk.epihandy.midp.db.FormDataStore;
-import org.fcitmuk.epihandy.midp.db.StudyStore;
-import org.fcitmuk.epihandy.midp.model.Model;
-import org.fcitmuk.epihandy.midp.transport.FormUpload;
-import org.junit.Ignore;
+import org.apache.commons.collections.MapUtils;
 import org.junit.Test;
 
-import javax.microedition.io.Connector;
-import javax.microedition.io.HttpConnection;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-@Ignore
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+
 public class FormUploadTest {
     @Test
-    public void shouldDownloadDefaultXFormsFromGhanaNational() {
-        try {
-            final HttpConnection httpConnection = (HttpConnection) Connector.open("http://localhost:8080/ghana-national-web/formupload");
-            httpConnection.setRequestMethod(HttpConnection.POST);
-            httpConnection.setRequestProperty("Content-Type", "application/octet-stream");
-            httpConnection.setRequestProperty("User-Agent", "Profile/MIDP-2.0 Configuration/CLDC-1.0");
-            httpConnection.setRequestProperty("Content-Language", "en-US");
+    public void shouldCheckForMandatoryFields() throws Exception {
 
-            DataOutputStream dataOutputStream = httpConnection.openDataOutputStream();
-            dataOutputStream.writeUTF("motech");
-            dataOutputStream.writeUTF("ghs");
-            dataOutputStream.writeUTF("");
-            dataOutputStream.writeUTF("");
-            dataOutputStream.writeByte(2);
-            final StudyStore studyStore = new StudyStore();
-            final FormDataStore formDataStore = new FormDataStore();
-//            formDataStore.saveFormData()
-            FormUpload formUpload = new FormUpload(new Model(studyStore, formDataStore));
-            formUpload.write(dataOutputStream);
+        final XformHttpClient.XformResponse xformResponse = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
+                "NurseDataEntry", XFormParser.parse("register-client-template.xml", MapUtils.EMPTY_MAP));
 
-            if (httpConnection.getResponseCode() == HttpConnection.HTTP_OK) {
-                System.out.println("success");
-                final DataInputStream dataInputStream = httpConnection.openDataInputStream();
-                assertResponse(dataInputStream);
-            }
+        final List<XformHttpClient.Error> errors = xformResponse.getErrors();
+        assertEquals(errors.size(), 1);
+        final Map<String, String> errorsMap = errors.iterator().next().getErrors();
 
-        } catch (IOException e) {
-            System.out.println(e);
-        }
+        assertEquals("is mandatory", errorsMap.get("registrationMode"));
+        assertEquals("is mandatory", errorsMap.get("registrantType"));
+        assertEquals("is mandatory", errorsMap.get("firstName"));
+        assertEquals("is mandatory", errorsMap.get("lastName"));
+        assertEquals("is mandatory", errorsMap.get("dateOfBirth"));
+        assertEquals("is mandatory", errorsMap.get("date"));
+        assertEquals("is mandatory", errorsMap.get("estimatedBirthDate"));
+        assertEquals("is mandatory", errorsMap.get("insured"));
+        assertEquals("is mandatory", errorsMap.get("date"));
+        assertEquals("is mandatory", errorsMap.get("address"));
+        assertEquals("not found", errorsMap.get("facilityId"));
+        assertEquals("not found", errorsMap.get("staffId"));
     }
 
-    private void assertResponse(DataInputStream dataInputStream) {
+    @Test
+    public void shouldNotGiveErrorForFirstNameIfGiven() throws Exception {
 
+        final XformHttpClient.XformResponse xformResponse = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
+                "NurseDataEntry", XFormParser.parse("register-client-template.xml", new HashMap<String, String>() {{
+                    put("firstName", "Joe");
+                }}));
+
+        final List<XformHttpClient.Error> errors = xformResponse.getErrors();
+        assertEquals(errors.size(), 1);
+        final Map<String, String> errorsMap = errors.iterator().next().getErrors();
+        assertNull(errorsMap.get("firstName"));
     }
 }
