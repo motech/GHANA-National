@@ -23,7 +23,8 @@
 
         <div>
             <label for="motechId" class="formLabel">${fn:escapeXml(staff_id)}:</label>
-            <form:input path="staffId" size="20" cssClass="jsRequire" disabled="true"/>
+            <form:input path="staffId" size="20" cssClass="jsRequire" disabled="true" />
+            <form:hidden path="staffId" />
             <form:hidden path="id" />
         </div>
         <div>
@@ -51,11 +52,18 @@
             <span id='email_error' class='formlyInvalid formlyAlert hide'></span>
         </div>
         <div>
+        ${editStaffForm.role}
             <label class="formLabel" for="user_role">${fn:escapeXml(user_role)} *:</label>
             <form:select id="user_role" path="role">
                 <option parent="select" value="">${fn:escapeXml(user_role_select)}</option>
                 <c:forEach items="${roles}" var="role">
-                    <option value="${role.key}">${role.key} (${role.value})</option>
+                    <c:if test="${role.key eq editStaffForm.role}">
+                        <option value="${role.key}" >${role.key} (${role.value})</option>
+                    </c:if>
+                    <c:if test="${role.key ne editStaffForm.role}">
+                        <option value="${role.key}" >${role.key} (${role.value})</option>
+                    </c:if>
+
                 </c:forEach>
             </form:select>
             <span id='role_error' class='formlyInvalid formlyAlert hide'></span>

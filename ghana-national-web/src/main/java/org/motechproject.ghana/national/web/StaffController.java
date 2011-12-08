@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.web;
 
-import org.motechproject.ghana.national.domain.Constants;
+import ch.lambdaj.Lambda;
 import org.motechproject.ghana.national.domain.StaffType;
 import org.motechproject.ghana.national.helper.StaffHelper;
 import org.motechproject.ghana.national.service.EmailTemplateService;
@@ -13,11 +13,11 @@ import org.motechproject.mrs.model.User;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -27,6 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static org.hamcrest.Matchers.equalTo;
+import static org.motechproject.ghana.national.domain.Constants.PERSON_ATTRIBUTE_TYPE_EMAIL;
+import static org.motechproject.ghana.national.domain.Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER;
+import static org.motechproject.ghana.national.domain.Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE;
 
 @Controller
 @RequestMapping(value = "/admin/staffs")
@@ -76,12 +83,9 @@ public class StaffController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createUser(@Valid StaffForm staffForm, BindingResult bindingResult, ModelMap model) {
         Map userData;
-        User user = new User();
-        createUserFromFieldValues(user, staffForm);
+        User user = staffForm.createUser();
         String roleOfStaff = staffForm.getRole();
-        if (StaffType.Role.isAdmin(roleOfStaff)) {
-            user.userName(staffForm.getEmail());
-        }
+
         user.systemId(identifierGenerationService.newStaffId());
 
         try {
@@ -110,24 +114,14 @@ public class StaffController {
 
     @ApiSession
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public String updateFacility(@Valid StaffForm updateStaffForm, BindingResult bindingResult, ModelMap modelMap) {
-        User user = new User();
-        createUserFromFieldValues(user, updateStaffForm);
+    public String updateStaff (@ModelAttribute("editStaffForm") StaffForm staffForm, BindingResult bindingResult, ModelMap model) {
+        User user = staffForm.createUser();
         try {
-            staffService.saveUser(user);
+            staffService.updateUser(user);
             return SUCCESS;
         } catch (UserAlreadyExistsException e) {
         }
-        return NEW_STAFF_URL;
-    }
-
-    private void createUserFromFieldValues(User user, StaffForm staffForm) {
-        user.firstName(staffForm.getFirstName()).middleName(staffForm.getMiddleName()).lastName(staffForm.getLastName());
-        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, staffForm.getEmail()));
-        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, staffForm.getPhoneNumber()));
-        String roleOfStaff = staffForm.getRole();
-        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
-        user.securityRole(StaffType.Role.securityRoleFor(roleOfStaff));
+        return EDIT_STAFF_URL;
     }
 
     private String getStaffForId(ModelMap modelMap, String staffId) {
@@ -140,14 +134,18 @@ public class StaffController {
     private StaffForm copyStaffValuesToForm(User user) {
         StaffForm staffForm = new StaffForm();
         staffForm.setId(user.getId());
-        staffForm.setstaffId(user.getSystemId());
+        staffForm.setStaffId(user.getSystemId());
         staffForm.setFirstName(user.getFirstName());
         staffForm.setMiddleName(user.getMiddleName());
         staffForm.setLastName(user.getLastName());
-//        staffForm.setEmail(user.getAttributes().get(0));
-//        staffForm.setPhoneNumber(user.getAttributes().get(1).value());
-//        staffForm.setRole(user.getAttributes().get(2).value());
+        staffForm.setEmail(attrValue(user, PERSON_ATTRIBUTE_TYPE_EMAIL));
+        staffForm.setPhoneNumber(attrValue(user, PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER));
+        staffForm.setRole(attrValue(user, PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
         return staffForm;
+    }
+
+    private String attrValue(User user, String key) {
+        return Lambda.<Attribute>selectFirst(user.getAttributes(), having(on(Attribute.class).name(), equalTo(key))).value();
     }
 
     @ApiSession
@@ -161,7 +159,7 @@ public class StaffController {
     @ApiSession
     @RequestMapping(value = "searchStaffs", method = RequestMethod.POST)
     public String searchStaff(@Valid final StaffForm staffForm, ModelMap modelMap) {
-        final List<User> users = staffService.searchStaff(staffForm.getstaffId(), staffForm.getFirstName(),
+        final List<User> users = staffService.searchStaff(staffForm.getStaffId(), staffForm.getFirstName(),
                 staffForm.getMiddleName(), staffForm.getLastName(), staffForm.getPhoneNumber(), staffForm.getRole());
 
         final ArrayList<StaffForm> requestedUsers = new ArrayList<StaffForm>();

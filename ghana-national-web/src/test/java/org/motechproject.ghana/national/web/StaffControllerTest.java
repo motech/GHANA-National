@@ -10,7 +10,6 @@ import org.motechproject.ghana.national.helper.StaffHelper;
 import org.motechproject.ghana.national.service.EmailTemplateService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.StaffService;
-import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.form.StaffForm;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
@@ -197,7 +196,7 @@ public class StaffControllerTest {
         String role = "System Developer";
 
         StaffForm staffForm = new StaffForm();
-        staffForm.setstaffId(staffID);
+        staffForm.setStaffId(staffID);
         staffForm.setFirstName(firstName);
         staffForm.setMiddleName(middleName);
         staffForm.setLastName(lastName);
@@ -217,13 +216,13 @@ public class StaffControllerTest {
 
         controller.searchStaff(staffForm, modelMap);
 
-        verify(mockStaffService).searchStaff(staffForm.getstaffId(), staffForm.getFirstName(), staffForm.getMiddleName(),
+        verify(mockStaffService).searchStaff(staffForm.getStaffId(), staffForm.getFirstName(), staffForm.getMiddleName(),
                 staffForm.getLastName(), staffForm.getPhoneNumber(), staffForm.getRole());
 
         final List<StaffForm> actualRequestedUsers = (List<StaffForm>) modelMap.get(StaffController.REQUESTED_STAFFS);
         assertEquals(1, actualRequestedUsers.size());
         final StaffForm form = actualRequestedUsers.get(0);
-        assertEquals(form.getstaffId(), staffID);
+        assertEquals(form.getStaffId(), staffID);
         assertEquals(form.getEmail(), email);
         assertEquals(form.getFirstName(), firstName);
         assertEquals(form.getLastName(), lastName);
@@ -272,7 +271,7 @@ public class StaffControllerTest {
 
     private StaffForm createStaffForm(String staffId, String firstName, String middleName, String lastName, String email, String phoneNumber, String role) {
         StaffForm staffForm = new StaffForm();
-        staffForm.setstaffId(staffId);
+        staffForm.setStaffId(staffId);
         staffForm.setFirstName(firstName);
         staffForm.setMiddleName(middleName);
         staffForm.setLastName(lastName);

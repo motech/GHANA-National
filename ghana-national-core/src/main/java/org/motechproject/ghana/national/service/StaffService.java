@@ -38,6 +38,11 @@ public class StaffService {
     public Map saveUser(User user) throws UserAlreadyExistsException {
         return userAdaptor.saveUser(user);
     }
+    public Map updateUser(User user) throws UserAlreadyExistsException {
+        return userAdaptor.updateUser(user);
+    }
+
+
 
     public String changePasswordByEmailId(String emailId) {
         String password = "";

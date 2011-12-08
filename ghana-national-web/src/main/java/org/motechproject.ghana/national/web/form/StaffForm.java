@@ -1,5 +1,12 @@
 package org.motechproject.ghana.national.web.form;
 
+import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.StaffType;
+import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.User;
+
+import static org.motechproject.ghana.national.domain.StaffType.Role.isAdmin;
+
 public class StaffForm {
     private String id;
     private String staffId;
@@ -32,11 +39,11 @@ public class StaffForm {
         this.id = id;
     }
 
-    public String getstaffId() {
+    public String getStaffId() {
         return staffId;
     }
 
-    public void setstaffId(String staffId) {
+    public void setStaffId(String staffId) {
         this.staffId = staffId;
     }
 
@@ -88,4 +95,18 @@ public class StaffForm {
         this.role = role;
     }
 
+    public User createUser() {
+        User user = new User().id(getId()).systemId(getStaffId()).firstName(getFirstName()).middleName(getMiddleName()).lastName(getLastName());
+        String roleOfStaff = getRole();
+
+        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, getEmail()));
+        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, getPhoneNumber()));
+        user.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
+        user.securityRole(StaffType.Role.securityRoleFor(roleOfStaff));
+
+        if (isAdmin(roleOfStaff)) {
+            user.userName(getEmail());
+        }
+        return user;
+    }
 }
