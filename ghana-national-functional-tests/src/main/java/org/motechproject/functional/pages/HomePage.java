@@ -8,17 +8,24 @@ import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class HomePage {
 
+    @Autowired
+    WebDriverProvider webDriverProvider;
+
     private WebDriver driver;
+    private org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(HomePage.class);
 
     @Autowired
     public HomePage(WebDriverProvider driverProvider) {
         this.driver = driverProvider.getWebDriver();
     }
 
+
     WebElement CreateFacilityLink, CreatePatientLink, ResetPassLink, CreateStaffLink, LogoutLink;
+
 
     public void Logout() {
         LogoutLink = driver.findElement(By.linkText("Logout"));
@@ -27,16 +34,28 @@ public class HomePage {
 
     public boolean OpenCreateFacilityPage() {
         WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
+
         FacilityParentLink.click();
-
-        try {
-            Thread.sleep(5000);
-            driver.findElement(By.id("newfacility")).click();
-        } catch (Exception e) {
-
-            System.out.println("Exception " + e.getMessage()); return false;
-        }
-        return true;
+        webDriverProvider.WaitForElement_ID("newfacility");
+        driver.findElement(By.id("newfacility")).click();
+        return webDriverProvider.WaitForElement_ID("name");
+//        try {
+//            Actions movetoMenu = new Actions(driver);
+//            movetoMenu.moveToElement(FacilityParentLink).build().perform();
+//            movetoMenu.click();
+//
+//            webDriverProvider.WaitForElement_ID("newfacility");
+//            driver.findElement(By.id("newfacility")).click();
+//
+//            if (webDriverProvider.WaitForElement_ID("name")) {
+//                return true;
+//            }
+//        } catch (Exception e) {
+//            log.debug("Exception from HomePage" + e.getMessage());
+//            System.out.println("Exception from HomePage" + e.getMessage());
+//            return false;
+//        }
+        //return true;
     }
 
     public boolean OpenCreateStaffPage() {

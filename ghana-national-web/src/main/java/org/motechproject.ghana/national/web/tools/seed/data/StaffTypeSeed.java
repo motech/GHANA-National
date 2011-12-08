@@ -1,9 +1,9 @@
-package org.motechproject.ghana.national.tools.seed.data;
+package org.motechproject.ghana.national.web.tools.seed.data;
 
 import org.apache.commons.io.IOUtils;
 import org.motechproject.ghana.national.domain.StaffType;
 import org.motechproject.ghana.national.repository.AllStaffTypes;
-import org.motechproject.ghana.national.tools.seed.Seed;
+import org.motechproject.ghana.national.web.tools.seed.Seed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

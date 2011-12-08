@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.tools.seed;
+package org.motechproject.ghana.national.web.tools.seed;
 
 import org.apache.log4j.Logger;
 

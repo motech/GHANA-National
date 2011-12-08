@@ -19,8 +19,13 @@ public class FireFoxWebDriver extends BaseWebDriver {
     private String firefoxDisplay;
 
     public WebDriver getDriver() {
-        FirefoxBinary firefoxBinary = new FirefoxBinary(new File(firefoxLocation));
-        firefoxBinary.setEnvironmentProperty("DISPLAY", System.getProperty("functional.test.display", ":0.0"));
-        return new FirefoxDriver(firefoxBinary, new FirefoxProfile());
+        if (driver == null) {
+            FirefoxProfile profile = new FirefoxProfile();
+            profile.setEnableNativeEvents(true);
+            FirefoxBinary firefoxBinary = new FirefoxBinary(new File(firefoxLocation));
+            firefoxBinary.setEnvironmentProperty("DISPLAY", System.getProperty("functional.test.display", ":0.0"));
+            driver = new FirefoxDriver(firefoxBinary, profile);
+        }
+        return driver;
     }
 }
