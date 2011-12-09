@@ -7,6 +7,7 @@ import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
 import org.motechproject.dao.MotechAuditableRepository;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.services.MRSFacilityAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,7 +47,7 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
     }
 
     private void saveMRSFacility(Facility facility) {
-        final org.motechproject.mrs.model.Facility savedFacility = facilityAdaptor.saveFacility(facility.mrsFacility());
+        final MRSFacility savedFacility = facilityAdaptor.saveFacility(facility.mrsFacility());
         facility.mrsFacilityId(savedFacility.getId());
     }
 
@@ -60,9 +61,9 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
     }
 
     public List<Facility> facilities() {
-        final List<org.motechproject.mrs.model.Facility> mrsFacilities = facilityAdaptor.getFacilities();
+        final List<MRSFacility> mrsFacilities = facilityAdaptor.getFacilities();
         final ArrayList<Facility> facilities = new ArrayList<Facility>();
-        for (org.motechproject.mrs.model.Facility mrsFacility : mrsFacilities) {
+        for (MRSFacility mrsFacility : mrsFacilities) {
             Facility facility = findByMrsFacilityId(mrsFacility.getId());
             if (facility == null)
                 facility = new Facility();
@@ -72,13 +73,13 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
         return facilities;
     }
 
-    private List<Facility> getFacilitiesWithAllInfo(List<org.motechproject.mrs.model.Facility> mrsFacilities) {
-        final List<String> facilityIdsAsString = extract(mrsFacilities, on(org.motechproject.mrs.model.Facility.class).getId());
+    private List<Facility> getFacilitiesWithAllInfo(List<MRSFacility> mrsFacilities) {
+        final List<String> facilityIdsAsString = extract(mrsFacilities, on(MRSFacility.class).getId());
         final List<Facility> facilities = findByFacilityIds(facilityIdsAsString);
 
-        return convert(mrsFacilities, new Converter<org.motechproject.mrs.model.Facility, Facility>() {
+        return convert(mrsFacilities, new Converter<MRSFacility, Facility>() {
             @Override
-            public Facility convert(org.motechproject.mrs.model.Facility mrsFacility) {
+            public Facility convert(MRSFacility mrsFacility) {
                 final Facility facility = (Facility) selectUnique(facilities, having(on(Facility.class).mrsFacilityId(),
                         is(mrsFacility.getId())));
                 return (facility != null) ? facility.mrsFacility(mrsFacility) : new Facility(mrsFacility);
@@ -87,7 +88,7 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
     }
 
     public Facility getFacility(String mrsFacilityId) {
-        org.motechproject.mrs.model.Facility mrsFacility = facilityAdaptor.getFacility(mrsFacilityId);
+        MRSFacility mrsFacility = facilityAdaptor.getFacility(mrsFacilityId);
         return (mrsFacility != null) ? findByMrsFacilityId(mrsFacilityId).mrsFacility(mrsFacility) : null;
     }
 

@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.repository.AllFacilities;
+import org.motechproject.mrs.model.MRSFacility;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -117,7 +118,7 @@ public class FacilityServiceTest {
         String region = "region";
         String district = "district";
         String province = "province";
-        when(mockAllFacilities.facilitiesByName(facilityName)).thenReturn(Arrays.asList(new Facility(new org.motechproject.mrs.model.Facility(facilityName, country, region, district, province))));
+        when(mockAllFacilities.facilitiesByName(facilityName)).thenReturn(Arrays.asList(new Facility(new MRSFacility(facilityName, country, region, district, province))));
         facilityService.create(facilityName, country, region, district, province, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
@@ -146,7 +147,7 @@ public class FacilityServiceTest {
         String region = "region";
         String district = null;
         String province = null;
-        final Facility facility = new Facility(new org.motechproject.mrs.model.Facility(facilityName, country, region, district, province));
+        final Facility facility = new Facility(new MRSFacility(facilityName, country, region, district, province));
         when(mockAllFacilities.facilities()).thenReturn(Arrays.asList(facility));
 
         List<Facility> actualFacilities = facilityService.searchFacilities("", "", "cOuNt", "", "", "");
@@ -161,7 +162,7 @@ public class FacilityServiceTest {
         String region = "region";
         String district = null;
         String province = null;
-        final Facility facility = new Facility(new org.motechproject.mrs.model.Facility(facilityName, country, region, district, province));
+        final Facility facility = new Facility(new MRSFacility(facilityName, country, region, district, province));
         when(mockAllFacilities.facilities()).thenReturn(Arrays.asList(facility));
 
         List<Facility> actualFacilities = facilityService.searchFacilities("", "", "coUnTer", "", "", "");
