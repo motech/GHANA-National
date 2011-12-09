@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <include file="../build/sql/changelog/001.setup-openmrs.xml"/>
+    <include file="../build/sql/changelog/002.insert-training-facility.xml"/>
+    <include file="../build/sql/changelog/003.insert-email-person-attribute.xml"/>
+    <include file="../build/sql/changelog/004.remove-old-ghana-data.xml"/>
+</databaseChangeLog>

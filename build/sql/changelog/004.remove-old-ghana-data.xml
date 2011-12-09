@@ -1,0 +1,33 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="admin" id="1323410456950-1">
+        <update tableName="scheduler_task_config_property">
+            <column name="task_config_id" value="null"/>
+        </update>
+
+        <delete tableName="scheduler_task_config">
+        </delete>
+
+        <update tableName="patient_identifier_type">
+            <column name="validator" value="org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator"/>
+            <where>name like 'MoTeCH Id%'</where>
+        </update>
+        <update tableName="patient_identifier_type">
+            <column name="validator" value="org.motechproject.openmrs.omod.validator.VerhoeffValidator"/>
+            <where>name like 'MoTeCH Staff Id%'</where>
+        </update>
+        <update tableName="patient_identifier_type">
+            <column name="validator" value="org.motechproject.openmrs.omod.validator.VerhoeffValidator"/>
+            <where>name like 'MoTeCH Facility Id%'</where>
+        </update>
+        <update tableName="patient_identifier_type">
+            <column name="validator" value="org.motechproject.openmrs.omod.validator.VerhoeffValidator"/>
+            <where>name like 'MoTeCH Community Id%'</where>
+        </update>
+        <update tableName="patient_identifier_type">
+            <column name="validator" value="org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator"/>
+            <where>name like 'OpenMRS Identification Number%'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

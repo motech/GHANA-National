@@ -10,7 +10,7 @@ import java.util.Map;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 
-public class FormUploadTest {
+public class RegisterClientMobileUploadTest {
     @Test
     public void shouldCheckForMandatoryFields() throws Exception {
 
@@ -40,8 +40,8 @@ public class FormUploadTest {
 
         final XformHttpClient.XformResponse xformResponse = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
                 "NurseDataEntry", XFormParser.parse("register-client-template.xml", new HashMap<String, String>() {{
-                    put("firstName", "Joe");
-                }}));
+            put("firstName", "Joe");
+        }}));
 
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);

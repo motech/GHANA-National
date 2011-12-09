@@ -54,17 +54,16 @@
                         </goals>
                         <configuration>
                             <files>
-                                <file>../build/maven.properties</file>
+                                <file>${parent.relativePath}/../build/maven.properties</file>
                             </files>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <!--MYSQL RECREATION-->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>sql-maven-plugin</artifactId>
-                <version>1.5</version>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>2.0.1</version>
                 <dependencies>
                     <dependency>
                         <groupId>mysql</groupId>
@@ -72,49 +71,19 @@
                         <version>5.1.13</version>
                     </dependency>
                 </dependencies>
-                <configuration>
-                    <driver>com.mysql.jdbc.Driver</driver>
-                    <username>${mysql.user}</username>
-                    <password>${mysql.password}</password>
-                    <url>jdbc:mysql://localhost:3306</url>
-                </configuration>
                 <executions>
                     <execution>
-                        <id>drop-db</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
+                        <phase>process-resources</phase>
                         <configuration>
-                            <autocommit>true</autocommit>
-                            <sqlCommand>
-                                drop database openmrs_test;
-                            </sqlCommand>
-                            <onError>continue</onError>
+                            <changeLogFile>../build/sql/master.xml</changeLogFile>
+                            <driver>${mysql.driver}</driver>
+                            <url>${mysql.url}</url>
+                            <username>${mysql.user}</username>
+                            <password>${mysql.password}</password>
                         </configuration>
-                    </execution>
-                    <execution>
-                        <id>create-db</id>
-                        <phase>pre-integration-test</phase>
                         <goals>
-                            <goal>execute</goal>
+                            <goal>update</goal>
                         </goals>
-                        <configuration>
-                            <autocommit>true</autocommit>
-                            <sqlCommand>
-                                create database openmrs_test default charset utf8;
-                                grant all on openmrs_test.* to 'openmrs'@'localhost' identified by
-                                'password';
-                                grant all on openmrs_test.* to 'openmrs'@'%' identified by 'password';
-                                flush privileges;
-                                use openmrs_test;
-                            </sqlCommand>
-                            <srcFiles>
-                                <srcFile>../build/sql/0.openmrs-1.8.sql</srcFile>
-                                <srcFile>../build/sql/1.insert_email_person_attribute_type_table.sql</srcFile>
-                                <srcFile>../build/sql/2.insert_training_facility.sql</srcFile>
-                            </srcFiles>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

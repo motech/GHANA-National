@@ -160,6 +160,7 @@
                         <id>create-and-move-openmrs-modules</id>
                         <phase>pre-integration-test</phase>
                         <configuration>
+                            <skip>${openmrs.skip}</skip>
                             <target>
                                 <condition property="openmrs.directory" value="${user.home}/.OpenMRS"
                                            else="${user.home}/AppData/Roaming/OpenMRS">
@@ -209,7 +210,7 @@
                 </executions>
             </plugin>
 
-             <!--COUCHDB RECREATION-->
+            <!--COUCHDB RECREATION-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -239,7 +240,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <!--JETTY-->
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>

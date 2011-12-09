@@ -22,6 +22,7 @@
         <skip>false</skip>
         <exec-maven-plugin.version>1.1.1</exec-maven-plugin.version>
         <environment>qa</environment>
+        <openmrs.skip>false</openmrs.skip>
     </properties>
     <repositories>
         <repository>
@@ -261,9 +262,31 @@
                     <excludes>
                         <exclude>**/*IT.java</exclude>
                         <exclude>**/repository/*Test.java</exclude>
-                        <exclude>**/functional/*Test.java</exclude>
+                        <exclude>**/functional/**/*Test.java</exclude>
                     </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>test-junit</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <testNGArtifactName>none:none</testNGArtifactName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-testng</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <junitArtifactName>none:none</junitArtifactName>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <!--FAILSAFE FOR INTEGRATION TESTS-->
             <plugin>
@@ -283,7 +306,7 @@
                     <includes>
                         <include>**/*IT.java</include>
                         <include>**/repository/*Test.java</include>
-                        <include>**/functional/*Test.java</include>
+                        <include>**/functional/**/*Test.java</include>
                     </includes>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
