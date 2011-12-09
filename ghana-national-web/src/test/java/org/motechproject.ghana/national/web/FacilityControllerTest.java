@@ -72,7 +72,7 @@ public class FacilityControllerTest {
         Facility facility = facility(name, facilityId, region, district, country, province, phoneNumber, addPhoneNumb1, addPhoneNumb2, addPhoneNumb3);
         when(mockFacilityService.facilities()).thenReturn(Arrays.asList(facility));
         final HashMap<String, Object> map = new HashMap<String, Object>() {{
-            put(CREATE_FACILITY_FORM, new Object());
+            put(FACILITY_FORM, new Object());
             put(Constants.COUNTRIES, new Object());
             put(Constants.REGIONS, new Object());
             put(Constants.PROVINCES, new Object());
@@ -85,9 +85,9 @@ public class FacilityControllerTest {
         final String result = spyFacilitiesController.createFacility(facilityForm, mockBindingResult, modelMap);
 
         verify(mockFacilityService).create(name, country, region, district, province, phoneNumber, addPhoneNumb1, addPhoneNumb2, addPhoneNumb3);
-        assertThat(result, is(equalTo(EDIT_FACILITY_URL)));
+        assertThat(result, is(equalTo(EDIT_FACILITY_VIEW)));
         verify(mockFacilityHelper).locationMap();
-        assertNotNull(modelMap.get(CREATE_FACILITY_FORM));
+        assertNotNull(modelMap.get(FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));
         assertNotNull(modelMap.get(Constants.PROVINCES));
@@ -119,7 +119,7 @@ public class FacilityControllerTest {
         createFacilityForm.setAdditionalPhoneNumber3(StringUtils.EMPTY);
 
         final HashMap<String, Object> map = new HashMap<String, Object>() {{
-            put(CREATE_FACILITY_FORM, new Object());
+            put(FACILITY_FORM, new Object());
             put(Constants.COUNTRIES, new Object());
             put(Constants.REGIONS, new Object());
             put(Constants.PROVINCES, new Object());
@@ -133,11 +133,11 @@ public class FacilityControllerTest {
         verify(mockBindingResult).addError(captor.capture());
         final FieldError actualFieldError = captor.getValue();
         assertThat(result, is(equalTo("facilities/new")));
-        assertThat(actualFieldError.getObjectName(), is(equalTo(CREATE_FACILITY_FORM)));
+        assertThat(actualFieldError.getObjectName(), is(equalTo(FACILITY_FORM)));
         assertThat(actualFieldError.getField(), is(equalTo("name")));
         assertThat(actualFieldError.getDefaultMessage(), is(equalTo(message)));
         verify(mockFacilityHelper).locationMap();
-        assertNotNull(modelMap.get(CREATE_FACILITY_FORM));
+        assertNotNull(modelMap.get(FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));
         assertNotNull(modelMap.get(Constants.PROVINCES));
@@ -199,9 +199,9 @@ public class FacilityControllerTest {
         mockHttpServletRequest.setParameter(FACILITY_ID, facilityId);
         String editFormName = facilityController.editFacilityForm(modelMap, mockHttpServletRequest);
 
-        assertThat(editFormName, is(EDIT_FACILITY_URL));
+        assertThat(editFormName, is(EDIT_FACILITY_VIEW));
         FacilityForm expectedFacilityForm = createFacilityForm(name, country, region, district, province, phoneNumber, addPhoneNumber1, addPhoneNumber2, addPhoneNumber3);
-        FacilityForm facilityForm = (FacilityForm) modelMap.get(EDIT_FACILITY_FORM);
+        FacilityForm facilityForm = (FacilityForm) modelMap.get(FACILITY_FORM);
 
         assertFacilityForm(expectedFacilityForm, facilityForm);
     }

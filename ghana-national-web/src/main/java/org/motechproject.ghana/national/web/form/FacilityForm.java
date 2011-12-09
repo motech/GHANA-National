@@ -2,17 +2,17 @@ package org.motechproject.ghana.national.web.form;
 
 public class FacilityForm {
 
-    private String id="";
-    private String name="";
-    private String country="";
-    private String region="";
-    private String countyDistrict="";
-    private String stateProvince="";
-    private String phoneNumber="";
-    private String additionalPhoneNumber1="";
-    private String additionalPhoneNumber2="";
-    private String additionalPhoneNumber3="";
-    private String motechId="";
+    private String id;
+    private String name;
+    private String country;
+    private String region;
+    private String countyDistrict;
+    private String stateProvince;
+    private String phoneNumber;
+    private String additionalPhoneNumber1;
+    private String additionalPhoneNumber2;
+    private String additionalPhoneNumber3;
+    private String motechId;
 
     public FacilityForm(String id, String motechId, String name, String country, String region, String countyDistrict, String stateProvince, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) {
         this.id = id;
@@ -32,7 +32,7 @@ public class FacilityForm {
     }
 
     public String getName() {
-        return name.trim();
+        return name;
     }
 
     public void setName(String name) {
@@ -40,7 +40,7 @@ public class FacilityForm {
     }
 
     public String getCountry() {
-        return country.trim();
+        return country;
     }
 
     public void setCountry(String country) {
@@ -48,7 +48,7 @@ public class FacilityForm {
     }
 
     public String getRegion() {
-        return region.trim();
+        return region;
     }
 
     public void setRegion(String region) {
@@ -56,7 +56,7 @@ public class FacilityForm {
     }
 
     public String getCountyDistrict() {
-        return countyDistrict.trim();
+        return countyDistrict;
     }
 
     public void setCountyDistrict(String countyDistrict) {
@@ -64,7 +64,7 @@ public class FacilityForm {
     }
 
     public String getStateProvince() {
-        return stateProvince.trim();
+        return stateProvince;
     }
 
     public void setStateProvince(String stateProvince) {
@@ -72,7 +72,7 @@ public class FacilityForm {
     }
 
     public String getPhoneNumber() {
-        return phoneNumber.trim();
+        return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
@@ -80,7 +80,7 @@ public class FacilityForm {
     }
 
     public String getAdditionalPhoneNumber1() {
-        return additionalPhoneNumber1.trim();
+        return additionalPhoneNumber1;
     }
 
     public void setAdditionalPhoneNumber1(String additionalPhoneNumber1) {
@@ -88,7 +88,7 @@ public class FacilityForm {
     }
 
     public String getAdditionalPhoneNumber2() {
-        return additionalPhoneNumber2.trim();
+        return additionalPhoneNumber2;
     }
 
     public void setAdditionalPhoneNumber2(String additionalPhoneNumber2) {
@@ -96,7 +96,7 @@ public class FacilityForm {
     }
 
     public String getAdditionalPhoneNumber3() {
-        return additionalPhoneNumber3.trim();
+        return additionalPhoneNumber3;
     }
 
     public void setAdditionalPhoneNumber3(String additionalPhoneNumber3) {
@@ -104,7 +104,7 @@ public class FacilityForm {
     }
 
     public String getId() {
-        return id.trim();
+        return id;
     }
 
     public void setId(String id) {
@@ -116,6 +116,6 @@ public class FacilityForm {
     }
 
     public String getMotechId() {
-        return motechId.trim();
+        return motechId;
     }
 }

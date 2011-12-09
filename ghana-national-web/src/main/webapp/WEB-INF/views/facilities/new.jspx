@@ -8,8 +8,8 @@
     <script src="${facility_field_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${create_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/facilities/create" var="form_url"/>
-    <form:form id="createFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Facility"
-               commandName="createFacilityForm">
+    <form:form id="facilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Facility"
+               commandName="facilityForm">
         <spring:message code="facility_name" var="facility_name" htmlEscape="false"/>
         <spring:message code="facility_country" var="facility_country" htmlEscape="false"/>
         <spring:message code="facility_region" var="facility_region" htmlEscape="false"/>
@@ -31,6 +31,9 @@
         <spring:message code="facility_phone_number_incorrect_msg" var="facility_phone_number_incorrect_msg"
                         htmlEscape="false"/>
 
+        <c:if test="${message}">
+            <h3>facility created successfully.</h3>
+        </c:if>
         <div>
             <label for="name" class="formLabel">${fn:escapeXml(facility_name)} *:</label>
             <form:input path="name" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_name)}"/>

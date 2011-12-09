@@ -26,18 +26,20 @@ import java.util.Locale;
 @Controller
 @RequestMapping(value = "/admin/facilities")
 public class FacilityController {
-    public static final String CREATE_FACILITY_FORM = "createFacilityForm";
+    public static final String FACILITY_FORM = "facilityForm";
     public static final String SEARCH_FACILITY_FORM = "searchFacilityForm";
-    static final String EDIT_FACILITY_FORM = "editFacilityForm";
-    public static final String SUCCESS = "facilities/success";
-    public static final String NEW_FACILITY_URL = "facilities/new";
-    public static final String SEARCH_FACILITY_URL = "facilities/search";
-    static final String EDIT_FACILITY_URL = "facilities/edit";
+
+    public static final String SUCCESS_VIEW = "facilities/success";
+    public static final String NEW_FACILITY_VIEW = "facilities/new";
+    public static final String SEARCH_FACILITY_VIEW = "facilities/search";
+    static final String EDIT_FACILITY_VIEW = "facilities/edit";
 
     public static final String FACILITY_ID = "id";
+
     private FacilityService facilityService;
     private MessageSource messageSource;
     private FacilityHelper facilityHelper;
+    private static final String NEW_FACILITY_REDIRECT_URL = "/admin/facilities/new";
 
     public FacilityController() {
     }
@@ -52,9 +54,9 @@ public class FacilityController {
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newFacilityForm(ModelMap modelMap) {
-        modelMap.put(CREATE_FACILITY_FORM, new FacilityForm());
+        modelMap.put(FACILITY_FORM, new FacilityForm());
         modelMap.mergeAttributes(facilityHelper.locationMap());
-        return NEW_FACILITY_URL;
+        return NEW_FACILITY_VIEW;
     }
 
     @ApiSession
@@ -67,8 +69,9 @@ public class FacilityController {
                     createFacilityForm.getAdditionalPhoneNumber1(), createFacilityForm.getAdditionalPhoneNumber2(),
                     createFacilityForm.getAdditionalPhoneNumber3());
         } catch (FacilityAlreadyFoundException e) {
-            handleExistingFacilityError(bindingResult, modelMap, messageSource.getMessage("facility_already_exists", null, Locale.getDefault()));
-            return NEW_FACILITY_URL;
+            handleExistingFacilityError(bindingResult, modelMap, messageSource.getMessage("facility_already_exists", null, Locale.getDefault()), FACILITY_FORM);
+            modelMap.mergeAttributes(facilityHelper.locationMap());
+            return NEW_FACILITY_VIEW;
         }
         return getFacilityForId(modelMap, facilityId);
     }
@@ -78,7 +81,7 @@ public class FacilityController {
     public String searchFacilityForm(ModelMap modelMap) {
         modelMap.put(SEARCH_FACILITY_FORM, new SearchFacilityForm());
         modelMap.mergeAttributes(facilityHelper.locationMap());
-        return SEARCH_FACILITY_URL;
+        return SEARCH_FACILITY_VIEW;
     }
 
     @ApiSession
@@ -89,13 +92,13 @@ public class FacilityController {
                 searchFacilityForm.getCountyDistrict(), searchFacilityForm.getStateProvince());
         List<FacilityForm> requestedFacilities = new ArrayList<FacilityForm>();
         for (Facility facility : searchResults) {
-             requestedFacilities.add(new FacilityForm(facility.mrsFacilityId(), facility.motechId(), facility.name(), facility.country(),
-                     facility.region(),facility.district(),facility.province(),facility.phoneNumber(),facility.additionalPhoneNumber1(),
-                     facility.additionalPhoneNumber2(), facility.additionalPhoneNumber3()));
+            requestedFacilities.add(new FacilityForm(facility.mrsFacilityId(), facility.motechId(), facility.name(), facility.country(),
+                    facility.region(), facility.district(), facility.province(), facility.phoneNumber(), facility.additionalPhoneNumber1(),
+                    facility.additionalPhoneNumber2(), facility.additionalPhoneNumber3()));
         }
         modelMap.put("requestedFacilities", requestedFacilities);
         modelMap.mergeAttributes(facilityHelper.locationMap());
-        return SEARCH_FACILITY_URL;
+        return SEARCH_FACILITY_VIEW;
     }
 
     @ApiSession
@@ -109,22 +112,23 @@ public class FacilityController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String updateFacility(@Valid FacilityForm updateFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
         try {
-            facilityService.update(updateFacilityForm.getId(), updateFacilityForm.getMotechId(), updateFacilityForm.getName(), updateFacilityForm.getCountry(), updateFacilityForm.getRegion(),
+            facilityService.update(updateFacilityForm.getId(), updateFacilityForm.getMotechId(),
+                    updateFacilityForm.getName(), updateFacilityForm.getCountry(), updateFacilityForm.getRegion(),
                     updateFacilityForm.getCountyDistrict(), updateFacilityForm.getStateProvince(), updateFacilityForm.getPhoneNumber(),
                     updateFacilityForm.getAdditionalPhoneNumber1(), updateFacilityForm.getAdditionalPhoneNumber2(),
                     updateFacilityForm.getAdditionalPhoneNumber3());
-            return SUCCESS;
+            return SUCCESS_VIEW;
         } catch (FacilityNotFoundException e) {
-            handleExistingFacilityError(bindingResult, modelMap, messageSource.getMessage("facility_does_not_exist", null, Locale.getDefault()));
+            return "redirect:" + NEW_FACILITY_REDIRECT_URL;
         }
-        return NEW_FACILITY_URL;
     }
 
     private String getFacilityForId(ModelMap modelMap, String facilityId) {
         Facility facility = facilityService.getFacility(facilityId);
-        modelMap.addAttribute(EDIT_FACILITY_FORM, copyFacilityValuesToForm(facility));
+        modelMap.addAttribute(FACILITY_FORM, copyFacilityValuesToForm(facility));
+        modelMap.addAttribute("message", "facility created successfully.");
         modelMap.mergeAttributes(facilityHelper.locationMap());
-        return EDIT_FACILITY_URL;
+        return EDIT_FACILITY_VIEW;
     }
 
     private FacilityForm copyFacilityValuesToForm(Facility facility) {
@@ -143,9 +147,8 @@ public class FacilityController {
         return facilityForm;
     }
 
-    private void handleExistingFacilityError(BindingResult bindingResult, ModelMap modelMap, String message) {
-        modelMap.mergeAttributes(facilityHelper.locationMap());
-        bindingResult.addError(new FieldError(CREATE_FACILITY_FORM, "name", message));
+    private void handleExistingFacilityError(BindingResult bindingResult, ModelMap modelMap, String message, String formName) {
+        bindingResult.addError(new FieldError(formName, "name", message));
         modelMap.mergeAttributes(bindingResult.getModel());
     }
 }

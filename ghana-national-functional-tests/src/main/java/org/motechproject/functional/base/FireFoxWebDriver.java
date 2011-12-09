@@ -7,13 +7,8 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-
 @Component
 public class FireFoxWebDriver extends BaseWebDriver {
-
-    @Value("#{functionalTestProperties['firefox.loc']}")
-    private String firefoxLocation;
 
     @Value("#{functionalTestProperties['firefox.display']}")
     private String firefoxDisplay;
@@ -22,7 +17,7 @@ public class FireFoxWebDriver extends BaseWebDriver {
         if (driver == null) {
             FirefoxProfile profile = new FirefoxProfile();
             profile.setEnableNativeEvents(true);
-            FirefoxBinary firefoxBinary = new FirefoxBinary(new File(firefoxLocation));
+            FirefoxBinary firefoxBinary = new FirefoxBinary();
             firefoxBinary.setEnvironmentProperty("DISPLAY", System.getProperty("functional.test.display", ":0.0"));
             driver = new FirefoxDriver(firefoxBinary, profile);
         }
