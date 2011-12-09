@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.model.MotechAuditableDataObject;
+import org.motechproject.mrs.model.MRSPatient;
 
 @TypeDiscriminator("doc.type === 'Patient'")
 public class Patient extends MotechAuditableDataObject {
@@ -12,16 +13,16 @@ public class Patient extends MotechAuditableDataObject {
     @JsonProperty
     private String mrsPatientId;
     @JsonIgnore
-    private org.motechproject.mrs.model.Patient mrsPatient;
+    private MRSPatient mrsPatient;
 
     public Patient() {
     }
 
-    public Patient(org.motechproject.mrs.model.Patient mrsPatient) {
+    public Patient(MRSPatient mrsPatient) {
         this.mrsPatient = mrsPatient;
     }
 
-    public org.motechproject.mrs.model.Patient mrsPatient() {
+    public MRSPatient mrsPatient() {
         return mrsPatient;
     }
 
