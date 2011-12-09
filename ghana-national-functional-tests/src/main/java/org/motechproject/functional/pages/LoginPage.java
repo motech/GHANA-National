@@ -26,7 +26,7 @@ public class LoginPage {
     }
 
     public boolean LoginAs(String UserName, String Password) {
-        driver.navigate().to("http://" + host + ":" + port + LOGIN_PATH);
+        driver.get("http://" + host + ":" + port + LOGIN_PATH);
 
         WebElement uName = driver.findElement(By.name("j_username"));
         uName.sendKeys(UserName);

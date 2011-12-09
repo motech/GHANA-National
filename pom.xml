@@ -23,6 +23,7 @@
         <exec-maven-plugin.version>1.1.1</exec-maven-plugin.version>
         <environment>qa</environment>
         <openmrs.skip>false</openmrs.skip>
+        <drop.db.skip>false</drop.db.skip>
     </properties>
     <repositories>
         <repository>

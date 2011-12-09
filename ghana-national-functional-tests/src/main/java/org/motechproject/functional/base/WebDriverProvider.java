@@ -37,11 +37,8 @@ public class WebDriverProvider {
                     return driver.findElement(By.id(elementid)).isDisplayed();
                 }
             });
-        } catch (ElementNotFoundException e) {
-
+        } catch (ElementNotFoundException ignored) {
         }
-
         return true;
     }
-
 }

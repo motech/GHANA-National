@@ -61,6 +61,59 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sql-maven-plugin</artifactId>
+                <version>1.5</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>5.1.13</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <driver>${mysql.driver}</driver>
+                    <username>${mysql.user}</username>
+                    <password>${mysql.password}</password>
+                    <url>${mysql.url}</url>
+                    <skip>${drop.db.skip}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>drop-db</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <autocommit>true</autocommit>
+                            <sqlCommand>
+                                drop database openmrs_test;
+                            </sqlCommand>
+                            <onError>continue</onError>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>create-db</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <autocommit>true</autocommit>
+                            <sqlCommand>
+                                create database openmrs_test default charset utf8;
+                                grant all on openmrs_test.* to 'openmrs'@'localhost' identified by
+                                'password';
+                                grant all on openmrs_test.* to 'openmrs'@'%' identified by 'password';
+                                flush privileges;
+                                use openmrs_test;
+                            </sqlCommand>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>2.0.1</version>
@@ -77,7 +130,7 @@
                         <configuration>
                             <changeLogFile>../build/sql/master.xml</changeLogFile>
                             <driver>${mysql.driver}</driver>
-                            <url>${mysql.url}</url>
+                            <url>${mysql.url}/${mysql.db}</url>
                             <username>${mysql.user}</username>
                             <password>${mysql.password}</password>
                         </configuration>

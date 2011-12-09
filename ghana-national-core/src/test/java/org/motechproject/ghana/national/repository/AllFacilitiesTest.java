@@ -257,8 +257,6 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
                 .mrsFacility(updatedMRSFacility);
 
         allFacilities.update(facility);
-
-
     }
 
     @After
