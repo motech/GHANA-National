@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -37,6 +38,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.domain.Constants.PERSON_ATTRIBUTE_TYPE_EMAIL;
+import static org.motechproject.ghana.national.domain.Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER;
+import static org.motechproject.ghana.national.domain.Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE;
 
 public class StaffControllerTest {
 
@@ -97,11 +101,13 @@ public class StaffControllerTest {
             put("openMRSUser", openMRSuser);
             put("password", "P@ssw0rd");
         }};
+        final MRSUser mrsUser = form.createUser();
         when(mockStaffService.saveUser(any(MRSUser.class))).thenReturn(test);
+        when(mockStaffService.getUserById(openMRSuser.getSystemId())).thenReturn(mrsUser);
 
         String view = controller.createUser(form, bindingResult, model);
 
-        assertEquals(StaffController.SUCCESS, view);
+        assertEquals(StaffController.EDIT_STAFF_URL, view);
         verify(model).put("userId", "1234");
         verify(model).put("userName", "Jack H Daniels");
 
@@ -116,35 +122,39 @@ public class StaffControllerTest {
 
     @Test
     public void shouldAddNewNonAdminUser() throws UserAlreadyExistsException {
+
+        String userId = "1234";
         StaffForm form = new StaffForm();
         form.setEmail("jack@daniels.com");
         form.setFirstName("Jack");
         form.setMiddleName("H");
         form.setLastName("Daniels");
         form.setPhoneNumber("1234");
+        form.setStaffId(userId);
         form.setRole(StaffType.Role.COMMUNITY_HEALTH_OPERATOR.key());
 
         ModelMap model = mock(ModelMap.class);
-        String userId = "1234";
         final org.openmrs.User openMRSuser = new org.openmrs.User();
-        openMRSuser.setSystemId("1234");
+        openMRSuser.setSystemId(userId);
         Map test = new HashMap() {{
             put("openMRSUser", openMRSuser);
             put("password", "P@ssw0rd");
         }};
         when(mockStaffService.saveUser(any(MRSUser.class))).thenReturn(test);
         when(mockIdentifierGenerationService.newStaffId()).thenReturn(userId);
-
+        final MRSUser mrsUser = new MRSUser().systemId(userId);
+        when(mockStaffService.getUserById(openMRSuser.getSystemId())).thenReturn(mrsUser);
+        
         String view = controller.createUser(form, mockBindingResult, model);
 
-        assertEquals(StaffController.SUCCESS, view);
-        verify(model).put("userId", "1234");
+        assertEquals(StaffController.EDIT_STAFF_URL, view);
+        verify(model).put("userId", userId);
         verify(model).put("userName", "Jack H Daniels");
 
         ArgumentCaptor<MRSUser> captor = ArgumentCaptor.forClass(MRSUser.class);
         verify(mockStaffService).saveUser(captor.capture());
         MRSUser captured = captor.getValue();
-        assertEquals(userId, captured.getId());
+        assertEquals(userId, captured.getSystemId());
         assertEquals(form.getRole(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
         assertEquals(form.getEmail(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_EMAIL));
         assertEquals(form.getPhoneNumber(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER));
@@ -204,7 +214,7 @@ public class StaffControllerTest {
         staffForm.setRole(role);
 
         ModelMap modelMap = new ModelMap();
-        MRSUser user1 = new MRSUser();
+        MRSUser user1 = new MRSUser().systemId(staffID);
         user1.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, phoneNumber));
         user1.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, email));
         user1.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role));
@@ -231,14 +241,13 @@ public class StaffControllerTest {
         assertEquals(form.getRole(), role);
     }
 
-
     @Test
     public void shouldReturnDetailsOfStaffToEdit() {
         String staffId = "123";
         String firstName = "fname";
         String middleName = "maname";
         String lastName = "lname";
-        String email = "test@gmail.com";
+        String email = null;
         String phoneNumber = "0987654321";
         String role = "CHV";
         final String EDIT_STAFF_URL = "staffs/edit";
@@ -249,10 +258,13 @@ public class StaffControllerTest {
 
         MRSUser mrsUser = mock(MRSUser.class);
         when(mockStaffService.getUserById(staffId)).thenReturn(mrsUser);
+        when(mrsUser.getSystemId()).thenReturn(staffId);
         when(mrsUser.getFirstName()).thenReturn(firstName);
         when(mrsUser.getMiddleName()).thenReturn(middleName);
         when(mrsUser.getLastName()).thenReturn(lastName);
         when(mrsUser.getSecurityRole()).thenReturn(role);
+        when(mrsUser.getAttributes()).thenReturn(asList(new Attribute(PERSON_ATTRIBUTE_TYPE_EMAIL, email),
+                new Attribute(PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, phoneNumber), new Attribute(PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role)));
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setParameter("Id", staffId);
@@ -267,6 +279,11 @@ public class StaffControllerTest {
 
     private void assertStaffForm(StaffForm expectedStaffForm, StaffForm staffForm) {
         assertThat(staffForm.getFirstName(), is(equalTo(expectedStaffForm.getFirstName())));
+        assertThat(staffForm.getLastName(), is(equalTo(expectedStaffForm.getLastName())));
+        assertThat(staffForm.getMiddleName(), is(equalTo(expectedStaffForm.getMiddleName())));
+        assertThat(staffForm.getRole(), is(equalTo(expectedStaffForm.getRole())));
+        assertThat(staffForm.getStaffId(), is(equalTo(expectedStaffForm.getStaffId())));
+        assertThat(staffForm.getEmail(), is(equalTo(expectedStaffForm.getEmail())));
     }
 
     private StaffForm createStaffForm(String staffId, String firstName, String middleName, String lastName, String email, String phoneNumber, String role) {

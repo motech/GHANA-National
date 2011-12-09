@@ -6,6 +6,7 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.FacilityVO;
+import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
@@ -91,10 +92,10 @@ public class FacilityHelperTest {
 
     private List<Facility> populateData() {
         List<Facility> facilities = new ArrayList<Facility>();
-        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 1", "Utopia", "Region 1", "District 1", "Province 1")));
-        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 2", "Utopia", "Region 1", "District 1", "Province 2")));
-        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 3", "Utopia", "Region 3", "District 6", null)));
-        facilities.add(new Facility(new org.motechproject.mrs.model.Facility("Facility 4", "Utopia", "Region 4", null, null)));
+        facilities.add(new Facility(new MRSFacility("Facility 1", "Utopia", "Region 1", "District 1", "Province 1")));
+        facilities.add(new Facility(new MRSFacility("Facility 2", "Utopia", "Region 1", "District 1", "Province 2")));
+        facilities.add(new Facility(new MRSFacility("Facility 3", "Utopia", "Region 3", "District 6", null)));
+        facilities.add(new Facility(new MRSFacility("Facility 4", "Utopia", "Region 4", null, null)));
         return facilities;
     }
 }

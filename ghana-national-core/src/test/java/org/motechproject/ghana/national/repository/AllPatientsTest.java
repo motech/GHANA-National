@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.mrs.model.Facility;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.services.MRSPatientAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,7 +49,7 @@ public class AllPatientsTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void shouldSaveAPatient() {
-        final Facility facility = new Facility("1", "facility", "country", "region", "district", "state");
+        final MRSFacility facility = new MRSFacility("1", "facility", "country", "region", "district", "state");
         final String first = "first";
         final String middle = "middle";
         final String last = "last";

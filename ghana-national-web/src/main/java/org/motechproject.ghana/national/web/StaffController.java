@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.web;
 
-import ch.lambdaj.Lambda;
 import org.motechproject.ghana.national.domain.StaffType;
 import org.motechproject.ghana.national.helper.StaffHelper;
 import org.motechproject.ghana.national.service.EmailTemplateService;
@@ -28,12 +27,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.*;
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.hamcrest.Matchers.equalTo;
-import static org.motechproject.ghana.national.domain.Constants.PERSON_ATTRIBUTE_TYPE_EMAIL;
-import static org.motechproject.ghana.national.domain.Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER;
-import static org.motechproject.ghana.national.domain.Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE;
+import static org.motechproject.ghana.national.domain.Constants.*;
 
 @Controller
 @RequestMapping(value = "/admin/staffs")
@@ -138,14 +135,18 @@ public class StaffController {
         staffForm.setFirstName(mrsUser.getFirstName());
         staffForm.setMiddleName(mrsUser.getMiddleName());
         staffForm.setLastName(mrsUser.getLastName());
-        staffForm.setEmail(attrValue(mrsUser, PERSON_ATTRIBUTE_TYPE_EMAIL));
-        staffForm.setPhoneNumber(attrValue(mrsUser, PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER));
-        staffForm.setRole(attrValue(mrsUser, PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
+        List<Attribute> attributeList = mrsUser.getAttributes();
+        if (isNotEmpty(attributeList)) {
+            staffForm.setEmail(attrValue(attributeList, PERSON_ATTRIBUTE_TYPE_EMAIL));
+            staffForm.setPhoneNumber(attrValue(attributeList, PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER));
+            staffForm.setRole(attrValue(attributeList, PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
+        }
         return staffForm;
     }
 
-    private String attrValue(MRSUser mrsUser, String key) {
-        return Lambda.<Attribute>selectFirst(mrsUser.getAttributes(), having(on(Attribute.class).name(), equalTo(key))).value();
+    private String attrValue(List<Attribute> attributes, String key) {
+        List<Attribute> filteredItems = select(attributes, having(on(Attribute.class).name(), equalTo(key)));
+        return isNotEmpty(filteredItems) ? filteredItems.get(0).value() : null;
     }
 
     @ApiSession
@@ -162,13 +163,13 @@ public class StaffController {
         final List<MRSUser> mrsUsers = staffService.searchStaff(staffForm.getStaffId(), staffForm.getFirstName(),
                 staffForm.getMiddleName(), staffForm.getLastName(), staffForm.getPhoneNumber(), staffForm.getRole());
 
-        final ArrayList<StaffForm> requestedUsers = new ArrayList<StaffForm>();
+        final ArrayList<StaffForm> staffForms = new ArrayList<StaffForm>();
         for (MRSUser mrsUser : mrsUsers) {
-            requestedUsers.add(new StaffForm(mrsUser.getId(), mrsUser.getSystemId(), mrsUser.getFirstName(), mrsUser.getMiddleName(), mrsUser.getLastName(),
+            staffForms.add(new StaffForm(mrsUser.getId(), mrsUser.getSystemId(), mrsUser.getFirstName(), mrsUser.getMiddleName(), mrsUser.getLastName(),
                     staffHelper.getEmail(mrsUser), staffHelper.getPhoneNumber(mrsUser), staffHelper.getRole(mrsUser)));
         }
         modelMap.put(SEARCH_STAFF_FORM, new StaffForm());
-        modelMap.put(REQUESTED_STAFFS, requestedUsers);
+        modelMap.put(REQUESTED_STAFFS, staffForms);
         modelMap.addAttribute("roles", staffService.fetchAllRoles());
         return SEARCH_STAFF;
     }

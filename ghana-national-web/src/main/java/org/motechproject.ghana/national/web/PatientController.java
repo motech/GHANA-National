@@ -11,7 +11,7 @@ import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.web.form.CreatePatientForm;
 import org.motechproject.mrs.model.Attribute;
-import org.motechproject.mrs.model.Facility;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.openmrs.patient.UnallowedIdentifierException;
@@ -114,7 +114,7 @@ public class PatientController {
         }
         org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(patientID, createPatientForm.getFirstName(),
                 createPatientForm.getMiddleName(), createPatientForm.getLastName(), createPatientForm.getPreferredName(), createPatientForm.getDateOfBirth(), createPatientForm.getEstimatedDateOfBirth(), createPatientForm.getSex(),
-                createPatientForm.getAddress(), attributes, new Facility(createPatientForm.getFacilityId()));
+                createPatientForm.getAddress(), attributes, new MRSFacility(createPatientForm.getFacilityId()));
 
         return new Patient(mrsPatient);
     }

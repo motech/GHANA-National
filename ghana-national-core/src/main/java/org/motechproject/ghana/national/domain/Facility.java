@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.model.MotechAuditableDataObject;
+import org.motechproject.mrs.model.MRSFacility;
 
 @TypeDiscriminator("doc.type === 'Facility'")
 public class Facility extends MotechAuditableDataObject {
@@ -23,16 +24,16 @@ public class Facility extends MotechAuditableDataObject {
     private String motechId;
 
     @JsonIgnore
-    private org.motechproject.mrs.model.Facility mrsFacility;
+    private MRSFacility mrsFacility;
 
     public Facility() {
     }
 
-    public Facility(org.motechproject.mrs.model.Facility mrsFacility) {
+    public Facility(MRSFacility mrsFacility) {
         this.mrsFacility = mrsFacility;
     }
 
-    public Facility mrsFacility(org.motechproject.mrs.model.Facility mrsFacility) {
+    public Facility mrsFacility(MRSFacility mrsFacility) {
         this.mrsFacility = mrsFacility;
         return this;
     }
@@ -73,7 +74,7 @@ public class Facility extends MotechAuditableDataObject {
         return this;
     }
 
-    public org.motechproject.mrs.model.Facility mrsFacility() {
+    public MRSFacility mrsFacility() {
         return mrsFacility;
     }
 
@@ -110,7 +111,7 @@ public class Facility extends MotechAuditableDataObject {
         return phoneNumber;
     }
 
-    public org.motechproject.mrs.model.Facility getMrsFacility() {
+    public MRSFacility getMrsFacility() {
         return mrsFacility;
     }
 

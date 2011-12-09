@@ -7,7 +7,7 @@ import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.Attribute;
-import org.motechproject.mrs.model.Facility;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
@@ -40,7 +40,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             RegisterClientForm registerClientForm = (RegisterClientForm) event.getParameters().get(FORM_BEAN);
             org.motechproject.mrs.model.Patient mrsPatient = new org.motechproject.mrs.model.Patient(registerClientForm.getMotechId(), registerClientForm.getFirstName(),
                     registerClientForm.getMiddleName(), registerClientForm.getLastName(), registerClientForm.getPrefferedName(), registerClientForm.getDateOfBirth(), registerClientForm.getEstimatedBirthDate(),
-                    registerClientForm.getSex(), registerClientForm.getAddress(), getPatientAttributes(registerClientForm), new Facility(registerClientForm.getFacilityId()));
+                    registerClientForm.getSex(), registerClientForm.getAddress(), getPatientAttributes(registerClientForm), new MRSFacility(registerClientForm.getFacilityId()));
 
             patientService.registerPatient(new Patient(mrsPatient), registerClientForm.getRegistrantType(), registerClientForm.getMotherMotechId());
         } catch (Exception e) {
