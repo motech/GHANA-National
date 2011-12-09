@@ -6,6 +6,7 @@ import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.tools.StartsWithMatcher;
+import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class FacilityService {
 
     public String create(String name, String country, String region, String district, String province, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) throws FacilityAlreadyFoundException {
         final List<Facility> facilities = allFacilities.facilitiesByName(name);
-        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(name, country, region, district, province);
+        final MRSFacility mrsFacility = new MRSFacility(name, country, region, district, province);
         if (isDuplicate(facilities, mrsFacility, phoneNumber)) {
             throw new FacilityAlreadyFoundException();
         }
@@ -59,9 +60,9 @@ public class FacilityService {
         return filteredFacilities;
     }
 
-    private boolean isDuplicate(List<Facility> facilities, org.motechproject.mrs.model.Facility mrsFacility, String phoneNumber) {
+    private boolean isDuplicate(List<Facility> facilities, MRSFacility mrsFacility, String phoneNumber) {
         for (Facility facility : facilities) {
-            org.motechproject.mrs.model.Facility thatMrsFacility = facility.mrsFacility();
+            MRSFacility thatMrsFacility = facility.mrsFacility();
             boolean isFacilityNotUnique = false;
             if ((thatMrsFacility != null
                     && StringUtils.equals(thatMrsFacility.getName(), mrsFacility.getName())
@@ -93,7 +94,7 @@ public class FacilityService {
             throw new FacilityNotFoundException();
         }
 
-        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(facilityId, name, country, region, district, province);
+        final MRSFacility mrsFacility = new MRSFacility(facilityId, name, country, region, district, province);
         final Facility facilityToBeSaved = new Facility(mrsFacility).phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber1).
                 additionalPhoneNumber2(additionalPhoneNumber2).additionalPhoneNumber3(additionalPhoneNumber3).motechId(motechId).mrsFacilityId(facilityId);
         save(facilityToBeSaved);

@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.services.MRSFacilityAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -52,12 +53,12 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         String additionalPhone1 = "12345";
         String additionalPhone2 = "321234";
         String additionalPhone3 = "33344";
-        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(facilityName);
+        final MRSFacility mrsFacility = new MRSFacility(facilityName);
         Facility facility = facility(phoneNumber, additionalPhone1, additionalPhone2, additionalPhone3, mrsFacility);
         final int initialSize = allFacilities.getAll().size();
 
         final String facilityId = "12";
-        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(new org.motechproject.mrs.model.Facility(facilityId, facilityName,
+        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(new MRSFacility(facilityId, facilityName,
                 "country", "region", "district", "province"));
 
         allFacilities.add(facility);
@@ -83,12 +84,12 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         final String phoneNumber = "0123456789";
         final String mrsFacilityId = "12";
 
-        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(mrsFacilityId,
+        final MRSFacility mrsFacility = new MRSFacility(mrsFacilityId,
                 facilityName, country, region, district, province);
         Facility facility = new Facility(mrsFacility)
                 .phoneNumber(phoneNumber);
 
-        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(new org.motechproject.mrs.model.Facility(mrsFacilityId, facilityName,
+        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(new MRSFacility(mrsFacilityId, facilityName,
                 "country", "region", "district", "province"));
         allFacilities.add(facility);
         when(mockMrsFacilityAdaptor.getFacilities(facilityName)).thenReturn(Arrays.asList(mrsFacility));
@@ -109,7 +110,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         final String province = "province";
         final String mrsFacilityId = "13";
 
-        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(mrsFacilityId,
+        final MRSFacility mrsFacility = new MRSFacility(mrsFacilityId,
                 facilityName, country, region, district, province);
         when(mockMrsFacilityAdaptor.getFacilities(facilityName)).thenReturn(Arrays.asList(mrsFacility));
 
@@ -131,9 +132,9 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         final String region = "Region 1";
         final String district = "District 1";
         final String province = "Province 1";
-        final org.motechproject.mrs.model.Facility facility = new org.motechproject.mrs.model.Facility(mrsFacilityId, facilityName, country, region, district, province);
+        final MRSFacility facility = new MRSFacility(mrsFacilityId, facilityName, country, region, district, province);
 
-        when(mockMrsFacilityAdaptor.saveFacility(facility)).thenReturn(new org.motechproject.mrs.model.Facility(mrsFacilityId, facilityName,
+        when(mockMrsFacilityAdaptor.saveFacility(facility)).thenReturn(new MRSFacility(mrsFacilityId, facilityName,
                 country, region, district, province));
         allFacilities.add(new Facility(facility));
 
@@ -155,14 +156,14 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void shouldFetchFacilitiesGivenAListOfMRSFacilityIds() {
-        final org.motechproject.mrs.model.Facility anyFacility1 = new org.motechproject.mrs.model.Facility("1", "name", "country", "region", "district", "province");
-        final org.motechproject.mrs.model.Facility anyFacility2 = new org.motechproject.mrs.model.Facility("2", "name", "country", "region", "district", "province");
-        final org.motechproject.mrs.model.Facility anyFacility3 = new org.motechproject.mrs.model.Facility("3", "name", "country", "region", "district", "province");
-        final org.motechproject.mrs.model.Facility anyFacility4 = new org.motechproject.mrs.model.Facility("4", "name", "country", "region", "district", "province");
-        final Facility facility1 = new Facility(new org.motechproject.mrs.model.Facility("1", "name1", "country", "region", "district", "province"));
-        final Facility facility2 = new Facility(new org.motechproject.mrs.model.Facility("2", "name2", "country", "region", "district", "province"));
-        final Facility facility3 = new Facility(new org.motechproject.mrs.model.Facility("3", "name3", "country", "region", "district", "province"));
-        final Facility facility4 = new Facility(new org.motechproject.mrs.model.Facility("4", "name4", "country", "region", "district", "province"));
+        final MRSFacility anyFacility1 = new MRSFacility("1", "name", "country", "region", "district", "province");
+        final MRSFacility anyFacility2 = new MRSFacility("2", "name", "country", "region", "district", "province");
+        final MRSFacility anyFacility3 = new MRSFacility("3", "name", "country", "region", "district", "province");
+        final MRSFacility anyFacility4 = new MRSFacility("4", "name", "country", "region", "district", "province");
+        final Facility facility1 = new Facility(new MRSFacility("1", "name1", "country", "region", "district", "province"));
+        final Facility facility2 = new Facility(new MRSFacility("2", "name2", "country", "region", "district", "province"));
+        final Facility facility3 = new Facility(new MRSFacility("3", "name3", "country", "region", "district", "province"));
+        final Facility facility4 = new Facility(new MRSFacility("4", "name4", "country", "region", "district", "province"));
         when(mockMrsFacilityAdaptor.saveFacility(facility1.mrsFacility())).thenReturn(anyFacility1);
         when(mockMrsFacilityAdaptor.saveFacility(facility2.mrsFacility())).thenReturn(anyFacility2);
         when(mockMrsFacilityAdaptor.saveFacility(facility3.mrsFacility())).thenReturn(anyFacility3);
@@ -185,7 +186,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         String region = "region";
         String country = "country";
 
-        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(facilityId, name, country, region, district, province);
+        final MRSFacility mrsFacility = new MRSFacility(facilityId, name, country, region, district, province);
 
         when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(mrsFacility);
         allFacilities.add(facility("123460987", null, null, null, mrsFacility).motechId(facilityId));
@@ -204,7 +205,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
     public void shouldFindFacilityById() {
         String facilityId = "1234";
         String country = "Country";
-        org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(facilityId, "facilityName", country, "Region", null, null);
+        MRSFacility mrsFacility = new MRSFacility(facilityId, "facilityName", country, "Region", null, null);
         String phoneNumber = "9911002288";
         when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(mrsFacility);
         allFacilities.add(facility(phoneNumber, null, null, null, mrsFacility).motechId(facilityId));
@@ -212,7 +213,7 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         assertThat(allFacilities.findByMrsFacilityId(facilityId).phoneNumber(), is(phoneNumber));
     }
 
-    private Facility facility(String phoneNumber, String additionalPhone1, String additionalPhone2, String additionalPhone3, org.motechproject.mrs.model.Facility mrsFacility) {
+    private Facility facility(String phoneNumber, String additionalPhone1, String additionalPhone2, String additionalPhone3, MRSFacility mrsFacility) {
         return new Facility(mrsFacility)
                 .phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhone1).additionalPhoneNumber2(additionalPhone2)
                 .additionalPhoneNumber3(additionalPhone3);
@@ -241,14 +242,14 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
         String updatedAdditionalPhone2 = "321234";
         String updatedAdditionalPhone3 = "33344";
 
-        final org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(facilityName);
+        final MRSFacility mrsFacility = new MRSFacility(facilityName);
         Facility facility = facility(phoneNumber, additionalPhone1, additionalPhone2, additionalPhone3, mrsFacility);
 
-         when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(new org.motechproject.mrs.model.Facility(facilityId, facilityName,
+         when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(new MRSFacility(facilityId, facilityName,
                 "country", "region", "district", "province"));
         allFacilities.add(facility);
 
-        final org.motechproject.mrs.model.Facility updatedMRSFacility = new org.motechproject.mrs.model.Facility(updatedFacilityName);
+        final MRSFacility updatedMRSFacility = new MRSFacility(updatedFacilityName);
         facility.phoneNumber(updatedPhoneNumber)
                 .additionalPhoneNumber1(updatedAdditionalPhone1)
                 .additionalPhoneNumber2(updatedAdditionalPhone2)

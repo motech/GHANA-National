@@ -7,12 +7,8 @@ import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.web.PatientController;
 import org.motechproject.mrs.model.Attribute;
-import org.motechproject.mrs.model.Facility;
-import org.openmrs.patient.UnallowedIdentifierException;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
@@ -20,7 +16,6 @@ import static ch.lambdaj.Lambda.selectUnique;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.motechproject.ghana.national.tools.Utility.safeToString;
 
 public class CreatePatientFormTest {
     @Test

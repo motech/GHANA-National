@@ -12,6 +12,7 @@ import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.form.SearchFacilityForm;
+import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.ui.ModelMap;
@@ -50,7 +51,7 @@ public class FacilityControllerTest {
 
     @Test
     public void shouldRenderForm() {
-        when(mockFacilityService.facilities()).thenReturn(Arrays.asList(new Facility(new org.motechproject.mrs.model.Facility("facility"))));
+        when(mockFacilityService.facilities()).thenReturn(Arrays.asList(new Facility(new MRSFacility("facility"))));
         assertThat(facilityController.newFacilityForm(new ModelMap()), is(equalTo("facilities/new")));
     }
 
@@ -219,7 +220,7 @@ public class FacilityControllerTest {
     }
 
     private Facility facility(String name, String facilityId, String region, String district, String country, String province, String phoneNumber, String addPhoneNumb1, String addPhoneNumb2, String addPhoneNumb3) {
-        org.motechproject.mrs.model.Facility mrsFacility = new org.motechproject.mrs.model.Facility(name, country, region, district, province);
+        MRSFacility mrsFacility = new MRSFacility(name, country, region, district, province);
         return new Facility().motechId("2134").mrsFacility(mrsFacility).mrsFacilityId(facilityId).phoneNumber(phoneNumber).additionalPhoneNumber1(addPhoneNumb1).additionalPhoneNumber2(addPhoneNumb2).additionalPhoneNumber3(addPhoneNumb3);
     }
 

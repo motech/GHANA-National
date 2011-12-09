@@ -1,17 +1,9 @@
 package org.motechproject.ghana.national.web.form;
 
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
-import org.motechproject.mrs.model.Attribute;
-import org.motechproject.mrs.model.Facility;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-
-import static org.motechproject.ghana.national.tools.Utility.safeToString;
 
 public class CreatePatientForm {
     private RegistrationType registrationMode;

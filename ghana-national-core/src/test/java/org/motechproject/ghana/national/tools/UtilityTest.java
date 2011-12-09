@@ -4,6 +4,7 @@ import ch.lambdaj.function.convert.Converter;
 import ch.lambdaj.group.Group;
 import org.junit.Test;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.mrs.model.MRSFacility;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +30,7 @@ public class UtilityTest {
         final String region = "region";
         ArrayList<Facility> facilities = new ArrayList<Facility>() {
             {
-                add(new Facility(new org.motechproject.mrs.model.Facility("facility", country, region, "district", "state")));
+                add(new Facility(new MRSFacility("facility", country, region, "district", "state")));
             }
         };
         Group<Facility> facilityGroup = group(facilities, by(on(Facility.class).country()), by(on(Facility.class).region()));
