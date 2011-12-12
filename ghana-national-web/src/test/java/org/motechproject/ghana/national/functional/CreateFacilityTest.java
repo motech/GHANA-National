@@ -65,4 +65,5 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
         Assert.assertTrue(createFacilityPage.SubmitDetails());
         homePage.Logout();
     }
+
 }

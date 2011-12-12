@@ -1,10 +1,17 @@
 package org.motechproject.functional.pages;
 
+import org.motechproject.functional.base.WebDriverProvider;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Calendar;
+import java.util.List;
 
 @Component
 public class CreatePatientPage {
@@ -13,7 +20,7 @@ public class CreatePatientPage {
     @CacheLookup
     WebElement motechId;
 
-    @FindBy(id = "registrationMode")
+    @FindBy(name = "registrationMode")
     @CacheLookup
     WebElement SelectRegnMode;
 
@@ -75,11 +82,11 @@ public class CreatePatientPage {
 
     @FindBy(id = "regions")
     @CacheLookup
-    WebElement selectregions;
+    WebElement regionDropDown;
 
     @FindBy(id = "facilities")
     @CacheLookup
-    WebElement selectfacilities;
+    WebElement facilityDropDown;
 
     @FindBy(id = "address")
     @CacheLookup
@@ -89,33 +96,140 @@ public class CreatePatientPage {
     @CacheLookup
     WebElement submitNewPatient;
 
-    public enum  PATIENT_REGN_MODE {AUTO_GEN_ID,PRE_PRINTED_ID}
-    public enum  PATIENT_TYPE {PREGNANT_MOTHER,CHILD_UNDER_5,OTHER}
+    @FindBy(id = "districts")
+    @CacheLookup
+    WebElement districtDropDown;
 
-    public void SetRegistrationMode(PATIENT_REGN_MODE patient_regn_mode) {
+    @FindBy(id = "sub-districts")
+    @CacheLookup
+    WebElement subdistrictDropDown;
+
+    @Autowired
+    WebDriverProvider webDriverProvider;
+
+    private WebDriver driver;
+
+    public enum PATIENT_REGN_MODE {AUTO_GENERATE_ID, USE_PREPRINTED_ID}
+
+    public enum PATIENT_TYPE {PATIENT_MOTHER, CHILD_UNDER_FIVE, OTHER}
+
+    @Autowired
+    public CreatePatientPage(WebDriverProvider webDriverProvider) {
+        this.driver = webDriverProvider.getWebDriver();
+    }
+
+    public CreatePatientPage WithRegistrationMode(PATIENT_REGN_MODE patient_regn_mode) {
         Select selectRegnMode = new Select(SelectRegnMode);
-        selectRegnMode.selectByValue(patient_regn_mode.toString());
+        selectRegnMode.selectByValue(patient_regn_mode.name());
+        return this;
     }
 
-    public void SetPatientType(PATIENT_TYPE patient_type) {
+    public CreatePatientPage WithPatientType(PATIENT_TYPE patient_type) {
         Select selectPatientType = new Select(typeOfPatient);
-        selectPatientType.selectByValue(patient_type.toString());
+        selectPatientType.selectByValue(patient_type.name());
+        return this;
     }
 
-    public void SetPatientName(String patientname) {
+    public CreatePatientPage WithPatientFirstName(String patientname) {
         firstName.sendKeys(patientname);
+        return this;
     }
 
-    public void SetPatientMiddleName(String midname) {
-      middleName.sendKeys(midname);
+    public CreatePatientPage WithPatientMiddleName(String midname) {
+        middleName.sendKeys(midname);
+        return this;
     }
 
-    public void SetPatientLastName(String lstname) {
+    public CreatePatientPage WithPatientLastName(String lstname) {
         lastName.sendKeys(lstname);
+        return this;
     }
 
-    public void SetValue(WebElement elementName,String Value) {
+    public CreatePatientPage WithDateofBirth(Calendar DOB) {
 
+        driver.findElement(By.className("ui-datepicker-trigger")).click();
+        WebElement month = driver.findElement(By.className("ui-datepicker-month"));
+        Select selectmonth = new Select(month);
+        selectmonth.selectByValue(Integer.toString(DOB.get(Calendar.MONTH)));
+        WebElement Year = driver.findElement(By.className("ui-datepicker-year"));
+        Select selectyear = new Select(Year);
+        selectyear.selectByValue(Integer.toString(DOB.get(Calendar.YEAR)));
+//       WebElement datefield = driver.findElement(By.className("ui-state-default"));
+             WebElement table = driver.findElement(By.className("ui-datepicker-calendar"));
+
+        List<WebElement> tds = table.findElements(By.tagName("td"));
+        for (WebElement td : tds) {
+            //Select 20th Date of the month
+            if (td.getText().equals("20")) {
+                td.findElement(By.linkText("20")).click();
+                break;
+            }
+        }
+            return this;
+        }
+
+    public CreatePatientPage WithEstimatedDOB(Boolean estimateddob) {
+        if (!estimateddob)
+            radioestimatedDateOfBirth2.click();
+        else
+            radioestimatedDateOfBirth1.click();
+        return this;
+    }
+
+    public CreatePatientPage WithPatientGender(Boolean Gender) {
+        if (Gender)
+            radiosex1.click();
+        else
+            radiosex2.click();
+        return this;
+    }
+
+    public CreatePatientPage WithInsured(Boolean Insured) {
+        if (Insured)
+            radioinsured1.click();
+        else
+            radioinsured2.click();
+        return this;
+    }
+
+    public CreatePatientPage WithNHIS(String NHISNumber) {
+        nhisNumber.sendKeys(NHISNumber);
+        return this;
+    }
+
+    public CreatePatientPage WithNHISExpirateDate(String expirationdate) {
+        nhisExpirationDate.sendKeys(expirationdate);
+        return this;
+    }
+
+    public CreatePatientPage WithRegion(String regionName) {
+        Select selectRegion = new Select(regionDropDown);
+        selectRegion.selectByValue(regionName);
+        return this;
+    }
+
+    public CreatePatientPage WithDistrict(String districtName) {
+        Select selectDistrict = new Select(districtDropDown);
+        selectDistrict.selectByValue(districtName);
+        return this;
+    }
+
+    public CreatePatientPage WithSubDistrict(String subdistrictName) {
+        Select selectSubDist = new Select(subdistrictDropDown);
+        selectSubDist.selectByValue(subdistrictName);
+        return this;
+    }
+
+    public CreatePatientPage WithFacility(String facilityName) {
+        Select selectFacility = new Select(facilityDropDown);
+//        selectFacility.selectByValue(facilityName);
+        selectFacility.selectByVisibleText(facilityName);
+
+        return this;
+    }
+
+    public void Create() {
+        submitNewPatient.click();
     }
 
 
