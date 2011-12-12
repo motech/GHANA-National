@@ -228,8 +228,14 @@ public class CreatePatientPage {
         return this;
     }
 
-    public void Create() {
+    public boolean Create() {
         submitNewPatient.click();
+        String src = driver.getPageSource();
+        if (src.contains("Patient created successfully"))
+            return true;
+            else
+            return false;
+
     }
 
 

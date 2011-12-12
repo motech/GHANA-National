@@ -37,7 +37,8 @@ public class HomePage {
     public void OpenCreateFacilityPage() {
         WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
         FacilityParentLink.click();
-        myJsExecutor.clickOnLink("newfacility", driver);
+        myJsExecutor.getElementById("newfacility",driver).click();
+        //myJsExecutor.clickOnLink("newfacility", driver);
     }
 
 
