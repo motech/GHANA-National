@@ -1,6 +1,7 @@
 package org.motechproject.functional.pages;
 
 import org.motechproject.functional.base.WebDriverProvider;
+import org.motechproject.functional.util.JavascriptExecutor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -14,6 +15,9 @@ public class HomePage {
 
     @Autowired
     WebDriverProvider webDriverProvider;
+
+    @Autowired
+    JavascriptExecutor javascriptExecutor;
 
     private WebDriver driver;
     private org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(HomePage.class);
@@ -34,28 +38,12 @@ public class HomePage {
 
     public boolean OpenCreateFacilityPage() {
         WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
-
         FacilityParentLink.click();
-        webDriverProvider.WaitForElement_ID("newfacility");
-        driver.findElement(By.id("newfacility")).click();
-        return webDriverProvider.WaitForElement_ID("name");
-//        try {
-//            Actions movetoMenu = new Actions(driver);
-//            movetoMenu.moveToElement(FacilityParentLink).build().perform();
-//            movetoMenu.click();
-//
-//            webDriverProvider.WaitForElement_ID("newfacility");
-//            driver.findElement(By.id("newfacility")).click();
-//
-//            if (webDriverProvider.WaitForElement_ID("name")) {
-//                return true;
-//            }
-//        } catch (Exception e) {
-//            log.debug("Exception from HomePage" + e.getMessage());
-//            System.out.println("Exception from HomePage" + e.getMessage());
-//            return false;
-//        }
-        //return true;
+
+        WebElement newFacilityLink = javascriptExecutor.getElementById("newfacility", driver);
+        newFacilityLink.click();
+
+        return true;
     }
 
     public boolean OpenCreateStaffPage() {
