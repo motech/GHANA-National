@@ -45,15 +45,13 @@ public class StaffController {
     public static final String STAFF_SEQUENTIAL_ID = "Id";
     public static final String STAFF_NAME = "userName";
     public static final String EMAIL = "email";
-    public static final String CREATE_STAFF_FORM = "createStaffForm";
-    static final String EDIT_STAFF_FORM = "editStaffForm";
+    public static final String STAFF_FORM = "staffForm";
     public static final String STAFF_ALREADY_EXISTS = "user_email_already_exists";
     public static final String NEW_STAFF_URL = "staffs/new";
     private EmailTemplateService emailTemplateService;
     public static final String SEARCH_STAFF_FORM = "searchStaffForm";
     public static final String SEARCH_STAFF = "staffs/search";
     static final String EDIT_STAFF_URL = "staffs/edit";
-    public static final String SUCCESS = "staffs/success";
 
     public StaffController() {
     }
@@ -71,8 +69,8 @@ public class StaffController {
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newUser(ModelMap modelMap) {
-        modelMap.addAttribute(CREATE_STAFF_FORM, new StaffForm());
-        modelMap.addAttribute("roles", staffService.fetchAllRoles());
+        modelMap.addAttribute(STAFF_FORM, new StaffForm());
+        populateRoles(modelMap);
         return NEW_STAFF_URL;
     }
 
@@ -93,10 +91,11 @@ public class StaffController {
             if (StaffType.Role.isAdmin(roleOfStaff)) {
                 emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUsername(), (String) userData.get("password"));
             }
+            model.put("successMessage", "Staff created successfully.");
             return getStaffForId(model, openMRSUser.getSystemId());
         } catch (UserAlreadyExistsException e) {
-            bindingResult.addError(new FieldError(CREATE_STAFF_FORM, EMAIL, messageSource.getMessage(STAFF_ALREADY_EXISTS, null, Locale.getDefault())));
-            model.addAttribute("roles", staffService.fetchAllRoles());
+            bindingResult.addError(new FieldError(STAFF_FORM, EMAIL, messageSource.getMessage(STAFF_ALREADY_EXISTS, null, Locale.getDefault())));
+            populateRoles(model);
             model.mergeAttributes(bindingResult.getModel());
             return NEW_STAFF_URL;
         }
@@ -111,20 +110,22 @@ public class StaffController {
 
     @ApiSession
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public String updateStaff (@ModelAttribute("editStaffForm") StaffForm staffForm, BindingResult bindingResult, ModelMap model) {
+    public String updateStaff (@ModelAttribute(StaffController.STAFF_FORM) StaffForm staffForm, BindingResult bindingResult, ModelMap model) {
         MRSUser mrsUser = staffForm.createUser();
         try {
             staffService.updateUser(mrsUser);
-            return SUCCESS;
-        } catch (UserAlreadyExistsException e) {
+            getStaffForId(model, mrsUser.getSystemId());
+            model.put("successMessage", "Staff edited successfully.");
+        } catch (UserAlreadyExistsException ignored) {
+            //cannot happen as the Id is unique.
         }
         return EDIT_STAFF_URL;
     }
 
     private String getStaffForId(ModelMap modelMap, String staffId) {
         MRSUser mrsUser = staffService.getUserById(staffId);
-        modelMap.addAttribute(EDIT_STAFF_FORM, copyStaffValuesToForm(mrsUser));
-        modelMap.addAttribute("roles", staffService.fetchAllRoles());
+        modelMap.addAttribute(STAFF_FORM, copyStaffValuesToForm(mrsUser));
+        populateRoles(modelMap);
         return EDIT_STAFF_URL;
     }
 
@@ -153,7 +154,7 @@ public class StaffController {
     @RequestMapping(value = "search", method = RequestMethod.GET)
     public String searchStaffForm(ModelMap modelMap) {
         modelMap.put(SEARCH_STAFF_FORM, new StaffForm());
-        modelMap.addAttribute("roles", staffService.fetchAllRoles());
+        populateRoles(modelMap);
         return SEARCH_STAFF;
     }
 
@@ -170,8 +171,12 @@ public class StaffController {
         }
         modelMap.put(SEARCH_STAFF_FORM, new StaffForm());
         modelMap.put(REQUESTED_STAFFS, staffForms);
-        modelMap.addAttribute("roles", staffService.fetchAllRoles());
+        populateRoles(modelMap);
         return SEARCH_STAFF;
+    }
+
+    private void populateRoles(ModelMap modelMap) {
+        modelMap.addAttribute("roles", staffService.fetchAllRoles());
     }
 
 }

@@ -94,7 +94,8 @@
                             </td>
                             <td class="action">
                                 <div class="edit">
-                                    <a href="#" title="Edit"></a>
+                                    <spring:url value="/admin/staffs/edit" var="edit_url"/>
+                                    <a href="${edit_url}?Id=${user.staffId}" title="Edit"></a>
                                 </div>
                             </td>
                         </tr>

@@ -11,7 +11,7 @@
         <c:set var="cssClass" value="jsPhone jsRequire" />
     </c:if>
 
-    <label for="${path}" class="formLabel">${fn:escapeXml(label)}:</label>
+    <label for="${path}" class="formLabel">${fn:escapeXml(label)}</label>
     <form:input path="${path}" label="${fn:escapeXml(label)}" maxlength="10" cssClass="${cssClass}" />
     <span id="${path}Error" class='locationAlert alertText formlyInvalid formlyAlert hide'>
         ${fn:escapeXml(errorMsg)}

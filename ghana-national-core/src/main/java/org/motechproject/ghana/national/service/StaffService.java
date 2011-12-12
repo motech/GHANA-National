@@ -40,8 +40,6 @@ public class StaffService {
         return userAdaptor.updateUser(mrsUser);
     }
 
-
-
     public String changePasswordByEmailId(String emailId) {
         String password = "";
         try {
@@ -63,7 +61,7 @@ public class StaffService {
     }
 
     public MRSUser getUserById(String userId) {
-        return userAdaptor.getUserBySystemId(userId);
+        return userAdaptor.getUserByUserName(userId);
     }
 
     public List<MRSUser> searchStaff(String systemId, String firstName, String middleName, String lastName, String phoneNumber, String role) {

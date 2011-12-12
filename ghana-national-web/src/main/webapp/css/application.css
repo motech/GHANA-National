@@ -19,8 +19,15 @@ form {
     padding: 5px;
 }
 
-#main-content {
-
+.success {
+    background: #8FABC7;
+    color: #fff;
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-weight: bold;
+    font-size: 12px;
+    margin: 5px 0;
 }
 
 nav ul {
@@ -94,7 +101,7 @@ nav ul li a:active, nav ul li a.current {
 }
 
 .radio {
-    width:155px;
+    width: 155px;
     float: left;
     padding: 10px 0;
 }

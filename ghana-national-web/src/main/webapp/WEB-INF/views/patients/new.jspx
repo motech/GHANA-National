@@ -210,7 +210,7 @@
             </span>
         </div>
         <div class="form-field">
-            <motech:location id="regions" path="region" label="${facility_region} *"
+            <motech:location id="regions" path="region" label="${facility_region} *:"
                              defaultValue="${facility_region_select}" errorMsg="${facility_region_req_msg}"
                              locations="${regions}"/>
             <span id='facilityIdError' class='alertText formlyInvalid formlyAlert hide'>
@@ -218,12 +218,12 @@
             </span>
         </div>
         <div class="hide form-field">
-            <motech:location id="districts" path="district" label="${facility_district} *"
+            <motech:location id="districts" path="district" label="${facility_district} *:"
                              defaultValue="${facility_district_select}" errorMsg="${facility_district_req_msg}"
                              locations="${districts}"/>
         </div>
         <div class="hide form-field">
-            <motech:location id="sub-districts" path="subDistrict" label="${facility_sub_district} *"
+            <motech:location id="sub-districts" path="subDistrict" label="${facility_sub_district} *:"
                              defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
                              locations="${provinces}"/>
         </div>

@@ -47,8 +47,8 @@ $.UserFormValidator = function() {
 
         if ($("#phoneNumber").val().length == 0 || !phone_regex.test($("#phoneNumber").val())) {
             isValid = false;
-            $("#phoneNumber").html("Please enter valid phone number");
-            $("#phoneNumber").show();
+            $("#phoneNumberError").html("Please enter valid phone number");
+            $("#phoneNumberError").show();
         }
 
         if (!name_reg.test($("#user_first_name").val())) {
@@ -57,13 +57,15 @@ $.UserFormValidator = function() {
             $("#firstName_error").show();
         }
 
-        var role = $("#user_role option:selected").text();
-        if (role == 'Select a role') {
+        var regexMatch = $("#user_role option:selected").text().match(/\(.*?\)/);
+        var role = (regexMatch != null) ? regexMatch[0].substring(1, regexMatch[0].length - 1) : null;
+        console.log(role);
+        if (role == null) {
             isValid = false;
             $("#role_error").html("Please select a role");
             $("#role_error").show();
         }
-        if (role == 'Super Admin' || role == 'Facility Admin' || role == 'CallCenter Admin' || role == 'HealthCare Admin') {
+        if (role == 'Super Administrator' || role == 'Facility Administrator' || role == 'Call Centre Administrator' || role == 'Health Care Administrator') {
             if ($("#user_email").val().length == 0 || !email_regex.test($("#user_email").val())) {
                 isValid = false;
                 $("#email_error").html("Please enter valid email");

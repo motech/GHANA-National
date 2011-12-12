@@ -69,19 +69,19 @@
                              locations="${provinces}"/>
         </div>
         <div>
-            <motech:phone path="phoneNumber" label="${facility_phone_number} *"
+            <motech:phone path="phoneNumber" label="${facility_phone_number} *:"
                           errorMsg="${facility_phone_number_incorrect_msg}" required="true"/>
         </div>
         <div>
-            <motech:phone path="additionalPhoneNumber1" label="${facility_add_phone_number1}"
+            <motech:phone path="additionalPhoneNumber1" label="${facility_add_phone_number1} :"
                           errorMsg="${facility_phone_number_incorrect_msg}"/>
         </div>
         <div>
-            <motech:phone path="additionalPhoneNumber2" label="${facility_add_phone_number2}"
+            <motech:phone path="additionalPhoneNumber2" label="${facility_add_phone_number2} :"
                           errorMsg="${facility_phone_number_incorrect_msg}"/>
         </div>
         <div>
-            <motech:phone path="additionalPhoneNumber3" label="${facility_add_phone_number3}"
+            <motech:phone path="additionalPhoneNumber3" label="${facility_add_phone_number3} :"
                           errorMsg="${facility_phone_number_incorrect_msg}"/>
         </div>
 

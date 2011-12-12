@@ -7,8 +7,12 @@
     <script src="${create_staff_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/staffs/update" var="form_url"/>
 
+    <c:if test="${successMessage ne null}">
+        <br/><span class="success"><c:out value="${successMessage}"/></span><br/><br/>
+    </c:if>
+
     <form:form id="staffForm" action="${fn:escapeXml(form_url)}" method="POST" title="Update a Staff Member"
-               commandName="editStaffForm">
+               commandName="staffForm">
 
         <spring:message code="staff_id" var="staff_id" htmlEscape="false"/>
         <spring:message code="user_first_name" var="user_first_name" htmlEscape="false"/>
@@ -22,8 +26,8 @@
 
 
         <div>
-            <label for="motechId" class="formLabel">${fn:escapeXml(staff_id)}:</label>
-            <form:input path="staffId" size="20" cssClass="jsRequire" disabled="true" />
+            <label for="staffId" class="formLabel">${fn:escapeXml(staff_id)}:</label>
+            <form:input path="staffId" size="20" disabled="true" />
             <form:hidden path="staffId" />
             <form:hidden path="id" />
         </div>
@@ -52,18 +56,18 @@
             <span id='email_error' class='formlyInvalid formlyAlert hide'></span>
         </div>
         <div>
-        ${editStaffForm.role}
             <label class="formLabel" for="user_role">${fn:escapeXml(user_role)} *:</label>
             <form:select id="user_role" path="role">
                 <option parent="select" value="">${fn:escapeXml(user_role_select)}</option>
                 <c:forEach items="${roles}" var="role">
-                    <c:if test="${role.key eq editStaffForm.role}">
-                        <option value="${role.key}" >${role.key} (${role.value})</option>
-                    </c:if>
-                    <c:if test="${role.key ne editStaffForm.role}">
-                        <option value="${role.key}" >${role.key} (${role.value})</option>
-                    </c:if>
-
+                    <c:choose>
+                        <c:when test="${role.key eq staffForm.role}">
+                            <option value="${role.key}" selected="selected">${role.key} (${role.value})</option>
+                        </c:when>
+                        <c:otherwise>
+                            <option value="${role.key}">${role.key} (${role.value})</option>
+                        </c:otherwise>
+                    </c:choose>
                 </c:forEach>
             </form:select>
             <span id='role_error' class='formlyInvalid formlyAlert hide'></span>

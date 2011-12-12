@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.web;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -26,8 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.select;
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertNull;
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -78,7 +81,7 @@ public class StaffControllerTest {
         assertEquals(StaffController.NEW_STAFF_URL, view);
         ArgumentCaptor<StaffForm> captor = ArgumentCaptor.forClass(StaffForm.class);
         verify(model).addAttribute("roles", roles);
-        verify(model).addAttribute(eq("createStaffForm"), captor.capture());
+        verify(model).addAttribute(eq(StaffController.STAFF_FORM), captor.capture());
         StaffForm captured = captor.getValue();
         assertNotNull(captured);
     }
@@ -145,7 +148,7 @@ public class StaffControllerTest {
         when(mockIdentifierGenerationService.newStaffId()).thenReturn(userId);
         final MRSUser mrsUser = new MRSUser().systemId(userId);
         when(mockStaffService.getUserById(openMRSuser.getSystemId())).thenReturn(mrsUser);
-        
+
         String view = controller.createUser(form, mockBindingResult, model);
 
         assertEquals(StaffController.EDIT_STAFF_URL, view);
@@ -164,7 +167,8 @@ public class StaffControllerTest {
 
     private String getAttrValue(MRSUser mrsUser, String name) {
         for (Attribute userAttribute : mrsUser.getAttributes())
-            if (userAttribute.name().equalsIgnoreCase(name)) return userAttribute.value();
+            if (userAttribute.name().equalsIgnoreCase(name))
+                return userAttribute.value();
         return null;
     }
 
@@ -251,8 +255,6 @@ public class StaffControllerTest {
         String email = null;
         String phoneNumber = "0987654321";
         String role = "CHV";
-        final String EDIT_STAFF_URL = "staffs/edit";
-        final String EDIT_STAFF_FORM = "editStaffForm";
 
         ModelMap modelMap = new ModelMap();
         modelMap.addAttribute("Id", staffId);
@@ -271,9 +273,9 @@ public class StaffControllerTest {
         mockHttpServletRequest.setParameter("Id", staffId);
         String editFormName = controller.editStaffForm(modelMap, mockHttpServletRequest);
 
-        assertThat(editFormName, is(EDIT_STAFF_URL));
+        assertThat(editFormName, is(StaffController.EDIT_STAFF_URL));
         StaffForm expectedStaffForm = createStaffForm(staffId, firstName, middleName, lastName, email, phoneNumber, role);
-        StaffForm staffForm = (StaffForm) modelMap.get(EDIT_STAFF_FORM);
+        StaffForm staffForm = (StaffForm) modelMap.get(StaffController.STAFF_FORM);
 
         assertStaffForm(expectedStaffForm, staffForm);
     }
@@ -297,6 +299,44 @@ public class StaffControllerTest {
         staffForm.setPhoneNumber(phoneNumber);
         staffForm.setRole(role);
         return staffForm;
+    }
+
+    @Test
+    public void shouldUpdateUser() throws UserAlreadyExistsException {
+        String id = "1";
+        String staffId = "112";
+        String first = "first";
+        String last = "last";
+        String phoneNumber = "0123456789";
+        String hpo = "HPO";
+        String email = "";
+        StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, hpo);
+        ModelMap modelMap = new ModelMap();
+        MRSUser mockMRSUser = mock(MRSUser.class);
+        when(mockStaffService.getUserById(staffId)).thenReturn(mockMRSUser);
+
+        String result = controller.updateStaff(staffForm, mockBindingResult, modelMap);
+        ArgumentCaptor<MRSUser> captor = ArgumentCaptor.forClass(MRSUser.class);
+        verify(mockStaffService).updateUser(captor.capture());
+        assertThat(result, is(StaffController.EDIT_STAFF_URL));
+
+        MRSUser actualUser = captor.getValue();
+        assertThat(actualUser.getId(), is(id));
+        assertThat(actualUser.getSystemId(), is(staffId));
+        assertThat(actualUser.getFirstName(), is(first));
+        assertThat(actualUser.getLastName(), is(last));
+        assertThat(actualUser.getAttributes().size(), is(3));
+        assertThat(attrValue(actualUser.getAttributes(), PERSON_ATTRIBUTE_TYPE_EMAIL), is(email));
+        assertThat(attrValue(actualUser.getAttributes(), PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER), is(phoneNumber));
+        assertThat(attrValue(actualUser.getAttributes(), PERSON_ATTRIBUTE_TYPE_STAFF_TYPE), is(hpo));
+
+        assertNotNull(modelMap.get("roles"));
+        assertNotNull(modelMap.get(StaffController.STAFF_FORM));
+    }
+
+    private String attrValue(List<Attribute> attributes, String key) {
+        List<Attribute> filteredItems = select(attributes, having(on(Attribute.class).name(), equalTo(key)));
+        return isNotEmpty(filteredItems) ? filteredItems.get(0).value() : null;
     }
 }
 

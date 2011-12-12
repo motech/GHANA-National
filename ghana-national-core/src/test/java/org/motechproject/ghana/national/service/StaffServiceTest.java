@@ -73,7 +73,7 @@ public class StaffServiceTest {
     public void shouldGetUserById() {
         String userId = "124567";
         MRSUser mrsUser = new MRSUser();
-        when(userAdaptor.getUserBySystemId(userId)).thenReturn(mrsUser);
+        when(userAdaptor.getUserByUserName(userId)).thenReturn(mrsUser);
         assertThat(service.getUserById(userId), is(equalTo(mrsUser)));
     }
 

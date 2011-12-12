@@ -56,34 +56,34 @@
             </span>
         </div>
         <div  class="hidden-location">
-            <motech:location id="regions" path="region" label="${facility_region}"
+            <motech:location id="regions" path="region" label="${facility_region} :"
                              defaultValue="${facility_region_select}" errorMsg="${facility_region_req_msg}"
                              locations="${regions}" />
         </div>
         <div  class="hidden-location">
-            <motech:location id="districts" path="countyDistrict" label="${facility_district}"
+            <motech:location id="districts" path="countyDistrict" label="${facility_district} :"
                              defaultValue="${facility_district_select}" errorMsg="${facility_district_req_msg}"
                              locations="${districts}"/>
         </div>
         <div  class="hidden-location">
-            <motech:location id="sub-districts" path="stateProvince" label="${facility_sub_district}"
+            <motech:location id="sub-districts" path="stateProvince" label="${facility_sub_district} :"
                              defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
                              locations="${provinces}"/>
         </div>
         <div>
-            <motech:phone path="phoneNumber" label="${facility_phone_number}"
+            <motech:phone path="phoneNumber" label="${facility_phone_number} *:"
                           errorMsg="${facility_phone_number_incorrect_msg}" required="true"/>
         </div>
         <div>
-            <motech:phone path="additionalPhoneNumber1" label="${facility_add_phone_number1}"
+            <motech:phone path="additionalPhoneNumber1" label="${facility_add_phone_number1} :"
                           errorMsg="${facility_phone_number_incorrect_msg}"/>
         </div>
         <div>
-            <motech:phone path="additionalPhoneNumber2" label="${facility_add_phone_number2}"
+            <motech:phone path="additionalPhoneNumber2" label="${facility_add_phone_number2} :"
                           errorMsg="${facility_phone_number_incorrect_msg}"/>
         </div>
         <div>
-            <motech:phone path="additionalPhoneNumber3" label="${facility_add_phone_number3}"
+            <motech:phone path="additionalPhoneNumber3" label="${facility_add_phone_number3} :"
                           errorMsg="${facility_phone_number_incorrect_msg}"/>
         </div>
 

@@ -9,7 +9,7 @@
     <jsp:directive.attribute name="errorMsg" type="java.lang.String" required="true" rtexprvalue="true"/>
     <jsp:directive.attribute name="locations" type="java.util.Map" required="true" rtexprvalue="true"/>
 
-    <label for="${id}" class="formLabel">${fn:escapeXml(label)}:</label>
+    <label for="${id}" class="formLabel">${fn:escapeXml(label)}</label>
     <form:select id="${id}" path="${path}">
         <option parent="select" value="">${fn:escapeXml(defaultValue)}</option>
         <c:forEach items="${locations}" var="location">
