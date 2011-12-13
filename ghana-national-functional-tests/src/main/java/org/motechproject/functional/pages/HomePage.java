@@ -5,6 +5,7 @@ import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.util.JavascriptExecutor;
 import org.openqa.selenium.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -13,6 +14,11 @@ import java.io.IOException;
 
 @Component
 public class HomePage {
+     @Value("#{functionalTestProperties['host']}")
+    private String host;
+
+    @Value("#{functionalTestProperties['port']}")
+    private String port;
 
     @Autowired
     WebDriverProvider webDriverProvider;
@@ -37,19 +43,19 @@ public class HomePage {
     }
 
     public void OpenCreateFacilityPage() {
-        WebElement FacilityParentLink = driver.findElement(By.linkText("Facilityyyy"));
+        WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
         File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
         try {
             FileUtils.copyFile(screenshot,new File("blah.bmp"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        FacilityParentLink.click();
-//        WebElement temp= myJsExecutor.getElementById("newfacility",driver);
-//        temp.click();
-//        // The below line of code does not work in Linux env so commenting it out and
-//        // added the line above this comment to pass the build in hudson
-        myJsExecutor.clickOnLink("newfacility", driver);
+        FacilityParentLink.click();
+        WebElement temp= myJsExecutor.getElementById("newfacility",driver);
+        temp.click();
+////        // The below line of code does not work in Linux env so commenting it out and
+////        // added the line above this comment to pass the build in hudson
+//        myJsExecutor.clickOnLink("newfacility", driver);
         webDriverProvider.WaitForElement_ID("submitFacility");
     }
 
@@ -58,9 +64,9 @@ public class HomePage {
         WebElement PatientParentLink = driver.findElement(By.linkText("Patient"));
         PatientParentLink.click();
 
-//        WebElement temp = myJsExecutor.getElementById("newpatient", driver);
-//        temp.click();
-        myJsExecutor.clickOnLink("newpatient", driver);
+        WebElement temp = myJsExecutor.getElementById("newpatient", driver);
+        temp.click();
+//        myJsExecutor.clickOnLink("newpatient", driver);
         webDriverProvider.WaitForElement_ID("submitNewPatient");
     }
 }
