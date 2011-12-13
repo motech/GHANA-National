@@ -114,7 +114,7 @@ public class CreateFacilityPage {
     public boolean SubmitDetails() {
         SubmitFacilityDetails.click();
         // if facility id is displayed in the next page then we presume facility created successfully
-        return webDriverProvider.WaitForElement_ID("motechId");
+        return webDriverProvider.WaitForElement_ID("facilityId");
     }
 
     public HomePage getHomePage() {

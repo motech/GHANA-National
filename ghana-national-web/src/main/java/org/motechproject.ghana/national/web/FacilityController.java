@@ -25,7 +25,6 @@ import java.util.Locale;
 @RequestMapping(value = "/admin/facilities")
 public class FacilityController {
     public static final String FACILITY_FORM = "facilityForm";
-    public static final String SUCCESS_VIEW = "facilities/success";
     public static final String NEW_FACILITY_VIEW = "facilities/new";
     public static final String SEARCH_FACILITY_VIEW = "facilities/search";
     public static final String EDIT_FACILITY_VIEW = "facilities/edit";
@@ -113,7 +112,8 @@ public class FacilityController {
                     updateFacilityForm.getCountyDistrict(), updateFacilityForm.getStateProvince(), updateFacilityForm.getPhoneNumber(),
                     updateFacilityForm.getAdditionalPhoneNumber1(), updateFacilityForm.getAdditionalPhoneNumber2(),
                     updateFacilityForm.getAdditionalPhoneNumber3());
-            modelMap.put("successMessage", "Staff edited successfully.");
+            facilityHelper.getFacilityForId(modelMap, facilityService.getFacility(updateFacilityForm.getId()));
+            modelMap.put("successMessage", "Facility edited successfully.");
         } catch (FacilityNotFoundException e) {
             return "redirect:" + NEW_FACILITY_REDIRECT_URL;
         }

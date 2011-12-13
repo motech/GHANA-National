@@ -42,6 +42,7 @@
             <label for="facilityId" class="formLabel">${fn:escapeXml(facility_id)}:</label>
             <form:input path="facilityId" size="20" cssClass="jsRequire" disabled="true"/>
             <form:hidden path="id" />
+            <form:hidden path="facilityId" />
         </div>
         <div>
             <label for="name" class="formLabel">${fn:escapeXml(facility_name)}:</label>
