@@ -84,7 +84,7 @@ public class StaffController {
             if (StaffType.Role.isAdmin(roleOfStaff)) {
                 emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUsername(), (String) userData.get("password"));
             }
-            modelMap.put("successMessage", "Staff created successfully.");
+            modelMap.put("successMessage", "Staff created successfully.Email with new Password sent to the mentioned email id");
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
             return staffHelper.getStaffForId(modelMap, staffService.getUserById(openMRSUser.getSystemId()));
         } catch (UserAlreadyExistsException e) {
@@ -107,8 +107,13 @@ public class StaffController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@ModelAttribute(StaffController.STAFF_FORM) StaffForm staffForm, BindingResult bindingResult, ModelMap modelMap) {
         MRSUser mrsUser = staffForm.createUser();
+        Map userData;
         try {
-            staffService.updateUser(mrsUser);
+            userData = staffService.updateUser(mrsUser);
+            org.openmrs.User openMRSUser = (org.openmrs.User) userData.get("openMRSUser");
+            if (StaffType.Role.isAdmin(staffForm.getRole())) {
+                emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUsername(), (String) userData.get("password"));
+            }
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
             staffHelper.getStaffForId(modelMap, staffService.getUserById(mrsUser.getSystemId()));
             modelMap.put("successMessage", "Staff edited successfully.");
