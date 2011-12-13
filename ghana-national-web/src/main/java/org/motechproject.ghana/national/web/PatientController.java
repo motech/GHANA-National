@@ -6,10 +6,10 @@ import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
-import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.web.form.CreatePatientForm;
+import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
@@ -119,7 +119,6 @@ public class PatientController {
 
         return new Patient(mrsPatient);
     }
-
 
     private void handleError(BindingResult bindingResult, ModelMap modelMap, String message) {
         modelMap.mergeAttributes(facilityHelper.locationMap());

@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.helper;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.web.helper.StaffHelper;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSUser;
 
