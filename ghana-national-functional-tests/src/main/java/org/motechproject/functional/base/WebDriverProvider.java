@@ -1,6 +1,5 @@
 package org.motechproject.functional.base;
 
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
@@ -42,7 +41,7 @@ public class WebDriverProvider  {
                     return driver.findElement(By.id(elementid)).isDisplayed();
                 }
             });
-        } catch (ElementNotFoundException ignored) {
+        } catch (Exception ignored) {
              File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
         try {
             FileUtils.copyFile(screenshot, new File(elementid + "_failed.bmp"));
