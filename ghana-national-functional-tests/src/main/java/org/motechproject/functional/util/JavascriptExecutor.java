@@ -9,4 +9,9 @@ public class JavascriptExecutor {
     public WebElement getElementById(String id, WebDriver driver){
         return (WebElement) ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("return document.getElementById(arguments[0]);", id);
     }
+
+
+    public void clickOnLink(String id,WebDriver driver) {
+        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("document.getElementById(arguments[0]).click();", id);
+    }
 }

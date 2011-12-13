@@ -64,9 +64,7 @@ public class CreateFacilityPage {
     @CacheLookup
     WebElement SubmitFacilityDetails;
 
-    @FindBy(id = "id")
-    @CacheLookup
-    WebElement facilityid;
+
 
     @Autowired
     public CreateFacilityPage(WebDriverProvider webDriverProvider) {

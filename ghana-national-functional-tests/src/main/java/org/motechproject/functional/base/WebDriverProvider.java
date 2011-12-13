@@ -11,10 +11,11 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-public class WebDriverProvider {
+public class WebDriverProvider  {
 
     private static final String BROWSER = "browser";
     private static final String FIREFOX = "fireFoxWebDriver";
+
 
     private WebDriver driver;
 
@@ -29,10 +30,9 @@ public class WebDriverProvider {
 
 
     public boolean WaitForElement_ID(final String elementid) {
+         try {
 
-        try {
-
-            (new WebDriverWait(driver, 20)).until(new ExpectedCondition<Boolean>() {
+            (new WebDriverWait(driver, 10)).until(new ExpectedCondition<Boolean>() {
                 public Boolean apply(WebDriver driver) {
                     return driver.findElement(By.id(elementid)).isDisplayed();
                 }

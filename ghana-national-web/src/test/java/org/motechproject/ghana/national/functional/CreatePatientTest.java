@@ -2,7 +2,7 @@ package org.motechproject.ghana.national.functional;
 
 import org.junit.runner.RunWith;
 import org.motechproject.functional.base.WebDriverProvider;
-import org.motechproject.functional.pages.CreateFacilityPage;
+import org.motechproject.functional.pages.CreatePatientPage;
 import org.motechproject.functional.pages.HomePage;
 import org.motechproject.functional.pages.LoginPage;
 import org.openqa.selenium.WebDriver;
@@ -17,11 +17,13 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Calendar;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
+public class CreatePatientTest extends AbstractTestNGSpringContextTests {
 
-    private Logger log = LoggerFactory.getLogger(CreateFacilityTest.class);
+    private Logger log = LoggerFactory.getLogger(CreatePatientTest.class);
 
     @Autowired
     private LoginPage loginPage;
@@ -29,8 +31,11 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private HomePage homePage;
 
+/*    @Autowired
+    private CreateFacilityPage createFacilityPage;*/
+
     @Autowired
-    private CreateFacilityPage createFacilityPage;
+    private CreatePatientPage createPatient;
 
     @Autowired
     private WebDriverProvider driverProvider;
@@ -43,27 +48,24 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void createFacilityWithValidValues() {
+    public void CreatePatientWithValidValues() {
         loginPage.LoginAs("admin", "P@ssw0rd");
-        homePage.OpenCreateFacilityPage();
+        homePage.OpenCreatePatientPage();
         boolean TestPassed;
-        PageFactory.initElements(driver, createFacilityPage);
-        createFacilityPage.SetFacilityName("Test Facility" + Math.random() * 9000L);
-        createFacilityPage.SelectCountry("Ghana");
-        if (createFacilityPage.IsRegionDisplayed()) {
-            createFacilityPage.SetRegionName("Central Region");
-        } else {
-            log.debug("Region Drop down not appearing when selecting Country Ghana");
-            TestPassed = false;
-            homePage.Logout();
-            Assert.assertTrue(TestPassed);
-        }
-        createFacilityPage.SelectDistrict("Awutu Senya");
-        createFacilityPage.SelectSubDistrict("Bawjiase");
-        long number = (long) Math.floor(Math.random() * 900000000L) + 100000000L;
-        createFacilityPage.SetPhoneNum("0" + number);
-        Assert.assertTrue(createFacilityPage.SubmitDetails());
-        homePage.Logout();
+        PageFactory.initElements(driver, createPatient);
+        Calendar DOB = Calendar.getInstance();
+        DOB.set(1980,01,01);
+        Assert.assertTrue(createPatient.WithRegistrationMode(CreatePatientPage.PATIENT_REGN_MODE.AUTO_GENERATE_ID).WithPatientType(CreatePatientPage.PATIENT_TYPE.PATIENT_MOTHER)
+                .WithPatientFirstName("AutomationPatient")
+                .WithPatientLastName("Auto Last Name")
+                .WithDateofBirth(DOB)
+                .WithEstimatedDOB(false)
+                .WithPatientGender(true)
+                .WithInsured(false)
+                .WithRegion("Central Region")
+                .WithDistrict("Awutu Senya")
+                .WithSubDistrict("Kasoa")
+                .WithFacility("Papaase CHPS").Create());
     }
 
 }

@@ -3,7 +3,6 @@ package org.motechproject.functional.pages;
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.util.JavascriptExecutor;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,6 @@ public class HomePage {
     @Autowired
     WebDriverProvider webDriverProvider;
 
-    @Autowired
-    JavascriptExecutor javascriptExecutor;
-
     private WebDriver driver;
     private org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(HomePage.class);
 
@@ -27,8 +23,10 @@ public class HomePage {
         this.driver = driverProvider.getWebDriver();
     }
 
+    @Autowired
+    public JavascriptExecutor myJsExecutor;
 
-    WebElement CreateFacilityLink, CreatePatientLink, ResetPassLink, CreateStaffLink, LogoutLink;
+    WebElement LogoutLink;
 
 
     public void Logout() {
@@ -36,36 +34,24 @@ public class HomePage {
         LogoutLink.click();
     }
 
-    public boolean OpenCreateFacilityPage() {
+    public void OpenCreateFacilityPage() {
         WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
         FacilityParentLink.click();
-
-        WebElement newFacilityLink = javascriptExecutor.getElementById("newfacility", driver);
-        newFacilityLink.click();
-
-        return true;
+        WebElement temp= myJsExecutor.getElementById("newfacility",driver);
+        temp.click();
+        // The below line of code does not work in Linux env so commenting it out and
+        // added the line above this comment to pass the build in hudson
+        //myJsExecutor.clickOnLink("newfacility", driver);
     }
 
-    public boolean OpenCreateStaffPage() {
-        CreateStaffLink = driver.findElement(By.id("newstaff"));
-        try {
-            CreateStaffLink.click();
-        } catch (NoSuchElementException e) {
-            return false;
-        }
-        return true;
-    }
 
-    public boolean OpenCreatePatientPage() {
-        CreatePatientLink = driver.findElement(By.id("newpatient"));
-        try {
+    public void OpenCreatePatientPage() {
+        WebElement PatientParentLink = driver.findElement(By.linkText("Patient"));
+        PatientParentLink.click();
 
-            CreatePatientLink.click();
-        } catch (NoSuchElementException e) {
-            return false;
-        }
-        return true;
-
+        WebElement temp = myJsExecutor.getElementById("newpatient",driver);
+        temp.click();
+        //myJsExecutor.clickOnLink("newpatient", driver);
     }
 }
 
