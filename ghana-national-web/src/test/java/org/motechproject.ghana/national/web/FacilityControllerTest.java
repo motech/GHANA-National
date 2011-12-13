@@ -10,11 +10,7 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.FacilityForm;
-<<<<<<< HEAD
-=======
-import org.motechproject.ghana.national.web.form.SearchFacilityForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
->>>>>>> 9dbf0208b3cfcc886f90dae6927e1c2da5e0280a
 import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockHttpServletRequest;

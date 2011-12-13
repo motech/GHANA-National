@@ -81,7 +81,7 @@ public class FacilityHelper {
         facilityForm.setRegion(facility.region());
         facilityForm.setStateProvince(facility.province());
         facilityForm.setId(facility.mrsFacilityId());
-        facilityForm.setMotechId(facility.motechId());
+        facilityForm.setFacilityId(facility.motechId());
         return facilityForm;
     }
 
