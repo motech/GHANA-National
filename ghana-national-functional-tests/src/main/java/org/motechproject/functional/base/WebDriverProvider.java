@@ -45,7 +45,7 @@ public class WebDriverProvider  {
         } catch (ElementNotFoundException ignored) {
              File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
         try {
-            FileUtils.copyFile(screenshot, new File("waitingfailed.bmp"));
+            FileUtils.copyFile(screenshot, new File(elementid + "_failed.bmp"));
         } catch (IOException e) {
             e.printStackTrace();
         }
