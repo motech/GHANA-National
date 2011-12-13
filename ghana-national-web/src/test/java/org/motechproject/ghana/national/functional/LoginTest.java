@@ -37,17 +37,17 @@ public class LoginTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void abletoLoginwithRightUnamePass() {
-        Assert.assertTrue(loginPage.LoginAs("admin", "P@ssw0rd"));
+        Assert.assertTrue(loginPage.loginAs("admin", "P@ssw0rd"));
         homePage.Logout();
     }
 
     @Test
     public void shouldnotLoginwithInvalidUnamePass() {
-        Assert.assertFalse(loginPage.LoginAs("blah", "blahblah"));
+        Assert.assertFalse(loginPage.loginAs("blah", "blahblah"));
     }
 
     @Test
     public void shouldnotLoginwithEmptyPass() {
-        Assert.assertFalse(loginPage.LoginAs("admin", ""));
+        Assert.assertFalse(loginPage.loginAs("admin", ""));
     }
 }

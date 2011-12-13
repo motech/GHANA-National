@@ -49,7 +49,7 @@ public class CreatePatientTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void CreatePatientWithValidValues() {
-        loginPage.LoginAs("admin", "P@ssw0rd");
+        loginPage.loginAs("admin", "P@ssw0rd");
         homePage.OpenCreatePatientPage();
         boolean TestPassed;
         PageFactory.initElements(driver, createPatient);
