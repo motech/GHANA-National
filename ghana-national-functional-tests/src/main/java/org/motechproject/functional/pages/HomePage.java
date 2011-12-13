@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class HomePage {
-     @Value("#{functionalTestProperties['host']}")
+    @Value("#{functionalTestProperties['host']}")
     private String host;
 
     @Value("#{functionalTestProperties['port']}")
@@ -44,23 +44,30 @@ public class HomePage {
         WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
 
 
-        WebElement temp= myJsExecutor.getElementById("newfacility",driver);
-        FacilityParentLink.click();
-        temp.click();
-
-   //     myJsExecutor.clickOnLink("newfacility", driver);
+        if (System.getProperty("os.name").contains("Wind")) {
+            myJsExecutor.clickOnLink("newfacility", driver);
+            System.out.println("OS NAME" + System.getProperty("os.name"));
+        } else {
+            System.out.println("OS NAME" + System.getProperty("os.name"));
+            WebElement temp = myJsExecutor.getElementById("newfacility", driver);
+            webDriverProvider.WaitForElement_ID("newfacility");
+            FacilityParentLink.click();
+            temp.click();
+        }
         webDriverProvider.WaitForElement_ID("submitFacility");
     }
 
 
     public void OpenCreatePatientPage() {
         WebElement PatientParentLink = driver.findElement(By.linkText("Patient"));
-
-        WebElement temp = myJsExecutor.getElementById("newpatient", driver);
-        PatientParentLink.click();
-        temp.click();
-
-  //      myJsExecutor.clickOnLink("newpatient", driver);
+        if (System.getProperty("os.name").contains("Wind")) {
+            myJsExecutor.clickOnLink("newpatient", driver);
+        } else {
+            WebElement temp = myJsExecutor.getElementById("newpatient", driver);
+            webDriverProvider.WaitForElement_ID("newpatient");
+            PatientParentLink.click();
+            temp.click();
+        }
         webDriverProvider.WaitForElement_ID("submitNewPatient");
     }
 }
