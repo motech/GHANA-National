@@ -44,12 +44,7 @@ public class HomePage {
 
     public void OpenCreateFacilityPage() {
         WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
-        File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        try {
-            FileUtils.copyFile(screenshot,new File("blah.bmp"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         FacilityParentLink.click();
         WebElement temp= myJsExecutor.getElementById("newfacility",driver);
         temp.click();
