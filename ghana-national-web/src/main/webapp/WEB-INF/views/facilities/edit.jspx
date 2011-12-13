@@ -33,6 +33,11 @@
         <spring:message code="facility_phone_number_incorrect_msg" var="facility_phone_number_incorrect_msg"
                         htmlEscape="false"/>
 
+        <c:if test="${successMessage ne null}">
+            <br/><span class="success"><c:out value="${successMessage}"/></span><br/><br/>
+        </c:if>
+
+
         <div>
             <label for="facilityId" class="formLabel">${fn:escapeXml(facility_id)}:</label>
             <form:input path="facilityId" size="20" cssClass="jsRequire" disabled="true"/>
@@ -55,17 +60,17 @@
                 ${fn:escapeXml(facility_country_req_msg)}
             </span>
         </div>
-        <div  class="hidden-location">
+        <div>
             <motech:location id="regions" path="region" label="${facility_region} :"
                              defaultValue="${facility_region_select}" errorMsg="${facility_region_req_msg}"
                              locations="${regions}" />
         </div>
-        <div  class="hidden-location">
+        <div>
             <motech:location id="districts" path="countyDistrict" label="${facility_district} :"
                              defaultValue="${facility_district_select}" errorMsg="${facility_district_req_msg}"
                              locations="${districts}"/>
         </div>
-        <div  class="hidden-location">
+        <div>
             <motech:location id="sub-districts" path="stateProvince" label="${facility_sub_district} :"
                              defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
                              locations="${provinces}"/>

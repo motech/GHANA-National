@@ -100,7 +100,7 @@
                             <td><c:out value="${facility.stateProvince}"/></td>
                             <td><c:out value="${facility.phoneNumber}"/></td>
                             <td class="action">
-                                <div class="edit"><a href="${edit_facility_url}?id=${facility.id}" title="Edit"> </a></div>
+                                <div class="edit"><a href="${edit_facility_url}?Id=${facility.id}" title="Edit"> </a></div>
                             </td>
                         </tr>
                     </c:forEach>

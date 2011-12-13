@@ -31,7 +31,7 @@ public class FacilityController {
     public static final String SEARCH_FACILITY_VIEW = "facilities/search";
     static final String EDIT_FACILITY_VIEW = "facilities/edit";
 
-    public static final String FACILITY_ID = "id";
+    public static final String FACILITY_ID = "Id";
 
     private FacilityService facilityService;
     private MessageSource messageSource;
@@ -114,10 +114,11 @@ public class FacilityController {
                     updateFacilityForm.getCountyDistrict(), updateFacilityForm.getStateProvince(), updateFacilityForm.getPhoneNumber(),
                     updateFacilityForm.getAdditionalPhoneNumber1(), updateFacilityForm.getAdditionalPhoneNumber2(),
                     updateFacilityForm.getAdditionalPhoneNumber3());
-            return SUCCESS_VIEW;
+            modelMap.put("successMessage", "Staff edited successfully.");
         } catch (FacilityNotFoundException e) {
             return "redirect:" + NEW_FACILITY_REDIRECT_URL;
         }
+        return EDIT_FACILITY_VIEW;
     }
 
     private String getFacilityForId(ModelMap modelMap, String facilityId) {
