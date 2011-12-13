@@ -8,6 +8,11 @@
     <script src="${facility_field_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <script src="${create_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/facilities/update" var="form_url"/>
+
+    <c:if test="${successMessage ne null}">
+         <br/><span class="success"><c:out value="${successMessage}"/></span><br/><br/>
+    </c:if>
+
     <form:form id="facilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Edit a Facility"
                commandName="facilityForm">
 
@@ -33,9 +38,6 @@
         <spring:message code="facility_phone_number_incorrect_msg" var="facility_phone_number_incorrect_msg"
                         htmlEscape="false"/>
 
-        <c:if test="${successMessage ne null}">
-            <br/><span class="success"><c:out value="${successMessage}"/></span><br/><br/>
-        </c:if>
 
 
         <div>
