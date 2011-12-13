@@ -7,19 +7,18 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.mrs.model.MRSFacility;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import static ch.lambdaj.Lambda.convert;
 import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.group.Groups.by;
 import static ch.lambdaj.group.Groups.group;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 public class UtilityTest {
@@ -60,8 +59,13 @@ public class UtilityTest {
     }
 
     @Test
-    public void shouldConvertToIntegerCollectionGivenAStringCollection(){
-        List<String> strings = Arrays.asList("1", "22");
-        assertThat(convert(strings, Utility.stringToIntegerConverter()), is(equalTo(Arrays.asList(1, 22))));
+    public void shouldDoToStringSafely() {
+        assertNull(Utility.safeToString(null));
+        assertEquals("toString", Utility.safeToString(new Object() {
+            @Override
+            public String toString() {
+                return "toString";
+            }
+        }));
     }
 }

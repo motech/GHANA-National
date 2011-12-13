@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.Attribute;
@@ -19,8 +20,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.motechproject.ghana.national.tools.Utility.safeToString;
 
 
 @Component
@@ -52,9 +51,9 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
     private List<Attribute> getPatientAttributes(RegisterClientForm registerClientForm) {
         List<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), registerClientForm.getPhoneNumber()));
-        attributes.add(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), safeToString(registerClientForm.getNhisExpires())));
+        attributes.add(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), Utility.safeToString(registerClientForm.getNhisExpires())));
         attributes.add(new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), registerClientForm.getNhis()));
-        attributes.add(new Attribute(PatientAttributes.INSURED.getAttribute(), safeToString(registerClientForm.getInsured())));
+        attributes.add(new Attribute(PatientAttributes.INSURED.getAttribute(), Utility.safeToString(registerClientForm.getInsured())));
         return attributes;
     }
 }
