@@ -8,7 +8,7 @@
     <spring:url value="/admin/staffs/searchStaffs" var="form_url"/>
 
     <form:form id="staffForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search for staff member"
-               commandName="searchStaffForm">
+               commandName="staffForm">
         <spring:message code="staff_id" var="staff_id" htmlEscape="false"/>
         <spring:message code="user_first_name" var="user_first_name" htmlEscape="false"/>
         <spring:message code="user_middle_name" var="user_middle_name" htmlEscape="false"/>

@@ -5,7 +5,6 @@ import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.FacilityForm;
-import org.motechproject.ghana.national.web.form.SearchFacilityForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +25,11 @@ import java.util.Locale;
 @RequestMapping(value = "/admin/facilities")
 public class FacilityController {
     public static final String FACILITY_FORM = "facilityForm";
-    public static final String SEARCH_FACILITY_FORM = "searchFacilityForm";
-
-    public static final String SUCCESS_VIEW = "facilities/success";
     public static final String NEW_FACILITY_VIEW = "facilities/new";
     public static final String SEARCH_FACILITY_VIEW = "facilities/search";
     public static final String EDIT_FACILITY_VIEW = "facilities/edit";
 
-    public static final String FACILITY_ID = "id";
+    public static final String FACILITY_ID = "Id";
 
     private FacilityService facilityService;
     private MessageSource messageSource;
@@ -78,15 +74,15 @@ public class FacilityController {
     @ApiSession
     @RequestMapping(value = "search", method = RequestMethod.GET)
     public String search(ModelMap modelMap) {
-        modelMap.put(SEARCH_FACILITY_FORM, new SearchFacilityForm());
+        modelMap.put(FACILITY_FORM, new FacilityForm());
         modelMap.mergeAttributes(facilityHelper.locationMap());
         return SEARCH_FACILITY_VIEW;
     }
 
     @ApiSession
     @RequestMapping(value = "searchFacilities", method = RequestMethod.POST)
-    public String search(@Valid final SearchFacilityForm searchFacilityForm, ModelMap modelMap) {
-        final List<Facility> searchResults = facilityService.searchFacilities(searchFacilityForm.getFacilityID(),
+    public String search(@Valid final FacilityForm searchFacilityForm, ModelMap modelMap) {
+        final List<Facility> searchResults = facilityService.searchFacilities(searchFacilityForm.getFacilityId(),
                 searchFacilityForm.getName(), searchFacilityForm.getCountry(), searchFacilityForm.getRegion(),
                 searchFacilityForm.getCountyDistrict(), searchFacilityForm.getStateProvince());
         List<FacilityForm> requestedFacilities = new ArrayList<FacilityForm>();
@@ -111,14 +107,16 @@ public class FacilityController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid FacilityForm updateFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
         try {
-            facilityService.update(updateFacilityForm.getId(), updateFacilityForm.getMotechId(),
+            facilityService.update(updateFacilityForm.getId(), updateFacilityForm.getFacilityId(),
                     updateFacilityForm.getName(), updateFacilityForm.getCountry(), updateFacilityForm.getRegion(),
                     updateFacilityForm.getCountyDistrict(), updateFacilityForm.getStateProvince(), updateFacilityForm.getPhoneNumber(),
                     updateFacilityForm.getAdditionalPhoneNumber1(), updateFacilityForm.getAdditionalPhoneNumber2(),
                     updateFacilityForm.getAdditionalPhoneNumber3());
-            return SUCCESS_VIEW;
+            facilityHelper.getFacilityForId(modelMap, facilityService.getFacility(updateFacilityForm.getId()));
+            modelMap.put("successMessage", "Facility edited successfully.");
         } catch (FacilityNotFoundException e) {
             return "redirect:" + NEW_FACILITY_REDIRECT_URL;
         }
+        return EDIT_FACILITY_VIEW;
     }
 }

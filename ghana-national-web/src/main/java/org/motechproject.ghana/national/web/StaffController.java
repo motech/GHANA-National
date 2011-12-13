@@ -33,7 +33,6 @@ public class StaffController {
     private StaffService staffService;
     private MessageSource messageSource;
     private IdentifierGenerationService identifierGenerationService;
-    private EmailTemplateService emailTemplateService;
     private StaffHelper staffHelper;
 
     public static final String STAFF_ID = "userId";
@@ -43,7 +42,7 @@ public class StaffController {
     public static final String STAFF_FORM = "staffForm";
     public static final String STAFF_ALREADY_EXISTS = "user_email_already_exists";
     public static final String NEW_STAFF_URL = "staffs/new";
-    public static final String SEARCH_STAFF_FORM = "searchStaffForm";
+    private EmailTemplateService emailTemplateService;
     public static final String SEARCH_STAFF = "staffs/search";
     public static final String EDIT_STAFF_URL = "staffs/edit";
 
@@ -85,7 +84,7 @@ public class StaffController {
             if (StaffType.Role.isAdmin(roleOfStaff)) {
                 emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUsername(), (String) userData.get("password"));
             }
-            modelMap.put("successMessage", "Staff created successfully.");
+            modelMap.put("successMessage", "Staff created successfully.Email with new Password sent to the mentioned email id");
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
             return staffHelper.getStaffForId(modelMap, staffService.getUserById(openMRSUser.getSystemId()));
         } catch (UserAlreadyExistsException e) {
@@ -108,8 +107,13 @@ public class StaffController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@ModelAttribute(StaffController.STAFF_FORM) StaffForm staffForm, BindingResult bindingResult, ModelMap modelMap) {
         MRSUser mrsUser = staffForm.createUser();
+        Map userData;
         try {
-            staffService.updateUser(mrsUser);
+            userData = staffService.updateUser(mrsUser);
+            org.openmrs.User openMRSUser = (org.openmrs.User) userData.get("openMRSUser");
+            if (StaffType.Role.isAdmin(staffForm.getRole())) {
+                emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUsername(), (String) userData.get("password"));
+            }
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
             staffHelper.getStaffForId(modelMap, staffService.getUserById(mrsUser.getSystemId()));
             modelMap.put("successMessage", "Staff edited successfully.");
@@ -122,7 +126,7 @@ public class StaffController {
     @ApiSession
     @RequestMapping(value = "search", method = RequestMethod.GET)
     public String search(ModelMap modelMap) {
-        modelMap.put(SEARCH_STAFF_FORM, new StaffForm());
+        modelMap.put(STAFF_FORM, new StaffForm());
         staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
         return SEARCH_STAFF;
     }
@@ -138,7 +142,7 @@ public class StaffController {
             staffForms.add(new StaffForm(mrsUser.getId(), mrsUser.getSystemId(), mrsUser.getFirstName(), mrsUser.getMiddleName(), mrsUser.getLastName(),
                     staffHelper.getEmail(mrsUser), staffHelper.getPhoneNumber(mrsUser), staffHelper.getRole(mrsUser)));
         }
-        modelMap.put(SEARCH_STAFF_FORM, new StaffForm());
+        modelMap.put(STAFF_FORM, new StaffForm());
         modelMap.put(REQUESTED_STAFFS, staffForms);
         staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
         return SEARCH_STAFF;

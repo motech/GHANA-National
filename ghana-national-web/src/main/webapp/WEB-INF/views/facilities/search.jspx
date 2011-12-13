@@ -9,8 +9,8 @@
     <script src="${search_facility_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
     <spring:url value="/admin/facilities/searchFacilities" var="form_url"/>
     <spring:url value="/admin/facilities/edit" var="edit_facility_url"/>
-    <form:form id="searchFacilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search for a Facility"
-               commandName="searchFacilityForm">
+    <form:form id="facilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search for a Facility"
+               commandName="facilityForm">
         <spring:message code="facility_id" var="facility_id" htmlEscape="false"/>
         <spring:message code="facility_name" var="facility_name" htmlEscape="false"/>
         <spring:message code="facility_country" var="facility_country" htmlEscape="false"/>
@@ -37,7 +37,7 @@
         <div class="input-description"> * Please enter atleast one field to enable search</div>
         <div>
             <label for="facilityID" class="formLabel">${fn:escapeXml(facility_id)}:</label>
-            <form:input path="facilityID" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_id)}"/>
+            <form:input path="facilityId" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_id)}"/>
         </div>
         <div>
             <label for="name" class="formLabel">${fn:escapeXml(facility_name)}:</label>
@@ -92,7 +92,7 @@
                     </tr>
                     <c:forEach var="facility" items="${requestedFacilities}">
                         <tr>
-                            <td><c:out value="${facility.motechId}"/></td>
+                            <td><c:out value="${facility.facilityId}"/></td>
                             <td><c:out value="${facility.name}"/></td>
                             <td><c:out value="${facility.country}"/></td>
                             <td><c:out value="${facility.region}"/></td>
@@ -100,7 +100,7 @@
                             <td><c:out value="${facility.stateProvince}"/></td>
                             <td><c:out value="${facility.phoneNumber}"/></td>
                             <td class="action">
-                                <div class="edit"><a href="${edit_facility_url}?id=${facility.id}" title="Edit"> </a></div>
+                                <div class="edit"><a href="${edit_facility_url}?Id=${facility.id}" title="Edit"> </a></div>
                             </td>
                         </tr>
                     </c:forEach>

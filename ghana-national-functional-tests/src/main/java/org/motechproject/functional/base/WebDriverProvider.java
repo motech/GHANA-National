@@ -1,13 +1,18 @@
 package org.motechproject.functional.base;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 @Component
@@ -38,6 +43,12 @@ public class WebDriverProvider  {
                 }
             });
         } catch (ElementNotFoundException ignored) {
+             File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        try {
+            FileUtils.copyFile(screenshot, new File(elementid + "_failed.bmp"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         }
         return true;
     }
