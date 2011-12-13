@@ -6,6 +6,7 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.FacilityVO;
+import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.test.util.ReflectionTestUtils;
 

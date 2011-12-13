@@ -8,12 +8,17 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
-import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.FacilityForm;
+<<<<<<< HEAD
+=======
+import org.motechproject.ghana.national.web.form.SearchFacilityForm;
+import org.motechproject.ghana.national.web.helper.FacilityHelper;
+>>>>>>> 9dbf0208b3cfcc886f90dae6927e1c2da5e0280a
 import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -26,9 +31,16 @@ import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.web.FacilityController.*;
+import static org.motechproject.ghana.national.web.FacilityController.EDIT_FACILITY_VIEW;
+import static org.motechproject.ghana.national.web.FacilityController.FACILITY_FORM;
+import static org.motechproject.ghana.national.web.FacilityController.FACILITY_ID;
 
 public class FacilityControllerTest {
     FacilityController facilityController;
@@ -38,20 +50,22 @@ public class FacilityControllerTest {
     MessageSource mockMessageSource;
     @Mock
     BindingResult mockBindingResult;
-    @Mock
-    FacilityHelper mockFacilityHelper;
+
+    FacilityHelper facilityHelper;
 
     @Before
     public void setUp() {
         initMocks(this);
-        facilityController = new FacilityController(mockFacilityService, mockMessageSource, mockFacilityHelper);
+        facilityHelper = new FacilityHelper();
+        ReflectionTestUtils.setField(facilityHelper, "facilityService", mockFacilityService);
+        facilityController = new FacilityController(mockFacilityService, mockMessageSource, facilityHelper);
         mockBindingResult = mock(BindingResult.class);
     }
 
     @Test
     public void shouldRenderForm() {
         when(mockFacilityService.facilities()).thenReturn(Arrays.asList(new Facility(new MRSFacility("facility"))));
-        assertThat(facilityController.newFacilityForm(new ModelMap()), is(equalTo("facilities/new")));
+        assertThat(facilityController.newFacility(new ModelMap()), is(equalTo("facilities/new")));
     }
 
     @Test
@@ -78,15 +92,14 @@ public class FacilityControllerTest {
             put(Constants.PROVINCES, new Object());
             put(Constants.DISTRICTS, new Object());
         }};
-        when(mockFacilityHelper.locationMap()).thenReturn(map);
         when(mockFacilityService.getFacility(String.valueOf(facilityId))).thenReturn(facility);
         when(mockFacilityService.create(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(String.valueOf(facilityId));
         FacilityForm facilityForm = createFacilityForm(name, country, region, district, province, phoneNumber, addPhoneNumb1, addPhoneNumb2, addPhoneNumb3);
-        final String result = spyFacilitiesController.createFacility(facilityForm, mockBindingResult, modelMap);
+        
+        String result = spyFacilitiesController.create(facilityForm, mockBindingResult, modelMap);
 
         verify(mockFacilityService).create(name, country, region, district, province, phoneNumber, addPhoneNumb1, addPhoneNumb2, addPhoneNumb3);
         assertThat(result, is(equalTo(EDIT_FACILITY_VIEW)));
-        verify(mockFacilityHelper).locationMap();
         assertNotNull(modelMap.get(FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));
@@ -95,7 +108,7 @@ public class FacilityControllerTest {
     }
 
     @Test
-    public void testNotSaveFacilityWhenInValid() throws FacilityAlreadyFoundException {
+    public void shouldtNotSaveFacilityWhenInValid() throws FacilityAlreadyFoundException {
         final ModelMap modelMap = new ModelMap();
         final String facility = "facility";
         final String country = "country";
@@ -125,9 +138,8 @@ public class FacilityControllerTest {
             put(Constants.PROVINCES, new Object());
             put(Constants.DISTRICTS, new Object());
         }};
-        when(mockFacilityHelper.locationMap()).thenReturn(map);
 
-        final String result = spyFacilitiesController.createFacility(createFacilityForm, mockBindingResult, modelMap);
+        final String result = spyFacilitiesController.create(createFacilityForm, mockBindingResult, modelMap);
 
         final ArgumentCaptor<FieldError> captor = ArgumentCaptor.forClass(FieldError.class);
         verify(mockBindingResult).addError(captor.capture());
@@ -136,8 +148,6 @@ public class FacilityControllerTest {
         assertThat(actualFieldError.getObjectName(), is(equalTo(FACILITY_FORM)));
         assertThat(actualFieldError.getField(), is(equalTo("name")));
         assertThat(actualFieldError.getDefaultMessage(), is(equalTo(message)));
-        verify(mockFacilityHelper).locationMap();
-        assertNotNull(modelMap.get(FACILITY_FORM));
         assertNotNull(modelMap.get(Constants.COUNTRIES));
         assertNotNull(modelMap.get(Constants.REGIONS));
         assertNotNull(modelMap.get(Constants.PROVINCES));
@@ -160,10 +170,9 @@ public class FacilityControllerTest {
         searchFacilityForm.setCountyDistrict(district);
         searchFacilityForm.setStateProvince(province);
 
-        facilityController.searchFacility(searchFacilityForm, new ModelMap());
+        facilityController.search(searchFacilityForm, new ModelMap());
 
         verify(mockFacilityService).searchFacilities(id, name, country, region, district, province);
-        verify(mockFacilityHelper).locationMap();
     }
 
     @Test
@@ -197,7 +206,7 @@ public class FacilityControllerTest {
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setParameter(FACILITY_ID, facilityId);
-        String editFormName = facilityController.editFacilityForm(modelMap, mockHttpServletRequest);
+        String editFormName = facilityController.edit(modelMap, mockHttpServletRequest);
 
         assertThat(editFormName, is(EDIT_FACILITY_VIEW));
         FacilityForm expectedFacilityForm = createFacilityForm(name, country, region, district, province, phoneNumber, addPhoneNumber1, addPhoneNumber2, addPhoneNumber3);

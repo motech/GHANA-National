@@ -5,10 +5,10 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.RegistrationType;
-import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.web.form.CreatePatientForm;
+import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
@@ -28,7 +28,9 @@ import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientControllerTest {
@@ -45,7 +47,6 @@ public class PatientControllerTest {
     MotechIdVerhoeffValidator motechIdVerhoeffValidator;
     @Mock
     BindingResult mockBindingResult;
-
 
     @Before
     public void setUp() {

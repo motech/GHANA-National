@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.helper;
+package org.motechproject.ghana.national.web.helper;
 
 import ch.lambdaj.group.Group;
 import org.apache.commons.lang.StringUtils;
@@ -6,8 +6,13 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.FacilityVO;
+import org.motechproject.ghana.national.web.FacilityController;
+import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,5 +67,33 @@ public class FacilityHelper {
             }
         }
         return facilityVOs;
+    }
+
+    public FacilityForm copyFacilityValuesToForm(Facility facility) {
+        FacilityForm facilityForm = new FacilityForm();
+        facilityForm.setAdditionalPhoneNumber1(facility.additionalPhoneNumber1());
+        facilityForm.setAdditionalPhoneNumber2(facility.additionalPhoneNumber2());
+        facilityForm.setAdditionalPhoneNumber3(facility.additionalPhoneNumber3());
+        facilityForm.setPhoneNumber(facility.phoneNumber());
+        facilityForm.setCountry(facility.country());
+        facilityForm.setCountyDistrict(facility.district());
+        facilityForm.setName(facility.name());
+        facilityForm.setRegion(facility.region());
+        facilityForm.setStateProvince(facility.province());
+        facilityForm.setId(facility.mrsFacilityId());
+        facilityForm.setMotechId(facility.motechId());
+        return facilityForm;
+    }
+
+    public void handleExistingFacilityError(BindingResult bindingResult, ModelMap modelMap, String message, String formName) {
+        bindingResult.addError(new FieldError(formName, "name", message));
+        modelMap.mergeAttributes(bindingResult.getModel());
+    }
+
+    public String getFacilityForId(ModelMap modelMap, Facility facility) {
+        modelMap.addAttribute(FacilityController.FACILITY_FORM, copyFacilityValuesToForm(facility));
+        modelMap.addAttribute("message", "facility created successfully.");
+        modelMap.mergeAttributes(locationMap());
+        return FacilityController.EDIT_FACILITY_VIEW;
     }
 }

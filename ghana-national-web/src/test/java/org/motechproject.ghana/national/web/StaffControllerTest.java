@@ -6,7 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.StaffType;
-import org.motechproject.ghana.national.helper.StaffHelper;
+import org.motechproject.ghana.national.web.helper.StaffHelper;
 import org.motechproject.ghana.national.service.EmailTemplateService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.StaffService;
@@ -59,13 +59,14 @@ public class StaffControllerTest {
     BindingResult mockBindingResult;
     @Mock
     IdentifierGenerationService mockIdentifierGenerationService;
-    @Mock
-    StaffHelper mockStaffHelper;
+
+    StaffHelper staffHelper;
 
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new StaffController(mockStaffService, mockMessageSource, mockEmailTemplateService, mockIdentifierGenerationService, mockStaffHelper);
+        staffHelper = new StaffHelper();
+        controller = new StaffController(mockStaffService, mockMessageSource, mockEmailTemplateService, mockIdentifierGenerationService, staffHelper);
         mockBindingResult = mock(BindingResult.class);
     }
 
@@ -76,7 +77,7 @@ public class StaffControllerTest {
 
         when(mockStaffService.fetchAllRoles()).thenReturn(roles);
 
-        String view = controller.newUser(model);
+        String view = controller.newStaff(model);
 
         assertEquals(StaffController.NEW_STAFF_URL, view);
         ArgumentCaptor<StaffForm> captor = ArgumentCaptor.forClass(StaffForm.class);
@@ -109,7 +110,7 @@ public class StaffControllerTest {
         when(mockStaffService.saveUser(any(MRSUser.class))).thenReturn(test);
         when(mockStaffService.getUserById(openMRSuser.getSystemId())).thenReturn(mrsUser);
 
-        String view = controller.createUser(form, bindingResult, model);
+        String view = controller.create(form, bindingResult, model);
 
         assertEquals(StaffController.EDIT_STAFF_URL, view);
         verify(model).put("userId", "1234");
@@ -149,7 +150,7 @@ public class StaffControllerTest {
         final MRSUser mrsUser = new MRSUser().systemId(userId);
         when(mockStaffService.getUserById(openMRSuser.getSystemId())).thenReturn(mrsUser);
 
-        String view = controller.createUser(form, mockBindingResult, model);
+        String view = controller.create(form, mockBindingResult, model);
 
         assertEquals(StaffController.EDIT_STAFF_URL, view);
         verify(model).put("userId", userId);
@@ -192,7 +193,7 @@ public class StaffControllerTest {
         when(mockBindingResult.getModel()).thenReturn(boundModel);
         when(mockStaffService.fetchAllRoles()).thenReturn(roles);
 
-        String view = controller.createUser(form, mockBindingResult, model);
+        String view = controller.create(form, mockBindingResult, model);
 
         assertEquals(StaffController.NEW_STAFF_URL, view);
         verify(model).mergeAttributes(boundModel);
@@ -225,11 +226,8 @@ public class StaffControllerTest {
         user1.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role));
         user1.firstName(firstName).middleName(middleName).lastName(lastName).id(staffID);
         when(mockStaffService.searchStaff(staffID, firstName, middleName, lastName, phoneNumber, role)).thenReturn(Arrays.asList(user1));
-        when(mockStaffHelper.getEmail(user1)).thenReturn(email);
-        when(mockStaffHelper.getPhoneNumber(user1)).thenReturn(phoneNumber);
-        when(mockStaffHelper.getRole(user1)).thenReturn(role);
 
-        controller.searchStaff(staffForm, modelMap);
+        controller.search(staffForm, modelMap);
 
         verify(mockStaffService).searchStaff(staffForm.getStaffId(), staffForm.getFirstName(), staffForm.getMiddleName(),
                 staffForm.getLastName(), staffForm.getPhoneNumber(), staffForm.getRole());
@@ -271,7 +269,7 @@ public class StaffControllerTest {
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setParameter("Id", staffId);
-        String editFormName = controller.editStaffForm(modelMap, mockHttpServletRequest);
+        String editFormName = controller.edit(modelMap, mockHttpServletRequest);
 
         assertThat(editFormName, is(StaffController.EDIT_STAFF_URL));
         StaffForm expectedStaffForm = createStaffForm(staffId, firstName, middleName, lastName, email, phoneNumber, role);
@@ -315,7 +313,7 @@ public class StaffControllerTest {
         MRSUser mockMRSUser = mock(MRSUser.class);
         when(mockStaffService.getUserById(staffId)).thenReturn(mockMRSUser);
 
-        String result = controller.updateStaff(staffForm, mockBindingResult, modelMap);
+        String result = controller.update(staffForm, mockBindingResult, modelMap);
         ArgumentCaptor<MRSUser> captor = ArgumentCaptor.forClass(MRSUser.class);
         verify(mockStaffService).updateUser(captor.capture());
         assertThat(result, is(StaffController.EDIT_STAFF_URL));
