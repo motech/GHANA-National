@@ -44,7 +44,7 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void createFacilityWithValidValues() {
-        loginPage.LoginAs("admin", "P@ssw0rd");
+        loginPage.loginAs("admin", "P@ssw0rd");
         homePage.OpenCreateFacilityPage();
         boolean TestPassed;
         PageFactory.initElements(driver, createFacilityPage);

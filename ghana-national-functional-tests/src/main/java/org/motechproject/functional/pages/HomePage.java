@@ -36,12 +36,13 @@ public class HomePage {
 
     public void OpenCreateFacilityPage() {
         WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
-        FacilityParentLink.click();
-        WebElement temp= myJsExecutor.getElementById("newfacility",driver);
-        temp.click();
-        // The below line of code does not work in Linux env so commenting it out and
-        // added the line above this comment to pass the build in hudson
-        //myJsExecutor.clickOnLink("newfacility", driver);
+
+//        FacilityParentLink.click();
+//        WebElement temp= myJsExecutor.getElementById("newfacility",driver);
+//        temp.click();
+//        // The below line of code does not work in Linux env so commenting it out and
+//        // added the line above this comment to pass the build in hudson
+        myJsExecutor.clickOnLink("newfacility", driver);
     }
 
 
