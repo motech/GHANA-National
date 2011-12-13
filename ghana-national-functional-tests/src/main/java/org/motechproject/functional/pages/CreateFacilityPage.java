@@ -1,6 +1,9 @@
 package org.motechproject.functional.pages;
 
+import org.apache.commons.io.FileUtils;
 import org.motechproject.functional.base.WebDriverProvider;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -10,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.File;
+import java.io.IOException;
 
 @Component
 public class CreateFacilityPage {
@@ -80,7 +86,18 @@ public class CreateFacilityPage {
     }
 
     public void SetFacilityName(String facilityName) {
+        try {
         FacilityNameInput.sendKeys(facilityName);
+        }
+        catch (Exception e)
+        {
+            File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        try {
+            FileUtils.copyFile(screenshot, new File("./tryingtoenterfacilityname.bmp"));
+        } catch (IOException IOe) {
+            e.printStackTrace();
+        }
+        }
     }
 
     public String GetFacilityName() {
@@ -114,7 +131,7 @@ public class CreateFacilityPage {
     public boolean SubmitDetails() {
         SubmitFacilityDetails.click();
         // if facility id is displayed in the next page then we presume facility created successfully
-        return webDriverProvider.WaitForElement_ID("facilityId");
+        return webDriverProvider.WaitForElement_ID("motechId");
     }
 
     public HomePage getHomePage() {

@@ -1,12 +1,14 @@
 package org.motechproject.functional.pages;
 
+import org.apache.commons.io.FileUtils;
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.util.JavascriptExecutor;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.File;
+import java.io.IOException;
 
 
 @Component
@@ -35,8 +37,13 @@ public class HomePage {
     }
 
     public void OpenCreateFacilityPage() {
-        WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
-
+        WebElement FacilityParentLink = driver.findElement(By.linkText("Facilityyyy"));
+        File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        try {
+            FileUtils.copyFile(screenshot,new File("blah.bmp"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 //        FacilityParentLink.click();
 //        WebElement temp= myJsExecutor.getElementById("newfacility",driver);
 //        temp.click();

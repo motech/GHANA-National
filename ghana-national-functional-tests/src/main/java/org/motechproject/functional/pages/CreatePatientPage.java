@@ -230,7 +230,6 @@ public class CreatePatientPage {
 
     public boolean Create() {
         submitNewPatient.click();
-
         String src = driver.getPageSource();
         if (src.contains("Patient created successfully"))
             return true;
