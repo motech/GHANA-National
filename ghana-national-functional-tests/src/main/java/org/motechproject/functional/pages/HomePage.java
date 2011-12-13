@@ -43,21 +43,24 @@ public class HomePage {
     public void OpenCreateFacilityPage() {
         WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
 
-//        FacilityParentLink.click();
-//        WebElement temp= myJsExecutor.getElementById("newfacility",driver);
-//        temp.click();
-        myJsExecutor.clickOnLink("newfacility", driver);
+
+        WebElement temp= myJsExecutor.getElementById("newfacility",driver);
+        FacilityParentLink.click();
+        temp.click();
+
+   //     myJsExecutor.clickOnLink("newfacility", driver);
         webDriverProvider.WaitForElement_ID("submitFacility");
     }
 
 
     public void OpenCreatePatientPage() {
         WebElement PatientParentLink = driver.findElement(By.linkText("Patient"));
-        PatientParentLink.click();
 
-//        WebElement temp = myJsExecutor.getElementById("newpatient", driver);
-//        temp.click();
-        myJsExecutor.clickOnLink("newpatient", driver);
+        WebElement temp = myJsExecutor.getElementById("newpatient", driver);
+        PatientParentLink.click();
+        temp.click();
+
+  //      myJsExecutor.clickOnLink("newpatient", driver);
         webDriverProvider.WaitForElement_ID("submitNewPatient");
     }
 }
