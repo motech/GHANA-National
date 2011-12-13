@@ -49,7 +49,6 @@ public class StaffController {
     public static final String STAFF_ALREADY_EXISTS = "user_email_already_exists";
     public static final String NEW_STAFF_URL = "staffs/new";
     private EmailTemplateService emailTemplateService;
-    public static final String SEARCH_STAFF_FORM = "searchStaffForm";
     public static final String SEARCH_STAFF = "staffs/search";
     static final String EDIT_STAFF_URL = "staffs/edit";
 
@@ -153,7 +152,7 @@ public class StaffController {
     @ApiSession
     @RequestMapping(value = "search", method = RequestMethod.GET)
     public String searchStaffForm(ModelMap modelMap) {
-        modelMap.put(SEARCH_STAFF_FORM, new StaffForm());
+        modelMap.put(STAFF_FORM, new StaffForm());
         populateRoles(modelMap);
         return SEARCH_STAFF;
     }
@@ -169,7 +168,7 @@ public class StaffController {
             staffForms.add(new StaffForm(mrsUser.getId(), mrsUser.getSystemId(), mrsUser.getFirstName(), mrsUser.getMiddleName(), mrsUser.getLastName(),
                     staffHelper.getEmail(mrsUser), staffHelper.getPhoneNumber(mrsUser), staffHelper.getRole(mrsUser)));
         }
-        modelMap.put(SEARCH_STAFF_FORM, new StaffForm());
+        modelMap.put(STAFF_FORM, new StaffForm());
         modelMap.put(REQUESTED_STAFFS, staffForms);
         populateRoles(modelMap);
         return SEARCH_STAFF;

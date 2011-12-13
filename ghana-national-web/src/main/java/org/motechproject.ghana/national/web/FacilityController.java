@@ -6,7 +6,6 @@ import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.FacilityForm;
-import org.motechproject.ghana.national.web.form.SearchFacilityForm;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -27,8 +26,6 @@ import java.util.Locale;
 @RequestMapping(value = "/admin/facilities")
 public class FacilityController {
     public static final String FACILITY_FORM = "facilityForm";
-    public static final String SEARCH_FACILITY_FORM = "searchFacilityForm";
-
     public static final String SUCCESS_VIEW = "facilities/success";
     public static final String NEW_FACILITY_VIEW = "facilities/new";
     public static final String SEARCH_FACILITY_VIEW = "facilities/search";
@@ -79,15 +76,15 @@ public class FacilityController {
     @ApiSession
     @RequestMapping(value = "search", method = RequestMethod.GET)
     public String searchFacilityForm(ModelMap modelMap) {
-        modelMap.put(SEARCH_FACILITY_FORM, new SearchFacilityForm());
+        modelMap.put(FACILITY_FORM, new FacilityForm());
         modelMap.mergeAttributes(facilityHelper.locationMap());
         return SEARCH_FACILITY_VIEW;
     }
 
     @ApiSession
     @RequestMapping(value = "searchFacilities", method = RequestMethod.POST)
-    public String searchFacility(@Valid final SearchFacilityForm searchFacilityForm, ModelMap modelMap) {
-        final List<Facility> searchResults = facilityService.searchFacilities(searchFacilityForm.getFacilityID(),
+    public String searchFacility(@Valid final FacilityForm searchFacilityForm, ModelMap modelMap) {
+        final List<Facility> searchResults = facilityService.searchFacilities(searchFacilityForm.getFacilityId(),
                 searchFacilityForm.getName(), searchFacilityForm.getCountry(), searchFacilityForm.getRegion(),
                 searchFacilityForm.getCountyDistrict(), searchFacilityForm.getStateProvince());
         List<FacilityForm> requestedFacilities = new ArrayList<FacilityForm>();
@@ -112,7 +109,7 @@ public class FacilityController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String updateFacility(@Valid FacilityForm updateFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
         try {
-            facilityService.update(updateFacilityForm.getId(), updateFacilityForm.getMotechId(),
+            facilityService.update(updateFacilityForm.getId(), updateFacilityForm.getFacilityId(),
                     updateFacilityForm.getName(), updateFacilityForm.getCountry(), updateFacilityForm.getRegion(),
                     updateFacilityForm.getCountyDistrict(), updateFacilityForm.getStateProvince(), updateFacilityForm.getPhoneNumber(),
                     updateFacilityForm.getAdditionalPhoneNumber1(), updateFacilityForm.getAdditionalPhoneNumber2(),
@@ -143,7 +140,7 @@ public class FacilityController {
         facilityForm.setRegion(facility.region());
         facilityForm.setStateProvince(facility.province());
         facilityForm.setId(facility.mrsFacilityId());
-        facilityForm.setMotechId(facility.motechId());
+        facilityForm.setFacilityId(facility.motechId());
         return facilityForm;
     }
 

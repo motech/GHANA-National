@@ -11,7 +11,6 @@ import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.helper.FacilityHelper;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.FacilityForm;
-import org.motechproject.ghana.national.web.form.SearchFacilityForm;
 import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -153,8 +152,8 @@ public class FacilityControllerTest {
         final String region = "region";
         final String district = "district";
         final String province = "province";
-        final SearchFacilityForm searchFacilityForm = new SearchFacilityForm();
-        searchFacilityForm.setFacilityID(id);
+        final FacilityForm searchFacilityForm = new FacilityForm();
+        searchFacilityForm.setFacilityId(id);
         searchFacilityForm.setName(name);
         searchFacilityForm.setCountry(country);
         searchFacilityForm.setRegion(region);
