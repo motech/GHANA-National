@@ -4,6 +4,7 @@ public class Constants {
     //security roles
     public static final String SECURITY_ROLE_SUPER = "System Developer";
     public static final String SECURITY_ROLE_PROVIDER = "Provider";
+    public static final String SECURITY_ROLE_CALL_CENTER = "Create/Edit MoTeCH Data";
 
     //person attributes
     public static final String PERSON_ATTRIBUTE_TYPE_EMAIL = "Email";

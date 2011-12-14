@@ -76,7 +76,7 @@ public class LoginSuccessHandlerTest {
         when(servletRequest.getSession(false)).thenReturn(httpSession);
 
         new LoginSuccessHandler().onAuthenticationSuccess(servletRequest, response, authentication);
-        verify(response).sendRedirect("callcenter");
+        verify(response).sendRedirect("admin"); // TODO: hardcoded until the story for staff role login is played <geet/balaji>
     }
 
     @Test
@@ -95,6 +95,6 @@ public class LoginSuccessHandlerTest {
         when(servletRequest.getSession(false)).thenReturn(httpSession);
 
         new LoginSuccessHandler().onAuthenticationSuccess(servletRequest, response, authentication);
-        verify(response).sendRedirect("facility");
+        verify(response).sendRedirect("admin"); // TODO: hardcoded until the story for staff role login is played <geet/balaji>
     }
 }

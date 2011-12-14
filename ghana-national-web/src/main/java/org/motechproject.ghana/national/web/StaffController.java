@@ -84,7 +84,7 @@ public class StaffController {
             if (StaffType.Role.isAdmin(roleOfStaff)) {
                 emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUsername(), (String) userData.get("password"));
             }
-            modelMap.put("successMessage", "Staff created successfully.Email with login credentials sent to admin users only");
+            modelMap.put("successMessage", "Staff created successfully.Email with login credentials sent (to admin users only).");
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
             return staffHelper.getStaffForId(modelMap, staffService.getUserById(openMRSUser.getSystemId()));
         } catch (UserAlreadyExistsException e) {
@@ -116,7 +116,7 @@ public class StaffController {
             }
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
             staffHelper.getStaffForId(modelMap, staffService.getUserById(mrsUser.getSystemId()));
-            modelMap.put("successMessage", "Staff edited successfully.Email with login credentials sent to admin users only");
+            modelMap.put("successMessage", "Staff edited successfully.Email with login credentials sent (to admin users only).");
         } catch (UserAlreadyExistsException ignored) {
             //cannot happen as the Id is unique.
         }

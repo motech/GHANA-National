@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web.security;
 
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.mrs.security.MRSSecurityUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +25,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
         MRSSecurityUser user = (MRSSecurityUser) authentication.getPrincipal();
         request.getSession().setAttribute(LOGGED_IN_USER, user);
         if (getRedirectUrl(request) == null) {
-            response.sendRedirect(getDashboard(user));
+            response.sendRedirect("admin"); //TODO: hardcoded until the story for staff role login is played <geet/balaji>
         }
         super.onAuthenticationSuccess(request, response, authentication);
     }
