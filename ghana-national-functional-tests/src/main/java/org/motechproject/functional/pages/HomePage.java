@@ -57,6 +57,19 @@ public class HomePage {
         webDriverProvider.WaitForElement_ID("submitFacility");
     }
 
+    public void OpenCreateStaffPage() {
+            WebElement StaffParentLink = driver.findElement(By.linkText("Staff"));
+        if (System.getProperty("os.name").contains("Wind")) {
+            myJsExecutor.clickOnLink("newstaff", driver);
+        } else {
+            WebElement temp = myJsExecutor.getElementById("newstaff", driver);
+            webDriverProvider.WaitForElement_ID("newstaff");
+            StaffParentLink.click();
+            temp.click();
+        }
+        webDriverProvider.WaitForElement_ID("submitNewUser");
+    }
+
 
     public void OpenCreatePatientPage() {
         WebElement PatientParentLink = driver.findElement(By.linkText("Patient"));
