@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -27,15 +28,15 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
     private LoginPage loginPage;
 
     @Autowired
-    private HomePage homePage;
+    protected HomePage homePage;
 
     @Autowired
-    private CreateFacilityPage createFacilityPage;
+    protected CreateFacilityPage createFacilityPage;
 
     @Autowired
     private WebDriverProvider driverProvider;
 
-    private WebDriver driver;
+    protected WebDriver driver;
 
     @BeforeMethod
     public void setUp() {
@@ -63,6 +64,10 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
         long number = (long) Math.floor(Math.random() * 900000000L) + 100000000L;
         createFacilityPage.SetPhoneNum("0" + number);
         Assert.assertTrue(createFacilityPage.SubmitDetails());
+    }
+
+    @AfterMethod
+    public void tearDown(){
         homePage.Logout();
     }
 
