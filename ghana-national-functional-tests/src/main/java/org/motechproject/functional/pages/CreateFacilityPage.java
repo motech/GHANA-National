@@ -83,6 +83,7 @@ public class CreateFacilityPage {
     }
 
     public void SetFacilityName(String facilityName) {
+        FacilityNameInput.sendKeys("");
         FacilityNameInput.sendKeys(facilityName + dataGenerator.randomString(5));
     }
 
