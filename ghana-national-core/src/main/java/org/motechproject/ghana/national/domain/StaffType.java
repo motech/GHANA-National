@@ -41,7 +41,7 @@ public class StaffType extends MotechAuditableDataObject {
         COMMUNITY_HEALTH_VOLUNTEER("CHV", Constants.SECURITY_ROLE_PROVIDER),
         FIELD_AGENT("FA", Constants.SECURITY_ROLE_PROVIDER),
         FACILITY_ADMIN("Facility Admin", Constants.SECURITY_ROLE_PROVIDER),
-        HEALTH_CARE_ADMIN("HeathCare Admin", Constants.SECURITY_ROLE_PROVIDER),
+        HEALTH_CARE_ADMIN("HealthCare Admin", Constants.SECURITY_ROLE_PROVIDER),
         HEALTH_EXTENSION_WORKER("HEW", Constants.SECURITY_ROLE_PROVIDER),
         HEALTH_PROMOTION_OFFICER("HPO", Constants.SECURITY_ROLE_PROVIDER),
         MOBILE_MIDWIFE("MM", Constants.SECURITY_ROLE_PROVIDER),

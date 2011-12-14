@@ -1,6 +1,7 @@
 package org.motechproject.functional.pages;
 
 import org.motechproject.functional.base.WebDriverProvider;
+import org.motechproject.functional.util.DataGenerator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -107,6 +108,9 @@ public class CreatePatientPage {
     @Autowired
     WebDriverProvider webDriverProvider;
 
+    @Autowired
+    DataGenerator dataGenerator;
+
     private WebDriver driver;
 
     public enum PATIENT_REGN_MODE {AUTO_GENERATE_ID, USE_PREPRINTED_ID}
@@ -131,7 +135,7 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithPatientFirstName(String patientname) {
-        firstName.sendKeys(patientname);
+        firstName.sendKeys(patientname + dataGenerator.randomString(5));
         return this;
     }
 
@@ -230,12 +234,12 @@ public class CreatePatientPage {
 
     public boolean Create() {
         submitNewPatient.click();
+        webDriverProvider.WaitForElement_ID("footer");
         String src = driver.getPageSource();
         if (src.contains("Patient created successfully"))
             return true;
             else
-            return false;
-
+        return false;
     }
 
 

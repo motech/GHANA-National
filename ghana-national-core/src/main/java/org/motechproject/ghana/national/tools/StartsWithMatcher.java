@@ -18,7 +18,7 @@ public class StartsWithMatcher extends TypeSafeMatcher<String> {
 
     @Override
     public boolean matchesSafely(String item) {
-        return item.toLowerCase().startsWith(string.toLowerCase());
+        return (item != null) && item.toLowerCase().startsWith(string.toLowerCase());
     }
 
     public void describeTo(Description description) {
