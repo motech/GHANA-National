@@ -48,7 +48,7 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
         homePage.OpenCreateFacilityPage();
         boolean TestPassed;
         PageFactory.initElements(driver, createFacilityPage);
-        createFacilityPage.SetFacilityName("Test Facility" + Math.random() * 9000L);
+        createFacilityPage.SetFacilityName("Test Facility");
         createFacilityPage.SelectCountry("Ghana");
         if (createFacilityPage.IsRegionDisplayed()) {
             createFacilityPage.SetRegionName("Central Region");
