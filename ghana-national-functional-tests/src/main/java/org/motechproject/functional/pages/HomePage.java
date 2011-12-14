@@ -1,20 +1,18 @@
 package org.motechproject.functional.pages;
 
-import org.apache.commons.io.FileUtils;
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.util.JavascriptExecutor;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
-
 
 @Component
 public class HomePage {
-     @Value("#{functionalTestProperties['host']}")
+    @Value("#{functionalTestProperties['host']}")
     private String host;
 
     @Value("#{functionalTestProperties['port']}")
@@ -44,29 +42,32 @@ public class HomePage {
 
     public void OpenCreateFacilityPage() {
         WebElement FacilityParentLink = driver.findElement(By.linkText("Facility"));
-        File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        try {
-            FileUtils.copyFile(screenshot,new File("blah.bmp"));
-        } catch (IOException e) {
-            e.printStackTrace();
+
+
+        if (System.getProperty("os.name").contains("Wind")) {
+            myJsExecutor.clickOnLink("newfacility", driver);
+            System.out.println("OS NAME" + System.getProperty("os.name"));
+        } else {
+            System.out.println("OS NAME" + System.getProperty("os.name"));
+            WebElement temp = myJsExecutor.getElementById("newfacility", driver);
+            webDriverProvider.WaitForElement_ID("newfacility");
+            FacilityParentLink.click();
+            temp.click();
         }
-        FacilityParentLink.click();
-        WebElement temp= myJsExecutor.getElementById("newfacility",driver);
-        temp.click();
-////        // The below line of code does not work in Linux env so commenting it out and
-////        // added the line above this comment to pass the build in hudson
-//        myJsExecutor.clickOnLink("newfacility", driver);
         webDriverProvider.WaitForElement_ID("submitFacility");
     }
 
 
     public void OpenCreatePatientPage() {
         WebElement PatientParentLink = driver.findElement(By.linkText("Patient"));
-        PatientParentLink.click();
-
-        WebElement temp = myJsExecutor.getElementById("newpatient", driver);
-        temp.click();
-//        myJsExecutor.clickOnLink("newpatient", driver);
+        if (System.getProperty("os.name").contains("Wind")) {
+            myJsExecutor.clickOnLink("newpatient", driver);
+        } else {
+            WebElement temp = myJsExecutor.getElementById("newpatient", driver);
+            webDriverProvider.WaitForElement_ID("newpatient");
+            PatientParentLink.click();
+            temp.click();
+        }
         webDriverProvider.WaitForElement_ID("submitNewPatient");
     }
 }

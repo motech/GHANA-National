@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -66,6 +67,10 @@ public class CreatePatientTest extends AbstractTestNGSpringContextTests {
                 .WithDistrict("Awutu Senya")
                 .WithSubDistrict("Kasoa")
                 .WithFacility("Papaase CHPS").Create());
+    }
+    @AfterSuite
+    public void closeall() {
+        driver.close();driver.quit();
     }
 
 }
