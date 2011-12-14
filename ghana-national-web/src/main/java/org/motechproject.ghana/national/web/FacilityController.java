@@ -68,6 +68,7 @@ public class FacilityController {
             modelMap.mergeAttributes(facilityHelper.locationMap());
             return NEW_FACILITY_VIEW;
         }
+        modelMap.put("successMessage", "Facility created successfully.");
         return facilityHelper.getFacilityForId(modelMap, facilityService.getFacility(facilityId));
     }
 
