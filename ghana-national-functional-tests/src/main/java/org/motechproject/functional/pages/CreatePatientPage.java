@@ -173,7 +173,7 @@ public class CreatePatientPage {
         }
 
     public CreatePatientPage WithEstimatedDOB(Boolean estimateddob) {
-        if (!estimateddob)
+        if (estimateddob)
             estimatedDateOfBirth.click();
         else
             notEstimatedDateOfBirth.click();
