@@ -10,9 +10,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class CreateStaffPage {
@@ -54,12 +52,10 @@ public class CreateStaffPage {
     private WebDriver driver;
 
 
-    private Map<String, String> STAFF_CODE;
 
     @Autowired
     public CreateStaffPage(WebDriverProvider webDriverProvider) {
         this.driver = webDriverProvider.getWebDriver();
-        STAFF_CODE = new HashMap<String, String>();
     }
 
 
@@ -106,7 +102,7 @@ public class CreateStaffPage {
 
     public boolean SubmitStaff() {
         submitNewStaff.click();
-        webDriverProvider.WaitForElement_ID("staffForm");
+        webDriverProvider.WaitForElement_ID("footer");
 //        String src = driver.findElement(By.className("success")).getText();
             String src = driver.getPageSource();
         if (src.contains("Staff created successfully"))
