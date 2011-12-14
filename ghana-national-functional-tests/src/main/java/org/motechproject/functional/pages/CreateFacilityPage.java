@@ -83,6 +83,7 @@ public class CreateFacilityPage {
     }
 
     public void SetFacilityName(String facilityName) {
+        FacilityNameInput.sendKeys("");
         FacilityNameInput.sendKeys(facilityName + dataGenerator.randomString(5));
     }
 
@@ -118,6 +119,12 @@ public class CreateFacilityPage {
         SubmitFacilityDetails.click();
         // if facility id is displayed in the next page then we presume facility created successfully
         return webDriverProvider.WaitForElement_ID("facilityId");
+    }
+
+    public boolean UpdateFacilityDetails() {
+        SubmitFacilityDetails.click();
+        String srcPage = driver.getPageSource();
+        return (srcPage.contains("Facility edited successfully"));
     }
 
     public HomePage getHomePage() {

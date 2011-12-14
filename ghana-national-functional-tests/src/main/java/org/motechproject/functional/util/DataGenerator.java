@@ -29,7 +29,7 @@ public class DataGenerator {
 
     public String getRandPhoneNum() {
         long n =(long) Math.floor(Math.random() * 900000000L) + 100000000L;
-        return Long.toBinaryString(n);
+        return ("0") + Long.toString(n);
     }
 
 
