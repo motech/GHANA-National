@@ -104,9 +104,12 @@ public class StaffForm {
         mrsUser.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
         mrsUser.securityRole(StaffType.Role.securityRoleFor(roleOfStaff));
 
-        try{
-            mrsUser.userName(getEmail());
-        }catch(Exception ignored){}
+        try {
+            if (isAdmin(roleOfStaff)) {
+                mrsUser.userName(getEmail());
+            }
+        } catch (Exception ignored) {
+        }
         return mrsUser;
     }
 }

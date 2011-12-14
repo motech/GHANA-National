@@ -163,7 +163,7 @@ public class StaffControllerTest {
         assertEquals(form.getRole(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
         assertEquals(form.getEmail(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_EMAIL));
         assertEquals(form.getPhoneNumber(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER));
-        assertNull(captured.getUserName());
+//        assertNull(captured.getUserName());
     }
 
     private String getAttrValue(MRSUser mrsUser, String name) {

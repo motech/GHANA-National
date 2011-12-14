@@ -82,7 +82,7 @@ public class StaffController {
             modelMap.put(STAFF_ID, openMRSUser.getSystemId());
             modelMap.put(STAFF_NAME, mrsUser.getFullName());
             if (StaffType.Role.isAdmin(roleOfStaff)) {
-                emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUsername(), (String) userData.get("password"));
+//                emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUsername(), (String) userData.get("password"));
             }
             modelMap.put("successMessage", "Staff created successfully.Email with login credentials sent");
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());

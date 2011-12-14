@@ -12,6 +12,7 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSUser;
 import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -241,4 +242,30 @@ public class FacilityControllerTest {
         facilityForm.setAdditionalPhoneNumber3(addPhoneNumber3);
         return facilityForm;
     }
+
+//    @Test
+//    public void shouldUpdateFacility(){
+//        String id = "1";
+//        String facilityId = "12345";
+//        String name = "name";
+//        String country = "country";
+//        String region = "region";
+//        String countyDistrict = "countyDistrict";
+//        String stateProvince = "stateProvince";
+//        String phoneNumber = "0987654321";
+//        String additionalPhoneNumber1 = "0987654321";
+//        String additionalPhoneNumber2 = "0987654321";
+//        String additionalPhoneNumber3 = "0987654321";
+//        FacilityForm facilityForm = new FacilityForm(id,facilityId,name,country,region,countyDistrict,stateProvince,phoneNumber,additionalPhoneNumber1,additionalPhoneNumber2,additionalPhoneNumber3);
+//        String result = facilityController.update(staffForm, mockBindingResult, modelMap);
+//                ArgumentCaptor<MRSUser> captor = ArgumentCaptor.forClass(MRSUser.class);
+//                verify(mockStaffService).updateUser(captor.capture());
+//                assertThat(result, is(StaffController.EDIT_STAFF_URL));
+//
+//        when(mockFacilityService.getFacility(id)).thenReturn(mock(Facility.class));
+//        verify(mockFacilityService).update(captor.capture);
+//        facilityController.update()
+//
+//    }
+
 }
