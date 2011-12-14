@@ -121,6 +121,12 @@ public class CreateFacilityPage {
         return webDriverProvider.WaitForElement_ID("facilityId");
     }
 
+    public boolean UpdateFacilityDetails() {
+        SubmitFacilityDetails.click();
+        String srcPage = driver.getPageSource();
+        return (srcPage.contains("Facility edited successfully"));
+    }
+
     public HomePage getHomePage() {
         return homePage;
     }
