@@ -59,14 +59,16 @@ public class CreatePatientTest extends AbstractTestNGSpringContextTests {
         Assert.assertTrue(createPatient.WithRegistrationMode(CreatePatientPage.PATIENT_REGN_MODE.AUTO_GENERATE_ID).WithPatientType(CreatePatientPage.PATIENT_TYPE.PATIENT_MOTHER)
                 .WithPatientFirstName("AutomationPatient")
                 .WithPatientLastName("Auto Last Name")
-                .WithDateofBirth(DOB)
                 .WithEstimatedDOB(false)
                 .WithPatientGender(true)
                 .WithInsured(false)
                 .WithRegion("Central Region")
                 .WithDistrict("Awutu Senya")
                 .WithSubDistrict("Kasoa")
-                .WithFacility("Papaase CHPS").Create());
+                .WithFacility("Papaase CHPS")
+                .WithDateofBirth(DOB) // select the DOB at last as there is a time delay in the jquery ui closing after selecting the date
+                                        // this happens when the build is run locally in dev environment
+                .Create());
     }
     @AfterSuite
     public void closeall() {
