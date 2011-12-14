@@ -51,27 +51,27 @@ public class CreatePatientPage {
 
     @FindBy(id = "estimatedDateOfBirth1")
     @CacheLookup
-    WebElement radioestimatedDateOfBirth1;
+    WebElement estimatedDateOfBirth;
 
     @FindBy(id = "estimatedDateOfBirth2")
     @CacheLookup
-    WebElement radioestimatedDateOfBirth2;
+    WebElement notEstimatedDateOfBirth;
 
     @FindBy(id = "sex1")
     @CacheLookup
-    WebElement radiosex1;
+    WebElement male;
 
     @FindBy(id = "sex2")
     @CacheLookup
-    WebElement radiosex2;
+    WebElement female;
 
     @FindBy(id = "insured1")
     @CacheLookup
-    WebElement radioinsured1;
+    WebElement insured;
 
     @FindBy(id = "insured2")
     @CacheLookup
-    WebElement radioinsured2;
+    WebElement notinsured;
 
     @FindBy(id = "nhisNumber")
     @CacheLookup
@@ -174,25 +174,25 @@ public class CreatePatientPage {
 
     public CreatePatientPage WithEstimatedDOB(Boolean estimateddob) {
         if (!estimateddob)
-            radioestimatedDateOfBirth2.click();
+            estimatedDateOfBirth.click();
         else
-            radioestimatedDateOfBirth1.click();
+            notEstimatedDateOfBirth.click();
         return this;
     }
 
     public CreatePatientPage WithPatientGender(Boolean Gender) {
         if (Gender)
-            radiosex1.click();
+            male.click();
         else
-            radiosex2.click();
+            female.click();
         return this;
     }
 
     public CreatePatientPage WithInsured(Boolean Insured) {
         if (Insured)
-            radioinsured1.click();
+            insured.click();
         else
-            radioinsured2.click();
+            notinsured.click();
         return this;
     }
 

@@ -50,8 +50,9 @@ public class HomePage {
         } else {
             System.out.println("OS NAME" + System.getProperty("os.name"));
             WebElement temp = myJsExecutor.getElementById("newfacility", driver);
-            webDriverProvider.WaitForElement_ID("newfacility");
+
             FacilityParentLink.click();
+            webDriverProvider.WaitForElement_ID("newfacility");
             temp.click();
         }
         webDriverProvider.WaitForElement_ID("submitFacility");
@@ -63,8 +64,9 @@ public class HomePage {
             myJsExecutor.clickOnLink("newstaff", driver);
         } else {
             WebElement temp = myJsExecutor.getElementById("newstaff", driver);
-            webDriverProvider.WaitForElement_ID("newstaff");
+
             StaffParentLink.click();
+            webDriverProvider.WaitForElement_ID("newstaff");
             temp.click();
         }
         webDriverProvider.WaitForElement_ID("submitNewUser");
@@ -77,8 +79,9 @@ public class HomePage {
             myJsExecutor.clickOnLink("newpatient", driver);
         } else {
             WebElement temp = myJsExecutor.getElementById("newpatient", driver);
-            webDriverProvider.WaitForElement_ID("newpatient");
+
             PatientParentLink.click();
+            webDriverProvider.WaitForElement_ID("newpatient");
             temp.click();
         }
         webDriverProvider.WaitForElement_ID("submitNewPatient");
