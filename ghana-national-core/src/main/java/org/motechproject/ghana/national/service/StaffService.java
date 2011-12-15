@@ -13,9 +13,16 @@ import org.motechproject.mrs.services.MRSUserAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.filter;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
 import static org.hamcrest.Matchers.equalTo;
 
 @Service
@@ -36,6 +43,7 @@ public class StaffService {
     public Map saveUser(MRSUser mrsUser) throws UserAlreadyExistsException {
         return userAdaptor.saveUser(mrsUser);
     }
+
     public Map updateUser(MRSUser mrsUser) throws UserAlreadyExistsException {
         return userAdaptor.updateUser(mrsUser);
     }
@@ -51,8 +59,10 @@ public class StaffService {
     }
 
     public Map<String, String> fetchAllRoles() {
-        Map<String, String> roles = new HashMap<String, String>();
-        for (StaffType staffType : allStaffTypes.getAll()) roles.put(staffType.name(), staffType.description());
+        Map<String, String> roles = new LinkedHashMap<String, String>();
+        for (StaffType staffType : allStaffTypes.getAll()) {
+            roles.put(staffType.name(), staffType.description());
+        }
         return roles;
     }
 
@@ -72,7 +82,7 @@ public class StaffService {
         filteredMRSUsers = filterUsers(on(MRSUser.class).getLastName(), lastName, filteredMRSUsers);
         filteredMRSUsers = filterByAttribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, phoneNumber, filteredMRSUsers);
         filteredMRSUsers = filterByAttribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role, filteredMRSUsers);
-        Collections.sort(filteredMRSUsers,new UserFirstNameComparator());
+        Collections.sort(filteredMRSUsers, new UserFirstNameComparator());
         return filteredMRSUsers;
     }
 

@@ -2,10 +2,10 @@ Super Admin,Super Administrator
 Facility Admin,Facility Administrator
 CallCenter Admin,Call Centre Administrator
 HealthCare Admin,Health Care Administrator
-HPO,Health Promotion Officer
 HEW,Health Extension Worker
-CHO,Community Health Operator
+CHO,Community Health Officer
 CHN,Community Health Nurse
 CHV,Community Health Volunteer
-FA,Field Agent
-MM,Mobile Midwife
+HPO,Health Promotion Officer
+FA,Motech Field Agent
+MMA,Mobile Midwife Agent
