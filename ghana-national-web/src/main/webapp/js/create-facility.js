@@ -29,8 +29,11 @@ $(document).ready(function() {
         }
     });
 
-    $(".hidden-location").each(function() {
-        if ($(this).children('select :selected').attr('value') == undefined) $(this).addClass('hide');
+
+    $(".hidden-location").children("select").each(function(e, i) {
+         if($(i).val() == "") {
+            $(i).parent().addClass('hide');
+         }
     });
 });
 

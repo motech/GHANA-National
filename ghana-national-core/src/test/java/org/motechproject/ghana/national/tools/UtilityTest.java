@@ -68,4 +68,11 @@ public class UtilityTest {
             }
         }));
     }
+
+    @Test
+    public void shouldReturnNullIfStringIsEmpty() {
+        assertNull(Utility.emptyToNull(""));
+        assertNull(Utility.emptyToNull(" "));
+        assertEquals("Facility", Utility.emptyToNull("Facility"));
+    }
 }

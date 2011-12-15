@@ -13,3 +13,4 @@ logs
 .classpath
 .project
 .settings/
+*_failed.bmp

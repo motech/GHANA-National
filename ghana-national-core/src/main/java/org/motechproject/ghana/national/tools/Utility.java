@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.tools;
 
 import ch.lambdaj.function.convert.Converter;
 import ch.lambdaj.group.Group;
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Facility;
 
 import java.util.HashMap;
@@ -28,5 +29,9 @@ public class Utility {
 
     public static String safeToString(Object object) {
         return object == null ? null : object.toString();
+    }
+
+    public static String emptyToNull(String string) {
+        return (StringUtils.isEmpty(string.trim())) ? null : string;
     }
 }

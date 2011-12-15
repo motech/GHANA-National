@@ -44,8 +44,8 @@ public class FacilityServiceTest {
         String facilityName = "name";
         String country = "country";
         String region = "region";
-        String district = "district";
-        String province = "province";
+        String district = "";
+        String province = "";
         String phoneNumber = "1";
         String additionalPhoneNumber1 = "2";
         String additionalPhoneNumber2 = "3";
@@ -60,8 +60,8 @@ public class FacilityServiceTest {
         assertThat(savedFacility.motechId(), is(equalTo(motechId)));
         assertThat(savedFacility.name(), is(equalTo(facilityName)));
         assertThat(savedFacility.region(), is(equalTo(region)));
-        assertThat(savedFacility.district(), is(equalTo(district)));
-        assertThat(savedFacility.province(), is(equalTo(province)));
+        assertThat(savedFacility.district(), is(equalTo(null)));
+        assertThat(savedFacility.province(), is(equalTo(null)));
         assertThat(savedFacility.country(), is(equalTo(country)));
         assertThat(savedFacility.phoneNumber(), is(equalTo(phoneNumber)));
         assertThat(savedFacility.additionalPhoneNumber1(), is(equalTo(additionalPhoneNumber1)));

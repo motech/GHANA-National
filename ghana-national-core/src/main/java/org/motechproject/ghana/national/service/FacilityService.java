@@ -6,13 +6,16 @@ import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.tools.StartsWithMatcher;
+import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.filter;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
 
 @Service
 public class FacilityService {
@@ -28,7 +31,7 @@ public class FacilityService {
 
     public String create(String name, String country, String region, String district, String province, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) throws FacilityAlreadyFoundException {
         final List<Facility> facilities = facilities();
-        final MRSFacility mrsFacility = new MRSFacility(name, country, region, district, province);
+        final MRSFacility mrsFacility = new MRSFacility(name, country, Utility.emptyToNull(region), Utility.emptyToNull(district), Utility.emptyToNull(province));
         if (isDuplicate(facilities, mrsFacility, phoneNumber)) {
             throw new FacilityAlreadyFoundException();
         }

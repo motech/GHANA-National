@@ -15,6 +15,8 @@
     <c:url var="forgotPasswordURL" value="/forgotPassword">
         <c:param name="emailId" value="${j_username}"/>
     </c:url>
+    <br/>
+    <br/>
     <a href="<c:out value="${forgotPasswordURL}"/>"
        onclick="this.href=this.href+document.getElementById('j_username').value">Forgot Password</a>
 
