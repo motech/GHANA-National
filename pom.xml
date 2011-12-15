@@ -12,7 +12,9 @@
         <module>ghana-national-functional-tests</module>
         <module>ghana-national-core</module>
         <module>ghana-national-xforms</module>
+        <module>ghana-national-tools</module>
         <module>ghana-national-web</module>
+        <module>ghana-national-common</module>
     </modules>
     <properties>
         <spring.version>3.0.5.RELEASE</spring.version>

@@ -107,19 +107,27 @@
             <version>6.1.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>ghana-national-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <classifier>resources</classifier>
+            <type>zip</type>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <build>
         <!--RESOURCE FILTERING-->
         <resources>
             <resource>
-                <directory>ghana-national-web/src/main/resources</directory>
+                <directory>${project.build.directory}/generated-resources</directory>
                 <filtering>true</filtering>
                 <excludes>
                     <exclude>**/*.omod</exclude>
                 </excludes>
             </resource>
             <resource>
-                <directory>ghana-national-web/src/main/resources</directory>
+                <directory>${project.build.directory}/generated-resources</directory>
                 <filtering>false</filtering>
                 <includes>
                     <include>**/*.omod</include>
@@ -127,6 +135,33 @@
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-shared-resources</id>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
+                            <includeArtifactIds>ghana-national-common</includeArtifactIds>
+                            <includeGroupIds>org.motechproject</includeGroupIds>
+                            <excludeTransitive>true</excludeTransitive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Exclude seed module from war -->
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <archiveClasses>false</archiveClasses>
+                    <packagingExcludes>WEB-INF/lib/ghana-national-tools.jar</packagingExcludes>
+                </configuration>
+            </plugin>
             <plugin>
                 <!-- INSERTS HUDSON BUILD NUMBER AS A HTML COMMENT IN THE FOOTER -->
                 <groupId>org.codehaus.mojo</groupId>
@@ -183,13 +218,13 @@
                                 <delete dir="${openmrs.directory}"/>
                                 <mkdir dir="${openmrs.directory}"/>
                                 <mkdir dir="${openmrs.directory}/modules"/>
-                                <copy file="../ghana-national-core/src/main/resources/openmrs-data/openmrs-runtime.properties"
+                                <copy file="../ghana-national-common/src/main/resources/openmrs-data/openmrs-runtime.properties"
                                       tofile="${openmrs.directory}/openmrs-runtime.properties"/>
                                 <copy file="../idgen-omod/target/idgen-omod.omod"
                                       tofile="${openmrs.directory}/modules/idgen-omod.omod"/>
                                 <copy todir="${openmrs.directory}/modules">
                                     <fileset
-                                            dir="../ghana-national-core/src/main/resources/openmrs-data/modules"/>
+                                            dir="../ghana-national-common/src/main/resources/openmrs-data/modules"/>
                                 </copy>
                             </target>
                         </configuration>
@@ -221,38 +256,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!--COUCHDB RECREATION-->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>recreate-db</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>org.motechproject.ghana.national.web.tools.RecreateDB</mainClass>
-                            <classpathScope>test</classpathScope>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>seed-db</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>org.motechproject.ghana.national.web.tools.seed.SetupSeedData</mainClass>
-                            <classpathScope>test</classpathScope>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!--JETTY-->
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xf:xforms xmlns:xf="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="6">
+  <xf:model>
+    <xf:instance id="generalopd">
+      <generalopd id="6" name="Outpatient Visit-">
+        <staffId/>
+        <facilityId/>
+        <formname/>
+        <date/>
+        <serialNumber/>
+        <motechId/>
+        <sex/>
+        <dateOfBirth/>
+        <insured/>
+        <newCase/>
+        <newPatient/>
+        <diagnosis/>
+        <otherdiagnosis/>
+        <secondDiagnosis/>
+        <othersecondarydiagnosis/>
+        <rdtGiven/>
+        <rdtPositive/>
+        <actTreated/>
+        <referred/>
+        <comments/>
+        <formtype>data_entry</formtype>
+      </generalopd>
+    </xf:instance>
+    <xf:bind id="staffId" nodeset="/generalopd/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+    <xf:bind id="facilityId" nodeset="/generalopd/facilityId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+    <xf:bind id="formname" nodeset="/generalopd/formname" required="true()" type="xsd:string"/>
+    <xf:bind constraint=". &lt;= 'today()'" id="date" message="Invalid date: date specified is in the future" nodeset="/generalopd/date" required="true()" type="xsd:date"/>
+    <xf:bind id="serialNumber" nodeset="/generalopd/serialNumber" type="xsd:string" required="true()"/>
+    <xf:bind action="show" id="motechId" nodeset="/generalopd/motechId" relevant="/generalopd/formname = 'motheropd-jf' or /generalopd/formname = 'childopd-jf'" type="xsd:int" visible="false()" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long" required="true()"/>
+    <xf:bind action="show" id="sex" nodeset="/generalopd/sex" relevant="/generalopd/formname = 'generalopd-jf'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" constraint=". &lt;= 'today()'" id="dateOfBirth" message="Invalid date: date specified is in the future" nodeset="/generalopd/dateOfBirth" relevant="/generalopd/formname = 'generalopd-jf'" required="true()" type="xsd:date" visible="false()"/>
+    <xf:bind id="insured" nodeset="/generalopd/insured" required="true()" type="xsd:string"/>
+    <xf:bind id="newCase" nodeset="/generalopd/newCase" required="true()" type="xsd:string"/>
+    <xf:bind id="newPatient" nodeset="/generalopd/newPatient" required="true()" type="xsd:string"/>
+    <xf:bind id="diagnosis" nodeset="/generalopd/diagnosis" required="true()" type="xsd:string"/>
+    <xf:bind action="show" constraint=". &gt;= 1 and . &lt;= 76" id="otherdiagnosis" message="Invalid diagnosis: value must be between 1 and 76" nodeset="/generalopd/otherdiagnosis" relevant="/generalopd/diagnosis = '78'" required="true()" type="xsd:int" visible="false()"/>
+    <xf:bind id="secondDiagnosis" nodeset="/generalopd/secondDiagnosis" type="xsd:string"/>
+    <xf:bind action="show" constraint=". &gt;= 1 and . &lt;= 76" id="othersecondarydiagnosis" message="Invalid diagnosis: value must be between 1 and 76" nodeset="/generalopd/othersecondarydiagnosis" relevant="/generalopd/secondDiagnosis = '78'" required="true()" type="xsd:int" visible="false()"/>
+    <xf:bind action="show" id="rdtGiven" nodeset="/generalopd/rdtGiven" relevant="/generalopd/diagnosis = '63' or /generalopd/diagnosis = '64' or /generalopd/diagnosis = '10' or /generalopd/diagnosis = '11' or /generalopd/diagnosis = '13' or /generalopd/diagnosis = '12' or /generalopd/secondDiagnosis = '63' or /generalopd/secondDiagnosis = '64' or /generalopd/secondDiagnosis = '10' or /generalopd/secondDiagnosis = '11' or /generalopd/secondDiagnosis = '13' or /generalopd/secondDiagnosis = '12'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" id="rdtPositive" nodeset="/generalopd/rdtPositive" relevant="/generalopd/rdtGiven = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" id="actTreated" nodeset="/generalopd/actTreated" relevant="/generalopd/diagnosis = '63' or /generalopd/diagnosis = '64' or /generalopd/secondDiagnosis = '63' or /generalopd/secondDiagnosis = '64'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind id="referred" nodeset="/generalopd/referred" required="true()" type="xsd:string"/>
+    <xf:bind id="comments" nodeset="/generalopd/comments"  type="xsd:string" required="false()"/>
+    <xf:bind id="formtype" nodeset="/generalopd/formtype" required="true()" type="xsd:string" visible="false()"/>
+  </xf:model>
+  <xf:group id="1">
+    <xf:label>Page5</xf:label>
+    <xf:input bind="staffId">
+      <xf:label>Staff ID</xf:label>
+    </xf:input>
+    <xf:input bind="facilityId">
+      <xf:label>Facility ID</xf:label>
+    </xf:input>
+    <xf:select1 bind="formname">
+      <xf:label>Type of client</xf:label>
+      <xf:item id="motheropd-jf">
+        <xf:label>Pregnant mother</xf:label>
+        <xf:value>motheropd-jf</xf:value>
+      </xf:item>
+      <xf:item id="childopd-jf">
+        <xf:label>Child  under 5 yrs</xf:label>
+        <xf:value>childopd-jf</xf:value>
+      </xf:item>
+      <xf:item id="generalopd-jf">
+        <xf:label>General Client</xf:label>
+        <xf:value>generalopd-jf</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:input bind="date">
+      <xf:label>Visit date</xf:label>
+    </xf:input>
+    <xf:input bind="serialNumber">
+      <xf:label>Serial number</xf:label>
+    </xf:input>
+    <xf:input bind="motechId">
+      <xf:label>MoTeCH ID</xf:label>
+    </xf:input>
+    <xf:select1 bind="sex">
+      <xf:label>Sex</xf:label>
+      <xf:item id="M">
+        <xf:label>Male</xf:label>
+        <xf:value>M</xf:value>
+      </xf:item>
+      <xf:item id="F">
+        <xf:label>Female</xf:label>
+        <xf:value>F</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:input bind="dateOfBirth">
+      <xf:label>Date of birth</xf:label>
+    </xf:input>
+    <xf:select1 bind="insured">
+      <xf:label>Insured</xf:label>
+      <xf:item id="Y">
+        <xf:label>Yes</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+      <xf:item id="N">
+        <xf:label>No</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:select1 bind="newCase">
+      <xf:label>Case status</xf:label>
+      <xf:item id="Y">
+        <xf:label>New</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+      <xf:item id="N">
+        <xf:label>Old</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:select1 bind="newPatient">
+      <xf:label>Client status</xf:label>
+      <xf:item id="Y">
+        <xf:label>New</xf:label>
+          <xf:value>Y</xf:value>
+          </xf:item>
+        <xf:item id="N">
+          <xf:label>Old</xf:label>
+          <xf:value>N</xf:value>
+        </xf:item>
+    </xf:select1>
+    <xf:select1 bind="diagnosis">
+      <xf:label>Principal diagnosis</xf:label>
+      <xf:item id="16">
+        <xf:label>Diarrhoea Diseases</xf:label>
+        <xf:value>16</xf:value>
+      </xf:item>
+      <xf:item id="63">
+        <xf:label>Malaria (Preg.) - Lab</xf:label>
+        <xf:value>63</xf:value>
+      </xf:item>
+      <xf:item id="64">
+        <xf:label>Malaria (Preg.) - Non-Lab</xf:label>
+        <xf:value>64</xf:value>
+      </xf:item>
+      <xf:item id="62">
+        <xf:label>Other ARI</xf:label>
+        <xf:value>62</xf:value>
+      </xf:item>
+      <xf:item id="61">
+        <xf:label>Pneumonia</xf:label>
+        <xf:value>61</xf:value>
+      </xf:item>
+      <xf:item id="10">
+        <xf:label>Simple malaria - Lab</xf:label>
+        <xf:value>10</xf:value>
+      </xf:item>
+      <xf:item id="11">
+        <xf:label>Simple malaria - Non-lab</xf:label>
+        <xf:value>11</xf:value>
+      </xf:item>
+      <xf:item id="13">
+        <xf:label>Severe malaria - Lab</xf:label>
+        <xf:value>13</xf:value>
+      </xf:item>
+      <xf:item id="12">
+        <xf:label>Severe malaria - Non-lab</xf:label>
+        <xf:value>12</xf:value>
+      </xf:item>
+      <xf:item id="65">
+        <xf:label>Skin Diseases &amp;amp; ulcers</xf:label>
+        <xf:value>65</xf:value>
+      </xf:item>
+      <xf:item id="78">
+        <xf:label>Other</xf:label>
+        <xf:value>78</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:input bind="otherdiagnosis">
+      <xf:label>Code for principal diagnosis</xf:label>
+    </xf:input>
+    <xf:select1 bind="secondDiagnosis">
+      <xf:label>Additional diagnosis</xf:label>
+      <xf:item id="16">
+        <xf:label>Diarrhoea Diseases</xf:label>
+        <xf:value>16</xf:value>
+      </xf:item>
+      <xf:item id="63">
+        <xf:label>Malaria (Preg.) - Lab</xf:label>
+        <xf:value>63</xf:value>
+      </xf:item>
+      <xf:item id="64">
+        <xf:label>Malaria (Preg.) - Non-Lab</xf:label>
+        <xf:value>64</xf:value>
+      </xf:item>
+      <xf:item id="62">
+        <xf:label>Other ARI</xf:label>
+        <xf:value>62</xf:value>
+      </xf:item>
+      <xf:item id="61">
+        <xf:label>Pneumonia</xf:label>
+        <xf:value>61</xf:value>
+      </xf:item>
+      <xf:item id="10">
+        <xf:label>Simple malaria - Lab</xf:label>
+        <xf:value>10</xf:value>
+      </xf:item>
+      <xf:item id="11">
+        <xf:label>Simple malaria - Non-lab</xf:label>
+        <xf:value>11</xf:value>
+      </xf:item>
+      <xf:item id="13">
+        <xf:label>Severe malaria - Lab</xf:label>
+        <xf:value>13</xf:value>
+      </xf:item>
+      <xf:item id="12">
+        <xf:label>Severe malaria - Non-lab</xf:label>
+        <xf:value>12</xf:value>
+      </xf:item>
+      <xf:item id="65">
+        <xf:label>Skin Diseases &amp;amp; ulcers</xf:label>
+        <xf:value>65</xf:value>
+      </xf:item>
+      <xf:item id="78">
+        <xf:label>Other</xf:label>
+        <xf:value>78</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:input bind="othersecondarydiagnosis">
+      <xf:label>Code for additional diagnosis</xf:label>
+    </xf:input>
+    <xf:select1 bind="rdtGiven">
+      <xf:label>RDT given</xf:label>
+      <xf:item id="Y">
+        <xf:label>Yes</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+      <xf:item id="N">
+        <xf:label>No</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:select1 bind="rdtPositive">
+      <xf:label>RDT result</xf:label>
+      <xf:item id="N">
+        <xf:label>Negative</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+      <xf:item id="Y">
+        <xf:label>Positive</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:select1 bind="actTreated">
+      <xf:label>ACT given?</xf:label>
+      <xf:item id="Y">
+        <xf:label>Yes</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+      <xf:item id="N">
+        <xf:label>No</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:select1 bind="referred">
+      <xf:label>Referred</xf:label>
+      <xf:item id="Y">
+        <xf:label>Yes</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+      <xf:item id="N">
+        <xf:label>No</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:input bind="comments">
+      <xf:label>Comments</xf:label>
+    </xf:input>
+    <xf:input bind="formtype">
+      <xf:label>formType</xf:label>
+    </xf:input>
+  </xf:group>
+</xf:xforms>
