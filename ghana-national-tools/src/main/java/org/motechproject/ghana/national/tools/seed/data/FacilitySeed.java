@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.tools.seed.data;
 
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.repository.AllFacilities;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.motechproject.ghana.national.tools.seed.data.source.FacilityNameAndId;
 import org.motechproject.ghana.national.tools.seed.data.source.FacilitySource;
@@ -21,6 +22,9 @@ public class FacilitySeed extends Seed {
 
     @Autowired
     FacilitySource facilitySource;
+
+    @Autowired
+    FacilityService facilityService;
 
     @Override
     protected void load() {
