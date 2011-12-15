@@ -27,7 +27,7 @@ public class FacilityService {
     }
 
     public String create(String name, String country, String region, String district, String province, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) throws FacilityAlreadyFoundException {
-        final List<Facility> facilities = allFacilities.facilitiesByName(name);
+        final List<Facility> facilities = facilities();
         final MRSFacility mrsFacility = new MRSFacility(name, country, region, district, province);
         if (isDuplicate(facilities, mrsFacility, phoneNumber)) {
             throw new FacilityAlreadyFoundException();

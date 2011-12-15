@@ -118,7 +118,7 @@ public class FacilityServiceTest {
         String region = "region";
         String district = "district";
         String province = "province";
-        when(mockAllFacilities.facilitiesByName(facilityName)).thenReturn(Arrays.asList(new Facility(new MRSFacility(facilityName, country, region, district, province))));
+        when(mockAllFacilities.facilities()).thenReturn(Arrays.asList(new Facility(new MRSFacility(facilityName, country, region, district, province))));
         facilityService.create(facilityName, country, region, district, province, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
@@ -130,7 +130,7 @@ public class FacilityServiceTest {
         String district = "district";
         String province = "province";
         String testPhoneNumber = "0123456789";
-        when(mockAllFacilities.facilitiesByName(facilityName)).thenReturn(Arrays.asList(new Facility().phoneNumber(testPhoneNumber)));
+        when(mockAllFacilities.facilities()).thenReturn(Arrays.asList(new Facility().phoneNumber(testPhoneNumber)));
         facilityService.create(facilityName, country, region, district, province, testPhoneNumber, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
