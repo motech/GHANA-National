@@ -18,12 +18,13 @@ public class UpdateFacilityTest extends CreateFacilityTest {
         super.setUp();
     }
 
-    @Test   (enabled = false)
+    @Test
     public void updateFacilityWithValidValues() {
         createFacilityWithValidValues();
         PageFactory.initElements(driver, createFacilityPage);
         createFacilityPage.SetFacilityName("Updated Facility");
         Assert.assertTrue(createFacilityPage.UpdateFacilityDetails());
+
     }
 
     @AfterSuite
