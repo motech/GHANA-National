@@ -100,6 +100,10 @@ public class CreateStaffPage {
         return this;
     }
 
+    public String getStaffLogin() {
+        return staffEmailId.getText();
+    }
+
     public boolean SubmitStaff() {
         submitNewStaff.click();
         webDriverProvider.WaitForElement_ID("footer");

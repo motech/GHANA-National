@@ -47,7 +47,7 @@ public class CreateStaffTest extends AbstractTestNGSpringContextTests {
 
     }
 
-    @Test(enabled = false)
+    @Test
     public void createStaffWithValidValues() {
        loginPage.loginAs("admin","P@ssw0rd");
         homePage.OpenCreateStaffPage();
@@ -61,4 +61,6 @@ public class CreateStaffTest extends AbstractTestNGSpringContextTests {
         Assert.assertTrue(createStaff.SubmitStaff());
 
     }
+
+
 }
