@@ -63,7 +63,7 @@ public class WebDriverProvider  {
         } catch (Exception ignored) {
              File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
         try {
-            FileUtils.copyFile(screenshot, new File(elementClass+ "_failed.bmp"));
+            FileUtils.copyFile(screenshot, new File(elementClass+ "_failedClass.bmp"));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -18,7 +18,7 @@ public class UpdateFacilityTest extends CreateFacilityTest {
         super.setUp();
     }
 
-    @Test
+    @Test   (enabled = false)
     public void updateFacilityWithValidValues() {
         createFacilityWithValidValues();
         PageFactory.initElements(driver, createFacilityPage);
