@@ -126,10 +126,10 @@ public class RegisterClientFormValidatorTest {
         when(mockRegisterClientForm.getFacilityId()).thenReturn(facilityId);
 
         Facility facilityMock = mock(Facility.class);
-        when(mockFacilityService.getFacility(facilityId)).thenReturn(facilityMock);
+        when(mockFacilityService.getFacilityByMotechId(facilityId)).thenReturn(facilityMock);
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("facilityId", NOT_FOUND))));
 
-        when(mockFacilityService.getFacility(facilityId)).thenReturn(null);
+        when(mockFacilityService.getFacilityByMotechId(facilityId)).thenReturn(null);
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("facilityId", NOT_FOUND)));
     }
 }

@@ -104,4 +104,15 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
         List<Facility> facilities = db.queryView(viewQuery, Facility.class);
         return CollectionUtils.isEmpty(facilities) ? null : facilities.get(0);
     }
+    @View(name = "find_by_motech_facility_id", map = "function(doc) { if(doc.type === 'Facility') emit(doc.motechId, doc) }")
+    public Facility findByMotechFacilityId(String facilityId) {
+        ViewQuery viewQuery = createQuery("find_by_motech_facility_id").key(facilityId).includeDocs(true);
+        List<Facility> facilities = db.queryView(viewQuery, Facility.class);
+        return CollectionUtils.isEmpty(facilities) ? null : facilities.get(0);
+    }
+
+    public Facility getFacilityByMotechId(String motechFacilityId) {
+        Facility facility = findByMotechFacilityId(motechFacilityId);
+        return (facility != null) ? facility.mrsFacility(facilityAdaptor.getFacility(facility.mrsFacilityId())) : null;
+    }
 }

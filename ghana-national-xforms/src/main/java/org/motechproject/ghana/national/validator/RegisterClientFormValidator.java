@@ -58,7 +58,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     }
 
     private void validateIfFacilityExists(List<FormError> formErrors, String facilityId) {
-        if (facilityService.getFacility(facilityId) == null)
+        if (facilityService.getFacilityByMotechId(facilityId) == null)
             CollectionUtils.addIgnoreNull(formErrors, new FormError("facilityId", NOT_FOUND));
     }
 

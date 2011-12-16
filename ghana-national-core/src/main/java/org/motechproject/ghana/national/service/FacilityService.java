@@ -102,4 +102,8 @@ public class FacilityService {
                 additionalPhoneNumber2(additionalPhoneNumber2).additionalPhoneNumber3(additionalPhoneNumber3).motechId(facilityId).mrsFacilityId(id);
         save(facilityToBeSaved);
     }
+
+    public Facility getFacilityByMotechId(String motechFacilityId) {
+        return allFacilities.getFacilityByMotechId(motechFacilityId);
+    }
 }

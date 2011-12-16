@@ -23,7 +23,7 @@ import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -202,15 +202,47 @@ public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
+    public void shouldGetFacilityByMotechFacilityId(){
+        AllFacilities allFacilitiesSpy = spy(allFacilities);
+        String motechFacilityId = "10000";
+        String mrsFacilityId = "10";
+        String phone_number = "0123456789";
+        Facility motechFacility = facility(phone_number, null, null, null, null).mrsFacilityId(mrsFacilityId).motechId(motechFacilityId);
+        MRSFacility mrsFacility = mock(MRSFacility.class);
+
+        doReturn(motechFacility).when(allFacilitiesSpy).findByMotechFacilityId(motechFacilityId);
+        when(mockMrsFacilityAdaptor.getFacility(mrsFacilityId)).thenReturn(mrsFacility);
+
+        Facility returnedFacility = allFacilitiesSpy.getFacilityByMotechId(motechFacilityId);
+        assertThat(returnedFacility.motechId(), is(equalTo(motechFacilityId)));
+        assertThat(returnedFacility.mrsFacilityId(), is(equalTo(mrsFacilityId)));
+        assertThat(returnedFacility.phoneNumber(), is(equalTo(phone_number)));
+        assertThat(returnedFacility.getMrsFacility(), is(equalTo(mrsFacility)));
+    }
+
+    @Test
     public void shouldFindFacilityById() {
-        String facilityId = "1234";
+        String mrsFacilityId = "1234";
         String country = "Country";
-        MRSFacility mrsFacility = new MRSFacility(facilityId, "facilityName", country, "Region", null, null);
+        MRSFacility mrsFacility = new MRSFacility(mrsFacilityId, "facilityName", country, "Region", null, null);
         String phoneNumber = "9911002288";
         when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(mrsFacility);
-        allFacilities.add(facility(phoneNumber, null, null, null, mrsFacility).motechId(facilityId));
+        allFacilities.add(facility(phoneNumber, null, null, null, mrsFacility));
 
-        assertThat(allFacilities.findByMrsFacilityId(facilityId).phoneNumber(), is(phoneNumber));
+        assertThat(allFacilities.findByMrsFacilityId(mrsFacilityId).phoneNumber(), is(phoneNumber));
+    }
+
+    @Test
+    public void shouldFindFacilityByMotechId() {
+        String motechFacilityId = "1346789";
+        String mrsFacilityId = "100";
+        MRSFacility mrsFacility = new MRSFacility(mrsFacilityId);
+        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(mrsFacility);
+        allFacilities.add(facility(
+                "9911002288", null, null, null, mrsFacility).motechId(motechFacilityId));
+
+        assertThat(allFacilities.findByMotechFacilityId(motechFacilityId).motechId(), is(motechFacilityId));
+        assertThat(allFacilities.findByMotechFacilityId(motechFacilityId).mrsFacility(), is(equalTo(null)));
     }
 
     private Facility facility(String phoneNumber, String additionalPhone1, String additionalPhone2, String additionalPhone3, MRSFacility mrsFacility) {
