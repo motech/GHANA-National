@@ -7,6 +7,8 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.TimeUnit;
+
 @Component
 public class FireFoxWebDriver extends BaseWebDriver {
 
@@ -20,6 +22,7 @@ public class FireFoxWebDriver extends BaseWebDriver {
             FirefoxBinary firefoxBinary = new FirefoxBinary();
             firefoxBinary.setEnvironmentProperty("DISPLAY", System.getProperty("functional.test.display", ":0.0"));
             driver = new FirefoxDriver(firefoxBinary, profile);
+            driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
         }
         return driver;
     }
