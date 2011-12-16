@@ -2,7 +2,6 @@ package org.motechproject.functional.pages;
 
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.util.DataGenerator;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -107,15 +106,9 @@ public class CreateStaffPage {
 
     public boolean SubmitStaff() {
         submitNewStaff.click();
-        webDriverProvider.WaitForElement_ID("staffId");
+        return webDriverProvider.WaitForElement_ID("staffId");
 //        String src = driver.findElement(By.className("success")).getText();
-
-        if(driver.findElement(By.id(("staffId"))).isDisplayed())
-            return true;
-        else
-            return false;
-
-    }
+     }
 
 
 }
