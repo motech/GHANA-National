@@ -72,7 +72,7 @@ public class CreatePatientTest extends AbstractTestNGSpringContextTests {
     }
     @AfterSuite
     public void closeall() {
-        driver.close();driver.quit();
+        driver.close();
     }
 
 }

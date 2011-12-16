@@ -15,6 +15,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -62,5 +64,12 @@ public class CreateStaffTest extends AbstractTestNGSpringContextTests {
 
     }
 
-
+        @AfterMethod
+        public void logout() {
+            homePage.Logout();
+        }
+      @AfterSuite
+    public void closeall() {
+        driver.close();
+    }
 }
