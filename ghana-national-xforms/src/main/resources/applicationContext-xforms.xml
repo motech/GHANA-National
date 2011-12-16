@@ -11,9 +11,7 @@
     <import resource="classpath:applicationPlatformServerAPI.xml"/>
     <context:annotation-config/>
     <context:spring-configured/>
-    <context:component-scan base-package="org.motechproject.ghana.national">
-        <context:exclude-filter type="regex" expression="org.motechproject.ghana.national.tools.*"/>
-    </context:component-scan>
+    <context:component-scan base-package="org.motechproject.ghana.national"/>
 
     <bean class="org.springframework.web.context.support.ServletContextAttributeExporter">
         <property name="attributes">

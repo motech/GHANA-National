@@ -100,17 +100,15 @@ public class CreateStaffPage {
         return this;
     }
 
+    public String getStaffLogin() {
+        return staffEmailId.getText();
+    }
+
     public boolean SubmitStaff() {
         submitNewStaff.click();
-        webDriverProvider.WaitForElement_ID("footer");
+        return webDriverProvider.WaitForElement_ID("staffId");
 //        String src = driver.findElement(By.className("success")).getText();
-            String src = driver.getPageSource();
-        if (src.contains("Staff created successfully"))
-            return true;
-        else
-            return false;
-
-    }
+     }
 
 
 }

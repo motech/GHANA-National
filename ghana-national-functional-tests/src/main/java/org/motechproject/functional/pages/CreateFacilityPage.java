@@ -2,6 +2,7 @@ package org.motechproject.functional.pages;
 
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.functional.util.Utilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CreateFacilityPage {
-    private String FACILITY_ID = "";
+    protected String FACILITY_ID,facilityName,country,regionName,districtName,subDistName,facilityPhone;
+
     private WebDriver driver;
     private Logger log = LoggerFactory.getLogger(CreateFacilityPage.class);
 
@@ -77,6 +79,8 @@ public class CreateFacilityPage {
     @Autowired
     DataGenerator dataGenerator;
 
+    @Autowired
+    Utilities myUtilities;
     public boolean IsRegionDisplayed() {
         return RegionDropDown.isDisplayed();
 
@@ -123,6 +127,7 @@ public class CreateFacilityPage {
 
     public boolean UpdateFacilityDetails() {
         SubmitFacilityDetails.click();
+        myUtilities.mySleep(20);
         String srcPage = driver.getPageSource();
         return (srcPage.contains("Facility edited successfully"));
     }
@@ -142,5 +147,7 @@ public class CreateFacilityPage {
     public void setLoginPage(LoginPage loginPage) {
         this.loginPage = loginPage;
     }
+
+
 }
 

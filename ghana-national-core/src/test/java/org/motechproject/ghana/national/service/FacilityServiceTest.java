@@ -169,15 +169,24 @@ public class FacilityServiceTest {
         assertThat(actualFacilities.size(), is(equalTo(0)));
     }
 
-
     @Test
-    public void shouldValidateIfFacilityExists() {
+    public void shouldGetIfFacilityExists() {
         String facilityId = "0987654";
         Facility facility = mock(Facility.class);
         when(mockAllFacilities.getFacility(facilityId)).thenReturn(facility);
         assertThat(facilityService.getFacility(facilityId), is(equalTo(facility)));
         when(mockAllFacilities.getFacility(facilityId)).thenReturn(null);
         assertThat(facilityService.getFacility(facilityId), is(equalTo(null)));
+    }
+
+    @Test
+    public void shouldGetFacilityByMotechIdIfItExists(){
+        String motechFacilityId = "345678";
+        Facility facility = mock(Facility.class);
+        when(mockAllFacilities.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
+        assertThat(facilityService.getFacilityByMotechId(motechFacilityId), is(equalTo(facility)));
+        when(mockAllFacilities.getFacilityByMotechId(motechFacilityId)).thenReturn(null);
+        assertThat(facilityService.getFacilityByMotechId(motechFacilityId), is(equalTo(null)));
     }
 }
 
