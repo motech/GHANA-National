@@ -16,11 +16,12 @@ public class StaffForm {
     private String email;
     private String phoneNumber;
     private String role;
+    private String currentRole;
 
     public StaffForm() {
     }
 
-    public StaffForm(String id, String staffId, String firstName, String middleName, String lastName, String email, String phoneNumber, String role) {
+    public StaffForm(String id, String staffId, String firstName, String middleName, String lastName, String email, String phoneNumber, String role, String currentRole) {
         this.id = id;
         this.staffId = staffId;
         this.firstName = firstName;
@@ -29,6 +30,7 @@ public class StaffForm {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.role = role;
+        this.currentRole = currentRole;
     }
 
     public String getId() {
@@ -93,6 +95,14 @@ public class StaffForm {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getCurrentRole() {
+        return currentRole;
+    }
+
+    public void setCurrentRole(String currentRole) {
+        this.currentRole = currentRole;
     }
 
     public MRSUser createUser() {

@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.web.form.StaffForm;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.services.OpenMRSUserAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -78,11 +79,11 @@ public class StaffController {
 
         try {
             userData = staffService.saveUser(mrsUser);
-            org.openmrs.User openMRSUser = (org.openmrs.User) userData.get("openMRSUser");
+            final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdaptor.USER_KEY);
             modelMap.put(STAFF_ID, openMRSUser.getSystemId());
             modelMap.put(STAFF_NAME, mrsUser.getFullName());
             if (StaffType.Role.isAdmin(roleOfStaff)) {
-                emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUsername(), (String) userData.get("password"));
+                emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUserName(), (String) userData.get(OpenMRSUserAdaptor.PASSWORD_USER_KEY));
             }
             modelMap.put("successMessage", "Staff created successfully.Email with login credentials sent (to admin users only).");
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
@@ -105,15 +106,17 @@ public class StaffController {
 
     @ApiSession
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public String update(@ModelAttribute(StaffController.STAFF_FORM) StaffForm staffForm, BindingResult bindingResult, ModelMap modelMap) {
+    public String update(@ModelAttribute(StaffController.STAFF_FORM) StaffForm staffForm, ModelMap modelMap) {
         MRSUser mrsUser = staffForm.createUser();
         Map userData;
         try {
             userData = staffService.updateUser(mrsUser);
-            org.openmrs.User openMRSUser = (org.openmrs.User) userData.get("openMRSUser");
-            if (StaffType.Role.isAdmin(staffForm.getRole())) {
-                emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUsername(), (String) userData.get("password"));
+            final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdaptor.USER_KEY);
+            if (StaffType.Role.isAdmin(staffForm.getRole()) && !staffForm.getRole().equals(staffForm.getCurrentRole())) {
+                String newPassword = staffService.changePasswordByEmailId(staffForm.getEmail());
+                emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUserName(), newPassword);
             }
+
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
             staffHelper.getStaffForId(modelMap, staffService.getUserById(mrsUser.getSystemId()));
             modelMap.put("successMessage", "Staff edited successfully.Email with login credentials sent (to admin users only).");
@@ -140,7 +143,7 @@ public class StaffController {
         final ArrayList<StaffForm> staffForms = new ArrayList<StaffForm>();
         for (MRSUser mrsUser : mrsUsers) {
             staffForms.add(new StaffForm(mrsUser.getId(), mrsUser.getSystemId(), mrsUser.getFirstName(), mrsUser.getMiddleName(), mrsUser.getLastName(),
-                    staffHelper.getEmail(mrsUser), staffHelper.getPhoneNumber(mrsUser), staffHelper.getRole(mrsUser)));
+                    staffHelper.getEmail(mrsUser), staffHelper.getPhoneNumber(mrsUser), staffHelper.getRole(mrsUser), null));
         }
         modelMap.put(STAFF_FORM, new StaffForm());
         modelMap.put(REQUESTED_STAFFS, staffForms);

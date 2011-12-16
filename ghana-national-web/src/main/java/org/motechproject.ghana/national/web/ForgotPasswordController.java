@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.web;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.service.EmailTemplateService;
 import org.motechproject.ghana.national.service.StaffService;
+import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ public class ForgotPasswordController {
         this.emailTemplateService = emailTemplateService;
     }
 
+    @LoginAsAdmin
     @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
     public ModelAndView changePasswordAndSendEmail(HttpServletRequest request) throws Exception {
         ModelAndView modelAndView = new ModelAndView("redirect:/forgotPasswordStatus.jsp");
