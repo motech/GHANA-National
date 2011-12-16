@@ -43,7 +43,7 @@
         </div>
         <div>
             <label class="formLabel" for="user_role">${fn:escapeXml(user_role)}:</label>
-            <form:select id="user_role" path="role">
+            <form:select id="user_role" path="newRole">
                 <option parent="select" value="">${fn:escapeXml(user_role_select)}</option>
                 <c:forEach items="${roles}" var="role">
                     <option value="${role.key}">${role.key} (${role.value})</option>
@@ -53,7 +53,7 @@
         <input type="button" id="searchStaff" value="Search"/>
 
         <div class="formlyAlerts">
-            <form:errors path="email" element="div" cssClass="formlyInvalid formlyAlert"
+            <form:errors path="newEmail" element="div" cssClass="formlyInvalid formlyAlert"
                          cssStyle="display: block;"/>
         </div>
 
@@ -90,7 +90,7 @@
                                 <c:out value="${user.phoneNumber}"/>
                             </td>
                             <td>
-                                <c:out value="${user.role}"/>
+                                <c:out value="${user.newRole}"/>
                             </td>
                             <td class="action">
                                 <div class="edit">

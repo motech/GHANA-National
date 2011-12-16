@@ -13,24 +13,26 @@ public class StaffForm {
     private String firstName;
     private String middleName;
     private String lastName;
-    private String email;
+    private String newEmail;
     private String phoneNumber;
-    private String role;
+    private String newRole;
     private String currentRole;
+    private String currentEmail;
 
     public StaffForm() {
     }
 
-    public StaffForm(String id, String staffId, String firstName, String middleName, String lastName, String email, String phoneNumber, String role, String currentRole) {
+    public StaffForm(String id, String staffId, String firstName, String middleName, String lastName, String newEmail, String phoneNumber, String newRole, String currentRole, String currentEmail) {
         this.id = id;
         this.staffId = staffId;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
-        this.email = email;
+        this.newEmail = newEmail;
         this.phoneNumber = phoneNumber;
-        this.role = role;
+        this.newRole = newRole;
         this.currentRole = currentRole;
+        this.currentEmail = currentEmail;
     }
 
     public String getId() {
@@ -73,12 +75,12 @@ public class StaffForm {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getNewEmail() {
+        return newEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setNewEmail(String newEmail) {
+        this.newEmail = newEmail;
     }
 
     public String getPhoneNumber() {
@@ -89,12 +91,12 @@ public class StaffForm {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getRole() {
-        return role;
+    public String getNewRole() {
+        return newRole;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setNewRole(String newRole) {
+        this.newRole = newRole;
     }
 
     public String getCurrentRole() {
@@ -105,18 +107,26 @@ public class StaffForm {
         this.currentRole = currentRole;
     }
 
+    public String getCurrentEmail() {
+        return currentEmail;
+    }
+
+    public void setCurrentEmail(String currentEmail) {
+        this.currentEmail = currentEmail;
+    }
+
     public MRSUser createUser() {
         MRSUser mrsUser = new MRSUser().id(getId()).systemId(getStaffId()).firstName(getFirstName()).middleName(getMiddleName()).lastName(getLastName());
-        String roleOfStaff = getRole();
+        String roleOfStaff = getNewRole();
 
-        mrsUser.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, getEmail()));
+        mrsUser.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, getNewEmail()));
         mrsUser.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, getPhoneNumber()));
         mrsUser.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
         mrsUser.securityRole(StaffType.Role.securityRoleFor(roleOfStaff));
 
         try {
             if (isAdmin(roleOfStaff)) {
-                mrsUser.userName(getEmail());
+                mrsUser.userName(getNewEmail());
             }
         } catch (Exception ignored) {
         }

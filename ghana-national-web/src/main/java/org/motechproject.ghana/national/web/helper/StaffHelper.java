@@ -57,9 +57,9 @@ public class StaffHelper {
         staffForm.setLastName(mrsUser.getLastName());
         List<Attribute> attributeList = mrsUser.getAttributes();
         if (isNotEmpty(attributeList)) {
-            staffForm.setEmail(attrValue(attributeList, PERSON_ATTRIBUTE_TYPE_EMAIL));
+            staffForm.setNewEmail(attrValue(attributeList, PERSON_ATTRIBUTE_TYPE_EMAIL));
             staffForm.setPhoneNumber(attrValue(attributeList, PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER));
-            staffForm.setRole(attrValue(attributeList, PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
+            staffForm.setNewRole(attrValue(attributeList, PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
         }
         return staffForm;
     }

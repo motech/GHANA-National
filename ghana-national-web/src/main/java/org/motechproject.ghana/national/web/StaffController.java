@@ -1,11 +1,11 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.StaffType;
-import org.motechproject.ghana.national.web.helper.StaffHelper;
 import org.motechproject.ghana.national.service.EmailTemplateService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.web.form.StaffForm;
+import org.motechproject.ghana.national.web.helper.StaffHelper;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -39,7 +38,7 @@ public class StaffController {
     public static final String STAFF_ID = "userId";
     public static final String STAFF_SEQUENTIAL_ID = "Id";
     public static final String STAFF_NAME = "userName";
-    public static final String EMAIL = "email";
+    public static final String EMAIL = "newEmail";
     public static final String STAFF_FORM = "staffForm";
     public static final String STAFF_ALREADY_EXISTS = "user_email_already_exists";
     public static final String NEW_STAFF_URL = "staffs/new";
@@ -73,7 +72,7 @@ public class StaffController {
     public String create(@Valid StaffForm staffForm, BindingResult bindingResult, ModelMap modelMap) {
         Map userData;
         MRSUser mrsUser = staffForm.createUser();
-        String roleOfStaff = staffForm.getRole();
+        String roleOfStaff = staffForm.getNewRole();
 
         mrsUser.systemId(identifierGenerationService.newStaffId());
 
@@ -89,9 +88,7 @@ public class StaffController {
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
             return staffHelper.getStaffForId(modelMap, staffService.getUserById(openMRSUser.getSystemId()));
         } catch (UserAlreadyExistsException e) {
-            bindingResult.addError(new FieldError(STAFF_FORM, EMAIL, messageSource.getMessage(STAFF_ALREADY_EXISTS, null, Locale.getDefault())));
-            staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
-            modelMap.mergeAttributes(bindingResult.getModel());
+            handleUserAlreadyExistsError(modelMap, bindingResult);
             return NEW_STAFF_URL;
         }
     }
@@ -106,23 +103,21 @@ public class StaffController {
 
     @ApiSession
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public String update(@ModelAttribute(StaffController.STAFF_FORM) StaffForm staffForm, ModelMap modelMap) {
+    public String update(@Valid StaffForm staffForm, BindingResult bindingResult, ModelMap modelMap) {
         MRSUser mrsUser = staffForm.createUser();
-        Map userData;
-        try {
-            userData = staffService.updateUser(mrsUser);
-            final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdaptor.USER_KEY);
-            if (StaffType.Role.isAdmin(staffForm.getRole()) && !staffForm.getRole().equals(staffForm.getCurrentRole())) {
-                String newPassword = staffService.changePasswordByEmailId(staffForm.getEmail());
-                emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUserName(), newPassword);
-            }
-
-            staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
-            staffHelper.getStaffForId(modelMap, staffService.getUserById(mrsUser.getSystemId()));
-            modelMap.put("successMessage", "Staff edited successfully.Email with login credentials sent (to admin users only).");
-        } catch (UserAlreadyExistsException ignored) {
-            //cannot happen as the Id is unique.
+        if (!staffForm.getCurrentEmail().equals(staffForm.getNewEmail()) && staffService.getUserById(staffForm.getNewEmail()) != null) {
+            handleUserAlreadyExistsError(modelMap, bindingResult);
+            return NEW_STAFF_URL;
         }
+        Map userData = staffService.updateUser(mrsUser);
+        final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdaptor.USER_KEY);
+        if (StaffType.Role.isAdmin(staffForm.getNewRole()) && !staffForm.getNewRole().equals(staffForm.getCurrentRole())) {
+            String newPassword = staffService.changePasswordByEmailId(staffForm.getNewEmail());
+            emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUserName(), newPassword);
+        }
+        staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
+        staffHelper.getStaffForId(modelMap, staffService.getUserById(mrsUser.getSystemId()));
+        modelMap.put("successMessage", "Staff edited successfully.Email with login credentials sent (to admin users only).");
         return EDIT_STAFF_URL;
     }
 
@@ -138,16 +133,22 @@ public class StaffController {
     @RequestMapping(value = "searchStaffs", method = RequestMethod.POST)
     public String search(@Valid final StaffForm staffForm, ModelMap modelMap) {
         final List<MRSUser> mrsUsers = staffService.searchStaff(staffForm.getStaffId(), staffForm.getFirstName(),
-                staffForm.getMiddleName(), staffForm.getLastName(), staffForm.getPhoneNumber(), staffForm.getRole());
+                staffForm.getMiddleName(), staffForm.getLastName(), staffForm.getPhoneNumber(), staffForm.getNewRole());
 
         final ArrayList<StaffForm> staffForms = new ArrayList<StaffForm>();
         for (MRSUser mrsUser : mrsUsers) {
             staffForms.add(new StaffForm(mrsUser.getId(), mrsUser.getSystemId(), mrsUser.getFirstName(), mrsUser.getMiddleName(), mrsUser.getLastName(),
-                    staffHelper.getEmail(mrsUser), staffHelper.getPhoneNumber(mrsUser), staffHelper.getRole(mrsUser), null));
+                    staffHelper.getEmail(mrsUser), staffHelper.getPhoneNumber(mrsUser), staffHelper.getRole(mrsUser), null, null));
         }
         modelMap.put(STAFF_FORM, new StaffForm());
         modelMap.put(REQUESTED_STAFFS, staffForms);
         staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
         return SEARCH_STAFF;
+    }
+
+    private void handleUserAlreadyExistsError(ModelMap modelMap, BindingResult bindingResult) {
+        bindingResult.addError(new FieldError(STAFF_FORM, EMAIL, messageSource.getMessage(STAFF_ALREADY_EXISTS, null, Locale.getDefault())));
+        staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
+        modelMap.mergeAttributes(bindingResult.getModel());
     }
 }

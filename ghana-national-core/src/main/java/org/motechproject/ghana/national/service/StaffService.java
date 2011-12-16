@@ -44,7 +44,7 @@ public class StaffService {
         return userAdaptor.saveUser(mrsUser);
     }
 
-    public Map updateUser(MRSUser mrsUser) throws UserAlreadyExistsException {
+    public Map updateUser(MRSUser mrsUser) {
         return userAdaptor.updateUser(mrsUser);
     }
 

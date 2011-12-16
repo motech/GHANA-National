@@ -93,12 +93,12 @@ public class StaffControllerTest {
     public void shouldAddNewAdminUser() throws UserAlreadyExistsException {
         StaffForm form = new StaffForm();
         final String email = "jack@daniels.com";
-        form.setEmail(email);
+        form.setNewEmail(email);
         form.setFirstName("Jack");
         form.setMiddleName("H");
         form.setLastName("Daniels");
         form.setPhoneNumber("1234");
-        form.setRole(StaffType.Role.CALL_CENTER_ADMIN.key());
+        form.setNewRole(StaffType.Role.CALL_CENTER_ADMIN.key());
 
         BindingResult bindingResult = mock(BindingResult.class);
         ModelMap model = mock(ModelMap.class);
@@ -121,8 +121,8 @@ public class StaffControllerTest {
         ArgumentCaptor<MRSUser> captor = ArgumentCaptor.forClass(MRSUser.class);
         verify(mockStaffService).saveUser(captor.capture());
         MRSUser captured = captor.getValue();
-        assertEquals(form.getRole(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
-        assertEquals(form.getEmail(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_EMAIL));
+        assertEquals(form.getNewRole(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
+        assertEquals(form.getNewEmail(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_EMAIL));
         assertEquals(form.getPhoneNumber(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER));
         assertEquals(email, captured.getUserName());
     }
@@ -132,13 +132,13 @@ public class StaffControllerTest {
 
         String userId = "1234";
         StaffForm form = new StaffForm();
-        form.setEmail("jack@daniels.com");
+        form.setNewEmail("jack@daniels.com");
         form.setFirstName("Jack");
         form.setMiddleName("H");
         form.setLastName("Daniels");
         form.setPhoneNumber("1234");
         form.setStaffId(userId);
-        form.setRole(StaffType.Role.COMMUNITY_HEALTH_OPERATOR.key());
+        form.setNewRole(StaffType.Role.COMMUNITY_HEALTH_OPERATOR.key());
 
         ModelMap model = mock(ModelMap.class);
         final MRSUser openMRSuser = new MRSUser();
@@ -162,8 +162,8 @@ public class StaffControllerTest {
         verify(mockStaffService).saveUser(captor.capture());
         MRSUser captured = captor.getValue();
         assertEquals(userId, captured.getSystemId());
-        assertEquals(form.getRole(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
-        assertEquals(form.getEmail(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_EMAIL));
+        assertEquals(form.getNewRole(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE));
+        assertEquals(form.getNewEmail(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_EMAIL));
         assertEquals(form.getPhoneNumber(), getAttrValue(captured, Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER));
 //        assertNull(captured.getUserName());
     }
@@ -178,12 +178,12 @@ public class StaffControllerTest {
     @Test
     public void shouldReturnErrorMessageIfUserAlreadyExists() throws UserAlreadyExistsException {
         StaffForm form = new StaffForm();
-        form.setEmail("jack@daniels.com");
+        form.setNewEmail("jack@daniels.com");
         form.setFirstName("Jack");
         form.setMiddleName("H");
         form.setLastName("Daniels");
         form.setPhoneNumber("1234");
-        form.setRole(StaffType.Role.CALL_CENTER_ADMIN.key());
+        form.setNewRole(StaffType.Role.CALL_CENTER_ADMIN.key());
 
 
         ModelMap model = mock(ModelMap.class);
@@ -219,7 +219,7 @@ public class StaffControllerTest {
         staffForm.setMiddleName(middleName);
         staffForm.setLastName(lastName);
         staffForm.setPhoneNumber(phoneNumber);
-        staffForm.setRole(role);
+        staffForm.setNewRole(role);
 
         ModelMap modelMap = new ModelMap();
         MRSUser user1 = new MRSUser().systemId(staffID);
@@ -232,18 +232,18 @@ public class StaffControllerTest {
         controller.search(staffForm, modelMap);
 
         verify(mockStaffService).searchStaff(staffForm.getStaffId(), staffForm.getFirstName(), staffForm.getMiddleName(),
-                staffForm.getLastName(), staffForm.getPhoneNumber(), staffForm.getRole());
+                staffForm.getLastName(), staffForm.getPhoneNumber(), staffForm.getNewRole());
 
         final List<StaffForm> actualRequestedUsers = (List<StaffForm>) modelMap.get(StaffController.REQUESTED_STAFFS);
         assertEquals(1, actualRequestedUsers.size());
         final StaffForm form = actualRequestedUsers.get(0);
         assertEquals(form.getStaffId(), staffID);
-        assertEquals(form.getEmail(), email);
+        assertEquals(form.getNewEmail(), email);
         assertEquals(form.getFirstName(), firstName);
         assertEquals(form.getLastName(), lastName);
         assertEquals(form.getMiddleName(), middleName);
         assertEquals(form.getPhoneNumber(), phoneNumber);
-        assertEquals(form.getRole(), role);
+        assertEquals(form.getNewRole(), role);
     }
 
     @Test
@@ -284,9 +284,9 @@ public class StaffControllerTest {
         assertThat(staffForm.getFirstName(), is(equalTo(expectedStaffForm.getFirstName())));
         assertThat(staffForm.getLastName(), is(equalTo(expectedStaffForm.getLastName())));
         assertThat(staffForm.getMiddleName(), is(equalTo(expectedStaffForm.getMiddleName())));
-        assertThat(staffForm.getRole(), is(equalTo(expectedStaffForm.getRole())));
+        assertThat(staffForm.getNewRole(), is(equalTo(expectedStaffForm.getNewRole())));
         assertThat(staffForm.getStaffId(), is(equalTo(expectedStaffForm.getStaffId())));
-        assertThat(staffForm.getEmail(), is(equalTo(expectedStaffForm.getEmail())));
+        assertThat(staffForm.getNewEmail(), is(equalTo(expectedStaffForm.getNewEmail())));
     }
 
     private StaffForm createStaffForm(String staffId, String firstName, String middleName, String lastName, String email, String phoneNumber, String role) {
@@ -295,9 +295,9 @@ public class StaffControllerTest {
         staffForm.setFirstName(firstName);
         staffForm.setMiddleName(middleName);
         staffForm.setLastName(lastName);
-        staffForm.setEmail(email);
+        staffForm.setNewEmail(email);
         staffForm.setPhoneNumber(phoneNumber);
-        staffForm.setRole(role);
+        staffForm.setNewRole(role);
         return staffForm;
     }
 
@@ -311,7 +311,7 @@ public class StaffControllerTest {
         String role = "Super Admin";
         String password = "password";
         String email = "";
-        StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, role, "HPO");
+        StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, role, "HPO", "");
         ModelMap modelMap = new ModelMap();
         MRSUser mockMRSUser = mock(MRSUser.class);
         when(mockStaffService.getUserById(staffId)).thenReturn(mockMRSUser);
@@ -322,7 +322,7 @@ public class StaffControllerTest {
         userData.put(OpenMRSUserAdaptor.USER_KEY, openmrsUser);
         when(mockStaffService.updateUser(Matchers.<MRSUser>any())).thenReturn(userData);
 
-        String result = controller.update(staffForm, modelMap);
+        String result = controller.update(staffForm, mock(BindingResult.class), modelMap);
 
         ArgumentCaptor<MRSUser> captor = ArgumentCaptor.forClass(MRSUser.class);
         verify(mockStaffService).updateUser(captor.capture());
@@ -354,7 +354,7 @@ public class StaffControllerTest {
         String role = "Super Admin";
         String password = "password";
         String email = "";
-        StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, role, role);
+        StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, role, role, email);
         ModelMap modelMap = new ModelMap();
         MRSUser mockMRSUser = mock(MRSUser.class);
         when(mockStaffService.getUserById(staffId)).thenReturn(mockMRSUser);
@@ -365,7 +365,7 @@ public class StaffControllerTest {
         userData.put(OpenMRSUserAdaptor.USER_KEY, openmrsUser);
         when(mockStaffService.updateUser(Matchers.<MRSUser>any())).thenReturn(userData);
 
-        String result = controller.update(staffForm, modelMap);
+        String result = controller.update(staffForm, mock(BindingResult.class), modelMap);
 
         ArgumentCaptor<MRSUser> captor = ArgumentCaptor.forClass(MRSUser.class);
         verify(mockStaffService).updateUser(captor.capture());
@@ -384,7 +384,7 @@ public class StaffControllerTest {
         String role = "MMA";
         String password = "password";
         String email = "";
-        StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, role, "HPO");
+        StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, role, "HPO", "");
         ModelMap modelMap = new ModelMap();
         MRSUser mockMRSUser = mock(MRSUser.class);
         when(mockStaffService.getUserById(staffId)).thenReturn(mockMRSUser);
@@ -395,7 +395,7 @@ public class StaffControllerTest {
         userData.put(OpenMRSUserAdaptor.USER_KEY, openmrsUser);
         when(mockStaffService.updateUser(Matchers.<MRSUser>any())).thenReturn(userData);
 
-        String result = controller.update(staffForm, modelMap);
+        String result = controller.update(staffForm, mock(BindingResult.class), modelMap);
 
         ArgumentCaptor<MRSUser> captor = ArgumentCaptor.forClass(MRSUser.class);
         verify(mockStaffService).updateUser(captor.capture());
@@ -415,6 +415,32 @@ public class StaffControllerTest {
 
         assertNotNull(modelMap.get("roles"));
         assertNotNull(modelMap.get(StaffController.STAFF_FORM));
+    }
+
+    @Test
+    public void shouldThrowUserAlreadyFoundExceptionIfEmailIdIsUpdatedToAnExistingUserId() {
+        String id = "1";
+        String staffId = "112";
+        String first = "first";
+        String last = "last";
+        String phoneNumber = "0123456789";
+        String role = "MMA";
+        String email = "";
+        StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, role, "HPO", "newemail@e.com");
+        ModelMap modelMap = new ModelMap();
+        MRSUser mockMRSUser = mock(MRSUser.class);
+        when(mockStaffService.getUserById(email)).thenReturn(mockMRSUser);
+
+        final BindingResult mockBindingResult = mock(BindingResult.class);
+        final String result = controller.update(staffForm, mockBindingResult, modelMap);
+        assertThat(result, is(equalTo(StaffController.NEW_STAFF_URL)));
+        verify(mockStaffService, never()).updateUser(mockMRSUser);
+        final ArgumentCaptor<FieldError> captor = ArgumentCaptor.forClass(FieldError.class);
+        verify(mockBindingResult).addError(captor.capture());
+        final FieldError actualError = captor.getValue();
+        
+        assertThat(StaffController.EMAIL, is(actualError.getField()));
+        assertThat(StaffController.STAFF_FORM, is(actualError.getObjectName()));
     }
 
     private String attrValue(List<Attribute> attributes, String key) {

@@ -14,7 +14,8 @@
     <form:form id="staffForm" action="${fn:escapeXml(form_url)}" method="POST" title="Update a Staff Member"
                commandName="staffForm">
 
-        <form:hidden path="currentRole" value="${staffForm.role}"/>
+        <form:hidden path="currentRole" value="${staffForm.newRole}"/>
+        <form:hidden path="currentEmail" value="${staffForm.newEmail}"/>
         <spring:message code="staff_id" var="staff_id" htmlEscape="false"/>
         <spring:message code="user_first_name" var="user_first_name" htmlEscape="false"/>
         <spring:message code="user_middle_name" var="user_middle_name" htmlEscape="false"/>
@@ -53,16 +54,16 @@
         </div>
         <div>
             <label class="formLabel" for="user_email">${fn:escapeXml(user_email)}:</label>
-            <form:input id="user_email" path="email" size="20" label="${fn:escapeXml(user_email)}"/>
+            <form:input id="user_email" path="newEmail" size="20" label="${fn:escapeXml(user_email)}"/>
             <span id='email_error' class='formlyInvalid formlyAlert hide'></span>
         </div>
         <div>
             <label class="formLabel" for="user_role">${fn:escapeXml(user_role)} *:</label>
-            <form:select id="user_role" path="role">
+            <form:select id="user_role" path="newRole">
                 <option parent="select" value="">${fn:escapeXml(user_role_select)}</option>
                 <c:forEach items="${roles}" var="role">
                     <c:choose>
-                        <c:when test="${role.key eq staffForm.role}">
+                        <c:when test="${role.key eq staffForm.newRole}">
                             <option value="${role.key}" selected="selected">${role.key} (${role.value})</option>
                         </c:when>
                         <c:otherwise>
@@ -76,7 +77,7 @@
         <input type="button" id="submitNewUser" value="Submit"/>
 
         <div class="formlyAlerts">
-            <form:errors path="email" element="div" cssClass="formlyInvalid formlyAlert"
+            <form:errors path="newEmail" element="div" cssClass="formlyInvalid formlyAlert"
                          cssStyle="display: block;"/>
         </div>
     </form:form>
