@@ -15,6 +15,7 @@ import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -104,27 +105,27 @@ public class PatientRegistrationFormHandlerTest {
         patientRegistrationFormHandler.handleFormEvent(event);
 
         Patient savedPatient = patientArgumentCaptor.getValue();
-
-        assertThat(savedPatient.mrsPatient().getAddress(), is(equalTo(address)));
-        assertThat(savedPatient.mrsPatient().getDateOfBirth(), is(equalTo(dateofBirth)));
+        MRSPerson mrsPerson = savedPatient.mrsPatient().getPerson();
+        assertThat(mrsPerson.getAddress(), is(equalTo(address)));
+        assertThat(mrsPerson.getDateOfBirth(), is(equalTo(dateofBirth)));
         assertThat(savedPatient.mrsPatient().getFacility().getId(), is(equalTo(facilityId)));
         assertThat(savedPatient.mrsPatient().getFacility().getCountyDistrict(), is(equalTo(null)));
         assertThat(savedPatient.mrsPatient().getFacility().getRegion(), is(equalTo(null)));
         assertThat(savedPatient.mrsPatient().getFacility().getStateProvince(), is(equalTo(null)));
-        assertThat(savedPatient.mrsPatient().getBirthDateEstimated(), is(equalTo(isBirthDateEstimated)));
-        assertThat(savedPatient.mrsPatient().getFirstName(), is(equalTo(firstName)));
-        assertThat(savedPatient.mrsPatient().getLastName(), is(equalTo(lastName)));
-        assertThat(savedPatient.mrsPatient().getMiddleName(), is(equalTo(middleName)));
+        assertThat(mrsPerson.getBirthDateEstimated(), is(equalTo(isBirthDateEstimated)));
+        assertThat(mrsPerson.getFirstName(), is(equalTo(firstName)));
+        assertThat(mrsPerson.getLastName(), is(equalTo(lastName)));
+        assertThat(mrsPerson.getMiddleName(), is(equalTo(middleName)));
         assertThat(savedPatient.mrsPatient().getId(), is(equalTo(motechId)));
-        assertThat(savedPatient.mrsPatient().getPreferredName(), is(equalTo(preferredName)));
-        assertThat(savedPatient.mrsPatient().getGender(), is(equalTo(sex)));
-        assertThat(((Attribute) selectUnique(savedPatient.mrsPatient().getAttributes(), having(on(Attribute.class).name(),
+        assertThat(mrsPerson.getPreferredName(), is(equalTo(preferredName)));
+        assertThat(mrsPerson.getGender(), is(equalTo(sex)));
+        assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute())))).value(), is(equalTo(nhisExpDate.toString())));
-        assertThat(((Attribute) selectUnique(savedPatient.mrsPatient().getAttributes(), having(on(Attribute.class).name(),
+        assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.NHIS_NUMBER.getAttribute())))).value(), is(equalTo(nhisNumber)));
-        assertThat(((Attribute) selectUnique(savedPatient.mrsPatient().getAttributes(), having(on(Attribute.class).name(),
+        assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.INSURED.getAttribute())))).value(), is(equalTo(insured.toString())));
-        assertThat(((Attribute) selectUnique(savedPatient.mrsPatient().getAttributes(), having(on(Attribute.class).name(),
+        assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.PHONE_NUMBER.getAttribute())))).value(), is(equalTo(phoneNumber)));
 
         assertThat(parentIdCaptor.getValue(), is(equalTo(registerClientForm.getMotherMotechId())));

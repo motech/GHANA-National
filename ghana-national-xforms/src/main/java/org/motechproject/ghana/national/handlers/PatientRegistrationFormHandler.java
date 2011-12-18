@@ -10,6 +10,7 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
@@ -38,9 +39,12 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
     public void handleFormEvent(MotechEvent event) {
         try {
             RegisterClientForm registerClientForm = (RegisterClientForm) event.getParameters().get(FORM_BEAN);
-            MRSPatient mrsPatient = new MRSPatient(registerClientForm.getMotechId(), registerClientForm.getFirstName(),
-                    registerClientForm.getMiddleName(), registerClientForm.getLastName(), registerClientForm.getPrefferedName(), registerClientForm.getDateOfBirth(), registerClientForm.getEstimatedBirthDate(),
-                    registerClientForm.getSex(), registerClientForm.getAddress(), getPatientAttributes(registerClientForm), new MRSFacility(registerClientForm.getFacilityId()));
+
+            MRSPerson mrsPerson = new MRSPerson().firstName(registerClientForm.getFirstName()).middleName(registerClientForm.getMiddleName()).
+                    lastName(registerClientForm.getLastName()).preferredName(registerClientForm.getPrefferedName()).dateOfBirth(registerClientForm.getDateOfBirth()).
+                    birthDateEstimated(registerClientForm.getEstimatedBirthDate()).gender(registerClientForm.getSex()).address(registerClientForm.getAddress()).attributes(getPatientAttributes(registerClientForm));
+
+            MRSPatient mrsPatient = new MRSPatient(registerClientForm.getMotechId(), mrsPerson, new MRSFacility(registerClientForm.getFacilityId()));
 
             patientService.registerPatient(new Patient(mrsPatient), registerClientForm.getRegistrantType(), registerClientForm.getMotherMotechId());
         } catch (Exception e) {

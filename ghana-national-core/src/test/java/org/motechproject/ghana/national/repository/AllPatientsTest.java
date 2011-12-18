@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.services.MRSPatientAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -60,7 +61,9 @@ public class AllPatientsTest extends AbstractJUnit4SpringContextTests {
         final String address = "address";
         final String patientId = "1000";
         Boolean birthDateEstimated = true;
-        final MRSPatient mrsPatient = new MRSPatient(first, middle, last, preferred, dateOfBirth, birthDateEstimated, gender, address, facility);
+
+        MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last).preferredName(preferred).dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
+        final MRSPatient mrsPatient = new MRSPatient( mrsPerson,facility);
         final Patient patient = new Patient(mrsPatient);
         MRSPatient savedPatient = mock(MRSPatient.class);
         when(savedPatient.getId()).thenReturn(patientId);
@@ -89,7 +92,7 @@ public class AllPatientsTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void shouldFetchPatientById() {
         final String patientId = "1";
-        MRSPatient patient = new MRSPatient(null, null, null, null, null, null, null, null, null);
+        MRSPatient patient = new MRSPatient(patientId);
         when(mockMrsPatientAdaptor.getPatientByMotechId(patientId)).thenReturn(patient);
         final Patient actualPatient = allPatients.patientById(patientId);
         assertThat(actualPatient.mrsPatient(), is(patient));

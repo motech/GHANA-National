@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.web.form;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.StaffType;
 import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
 
 import static org.motechproject.ghana.national.domain.StaffType.Role.isAdmin;
@@ -39,72 +40,81 @@ public class StaffForm {
         return id;
     }
 
-    public void setId(String id) {
+    public StaffForm setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getStaffId() {
         return staffId;
     }
 
-    public void setStaffId(String staffId) {
+    public StaffForm setStaffId(String staffId) {
         this.staffId = staffId;
+        return this;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public StaffForm setFirstName(String firstName) {
         this.firstName = firstName;
+        return this;
     }
 
     public String getMiddleName() {
         return middleName;
     }
 
-    public void setMiddleName(String middleName) {
+    public StaffForm setMiddleName(String middleName) {
         this.middleName = middleName;
+        return this;
     }
 
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public StaffForm setLastName(String lastName) {
         this.lastName = lastName;
+        return this;
     }
 
     public String getNewEmail() {
         return newEmail;
     }
 
-    public void setNewEmail(String newEmail) {
+    public StaffForm setNewEmail(String newEmail) {
         this.newEmail = newEmail;
+        return this;
     }
 
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public StaffForm setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        return this;
     }
 
     public String getNewRole() {
         return newRole;
     }
 
-    public void setNewRole(String newRole) {
+    public StaffForm setNewRole(String newRole) {
         this.newRole = newRole;
+        return this;
     }
 
     public String getCurrentRole() {
         return currentRole;
     }
 
-    public void setCurrentRole(String currentRole) {
+    public StaffForm setCurrentRole(String currentRole) {
         this.currentRole = currentRole;
+        return this;
     }
 
     public String getCurrentEmail() {
@@ -116,12 +126,13 @@ public class StaffForm {
     }
 
     public MRSUser createUser() {
-        MRSUser mrsUser = new MRSUser().id(getId()).systemId(getStaffId()).firstName(getFirstName()).middleName(getMiddleName()).lastName(getLastName());
         String roleOfStaff = getNewRole();
+        MRSPerson mrsPerson = new MRSPerson().firstName(getFirstName()).middleName(getMiddleName()).lastName(getLastName()).
+                addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, getNewEmail()))
+        .addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, getPhoneNumber()))
+        .addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
+        MRSUser mrsUser = new MRSUser().id(getId()).systemId(getStaffId()).person(mrsPerson);
 
-        mrsUser.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL, getNewEmail()));
-        mrsUser.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, getPhoneNumber()));
-        mrsUser.addAttribute(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, roleOfStaff));
         mrsUser.securityRole(StaffType.Role.securityRoleFor(roleOfStaff));
 
         try {

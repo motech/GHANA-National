@@ -1,12 +1,13 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.StaffType;
+import org.motechproject.ghana.national.web.helper.StaffHelper;
 import org.motechproject.ghana.national.service.EmailTemplateService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.web.form.StaffForm;
-import org.motechproject.ghana.national.web.helper.StaffHelper;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.services.OpenMRSUserAdaptor;
@@ -80,13 +81,13 @@ public class StaffController {
             userData = staffService.saveUser(mrsUser);
             final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdaptor.USER_KEY);
             modelMap.put(STAFF_ID, openMRSUser.getSystemId());
-            modelMap.put(STAFF_NAME, mrsUser.getFullName());
+            modelMap.put(STAFF_NAME, mrsUser.getPerson().getFullName());
             if (StaffType.Role.isAdmin(roleOfStaff)) {
                 emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUserName(), (String) userData.get(OpenMRSUserAdaptor.PASSWORD_USER_KEY));
             }
             modelMap.put("successMessage", "Staff created successfully.Email with login credentials sent (to admin users only).");
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
-            return staffHelper.getStaffForId(modelMap, staffService.getUserById(openMRSUser.getSystemId()));
+            return staffHelper.getStaffForId(modelMap, openMRSUser);
         } catch (UserAlreadyExistsException e) {
             handleUserAlreadyExistsError(modelMap, bindingResult);
             return NEW_STAFF_URL;
@@ -116,7 +117,7 @@ public class StaffController {
             emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUserName(), newPassword);
         }
         staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
-        staffHelper.getStaffForId(modelMap, staffService.getUserById(mrsUser.getSystemId()));
+        staffHelper.getStaffForId(modelMap, openMRSUser);
         modelMap.put("successMessage", "Staff edited successfully.Email with login credentials sent (to admin users only).");
         return EDIT_STAFF_URL;
     }
@@ -137,7 +138,8 @@ public class StaffController {
 
         final ArrayList<StaffForm> staffForms = new ArrayList<StaffForm>();
         for (MRSUser mrsUser : mrsUsers) {
-            staffForms.add(new StaffForm(mrsUser.getId(), mrsUser.getSystemId(), mrsUser.getFirstName(), mrsUser.getMiddleName(), mrsUser.getLastName(),
+            MRSPerson mrsPerson = mrsUser.getPerson();
+            staffForms.add(new StaffForm(mrsUser.getId(), mrsUser.getSystemId(), mrsPerson.getFirstName(), mrsPerson.getMiddleName(), mrsPerson.getLastName(),
                     staffHelper.getEmail(mrsUser), staffHelper.getPhoneNumber(mrsUser), staffHelper.getRole(mrsUser), null, null));
         }
         modelMap.put(STAFF_FORM, new StaffForm());

@@ -77,9 +77,9 @@ public class StaffService {
     public List<MRSUser> searchStaff(String systemId, String firstName, String middleName, String lastName, String phoneNumber, String role) {
         List<MRSUser> filteredMRSUsers = getAllUsers();
         filteredMRSUsers = filterUsers(on(MRSUser.class).getSystemId(), systemId, filteredMRSUsers);
-        filteredMRSUsers = filterUsers(on(MRSUser.class).getFirstName(), firstName, filteredMRSUsers);
-        filteredMRSUsers = filterUsers(on(MRSUser.class).getMiddleName(), middleName, filteredMRSUsers);
-        filteredMRSUsers = filterUsers(on(MRSUser.class).getLastName(), lastName, filteredMRSUsers);
+        filteredMRSUsers = filterUsers(on(MRSUser.class).getPerson().getFirstName(), firstName, filteredMRSUsers);
+        filteredMRSUsers = filterUsers(on(MRSUser.class).getPerson().getMiddleName(), middleName, filteredMRSUsers);
+        filteredMRSUsers = filterUsers(on(MRSUser.class).getPerson().getLastName(), lastName, filteredMRSUsers);
         filteredMRSUsers = filterByAttribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, phoneNumber, filteredMRSUsers);
         filteredMRSUsers = filterByAttribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role, filteredMRSUsers);
         Collections.sort(filteredMRSUsers, new UserFirstNameComparator());
@@ -89,7 +89,7 @@ public class StaffService {
     private List<MRSUser> filterByAttribute(String searchAttribute, String searchCriteria, List<MRSUser> filteredMRSUsers) {
         final ArrayList<MRSUser> filteredList = new ArrayList<MRSUser>();
         for (MRSUser filteredMRSUser : filteredMRSUsers) {
-            final List<Attribute> attributeSearchResults = filter(having(on(Attribute.class).name(), equalTo(searchAttribute)), filteredMRSUser.getAttributes());
+            final List<Attribute> attributeSearchResults = filter(having(on(Attribute.class).name(), equalTo(searchAttribute)), filteredMRSUser.getPerson().getAttributes());
             if (CollectionUtils.isNotEmpty(attributeSearchResults) && attributeSearchResults.get(0).value().startsWith(searchCriteria)) {
                 filteredList.add(filteredMRSUser);
             }
@@ -104,7 +104,7 @@ public class StaffService {
     private class UserFirstNameComparator implements Comparator<MRSUser> {
         @Override
         public int compare(MRSUser user1, MRSUser user2) {
-            return user2.getFirstName().compareTo(user1.getFirstName());
+            return user2.getPerson().getFirstName().compareTo(user1.getPerson().getFirstName());
         }
     }
 }

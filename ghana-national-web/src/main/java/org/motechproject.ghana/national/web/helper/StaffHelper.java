@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.web.StaffController;
 import org.motechproject.ghana.national.web.form.StaffForm;
 import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
@@ -26,19 +27,20 @@ import static org.motechproject.ghana.national.domain.Constants.PERSON_ATTRIBUTE
 public class StaffHelper {
 
     public String getEmail(MRSUser mrsUser) {
-        final Attribute attribute = selectUnique(mrsUser.getAttributes(),
+        MRSPerson mrsPerson = mrsUser.getPerson();
+        final Attribute attribute = selectUnique(mrsPerson.getAttributes(),
                 having(on(Attribute.class).name(), is(Constants.PERSON_ATTRIBUTE_TYPE_EMAIL)));
         return (attribute != null) ? attribute.value() : "";
     }
 
     public String getPhoneNumber(MRSUser mrsUser) {
-        final Attribute attribute = selectUnique(mrsUser.getAttributes(),
+        final Attribute attribute = selectUnique(mrsUser.getPerson().getAttributes(),
                 having(on(Attribute.class).name(), is(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER)));
         return (attribute != null) ? attribute.value() : "";
     }
 
     public String getRole(MRSUser mrsUser) {
-        final Attribute attribute = selectUnique(mrsUser.getAttributes(),
+        final Attribute attribute = selectUnique(mrsUser.getPerson().getAttributes(),
                 having(on(Attribute.class).name(), is(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE)));
         return (attribute != null) ? attribute.value() : "";
     }
@@ -50,12 +52,13 @@ public class StaffHelper {
 
     public StaffForm copyStaffValuesToForm(MRSUser mrsUser) {
         StaffForm staffForm = new StaffForm();
+        MRSPerson mrsPerson = mrsUser.getPerson();
         staffForm.setId(mrsUser.getId());
         staffForm.setStaffId(mrsUser.getSystemId());
-        staffForm.setFirstName(mrsUser.getFirstName());
-        staffForm.setMiddleName(mrsUser.getMiddleName());
-        staffForm.setLastName(mrsUser.getLastName());
-        List<Attribute> attributeList = mrsUser.getAttributes();
+        staffForm.setFirstName(mrsPerson.getFirstName());
+        staffForm.setMiddleName(mrsUser.getPerson().getMiddleName());
+        staffForm.setLastName(mrsUser.getPerson().getLastName());
+        List<Attribute> attributeList = mrsUser.getPerson().getAttributes();
         if (isNotEmpty(attributeList)) {
             staffForm.setNewEmail(attrValue(attributeList, PERSON_ATTRIBUTE_TYPE_EMAIL));
             staffForm.setPhoneNumber(attrValue(attributeList, PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER));

@@ -13,6 +13,7 @@ import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.openmrs.patient.UnallowedIdentifierException;
@@ -113,9 +114,11 @@ public class PatientController {
                 throw new UnallowedIdentifierException("User Id is not allowed");
             patientID = createPatientForm.getMotechId();
         }
-        MRSPatient mrsPatient = new MRSPatient(patientID, createPatientForm.getFirstName(),
-                createPatientForm.getMiddleName(), createPatientForm.getLastName(), createPatientForm.getPreferredName(), createPatientForm.getDateOfBirth(), createPatientForm.getEstimatedDateOfBirth(), createPatientForm.getSex(),
-                createPatientForm.getAddress(), attributes, new MRSFacility(createPatientForm.getFacilityId()));
+
+        MRSPerson mrsPerson = new MRSPerson().firstName(createPatientForm.getFirstName()).middleName(createPatientForm.getMiddleName())
+                .lastName(createPatientForm.getLastName()).preferredName(createPatientForm.getPreferredName()).dateOfBirth(createPatientForm.getDateOfBirth())
+                .birthDateEstimated(createPatientForm.getEstimatedDateOfBirth()).gender(createPatientForm.getSex()).address(createPatientForm.getAddress()).attributes(attributes);
+        MRSPatient mrsPatient = new MRSPatient(patientID, mrsPerson, new MRSFacility(createPatientForm.getFacilityId()));
 
         return new Patient(mrsPatient);
     }

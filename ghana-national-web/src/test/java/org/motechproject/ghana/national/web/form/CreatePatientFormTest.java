@@ -7,6 +7,7 @@ import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.web.PatientController;
 import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.MRSPerson;
 
 import java.util.Date;
 
@@ -67,27 +68,28 @@ public class CreatePatientFormTest {
         Patient patient = patientController.getPatient(form, motechId);
 
         assertThat(patient.mrsPatientId(), is(equalTo(null)));
+        MRSPerson mrsPerson = patient.mrsPatient().getPerson();
 
-        assertThat(patient.mrsPatient().getAddress(), is(equalTo(address)));
-        assertThat(patient.mrsPatient().getDateOfBirth(), is(equalTo(dateofBirth)));
+        assertThat(mrsPerson.getAddress(), is(equalTo(address)));
+        assertThat(mrsPerson.getDateOfBirth(), is(equalTo(dateofBirth)));
         assertThat(patient.mrsPatient().getFacility().getId(), is(equalTo(facilityId)));
         assertThat(patient.mrsPatient().getFacility().getCountyDistrict(), is(equalTo(null)));
         assertThat(patient.mrsPatient().getFacility().getRegion(), is(equalTo(null)));
         assertThat(patient.mrsPatient().getFacility().getStateProvince(), is(equalTo(null)));
-        assertThat(patient.mrsPatient().getBirthDateEstimated(), is(equalTo(isBirthDateEstimated)));
-        assertThat(patient.mrsPatient().getFirstName(), is(equalTo(firstName)));
-        assertThat(patient.mrsPatient().getLastName(), is(equalTo(lastName)));
-        assertThat(patient.mrsPatient().getMiddleName(), is(equalTo(middleName)));
+        assertThat(mrsPerson.getBirthDateEstimated(), is(equalTo(isBirthDateEstimated)));
+        assertThat(mrsPerson.getFirstName(), is(equalTo(firstName)));
+        assertThat(mrsPerson.getLastName(), is(equalTo(lastName)));
+        assertThat(mrsPerson.getMiddleName(), is(equalTo(middleName)));
         assertThat(patient.mrsPatient().getId(), is(equalTo(motechId)));
-        assertThat(patient.mrsPatient().getPreferredName(), is(equalTo(preferredName)));
-        assertThat(patient.mrsPatient().getGender(), is(equalTo(sex)));
-        assertThat(((Attribute) selectUnique(patient.mrsPatient().getAttributes(), having(on(Attribute.class).name(),
+        assertThat(mrsPerson.getPreferredName(), is(equalTo(preferredName)));
+        assertThat(mrsPerson.getGender(), is(equalTo(sex)));
+        assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute())))).value(), is(equalTo(nhisExpDate.toString())));
-        assertThat(((Attribute) selectUnique(patient.mrsPatient().getAttributes(), having(on(Attribute.class).name(),
+        assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.NHIS_NUMBER.getAttribute())))).value(), is(equalTo(nhisNumber)));
-        assertThat(((Attribute) selectUnique(patient.mrsPatient().getAttributes(), having(on(Attribute.class).name(),
+        assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.INSURED.getAttribute())))).value(), is(equalTo(insured.toString())));
-        assertThat(((Attribute) selectUnique(patient.mrsPatient().getAttributes(), having(on(Attribute.class).name(),
+        assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.PHONE_NUMBER.getAttribute())))).value(), is(equalTo(phoneNumber)));
     }
 }
