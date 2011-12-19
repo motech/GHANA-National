@@ -34,21 +34,11 @@ public class WebDriverProvider  {
 
 
     public boolean WaitForElement_ID(final String elementid) {
-         try {
-
             (new WebDriverWait(driver, 15)).until(new ExpectedCondition<Boolean>() {
                 public Boolean apply(WebDriver driver) {
                     return driver.findElement(By.id(elementid)).isDisplayed();
                 }
             });
-        } catch (Exception ignored) {
-             File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        try {
-            FileUtils.copyFile(screenshot, new File(elementid + "_failed.bmp"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        }
         return true;
     }
 

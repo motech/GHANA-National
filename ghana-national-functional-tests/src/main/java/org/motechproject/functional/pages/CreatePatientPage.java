@@ -194,7 +194,7 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithInsured(Boolean Insured) {
-        myUtilities.mySleep();
+        webDriverProvider.WaitForElement_ID("insured2");
         if (Insured)
             insured.click();
         else

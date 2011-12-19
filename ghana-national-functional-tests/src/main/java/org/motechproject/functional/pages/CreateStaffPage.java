@@ -127,8 +127,7 @@ public class CreateStaffPage {
     }
 
     public boolean isErrorPresent(STAFF_PAGE_ERROR_TAGS error_tags) {
-
-        switch (error_tags) {
+         switch (error_tags) {
             case email_error:
                 webDriverProvider.WaitForElement_ID("email_error");
                 return driver.findElement(By.id("email_error")).isDisplayed();
