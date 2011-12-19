@@ -60,38 +60,41 @@ public class CreateStaffTest extends AbstractTestNGSpringContextTests {
                 .WithValidStaffPhoneNumber()
                 .WithGeneratedEmailID()
                 .WithStaffRole("Super Admin");
-        Assert.assertTrue(createStaff.SubmitStaff());
+        Assert.assertTrue(createStaff.SubmitStaffandWait());
     }
 
     @Test
     public void assertForInvalidPhone() {
         loginPage.login();
         homePage.OpenCreateStaffPage();
-        PageFactory.initElements(driver,createStaff);
+        PageFactory.initElements(driver, createStaff);
 
-        Assert.assertTrue(createStaff.WithStaffFirstName("Automation")
+        createStaff.WithStaffFirstName("Automation")
                 .WithStaffLastName("automation")
                 .WithInvalidStaffPhoneNum()
                 .WithGeneratedEmailID()
-                .WithStaffRole("Super Admin").isErrorPresent(CreateStaffPage.STAFF_PAGE_ERROR_TAGS.phone_error));
+                .WithStaffRole("Super Admin")
+                .SubmitStaff();
+
+        Assert.assertTrue(createStaff.isErrorPresent(CreateStaffPage.STAFF_PAGE_ERROR_TAGS.phone_error));
     }
+
     @Test
     public void assertForMissingOrInvalidFirstName() {
-         loginPage.login();
+        loginPage.login();
         homePage.OpenCreateStaffPage();
-        PageFactory.initElements(driver,createStaff);
-
-        Assert.assertTrue(
-                createStaff.WithStaffFirstName("Auto1")
-                .isErrorPresent(CreateStaffPage.STAFF_PAGE_ERROR_TAGS.firstname_error)
-                );
+        PageFactory.initElements(driver, createStaff);
+        createStaff.SubmitStaff();
+        createStaff.WithStaffFirstName("Auto1").SubmitStaff();
+        createStaff.isErrorPresent(CreateStaffPage.STAFF_PAGE_ERROR_TAGS.firstname_error);
     }
 
     @Test
     public void assertForMissingReqdFields() {
         loginPage.login();
         homePage.OpenCreateStaffPage();
-        PageFactory.initElements(driver,createStaff);
+        PageFactory.initElements(driver, createStaff);
+        createStaff.SubmitStaff();
         Assert.assertTrue(createStaff.isErrorPresent(CreateStaffPage.STAFF_PAGE_ERROR_TAGS.firstname_error));
         Assert.assertTrue(createStaff.isErrorPresent(CreateStaffPage.STAFF_PAGE_ERROR_TAGS.lastname_error));
         Assert.assertTrue(createStaff.isErrorPresent(CreateStaffPage.STAFF_PAGE_ERROR_TAGS.phone_error));
@@ -102,11 +105,12 @@ public class CreateStaffTest extends AbstractTestNGSpringContextTests {
     public void createAdminWithoutEmailAndCheckIfErrorIsThrown() {
         loginPage.login();
         homePage.OpenCreateStaffPage();
-        PageFactory.initElements(driver,createStaff);
-        Assert.assertTrue(createStaff.WithStaffFirstName("AutomationValid")
+        PageFactory.initElements(driver, createStaff);
+        createStaff.WithStaffFirstName("AutomationValid")
                 .WithStaffLastName("AutoLastNAmeValid")
-                .WithStaffRole("Super Admin")
-                .isErrorPresent(CreateStaffPage.STAFF_PAGE_ERROR_TAGS.email_error));
+                .WithStaffRole("Super Admin");
+        createStaff.SubmitStaff();
+        Assert.assertTrue(createStaff.isErrorPresent(CreateStaffPage.STAFF_PAGE_ERROR_TAGS.email_error));
     }
 
     @AfterMethod
