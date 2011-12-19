@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -127,6 +128,7 @@ public class CreateStaffPage {
     }
 
     public boolean isErrorPresent(STAFF_PAGE_ERROR_TAGS error_tags) {
+        PageFactory.initElements(driver,this);
          switch (error_tags) {
             case email_error:
                 webDriverProvider.WaitForElement_ID("email_error");

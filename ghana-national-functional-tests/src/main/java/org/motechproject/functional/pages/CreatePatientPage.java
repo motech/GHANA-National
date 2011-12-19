@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -178,6 +179,8 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithEstimatedDOB(Boolean estimateddob) {
+        PageFactory.initElements(driver,this);
+
         if (estimateddob)
             estimatedDateOfBirth.click();
         else
@@ -186,6 +189,8 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithPatientGender(Boolean Gender) {
+        PageFactory.initElements(driver,this);
+
         if (Gender)
             male.click();
         else
@@ -194,7 +199,7 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithInsured(Boolean Insured) {
-        webDriverProvider.WaitForElement_ID("insured2");
+        PageFactory.initElements(driver,this);
         if (Insured)
             insured.click();
         else
@@ -203,22 +208,28 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithNHIS(String NHISNumber) {
+        PageFactory.initElements(driver,this);
+
         nhisNumber.sendKeys(NHISNumber);
         return this;
     }
 
     public CreatePatientPage WithNHISExpirateDate(String expirationdate) {
+        PageFactory.initElements(driver,this);
+
         nhisExpirationDate.sendKeys(expirationdate);
         return this;
     }
 
     public CreatePatientPage WithRegion(String regionName) {
+        PageFactory.initElements(driver,this);
         Select selectRegion = new Select(regionDropDown);
         selectRegion.selectByValue(regionName);
         return this;
     }
 
     public CreatePatientPage WithDistrict(String districtName) {
+        PageFactory.initElements(driver,this);
         Select selectDistrict = new Select(districtDropDown);
         selectDistrict.selectByValue(districtName);
         return this;
