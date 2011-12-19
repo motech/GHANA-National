@@ -204,6 +204,28 @@
                 <version>1.7</version>
                 <executions>
                     <execution>
+                        <id>inject-test_config-files-for-integration-tests</id>
+                        <phase>pre-integration-test</phase>
+                        <configuration>
+                            <skip>${openmrs.skip}</skip>
+                            <target>
+                                <copy overwrite="true" todir="${project.build.directory}/ghana-national-web-1.0-SNAPSHOT/WEB-INF/classes">
+                                    <fileset
+                                            dir="../ghana-national-common/src/test/resources"/>
+                                </copy>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
                         <id>create-and-move-openmrs-modules</id>
                         <phase>pre-integration-test</phase>
                         <configuration>
@@ -317,7 +339,8 @@
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/generated-sources/it-dependencies</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/generated-sources/it-dependencies
+                                    </outputDirectory>
                                     <resources>
                                         <resource>
                                             <directory>../ghana-national-core/src/main/java</directory>

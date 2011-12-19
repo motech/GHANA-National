@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xf:xforms xmlns:xf="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="11">
+  <xf:model>
+    <xf:instance id="ANCRegistration">
+      <ANCRegistration id="11" name="Reg-ANC">
+        <staffId/>
+        <facilityId/>
+        <date/>
+        <motechId/>
+        <ancRegNumber/>
+        <estDeliveryDate/>
+        <height/>
+        <gravida/>
+        <parity/>
+        <enroll/>
+        <consent/>
+        <ownership/>
+        <phoneNumber/>
+        <format/>
+        <language/>
+        <dayOfWeek/>
+        <timeOfDay/>
+        <howLearned/>
+        <formtype>data_entry</formtype>
+        <formname>registerANCMother-jf</formname>
+      </ANCRegistration>
+    </xf:instance>
+    <xf:instance id="format">
+      <dynamiclist>
+        <item id="PERS_VOICE" parent="PERSONAL">
+          <label>Voice</label>
+          <value>PERS_VOICE</value>
+        </item>
+        <item id="PERS_TEXT" parent="PERSONAL">
+          <label>SMS</label>
+          <value>PERS_TEXT</value>
+        </item>
+        <item id="HSE_VOICE" parent="HOUSEHOLD">
+          <label>Voice</label>
+          <value>HSE_VOICE</value>
+        </item>
+        <item id="HSE_TEXT" parent="HOUSEHOLD">
+          <label>SMS</label>
+          <value>HSE_TEXT</value>
+        </item>
+        <item id="PUB_VOICE" parent="PUBLIC">
+          <label>Voice</label>
+          <value>PUB_VOICE</value>
+        </item>
+      </dynamiclist>
+    </xf:instance>
+    <xf:instance id="language">
+      <dynamiclist>
+        <item id="en" parent="PERS_VOICE">
+          <label>English</label>
+          <value>en</value>
+        </item>
+        <item id="kas" parent="PERS_VOICE">
+          <label>Kassim</label>
+          <value>kas</value>
+        </item>
+        <item id="nan" parent="PERS_VOICE">
+          <label>Nankam</label>
+          <value>nan</value>
+        </item>
+        <item id="fan" parent="PERS_VOICE">
+          <label>Fante</label>
+          <value>fan</value>
+        </item>
+        <item id="en" parent="PERS_TEXT">
+          <label>English</label>
+          <value>en</value>
+        </item>
+        <item id="en" parent="HSE_VOICE">
+          <label>English</label>
+          <value>en</value>
+        </item>
+        <item id="kas" parent="HSE_VOICE">
+          <label>Kassim</label>
+          <value>kas</value>
+        </item>
+        <item id="nan" parent="HSE_VOICE">
+          <label>Nankam</label>
+          <value>nan</value>
+        </item>
+        <item id="fan" parent="HSE_VOICE">
+          <label>Fante</label>
+          <value>fan</value>
+        </item>
+        <item id="en" parent="HSE_TEXT">
+          <label>English</label>
+          <value>en</value>
+        </item>
+        <item id="en" parent="PUB_VOICE">
+          <label>English</label>
+          <value>en</value>
+        </item>
+        <item id="kas" parent="PUB_VOICE">
+          <label>Kassim</label>
+          <value>kas</value>
+        </item>
+        <item id="nan" parent="PUB_VOICE">
+          <label>Nankam</label>
+          <value>nan</value>
+        </item>
+        <item id="fan" parent="PUB_VOICE">
+          <label>Fante</label>
+          <value>fan</value>
+        </item>
+      </dynamiclist>
+    </xf:instance>
+    <xf:bind id="staffId" nodeset="/ANCRegistration/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+    <xf:bind id="facilityId" nodeset="/ANCRegistration/facilityId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+    <xf:bind constraint=". &lt;= 'today()'" id="date" message="Invalid date: date entered is in the future" nodeset="/ANCRegistration/date" required="true()" type="xsd:date"/>
+    <xf:bind id="motechId" nodeset="/ANCRegistration/motechId" required="true()" type="xsd:int" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
+    <xf:bind id="ancRegNumber" nodeset="/ANCRegistration/ancRegNumber" type="xsd:string" required="true()"/>
+    <xf:bind id="estDeliveryDate" nodeset="/ANCRegistration/estDeliveryDate" required="true()" type="xsd:date"/>
+    <xf:bind constraint=". &gt;= 60 and . &lt;= 200" id="height" message="Value out of range: must be between 60 and 200" nodeset="/ANCRegistration/height" required="true()" type="xsd:decimal"/>
+    <xf:bind constraint=". &gt;= 1 and . &lt;= 20" id="gravida" message="Value out of range: must be between 1 and 20" nodeset="/ANCRegistration/gravida" required="true()" type="xsd:int"/>
+    <xf:bind constraint=". &gt;= 0 and . &lt;= 20" id="parity" message="Value out of range: must be between 0 and 20" nodeset="/ANCRegistration/parity" required="true()" type="xsd:int"/>
+    <xf:bind id="enroll" nodeset="/ANCRegistration/enroll" required="true()" type="xsd:string"/>
+    <xf:bind action="show" id="consent" nodeset="/ANCRegistration/consent" relevant="/ANCRegistration/enroll = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" id="ownership" nodeset="/ANCRegistration/ownership" relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" id="phoneNumber" nodeset="/ANCRegistration/phoneNumber" relevant="/ANCRegistration/ownership = 'PERSONAL' or /ANCRegistration/ownership = 'HOUSEHOLD'" required="true()" type="xsd:int" visible="false()" constraint=". &lt;= 999999999" message="Number too large. It should be 10 digits long"/>
+    <xf:bind action="show" id="format" nodeset="/ANCRegistration/format" relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" id="language" nodeset="/ANCRegistration/language" relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" id="dayOfWeek" nodeset="/ANCRegistration/dayOfWeek" relevant="/ANCRegistration/format = 'PERS_VOICE' or /ANCRegistration/format = 'HSE_VOICE'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" id="timeOfDay" nodeset="/ANCRegistration/timeOfDay" relevant="/ANCRegistration/format = 'PERS_VOICE' or /ANCRegistration/format = 'HSE_VOICE'" required="true()" type="xsd:time" visible="false()"/>
+    <xf:bind action="show" id="howLearned" nodeset="/ANCRegistration/howLearned" relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind id="formtype" nodeset="/ANCRegistration/formtype" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind id="formname" nodeset="/ANCRegistration/formname" required="true()" type="xsd:string" visible="false()"/>
+  </xf:model>
+  <xf:group id="1">
+    <xf:label>Page1</xf:label>
+    <xf:input bind="staffId">
+      <xf:label>Staff ID</xf:label>
+    </xf:input>
+    <xf:input bind="facilityId">
+      <xf:label>Facility ID</xf:label>
+    </xf:input>
+    <xf:input bind="date">
+      <xf:label>Reg. date</xf:label>
+    </xf:input>
+    <xf:input bind="motechId">
+      <xf:label>MoTeCH ID</xf:label>
+    </xf:input>
+    <xf:input bind="ancRegNumber">
+      <xf:label>Serial Number</xf:label>
+    </xf:input>
+    <xf:input bind="estDeliveryDate">
+      <xf:label>EDD</xf:label>
+    </xf:input>
+    <xf:input bind="height">
+      <xf:label>Height (cm)</xf:label>
+    </xf:input>
+    <xf:input bind="gravida">
+      <xf:label>Gravida</xf:label>
+    </xf:input>
+    <xf:input bind="parity">
+      <xf:label>Parity</xf:label>
+    </xf:input>
+    <xf:select1 bind="enroll">
+      <xf:label>Join Mobile Midwife?</xf:label>
+      <xf:item id="Y">
+        <xf:label>Yes</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+      <xf:item id="N">
+        <xf:label>No</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:select1 bind="consent">
+      <xf:label>Consent?</xf:label>
+      <xf:item id="Y">
+        <xf:label>Yes</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+      <xf:item id="N">
+        <xf:label>No</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:select1 bind="ownership">
+      <xf:label>Phone ownership</xf:label>
+      <xf:item id="PERSONAL">
+        <xf:label>Personal phone</xf:label>
+        <xf:value>PERSONAL</xf:value>
+      </xf:item>
+      <xf:item id="HOUSEHOLD">
+        <xf:label>Household phone</xf:label>
+        <xf:value>HOUSEHOLD</xf:value>
+      </xf:item>
+      <xf:item id="PUBLIC">
+        <xf:label>Public phone</xf:label>
+        <xf:value>PUBLIC</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:input bind="phoneNumber">
+      <xf:label>Phone number</xf:label>
+    </xf:input>
+    <xf:select1 bind="format">
+      <xf:label>Message format</xf:label>
+      <xf:itemset nodeset="instance('format')/item[@parent=instance('ANCRegistration')/ownership]">
+        <xf:label ref="label"/>
+        <xf:value ref="value"/>
+      </xf:itemset>
+    </xf:select1>
+    <xf:select1 bind="language">
+      <xf:label>Message language</xf:label>
+      <xf:itemset nodeset="instance('language')/item[@parent=instance('ANCRegistration')/format]">
+        <xf:label ref="label"/>
+        <xf:value ref="value"/>
+      </xf:itemset>
+    </xf:select1>
+    <xf:select1 bind="dayOfWeek">
+      <xf:label>Day of week to receive messages</xf:label>
+      <xf:item id="monday">
+        <xf:label>Monday</xf:label>
+        <xf:value>monday</xf:value>
+      </xf:item>
+      <xf:item id="tuesday">
+        <xf:label>Tuesday</xf:label>
+        <xf:value>tuesday</xf:value>
+      </xf:item>
+      <xf:item id="wednesday">
+        <xf:label>Wednesday</xf:label>
+        <xf:value>wednesday</xf:value>
+      </xf:item>
+      <xf:item id="thursday">
+        <xf:label>Thursday</xf:label>
+        <xf:value>thursday</xf:value>
+      </xf:item>
+      <xf:item id="friday">
+        <xf:label>Friday</xf:label>
+        <xf:value>friday</xf:value>
+      </xf:item>
+      <xf:item id="saturday">
+        <xf:label>Saturday</xf:label>
+        <xf:value>saturday</xf:value>
+      </xf:item>
+      <xf:item id="sunday">
+        <xf:label>Sunday</xf:label>
+        <xf:value>sunday</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:input bind="timeOfDay">
+      <xf:label>Time of day to receive messages</xf:label>
+    </xf:input>
+    <xf:select1 bind="howLearned">
+      <xf:label>How learned of Mobile Midwife</xf:label>
+      <xf:item id="GHS_NURSE">
+        <xf:label>GHS Nurse</xf:label>
+        <xf:value>GHS_NURSE</xf:value>
+      </xf:item>
+      <xf:item id="MOTECH_FIELD_AGENT">
+        <xf:label>MoTeCH field agent</xf:label>
+        <xf:value>MOTECH_FIELD_AGENT</xf:value>
+      </xf:item>
+      <xf:item id="FRIEND">
+        <xf:label>Friend</xf:label>
+        <xf:value>FRIEND</xf:value>
+      </xf:item>
+      <xf:item id="POSTERS_ADS">
+        <xf:label>Posters/ads</xf:label>
+        <xf:value>POSTERS_ADS</xf:value>
+      </xf:item>
+      <xf:item id="RADIO">
+        <xf:label>Radio</xf:label>
+        <xf:value>RADIO</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:input bind="formtype">
+      <xf:label>formType</xf:label>
+    </xf:input>
+    <xf:input bind="formname">
+      <xf:label>formName</xf:label>
+    </xf:input>
+  </xf:group>
+</xf:xforms>
