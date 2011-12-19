@@ -101,14 +101,12 @@ public class CreateStaffTest extends AbstractTestNGSpringContextTests {
        // Assert.assertTrue(createStaff.isErrorPresent(CreateStaffPage.STAFF_PAGE_ERROR_TAGS.role_error));
     }
 
-    @Test (enabled = false)
+    @Test
     public void createAdminWithoutEmailAndCheckIfErrorIsThrown() {
         loginPage.login();
         homePage.OpenCreateStaffPage();
         PageFactory.initElements(driver, createStaff);
-        createStaff.WithStaffFirstName("AutomationValid")
-                .WithStaffLastName("AutoLastNAmeValid")
-                .WithStaffRole("Super Admin");
+        createStaff.WithStaffRole("Super Admin");
         createStaff.SubmitStaff();
         Assert.assertTrue(createStaff.isErrorPresent(CreateStaffPage.STAFF_PAGE_ERROR_TAGS.email_error));
     }
