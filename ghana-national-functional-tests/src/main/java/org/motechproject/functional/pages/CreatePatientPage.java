@@ -2,6 +2,7 @@ package org.motechproject.functional.pages;
 
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.functional.util.Utilities;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -111,6 +112,9 @@ public class CreatePatientPage {
     @Autowired
     DataGenerator dataGenerator;
 
+    @Autowired
+    Utilities myUtilities;
+
     private WebDriver driver;
 
     public enum PATIENT_REGN_MODE {AUTO_GENERATE_ID, USE_PREPRINTED_ID}
@@ -123,6 +127,7 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithRegistrationMode(PATIENT_REGN_MODE patient_regn_mode) {
+        myUtilities.mySleep();
         Select selectRegnMode = new Select(SelectRegnMode);
         selectRegnMode.selectByValue(patient_regn_mode.name());
         return this;
@@ -159,7 +164,7 @@ public class CreatePatientPage {
         Select selectyear = new Select(Year);
         selectyear.selectByValue(Integer.toString(DOB.get(Calendar.YEAR)));
 //       WebElement datefield = driver.findElement(By.className("ui-state-default"));
-             WebElement table = driver.findElement(By.className("ui-datepicker-calendar"));
+        WebElement table = driver.findElement(By.className("ui-datepicker-calendar"));
 
         List<WebElement> tds = table.findElements(By.tagName("td"));
         for (WebElement td : tds) {
@@ -169,8 +174,8 @@ public class CreatePatientPage {
                 break;
             }
         }
-            return this;
-        }
+        return this;
+    }
 
     public CreatePatientPage WithEstimatedDOB(Boolean estimateddob) {
         if (estimateddob)
@@ -189,6 +194,7 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithInsured(Boolean Insured) {
+        myUtilities.mySleep();
         if (Insured)
             insured.click();
         else
@@ -238,8 +244,8 @@ public class CreatePatientPage {
         String src = driver.getPageSource();
         if (src.contains("Patient created successfully"))
             return true;
-            else
-        return false;
+        else
+            return false;
     }
 
 

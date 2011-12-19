@@ -127,17 +127,22 @@ public class CreateStaffPage {
     }
 
     public boolean isErrorPresent(STAFF_PAGE_ERROR_TAGS error_tags) {
-        myUtilities.mySleep();
+
         switch (error_tags) {
             case email_error:
+                webDriverProvider.WaitForElement_ID("email_error");
                 return driver.findElement(By.id("email_error")).isDisplayed();
             case phone_error:
+                webDriverProvider.WaitForElement_ID("phoneNumberError");
                 return driver.findElement(By.id("phoneNumberError")).isDisplayed();
             case firstname_error:
+                webDriverProvider.WaitForElement_ID("firstName_error");
                 return driver.findElement(By.id("firstName_error")).isDisplayed();
             case lastname_error:
+                webDriverProvider.WaitForElement_ID("lastName_error");
                 return driver.findElement(By.id("lastName_error")).isDisplayed();
             case role_error:
+                webDriverProvider.WaitForElement_ID("role_error");
                 return driver.findElement(By.id("role_error")).isDisplayed();
         }
         return false;
