@@ -24,6 +24,7 @@ public class Facility extends MotechAuditableDataObject {
     private String motechId;
 
     @JsonIgnore
+
     private MRSFacility mrsFacility;
 
     public Facility() {
@@ -122,6 +123,26 @@ public class Facility extends MotechAuditableDataObject {
     public Facility motechId(String motechId) {
         this.motechId = motechId;
         return this;
+    }
+
+    public String getAdditionalPhoneNumber1() {
+        return additionalPhoneNumber1;
+    }
+
+    public String getAdditionalPhoneNumber2() {
+        return additionalPhoneNumber2;
+    }
+
+    public String getAdditionalPhoneNumber3() {
+        return additionalPhoneNumber3;
+    }
+
+    public String getMrsFacilityId() {
+        return mrsFacilityId;
+    }
+
+    public String getMotechId() {
+        return motechId;
     }
 }
 

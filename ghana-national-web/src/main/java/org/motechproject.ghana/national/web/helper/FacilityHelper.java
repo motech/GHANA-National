@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.FacilityVO;
 import org.motechproject.ghana.national.web.FacilityController;
 import org.motechproject.ghana.national.web.form.FacilityForm;
+import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
@@ -95,5 +96,14 @@ public class FacilityHelper {
         modelMap.addAttribute("message", "facility created successfully.");
         modelMap.mergeAttributes(locationMap());
         return FacilityController.EDIT_FACILITY_VIEW;
+    }
+
+
+    public Facility createFacilityVO(FacilityForm updateFacilityForm) {
+        MRSFacility mrsFacility = new MRSFacility(updateFacilityForm.getId(), updateFacilityForm.getName(), updateFacilityForm.getCountry(), updateFacilityForm.getRegion(),
+                updateFacilityForm.getCountyDistrict(), updateFacilityForm.getStateProvince());
+        Facility facility = new Facility().mrsFacility(mrsFacility).mrsFacilityId(updateFacilityForm.getId()).motechId(updateFacilityForm.getFacilityId()).phoneNumber(updateFacilityForm.getPhoneNumber()).
+                additionalPhoneNumber1(updateFacilityForm.getAdditionalPhoneNumber1()).additionalPhoneNumber2(updateFacilityForm.getAdditionalPhoneNumber2()).additionalPhoneNumber3(updateFacilityForm.getAdditionalPhoneNumber3());
+        return facility;
     }
 }
