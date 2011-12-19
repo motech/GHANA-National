@@ -41,20 +41,20 @@
 
 
         <div>
-            <label for="facilityId" class="formLabel">${fn:escapeXml(facility_id)}:</label>
+            <label for="facilityId" class="formLabel">${fn:escapeXml(facility_id)} *:</label>
             <form:input path="facilityId" size="20" cssClass="jsRequire" disabled="true"/>
             <form:hidden path="id" />
             <form:hidden path="facilityId" />
         </div>
         <div>
-            <label for="name" class="formLabel">${fn:escapeXml(facility_name)}:</label>
+            <label for="name" class="formLabel">${fn:escapeXml(facility_name)} *:</label>
             <form:input path="name" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_name)}"/>
             <span id='nameError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(facility_name_req_msg)}
             </span>
         </div>
         <div>
-            <label for="countries" class="formLabel">${fn:escapeXml(facility_country)}:</label>
+            <label for="countries" class="formLabel">${fn:escapeXml(facility_country)} *:</label>
             <form:select id="countries" path="country">
                 <option parent="select" value="">${fn:escapeXml(facility_country_select)}</option>
                 <form:options items="${countries}" />
@@ -64,17 +64,17 @@
             </span>
         </div>
         <div class="hidden-location">
-            <motech:location id="regions" path="region" label="${facility_region} :"
+            <motech:location id="regions" path="region" label="${facility_region} *:"
                              defaultValue="${facility_region_select}" errorMsg="${facility_region_req_msg}"
                              locations="${regions}" />
         </div>
         <div class="hidden-location">
-            <motech:location id="districts" path="countyDistrict" label="${facility_district} :"
+            <motech:location id="districts" path="countyDistrict" label="${facility_district}* :"
                              defaultValue="${facility_district_select}" errorMsg="${facility_district_req_msg}"
                              locations="${districts}"/>
         </div>
         <div class="hidden-location">
-            <motech:location id="sub-districts" path="stateProvince" label="${facility_sub_district} :"
+            <motech:location id="sub-districts" path="stateProvince" label="${facility_sub_district}* :"
                              defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
                              locations="${provinces}"/>
         </div>
