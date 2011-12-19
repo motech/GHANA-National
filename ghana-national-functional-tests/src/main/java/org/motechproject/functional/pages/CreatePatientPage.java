@@ -201,9 +201,15 @@ public class CreatePatientPage {
     public CreatePatientPage WithInsured(Boolean Insured) {
         PageFactory.initElements(driver,this);
         if (Insured)
+
             insured.click();
         else
+        if(driver.findElement(By.id("insured2")).isDisplayed())
+        {
             notinsured.click();
+        }
+        else
+        webDriverProvider.WaitForElement_ID("insured2");
         return this;
     }
 
