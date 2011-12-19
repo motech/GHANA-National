@@ -68,11 +68,11 @@ public class CreatePatientPage {
     @CacheLookup
     WebElement female;
 
-    @FindBy(id = "insured1")
+    @FindBy(id = "insured")
     @CacheLookup
     WebElement insured;
 
-    @FindBy(id = "insured2")
+    @FindBy(id = "notInsured")
     @CacheLookup
     WebElement notinsured;
 
@@ -205,12 +205,13 @@ public class CreatePatientPage {
     public CreatePatientPage WithInsured(Boolean Insured) {
 //        PageFactory.initElements(driver, this);
         if (Insured)
-            javascriptExecutor.getElementById("insured1", driver).click();
-//            insured.click();
+//            javascriptExecutor.getElementById("insured", driver).click();
+            insured.click();
         else {
-            javascriptExecutor.getElementById("insured2", driver).click();
+//            javascriptExecutor.getElementById("notInsured", driver).click();
+            notinsured.click();
         }
-      return this;
+        return this;
     }
 
     public CreatePatientPage WithNHIS(String NHISNumber) {
