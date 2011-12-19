@@ -40,4 +40,14 @@ $(document).ready(function() {
             patientForm.submit();
         }
     });
+
+    $('#insured').click(function() {
+        $('#nhisNumber').parent().show();
+        $('#nhisExpirationDate').parent().show();
+    });
+
+    $('#notInsured').click(function() {
+         $('#nhisNumber').parent().hide();
+         $('#nhisExpirationDate').parent().hide();
+    });
 });

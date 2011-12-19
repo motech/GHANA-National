@@ -50,7 +50,7 @@ public class CreatePatientTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void CreatePatientWithValidValues() {
-        loginPage.loginAs("admin", "P@ssw0rd");
+        loginPage.login();
         homePage.OpenCreatePatientPage();
         boolean TestPassed;
         PageFactory.initElements(driver, createPatient);
@@ -61,18 +61,19 @@ public class CreatePatientTest extends AbstractTestNGSpringContextTests {
                 .WithPatientLastName("Auto Last Name")
                 .WithEstimatedDOB(false)
                 .WithPatientGender(true)
-                .WithInsured(false)
+
                 .WithRegion("Central Region")
                 .WithDistrict("Awutu Senya")
                 .WithSubDistrict("Kasoa")
                 .WithFacility("Papaase CHPS")
+                .WithInsured(false)
                 .WithDateofBirth(DOB) // select the DOB at last as there is a time delay in the jquery ui closing after selecting the date
                                         // this happens when the build is run locally in dev environment
                 .Create());
     }
     @AfterSuite
     public void closeall() {
-        driver.close();
+        driver.quit();
     }
 
 }

@@ -2,11 +2,13 @@ package org.motechproject.functional.pages;
 
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.functional.util.Utilities;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -111,6 +113,9 @@ public class CreatePatientPage {
     @Autowired
     DataGenerator dataGenerator;
 
+    @Autowired
+    Utilities myUtilities;
+
     private WebDriver driver;
 
     public enum PATIENT_REGN_MODE {AUTO_GENERATE_ID, USE_PREPRINTED_ID}
@@ -123,6 +128,7 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithRegistrationMode(PATIENT_REGN_MODE patient_regn_mode) {
+        myUtilities.mySleep();
         Select selectRegnMode = new Select(SelectRegnMode);
         selectRegnMode.selectByValue(patient_regn_mode.name());
         return this;
@@ -159,7 +165,7 @@ public class CreatePatientPage {
         Select selectyear = new Select(Year);
         selectyear.selectByValue(Integer.toString(DOB.get(Calendar.YEAR)));
 //       WebElement datefield = driver.findElement(By.className("ui-state-default"));
-             WebElement table = driver.findElement(By.className("ui-datepicker-calendar"));
+        WebElement table = driver.findElement(By.className("ui-datepicker-calendar"));
 
         List<WebElement> tds = table.findElements(By.tagName("td"));
         for (WebElement td : tds) {
@@ -169,10 +175,12 @@ public class CreatePatientPage {
                 break;
             }
         }
-            return this;
-        }
+        return this;
+    }
 
     public CreatePatientPage WithEstimatedDOB(Boolean estimateddob) {
+        PageFactory.initElements(driver,this);
+
         if (estimateddob)
             estimatedDateOfBirth.click();
         else
@@ -181,6 +189,8 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithPatientGender(Boolean Gender) {
+        PageFactory.initElements(driver,this);
+
         if (Gender)
             male.click();
         else
@@ -189,6 +199,7 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithInsured(Boolean Insured) {
+        PageFactory.initElements(driver,this);
         if (Insured)
             insured.click();
         else
@@ -197,22 +208,28 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithNHIS(String NHISNumber) {
+        PageFactory.initElements(driver,this);
+
         nhisNumber.sendKeys(NHISNumber);
         return this;
     }
 
     public CreatePatientPage WithNHISExpirateDate(String expirationdate) {
+        PageFactory.initElements(driver,this);
+
         nhisExpirationDate.sendKeys(expirationdate);
         return this;
     }
 
     public CreatePatientPage WithRegion(String regionName) {
+        PageFactory.initElements(driver,this);
         Select selectRegion = new Select(regionDropDown);
         selectRegion.selectByValue(regionName);
         return this;
     }
 
     public CreatePatientPage WithDistrict(String districtName) {
+        PageFactory.initElements(driver,this);
         Select selectDistrict = new Select(districtDropDown);
         selectDistrict.selectByValue(districtName);
         return this;
@@ -238,8 +255,8 @@ public class CreatePatientPage {
         String src = driver.getPageSource();
         if (src.contains("Patient created successfully"))
             return true;
-            else
-        return false;
+        else
+            return false;
     }
 
 

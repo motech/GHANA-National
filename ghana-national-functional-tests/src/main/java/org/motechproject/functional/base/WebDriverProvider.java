@@ -70,4 +70,21 @@ public class WebDriverProvider  {
         }
         return true;
     }
+
+    public boolean WaitForElement_LinkText(final String linkText) {
+        try {
+            (new WebDriverWait(driver, 20)).until(new ExpectedCondition<Boolean>() {
+                public Boolean apply(WebDriver driver) {
+                    return driver.findElement(By.linkText(linkText)).isDisplayed();
+                }
+            });
+
+
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }

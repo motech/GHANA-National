@@ -54,6 +54,6 @@ public class LoginTest extends AbstractTestNGSpringContextTests {
 
     @AfterSuite
     public void closeall() {
-        driver.close();
+        driver.quit();
     }
 }
