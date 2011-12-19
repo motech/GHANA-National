@@ -180,9 +180,9 @@
         <div class="form-field">
             <label class="formLabel" for="insured">${fn:escapeXml(patient_insured)} *:</label>
             <div class="radio">
-                <form:radiobutton cssClass="jsRequire" path="insured" value="true"
+                <form:radiobutton id = "insured" cssClass="jsRequire" path="insured" value="true"
                                   label="${fn:escapeXml(yes)}"/>
-                <form:radiobutton cssClass="jsRequire" path="insured" value="false"
+                <form:radiobutton id = "notInsured" cssClass="jsRequire" path="insured" value="false"
                                   label="${fn:escapeXml(no)}"/>
             </div>
             <div class="radioError">
@@ -191,14 +191,14 @@
                 </span>
             </div>
         </div>
-        <div class="form-field">
+        <div class="form-field hide">
             <label class="formLabel" for="nhisNumber">${fn:escapeXml(patient_nhis_number)}:</label>
             <form:input path="nhisNumber" size="20" label="${fn:escapeXml(patient_nhis_number)}"/>
             <span id='nhisNumberError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_nhis_number)} ${fn:escapeXml(required_msg)}
             </span>
         </div>
-        <div class="form-field">
+        <div class="form-field hide">
             <label class="formLabel" for="nhisExpirationDate">${fn:escapeXml(patient_nhis_expiration_date)}:</label>
             <form:input path="nhisExpirationDate" size="20" label="${fn:escapeXml(patient_nhis_expiration_date)}"
                         cssClass="jsDate"/>
