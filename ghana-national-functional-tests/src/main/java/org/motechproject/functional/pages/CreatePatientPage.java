@@ -2,6 +2,7 @@ package org.motechproject.functional.pages;
 
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.functional.util.JavascriptExecutor;
 import org.motechproject.functional.util.Utilities;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -114,6 +115,9 @@ public class CreatePatientPage {
     DataGenerator dataGenerator;
 
     @Autowired
+    JavascriptExecutor javascriptExecutor;
+
+    @Autowired
     Utilities myUtilities;
 
     private WebDriver driver;
@@ -179,7 +183,7 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithEstimatedDOB(Boolean estimateddob) {
-        PageFactory.initElements(driver,this);
+        PageFactory.initElements(driver, this);
 
         if (estimateddob)
             estimatedDateOfBirth.click();
@@ -189,7 +193,7 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithPatientGender(Boolean Gender) {
-        PageFactory.initElements(driver,this);
+        PageFactory.initElements(driver, this);
 
         if (Gender)
             male.click();
@@ -199,43 +203,56 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithInsured(Boolean Insured) {
-        PageFactory.initElements(driver,this);
+//        PageFactory.initElements(driver, this);
         if (Insured)
-
-            insured.click();
-        else
-        if(driver.findElement(By.id("insured2")).isDisplayed())
-        {
-            notinsured.click();
+            javascriptExecutor.getElementById("insured1", driver).click();
+//            insured.click();
+        else {
+            javascriptExecutor.getElementById("insured2", driver).click();
         }
-        else
-        webDriverProvider.WaitForElement_ID("insured2");
-        return this;
+      return this;
     }
 
     public CreatePatientPage WithNHIS(String NHISNumber) {
-        PageFactory.initElements(driver,this);
+        PageFactory.initElements(driver, this);
 
         nhisNumber.sendKeys(NHISNumber);
         return this;
     }
 
-    public CreatePatientPage WithNHISExpirateDate(String expirationdate) {
-        PageFactory.initElements(driver,this);
+    public CreatePatientPage WithNHISExpirateDate(Calendar expdate) {
+        PageFactory.initElements(driver, this);
 
-        nhisExpirationDate.sendKeys(expirationdate);
+        driver.findElement(By.className("ui-datepicker-trigger")).click();
+        WebElement month = driver.findElement(By.className("ui-datepicker-month"));
+        Select selectmonth = new Select(month);
+        selectmonth.selectByValue(Integer.toString(expdate.get(Calendar.MONTH)));
+        WebElement Year = driver.findElement(By.className("ui-datepicker-year"));
+        Select selectyear = new Select(Year);
+        selectyear.selectByValue(Integer.toString(expdate.get(Calendar.YEAR)));
+//       WebElement datefield = driver.findElement(By.className("ui-state-default"));
+        WebElement table = driver.findElement(By.className("ui-datepicker-calendar"));
+
+        List<WebElement> tds = table.findElements(By.tagName("td"));
+        for (WebElement td : tds) {
+            //Select 20th Date of the month
+            if (td.getText().equals("20")) {
+                td.findElement(By.linkText("20")).click();
+                break;
+            }
+        }
         return this;
     }
 
     public CreatePatientPage WithRegion(String regionName) {
-        PageFactory.initElements(driver,this);
+        PageFactory.initElements(driver, this);
         Select selectRegion = new Select(regionDropDown);
         selectRegion.selectByValue(regionName);
         return this;
     }
 
     public CreatePatientPage WithDistrict(String districtName) {
-        PageFactory.initElements(driver,this);
+        PageFactory.initElements(driver, this);
         Select selectDistrict = new Select(districtDropDown);
         selectDistrict.selectByValue(districtName);
         return this;
