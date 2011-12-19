@@ -46,24 +46,18 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void createFacilityWithValidValues() {
-        loginPage.loginAs("admin", "P@ssw0rd");
+        loginPage.login();
         homePage.OpenCreateFacilityPage();
         boolean TestPassed;
         PageFactory.initElements(driver, createFacilityPage);
-        createFacilityPage.SetFacilityName("Test Facility");
-        createFacilityPage.SelectCountry("Ghana");
-        if (createFacilityPage.IsRegionDisplayed()) {
-            createFacilityPage.SetRegionName("Central Region");
-        } else {
-            log.debug("Region Drop down not appearing when selecting Country Ghana");
-            TestPassed = false;
-            homePage.Logout();
-            Assert.assertTrue(TestPassed);
-        }
-        createFacilityPage.SelectDistrict("Awutu Senya");
-        createFacilityPage.SelectSubDistrict("Bawjiase");
         long number = (long) Math.floor(Math.random() * 900000000L) + 100000000L;
-        createFacilityPage.SetPhoneNum("0" + number);
+        createFacilityPage
+                .WithFacilityName("Test Facility")
+                .withCountry("Ghana").withRegionName("Central Region")
+        .withDistrict("Awutu Senya")
+                .withSubDistrict("Bawjiase")
+
+        .withPhoneNum();
         Assert.assertTrue(createFacilityPage.SubmitDetails());
     }
 
@@ -74,6 +68,6 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
 
      @AfterSuite
     public void closeall() {
-        driver.close();
+        driver.quit();
     }
 }

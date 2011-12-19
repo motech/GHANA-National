@@ -19,6 +19,8 @@ public class LoginPage {
     private String port;
 
     private WebDriver driver;
+    @Autowired
+    WebDriverProvider webDriverProvider;
 
     @Autowired
     public LoginPage(WebDriverProvider driverProvider) {
@@ -45,6 +47,17 @@ public class LoginPage {
             return false;
         else
             return true;
+    }
+
+    public void login() {
+        driver.get("http://"+ host + ":"+ port + LOGIN_PATH);
+        WebElement uName = driver.findElement(By.name("j_username"));
+        uName.sendKeys("admin");
+        WebElement uPass = driver.findElement(By.name("j_password"));
+        uPass.sendKeys("P@ssw0rd");
+        WebElement BtnLogin = driver.findElement(By.xpath("//input[3]"));
+        BtnLogin.click();
+        webDriverProvider.WaitForElement_LinkText("Logout");
     }
 
 }

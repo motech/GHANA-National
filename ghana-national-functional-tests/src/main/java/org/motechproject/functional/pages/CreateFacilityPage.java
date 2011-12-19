@@ -34,7 +34,6 @@ public class CreateFacilityPage {
     @CacheLookup
     WebElement FacilityNameInput;
 
-
     @FindBy(name = "countyDistrict")
     @CacheLookup
     WebElement DistrictDropDown;
@@ -67,7 +66,6 @@ public class CreateFacilityPage {
     @CacheLookup
     WebElement SubmitFacilityDetails;
 
-
     @Autowired
     public CreateFacilityPage(WebDriverProvider webDriverProvider) {
         this.driver = webDriverProvider.getWebDriver();
@@ -83,40 +81,45 @@ public class CreateFacilityPage {
     Utilities myUtilities;
     public boolean IsRegionDisplayed() {
         return RegionDropDown.isDisplayed();
-
     }
 
-    public void SetFacilityName(String facilityName) {
-        FacilityNameInput.sendKeys("");
+    public CreateFacilityPage WithFacilityName(String facilityName) {
+        FacilityNameInput.clear();
         FacilityNameInput.sendKeys(facilityName + dataGenerator.randomString(5));
+        return this;
     }
 
     public String GetFacilityName() {
         return FacilityNameInput.getText();
     }
 
-    public void SelectCountry(String CountryName) {
+    public CreateFacilityPage withCountry(String CountryName) {
         Select selectCountry = new Select(CountryDropDown);
         selectCountry.selectByValue(CountryName);
+        return this;
     }
 
-    public void SetRegionName(String RegionName) {
+    public CreateFacilityPage withRegionName(String RegionName) {
         Select selectRegion = new Select(RegionDropDown);
         selectRegion.selectByValue(RegionName);
+        return this;
     }
 
-    public void SelectDistrict(String DistrictName) {
+    public CreateFacilityPage withDistrict(String DistrictName) {
         Select selectDistrict = new Select(DistrictDropDown);
         selectDistrict.selectByValue(DistrictName);
+        return this;
     }
 
-    public void SelectSubDistrict(String SubDistName) {
+    public CreateFacilityPage withSubDistrict(String SubDistName) {
         Select selectSubDistrict = new Select(SubDistDropDown);
         selectSubDistrict.selectByValue(SubDistName);
+        return this;
     }
 
-    public void SetPhoneNum(String PhoneNum) {
-        PhoneNumberInput.sendKeys(PhoneNum);
+    public CreateFacilityPage withPhoneNum() {
+        PhoneNumberInput.sendKeys(dataGenerator.getRandPhoneNum());
+        return this;
     }
 
     public boolean SubmitDetails() {
@@ -131,23 +134,5 @@ public class CreateFacilityPage {
         String srcPage = driver.getPageSource();
         return (srcPage.contains("Facility edited successfully"));
     }
-
-    public HomePage getHomePage() {
-        return homePage;
-    }
-
-    public void setHomePage(HomePage homePage) {
-        this.homePage = homePage;
-    }
-
-    public LoginPage getLoginPage() {
-        return loginPage;
-    }
-
-    public void setLoginPage(LoginPage loginPage) {
-        this.loginPage = loginPage;
-    }
-
-
 }
 

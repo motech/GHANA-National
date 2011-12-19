@@ -22,13 +22,13 @@ public class UpdateFacilityTest extends CreateFacilityTest {
     public void updateFacilityWithValidValues() {
         createFacilityWithValidValues();
         PageFactory.initElements(driver, createFacilityPage);
-        createFacilityPage.SetFacilityName("Updated Facility");
+        createFacilityPage.WithFacilityName("Updated Facility");
         Assert.assertTrue(createFacilityPage.UpdateFacilityDetails());
 
     }
 
     @AfterSuite
     public void closeall() {
-        driver.close();
+        driver.quit();
     }
 }

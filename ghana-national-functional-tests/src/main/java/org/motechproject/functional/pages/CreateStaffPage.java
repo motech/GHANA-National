@@ -2,6 +2,8 @@ package org.motechproject.functional.pages;
 
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.functional.util.Utilities;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -51,7 +53,10 @@ public class CreateStaffPage {
 
     private WebDriver driver;
 
+    public enum STAFF_PAGE_ERROR_TAGS {phone_error, email_error, firstname_error, lastname_error, role_error}
 
+    @Autowired
+    Utilities myUtilities;
 
     @Autowired
     public CreateStaffPage(WebDriverProvider webDriverProvider) {
@@ -88,6 +93,7 @@ public class CreateStaffPage {
         staffEmailId.sendKeys(dataGenerator.randomString(8) + "@generateddomain.com");
         return this;
     }
+
     public CreateStaffPage WithStaffRole(String staffCode) {
         Select selectStaffRole = new Select(roleDropDown);
         List<WebElement> staffCodes = selectStaffRole.getOptions();
@@ -104,11 +110,36 @@ public class CreateStaffPage {
         return staffEmailId.getText();
     }
 
-    public boolean SubmitStaff() {
+    public boolean SubmitStaffandWait() {
         submitNewStaff.click();
         return webDriverProvider.WaitForElement_ID("staffId");
 //        String src = driver.findElement(By.className("success")).getText();
-     }
+    }
 
+    public void SubmitStaff() {
+        submitNewStaff.click();
+    }
 
+    public CreateStaffPage WithInvalidStaffPhoneNum() {
+        long n = (long) Math.floor(Math.random() * 9000000L) + 1000000L;
+        staffPhoneNumber.sendKeys(Long.toString(n));
+        return this;
+    }
+
+    public boolean isErrorPresent(STAFF_PAGE_ERROR_TAGS error_tags) {
+
+        switch (error_tags) {
+            case email_error:
+                return driver.findElement(By.id("email_error")).isDisplayed();
+            case phone_error:
+                return driver.findElement(By.id("phoneNumberError")).isDisplayed();
+            case firstname_error:
+                return driver.findElement(By.id("firstName_error")).isDisplayed();
+            case lastname_error:
+                return driver.findElement(By.id("lastName_error")).isDisplayed();
+            case role_error:
+                return driver.findElement(By.id("role_error")).isDisplayed();
+        }
+        return false;
+    }
 }

@@ -50,7 +50,7 @@ public class CreatePatientTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void CreatePatientWithValidValues() {
-        loginPage.loginAs("admin", "P@ssw0rd");
+        loginPage.login();
         homePage.OpenCreatePatientPage();
         boolean TestPassed;
         PageFactory.initElements(driver, createPatient);
@@ -72,7 +72,7 @@ public class CreatePatientTest extends AbstractTestNGSpringContextTests {
     }
     @AfterSuite
     public void closeall() {
-        driver.close();
+        driver.quit();
     }
 
 }
