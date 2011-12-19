@@ -127,7 +127,7 @@ public class CreateStaffPage {
     }
 
     public boolean isErrorPresent(STAFF_PAGE_ERROR_TAGS error_tags) {
-
+        myUtilities.mySleep();
         switch (error_tags) {
             case email_error:
                 return driver.findElement(By.id("email_error")).isDisplayed();
