@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
+import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
@@ -92,7 +93,7 @@ public class FacilityControllerTest {
         when(mockFacilityService.getFacility(String.valueOf(facilityId))).thenReturn(facility);
         when(mockFacilityService.create(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(String.valueOf(facilityId));
         FacilityForm facilityForm = createFacilityForm(name, country, region, district, province, phoneNumber, addPhoneNumb1, addPhoneNumb2, addPhoneNumb3);
-        
+
         String result = spyFacilitiesController.create(facilityForm, mockBindingResult, modelMap);
 
         verify(mockFacilityService).create(name, country, region, district, province, phoneNumber, addPhoneNumb1, addPhoneNumb2, addPhoneNumb3);
@@ -243,29 +244,46 @@ public class FacilityControllerTest {
         return facilityForm;
     }
 
-//    @Test
-//    public void shouldUpdateFacility(){
-//        String id = "1";
-//        String facilityId = "12345";
-//        String name = "name";
-//        String country = "country";
-//        String region = "region";
-//        String countyDistrict = "countyDistrict";
-//        String stateProvince = "stateProvince";
-//        String phoneNumber = "0987654321";
-//        String additionalPhoneNumber1 = "0987654321";
-//        String additionalPhoneNumber2 = "0987654321";
-//        String additionalPhoneNumber3 = "0987654321";
-//        FacilityForm facilityForm = new FacilityForm(id,facilityId,name,country,region,countyDistrict,stateProvince,phoneNumber,additionalPhoneNumber1,additionalPhoneNumber2,additionalPhoneNumber3);
-//        String result = facilityController.update(staffForm, mockBindingResult, modelMap);
-//                ArgumentCaptor<MRSUser> captor = ArgumentCaptor.forClass(MRSUser.class);
-//                verify(mockStaffService).updateUser(captor.capture());
-//                assertThat(result, is(StaffController.EDIT_STAFF_URL));
-//
-//        when(mockFacilityService.getFacility(id)).thenReturn(mock(Facility.class));
-//        verify(mockFacilityService).update(captor.capture);
-//        facilityController.update()
-//
-//    }
+    private FacilityForm updateFacilityForm (String id , String facilityId,String name ,String country,String region,String district,String province,String phoneNumber,String additionalPhoneNumber1,String additionalPhoneNumber2,String additionalPhoneNumber3){
+        FacilityForm facilityForm = createFacilityForm(name,country,region,district,province,phoneNumber,additionalPhoneNumber1,additionalPhoneNumber2,additionalPhoneNumber3);
+        facilityForm.setId(id);
+        facilityForm.setFacilityId(facilityId);
+        return facilityForm;
+    }
+
+    @Test
+    public void shouldUpdateAFacility() throws FacilityNotFoundException {
+        String id = "12";
+        String facilityId = "12345678";
+        String facilityName = "name";
+        String country = "country";
+        String region = "region";
+        String district = "district";
+        String province = "province";
+        String phoneNumber = "1";
+        String additionalPhoneNumber1 = "2";
+        String additionalPhoneNumber2 = "3";
+        String additionalPhoneNumber3 = "4";
+
+        Facility mockFacility = mock(Facility.class);
+        ModelMap modelMap = new ModelMap();
+        when(mockFacilityService.getFacility(id)).thenReturn(mockFacility);
+        facilityController.update(updateFacilityForm(id,facilityId,facilityName,country,region,district,province,phoneNumber,additionalPhoneNumber1,additionalPhoneNumber2,additionalPhoneNumber3),mockBindingResult,modelMap);
+        final ArgumentCaptor<Facility> captor = ArgumentCaptor.forClass(Facility.class);
+        verify(mockFacilityService).update(captor.capture());
+
+        final Facility savedFacility = captor.getValue();
+        assertThat(savedFacility.motechId(), is(equalTo(facilityId)));
+        assertThat(savedFacility.mrsFacility().getId(), is(equalTo(id)));
+        assertThat(savedFacility.name(), is(equalTo(facilityName)));
+        assertThat(savedFacility.region(), is(equalTo(region)));
+        assertThat(savedFacility.district(), is(equalTo(district)));
+        assertThat(savedFacility.province(), is(equalTo(province)));
+        assertThat(savedFacility.country(), is(equalTo(country)));
+        assertThat(savedFacility.phoneNumber(), is(equalTo(phoneNumber)));
+        assertThat(savedFacility.additionalPhoneNumber1(), is(equalTo(additionalPhoneNumber1)));
+        assertThat(savedFacility.additionalPhoneNumber2(), is(equalTo(additionalPhoneNumber2)));
+        assertThat(savedFacility.additionalPhoneNumber3(), is(equalTo(additionalPhoneNumber3)));
+    }
 
 }

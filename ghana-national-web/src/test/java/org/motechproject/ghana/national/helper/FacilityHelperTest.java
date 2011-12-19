@@ -1,11 +1,13 @@
 package org.motechproject.ghana.national.helper;
 
+import junit.framework.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.FacilityVO;
+import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import static junit.framework.Assert.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -98,5 +101,36 @@ public class FacilityHelperTest {
         facilities.add(new Facility(new MRSFacility("Facility 3", "Utopia", "Region 3", "District 6", null)));
         facilities.add(new Facility(new MRSFacility("Facility 4", "Utopia", "Region 4", null, null)));
         return facilities;
+    }
+
+    @Test
+    public void shouldCreateFacilityVO() {
+        String id = "2";
+        String facilityId = "66";
+        String name = "name";
+        String country = "country";
+        String region = "region";
+        String countyDistrict = "countyDistrict";
+        String stateProvince = "stateProvince";
+        String phoneNumber = "0123456789";
+        String additionalPhoneNumber1 = "0987654321";
+        String additionalPhoneNumber2 = "0987654322";
+        String additionalPhoneNumber3 = "0987654323";
+        FacilityForm updateFacilityForm = new FacilityForm(id, facilityId, name, country, region, countyDistrict, stateProvince, phoneNumber,
+                additionalPhoneNumber1, additionalPhoneNumber2, additionalPhoneNumber3);
+        FacilityHelper facilityHelper = new FacilityHelper();
+        Facility facility = facilityHelper.createFacilityVO(updateFacilityForm);
+        assertEquals(id, facility.getMrsFacilityId());
+        assertEquals(id, facility.getMrsFacility().getId());
+        assertEquals(facilityId, facility.getMotechId());
+        assertEquals(name, facility.getMrsFacility().getName());
+        assertEquals(country, facility.getMrsFacility().getCountry());
+        assertEquals(region, facility.getMrsFacility().getRegion());
+        assertEquals(countyDistrict, facility.getMrsFacility().getCountyDistrict());
+        assertEquals(stateProvince, facility.getMrsFacility().getStateProvince());
+        assertEquals(phoneNumber, facility.getPhoneNumber());
+        assertEquals(additionalPhoneNumber1, facility.getAdditionalPhoneNumber1());
+        assertEquals(additionalPhoneNumber2, facility.getAdditionalPhoneNumber2());
+        assertEquals(additionalPhoneNumber3, facility.getAdditionalPhoneNumber3());
     }
 }

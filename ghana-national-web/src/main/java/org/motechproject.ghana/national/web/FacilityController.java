@@ -107,12 +107,10 @@ public class FacilityController {
     @ApiSession
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid FacilityForm updateFacilityForm, BindingResult bindingResult, ModelMap modelMap) {
+
+        Facility facility = facilityHelper.createFacilityVO(updateFacilityForm);
         try {
-            facilityService.update(updateFacilityForm.getId(), updateFacilityForm.getFacilityId(),
-                    updateFacilityForm.getName(), updateFacilityForm.getCountry(), updateFacilityForm.getRegion(),
-                    updateFacilityForm.getCountyDistrict(), updateFacilityForm.getStateProvince(), updateFacilityForm.getPhoneNumber(),
-                    updateFacilityForm.getAdditionalPhoneNumber1(), updateFacilityForm.getAdditionalPhoneNumber2(),
-                    updateFacilityForm.getAdditionalPhoneNumber3());
+            facilityService.update(facility);
             facilityHelper.getFacilityForId(modelMap, facilityService.getFacility(updateFacilityForm.getId()));
             modelMap.put("successMessage", "Facility edited successfully.");
         } catch (FacilityNotFoundException e) {

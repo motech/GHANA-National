@@ -71,8 +71,8 @@ public class FacilityServiceTest {
 
     @Test
     public void shouldUpdateAFacility() throws FacilityNotFoundException {
-        String facilityId = "12";
-        String motechId = "12345678";
+        String id = "1";
+        String facilityId = "12345678";
         String facilityName = "name";
         String country = "country";
         String region = "region";
@@ -85,14 +85,15 @@ public class FacilityServiceTest {
 
         Facility mockFacility = mock(Facility.class);
 
-        when(mockAllFacilities.getFacility(facilityId)).thenReturn(mockFacility);
-        facilityService.update(facilityId, motechId, facilityName, country, region, district, province, phoneNumber, additionalPhoneNumber1, additionalPhoneNumber2, additionalPhoneNumber3);
+        when(mockAllFacilities.getFacility(id)).thenReturn(mockFacility);
+        Facility facility = createFacilityVO(id, facilityId, facilityName, country, region, district, province, phoneNumber, additionalPhoneNumber1, additionalPhoneNumber2, additionalPhoneNumber3);
+        facilityService.update(facility);
         final ArgumentCaptor<Facility> captor = ArgumentCaptor.forClass(Facility.class);
         verify(mockAllFacilities).update(captor.capture());
 
         final Facility savedFacility = captor.getValue();
-        assertThat(savedFacility.motechId(), is(equalTo(motechId)));
-        assertThat(savedFacility.mrsFacility().getId(), is(equalTo(facilityId)));
+        assertThat(savedFacility.motechId(), is(equalTo(facilityId)));
+        assertThat(savedFacility.mrsFacility().getId(), is(equalTo(id)));
         assertThat(savedFacility.name(), is(equalTo(facilityName)));
         assertThat(savedFacility.region(), is(equalTo(region)));
         assertThat(savedFacility.district(), is(equalTo(district)));
@@ -108,7 +109,7 @@ public class FacilityServiceTest {
     public void shouldNotUpdateFacilityIfFacilityIsNotFound() throws FacilityNotFoundException {
         String facilityId = "123456";
         when(mockAllFacilities.getFacility(facilityId)).thenReturn(null);
-        facilityService.update(facilityId,null, null, null, null, null, null, null, null, null, null);
+        facilityService.update(createFacilityVO(facilityId, null, null, null, null, null, null, null, null, null, null));
     }
 
     @Test(expected = FacilityAlreadyFoundException.class)
@@ -180,13 +181,20 @@ public class FacilityServiceTest {
     }
 
     @Test
-    public void shouldGetFacilityByMotechIdIfItExists(){
+    public void shouldGetFacilityByMotechIdIfItExists() {
         String motechFacilityId = "345678";
         Facility facility = mock(Facility.class);
         when(mockAllFacilities.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
         assertThat(facilityService.getFacilityByMotechId(motechFacilityId), is(equalTo(facility)));
         when(mockAllFacilities.getFacilityByMotechId(motechFacilityId)).thenReturn(null);
         assertThat(facilityService.getFacilityByMotechId(motechFacilityId), is(equalTo(null)));
+    }
+
+    private Facility createFacilityVO(String id, String facilityId, String facilityName, String country, String region, String district, String province, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) {
+        MRSFacility mrsFacility = new MRSFacility(id, facilityName, country, region,
+                district, province);
+        return new Facility().mrsFacility(mrsFacility).mrsFacilityId(id).motechId(facilityId).phoneNumber(phoneNumber).
+                additionalPhoneNumber1(additionalPhoneNumber1).additionalPhoneNumber2(additionalPhoneNumber2).additionalPhoneNumber3(additionalPhoneNumber3);
     }
 }
 
