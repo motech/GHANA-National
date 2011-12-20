@@ -3,12 +3,10 @@ package org.motechproject.functional.pages;
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.util.DataGenerator;
 import org.motechproject.functional.util.Utilities;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -128,23 +126,22 @@ public class CreateStaffPage {
     }
 
     public boolean isErrorPresent(STAFF_PAGE_ERROR_TAGS error_tags) {
-        PageFactory.initElements(driver,this);
          switch (error_tags) {
             case email_error:
-                webDriverProvider.WaitForElement_ID("email_error");
-                return driver.findElement(By.id("email_error")).isDisplayed();
+                return webDriverProvider.WaitForElement_ID("email_error");
+                //return driver.findElement(By.id("email_error")).isDisplayed();
             case phone_error:
-                webDriverProvider.WaitForElement_ID("phoneNumberError");
-                return driver.findElement(By.id("phoneNumberError")).isDisplayed();
+                return webDriverProvider.WaitForElement_ID("phoneNumberError");
+                //return driver.findElement(By.id("phoneNumberError")).isDisplayed();
             case firstname_error:
-                webDriverProvider.WaitForElement_ID("firstName_error");
-                return driver.findElement(By.id("firstName_error")).isDisplayed();
+                return webDriverProvider.WaitForElement_ID("firstName_error");
+//                return driver.findElement(By.id("firstName_error")).isDisplayed();
             case lastname_error:
-                webDriverProvider.WaitForElement_ID("lastName_error");
-                return driver.findElement(By.id("lastName_error")).isDisplayed();
+                return webDriverProvider.WaitForElement_ID("lastName_error");
+//                return driver.findElement(By.id("lastName_error")).isDisplayed();
             case role_error:
-                webDriverProvider.WaitForElement_ID("role_error");
-                return driver.findElement(By.id("role_error")).isDisplayed();
+                return webDriverProvider.WaitForElement_ID("role_error");
+//                return driver.findElement(By.id("role_error")).isDisplayed();
         }
         return false;
     }
