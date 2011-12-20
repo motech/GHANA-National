@@ -71,6 +71,53 @@ public class CreatePatientTest extends AbstractTestNGSpringContextTests {
                                         // this happens when the build is run locally in dev environment
                 .Create());
     }
+
+    @Test
+    public void createPatientChildUnder5 () {
+    loginPage.login();
+        homePage.OpenCreatePatientPage();
+        boolean TestPassed;
+        PageFactory.initElements(driver, createPatient);
+        Calendar DOB = Calendar.getInstance();
+        DOB.set(2009,01,01);
+        Assert.assertTrue(createPatient.WithRegistrationMode(CreatePatientPage.PATIENT_REGN_MODE.AUTO_GENERATE_ID).WithPatientType(CreatePatientPage.PATIENT_TYPE.CHILD_UNDER_FIVE)
+                .WithPatientFirstName("AutomationChild")
+                .WithPatientLastName("ChildLastName")
+                .WithEstimatedDOB(false)
+                .WithPatientGender(false)
+                .WithRegion("Central Region")
+                .WithDistrict("Awutu Senya")
+                .WithSubDistrict("Kasoa")
+                .WithFacility("Papaase CHPS")
+                .WithInsured(false)
+                .WithDateofBirth(DOB) // select the DOB at last as there is a time delay in the jquery ui closing after selecting the date
+                                        // this happens when the build is run locally in dev environment
+                .Create());
+    }
+
+    @Test
+    public void createPatientTypeOther() {
+    loginPage.login();
+        homePage.OpenCreatePatientPage();
+        boolean TestPassed;
+        PageFactory.initElements(driver, createPatient);
+        Calendar DOB = Calendar.getInstance();
+        DOB.set(2009,01,01);
+        Assert.assertTrue(createPatient.WithRegistrationMode(CreatePatientPage.PATIENT_REGN_MODE.AUTO_GENERATE_ID).WithPatientType(CreatePatientPage.PATIENT_TYPE.OTHER)
+                .WithPatientFirstName("AutomationOther")
+                .WithPatientLastName("OtherLastName")
+                .WithEstimatedDOB(true)
+                .WithPatientGender(true)
+                .WithRegion("Central Region")
+                .WithDistrict("Awutu Senya")
+                .WithSubDistrict("Kasoa")
+                .WithFacility("Papaase CHPS")
+                .WithInsured(false)
+                .WithDateofBirth(DOB) // select the DOB at last as there is a time delay in the jquery ui closing after selecting the date
+                                        // this happens when the build is run locally in dev environment
+                .Create());
+    }
+
     @AfterSuite
     public void closeall() {
         driver.quit();
