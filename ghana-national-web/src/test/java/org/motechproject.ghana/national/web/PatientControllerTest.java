@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
+import org.motechproject.ghana.national.web.helper.PatientHelper;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
@@ -45,14 +46,14 @@ public class PatientControllerTest {
     @Mock
     FacilityHelper mockFacilityHelper;
     @Mock
-    MotechIdVerhoeffValidator motechIdVerhoeffValidator;
+    PatientHelper mockPatientHelper;
     @Mock
     BindingResult mockBindingResult;
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientController = new PatientController(mockPatientService, mockIdentifierGenerationService, mockMessageSource, mockFacilityHelper, motechIdVerhoeffValidator);
+        patientController = new PatientController(mockPatientService, mockIdentifierGenerationService, mockMessageSource, mockFacilityHelper, mockPatientHelper);
         mockBindingResult = mock(BindingResult.class);
     }
 
@@ -89,11 +90,11 @@ public class PatientControllerTest {
         createPatientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
         ModelMap modelMap = new ModelMap();
         String view = patientController.createPatient(createPatientForm, mockBindingResult, modelMap);
-        assertEquals(view,"patients/new");
+        assertEquals(view, "patients/new");
     }
 
     @Test
-    public void shouldRenderSearchPatientPage(){
+    public void shouldRenderSearchPatientPage() {
         assertThat(patientController.searchPatient(new ModelMap()), is(equalTo("patients/search")));
     }
 }

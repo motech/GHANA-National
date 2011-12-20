@@ -7,6 +7,7 @@ import java.util.Date;
 
 public class PatientForm {
     private RegistrationType registrationMode;
+
     private String motechId;
     private String parentId;
     private PatientType typeOfPatient;
@@ -26,9 +27,38 @@ public class PatientForm {
     private String facilityId;
     private String address;
     private String phoneNumber;
-
     public RegistrationType getRegistrationMode() {
         return registrationMode;
+    }
+
+    public PatientForm() {
+    }
+
+    public PatientForm(RegistrationType registrationMode, String motechId, String parentId, PatientType typeOfPatient,
+                       String firstName, String middleName,String lastName,String preferredName, Date dateOfBirth,
+                       Boolean estimatedDateOfBirth, String sex, Boolean insured, String nhisNumber,
+                       Date nhisExpirationDate, String region, String district, String subDistrict, String facilityId,
+                       String address, String phoneNumber) {
+        this.registrationMode = registrationMode;
+        this.motechId = motechId;
+        this.parentId = parentId;
+        this.typeOfPatient = typeOfPatient;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.preferredName = preferredName;
+        this.dateOfBirth = dateOfBirth;
+        this.estimatedDateOfBirth = estimatedDateOfBirth;
+        this.sex = sex;
+        this.insured = insured;
+        this.nhisNumber = nhisNumber;
+        this.nhisExpirationDate = nhisExpirationDate;
+        this.region = region;
+        this.district = district;
+        this.subDistrict = subDistrict;
+        this.facilityId = facilityId;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
     }
 
     public void setRegistrationMode(RegistrationType registrationMode) {
