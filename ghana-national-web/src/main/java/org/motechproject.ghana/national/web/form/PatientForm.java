@@ -5,7 +5,7 @@ import org.motechproject.ghana.national.domain.RegistrationType;
 
 import java.util.Date;
 
-public class CreatePatientForm {
+public class PatientForm {
     private RegistrationType registrationMode;
     private String motechId;
     private String parentId;

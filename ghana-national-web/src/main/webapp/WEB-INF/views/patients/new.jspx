@@ -10,8 +10,8 @@
     <script src="${facility_field_url}" type="text/javascript"><!--closing tag needed--></script>
     <spring:url value="/admin/patients/create" var="form_url"/>
 
-    <form:form id="createPatientForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Patient"
-               commandName="createPatientForm">
+    <form:form id="patientForm" action="${fn:escapeXml(form_url)}" method="POST" title="Create a Patient"
+               commandName="patientForm">
         <div class="formlyAlerts">
             <form:errors path="parentId" element="div" cssClass="formlyInvalid formlyAlert" cssStyle="display: block;"/>
         </div>

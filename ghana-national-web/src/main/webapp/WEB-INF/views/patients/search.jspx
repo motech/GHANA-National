@@ -1,0 +1,51 @@
+<div id="body" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <spring:url value="/resources/js/facility-fields.js" var="facility_field_url"/>
+    <spring:url value="/resources/js/create-patient.js" var="create_patient_url"/>
+
+    <script src="${create_patient_url}" type="text/javascript"><!--closing tag needed--></script>
+    <script src="${facility_field_url}" type="text/javascript"><!--closing tag needed--></script>
+    <spring:url value="/admin/patients/create" var="form_url"/>
+
+    <form:form id="patientForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search a Patient"
+               commandName="patientForm">
+        <spring:message code="patient_motech_id" var="patient_motech_id" htmlEscape="false"/>
+        <spring:message code="patient_first_name" var="patient_first_name" htmlEscape="false"/>
+        <spring:message code="patient_middle_name" var="patient_middle_name" htmlEscape="false"/>
+        <spring:message code="patient_last_name" var="patient_last_name" htmlEscape="false"/>
+
+        <div class="form-field">
+            <label class="formLabel" for="motechId">${fn:escapeXml(patient_motech_id)}:</label>
+            <form:input path="motechId" cssClass="jsRequire" size="20" label="${fn:escapeXml(patient_motech_id)}"/>
+            <span id='motechIdError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_motech_id)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <div class="form-field">
+            <label class="formLabel" for="firstName">${fn:escapeXml(patient_first_name)}:</label>
+            <form:input path="firstName" size="20" cssClass="jsRequire" label="${fn:escapeXml(patient_first_name)}"/>
+            <span id='firstNameError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_first_name)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <div class="form-field">
+            <label class="formLabel" for="middleName">${fn:escapeXml(patient_middle_name)}:</label>
+            <form:input path="middleName" size="20" label="${fn:escapeXml(patient_middle_name)}"/>
+        </div>
+
+        <div class="form-field">
+            <label class="formLabel" for="lastName">${fn:escapeXml(patient_last_name)}:</label>
+            <form:input path="lastName" size="20" cssClass="jsRequire" label="${fn:escapeXml(patient_last_name)}"/>
+            <span id='lastNameError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_last_name)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <input type="button" id="searchPatient" value="Search"/>
+    </form:form>
+</div>

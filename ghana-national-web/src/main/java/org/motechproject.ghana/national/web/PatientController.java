@@ -8,7 +8,7 @@ import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatExcept
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.web.form.CreatePatientForm;
+import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
@@ -40,8 +40,9 @@ import static org.motechproject.ghana.national.tools.Utility.safeToString;
 @Controller
 @RequestMapping(value = "/admin/patients")
 public class PatientController {
-    public static final String NEW_PATIENT = "patients/new";
-    public static final String CREATE_PATIENT_FORM = "createPatientForm";
+    public static final String NEW_PATIENT_URL = "patients/new";
+    public static final String PATIENT_FORM = "patientForm";
+    public static final String SEARCH_PATIENT_URL = "patients/search";
     public static final String SUCCESS = "patients/success";
 
     private FacilityHelper facilityHelper;
@@ -73,14 +74,14 @@ public class PatientController {
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newPatientForm(ModelMap modelMap) {
-        modelMap.put(CREATE_PATIENT_FORM, new CreatePatientForm());
+        modelMap.put(PATIENT_FORM, new PatientForm());
         modelMap.mergeAttributes(facilityHelper.locationMap());
-        return NEW_PATIENT;
+        return NEW_PATIENT_URL;
     }
 
     @ApiSession
     @RequestMapping(value = "create", method = RequestMethod.POST)
-    public String createPatient(CreatePatientForm createPatientForm, BindingResult result, ModelMap modelMap) {
+    public String createPatient(PatientForm createPatientForm, BindingResult result, ModelMap modelMap) {
         try {
             String patientID = "";
             if (createPatientForm.getRegistrationMode().equals(RegistrationType.AUTO_GENERATE_ID)) {
@@ -89,21 +90,28 @@ public class PatientController {
             patientService.registerPatient(getPatient(createPatientForm, patientID), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
         } catch (ParentNotFoundException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_parent_not_found", null, Locale.getDefault()));
-            return NEW_PATIENT;
+            return NEW_PATIENT_URL;
         } catch (PatientIdNotUniqueException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_id_duplicate", null, Locale.getDefault()));
-            return NEW_PATIENT;
+            return NEW_PATIENT_URL;
         } catch (PatientIdIncorrectFormatException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
-            return NEW_PATIENT;
+            return NEW_PATIENT_URL;
         } catch (UnallowedIdentifierException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
-            return NEW_PATIENT;
+            return NEW_PATIENT_URL;
         }
         return SUCCESS;
     }
 
-    public Patient getPatient(CreatePatientForm createPatientForm, String patientID) throws UnallowedIdentifierException {
+    @ApiSession
+    @RequestMapping(value = "search", method = RequestMethod.GET)
+    public String searchPatient(ModelMap modelMap) {
+        modelMap.put(PATIENT_FORM, new PatientForm());
+        return SEARCH_PATIENT_URL;
+    }
+
+    public Patient getPatient(PatientForm createPatientForm, String patientID) throws UnallowedIdentifierException {
         List<Attribute> attributes = Arrays.asList(
                 new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), safeToString(createPatientForm.getPhoneNumber())),
                 new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), safeToString(createPatientForm.getNhisExpirationDate())),
@@ -125,7 +133,7 @@ public class PatientController {
 
     private void handleError(BindingResult bindingResult, ModelMap modelMap, String message) {
         modelMap.mergeAttributes(facilityHelper.locationMap());
-        bindingResult.addError(new FieldError(CREATE_PATIENT_FORM, "parentId", message));
+        bindingResult.addError(new FieldError(PATIENT_FORM, "parentId", message));
         modelMap.mergeAttributes(bindingResult.getModel());
     }
 }

@@ -10,7 +10,7 @@ $(document).ready(function() {
         ($(this).val() == 'USE_PREPRINTED_ID') ? $('#motechId').parent().show() : $('#motechId').parent().hide();
     });
 
-    $("#createPatientForm").formly({'onBlur':false, 'theme':'Light'});
+    $("#patientForm").formly({'onBlur':false, 'theme':'Light'});
     new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts')));
 
     var validate = function(form) {
@@ -35,7 +35,7 @@ $(document).ready(function() {
     });
 
     $('#submitNewPatient').click(function() {
-        var patientForm = $('#createPatientForm');
+        var patientForm = $('#patientForm');
         if (!validate(patientForm)) {
             patientForm.submit();
         }

@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.web.form.CreatePatientForm;
+import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -26,6 +26,7 @@ import java.util.HashMap;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -83,11 +84,16 @@ public class PatientControllerTest {
 
     @Test
     public void shouldSaveUserForValidId() {
-        CreatePatientForm createPatientForm = new CreatePatientForm();
+        PatientForm createPatientForm = new PatientForm();
         createPatientForm.setMotechId("1267");
         createPatientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
         ModelMap modelMap = new ModelMap();
         String view = patientController.createPatient(createPatientForm, mockBindingResult, modelMap);
         assertEquals(view,"patients/new");
+    }
+
+    @Test
+    public void shouldRenderSearchPatientPage(){
+        assertThat(patientController.searchPatient(new ModelMap()), is(equalTo("patients/search")));
     }
 }

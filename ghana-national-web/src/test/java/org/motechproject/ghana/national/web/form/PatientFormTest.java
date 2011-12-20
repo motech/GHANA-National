@@ -18,10 +18,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class CreatePatientFormTest {
+public class PatientFormTest {
     @Test
     public void shouldCreateMrsPatientObjectGivenAFormPopulatedWithData() {
-        final CreatePatientForm form = new CreatePatientForm();
+        final PatientForm form = new PatientForm();
         final PatientController patientController = new PatientController();
         String address = "Address";
         Date dateofBirth = new Date(10, 10, 2011);

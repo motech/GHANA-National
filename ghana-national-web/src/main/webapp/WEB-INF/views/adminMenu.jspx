@@ -7,6 +7,7 @@
             <spring:url value="/admin/facilities/search" var="search_facility_url"/>
             <spring:url value="/admin/staffs/search" var="search_staffs_url"/>
             <spring:url value="/admin/patients/new" var="new_patient_url"/>
+            <spring:url value="/admin/patients/search" var="search_patient_url"/>
             <spring:url value="/security/password/reset" var="password_reset_url"/>
             <spring:url value="/logout" var="logout_url"/>
             <spring:url value="/admin/staffs/new" var="staffs_url"/>
@@ -28,7 +29,7 @@
                         <a href="${new_patient_url}" id="newpatient">New</a>
                     </li>
                     <li>
-                        <a href="#" id="searchpatient">Search</a>
+                        <a href="${search_patient_url}" id="searchpatient">Search</a>
                     </li>
                 </ul>
 
