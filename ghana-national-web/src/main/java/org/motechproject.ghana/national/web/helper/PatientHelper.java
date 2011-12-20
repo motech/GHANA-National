@@ -10,12 +10,14 @@ import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.openmrs.patient.UnallowedIdentifierException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.motechproject.ghana.national.tools.Utility.safeToString;
 
+@Component("patientControllerHelper")
 public class PatientHelper {
 
     @Autowired

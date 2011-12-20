@@ -90,7 +90,7 @@ public class PatientControllerTest {
         createPatientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
         ModelMap modelMap = new ModelMap();
         String view = patientController.createPatient(createPatientForm, mockBindingResult, modelMap);
-        assertEquals(view, "patients/new");
+        assertEquals(view, "patients/success");
     }
 
     @Test
