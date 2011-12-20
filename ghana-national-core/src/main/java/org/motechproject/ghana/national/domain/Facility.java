@@ -24,7 +24,6 @@ public class Facility extends MotechAuditableDataObject {
     private String motechId;
 
     @JsonIgnore
-
     private MRSFacility mrsFacility;
 
     public Facility() {
