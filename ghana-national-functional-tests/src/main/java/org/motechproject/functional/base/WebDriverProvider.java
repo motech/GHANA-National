@@ -33,7 +33,7 @@ public class WebDriverProvider  {
     }
 
 
-    public boolean WaitForElement_ID(final String elementid) {
+    public boolean waitForElement_ID(final String elementid) {
          try {
 
             (new WebDriverWait(driver, 15)).until(new ExpectedCondition<Boolean>() {

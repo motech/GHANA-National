@@ -59,7 +59,7 @@ Field.prototype.populateDependentWithOriginalValues = function() {
 
 Field.prototype.showOrHideDependsBasedOnSelection = function() {
     var field = this;
-
+    var previouslySelectedDependentValue = field.dependent.node.find('option:selected').text();
     function getDependentOptionsForSelectedValue() {
         return field.dependent.node.find('option').filter(function() {
             return $(this).attr('parent') == field.node.find('option:selected').text() && $(this).text() != '';
@@ -70,6 +70,7 @@ Field.prototype.showOrHideDependsBasedOnSelection = function() {
     facilities.hide(field);
     if (dependentOptions.length > 0) {
         this.showDependent(dependentOptions);
+        $(field.dependent.node).val(previouslySelectedDependentValue).trigger('change');
     } else {
         this.hideDependents();
         facilities.show(field.node);

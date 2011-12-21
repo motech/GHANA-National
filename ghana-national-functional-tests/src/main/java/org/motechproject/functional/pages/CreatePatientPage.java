@@ -26,7 +26,7 @@ public class CreatePatientPage {
 
     @FindBy(name = "registrationMode")
     @CacheLookup
-    WebElement SelectRegnMode;
+    WebElement selectRegnMode;
 
     @FindBy(id = "typeOfPatient")
     @CacheLookup
@@ -132,8 +132,8 @@ public class CreatePatientPage {
     }
 
     public CreatePatientPage WithRegistrationMode(PATIENT_REGN_MODE patient_regn_mode) {
-        myUtilities.mySleep();
-        Select selectRegnMode = new Select(SelectRegnMode);
+        myUtilities.sleep();
+        Select selectRegnMode = new Select(this.selectRegnMode);
         selectRegnMode.selectByValue(patient_regn_mode.name());
         return this;
     }
@@ -275,7 +275,7 @@ public class CreatePatientPage {
 
     public boolean Create() {
         submitNewPatient.click();
-        webDriverProvider.WaitForElement_ID("footer");
+        webDriverProvider.waitForElement_ID("footer");
         String src = driver.getPageSource();
         if (src.contains("Patient created successfully"))
             return true;
