@@ -19,12 +19,12 @@ public class FacilitySource {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<FacilityNameAndId> getMotechFacilityNameAndIds() {
+    public List<OldGhanaFacility> getMotechFacilityNameAndIds() {
         return jdbcTemplate.query("select loc.name, fac.facility_id from motechmodule_facility fac, location loc where loc.location_id = fac.location_id",
-                new RowMapper<FacilityNameAndId>() {
+                new RowMapper<OldGhanaFacility>() {
                     @Override
-                    public FacilityNameAndId mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-                        return new FacilityNameAndId(resultSet.getString("name"), String.valueOf(resultSet.getInt("facility_id")));
+                    public OldGhanaFacility mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+                        return new OldGhanaFacility(resultSet.getString("name"), String.valueOf(resultSet.getInt("facility_id")));
                     }
                 });
     }

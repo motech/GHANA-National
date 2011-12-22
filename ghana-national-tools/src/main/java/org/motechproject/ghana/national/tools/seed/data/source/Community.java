@@ -13,6 +13,7 @@ public class Community extends MotechAuditableDataObject {
     private String type = "Community";
     @JsonProperty
     private String id;
+    // community id is a duplication, But stored just in case for the migration
     @JsonProperty
     private String communityId;
     @JsonProperty
@@ -20,16 +21,16 @@ public class Community extends MotechAuditableDataObject {
     @JsonProperty
     private Integer facilityId;
     @JsonProperty
-    private int retired;
+    private String facilityName;
     @JsonProperty
-    List<String> patientIds;
-
+    private int retired;
 
     public Community id(String id) {
         this.id = id;
         return this;
     }
 
+    // community id is a duplication, But stored just in case for the migration
     public Community communityId(String communityId) {
         this.communityId = communityId;
         return this;
@@ -47,11 +48,6 @@ public class Community extends MotechAuditableDataObject {
 
     public Community retired(int retired) {
         this.retired = retired;
-        return this;
-    }
-
-    public Community patientIds(List<String> patientIds) {
-        this.patientIds = patientIds;
         return this;
     }
 
@@ -75,7 +71,8 @@ public class Community extends MotechAuditableDataObject {
         return retired;
     }
 
-    public List<String> getPatientIds() {
-        return patientIds;
+    public Community facilityName(String facilityName) {
+        this.facilityName = facilityName;
+        return this;
     }
 }
