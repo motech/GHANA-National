@@ -111,7 +111,7 @@ public class CreateStaffPage {
 
     public boolean SubmitStaffandWait() {
         submitNewStaff.click();
-        return webDriverProvider.WaitForElement_ID("staffId");
+        return webDriverProvider.waitForElement_ID("staffId");
 //        String src = driver.findElement(By.className("success")).getText();
     }
 
@@ -128,19 +128,19 @@ public class CreateStaffPage {
     public boolean isErrorPresent(STAFF_PAGE_ERROR_TAGS error_tags) {
          switch (error_tags) {
             case email_error:
-                return webDriverProvider.WaitForElement_ID("email_error");
+                return webDriverProvider.waitForElement_ID("email_error");
                 //return driver.findElement(By.id("email_error")).isDisplayed();
             case phone_error:
-                return webDriverProvider.WaitForElement_ID("phoneNumberError");
+                return webDriverProvider.waitForElement_ID("phoneNumberError");
                 //return driver.findElement(By.id("phoneNumberError")).isDisplayed();
             case firstname_error:
-                return webDriverProvider.WaitForElement_ID("firstName_error");
+                return webDriverProvider.waitForElement_ID("firstName_error");
 //                return driver.findElement(By.id("firstName_error")).isDisplayed();
             case lastname_error:
-                return webDriverProvider.WaitForElement_ID("lastName_error");
+                return webDriverProvider.waitForElement_ID("lastName_error");
 //                return driver.findElement(By.id("lastName_error")).isDisplayed();
             case role_error:
-                return webDriverProvider.WaitForElement_ID("role_error");
+                return webDriverProvider.waitForElement_ID("role_error");
 //                return driver.findElement(By.id("role_error")).isDisplayed();
         }
         return false;

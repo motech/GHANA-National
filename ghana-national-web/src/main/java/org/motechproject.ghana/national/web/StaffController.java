@@ -81,7 +81,7 @@ public class StaffController {
             userData = staffService.saveUser(mrsUser);
             final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdaptor.USER_KEY);
             modelMap.put(STAFF_ID, openMRSUser.getSystemId());
-            modelMap.put(STAFF_NAME, mrsUser.getPerson().getFullName());
+            modelMap.put(STAFF_NAME, openMRSUser.getPerson().getFullName());
             if (StaffType.Role.isAdmin(roleOfStaff)) {
                 emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUserName(), (String) userData.get(OpenMRSUserAdaptor.PASSWORD_USER_KEY));
             }
