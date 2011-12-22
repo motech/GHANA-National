@@ -9,6 +9,20 @@
     <context:spring-configured/>
     <context:component-scan base-package="org.motechproject.ghana.national"/>
 
+    <util:properties id="couchdbProperties" location="classpath:couchdb.properties"/>
+    <util:properties id="ghanaNationalProperties" location="classpath:ghana-national.properties"/>
+
+    <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
+        <constructor-arg>
+            <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean"/>
+        </constructor-arg>
+    </bean>
+    <bean id="couchDbConnector" class="org.ektorp.impl.StdCouchDbConnector">
+        <constructor-arg ref="couchDbInstance"/>
+        <constructor-arg value="ghana-national"/>
+    </bean>
+
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="${connection.string}"/>
@@ -23,6 +37,7 @@
             <list>
                 <ref bean="staffTypeSeed"/>
                 <ref bean="facilitySeed"/>
+                <ref bean="communitySeed"/>
             </list>
         </constructor-arg>
     </bean>
