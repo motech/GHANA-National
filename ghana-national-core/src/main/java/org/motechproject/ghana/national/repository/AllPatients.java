@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.repository;
 
+import ch.lambdaj.function.convert.Converter;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Set;
+
+import static ch.lambdaj.Lambda.convert;
 
 @Repository
 public class AllPatients extends MotechAuditableRepository<Patient> {
@@ -41,4 +44,14 @@ public class AllPatients extends MotechAuditableRepository<Patient> {
         ViewQuery viewQuery = createQuery("find_by_patient_ids").keys(patientIds);
         return db.queryView(viewQuery, Patient.class);
     }
+
+    public List<Patient> search(String name, String motechId) {
+        return convert(patientAdaptor.search(name, motechId), new Converter<MRSPatient, Patient>() {
+            @Override
+            public Patient convert(MRSPatient mrsPatient) {
+                return new Patient(mrsPatient);
+            }
+        });
+    }
+
 }

@@ -204,12 +204,11 @@
                 <version>1.7</version>
                 <executions>
                     <execution>
-                        <id>inject-test_config-files-for-integration-tests</id>
+                        <id>inject-test-config-files-for-integration-tests</id>
                         <phase>pre-integration-test</phase>
                         <configuration>
-                            <skip>${openmrs.skip}</skip>
                             <target>
-                                <copy overwrite="true" todir="${project.build.directory}/ghana-national-web-1.0-SNAPSHOT/WEB-INF/classes">
+                                <copy overwrite="true" todir="${project.build.directory}/${pom.artifactId}-${pom.version}/WEB-INF/classes">
                                     <fileset
                                             dir="../ghana-national-common/src/test/resources"/>
                                 </copy>

@@ -23,22 +23,22 @@ public class PatientHelper {
     @Autowired
     private MotechIdVerhoeffValidator motechIdVerhoeffValidator;
 
-    public Patient getPatientVO(PatientForm createPatientForm, String patientID) throws UnallowedIdentifierException {
+    public Patient getPatientVO(PatientForm createPatientForm, String motechId) throws UnallowedIdentifierException {
         List<Attribute> attributes = Arrays.asList(
                 new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), safeToString(createPatientForm.getPhoneNumber())),
                 new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), safeToString(createPatientForm.getNhisExpirationDate())),
                 new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), createPatientForm.getNhisNumber()),
                 new Attribute(PatientAttributes.INSURED.getAttribute(), safeToString(createPatientForm.getInsured())));
-        if (patientID.equals("")) {
+        if (motechId.equals("")) {
             if (!motechIdVerhoeffValidator.isValid(createPatientForm.getMotechId()))
                 throw new UnallowedIdentifierException("User Id is not allowed");
-            patientID = createPatientForm.getMotechId();
+            motechId = createPatientForm.getMotechId();
         }
 
         MRSPerson mrsPerson = new MRSPerson().firstName(createPatientForm.getFirstName()).middleName(createPatientForm.getMiddleName())
                 .lastName(createPatientForm.getLastName()).preferredName(createPatientForm.getPreferredName()).dateOfBirth(createPatientForm.getDateOfBirth())
                 .birthDateEstimated(createPatientForm.getEstimatedDateOfBirth()).gender(createPatientForm.getSex()).address(createPatientForm.getAddress()).attributes(attributes);
-        MRSPatient mrsPatient = new MRSPatient(patientID, mrsPerson, new MRSFacility(createPatientForm.getFacilityId()));
+        MRSPatient mrsPatient = new MRSPatient(motechId, mrsPerson, new MRSFacility(createPatientForm.getFacilityId()));
 
         return new Patient(mrsPatient);
     }

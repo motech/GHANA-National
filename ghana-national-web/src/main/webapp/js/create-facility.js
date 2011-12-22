@@ -28,12 +28,6 @@ $(document).ready(function() {
             facilityForm.submit();
         }
     });
-
-
-    $(".hidden-location").children("select").each(function(e, i) {
-         if($(i).val() == "") {
-            $(i).parent().addClass('hide');
-         }
-    });
+    $('#regions').trigger('change');
 });
 

@@ -11,6 +11,9 @@ import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.openmrs.api.IdentifierNotUniqueException;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -75,5 +78,18 @@ public class PatientServiceTest {
 
         when(mockAllPatients.patientById(patientId)).thenReturn(null);
         assertThat(patientService.getPatientById(patientId), is(equalTo(null)));
+    }
+
+    @Test
+    public void shouldSearchPatientByNameOrId() {
+        List<Patient> patientList = Arrays.asList(mock(Patient.class));
+        String motechId = "123456";
+        String name = "name";
+        when(mockAllPatients.search(name, motechId)).thenReturn(patientList);
+        assertThat(patientService.search(name, motechId), is(equalTo(patientList)));
+
+        when(mockAllPatients.search(name, null)).thenReturn(patientList);
+        assertThat(patientService.search(name, ""), is(equalTo(patientList)));
+
     }
 }

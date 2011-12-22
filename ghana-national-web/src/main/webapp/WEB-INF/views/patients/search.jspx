@@ -3,49 +3,82 @@
      xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:url value="/resources/js/facility-fields.js" var="facility_field_url"/>
-    <spring:url value="/resources/js/create-patient.js" var="create_patient_url"/>
+    <spring:url value="/resources/js/search-patient.js" var="search_patient_url"/>
 
-    <script src="${create_patient_url}" type="text/javascript"><!--closing tag needed--></script>
-    <script src="${facility_field_url}" type="text/javascript"><!--closing tag needed--></script>
-    <spring:url value="/admin/patients/create" var="form_url"/>
+    <script src="${search_patient_url}" type="text/javascript"><!--closing tag needed--></script>
+    <spring:url value="/admin/patients/searchPatients" var="form_url"/>
 
-    <form:form id="patientForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search a Patient"
-               commandName="patientForm">
+    <form:form id="searchPatientForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search a Patient"
+               commandName="searchPatientForm">
         <spring:message code="patient_motech_id" var="patient_motech_id" htmlEscape="false"/>
+        <spring:message code="patient_name" var="patient_name" htmlEscape="false"/>
         <spring:message code="patient_first_name" var="patient_first_name" htmlEscape="false"/>
         <spring:message code="patient_middle_name" var="patient_middle_name" htmlEscape="false"/>
         <spring:message code="patient_last_name" var="patient_last_name" htmlEscape="false"/>
+        <spring:message code="patient_date_of_birth_for_search_title" var="patient_date_of_birth_for_search_title"
+                        htmlEscape="false"/>
+        <spring:message code="patient_sex" var="patient_sex" htmlEscape="false"/>
+        <spring:message code="edit" var="edit" htmlEscape="false"/>
+
+        <div id="enter_atleast_one_field" class="input-description hide">* Please enter atleast one field to enable search</div>
 
         <div class="form-field">
             <label class="formLabel" for="motechId">${fn:escapeXml(patient_motech_id)}:</label>
-            <form:input path="motechId" cssClass="jsRequire" size="20" label="${fn:escapeXml(patient_motech_id)}"/>
-            <span id='motechIdError' class='alertText formlyInvalid formlyAlert hide'>
-                ${fn:escapeXml(patient_motech_id)} ${fn:escapeXml(required_msg)}
-            </span>
+            <form:input path="motechId" size="20" label="${fn:escapeXml(patient_motech_id)}"/>
         </div>
 
         <div class="form-field">
-            <label class="formLabel" for="firstName">${fn:escapeXml(patient_first_name)}:</label>
-            <form:input path="firstName" size="20" cssClass="jsRequire" label="${fn:escapeXml(patient_first_name)}"/>
-            <span id='firstNameError' class='alertText formlyInvalid formlyAlert hide'>
-                ${fn:escapeXml(patient_first_name)} ${fn:escapeXml(required_msg)}
-            </span>
-        </div>
-
-        <div class="form-field">
-            <label class="formLabel" for="middleName">${fn:escapeXml(patient_middle_name)}:</label>
-            <form:input path="middleName" size="20" label="${fn:escapeXml(patient_middle_name)}"/>
-        </div>
-
-        <div class="form-field">
-            <label class="formLabel" for="lastName">${fn:escapeXml(patient_last_name)}:</label>
-            <form:input path="lastName" size="20" cssClass="jsRequire" label="${fn:escapeXml(patient_last_name)}"/>
-            <span id='lastNameError' class='alertText formlyInvalid formlyAlert hide'>
-                ${fn:escapeXml(patient_last_name)} ${fn:escapeXml(required_msg)}
-            </span>
+            <label class="formLabel" for="name">${fn:escapeXml(patient_name)}:</label>
+            <form:input path="name" size="20" label="${fn:escapeXml(patient_name)}"/>
         </div>
 
         <input type="button" id="searchPatient" value="Search"/>
+        <br/><br/>
+        <div id="search-results" >
+            <c:if test="${null ne searchPatientForm.patientForms and empty searchPatientForm.patientForms}">
+                <span class="error-message">There were no search results that matched your search terms.</span>
+            </c:if>
+            <c:if test="${not empty searchPatientForm.patientForms}">
+                <table>
+                    <tr>
+                        <th>${fn:escapeXml(patient_motech_id)}</th>
+                        <th>${fn:escapeXml(patient_first_name)}</th>
+                        <th>${fn:escapeXml(patient_middle_name)}</th>
+                        <th>${fn:escapeXml(patient_last_name)}</th>
+                        <th>${fn:escapeXml(patient_date_of_birth_for_search_title)}</th>
+                        <th>${fn:escapeXml(patient_sex)}</th>
+                        <th>${fn:escapeXml(edit)}</th>
+                    </tr>
+                    <c:forEach var="patient" items="${searchPatientForm.patientForms}">
+                        <tr>
+                            <td>
+                                <c:out value="${patient.motechId}"/>
+                            </td>
+                            <td>
+                                <c:out value="${patient.firstName}"/>
+                            </td>
+                            <td>
+                                <c:out value="${patient.middleName}"/>
+                            </td>
+                            <td>
+                                <c:out value="${patient.lastName}"/>
+                            </td>
+                            <td>
+                                <c:out value="${patient.dateOfBirth}"/>
+                            </td>
+                            <td>
+                                <c:out value="${patient.sex}"/>
+                            </td>
+                            <td class="action">
+                                <div class="edit">
+                                    <spring:url value="/admin/patients/edit" var="edit_url"/>
+                                    <a href="#" title="Edit"></a>
+                                </div>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </c:if>
+        </div>
     </form:form>
 </div>

@@ -6,18 +6,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
 
-/**
- * Created by IntelliJ IDEA.
- * User: karthikm
- * Date: 12/14/11
- * Time: 8:03 PM
- * To change this template use File | Settings | File Templates.
- */
 @Component
 public class Utilities {
     SimpleSmtpServer smtpServer;
 
-    public void mySleep() {
+    public void sleep() {
         try {
             Thread.sleep(20);
         } catch (InterruptedException e) {
@@ -25,7 +18,7 @@ public class Utilities {
         }
     }
 
-    public void mySleep(int x) {
+    public void sleep(int x) {
         try {
             Thread.sleep(x);
         } catch (InterruptedException e) {
