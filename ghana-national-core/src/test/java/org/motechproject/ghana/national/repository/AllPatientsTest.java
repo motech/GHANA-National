@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class AllPatientsTest extends AbstractJUnit4SpringContextTests {
         Boolean birthDateEstimated = true;
 
         MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last).preferredName(preferred).dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
-        final MRSPatient mrsPatient = new MRSPatient( mrsPerson,facility);
+        final MRSPatient mrsPatient = new MRSPatient("", mrsPerson, facility);
         final Patient patient = new Patient(mrsPatient);
         MRSPatient savedPatient = mock(MRSPatient.class);
         when(savedPatient.getId()).thenReturn(patientId);
@@ -96,6 +97,19 @@ public class AllPatientsTest extends AbstractJUnit4SpringContextTests {
         when(mockMrsPatientAdaptor.getPatientByMotechId(patientId)).thenReturn(patient);
         final Patient actualPatient = allPatients.patientById(patientId);
         assertThat(actualPatient.mrsPatient(), is(patient));
+    }
+
+    @Test
+    public void shouldSearchPatientByNameOrId() {
+        String name = "name";
+        String motechId = "id";
+        MRSPatient returnedMrsPatient = new MRSPatient(motechId);
+        List<MRSPatient> returnedMrsPatientList = Arrays.asList(returnedMrsPatient);
+        when(mockMrsPatientAdaptor.search(name, motechId)).thenReturn(returnedMrsPatientList);
+        List<Patient> returnedPatient = allPatients.search(name, motechId);
+        assertThat(returnedPatient.size(), is(equalTo(1)));
+        assertThat(returnedPatient.get(0).mrsPatient(), is(equalTo(returnedMrsPatient)));
+
     }
 
     @After

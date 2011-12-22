@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web.form;
 
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 
@@ -34,31 +35,13 @@ public class PatientForm {
     public PatientForm() {
     }
 
-    public PatientForm(RegistrationType registrationMode, String motechId, String parentId, PatientType typeOfPatient,
-                       String firstName, String middleName,String lastName,String preferredName, Date dateOfBirth,
-                       Boolean estimatedDateOfBirth, String sex, Boolean insured, String nhisNumber,
-                       Date nhisExpirationDate, String region, String district, String subDistrict, String facilityId,
-                       String address, String phoneNumber) {
-        this.registrationMode = registrationMode;
-        this.motechId = motechId;
-        this.parentId = parentId;
-        this.typeOfPatient = typeOfPatient;
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.preferredName = preferredName;
-        this.dateOfBirth = dateOfBirth;
-        this.estimatedDateOfBirth = estimatedDateOfBirth;
-        this.sex = sex;
-        this.insured = insured;
-        this.nhisNumber = nhisNumber;
-        this.nhisExpirationDate = nhisExpirationDate;
-        this.region = region;
-        this.district = district;
-        this.subDistrict = subDistrict;
-        this.facilityId = facilityId;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
+    public PatientForm(Patient patient) {
+        this.motechId = patient.mrsPatient().getMotechId();
+        this.firstName = patient.mrsPatient().getPerson().getFirstName();
+        this.middleName = patient.mrsPatient().getPerson().getMiddleName();
+        this.lastName = patient.mrsPatient().getPerson().getLastName();
+        this.dateOfBirth = patient.mrsPatient().getPerson().getDateOfBirth();
+        this.sex = patient.mrsPatient().getPerson().getGender();
     }
 
     public void setRegistrationMode(RegistrationType registrationMode) {

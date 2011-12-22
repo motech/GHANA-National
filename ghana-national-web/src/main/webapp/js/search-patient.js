@@ -8,9 +8,14 @@ $(document).ready(function() {
     }
 
     $('#searchPatient').click(function() {
-        var patientForm = $('#patientForm');
-        if (!validate(patientForm)) {
-            patientForm.submit();
+        $('#search-results').hide();
+        var patientForm = $('#searchPatientForm');
+        if($('#motechId').val() || $('#name').val()){
+            if (!validate(patientForm)) {
+                patientForm.submit();
+            }
+        }else{
+            $('#enter_atleast_one_field').show();
         }
     });
 

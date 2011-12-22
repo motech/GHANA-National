@@ -12,6 +12,10 @@ import org.openmrs.api.InvalidCheckDigitException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
+
 @Service
 public class PatientService {
     AllPatients allPatients;
@@ -42,5 +46,9 @@ public class PatientService {
 
     public Patient getPatientById(String patientId) {
         return allPatients.patientById(patientId);
+    }
+
+    public List<Patient> search(String name, String motechId) {
+        return allPatients.search(emptyToNull(name), emptyToNull(motechId));
     }
 }

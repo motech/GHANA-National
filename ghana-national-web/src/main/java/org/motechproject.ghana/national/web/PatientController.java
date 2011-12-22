@@ -1,5 +1,7 @@
 package org.motechproject.ghana.national.web;
 
+import ch.lambdaj.function.convert.Converter;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
@@ -7,13 +9,12 @@ import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.web.form.PatientForm;
+import org.motechproject.ghana.national.web.form.SearchPatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.ghana.national.web.helper.PatientHelper;
 import org.motechproject.openmrs.advice.ApiSession;
-import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.openmrs.patient.UnallowedIdentifierException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -25,9 +26,13 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+
+import static ch.lambdaj.Lambda.convert;
 
 
 @Controller
@@ -43,6 +48,7 @@ public class PatientController {
     private PatientHelper patientHelper;
     private MessageSource messageSource;
     private IdentifierGenerationService identifierGenerationService;
+    public static final String SEARCH_PATIENT_FORM = "searchPatientForm";
 
 
     @InitBinder
@@ -77,11 +83,11 @@ public class PatientController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createPatient(PatientForm createPatientForm, BindingResult result, ModelMap modelMap) {
         try {
-            String patientID = "";
+            String motechId = "";
             if (createPatientForm.getRegistrationMode().equals(RegistrationType.AUTO_GENERATE_ID)) {
-                patientID = identifierGenerationService.newPatientId();
+                motechId = identifierGenerationService.newPatientId();
             }
-            patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, patientID), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
+            patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, motechId), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
         } catch (ParentNotFoundException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_parent_not_found", null, Locale.getDefault()));
             return NEW_PATIENT_URL;
@@ -98,11 +104,23 @@ public class PatientController {
         return SUCCESS;
     }
 
-    @ApiSession
     @RequestMapping(value = "search", method = RequestMethod.GET)
-    public String searchPatient(ModelMap modelMap) {
-        modelMap.put(PATIENT_FORM, new PatientForm());
+    public String search(ModelMap modelMap) {
+        modelMap.put(SEARCH_PATIENT_FORM, new SearchPatientForm());
         return SEARCH_PATIENT_URL;
+    }
+
+    @ApiSession
+    @RequestMapping(value = "searchPatients", method = RequestMethod.POST)
+    public String search(@Valid final SearchPatientForm searchPatientForm, ModelMap modelMap) {
+        List<Patient> returnedPatient = patientService.search(searchPatientForm.getName(), searchPatientForm.getMotechId());
+        modelMap.put(SEARCH_PATIENT_FORM, new SearchPatientForm(convert(returnedPatient, new Converter<Patient, PatientForm>() {
+            @Override
+            public PatientForm convert(Patient patient) {
+                return new PatientForm(patient);
+            }
+        })));
+        return PatientController.SEARCH_PATIENT_URL;
     }
 
     private void handleError(BindingResult bindingResult, ModelMap modelMap, String message) {
