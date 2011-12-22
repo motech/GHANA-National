@@ -48,25 +48,22 @@ public class CreateFacilityTest extends AbstractTestNGSpringContextTests {
     public void createFacilityWithValidValues() {
         loginPage.login();
         homePage.OpenCreateFacilityPage();
-        boolean TestPassed;
         PageFactory.initElements(driver, createFacilityPage);
-        long number = (long) Math.floor(Math.random() * 900000000L) + 100000000L;
         createFacilityPage
-                .WithFacilityName("Test Facility")
+                .withFacilityName("Test Facility")
                 .withCountry("Ghana").withRegionName("Central Region")
-        .withDistrict("Awutu Senya")
+                .withDistrict("Awutu Senya")
                 .withSubDistrict("Bawjiase")
-
-        .withPhoneNum();
-        Assert.assertTrue(createFacilityPage.SubmitDetails());
+                .withPhoneNum();
+        Assert.assertTrue(createFacilityPage.submitDetails());
     }
 
     @AfterMethod
-    public void tearDown(){
+    public void tearDown() {
         homePage.Logout();
     }
 
-     @AfterSuite
+    @AfterSuite
     public void closeall() {
         driver.quit();
     }

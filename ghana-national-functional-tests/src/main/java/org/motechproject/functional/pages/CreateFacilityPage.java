@@ -8,63 +8,40 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CreateFacilityPage {
-    protected String FACILITY_ID,facilityName,country,regionName,districtName,subDistName,facilityPhone;
-
     private WebDriver driver;
-    private Logger log = LoggerFactory.getLogger(CreateFacilityPage.class);
-
-    @Autowired
-    private HomePage homePage;
-
-    @Autowired
-    private LoginPage loginPage;
 
     @FindBy(name = "country")
     @CacheLookup
-    WebElement CountryDropDown;
+    WebElement countryDropDown;
 
     @FindBy(name = "name")
     @CacheLookup
-    WebElement FacilityNameInput;
+    WebElement facilityNameInput;
 
     @FindBy(name = "countyDistrict")
     @CacheLookup
-    WebElement DistrictDropDown;
+    WebElement districtDropDown;
 
     @FindBy(name = "stateProvince")
     @CacheLookup
-    WebElement SubDistDropDown;
+    WebElement subDistDropDown;
 
     @FindBy(name = "phoneNumber")
     @CacheLookup
-    WebElement PhoneNumberInput;
-
-    @FindBy(name = "additionalPhoneNumber1")
-    @CacheLookup
-    WebElement PhoneNum1;
-
-    @FindBy(name = "additionalPhoneNumber2")
-    @CacheLookup
-    WebElement PhoneNum2;
-
-    @FindBy(name = "additionalPhoneNumber3")
-    @CacheLookup
-    WebElement PhoneNum3;
+    WebElement phoneNumberInput;
 
     @FindBy(name = "region")
     @CacheLookup
-    WebElement RegionDropDown;
+    WebElement regionDropDown;
 
     @FindBy(id = "submitFacility")
     @CacheLookup
-    WebElement SubmitFacilityDetails;
+    WebElement submitFacilityDetails;
 
     @Autowired
     public CreateFacilityPage(WebDriverProvider webDriverProvider) {
@@ -78,59 +55,52 @@ public class CreateFacilityPage {
     DataGenerator dataGenerator;
 
     @Autowired
-    Utilities myUtilities;
-    public boolean IsRegionDisplayed() {
-        return RegionDropDown.isDisplayed();
-    }
+    Utilities utilities;
 
-    public CreateFacilityPage WithFacilityName(String facilityName) {
-        FacilityNameInput.clear();
-        FacilityNameInput.sendKeys(facilityName + dataGenerator.randomString(5));
+    public CreateFacilityPage withFacilityName(String facilityName) {
+        facilityNameInput.clear();
+        facilityNameInput.sendKeys(facilityName + dataGenerator.randomString(5));
         return this;
     }
 
-    public String GetFacilityName() {
-        return FacilityNameInput.getText();
-    }
-
-    public CreateFacilityPage withCountry(String CountryName) {
-        Select selectCountry = new Select(CountryDropDown);
-        selectCountry.selectByValue(CountryName);
+    public CreateFacilityPage withCountry(String countryName) {
+        Select selectCountry = new Select(countryDropDown);
+        selectCountry.selectByValue(countryName);
         return this;
     }
 
-    public CreateFacilityPage withRegionName(String RegionName) {
-        Select selectRegion = new Select(RegionDropDown);
-        selectRegion.selectByValue(RegionName);
+    public CreateFacilityPage withRegionName(String regionName) {
+        Select selectRegion = new Select(regionDropDown);
+        selectRegion.selectByValue(regionName);
         return this;
     }
 
-    public CreateFacilityPage withDistrict(String DistrictName) {
-        Select selectDistrict = new Select(DistrictDropDown);
-        selectDistrict.selectByValue(DistrictName);
+    public CreateFacilityPage withDistrict(String districtName) {
+        Select selectDistrict = new Select(districtDropDown);
+        selectDistrict.selectByValue(districtName);
         return this;
     }
 
-    public CreateFacilityPage withSubDistrict(String SubDistName) {
-        Select selectSubDistrict = new Select(SubDistDropDown);
-        selectSubDistrict.selectByValue(SubDistName);
+    public CreateFacilityPage withSubDistrict(String subDistName) {
+        Select selectSubDistrict = new Select(subDistDropDown);
+        selectSubDistrict.selectByValue(subDistName);
         return this;
     }
 
     public CreateFacilityPage withPhoneNum() {
-        PhoneNumberInput.sendKeys(dataGenerator.getRandPhoneNum());
+        phoneNumberInput.sendKeys(dataGenerator.getRandPhoneNum());
         return this;
     }
 
-    public boolean SubmitDetails() {
-        SubmitFacilityDetails.click();
+    public boolean submitDetails() {
+        submitFacilityDetails.click();
         // if facility id is displayed in the next page then we presume facility created successfully
-        return webDriverProvider.WaitForElement_ID("facilityId");
+        return webDriverProvider.waitForElement_ID("facilityId");
     }
 
-    public boolean UpdateFacilityDetails() {
-        SubmitFacilityDetails.click();
-        myUtilities.mySleep(20);
+    public boolean updateFacilityDetails() {
+        submitFacilityDetails.click();
+        utilities.sleep(200);
         String srcPage = driver.getPageSource();
         return (srcPage.contains("Facility edited successfully"));
     }

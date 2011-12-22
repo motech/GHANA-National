@@ -82,7 +82,7 @@ public class PatientFormTest {
         assertThat(mrsPerson.getFirstName(), is(equalTo(firstName)));
         assertThat(mrsPerson.getLastName(), is(equalTo(lastName)));
         assertThat(mrsPerson.getMiddleName(), is(equalTo(middleName)));
-        assertThat(patient.mrsPatient().getId(), is(equalTo(motechId)));
+        assertThat(patient.mrsPatient().getMotechId(), is(equalTo(motechId)));
         assertThat(mrsPerson.getPreferredName(), is(equalTo(preferredName)));
         assertThat(mrsPerson.getGender(), is(equalTo(sex)));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),

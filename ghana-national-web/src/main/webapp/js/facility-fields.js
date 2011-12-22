@@ -47,8 +47,9 @@ Field.prototype.hasADependent = function(dependent) {
     var field = this;
     this.node.change(function() {
         field.hideAlert();
+        var previouslySelectedDependentValue = field.dependent.node.find('option:selected').text();
         field.populateDependentWithOriginalValues();
-        field.showOrHideDependsBasedOnSelection();
+        field.showOrHideDependsBasedOnSelection(previouslySelectedDependentValue);
     });
     return this;
 }
@@ -57,9 +58,8 @@ Field.prototype.populateDependentWithOriginalValues = function() {
     this.dependent.node.html(this.dependent.options);
 }
 
-Field.prototype.showOrHideDependsBasedOnSelection = function() {
+Field.prototype.showOrHideDependsBasedOnSelection = function(previouslySelectedDependentValue) {
     var field = this;
-
     function getDependentOptionsForSelectedValue() {
         return field.dependent.node.find('option').filter(function() {
             return $(this).attr('parent') == field.node.find('option:selected').text() && $(this).text() != '';
@@ -70,6 +70,7 @@ Field.prototype.showOrHideDependsBasedOnSelection = function() {
     facilities.hide(field);
     if (dependentOptions.length > 0) {
         this.showDependent(dependentOptions);
+        $(field.dependent.node).val(previouslySelectedDependentValue).trigger('change');
     } else {
         this.hideDependents();
         facilities.show(field.node);
