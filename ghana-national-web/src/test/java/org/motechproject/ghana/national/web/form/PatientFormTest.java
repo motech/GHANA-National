@@ -5,7 +5,6 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
-import org.motechproject.ghana.national.web.PatientController;
 import org.motechproject.ghana.national.web.helper.PatientHelper;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSPerson;
@@ -23,7 +22,6 @@ public class PatientFormTest {
     @Test
     public void shouldCreateMrsPatientObjectGivenAFormPopulatedWithData() {
         final PatientForm form = new PatientForm();
-        final PatientController patientController = new PatientController();
         final PatientHelper patientHelper = new PatientHelper();
         String address = "Address";
         Date dateofBirth = new Date(10, 10, 2011);
@@ -69,7 +67,6 @@ public class PatientFormTest {
 
         Patient patient = patientHelper.getPatientVO(form, motechId);
 
-        assertThat(patient.mrsPatientId(), is(equalTo(null)));
         MRSPerson mrsPerson = patient.mrsPatient().getPerson();
 
         assertThat(mrsPerson.getAddress(), is(equalTo(address)));
