@@ -95,7 +95,7 @@ public class CreateFacilityPage {
     public boolean submitDetails() {
         submitFacilityDetails.click();
         // if facility id is displayed in the next page then we presume facility created successfully
-        return webDriverProvider.waitForElement_ID("facilityId");
+        return webDriverProvider.waitForElementID("facilityId");
     }
 
     public boolean updateFacilityDetails() {

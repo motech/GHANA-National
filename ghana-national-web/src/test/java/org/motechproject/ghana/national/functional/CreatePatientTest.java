@@ -5,43 +5,32 @@ import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.pages.CreatePatientPage;
 import org.motechproject.functional.pages.HomePage;
 import org.motechproject.functional.pages.LoginPage;
+import org.motechproject.ghana.national.functional.helper.CreatePatientHelper;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Calendar;
 
+import static org.testng.Assert.assertTrue;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class CreatePatientTest extends AbstractTestNGSpringContextTests {
 
-    private Logger log = LoggerFactory.getLogger(CreatePatientTest.class);
-
     @Autowired
-    private LoginPage loginPage;
-
-    @Autowired
-    private HomePage homePage;
-
-/*    @Autowired
-    private CreateFacilityPage createFacilityPage;*/
-
-    @Autowired
-    private CreatePatientPage createPatient;
+    private CreatePatientHelper createPatientHelper;
 
     @Autowired
     private WebDriverProvider driverProvider;
 
-    private WebDriver driver;
+    protected WebDriver driver;
 
     @BeforeMethod
     public void setUp() {
@@ -49,78 +38,28 @@ public class CreatePatientTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void CreatePatientWithValidValues() {
-        loginPage.login();
-        homePage.OpenCreatePatientPage();
-        boolean TestPassed;
-        PageFactory.initElements(driver, createPatient);
-        Calendar DOB = Calendar.getInstance();
-        DOB.set(1980,01,01);
-        Assert.assertTrue(createPatient.WithRegistrationMode(CreatePatientPage.PATIENT_REGN_MODE.AUTO_GENERATE_ID).WithPatientType(CreatePatientPage.PATIENT_TYPE.PATIENT_MOTHER)
-                .WithPatientFirstName("AutomationPatient")
-                .WithPatientLastName("Auto Last Name")
-                .WithEstimatedDOB(false)
-                .WithPatientGender(true)
-
-                .WithRegion("Central Region")
-                .WithDistrict("Awutu Senya")
-                .WithSubDistrict("Kasoa")
-                .WithFacility("Papaase CHPS")
-                .WithInsured(false)
-                .WithDateofBirth(DOB) // select the DOB at last as there is a time delay in the jquery ui closing after selecting the date
-                                        // this happens when the build is run locally in dev environment
-                .Create());
+    public void createPatientWithValidValues() {
+        Calendar dateOfBirth = Calendar.getInstance();
+        dateOfBirth.set(1980, 01, 01);
+        assertTrue(createPatientHelper.createPatient("AutomationPatient", "Auto Middle Name", "Auto Last Name", true, dateOfBirth, CreatePatientPage.PATIENT_TYPE.PATIENT_MOTHER, null));
     }
 
     @Test
-    public void createPatientChildUnder5 () {
-    loginPage.login();
-        homePage.OpenCreatePatientPage();
-        boolean TestPassed;
-        PageFactory.initElements(driver, createPatient);
-        Calendar DOB = Calendar.getInstance();
-        DOB.set(2009,01,01);
-        Assert.assertTrue(createPatient.WithRegistrationMode(CreatePatientPage.PATIENT_REGN_MODE.AUTO_GENERATE_ID).WithPatientType(CreatePatientPage.PATIENT_TYPE.CHILD_UNDER_FIVE)
-                .WithPatientFirstName("AutomationChild")
-                .WithPatientLastName("ChildLastName")
-                .WithEstimatedDOB(false)
-                .WithPatientGender(false)
-                .WithRegion("Central Region")
-                .WithDistrict("Awutu Senya")
-                .WithSubDistrict("Kasoa")
-                .WithFacility("Papaase CHPS")
-                .WithInsured(false)
-                .WithDateofBirth(DOB) // select the DOB at last as there is a time delay in the jquery ui closing after selecting the date
-                                        // this happens when the build is run locally in dev environment
-                .Create());
+    public void createPatientChildUnder5() {
+        Calendar dateOfBirth = Calendar.getInstance();
+        dateOfBirth.set(2009, 01, 01);
+        assertTrue(createPatientHelper.createPatient("AutomationChild", "ChildMiddleName", "ChildLastName", false, dateOfBirth, CreatePatientPage.PATIENT_TYPE.CHILD_UNDER_FIVE, null));
     }
 
     @Test
     public void createPatientTypeOther() {
-    loginPage.login();
-        homePage.OpenCreatePatientPage();
-        boolean TestPassed;
-        PageFactory.initElements(driver, createPatient);
-        Calendar DOB = Calendar.getInstance();
-        DOB.set(2009,01,01);
-        Assert.assertTrue(createPatient.WithRegistrationMode(CreatePatientPage.PATIENT_REGN_MODE.AUTO_GENERATE_ID).WithPatientType(CreatePatientPage.PATIENT_TYPE.OTHER)
-                .WithPatientFirstName("AutomationOther")
-                .WithPatientLastName("OtherLastName")
-                .WithEstimatedDOB(true)
-                .WithPatientGender(true)
-                .WithRegion("Central Region")
-                .WithDistrict("Awutu Senya")
-                .WithSubDistrict("Kasoa")
-                .WithFacility("Papaase CHPS")
-                .WithInsured(false)
-                .WithDateofBirth(DOB) // select the DOB at last as there is a time delay in the jquery ui closing after selecting the date
-                                        // this happens when the build is run locally in dev environment
-                .Create());
+        Calendar dateOfBirth = Calendar.getInstance();
+        dateOfBirth.set(2009, 01, 01);
+        assertTrue(createPatientHelper.createPatient("AutomationOther", "OtherMiddleName", "OtherLastName", true, dateOfBirth, CreatePatientPage.PATIENT_TYPE.OTHER, null));
     }
 
     @AfterSuite
     public void closeall() {
         driver.quit();
     }
-
 }

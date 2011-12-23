@@ -33,7 +33,7 @@ public class WebDriverProvider  {
     }
 
 
-    public boolean waitForElement_ID(final String elementid) {
+    public boolean waitForElementID(final String elementid) {
          try {
 
             (new WebDriverWait(driver, 15)).until(new ExpectedCondition<Boolean>() {
@@ -52,7 +52,7 @@ public class WebDriverProvider  {
         return true;
     }
 
-    public boolean WaitForElement_Class(final String elementClass) {
+    public boolean waitForElementClass(final String elementClass) {
                try {
 
             (new WebDriverWait(driver, 20)).until(new ExpectedCondition<Boolean>() {
@@ -71,7 +71,7 @@ public class WebDriverProvider  {
         return true;
     }
 
-    public boolean WaitForElement_LinkText(final String linkText) {
+    public boolean waitForElementLinkText(final String linkText) {
         try {
             (new WebDriverWait(driver, 20)).until(new ExpectedCondition<Boolean>() {
                 public Boolean apply(WebDriver driver) {

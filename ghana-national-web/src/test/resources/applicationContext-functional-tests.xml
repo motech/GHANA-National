@@ -8,6 +8,11 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     <context:annotation-config/>
     <context:spring-configured/>
+    <context:component-scan base-package="org.motechproject.ghana.national.functional"/>
     <context:component-scan base-package="org.motechproject.functional"/>
     <util:properties id="functionalTestProperties" location="classpath:functional-test.properties"/>
+
+    <bean id="identifierGenerationService" class="org.motechproject.ghana.national.service.IdentifierGenerationService"/>
+    <util:properties id="ghanaNationalProperties" location="classpath:ghana-national.properties"/>
+
 </beans>
