@@ -32,9 +32,8 @@ public class PatientSeed extends Seed {
 
     private void updatePatientsWithLocationId() {
         Map<String, String> allPatientsWithFacilities = patientSource.getAllPatientsWithFacilities();
-        String updatePatientLocationSql = "update patient_identifier set location_id=%s where patient_id=%s";
         for(String patientId: allPatientsWithFacilities.keySet()){
-            int update = jdbcTemplate.update(format(updatePatientLocationSql, allPatientsWithFacilities.get(patientId), patientId));
+            int update = jdbcTemplate.update(format("update patient_identifier set location_id=%s where patient_id=%s", allPatientsWithFacilities.get(patientId), patientId));
             assert 1 == update;
         }
     }
