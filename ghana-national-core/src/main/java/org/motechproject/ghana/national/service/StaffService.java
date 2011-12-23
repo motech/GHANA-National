@@ -80,16 +80,30 @@ public class StaffService {
         filteredMRSUsers = filterUsers(on(MRSUser.class).getPerson().getFirstName(), firstName, filteredMRSUsers);
         filteredMRSUsers = filterUsers(on(MRSUser.class).getPerson().getMiddleName(), middleName, filteredMRSUsers);
         filteredMRSUsers = filterUsers(on(MRSUser.class).getPerson().getLastName(), lastName, filteredMRSUsers);
-        filteredMRSUsers = filterByAttribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, phoneNumber, filteredMRSUsers);
-        filteredMRSUsers = filterByAttribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role, filteredMRSUsers);
+        filteredMRSUsers = filterByPhone(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, phoneNumber, filteredMRSUsers);
+        filteredMRSUsers = filterByRole(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role, filteredMRSUsers);
         Collections.sort(filteredMRSUsers, new UserFirstNameComparator());
         return filteredMRSUsers;
     }
 
-    private List<MRSUser> filterByAttribute(String searchAttribute, String searchCriteria, List<MRSUser> filteredMRSUsers) {
-        final ArrayList<MRSUser> filteredList = new ArrayList<MRSUser>();
+    private List<MRSUser> filterByRole(String searchAttribute, String searchCriteria, List<MRSUser> filteredMRSUsers) {
+        if(StringUtils.isEmpty(searchAttribute)) {
+            return filteredMRSUsers;
+        }
+        ArrayList<MRSUser> filteredList = new ArrayList<MRSUser>();
         for (MRSUser filteredMRSUser : filteredMRSUsers) {
-            final List<Attribute> attributeSearchResults = filter(having(on(Attribute.class).name(), equalTo(searchAttribute)), filteredMRSUser.getPerson().getAttributes());
+            List<Attribute> attributeSearchResults = filter(having(on(Attribute.class).name(), equalTo(searchAttribute)), filteredMRSUser.getPerson().getAttributes());
+            if (CollectionUtils.isNotEmpty(attributeSearchResults) && attributeSearchResults.get(0).value().trim().equalsIgnoreCase(searchCriteria)) {
+                filteredList.add(filteredMRSUser);
+            }
+        }
+        return filteredList;
+    }
+
+    private List<MRSUser> filterByPhone(String searchAttribute, String searchCriteria, List<MRSUser> filteredMRSUsers) {
+        ArrayList<MRSUser> filteredList = new ArrayList<MRSUser>();
+        for (MRSUser filteredMRSUser : filteredMRSUsers) {
+            List<Attribute> attributeSearchResults = filter(having(on(Attribute.class).name(), equalTo(searchAttribute)), filteredMRSUser.getPerson().getAttributes());
             if (CollectionUtils.isNotEmpty(attributeSearchResults) && attributeSearchResults.get(0).value().startsWith(searchCriteria)) {
                 filteredList.add(filteredMRSUser);
             }

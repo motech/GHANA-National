@@ -117,6 +117,16 @@ public class StaffServiceTest {
     }
 
     @Test
+    public void shouldSearchForUsersWithRespectiveRolesAndReturnEmptyIfRolesAreEmpty() {
+        List<Attribute> attributeList = Arrays.asList(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, "admin"));
+        final MRSUser user1 = new MRSUser().id("123").person(new MRSPerson().firstName("firstName").middleName("middleName").attributes(attributeList));
+        final List<MRSUser> expectedMRSUsers = Arrays.asList(user1, new MRSUser().person(new MRSPerson().firstName("firstNm")).id("1234"));
+        when(userAdaptor.getAllUsers()).thenReturn(expectedMRSUsers);
+        final List<MRSUser> actualMRSUsers = service.searchStaff("", "", "", "", "", "");
+        assertEquals(0, actualMRSUsers.size());
+    }
+
+    @Test
     public void shouldReturnEmptyIfSearchDoesntReturnAnyResults() {
         final List<MRSUser> expectedMRSUsers = Arrays.asList(new MRSUser().person(new MRSPerson().firstName("firstNm")).id("1234"));
         when(userAdaptor.getAllUsers()).thenReturn(expectedMRSUsers);
