@@ -23,7 +23,6 @@
             <list>
                 <ref bean="staffTypeSeed"/>
                 <ref bean="facilitySeed"/>
-                <ref bean="patientSeed"/>
             </list>
         </constructor-arg>
     </bean>
