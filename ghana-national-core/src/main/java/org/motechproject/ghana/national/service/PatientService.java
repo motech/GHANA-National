@@ -19,8 +19,6 @@ import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
 @Service
 public class PatientService {
     AllPatients allPatients;
-    public PatientService() {
-    }
 
     @Autowired
     public PatientService(AllPatients allPatients) {
@@ -36,7 +34,7 @@ public class PatientService {
             }
         }
         try {
-            allPatients.add(patient);
+            allPatients.save(patient);
         } catch (IdentifierNotUniqueException e) {
             throw new PatientIdNotUniqueException();
         } catch (InvalidCheckDigitException e) {

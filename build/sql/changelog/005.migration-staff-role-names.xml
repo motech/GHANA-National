@@ -1,0 +1,14 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="admin" id="1323410456950-1">
+        <update tableName="person_attribute">
+            <column name="value" value="FA"/>
+            <where>person_attribute_type_id = 19 and value = 'Field Agent'</where>
+        </update>
+        <update tableName="person_attribute">
+            <column name="value" value="MMA"/>
+            <where>person_attribute_type_id = 19 and value = 'Midwife'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>
