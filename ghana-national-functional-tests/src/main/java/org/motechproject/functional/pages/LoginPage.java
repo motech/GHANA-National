@@ -57,7 +57,7 @@ public class LoginPage {
         uPass.sendKeys("P@ssw0rd");
         WebElement BtnLogin = driver.findElement(By.xpath("//input[3]"));
         BtnLogin.click();
-        webDriverProvider.WaitForElement_LinkText("Logout");
+        webDriverProvider.waitForElementLinkText("Logout");
     }
 
 }

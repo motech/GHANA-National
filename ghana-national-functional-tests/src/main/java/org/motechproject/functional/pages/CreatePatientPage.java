@@ -122,52 +122,59 @@ public class CreatePatientPage {
 
     private WebDriver driver;
 
-    public enum PATIENT_REGN_MODE {AUTO_GENERATE_ID, USE_PREPRINTED_ID}
 
-    public enum PATIENT_TYPE {PATIENT_MOTHER, CHILD_UNDER_FIVE, OTHER}
+    public enum PATIENT_REGN_MODE {AUTO_GENERATE_ID, USE_PREPRINTED_ID;}
+
+
+    public enum PATIENT_TYPE {PATIENT_MOTHER, CHILD_UNDER_FIVE, OTHER;}
 
     @Autowired
     public CreatePatientPage(WebDriverProvider webDriverProvider) {
         this.driver = webDriverProvider.getWebDriver();
     }
 
-    public CreatePatientPage WithRegistrationMode(PATIENT_REGN_MODE patient_regn_mode) {
+    public CreatePatientPage withMotechId(String motechId) {
+        this.motechId.sendKeys(motechId);
+        return this;
+    }
+
+    public CreatePatientPage withRegistrationMode(PATIENT_REGN_MODE patient_regn_mode) {
         myUtilities.sleep();
         Select selectRegnMode = new Select(this.selectRegnMode);
         selectRegnMode.selectByValue(patient_regn_mode.name());
         return this;
     }
 
-    public CreatePatientPage WithPatientType(PATIENT_TYPE patient_type) {
+    public CreatePatientPage withPatientType(PATIENT_TYPE patient_type) {
         Select selectPatientType = new Select(typeOfPatient);
         selectPatientType.selectByValue(patient_type.name());
         return this;
     }
 
-    public CreatePatientPage WithPatientFirstName(String patientname) {
+    public CreatePatientPage withPatientFirstName(String patientname) {
         firstName.sendKeys(patientname + dataGenerator.randomString(5));
         return this;
     }
 
-    public CreatePatientPage WithPatientMiddleName(String midname) {
+    public CreatePatientPage withPatientMiddleName(String midname) {
         middleName.sendKeys(midname);
         return this;
     }
 
-    public CreatePatientPage WithPatientLastName(String lstname) {
+    public CreatePatientPage withPatientLastName(String lstname) {
         lastName.sendKeys(lstname);
         return this;
     }
 
-    public CreatePatientPage WithDateofBirth(Calendar DOB) {
+    public CreatePatientPage withDateofBirth(Calendar dateOfBirth) {
 
         driver.findElement(By.className("ui-datepicker-trigger")).click();
         WebElement month = driver.findElement(By.className("ui-datepicker-month"));
         Select selectmonth = new Select(month);
-        selectmonth.selectByValue(Integer.toString(DOB.get(Calendar.MONTH)));
+        selectmonth.selectByValue(Integer.toString(dateOfBirth.get(Calendar.MONTH) - 1));
         WebElement Year = driver.findElement(By.className("ui-datepicker-year"));
         Select selectyear = new Select(Year);
-        selectyear.selectByValue(Integer.toString(DOB.get(Calendar.YEAR)));
+        selectyear.selectByValue(Integer.toString(dateOfBirth.get(Calendar.YEAR)));
 //       WebElement datefield = driver.findElement(By.className("ui-state-default"));
         WebElement table = driver.findElement(By.className("ui-datepicker-calendar"));
 
@@ -182,7 +189,7 @@ public class CreatePatientPage {
         return this;
     }
 
-    public CreatePatientPage WithEstimatedDOB(Boolean estimateddob) {
+    public CreatePatientPage withEstimatedDOB(Boolean estimateddob) {
         PageFactory.initElements(driver, this);
 
         if (estimateddob)
@@ -192,7 +199,7 @@ public class CreatePatientPage {
         return this;
     }
 
-    public CreatePatientPage WithPatientGender(Boolean Gender) {
+    public CreatePatientPage withPatientGender(Boolean Gender) {
         PageFactory.initElements(driver, this);
 
         if (Gender)
@@ -202,7 +209,7 @@ public class CreatePatientPage {
         return this;
     }
 
-    public CreatePatientPage WithInsured(Boolean Insured) {
+    public CreatePatientPage withInsured(Boolean Insured) {
 //        PageFactory.initElements(driver, this);
         if (Insured)
 //            javascriptExecutor.getElementById("insured", driver).click();
@@ -227,7 +234,7 @@ public class CreatePatientPage {
         driver.findElement(By.className("ui-datepicker-trigger")).click();
         WebElement month = driver.findElement(By.className("ui-datepicker-month"));
         Select selectmonth = new Select(month);
-        selectmonth.selectByValue(Integer.toString(expdate.get(Calendar.MONTH)));
+        selectmonth.selectByValue(Integer.toString(expdate.get(Calendar.MONTH) - 1));
         WebElement Year = driver.findElement(By.className("ui-datepicker-year"));
         Select selectyear = new Select(Year);
         selectyear.selectByValue(Integer.toString(expdate.get(Calendar.YEAR)));
@@ -245,27 +252,27 @@ public class CreatePatientPage {
         return this;
     }
 
-    public CreatePatientPage WithRegion(String regionName) {
+    public CreatePatientPage withRegion(String regionName) {
         PageFactory.initElements(driver, this);
         Select selectRegion = new Select(regionDropDown);
         selectRegion.selectByValue(regionName);
         return this;
     }
 
-    public CreatePatientPage WithDistrict(String districtName) {
+    public CreatePatientPage withDistrict(String districtName) {
         PageFactory.initElements(driver, this);
         Select selectDistrict = new Select(districtDropDown);
         selectDistrict.selectByValue(districtName);
         return this;
     }
 
-    public CreatePatientPage WithSubDistrict(String subdistrictName) {
+    public CreatePatientPage withSubDistrict(String subdistrictName) {
         Select selectSubDist = new Select(subdistrictDropDown);
         selectSubDist.selectByValue(subdistrictName);
         return this;
     }
 
-    public CreatePatientPage WithFacility(String facilityName) {
+    public CreatePatientPage withFacility(String facilityName) {
         Select selectFacility = new Select(facilityDropDown);
 //        selectFacility.selectByValue(facilityName);
         selectFacility.selectByVisibleText(facilityName);
@@ -275,7 +282,7 @@ public class CreatePatientPage {
 
     public boolean Create() {
         submitNewPatient.click();
-        webDriverProvider.waitForElement_ID("footer");
+        webDriverProvider.waitForElementID("footer");
         String src = driver.getPageSource();
         if (src.contains("Patient created successfully"))
             return true;

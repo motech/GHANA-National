@@ -52,10 +52,10 @@ public class HomePage {
             WebElement temp = myJsExecutor.getElementById("newfacility", driver);
 
             FacilityParentLink.click();
-            webDriverProvider.waitForElement_ID("newfacility");
+            webDriverProvider.waitForElementID("newfacility");
             temp.click();
         }
-        webDriverProvider.waitForElement_ID("submitFacility");
+        webDriverProvider.waitForElementID("submitFacility");
     }
 
     public void OpenCreateStaffPage() {
@@ -66,10 +66,10 @@ public class HomePage {
             WebElement temp = myJsExecutor.getElementById("newstaff", driver);
 
             StaffParentLink.click();
-            webDriverProvider.waitForElement_ID("newstaff");
+            webDriverProvider.waitForElementID("newstaff");
             temp.click();
         }
-        webDriverProvider.waitForElement_ID("submitNewUser");
+        webDriverProvider.waitForElementID("submitNewUser");
     }
 
 
@@ -81,11 +81,12 @@ public class HomePage {
             WebElement temp = myJsExecutor.getElementById("newpatient", driver);
 
             PatientParentLink.click();
-            webDriverProvider.waitForElement_ID("newpatient");
+            webDriverProvider.waitForElementID("newpatient");
             temp.click();
         }
-        webDriverProvider.waitForElement_ID("submitNewPatient");
+        webDriverProvider.waitForElementID("submitNewPatient");
     }
+
 }
 
 
