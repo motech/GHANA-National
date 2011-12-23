@@ -3,5 +3,6 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
     <changeSet author="admin" id="1323410456950-1">
         <sqlFile path="../build/sql/1.update_patient_with_proper_locations.sql"/>
+        <sqlFile path="../build/sql/2.update_patient_with_locations_based_on_community.sql"/>
     </changeSet>
 </databaseChangeLog>
