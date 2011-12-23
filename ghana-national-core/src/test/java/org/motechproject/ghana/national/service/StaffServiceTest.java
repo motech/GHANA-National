@@ -82,7 +82,7 @@ public class StaffServiceTest {
     public void shouldSearchForUsersWithRespectiveSearchCriteria() {
         final String middleName = "middleName";
         MRSPerson mrsPerson = new MRSPerson().firstName("firstName").middleName(middleName)
-        .attributes(Arrays.asList(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, "0123456789")));
+                .attributes(Arrays.asList(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, "0123456789")));
         final MRSUser user1 = new MRSUser().systemId("123").person(mrsPerson);
 
         final List<MRSUser> expectedMRSUsers = Arrays.asList(user1, new MRSUser().person(new MRSPerson().firstName("first")).systemId("1234"));
@@ -118,11 +118,11 @@ public class StaffServiceTest {
 
     @Test
     public void shouldSearchForUsersWithRespectiveRolesAndReturnEmptyIfRolesAreEmpty() {
-        List<Attribute> attributeList = Arrays.asList(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, "admin"));
+        List<Attribute> attributeList = Arrays.asList(new Attribute(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, ""));
         final MRSUser user1 = new MRSUser().id("123").person(new MRSPerson().firstName("firstName").middleName("middleName").attributes(attributeList));
         final List<MRSUser> expectedMRSUsers = Arrays.asList(user1, new MRSUser().person(new MRSPerson().firstName("firstNm")).id("1234"));
         when(userAdaptor.getAllUsers()).thenReturn(expectedMRSUsers);
-        final List<MRSUser> actualMRSUsers = service.searchStaff("", "", "", "", "", "");
+        final List<MRSUser> actualMRSUsers = service.searchStaff("", "", "", "", "", "admin");
         assertEquals(0, actualMRSUsers.size());
     }
 

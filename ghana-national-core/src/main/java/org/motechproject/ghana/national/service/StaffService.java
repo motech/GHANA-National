@@ -87,7 +87,7 @@ public class StaffService {
     }
 
     private List<MRSUser> filterByRole(String searchAttribute, String searchCriteria, List<MRSUser> filteredMRSUsers) {
-        if(StringUtils.isEmpty(searchAttribute)) {
+        if (StringUtils.isEmpty(searchCriteria)) {
             return filteredMRSUsers;
         }
         ArrayList<MRSUser> filteredList = new ArrayList<MRSUser>();
