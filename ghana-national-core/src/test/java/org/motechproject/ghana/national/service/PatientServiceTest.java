@@ -56,7 +56,7 @@ public class PatientServiceTest {
         when(mockAllPatients.patientById(parentId)).thenReturn(mother);
         patientService.registerPatient(patient, PatientType.CHILD_UNDER_FIVE, parentId);
 
-        verify(mockAllPatients).add(patient);
+        verify(mockAllPatients).save(patient);
     }
 
     @Test(expected = PatientIdNotUniqueException.class)
@@ -65,7 +65,7 @@ public class PatientServiceTest {
         Patient mother = mock(Patient.class);
         final String parentId = "11";
         when(mockAllPatients.patientById(parentId)).thenReturn(mother);
-        doThrow(new IdentifierNotUniqueException()).when(mockAllPatients).add(patient);
+        doThrow(new IdentifierNotUniqueException()).when(mockAllPatients).save(patient);
         patientService.registerPatient(patient, PatientType.CHILD_UNDER_FIVE, parentId);
     }
 
