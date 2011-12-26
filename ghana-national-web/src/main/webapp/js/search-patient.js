@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    $("#searchPatientForm").formly({'onBlur':false, 'theme':'Light'});
 
     var validate = function(form) {
         formValidator.clearMessages(form);
