@@ -30,7 +30,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientRegistrationFormHandlerTest {
@@ -100,7 +100,7 @@ public class PatientRegistrationFormHandlerTest {
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<PatientType> patientTypeArgumentCaptor = ArgumentCaptor.forClass(PatientType.class);
         ArgumentCaptor<String> parentIdCaptor = ArgumentCaptor.forClass(String.class);
-        doNothing().when(mockPatientService).registerPatient(patientArgumentCaptor.capture(), patientTypeArgumentCaptor.capture(), parentIdCaptor.capture());
+        doReturn(motechId).when(mockPatientService).registerPatient(patientArgumentCaptor.capture(), patientTypeArgumentCaptor.capture(), parentIdCaptor.capture());
 
         patientRegistrationFormHandler.handleFormEvent(event);
 

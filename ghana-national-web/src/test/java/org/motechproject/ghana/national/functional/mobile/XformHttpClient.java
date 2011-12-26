@@ -8,6 +8,7 @@ import org.fcitmuk.epihandy.RequestHeader;
 import org.fcitmuk.epihandy.StudyData;
 import org.fcitmuk.epihandy.StudyDef;
 import org.fcitmuk.epihandy.xform.EpihandyXform;
+import org.motechproject.ghana.national.domain.Constants;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
@@ -73,7 +74,7 @@ public class XformHttpClient {
     private static void hackDate(FormData formData, String variableName) throws ParseException {
         final String answer = (String) formData.getQuestion(variableName).getAnswer();
         if (answer != null)
-            formData.setDateValue(variableName, new SimpleDateFormat("yyyy-MM-dd").parse(answer));
+            formData.setDateValue(variableName, new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).parse(answer));
     }
 
     private static XformResponse processResponse(HttpConnection httpConnection) throws IOException {

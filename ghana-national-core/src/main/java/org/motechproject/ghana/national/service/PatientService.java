@@ -25,7 +25,7 @@ public class PatientService {
         this.allPatients = allPatients;
     }
 
-    public void registerPatient(Patient patient, PatientType typeOfPatient, String parentId)
+    public String registerPatient(Patient patient, PatientType typeOfPatient, String parentId)
             throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         if (PatientType.CHILD_UNDER_FIVE.equals(typeOfPatient) && StringUtils.isNotEmpty(parentId)) {
             Patient mother = allPatients.patientById(parentId);
@@ -34,7 +34,7 @@ public class PatientService {
             }
         }
         try {
-            allPatients.save(patient);
+            return allPatients.save(patient);
         } catch (IdentifierNotUniqueException e) {
             throw new PatientIdNotUniqueException();
         } catch (InvalidCheckDigitException e) {

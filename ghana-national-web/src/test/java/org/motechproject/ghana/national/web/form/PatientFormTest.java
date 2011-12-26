@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.web.form;
 
 import org.junit.Test;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.domain.PatientType;
@@ -9,6 +10,7 @@ import org.motechproject.ghana.national.web.helper.PatientHelper;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSPerson;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static ch.lambdaj.Lambda.having;
@@ -65,7 +67,7 @@ public class PatientFormTest {
         form.setTypeOfPatient(patientType);
         form.setPhoneNumber(phoneNumber);
 
-        Patient patient = patientHelper.getPatientVO(form, motechId);
+        Patient patient = patientHelper.getPatientVO(form);
 
         MRSPerson mrsPerson = patient.mrsPatient().getPerson();
 
@@ -83,7 +85,7 @@ public class PatientFormTest {
         assertThat(mrsPerson.getPreferredName(), is(equalTo(preferredName)));
         assertThat(mrsPerson.getGender(), is(equalTo(sex)));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
-                equalTo(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute())))).value(), is(equalTo(nhisExpDate.toString())));
+                equalTo(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute())))).value(), is(equalTo(new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(nhisExpDate))));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.NHIS_NUMBER.getAttribute())))).value(), is(equalTo(nhisNumber)));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),

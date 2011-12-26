@@ -50,4 +50,5 @@ $(document).ready(function() {
          $('#nhisNumber').parent().hide();
          $('#nhisExpirationDate').parent().hide();
     });
+    $('#regions').trigger('change');
 });

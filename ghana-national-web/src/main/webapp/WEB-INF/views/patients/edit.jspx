@@ -1,0 +1,250 @@
+<div id="body" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <spring:url value="/resources/js/facility-fields.js" var="facility_field_url"/>
+    <spring:url value="/resources/js/create-patient.js" var="create_patient_url"/>
+
+    <script src="${create_patient_url}" type="text/javascript"><!--closing tag needed--></script>
+    <script src="${facility_field_url}" type="text/javascript"><!--closing tag needed--></script>
+    <spring:url value="/admin/patients/create" var="form_url"/>
+
+    <c:if test="${successMessage ne null}">
+        <br/><span class="success"><c:out value="${successMessage}"/></span><br/><br/>
+    </c:if>
+
+    <form:form id="patientForm" action="${fn:escapeXml(form_url)}" method="POST" title="Edit Patient"
+               commandName="patientForm">
+        <div class="formlyAlerts">
+            <form:errors path="parentId" element="div" cssClass="formlyInvalid formlyAlert" cssStyle="display: block;"/>
+        </div>
+        <spring:message code="patient_registration_mode" var="patient_registration_mode" htmlEscape="false"/>
+        <spring:message code="patient_registration_mode_1_label" var="patient_registration_mode_1" htmlEscape="false"/>
+        <spring:message code="patient_registration_mode_2_label" var="patient_registration_mode_2" htmlEscape="false"/>
+        <spring:message code="patient_registration_mode_1_value" var="patient_registration_mode_1_value"
+                        htmlEscape="false"/>
+        <spring:message code="patient_registration_mode_2_value" var="patient_registration_mode_2_value"
+                        htmlEscape="false"/>
+        <spring:message code="patient_motech_id" var="patient_motech_id" htmlEscape="false"/>
+        <spring:message code="patient_type" var="patient_type" htmlEscape="false"/>
+        <spring:message code="patient_mothers_motech_id" var="patient_mothers_motech_id" htmlEscape="false"/>
+        <spring:message code="patient_first_name" var="patient_first_name" htmlEscape="false"/>
+        <spring:message code="patient_middle_name" var="patient_middle_name" htmlEscape="false"/>
+        <spring:message code="patient_last_name" var="patient_last_name" htmlEscape="false"/>
+        <spring:message code="patient_preferred_name" var="patient_preferred_name" htmlEscape="false"/>
+        <spring:message code="patient_date_of_birth" var="patient_date_of_birth" htmlEscape="false"/>
+        <spring:message code="patient_date_of_birth_estimated" var="patient_date_of_birth_estimated"
+                        htmlEscape="false"/>
+        <spring:message code="patient_sex" var="patient_sex" htmlEscape="false"/>
+        <spring:message code="patient_insured" var="patient_insured" htmlEscape="false"/>
+        <spring:message code="patient_nhis_number" var="patient_nhis_number" htmlEscape="false"/>
+        <spring:message code="patient_nhis_expiration_date" var="patient_nhis_expiration_date" htmlEscape="false"/>
+        <spring:message code="patient_region" var="patient_region" htmlEscape="false"/>
+        <spring:message code="patient_district" var="patient_district" htmlEscape="false"/>
+        <spring:message code="patient_sub_district" var="patient_sub_district" htmlEscape="false"/>
+        <spring:message code="patient_facility" var="patient_facility" htmlEscape="false"/>
+        <spring:message code="patient_address" var="patient_address" htmlEscape="false"/>
+        <spring:message code="yes" var="yes" htmlEscape="false"/>
+        <spring:message code="no" var="no" htmlEscape="false"/>
+        <spring:message code="patient_male" var="male" htmlEscape="false"/>
+        <spring:message code="patient_female" var="female" htmlEscape="false"/>
+        <spring:message code="patient_type" var="patient_type" htmlEscape="false"/>
+        <spring:message code="patient_type_other" var="patient_type_other" htmlEscape="false"/>
+        <spring:message code="patient_type_mother" var="patient_type_mother" htmlEscape="false"/>
+        <spring:message code="patient_type_child" var="patient_type_child" htmlEscape="false"/>
+
+        <spring:message code="patient_type_other_display" var="patient_type_other_display" htmlEscape="false"/>
+        <spring:message code="patient_type_mother_display" var="patient_type_mother_display" htmlEscape="false"/>
+        <spring:message code="patient_type_child_display" var="patient_type_child_display" htmlEscape="false"/>
+
+        <spring:message code="facility_region" var="facility_region" htmlEscape="false"/>
+        <spring:message code="facility_district" var="facility_district" htmlEscape="false"/>
+        <spring:message code="facility_sub_district" var="facility_sub_district" htmlEscape="false"/>
+        <spring:message code="facility_country_req_msg" var="facility_country_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_region_req_msg" var="facility_region_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_district_req_msg" var="facility_district_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_sub_district_req_msg" var="facility_sub_district_req_msg" htmlEscape="false"/>
+        <spring:message code="facility_country_select" var="facility_country_select" htmlEscape="false"/>
+        <spring:message code="facility_region_select" var="facility_region_select" htmlEscape="false"/>
+        <spring:message code="facility_district_select" var="facility_district_select" htmlEscape="false"/>
+        <spring:message code="facility_facility_select" var="facility_facility_select" htmlEscape="false"/>
+        <spring:message code="facility_sub_district_select" var="facility_sub_district_select" htmlEscape="false"/>
+        <spring:message code="required_msg" var="required_msg" htmlEscape="false"/>
+        <spring:message code="incorrect_msg" var="incorrect_msg" htmlEscape="false"/>
+
+        <div class="form-field hide">
+            <label class="formLabel" for="motechId">${fn:escapeXml(patient_motech_id)}:</label>
+            <form:input path="motechId" cssClass="jsRequire" size="20" label="${fn:escapeXml(patient_motech_id)}"
+                        readonly="true"/>
+            <span id='motechIdError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_motech_id)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <div class="form-field">
+            <label class="formLabel" for="typeOfPatient">${fn:escapeXml(patient_type)}:</label>
+            <form:select path="typeOfPatient" label="${fn:escapeXml(patient_type)}">
+                <option value="${fn:escapeXml(patient_type_mother)}">
+                    ${fn:escapeXml(patient_type_mother_display)}
+                </option>
+                <option value="${fn:escapeXml(patient_type_child)}">
+                    ${fn:escapeXml(patient_type_child_display)}
+                </option>
+                <option value="${fn:escapeXml(patient_type_other)}">
+                    ${fn:escapeXml(patient_type_other_display)}
+                </option>
+            </form:select>
+        </div>
+
+        <div class="form-field hide">
+            <label class="formLabel" for="parentId">${fn:escapeXml(patient_mothers_motech_id)}:</label>
+            <form:input path="parentId" size="20" label="${fn:escapeXml(patient_mothers_motech_id)}"/>
+            <span id='parentIdError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_mothers_motech_id)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <div class="form-field">
+            <label class="formLabel" for="firstName">${fn:escapeXml(patient_first_name)} *:</label>
+            <form:input path="firstName" size="20" cssClass="jsRequire" label="${fn:escapeXml(patient_first_name)}"/>
+            <span id='firstNameError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_first_name)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <div class="form-field">
+            <label class="formLabel" for="middleName">${fn:escapeXml(patient_middle_name)}:</label>
+            <form:input path="middleName" size="20" label="${fn:escapeXml(patient_middle_name)}"/>
+        </div>
+
+        <div class="form-field">
+            <label class="formLabel" for="lastName">${fn:escapeXml(patient_last_name)} *:</label>
+            <form:input path="lastName" size="20" cssClass="jsRequire" label="${fn:escapeXml(patient_last_name)}"/>
+            <span id='lastNameError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_last_name)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+        <div class="form-field">
+            <label class="formLabel" for="preferredName">${fn:escapeXml(patient_preferred_name)}:</label>
+            <form:input path="preferredName" size="20" label="${fn:escapeXml(patient_preferred_name)}"/>
+        </div>
+        <div class="form-field">
+            <label class="formLabel" for="dateOfBirth">${fn:escapeXml(patient_date_of_birth)} *:</label>
+            <form:input readonly="true" path="dateOfBirth" cssClass="jsRequire jsDate jsBefore" size="20"
+                        label="${fn:escapeXml(patient_date_of_birth)}"/>
+            <span id='dateOfBirthError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_date_of_birth)} ${fn:escapeXml(required_msg)}
+            </span>
+            <span id='dateOfBirthDateError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_date_of_birth)} ${fn:escapeXml(incorrect_msg)}
+            </span>
+        </div>
+        <div class="form-field">
+            <label class="formLabel" for="estimatedDateOfBirth">${fn:escapeXml(patient_date_of_birth_estimated)} *:
+            </label>
+            <div class="radio">
+                <form:radiobutton cssClass="jsRequire" path="estimatedDateOfBirth" value="true"
+                                  label="${fn:escapeXml(yes)}"/>
+                <form:radiobutton cssClass="jsRequire" path="estimatedDateOfBirth" value="false"
+                                  label="${fn:escapeXml(no)}"/>
+            </div>
+            <div class="radioError">
+                <span id='estimatedDateOfBirthError' class='alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(patient_date_of_birth_estimated)} ${fn:escapeXml(required_msg)}
+                </span>
+            </div>
+        </div>
+        <div class="form-field">
+            <label class="formLabel" for="sex">${fn:escapeXml(patient_sex)} *:</label>
+            <div class="radio">
+                <form:radiobutton cssClass="jsRequire" path="sex" value="${fn:escapeXml(male)}"
+                                  label="${fn:escapeXml(male)}"/>
+                <form:radiobutton cssClass="jsRequire" path="sex" value="${fn:escapeXml(female)}"
+                                  label="${fn:escapeXml(female)}"/>
+            </div>
+            <div class="radioError">
+                <span id='sexError' class='alertText formlyInvalid formlyAlert hide'>
+
+                    ${fn:escapeXml(patient_sex)} ${fn:escapeXml(required_msg)}
+                </span>
+            </div>
+        </div>
+        <div class="form-field">
+            <label class="formLabel" for="insured">${fn:escapeXml(patient_insured)} *:</label>
+            <div class="radio">
+                <form:radiobutton id="insured" cssClass="jsRequire" path="insured" value="true"
+                                  label="${fn:escapeXml(yes)}"/>
+                <form:radiobutton id="notInsured" cssClass="jsRequire" path="insured" value="false"
+                                  label="${fn:escapeXml(no)}"/>
+            </div>
+            <div class="radioError">
+                <span id='insuredError' class='alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(patient_insured)} ${fn:escapeXml(required_msg)}
+                </span>
+            </div>
+        </div>
+        <div class="form-field hide">
+            <label class="formLabel" for="nhisNumber">${fn:escapeXml(patient_nhis_number)} *:</label>
+            <form:input path="nhisNumber" size="20" label="${fn:escapeXml(patient_nhis_number)}"/>
+            <span id='nhisNumberError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_nhis_number)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+        <div class="form-field hide">
+            <label class="formLabel" for="nhisExpirationDate">${fn:escapeXml(patient_nhis_expiration_date)} *:</label>
+            <form:input path="nhisExpirationDate" size="20" label="${fn:escapeXml(patient_nhis_expiration_date)}"
+                        cssClass="jsDate"/>
+            <span id='nhisExpirationDateError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_nhis_expiration_date)} ${fn:escapeXml(required_msg)}
+            </span>
+            <span id='nhisExpirationDateDateError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_nhis_expiration_date)} ${fn:escapeXml(incorrect_msg)}
+            </span>
+        </div>
+        <div class="form-field">
+            <motech:location id="regions" path="region" label="${facility_region} *:"
+                             defaultValue="${facility_region_select}" errorMsg="${facility_region_req_msg}"
+                             locations="${regions}"/>
+            <span id='facilityIdError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_facility)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+        <div class="hide form-field">
+            <motech:location id="districts" path="district" label="${facility_district} *:"
+                             defaultValue="${facility_district_select}" errorMsg="${facility_district_req_msg}"
+                             locations="${districts}"/>
+        </div>
+        <div class="hide form-field">
+            <motech:location id="sub-districts" path="subDistrict" label="${facility_sub_district} *:"
+                             defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
+                             locations="${provinces}"/>
+        </div>
+        <div class="hide form-field">
+            <label class="formLabel" for="facilityId">${fn:escapeXml(patient_facility)} *:</label>
+            <form:select path="facilityId" cssClass="jsRequire" id="facilities">
+                <option value="" parent="select">Select Facility</option>
+
+                <c:forEach items="${facilities}" var="facility">
+
+                    <c:choose>
+                        <c:when test="${facility.id eq patientForm.facilityId}">
+                            <option parent="${facility.parent}" value="${facility.id}" selected="selected">
+                                ${facility.name}
+                            </option>
+                        </c:when>
+                        <c:otherwise>
+                            <option parent="${facility.parent}" value="${facility.id}">${facility.name}</option>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </form:select>
+        </div>
+        <div class="form-field">
+            <label class="formLabel" for="address">${fn:escapeXml(patient_address)}:</label>
+            <form:textarea path="address" cssClass="jsRequire" size="200" label="${fn:escapeXml(patient_address)}"/>
+        </div>
+
+        <input type="button" id="submitNewPatient" value="Submit"/>
+    </form:form>
+</div>

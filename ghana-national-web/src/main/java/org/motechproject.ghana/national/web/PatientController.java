@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.web;
 
 import ch.lambdaj.function.convert.Converter;
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
@@ -13,6 +14,7 @@ import org.motechproject.ghana.national.web.form.SearchPatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.ghana.national.web.helper.PatientHelper;
 import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.openmrs.patient.UnallowedIdentifierException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -25,8 +27,10 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -41,13 +45,22 @@ public class PatientController {
     public static final String NEW_PATIENT_URL = "patients/new";
     public static final String PATIENT_FORM = "patientForm";
     public static final String SEARCH_PATIENT_URL = "patients/search";
+    public static final String EDIT_PATIENT_URL = "patients/edit";
     public static final String SUCCESS = "patients/success";
 
+    @Autowired
     private FacilityHelper facilityHelper;
+    @Autowired
     private PatientService patientService;
+    @Autowired
     private PatientHelper patientHelper;
+    @Autowired
     private MessageSource messageSource;
+    @Autowired
     private IdentifierGenerationService identifierGenerationService;
+    @Autowired
+    private MotechIdVerhoeffValidator motechIdVerhoeffValidator;
+
     public static final String SEARCH_PATIENT_FORM = "searchPatientForm";
 
 
@@ -56,19 +69,6 @@ public class PatientController {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         dateFormat.setLenient(false);
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
-    }
-
-    public PatientController() {
-    }
-
-    @Autowired
-    public PatientController(PatientService patientService, IdentifierGenerationService identifierGenerationService,
-                             MessageSource messageSource, FacilityHelper facilityHelper, PatientHelper patientHelper) {
-        this.patientService = patientService;
-        this.messageSource = messageSource;
-        this.identifierGenerationService = identifierGenerationService;
-        this.facilityHelper = facilityHelper;
-        this.patientHelper = patientHelper;
     }
 
     @ApiSession
@@ -83,11 +83,20 @@ public class PatientController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createPatient(PatientForm createPatientForm, BindingResult result, ModelMap modelMap) {
         try {
-            String motechId = "";
             if (createPatientForm.getRegistrationMode().equals(RegistrationType.AUTO_GENERATE_ID)) {
-                motechId = identifierGenerationService.newPatientId();
+                createPatientForm.setMotechId(identifierGenerationService.newPatientId());
+            } else {
+                if (!motechIdVerhoeffValidator.isValid(createPatientForm.getMotechId())) {
+                    throw new UnallowedIdentifierException("User Id is not allowed");
+                }
             }
-            patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, motechId), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
+            final String motechId = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
+            if (StringUtils.isNotEmpty(motechId)) {
+                modelMap.put("successMessage", "Patient created successfully.");
+                modelMap.addAttribute(PATIENT_FORM, patientHelper.getPatientForm(patientService.getPatientById(motechId)));
+                modelMap.mergeAttributes(facilityHelper.locationMap());
+                return EDIT_PATIENT_URL;
+            }
         } catch (ParentNotFoundException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_parent_not_found", null, Locale.getDefault()));
             return NEW_PATIENT_URL;
@@ -100,6 +109,7 @@ public class PatientController {
         } catch (UnallowedIdentifierException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
             return NEW_PATIENT_URL;
+        } catch (ParseException ignored) {
         }
         return SUCCESS;
     }
@@ -121,6 +131,19 @@ public class PatientController {
             }
         })));
         return PatientController.SEARCH_PATIENT_URL;
+    }
+
+    @ApiSession
+    @RequestMapping(value = "edit", method = RequestMethod.GET)
+    public String edit(ModelMap modelMap, @RequestParam String motechId) {
+        final Patient patient = patientService.getPatientById(motechId);
+        try {
+            modelMap.put(PATIENT_FORM, patientHelper.getPatientForm(patient));
+        } catch (ParseException e) {
+
+        }
+        modelMap.mergeAttributes(facilityHelper.locationMap());
+        return PatientController.EDIT_PATIENT_URL;
     }
 
     private void handleError(BindingResult bindingResult, ModelMap modelMap, String message) {

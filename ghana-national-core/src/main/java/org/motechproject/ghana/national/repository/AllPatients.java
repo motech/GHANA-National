@@ -16,8 +16,9 @@ public class AllPatients {
     @Autowired
     private MRSPatientAdaptor patientAdaptor;
 
-    public void save(Patient patient) {
-        patientAdaptor.savePatient(patient.mrsPatient());
+    public String save(Patient patient) {
+        final MRSPatient savedPatient = patientAdaptor.savePatient(patient.mrsPatient());
+        return savedPatient.getMotechId();
     }
 
     public Patient patientById(String id) {

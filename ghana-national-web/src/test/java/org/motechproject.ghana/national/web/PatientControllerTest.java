@@ -14,8 +14,10 @@ import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.ghana.national.web.helper.PatientHelper;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.BindingResult;
@@ -34,7 +36,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientControllerTest {
@@ -51,11 +55,19 @@ public class PatientControllerTest {
     PatientHelper mockPatientHelper;
     @Mock
     BindingResult mockBindingResult;
+    @Mock
+    MotechIdVerhoeffValidator mockMotechIdVerhoeffValidator;
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientController = new PatientController(mockPatientService, mockIdentifierGenerationService, mockMessageSource, mockFacilityHelper, mockPatientHelper);
+        patientController = new PatientController();
+        ReflectionTestUtils.setField(patientController, "patientService", mockPatientService);
+        ReflectionTestUtils.setField(patientController, "patientHelper", mockPatientHelper);
+        ReflectionTestUtils.setField(patientController, "facilityHelper", mockFacilityHelper);
+        ReflectionTestUtils.setField(patientController, "messageSource", mockMessageSource);
+        ReflectionTestUtils.setField(patientController, "motechIdVerhoeffValidator", mockMotechIdVerhoeffValidator);
+        ReflectionTestUtils.setField(patientController, "identifierGenerationService", mockIdentifierGenerationService);
         mockBindingResult = mock(BindingResult.class);
     }
 
@@ -88,9 +100,11 @@ public class PatientControllerTest {
     @Test
     public void shouldSaveUserForValidId() {
         PatientForm createPatientForm = new PatientForm();
-        createPatientForm.setMotechId("1267");
+        final String motechId = "1267";
+        createPatientForm.setMotechId(motechId);
         createPatientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
         ModelMap modelMap = new ModelMap();
+        when(mockMotechIdVerhoeffValidator.isValid(motechId)).thenReturn(true);
         String view = patientController.createPatient(createPatientForm, mockBindingResult, modelMap);
         assertEquals(view, "patients/success");
     }
@@ -99,13 +113,13 @@ public class PatientControllerTest {
     public void shouldRenderSearchPatientPage() {
         ModelMap modelMap = new ModelMap();
         assertThat(patientController.search(modelMap), is(equalTo("patients/search")));
-        assertThat(((SearchPatientForm)modelMap.get(PatientController.SEARCH_PATIENT_FORM)).getMotechId(), is(equalTo(null)));
-        assertThat(((SearchPatientForm)modelMap.get(PatientController.SEARCH_PATIENT_FORM)).getName(), is(equalTo(null)));
-        assertThat(((SearchPatientForm)modelMap.get(PatientController.SEARCH_PATIENT_FORM)).getPatientForms(), is(equalTo(null)));
+        assertThat(((SearchPatientForm) modelMap.get(PatientController.SEARCH_PATIENT_FORM)).getMotechId(), is(equalTo(null)));
+        assertThat(((SearchPatientForm) modelMap.get(PatientController.SEARCH_PATIENT_FORM)).getName(), is(equalTo(null)));
+        assertThat(((SearchPatientForm) modelMap.get(PatientController.SEARCH_PATIENT_FORM)).getPatientForms(), is(equalTo(null)));
     }
 
     @Test
-    public void shouldSearchForPatientByNameOrId(){
+    public void shouldSearchForPatientByNameOrId() {
         String motechId = "12345";
         String name = "name";
         SearchPatientForm searchPatientForm = new SearchPatientForm(name, motechId);
@@ -132,5 +146,17 @@ public class PatientControllerTest {
         assertThat(patientsReturnedBySearch.getPatientForms().get(0).getDateOfBirth(), is(equalTo(dateOfBirth)));
 
         assertThat(returnedUrl, is(equalTo(PatientController.SEARCH_PATIENT_URL)));
+    }
+
+    @Test
+    public void shouldReturnEditPatientForm() {
+        final ModelMap modelMap = new ModelMap();
+
+        when(mockFacilityHelper.locationMap()).thenReturn(new HashMap<String, Object>() {{
+            put("key", new Object());
+        }});
+        String motechId = "";
+        final String edit = patientController.edit(modelMap, motechId);
+        assertThat(edit, is(equalTo(PatientController.EDIT_PATIENT_URL)));
     }
 }
