@@ -41,7 +41,7 @@ public class CreatePatientTest extends AbstractTestNGSpringContextTests {
     public void createPatientWithValidValues() {
         Calendar dateOfBirth = Calendar.getInstance();
         dateOfBirth.set(1980, 01, 01);
-        assertTrue(createPatientHelper.createPatient("AutomationPatient", "Auto Middle Name", "Auto Last Name", true, dateOfBirth, CreatePatientPage.PATIENT_TYPE.PATIENT_MOTHER, null));
+        assertTrue(createPatientHelper.createPatient("AutomationPatient", "Auto Middle Name", "Auto Last Name", false, dateOfBirth, CreatePatientPage.PATIENT_TYPE.PATIENT_MOTHER, null));
     }
 
     @Test
