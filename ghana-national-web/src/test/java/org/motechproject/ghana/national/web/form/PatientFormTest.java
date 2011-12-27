@@ -1,21 +1,16 @@
 package org.motechproject.ghana.national.web.form;
 
 import org.junit.Test;
-import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientAttributes;
-import org.motechproject.ghana.national.domain.PatientType;
-import org.motechproject.ghana.national.domain.RegistrationType;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.web.helper.PatientHelper;
 import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPerson;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.selectUnique;
+import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -43,7 +38,6 @@ public class PatientFormTest {
         RegistrationType registrationMode = RegistrationType.USE_PREPRINTED_ID;
         String sex = "M";
         String subDistrict = "SubDistrict";
-        String phoneNumber = "0123456789";
         PatientType patientType = PatientType.CHILD_UNDER_FIVE;
 
         form.setAddress(address);
@@ -65,18 +59,21 @@ public class PatientFormTest {
         form.setSex(sex);
         form.setSubDistrict(subDistrict);
         form.setTypeOfPatient(patientType);
-        form.setPhoneNumber(phoneNumber);
 
-        Patient patient = patientHelper.getPatientVO(form);
+        String country = "country";
+        String facilityName = "facilityName";
+        Patient patient = patientHelper.getPatientVO(form, new Facility(new MRSFacility(facilityId,facilityName, country, region, district, subDistrict)));
 
         MRSPerson mrsPerson = patient.mrsPatient().getPerson();
 
         assertThat(mrsPerson.getAddress(), is(equalTo(address)));
         assertThat(mrsPerson.getDateOfBirth(), is(equalTo(dateofBirth)));
         assertThat(patient.mrsPatient().getFacility().getId(), is(equalTo(facilityId)));
-        assertThat(patient.mrsPatient().getFacility().getCountyDistrict(), is(equalTo(null)));
-        assertThat(patient.mrsPatient().getFacility().getRegion(), is(equalTo(null)));
-        assertThat(patient.mrsPatient().getFacility().getStateProvince(), is(equalTo(null)));
+        assertThat(patient.mrsPatient().getFacility().getCountyDistrict(), is(equalTo(district)));
+        assertThat(patient.mrsPatient().getFacility().getCountry(), is(equalTo(country)));
+        assertThat(patient.mrsPatient().getFacility().getName(), is(equalTo(facilityName)));
+        assertThat(patient.mrsPatient().getFacility().getRegion(), is(equalTo(region)));
+        assertThat(patient.mrsPatient().getFacility().getStateProvince(), is(equalTo(subDistrict)));
         assertThat(mrsPerson.getBirthDateEstimated(), is(equalTo(isBirthDateEstimated)));
         assertThat(mrsPerson.getFirstName(), is(equalTo(firstName)));
         assertThat(mrsPerson.getLastName(), is(equalTo(lastName)));
@@ -90,7 +87,5 @@ public class PatientFormTest {
                 equalTo(PatientAttributes.NHIS_NUMBER.getAttribute())))).value(), is(equalTo(nhisNumber)));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.INSURED.getAttribute())))).value(), is(equalTo(insured.toString())));
-        assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
-                equalTo(PatientAttributes.PHONE_NUMBER.getAttribute())))).value(), is(equalTo(phoneNumber)));
     }
 }

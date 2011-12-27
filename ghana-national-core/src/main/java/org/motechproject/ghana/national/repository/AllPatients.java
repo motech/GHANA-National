@@ -34,4 +34,8 @@ public class AllPatients {
             }
         });
     }
+
+    public String update(Patient patient) {
+        return patientAdaptor.updatePatient(patient.mrsPatient());
+    }
 }

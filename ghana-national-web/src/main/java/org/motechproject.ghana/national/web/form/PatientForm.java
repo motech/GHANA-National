@@ -27,7 +27,8 @@ public class PatientForm {
     private String subDistrict;
     private String facilityId;
     private String address;
-    private String phoneNumber;
+    private String facilityName;
+
     public RegistrationType getRegistrationMode() {
         return registrationMode;
     }
@@ -192,11 +193,11 @@ public class PatientForm {
         this.parentId = parentId;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public void setFacilityName(String facilityName) {
+        this.facilityName = facilityName;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public String getFacilityName() {
+        return facilityName;
     }
 }

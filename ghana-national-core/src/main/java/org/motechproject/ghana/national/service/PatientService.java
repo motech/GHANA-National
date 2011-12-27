@@ -49,4 +49,8 @@ public class PatientService {
     public List<Patient> search(String name, String motechId) {
         return allPatients.search(emptyToNull(name), emptyToNull(motechId));
     }
+
+    public String updatePatient(Patient patient, PatientType typeOfPatient, String parentId) {
+        return allPatients.update(patient);
+    }
 }

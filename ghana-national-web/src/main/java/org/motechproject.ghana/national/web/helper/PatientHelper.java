@@ -1,9 +1,7 @@
 package org.motechproject.ghana.national.web.helper;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientAttributes;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
@@ -24,9 +22,8 @@ public class PatientHelper {
 
     static DateFormat dateFormat = new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD);
 
-    public Patient getPatientVO(PatientForm createPatientForm) throws UnallowedIdentifierException {
+    public Patient getPatientVO(PatientForm createPatientForm, Facility facility) throws UnallowedIdentifierException {
         List<Attribute> attributes = new ArrayList<Attribute>();
-        setAttribute(attributes, createPatientForm.getPhoneNumber(), PatientAttributes.PHONE_NUMBER);
         setAttribute(attributes, createPatientForm.getNhisNumber(), PatientAttributes.NHIS_NUMBER);
         Date nhisExpirationDate = createPatientForm.getNhisExpirationDate();
         if (nhisExpirationDate != null) {
@@ -37,7 +34,11 @@ public class PatientHelper {
         MRSPerson mrsPerson = new MRSPerson().firstName(createPatientForm.getFirstName()).middleName(createPatientForm.getMiddleName())
                 .lastName(createPatientForm.getLastName()).preferredName(createPatientForm.getPreferredName()).dateOfBirth(createPatientForm.getDateOfBirth())
                 .birthDateEstimated(createPatientForm.getEstimatedDateOfBirth()).gender(createPatientForm.getSex()).address(createPatientForm.getAddress()).attributes(attributes);
-        MRSPatient mrsPatient = new MRSPatient(createPatientForm.getMotechId(), mrsPerson, new MRSFacility(createPatientForm.getFacilityId()));
+
+        MRSFacility mrsFacility = new MRSFacility(facility.getMrsFacility().getId(), facility.name(), facility.country(), facility.region(),
+                facility.district(), facility.province());
+
+        MRSPatient mrsPatient = new MRSPatient(createPatientForm.getMotechId(), mrsPerson, mrsFacility);
 
         return new Patient(mrsPatient);
     }
@@ -69,11 +70,6 @@ public class PatientHelper {
         String insured = mrsPerson.attrValue(PatientAttributes.INSURED.getAttribute());
         if (insured != null) {
             createPatientForm.setInsured(Boolean.valueOf(insured));
-        }
-
-        String phoneNumber = mrsPerson.attrValue(PatientAttributes.PHONE_NUMBER.getAttribute());
-        if (phoneNumber != null) {
-            createPatientForm.setPhoneNumber(phoneNumber);
         }
 
         String nhisExpiryDate = mrsPerson.attrValue(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute());

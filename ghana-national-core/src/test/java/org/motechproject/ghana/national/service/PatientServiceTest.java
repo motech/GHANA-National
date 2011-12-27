@@ -92,4 +92,12 @@ public class PatientServiceTest {
         assertThat(patientService.search(name, ""), is(equalTo(patientList)));
 
     }
+
+    @Test
+    public void shouldUpdateAPatient() {
+        Patient mockPatient = mock(Patient.class);
+        String parentId = "12345";
+        patientService.updatePatient(mockPatient, PatientType.CHILD_UNDER_FIVE , parentId);
+        verify(mockAllPatients).update(mockPatient);
+    }
 }

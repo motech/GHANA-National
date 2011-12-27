@@ -8,10 +8,15 @@
 
     <script src="${create_patient_url}" type="text/javascript"><!--closing tag needed--></script>
     <script src="${facility_field_url}" type="text/javascript"><!--closing tag needed--></script>
-    <spring:url value="/admin/patients/create" var="form_url"/>
+    <spring:url value="/admin/patients/update" var="form_url"/>
 
     <c:if test="${successMessage ne null}">
-        <br/><span class="success"><c:out value="${successMessage}"/></span><br/><br/>
+        <br/>
+        <span class="success">
+            <c:out value="${successMessage}"/>
+        </span>
+        <br/>
+        <br/>
     </c:if>
 
     <form:form id="patientForm" action="${fn:escapeXml(form_url)}" method="POST" title="Edit Patient"
@@ -73,10 +78,10 @@
         <spring:message code="required_msg" var="required_msg" htmlEscape="false"/>
         <spring:message code="incorrect_msg" var="incorrect_msg" htmlEscape="false"/>
 
-        <div class="form-field hide">
+        <div class="form-field">
             <label class="formLabel" for="motechId">${fn:escapeXml(patient_motech_id)}:</label>
             <form:input path="motechId" cssClass="jsRequire" size="20" label="${fn:escapeXml(patient_motech_id)}"
-                        readonly="true"/>
+                        disabled="true"/>
             <span id='motechIdError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_motech_id)} ${fn:escapeXml(required_msg)}
             </span>

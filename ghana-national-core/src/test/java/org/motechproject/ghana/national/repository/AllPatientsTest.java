@@ -91,4 +91,26 @@ public class AllPatientsTest {
         assertThat(returnedPatient.get(0).mrsPatient(), is(equalTo(returnedMrsPatient)));
 
     }
+
+    @Test
+    public void shouldUpdateAPatient() {
+        MRSFacility facility = new MRSFacility("1", "facility", "country", "region", "district", "state");
+        String first = "first";
+        String middle = "middle";
+        String last = "last";
+        String preferred = "preferred";
+        Date dateOfBirth = new Date();
+        String gender = "male";
+        String address = "address";
+        String patientId = "1000";
+        Boolean birthDateEstimated = true;
+
+        MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last).preferredName(preferred)
+                .dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
+        final MRSPatient mrsPatient = new MRSPatient("", mrsPerson, facility);
+        final Patient patient = new Patient(mrsPatient);
+        when(mockMrsPatientAdaptor.updatePatient(patient.mrsPatient())).thenReturn(patientId);
+        final String motechIdForUpdatedPatient = allPatients.update(patient);
+        assertThat(patientId, is(motechIdForUpdatedPatient));
+    }
 }

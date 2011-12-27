@@ -2,11 +2,13 @@ package org.motechproject.ghana.national.web;
 
 import ch.lambdaj.function.convert.Converter;
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.web.form.PatientForm;
@@ -53,6 +55,8 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
     @Autowired
+    private FacilityService facilityService;
+    @Autowired
     private PatientHelper patientHelper;
     @Autowired
     private MessageSource messageSource;
@@ -82,6 +86,7 @@ public class PatientController {
     @ApiSession
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createPatient(PatientForm createPatientForm, BindingResult result, ModelMap modelMap) {
+        Facility facility = facilityService.getFacility(createPatientForm.getFacilityId());
         try {
             if (createPatientForm.getRegistrationMode().equals(RegistrationType.AUTO_GENERATE_ID)) {
                 createPatientForm.setMotechId(identifierGenerationService.newPatientId());
@@ -90,12 +95,9 @@ public class PatientController {
                     throw new UnallowedIdentifierException("User Id is not allowed");
                 }
             }
-            final String motechId = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
+            final String motechId = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
             if (StringUtils.isNotEmpty(motechId)) {
-                modelMap.put("successMessage", "Patient created successfully.");
-                modelMap.addAttribute(PATIENT_FORM, patientHelper.getPatientForm(patientService.getPatientById(motechId)));
-                modelMap.mergeAttributes(facilityHelper.locationMap());
-                return EDIT_PATIENT_URL;
+                return populateView(modelMap, motechId);
             }
         } catch (ParentNotFoundException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_parent_not_found", null, Locale.getDefault()));
@@ -112,6 +114,13 @@ public class PatientController {
         } catch (ParseException ignored) {
         }
         return SUCCESS;
+    }
+
+    private String populateView(ModelMap modelMap, String motechId) throws ParseException {
+        modelMap.put("successMessage", "Patient created successfully.");
+        modelMap.addAttribute(PATIENT_FORM, patientHelper.getPatientForm(patientService.getPatientById(motechId)));
+        modelMap.mergeAttributes(facilityHelper.locationMap());
+        return EDIT_PATIENT_URL;
     }
 
     @RequestMapping(value = "search", method = RequestMethod.GET)
@@ -139,8 +148,7 @@ public class PatientController {
         final Patient patient = patientService.getPatientById(motechId);
         try {
             modelMap.put(PATIENT_FORM, patientHelper.getPatientForm(patient));
-        } catch (ParseException e) {
-
+        } catch (ParseException ignored) {
         }
         modelMap.mergeAttributes(facilityHelper.locationMap());
         return PatientController.EDIT_PATIENT_URL;
@@ -150,5 +158,20 @@ public class PatientController {
         modelMap.mergeAttributes(facilityHelper.locationMap());
         bindingResult.addError(new FieldError(PATIENT_FORM, "parentId", message));
         modelMap.mergeAttributes(bindingResult.getModel());
+    }
+
+    @ApiSession
+    @RequestMapping(value = "update", method = RequestMethod.POST)
+    public String update(PatientForm patientForm, BindingResult bindingResult, ModelMap modelMap) {
+        try {
+            String motechId = patientService.updatePatient(patientHelper.getPatientVO(patientForm, facilityService.getFacility(patientForm.getFacilityId())),
+                    patientForm.getTypeOfPatient(), patientForm.getParentId());
+            return populateView(modelMap, motechId);
+        } catch (UnallowedIdentifierException e) {
+            handleError(bindingResult, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
+            return NEW_PATIENT_URL;
+        } catch (ParseException ignored) {
+            return NEW_PATIENT_URL;
+        }
     }
 }

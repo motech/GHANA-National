@@ -3,15 +3,22 @@ package org.motechproject.ghana.national.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationType;
+import org.motechproject.ghana.national.exception.ParentNotFoundException;
+import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
+import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.form.SearchPatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.ghana.national.web.helper.PatientHelper;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
@@ -54,6 +61,8 @@ public class PatientControllerTest {
     @Mock
     PatientHelper mockPatientHelper;
     @Mock
+    FacilityService mockFacilityService;
+    @Mock
     BindingResult mockBindingResult;
     @Mock
     MotechIdVerhoeffValidator mockMotechIdVerhoeffValidator;
@@ -65,6 +74,7 @@ public class PatientControllerTest {
         ReflectionTestUtils.setField(patientController, "patientService", mockPatientService);
         ReflectionTestUtils.setField(patientController, "patientHelper", mockPatientHelper);
         ReflectionTestUtils.setField(patientController, "facilityHelper", mockFacilityHelper);
+        ReflectionTestUtils.setField(patientController, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(patientController, "messageSource", mockMessageSource);
         ReflectionTestUtils.setField(patientController, "motechIdVerhoeffValidator", mockMotechIdVerhoeffValidator);
         ReflectionTestUtils.setField(patientController, "identifierGenerationService", mockIdentifierGenerationService);
@@ -102,6 +112,12 @@ public class PatientControllerTest {
         PatientForm createPatientForm = new PatientForm();
         final String motechId = "1267";
         createPatientForm.setMotechId(motechId);
+        String facilityId = "12";
+        String facilityName = "facilityName";
+        createPatientForm.setFacilityId(facilityId);
+        Facility mockFacility = mock(Facility.class);
+        when(mockFacilityService.getFacility(createPatientForm.getFacilityId())).thenReturn(mockFacility);
+        when(mockFacility.name()).thenReturn(facilityName);
         createPatientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
         ModelMap modelMap = new ModelMap();
         when(mockMotechIdVerhoeffValidator.isValid(motechId)).thenReturn(true);
@@ -158,5 +174,32 @@ public class PatientControllerTest {
         String motechId = "";
         final String edit = patientController.edit(modelMap, motechId);
         assertThat(edit, is(equalTo(PatientController.EDIT_PATIENT_URL)));
+    }
+
+    @Test
+    public void shouldUpdatePatientWithEditedInfo() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
+        String motechId = "12345";
+        final MRSPerson mrsPerson = new MRSPerson();
+        mrsPerson.firstName("fname");
+        mrsPerson.middleName("mname");
+        mrsPerson.lastName("lname");
+        mrsPerson.dateOfBirth(new Date(2000, 11, 11));
+        mrsPerson.gender("male");
+
+        MRSFacility mrsFacility = new MRSFacility("name", "country", "region", "countyDistrict", "stateProvince");
+        Patient mockPatient = new Patient(new MRSPatient("2", motechId, mrsPerson, mrsFacility));
+        PatientForm patientForm = new PatientForm(mockPatient);
+        String facilityId = "12";
+        String facilityName = "facilityName";
+        patientForm.setFacilityId(facilityId);
+        Facility mockFacility = mock(Facility.class);
+        when(mockFacilityService.getFacility(patientForm.getFacilityId())).thenReturn(mockFacility);
+        when(mockFacility.name()).thenReturn(facilityName);
+        when(mockFacilityService.getFacility(facilityId)).thenReturn(mockFacility);
+        when(mockPatientHelper.getPatientVO(patientForm, mockFacility)).thenReturn(mockPatient);
+        String url = patientController.update(patientForm, mockBindingResult, new ModelMap());
+        assertThat(PatientController.EDIT_PATIENT_URL, is(url));
+        verify(mockPatientService).updatePatient(eq(mockPatient), eq(patientForm.getTypeOfPatient()), eq(patientForm.getParentId()));
+
     }
 }
