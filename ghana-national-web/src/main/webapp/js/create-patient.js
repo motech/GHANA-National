@@ -10,23 +10,28 @@ $(document).ready(function() {
         ($(this).val() == 'USE_PREPRINTED_ID') ? $('#motechId').parent().show() : $('#motechId').parent().hide();
     });
 
+    $('#typeOfPatient').change(function() {
+        if($(this).val() == 'PATIENT_MOTHER') {
+            disableGenderForMother();
+        } else {
+            $('#sex2').attr('checked', false);
+            $('.jsHideMale').show();
+        }
+    });
+
     $("#patientForm").formly({'onBlur':false, 'theme':'Light'});
     new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts')));
+
+    var disableGenderForMother = function() {
+        $('#sex2').attr('checked', true);
+        $('.jsHideMale').hide();
+    }
 
     var validate = function(form) {
         formValidator.clearMessages(form);
         formValidator.validateRequiredFields(form);
         formValidator.validateDate(form);
         formValidator.validateDateBefore(form);
-
-        if(!utilities.isNull($('#nhisNumber').val()) && utilities.isNull($('#nhisExpirationDate').val())) {
-            $("#nhisExpirationDateError").removeClass('hide');
-        }
-
-        if(utilities.isNull($('#nhisNumber').val()) && !utilities.isNull($('#nhisExpirationDate').val())) {
-            $("#nhisNumberError").removeClass('hide');
-        }
-
         return formValidator.hasErrors(form);
     }
 
@@ -51,4 +56,5 @@ $(document).ready(function() {
          $('#nhisExpirationDate').parent().hide();
     });
     $('#regions').trigger('change');
+    disableGenderForMother();
 });

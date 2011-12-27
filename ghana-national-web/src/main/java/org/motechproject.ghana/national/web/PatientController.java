@@ -97,6 +97,7 @@ public class PatientController {
             }
             final String motechId = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
             if (StringUtils.isNotEmpty(motechId)) {
+                modelMap.put("successMessage", "Patient created successfully.");
                 return populateView(modelMap, motechId);
             }
         } catch (ParentNotFoundException e) {
@@ -117,7 +118,6 @@ public class PatientController {
     }
 
     private String populateView(ModelMap modelMap, String motechId) throws ParseException {
-        modelMap.put("successMessage", "Patient created successfully.");
         modelMap.addAttribute(PATIENT_FORM, patientHelper.getPatientForm(patientService.getPatientById(motechId)));
         modelMap.mergeAttributes(facilityHelper.locationMap());
         return EDIT_PATIENT_URL;
@@ -166,6 +166,7 @@ public class PatientController {
         try {
             String motechId = patientService.updatePatient(patientHelper.getPatientVO(patientForm, facilityService.getFacility(patientForm.getFacilityId())),
                     patientForm.getTypeOfPatient(), patientForm.getParentId());
+            modelMap.put("successMessage", "Patient edited successfully.");
             return populateView(modelMap, motechId);
         } catch (UnallowedIdentifierException e) {
             handleError(bindingResult, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));

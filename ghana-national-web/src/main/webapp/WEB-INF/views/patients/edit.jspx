@@ -163,14 +163,15 @@
         <div class="form-field">
             <label class="formLabel" for="sex">${fn:escapeXml(patient_sex)} *:</label>
             <div class="radio">
+                <span class="jsHideMale">
                 <form:radiobutton cssClass="jsRequire" path="sex" value="${fn:escapeXml(male)}"
                                   label="${fn:escapeXml(male)}"/>
+                </span>
                 <form:radiobutton cssClass="jsRequire" path="sex" value="${fn:escapeXml(female)}"
                                   label="${fn:escapeXml(female)}"/>
             </div>
             <div class="radioError">
                 <span id='sexError' class='alertText formlyInvalid formlyAlert hide'>
-
                     ${fn:escapeXml(patient_sex)} ${fn:escapeXml(required_msg)}
                 </span>
             </div>
@@ -191,7 +192,7 @@
         </div>
         <div class="form-field hide">
             <label class="formLabel" for="nhisNumber">${fn:escapeXml(patient_nhis_number)} *:</label>
-            <form:input path="nhisNumber" size="20" label="${fn:escapeXml(patient_nhis_number)}"/>
+            <form:input path="nhisNumber" size="20" label="${fn:escapeXml(patient_nhis_number)}" cssClass="jsRequire"/>
             <span id='nhisNumberError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_nhis_number)} ${fn:escapeXml(required_msg)}
             </span>
@@ -199,7 +200,7 @@
         <div class="form-field hide">
             <label class="formLabel" for="nhisExpirationDate">${fn:escapeXml(patient_nhis_expiration_date)} *:</label>
             <form:input path="nhisExpirationDate" size="20" label="${fn:escapeXml(patient_nhis_expiration_date)}"
-                        cssClass="jsDate"/>
+                        cssClass="jsDate jsRequire"/>
             <span id='nhisExpirationDateError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_nhis_expiration_date)} ${fn:escapeXml(required_msg)}
             </span>
