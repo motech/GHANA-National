@@ -1,4 +1,5 @@
-<div id="body" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+<div id="body" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
      xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
      xmlns:spring="http://www.springframework.org/tags">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
@@ -22,7 +23,9 @@
         <spring:message code="edit" var="edit" htmlEscape="false"/>
 
 
-        <div id="enter_atleast_one_field" class="input-description hide">* Please enter atleast one field to enable search</div>
+        <div id="enter_atleast_one_field" class="input-description hide">* Please enter atleast one field to enable
+            search
+        </div>
 
         <div class="form-field">
             <label class="formLabel" for="motechId">${fn:escapeXml(patient_motech_id)}:</label>
@@ -35,51 +38,54 @@
         </div>
 
         <input type="button" id="searchPatient" value="Search"/>
-        <br/><br/>
-        <div id="search-results" >
+        <br/>
+        <br/>
+        <div id="search-results">
             <c:if test="${null ne searchPatientForm.patientForms and empty searchPatientForm.patientForms}">
                 <span class="error-message">There were no search results that matched your search terms.</span>
             </c:if>
             <c:if test="${not empty searchPatientForm.patientForms}">
-                <table>
-                    <tr>
-                        <th>${fn:escapeXml(patient_motech_id)}</th>
-                        <th>${fn:escapeXml(patient_first_name)}</th>
-                        <th>${fn:escapeXml(patient_middle_name)}</th>
-                        <th>${fn:escapeXml(patient_last_name)}</th>
-                        <th>${fn:escapeXml(patient_date_of_birth_for_search_title)}</th>
-                        <th>${fn:escapeXml(patient_sex)}</th>
-                        <th>${fn:escapeXml(edit)}</th>
-                    </tr>
-                    <c:forEach var="patient" items="${searchPatientForm.patientForms}">
+                <div id="patientsReturnedBySearch">
+                    <table id="searchResultTable">
                         <tr>
-                            <td>
-                                <c:out value="${patient.motechId}"/>
-                            </td>
-                            <td>
-                                <c:out value="${patient.firstName}"/>
-                            </td>
-                            <td>
-                                <c:out value="${patient.middleName}"/>
-                            </td>
-                            <td>
-                                <c:out value="${patient.lastName}"/>
-                            </td>
-                            <td>
-                                <fmt:formatDate value="${patient.dateOfBirth}" pattern="yyyy-MM-dd"/>
-                            </td>
-                            <td>
-                                <c:out value="${patient.sex}"/>
-                            </td>
-                            <td class="action">
-                                <div class="edit">
-                                    <spring:url value="/admin/patients/edit" var="edit_url"/>
-                                    <a href="${edit_url}?motechId=${patient.motechId}" title="Edit"></a>
-                                </div>
-                            </td>
+                            <th>${fn:escapeXml(patient_motech_id)}</th>
+                            <th>${fn:escapeXml(patient_first_name)}</th>
+                            <th>${fn:escapeXml(patient_middle_name)}</th>
+                            <th>${fn:escapeXml(patient_last_name)}</th>
+                            <th>${fn:escapeXml(patient_date_of_birth_for_search_title)}</th>
+                            <th>${fn:escapeXml(patient_sex)}</th>
+                            <th>${fn:escapeXml(edit)}</th>
                         </tr>
-                    </c:forEach>
-                </table>
+                        <c:forEach var="patient" items="${searchPatientForm.patientForms}">
+                            <tr>
+                                <td>
+                                    <c:out value="${patient.motechId}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${patient.firstName}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${patient.middleName}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${patient.lastName}"/>
+                                </td>
+                                <td>
+                                    <fmt:formatDate value="${patient.dateOfBirth}" pattern="yyyy-MM-dd"/>
+                                </td>
+                                <td>
+                                    <c:out value="${patient.sex}"/>
+                                </td>
+                                <td class="action">
+                                    <div class="edit">
+                                        <spring:url value="/admin/patients/edit" var="edit_url"/>
+                                        <a href="${edit_url}?motechId=${patient.motechId}" title="Edit"></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </div>
             </c:if>
         </div>
     </form:form>

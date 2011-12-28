@@ -34,7 +34,7 @@
                         htmlEscape="false"/>
 
 
-        <div class="input-description"> * Please enter atleast one field to enable search</div>
+        <div class="input-description">* Please enter atleast one field to enable search</div>
         <div>
             <label for="facilityID" class="formLabel">${fn:escapeXml(facility_id)}:</label>
             <form:input path="facilityId" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_id)}"/>
@@ -79,32 +79,50 @@
                 <span class="error-message">There were no search results that matched your search terms.</span>
             </c:if>
             <c:if test="${not empty requestedFacilities}">
-                <table>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Country</th>
-                        <th>Region</th>
-                        <th>District</th>
-                        <th>Sub-District</th>
-                        <th>Phone number</th>
-                        <th>Edit</th>
-                    </tr>
-                    <c:forEach var="facility" items="${requestedFacilities}">
+                <div id="facilitiesReturnedBySearch">
+                    <table id="searchResultTable">
                         <tr>
-                            <td><c:out value="${facility.facilityId}"/></td>
-                            <td><c:out value="${facility.name}"/></td>
-                            <td><c:out value="${facility.country}"/></td>
-                            <td><c:out value="${facility.region}"/></td>
-                            <td><c:out value="${facility.countyDistrict}"/></td>
-                            <td><c:out value="${facility.stateProvince}"/></td>
-                            <td><c:out value="${facility.phoneNumber}"/></td>
-                            <td class="action">
-                                <div class="edit"><a href="${edit_facility_url}?Id=${facility.id}" title="Edit"> </a></div>
-                            </td>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Country</th>
+                            <th>Region</th>
+                            <th>District</th>
+                            <th>Sub-District</th>
+                            <th>Phone number</th>
+                            <th>Edit</th>
                         </tr>
-                    </c:forEach>
-                </table>
+                        <c:forEach var="facility" items="${requestedFacilities}">
+                            <tr>
+                                <td>
+                                    <c:out value="${facility.facilityId}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${facility.name}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${facility.country}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${facility.region}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${facility.countyDistrict}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${facility.stateProvince}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${facility.phoneNumber}"/>
+                                </td>
+                                <td class="action">
+                                    <div class="edit">
+                                        <a href="${edit_facility_url}?Id=${facility.id}" title="Edit"></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </div>
             </c:if>
         </div>
     </form:form>

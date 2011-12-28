@@ -1,36 +1,20 @@
 package org.motechproject.functional.util;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.stereotype.Component;
-
-import java.util.Random;
-
-/**
- * Created by IntelliJ IDEA.
- * User: karthikm
- * Date: 12/13/11
- * Time: 11:57 PM
- * To change this template use File | Settings | File Templates.
- */
 
 @Component
 public class DataGenerator {
 
-       public String randomString(int length) {
-        Random rand = new Random();
-           String chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            buf.append(chars.charAt(rand.nextInt(chars.length())));
-        }
-        return buf.toString();
+    public String randomString(int length) {
+        return RandomStringUtils.randomAlphabetic(length);
     }
 
-
-    public String getRandPhoneNum() {
-        long n =(long) Math.floor(Math.random() * 900000000L) + 100000000L;
-        return ("0") + Long.toString(n);
+    public String randomPhoneNumber() {
+        return "0" + RandomStringUtils.randomNumeric(9);
     }
 
-
+    public String randomEmailId(){
+        return RandomStringUtils.randomAlphabetic(5) + "@" + RandomStringUtils.randomAlphabetic(5) + ".com";
+    }
 }
