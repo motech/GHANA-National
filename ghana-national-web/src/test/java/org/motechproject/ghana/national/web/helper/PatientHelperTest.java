@@ -57,6 +57,7 @@ public class PatientHelperTest {
         createPatientForm.setSex("Male");
         createPatientForm.setNhisExpirationDate(new Date());
         createPatientForm.setParentId("123");
+        createPatientForm.setPhoneNumber("1234567890");
 
         Patient patientVO = patientHelper.getPatientVO(createPatientForm, new Facility(new MRSFacility(facilityId, facilityName, country, region, district, subDistrict)));
 
@@ -72,11 +73,13 @@ public class PatientHelperTest {
         person.dateOfBirth(new Date());
         person.birthDateEstimated(true);
         person.firstName("firstNm");
-        person.addAttribute(new Attribute(PatientAttributes.INSURED.getAttribute(), "false"));
         person.lastName("lastNm");
         person.middleName("middlenm");
         person.preferredName("preferred");
         person.gender("Male");
+        person.addAttribute(new Attribute(PatientAttributes.INSURED.getAttribute(), "false"));
+        person.addAttribute(new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), "45326"));
+        person.addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), "06543987623"));
         person.addAttribute(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(new Date())));
         final Patient patientVO = new Patient(mrsPatient);
         PatientForm patientForm = patientHelper.getPatientForm(patientVO);
@@ -102,6 +105,7 @@ public class PatientHelperTest {
         assertThat(patientView.getSubDistrict(), is(equalTo(facility.getStateProvince())));
         assertThat(patientView.getMotechId(), is(equalTo(mrsPatient.getMotechId())));
         assertThat(patientView.getNhisNumber(), is(equalTo(person.attrValue(PatientAttributes.NHIS_NUMBER.getAttribute()))));
+        assertThat(patientView.getPhoneNumber(), is(equalTo(person.attrValue(PatientAttributes.PHONE_NUMBER.getAttribute()))));
         assertThat(patientView.getInsured().toString(), is(equalTo(person.attrValue(PatientAttributes.INSURED.getAttribute()))));
         assertThat(new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(patientView.getNhisExpirationDate()), is(equalTo(person.attrValue(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute()))));
     }

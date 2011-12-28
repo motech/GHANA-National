@@ -77,6 +77,9 @@
         <spring:message code="facility_sub_district_select" var="facility_sub_district_select" htmlEscape="false"/>
         <spring:message code="required_msg" var="required_msg" htmlEscape="false"/>
         <spring:message code="incorrect_msg" var="incorrect_msg" htmlEscape="false"/>
+        <spring:message code="phone_number_incorrect_msg" var="phone_number_incorrect_msg"
+                        htmlEscape="false"/>
+        <spring:message code="patient_phone_number" var="patient_phone_number" htmlEscape="false"/>
 
         <div class="form-field">
             <label class="formLabel" for="motechId">${fn:escapeXml(patient_motech_id)}:</label>
@@ -160,12 +163,16 @@
                 </span>
             </div>
         </div>
+        <div id="otherPatientContactNumber" class="hide">
+            <motech:phone path="phoneNumber" label="${patient_phone_number} :"
+                          errorMsg="${phone_number_incorrect_msg}" required="false"/>
+        </div>
         <div class="form-field">
             <label class="formLabel" for="sex">${fn:escapeXml(patient_sex)} *:</label>
             <div class="radio">
                 <span class="jsHideMale">
-                <form:radiobutton cssClass="jsRequire" path="sex" value="${fn:escapeXml(male)}"
-                                  label="${fn:escapeXml(male)}"/>
+                    <form:radiobutton cssClass="jsRequire" path="sex" value="${fn:escapeXml(male)}"
+                                      label="${fn:escapeXml(male)}"/>
                 </span>
                 <form:radiobutton cssClass="jsRequire" path="sex" value="${fn:escapeXml(female)}"
                                   label="${fn:escapeXml(female)}"/>
@@ -250,7 +257,6 @@
             <label class="formLabel" for="address">${fn:escapeXml(patient_address)}:</label>
             <form:textarea path="address" cssClass="jsRequire" size="200" label="${fn:escapeXml(patient_address)}"/>
         </div>
-
         <input type="button" id="submitNewPatient" value="Submit"/>
     </form:form>
 </div>

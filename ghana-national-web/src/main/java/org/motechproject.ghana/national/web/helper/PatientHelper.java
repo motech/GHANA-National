@@ -30,6 +30,7 @@ public class PatientHelper {
             setAttribute(attributes, new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(nhisExpirationDate), PatientAttributes.NHIS_EXPIRY_DATE);
         }
         setAttribute(attributes, String.valueOf(createPatientForm.getInsured()), PatientAttributes.INSURED);
+        setAttribute(attributes, String.valueOf(createPatientForm.getPhoneNumber()), PatientAttributes.PHONE_NUMBER);
 
         MRSPerson mrsPerson = new MRSPerson().firstName(createPatientForm.getFirstName()).middleName(createPatientForm.getMiddleName())
                 .lastName(createPatientForm.getLastName()).preferredName(createPatientForm.getPreferredName()).dateOfBirth(createPatientForm.getDateOfBirth())
@@ -80,6 +81,11 @@ public class PatientHelper {
         String nhisNumber = mrsPerson.attrValue(PatientAttributes.NHIS_NUMBER.getAttribute());
         if (nhisNumber != null) {
             createPatientForm.setNhisNumber(nhisNumber);
+        }
+
+        String phoneNumber = mrsPerson.attrValue(PatientAttributes.PHONE_NUMBER.getAttribute());
+        if (phoneNumber != null) {
+            createPatientForm.setPhoneNumber(phoneNumber);
         }
         return createPatientForm;
     }

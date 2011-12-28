@@ -30,7 +30,7 @@
         <spring:message code="facility_add_phone_number2" var="facility_add_phone_number2" htmlEscape="false"/>
         <spring:message code="facility_add_phone_number3" var="facility_add_phone_number3" htmlEscape="false"/>
         <spring:message code="facility_name_req_msg" var="facility_name_req_msg" htmlEscape="false"/>
-        <spring:message code="facility_phone_number_incorrect_msg" var="facility_phone_number_incorrect_msg"
+        <spring:message code="phone_number_incorrect_msg" var="phone_number_incorrect_msg"
                         htmlEscape="false"/>
 
 

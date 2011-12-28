@@ -17,6 +17,12 @@ $(document).ready(function() {
             $('#sex2').attr('checked', false);
             $('.jsHideMale').show();
         }
+
+        if($(this).val() == 'OTHER') {
+            $('#otherPatientContactNumber').show();
+        } else {
+            $('#otherPatientContactNumber').hide();
+        }
     });
 
     $("#patientForm").formly({'onBlur':false, 'theme':'Light'});
