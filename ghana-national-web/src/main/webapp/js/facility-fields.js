@@ -86,6 +86,7 @@ Field.prototype.hideDependents = function() {
     while (field.hasDependent()) {
         var field = field.dependent;
         field.node.parent().hide();
+        field.node.find('option:first').attr('selected', 'selected');
     }
 }
 

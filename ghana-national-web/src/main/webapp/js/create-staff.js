@@ -59,7 +59,6 @@ $.UserFormValidator = function() {
 
         var regexMatch = $("#user_role option:selected").text().match(/\(.*?\)/);
         var role = (regexMatch != null) ? regexMatch[0].substring(1, regexMatch[0].length - 1) : null;
-        console.log(role);
         if (role == null) {
             isValid = false;
             $("#role_error").html("Please select a role");

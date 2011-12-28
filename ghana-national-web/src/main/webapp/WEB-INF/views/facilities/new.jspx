@@ -32,7 +32,7 @@
                         htmlEscape="false"/>
 
         <c:if test="${message}">
-            <h3>facility created successfully.</h3>
+            <h3 id="successMessage">facility created successfully.</h3>
         </c:if>
         <div>
             <label for="name" class="formLabel">${fn:escapeXml(facility_name)} *:</label>

@@ -10,7 +10,7 @@
     <spring:url value="/admin/facilities/update" var="form_url"/>
 
     <c:if test="${successMessage ne null}">
-         <br/><span class="success"><c:out value="${successMessage}"/></span><br/><br/>
+         <br/><span id="successMessage" class="success"><c:out value="${successMessage}"/></span><br/><br/>
     </c:if>
 
     <form:form id="facilityForm" action="${fn:escapeXml(form_url)}" method="POST" title="Edit a Facility"

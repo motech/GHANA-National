@@ -62,45 +62,47 @@
                 <span class="error-message">There were no search results that matched your search terms.</span>
             </c:if>
             <c:if test="${not empty requestedStaffs}">
-                <table>
-                    <tr>
-                        <th>Staff Id</th>
-                        <th>First Name</th>
-                        <th>Middle Name</th>
-                        <th>Last Name</th>
-                        <th>Phone Number</th>
-                        <th>Role</th>
-                        <th>Edit</th>
-                    </tr>
-                    <c:forEach var="user" items="${requestedStaffs}">
+                <div id="staffsReturnedBySearch">
+                    <table id="searchResultTable">
                         <tr>
-                            <td>
-                                <c:out value="${user.staffId}"/>
-                            </td>
-                            <td>
-                                <c:out value="${user.firstName}"/>
-                            </td>
-                            <td>
-                                <c:out value="${user.middleName}"/>
-                            </td>
-                            <td>
-                                <c:out value="${user.lastName}"/>
-                            </td>
-                            <td>
-                                <c:out value="${user.phoneNumber}"/>
-                            </td>
-                            <td>
-                                <c:out value="${user.newRole}"/>
-                            </td>
-                            <td class="action">
-                                <div class="edit">
-                                    <spring:url value="/admin/staffs/edit" var="edit_url"/>
-                                    <a href="${edit_url}?Id=${user.staffId}" title="Edit"></a>
-                                </div>
-                            </td>
+                            <th>Staff Id</th>
+                            <th>First Name</th>
+                            <th>Middle Name</th>
+                            <th>Last Name</th>
+                            <th>Phone Number</th>
+                            <th>Role</th>
+                            <th>Edit</th>
                         </tr>
-                    </c:forEach>
-                </table>
+                        <c:forEach var="user" items="${requestedStaffs}">
+                            <tr>
+                                <td>
+                                    <c:out value="${user.staffId}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${user.firstName}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${user.middleName}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${user.lastName}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${user.phoneNumber}"/>
+                                </td>
+                                <td>
+                                    <c:out value="${user.newRole}"/>
+                                </td>
+                                <td class="action">
+                                    <div class="edit">
+                                        <spring:url value="/admin/staffs/edit" var="edit_url"/>
+                                        <a href="${edit_url}?Id=${user.staffId}" title="Edit"></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </div>
             </c:if>
         </div>
     </form:form>

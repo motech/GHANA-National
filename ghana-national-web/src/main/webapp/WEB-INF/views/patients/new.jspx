@@ -136,7 +136,7 @@
             <label class="formLabel" for="preferredName">${fn:escapeXml(patient_preferred_name)}:</label>
             <form:input path="preferredName" size="20" label="${fn:escapeXml(patient_preferred_name)}"/>
         </div>
-        <div class="form-field">
+        <div id="dateOfBirthHolder" class="form-field">
             <label class="formLabel" for="dateOfBirth">${fn:escapeXml(patient_date_of_birth)} *:</label>
             <form:input readonly="true" path="dateOfBirth" cssClass="jsRequire jsDate jsBefore" size="20"
                         label="${fn:escapeXml(patient_date_of_birth)}"/>
@@ -200,7 +200,7 @@
                 ${fn:escapeXml(patient_nhis_number)} ${fn:escapeXml(required_msg)}
             </span>
         </div>
-        <div class="form-field hide">
+        <div id="nhisExpDateHolder" class="form-field hide">
             <label class="formLabel" for="nhisExpirationDate">${fn:escapeXml(patient_nhis_expiration_date)} *:</label>
             <form:input path="nhisExpirationDate" size="20" label="${fn:escapeXml(patient_nhis_expiration_date)}"
                         cssClass="jsDate jsRequire"/>
