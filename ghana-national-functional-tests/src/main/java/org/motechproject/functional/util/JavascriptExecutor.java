@@ -16,7 +16,8 @@ public class JavascriptExecutor {
         ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("window.location.href = $('#' + arguments[0]).attr('href');", menuItemId);
     }
 
-    public void clickOnLink(String id,WebDriver driver) {
-        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("document.getElementById(arguments[0]).click();", id);
+    public void clickOnLink(WebDriver driver, String menuName, String menuItemId) {
+        driver.findElement(By.linkText(menuName)).click(); // just for visual effect
+        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("document.getElementById(arguments[0]).click();", menuItemId);
     }
 }

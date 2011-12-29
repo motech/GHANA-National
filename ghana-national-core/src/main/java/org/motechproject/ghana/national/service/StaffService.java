@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.StaffType;
 import org.motechproject.ghana.national.repository.AllStaffTypes;
+import org.motechproject.ghana.national.repository.AllStaffs;
 import org.motechproject.ghana.national.tools.StartsWithMatcher;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
@@ -31,13 +32,16 @@ public class StaffService {
     private MRSUserAdaptor userAdaptor;
     @Autowired
     private AllStaffTypes allStaffTypes;
+    @Autowired
+    private AllStaffs allStaffs;
 
     public StaffService() {
     }
 
-    public StaffService(AllStaffTypes allStaffTypes, MRSUserAdaptor userAdaptor) {
+    public StaffService(AllStaffTypes allStaffTypes, MRSUserAdaptor userAdaptor, AllStaffs allStaffs) {
         this.allStaffTypes = allStaffTypes;
         this.userAdaptor = userAdaptor;
+        this.allStaffs = allStaffs;
     }
 
     public Map saveUser(MRSUser mrsUser) throws UserAlreadyExistsException {
@@ -75,50 +79,6 @@ public class StaffService {
     }
 
     public List<MRSUser> searchStaff(String systemId, String firstName, String middleName, String lastName, String phoneNumber, String role) {
-        List<MRSUser> filteredMRSUsers = getAllUsers();
-        filteredMRSUsers = filterUsers(on(MRSUser.class).getSystemId(), systemId, filteredMRSUsers);
-        filteredMRSUsers = filterUsers(on(MRSUser.class).getPerson().getFirstName(), firstName, filteredMRSUsers);
-        filteredMRSUsers = filterUsers(on(MRSUser.class).getPerson().getMiddleName(), middleName, filteredMRSUsers);
-        filteredMRSUsers = filterUsers(on(MRSUser.class).getPerson().getLastName(), lastName, filteredMRSUsers);
-        filteredMRSUsers = filterByPhone(Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, phoneNumber, filteredMRSUsers);
-        filteredMRSUsers = filterByRole(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role, filteredMRSUsers);
-        Collections.sort(filteredMRSUsers, new UserFirstNameComparator());
-        return filteredMRSUsers;
-    }
-
-    private List<MRSUser> filterByRole(String searchAttribute, String searchCriteria, List<MRSUser> filteredMRSUsers) {
-        if (StringUtils.isEmpty(searchCriteria)) {
-            return filteredMRSUsers;
-        }
-        ArrayList<MRSUser> filteredList = new ArrayList<MRSUser>();
-        for (MRSUser filteredMRSUser : filteredMRSUsers) {
-            List<Attribute> attributeSearchResults = filter(having(on(Attribute.class).name(), equalTo(searchAttribute)), filteredMRSUser.getPerson().getAttributes());
-            if (CollectionUtils.isNotEmpty(attributeSearchResults) && attributeSearchResults.get(0).value().trim().equalsIgnoreCase(searchCriteria)) {
-                filteredList.add(filteredMRSUser);
-            }
-        }
-        return filteredList;
-    }
-
-    private List<MRSUser> filterByPhone(String searchAttribute, String searchCriteria, List<MRSUser> filteredMRSUsers) {
-        ArrayList<MRSUser> filteredList = new ArrayList<MRSUser>();
-        for (MRSUser filteredMRSUser : filteredMRSUsers) {
-            List<Attribute> attributeSearchResults = filter(having(on(Attribute.class).name(), equalTo(searchAttribute)), filteredMRSUser.getPerson().getAttributes());
-            if (CollectionUtils.isNotEmpty(attributeSearchResults) && attributeSearchResults.get(0).value().startsWith(searchCriteria)) {
-                filteredList.add(filteredMRSUser);
-            }
-        }
-        return (CollectionUtils.isEmpty(filteredList)) ? filteredMRSUsers : filteredList;
-    }
-
-    private List<MRSUser> filterUsers(String field, String matcher, List<MRSUser> filteredMRSUsers) {
-        return (StringUtils.isNotEmpty(matcher)) ? filter(having(field, StartsWithMatcher.ignoreCaseStartsWith(matcher)), filteredMRSUsers) : filteredMRSUsers;
-    }
-
-    private class UserFirstNameComparator implements Comparator<MRSUser> {
-        @Override
-        public int compare(MRSUser user1, MRSUser user2) {
-            return user2.getPerson().getFirstName().compareTo(user1.getPerson().getFirstName());
-        }
+        return allStaffs.searchStaff(systemId, firstName, middleName, lastName, phoneNumber, role, getAllUsers());
     }
 }

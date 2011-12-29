@@ -27,27 +27,27 @@ public class HomePage extends BasePage {
     }
 
     public void openCreateFaclityPage() {
-        selectMenu("Facility", "New", "newfacility");
+        selectMenu("Facility", "newfacility");
     }
 
     public void openSearchFaclityPage() {
-        selectMenu("Facility", "Search", "searchfacility");
+        selectMenu("Facility", "searchfacility");
     }
 
     public void openCreateStaffPage() {
-        selectMenu("Staff", "New", "newstaff");
+        selectMenu("Staff", "newstaff");
     }
 
     public void openSearchStaffPage() {
-        selectMenu("Staff", "Search", "searchstaff");
+        selectMenu("Staff", "searchstaff");
     }
 
     public void openCreatePatientPage() {
-        selectMenu("Patient", "New", "newpatient");
+        selectMenu("Patient", "newpatient");
     }
 
     public void openSearchPatientPage() {
-        selectMenu("Patient", "Search", "searchpatient");
+        selectMenu("Patient", "searchpatient");
     }
 
     public boolean isLogoutLinkVisible(){
@@ -58,11 +58,11 @@ public class HomePage extends BasePage {
         }
     }
 
-    public void selectMenu(final String menuName, final String menuItemName, final String menuItemId) {
+    public void selectMenu(final String menuName, final String menuItemId) {
         platformSpecificExecutor.execute(new PlatformSpecificExecutor.Code() {
             @Override
             public void windows() {
-                javascriptExecutor.clickOnLink(menuItemName, driver);
+                javascriptExecutor.clickOnLink(driver, menuName, menuItemId);
             }
 
             @Override
