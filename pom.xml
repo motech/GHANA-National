@@ -476,7 +476,7 @@
                             <includes>
                                 <include>**/*IT.java</include>
                                 <include>**/repository/*Test.java</include>
-                                <include>**/functional/*Test.java</include>
+                                <include>**/functional/**/*Test.java</include>
                             </includes>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
                         </configuration>
