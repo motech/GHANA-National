@@ -13,35 +13,16 @@ $.UserFormValidator = function() {
     };
 
     this.validate = function(form) {
-        var isValid = true;
-        hideAllErrors();
         formValidator.clearMessages(form);
         formValidator.validateRequiredFields(form);
         formValidator.validatePhoneNumbers(form);
 
-
-        if (!name_reg.test($("#user_first_name").val())) {
-            isValid = false;
-            $("#firstName_error").html("Please enter valid first name");
-            $("#firstName_error").show();
-        }
-
-        if (!name_reg.test($("#user_last_name").val())) {
-            isValid = false;
-            $("#lastName_error").html("Please enter valid last name");
-            $("#lastName_error").show();
-        }
-
-        if ($("#user_middle_name").val().length != 0 && !name_reg.test($("#user_middle_name").val())) {
-            isValid = false;
-            $("#middleName_error").html("Please enter valid middle name");
-            $("#middleName_error").show();
-        }
-
-        if (!name_reg.test($("#user_first_name").val())) {
-            isValid = false;
-            $("#firstName_error").html("Please enter valid first name");
-            $("#firstName_error").show();
+        var isValid = true;
+        hideAllErrors();
+        isValid = validateRegEx(name_reg, $("#user_first_name").val(), "Please enter valid first name", $("#firstName_error"));
+        isValid = validateRegEx(name_reg, $("#user_last_name").val(), "Please enter valid last name", $("#lastName_error"));
+        if ($("#user_middle_name").val().length != 0) {
+            isValid = validateRegEx(name_reg, $("#user_middle_name").val(), "Please enter valid middle name", $("#middleName_error"));
         }
 
         var regexMatch = $("#user_role option:selected").text().match(/\(.*?\)/);
@@ -60,6 +41,16 @@ $.UserFormValidator = function() {
         }
         return isValid;
     };
+
+    var validateRegEx = function (regEx, fieldValue, errorMessage, errorField) {
+        if (!regEx.test(fieldValue)) {
+            errorField.html(errorMessage);
+            errorField.show();
+            return false;
+        }
+        return true;
+    };
+
 };
 
 $.StaffForm = function() {
