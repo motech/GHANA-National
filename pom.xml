@@ -469,9 +469,9 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <!--<systemPropertyVariables>-->
-                                <!--<functional.test.display>:2</functional.test.display>-->
-                            <!--</systemPropertyVariables>-->
+                            <systemPropertyVariables>
+                                <functional.test.display>:2</functional.test.display>
+                            </systemPropertyVariables>
                             <printSummary>true</printSummary>
                             <includes>
                                 <include>**/*IT.java</include>
