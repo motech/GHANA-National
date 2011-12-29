@@ -53,7 +53,9 @@
         <spring:message code="yes" var="yes" htmlEscape="false"/>
         <spring:message code="no" var="no" htmlEscape="false"/>
         <spring:message code="patient_male" var="male" htmlEscape="false"/>
+        <spring:message code="patient_male_display" var="male_display" htmlEscape="false"/>
         <spring:message code="patient_female" var="female" htmlEscape="false"/>
+        <spring:message code="patient_female_display" var="female_display" htmlEscape="false"/>
         <spring:message code="patient_type" var="patient_type" htmlEscape="false"/>
         <spring:message code="patient_type_other" var="patient_type_other" htmlEscape="false"/>
         <spring:message code="patient_type_mother" var="patient_type_mother" htmlEscape="false"/>
@@ -62,6 +64,7 @@
         <spring:message code="patient_type_other_display" var="patient_type_other_display" htmlEscape="false"/>
         <spring:message code="patient_type_mother_display" var="patient_type_mother_display" htmlEscape="false"/>
         <spring:message code="patient_type_child_display" var="patient_type_child_display" htmlEscape="false"/>
+        <spring:message code="select_patient_type_display" var="select_patient_type_display" htmlEscape="false"/>
 
         <spring:message code="facility_region" var="facility_region" htmlEscape="false"/>
         <spring:message code="facility_district" var="facility_district" htmlEscape="false"/>
@@ -92,7 +95,10 @@
 
         <div class="form-field">
             <label class="formLabel" for="typeOfPatient">${fn:escapeXml(patient_type)}:</label>
-            <form:select path="typeOfPatient" label="${fn:escapeXml(patient_type)}">
+            <form:select cssClass="jsRequire" path="typeOfPatient" label="${fn:escapeXml(patient_type)}">
+                <option value="">
+                    ${fn:escapeXml(select_patient_type_display)}
+                </option>
                 <option value="${fn:escapeXml(patient_type_mother)}">
                     ${fn:escapeXml(patient_type_mother_display)}
                 </option>
@@ -103,6 +109,10 @@
                     ${fn:escapeXml(patient_type_other_display)}
                 </option>
             </form:select>
+            <form:hidden path="typeOfPatient"/>
+            <span id='typeOfPatientError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_type)} ${fn:escapeXml(required_msg)}
+            </span>
         </div>
 
         <div class="form-field hide">
@@ -172,10 +182,11 @@
             <div class="radio">
                 <span class="jsHideMale">
                     <form:radiobutton cssClass="jsRequire" path="sex" value="${fn:escapeXml(male)}"
-                                      label="${fn:escapeXml(male)}"/>
+                                      label="${fn:escapeXml(male_display)}"/>
                 </span>
                 <form:radiobutton cssClass="jsRequire" path="sex" value="${fn:escapeXml(female)}"
-                                  label="${fn:escapeXml(female)}"/>
+                                  label="${fn:escapeXml(female_display)}"/>
+                <input type="hidden" id="patientGender" value="${patientForm.sex}"/>
             </div>
             <div class="radioError">
                 <span id='sexError' class='alertText formlyInvalid formlyAlert hide'>

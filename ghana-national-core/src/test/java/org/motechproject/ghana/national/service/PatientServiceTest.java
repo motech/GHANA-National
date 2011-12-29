@@ -9,6 +9,10 @@ import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.AllPatients;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
+import org.openmrs.Person;
+import org.openmrs.Relationship;
 import org.openmrs.api.IdentifierNotUniqueException;
 
 import java.util.Arrays;
@@ -17,7 +21,14 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientServiceTest {
@@ -45,6 +56,10 @@ public class PatientServiceTest {
         Patient patient = mock(Patient.class);
         final String parentId = "11";
         when(mockAllPatients.patientById(parentId)).thenReturn(null);
+        MRSPerson mockPerson = mock(MRSPerson.class);
+        MRSPatient mockMRSPatient = mock(MRSPatient.class);
+        when(patient.mrsPatient()).thenReturn(mockMRSPatient);
+        when(mockAllPatients.getMotherRelationship(mockPerson)).thenReturn(null);
         patientService.registerPatient(patient, PatientType.CHILD_UNDER_FIVE, parentId);
     }
 
@@ -52,11 +67,24 @@ public class PatientServiceTest {
     public void shouldRegisterAPatientWithParentIfFound() throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         Patient patient = mock(Patient.class);
         Patient mother = mock(Patient.class);
+        final MRSPatient mrsMother = mock(MRSPatient.class);
+        final MRSPerson mrsMotherPerson = mock(MRSPerson.class);
+        when(mother.mrsPatient()).thenReturn(mrsMother);
+        when(mrsMother.getPerson()).thenReturn(mrsMotherPerson);
         final String parentId = "11";
         when(mockAllPatients.patientById(parentId)).thenReturn(mother);
+        Patient child = mock(Patient.class);
+        final MRSPatient mrsChild = mock(MRSPatient.class);
+        final MRSPerson mrsChildPerson = mock(MRSPerson.class);
+        when(child.mrsPatient()).thenReturn(mrsChild);
+        when(mrsChild.getPerson()).thenReturn(mrsChildPerson);
+        String childId = "121";
+        when(mockAllPatients.save(patient)).thenReturn(childId);
+        when(mockAllPatients.patientById(childId)).thenReturn(child);
         patientService.registerPatient(patient, PatientType.CHILD_UNDER_FIVE, parentId);
 
         verify(mockAllPatients).save(patient);
+        verify(mockAllPatients).createMotherChildRelationship(mrsMotherPerson, mrsChildPerson);
     }
 
     @Test(expected = PatientIdNotUniqueException.class)
@@ -73,6 +101,10 @@ public class PatientServiceTest {
     public void shouldReturnGetAPatientById() {
         String patientId = "10000";
         Patient patient = mock(Patient.class);
+        MRSPerson mockPerson = mock(MRSPerson.class);
+        MRSPatient mockMRSPatient = mock(MRSPatient.class);
+        when(patient.mrsPatient()).thenReturn(mockMRSPatient);
+        when(mockAllPatients.getMotherRelationship(mockPerson)).thenReturn(null);
         when(mockAllPatients.patientById(patientId)).thenReturn(patient);
         assertThat(patientService.getPatientById(patientId), is(equalTo(patient)));
 
@@ -94,10 +126,79 @@ public class PatientServiceTest {
     }
 
     @Test
-    public void shouldUpdateAPatient() {
+    public void shouldCreateMotherChildRelationshipAndUpdate() throws ParentNotFoundException {
         Patient mockPatient = mock(Patient.class);
-        String parentId = "12345";
-        patientService.updatePatient(mockPatient, PatientType.CHILD_UNDER_FIVE , parentId);
+        String parentId = "123";
+        String savedPatientId = "234";
+        when(mockAllPatients.update(mockPatient)).thenReturn(savedPatientId);
+        MRSPerson mockPerson = mock(MRSPerson.class);
+        MRSPatient mockMRSPatient = mock(MRSPatient.class);
+        when(mockPatient.mrsPatient()).thenReturn(mockMRSPatient);
+        when(mockMRSPatient.getPerson()).thenReturn(mockPerson);
+        when(mockAllPatients.getMotherRelationship(mockPerson)).thenReturn(null);
+        final PatientService spyPatientService = spy(patientService);
+        doReturn(mockPatient).when(spyPatientService).getPatientById(savedPatientId);
+        doNothing().when(spyPatientService).createRelationship(PatientType.CHILD_UNDER_FIVE, parentId, savedPatientId);
+
+        spyPatientService.updatePatient(mockPatient, PatientType.CHILD_UNDER_FIVE, parentId);
+
         verify(mockAllPatients).update(mockPatient);
+        verify(spyPatientService).createRelationship(PatientType.CHILD_UNDER_FIVE, parentId, savedPatientId);
     }
+
+    @Test
+    public void shoulVoidMotherChildRelationshipAndUpdate() throws ParentNotFoundException {
+        Patient mockPatient = mock(Patient.class);
+        String parentId = "";
+        String savedPatientId = "234";
+        when(mockAllPatients.update(mockPatient)).thenReturn(savedPatientId);
+        MRSPerson mockPerson = mock(MRSPerson.class);
+        MRSPatient mockMRSPatient = mock(MRSPatient.class);
+        when(mockPatient.mrsPatient()).thenReturn(mockMRSPatient);
+        when(mockMRSPatient.getPerson()).thenReturn(mockPerson);
+        Relationship mockRelationship = mock(Relationship.class);
+        when(mockAllPatients.getMotherRelationship(mockPerson)).thenReturn(mockRelationship);
+        final PatientService spyPatientService = spy(patientService);
+        doReturn(mockPatient).when(spyPatientService).getPatientById(savedPatientId);
+        doNothing().when(spyPatientService).createRelationship(PatientType.CHILD_UNDER_FIVE, parentId, savedPatientId);
+
+        spyPatientService.updatePatient(mockPatient, PatientType.CHILD_UNDER_FIVE, parentId);
+        verify(mockAllPatients).update(mockPatient);
+        verify(mockAllPatients).voidMotherChildRelationship(mockPerson);
+    }
+
+    @Test
+    public void shouldUpdateMotherChildRelationshipAndUpdate() throws ParentNotFoundException {
+        String parentId = "parentId";
+        String savedPatientId = "234";
+
+        Patient mockPatient = mock(Patient.class);
+        when(mockAllPatients.update(mockPatient)).thenReturn(savedPatientId);
+        MRSPerson mockChildPerson = mock(MRSPerson.class);
+        MRSPatient mockMRSPatient = mock(MRSPatient.class);
+        when(mockPatient.mrsPatient()).thenReturn(mockMRSPatient);
+        when(mockMRSPatient.getPerson()).thenReturn(mockChildPerson);
+
+        Relationship mockRelationship = mock(Relationship.class);
+        final Person mockPersonA = mock(Person.class);
+        when(mockRelationship.getPersonA()).thenReturn(mockPersonA);
+        when(mockAllPatients.getMotherRelationship(mockChildPerson)).thenReturn(mockRelationship);
+
+        MRSPerson mockMotherPerson = mock(MRSPerson.class);
+        MRSPatient mockMotherMRSPatient = mock(MRSPatient.class);
+        Patient mockMotherPatient = mock(Patient.class);
+        when(mockMotherPatient.mrsPatient()).thenReturn(mockMotherMRSPatient);
+        when(mockMotherMRSPatient.getPerson()).thenReturn(mockMotherPerson);
+
+        final PatientService spyPatientService = spy(patientService);
+        doReturn(mockPatient).when(spyPatientService).getPatientById(savedPatientId);
+        doReturn(mockMotherPatient).when(spyPatientService).getPatientById(parentId);
+        doNothing().when(spyPatientService).createRelationship(PatientType.CHILD_UNDER_FIVE, parentId, savedPatientId);
+
+        spyPatientService.updatePatient(mockPatient, PatientType.CHILD_UNDER_FIVE, parentId);
+
+        verify(mockAllPatients).update(mockPatient);
+        verify(mockAllPatients).updateMotherChildRelationship(mockMotherPerson, mockChildPerson);
+    }
+
 }

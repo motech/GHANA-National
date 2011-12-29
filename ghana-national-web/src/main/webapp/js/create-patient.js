@@ -2,26 +2,19 @@ $(document).ready(function() {
 
     $('#dateOfBirth').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#nhisExpirationDate').datepicker({dateFormat: "dd/mm/yy", buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:2100', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
-    $('#typeOfPatient').change(function() {
-        ($(this).val() == 'CHILD_UNDER_FIVE') ? $('#parentId').parent().show() : $('#parentId').parent().hide();
-    });
-
     $('#registrationMode').change(function() {
         ($(this).val() == 'USE_PREPRINTED_ID') ? $('#motechId').parent().show() : $('#motechId').parent().hide();
     });
 
     $('#typeOfPatient').change(function() {
+        ($(this).val() == 'CHILD_UNDER_FIVE') ? $('#parentId').parent().show() : $('#parentId').parent().hide();
+        ($(this).val() == 'OTHER') ? $('#otherPatientContactNumber').show() : $('#otherPatientContactNumber').hide();
+
         if($(this).val() == 'PATIENT_MOTHER') {
             disableGenderForMother();
         } else {
             $('#sex2').attr('checked', false);
             $('.jsHideMale').show();
-        }
-
-        if($(this).val() == 'OTHER') {
-            $('#otherPatientContactNumber').show();
-        } else {
-            $('#otherPatientContactNumber').hide();
         }
     });
 
@@ -62,5 +55,14 @@ $(document).ready(function() {
          $('#nhisExpirationDate').parent().hide();
     });
     $('#regions').trigger('change');
-    disableGenderForMother();
+
+    $($('select[id = "typeOfPatient"]').find('option[value="' + $('input[type = "hidden"][id="typeOfPatient"]').val() + '"]')[0]).attr('selected', true).change();
+
+    if($('#patientGender').val() != undefined && $('#patientGender').val() != "") {
+        if($('#patientGender').val() == 'F') {
+            $('#sex2').attr('checked', true);
+        } else {
+            $('#sex1').attr('checked', true);
+        }
+    }
 });
