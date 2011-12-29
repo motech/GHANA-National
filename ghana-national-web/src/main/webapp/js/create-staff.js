@@ -12,25 +12,18 @@ $.UserFormValidator = function() {
         $("#firstName.errors").html('').hide();
     };
 
-    this.validate = function() {
+    this.validate = function(form) {
         var isValid = true;
         hideAllErrors();
+        formValidator.clearMessages(form);
+        formValidator.validateRequiredFields(form);
+        formValidator.validatePhoneNumbers(form);
 
-        if ($("#user_first_name").val().length == 0) {
-            isValid = false;
-            $("#firstName_error").html("Please enter first name");
-            $("#firstName_error").show();
-        }
+
         if (!name_reg.test($("#user_first_name").val())) {
             isValid = false;
             $("#firstName_error").html("Please enter valid first name");
             $("#firstName_error").show();
-        }
-
-        if ($("#user_last_name").val().length == 0) {
-            isValid = false;
-            $("#lastName_error").html("Please enter last name");
-            $("#lastName_error").show();
         }
 
         if (!name_reg.test($("#user_last_name").val())) {
@@ -43,12 +36,6 @@ $.UserFormValidator = function() {
             isValid = false;
             $("#middleName_error").html("Please enter valid middle name");
             $("#middleName_error").show();
-        }
-
-        if ($("#phoneNumber").val().length == 0 || !phone_regex.test($("#phoneNumber").val())) {
-            isValid = false;
-            $("#phoneNumberError").html("Please enter valid phone number");
-            $("#phoneNumberError").show();
         }
 
         if (!name_reg.test($("#user_first_name").val())) {
@@ -79,8 +66,9 @@ $.StaffForm = function() {
     var validator = new $.UserFormValidator();
 
     var submitForm = function() {
-        if (validator.validate()) {
-            $('#staffForm').submit();
+        var staffForm = $('#staffForm');
+        if (validator.validate(staffForm)) {
+            staffForm.submit();
         }
     };
     var bootstrap = function() {

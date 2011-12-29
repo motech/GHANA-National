@@ -21,7 +21,7 @@
 
         <div>
             <label class="formLabel" for="user_first_name">${fn:escapeXml(user_first_name)} *:</label>
-            <form:input id="user_first_name" path="firstName" size="20" label="${fn:escapeXml(user_first_name)}"/>
+            <form:input id="user_first_name" path="firstName" size="20" cssClass="jsRequire" label="${fn:escapeXml(user_first_name)}"/>
             <span id='firstName_error' class='formlyInvalid formlyAlert hide'></span>
         </div>
         <div>
@@ -31,7 +31,7 @@
         </div>
         <div>
             <label class="formLabel" for="user_last_name">${fn:escapeXml(user_last_name)} *:</label>
-            <form:input id="user_last_name" path="lastName" size="20" label="${fn:escapeXml(user_last_name)}"/>
+            <form:input id="user_last_name" path="lastName" size="20" cssClass="jsRequire" label="${fn:escapeXml(user_last_name)}"/>
             <span id='lastName_error' class='formlyInvalid formlyAlert hide'></span>
         </div>
         <div>
