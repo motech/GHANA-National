@@ -82,7 +82,13 @@ public class XformHttpClient {
         try {
             if (httpConnection.getResponseCode() == HttpConnection.HTTP_OK) {
                 dataInputStream = new DataInputStream(new ZInputStream(httpConnection.openInputStream()));
-                final XformResponse response = new XformResponse(dataInputStream.readByte(), dataInputStream.readInt(), dataInputStream.readInt());
+                final byte status = dataInputStream.readByte();
+
+                if(status != 1) {
+                    throw new RuntimeException("xml processing failed.");
+                }
+
+                final XformResponse response = new XformResponse(status, dataInputStream.readInt(), dataInputStream.readInt());
                 for (int i = 0; i < response.getFailureCount(); i++) {
                     response.addError(new Error(dataInputStream.readByte(), dataInputStream.readShort(), dataInputStream.readUTF()));
                 }

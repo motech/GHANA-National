@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.repository;
 
 import ch.lambdaj.function.convert.Converter;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
@@ -16,7 +17,11 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.convert;
+import static ch.lambdaj.Lambda.extract;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.selectUnique;
 import static org.hamcrest.core.Is.is;
 
 @Repository
@@ -104,8 +109,12 @@ public class AllFacilities extends MotechAuditableRepository<Facility> {
         List<Facility> facilities = db.queryView(viewQuery, Facility.class);
         return CollectionUtils.isEmpty(facilities) ? null : facilities.get(0);
     }
+
     @View(name = "find_by_motech_facility_id", map = "function(doc) { if(doc.type === 'Facility') emit(doc.motechId, doc) }")
     public Facility findByMotechFacilityId(String facilityId) {
+        if(StringUtils.isEmpty(facilityId)) {
+            return null;
+        }
         ViewQuery viewQuery = createQuery("find_by_motech_facility_id").key(facilityId).includeDocs(true);
         List<Facility> facilities = db.queryView(viewQuery, Facility.class);
         return CollectionUtils.isEmpty(facilities) ? null : facilities.get(0);
