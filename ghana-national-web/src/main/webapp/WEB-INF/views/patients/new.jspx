@@ -44,7 +44,9 @@
         <spring:message code="yes" var="yes" htmlEscape="false"/>
         <spring:message code="no" var="no" htmlEscape="false"/>
         <spring:message code="patient_male" var="male" htmlEscape="false"/>
+        <spring:message code="patient_male_display" var="male_display" htmlEscape="false"/>
         <spring:message code="patient_female" var="female" htmlEscape="false"/>
+        <spring:message code="patient_female_display" var="female_display" htmlEscape="false"/>
         <spring:message code="patient_type" var="patient_type" htmlEscape="false"/>
         <spring:message code="patient_type_other" var="patient_type_other" htmlEscape="false"/>
         <spring:message code="patient_type_mother" var="patient_type_mother" htmlEscape="false"/>
@@ -177,10 +179,10 @@
             <div class="radio">
                 <span class="jsHideMale">
                     <form:radiobutton cssClass="jsRequire" path="sex" value="${fn:escapeXml(male)}"
-                                      label="${fn:escapeXml(male)}"/>
+                                      label="${fn:escapeXml(male_display)}"/>
                 </span>
                 <form:radiobutton cssClass="jsRequire" path="sex" value="${fn:escapeXml(female)}"
-                                  label="${fn:escapeXml(female)}"/>
+                                  label="${fn:escapeXml(female_display)}"/>
             </div>
             <div class="radioError">
                 <span id='sexError' class='alertText formlyInvalid formlyAlert hide'>

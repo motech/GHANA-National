@@ -57,4 +57,12 @@ $(document).ready(function() {
     $('#regions').trigger('change');
 
     $($('select[id = "typeOfPatient"]').find('option[value="' + $('input[type = "hidden"][id="typeOfPatient"]').val() + '"]')[0]).attr('selected', true).change();
+
+    if($('#patientGender').val() != undefined && $('#patientGender').val() != "") {
+        if($('#patientGender').val() == 'F') {
+            $('#sex2').attr('checked', true);
+        } else {
+            $('#sex1').attr('checked', true);
+        }
+    }
 });

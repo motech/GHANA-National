@@ -54,7 +54,7 @@ public class PatientHelperTest {
         createPatientForm.setMiddleName("middlenm");
         createPatientForm.setPreferredName("preferred");
         createPatientForm.setMotechId("12567");
-        createPatientForm.setSex("Male");
+        createPatientForm.setSex(Constants.PATIENT_GENDER_MALE);
         createPatientForm.setNhisExpirationDate(new Date());
         createPatientForm.setParentId("123");
         createPatientForm.setPhoneNumber("1234567890");
@@ -76,7 +76,7 @@ public class PatientHelperTest {
         person.lastName("lastNm");
         person.middleName("middlenm");
         person.preferredName("preferred");
-        person.gender("Male");
+        person.gender(Constants.PATIENT_GENDER_MALE);
         person.addAttribute(new Attribute(PatientAttributes.INSURED.getAttribute(), "false"));
         person.addAttribute(new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), "45326"));
         person.addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), "06543987623"));
