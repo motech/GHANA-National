@@ -41,7 +41,9 @@ public class PatientHelper {
 
         MRSPatient mrsPatient = new MRSPatient(createPatientForm.getMotechId(), mrsPerson, mrsFacility);
 
-        return new Patient(mrsPatient);
+        final Patient patient = new Patient(mrsPatient);
+        patient.parentId(createPatientForm.getParentId());
+        return patient;
     }
 
     private void setAttribute(List<Attribute> attributes, String attributeValue, PatientAttributes patientAttribute) {
@@ -67,6 +69,12 @@ public class PatientHelper {
         createPatientForm.setPreferredName(mrsPerson.getPreferredName());
         createPatientForm.setMotechId(patientVO.mrsPatient().getMotechId());
         createPatientForm.setSex(mrsPerson.getGender());
+        final String parentId = patientVO.parentId();
+        if (StringUtils.isNotEmpty(parentId)) {
+            createPatientForm.setParentId(parentId);
+            createPatientForm.setTypeOfPatient(PatientType.CHILD_UNDER_FIVE);
+        }
+
 
         String insured = mrsPerson.attrValue(PatientAttributes.INSURED.getAttribute());
         if (insured != null) {

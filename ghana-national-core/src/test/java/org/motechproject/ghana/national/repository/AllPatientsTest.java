@@ -8,6 +8,7 @@ import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.services.MRSPatientAdaptor;
+import org.motechproject.openmrs.services.OpenMRSRelationshipAdaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
@@ -29,12 +30,16 @@ public class AllPatientsTest {
 
     @Mock
     MRSPatientAdaptor mockMrsPatientAdaptor;
+    @Mock
+    OpenMRSRelationshipAdaptor mockOpenMRSRelationshipAdaptor;
+
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
         allPatients = new AllPatients();
         ReflectionTestUtils.setField(allPatients, "patientAdaptor", mockMrsPatientAdaptor);
+        ReflectionTestUtils.setField(allPatients, "openMRSRelationshipAdaptor", mockOpenMRSRelationshipAdaptor);
     }
 
     @Test
@@ -112,5 +117,47 @@ public class AllPatientsTest {
         when(mockMrsPatientAdaptor.updatePatient(patient.mrsPatient())).thenReturn(patientId);
         final String motechIdForUpdatedPatient = allPatients.update(patient);
         assertThat(patientId, is(motechIdForUpdatedPatient));
+    }
+    
+    @Test
+    public void shouldCreateMotherRelation() {
+        MRSPerson mockMother = mock(MRSPerson.class);
+        MRSPerson mockChild = mock(MRSPerson.class);
+        final String motherId = "123";
+        String childId = "234";
+        when(mockMother.getId()).thenReturn(motherId);
+        when(mockChild.getId()).thenReturn(childId);
+        allPatients.createMotherChildRelationship(mockMother, mockChild);
+        verify(mockOpenMRSRelationshipAdaptor).createMotherChildRelationship(motherId,childId);
+    }
+
+    @Test
+    public void shouldUpdateMotherRelation() {
+        MRSPerson mockMother = mock(MRSPerson.class);
+        MRSPerson mockChild = mock(MRSPerson.class);
+        final String motherId = "123";
+        String childId = "234";
+        when(mockMother.getId()).thenReturn(motherId);
+        when(mockChild.getId()).thenReturn(childId);
+        allPatients.updateMotherChildRelationship(mockMother, mockChild);
+        verify(mockOpenMRSRelationshipAdaptor).updateMotherRelationship(motherId, childId);
+    }
+
+    @Test
+    public void shouldVoidMotherChildRelationship() {
+        MRSPerson mockChild = mock(MRSPerson.class);
+        String childId = "234";
+        when(mockChild.getId()).thenReturn(childId);
+        allPatients.voidMotherChildRelationship(mockChild);
+        verify(mockOpenMRSRelationshipAdaptor).voidRelationship(childId);
+    }
+
+    @Test
+    public void shouldGetMotherRelationship() {
+        MRSPerson mockChild = mock(MRSPerson.class);
+        String childId = "234";
+        when(mockChild.getId()).thenReturn(childId);
+        allPatients.getMotherRelationship(mockChild);
+        verify(mockOpenMRSRelationshipAdaptor).getMotherRelationship(childId);
     }
 }

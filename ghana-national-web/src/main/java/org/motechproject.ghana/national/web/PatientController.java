@@ -173,6 +173,9 @@ public class PatientController {
             return NEW_PATIENT_URL;
         } catch (ParseException ignored) {
             return NEW_PATIENT_URL;
+        } catch (ParentNotFoundException e) {
+            handleError(bindingResult, modelMap, messageSource.getMessage("patient_parent_not_found", null, Locale.getDefault()));
+            return NEW_PATIENT_URL;
         }
     }
 }
