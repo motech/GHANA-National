@@ -2,30 +2,35 @@ package org.motechproject.ghana.national.repository;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.ektorp.CouchDbConnector;
-import org.motechproject.dao.MotechAuditableRepository;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.StaffType;
 import org.motechproject.ghana.national.tools.StartsWithMatcher;
+import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.mrs.services.MRSUserAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
-import static ch.lambdaj.Lambda.filter;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.equalTo;
 
 @Repository
 public class AllStaffs {
-    public List<MRSUser> searchStaff(String systemId, String firstName, String middleName, String lastName, String phoneNumber, String role, List<MRSUser> allUsers) {
+
+    private AllStaffTypes allStaffTypes;
+    private MRSUserAdaptor userAdaptor;
+
+    @Autowired
+    public AllStaffs(AllStaffTypes allStaffTypes, MRSUserAdaptor userAdaptor) {
+        this.allStaffTypes = allStaffTypes;
+        this.userAdaptor = userAdaptor;
+    }
+
+    public List<MRSUser> searchStaff(String systemId, String firstName, String middleName, String lastName, String phoneNumber, String role) {
+        List<MRSUser> allUsers = getAllUsers();
         allUsers = filterUsers(on(MRSUser.class).getSystemId(), systemId, allUsers);
         allUsers = filterUsers(on(MRSUser.class).getPerson().getFirstName(), firstName, allUsers);
         allUsers = filterUsers(on(MRSUser.class).getPerson().getMiddleName(), middleName, allUsers);
@@ -64,6 +69,40 @@ public class AllStaffs {
             }
         }
         return (CollectionUtils.isEmpty(filteredList)) ? filteredMRSUsers : filteredList;
+    }
+
+    public Map<String, String> fetchAllRoles() {
+        Map<String, String> roles = new LinkedHashMap<String, String>();
+        for (StaffType staffType : allStaffTypes.getAll()) {
+            roles.put(staffType.name(), staffType.description());
+        }
+        return roles;
+    }
+
+    public Map saveUser(MRSUser mrsUser) throws UserAlreadyExistsException {
+        return userAdaptor.saveUser(mrsUser);
+    }
+
+    public Map updateUser(MRSUser mrsUser) {
+        return userAdaptor.updateUser(mrsUser);
+    }
+
+    public String changePasswordByEmailId(String emailId) {
+        String password = "";
+        try {
+            password = userAdaptor.setNewPasswordForUser(emailId);
+        } catch (Exception e) {
+            password = "";
+        }
+        return password;
+    }
+
+    public List<MRSUser> getAllUsers() {
+        return userAdaptor.getAllUsers();
+    }
+
+    public MRSUser getUserById(String userId) {
+        return userAdaptor.getUserByUserName(userId);
     }
 
     private class UserFirstNameComparator implements Comparator<MRSUser> {
