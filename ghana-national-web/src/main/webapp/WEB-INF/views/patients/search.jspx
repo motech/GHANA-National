@@ -71,7 +71,7 @@
                                     <c:out value="${patient.lastName}"/>
                                 </td>
                                 <td>
-                                    <fmt:formatDate value="${patient.dateOfBirth}" pattern="yyyy-MM-dd"/>
+                                    <fmt:formatDate value="${patient.dateOfBirth}" pattern="dd-MM-yyyy"/>
                                 </td>
                                 <td>
                                     <c:out value="${patient.sex}"/>
