@@ -138,12 +138,12 @@ public class PatientServiceTest {
         when(mockAllPatients.getMotherRelationship(mockPerson)).thenReturn(null);
         final PatientService spyPatientService = spy(patientService);
         doReturn(mockPatient).when(spyPatientService).getPatientById(savedPatientId);
-        doNothing().when(spyPatientService).createRelationship(PatientType.CHILD_UNDER_FIVE, parentId, savedPatientId);
+        doNothing().when(spyPatientService).createRelationship(parentId, savedPatientId);
 
         spyPatientService.updatePatient(mockPatient, PatientType.CHILD_UNDER_FIVE, parentId);
 
         verify(mockAllPatients).update(mockPatient);
-        verify(spyPatientService).createRelationship(PatientType.CHILD_UNDER_FIVE, parentId, savedPatientId);
+        verify(spyPatientService).createRelationship(parentId, savedPatientId);
     }
 
     @Test
@@ -160,7 +160,7 @@ public class PatientServiceTest {
         when(mockAllPatients.getMotherRelationship(mockPerson)).thenReturn(mockRelationship);
         final PatientService spyPatientService = spy(patientService);
         doReturn(mockPatient).when(spyPatientService).getPatientById(savedPatientId);
-        doNothing().when(spyPatientService).createRelationship(PatientType.CHILD_UNDER_FIVE, parentId, savedPatientId);
+        doNothing().when(spyPatientService).createRelationship(parentId, savedPatientId);
 
         spyPatientService.updatePatient(mockPatient, PatientType.CHILD_UNDER_FIVE, parentId);
         verify(mockAllPatients).update(mockPatient);
@@ -193,7 +193,7 @@ public class PatientServiceTest {
         final PatientService spyPatientService = spy(patientService);
         doReturn(mockPatient).when(spyPatientService).getPatientById(savedPatientId);
         doReturn(mockMotherPatient).when(spyPatientService).getPatientById(parentId);
-        doNothing().when(spyPatientService).createRelationship(PatientType.CHILD_UNDER_FIVE, parentId, savedPatientId);
+        doNothing().when(spyPatientService).createRelationship(parentId, savedPatientId);
 
         spyPatientService.updatePatient(mockPatient, PatientType.CHILD_UNDER_FIVE, parentId);
 

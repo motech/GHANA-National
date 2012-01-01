@@ -8,7 +8,6 @@ $(document).ready(function() {
 
     $('#typeOfPatient').change(function() {
         ($(this).val() == 'CHILD_UNDER_FIVE') ? $('#parentId').parent().show() : $('#parentId').parent().hide();
-        ($(this).val() == 'OTHER') ? $('#otherPatientContactNumber').show() : $('#otherPatientContactNumber').hide();
 
         if($(this).val() == 'PATIENT_MOTHER') {
             disableGenderForMother();
@@ -31,6 +30,7 @@ $(document).ready(function() {
         formValidator.validateRequiredFields(form);
         formValidator.validateDate(form);
         formValidator.validateDateBefore(form);
+        formValidator.validatePhoneNumbers(form);
         return formValidator.hasErrors(form);
     }
 

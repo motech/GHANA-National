@@ -173,7 +173,7 @@
                 </span>
             </div>
         </div>
-        <div id="otherPatientContactNumber" class="hide">
+        <div class="form-field">
             <motech:phone path="phoneNumber" label="${patient_phone_number} :"
                           errorMsg="${phone_number_incorrect_msg}" required="false"/>
         </div>

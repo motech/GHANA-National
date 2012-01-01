@@ -63,6 +63,7 @@ public class PatientHelper {
         createPatientForm.setRegion(mrsFacility.getRegion());
         createPatientForm.setDistrict(mrsFacility.getCountyDistrict());
         createPatientForm.setSubDistrict(mrsFacility.getStateProvince());
+        createPatientForm.setFacilityName(mrsFacility.getName());
         createPatientForm.setFirstName(mrsPerson.getFirstName());
         createPatientForm.setLastName(mrsPerson.getLastName());
         createPatientForm.setMiddleName(mrsPerson.getMiddleName());

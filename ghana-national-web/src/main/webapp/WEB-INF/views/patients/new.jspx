@@ -155,7 +155,7 @@
                 ${fn:escapeXml(patient_date_of_birth)} ${fn:escapeXml(incorrect_msg)}
             </span>
         </div>
-        <div id="otherPatientContactNumber" class="hide form-field">
+        <div class="form-field">
             <motech:phone path="phoneNumber" label="${patient_phone_number} :"
                           errorMsg="${phone_number_incorrect_msg}" required="false"/>
         </div>

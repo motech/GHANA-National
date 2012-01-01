@@ -33,7 +33,6 @@ public class AllPatientsTest {
     @Mock
     OpenMRSRelationshipAdaptor mockOpenMRSRelationshipAdaptor;
 
-
     @Before
     public void setUp() throws Exception {
         initMocks(this);

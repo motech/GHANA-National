@@ -30,8 +30,10 @@ public class PatientService {
     public String registerPatient(Patient patient, PatientType typeOfPatient, String parentId)
             throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         try {
-            final String savedPatientId = allPatients.save(patient);
-            createRelationship(typeOfPatient, parentId, savedPatientId);
+            String savedPatientId = allPatients.save(patient);
+            if (StringUtils.isNotEmpty(parentId)) {
+                createRelationship(parentId, savedPatientId);
+            }
             return savedPatientId;
         } catch (IdentifierNotUniqueException e) {
             throw new PatientIdNotUniqueException();
@@ -40,42 +42,16 @@ public class PatientService {
         }
     }
 
-    void createRelationship(PatientType typeOfPatient, String parentId, String savedPatientId) throws ParentNotFoundException {
-        if (PatientType.CHILD_UNDER_FIVE.equals(typeOfPatient) && StringUtils.isNotEmpty(parentId)) {
-            Patient mother = getPatientById(parentId);
-            if (mother == null) {
-                throw new ParentNotFoundException();
-            }
-            final Patient child = getPatientById(savedPatientId);
-            allPatients.createMotherChildRelationship(mother.mrsPatient().getPerson(), child.mrsPatient().getPerson());
-        }
-    }
-
     public Patient getPatientById(String patientId) {
-        final Patient patient = allPatients.patientById(patientId);
+        Patient patient = allPatients.patientById(patientId);
         if (patient == null) {
-            return patient;
+            return null;
         }
-        final Relationship motherRelationship = allPatients.getMotherRelationship(patient.mrsPatient().getPerson());
+        Relationship motherRelationship = allPatients.getMotherRelationship(patient.mrsPatient().getPerson());
         if (motherRelationship != null) {
-            final Person mother = motherRelationship.getPersonA();
-            if (mother != null && !mother.getNames().isEmpty()) {
-                final List<Patient> patients = allPatients.search(mother.getNames().iterator().next().getFullName(), null);
-                if (patients != null && !patients.isEmpty()) {
-                    patient.parentId(getParentId(mother, patients));
-                }
-            }
+            setParentId(patient, motherRelationship);
         }
         return patient;
-    }
-
-    private String getParentId(Person mother, List<Patient> patients) {
-        for (Patient motherPatient : patients) {
-            if (motherPatient.mrsPatient().getPerson().getId().equals(mother.getId().toString())) {
-                return motherPatient.mrsPatient().getMotechId();
-            }
-        }
-        return null;
     }
 
     public List<Patient> search(String name, String motechId) {
@@ -87,21 +63,54 @@ public class PatientService {
         Patient savedPatient = getPatientById(savedPatientId);
         Relationship relationship = allPatients.getMotherRelationship(savedPatient.mrsPatient().getPerson());
 
-        if (relationship != null) {
-            if (StringUtils.isNotEmpty(parentId)) {
-                Patient updatedMother = getPatientById(parentId);
-                Person personA = relationship.getPersonA();
-                if (personA != null && !personA.getId().toString().equals(updatedMother.mrsPatient().getPerson().getId())) {
-                    allPatients.updateMotherChildRelationship(updatedMother.mrsPatient().getPerson(), savedPatient.mrsPatient().getPerson());
-                } else {
-                    //relationship has not changed!
-                }
-            } else {
-                allPatients.voidMotherChildRelationship(savedPatient.mrsPatient().getPerson());
-            }
-        } else if (StringUtils.isNotEmpty(parentId)) {
-            createRelationship(typeOfPatient, parentId, savedPatientId);
+        if (relationship != null && StringUtils.isEmpty(parentId)) {
+            allPatients.voidMotherChildRelationship(savedPatient.mrsPatient().getPerson());
+        }
+        if (relationship == null && StringUtils.isNotEmpty(parentId)) {
+            createRelationship(parentId, savedPatientId);
+        }
+        if (relationship != null && StringUtils.isNotEmpty(parentId)) {
+            updateRelationship(parentId, savedPatient, relationship);
         }
         return savedPatientId;
+    }
+
+    private void setParentId(Patient patient, Relationship motherRelationship) {
+        Person mother = motherRelationship.getPersonA();
+        if (mother != null && !mother.getNames().isEmpty()) {
+            List<Patient> patients = allPatients.search(mother.getNames().iterator().next().getFullName(), null);
+            if (patients != null && !patients.isEmpty()) {
+                patient.parentId(getParentId(mother, patients));
+            }
+        }
+    }
+
+    private String getParentId(Person mother, List<Patient> patients) {
+        for (Patient patient : patients) {
+            if (patient.mrsPatient().getPerson().getId().equals(mother.getId().toString())) {
+                return patient.mrsPatient().getMotechId();
+            }
+        }
+        return null;
+    }
+
+    void createRelationship(String parentId, String savedPatientId) throws ParentNotFoundException {
+        Patient mother = getPatientById(parentId);
+        if (mother == null) {
+            throw new ParentNotFoundException();
+        }
+        Patient child = getPatientById(savedPatientId);
+        allPatients.createMotherChildRelationship(mother.mrsPatient().getPerson(), child.mrsPatient().getPerson());
+    }
+
+    private void updateRelationship(String parentId, Patient savedPatient, Relationship relationship) throws ParentNotFoundException {
+        Patient updatedMother = getPatientById(parentId);
+        if (updatedMother == null) {
+            throw new ParentNotFoundException();
+        }
+        Person personA = relationship.getPersonA();
+        if (personA != null && !personA.getId().toString().equals(updatedMother.mrsPatient().getPerson().getId())) {
+            allPatients.updateMotherChildRelationship(updatedMother.mrsPatient().getPerson(), savedPatient.mrsPatient().getPerson());
+        }
     }
 }
