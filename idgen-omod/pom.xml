@@ -143,4 +143,10 @@
         </plugins>
         <finalName>idgen-omod</finalName>
     </build>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven-openmrs</id>
+            <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
