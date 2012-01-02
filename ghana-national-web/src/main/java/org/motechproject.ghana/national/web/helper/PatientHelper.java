@@ -54,8 +54,8 @@ public class PatientHelper {
 
     public PatientForm getPatientForm(Patient patientVO) throws ParseException {
         PatientForm createPatientForm = new PatientForm();
-        MRSPerson mrsPerson = patientVO.mrsPatient().getPerson();
-        MRSFacility mrsFacility = patientVO.mrsPatient().getFacility();
+        MRSPerson mrsPerson = patientVO.getMrsPatient().getPerson();
+        MRSFacility mrsFacility = patientVO.getMrsPatient().getFacility();
         createPatientForm.setAddress(mrsPerson.getAddress());
         createPatientForm.setDateOfBirth(mrsPerson.getDateOfBirth());
         createPatientForm.setEstimatedDateOfBirth(mrsPerson.getBirthDateEstimated());
@@ -68,9 +68,9 @@ public class PatientHelper {
         createPatientForm.setLastName(mrsPerson.getLastName());
         createPatientForm.setMiddleName(mrsPerson.getMiddleName());
         createPatientForm.setPreferredName(mrsPerson.getPreferredName());
-        createPatientForm.setMotechId(patientVO.mrsPatient().getMotechId());
+        createPatientForm.setMotechId(patientVO.getMrsPatient().getMotechId());
         createPatientForm.setSex(mrsPerson.getGender());
-        final String parentId = patientVO.parentId();
+        final String parentId = patientVO.getParentId();
         if (StringUtils.isNotEmpty(parentId)) {
             createPatientForm.setParentId(parentId);
             createPatientForm.setTypeOfPatient(PatientType.CHILD_UNDER_FIVE);

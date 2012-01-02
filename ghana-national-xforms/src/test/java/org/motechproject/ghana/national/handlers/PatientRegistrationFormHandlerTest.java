@@ -105,18 +105,18 @@ public class PatientRegistrationFormHandlerTest {
         patientRegistrationFormHandler.handleFormEvent(event);
 
         Patient savedPatient = patientArgumentCaptor.getValue();
-        MRSPerson mrsPerson = savedPatient.mrsPatient().getPerson();
+        MRSPerson mrsPerson = savedPatient.getMrsPatient().getPerson();
         assertThat(mrsPerson.getAddress(), is(equalTo(address)));
         assertThat(mrsPerson.getDateOfBirth(), is(equalTo(dateofBirth)));
-        assertThat(savedPatient.mrsPatient().getFacility().getId(), is(equalTo(facilityId)));
-        assertThat(savedPatient.mrsPatient().getFacility().getCountyDistrict(), is(equalTo(null)));
-        assertThat(savedPatient.mrsPatient().getFacility().getRegion(), is(equalTo(null)));
-        assertThat(savedPatient.mrsPatient().getFacility().getStateProvince(), is(equalTo(null)));
+        assertThat(savedPatient.getMrsPatient().getFacility().getId(), is(equalTo(facilityId)));
+        assertThat(savedPatient.getMrsPatient().getFacility().getCountyDistrict(), is(equalTo(null)));
+        assertThat(savedPatient.getMrsPatient().getFacility().getRegion(), is(equalTo(null)));
+        assertThat(savedPatient.getMrsPatient().getFacility().getStateProvince(), is(equalTo(null)));
         assertThat(mrsPerson.getBirthDateEstimated(), is(equalTo(isBirthDateEstimated)));
         assertThat(mrsPerson.getFirstName(), is(equalTo(firstName)));
         assertThat(mrsPerson.getLastName(), is(equalTo(lastName)));
         assertThat(mrsPerson.getMiddleName(), is(equalTo(middleName)));
-        assertThat(savedPatient.mrsPatient().getMotechId(), is(equalTo(motechId)));
+        assertThat(savedPatient.getMrsPatient().getMotechId(), is(equalTo(motechId)));
         assertThat(mrsPerson.getPreferredName(), is(equalTo(preferredName)));
         assertThat(mrsPerson.getGender(), is(equalTo(sex)));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),

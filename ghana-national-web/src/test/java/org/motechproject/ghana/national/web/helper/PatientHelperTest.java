@@ -88,7 +88,7 @@ public class PatientHelperTest {
     }
 
     private void assertCompareViewAndValueObject(PatientForm patientView, Patient patientVO) {
-        final MRSPatient mrsPatient = patientVO.mrsPatient();
+        final MRSPatient mrsPatient = patientVO.getMrsPatient();
         final MRSPerson person = mrsPatient.getPerson();
         assertThat(patientView.getAddress(), is(equalTo(person.getAddress())));
         assertThat(patientView.getFirstName(), is(equalTo(person.getFirstName())));

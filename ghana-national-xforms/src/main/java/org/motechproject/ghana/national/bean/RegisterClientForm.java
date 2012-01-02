@@ -8,6 +8,7 @@ import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
+import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
 
 import java.util.Date;
 
@@ -52,7 +53,7 @@ public class RegisterClientForm extends FormBean {
     private String address;
     private String sender;
     private Boolean enroll;
-    @Required @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
+    @Required @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN) @MotechId(validator = VerhoeffValidator.class)
     private String staffId;
     @Required
     private Date date;

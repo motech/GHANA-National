@@ -38,12 +38,12 @@ public class PatientForm {
     }
 
     public PatientForm(Patient patient) {
-        this.motechId = patient.mrsPatient().getMotechId();
-        this.firstName = patient.mrsPatient().getPerson().getFirstName();
-        this.middleName = patient.mrsPatient().getPerson().getMiddleName();
-        this.lastName = patient.mrsPatient().getPerson().getLastName();
-        this.dateOfBirth = patient.mrsPatient().getPerson().getDateOfBirth();
-        this.sex = patient.mrsPatient().getPerson().getGender();
+        this.motechId = patient.getMrsPatient().getMotechId();
+        this.firstName = patient.getMrsPatient().getPerson().getFirstName();
+        this.middleName = patient.getMrsPatient().getPerson().getMiddleName();
+        this.lastName = patient.getMrsPatient().getPerson().getLastName();
+        this.dateOfBirth = patient.getMrsPatient().getPerson().getDateOfBirth();
+        this.sex = patient.getMrsPatient().getPerson().getGender();
     }
 
     public void setRegistrationMode(RegistrationType registrationMode) {

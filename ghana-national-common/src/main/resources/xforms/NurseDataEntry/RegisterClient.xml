@@ -67,7 +67,7 @@
                 <howLearned/>
                 <messageStartWeek/>
                 <formtype>data_entry</formtype>
-                <formname>registerPatient-jf</formname>
+                <formname>registerPatient</formname>
             </patientRegistration>
         </xf:instance>
         <xf:instance id="district">

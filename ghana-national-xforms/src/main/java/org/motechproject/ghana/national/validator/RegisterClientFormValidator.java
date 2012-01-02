@@ -40,13 +40,13 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     }
 
     private void validateIfMotechId(List<FormError> formErrors, String motechId, RegistrationType registrationType) {
-        if (RegistrationType.USE_PREPRINTED_ID.equals(registrationType) && patientService.getPatientById(motechId) != null)
+        if (RegistrationType.USE_PREPRINTED_ID.equals(registrationType) && patientService.getPatientByMotechId(motechId) != null)
             CollectionUtils.addIgnoreNull(formErrors, new FormError("motechId", "in use"));
     }
 
     private void validateIfMotherMotechId(List<FormError> formErrors, String motherMotechId, PatientType patientType) {
         if (PatientType.CHILD_UNDER_FIVE.equals(patientType)) {
-            if (motherMotechId == null || patientService.getPatientById(motherMotechId) == null) {
+            if (motherMotechId == null || patientService.getPatientByMotechId(motherMotechId) == null) {
                 CollectionUtils.addIgnoreNull(formErrors, new FormError("motherMotechId", NOT_FOUND));
             }
         }

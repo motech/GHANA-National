@@ -118,7 +118,7 @@ public class PatientController {
     }
 
     private String populateView(ModelMap modelMap, String motechId) throws ParseException {
-        modelMap.addAttribute(PATIENT_FORM, patientHelper.getPatientForm(patientService.getPatientById(motechId)));
+        modelMap.addAttribute(PATIENT_FORM, patientHelper.getPatientForm(patientService.getPatientByMotechId(motechId)));
         modelMap.mergeAttributes(facilityHelper.locationMap());
         return EDIT_PATIENT_URL;
     }
@@ -145,7 +145,7 @@ public class PatientController {
     @ApiSession
     @RequestMapping(value = "edit", method = RequestMethod.GET)
     public String edit(ModelMap modelMap, @RequestParam String motechId) {
-        final Patient patient = patientService.getPatientById(motechId);
+        final Patient patient = patientService.getPatientByMotechId(motechId);
         try {
             modelMap.put(PATIENT_FORM, patientHelper.getPatientForm(patient));
         } catch (ParseException ignored) {
