@@ -19,6 +19,12 @@
                 "fileName" :  "RegisterClient.xml",
                 "bean":"org.motechproject.ghana.national.bean.RegisterClientForm",
                 "validator": "org.motechproject.ghana.national.validator.RegisterClientFormValidator"
+            },
+            {
+                "name" : "registerCWCChild",
+                "fileName" :  "RegisterCWC.xml",
+                "bean":"org.motechproject.ghana.national.bean.RegisterCWCForm",
+                "validator": "org.motechproject.ghana.national.validator.RegisterCWCFormValidator"
             }
         ]
     },
