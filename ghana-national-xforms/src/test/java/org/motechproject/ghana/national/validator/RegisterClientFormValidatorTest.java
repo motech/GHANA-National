@@ -5,10 +5,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientType;
-import org.motechproject.ghana.national.domain.RegistrationType;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
@@ -28,7 +25,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.validator.RegisterClientFormValidator.NOT_FOUND;
+import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
 
 public class RegisterClientFormValidatorTest {
     private RegisterClientFormValidator registerClientFormValidator;
