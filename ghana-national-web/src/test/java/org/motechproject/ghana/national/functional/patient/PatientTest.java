@@ -84,17 +84,17 @@ public class PatientTest extends AbstractTestNGSpringContextTests {
         // search
         searchPatientPage.open();
         searchPatientPage.withName(firstName).search();
-        searchPatientPage.assertIfSearchReturned(firstName, middleName, lastName, "F", "2009-11-30");
+        searchPatientPage.assertIfSearchReturned(firstName, middleName, lastName, "F", "30-11-2009");
 
         String startingOfMiddleName = "Middle";
         searchPatientPage.initializePageElements();
         searchPatientPage.withName(startingOfMiddleName).search();
-        searchPatientPage.assertIfSearchReturned(firstName, middleName, lastName, "F", "2009-11-30");
+        searchPatientPage.assertIfSearchReturned(firstName, middleName, lastName, "F", "30-11-2009");
 
         String startingOfLastName = "Las";
         searchPatientPage.initializePageElements();
         searchPatientPage.withName(startingOfLastName).search();
-        searchPatientPage.assertIfSearchReturned(firstName, middleName, lastName, "F", "2009-11-30");
+        searchPatientPage.assertIfSearchReturned(firstName, middleName, lastName, "F", "30-11-2009");
     }
 
 
@@ -141,7 +141,7 @@ public class PatientTest extends AbstractTestNGSpringContextTests {
         // search
         searchPatientPage.open();
         searchPatientPage.withMotechId(motechId).search();
-        searchPatientPage.assertIfSearchReturned(firstName, middleName, lastName, "F", "2009-11-30");
+        searchPatientPage.assertIfSearchReturned(firstName, middleName, lastName, "F", "30-11-2009");
 
     }
 

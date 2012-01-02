@@ -70,7 +70,7 @@ public class AllPatientsTest {
     public void shouldReturnNullIfFetchPatientByIdIsNull() {
         final String patientId = "1";
         when(mockMrsPatientAdaptor.getPatientByMotechId(patientId)).thenReturn(null);
-        final Patient actualPatient = allPatients.patientById(patientId);
+        final Patient actualPatient = allPatients.patientByMotechId(patientId);
         assertNull(actualPatient);
     }
 
@@ -79,8 +79,8 @@ public class AllPatientsTest {
         final String patientId = "1";
         MRSPatient patient = new MRSPatient(patientId);
         when(mockMrsPatientAdaptor.getPatientByMotechId(patientId)).thenReturn(patient);
-        final Patient actualPatient = allPatients.patientById(patientId);
-        assertThat(actualPatient.mrsPatient(), is(patient));
+        final Patient actualPatient = allPatients.patientByMotechId(patientId);
+        assertThat(actualPatient.getMrsPatient(), is(patient));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class AllPatientsTest {
         when(mockMrsPatientAdaptor.search(name, motechId)).thenReturn(returnedMrsPatientList);
         List<Patient> returnedPatient = allPatients.search(name, motechId);
         assertThat(returnedPatient.size(), is(equalTo(1)));
-        assertThat(returnedPatient.get(0).mrsPatient(), is(equalTo(returnedMrsPatient)));
+        assertThat(returnedPatient.get(0).getMrsPatient(), is(equalTo(returnedMrsPatient)));
 
     }
 
@@ -113,7 +113,7 @@ public class AllPatientsTest {
                 .dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
         final MRSPatient mrsPatient = new MRSPatient("", mrsPerson, facility);
         final Patient patient = new Patient(mrsPatient);
-        when(mockMrsPatientAdaptor.updatePatient(patient.mrsPatient())).thenReturn(patientId);
+        when(mockMrsPatientAdaptor.updatePatient(patient.getMrsPatient())).thenReturn(patientId);
         final String motechIdForUpdatedPatient = allPatients.update(patient);
         assertThat(patientId, is(motechIdForUpdatedPatient));
     }

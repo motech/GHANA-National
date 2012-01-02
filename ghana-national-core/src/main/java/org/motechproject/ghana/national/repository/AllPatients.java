@@ -23,11 +23,11 @@ public class AllPatients {
     private OpenMRSRelationshipAdaptor openMRSRelationshipAdaptor;
 
     public String save(Patient patient) {
-        final MRSPatient savedPatient = patientAdaptor.savePatient(patient.mrsPatient());
+        final MRSPatient savedPatient = patientAdaptor.savePatient(patient.getMrsPatient());
         return savedPatient.getMotechId();
     }
 
-    public Patient patientById(String id) {
+    public Patient patientByMotechId(String id) {
         MRSPatient mrsPatient = patientAdaptor.getPatientByMotechId(id);
         return (mrsPatient != null) ? new Patient(mrsPatient) : null;
     }
@@ -42,7 +42,7 @@ public class AllPatients {
     }
 
     public String update(Patient patient) {
-        return patientAdaptor.updatePatient(patient.mrsPatient());
+        return patientAdaptor.updatePatient(patient.getMrsPatient());
     }
 
     public void createMotherChildRelationship(MRSPerson mother, MRSPerson child) {

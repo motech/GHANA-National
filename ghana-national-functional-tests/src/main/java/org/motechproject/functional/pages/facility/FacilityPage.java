@@ -16,31 +16,31 @@ public class FacilityPage extends BasePage {
 
     @FindBy(name = "country")
     @CacheLookup
-    WebElement country;
+    private WebElement country;
 
     @FindBy(name = "name")
     @CacheLookup
-    WebElement name;
+    private WebElement name;
 
     @FindBy(name = "countyDistrict")
     @CacheLookup
-    WebElement district;
+    private WebElement district;
 
     @FindBy(name = "stateProvince")
     @CacheLookup
-    WebElement subDistrict;
+    private WebElement subDistrict;
 
     @FindBy(name = "phoneNumber")
     @CacheLookup
-    WebElement phoneNumber;
+    private WebElement phoneNumber;
 
     @FindBy(name = "region")
     @CacheLookup
-    WebElement region;
+    private WebElement region;
 
     @FindBy(id = "submitFacility")
     @CacheLookup
-    WebElement submit;
+    private WebElement submit;
 
     private String successMessageClass = "success";
     private String submitFacilityElementId = "submitFacility";

@@ -64,21 +64,21 @@ public class PatientFormTest {
         String facilityName = "facilityName";
         Patient patient = patientHelper.getPatientVO(form, new Facility(new MRSFacility(facilityId,facilityName, country, region, district, subDistrict)));
 
-        MRSPerson mrsPerson = patient.mrsPatient().getPerson();
+        MRSPerson mrsPerson = patient.getMrsPatient().getPerson();
 
         assertThat(mrsPerson.getAddress(), is(equalTo(address)));
         assertThat(mrsPerson.getDateOfBirth(), is(equalTo(dateofBirth)));
-        assertThat(patient.mrsPatient().getFacility().getId(), is(equalTo(facilityId)));
-        assertThat(patient.mrsPatient().getFacility().getCountyDistrict(), is(equalTo(district)));
-        assertThat(patient.mrsPatient().getFacility().getCountry(), is(equalTo(country)));
-        assertThat(patient.mrsPatient().getFacility().getName(), is(equalTo(facilityName)));
-        assertThat(patient.mrsPatient().getFacility().getRegion(), is(equalTo(region)));
-        assertThat(patient.mrsPatient().getFacility().getStateProvince(), is(equalTo(subDistrict)));
+        assertThat(patient.getMrsPatient().getFacility().getId(), is(equalTo(facilityId)));
+        assertThat(patient.getMrsPatient().getFacility().getCountyDistrict(), is(equalTo(district)));
+        assertThat(patient.getMrsPatient().getFacility().getCountry(), is(equalTo(country)));
+        assertThat(patient.getMrsPatient().getFacility().getName(), is(equalTo(facilityName)));
+        assertThat(patient.getMrsPatient().getFacility().getRegion(), is(equalTo(region)));
+        assertThat(patient.getMrsPatient().getFacility().getStateProvince(), is(equalTo(subDistrict)));
         assertThat(mrsPerson.getBirthDateEstimated(), is(equalTo(isBirthDateEstimated)));
         assertThat(mrsPerson.getFirstName(), is(equalTo(firstName)));
         assertThat(mrsPerson.getLastName(), is(equalTo(lastName)));
         assertThat(mrsPerson.getMiddleName(), is(equalTo(middleName)));
-        assertThat(patient.mrsPatient().getMotechId(), is(equalTo(motechId)));
+        assertThat(patient.getMrsPatient().getMotechId(), is(equalTo(motechId)));
         assertThat(mrsPerson.getPreferredName(), is(equalTo(preferredName)));
         assertThat(mrsPerson.getGender(), is(equalTo(sex)));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),

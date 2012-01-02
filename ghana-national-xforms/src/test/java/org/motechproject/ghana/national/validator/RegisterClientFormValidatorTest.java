@@ -74,10 +74,10 @@ public class RegisterClientFormValidatorTest {
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(mothersMotechId);
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
         Patient patientsMotherMock = mock(Patient.class);
-        when(mockPatientService.getPatientById(mothersMotechId)).thenReturn(patientsMotherMock);
+        when(mockPatientService.getPatientByMotechId(mothersMotechId)).thenReturn(patientsMotherMock);
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
 
-        when(mockPatientService.getPatientById(mothersMotechId)).thenReturn(null);
+        when(mockPatientService.getPatientByMotechId(mothersMotechId)).thenReturn(null);
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("motherMotechId", NOT_FOUND)));
     }
 
@@ -86,7 +86,7 @@ public class RegisterClientFormValidatorTest {
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(null);
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("motherMotechId", NOT_FOUND)));
-        verify(mockPatientService, never()).getPatientById(Matchers.<String>any());
+        verify(mockPatientService, never()).getPatientByMotechId(Matchers.<String>any());
     }
 
     @Test
@@ -94,7 +94,7 @@ public class RegisterClientFormValidatorTest {
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(null);
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.PREGNANT_MOTHER);
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
-        verify(mockPatientService, never()).getPatientById(Matchers.<String>any());
+        verify(mockPatientService, never()).getPatientByMotechId(Matchers.<String>any());
     }
 
     @Test
@@ -102,11 +102,11 @@ public class RegisterClientFormValidatorTest {
         String motechId = "12345";
         when(mockRegisterClientForm.getRegistrationMode()).thenReturn(RegistrationType.USE_PREPRINTED_ID);
         Patient patientMock = mock(Patient.class);
-        when(mockPatientService.getPatientById(motechId)).thenReturn(patientMock);
+        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patientMock);
         when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("motechId", "in use")));
 
-        when(mockPatientService.getPatientById(motechId)).thenReturn(null);
+        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(null);
         when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motechId", "in use"))));
     }
@@ -117,7 +117,7 @@ public class RegisterClientFormValidatorTest {
         when(mockRegisterClientForm.getRegistrationMode()).thenReturn(RegistrationType.AUTO_GENERATE_ID);
         when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motechId", NOT_FOUND))));
-        verify(mockPatientService, never()).getPatientById(anyString());
+        verify(mockPatientService, never()).getPatientByMotechId(anyString());
     }
 
     @Test
