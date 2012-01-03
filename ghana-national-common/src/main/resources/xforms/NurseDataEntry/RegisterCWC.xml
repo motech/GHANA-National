@@ -6,7 +6,6 @@
                 <staffId/>
                 <facilityId/>
                 <motechId/>
-                <registrantType/>
                 <registrationToday/>
                 <registrationDate/>
                 <serialNumber/>
@@ -20,8 +19,6 @@
                  constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
         <xf:bind id="motechId" nodeset="/CWCRegistration/motechId" required="true()" type="xsd:int"
                  constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
-        <xf:bind id="registrantType" nodeset="/CWCRegistration/registrantType" required="true()"
-                 type="xsd:string"/>
         <xf:bind id="registrationToday" nodeset="/CWCRegistration/registrationToday" required="true()"
                  type="xsd:string"/>
         <xf:bind constraint=". &lt;= 'today()'" id="registrationDate"
@@ -43,21 +40,6 @@
         <xf:input bind="motechId">
             <xf:label>MoTeCH ID</xf:label>
         </xf:input>
-        <xf:select1 bind="registrantType">
-            <xf:label>Client type</xf:label>
-            <xf:item id="PREGNANT_MOTHER">
-                <xf:label>Pregnant mother</xf:label>
-                <xf:value>PREGNANT_MOTHER</xf:value>
-            </xf:item>
-            <xf:item id="CHILD_UNDER_FIVE">
-                <xf:label>Child Under 5</xf:label>
-                <xf:value>CHILD_UNDER_FIVE</xf:value>
-            </xf:item>
-            <xf:item id="OTHER">
-                <xf:label>Other</xf:label>
-                <xf:value>OTHER</xf:value>
-            </xf:item>
-        </xf:select1>
         <xf:select1 bind="registrationToday">
             <xf:label>Registration Today</xf:label>
             <xf:item id="Today">
