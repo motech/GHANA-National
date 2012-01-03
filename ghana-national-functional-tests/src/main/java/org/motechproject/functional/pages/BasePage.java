@@ -2,26 +2,14 @@ package org.motechproject.functional.pages;
 
 import org.motechproject.functional.util.*;
 import org.openqa.selenium.WebDriver;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.openqa.selenium.WebElement;
 
-public class BasePage {
-    @Autowired
-    protected JavascriptExecutor javascriptExecutor;
-
-    @Autowired
-    protected PlatformSpecificExecutor platformSpecificExecutor;
-
-    @Autowired
-    protected HtmlTableParser htmlTableParser;
-
-    @Autowired
-    private ScreenShotCaptor screenShotCaptor;
-
-    @Autowired
-    protected DateSelector dateSelector;
-
-    @Autowired
-    protected ElementPoller elementPoller;
+public class BasePage<T> {
+    protected JavascriptExecutor javascriptExecutor = new JavascriptExecutor();
+    protected PlatformSpecificExecutor platformSpecificExecutor = new PlatformSpecificExecutor();
+    protected HtmlTableParser htmlTableParser = new HtmlTableParser();
+    protected DateSelector dateSelector = new DateSelector();
+    protected ElementPoller elementPoller = new ElementPoller();
 
     protected WebDriver driver;
 
@@ -29,7 +17,16 @@ public class BasePage {
         this.driver = driver;
     }
 
-    public WebDriver getDriver(){
+    public WebDriver getDriver() {
         return driver;
+    }
+
+    protected T enter(WebElement webElement, String value) {
+        webElement.clear();
+        webElement.sendKeys(value);
+        return (T) this;
+    }
+
+    public void waitForSuccessfulCompletion() {
     }
 }

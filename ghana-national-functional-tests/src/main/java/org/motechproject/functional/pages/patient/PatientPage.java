@@ -1,21 +1,16 @@
 package org.motechproject.functional.pages.patient;
 
-import org.motechproject.functional.base.WebDriverProvider;
-import org.motechproject.functional.pages.BasePage;
+import org.joda.time.LocalDate;
+import org.motechproject.functional.data.TestPatient;
 import org.motechproject.functional.pages.home.HomePage;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import java.util.Calendar;
-
-@Component
-public class PatientPage extends BasePage {
-
+public class PatientPage extends HomePage {
     @FindBy(id = "motechId")
     @CacheLookup
     private WebElement motechId;
@@ -112,20 +107,10 @@ public class PatientPage extends BasePage {
     @CacheLookup
     private WebElement subDistrict;
 
-    @Autowired
-    private HomePage homePage;
-
-
-    private String submitNewPatientElementId = "submitNewPatient";
-    private String successMessageClass = "success";
-
-    public static enum PATIENT_REGN_MODE {AUTO_GENERATE_ID, USE_PREPRINTED_ID}
-
-    public static enum PATIENT_TYPE {PATIENT_MOTHER, CHILD_UNDER_FIVE, OTHER}
-
-    @Autowired
-    public PatientPage(WebDriverProvider webDriverProvider) {
-        super(webDriverProvider.getWebDriver());
+    public PatientPage(WebDriver webDriver) {
+        super(webDriver);
+        elementPoller.waitForElementID("submitNewPatient", driver);
+        PageFactory.initElements(driver, this);
     }
 
     public PatientPage withAddress(String address) {
@@ -146,13 +131,13 @@ public class PatientPage extends BasePage {
         return this;
     }
 
-    public PatientPage withRegistrationMode(PATIENT_REGN_MODE patientRegnMode) {
+    public PatientPage withRegistrationMode(TestPatient.PATIENT_REGN_MODE patientRegnMode) {
         Select selectRegnMode = new Select(this.selectRegnMode);
         selectRegnMode.selectByValue(patientRegnMode.name());
         return this;
     }
 
-    public PatientPage withPatientType(PATIENT_TYPE patientType) {
+    public PatientPage withPatientType(TestPatient.PATIENT_TYPE patientType) {
         Select selectPatientType = new Select(typeOfPatient);
         selectPatientType.selectByValue(patientType.name());
         return this;
@@ -186,9 +171,9 @@ public class PatientPage extends BasePage {
 
     public PatientPage withGender(Boolean gender) {
         if (gender)
-            male.click();
-        else
             female.click();
+        else
+            male.click();
         return this;
     }
 
@@ -232,35 +217,43 @@ public class PatientPage extends BasePage {
         return this;
     }
 
-    public PatientPage withNhisExpiryDate(Calendar nhisExpiryDate) {
+    public PatientPage withNhisExpiryDate(LocalDate nhisExpiryDate) {
         dateSelector.select(nhisExpDateHolder, nhisExpiryDate, driver);
         return this;
     }
 
-    public PatientPage withDateofBirth(Calendar dateOfBirth) {
+    public PatientPage withDateofBirth(LocalDate dateOfBirth) {
         dateSelector.select(dateOfBirthHolder, dateOfBirth, driver);
         return this;
     }
 
-    public void open() {
-        homePage.openCreatePatientPage();
-        waitForPageToLoad();
-    }
-
     public void submit() {
         submit.click();
-        waitForSuccessMessage();
-        PageFactory.initElements(driver, this);
     }
 
-    private void waitForSuccessMessage() {
-        elementPoller.waitForElementClassName(successMessageClass, driver);
+    public void create(TestPatient patient) {
+        PatientPage patientPage = this.withRegistrationMode(patient.registrationMode())
+                .withEstimatedDateOfBirth(patient.estimatedDateOfBirth())
+                .withInsured(patient.insured())
+                .withPatientType(patient.patientType())
+                .withFirstName(patient.firstName())
+                .withMiddleName(patient.middleName())
+                .withLastName(patient.lastName())
+                .withPreferredName(patient.preferredName())
+                .withRegion(patient.region())
+                .withDistrict(patient.district())
+                .withSubDistrict(patient.subDistrict())
+                .withFacility(patient.facility())
+                .withAddress(patient.address())
+                .withGender(patient.isFemale())
+                .withDateofBirth(patient.dateOfBirth());
+        if (patient.hasMotechId())
+            patientPage.withMotechId(patient.motechId());
+        patientPage.submit();
     }
 
-    private void waitForPageToLoad() {
-        elementPoller.waitForElementID(submitNewPatientElementId, driver);
-        PageFactory.initElements(driver, this);
+    @Override
+    public void waitForSuccessfulCompletion() {
+        elementPoller.waitForElementClassName("success", driver);
     }
-
-
 }

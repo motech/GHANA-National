@@ -1,16 +1,23 @@
 package org.motechproject.ghana.national.functional.util;
 
-import org.motechproject.ghana.national.service.IdentifierGenerationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.motechproject.functional.data.OpenMRSTestUser;
+import org.motechproject.functional.framework.Browser;
+import org.motechproject.functional.pages.openmrs.MotechIdGeneratorPage;
+import org.motechproject.functional.pages.openmrs.OpenMRSLoginPage;
 
-@Component
 public class MotechIdGenerator {
+    private Browser browser;
 
-    @Autowired
-    private IdentifierGenerationService identifierGenerationService;
+    public MotechIdGenerator(Browser browser) {
+        this.browser = browser;
+    }
 
-    public String generatePrePrintedPatientId(){
-        return identifierGenerationService.newPatientId();
+    public String generatePrePrintedPatientId() {
+        OpenMRSLoginPage loginPage = browser.toOpenMRSLogin();
+        loginPage.login(OpenMRSTestUser.admin());
+        browser.openMRSHomePage();
+        MotechIdGeneratorPage motechIdGeneratorPage = browser.toMotechIdGenerator("/openmrs/module/idgen/viewIdentifierSource.form?source=1");
+        motechIdGeneratorPage.generate(1);
+        return null;
     }
 }

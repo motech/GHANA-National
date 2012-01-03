@@ -1,13 +1,14 @@
 package org.motechproject.functional.pages.staff;
 
 import org.motechproject.functional.pages.BasePage;
+import org.motechproject.functional.pages.home.HomePage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 
-public class StaffPageElements extends BasePage {
+public class StaffPageElements extends HomePage {
     @FindBy(id = "user_first_name")
     @CacheLookup
     WebElement firstName;

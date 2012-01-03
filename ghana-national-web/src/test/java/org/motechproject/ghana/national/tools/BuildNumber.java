@@ -13,8 +13,11 @@ import java.util.List;
  * Inserts the Hudson build number as a comment in the footer jsp
  */
 public class BuildNumber {
+    private static final String BUILD_NUMBER_PROPERTY = "BUILD_NUMBER";
+    private static final String BUILD_NUMBER_PLACE_HOLDER_VALUE = "${build_number}";
+
     public static void main(String[] args) throws IOException {
-        if (args.length != 1) {
+        if (args.length != 1 || buildNumber().equals(BUILD_NUMBER_PLACE_HOLDER_VALUE)) {
             return;
         }
         File file = new File("ghana-national-web/src/main/webapp/WEB-INF/views/footer.jspx");
@@ -35,10 +38,11 @@ public class BuildNumber {
     }
 
     private static String insert() throws IOException {
-        String buildNumber = System.getProperty("BUILD_NUMBER");
-        if (StringUtils.isEmpty(buildNumber)) {
-            buildNumber = "${build_number}";
-        }
-       return "<![CDATA[<!-- " + buildNumber + " -->]]>\n</div>";
+        String buildNumber = buildNumber();
+        return String.format("<![CDATA[<!-- %s -->]]>\n</div>", buildNumber);
+    }
+
+    private static String buildNumber() {
+        return System.getProperty(BUILD_NUMBER_PROPERTY, BUILD_NUMBER_PLACE_HOLDER_VALUE);
     }
 }
