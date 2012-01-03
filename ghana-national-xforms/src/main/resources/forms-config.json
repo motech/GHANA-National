@@ -9,7 +9,7 @@
                 "validator": "org.motechproject.ghana.national.validator.RegisterClientFormValidator"
             },
             {
-                "name" : "registerPatient",
+                "name" : "mobileMidwife",
                 "fileName" :  "MobileMidwife.xml",
                 "bean":"org.motechproject.ghana.national.bean.MobileMidwifeForm",
                 "validator": "org.motechproject.ghana.national.validator.MobileMidwifeFormValidator"

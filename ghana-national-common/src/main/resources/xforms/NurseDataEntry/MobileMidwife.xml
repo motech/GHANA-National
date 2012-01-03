@@ -18,7 +18,7 @@
                 <reason/>
                 <messageStartWeek/>
                 <formtype>data_entry</formtype>
-                <formname>mobileMidwifeRegistration</formname>
+                <formname>mobileMidwife</formname>
             </mobileMidwifeRegistration>
         </xf:instance>
         <xf:instance id="medium">
