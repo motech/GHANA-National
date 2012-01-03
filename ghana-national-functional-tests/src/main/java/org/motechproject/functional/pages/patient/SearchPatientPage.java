@@ -1,23 +1,20 @@
 package org.motechproject.functional.pages.patient;
 
-import org.motechproject.functional.base.WebDriverProvider;
-import org.motechproject.functional.pages.BasePage;
+import org.motechproject.functional.data.TestPatient;
 import org.motechproject.functional.pages.home.HomePage;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.thoughtworks.selenium.SeleneseTestBase.assertTrue;
 
-@Component
-public class SearchPatientPage extends BasePage {
-
+public class SearchPatientPage extends HomePage {
     @FindBy(id = "motechId")
     @CacheLookup
     WebElement motechId;
@@ -30,15 +27,13 @@ public class SearchPatientPage extends BasePage {
     @CacheLookup
     WebElement search;
 
-    @Autowired
-    private HomePage homePage;
-    private String searchPatientElementId = "searchPatient";
-    private String searchResultElementID = "patientsReturnedBySearch";
     private String searchResultTableId = "searchResultTable";
 
     @Autowired
-    public SearchPatientPage(WebDriverProvider webDriverProvider) {
-        super(webDriverProvider.getWebDriver());
+    public SearchPatientPage(WebDriver webDriver) {
+        super(webDriver);
+        openSearchPatientPage();
+        waitForPageToLoad();
     }
 
     public SearchPatientPage withName(String fullName) {
@@ -54,7 +49,7 @@ public class SearchPatientPage extends BasePage {
     }
 
     public void waitForPageToLoad() {
-        elementPoller.waitForElementID(searchPatientElementId, driver);
+        elementPoller.waitForElementID("searchPatient", driver);
         initializePageElements();
     }
 
@@ -63,32 +58,38 @@ public class SearchPatientPage extends BasePage {
     }
 
     public void waitForSearchResultsToLoad() {
-        elementPoller.waitForElementID(searchResultElementID, driver);
+        elementPoller.waitForElementID("patientsReturnedBySearch", driver);
     }
 
-    public void open() {
-        homePage.openSearchPatientPage();
-        waitForPageToLoad();
+    public void search(String searchString) {
+        withName(searchString);
+        search();
     }
 
-    public void search() {
+    private void search() {
         search.click();
         waitForSearchResultsToLoad();
+        initializePageElements();
     }
 
-    public void assertIfSearchReturned(String motechId, String firstName, String middleName, String lastName, String gender, String dateOfBirth) {
-        assertTrue(htmlTableParser.hasRow(driver, searchResultTableId, mapTableRowDataWithColumns(motechId, firstName, middleName, lastName, gender, dateOfBirth)));
-    }
-
-    public void assertIfSearchReturned(String firstName, String middleName, String lastName, String gender, String dateOfBirth) {
-        assertTrue(htmlTableParser.hasRow(driver, searchResultTableId, mapTableRowDataWithColumns(firstName, middleName, lastName, gender, dateOfBirth)));
-    }
-
-    private Map<String, String> mapTableRowDataWithColumns(final String motechId, final String firstName, final String middleName, final String lastName, final String gender, final String dateOfBirth) {
-        return new HashMap<String, String>(){{put("Patient ID", motechId); put("First Name", firstName); put("Middle Name", middleName); put("Last Name", lastName); put("Date of Birth", dateOfBirth); put("Sex", gender);}};  //To change body of created methods use File | Settings | File Templates.
+    public void displaying(TestPatient patient) {
+        Map<String, String> map = mapTableRowDataWithColumns(patient.firstName(), patient.middleName(), patient.lastName(),
+                patient.genderCode(), patient.dateOfBirth().toString("dd-MM-YYYY"));
+        assertTrue(map.toString(), htmlTableParser.hasRow(driver, searchResultTableId, map));
     }
 
     private Map<String, String> mapTableRowDataWithColumns(final String firstName, final String middleName, final String lastName, final String gender, final String dateOfBirth) {
-        return new HashMap<String, String>(){{put("First Name", firstName); put("Middle Name", middleName); put("Last Name", lastName); put("Date of Birth", dateOfBirth); put("Sex", gender);}};  //To change body of created methods use File | Settings | File Templates.
+        return new HashMap<String, String>() {{
+            put("First Name", firstName);
+            put("Middle Name", middleName);
+            put("Last Name", lastName);
+            put("Date of Birth", dateOfBirth);
+            put("Sex", gender);
+        }};
+    }
+
+    public void searchWithMotechId(String id) {
+        withMotechId(id);
+        search();
     }
 }

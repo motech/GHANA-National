@@ -6,11 +6,10 @@ import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
-
-import java.util.Date;
 
 public class MobileMidwifeForm extends FormBean {
     public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
@@ -40,7 +39,7 @@ public class MobileMidwifeForm extends FormBean {
     @RegEx(pattern = "([A-Z]+_VOICE|[A-Z]+_TEXT)")
     private String medium;
     @Required
-    private Date dayOfWeek;
+    private DayOfWeek dayOfWeek;
     @Required
     private Time timeOfDay;
     @Required
@@ -116,14 +115,6 @@ public class MobileMidwifeForm extends FormBean {
         this.medium = medium;
     }
 
-    public Date getDayOfWeek() {
-        return dayOfWeek;
-    }
-
-    public void setDayOfWeek(Date dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
-    }
-
     public Time getTimeOfDay() {
         return timeOfDay;
     }
@@ -171,5 +162,13 @@ public class MobileMidwifeForm extends FormBean {
 
     public void setPatientId(String patientId) {
         this.patientId = patientId;
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public void setDayOfWeek(DayOfWeek dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
     }
 }

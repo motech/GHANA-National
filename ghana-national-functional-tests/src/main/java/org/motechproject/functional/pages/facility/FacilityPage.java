@@ -3,6 +3,7 @@ package org.motechproject.functional.pages.facility;
 import org.motechproject.functional.base.WebDriverProvider;
 import org.motechproject.functional.pages.BasePage;
 import org.motechproject.functional.pages.home.HomePage;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
@@ -11,9 +12,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
-public class FacilityPage extends BasePage {
-
+public class FacilityPage extends HomePage {
     @FindBy(name = "country")
     @CacheLookup
     private WebElement country;
@@ -42,16 +41,11 @@ public class FacilityPage extends BasePage {
     @CacheLookup
     private WebElement submit;
 
-    private String successMessageClass = "success";
-    private String submitFacilityElementId = "submitFacility";
-
-    @Autowired
-    public FacilityPage(WebDriverProvider webDriverProvider) {
-        super(webDriverProvider.getWebDriver());
+    public FacilityPage(WebDriver webDriver) {
+        super(webDriver);
+        elementPoller.waitForElementID("submitFacility", driver);
+        PageFactory.initElements(driver, this);
     }
-
-    @Autowired
-    HomePage homePage;
 
     public FacilityPage withName(String name) {
         this.name.clear();
@@ -89,24 +83,13 @@ public class FacilityPage extends BasePage {
         return this;
     }
 
-    public void open() {
-        homePage.openCreateFaclityPage();
-        waitForPageToLoad();
-    }
-
     public void submit() {
         submit.click();
         waitForSuccessMessage();
     }
 
     public void waitForSuccessMessage(){
-        elementPoller.waitForElementClassName(successMessageClass, driver);
+        elementPoller.waitForElementClassName("success", driver);
     }
-
-    public void waitForPageToLoad() {
-        elementPoller.waitForElementID(submitFacilityElementId, driver);
-        PageFactory.initElements(driver, this);
-    }
-
 }
 

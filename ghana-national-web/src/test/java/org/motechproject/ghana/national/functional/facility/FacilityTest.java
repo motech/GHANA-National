@@ -1,43 +1,18 @@
 package org.motechproject.ghana.national.functional.facility;
 
 import org.junit.runner.RunWith;
-import org.motechproject.functional.pages.login.LoginPage;
 import org.motechproject.functional.pages.facility.FacilityPage;
 import org.motechproject.functional.pages.facility.SearchFacilityPage;
-import org.motechproject.functional.pages.home.HomePage;
 import org.motechproject.functional.util.DataGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class FacilityTest extends AbstractTestNGSpringContextTests {
-
-    @Autowired
-    private LoginPage loginPage;
-
-    @Autowired
-    private HomePage homePage;
-
-    @Autowired
-    private FacilityPage facilityPage;
-
-    @Autowired
-    private SearchFacilityPage searchFacilityPage;
-
-    @Autowired
-    protected DataGenerator dataGenerator;
-
-    @BeforeMethod
-    public void setUp() {
-        loginPage.login();
-    }
+public class FacilityTest extends LoggedInUserFunctionalTest {
+    private DataGenerator dataGenerator = new DataGenerator();
 
     @Test
     public void shouldCreateAFaclitySearchItAndEditTheDetailsOfIt() {
@@ -52,8 +27,7 @@ public class FacilityTest extends AbstractTestNGSpringContextTests {
         String newRegion = "Ashanti";
         String newPhoneNumber = dataGenerator.randomPhoneNumber();
 
-        // create
-        facilityPage.open();
+        FacilityPage facilityPage = browser.toFacitlityPage(homePage);
 
         facilityPage
                 .withName(name)
@@ -63,31 +37,19 @@ public class FacilityTest extends AbstractTestNGSpringContextTests {
                 .withSubDistrict(subDistrict)
                 .withPhoneNum(phoneNumber).submit();
 
-        // search
-        searchFacilityPage.open();
+        SearchFacilityPage searchFacilityPage = browser.toSearchFacility(facilityPage);
         searchFacilityPage.withName(name).search();
         searchFacilityPage.assertIfSearchReturned(name, country, region, district, subDistrict, phoneNumber);
 
-        // update
         searchFacilityPage.clickEditLink(name, country, region, district, subDistrict, phoneNumber);
+        facilityPage = browser.getFacilityPage();
         facilityPage
                 .withName(newName)
                 .withRegion(newRegion)
                 .withPhoneNum(newPhoneNumber).submit();
 
-        // search
-        searchFacilityPage.open();
+        searchFacilityPage = browser.toSearchFacility(facilityPage);
         searchFacilityPage.withCountry(country).withRegion(newRegion).search();
         searchFacilityPage.assertIfSearchReturned(newName, country, newRegion, "", "", newPhoneNumber);
-    }
-
-    @AfterMethod
-    public void tearDown() {
-        homePage.logout();
-    }
-
-    @AfterSuite
-    public void closeall() {
-        facilityPage.getDriver().quit();
     }
 }

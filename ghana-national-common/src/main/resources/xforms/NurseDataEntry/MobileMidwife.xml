@@ -18,7 +18,7 @@
                 <reason/>
                 <messageStartWeek/>
                 <formtype>data_entry</formtype>
-                <formname>mobileMidwifeRegistration</formname>
+                <formname>mobileMidwife</formname>
             </mobileMidwifeRegistration>
         </xf:instance>
         <xf:instance id="medium">
@@ -204,31 +204,31 @@
             <xf:label>Day of week to receive messages</xf:label>
             <xf:item id="MONDAY">
                 <xf:label>Monday</xf:label>
-                <xf:value>MONDAY</xf:value>
+                <xf:value>Monday</xf:value>
             </xf:item>
             <xf:item id="TUESDAY">
                 <xf:label>Tuesday</xf:label>
-                <xf:value>TUESDAY</xf:value>
+                <xf:value>Tuesday</xf:value>
             </xf:item>
             <xf:item id="WEDNESDAY">
                 <xf:label>Wednesday</xf:label>
-                <xf:value>WEDNESDAY</xf:value>
+                <xf:value>Wednesday</xf:value>
             </xf:item>
             <xf:item id="THURSDAY">
                 <xf:label>Thursday</xf:label>
-                <xf:value>THURSDAY</xf:value>
+                <xf:value>Thursday</xf:value>
             </xf:item>
             <xf:item id="FRIDAY">
                 <xf:label>Friday</xf:label>
-                <xf:value>FRIDAY</xf:value>
+                <xf:value>Friday</xf:value>
             </xf:item>
             <xf:item id="SATURDAY">
                 <xf:label>Saturday</xf:label>
-                <xf:value>SATURDAY</xf:value>
+                <xf:value>Saturday</xf:value>
             </xf:item>
             <xf:item id="SUNDAY">
                 <xf:label>Sunday</xf:label>
-                <xf:value>SUNDAY</xf:value>
+                <xf:value>Sunday</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="timeOfDay">

@@ -16,12 +16,8 @@
     <bean class="org.springframework.web.context.support.ServletContextAttributeExporter">
         <property name="attributes">
             <map>
-                <entry key="org.motechproject.ghana.national.validator.ClientQueryFormValidator" value-ref="clientQueryFormValidator"/>
-                <entry key="org.motechproject.ghana.national.validator.DeliveryNotificationFormValidator" value-ref="deliveryNotificationFormValidator"/>
-                <entry key="org.motechproject.ghana.national.validator.ANCVisitFormValidator" value-ref="ANCVisitFormValidator"/>
-                <entry key="org.motechproject.ghana.national.validator.DeliveryFormValidator" value-ref="deliveryFormValidator"/>
-                <entry key="org.motechproject.ghana.national.validator.GeneralQueryFormValidator" value-ref="generalQueryFormValidator"/>
                 <entry key="org.motechproject.ghana.national.validator.RegisterClientFormValidator" value-ref="registerClientFormValidator"/>
+                <entry key="org.motechproject.ghana.national.validator.MobileMidwifeFormValidator" value-ref="mobileMidwifeFormValidator"/>
             </map>
         </property>
     </bean>

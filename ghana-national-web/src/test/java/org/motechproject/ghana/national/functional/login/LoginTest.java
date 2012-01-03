@@ -1,56 +1,44 @@
 package org.motechproject.ghana.national.functional.login;
 
-
 import org.junit.runner.RunWith;
+import org.motechproject.functional.data.TestUser;
 import org.motechproject.functional.pages.home.HomePage;
 import org.motechproject.functional.pages.login.LoginPage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.motechproject.ghana.national.functional.FunctionalTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static com.thoughtworks.selenium.SeleneseTestBase.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class LoginTest extends AbstractTestNGSpringContextTests {
-
-    @Value("#{functionalTestProperties['admin.username']}")
-    private String adminUserNmae;
-
-    @Value("#{functionalTestProperties['admin.password']}")
-    private String adminPassword;
-
-    @Autowired
+public class LoginTest extends FunctionalTest {
     private LoginPage loginPage;
 
-    @Autowired
-    private HomePage homePage;
+    @BeforeMethod
+    public void setUp() {
+        loginPage = browser.gotoLoginPage();
+    }
 
     @Test
     public void shouldLoginwithRightUsernameAndPassword() {
-        loginPage.loginAs(adminUserNmae, adminPassword);
-        loginPage.assertIfLoginSuccess();
+        loginPage.login(TestUser.admin());
+        HomePage homePage = browser.homePage();
+        assertTrue(homePage.isLogoutLinkVisible());
         homePage.logout();
     }
 
     @Test
     public void shouldNotLoginwithInvalidUsernameAndPassword() {
-        loginPage.loginAs("blah", "blahblah");
+        loginPage.login(new TestUser("blah", "blahblah"));
         loginPage.assertIfLoginFailed();
-
     }
 
     @Test
     public void shouldNotLoginwithEmptyPassword() {
-        loginPage.loginAs(adminUserNmae, "");
+        loginPage.login(new TestUser(TestUser.admin().name(), ""));
         loginPage.assertIfLoginFailed();
-    }
-
-    @AfterSuite
-    public void closeAll() {
-        loginPage.getDriver().quit();
     }
 }

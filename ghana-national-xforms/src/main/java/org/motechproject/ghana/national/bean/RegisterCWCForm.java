@@ -31,8 +31,6 @@ public class RegisterCWCForm extends FormBean {
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
     @Required
-    private PatientType registrantType;
-    @Required
     private String serialNumber;
     @Required
     private RegistrationToday registrationToday;
@@ -75,14 +73,6 @@ public class RegisterCWCForm extends FormBean {
 
     public void setMotechId(String motechId) {
         this.motechId = motechId;
-    }
-
-    public PatientType getRegistrantType() {
-        return registrantType;
-    }
-
-    public void setRegistrantType(PatientType registrantType) {
-        this.registrantType = registrantType;
     }
 
     public String getSerialNumber() {
