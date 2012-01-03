@@ -4,6 +4,7 @@ import com.jcraft.jzlib.ZInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.fcitmuk.epihandy.FormData;
 import org.fcitmuk.epihandy.FormDef;
+import org.fcitmuk.epihandy.QuestionData;
 import org.fcitmuk.epihandy.RequestHeader;
 import org.fcitmuk.epihandy.StudyData;
 import org.fcitmuk.epihandy.StudyDef;
@@ -58,12 +59,14 @@ public class XformHttpClient {
         studyDef.setId(1);
         studyDef.setVariableName(" ");
         Vector<FormData> formsList = new Vector<FormData>();
-        for (String string: xmlStrings) {
+        for (String string : xmlStrings) {
             final FormDef formDef = EpihandyXform.getFormDef(EpihandyXform.getDocument(new StringReader(string)));
             studyDef.addForm(formDef);
             final FormData formData = new FormData(formDef);
             hackDate(formData, "/patientRegistration/date");
             hackDate(formData, "/patientRegistration/dateOfBirth");
+            hackDate(formData, "/ANCRegistration/date");
+            hackDate(formData, "/ANCRegistration/estDeliveryDate");
             formsList.add(formData);
         }
         final StudyData studyData = new StudyData(studyDef);
@@ -72,9 +75,11 @@ public class XformHttpClient {
     }
 
     private static void hackDate(FormData formData, String variableName) throws ParseException {
-        final String answer = (String) formData.getQuestion(variableName).getAnswer();
-        if (answer != null)
-            formData.setDateValue(variableName, new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).parse(answer));
+        final QuestionData question = formData.getQuestion(variableName);
+        if (question == null) return;
+        final String answer = (String) question.getAnswer();
+        if (answer == null) return;
+        formData.setDateValue(variableName, new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).parse(answer));
     }
 
     private static XformResponse processResponse(HttpConnection httpConnection) throws IOException {
@@ -84,7 +89,7 @@ public class XformHttpClient {
                 dataInputStream = new DataInputStream(new ZInputStream(httpConnection.openInputStream()));
                 final byte status = dataInputStream.readByte();
 
-                if(status != 1) {
+                if (status != 1) {
                     throw new RuntimeException("xml processing failed.");
                 }
 

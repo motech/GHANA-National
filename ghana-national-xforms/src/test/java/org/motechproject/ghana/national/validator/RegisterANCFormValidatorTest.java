@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.bean.MobileMidwifeForm;
+import org.motechproject.ghana.national.bean.RegisterANCForm;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -16,8 +16,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class MobileMidwifeFormValidatorTest {
-    private MobileMidwifeFormValidator mobileMidwifeFormValidator;
+public class RegisterANCFormValidatorTest {
+    private RegisterANCFormValidator registerANCFormValidator;
 
     @Mock
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
@@ -25,23 +25,23 @@ public class MobileMidwifeFormValidatorTest {
     @Before
     public void setUp(){
         initMocks(this);
-        mobileMidwifeFormValidator = new MobileMidwifeFormValidator();
-        ReflectionTestUtils.setField(mobileMidwifeFormValidator, "formValidator", formValidator);
+        registerANCFormValidator = new RegisterANCFormValidator();
+        ReflectionTestUtils.setField(registerANCFormValidator, "formValidator", formValidator);
     }
 
     @Test
-    public void shouldValidateMobileMidwifeForm() {
-        MobileMidwifeForm formBean = mock(MobileMidwifeForm.class);
-        String patientId = "1231231";
+    public void shouldValidateRegisterANCForm() {
+        RegisterANCForm formBean = mock(RegisterANCForm.class);
+        String motechId = "1231231";
         String staffId = "11";
         String facilityId = "34";
-        when(formBean.getPatientId()).thenReturn(patientId);
+        when(formBean.getMotechId()).thenReturn(motechId);
         when(formBean.getStaffId()).thenReturn(staffId);
         when(formBean.getFacilityId()).thenReturn(facilityId);
 
-        mobileMidwifeFormValidator.validate(formBean);
+        registerANCFormValidator.validate(formBean);
 
-        verify(formValidator).validatePatient(Matchers.<List<FormError>>any(), eq(patientId));
+        verify(formValidator).validatePatient(Matchers.<List<FormError>>any(), eq(motechId));
         verify(formValidator).validateIfStaffExists(Matchers.<List<FormError>>any(), eq(staffId));
         verify(formValidator).validateIfFacilityExists(Matchers.<List<FormError>>any(), eq(facilityId));
     }

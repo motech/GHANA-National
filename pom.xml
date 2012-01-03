@@ -313,6 +313,7 @@
                     </includes>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
+
             </plugin>
             <!--BUILD HELPER-->
             <plugin>

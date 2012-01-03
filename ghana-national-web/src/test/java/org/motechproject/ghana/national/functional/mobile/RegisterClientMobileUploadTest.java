@@ -1,14 +1,15 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
+import static org.testng.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertNull;
+
 
 public class RegisterClientMobileUploadTest {
     @Test

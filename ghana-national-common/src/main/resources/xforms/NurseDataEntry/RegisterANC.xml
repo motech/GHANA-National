@@ -22,7 +22,7 @@
         <timeOfDay/>
         <howLearned/>
         <formtype>data_entry</formtype>
-        <formname>registerANCMother-jf</formname>
+        <formname>registerANC</formname>
       </ANCRegistration>
     </xf:instance>
     <xf:instance id="format">
@@ -114,10 +114,10 @@
     <xf:bind constraint=". &lt;= 'today()'" id="date" message="Invalid date: date entered is in the future" nodeset="/ANCRegistration/date" required="true()" type="xsd:date"/>
     <xf:bind id="motechId" nodeset="/ANCRegistration/motechId" required="true()" type="xsd:int" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
     <xf:bind id="ancRegNumber" nodeset="/ANCRegistration/ancRegNumber" type="xsd:string" required="true()"/>
-    <xf:bind id="estDeliveryDate" nodeset="/ANCRegistration/estDeliveryDate" required="true()" type="xsd:date"/>
+    <xf:bind constraint=". &gt;= 'today()'" id="estDeliveryDate" message="Invalid EDD: date entered is in the past" nodeset="/ANCRegistration/estDeliveryDate" required="true()" type="xsd:date"/>
     <xf:bind constraint=". &gt;= 60 and . &lt;= 200" id="height" message="Value out of range: must be between 60 and 200" nodeset="/ANCRegistration/height" required="true()" type="xsd:decimal"/>
-    <xf:bind constraint=". &gt;= 1 and . &lt;= 20" id="gravida" message="Value out of range: must be between 1 and 20" nodeset="/ANCRegistration/gravida" required="true()" type="xsd:int"/>
-    <xf:bind constraint=". &gt;= 0 and . &lt;= 20" id="parity" message="Value out of range: must be between 0 and 20" nodeset="/ANCRegistration/parity" required="true()" type="xsd:int"/>
+    <xf:bind constraint=". &gt;= 1 and . &lt;= 30" id="gravida" message="Value out of range: must be between 1 and 30" nodeset="/ANCRegistration/gravida" required="true()" type="xsd:int"/>
+    <xf:bind constraint=". &gt;= 0 and . &lt;= 30" id="parity" message="Value out of range: must be between 0 and 30" nodeset="/ANCRegistration/parity" required="true()" type="xsd:int"/>
     <xf:bind id="enroll" nodeset="/ANCRegistration/enroll" required="true()" type="xsd:string"/>
     <xf:bind action="show" id="consent" nodeset="/ANCRegistration/consent" relevant="/ANCRegistration/enroll = 'Y'" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind action="show" id="ownership" nodeset="/ANCRegistration/ownership" relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>

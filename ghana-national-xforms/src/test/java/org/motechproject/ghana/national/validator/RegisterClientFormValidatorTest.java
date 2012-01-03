@@ -5,12 +5,11 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
-import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientType;
+import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.mobileforms.api.domain.FormError;
-import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -19,6 +18,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -33,36 +33,18 @@ public class RegisterClientFormValidatorTest {
     @Mock
     private RegisterClientForm mockRegisterClientForm;
     @Mock
-    private StaffService mockStaffService;
-    @Mock
-    private FacilityService mockFacilityService;
-    @Mock
     private PatientService mockPatientService;
     @Mock
     private MotechIdVerhoeffValidator mockMotechIdVerhoeffValidator;
+    @Mock
+    private FormValidator formValidator;
 
     @Before
     public void setUp() {
         initMocks(this);
         registerClientFormValidator = new RegisterClientFormValidator();
-        ReflectionTestUtils.setField(registerClientFormValidator, "staffService", mockStaffService);
-        ReflectionTestUtils.setField(registerClientFormValidator, "facilityService", mockFacilityService);
+        ReflectionTestUtils.setField(registerClientFormValidator, "formValidator", formValidator);
         ReflectionTestUtils.setField(registerClientFormValidator, "patientService", mockPatientService);
-    }
-
-    @Test
-    public void shouldValidateIfTheStaffWhoSubmitsTheFormIsAlreadyRegistered() {
-        String userId = "0987654";
-        when(mockRegisterClientForm.getStaffId()).thenReturn(userId);
-
-        when(mockStaffService.getUserById(userId)).thenReturn(new MRSUser());
-
-        List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm);
-        assertThat(formErrors, not(hasItem(new FormError("staffId", NOT_FOUND))));
-
-        when(mockStaffService.getUserById(userId)).thenReturn(null);
-        formErrors = registerClientFormValidator.validate(mockRegisterClientForm);
-        assertThat(formErrors, hasItem(new FormError("staffId", NOT_FOUND)));
     }
 
     @Test
@@ -118,15 +100,18 @@ public class RegisterClientFormValidatorTest {
     }
 
     @Test
-    public void shouldValidateIfTheSelectedFacilityIsAvailable() {
-        String facilityId = "0987653";
+    public void shouldVerifyIfStaffIdIsValidOrNot() {
+        String staffId = "21";
+        when(mockRegisterClientForm.getStaffId()).thenReturn(staffId);
+        registerClientFormValidator.validate(mockRegisterClientForm);
+        verify(formValidator).validateIfStaffExists(Matchers.<List<FormError>>any(), eq(staffId));
+    }
+
+    @Test
+    public void shouldVerifyIfFacilityIdIsValidOrNot() {
+        String facilityId = "21";
         when(mockRegisterClientForm.getFacilityId()).thenReturn(facilityId);
-
-        Facility facilityMock = mock(Facility.class);
-        when(mockFacilityService.getFacilityByMotechId(facilityId)).thenReturn(facilityMock);
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("facilityId", NOT_FOUND))));
-
-        when(mockFacilityService.getFacilityByMotechId(facilityId)).thenReturn(null);
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("facilityId", NOT_FOUND)));
+        registerClientFormValidator.validate(mockRegisterClientForm);
+        verify(formValidator).validateIfFacilityExists(Matchers.<List<FormError>>any(), eq(facilityId));
     }
 }

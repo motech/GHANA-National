@@ -3,9 +3,7 @@ package org.motechproject.ghana.national.validator;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
-import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -21,19 +19,18 @@ import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
 public class RegisterClientFormValidator extends FormValidator<RegisterClientForm> {
 
     @Autowired
-    private StaffService staffService;
-    @Autowired
-    private FacilityService facilityService;
-    @Autowired
     private PatientService patientService;
+    @Autowired
+    private org.motechproject.ghana.national.validator.FormValidator formValidator;
+
 
     @Override
     @LoginAsAdmin
     @ApiSession
     public List<FormError> validate(RegisterClientForm formBean) {
         List<FormError> formErrors = super.validate(formBean);
-        validateIfStaffExists(formErrors, formBean.getStaffId());
-        validateIfFacilityExists(formErrors, formBean.getFacilityId());
+        formValidator.validateIfStaffExists(formErrors, formBean.getStaffId());
+        formValidator.validateIfFacilityExists(formErrors, formBean.getFacilityId());
         validateIfMotechId(formErrors, formBean.getMotechId(), formBean.getRegistrationMode());
         validateIfMotherMotechId(formErrors, formBean.getMotherMotechId(), formBean.getRegistrantType());
         return formErrors;
@@ -51,16 +48,4 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
             }
         }
     }
-
-    private void validateIfStaffExists(List<FormError> formErrors, final String staffId) {
-        if (staffService.getUserById(staffId) == null)
-            formErrors.add(new FormError("staffId", NOT_FOUND));
-    }
-
-    private void validateIfFacilityExists(List<FormError> formErrors, String facilityId) {
-        if (facilityService.getFacilityByMotechId(facilityId) == null)
-            formErrors.add(new FormError("facilityId", NOT_FOUND));
-    }
-
-
 }

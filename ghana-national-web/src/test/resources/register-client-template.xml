@@ -67,7 +67,7 @@
                 <howLearned/>
                 <messageStartWeek/>
                 <formtype>data_entry</formtype>
-                <formname>registerPatient-jf</formname>
+                <formname>registerPatient</formname>
             </patientRegistration>
         </xf:instance>
         <xf:instance id="district">
@@ -343,14 +343,14 @@
                  nodeset="/patientRegistration/height"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER'" required="true()"
                  type="xsd:decimal" visible="false()"/>
-        <xf:bind action="show" constraint=". &gt;= 1 and . &lt;= 20" id="gravida"
-                 message="Value out of range: must be between 1 and 20"
+        <xf:bind action="show" constraint=". &gt;= 1 and . &lt;= 30" id="gravida"
+                 message="Value out of range: must be between 1 and 30"
                  nodeset="/patientRegistration/gravida"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER'" required="true()"
                  type="xsd:int"
                  visible="false()"/>
-        <xf:bind action="show" constraint=". &gt;= 0 and . &lt;= 20" id="parity"
-                 message="Value out of range: must be between 0 and 20"
+        <xf:bind action="show" constraint=". &gt;= 0 and . &lt;= 30" id="parity"
+                 message="Value out of range: must be between 0 and 30"
                  nodeset="/patientRegistration/parity"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER'" required="true()"
                  type="xsd:int"
