@@ -13,14 +13,12 @@ var facilities = (function(){
             }
             if(element.find('option:selected').attr('parent') != 'select') {
                 facilities.initializeSelectBoxWithTheCompleteFacilityList();
-                var facilitySelect = $('#facilities');
-                var selectedFacility = facilitySelect.find('option:selected').val();
-                facilitySelect.html($('#facilities').find('option').filter(function() {
+                $('#facilities').html($('#facilities').find('option').filter(function() {
                     return ($(this).attr('parent') == element.find('option:selected').text());
                 }));
-                facilitySelect.prepend('<option value="" parent="select">Select Facility</option>');
-                facilitySelect.val(selectedFacility);
-                facilitySelect.parent().show();
+                $('#facilities').prepend('<option value="" parent="select">Select Facility</option>');
+                $('#facilities').find('option:first').html('Select Facility');
+                $('#facilities').parent().show();
             }
         },
         hide :  function (field) {
@@ -88,7 +86,7 @@ Field.prototype.hideDependents = function() {
     while (field.hasDependent()) {
         var field = field.dependent;
         field.node.parent().hide();
-//        field.node.find('option:first').attr('selected', 'selected');
+        field.node.find('option:first').attr('selected', 'selected');
     }
 }
 
