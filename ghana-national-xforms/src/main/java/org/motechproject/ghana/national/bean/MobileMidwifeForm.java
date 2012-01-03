@@ -27,7 +27,7 @@ public class MobileMidwifeForm extends FormBean {
     @Required
     @RegEx(pattern = MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
-    private String motechId;
+    private String patientId;
     @Required
     private Boolean consent;
     @Required
@@ -74,14 +74,6 @@ public class MobileMidwifeForm extends FormBean {
 
     public void setFacilityId(String facilityId) {
         this.facilityId = facilityId;
-    }
-
-    public String getMotechId() {
-        return motechId;
-    }
-
-    public void setMotechId(String motechId) {
-        this.motechId = motechId;
     }
 
     public Boolean getConsent() {
@@ -173,4 +165,11 @@ public class MobileMidwifeForm extends FormBean {
     }
 
 
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
+    }
 }

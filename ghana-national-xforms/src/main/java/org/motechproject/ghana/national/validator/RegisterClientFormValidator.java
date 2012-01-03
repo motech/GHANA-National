@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.validator;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
@@ -16,10 +15,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
+
 @Component
 public class RegisterClientFormValidator extends FormValidator<RegisterClientForm> {
 
-    public static final String NOT_FOUND = "not found";
     @Autowired
     private StaffService staffService;
     @Autowired
@@ -41,25 +41,25 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
 
     private void validateIfMotechId(List<FormError> formErrors, String motechId, RegistrationType registrationType) {
         if (RegistrationType.USE_PREPRINTED_ID.equals(registrationType) && patientService.getPatientByMotechId(motechId) != null)
-            CollectionUtils.addIgnoreNull(formErrors, new FormError("motechId", "in use"));
+            formErrors.add(new FormError("motechId", "in use"));
     }
 
     private void validateIfMotherMotechId(List<FormError> formErrors, String motherMotechId, PatientType patientType) {
         if (PatientType.CHILD_UNDER_FIVE.equals(patientType)) {
             if (motherMotechId == null || patientService.getPatientByMotechId(motherMotechId) == null) {
-                CollectionUtils.addIgnoreNull(formErrors, new FormError("motherMotechId", NOT_FOUND));
+                formErrors.add(new FormError("motherMotechId", NOT_FOUND));
             }
         }
     }
 
     private void validateIfStaffExists(List<FormError> formErrors, final String staffId) {
         if (staffService.getUserById(staffId) == null)
-            CollectionUtils.addIgnoreNull(formErrors, new FormError("staffId", NOT_FOUND));
+            formErrors.add(new FormError("staffId", NOT_FOUND));
     }
 
     private void validateIfFacilityExists(List<FormError> formErrors, String facilityId) {
         if (facilityService.getFacilityByMotechId(facilityId) == null)
-            CollectionUtils.addIgnoreNull(formErrors, new FormError("facilityId", NOT_FOUND));
+            formErrors.add(new FormError("facilityId", NOT_FOUND));
     }
 
 
