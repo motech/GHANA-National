@@ -29,29 +29,20 @@ public class MobileMidwifeForm extends FormBean {
     private String patientId;
     @Required
     private Boolean consent;
-    @Required
     private MobileMidwifeServiceType serviceType;
-    @Required
     private PhoneOwnership phoneOwnership;
     @RegEx(pattern = "0[0-9]{9}")
     private String phoneNumber;
-    @Required
     @RegEx(pattern = "([A-Z]+_VOICE|[A-Z]+_TEXT)")
     private String medium;
-    @Required
     private DayOfWeek dayOfWeek;
-    @Required
     private Time timeOfDay;
-    @Required
     @RegEx(pattern = "(en|kas|nan|fan)")
     private String language;
-    @Required
     @RegEx(pattern = "(GHS_NURSE|MOTECH_FIELD_AGENT|FRIEND|POSTERS_ADS|RADIO)")
     private String howLearned;
-    @Required
     @RegEx(pattern = "(CURRENTLY_PREGNANT|RECENTLY_DELIVERED|FAMILY_FRIEND_PREGNANT|FAMILY_FRIEND_DELIVERED|PLANNING_PREGNANCY_INFO|KNOW_MORE_PREGNANCY_CHILDBIRTH|WORK_WITH_WOMEN_NEWBORNS)")
     private String reason;
-    @Required
     @RegEx(pattern = "([5-9]{1}|[1-8]{1}[0-9]{1}|9[0-2]{1})")
     private String messageStartWeek;
 
