@@ -5,6 +5,7 @@ import org.motechproject.MotechException;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FieldValidator;
 import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
+import org.openmrs.patient.UnallowedIdentifierException;
 
 public class MotechIdValidator implements FieldValidator<MotechId> {
     private final static Logger log = Logger.getLogger(MotechIdValidator.class);
@@ -14,9 +15,14 @@ public class MotechIdValidator implements FieldValidator<MotechId> {
         if (fieldValue != null) {
             VerhoeffValidator validator = getValidatorInstance(annotation.validator());
             if (fieldType == String.class) {
-                if (!validator.isValid(String.valueOf(fieldValue))) {
+                try{
+                    if (!validator.isValid(String.valueOf(fieldValue))) {
+                        return new FormError(fieldName, "is invalid");
+                    }
+                }catch (UnallowedIdentifierException e){
                     return new FormError(fieldName, "is invalid");
                 }
+
             }
         }
         return null;

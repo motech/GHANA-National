@@ -16,15 +16,12 @@ public class MobileMidwifeForm extends FormBean {
     public static final String MOTECH_ID_PATTERN = "[0-9]{7}";
 
     @Required
-    @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     @MotechId(validator = VerhoeffValidator.class)
     private String staffId;
     @Required
-    @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     @MotechId(validator = VerhoeffValidator.class)
     private String facilityId;
     @Required
-    @RegEx(pattern = MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String patientId;
     @Required
