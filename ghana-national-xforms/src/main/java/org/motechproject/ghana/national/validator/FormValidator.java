@@ -25,17 +25,15 @@ public class FormValidator {
     private StaffService staffService;
 
     public static final String IS_NOT_ALIVE = "is not alive";
-    public static final String PATIENT_ID = "patientId";
     public static final String FACILITY_ID = "facilityId";
     public static final String STAFF_ID = "staffId";
 
-
-    public void validatePatient(List<FormError> formErrors, String patientId) {
-        Patient patient = patientService.getPatientByMotechId(patientId);
+    public void validatePatient(List<FormError> formErrors, String motechId, String patientIdAttribute) {
+        Patient patient = patientService.getPatientByMotechId(motechId);
         if (patient == null) {
-            formErrors.add(new FormError(PATIENT_ID, NOT_FOUND));
+            formErrors.add(new FormError(patientIdAttribute, NOT_FOUND));
         } else if (patient.getMrsPatient().getPerson().isDead()) {
-            formErrors.add(new FormError(PATIENT_ID, IS_NOT_ALIVE));
+            formErrors.add(new FormError(patientIdAttribute, IS_NOT_ALIVE));
         }
     }
 
@@ -46,9 +44,7 @@ public class FormValidator {
 
     public void validateIfStaffExists(List<FormError> formErrors, final String staffId) {
         if (staffService.getUserById(staffId) == null) {
-            formErrors.add(new FormError("staffId", NOT_FOUND));
+            formErrors.add(new FormError(STAFF_ID, NOT_FOUND));
         }
     }
-
-
 }

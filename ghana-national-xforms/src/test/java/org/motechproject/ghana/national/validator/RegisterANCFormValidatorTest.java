@@ -23,7 +23,7 @@ public class RegisterANCFormValidatorTest {
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         initMocks(this);
         registerANCFormValidator = new RegisterANCFormValidator();
         ReflectionTestUtils.setField(registerANCFormValidator, "formValidator", formValidator);
@@ -41,7 +41,7 @@ public class RegisterANCFormValidatorTest {
 
         registerANCFormValidator.validate(formBean);
 
-        verify(formValidator).validatePatient(Matchers.<List<FormError>>any(), eq(motechId));
+        verify(formValidator).validatePatient(Matchers.<List<FormError>>any(), eq(motechId), eq(RegisterANCFormValidator.MOTECH_ID_ATTRIBUTE_NAME));
         verify(formValidator).validateIfStaffExists(Matchers.<List<FormError>>any(), eq(staffId));
         verify(formValidator).validateIfFacilityExists(Matchers.<List<FormError>>any(), eq(facilityId));
     }

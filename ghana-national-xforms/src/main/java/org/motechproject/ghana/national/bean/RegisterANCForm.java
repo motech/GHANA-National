@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.bean;
 
-import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
@@ -23,36 +22,29 @@ public class RegisterANCForm extends FormBean {
     @MaxLength(size = 50)
     @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String facilityId;
-    
+
     @Required
-    private RegistrationToday registrationToday;
-    
+    private Date date;
+
     @Required
-    private Date registrationDate;
-    
     @RegEx(pattern = MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
     
     @Required
-    private Date expectedDeliveryDate;
+    private Date estDeliveryDate;
+    
+    @Required
+    private Integer height;
     
     @Required
     private Integer gravida;
 
     @Required
     private Integer parity;
-
-    @Required
-    private Boolean deliveryDateConfirmedByCHW;
     
-    public void setRegistrationToday(RegistrationToday registrationToday) {
-        this.registrationToday = registrationToday;
-    }
-
-    public RegistrationToday getRegistrationToday() {
-        return registrationToday;
-    }
+    @Required
+    private String ancRegNumber;
 
     public String getStaffId() {
         return staffId;
@@ -70,12 +62,12 @@ public class RegisterANCForm extends FormBean {
         this.facilityId = facilityId;
     }
 
-    public Date getRegistrationDate() {
-        return registrationDate;
+    public Date getDate() {
+        return date;
     }
 
-    public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getMotechId() {
@@ -86,12 +78,20 @@ public class RegisterANCForm extends FormBean {
         this.motechId = motechId;
     }
 
-    public Date getExpectedDeliveryDate() {
-        return expectedDeliveryDate;
+    public Date getEstDeliveryDate() {
+        return estDeliveryDate;
     }
 
-    public void setExpectedDeliveryDate(Date expectedDeliveryDate) {
-        this.expectedDeliveryDate = expectedDeliveryDate;
+    public void setEstDeliveryDate(Date estDeliveryDate) {
+        this.estDeliveryDate = estDeliveryDate;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 
     public Integer getGravida() {
@@ -110,11 +110,11 @@ public class RegisterANCForm extends FormBean {
         this.parity = parity;
     }
 
-    public Boolean getDeliveryDateConfirmedByCHW() {
-        return deliveryDateConfirmedByCHW;
+    public String getAncRegNumber() {
+        return ancRegNumber;
     }
 
-    public void setDeliveryDateConfirmedByCHW(Boolean deliveryDateConfirmedByCHW) {
-        this.deliveryDateConfirmedByCHW = deliveryDateConfirmedByCHW;
+    public void setAncRegNumber(String ancRegNumber) {
+        this.ancRegNumber = ancRegNumber;
     }
 }
