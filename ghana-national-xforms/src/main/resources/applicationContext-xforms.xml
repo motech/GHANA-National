@@ -18,6 +18,7 @@
             <map>
                 <entry key="org.motechproject.ghana.national.validator.RegisterClientFormValidator" value-ref="registerClientFormValidator"/>
                 <entry key="org.motechproject.ghana.national.validator.MobileMidwifeFormValidator" value-ref="mobileMidwifeFormValidator"/>
+                <entry key="org.motechproject.ghana.national.validator.RegisterANCFormValidator" value-ref="registerANCFormValidator"/>
             </map>
         </property>
     </bean>
