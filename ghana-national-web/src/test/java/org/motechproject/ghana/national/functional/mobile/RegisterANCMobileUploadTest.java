@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.testng.Assert.assertEquals;
 
 public class RegisterANCMobileUploadTest {
@@ -17,13 +19,14 @@ public class RegisterANCMobileUploadTest {
                 "NurseDataEntry", XFormParser.parse("register-anc-template.xml", MapUtils.EMPTY_MAP));
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);
-        final Map<String, String> errorsMap = errors.iterator().next().getErrors();
-        assertEquals(errorsMap.get("gravida"), "is mandatory");
-        assertEquals(errorsMap.get("parity"), "is mandatory");
-        assertEquals(errorsMap.get("height"), "is mandatory");
-        assertEquals(errorsMap.get("estDeliveryDate"), "is mandatory");
-        assertEquals(errorsMap.get("date"), "is mandatory");
-        assertEquals(errorsMap.get("ancRegNumber"), "is mandatory");
+        final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
+
+        assertThat(errorsMap.get("gravida"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("parity"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("height"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("estDeliveryDate"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("date"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("ancRegNumber"), hasItem("is mandatory"));
     }
 
     @Test
@@ -42,9 +45,10 @@ public class RegisterANCMobileUploadTest {
         }}));
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);
-        final Map<String, String> errorsMap = errors.iterator().next().getErrors();
-        assertEquals(errorsMap.get("staffId"), "not found");
-        assertEquals(errorsMap.get("facilityId"), "not found");
-        assertEquals(errorsMap.get("motechId"), "not found");
+        final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
+
+        assertThat(errorsMap.get("staffId"), hasItem("not found"));
+        assertThat(errorsMap.get("facilityId"), hasItem("not found"));
+        assertThat(errorsMap.get("motechId"), hasItem("not found"));
     }
 }
