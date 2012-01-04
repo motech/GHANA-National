@@ -87,7 +87,7 @@
         <div class="form-field">
             <label class="formLabel" for="motechId">${fn:escapeXml(patient_motech_id)}:</label>
             <form:input path="motechId" cssClass="jsRequire" size="20" label="${fn:escapeXml(patient_motech_id)}"
-                        disabled="true"/>
+                        readonly="true"/>
             <span id='motechIdError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_motech_id)} ${fn:escapeXml(required_msg)}
             </span>
