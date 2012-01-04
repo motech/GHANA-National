@@ -33,6 +33,7 @@ public class FormValidatorTest {
     private FacilityService facilityService;
     @Mock
     private StaffService staffService;
+    private String PATIENT_ID = "patientId";
 
     @Before
     public void setUp(){
@@ -49,13 +50,13 @@ public class FormValidatorTest {
         setupPatientServiceMockToReturnIfPatientIsAliveOrDead(motechId, true);
 
         ArrayList<FormError> formErrors = new ArrayList<FormError>();
-        formValidator.validatePatient(formErrors, motechId);
-        assertThat(formErrors, hasItem(new FormError(FormValidator.PATIENT_ID, FormValidator.IS_NOT_ALIVE)));
+        formValidator.validatePatient(formErrors, motechId, PATIENT_ID);
+        assertThat(formErrors, hasItem(new FormError(PATIENT_ID, FormValidator.IS_NOT_ALIVE)));
 
         setupPatientServiceMockToReturnIfPatientIsAliveOrDead(motechId, false);
         formErrors = new ArrayList<FormError>();
-        formValidator.validatePatient(formErrors, motechId);
-        assertThat(formErrors, not(hasItem(new FormError(FormValidator.PATIENT_ID, FormValidator.IS_NOT_ALIVE))));
+        formValidator.validatePatient(formErrors, motechId, PATIENT_ID);
+        assertThat(formErrors, not(hasItem(new FormError(PATIENT_ID, FormValidator.IS_NOT_ALIVE))));
     }
 
     private MRSPerson setupPatientServiceMockToReturnIfPatientIsAliveOrDead(String motechId, boolean isDead) {
@@ -92,13 +93,13 @@ public class FormValidatorTest {
         String patientId = "patientId";
         when(patientService.getPatientByMotechId(patientId)).thenReturn(null);
         ArrayList<FormError> formErrors = new ArrayList<FormError>();
-        formValidator.validatePatient(formErrors, patientId);
-        assertThat(formErrors, hasItem(new FormError(FormValidator.PATIENT_ID, NOT_FOUND)));
+        formValidator.validatePatient(formErrors, patientId, PATIENT_ID);
+        assertThat(formErrors, hasItem(new FormError(PATIENT_ID, NOT_FOUND)));
 
         setupPatientServiceMockToReturnIfPatientIsAliveOrDead(patientId, false);
         formErrors = new ArrayList<FormError>();
-        formValidator.validatePatient(formErrors, patientId);
-        assertThat(formErrors, not(hasItem(new FormError(FormValidator.PATIENT_ID, NOT_FOUND))));
+        formValidator.validatePatient(formErrors, patientId, PATIENT_ID);
+        assertThat(formErrors, not(hasItem(new FormError(PATIENT_ID, NOT_FOUND))));
     }
 
     @Test

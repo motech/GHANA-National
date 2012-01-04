@@ -14,13 +14,14 @@ import java.util.List;
 public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
     @Autowired
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
+    static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
 
     @Override
     @LoginAsAdmin
     @ApiSession
     public List<FormError> validate(RegisterANCForm formBean) {
         List<FormError> formErrors = super.validate(formBean);
-        formValidator.validatePatient(formErrors, formBean.getMotechId());
+        formValidator.validatePatient(formErrors, formBean.getMotechId(), MOTECH_ID_ATTRIBUTE_NAME);
         formValidator.validateIfFacilityExists(formErrors, formBean.getFacilityId());
         formValidator.validateIfStaffExists(formErrors, formBean.getStaffId());
         return formErrors;

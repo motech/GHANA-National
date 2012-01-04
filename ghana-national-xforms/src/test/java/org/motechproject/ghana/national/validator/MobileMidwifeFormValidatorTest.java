@@ -41,7 +41,7 @@ public class MobileMidwifeFormValidatorTest {
 
         mobileMidwifeFormValidator.validate(formBean);
 
-        verify(formValidator).validatePatient(Matchers.<List<FormError>>any(), eq(patientId));
+        verify(formValidator).validatePatient(Matchers.<List<FormError>>any(), eq(patientId), eq(MobileMidwifeFormValidator.PATIENT_ID_ATTRIBUTE_NAME));
         verify(formValidator).validateIfStaffExists(Matchers.<List<FormError>>any(), eq(staffId));
         verify(formValidator).validateIfFacilityExists(Matchers.<List<FormError>>any(), eq(facilityId));
     }
