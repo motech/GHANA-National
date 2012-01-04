@@ -1,0 +1,61 @@
+<div id="select_facility" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
+
+
+    <spring:message code="facility_country" var="facility_country" htmlEscape="false"/>
+    <spring:message code="facility_region" var="facility_region" htmlEscape="false"/>
+    <spring:message code="facility_district" var="facility_district" htmlEscape="false"/>
+    <spring:message code="facility_sub_district" var="facility_sub_district" htmlEscape="false"/>
+    <spring:message code="facility_region" var="facility_region" htmlEscape="false"/>
+    <spring:message code="facility_district" var="facility_district" htmlEscape="false"/>
+    <spring:message code="facility_sub_district" var="facility_sub_district" htmlEscape="false"/>
+    <spring:message code="facility_country_req_msg" var="facility_country_req_msg" htmlEscape="false"/>
+    <spring:message code="facility_region_req_msg" var="facility_region_req_msg" htmlEscape="false"/>
+    <spring:message code="facility_district_req_msg" var="facility_district_req_msg" htmlEscape="false"/>
+    <spring:message code="facility_sub_district_req_msg" var="facility_sub_district_req_msg" htmlEscape="false"/>
+    <spring:message code="facility_country_select" var="facility_country_select" htmlEscape="false"/>
+    <spring:message code="facility_region_select" var="facility_region_select" htmlEscape="false"/>
+    <spring:message code="facility_district_select" var="facility_district_select" htmlEscape="false"/>
+    <spring:message code="facility_facility_select" var="facility_facility_select" htmlEscape="false"/>
+    <spring:message code="facility_sub_district_select" var="facility_sub_district_select" htmlEscape="false"/>
+    <spring:message code="required_msg" var="required_msg" htmlEscape="false"/>
+    <spring:message code="incorrect_msg" var="incorrect_msg" htmlEscape="false"/>
+
+    <div>
+        <label for="countries" class="formLabel">${fn:escapeXml(facility_country)} *:</label>
+        <form:select id="countries" path="facilityForm.country">
+            <option parent="select" value="">${fn:escapeXml(facility_country_select)}</option>
+            <c:forEach items="${countries}" var="country">
+                <form:option parent="${country}" value="${country}">${country}</form:option>
+            </c:forEach>
+        </form:select>
+            <span id='countriesError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(facility_country_req_msg)}
+            </span>
+    </div>
+    <div class="hidden-location hide">
+        <motech:location id="regions" path="facilityForm.region" label="${facility_region} *"
+                         defaultValue="${facility_region_select}" errorMsg="${facility_region_req_msg}"
+                         locations="${regions}"/>
+    </div>
+    <div class="hidden-location hide">
+        <motech:location id="districts" path="facilityForm.countyDistrict" label="${facility_district} *"
+                         defaultValue="${facility_district_select}" errorMsg="${facility_district_req_msg}"
+                         locations="${districts}"/>
+    </div>
+    <div class="hidden-location hide">
+        <motech:location id="sub-districts" path="facilityForm.stateProvince" label="${facility_sub_district} *"
+                         defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
+                         locations="${provinces}"/>
+    </div>
+    <div class="hide form-field">
+        <label class="formLabel" for="facility">${fn:escapeXml(facility_facility_select)} *:</label>
+        <form:select path="facilityForm.facilityId" cssClass="jsRequire" id="facilities">
+            <option value="" parent="select">Select Facility</option>
+            <c:forEach items="${facilities}" var="facility">
+                <option parent="${facility.parent}" value="${facility.id}">${facility.name}</option>
+            </c:forEach>
+        </form:select>
+    </div>
+</div>

@@ -1,19 +1,14 @@
 package org.motechproject.ghana.national.repository;
 
-import org.ektorp.CouchDbConnector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.services.MRSFacilityAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
@@ -26,13 +21,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class AllFacilitiesTest extends AbstractJUnit4SpringContextTests {
-
-    @Qualifier("couchDbConnector")
-    @Autowired
-    protected CouchDbConnector dbConnector;
+public class AllFacilitiesTest extends BaseIntegrationTest {
 
     @Mock
     MRSFacilityAdaptor mockMrsFacilityAdaptor;

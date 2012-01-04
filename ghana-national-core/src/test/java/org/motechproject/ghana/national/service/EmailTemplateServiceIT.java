@@ -2,20 +2,15 @@ package org.motechproject.ghana.national.service;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.domain.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class EmailTemplateServiceIT extends AbstractJUnit4SpringContextTests {
+public class EmailTemplateServiceIT extends BaseIntegrationTest {
 
     @Autowired
     private EmailTemplateService emailTemplateService;

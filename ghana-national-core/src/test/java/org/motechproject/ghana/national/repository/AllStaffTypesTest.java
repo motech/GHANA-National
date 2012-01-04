@@ -2,20 +2,15 @@ package org.motechproject.ghana.national.repository;
 
 import org.junit.After;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.domain.StaffType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class AllStaffTypesTest extends AbstractJUnit4SpringContextTests {
+public class AllStaffTypesTest extends BaseIntegrationTest {
     @Autowired
     private AllStaffTypes allStaffTypes;
 

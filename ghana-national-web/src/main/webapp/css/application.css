@@ -162,3 +162,18 @@ nav ul li a:active, nav ul li a.current {
     background: url("../images/trash-can-icon.png");
 }
 
+/*Enrollment to a program*/
+
+.form-width-40 {
+    width: 40%;
+    float:left;
+}
+
+.enrollment_link_section {
+    border: 1px solid #EEEEEE;
+    padding:1%;
+    float: left;
+    width: 20%;
+}
+
+
