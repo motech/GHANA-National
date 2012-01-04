@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertNull;
 
@@ -20,20 +22,20 @@ public class RegisterClientMobileUploadTest {
 
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);
-        final Map<String, String> errorsMap = errors.iterator().next().getErrors();
+        final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
 
-        assertEquals("is mandatory", errorsMap.get("registrationMode"));
-        assertEquals("is mandatory", errorsMap.get("registrantType"));
-        assertEquals("is mandatory", errorsMap.get("firstName"));
-        assertEquals("is mandatory", errorsMap.get("lastName"));
-        assertEquals("is mandatory", errorsMap.get("dateOfBirth"));
-        assertEquals("is mandatory", errorsMap.get("date"));
-        assertEquals("is mandatory", errorsMap.get("estimatedBirthDate"));
-        assertEquals("is mandatory", errorsMap.get("insured"));
-        assertEquals("is mandatory", errorsMap.get("date"));
-        assertEquals("is mandatory", errorsMap.get("address"));
-        assertEquals("not found", errorsMap.get("facilityId"));
-        assertEquals("not found", errorsMap.get("staffId"));
+        assertThat(errorsMap.get("registrationMode"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("registrantType"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("firstName"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("lastName"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("dateOfBirth"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("date"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("estimatedBirthDate"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("insured"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("date"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("address"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("facilityId"), hasItem("not found"));
+        assertThat(errorsMap.get("staffId"), hasItem("not found"));
     }
 
     @Test
@@ -46,7 +48,7 @@ public class RegisterClientMobileUploadTest {
 
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);
-        final Map<String, String> errorsMap = errors.iterator().next().getErrors();
+        final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
         assertNull(errorsMap.get("firstName"));
     }
 }

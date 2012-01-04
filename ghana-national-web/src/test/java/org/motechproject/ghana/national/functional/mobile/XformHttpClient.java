@@ -19,11 +19,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 public class XformHttpClient {
     public static XformResponse execute(String url, String studyName, String... xmlStrings) throws IOException, ParseException {
@@ -160,15 +156,18 @@ public class XformHttpClient {
             return formIndex;
         }
 
-        public Map<String, String> getErrors() {
+        public Map<String, List<String>> getErrors() {
             final String errors = error.split(":")[1];
             final String[] errorPairsAsString = errors.split("\n");
 
-            final HashMap<String, String> errorPairs = new HashMap<String, String>();
+            final HashMap<String, List<String>> errorPairs = new HashMap<String, List<String>>();
             for (String errorPair : errorPairsAsString) {
                 if (StringUtils.isNotEmpty(errorPair)) {
                     final String[] pair = errorPair.split("=");
-                    errorPairs.put(pair[0], pair[1]);
+                    if (errorPairs.get(pair[0]) == null) {
+                        errorPairs.put(pair[0], new ArrayList<String>());
+                    }
+                    errorPairs.get(pair[0]).add(pair[1]);
                 }
             }
             return errorPairs;

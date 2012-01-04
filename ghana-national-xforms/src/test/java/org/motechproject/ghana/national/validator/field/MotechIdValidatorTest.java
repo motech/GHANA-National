@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
+import org.openmrs.patient.UnallowedIdentifierException;
 
 import java.lang.annotation.Annotation;
 
@@ -26,10 +27,11 @@ public class MotechIdValidatorTest {
     @Test
     public void shouldValidateIfTheAnnotatedIdFieldIsAValidMotechId() throws IllegalAccessException, InstantiationException {
         motechIdValidator = spy(motechIdValidator);
-        String fieldValue = "1234567";
+        String fieldValue = "aflksdjflkjsfkl";
         String fieldName = "motechId";
 
         final Class<? extends VerhoeffValidator> validatorClass = MotechIdVerhoeffValidator.class;
+
         MotechId motechId = new MotechId() {
 
             @Override
@@ -48,6 +50,11 @@ public class MotechIdValidatorTest {
         when(motechIdVerhoeffValidatorMock.isValid(fieldValue)).thenReturn(false);
         assertThat(motechIdValidator.validate(fieldValue, fieldName, String.class, motechId), is(equalTo(new FormError(fieldName, "is invalid"))));
 
+        reset(motechIdVerhoeffValidatorMock);
+        when(motechIdVerhoeffValidatorMock.isValid(fieldValue)).thenThrow(new UnallowedIdentifierException());
+        assertThat(motechIdValidator.validate(fieldValue, fieldName, String.class, motechId), is(equalTo(new FormError(fieldName, "is invalid"))));
+
+        reset(motechIdVerhoeffValidatorMock);
         when(motechIdVerhoeffValidatorMock.isValid(fieldValue)).thenReturn(true);
         assertThat(motechIdValidator.validate(fieldValue, fieldName, String.class, motechId), is(equalTo(null)));
     }
