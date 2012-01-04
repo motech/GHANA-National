@@ -9,7 +9,7 @@ $(document).ready(function() {
             }
         });
         return isValid;
-    }
+    };
 
     var validate = function(facilityForm) {
         hasSelectedValidItem();
@@ -17,7 +17,7 @@ $(document).ready(function() {
         formValidator.validatePhoneNumbers(facilityForm);
         formValidator.validateRequiredFields(facilityForm);
         return formValidator.hasErrors(facilityForm);
-    }
+    };
 
     $("#facilityForm").formly({'onBlur':false, 'theme':'Light'});
     new Field('countries').hasADependent(new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts'))));

@@ -23,7 +23,7 @@ $(document).ready(function() {
     var disableGenderForMother = function() {
         $('#sex2').attr('checked', true);
         $('.jsHideMale').hide();
-    }
+    };
 
     var validate = function(form) {
         formValidator.clearMessages(form);
@@ -32,7 +32,7 @@ $(document).ready(function() {
         formValidator.validateDateBefore(form);
         formValidator.validatePhoneNumbers(form);
         return formValidator.hasErrors(form);
-    }
+    };
 
     $('#sub-districts').change(function() {
         facilities.show($(this));
