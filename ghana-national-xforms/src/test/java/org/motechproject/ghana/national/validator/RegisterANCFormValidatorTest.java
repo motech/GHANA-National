@@ -48,7 +48,7 @@ public class RegisterANCFormValidatorTest {
         when(formBean.getMotechId()).thenReturn(motechId);
         when(formBean.getStaffId()).thenReturn(staffId);
         when(formBean.getFacilityId()).thenReturn(facilityId);
-
+        setupPatient(motechId, Constants.PATIENT_GENDER_FEMALE);
         registerANCFormValidator.validate(formBean);
 
         verify(formValidator).validatePatient(eq(motechId), eq(RegisterANCFormValidator.MOTECH_ID_ATTRIBUTE_NAME));
