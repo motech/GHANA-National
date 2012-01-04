@@ -11,6 +11,8 @@ import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
@@ -29,23 +31,30 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     @ApiSession
     public List<FormError> validate(RegisterClientForm formBean) {
         List<FormError> formErrors = super.validate(formBean);
-        formValidator.validateIfStaffExists(formErrors, formBean.getStaffId());
-        formValidator.validateIfFacilityExists(formErrors, formBean.getFacilityId());
-        validateIfMotechId(formErrors, formBean.getMotechId(), formBean.getRegistrationMode());
-        validateIfMotherMotechId(formErrors, formBean.getMotherMotechId(), formBean.getRegistrantType());
+        formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
+        formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
+        formErrors.addAll(validateIfMotechId(formBean.getMotechId(), formBean.getRegistrationMode()));
+        formErrors.addAll(validateIfMotherMotechId(formBean.getMotherMotechId(), formBean.getRegistrantType()));
         return formErrors;
     }
 
-    private void validateIfMotechId(List<FormError> formErrors, String motechId, RegistrationType registrationType) {
-        if (RegistrationType.USE_PREPRINTED_ID.equals(registrationType) && patientService.getPatientByMotechId(motechId) != null)
-            formErrors.add(new FormError("motechId", "in use"));
+    private List<FormError> validateIfMotechId(String motechId, RegistrationType registrationType) {
+        if (RegistrationType.USE_PREPRINTED_ID.equals(registrationType) && patientService.getPatientByMotechId(motechId) != null) {
+            return new ArrayList<FormError>() {{
+                add(new FormError("motechId", "in use"));
+            }};
+        }
+        return Collections.emptyList();
     }
 
-    private void validateIfMotherMotechId(List<FormError> formErrors, String motherMotechId, PatientType patientType) {
+    private List<FormError> validateIfMotherMotechId(String motherMotechId, PatientType patientType) {
         if (PatientType.CHILD_UNDER_FIVE.equals(patientType)) {
             if (motherMotechId == null || patientService.getPatientByMotechId(motherMotechId) == null) {
-                formErrors.add(new FormError("motherMotechId", NOT_FOUND));
+                return new ArrayList<FormError>() {{
+                    add(new FormError("motherMotechId", NOT_FOUND));
+                }};
             }
         }
+        return Collections.emptyList();
     }
 }

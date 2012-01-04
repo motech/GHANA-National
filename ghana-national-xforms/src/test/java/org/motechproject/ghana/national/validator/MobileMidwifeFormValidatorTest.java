@@ -2,13 +2,9 @@ package org.motechproject.ghana.national.validator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.MobileMidwifeForm;
-import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.List;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -41,8 +37,8 @@ public class MobileMidwifeFormValidatorTest {
 
         mobileMidwifeFormValidator.validate(formBean);
 
-        verify(formValidator).validatePatient(Matchers.<List<FormError>>any(), eq(patientId), eq(MobileMidwifeFormValidator.PATIENT_ID_ATTRIBUTE_NAME));
-        verify(formValidator).validateIfStaffExists(Matchers.<List<FormError>>any(), eq(staffId));
-        verify(formValidator).validateIfFacilityExists(Matchers.<List<FormError>>any(), eq(facilityId));
+        verify(formValidator).validatePatient( eq(patientId), eq(MobileMidwifeFormValidator.PATIENT_ID_ATTRIBUTE_NAME));
+        verify(formValidator).validateIfStaffExists(eq(staffId));
+        verify(formValidator).validateIfFacilityExists(eq(facilityId));
     }
 }

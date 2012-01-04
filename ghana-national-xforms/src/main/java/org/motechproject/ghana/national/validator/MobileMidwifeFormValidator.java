@@ -22,9 +22,9 @@ public class MobileMidwifeFormValidator extends FormValidator<MobileMidwifeForm>
     @ApiSession
     public List<FormError> validate(MobileMidwifeForm formBean) {
         List<FormError> formErrors = super.validate(formBean);
-        formValidator.validatePatient(formErrors, formBean.getPatientId(), PATIENT_ID_ATTRIBUTE_NAME);
-        formValidator.validateIfFacilityExists(formErrors, formBean.getFacilityId());
-        formValidator.validateIfStaffExists(formErrors, formBean.getStaffId());
+        formErrors.addAll(formValidator.validatePatient(formBean.getPatientId(), PATIENT_ID_ATTRIBUTE_NAME));
+        formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
+        formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         return formErrors;
     }
 }

@@ -8,6 +8,8 @@ import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
@@ -28,23 +30,35 @@ public class FormValidator {
     public static final String FACILITY_ID = "facilityId";
     public static final String STAFF_ID = "staffId";
 
-    public void validatePatient(List<FormError> formErrors, String motechId, String patientIdAttribute) {
-        Patient patient = patientService.getPatientByMotechId(motechId);
+    public List<FormError> validatePatient(String motechId, final String patientIdAttribute) {
+        final Patient patient = patientService.getPatientByMotechId(motechId);
         if (patient == null) {
-            formErrors.add(new FormError(patientIdAttribute, NOT_FOUND));
+            return new ArrayList<FormError>() {{
+                add(new FormError(patientIdAttribute, NOT_FOUND));
+            }};
         } else if (patient.getMrsPatient().getPerson().isDead()) {
-            formErrors.add(new FormError(patientIdAttribute, IS_NOT_ALIVE));
+            return new ArrayList<FormError>() {{
+                add(new FormError(patientIdAttribute, IS_NOT_ALIVE));
+            }};
         }
+        return Collections.emptyList();
     }
 
-    public void validateIfFacilityExists(List<FormError> formErrors, String facilityId) {
-        if (facilityService.getFacilityByMotechId(facilityId) == null)
-            formErrors.add(new FormError(FACILITY_ID, NOT_FOUND));
+    public List<FormError> validateIfFacilityExists(String facilityId) {
+        if (facilityService.getFacilityByMotechId(facilityId) == null) {
+            return new ArrayList<FormError>() {{
+                add(new FormError(FACILITY_ID, NOT_FOUND));
+            }};
+        }
+        return Collections.emptyList();
     }
 
-    public void validateIfStaffExists(List<FormError> formErrors, final String staffId) {
+    public List<FormError> validateIfStaffExists(final String staffId) {
         if (staffService.getUserById(staffId) == null) {
-            formErrors.add(new FormError(STAFF_ID, NOT_FOUND));
+            return new ArrayList<FormError>() {{
+                add(new FormError(STAFF_ID, NOT_FOUND));
+            }};
         }
+        return Collections.emptyList();
     }
 }

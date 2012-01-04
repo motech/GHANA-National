@@ -13,8 +13,6 @@ import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.List;
-
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
@@ -104,7 +102,7 @@ public class RegisterClientFormValidatorTest {
         String staffId = "21";
         when(mockRegisterClientForm.getStaffId()).thenReturn(staffId);
         registerClientFormValidator.validate(mockRegisterClientForm);
-        verify(formValidator).validateIfStaffExists(Matchers.<List<FormError>>any(), eq(staffId));
+        verify(formValidator).validateIfStaffExists(eq(staffId));
     }
 
     @Test
@@ -112,6 +110,6 @@ public class RegisterClientFormValidatorTest {
         String facilityId = "21";
         when(mockRegisterClientForm.getFacilityId()).thenReturn(facilityId);
         registerClientFormValidator.validate(mockRegisterClientForm);
-        verify(formValidator).validateIfFacilityExists(Matchers.<List<FormError>>any(), eq(facilityId));
+        verify(formValidator).validateIfFacilityExists(eq(facilityId));
     }
 }
