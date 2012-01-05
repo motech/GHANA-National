@@ -34,7 +34,6 @@ public class AllEnrollmentTestIT extends BaseIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void shouldFindEnrollmentByPatientIdAndProgramName() {
         String patientId = "123453";
         MotechProgram motechProgram = new MotechProgram(MotechProgramName.CWC);

@@ -32,7 +32,7 @@ public class AllEnrollment extends MotechAuditableRepository<CWCEnrollment> {
 
     @View(name = "find_by_motech_patient_id_and_program_name", map = "function(doc) { if(doc.type === 'CWCEnrollment') emit([doc.patientId, doc.program.name], doc); }")
     public CWCEnrollment findBy(String patientId, MotechProgramName programName) {
-        ViewQuery viewQuery = createQuery("find_by_motech_patient_id_and_program_name").key(ComplexKey.of(patientId, programName.getName())).includeDocs(true);
+        ViewQuery viewQuery = createQuery("find_by_motech_patient_id_and_program_name").key(ComplexKey.of(patientId, programName.name())).includeDocs(true);
         return getEnrollmentForView(viewQuery);
     }
 
