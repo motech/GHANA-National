@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
+import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
@@ -23,8 +24,10 @@ public class RegisterANCForm extends FormBean {
     @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String facilityId;
 
-    @Required
     private Date date;
+
+    @Required
+    private RegistrationToday regDateToday;
 
     @Required
     @RegEx(pattern = MOTECH_ID_PATTERN)
@@ -33,6 +36,16 @@ public class RegisterANCForm extends FormBean {
     
     @Required
     private Date estDeliveryDate;
+    
+    @Required
+    private Boolean deliveryDateConfirmed;
+
+    @Required
+    private Boolean addHistory;
+
+    private Date lastIPTDate;
+
+    private Date lastTTDate;
     
     @Required
     private Integer height;
@@ -116,5 +129,45 @@ public class RegisterANCForm extends FormBean {
 
     public void setAncRegNumber(String ancRegNumber) {
         this.ancRegNumber = ancRegNumber;
+    }
+
+    public RegistrationToday getRegDateToday() {
+        return regDateToday;
+    }
+
+    public void setRegDateToday(RegistrationToday regDateToday) {
+        this.regDateToday = regDateToday;
+    }
+
+    public Boolean getDeliveryDateConfirmed() {
+        return deliveryDateConfirmed;
+    }
+
+    public void setDeliveryDateConfirmed(Boolean deliveryDateConfirmed) {
+        this.deliveryDateConfirmed = deliveryDateConfirmed;
+    }
+
+    public Boolean getAddHistory() {
+        return addHistory;
+    }
+
+    public void setAddHistory(Boolean addHistory) {
+        this.addHistory = addHistory;
+    }
+
+    public Date getLastIPTDate() {
+        return lastIPTDate;
+    }
+
+    public void setLastIPTDate(Date lastIPTDate) {
+        this.lastIPTDate = lastIPTDate;
+    }
+
+    public Date getLastTTDate() {
+        return lastTTDate;
+    }
+
+    public void setLastTTDate(Date lastTTDate) {
+        this.lastTTDate = lastTTDate;
     }
 }
