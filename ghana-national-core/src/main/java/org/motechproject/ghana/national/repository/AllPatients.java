@@ -28,8 +28,12 @@ public class AllPatients {
     }
 
     public Patient patientByMotechId(String id) {
-        MRSPatient mrsPatient = patientAdaptor.getPatientByMotechId(id);
+        MRSPatient mrsPatient = getPatientByMotechId(id);
         return (mrsPatient != null) ? new Patient(mrsPatient) : null;
+    }
+
+    private MRSPatient getPatientByMotechId(String id) {
+        return patientAdaptor.getPatientByMotechId(id);
     }
 
     public List<Patient> search(String name, String motechId) {
@@ -39,6 +43,10 @@ public class AllPatients {
                 return new Patient(mrsPatient);
             }
         });
+    }
+    
+    public Integer getAgeOfPersonByMotechId(String motechId){
+        return patientAdaptor.getAgeOfPatientByMotechId(motechId);
     }
 
     public String update(Patient patient) {

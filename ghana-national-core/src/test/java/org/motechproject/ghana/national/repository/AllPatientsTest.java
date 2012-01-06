@@ -8,6 +8,7 @@ import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.services.MRSPatientAdaptor;
+import org.motechproject.openmrs.services.OpenMRSPersonAdaptor;
 import org.motechproject.openmrs.services.OpenMRSRelationshipAdaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -19,9 +20,7 @@ import static junit.framework.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AllPatientsTest {
@@ -159,4 +158,15 @@ public class AllPatientsTest {
         allPatients.getMotherRelationship(mockChild);
         verify(mockOpenMRSRelationshipAdaptor).getMotherRelationship(childId);
     }
+
+    @Test
+    public void shouldGetAgeOfAPerson() {
+        String motechId = "1234567";
+
+        when(mockMrsPatientAdaptor.getAgeOfPatientByMotechId(motechId)).thenReturn(3);
+        allPatients.getAgeOfPersonByMotechId(motechId);
+
+        verify(mockMrsPatientAdaptor).getAgeOfPatientByMotechId(motechId);
+    }
+
 }

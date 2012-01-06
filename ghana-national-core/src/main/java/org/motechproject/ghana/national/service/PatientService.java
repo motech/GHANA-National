@@ -75,6 +75,10 @@ public class PatientService {
         return savedPatientId;
     }
 
+    public Integer getAgeOfPatientByMotechId(String motechId) {
+        return allPatients.getAgeOfPersonByMotechId(motechId);
+    }
+
     private void setParentId(Patient patient, Relationship motherRelationship) {
         Person mother = motherRelationship.getPersonA();
         if (mother != null && !mother.getNames().isEmpty()) {

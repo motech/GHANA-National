@@ -1,0 +1,17 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:form="http://www.springframework.org/tags/form" version="2.0"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <jsp:output omit-xml-declaration="yes"/>
+    <jsp:directive.attribute name="path" type="java.lang.String" required="true" rtexprvalue="true"/>
+    <jsp:directive.attribute name="label" type="java.lang.String" required="true" rtexprvalue="true"/>
+    <jsp:directive.attribute name="errorMsgId" type="java.lang.String" required="true" rtexprvalue="true"/>
+    <jsp:directive.attribute name="required" type="java.lang.String" rtexprvalue="true"/>
+
+    <c:if test="${required}">
+        <c:set var="cssClass" value="jsRequire" />
+    </c:if>
+
+    <label for="${path}" class="formLabel">${fn:escapeXml(label)}</label>
+    <form:input path="${path}.hour" label="${fn:escapeXml(label)}" maxlength="10" cssClass="${cssClass}"  />
+    <form:input path="${path}.minute" label="${fn:escapeXml(label)}" maxlength="10" cssClass="${cssClass}"  />
+    <span id="${errorMsgId}" class='formlyInvalid formlyAlert hide'/>
+</jsp:root>

@@ -18,6 +18,7 @@ import org.openmrs.api.IdentifierNotUniqueException;
 import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -199,6 +200,13 @@ public class PatientServiceTest {
 
         verify(mockAllPatients).update(mockPatient);
         verify(mockAllPatients).updateMotherChildRelationship(mockMotherPerson, mockChildPerson);
+    }
+    
+    @Test
+    public void shouldGetAgeOfAPerson(){
+        String motechId = "12345";
+        patientService.getAgeOfPatientByMotechId(motechId);
+        verify(mockAllPatients).getAgeOfPersonByMotechId(motechId);
     }
 
 }
