@@ -63,8 +63,8 @@
                 <language/>
                 <dayOfWeek/>
                 <timeOfDay/>
-                <reason/>
-                <howLearned/>
+                <reasonToJoin/>
+                <learnedFrom/>
                 <messageStartWeek/>
                 <formtype>data_entry</formtype>
                 <formname>registerPatient</formname>
@@ -202,61 +202,61 @@
         </xf:instance>
         <xf:instance id="language">
             <dynamiclist>
-                <item id="en" parent="PERS_VOICE">
+                <item id="EN" parent="PERS_VOICE">
                     <label>English</label>
-                    <value>en</value>
+                    <value>EN</value>
                 </item>
-                <item id="kas" parent="PERS_VOICE">
+                <item id="KAS" parent="PERS_VOICE">
                     <label>Kassim</label>
-                    <value>kas</value>
+                    <value>KAS</value>
                 </item>
-                <item id="nan" parent="PERS_VOICE">
+                <item id="NAN" parent="PERS_VOICE">
                     <label>Nankam</label>
-                    <value>nan</value>
+                    <value>NAN</value>
                 </item>
-                <item id="fan" parent="PERS_VOICE">
+                <item id="FAN" parent="PERS_VOICE">
                     <label>Fante</label>
-                    <value>fan</value>
+                    <value>FAN</value>
                 </item>
-                <item id="en" parent="PERS_TEXT">
+                <item id="EN" parent="PERS_TEXT">
                     <label>English</label>
-                    <value>en</value>
+                    <value>EN</value>
                 </item>
-                <item id="en" parent="HSE_VOICE">
+                <item id="EN" parent="HSE_VOICE">
                     <label>English</label>
-                    <value>en</value>
+                    <value>EN</value>
                 </item>
-                <item id="kas" parent="HSE_VOICE">
+                <item id="KAS" parent="HSE_VOICE">
                     <label>Kassim</label>
-                    <value>kas</value>
+                    <value>KAS</value>
                 </item>
-                <item id="nan" parent="HSE_VOICE">
+                <item id="NAN" parent="HSE_VOICE">
                     <label>Nankam</label>
-                    <value>nan</value>
+                    <value>NAN</value>
                 </item>
-                <item id="fan" parent="HSE_VOICE">
+                <item id="FAN" parent="HSE_VOICE">
                     <label>Fante</label>
-                    <value>fan</value>
+                    <value>FAN</value>
                 </item>
-                <item id="en" parent="HSE_TEXT">
+                <item id="EN" parent="HSE_TEXT">
                     <label>English</label>
-                    <value>en</value>
+                    <value>EN</value>
                 </item>
-                <item id="en" parent="PUB_VOICE">
+                <item id="EN" parent="PUB_VOICE">
                     <label>English</label>
-                    <value>en</value>
+                    <value>EN</value>
                 </item>
-                <item id="kas" parent="PUB_VOICE">
+                <item id="KAS" parent="PUB_VOICE">
                     <label>Kassim</label>
-                    <value>kas</value>
+                    <value>KAS</value>
                 </item>
-                <item id="nan" parent="PUB_VOICE">
+                <item id="NAN" parent="PUB_VOICE">
                     <label>Nankam</label>
-                    <value>nan</value>
+                    <value>NAN</value>
                 </item>
-                <item id="fan" parent="PUB_VOICE">
+                <item id="FAN" parent="PUB_VOICE">
                     <label>Fante</label>
-                    <value>fan</value>
+                    <value>FAN</value>
                 </item>
             </dynamiclist>
         </xf:instance>
@@ -473,11 +473,11 @@
         <xf:bind action="show" id="timeOfDay" nodeset="/patientRegistration/timeOfDay"
                  relevant="/patientRegistration/format = 'PERS_VOICE' or /patientRegistration/format = 'HSE_VOICE'"
                  required="true()" type="xsd:time" visible="false()"/>
-        <xf:bind action="show" id="reason" nodeset="/patientRegistration/reason"
+        <xf:bind action="show" id="reasonToJoin" nodeset="/patientRegistration/reasonToJoin"
                  relevant="/patientRegistration/enroll = 'Y' and /patientRegistration/consent = 'Y' and
             /patientRegistration/registrantType = 'OTHER'"
                  required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="howLearned" nodeset="/patientRegistration/howLearned"
+        <xf:bind action="show" id="learnedFrom" nodeset="/patientRegistration/learnedFrom"
                  relevant="/patientRegistration/consent = 'Y'" required="true()" type="xsd:string"
                  visible="false()"/>
         <xf:bind action="show" id="messageStartWeek" nodeset="/patientRegistration/messageStartWeek"
@@ -1042,8 +1042,8 @@
         <xf:input bind="timeOfDay">
             <xf:label>Time of day to receive messages</xf:label>
         </xf:input>
-        <xf:select1 bind="reason">
-            <xf:label>Reason for interest in Mobile Midwife</xf:label>
+        <xf:select1 bind="reasonToJoin">
+            <xf:label>reasonToJoin for interest in Mobile Midwife</xf:label>
             <xf:item id="CURRENTLY_PREGNANT">
                 <xf:label>Currently pregnant</xf:label>
                 <xf:value>CURRENTLY_PREGNANT</xf:value>
@@ -1073,7 +1073,7 @@
                 <xf:value>WORK_WITH_WOMEN_NEWBORNS</xf:value>
             </xf:item>
         </xf:select1>
-        <xf:select1 bind="howLearned">
+        <xf:select1 bind="learnedFrom">
             <xf:label>How learned of Mobile Midwife</xf:label>
             <xf:item id="GHS_NURSE">
                 <xf:label>GHS Nurse</xf:label>
