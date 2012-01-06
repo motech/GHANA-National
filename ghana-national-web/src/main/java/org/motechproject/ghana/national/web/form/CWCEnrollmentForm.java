@@ -1,5 +1,9 @@
 package org.motechproject.ghana.national.web.form;
 
+import org.motechproject.ghana.national.domain.CWCEnrollment;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.web.helper.FacilityHelper;
+
 import java.util.Date;
 
 public class CWCEnrollmentForm {
@@ -8,6 +12,15 @@ public class CWCEnrollmentForm {
     private String serialNumber;
     private Date registrationDate;
     private FacilityForm facilityForm;
+
+    public CWCEnrollmentForm(CWCEnrollment CWCEnrollment, Facility facility) {
+        if (CWCEnrollment != null) {
+            patientMotechId = CWCEnrollment.getPatientId();
+            serialNumber = CWCEnrollment.getSerialNumber();
+            registrationDate = CWCEnrollment.getRegistrationDate();
+            facilityForm = new FacilityHelper().copyFacilityValuesToForm(facility);
+        }
+    }
 
     public FacilityForm getFacilityForm() {
         return facilityForm;

@@ -25,7 +25,6 @@ public class RegisterANCMobileUploadTest {
         assertThat(errorsMap.get("parity"), hasItem("is mandatory"));
         assertThat(errorsMap.get("height"), hasItem("is mandatory"));
         assertThat(errorsMap.get("estDeliveryDate"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("date"), hasItem("is mandatory"));
         assertThat(errorsMap.get("ancRegNumber"), hasItem("is mandatory"));
     }
 
@@ -41,6 +40,9 @@ public class RegisterANCMobileUploadTest {
             put("height", "61");
             put("estDeliveryDate", "2010-12-11");
             put("date", "2012-12-11");
+            put("deliveryDateConfirmed", "Y");
+            put("regDateToday", "TODAY");
+            put("addHistory", "0");
             put("ancRegNumber", "123ABC");
         }}));
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();

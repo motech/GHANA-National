@@ -9,7 +9,7 @@
     <script src="${pageContext.servletContext.contextPath}/resources/js/enrollCWC.js"
             type="text/javascript"><!-- required for FF3 and Opera --></script>
 
-    <form:form id="cwcEnrollmentForm" action="/admin/enroll/cwc" method="POST" title="CWC Enrollment"
+    <form:form id="cwcEnrollmentForm" action="/admin/enroll/cwc/save" method="POST" title="CWC Enrollment"
                commandName="cwcEnrollmentForm">
 
         <div>
