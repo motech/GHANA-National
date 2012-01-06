@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.web.form;
 
-import org.motechproject.ghana.national.domain.CWCEnrollment;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 
