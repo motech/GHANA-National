@@ -14,5 +14,8 @@
     <definition extends="default" name="patients/edit">
         <put-attribute name="body" value="/WEB-INF/views/patients/edit.jspx"/>
     </definition>
+    <definition extends="default" name="cwc/new">
+        <put-attribute name="body" value="/WEB-INF/views/patients/enrollments/cwc.jspx"/>
+    </definition>
 </tiles-definitions>
 

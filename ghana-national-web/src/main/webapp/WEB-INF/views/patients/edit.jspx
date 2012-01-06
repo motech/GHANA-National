@@ -276,7 +276,7 @@
 </div>
 <div class="enrollment_link_section">
     <h3><label>Enrollment:</label></h3>
-    <a href="${pageContext.servletContext.contextPath}/admin/enroll/cwc/new?motechPatientId=${patientForm.motechId}">CWC</a>
+    <a href="${pageContext.servletContext.contextPath}/admin/cwc/new?motechPatientId=${patientForm.motechId}">CWC</a>
 </div>
 </form:form>
 </div>
