@@ -19,6 +19,7 @@
                 <entry key="org.motechproject.ghana.national.validator.RegisterClientFormValidator" value-ref="registerClientFormValidator"/>
                 <entry key="org.motechproject.ghana.national.validator.MobileMidwifeFormValidator" value-ref="mobileMidwifeFormValidator"/>
                 <entry key="org.motechproject.ghana.national.validator.RegisterANCFormValidator" value-ref="registerANCFormValidator"/>
+                <entry key="org.motechproject.ghana.national.validator.RegisterCWCFormValidator" value-ref="registerCWCFormValidator"/>
             </map>
         </property>
     </bean>

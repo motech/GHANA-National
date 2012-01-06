@@ -15,16 +15,16 @@
                 "validator": "org.motechproject.ghana.national.validator.MobileMidwifeFormValidator"
             },
             {
-                "name" : "registerCWC",
-                "fileName" :  "RegisterCWC.xml",
-                "bean":"org.motechproject.ghana.national.bean.RegisterCWCForm",
-                "validator": ""
-            },
-            {
                 "name" : "registerANC",
                 "fileName" :  "RegisterANC.xml",
                 "bean":"org.motechproject.ghana.national.bean.RegisterANCForm",
                 "validator": "org.motechproject.ghana.national.validator.RegisterANCFormValidator"
+            },
+            {
+                "name" : "registerCWC",
+                "fileName" :  "RegisterCWC.xml",
+                "bean":"org.motechproject.ghana.national.bean.RegisterCWCForm",
+                "validator": "org.motechproject.ghana.national.validator.RegisterCWCFormValidator"
             }
         ]
     }

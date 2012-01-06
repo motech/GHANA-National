@@ -1,15 +1,12 @@
 package org.motechproject.ghana.national.bean;
 
-import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationToday;
-import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
-
 
 import java.util.Date;
 
@@ -21,17 +18,23 @@ public class RegisterCWCForm extends FormBean {
     @MaxLength(size = 50)
     @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String staffId;
+
     @Required
     @MaxLength(size = 50)
     @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String facilityId;
+
     @Required
     private Date registrationDate;
+
+    @Required
     @RegEx(pattern = MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
+
     @Required
     private String serialNumber;
+
     @Required
     private RegistrationToday registrationToday;
 

@@ -63,6 +63,7 @@ public class XformHttpClient {
             hackDate(formData, "/patientRegistration/dateOfBirth");
             hackDate(formData, "/ANCRegistration/date");
             hackDate(formData, "/ANCRegistration/estDeliveryDate");
+            hackDate(formData, "/CWCRegistration/registrationDate");
             formsList.add(formData);
         }
         final StudyData studyData = new StudyData(studyDef);

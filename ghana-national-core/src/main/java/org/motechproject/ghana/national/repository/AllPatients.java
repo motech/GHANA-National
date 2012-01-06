@@ -5,6 +5,7 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.services.MRSPatientAdaptor;
+import org.motechproject.mrs.services.MRSPersonAdaptor;
 import org.motechproject.openmrs.services.OpenMRSRelationshipAdaptor;
 import org.openmrs.Relationship;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import static ch.lambdaj.Lambda.convert;
 public class AllPatients {
     @Autowired
     private MRSPatientAdaptor patientAdaptor;
+    @Autowired
+    private MRSPersonAdaptor personAdaptor;
 
     @Autowired
     private OpenMRSRelationshipAdaptor openMRSRelationshipAdaptor;
@@ -28,8 +31,12 @@ public class AllPatients {
     }
 
     public Patient patientByMotechId(String id) {
-        MRSPatient mrsPatient = patientAdaptor.getPatientByMotechId(id);
+        MRSPatient mrsPatient = getPatientByMotechId(id);
         return (mrsPatient != null) ? new Patient(mrsPatient) : null;
+    }
+
+    private MRSPatient getPatientByMotechId(String id) {
+        return patientAdaptor.getPatientByMotechId(id);
     }
 
     public List<Patient> search(String name, String motechId) {
@@ -39,6 +46,10 @@ public class AllPatients {
                 return new Patient(mrsPatient);
             }
         });
+    }
+    
+    public Integer getAgeOfPersonByMotechId(String motechId){
+        return personAdaptor.getAgeOfAPerson(getPatientByMotechId(motechId).getId());
     }
 
     public String update(Patient patient) {

@@ -8,6 +8,7 @@ import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.services.MRSPatientAdaptor;
+import org.motechproject.openmrs.services.OpenMRSPersonAdaptor;
 import org.motechproject.openmrs.services.OpenMRSRelationshipAdaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -19,9 +20,7 @@ import static junit.framework.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AllPatientsTest {
@@ -32,6 +31,8 @@ public class AllPatientsTest {
     MRSPatientAdaptor mockMrsPatientAdaptor;
     @Mock
     OpenMRSRelationshipAdaptor mockOpenMRSRelationshipAdaptor;
+    @Mock
+    private OpenMRSPersonAdaptor mockPersonAdaptor;
 
     @Before
     public void setUp() throws Exception {
@@ -39,6 +40,7 @@ public class AllPatientsTest {
         allPatients = new AllPatients();
         ReflectionTestUtils.setField(allPatients, "patientAdaptor", mockMrsPatientAdaptor);
         ReflectionTestUtils.setField(allPatients, "openMRSRelationshipAdaptor", mockOpenMRSRelationshipAdaptor);
+        ReflectionTestUtils.setField(allPatients, "personAdaptor", mockPersonAdaptor);
     }
 
     @Test
@@ -159,4 +161,18 @@ public class AllPatientsTest {
         allPatients.getMotherRelationship(mockChild);
         verify(mockOpenMRSRelationshipAdaptor).getMotherRelationship(childId);
     }
+
+    @Test
+    public void shouldGetAgeOfAPerson() {
+        String motechId = "1234567";
+        MRSPatient mrsPatient = mock(MRSPatient.class);
+        String id = "23";
+
+        when(mockMrsPatientAdaptor.getPatientByMotechId(motechId)).thenReturn(mrsPatient);
+        when(mrsPatient.getId()).thenReturn(id);
+        allPatients.getAgeOfPersonByMotechId(motechId);
+
+        verify(mockPersonAdaptor).getAgeOfAPerson(id);
+    }
+
 }
