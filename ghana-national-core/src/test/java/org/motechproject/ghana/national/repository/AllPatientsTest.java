@@ -31,8 +31,6 @@ public class AllPatientsTest {
     MRSPatientAdaptor mockMrsPatientAdaptor;
     @Mock
     OpenMRSRelationshipAdaptor mockOpenMRSRelationshipAdaptor;
-    @Mock
-    private OpenMRSPersonAdaptor mockPersonAdaptor;
 
     @Before
     public void setUp() throws Exception {
@@ -40,7 +38,6 @@ public class AllPatientsTest {
         allPatients = new AllPatients();
         ReflectionTestUtils.setField(allPatients, "patientAdaptor", mockMrsPatientAdaptor);
         ReflectionTestUtils.setField(allPatients, "openMRSRelationshipAdaptor", mockOpenMRSRelationshipAdaptor);
-        ReflectionTestUtils.setField(allPatients, "personAdaptor", mockPersonAdaptor);
     }
 
     @Test
@@ -165,14 +162,11 @@ public class AllPatientsTest {
     @Test
     public void shouldGetAgeOfAPerson() {
         String motechId = "1234567";
-        MRSPatient mrsPatient = mock(MRSPatient.class);
-        String id = "23";
 
-        when(mockMrsPatientAdaptor.getPatientByMotechId(motechId)).thenReturn(mrsPatient);
-        when(mrsPatient.getId()).thenReturn(id);
+        when(mockMrsPatientAdaptor.getAgeOfPatientByMotechId(motechId)).thenReturn(3);
         allPatients.getAgeOfPersonByMotechId(motechId);
 
-        verify(mockPersonAdaptor).getAgeOfAPerson(id);
+        verify(mockMrsPatientAdaptor).getAgeOfPatientByMotechId(motechId);
     }
 
 }
