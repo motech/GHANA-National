@@ -34,9 +34,9 @@ public class MobileMidwifeForm extends FormBean {
     private DayOfWeek dayOfWeek;
     private Time timeOfDay;
     private Language language;
-    private LearnedFrom howLearned;
+    private LearnedFrom learnedFrom;
     @RegEx(pattern = "(CURRENTLY_PREGNANT|RECENTLY_DELIVERED|FAMILY_FRIEND_PREGNANT|FAMILY_FRIEND_DELIVERED|PLANNING_PREGNANCY_INFO|KNOW_MORE_PREGNANCY_CHILDBIRTH|WORK_WITH_WOMEN_NEWBORNS)")
-    private String reason;
+    private String reasonToJoin;
     @RegEx(pattern = "([5-9]{1}|[1-8]{1}[0-9]{1}|9[0-2]{1})")
     private String messageStartWeek;
 
@@ -108,14 +108,6 @@ public class MobileMidwifeForm extends FormBean {
         this.timeOfDay = timeOfDay;
     }
 
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
     public String getMessageStartWeek() {
         return messageStartWeek;
     }
@@ -145,7 +137,23 @@ public class MobileMidwifeForm extends FormBean {
         return language;
     }
 
-    public LearnedFrom getHowLearned() {
-        return howLearned;
+    public LearnedFrom getLearnedFrom() {
+        return learnedFrom;
+    }
+
+    public void setLearnedFrom(LearnedFrom learnedFrom) {
+        this.learnedFrom = learnedFrom;
+    }
+
+    public String getReasonToJoin() {
+        return reasonToJoin;
+    }
+
+    public void setReasonToJoin(String reasonToJoin) {
+        this.reasonToJoin = reasonToJoin;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 }
