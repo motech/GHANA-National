@@ -38,6 +38,17 @@ public class RegisterCWCForm extends FormBean {
     @Required
     private RegistrationToday registrationToday;
 
+    @Required
+    private Boolean addHistory;
+
+    @Required
+    private String addCareHistory;
+
+    private Date lastIPTDate;
+
+    private Date lastTTDate;
+
+
     public void setRegistrationToday(RegistrationToday registrationToday) {
         this.registrationToday = registrationToday;
     }
@@ -84,6 +95,38 @@ public class RegisterCWCForm extends FormBean {
 
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+    public Boolean getAddHistory() {
+        return addHistory;
+    }
+
+    public void setAddHistory(Boolean addHistory) {
+        this.addHistory = addHistory;
+    }
+
+    public String getAddCareHistory() {
+        return addCareHistory;
+    }
+
+    public void setAddCareHistory(String addCareHistory) {
+        this.addCareHistory = addCareHistory;
+    }
+
+    public Date getLastIPTDate() {
+        return lastIPTDate;
+    }
+
+    public void setLastIPTDate(Date lastIPTDate) {
+        this.lastIPTDate = lastIPTDate;
+    }
+
+    public Date getLastTTDate() {
+        return lastTTDate;
+    }
+
+    public void setLastTTDate(Date lastTTDate) {
+        this.lastTTDate = lastTTDate;
     }
 
 

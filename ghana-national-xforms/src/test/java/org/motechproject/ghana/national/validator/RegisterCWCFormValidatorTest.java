@@ -4,17 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
-import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.domain.FormError;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSPerson;
-import org.openmrs.Person;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +16,6 @@ import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -89,6 +82,8 @@ public class RegisterCWCFormValidatorTest {
         registerCWCForm.setSerialNumber(serialNumber);
         registerCWCForm.setRegistrationToday(registrationToday);
         registerCWCForm.setMotechId(motechId);
+        registerCWCForm.setAddHistory(true);
+        registerCWCForm.setAddCareHistory("addCare");
         return registerCWCForm;
     }
 
