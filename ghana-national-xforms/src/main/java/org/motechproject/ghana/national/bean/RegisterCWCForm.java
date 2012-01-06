@@ -44,10 +44,6 @@ public class RegisterCWCForm extends FormBean {
     @Required
     private String addCareHistory;
 
-    private Date lastIPTDate;
-
-    private Date lastTTDate;
-
 
     public void setRegistrationToday(RegistrationToday registrationToday) {
         this.registrationToday = registrationToday;
@@ -112,22 +108,5 @@ public class RegisterCWCForm extends FormBean {
     public void setAddCareHistory(String addCareHistory) {
         this.addCareHistory = addCareHistory;
     }
-
-    public Date getLastIPTDate() {
-        return lastIPTDate;
-    }
-
-    public void setLastIPTDate(Date lastIPTDate) {
-        this.lastIPTDate = lastIPTDate;
-    }
-
-    public Date getLastTTDate() {
-        return lastTTDate;
-    }
-
-    public void setLastTTDate(Date lastTTDate) {
-        this.lastTTDate = lastTTDate;
-    }
-
 
 }
