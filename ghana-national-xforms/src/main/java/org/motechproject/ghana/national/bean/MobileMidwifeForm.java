@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
-import org.motechproject.ghana.national.domain.MobileMidwifeServiceType;
-import org.motechproject.ghana.national.domain.PhoneOwnership;
+import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
@@ -26,7 +25,7 @@ public class MobileMidwifeForm extends FormBean {
     private String patientId;
     @Required
     private Boolean consent;
-    private MobileMidwifeServiceType serviceType;
+    private ServiceType serviceType;
     private PhoneOwnership phoneOwnership;
     @RegEx(pattern = "0[0-9]{9}")
     private String phoneNumber;
@@ -34,17 +33,15 @@ public class MobileMidwifeForm extends FormBean {
     private String medium;
     private DayOfWeek dayOfWeek;
     private Time timeOfDay;
-    @RegEx(pattern = "(en|kas|nan|fan)")
-    private String language;
-    @RegEx(pattern = "(GHS_NURSE|MOTECH_FIELD_AGENT|FRIEND|POSTERS_ADS|RADIO)")
-    private String howLearned;
+    private Language language;
+    private LearnedFrom learnedFrom;
     @RegEx(pattern = "(CURRENTLY_PREGNANT|RECENTLY_DELIVERED|FAMILY_FRIEND_PREGNANT|FAMILY_FRIEND_DELIVERED|PLANNING_PREGNANCY_INFO|KNOW_MORE_PREGNANCY_CHILDBIRTH|WORK_WITH_WOMEN_NEWBORNS)")
-    private String reason;
+    private String reasonToJoin;
     @RegEx(pattern = "([5-9]{1}|[1-8]{1}[0-9]{1}|9[0-2]{1})")
     private String messageStartWeek;
 
-    public String getMediumStripingOwnership(){
-        return medium != null? medium.substring(medium.indexOf("_") + 1): medium;
+    public Medium getMediumStripingOwnership(){
+        return medium != null ? Medium.valueOf(medium.substring(medium.indexOf("_") + 1)) : null;
     }
 
     public String getStaffId() {
@@ -71,11 +68,11 @@ public class MobileMidwifeForm extends FormBean {
         this.consent = consent;
     }
 
-    public MobileMidwifeServiceType getServiceType() {
+    public ServiceType getServiceType() {
         return serviceType;
     }
 
-    public void setServiceType(MobileMidwifeServiceType serviceType) {
+    public void setServiceType(ServiceType serviceType) {
         this.serviceType = serviceType;
     }
 
@@ -111,30 +108,6 @@ public class MobileMidwifeForm extends FormBean {
         this.timeOfDay = timeOfDay;
     }
 
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public String getHowLearned() {
-        return howLearned;
-    }
-
-    public void setHowLearned(String howLearned) {
-        this.howLearned = howLearned;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
     public String getMessageStartWeek() {
         return messageStartWeek;
     }
@@ -158,5 +131,29 @@ public class MobileMidwifeForm extends FormBean {
 
     public void setDayOfWeek(DayOfWeek dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public LearnedFrom getLearnedFrom() {
+        return learnedFrom;
+    }
+
+    public void setLearnedFrom(LearnedFrom learnedFrom) {
+        this.learnedFrom = learnedFrom;
+    }
+
+    public String getReasonToJoin() {
+        return reasonToJoin;
+    }
+
+    public void setReasonToJoin(String reasonToJoin) {
+        this.reasonToJoin = reasonToJoin;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 }

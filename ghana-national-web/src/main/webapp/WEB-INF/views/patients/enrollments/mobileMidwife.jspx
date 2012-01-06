@@ -1,0 +1,134 @@
+<div id="body" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <spring:url value="/resources/js/enrollMobileMidwife.js" var="enrollMobileMidwifeJsUrl"/>
+    <spring:url value="/admin/enroll/mobile-midwife/update" var="updateAction"/>
+
+    <script src="${enrollMobileMidwifeJsUrl}" type="text/javascript"><!--closing tag needed--></script>
+
+    <form:form id="mobileMidwifeEnrollmentForm" action="${fn:escapeXml(updateAction)}" method="POST"
+               title="Mobile Midwife Enrollment"
+               commandName="mobileMidwifeEnrollmentForm">
+        <spring:message code="patient_motech_id" var="patient_motech_id" htmlEscape="false"/>
+        <spring:message code="required_msg" var="required_msg" htmlEscape="false"/>
+        <spring:message code="staff_id" var="staff_id" htmlEscape="false"/>
+        <spring:message code="facility_id" var="facility_id" htmlEscape="false"/>
+        <spring:message code="consent" var="consent" htmlEscape="false"/>
+        <spring:message code="service_type" var="service_type" htmlEscape="false"/>
+        <spring:message code="service_type_select" var="service_type_select" htmlEscape="false"/>
+        <spring:message code="phone_ownership" var="phone_ownership" htmlEscape="false"/>
+        <spring:message code="phone_ownership_select" var="phone_ownership_select" htmlEscape="false"/>
+        <spring:message code="patient_phone_number" var="patient_phone_number" htmlEscape="false"/>
+        <spring:message code="phone_number_incorrect_msg" var="phone_number_incorrect_msg" htmlEscape="false"/>
+        <spring:message code="medium" var="medium" htmlEscape="false"/>
+        <spring:message code="medium_select" var="medium_select" htmlEscape="false"/>
+        <spring:message code="message_start_week" var="message_start_week" htmlEscape="false"/>
+        <spring:message code="message_start_week_select" var="message_start_week_select" htmlEscape="false"/>
+        <spring:message code="day_of_week" var="day_of_week" htmlEscape="false"/>
+        <spring:message code="day_of_week_select" var="day_of_week_select" htmlEscape="false"/>
+        <spring:message code="time_of_day" var="time_of_day" htmlEscape="false"/>
+
+        <div>
+            <label for="patientMotechId" class="formLabel">${fn:escapeXml(patient_motech_id)}:</label>
+            <form:input path="patientMotechId" size="20" cssClass="jsRequire" disabled="true"
+                        label="${fn:escapeXml(patient_motech_id)}:"/>
+        </div>
+        <div>
+            <label for="staffMotechId" class="formLabel">${fn:escapeXml(staff_id)}:</label>
+            <form:input path="staffMotechId" size="20" cssClass="jsRequire" label="${fn:escapeXml(staff_id)}:"/>
+            <span id='staffMotechIdError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(staff_id)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+        <div>
+            <label for="facilityMotechId" class="formLabel">${fn:escapeXml(facility_id)}:</label>
+            <form:input path="facilityMotechId" size="20" cssClass="jsRequire" label="${fn:escapeXml(facility_id)}:"/>
+            <span id='facilityMotechIdError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(facility_id)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+        <div class="form-field">
+            <label class="formLabel" for="consent">${fn:escapeXml(consent)} *:
+            </label>
+            <div class="radio">
+                <form:radiobutton cssClass="jsRequire" path="consent" value="true"
+                                  label="${fn:escapeXml(yes)}"/>
+                <form:radiobutton cssClass="jsRequire" path="consent" value="false"
+                                  label="${fn:escapeXml(no)}"/>
+            </div>
+            <div class="radioError">
+                <span id='consentError' class='alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(consent)} ${fn:escapeXml(required_msg)}
+                </span>
+            </div>
+        </div>
+        <div>
+            <label class="formLabel" for="serviceType">${fn:escapeXml(service_type)} *:</label>
+            <form:select id="serviceType" path="serviceType">
+                <option parent="select" value="">${fn:escapeXml(service_type_select)}</option>
+                <c:forEach items="${serviceTypes}" var="serviceTypeOption">
+                    <option value="${serviceTypeOption.key}">${serviceTypeOption.value}</option>
+                </c:forEach>
+            </form:select>
+            <span id='service_type_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <div>
+            <label class="formLabel" for="phoneOwnership">${fn:escapeXml(phone_ownership)} *:</label>
+            <form:select id="phoneOwnership" path="phoneOwnership">
+                <option parent="select" value="">${fn:escapeXml(phone_ownership_select)}</option>
+                <c:forEach items="${phoneOwnerships}" var="phoneOwnershipOption">
+                    <option value="${phoneOwnershipOption.key}">${phoneOwnershipOption.value}</option>
+                </c:forEach>
+            </form:select>
+            <span id='phone_ownership_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <div class="form-field">
+            <motech:phone path="phoneNumber" label="${patient_phone_number} :"
+                          errorMsg="${phone_number_incorrect_msg}" required="false"/>
+        </div>
+        <div>
+            <label class="formLabel" for="medium">${fn:escapeXml(medium)} *:</label>
+            <form:select id="medium" path="medium">
+                <option parent="select" value="">${fn:escapeXml(medium_select)}</option>
+                <c:forEach items="${mediums}" var="mediumOption">
+                    <option value="${mediumOption.key}">${mediumOption.value}</option>
+                </c:forEach>
+            </form:select>
+            <span id='medium_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <div>
+            <label class="formLabel" for="dayOfWeek">${fn:escapeXml(day_of_week)} *:</label>
+            <form:select id="dayOfWeek" path="dayOfWeek">
+                <option parent="select" value="">${fn:escapeXml(day_of_week_select)}</option>
+                <c:forEach items="${dayOfWeeks}" var="dayOfWeekOption">
+                    <option value="${dayOfWeekOption.key}">${dayOfWeekOption.value}</option>
+                </c:forEach>
+            </form:select>
+            <span id='day_of_week_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <div>
+            <label class="formLabel" for="messageStartWeek">${fn:escapeXml(message_start_week)} *:</label>
+            <form:select id="pregnancyMessageStartWeek" path="messageStartWeek">
+                <option parent="select" value="">${fn:escapeXml(message_start_week_select)}</option>
+                <c:forEach items="${pregnancyMessageStartWeeks}" var="messageStartWeek">
+                    <option value="${messageStartWeek.key}">${messageStartWeek.value}</option>
+                </c:forEach>
+            </form:select>
+            <form:select id="childCareMessageStartWeek" path="messageStartWeek">
+                <option parent="select" value="">${fn:escapeXml(message_start_week_select)}</option>
+                <c:forEach items="${childCareMessageStartWeeks}" var="messageStartWeek">
+                    <option value="${messageStartWeek.key}">${messageStartWeek.value}</option>
+                </c:forEach>
+            </form:select>
+            <span id='pregnancy_message_start_week_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <div class="form-field">
+            <motech:time path="timeOfDay" label="${time_of_day} :"
+                          errorMsgId="time_of_day_error" required="false"/>
+        </div>
+        <input type="submit" id="submit" value="Submit"/>
+    </form:form>
+</div>

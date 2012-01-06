@@ -1,0 +1,162 @@
+<div id="body" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <spring:message code="yes" var="yes" htmlEscape="false"/>
+    <spring:message code="no" var="no" htmlEscape="false"/>
+    <script src="${pageContext.servletContext.contextPath}/resources/js/facility-fields.js"
+            type="text/javascript"><!--closing tag needed--></script>
+
+    <script src="${pageContext.servletContext.contextPath}/resources/js/enroll-CWC.js"
+            type="text/javascript"><!-- required for FF3 and Opera --></script>
+
+    <form:form id="cwcEnrollmentForm" action="/admin/cwc/save" method="POST" title="CWC Enrollment"
+               commandName="cwcEnrollmentForm">
+
+        <div>
+            <label for="motechPatientId" class="formLabel">
+                <spring:message code="patient_motech_id"/>
+                *:
+            </label>
+            <form:input path="patientMotechId" size="20" cssClass="jsRequire" disabled="true"/>
+            <form:hidden path="patientMotechId"/>
+        </div>
+
+        <jsp:include page="/WEB-INF/views/common/select_facility.jspx"/>
+
+        <div>
+            <label for="serialNumber" class="formLabel">
+                <spring:message code="patient_serial_number"/>
+                *:
+            </label>
+            <form:input path="serialNumber" size="20" cssClass="jsRequire" disabled="true"/>
+            <form:hidden path="serialNumber"/>
+        </div>
+
+        <div id="registraionDateHolder" class="form-field">
+            <label class="formLabel" for="registrationDate">
+                <spring:message code="registration_date"/>
+                *:
+            </label>
+            <form:input readonly="true" path="registrationDate" cssClass="jsRequire jsDate jsBefore" size="20"
+                        label="${fn:escapeXml(registration_date)}"/>
+            <span id='registrationDate' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(registration_date)} ${fn:escapeXml(required_msg)}
+            </span>
+            <span id='registrationDate' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(registration_date)} ${fn:escapeXml(incorrect_msg)}
+            </span>
+        </div>
+
+        <div class="form-field">
+            <label for="addHistory" class="formLabel">
+                <spring:message code="patient_history"/>
+                *:
+            </label>
+            <form:radiobutton cssClass="jsRequire" path="addHistory" value="true"
+                              label="${fn:escapeXml(yes)}"/>
+            <form:radiobutton cssClass="jsRequire" path="addHistory" value="false"
+                              label="${fn:escapeXml(no)}"/>
+        </div>
+
+        <div id="jsCareHistory" class="hide">
+            <div class="form-field">
+                <label for="careHistories" class="formLabel">
+                    <spring:message code="patient_care_history"/>
+                    *:
+                </label>
+                <form:checkboxes path="careHistory" items="${careHistories}" cssClass="jsRequire"/>
+            </div>
+
+            <div id="jsOPV" class="hide">
+                <div class="form-field">
+                    <label for="lastOPV" class="formLabel">
+                        <spring:message code="patient_last_opv"/>
+                        *:
+                    </label>
+                    <form:radiobuttons path="lastOPV" items="${lastOPV}" cssClass="jsRequire"/>
+                </div>
+
+                <div class="form-field">
+                    <label for="lastOPVDate" class="formLabel">
+                        <spring:message code="patient_opv_date"/>
+                        *:
+                    </label>
+                    <form:input path="lastOPVDate" cssClass="jsDate jsRequire"/>
+                </div>
+            </div>
+            <div id="jsYF" class="hide">
+                <div class="form-field">
+                    <label for="yfDate" class="formLabel">
+                        <spring:message code="patient_yf_date"/>
+                        *:
+                    </label>
+                    <form:input path="yfDate" cssClass="jsDate jsRequire"/>
+                </div>
+            </div>
+            <div id="jsBCG" class="hide">
+                <div class="form-field">
+                    <label for="bcgDate" class="formLabel">
+                        <spring:message code="patient_bcg_date"/>
+                        *:
+                    </label>
+                    <form:input path="bcgDate" cssClass="jsDate jsRequire"/>
+                </div>
+            </div>
+            <div id="jsMeasles" class="hide">
+                <div class="form-field">
+                    <label for="measlesDate" class="formLabel">
+                        <spring:message code="patient_measles_date"/>
+                        *:
+                    </label>
+                    <form:input path="measlesDate" cssClass="jsDate jsRequire"/>
+                </div>
+            </div>
+            <div id="jsIPTi" class="hide">
+                <div class="form-field">
+                    <label for="lastIPTi" class="formLabel">
+                        <spring:message code="patient_last_IPTi"/>
+                        *:
+                    </label>
+                    <form:radiobuttons path="lastIPTi" items="${lastIPTi}" cssClass="jsRequire"/>
+                </div>
+
+                <div class="form-field">
+                    <label for="lastIPTiDate" class="formLabel">
+                        <spring:message code="patient_IPTi_date"/>
+                        *:
+                    </label>
+                    <form:input path="lastIPTiDate" cssClass="jsDate jsRequire"/>
+                </div>
+            </div>
+            <div id="jsPenta" class="hide">
+                <div class="form-field">
+                    <label for="lastPenta" class="formLabel">
+                        <spring:message code="patient_last_penta"/>
+                        *:
+                    </label>
+                    <form:radiobuttons path="lastPenta" items="${lastPenta}" cssClass="jsRequire"/>
+                </div>
+
+                <div class="form-field">
+                    <label for="lastPentaDate" class="formLabel">
+                        <spring:message code="patient_last_penta_date"/>
+                        *:
+                    </label>
+                    <form:input path="lastPentaDate" cssClass="jsDate jsRequire"/>
+                </div>
+            </div>
+            <div id="jsVitA" class="hide">
+                <div class="form-field">
+                    <label for="vitADate" class="formLabel">
+                        <spring:message code="patient_VitA_date"/>
+                        *:
+                    </label>
+                    <form:input path="vitADate" cssClass="jsDate jsRequire"/>
+                </div>
+            </div>
+        </div>
+        <input type="button" id="submit" value="Submit"/>
+    </form:form>
+</div>
