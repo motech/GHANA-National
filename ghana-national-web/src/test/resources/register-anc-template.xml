@@ -23,7 +23,7 @@
                 <enroll/>
                 <consent/>
                 <ownership/>
-                <phoneNumber/>
+                <regPhone/>
                 <format/>
                 <language/>
                 <dayOfWeek/>
@@ -117,42 +117,77 @@
                 </item>
             </dynamiclist>
         </xf:instance>
-        <xf:bind id="staffId" nodeset="/ANCRegistration/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
-        <xf:bind id="facilityId" nodeset="/ANCRegistration/facilityId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+        <xf:bind id="staffId" nodeset="/ANCRegistration/staffId" required="true()" type="xsd:int"
+                 constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+        <xf:bind id="facilityId" nodeset="/ANCRegistration/facilityId" required="true()" type="xsd:int"
+                 constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
         <xf:bind id="regDateToday" nodeset="/ANCRegistration/regDateToday" required="true()" type="xsd:string"/>
-        <xf:bind constraint=". &lt;= 'today()'" id="date" message="Invalid date: date entered is in the future" relevant="/ANCRegistration/regDateToday = 'IN_PAST' or /ANCRegistration/regDateToday = 'IN_PAST_IN_OTHER_FACILITY'"
+        <xf:bind constraint=". &lt;= 'today()'" id="date" message="Invalid date: date entered is in the future"
+                 relevant="/ANCRegistration/regDateToday = 'IN_PAST' or /ANCRegistration/regDateToday = 'IN_PAST_IN_OTHER_FACILITY'"
                  visible="false()" action="show" nodeset="/ANCRegistration/date" required="true()" type="xsd:date"/>
-        <xf:bind id="motechId" nodeset="/ANCRegistration/motechId" required="true()" type="xsd:int" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
+        <xf:bind id="motechId" nodeset="/ANCRegistration/motechId" required="true()" type="xsd:int"
+                 constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
         <xf:bind id="ancRegNumber" nodeset="/ANCRegistration/ancRegNumber" type="xsd:string" required="true()"/>
-        <xf:bind constraint=". &gt;= 'today()'" id="estDeliveryDate" message="Invalid EDD: date entered is in the past" nodeset="/ANCRegistration/estDeliveryDate" required="true()" type="xsd:date"/>
-        <xf:bind id="deliveryDateConfirmed" nodeset="/ANCRegistration/deliveryDateConfirmed" required="true()" type="xsd:string"/>
-        <xf:bind constraint=". &gt;= 60 and . &lt;= 200" id="height" message="Value out of range: must be between 60 and 200" nodeset="/ANCRegistration/height" required="true()" type="xsd:decimal"/>
-        <xf:bind constraint=". &gt;= 1 and . &lt;= 30" id="gravida" message="Value out of range: must be between 1 and 30" nodeset="/ANCRegistration/gravida" required="true()" type="xsd:int"/>
-        <xf:bind constraint=". &gt;= 0 and . &lt;= 30" id="parity" message="Value out of range: must be between 0 and 30" nodeset="/ANCRegistration/parity" required="true()" type="xsd:int"/>
+        <xf:bind constraint=". &gt;= 'today()'" id="estDeliveryDate" message="Invalid EDD: date entered is in the past"
+                 nodeset="/ANCRegistration/estDeliveryDate" required="true()" type="xsd:date"/>
+        <xf:bind id="deliveryDateConfirmed" nodeset="/ANCRegistration/deliveryDateConfirmed" required="true()"
+                 type="xsd:string"/>
+        <xf:bind constraint=". &gt;= 60 and . &lt;= 200" id="height"
+                 message="Value out of range: must be between 60 and 200" nodeset="/ANCRegistration/height"
+                 required="true()" type="xsd:decimal"/>
+        <xf:bind constraint=". &gt;= 1 and . &lt;= 30" id="gravida"
+                 message="Value out of range: must be between 1 and 30" nodeset="/ANCRegistration/gravida"
+                 required="true()" type="xsd:int"/>
+        <xf:bind constraint=". &gt;= 0 and . &lt;= 30" id="parity"
+                 message="Value out of range: must be between 0 and 30" nodeset="/ANCRegistration/parity"
+                 required="true()" type="xsd:int"/>
         <xf:bind id="addHistory" nodeset="/ANCRegistration/addHistory" type="xsd:string" required="true()"/>
-        <xf:bind id="addCareHistory" nodeset="/ANCRegistration/addCareHistory" relevant="/ANCRegistration/addHistory = '1'" type="xsd:string" visible="false()" action="show" required="true()"/>
-        <xf:bind id="lastIPT" nodeset="/ANCRegistration/lastIPT" type="xsd:string" visible="false()" relevant="/ANCRegistration/addCareHistory = '1' and /ANCRegistration/addHistory = '1'"
+        <xf:bind id="addCareHistory" nodeset="/ANCRegistration/addCareHistory"
+                 relevant="/ANCRegistration/addHistory = '1'" type="xsd:string" visible="false()" action="show"
+                 required="true()"/>
+        <xf:bind id="lastIPT" nodeset="/ANCRegistration/lastIPT" type="xsd:string" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = '1' and /ANCRegistration/addHistory = '1'"
                  action="show" required="true()"/>
-        <xf:bind id="lastIPTDate" nodeset="/ANCRegistration/lastIPTDate" type="xsd:date" visible="false()" constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
-                 relevant="/ANCRegistration/addCareHistory = '1' and /ANCRegistration/addHistory = '1'" action="show" required="true()"/>
-        <xf:bind id="lastTT" nodeset="/ANCRegistration/lastTT" type="xsd:string" visible="false()" relevant="/ANCRegistration/addCareHistory = '2' and /ANCRegistration/addHistory = '1'"
+        <xf:bind id="lastIPTDate" nodeset="/ANCRegistration/lastIPTDate" type="xsd:date" visible="false()"
+                 constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
+                 relevant="/ANCRegistration/addCareHistory = '1' and /ANCRegistration/addHistory = '1'" action="show"
+                 required="true()"/>
+        <xf:bind id="lastTT" nodeset="/ANCRegistration/lastTT" type="xsd:string" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = '2' and /ANCRegistration/addHistory = '1'"
                  action="show" required="true()"/>
-        <xf:bind id="lastTTDate" nodeset="/ANCRegistration/lastTTDate" type="xsd:date" visible="false()" action="show" constraint=". &lt;= 'today()'"
-                 message="Invalid date: date specified is in the future" relevant="/ANCRegistration/addCareHistory = '2' and /ANCRegistration/addHistory = '1'" required="true()"/>
+        <xf:bind id="lastTTDate" nodeset="/ANCRegistration/lastTTDate" type="xsd:date" visible="false()" action="show"
+                 constraint=". &lt;= 'today()'"
+                 message="Invalid date: date specified is in the future"
+                 relevant="/ANCRegistration/addCareHistory = '2' and /ANCRegistration/addHistory = '1'"
+                 required="true()"/>
         <xf:bind id="enroll" nodeset="/ANCRegistration/enroll" required="true()" type="xsd:string"/>
-        <xf:bind action="show" id="consent" nodeset="/ANCRegistration/consent" relevant="/ANCRegistration/enroll = 'Y'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="ownership" nodeset="/ANCRegistration/ownership" relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="phoneNumber" nodeset="/ANCRegistration/phoneNumber" relevant="/ANCRegistration/ownership = 'PERSONAL' or /ANCRegistration/ownership = 'HOUSEHOLD'" required="true()"
-                 type="xsd:int" visible="false()" constraint=". &lt;= 999999999" message="Number too large. It should be 10 digits long"/>
-        <xf:bind action="show" id="format" nodeset="/ANCRegistration/format" relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="language" nodeset="/ANCRegistration/language" relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="dayOfWeek" nodeset="/ANCRegistration/dayOfWeek" relevant="/ANCRegistration/format = 'PERS_VOICE' or /ANCRegistration/format = 'HSE_VOICE'" required="true()"
+        <xf:bind action="show" id="consent" nodeset="/ANCRegistration/consent" relevant="/ANCRegistration/enroll = 'Y'"
+                 required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="ownership" nodeset="/ANCRegistration/ownership"
+                 relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="regPhone" nodeset="/ANCRegistration/regPhone"
+                 relevant="/ANCRegistration/ownership = 'PERSONAL' or /ANCRegistration/ownership = 'HOUSEHOLD'"
+                 required="true()"
+                 type="xsd:int" visible="false()" constraint=". &lt;= 999999999"
+                 message="Number too large. It should be 10 digits long"/>
+        <xf:bind action="show" id="format" nodeset="/ANCRegistration/format" relevant="/ANCRegistration/consent = 'Y'"
+                 required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="language" nodeset="/ANCRegistration/language"
+                 relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="dayOfWeek" nodeset="/ANCRegistration/dayOfWeek"
+                 relevant="/ANCRegistration/format = 'PERS_VOICE' or /ANCRegistration/format = 'HSE_VOICE'"
+                 required="true()"
                  type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="timeOfDay" nodeset="/ANCRegistration/timeOfDay" relevant="/ANCRegistration/format = 'PERS_VOICE' or /ANCRegistration/format = 'HSE_VOICE'" required="true()"
+        <xf:bind action="show" id="timeOfDay" nodeset="/ANCRegistration/timeOfDay"
+                 relevant="/ANCRegistration/format = 'PERS_VOICE' or /ANCRegistration/format = 'HSE_VOICE'"
+                 required="true()"
                  type="xsd:time" visible="false()"/>
-        <xf:bind action="show" id="learnedFrom" nodeset="/ANCRegistration/learnedFrom" relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind id="formtype" nodeset="/ANCRegistration/formtype" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind id="formname" nodeset="/ANCRegistration/formname" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="learnedFrom" nodeset="/ANCRegistration/learnedFrom"
+                 relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind id="formtype" nodeset="/ANCRegistration/formtype" required="true()" type="xsd:string"
+                 visible="false()"/>
+        <xf:bind id="formname" nodeset="/ANCRegistration/formname" required="true()" type="xsd:string"
+                 visible="false()"/>
     </xf:model>
     <xf:group id="1">
         <xf:label>Page1</xf:label>
@@ -276,7 +311,7 @@
             <xf:label>Last TT Date</xf:label>
         </xf:input>
         <xf:select1 bind="enroll">
-            <xf:label>Join Mobile Midwife?</xf:label>
+            <xf:label>Enroll to Mobile Midwife?</xf:label>
             <xf:item id="Y">
                 <xf:label>Yes</xf:label>
                 <xf:value>Y</xf:value>
@@ -312,7 +347,7 @@
                 <xf:value>PUBLIC</xf:value>
             </xf:item>
         </xf:select1>
-        <xf:input bind="phoneNumber">
+        <xf:input bind="regPhone">
             <xf:label>Phone number</xf:label>
         </xf:input>
         <xf:select1 bind="format">
