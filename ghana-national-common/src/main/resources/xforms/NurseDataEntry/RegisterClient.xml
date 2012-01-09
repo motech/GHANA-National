@@ -954,7 +954,7 @@
             </xf:item>
         </xf:select1>
         <xf:select1 bind="enroll">
-            <xf:label>Join Mobile Midwife?</xf:label>
+            <xf:label>Enroll to Mobile Midwife?</xf:label>
             <xf:item id="Y">
                 <xf:label>Yes</xf:label>
                 <xf:value>Y</xf:value>
