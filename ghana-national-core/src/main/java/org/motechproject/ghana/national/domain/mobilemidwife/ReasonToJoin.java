@@ -1,8 +1,6 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
-import org.motechproject.ghana.national.domain.Displayable;
-
-public enum ReasonToJoin implements Displayable{
+public enum ReasonToJoin{
     CURRENTLY_PREGNANT("Currently pregnant"),
     RECENTLY_DELIVERED("Recently delivery"),
     FAMILY_FRIEND_PREGNANT("Family/friend pregnant"),
@@ -17,11 +15,11 @@ public enum ReasonToJoin implements Displayable{
         this.displayName = displayName;
     }
 
-    public String displayName() {
+    public String getDisplayName() {
         return displayName;
     }
 
-    public String value(){
+    public String getValue(){
         return name();
     }
 

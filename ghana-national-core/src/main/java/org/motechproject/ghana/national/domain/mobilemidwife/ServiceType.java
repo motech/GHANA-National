@@ -1,12 +1,10 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
-import org.motechproject.ghana.national.domain.Displayable;
-
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public enum ServiceType implements Displayable{
+public enum ServiceType{
     PREGNANCY("Pregnancy"){public Map<String, String> messageStartWeeks(){
         HashMap<String, String> messageStartWeeks = new LinkedHashMap<String, String>();
         for (int i = 5; i < 41; i++) {
@@ -28,11 +26,11 @@ public enum ServiceType implements Displayable{
         this.displayName = displayName;
     }
 
-    public String displayName() {
+    public String getDisplayName() {
         return displayName;
     }
 
-    public String value(){
+    public String getValue(){
         return name();
     }
 
