@@ -121,7 +121,7 @@
         <xf:bind action="show" id="learnedFrom" nodeset="/CWCRegistration/learnedFrom"
                  relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="messageStartWeek" nodeset="/CWCRegistration/messageStartWeek"
-                 relevant="/CWCRegistration/enroll = 'Y' and /CWCRegistration/consent = 'Y'"
+                 relevant="/CWCRegistration/consent = 'Y'"
                  required="true()" type="xsd:string" visible="false()"/>
         <xf:bind id="formtype" nodeset="/CWCRegistration/formtype" required="true()" type="xsd:string"
                  visible="false()"/>
