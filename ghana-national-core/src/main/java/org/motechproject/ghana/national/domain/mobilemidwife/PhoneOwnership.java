@@ -1,8 +1,6 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
-import org.motechproject.ghana.national.domain.Displayable;
-
-public enum PhoneOwnership implements Displayable {
+public enum PhoneOwnership{
     HOUSEHOLD("Household phone"), PERSONAL("Personal phone"), PUBLIC("Public phone");
     private String displayName;
 
@@ -10,11 +8,11 @@ public enum PhoneOwnership implements Displayable {
         this.displayName = displayName;
     }
 
-    public String displayName() {
+    public String getDisplayName() {
         return displayName;
     }
 
-    public String value(){
+    public String getValue(){
         return name();
     }
 }

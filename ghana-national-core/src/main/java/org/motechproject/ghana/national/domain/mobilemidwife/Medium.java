@@ -1,8 +1,6 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
-import org.motechproject.ghana.national.domain.Displayable;
-
-public enum Medium implements Displayable{
+public enum Medium{
     SMS("SMS"), VOICE("Voice");
     private String displayName;
 
@@ -10,11 +8,11 @@ public enum Medium implements Displayable{
         this.displayName = displayName;
     }
 
-    public String displayName() {
+    public String getDisplayName() {
         return displayName;
     }
 
-    public String value(){
+    public String getValue(){
         return name();
     }
 

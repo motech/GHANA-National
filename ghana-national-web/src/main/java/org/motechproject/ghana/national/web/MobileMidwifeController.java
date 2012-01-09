@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.web;
 
-import org.motechproject.ghana.national.domain.Displayable;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
 import org.motechproject.model.DayOfWeek;
@@ -32,12 +31,12 @@ public class MobileMidwifeController {
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String enroll(@RequestParam String motechPatientId, ModelMap modelMap) {
         modelMap.addAttribute("mobileMidwifeEnrollmentForm", new MobileMidwifeEnrollmentForm());
-        modelMap.addAttribute("serviceTypes", collectOptions(ServiceType.values()));
-        modelMap.addAttribute("phoneOwnerships", collectOptions(PhoneOwnership.values()));
-        modelMap.addAttribute("reasonsToJoin", collectOptions(ReasonToJoin.values()));
-        modelMap.addAttribute("learnedFrom", collectOptions(LearnedFrom.values()));
-        modelMap.addAttribute("languages", collectOptions(Language.values()));
-        modelMap.addAttribute("mediums", collectOptions(Medium.values()));
+        modelMap.addAttribute("serviceTypes", ServiceType.values());
+        modelMap.addAttribute("phoneOwnerships", PhoneOwnership.values());
+        modelMap.addAttribute("reasonsToJoin", ReasonToJoin.values());
+        modelMap.addAttribute("learnedFrom", LearnedFrom.values());
+        modelMap.addAttribute("languages", Language.values());
+        modelMap.addAttribute("mediums", Medium.values());
         modelMap.addAttribute("dayOfWeeks", collectDayOfWeekOptions());
         modelMap.addAttribute("pregnancyMessageStartWeeks", ServiceType.PREGNANCY.messageStartWeeks());
         modelMap.addAttribute("childCareMessageStartWeeks", ServiceType.CHILD_CARE.messageStartWeeks());
@@ -58,13 +57,4 @@ public class MobileMidwifeController {
         }
         return options;
     }
-
-    private Map<String, String> collectOptions(Displayable[] displayables) {
-        Map<String, String> options = new LinkedHashMap<String, String>();
-        for (Displayable displayable : displayables) {
-            options.put(displayable.value(), displayable.displayName());
-        }
-        return options;
-    }
-
 }

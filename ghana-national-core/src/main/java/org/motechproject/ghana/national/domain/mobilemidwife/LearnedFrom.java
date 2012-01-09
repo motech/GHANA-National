@@ -1,8 +1,6 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
-import org.motechproject.ghana.national.domain.Displayable;
-
-public enum LearnedFrom implements Displayable {
+public enum LearnedFrom{
     GHS_NURSE("GHS Nurse"),
     MOTECH_FIELD_AGENT("MoTeCH field agent"),
     FRIEND("Friend"),
@@ -15,11 +13,11 @@ public enum LearnedFrom implements Displayable {
         this.displayName = displayName;
     }
 
-    public String displayName() {
+    public String getDisplayName() {
         return displayName;
     }
 
-    public String value(){
+    public String getValue(){
         return name();
     }
 

@@ -30,6 +30,14 @@
         <spring:message code="day_of_week" var="day_of_week" htmlEscape="false"/>
         <spring:message code="day_of_week_select" var="day_of_week_select" htmlEscape="false"/>
         <spring:message code="time_of_day" var="time_of_day" htmlEscape="false"/>
+        <spring:message code="default_select_hour_message" var="default_select_hour_message" htmlEscape="false"/>
+        <spring:message code="default_select_minute_message" var="default_select_minute_message" htmlEscape="false"/>
+        <spring:message code="language" var="language" htmlEscape="false"/>
+        <spring:message code="language_select" var="language_select" htmlEscape="false"/>
+        <spring:message code="learned_from" var="learned_from" htmlEscape="false"/>
+        <spring:message code="learned_from_select" var="learned_from_select" htmlEscape="false"/>
+        <spring:message code="reason_to_join" var="reason_to_join" htmlEscape="false"/>
+        <spring:message code="reason_to_join_select" var="reason_to_join_select" htmlEscape="false"/>
 
         <div>
             <label for="patientMotechId" class="formLabel">${fn:escapeXml(patient_motech_id)}:</label>
@@ -70,7 +78,7 @@
             <form:select id="serviceType" path="serviceType">
                 <option parent="select" value="">${fn:escapeXml(service_type_select)}</option>
                 <c:forEach items="${serviceTypes}" var="serviceTypeOption">
-                    <option value="${serviceTypeOption.key}">${serviceTypeOption.value}</option>
+                    <option value="${serviceTypeOption.value}">${serviceTypeOption.displayName}</option>
                 </c:forEach>
             </form:select>
             <span id='service_type_error' class='formlyInvalid formlyAlert hide'></span>
@@ -80,7 +88,7 @@
             <form:select id="phoneOwnership" path="phoneOwnership">
                 <option parent="select" value="">${fn:escapeXml(phone_ownership_select)}</option>
                 <c:forEach items="${phoneOwnerships}" var="phoneOwnershipOption">
-                    <option value="${phoneOwnershipOption.key}">${phoneOwnershipOption.value}</option>
+                    <option value="${phoneOwnershipOption.value}">${phoneOwnershipOption.displayName}</option>
                 </c:forEach>
             </form:select>
             <span id='phone_ownership_error' class='formlyInvalid formlyAlert hide'></span>
@@ -94,7 +102,7 @@
             <form:select id="medium" path="medium">
                 <option parent="select" value="">${fn:escapeXml(medium_select)}</option>
                 <c:forEach items="${mediums}" var="mediumOption">
-                    <option value="${mediumOption.key}">${mediumOption.value}</option>
+                    <option value="${mediumOption.value}">${mediumOption.displayName}</option>
                 </c:forEach>
             </form:select>
             <span id='medium_error' class='formlyInvalid formlyAlert hide'></span>
@@ -108,6 +116,44 @@
                 </c:forEach>
             </form:select>
             <span id='day_of_week_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <div class="form-field">
+            <motech:time path="timeOfDay" label="${time_of_day} :"
+                         default_select_hour_message="${fn:escapeXml(default_select_hour_message)}"
+                         default_select_minute_message="${fn:escapeXml(default_select_minute_message)}"
+                          errorMsgId="time_of_day_error" required="false"/>
+        </div>
+        <div>
+            <label class="formLabel" for="language">${fn:escapeXml(language)} *:</label>
+            <form:select id="language" path="language">
+                <option parent="select" value="">${fn:escapeXml(language_select)}</option>
+                <c:forEach items="${languages}" var="languageOption">
+                    <c:forEach items="${languageOption.applicableFor}" var="applicableFor">
+                        <option value="${languageOption.value}" medium="${applicableFor.medium}" phoneOwnership="${applicableFor.phoneOwnership}">${languageOption.displayName}</option>
+                    </c:forEach>
+                </c:forEach>
+            </form:select>
+            <span id='language_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <div>
+            <label class="formLabel" for="learnedFrom">${fn:escapeXml(learned_from)} *:</label>
+            <form:select id="learnedFrom" path="learnedFrom">
+                <option parent="select" value="">${fn:escapeXml(learned_from_select)}</option>
+                <c:forEach items="${learnedFrom}" var="learnedFromOption">
+                    <option value="${learnedFromOption.value}">${learnedFromOption.displayName}</option>
+                </c:forEach>
+            </form:select>
+            <span id='learned_from_error' class='formlyInvalid formlyAlert hide'></span>
+        </div>
+        <div>
+            <label class="formLabel" for="reasonToJoin">${fn:escapeXml(reason_to_join)} *:</label>
+            <form:select id="reasonToJoin" path="reasonToJoin">
+                <option parent="select" value="">${fn:escapeXml(reason_to_join_select)}</option>
+                <c:forEach items="${reasonsToJoin}" var="reasonToJoinOption">
+                    <option value="${reasonToJoinOption.value}">${reasonToJoinOption.displayName}</option>
+                </c:forEach>
+            </form:select>
+            <span id='reason_to_join_error' class='formlyInvalid formlyAlert hide'></span>
         </div>
         <div>
             <label class="formLabel" for="messageStartWeek">${fn:escapeXml(message_start_week)} *:</label>
@@ -124,10 +170,6 @@
                 </c:forEach>
             </form:select>
             <span id='pregnancy_message_start_week_error' class='formlyInvalid formlyAlert hide'></span>
-        </div>
-        <div class="form-field">
-            <motech:time path="timeOfDay" label="${time_of_day} :"
-                          errorMsgId="time_of_day_error" required="false"/>
         </div>
         <input type="submit" id="submit" value="Submit"/>
     </form:form>
