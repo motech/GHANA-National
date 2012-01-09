@@ -13,7 +13,11 @@
 
     <form:form id="cwcEnrollmentForm" action="/admin/cwc/save" method="POST" title="CWC Enrollment"
                commandName="cwcEnrollmentForm">
-
+        <c:if test="${error ne null}">
+            <div class="formlyAlerts formlyInvalid formlyAlert" style="display: block;">
+                <c:out value="${error}"/>
+            </div>
+        </c:if>
         <div>
             <label for="motechPatientId" class="formLabel">
                 <spring:message code="patient_motech_id"/>
