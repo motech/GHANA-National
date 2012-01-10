@@ -208,7 +208,8 @@
                         <phase>pre-integration-test</phase>
                         <configuration>
                             <target>
-                                <copy overwrite="true" todir="${project.build.directory}/${pom.artifactId}-${pom.version}/WEB-INF/classes">
+                                <copy overwrite="true"
+                                      todir="${project.build.directory}/${pom.artifactId}-${pom.version}/WEB-INF/classes">
                                     <fileset
                                             dir="../ghana-national-common/src/test/resources"/>
                                 </copy>
@@ -219,7 +220,8 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>            <plugin>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.7</version>
@@ -283,6 +285,17 @@
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.1.26</version>
                 <configuration>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <scanTargetPatterns>
+                        <scanTargetPattern>
+                            <directory>target</directory>
+                            <includes>
+                                <include>**/*.xml</include>
+                                <include>**/*.properties</include>
+                                <include>**/*.class</include>
+                            </includes>
+                        </scanTargetPattern>
+                    </scanTargetPatterns>
                     <stopPort>9999</stopPort>
                     <stopKey>foo</stopKey>
                     <skip>${openmrs.skip}</skip>
