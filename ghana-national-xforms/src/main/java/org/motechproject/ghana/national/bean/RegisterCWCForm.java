@@ -44,6 +44,17 @@ public class RegisterCWCForm extends FormBean {
     @Required
     private String addCareHistory;
 
+    @RegEx(pattern = "0[0-9]{9}")
+    private String regPhone;
+
+    public String getRegPhone() {
+        return regPhone;
+    }
+
+    public void setRegPhone(String regPhone) {
+        this.regPhone = regPhone;
+    }
+
 
     public void setRegistrationToday(RegistrationToday registrationToday) {
         this.registrationToday = registrationToday;

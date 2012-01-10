@@ -59,6 +59,17 @@ public class RegisterANCForm extends FormBean {
     @Required
     private String ancRegNumber;
 
+    @RegEx(pattern = "0[0-9]{9}")
+    private String regPhone;
+
+    public String getRegPhone() {
+        return regPhone;
+    }
+
+    public void setRegPhone(String regPhone) {
+        this.regPhone = regPhone;
+    }
+
     public String getStaffId() {
         return staffId;
     }

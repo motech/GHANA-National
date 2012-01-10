@@ -23,6 +23,7 @@
                 <lastVitaminADate/>
                 <enroll/>
                 <consent/>
+                <serviceType/>
                 <ownership/>
                 <regPhone/>
                 <format/>
@@ -99,6 +100,8 @@
         <xf:bind id="enroll" nodeset="/CWCRegistration/enroll" required="true()" type="xsd:string"/>
         <xf:bind action="show" id="consent" nodeset="/CWCRegistration/consent" relevant="/CWCRegistration/enroll = 'Y'"
                  required="true()" type="xsd:string" visible="false()"/>
+         <xf:bind action="show" id="serviceType" nodeset="/CWCRegistration/serviceType"
+                 relevant="/CWCRegistration/consent = Y" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="ownership" nodeset="/CWCRegistration/ownership"
                  relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="regPhone" nodeset="/CWCRegistration/regPhone"
@@ -294,6 +297,13 @@
                 <xf:value>N</xf:value>
             </xf:item>
         </xf:select1>
+        <xf:select1 bind="serviceType">
+            <xf:label>MM Service</xf:label>
+            <xf:item id="CHILD_CARE">
+                <xf:label>Child Care</xf:label>
+                <xf:value>CHILD_CARE</xf:value>
+            </xf:item>
+        </xf:select1>
         <xf:select1 bind="ownership">
             <xf:label>Phone ownership</xf:label>
             <xf:item id="PERSONAL">
@@ -385,150 +395,6 @@
         </xf:select1>
         <xf:select1 bind="messageStartWeek">
             <xf:label>Week to begin messages</xf:label>
-            <xf:item id="5">
-                <xf:label>Pregnancy-week 5</xf:label>
-                <xf:value>5</xf:value>
-            </xf:item>
-            <xf:item id="6">
-                <xf:label>Pregnancy-week 6</xf:label>
-                <xf:value>6</xf:value>
-            </xf:item>
-            <xf:item id="7">
-                <xf:label>Pregnancy-week 7</xf:label>
-                <xf:value>7</xf:value>
-            </xf:item>
-            <xf:item id="8">
-                <xf:label>Pregnancy-week 8</xf:label>
-                <xf:value>8</xf:value>
-            </xf:item>
-            <xf:item id="9">
-                <xf:label>Pregnancy-week 9</xf:label>
-                <xf:value>9</xf:value>
-            </xf:item>
-            <xf:item id="10">
-                <xf:label>Pregnancy-week 10</xf:label>
-                <xf:value>10</xf:value>
-            </xf:item>
-            <xf:item id="11">
-                <xf:label>Pregnancy-week 11</xf:label>
-                <xf:value>11</xf:value>
-            </xf:item>
-            <xf:item id="12">
-                <xf:label>Pregnancy-week 12</xf:label>
-                <xf:value>12</xf:value>
-            </xf:item>
-            <xf:item id="13">
-                <xf:label>Pregnancy-week 13</xf:label>
-                <xf:value>13</xf:value>
-            </xf:item>
-            <xf:item id="14">
-                <xf:label>Pregnancy-week 14</xf:label>
-                <xf:value>14</xf:value>
-            </xf:item>
-            <xf:item id="15">
-                <xf:label>Pregnancy-week 15</xf:label>
-                <xf:value>15</xf:value>
-            </xf:item>
-            <xf:item id="16">
-                <xf:label>Pregnancy-week 16</xf:label>
-                <xf:value>16</xf:value>
-            </xf:item>
-            <xf:item id="17">
-                <xf:label>Pregnancy-week 17</xf:label>
-                <xf:value>17</xf:value>
-            </xf:item>
-            <xf:item id="18">
-                <xf:label>Pregnancy-week 18</xf:label>
-                <xf:value>18</xf:value>
-            </xf:item>
-            <xf:item id="19">
-                <xf:label>Pregnancy-week 19</xf:label>
-                <xf:value>19</xf:value>
-            </xf:item>
-            <xf:item id="20">
-                <xf:label>Pregnancy-week 20</xf:label>
-                <xf:value>20</xf:value>
-            </xf:item>
-            <xf:item id="21">
-                <xf:label>Pregnancy-week 21</xf:label>
-                <xf:value>21</xf:value>
-            </xf:item>
-            <xf:item id="22">
-                <xf:label>Pregnancy-week 22</xf:label>
-                <xf:value>22</xf:value>
-            </xf:item>
-            <xf:item id="23">
-                <xf:label>Pregnancy-week 23</xf:label>
-                <xf:value>23</xf:value>
-            </xf:item>
-            <xf:item id="24">
-                <xf:label>Pregnancy-week 24</xf:label>
-                <xf:value>24</xf:value>
-            </xf:item>
-            <xf:item id="25">
-                <xf:label>Pregnancy-week 25</xf:label>
-                <xf:value>25</xf:value>
-            </xf:item>
-            <xf:item id="26">
-                <xf:label>Pregnancy-week 26</xf:label>
-                <xf:value>26</xf:value>
-            </xf:item>
-            <xf:item id="27">
-                <xf:label>Pregnancy-week 27</xf:label>
-                <xf:value>27</xf:value>
-            </xf:item>
-            <xf:item id="28">
-                <xf:label>Pregnancy-week 28</xf:label>
-                <xf:value>28</xf:value>
-            </xf:item>
-            <xf:item id="29">
-                <xf:label>Pregnancy-week 29</xf:label>
-                <xf:value>29</xf:value>
-            </xf:item>
-            <xf:item id="30">
-                <xf:label>Pregnancy-week 30</xf:label>
-                <xf:value>30</xf:value>
-            </xf:item>
-            <xf:item id="31">
-                <xf:label>Pregnancy-week 31</xf:label>
-                <xf:value>31</xf:value>
-            </xf:item>
-            <xf:item id="32">
-                <xf:label>Pregnancy-week 32</xf:label>
-                <xf:value>32</xf:value>
-            </xf:item>
-            <xf:item id="33">
-                <xf:label>Pregnancy-week 33</xf:label>
-                <xf:value>33</xf:value>
-            </xf:item>
-            <xf:item id="34">
-                <xf:label>Pregnancy-week 34</xf:label>
-                <xf:value>34</xf:value>
-            </xf:item>
-            <xf:item id="35">
-                <xf:label>Pregnancy-week 35</xf:label>
-                <xf:value>35</xf:value>
-            </xf:item>
-            <xf:item id="36">
-                <xf:label>Pregnancy-week 36</xf:label>
-                <xf:value>36</xf:value>
-            </xf:item>
-            <xf:item id="37">
-                <xf:label>Pregnancy-week 37</xf:label>
-                <xf:value>37</xf:value>
-            </xf:item>
-            <xf:item id="38">
-                <xf:label>Pregnancy-week 38</xf:label>
-                <xf:value>38</xf:value>
-            </xf:item>
-            <xf:item id="39">
-                <xf:label>Pregnancy-week 39</xf:label>
-                <xf:value>39</xf:value>
-            </xf:item>
-            <xf:item id="40">
-                <xf:label>Pregnancy-week 40</xf:label>
-                <xf:value>40</xf:value>
-            </xf:item>
             <xf:item id="1">
                 <xf:label>Baby-week 1</xf:label>
                 <xf:value>41</xf:value>

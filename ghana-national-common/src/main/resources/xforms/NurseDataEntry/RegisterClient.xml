@@ -57,6 +57,7 @@
                 <deliveryDateConfirmed/>
                 <enroll/>
                 <consent/>
+                <serviceType/>
                 <ownership/>
                 <regPhone/>
                 <format/>
@@ -454,6 +455,8 @@
         <xf:bind action="show" id="consent" nodeset="/patientRegistration/consent"
                  relevant="/patientRegistration/enroll = 'Y'" required="true()" type="xsd:string"
                  visible="false()"/>
+        <xf:bind action="show" id="serviceType" nodeset="/patientRegistration/serviceType"
+                 relevant="/patientRegistration/consent = Y" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="ownership" nodeset="/patientRegistration/ownership"
                  relevant="/patientRegistration/consent = 'Y'" required="true()" type="xsd:string"
                  visible="false()"/>
@@ -973,6 +976,17 @@
             <xf:item id="N">
                 <xf:label>No</xf:label>
                 <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
+         <xf:select1 bind="serviceType">
+            <xf:label>MM Service</xf:label>
+            <xf:item id="PREGNANCY">
+                <xf:label>Pregnancy</xf:label>
+                <xf:value>PREGNANCY</xf:value>
+            </xf:item>
+            <xf:item id="CHILD_CARE">
+                <xf:label>Child Care</xf:label>
+                <xf:value>CHILD_CARE</xf:value>
             </xf:item>
         </xf:select1>
         <xf:select1 bind="ownership">
