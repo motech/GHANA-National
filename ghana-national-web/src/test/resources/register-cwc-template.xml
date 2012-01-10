@@ -30,11 +30,452 @@
                 <language/>
                 <dayOfWeek/>
                 <timeOfDay/>
+                <reasonToJoin/>
                 <learnedFrom/>
                 <messageStartWeek/>
                 <formtype>data_entry</formtype>
                 <formname>registerCWC</formname>
             </CWCRegistration>
+        </xf:instance>
+        <xf:instance id="format">
+            <dynamiclist>
+                <item id="PERS_VOICE" parent="PERSONAL">
+                    <label>Voice</label>
+                    <value>PERS_VOICE</value>
+                </item>
+                <item id="PERS_TEXT" parent="PERSONAL">
+                    <label>SMS</label>
+                    <value>PERS_TEXT</value>
+                </item>
+                <item id="HSE_VOICE" parent="HOUSEHOLD">
+                    <label>Voice</label>
+                    <value>HSE_VOICE</value>
+                </item>
+                <item id="HSE_TEXT" parent="HOUSEHOLD">
+                    <label>SMS</label>
+                    <value>HSE_TEXT</value>
+                </item>
+                <item id="PUB_VOICE" parent="PUBLIC">
+                    <label>Voice</label>
+                    <value>PUB_VOICE</value>
+                </item>
+            </dynamiclist>
+        </xf:instance>
+        <xf:instance id="language">
+            <dynamiclist>
+                <item id="EN" parent="PERS_VOICE">
+                    <label>English</label>
+                    <value>EN</value>
+                </item>
+                <item id="KAS" parent="PERS_VOICE">
+                    <label>Kassim</label>
+                    <value>KAS</value>
+                </item>
+                <item id="NAN" parent="PERS_VOICE">
+                    <label>Nankam</label>
+                    <value>NAN</value>
+                </item>
+                <item id="FAN" parent="PERS_VOICE">
+                    <label>Fante</label>
+                    <value>FAN</value>
+                </item>
+                <item id="EN" parent="PERS_TEXT">
+                    <label>English</label>
+                    <value>EN</value>
+                </item>
+                <item id="EN" parent="HSE_VOICE">
+                    <label>English</label>
+                    <value>EN</value>
+                </item>
+                <item id="KAS" parent="HSE_VOICE">
+                    <label>Kassim</label>
+                    <value>KAS</value>
+                </item>
+                <item id="NAN" parent="HSE_VOICE">
+                    <label>Nankam</label>
+                    <value>NAN</value>
+                </item>
+                <item id="FAN" parent="HSE_VOICE">
+                    <label>Fante</label>
+                    <value>FAN</value>
+                </item>
+                <item id="EN" parent="HSE_TEXT">
+                    <label>English</label>
+                    <value>EN</value>
+                </item>
+                <item id="EN" parent="PUB_VOICE">
+                    <label>English</label>
+                    <value>EN</value>
+                </item>
+                <item id="KAS" parent="PUB_VOICE">
+                    <label>Kassim</label>
+                    <value>KAS</value>
+                </item>
+                <item id="NAN" parent="PUB_VOICE">
+                    <label>Nankam</label>
+                    <value>NAN</value>
+                </item>
+                <item id="FAN" parent="PUB_VOICE">
+                    <label>Fante</label>
+                    <value>FAN</value>
+                </item>
+            </dynamiclist>
+        </xf:instance>
+         <xf:instance id="messageStartWeek">
+            <dynamiclist>
+                <item id="5" parent="PREGNANCY">
+                    <label>Pregnancy-week 5</label>
+                    <value>5</value>
+                </item>
+                <item id="6" parent="PREGNANCY">
+                    <label>Pregnancy-week 6</label>
+                    <value>6</value>
+                </item>
+                <item id="7" parent="PREGNANCY">
+                    <label>Pregnancy-week 7</label>
+                    <value>7</value>
+                </item>
+                <item id="8" parent="PREGNANCY">
+                    <label>Pregnancy-week 8</label>
+                    <value>8</value>
+                </item>
+                <item id="9" parent="PREGNANCY">
+                    <label>Pregnancy-week 9</label>
+                    <value>9</value>
+                </item>
+                <item id="10" parent="PREGNANCY">
+                    <label>Pregnancy-week 10</label>
+                    <value>10</value>
+                </item>
+                <item id="11" parent="PREGNANCY">
+                    <label>Pregnancy-week 11</label>
+                    <value>11</value>
+                </item>
+                <item id="12" parent="PREGNANCY">
+                    <label>Pregnancy-week 12</label>
+                    <value>12</value>
+                </item>
+                <item id="13" parent="PREGNANCY">
+                    <label>Pregnancy-week 13</label>
+                    <value>13</value>
+                </item>
+                <item id="14" parent="PREGNANCY">
+                    <label>Pregnancy-week 14</label>
+                    <value>14</value>
+                </item>
+                <item id="15" parent="PREGNANCY">
+                    <label>Pregnancy-week 15</label>
+                    <value>15</value>
+                </item>
+                <item id="16" parent="PREGNANCY">
+                    <label>Pregnancy-week 16</label>
+                    <value>16</value>
+                </item>
+                <item id="17" parent="PREGNANCY">
+                    <label>Pregnancy-week 17</label>
+                    <value>17</value>
+                </item>
+                <item id="18" parent="PREGNANCY">
+                    <label>Pregnancy-week 18</label>
+                    <value>18</value>
+                </item>
+                <item id="19" parent="PREGNANCY">
+                    <label>Pregnancy-week 19</label>
+                    <value>19</value>
+                </item>
+                <item id="20" parent="PREGNANCY">
+                    <label>Pregnancy-week 20</label>
+                    <value>20</value>
+                </item>
+                <item id="21" parent="PREGNANCY">
+                    <label>Pregnancy-week 21</label>
+                    <value>21</value>
+                </item>
+                <item id="22" parent="PREGNANCY">
+                    <label>Pregnancy-week 22</label>
+                    <value>22</value>
+                </item>
+                <item id="23" parent="PREGNANCY">
+                    <label>Pregnancy-week 23</label>
+                    <value>23</value>
+                </item>
+                <item id="24" parent="PREGNANCY">
+                    <label>Pregnancy-week 24</label>
+                    <value>24</value>
+                </item>
+                <item id="25" parent="PREGNANCY">
+                    <label>Pregnancy-week 25</label>
+                    <value>25</value>
+                </item>
+                <item id="26" parent="PREGNANCY">
+                    <label>Pregnancy-week 26</label>
+                    <value>26</value>
+                </item>
+                <item id="27" parent="PREGNANCY">
+                    <label>Pregnancy-week 27</label>
+                    <value>27</value>
+                </item>
+                <item id="28" parent="PREGNANCY">
+                    <label>Pregnancy-week 28</label>
+                    <value>28</value>
+                </item>
+                <item id="29" parent="PREGNANCY">
+                    <label>Pregnancy-week 29</label>
+                    <value>29</value>
+                </item>
+                <item id="30" parent="PREGNANCY">
+                    <label>Pregnancy-week 30</label>
+                    <value>30</value>
+                </item>
+                <item id="31" parent="PREGNANCY">
+                    <label>Pregnancy-week 31</label>
+                    <value>31</value>
+                </item>
+                <item id="32" parent="PREGNANCY">
+                    <label>Pregnancy-week 32</label>
+                    <value>32</value>
+                </item>
+                <item id="33" parent="PREGNANCY">
+                    <label>Pregnancy-week 33</label>
+                    <value>33</value>
+                </item>
+                <item id="34" parent="PREGNANCY">
+                    <label>Pregnancy-week 34</label>
+                    <value>34</value>
+                </item>
+                <item id="35" parent="PREGNANCY">
+                    <label>Pregnancy-week 35</label>
+                    <value>35</value>
+                </item>
+                <item id="36" parent="PREGNANCY">
+                    <label>Pregnancy-week 36</label>
+                    <value>36</value>
+                </item>
+                <item id="37" parent="PREGNANCY">
+                    <label>Pregnancy-week 37</label>
+                    <value>37</value>
+                </item>
+                <item id="38" parent="PREGNANCY">
+                    <label>Pregnancy-week 38</label>
+                    <value>38</value>
+                </item>
+                <item id="39" parent="PREGNANCY">
+                    <label>Pregnancy-week 39</label>
+                    <value>39</value>
+                </item>
+                <item id="40" parent="PREGNANCY">
+                    <label>Pregnancy-week 40</label>
+                    <value>40</value>
+                </item>
+                <item id="1" parent="CHILD_CARE">
+                    <label>Baby-week 1</label>
+                    <value>41</value>
+                </item>
+                <item id="2" parent="CHILD_CARE">
+                    <label>Baby-week 2</label>
+                    <value>42</value>
+                </item>
+                <item id="3" parent="CHILD_CARE">
+                    <label>Baby-week 3</label>
+                    <value>43</value>
+                </item>
+                <item id="4" parent="CHILD_CARE">
+                    <label>Baby-week 4</label>
+                    <value>44</value>
+                </item>
+                <item id="5" parent="CHILD_CARE">
+                    <label>Baby-week 5</label>
+                    <value>45</value>
+                </item>
+                <item id="6" parent="CHILD_CARE">
+                    <label>Baby-week 6</label>
+                    <value>46</value>
+                </item>
+                <item id="7" parent="CHILD_CARE">
+                    <label>Baby-week 7</label>
+                    <value>47</value>
+                </item>
+                <item id="8" parent="CHILD_CARE">
+                    <label>Baby-week 8</label>
+                    <value>48</value>
+                </item>
+                <item id="9" parent="CHILD_CARE">
+                    <label>Baby-week 9</label>
+                    <value>49</value>
+                </item>
+                <item id="10" parent="CHILD_CARE">
+                    <label>Baby-week 10</label>
+                    <value>50</value>
+                </item>
+                <item id="11" parent="CHILD_CARE">
+                    <label>Baby-week 11</label>
+                    <value>51</value>
+                </item>
+                <item id="12" parent="CHILD_CARE">
+                    <label>Baby-week 12</label>
+                    <value>52</value>
+                </item>
+                <item id="13" parent="CHILD_CARE">
+                    <label>Baby-week 13</label>
+                    <value>53</value>
+                </item>
+                <item id="14" parent="CHILD_CARE">
+                    <label>Baby-week 14</label>
+                    <value>54</value>
+                </item>
+                <item id="15" parent="CHILD_CARE">
+                    <label>Baby-week 15</label>
+                    <value>55</value>
+                </item>
+                <item id="16" parent="CHILD_CARE">
+                    <label>Baby-week 16</label>
+                    <value>56</value>
+                </item>
+                <item id="17" parent="CHILD_CARE">
+                    <label>Baby-week 17</label>
+                    <value>57</value>
+                </item>
+                <item id="18" parent="CHILD_CARE">
+                    <label>Baby-week 18</label>
+                    <value>58</value>
+                </item>
+                <item id="19" parent="CHILD_CARE">
+                    <label>Baby-week 19</label>
+                    <value>59</value>
+                </item>
+                <item id="20" parent="CHILD_CARE">
+                    <label>Baby-week 20</label>
+                    <value>60</value>
+                </item>
+                <item id="21" parent="CHILD_CARE">
+                    <label>Baby-week 21</label>
+                    <value>61</value>
+                </item>
+                <item id="22" parent="CHILD_CARE">
+                    <label>Baby-week 22</label>
+                    <value>62</value>
+                </item>
+                <item id="23" parent="CHILD_CARE">
+                    <label>Baby-week 23</label>
+                    <value>63</value>
+                </item>
+                <item id="24" parent="CHILD_CARE">
+                    <label>Baby-week 24</label>
+                    <value>64</value>
+                </item>
+                <item id="25" parent="CHILD_CARE">
+                    <label>Baby-week 25</label>
+                    <value>65</value>
+                </item>
+                <item id="26" parent="CHILD_CARE">
+                    <label>Baby-week 26</label>
+                    <value>66</value>
+                </item>
+                <item id="27" parent="CHILD_CARE">
+                    <label>Baby-week 27</label>
+                    <value>67</value>
+                </item>
+                <item id="28" parent="CHILD_CARE">
+                    <label>Baby-week 28</label>
+                    <value>68</value>
+                </item>
+                <item id="29" parent="CHILD_CARE">
+                    <label>Baby-week 29</label>
+                    <value>69</value>
+                </item>
+                <item id="30" parent="CHILD_CARE">
+                    <label>Baby-week 30</label>
+                    <value>70</value>
+                </item>
+                <item id="31" parent="CHILD_CARE">
+                    <label>Baby-week 31</label>
+                    <value>71</value>
+                </item>
+                <item id="32" parent="CHILD_CARE">
+                    <label>Baby-week 32</label>
+                    <value>72</value>
+                </item>
+                <item id="33" parent="CHILD_CARE">
+                    <label>Baby-week 33</label>
+                    <value>73</value>
+                </item>
+                <item id="34" parent="CHILD_CARE">
+                    <label>Baby-week 34</label>
+                    <value>74</value>
+                </item>
+                <item id="35" parent="CHILD_CARE">
+                    <label>Baby-week 35</label>
+                    <value>75</value>
+                </item>
+                <item id="36" parent="CHILD_CARE">
+                    <label>Baby-week 36</label>
+                    <value>76</value>
+                </item>
+                <item id="37" parent="CHILD_CARE">
+                    <label>Baby-week 37</label>
+                    <value>77</value>
+                </item>
+                <item id="38" parent="CHILD_CARE">
+                    <label>Baby-week 38</label>
+                    <value>78</value>
+                </item>
+                <item id="39" parent="CHILD_CARE">
+                    <label>Baby-week 39</label>
+                    <value>79</value>
+                </item>
+                <item id="40" parent="CHILD_CARE">
+                    <label>Baby-week 40</label>
+                    <value>80</value>
+                </item>
+                <item id="41" parent="CHILD_CARE">
+                    <label>Baby-week 41</label>
+                    <value>81</value>
+                </item>
+                <item id="42" parent="CHILD_CARE">
+                    <label>Baby-week 42</label>
+                    <value>82</value>
+                </item>
+                <item id="43" parent="CHILD_CARE">
+                    <label>Baby-week 43</label>
+                    <value>83</value>
+                </item>
+                <item id="44" parent="CHILD_CARE">
+                    <label>Baby-week 44</label>
+                    <value>84</value>
+                </item>
+                <item id="45" parent="CHILD_CARE">
+                    <label>Baby-week 45</label>
+                    <value>85</value>
+                </item>
+                <item id="46" parent="CHILD_CARE">
+                    <label>Baby-week 46</label>
+                    <value>86</value>
+                </item>
+                <item id="47" parent="CHILD_CARE">
+                    <label>Baby-week 47</label>
+                    <value>87</value>
+                </item>
+                <item id="48" parent="CHILD_CARE">
+                    <label>Baby-week 48</label>
+                    <value>88</value>
+                </item>
+                <item id="49" parent="CHILD_CARE">
+                    <label>Baby-week 49</label>
+                    <value>89</value>
+                </item>
+                <item id="50" parent="CHILD_CARE">
+                    <label>Baby-week 50</label>
+                    <value>90</value>
+                </item>
+                <item id="51" parent="CHILD_CARE">
+                    <label>Baby-week 51</label>
+                    <value>91</value>
+                </item>
+                <item id="52" parent="CHILD_CARE">
+                    <label>Baby-week 52</label>
+                    <value>92</value>
+                </item>
+            </dynamiclist>
         </xf:instance>
         <xf:bind id="staffId" nodeset="/CWCRegistration/staffId" required="true()" type="xsd:int"
                  constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
@@ -100,19 +541,21 @@
         <xf:bind id="enroll" nodeset="/CWCRegistration/enroll" required="true()" type="xsd:string"/>
         <xf:bind action="show" id="consent" nodeset="/CWCRegistration/consent" relevant="/CWCRegistration/enroll = 'Y'"
                  required="true()" type="xsd:string" visible="false()"/>
-         <xf:bind action="show" id="serviceType" nodeset="/CWCRegistration/serviceType"
+        <xf:bind action="show" id="serviceType" nodeset="/CWCRegistration/serviceType"
                  relevant="/CWCRegistration/consent = Y" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="ownership" nodeset="/CWCRegistration/ownership"
-                 relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+                 relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string"
+                 visible="false()"/>
         <xf:bind action="show" id="regPhone" nodeset="/CWCRegistration/regPhone"
                  relevant="/CWCRegistration/ownership = 'PERSONAL' or /CWCRegistration/ownership = 'HOUSEHOLD'"
-                 required="true()"
-                 type="xsd:int" visible="false()" constraint=". &lt;= 999999999"
+                 required="true()" type="xsd:int" constraint=". &lt;= 999999999"
                  message="Number too large. It should be 10 digits long"/>
-        <xf:bind action="show" id="format" nodeset="/CWCRegistration/format" relevant="/CWCRegistration/consent = 'Y'"
-                 required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="format" nodeset="/CWCRegistration/format"
+                 relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string"
+                 visible="false()"/>
         <xf:bind action="show" id="language" nodeset="/CWCRegistration/language"
-                 relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+                 relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string"
+                 visible="false()"/>
         <xf:bind action="show" id="dayOfWeek" nodeset="/CWCRegistration/dayOfWeek"
                  relevant="/CWCRegistration/format = 'PERS_VOICE' or /CWCRegistration/format = 'HSE_VOICE'"
                  required="true()"
@@ -122,6 +565,8 @@
                  required="true()"
                  type="xsd:time" visible="false()"/>
         <xf:bind action="show" id="learnedFrom" nodeset="/CWCRegistration/learnedFrom"
+                 relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+         <xf:bind action="show" id="reasonToJoin" nodeset="/CWCRegistration/reasonToJoin"
                  relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="messageStartWeek" nodeset="/CWCRegistration/messageStartWeek"
                  relevant="/CWCRegistration/consent = 'Y'"
@@ -299,6 +744,10 @@
         </xf:select1>
         <xf:select1 bind="serviceType">
             <xf:label>MM Service</xf:label>
+             <xf:item id="PREGNANCY">
+                <xf:label>Pregnancy</xf:label>
+                <xf:value>PREGNANCY</xf:value>
+            </xf:item>
             <xf:item id="CHILD_CARE">
                 <xf:label>Child Care</xf:label>
                 <xf:value>CHILD_CARE</xf:value>
@@ -324,7 +773,8 @@
         </xf:input>
         <xf:select1 bind="format">
             <xf:label>Message format</xf:label>
-            <xf:itemset nodeset="instance('format')/item[@parent=instance('CWCRegistration')/ownership]">
+            <xf:itemset
+                    nodeset="instance('format')/item[@parent=instance('CWCRegistration')/ownership]">
                 <xf:label ref="label"/>
                 <xf:value ref="value"/>
             </xf:itemset>
@@ -393,216 +843,45 @@
                 <xf:value>RADIO</xf:value>
             </xf:item>
         </xf:select1>
-        <xf:select1 bind="messageStartWeek">
-            <xf:label>Week to begin messages</xf:label>
-            <xf:item id="1">
-                <xf:label>Baby-week 1</xf:label>
-                <xf:value>41</xf:value>
+         <xf:select1 bind="reasonToJoin">
+            <xf:label>Reason for interest in Mobile Midwife</xf:label>
+            <xf:item id="CURRENTLY_PREGNANT">
+                <xf:label>Currently pregnant</xf:label>
+                <xf:value>CURRENTLY_PREGNANT</xf:value>
             </xf:item>
-            <xf:item id="2">
-                <xf:label>Baby-week 2</xf:label>
-                <xf:value>42</xf:value>
+            <xf:item id="RECENTLY_DELIVERED">
+                <xf:label>Recently delivered</xf:label>
+                <xf:value>RECENTLY_DELIVERED</xf:value>
             </xf:item>
-            <xf:item id="3">
-                <xf:label>Baby-week 3</xf:label>
-                <xf:value>43</xf:value>
+            <xf:item id="FAMILY_FRIEND_PREGNANT">
+                <xf:label>Family/friend pregnant</xf:label>
+                <xf:value>FAMILY_FRIEND_PREGNANT</xf:value>
             </xf:item>
-            <xf:item id="4">
-                <xf:label>Baby-week 4</xf:label>
-                <xf:value>44</xf:value>
+            <xf:item id="FAMILY_FRIEND_DELIVERED">
+                <xf:label>Family/friend recently delivered</xf:label>
+                <xf:value>FAMILY_FRIEND_DELIVERED</xf:value>
             </xf:item>
-            <xf:item id="5">
-                <xf:label>Baby-week 5</xf:label>
-                <xf:value>45</xf:value>
+            <xf:item id="PLANNING_PREGNANCY_INFO">
+                <xf:label>Thinking of getting pregnant</xf:label>
+                <xf:value>PLANNING_PREGNANCY_INFO</xf:value>
             </xf:item>
-            <xf:item id="6">
-                <xf:label>Baby-week 6</xf:label>
-                <xf:value>46</xf:value>
+            <xf:item id="KNOW_MORE_PREGNANCY_CHILDBIRTH">
+                <xf:label>Want to know more about pregnancy and child birth</xf:label>
+                <xf:value>KNOW_MORE_PREGNANCY_CHILDBIRTH</xf:value>
             </xf:item>
-            <xf:item id="7">
-                <xf:label>Baby-week 7</xf:label>
-                <xf:value>47</xf:value>
-            </xf:item>
-            <xf:item id="8">
-                <xf:label>Baby-week 8</xf:label>
-                <xf:value>48</xf:value>
-            </xf:item>
-            <xf:item id="9">
-                <xf:label>Baby-week 9</xf:label>
-                <xf:value>49</xf:value>
-            </xf:item>
-            <xf:item id="10">
-                <xf:label>Baby-week 10</xf:label>
-                <xf:value>50</xf:value>
-            </xf:item>
-            <xf:item id="11">
-                <xf:label>Baby-week 11</xf:label>
-                <xf:value>51</xf:value>
-            </xf:item>
-            <xf:item id="12">
-                <xf:label>Baby-week 12</xf:label>
-                <xf:value>52</xf:value>
-            </xf:item>
-            <xf:item id="13">
-                <xf:label>Baby-week 13</xf:label>
-                <xf:value>53</xf:value>
-            </xf:item>
-            <xf:item id="14">
-                <xf:label>Baby-week 14</xf:label>
-                <xf:value>54</xf:value>
-            </xf:item>
-            <xf:item id="15">
-                <xf:label>Baby-week 15</xf:label>
-                <xf:value>55</xf:value>
-            </xf:item>
-            <xf:item id="16">
-                <xf:label>Baby-week 16</xf:label>
-                <xf:value>56</xf:value>
-            </xf:item>
-            <xf:item id="17">
-                <xf:label>Baby-week 17</xf:label>
-                <xf:value>57</xf:value>
-            </xf:item>
-            <xf:item id="18">
-                <xf:label>Baby-week 18</xf:label>
-                <xf:value>58</xf:value>
-            </xf:item>
-            <xf:item id="19">
-                <xf:label>Baby-week 19</xf:label>
-                <xf:value>59</xf:value>
-            </xf:item>
-            <xf:item id="20">
-                <xf:label>Baby-week 20</xf:label>
-                <xf:value>60</xf:value>
-            </xf:item>
-            <xf:item id="21">
-                <xf:label>Baby-week 21</xf:label>
-                <xf:value>61</xf:value>
-            </xf:item>
-            <xf:item id="22">
-                <xf:label>Baby-week 22</xf:label>
-                <xf:value>62</xf:value>
-            </xf:item>
-            <xf:item id="23">
-                <xf:label>Baby-week 23</xf:label>
-                <xf:value>63</xf:value>
-            </xf:item>
-            <xf:item id="24">
-                <xf:label>Baby-week 24</xf:label>
-                <xf:value>64</xf:value>
-            </xf:item>
-            <xf:item id="25">
-                <xf:label>Baby-week 25</xf:label>
-                <xf:value>65</xf:value>
-            </xf:item>
-            <xf:item id="26">
-                <xf:label>Baby-week 26</xf:label>
-                <xf:value>66</xf:value>
-            </xf:item>
-            <xf:item id="27">
-                <xf:label>Baby-week 27</xf:label>
-                <xf:value>67</xf:value>
-            </xf:item>
-            <xf:item id="28">
-                <xf:label>Baby-week 28</xf:label>
-                <xf:value>68</xf:value>
-            </xf:item>
-            <xf:item id="29">
-                <xf:label>Baby-week 29</xf:label>
-                <xf:value>69</xf:value>
-            </xf:item>
-            <xf:item id="30">
-                <xf:label>Baby-week 30</xf:label>
-                <xf:value>70</xf:value>
-            </xf:item>
-            <xf:item id="31">
-                <xf:label>Baby-week 31</xf:label>
-                <xf:value>71</xf:value>
-            </xf:item>
-            <xf:item id="32">
-                <xf:label>Baby-week 32</xf:label>
-                <xf:value>72</xf:value>
-            </xf:item>
-            <xf:item id="33">
-                <xf:label>Baby-week 33</xf:label>
-                <xf:value>73</xf:value>
-            </xf:item>
-            <xf:item id="34">
-                <xf:label>Baby-week 34</xf:label>
-                <xf:value>74</xf:value>
-            </xf:item>
-            <xf:item id="35">
-                <xf:label>Baby-week 35</xf:label>
-                <xf:value>75</xf:value>
-            </xf:item>
-            <xf:item id="36">
-                <xf:label>Baby-week 36</xf:label>
-                <xf:value>76</xf:value>
-            </xf:item>
-            <xf:item id="37">
-                <xf:label>Baby-week 37</xf:label>
-                <xf:value>77</xf:value>
-            </xf:item>
-            <xf:item id="38">
-                <xf:label>Baby-week 38</xf:label>
-                <xf:value>78</xf:value>
-            </xf:item>
-            <xf:item id="39">
-                <xf:label>Baby-week 39</xf:label>
-                <xf:value>79</xf:value>
-            </xf:item>
-            <xf:item id="40">
-                <xf:label>Baby-week 40</xf:label>
-                <xf:value>80</xf:value>
-            </xf:item>
-            <xf:item id="41">
-                <xf:label>Baby-week 41</xf:label>
-                <xf:value>81</xf:value>
-            </xf:item>
-            <xf:item id="42">
-                <xf:label>Baby-week 42</xf:label>
-                <xf:value>82</xf:value>
-            </xf:item>
-            <xf:item id="43">
-                <xf:label>Baby-week 43</xf:label>
-                <xf:value>83</xf:value>
-            </xf:item>
-            <xf:item id="44">
-                <xf:label>Baby-week 44</xf:label>
-                <xf:value>84</xf:value>
-            </xf:item>
-            <xf:item id="45">
-                <xf:label>Baby-week 45</xf:label>
-                <xf:value>85</xf:value>
-            </xf:item>
-            <xf:item id="46">
-                <xf:label>Baby-week 46</xf:label>
-                <xf:value>86</xf:value>
-            </xf:item>
-            <xf:item id="47">
-                <xf:label>Baby-week 47</xf:label>
-                <xf:value>87</xf:value>
-            </xf:item>
-            <xf:item id="48">
-                <xf:label>Baby-week 48</xf:label>
-                <xf:value>88</xf:value>
-            </xf:item>
-            <xf:item id="49">
-                <xf:label>Baby-week 49</xf:label>
-                <xf:value>89</xf:value>
-            </xf:item>
-            <xf:item id="50">
-                <xf:label>Baby-week 50</xf:label>
-                <xf:value>90</xf:value>
-            </xf:item>
-            <xf:item id="51">
-                <xf:label>Baby-week 51</xf:label>
-                <xf:value>91</xf:value>
-            </xf:item>
-            <xf:item id="52">
-                <xf:label>Baby-week 52</xf:label>
-                <xf:value>92</xf:value>
+            <xf:item id="WORK_WITH_WOMEN_NEWBORNS">
+                <xf:label>Work with pregnant women or newborns</xf:label>
+                <xf:value>WORK_WITH_WOMEN_NEWBORNS</xf:value>
             </xf:item>
         </xf:select1>
+         <xf:select1 bind="messageStartWeek">
+            <xf:label>Week to begin messages</xf:label>
+            <xf:itemset
+                    nodeset="instance('messageStartWeek')/item[@parent=instance('CWCRegistration')/serviceType]">
+                <xf:label ref="label"/>
+                <xf:value ref="value"/>
+            </xf:itemset>
+        </xf:select1>
+
     </xf:group>
 </xf:xforms>
