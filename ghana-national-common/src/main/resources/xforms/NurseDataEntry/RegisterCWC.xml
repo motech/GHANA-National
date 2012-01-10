@@ -100,19 +100,21 @@
         <xf:bind id="enroll" nodeset="/CWCRegistration/enroll" required="true()" type="xsd:string"/>
         <xf:bind action="show" id="consent" nodeset="/CWCRegistration/consent" relevant="/CWCRegistration/enroll = 'Y'"
                  required="true()" type="xsd:string" visible="false()"/>
-         <xf:bind action="show" id="serviceType" nodeset="/CWCRegistration/serviceType"
+        <xf:bind action="show" id="serviceType" nodeset="/CWCRegistration/serviceType"
                  relevant="/CWCRegistration/consent = Y" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="ownership" nodeset="/CWCRegistration/ownership"
-                 relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+                 relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string"
+                 visible="false()"/>
         <xf:bind action="show" id="regPhone" nodeset="/CWCRegistration/regPhone"
                  relevant="/CWCRegistration/ownership = 'PERSONAL' or /CWCRegistration/ownership = 'HOUSEHOLD'"
-                 required="true()"
-                 type="xsd:int" visible="false()" constraint=". &lt;= 999999999"
+                 required="true()" type="xsd:int" constraint=". &lt;= 999999999"
                  message="Number too large. It should be 10 digits long"/>
-        <xf:bind action="show" id="format" nodeset="/CWCRegistration/format" relevant="/CWCRegistration/consent = 'Y'"
-                 required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="format" nodeset="/CWCRegistration/format"
+                 relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string"
+                 visible="false()"/>
         <xf:bind action="show" id="language" nodeset="/CWCRegistration/language"
-                 relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
+                 relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string"
+                 visible="false()"/>
         <xf:bind action="show" id="dayOfWeek" nodeset="/CWCRegistration/dayOfWeek"
                  relevant="/CWCRegistration/format = 'PERS_VOICE' or /CWCRegistration/format = 'HSE_VOICE'"
                  required="true()"
@@ -324,14 +326,15 @@
         </xf:input>
         <xf:select1 bind="format">
             <xf:label>Message format</xf:label>
-            <xf:itemset nodeset="instance('format')/item[@parent=instance('ANCRegistration')/ownership]">
+            <xf:itemset
+                    nodeset="instance('format')/item[@parent=instance('CWCRegistration')/ownership]">
                 <xf:label ref="label"/>
                 <xf:value ref="value"/>
             </xf:itemset>
         </xf:select1>
         <xf:select1 bind="language">
             <xf:label>Message language</xf:label>
-            <xf:itemset nodeset="instance('language')/item[@parent=instance('ANCRegistration')/format]">
+            <xf:itemset nodeset="instance('language')/item[@parent=instance('CWCRegistration')/format]">
                 <xf:label ref="label"/>
                 <xf:value ref="value"/>
             </xf:itemset>

@@ -484,9 +484,7 @@
                  relevant="/patientRegistration/consent = 'Y'" required="true()" type="xsd:string"
                  visible="false()"/>
         <xf:bind action="show" id="messageStartWeek" nodeset="/patientRegistration/messageStartWeek"
-                 relevant="/patientRegistration/enroll = 'Y' and /patientRegistration/consent = 'Y' and
-            /patientRegistration/registrantType = 'OTHER'"
-                 required="true()" type="xsd:string" visible="false()"/>
+                 relevant="/patientRegistration/consent = 'Y'"  required="true()" type="xsd:string" visible="false()"/>
         <xf:bind id="formtype" nodeset="/patientRegistration/formtype" required="true()" type="xsd:string"
                  visible="false()"/>
         <xf:bind id="formname" nodeset="/patientRegistration/formname" required="true()" type="xsd:string"

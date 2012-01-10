@@ -324,14 +324,14 @@
         </xf:input>
         <xf:select1 bind="format">
             <xf:label>Message format</xf:label>
-            <xf:itemset nodeset="instance('format')/item[@parent=instance('ANCRegistration')/ownership]">
+            <xf:itemset nodeset="instance('format')/item[@parent=instance('CWCRegistration')/ownership]">
                 <xf:label ref="label"/>
                 <xf:value ref="value"/>
             </xf:itemset>
         </xf:select1>
         <xf:select1 bind="language">
             <xf:label>Message language</xf:label>
-            <xf:itemset nodeset="instance('language')/item[@parent=instance('ANCRegistration')/format]">
+            <xf:itemset nodeset="instance('language')/item[@parent=instance('CWCRegistration')/format]">
                 <xf:label ref="label"/>
                 <xf:value ref="value"/>
             </xf:itemset>
