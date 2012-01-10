@@ -1,11 +1,17 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
-public enum Medium{
-    SMS("SMS"), VOICE("Voice");
-    private String displayName;
+import java.util.Arrays;
+import java.util.List;
 
-    Medium(String displayName) {
+public enum Medium{
+    SMS("SMS", Arrays.asList(PhoneOwnership.PERSONAL, PhoneOwnership.HOUSEHOLD)),
+    VOICE("Voice", Arrays.asList(PhoneOwnership.PERSONAL, PhoneOwnership.PUBLIC, PhoneOwnership.HOUSEHOLD));
+    private String displayName;
+    private List<PhoneOwnership> phoneOwnerships;
+
+    Medium(String displayName, List<PhoneOwnership> phoneOwnerships) {
         this.displayName = displayName;
+        this.phoneOwnerships = phoneOwnerships;
     }
 
     public String getDisplayName() {
@@ -16,4 +22,7 @@ public enum Medium{
         return name();
     }
 
+    public List<PhoneOwnership> getPhoneOwnerships() {
+        return phoneOwnerships;
+    }
 }

@@ -38,14 +38,14 @@ public class MobileMidwifeController {
         modelMap.addAttribute("languages", Language.values());
         modelMap.addAttribute("mediums", Medium.values());
         modelMap.addAttribute("dayOfWeeks", collectDayOfWeekOptions());
-        modelMap.addAttribute("pregnancyMessageStartWeeks", ServiceType.PREGNANCY.messageStartWeeks());
-        modelMap.addAttribute("childCareMessageStartWeeks", ServiceType.CHILD_CARE.messageStartWeeks());
+        modelMap.addAttribute("messageStartWeeks", MessageStartWeek.messageStartWeeks());
         return MOBILE_MIDWIFE_URL;
     }
 
     @ApiSession
-    @RequestMapping(value = "update", method = RequestMethod.POST)
+    @RequestMapping(value = "save", method = RequestMethod.POST)
     public String update(MobileMidwifeEnrollmentForm mobileMidwifeEnrollmentForm, BindingResult bindingResult, ModelMap modelMap) {
+        System.out.println("hitting back end ---------------------------------------------------------");
         return MOBILE_MIDWIFE_URL;
 
     }

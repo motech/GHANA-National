@@ -9,15 +9,21 @@ function FormValidator() {
     },
 
     this.validateRequiredFields = function(form) {
+        var self = this;
         form.find('.jsRequire').each(function() {
-            var val = $(this).val();
-            if($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
-                val = $("input[name='" + this.name + "']:checked").val();
-            }
-            if(utilities.isNull(val)) {
-                $("#" + $(this).attr('id') + "Error").removeClass('hide');
-            }
+            self.validateFieldForMandatoryValue(this);
         });
+    }
+    
+    this.validateFieldForMandatoryValue = function(field){
+        var val = $(field).val();
+        var fieldName = utilities.escapeDot(field.name);
+        if($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
+            val = $("input[name='" + fieldName + "']:checked").val();
+        }
+        if(utilities.isNull(val)) {
+             $("#" + $(this).attr('id') + "Error").removeClass('hide');
+        }
     }
 
     this.hasErrors = function(form) {

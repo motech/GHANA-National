@@ -6,6 +6,22 @@ function Utilities() {
 
     this.isNull = function(value) {
         return value == undefined || $.trim(value) == "";
+    },
+
+    this.escapeDot = function(string){
+        return string.replace('.', '\\.');
+    }
+
+    this.lazyLoad = function(fun){
+       var inst;
+        return {
+		    instance : function() {
+			    if(!inst) {
+				    inst = fun();
+			    }
+			    return inst;
+		    }
+	    }
     }
 }
 

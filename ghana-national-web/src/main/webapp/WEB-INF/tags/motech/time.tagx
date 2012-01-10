@@ -3,10 +3,13 @@
     <jsp:output omit-xml-declaration="yes"/>
     <jsp:directive.attribute name="path" type="java.lang.String" required="true" rtexprvalue="true"/>
     <jsp:directive.attribute name="label" type="java.lang.String" required="true" rtexprvalue="true"/>
-    <jsp:directive.attribute name="errorMsgId" type="java.lang.String" required="true" rtexprvalue="true"/>
     <jsp:directive.attribute name="required" type="java.lang.String" rtexprvalue="true"/>
     <jsp:directive.attribute name="default_select_hour_message" type="java.lang.String" rtexprvalue="true"/>
     <jsp:directive.attribute name="default_select_minute_message" type="java.lang.String" rtexprvalue="true"/>
+    <jsp:directive.attribute name="hourErrorMsgId" type="java.lang.String" required="true" rtexprvalue="true"/>
+    <jsp:directive.attribute name="hourErrorMessage" type="java.lang.String" rtexprvalue="true"/>
+    <jsp:directive.attribute name="minutesErrorMsgId" type="java.lang.String" required="true" rtexprvalue="true"/>
+    <jsp:directive.attribute name="minutesErrorMessage" type="java.lang.String" rtexprvalue="true"/>
 
     <c:if test="${required}">
         <c:set var="cssClass" value="jsRequire"/>
@@ -22,9 +25,14 @@
 
     <form:select id="${path}.minute" path="${path}.minute">
         <option value="">${fn:escapeXml(default_select_minute_message)}</option>
-        <c:forEach var="i" begin="1" end="30" step="1">
+        <c:forEach var="i" begin="1" end="60" step="1">
             <option value="${i}">${i}</option>
         </c:forEach>
     </form:select>
-    <span id="${errorMsgId}" class='formlyInvalid formlyAlert hide'/>
+    <span id="${hourErrorMsgId}" class='alertText formlyInvalid formlyAlert hide'>
+       ${fn:escapeXml(hourErrorMessage)}
+    </span>
+    <span id="${minutesErrorMsgId}" class='alertText formlyInvalid formlyAlert hide'>
+       ${fn:escapeXml(minutesErrorMessage)}
+    </span>
 </jsp:root>
