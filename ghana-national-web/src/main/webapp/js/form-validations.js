@@ -15,7 +15,7 @@ function FormValidator() {
                 val = $("input[name='" + this.name + "']:checked").val();
             }
             if(utilities.isNull(val)) {
-                $("#" + this.name + "Error").removeClass('hide');
+                $("#" + $(this).attr('id') + "Error").removeClass('hide');
             }
         });
     }

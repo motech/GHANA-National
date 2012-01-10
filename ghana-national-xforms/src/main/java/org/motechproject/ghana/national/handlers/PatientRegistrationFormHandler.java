@@ -33,7 +33,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
     private PatientService patientService;
 
     @Override
-    @MotechListener(subjects = "form.validation.successful.NurseDataEntry.registerPatient-jf")
+    @MotechListener(subjects = "form.validation.successful.NurseDataEntry.registerPatient")
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {

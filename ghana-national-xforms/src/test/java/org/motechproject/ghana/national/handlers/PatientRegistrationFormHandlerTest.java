@@ -136,7 +136,7 @@ public class PatientRegistrationFormHandlerTest {
     @Test
     public void shouldBeRegisteredAsAListenerForRegisterPatientEvent() throws NoSuchMethodException {
         String[] registeredEventSubject = patientRegistrationFormHandler.getClass().getMethod("handleFormEvent", new Class[]{MotechEvent.class}).getAnnotation(MotechListener.class).subjects();
-        assertThat(registeredEventSubject, is(equalTo(new String[]{"form.validation.successful.NurseDataEntry.registerPatient-jf"})));
+        assertThat(registeredEventSubject, is(equalTo(new String[]{"form.validation.successful.NurseDataEntry.registerPatient"})));
     }
 
     @Test
