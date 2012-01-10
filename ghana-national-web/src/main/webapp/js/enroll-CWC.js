@@ -1,11 +1,20 @@
 $.CWCEnrollmentForm = function() {
-    var submitForm = function() {
-        $('#cwcEnrollmentForm').submit();
-    };
     var bootstrap = function() {
         $("#cwcEnrollmentForm").formly({'onBlur':false, 'theme':'Light'});
-        $("#submit").click(submitForm);
+        $("#enrollCWC").click(function() {
+            if(!validate($('#cwcEnrollmentForm'))) {
+                $('#cwcEnrollmentForm').submit();
+            }
+        });
     };
+
+    var validate = function(cwcEnrollmentForm) {
+        formValidator.clearMessages(cwcEnrollmentForm);
+        formValidator.validatePhoneNumbers(cwcEnrollmentForm);
+        formValidator.validateRequiredFields(cwcEnrollmentForm);
+        return formValidator.hasErrors(cwcEnrollmentForm);
+    };
+
     $(bootstrap);
 };
 
@@ -62,4 +71,5 @@ $(document).ready(function() {
     $('#vitADate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#measlesDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#yfDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
+    $('#lastPentaDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
 });

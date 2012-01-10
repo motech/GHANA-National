@@ -6,6 +6,7 @@ import java.util.Date;
 
 public class CWCEnrollmentForm {
 
+    private String staffId;
     private String patientMotechId;
     private String serialNumber;
     private Date registrationDate;
@@ -19,9 +20,9 @@ public class CWCEnrollmentForm {
     private Date measlesDate;
     private Date yfDate;
     private CwcCareHistory careHistory;
-    private String lastIPTi;
-    private String lastOPV;
-    private String lastPenta;
+    private Integer lastIPTi;
+    private Integer lastOPV;
+    private Integer lastPenta;
 
 
     public FacilityForm getFacilityForm() {
@@ -120,27 +121,27 @@ public class CWCEnrollmentForm {
         this.careHistory = careHistory;
     }
 
-    public String getLastIPTi() {
+    public Integer getLastIPTi() {
         return lastIPTi;
     }
 
-    public void setLastIPTi(String lastIPTi) {
+    public void setLastIPTi(Integer lastIPTi) {
         this.lastIPTi = lastIPTi;
     }
 
-    public String getLastOPV() {
+    public Integer getLastOPV() {
         return lastOPV;
     }
 
-    public void setLastOPV(String lastOPV) {
+    public void setLastOPV(Integer lastOPV) {
         this.lastOPV = lastOPV;
     }
 
-    public String getLastPenta() {
+    public Integer getLastPenta() {
         return lastPenta;
     }
 
-    public void setLastPenta(String lastPenta) {
+    public void setLastPenta(Integer lastPenta) {
         this.lastPenta = lastPenta;
     }
 
@@ -150,5 +151,13 @@ public class CWCEnrollmentForm {
 
     public void setLastOPVDate(Date lastOPVDate) {
         this.lastOPVDate = lastOPVDate;
+    }
+
+    public String getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
     }
 }

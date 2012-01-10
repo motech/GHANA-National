@@ -11,7 +11,7 @@ function FormValidator() {
     this.validateRequiredFields = function(form) {
         form.find('.jsRequire').each(function() {
             var val = $(this).val();
-            if($(this).attr('type') == 'radio') {
+            if($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
                 val = $("input[name='" + this.name + "']:checked").val();
             }
             if(utilities.isNull(val)) {
