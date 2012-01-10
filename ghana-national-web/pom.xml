@@ -285,7 +285,7 @@
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.1.26</version>
                 <configuration>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <scanIntervalSeconds>0</scanIntervalSeconds>
                     <scanTargetPatterns>
                         <scanTargetPattern>
                             <directory>target</directory>
