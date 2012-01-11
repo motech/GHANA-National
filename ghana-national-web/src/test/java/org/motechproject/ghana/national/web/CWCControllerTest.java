@@ -8,10 +8,12 @@ import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.service.CWCService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.ghana.national.web.form.CWCEnrollmentForm;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
+import org.motechproject.mrs.model.MRSUser;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 
@@ -40,6 +42,9 @@ public class CWCControllerTest {
 
     @Mock
     CWCService mockCwcService;
+    
+    @Mock
+    StaffService mockStaffService;
 
     @Before
     public void setUp() {
@@ -48,6 +53,7 @@ public class CWCControllerTest {
         ReflectionTestUtils.setField(cwcController, "patientService", mockPatientService);
         ReflectionTestUtils.setField(cwcController, "facilityHelper", mockFacilityHelper);
         ReflectionTestUtils.setField(cwcController, "cwcService", mockCwcService);
+        ReflectionTestUtils.setField(cwcController, "staffService", mockStaffService);
 
     }
 
@@ -139,6 +145,9 @@ public class CWCControllerTest {
         cwcEnrollmentForm.setLastOPV(lastOPV);
         cwcEnrollmentForm.setLastIPTiDate(lastIPTiDate);
         cwcEnrollmentForm.setLastIPTi(lastIPTi);
+        final MRSUser mrsUser = mock(MRSUser.class);
+        when(mockStaffService.getUserById(staffId)).thenReturn(mrsUser);
+        
         cwcController.save(cwcEnrollmentForm, modelMap);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
         verify(mockCwcService).enroll(captor.capture());

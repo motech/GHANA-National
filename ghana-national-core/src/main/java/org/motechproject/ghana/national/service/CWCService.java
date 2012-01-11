@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.service;
 
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
@@ -29,16 +30,19 @@ public class CWCService {
     @Autowired
     OpenMRSConceptAdaptor openMRSConceptAdaptor;
 
+    @Autowired
+    AllEncounters allEncounters;
+
     static final String CWCREGVISIT = "CWCREGVISIT";
 
-    static final String CONCEPT_OPV = "ORAL POLIO VACCINATION DOSE";
-    static final String CONCEPT_PENTA = "PENTA VACCINATION DOSE";
-    static final String CONCEPT_IPTI = "INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE";
-    static final String CONCEPT_MEASLES = "MEASLES VACCINATION";
-    static final String CONCEPT_YF = "YELLOW FEVER VACCINATION";
-    static final String CONCEPT_VITA = "VITAMIN A";
-    static final String CONCEPT_BCG = "BACILLE CAMILE-GUERIN VACCINATION";
-    static final String CONCEPT_IMMUNIZATIONS_ORDERED = "IMMUNIZATIONS ORDERED";
+    public static final String CONCEPT_OPV = "ORAL POLIO VACCINATION DOSE";
+    public static final String CONCEPT_PENTA = "PENTA VACCINATION DOSE";
+    public static final String CONCEPT_IPTI = "INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE";
+    public static final String CONCEPT_MEASLES = "MEASLES VACCINATION";
+    public static final String CONCEPT_YF = "YELLOW FEVER VACCINATION";
+    public static final String CONCEPT_VITA = "VITAMIN A";
+    public static final String CONCEPT_BCG = "BACILLE CAMILE-GUERIN VACCINATION";
+    public static final String CONCEPT_IMMUNIZATIONS_ORDERED = "IMMUNIZATIONS ORDERED";
 
     public MRSEncounter enroll(CwcVO cwc) {
         MRSUser user = staffService.getUserById(cwc.getStaffId());
@@ -72,8 +76,12 @@ public class CWCService {
             mrsObservations.add(new MRSObservation<Integer>(cwc.getLastIPTiDate(), CONCEPT_IPTI, cwc.getLastIPTi()));
         }
 
-        final MRSEncounter mrsEncounter = new MRSEncounter(staffProviderId, staffUserId, facilityId,
+        MRSEncounter mrsEncounter = new MRSEncounter(staffProviderId, staffUserId, facilityId,
                 registrationDate, patientMotechId, mrsObservations, CWCREGVISIT);
-        return openMRSEncounterAdaptor.createEncounter(mrsEncounter);
+        return allEncounters.save(mrsEncounter);
+    }
+    
+    public MRSEncounter getEncounter(String motechId) {
+        return allEncounters.fetchLatest(motechId, CWCREGVISIT);
     }
 }

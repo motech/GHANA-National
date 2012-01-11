@@ -6,7 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
-import org.motechproject.dao.MotechAuditableRepository;
+import org.motechproject.dao.MotechBaseRepository;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.services.MRSFacilityAdaptor;
@@ -25,7 +25,7 @@ import static ch.lambdaj.Lambda.selectUnique;
 import static org.hamcrest.core.Is.is;
 
 @Repository
-public class AllFacilities extends MotechAuditableRepository<Facility> {
+public class AllFacilities extends MotechBaseRepository<Facility> {
     private MRSFacilityAdaptor facilityAdaptor;
 
     @Autowired
