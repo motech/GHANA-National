@@ -61,7 +61,7 @@
         </div>
         <div>
             <label for="registrationToday" class="formLabel">
-                <spring:message code="patient_registration_today"/>
+                <spring:message code="registration_today?"/>
                 *:
             </label>
             <form:select path="registrationToday" cssClass="jsRequire">
@@ -69,7 +69,7 @@
                 <form:options items="${registrationOptions}"/>
             </form:select>
             <span id='registrationTodayError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
-                <spring:message code="patient_registration_today"/> ${fn:escapeXml(required_msg)}
+                <spring:message code="registration_today?"/> ${fn:escapeXml(required_msg)}
             </span>
         </div>
 

@@ -25,6 +25,12 @@
                 "fileName" :  "RegisterCWC.xml",
                 "bean":"org.motechproject.ghana.national.bean.RegisterCWCForm",
                 "validator": "org.motechproject.ghana.national.validator.RegisterCWCFormValidator"
+            },
+            {
+                "name" : "editPatient",
+                "fileName" :  "EditClient.xml",
+                "bean":"org.motechproject.ghana.national.bean.EditClientForm",
+                "validator": "org.motechproject.ghana.national.validator.EditClientFormValidator"
             }
         ]
     }

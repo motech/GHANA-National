@@ -31,7 +31,9 @@ function FormValidator() {
     }
 
     this.clearMessages = function(form) {
-        form.find('.alertText').addClass('hide');
+        form.find('.alertText').each(function() {
+            $(this).addClass('hide');
+        });
         form.find('input, textarea').each(function() {
             $(this).val(jQuery.trim($(this).val()));
         });
@@ -80,5 +82,14 @@ function FormValidator() {
                 $("#" + this.name + "DateError").removeClass('hide');
             }
        });
+    };
+
+    this.validateRegEx = function (regEx, fieldValue, errorMessage, errorField) {
+        if (!regEx.test(fieldValue)) {
+            errorField.html(errorMessage);
+            errorField.removeClass('hide');
+            return false;
+        }
+        return true;
     };
 }

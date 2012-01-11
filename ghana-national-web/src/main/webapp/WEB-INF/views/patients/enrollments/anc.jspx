@@ -1,0 +1,167 @@
+<div id="body" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <script src="${pageContext.servletContext.contextPath}/resources/js/facility-fields.js"
+            type="text/javascript"><!--closing tag needed--></script>
+
+    <script src="${pageContext.servletContext.contextPath}/resources/js/form-validations.js"
+            type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <script src="${pageContext.servletContext.contextPath}/resources/js/enroll-ANC.js"
+            type="text/javascript"><!-- required for FF3 and Opera --></script>
+
+    <spring:url value="/admin/anc/save" var="form_url"/>
+    <form:form id="ancEnrollmentForm" action="${fn:escapeXml(form_url)}" method="POST" title="ANC Enrollment"
+               commandName="ancEnrollmentForm">
+        <spring:message code="required_msg" var="required_msg" htmlEscape="false"/>
+        <spring:message code="incorrect_msg" var="incorrect_msg" htmlEscape="false"/>
+        <spring:message code="patient_motech_id" var="patient_motech_id" htmlEscape="false"/>
+        <spring:message code="patient_serial_number" var="patient_serial_number" htmlEscape="false"/>
+        <spring:message code="estimatedDateOfDelivery" var="estimatedDateOfDelivery" htmlEscape="false"/>
+        <spring:message code="registration_today?" var="registration_today?" htmlEscape="false"/>
+        <spring:message code="registration_today" var="registration_today" htmlEscape="false"/>
+        <spring:message code="registration_date" var="registration_date" htmlEscape="false"/>
+        <spring:message code="registration_today_display" var="registration_today_display" htmlEscape="false"/>
+        <spring:message code="registration_in_past" var="registration_in_past" htmlEscape="false"/>
+        <spring:message code="registration_in_past_display" var="registration_in_past_display" htmlEscape="false"/>
+        <spring:message code="registration_in_past_in_other_facility" var="registration_in_past_in_other_facility" htmlEscape="false"/>
+        <spring:message code="patient_last_TT" var="patient_last_TT" htmlEscape="false"/>
+        <spring:message code="patient_last_IPT" var="patient_last_IPT" htmlEscape="false"/>
+        <spring:message code="patient_history" var="patient_history" htmlEscape="false"/>
+        <spring:message code="patient_height" var="patient_height" htmlEscape="false"/>
+        <spring:message code="patient_gravida" var="patient_gravida" htmlEscape="false"/>
+        <spring:message code="patient_parity" var="patient_parity" htmlEscape="false"/>
+        <spring:message code="yes" var="yes" htmlEscape="false"/>
+        <spring:message code="no" var="no" htmlEscape="false"/>
+
+        <spring:message code="registration_in_past_in_other_facility_display"
+                        var="registration_in_past_in_other_facility_display" htmlEscape="false"/>
+
+
+        <div>
+            <label for="motechPatientId" class="formLabel"><spring:message code="patient_motech_id"/> *:</label>
+            <form:input path="motechPatientId" size="20" cssClass="jsRequire" readonly="true"/>
+            <!--<form:hidden path="motechPatientId"/>-->
+            <span id='motechPatientIdError' class='alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(patient_motech_id)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <jsp:include page="/WEB-INF/views/common/select_facility.jspx"/>
+
+        <div>
+            <label for="serialNumber" class="formLabel"><spring:message code="patient_serial_number"/> *:</label>
+            <form:input path="serialNumber" size="20" cssClass="jsRequire"/>
+            <!--<form:hidden path="serialNumber"/>-->
+            <span id='serialNumberError' class='alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(patient_serial_number)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <div>
+            <label for="height" class="formLabel"><spring:message code="patient_height"/> *:</label>
+            <form:input path="height" size="20" cssClass="jsRequire" maxlength="5" />
+            <!--<form:hidden path="serialNumber"/>-->
+            <span id='heightError' class='alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(patient_height)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <div>
+            <label for="gravida" class="formLabel"><spring:message code="patient_gravida"/> *:</label>
+            <form:input path="gravida" size="20" cssClass="jsRequire"  maxlength="2" />
+            <!--<form:hidden path="serialNumber"/>-->
+            <span id='gravidaError' class='alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(patient_gravida)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <div>
+            <label for="parity" class="formLabel"><spring:message code="patient_parity"/> *:</label>
+            <form:input path="parity" size="20" cssClass="jsRequire"  maxlength="2" />
+            <!--<form:hidden path="serialNumber"/>-->
+            <span id='parityError' class='alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(patient_parity)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <div>
+            <label for="estimatedDateOfDelivery" class="formLabel"><spring:message code="estimatedDateOfDelivery"/> *:</label>
+            <form:input path="estimatedDateOfDelivery" readonly="true" size="20" cssClass="jsRequire jsBefore jsDate"/>
+            <span id='eddError' class='alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(estimatedDateOfDelivery)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <div id="registrationTodayHolder" class="form-field">
+            <label class="formLabel" for="registrationToday"><spring:message code="registration_today?"/> *:</label>
+            <form:select path="registrationToday" id="registrationToday" cssClass="jsRequire">
+                <option value="${fn:escapeXml(registration_today)}">${fn:escapeXml(registration_today_display)}</option>
+                <option value="${fn:escapeXml(registration_in_past)}">${fn:escapeXml(registration_in_past_display)}</option>
+                <option value="${fn:escapeXml(registration_in_past_in_other_facility)}">${fn:escapeXml(registration_in_past_in_other_facility_display)}</option>
+            </form:select>
+        </div>
+
+        <div id="registrationDateHolder" class="form-field hide">
+            <label class="formLabel" for="registrationDate" id="registrationDateLabel"><spring:message
+                    code="registration_date"/> *:</label>
+            <form:input readonly="true" path="registrationDate" cssClass="jsDate jsBefore" size="20"
+                        label="${fn:escapeXml(registration_date)}"/>
+            <span id='registrationDateError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(registration_date)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <div class="form-field">
+            <label for="addHistory" class="formLabel"> <spring:message code="patient_history"/> *: </label>
+            <form:radiobutton cssClass="jsRequire" path="addHistory" value="true" label="${fn:escapeXml(yes)}"/>
+            <form:radiobutton cssClass="jsRequire" path="addHistory" value="false" label="${fn:escapeXml(no)}"/>
+            <span id='addHistoryError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_history)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <div id="jsCareHistory" class="hide">
+            <div class="form-field">
+                <label for="careHistories" class="formLabel">
+                    <spring:message code="patient_care_history"/>
+                    *:
+                </label>
+                <form:checkboxes path="careHistory" items="${requestScope.careHistories}" cssClass="jsRequire"/>
+            </div>
+
+            <div id="jsIPT" class="hide">
+                <div class="form-field">
+                    <label for="lastIPT" class="formLabel"> <spring:message code="patient_last_IPT"/> *: </label>
+                    <form:radiobuttons path="lastIPT" items="${requestScope.lastIPT}" cssClass="jsRequire"/>
+                     <span id='lastIPTError' class='alertText formlyInvalid formlyAlert hide'>
+                        ${fn:escapeXml(patient_last_IPT)} ${fn:escapeXml(incorrect_msg)}
+                    </span>
+                </div>
+
+                <div class="form-field">
+                    <label for="lastIPTDate" class="formLabel"> <spring:message code="patient_IPT_date"/> *: </label>
+                    <form:input path="lastIPTDate" cssClass="jsDate jsRequire"/>
+                </div>
+            </div>
+            <div id="jsTT" class="hide">
+                <div class="form-field">
+                    <label for="lastTT" class="formLabel"> <spring:message code="patient_last_TT"/> *: </label>
+                    <form:radiobuttons path="lastTT" items="${requestScope.lastTT}" cssClass="jsRequire"/>
+                    <span id='lastTTError' class='alertText formlyInvalid formlyAlert hide'>
+                        ${fn:escapeXml(patient_last_TT)} ${fn:escapeXml(incorrect_msg)}
+                    </span>
+                </div>
+
+                <div class="form-field">
+                    <label for="lastTTDate" class="formLabel"> <spring:message code="patient_last_TT_date"/> *: </label>
+                    <form:input path="lastTTDate" cssClass="jsDate jsRequire"/>
+                </div>
+            </div>
+        </div>
+
+        <input type="button" id="submitANC" value="Submit"/>
+    </form:form>
+</div>
