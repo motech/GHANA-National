@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
@@ -12,7 +13,6 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
-import org.motechproject.openmrs.services.OpenMRSEncounterAdaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
@@ -38,7 +38,7 @@ public class CWCServiceTest {
     PatientService mockPatientService;
 
     @Mock
-    OpenMRSEncounterAdaptor mockOpenMRSEncounterAdaptor;
+    AllEncounters mockAllEncounters;
 
     @Mock
     OpenMRSConceptAdaptor mockOpenMRSConceptAdaptor;
@@ -49,7 +49,7 @@ public class CWCServiceTest {
         initMocks(this);
         ReflectionTestUtils.setField(cwcService, "staffService", mockStaffService);
         ReflectionTestUtils.setField(cwcService, "patientService", mockPatientService);
-        ReflectionTestUtils.setField(cwcService, "openMRSEncounterAdaptor", mockOpenMRSEncounterAdaptor);
+        ReflectionTestUtils.setField(cwcService, "allEncounters", mockAllEncounters);
         ReflectionTestUtils.setField(cwcService, "openMRSConceptAdaptor", mockOpenMRSConceptAdaptor);
     }
 
@@ -87,7 +87,7 @@ public class CWCServiceTest {
         cwcService.enroll(cwcVO);
 
         ArgumentCaptor<MRSEncounter> captor = ArgumentCaptor.forClass(MRSEncounter.class);
-        verify(mockOpenMRSEncounterAdaptor).createEncounter(captor.capture());
+        verify(mockAllEncounters).save(captor.capture());
         MRSEncounter actualEncounter = captor.getValue();
         assertThat(actualEncounter.getProvider().getId(), is(equalTo(staffPersonId)));
         assertThat(actualEncounter.getCreator().getId(), is(equalTo(staffUserId)));
@@ -142,7 +142,7 @@ public class CWCServiceTest {
         cwcService.enroll(cwcVO);
 
         ArgumentCaptor<MRSEncounter> captor = ArgumentCaptor.forClass(MRSEncounter.class);
-        verify(mockOpenMRSEncounterAdaptor).createEncounter(captor.capture());
+        verify(mockAllEncounters).save(captor.capture());
         MRSEncounter actualEncounter = captor.getValue();
         assertThat(actualEncounter.getObservations().size(), is(0));
     }

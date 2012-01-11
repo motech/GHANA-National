@@ -2,7 +2,7 @@ package org.motechproject.ghana.national.domain;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.model.MotechAuditableDataObject;
+import org.motechproject.model.MotechBaseDataObject;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import static java.util.Arrays.asList;
 
 
 @TypeDiscriminator("doc.type === 'StaffType'")
-public class StaffType extends MotechAuditableDataObject {
+public class StaffType extends MotechBaseDataObject {
     @JsonProperty("type")
     private String type = "StaffType";
     @JsonProperty

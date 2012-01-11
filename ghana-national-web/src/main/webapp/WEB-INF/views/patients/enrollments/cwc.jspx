@@ -39,6 +39,17 @@
         </div>
 
         <div>
+            <label for="staffId" class="formLabel">
+                <spring:message code="staff_id"/>
+                *:
+            </label>
+            <form:input path="staffId" size="20" cssClass="jsRequire"/>
+            <span id='staffIdError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                <spring:message code="staff_id"/> ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+
+        <div>
             <label for="motechPatientId" class="formLabel">
                 <spring:message code="patient_motech_id"/>
                 *:
@@ -108,6 +119,9 @@
                         *:
                     </label>
                     <form:radiobuttons path="lastOPV" items="${lastOPV}" cssClass="jsRequire"/>
+                    <span id='lastOPVError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                        <spring:message code="patient_last_opv"/> ${fn:escapeXml(required_msg)}
+                    </span>
                 </div>
 
                 <div class="form-field">

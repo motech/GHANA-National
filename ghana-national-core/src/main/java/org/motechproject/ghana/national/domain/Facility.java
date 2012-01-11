@@ -3,11 +3,11 @@ package org.motechproject.ghana.national.domain;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.model.MotechAuditableDataObject;
+import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.mrs.model.MRSFacility;
 
 @TypeDiscriminator("doc.type === 'Facility'")
-public class Facility extends MotechAuditableDataObject {
+public class Facility extends MotechBaseDataObject {
     @JsonProperty("type")
     private String type = "Facility";
     @JsonProperty
