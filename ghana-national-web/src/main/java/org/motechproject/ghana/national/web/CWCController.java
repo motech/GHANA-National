@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CWCService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -53,6 +55,7 @@ public class CWCController {
     static final String PENTA_3 = "Penta 3";
     static final String PATIENT_NOT_FOUND = "Patient Not Found";
     static final String PATIENT_IS_NOT_A_CHILD = "Patient is Not A Child";
+    public static final String REGISTRATION_OPTIONS = "registrationOptions";
 
     @Autowired
     PatientService patientService;
@@ -98,6 +101,7 @@ public class CWCController {
 
             Set<MRSObservation> observations = encounter.getObservations();
             cwcEnrollmentForm.setAddHistory(!observations.isEmpty());
+            final ArrayList<CwcCareHistory> careHistories = new ArrayList<CwcCareHistory>();
             for (MRSObservation observation : observations) {
 
                 if (CWCService.CONCEPT_IMMUNIZATIONS_ORDERED.equals(observation.getConceptName())) {
@@ -105,29 +109,40 @@ public class CWCController {
                     final String conceptName = concept.getName().getName();
                     if (CWCService.CONCEPT_YF.equals(conceptName)) {
                         cwcEnrollmentForm.setYfDate(observation.getDate());
+                        careHistories.add(CwcCareHistory.YF);
                     }
                     if (CWCService.CONCEPT_MEASLES.equals(conceptName)) {
                         cwcEnrollmentForm.setMeaslesDate(observation.getDate());
+                        careHistories.add(CwcCareHistory.MEASLES);
                     }
                     if (CWCService.CONCEPT_BCG.equals(conceptName)) {
                         cwcEnrollmentForm.setBcgDate(observation.getDate());
+                        careHistories.add(CwcCareHistory.BCG);
                     }
                     if (CWCService.CONCEPT_VITA.equals(conceptName)) {
                         cwcEnrollmentForm.setVitADate(observation.getDate());
+                        careHistories.add(CwcCareHistory.VITA_A);
                     }
                 }
                 if (CWCService.CONCEPT_IPTI.equals(observation.getConceptName())) {
                     cwcEnrollmentForm.setLastIPTiDate(observation.getDate());
                     cwcEnrollmentForm.setLastIPTi((Integer) observation.getValue());
+                    careHistories.add(CwcCareHistory.IPTI);
                 }
 
                 if (CWCService.CONCEPT_PENTA.equals(observation.getConceptName())) {
                     cwcEnrollmentForm.setLastPentaDate(observation.getDate());
                     cwcEnrollmentForm.setLastPenta((Integer) observation.getValue());
+                    careHistories.add(CwcCareHistory.PENTA);
                 }
                 if (CWCService.CONCEPT_OPV.equals(observation.getConceptName())) {
                     cwcEnrollmentForm.setLastOPVDate(observation.getDate());
                     cwcEnrollmentForm.setLastOPV((Integer) observation.getValue());
+                    careHistories.add(CwcCareHistory.OPV);
+                }
+                cwcEnrollmentForm.setCareHistory(careHistories);
+                if (CWCService.CONCEPT_CWC_REG_NUMBER.equals(observation.getConceptName())) {
+                    cwcEnrollmentForm.setSerialNumber((String) observation.getValue());
                 }
             }
         }
@@ -150,6 +165,7 @@ public class CWCController {
 
     private void setViewAttributes(ModelMap modelMap) {
         modelMap.addAttribute(CARE_HISTORIES, Arrays.asList(CwcCareHistory.values()));
+        modelMap.addAttribute(REGISTRATION_OPTIONS, Arrays.asList(RegistrationToday.values()));
         modelMap.addAttribute(LAST_IPTI, new HashMap<Integer, String>() {{
             put(1, IPTI_1);
             put(2, IPTI_2);
@@ -180,10 +196,14 @@ public class CWCController {
             return ENROLL_CWC_URL;
         }
 
+        Date registrationDate = cwcEnrollmentForm.getRegistrationDate();
+        if(cwcEnrollmentForm.getRegistrationToday().equals(RegistrationToday.TODAY)) {
+            registrationDate = new Date();
+        }
         cwcService.enroll(new CwcVO(
                 cwcEnrollmentForm.getStaffId(),
                 cwcEnrollmentForm.getFacilityForm().getFacilityId(),
-                cwcEnrollmentForm.getRegistrationDate(),
+                registrationDate,
                 cwcEnrollmentForm.getPatientMotechId(),
                 cwcEnrollmentForm.getBcgDate(),
                 cwcEnrollmentForm.getVitADate(),
@@ -194,7 +214,8 @@ public class CWCController {
                 cwcEnrollmentForm.getLastOPVDate(),
                 cwcEnrollmentForm.getLastOPV(),
                 cwcEnrollmentForm.getLastIPTiDate(),
-                cwcEnrollmentForm.getLastIPTi()));
+                cwcEnrollmentForm.getLastIPTi(),
+                cwcEnrollmentForm.getSerialNumber()));
         modelMap.addAttribute("success", "Client registered for CWC successfully.");
         return ENROLL_CWC_URL;
     }

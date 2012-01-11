@@ -43,6 +43,7 @@ public class CWCService {
     public static final String CONCEPT_VITA = "VITAMIN A";
     public static final String CONCEPT_BCG = "BACILLE CAMILE-GUERIN VACCINATION";
     public static final String CONCEPT_IMMUNIZATIONS_ORDERED = "IMMUNIZATIONS ORDERED";
+    public static final String CONCEPT_CWC_REG_NUMBER = "CWC REGISTRATION NUMBER";
 
     public MRSEncounter enroll(CwcVO cwc) {
         MRSUser user = staffService.getUserById(cwc.getStaffId());
@@ -75,12 +76,13 @@ public class CWCService {
         if (cwc.getLastIPTi() != null) {
             mrsObservations.add(new MRSObservation<Integer>(cwc.getLastIPTiDate(), CONCEPT_IPTI, cwc.getLastIPTi()));
         }
+        mrsObservations.add(new MRSObservation<String>(cwc.getRegistrationDate(), CONCEPT_CWC_REG_NUMBER, cwc.getSerialNumber()));
 
         MRSEncounter mrsEncounter = new MRSEncounter(staffProviderId, staffUserId, facilityId,
                 registrationDate, patientMotechId, mrsObservations, CWCREGVISIT);
         return allEncounters.save(mrsEncounter);
     }
-    
+
     public MRSEncounter getEncounter(String motechId) {
         return allEncounters.fetchLatest(motechId, CWCREGVISIT);
     }

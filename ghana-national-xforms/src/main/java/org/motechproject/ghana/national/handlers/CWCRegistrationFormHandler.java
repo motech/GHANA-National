@@ -40,6 +40,7 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
                 registerCWCForm.getLastOPVDate(),
                 registerCWCForm.getLastOPV(),
                 registerCWCForm.getLastIPTiDate(),
-                registerCWCForm.getLastIPTi()));
+                registerCWCForm.getLastIPTi(),
+                registerCWCForm.getSerialNumber()));
     }
 }

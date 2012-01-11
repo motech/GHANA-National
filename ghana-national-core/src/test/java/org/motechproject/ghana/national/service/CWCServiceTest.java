@@ -69,8 +69,9 @@ public class CWCServiceTest {
         final String patientMotechId = "1234567";
         final int lastOPV = 0;
         final String facilityId = "3232";
+        String serialNumber = "wewew";
         CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId, lastBCGDate, lastVitADate,
-                lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi);
+                lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi, serialNumber);
 
         final MRSUser mrsUser = new MRSUser();
         final String staffUserId = "12";
@@ -124,8 +125,9 @@ public class CWCServiceTest {
         final String patientMotechId = "1234567";
         final Integer lastOPV = null;
         final String facilityId = "3232";
+        String serialNumber = "wewew";
         CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId, lastBCGDate, lastVitADate,
-                lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi);
+                lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi, serialNumber);
 
         final MRSUser mrsUser = new MRSUser();
         final String staffUserId = "12";

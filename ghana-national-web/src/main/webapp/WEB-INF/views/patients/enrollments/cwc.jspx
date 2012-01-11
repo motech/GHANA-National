@@ -39,17 +39,6 @@
         </div>
 
         <div>
-            <label for="staffId" class="formLabel">
-                <spring:message code="staff_id"/>
-                *:
-            </label>
-            <form:input path="staffId" size="20" cssClass="jsRequire"/>
-            <span id='staffIdError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
-                <spring:message code="staff_id"/> ${fn:escapeXml(required_msg)}
-            </span>
-        </div>
-
-        <div>
             <label for="motechPatientId" class="formLabel">
                 <spring:message code="patient_motech_id"/>
                 *:
@@ -68,6 +57,19 @@
             <form:input path="serialNumber" size="20" cssClass="jsRequire"/>
             <span id='serialNumberError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
                 <spring:message code="patient_serial_number"/> ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+        <div>
+            <label for="registrationToday" class="formLabel">
+                <spring:message code="patient_registration_today"/>
+                *:
+            </label>
+            <form:select path="registrationToday" cssClass="jsRequire">
+                <option value="">Select a Value</option>
+                <form:options items="${registrationOptions}"/>
+            </form:select>
+            <span id='registrationTodayError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                <spring:message code="patient_registration_today"/> ${fn:escapeXml(required_msg)}
             </span>
         </div>
 
