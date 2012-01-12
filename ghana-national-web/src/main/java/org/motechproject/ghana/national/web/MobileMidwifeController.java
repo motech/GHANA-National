@@ -24,6 +24,9 @@ public class MobileMidwifeController {
     @Autowired
     private MobileMidwifeFormValidator mobileMidwifeFormValidator;
 
+    public MobileMidwifeController() {
+    }
+
     @Autowired
     public MobileMidwifeController(MobileMidwifeFormValidator mobileMidwifeFormValidator) {
         this.mobileMidwifeFormValidator = mobileMidwifeFormValidator;

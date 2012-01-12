@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public class RegisterCWCFormValidator extends  FormValidator<RegisterCWCForm> {
+public class RegisterCWCFormValidator extends FormValidator<RegisterCWCForm> {
 
     public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
     public static final String CHILD_AGE_PARAMETER = "childAge";
@@ -23,8 +23,8 @@ public class RegisterCWCFormValidator extends  FormValidator<RegisterCWCForm> {
 
     @Autowired
     private PatientService patientService;
-           
-    
+
+
     @Autowired
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
 
@@ -33,25 +33,29 @@ public class RegisterCWCFormValidator extends  FormValidator<RegisterCWCForm> {
     @ApiSession
     public List<FormError> validate(RegisterCWCForm formBean) {
         List<FormError> formErrors = super.validate(formBean);
-        List<FormError> patientErrors = formValidator.validatePatient(formBean.getMotechId(), MOTECH_ID_ATTRIBUTE_NAME);
-        if (!patientErrors.isEmpty()) {
-            formErrors.addAll(patientErrors);
-        } else {
-            formErrors.addAll(validateIfPatientIsAChild(formBean.getMotechId()));
-        }
-        formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
-        formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
+        formErrors.addAll(validate(formBean.getMotechId(), formBean.getStaffId(), formBean.getFacilityId()));
         return formErrors;
     }
 
-  protected  List<FormError> validateIfPatientIsAChild(String motechId) {
-        if(motechId!=null && patientService.getAgeOfPatientByMotechId(motechId) >= 5){
+    public List<FormError> validate(String motechId, String staffId, String facilityId) {
+        List<FormError> formErrors = new ArrayList<FormError>();
+        formErrors.addAll(formValidator.validateIfStaffExists(staffId));
+        formErrors.addAll(formValidator.validateIfFacilityExists(facilityId));
+        formErrors.addAll(validatePatient(motechId));
+        return formErrors;
+    }
+
+    private List<FormError> validatePatient(String motechId) {
+        List<FormError> patientErrors = formValidator.validatePatient(motechId, MOTECH_ID_ATTRIBUTE_NAME);
+        return !patientErrors.isEmpty() ? patientErrors : validateIfPatientIsAChild(motechId);
+    }
+
+    private List<FormError> validateIfPatientIsAChild(String motechId) {
+        if (motechId != null && patientService.getAgeOfPatientByMotechId(motechId) >= 5) {
             return new ArrayList<FormError>() {{
                 add(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_ERR_MSG));
             }};
         }
         return Collections.emptyList();
     }
-
-
 }

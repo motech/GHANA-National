@@ -39,4 +39,33 @@ public class Constants {
     public static final String PATTERN_YYYY_MM_DD = "yyyy-MM-dd";
 
     public static final String NOT_FOUND = "not found";
+
+
+
+    public static final String CARE_HISTORIES = "careHistories";
+    public static final String LAST_IPTI = "lastIPTi";
+    public static final String IPTI_1 = "IPTi 1";
+    public static final String IPTI_2 = "IPTi 2";
+    public static final String IPTI_3 = "IPTi 3";
+    public static final String OPV_0 = "OPV 0";
+    public static final String OPV_1 = "OPV 1";
+    public static final String OPV_2 = "OPV 2";
+    public static final String OPV_3 = "OPV 3";
+    public static final String LAST_OPV = "lastOPV";
+    public static final String LAST_PENTA = "lastPenta";
+    public static final String PENTA_1 = "Penta 1";
+    public static final String PENTA_2 = "Penta 2";
+    public static final String PENTA_3 = "Penta 3";
+
+
+    public static final String CONCEPT_OPV = "ORAL POLIO VACCINATION DOSE";
+    public static final String CONCEPT_PENTA = "PENTA VACCINATION DOSE";
+    public static final String CONCEPT_IPTI = "INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE";
+    public static final String CONCEPT_MEASLES = "MEASLES VACCINATION";
+    public static final String CONCEPT_YF = "YELLOW FEVER VACCINATION";
+    public static final String CONCEPT_VITA = "VITAMIN A";
+    public static final String CONCEPT_BCG = "BACILLE CAMILE-GUERIN VACCINATION";
+    public static final String CONCEPT_IMMUNIZATIONS_ORDERED = "IMMUNIZATIONS ORDERED";
+    public static final String CONCEPT_CWC_REG_NUMBER = "CWC REGISTRATION NUMBER";
+
 }

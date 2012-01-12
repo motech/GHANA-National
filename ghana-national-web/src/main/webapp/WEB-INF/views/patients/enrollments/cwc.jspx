@@ -78,11 +78,8 @@
                 <spring:message code="registration_date"/>
                 *:
             </label>
-            <form:input readonly="true" path="registrationDate" cssClass="jsRequire jsDate jsBefore" size="20"
+            <form:input readonly="true" path="registrationDate" cssClass="jsDate jsBefore" size="20"
                         label="${fn:escapeXml(registration_date)}"/>
-            <span id='registrationDateError' class='alertText formlyInvalid formlyAlert hide'>
-                <spring:message code="registration_date"/> ${fn:escapeXml(required_msg)}
-            </span>
             <span id='registrationDateDateError' class='alertText formlyInvalid formlyAlert hide'>
                 <spring:message code="registration_date"/> ${fn:escapeXml(incorrect_msg)}
             </span>
