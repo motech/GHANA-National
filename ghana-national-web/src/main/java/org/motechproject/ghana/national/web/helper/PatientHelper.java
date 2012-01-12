@@ -36,7 +36,7 @@ public class PatientHelper {
                 .lastName(createPatientForm.getLastName()).preferredName(createPatientForm.getPreferredName()).dateOfBirth(createPatientForm.getDateOfBirth())
                 .birthDateEstimated(createPatientForm.getEstimatedDateOfBirth()).gender(createPatientForm.getSex()).address(createPatientForm.getAddress()).attributes(attributes);
 
-        MRSFacility mrsFacility = new MRSFacility(facility.getMrsFacility().getId(), facility.name(), facility.country(), facility.region(),
+        MRSFacility mrsFacility = new MRSFacility(facility.mrsFacility().getId(), facility.name(), facility.country(), facility.region(),
                 facility.district(), facility.province());
 
         MRSPatient mrsPatient = new MRSPatient(createPatientForm.getMotechId(), mrsPerson, mrsFacility);

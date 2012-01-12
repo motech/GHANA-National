@@ -54,11 +54,11 @@ public class FacilityService {
 
     public List<Facility> searchFacilities(String motechId, String name, String country, String region, String district, String province) {
         List<Facility> filteredFacilities = facilities();
-        filteredFacilities = filterFacilities(on(Facility.class).getMrsFacility().getCountry(), country, filteredFacilities);
-        filteredFacilities = filterFacilities(on(Facility.class).getMrsFacility().getRegion(), region, filteredFacilities);
-        filteredFacilities = filterFacilities(on(Facility.class).getMrsFacility().getCountyDistrict(), district, filteredFacilities);
-        filteredFacilities = filterFacilities(on(Facility.class).getMrsFacility().getStateProvince(), province, filteredFacilities);
-        filteredFacilities = filterFacilities(on(Facility.class).getMrsFacility().getName(), name, filteredFacilities);
+        filteredFacilities = filterFacilities(on(Facility.class).mrsFacility().getCountry(), country, filteredFacilities);
+        filteredFacilities = filterFacilities(on(Facility.class).mrsFacility().getRegion(), region, filteredFacilities);
+        filteredFacilities = filterFacilities(on(Facility.class).mrsFacility().getCountyDistrict(), district, filteredFacilities);
+        filteredFacilities = filterFacilities(on(Facility.class).mrsFacility().getStateProvince(), province, filteredFacilities);
+        filteredFacilities = filterFacilities(on(Facility.class).mrsFacility().getName(), name, filteredFacilities);
         filteredFacilities = filterFacilities(on(Facility.class).motechId(), motechId, filteredFacilities);
         return filteredFacilities;
     }

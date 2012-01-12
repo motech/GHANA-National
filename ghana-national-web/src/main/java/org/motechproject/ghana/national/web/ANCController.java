@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.service.ANCService;
-import org.motechproject.ghana.national.vo.ANCVo;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -26,6 +25,7 @@ public class ANCController {
 
     public static final String ANC_URL = "anc/new";
     private FacilityHelper facilityHelper;
+    @Autowired
     private ANCService service;
 
     public ANCController() {
@@ -55,17 +55,9 @@ public class ANCController {
     @ApiSession
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String save(@Valid ANCEnrollmentForm ancEnrollmentForm, ModelMap modelMap) {
-        service.save(convertToVo(ancEnrollmentForm));
         modelMap.put("ancEnrollmentForm", ancEnrollmentForm);
         addPageAttributes(modelMap);
         return ANC_URL;
-    }
-
-    private ANCVo convertToVo(ANCEnrollmentForm ancEnrollmentForm) {
-        ANCVo vo = new ANCVo(ancEnrollmentForm.getMotechPatientId(), ancEnrollmentForm.getRegistrationDate(), ancEnrollmentForm.getSerialNumber(),
-                ancEnrollmentForm.getGravida(), ancEnrollmentForm.getParity(), ancEnrollmentForm.getHeight(), ancEnrollmentForm.getEstimatedDateOfDelivery());
-//        vo.addCareHistory(new ANCCareHistoryVo(ancEnrollmentForm.getCareHistory(), ancEnrollmentForm.get));
-        return vo;
     }
 
     private void addPageAttributes(ModelMap modelMap) {

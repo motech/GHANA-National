@@ -7,16 +7,18 @@ import java.util.Date;
 import java.util.List;
 
 public class ANCEnrollmentForm {
+    private String staffId;
+    private FacilityForm facilityForm;
     private String motechPatientId;
-    private String serialNumber;
-    private RegistrationToday registrationToday;
     private Date registrationDate;
+    private RegistrationToday registrationToday;
+    private String serialNumber;
+    private Date estimatedDateOfDelivery;
     private Float height;
     private Integer gravida;
     private Integer parity;
-    private Date estimatedDateOfDelivery;
-    private FacilityForm facilityForm;
     private Boolean addHistory;
+    private Boolean deliveryDateConfirmed;
     private List<ANCCareHistory> careHistory;
     private String lastIPT;
     private String lastTT;
@@ -34,6 +36,14 @@ public class ANCEnrollmentForm {
 
     public ANCEnrollmentForm(String motechPatientId) {
         this.motechPatientId = motechPatientId;
+    }
+
+    public String getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
     }
 
     public String getSerialNumber() {

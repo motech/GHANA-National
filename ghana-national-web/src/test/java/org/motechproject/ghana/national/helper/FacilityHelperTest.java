@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.helper;
 
-import junit.framework.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
@@ -12,14 +11,9 @@ import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -121,13 +115,13 @@ public class FacilityHelperTest {
         FacilityHelper facilityHelper = new FacilityHelper();
         Facility facility = facilityHelper.createFacilityVO(updateFacilityForm);
         assertEquals(id, facility.getMrsFacilityId());
-        assertEquals(id, facility.getMrsFacility().getId());
+        assertEquals(id, facility.mrsFacility().getId());
         assertEquals(facilityId, facility.getMotechId());
-        assertEquals(name, facility.getMrsFacility().getName());
-        assertEquals(country, facility.getMrsFacility().getCountry());
-        assertEquals(region, facility.getMrsFacility().getRegion());
-        assertEquals(countyDistrict, facility.getMrsFacility().getCountyDistrict());
-        assertEquals(stateProvince, facility.getMrsFacility().getStateProvince());
+        assertEquals(name, facility.mrsFacility().getName());
+        assertEquals(country, facility.mrsFacility().getCountry());
+        assertEquals(region, facility.mrsFacility().getRegion());
+        assertEquals(countyDistrict, facility.mrsFacility().getCountyDistrict());
+        assertEquals(stateProvince, facility.mrsFacility().getStateProvince());
         assertEquals(phoneNumber, facility.getPhoneNumber());
         assertEquals(additionalPhoneNumber1, facility.getAdditionalPhoneNumber1());
         assertEquals(additionalPhoneNumber2, facility.getAdditionalPhoneNumber2());
