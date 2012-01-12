@@ -65,7 +65,7 @@ public class EditPatientFormHandler implements FormPublishHandler {
         if (editClientForm.getFacilityId() != null) {
             facilityMotechIdFromForm = editClientForm.getFacilityId();
             Facility patientFacilityFromForm = facilityService.getFacilityByMotechId(facilityMotechIdFromForm);
-            patientMRSFacilityFromForm = patientFacilityFromForm.getMrsFacility();
+            patientMRSFacilityFromForm = patientFacilityFromForm.mrsFacility();
             mrsFacilityIdFromForm = patientFacilityFromForm.getMrsFacilityId();
         }
 
