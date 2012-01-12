@@ -40,6 +40,10 @@ public class HomePage extends BasePage {
         selectMenu("Patient", "searchpatient");
     }
 
+    public void openCWCEnrollmentPage() {
+        selectMenu("CWC", "cwcenrollment");
+    }
+
     public boolean isLogoutLinkVisible() {
         try {
             return driver.findElement(By.linkText("Logout")).isDisplayed();

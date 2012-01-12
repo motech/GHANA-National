@@ -10,6 +10,7 @@ import org.motechproject.functional.pages.login.LoginPage;
 import org.motechproject.functional.pages.openmrs.MotechIdGeneratorPage;
 import org.motechproject.functional.pages.openmrs.OpenMRSHomePage;
 import org.motechproject.functional.pages.openmrs.OpenMRSLoginPage;
+import org.motechproject.functional.pages.patient.CWCEnrollmentPage;
 import org.motechproject.functional.pages.patient.PatientPage;
 import org.motechproject.functional.pages.patient.SearchPatientPage;
 import org.motechproject.functional.pages.staff.SearchStaffPage;
@@ -70,6 +71,11 @@ public class Browser {
     public SearchStaffPage toSearchStaffPage(HomePage fromPage) {
         fromPage.openSearchStaffPage();
         return new SearchStaffPage(webDriver);
+    }
+
+    public CWCEnrollmentPage toCWCEnrollmentForm(HomePage fromPage) {
+        fromPage.openCWCEnrollmentPage();
+        return new CWCEnrollmentPage(webDriver);
     }
 
     public void quit() {
