@@ -4,30 +4,32 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CWCService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.service.StaffService;
+import org.motechproject.ghana.national.validator.FormValidator;
+import org.motechproject.ghana.national.validator.RegisterCWCFormValidator;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.ghana.national.web.form.CWCEnrollmentForm;
 import org.motechproject.ghana.national.web.form.FacilityForm;
+import org.motechproject.ghana.national.web.helper.CwcFormMapper;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
-import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.HashMap;
 
-import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -41,10 +43,16 @@ public class CWCControllerTest {
     FacilityHelper mockFacilityHelper;
 
     @Mock
-    CWCService mockCwcService;
-    
+    RegisterCWCFormValidator mockregisterCWCFormValidator;
+
     @Mock
-    StaffService mockStaffService;
+    FormValidator mockFormValidator;
+
+    @Mock
+    CWCService mockCwcService;
+
+    @Mock
+    CwcFormMapper mockCwcFormMapper;
 
     @Before
     public void setUp() {
@@ -53,37 +61,38 @@ public class CWCControllerTest {
         ReflectionTestUtils.setField(cwcController, "patientService", mockPatientService);
         ReflectionTestUtils.setField(cwcController, "facilityHelper", mockFacilityHelper);
         ReflectionTestUtils.setField(cwcController, "cwcService", mockCwcService);
-        ReflectionTestUtils.setField(cwcController, "staffService", mockStaffService);
-
+        ReflectionTestUtils.setField(cwcController, "cwcFormMapper", mockCwcFormMapper);
+        ReflectionTestUtils.setField(cwcController, "registerCWCFormValidator", mockregisterCWCFormValidator);
+        ReflectionTestUtils.setField(cwcController, "formValidator", mockFormValidator);
     }
 
     @Test
     public void shouldShowRegisterCWCForm() {
         ModelMap modelMap = new ModelMap();
         String motechPatientId = "1232132";
+        final Object value1 = new Object();
+        final Object value2 = new Object();
+        final Object value3 = new Object();
+
         final Patient mockPatient = mock(Patient.class);
         when(mockPatientService.getPatientByMotechId(motechPatientId)).thenReturn(mockPatient);
         when(mockPatientService.getAgeOfPatientByMotechId(motechPatientId)).thenReturn(2);
+        when(mockFacilityHelper.locationMap()).thenReturn(new HashMap<String, Object>() {{
+            put("test3", value3);
+        }});
+        when(mockCwcFormMapper.setViewAttributes()).thenReturn(new HashMap<String, Object>() {{
+            put("test1", value1);
+            put("test2", value2);
+        }});
 
-        final String actualResult = cwcController.create(motechPatientId, modelMap);
+        String actualResult = cwcController.create(motechPatientId, modelMap);
+
         assertThat(actualResult, is(CWCController.ENROLL_CWC_URL));
-        assertThat((List<CwcCareHistory>) modelMap.get(CWCController.CARE_HISTORIES), is(Arrays.asList(CwcCareHistory.values())));
-        assertThat((Map<Integer, String>) modelMap.get(CWCController.LAST_IPTI), allOf(
-                hasEntry(1, CWCController.IPTI_1),
-                hasEntry(2, CWCController.IPTI_2),
-                hasEntry(3, CWCController.IPTI_3)
-        ));
-        assertThat((Map<Integer, String>) modelMap.get(CWCController.LAST_OPV), allOf(
-                hasEntry(0, CWCController.OPV_0),
-                hasEntry(1, CWCController.OPV_1),
-                hasEntry(2, CWCController.OPV_2),
-                hasEntry(3, CWCController.OPV_3)
-        ));
-        assertThat((Map<Integer, String>) modelMap.get(CWCController.LAST_PENTA), allOf(
-                hasEntry(1, CWCController.PENTA_1),
-                hasEntry(2, CWCController.PENTA_2),
-                hasEntry(3, CWCController.PENTA_3)
-        ));
+        verify(mockCwcFormMapper).setViewAttributes();
+        verify(mockFacilityHelper).locationMap();
+        assertThat(modelMap.get("test1"), is(value1));
+        assertThat(modelMap.get("test2"), is(value2));
+        assertThat(modelMap.get("test3"), is(value3));
     }
 
     @Test
@@ -145,9 +154,12 @@ public class CWCControllerTest {
         cwcEnrollmentForm.setLastOPV(lastOPV);
         cwcEnrollmentForm.setLastIPTiDate(lastIPTiDate);
         cwcEnrollmentForm.setLastIPTi(lastIPTi);
-        final MRSUser mrsUser = mock(MRSUser.class);
-        when(mockStaffService.getUserById(staffId)).thenReturn(mrsUser);
-        
+        cwcEnrollmentForm.setRegistrationToday(RegistrationToday.IN_PAST);
+
+
+        when(mockFormValidator.validateIfStaffExists(staffId)).thenReturn(Collections.<FormError>emptyList());
+        when(mockregisterCWCFormValidator.validatePatient(patientMotechId)).thenReturn(Collections.<FormError>emptyList());
+
         cwcController.save(cwcEnrollmentForm, modelMap);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
         verify(mockCwcService).enroll(captor.capture());
@@ -166,5 +178,39 @@ public class CWCControllerTest {
         assertThat(lastOPVDate, is(cwcVO.getLastOPVDate()));
         assertThat(lastOPV, is(cwcVO.getLastOPV()));
         assertThat(lastIPTiDate, is(cwcVO.getLastIPTiDate()));
+        verify(mockCwcFormMapper).setViewAttributes();
+        verify(mockFacilityHelper).locationMap();
+    }
+
+    @Test
+    public void shouldReturnErrorIfThereAreFormValidations() {
+        String motechId = "234543";
+        String staffId = "11";
+        String facilityId = "43";
+        CWCEnrollmentForm cwcEnrollmentForm = new CWCEnrollmentForm();
+        cwcEnrollmentForm.setPatientMotechId(motechId);
+        cwcEnrollmentForm.setStaffId(staffId);
+        final FacilityForm facilityForm = new FacilityForm();
+        facilityForm.setFacilityId(facilityId);
+        cwcEnrollmentForm.setFacilityForm(facilityForm);
+        final ModelMap modelMap = new ModelMap();
+
+        when(mockregisterCWCFormValidator.validatePatient(motechId)).thenReturn(
+                new ArrayList<FormError>() {{
+                    add(new FormError("error1", "description1"));
+                }});
+
+        when(mockFormValidator.validateIfStaffExists(staffId)).thenReturn(
+                new ArrayList<FormError>() {{
+                    add(new FormError("error2", "description2"));
+                }});
+
+        final String result = cwcController.save(cwcEnrollmentForm, modelMap);
+
+        assertThat((String) modelMap.get("error"), is(equalTo("error1 description1\nerror2 description2\n")));
+        assertThat(result, is(equalTo(CWCController.ENROLL_CWC_URL)));
+        verifyZeroInteractions(mockCwcService);
+        verify(mockCwcFormMapper).setViewAttributes();
+        verify(mockFacilityHelper).locationMap();
     }
 }                   

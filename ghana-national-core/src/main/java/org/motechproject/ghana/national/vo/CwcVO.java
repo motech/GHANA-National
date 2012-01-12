@@ -18,9 +18,10 @@ public class CwcVO {
     private Integer lastOPV;
     private Date lastIPTiDate;
     private Integer lastIPTi;
+    private String serialNumber;
 
     public CwcVO(String staffId, String facilityId, Date registrationDate, String patientMotechId, Date bcgDate, Date vitADate,
-                 Date measlesDate, Date yfDate, Date lastPentaDate, Integer lastPenta, Date lastOPVDate, Integer lastOPV, Date lastIPTiDate, Integer lastIPTi) {
+                 Date measlesDate, Date yfDate, Date lastPentaDate, Integer lastPenta, Date lastOPVDate, Integer lastOPV, Date lastIPTiDate, Integer lastIPTi, String serialNumber) {
         this.staffId = staffId;
         this.facilityId = facilityId;
         this.registrationDate = registrationDate;
@@ -35,6 +36,7 @@ public class CwcVO {
         this.lastOPV = lastOPV;
         this.lastIPTiDate = lastIPTiDate;
         this.lastIPTi = lastIPTi;
+        this.serialNumber = serialNumber;
     }
 
     public String getStaffId() {
@@ -91,5 +93,9 @@ public class CwcVO {
 
     public Integer getLastIPTi() {
         return lastIPTi;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
     }
 }

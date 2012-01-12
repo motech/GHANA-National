@@ -17,6 +17,9 @@
     <definition extends="default" name="cwc/new">
         <put-attribute name="body" value="/WEB-INF/views/patients/enrollments/cwc.jspx"/>
     </definition>
+    <definition extends="default" name="anc/new">
+        <put-attribute name="body" value="/WEB-INF/views/patients/enrollments/anc.jspx"/>
+    </definition>
     <definition extends="default" name="enroll/mobile-midwife/new">
         <put-attribute name="body" value="/WEB-INF/views/patients/enrollments/mobileMidwife.jspx"/>
     </definition>

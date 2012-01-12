@@ -1,9 +1,11 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
+import org.motechproject.ghana.national.validator.MobileMidwifeFormValidator;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.openmrs.advice.ApiSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -19,8 +21,15 @@ import java.util.Map;
 public class MobileMidwifeController {
 
     public static final String MOBILE_MIDWIFE_URL = "enroll/mobile-midwife/new";
+    @Autowired
+    private MobileMidwifeFormValidator mobileMidwifeFormValidator;
 
     public MobileMidwifeController() {
+    }
+
+    @Autowired
+    public MobileMidwifeController(MobileMidwifeFormValidator mobileMidwifeFormValidator) {
+        this.mobileMidwifeFormValidator = mobileMidwifeFormValidator;
     }
 
     @RequestMapping(value = "form", method = RequestMethod.GET)
@@ -45,7 +54,6 @@ public class MobileMidwifeController {
     @ApiSession
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String update(MobileMidwifeEnrollmentForm mobileMidwifeEnrollmentForm, BindingResult bindingResult, ModelMap modelMap) {
-        System.out.println("hitting back end ---------------------------------------------------------");
         return MOBILE_MIDWIFE_URL;
 
     }

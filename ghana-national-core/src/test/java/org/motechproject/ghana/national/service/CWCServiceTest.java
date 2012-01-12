@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.CwcVO;
@@ -69,8 +70,9 @@ public class CWCServiceTest {
         final String patientMotechId = "1234567";
         final int lastOPV = 0;
         final String facilityId = "3232";
+        final String serialNumber = "wewew";
         CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId, lastBCGDate, lastVitADate,
-                lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi);
+                lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi, serialNumber);
 
         final MRSUser mrsUser = new MRSUser();
         final String staffUserId = "12";
@@ -95,15 +97,16 @@ public class CWCServiceTest {
         assertThat(actualEncounter.getDate(), is(equalTo(registartionDate)));
         assertThat(actualEncounter.getPatient().getId(), is(equalTo(patientId)));
         assertThat(actualEncounter.getEncounterType(), is(equalTo(CWCService.CWCREGVISIT)));
-        assertThat(actualEncounter.getObservations().size(), is(7));
+        assertThat(actualEncounter.getObservations().size(), is(8));
         final HashSet<MRSObservation> expected = new HashSet<MRSObservation>() {{
-            add(new MRSObservation(lastBCGDate, CWCService.CONCEPT_IMMUNIZATIONS_ORDERED, null));
-            add(new MRSObservation(lastVitADate, CWCService.CONCEPT_IMMUNIZATIONS_ORDERED, null));
-            add(new MRSObservation(lastMeaslesDate, CWCService.CONCEPT_IMMUNIZATIONS_ORDERED, null));
-            add(new MRSObservation(lastYfDate, CWCService.CONCEPT_IMMUNIZATIONS_ORDERED, null));
-            add(new MRSObservation(lastPentaDate, CWCService.CONCEPT_PENTA, lastPenta));
-            add(new MRSObservation(lastOPVDate, CWCService.CONCEPT_OPV, lastOPV));
-            add(new MRSObservation(lastIPTiDate, CWCService.CONCEPT_IPTI, lastIPTi));
+            add(new MRSObservation(lastBCGDate, Constants.CONCEPT_IMMUNIZATIONS_ORDERED, null));
+            add(new MRSObservation(lastVitADate, Constants.CONCEPT_IMMUNIZATIONS_ORDERED, null));
+            add(new MRSObservation(lastMeaslesDate, Constants.CONCEPT_IMMUNIZATIONS_ORDERED, null));
+            add(new MRSObservation(lastYfDate, Constants.CONCEPT_IMMUNIZATIONS_ORDERED, null));
+            add(new MRSObservation(lastPentaDate, Constants.CONCEPT_PENTA, lastPenta));
+            add(new MRSObservation(registartionDate, Constants.CONCEPT_CWC_REG_NUMBER, serialNumber));
+            add(new MRSObservation(lastOPVDate, Constants.CONCEPT_OPV, lastOPV));
+            add(new MRSObservation(lastIPTiDate, Constants.CONCEPT_IPTI, lastIPTi));
         }};
         assertReflectionEquals(actualEncounter.getObservations(), expected, ReflectionComparatorMode.LENIENT_ORDER);
     }
@@ -124,8 +127,9 @@ public class CWCServiceTest {
         final String patientMotechId = "1234567";
         final Integer lastOPV = null;
         final String facilityId = "3232";
+        String serialNumber = "wewew";
         CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId, lastBCGDate, lastVitADate,
-                lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi);
+                lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi, serialNumber);
 
         final MRSUser mrsUser = new MRSUser();
         final String staffUserId = "12";
@@ -144,7 +148,7 @@ public class CWCServiceTest {
         ArgumentCaptor<MRSEncounter> captor = ArgumentCaptor.forClass(MRSEncounter.class);
         verify(mockAllEncounters).save(captor.capture());
         MRSEncounter actualEncounter = captor.getValue();
-        assertThat(actualEncounter.getObservations().size(), is(0));
+        assertThat(actualEncounter.getObservations().size(), is(1));
     }
 
 }

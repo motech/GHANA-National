@@ -1,8 +1,10 @@
 package org.motechproject.ghana.national.web.form;
 
 import org.motechproject.ghana.national.domain.CwcCareHistory;
+import org.motechproject.ghana.national.domain.RegistrationToday;
 
 import java.util.Date;
+import java.util.List;
 
 public class CWCEnrollmentForm {
 
@@ -12,6 +14,7 @@ public class CWCEnrollmentForm {
     private Date registrationDate;
     private Boolean addHistory;
     private FacilityForm facilityForm;
+    private RegistrationToday registrationToday;
     private Date vitADate;
     private Date lastIPTiDate;
     private Date lastOPVDate;
@@ -19,7 +22,7 @@ public class CWCEnrollmentForm {
     private Date lastPentaDate;
     private Date measlesDate;
     private Date yfDate;
-    private CwcCareHistory careHistory;
+    private List<CwcCareHistory> careHistory;
     private Integer lastIPTi;
     private Integer lastOPV;
     private Integer lastPenta;
@@ -113,11 +116,11 @@ public class CWCEnrollmentForm {
         this.yfDate = yfDate;
     }
 
-    public CwcCareHistory getCareHistory() {
+    public List<CwcCareHistory> getCareHistory() {
         return careHistory;
     }
 
-    public void setCareHistory(CwcCareHistory careHistory) {
+    public void setCareHistory(List<CwcCareHistory> careHistory) {
         this.careHistory = careHistory;
     }
 
@@ -159,5 +162,13 @@ public class CWCEnrollmentForm {
 
     public void setStaffId(String staffId) {
         this.staffId = staffId;
+    }
+
+    public RegistrationToday getRegistrationToday() {
+        return registrationToday;
+    }
+
+    public void setRegistrationToday(RegistrationToday registrationToday) {
+        this.registrationToday = registrationToday;
     }
 }

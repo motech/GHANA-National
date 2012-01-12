@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
@@ -45,7 +44,7 @@ public class EditClientFormValidator extends FormValidator<EditClientForm> {
                 add(new FormError("motechId", NOT_FOUND));
             }};
         }
-        return Collections.emptyList();
+        return new ArrayList<FormError>();
     }
 
     private List<FormError> validateIfMotherMotechId(String motherMotechId) {
@@ -54,6 +53,6 @@ public class EditClientFormValidator extends FormValidator<EditClientForm> {
                 add(new FormError("motherMotechId", NOT_FOUND));
             }};
         }
-        return Collections.emptyList();
+        return new ArrayList<FormError>();
     }
 }

@@ -5,9 +5,12 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.CWCService;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
@@ -16,12 +19,17 @@ import java.util.HashMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CWCRegistrationFormHandlerTest {
 
     @Mock
     private CWCService mockCwcService;
+
+    @Mock
+    private FacilityService mockFacilityService;
+
     CWCRegistrationFormHandler formHandler;
 
     @Before
@@ -29,8 +37,8 @@ public class CWCRegistrationFormHandlerTest {
          initMocks(this);
         formHandler = new CWCRegistrationFormHandler();
         ReflectionTestUtils.setField(formHandler, "cwcService", mockCwcService);
+        ReflectionTestUtils.setField(formHandler, "facilityService", mockFacilityService);
     }
-
 
 
     @Test
@@ -50,10 +58,10 @@ public class CWCRegistrationFormHandlerTest {
         final int lastPenta = 1;
         final String patientMotechId = "1234567";
         final int lastOPV = 0;
-        final String facilityId = "3232";
+        final String facilityMotechId = "3232";
 
         registerCWCForm.setStaffId(staffId);
-        registerCWCForm.setFacilityId(facilityId);
+        registerCWCForm.setFacilityId(facilityMotechId);
         registerCWCForm.setRegistrationDate(registartionDate);
         registerCWCForm.setMotechId(patientMotechId);
         registerCWCForm.setBcgDate(lastBCGDate);
@@ -67,6 +75,9 @@ public class CWCRegistrationFormHandlerTest {
         registerCWCForm.setLastIPTiDate(lastIPTiDate);
         registerCWCForm.setLastIPTi(lastIPTi);
 
+        final String facilityId = "11";
+        when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(new Facility(new MRSFacility(facilityId)));
+
         formHandler.handleFormEvent(new MotechEvent("", new HashMap<String, Object>(){{
             put("formBean", registerCWCForm);
         }}));
@@ -76,7 +87,7 @@ public class CWCRegistrationFormHandlerTest {
         final CwcVO cwcVO = captor.getValue();
 
         assertThat(staffId, is(cwcVO.getStaffId()));
-        assertThat(facilityId, is(cwcVO.getFacilityId()));
+        assertThat(facilityId, is(facilityId));
         assertThat(registartionDate, is(cwcVO.getRegistrationDate()));
         assertThat(patientMotechId, is(cwcVO.getPatientMotechId()));
         assertThat(lastBCGDate, is(cwcVO.getBcgDate()));

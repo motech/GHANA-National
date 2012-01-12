@@ -33,7 +33,7 @@ public class FacilitySeed extends Seed {
         try {
             final List<Facility> facilities = facilities();
             List<OldGhanaFacility> oldGhanaFacilities = project(facilities, OldGhanaFacility.class,
-                    on(Facility.class).getMrsFacility().getName(), on(Facility.class).getMrsFacility().getId());
+                    on(Facility.class).mrsFacility().getName(), on(Facility.class).mrsFacility().getId());
             for (OldGhanaFacility oldGhanaFacility : facilitySource.getMotechFacilityNameAndIds()) {
                 String OpenMrsFacilityId = OldGhanaFacility.findByName(oldGhanaFacilities, oldGhanaFacility.getName()).getId();
                 allFacilities.saveLocally(new Facility().mrsFacilityId(OpenMrsFacilityId).motechId(oldGhanaFacility.getId()));

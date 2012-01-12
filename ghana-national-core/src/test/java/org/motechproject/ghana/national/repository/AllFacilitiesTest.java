@@ -140,7 +140,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         assertThat(actualFacility.region(), is(equalTo(region)));
         assertThat(actualFacility.province(), is(equalTo(province)));
         assertThat(actualFacility.district(), is(equalTo(district)));
-        assertThat(actualFacility.getMrsFacility().getId(), is(equalTo(facilityId)));
+        assertThat(actualFacility.mrsFacility().getId(), is(equalTo(facilityId)));
     }
 
     @Test
@@ -206,7 +206,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         assertThat(returnedFacility.motechId(), is(equalTo(motechFacilityId)));
         assertThat(returnedFacility.mrsFacilityId(), is(equalTo(mrsFacilityId)));
         assertThat(returnedFacility.phoneNumber(), is(equalTo(phone_number)));
-        assertThat(returnedFacility.getMrsFacility(), is(equalTo(mrsFacility)));
+        assertThat(returnedFacility.mrsFacility(), is(equalTo(mrsFacility)));
     }
 
     @Test

@@ -18,11 +18,11 @@ function FormValidator() {
     this.validateFieldForMandatoryValue = function(field){
         var val = $(field).val();
         var fieldName = utilities.escapeDot(field.name);
-        if($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
+        if($(field).attr('type') == 'radio' || $(field).attr('type') == 'checkbox') {
             val = $("input[name='" + fieldName + "']:checked").val();
         }
         if(utilities.isNull(val)) {
-             $("#" + $(this).attr('id') + "Error").removeClass('hide');
+             $("#" + $(field).attr('id') + "Error").removeClass('hide');
         }
     }
 
@@ -31,7 +31,9 @@ function FormValidator() {
     }
 
     this.clearMessages = function(form) {
-        form.find('.alertText').addClass('hide');
+        form.find('.alertText').each(function() {
+            $(this).addClass('hide');
+        });
         form.find('input, textarea').each(function() {
             $(this).val(jQuery.trim($(this).val()));
         });
@@ -80,5 +82,14 @@ function FormValidator() {
                 $("#" + this.name + "DateError").removeClass('hide');
             }
        });
+    };
+
+    this.validateRegEx = function (regEx, fieldValue, errorMessage, errorField) {
+        if (!regEx.test(fieldValue)) {
+            errorField.html(errorMessage);
+            errorField.removeClass('hide');
+            return false;
+        }
+        return true;
     };
 }

@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.service;
 
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.CwcVO;
@@ -35,14 +36,7 @@ public class CWCService {
 
     static final String CWCREGVISIT = "CWCREGVISIT";
 
-    public static final String CONCEPT_OPV = "ORAL POLIO VACCINATION DOSE";
-    public static final String CONCEPT_PENTA = "PENTA VACCINATION DOSE";
-    public static final String CONCEPT_IPTI = "INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE";
-    public static final String CONCEPT_MEASLES = "MEASLES VACCINATION";
-    public static final String CONCEPT_YF = "YELLOW FEVER VACCINATION";
-    public static final String CONCEPT_VITA = "VITAMIN A";
-    public static final String CONCEPT_BCG = "BACILLE CAMILE-GUERIN VACCINATION";
-    public static final String CONCEPT_IMMUNIZATIONS_ORDERED = "IMMUNIZATIONS ORDERED";
+   
 
     public MRSEncounter enroll(CwcVO cwc) {
         MRSUser user = staffService.getUserById(cwc.getStaffId());
@@ -55,32 +49,33 @@ public class CWCService {
 
         HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         if (cwc.getBcgDate() != null) {
-            mrsObservations.add(new MRSObservation<Concept>(cwc.getBcgDate(), CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(CONCEPT_BCG)));
+            mrsObservations.add(new MRSObservation<Concept>(cwc.getBcgDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_BCG)));
         }
         if (cwc.getVitADate() != null) {
-            mrsObservations.add(new MRSObservation<Concept>(cwc.getVitADate(), CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(CONCEPT_VITA)));
+            mrsObservations.add(new MRSObservation<Concept>(cwc.getVitADate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_VITA)));
         }
         if (cwc.getMeaslesDate() != null) {
-            mrsObservations.add(new MRSObservation<Concept>(cwc.getMeaslesDate(), CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(CONCEPT_MEASLES)));
+            mrsObservations.add(new MRSObservation<Concept>(cwc.getMeaslesDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_MEASLES)));
         }
         if (cwc.getYfDate() != null) {
-            mrsObservations.add(new MRSObservation<Concept>(cwc.getYfDate(), CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(CONCEPT_YF)));
+            mrsObservations.add(new MRSObservation<Concept>(cwc.getYfDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_YF)));
         }
         if (cwc.getLastPenta() != null) {
-            mrsObservations.add(new MRSObservation<Integer>(cwc.getLastPentaDate(), CONCEPT_PENTA, cwc.getLastPenta()));
+            mrsObservations.add(new MRSObservation<Integer>(cwc.getLastPentaDate(), Constants.CONCEPT_PENTA, cwc.getLastPenta()));
         }
         if (cwc.getLastOPV() != null) {
-            mrsObservations.add(new MRSObservation<Integer>(cwc.getLastOPVDate(), CONCEPT_OPV, cwc.getLastOPV()));
+            mrsObservations.add(new MRSObservation<Integer>(cwc.getLastOPVDate(),Constants.CONCEPT_OPV, cwc.getLastOPV()));
         }
         if (cwc.getLastIPTi() != null) {
-            mrsObservations.add(new MRSObservation<Integer>(cwc.getLastIPTiDate(), CONCEPT_IPTI, cwc.getLastIPTi()));
+            mrsObservations.add(new MRSObservation<Integer>(cwc.getLastIPTiDate(), Constants.CONCEPT_IPTI, cwc.getLastIPTi()));
         }
+        mrsObservations.add(new MRSObservation<String>(cwc.getRegistrationDate(), Constants.CONCEPT_CWC_REG_NUMBER, cwc.getSerialNumber()));
 
         MRSEncounter mrsEncounter = new MRSEncounter(staffProviderId, staffUserId, facilityId,
                 registrationDate, patientMotechId, mrsObservations, CWCREGVISIT);
         return allEncounters.save(mrsEncounter);
     }
-    
+
     public MRSEncounter getEncounter(String motechId) {
         return allEncounters.fetchLatest(motechId, CWCREGVISIT);
     }

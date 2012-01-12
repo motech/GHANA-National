@@ -33,18 +33,7 @@
                 *:
             </label>
             <form:input path="staffId" size="20" cssClass="jsRequire"/>
-            <span id='staffIdError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
-                <spring:message code="staff_id"/> ${fn:escapeXml(required_msg)}
-            </span>
-        </div>
-
-        <div>
-            <label for="staffId" class="formLabel">
-                <spring:message code="staff_id"/>
-                *:
-            </label>
-            <form:input path="staffId" size="20" cssClass="jsRequire"/>
-            <span id='staffIdError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+            <span id='staffIdError' class='alertText formlyInvalid formlyAlert hide'>
                 <spring:message code="staff_id"/> ${fn:escapeXml(required_msg)}
             </span>
         </div>
@@ -66,8 +55,21 @@
                 *:
             </label>
             <form:input path="serialNumber" size="20" cssClass="jsRequire"/>
-            <span id='serialNumberError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+            <span id='serialNumberError' class='alertText formlyInvalid formlyAlert hide'>
                 <spring:message code="patient_serial_number"/> ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
+        <div>
+            <label for="registrationToday" class="formLabel">
+                <spring:message code="registration_today?"/>
+                *:
+            </label>
+            <form:select path="registrationToday" cssClass="jsRequire">
+                <option value="">Select a Value</option>
+                <form:options items="${registrationOptions}"/>
+            </form:select>
+            <span id='registrationTodayError' class='alertText formlyInvalid formlyAlert hide'>
+                <spring:message code="registration_today?"/> ${fn:escapeXml(required_msg)}
             </span>
         </div>
 
@@ -76,11 +78,8 @@
                 <spring:message code="registration_date"/>
                 *:
             </label>
-            <form:input readonly="true" path="registrationDate" cssClass="jsRequire jsDate jsBefore" size="20"
+            <form:input readonly="true" path="registrationDate" cssClass="jsDate jsBefore" size="20"
                         label="${fn:escapeXml(registration_date)}"/>
-            <span id='registrationDateError' class='alertText formlyInvalid formlyAlert hide'>
-                <spring:message code="registration_date"/> ${fn:escapeXml(required_msg)}
-            </span>
             <span id='registrationDateDateError' class='alertText formlyInvalid formlyAlert hide'>
                 <spring:message code="registration_date"/> ${fn:escapeXml(incorrect_msg)}
             </span>
@@ -95,7 +94,7 @@
                               label="${fn:escapeXml(yes)}"/>
             <form:radiobutton cssClass="jsRequire" path="addHistory" value="false"
                               label="${fn:escapeXml(no)}"/>
-            <span id='addHistoryError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+            <span id='addHistoryError' class='alertText formlyInvalid formlyAlert hide'>
                 <spring:message code="patient_history"/> ${fn:escapeXml(required_msg)}
             </span>
         </div>
@@ -107,7 +106,7 @@
                     *:
                 </label>
                 <form:checkboxes path="careHistory" items="${careHistories}" cssClass="jsRequire"/>
-                <span id='careHistoryError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                <span id='careHistoryError' class='alertText formlyInvalid formlyAlert hide'>
                     <spring:message code="patient_care_history"/> ${fn:escapeXml(required_msg)}
                 </span>
             </div>
@@ -119,7 +118,7 @@
                         *:
                     </label>
                     <form:radiobuttons path="lastOPV" items="${lastOPV}" cssClass="jsRequire"/>
-                    <span id='lastOPVError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                    <span id='lastOPVError' class='alertText formlyInvalid formlyAlert hide'>
                         <spring:message code="patient_last_opv"/> ${fn:escapeXml(required_msg)}
                     </span>
                 </div>
@@ -190,7 +189,7 @@
                         *:
                     </label>
                     <form:radiobuttons path="lastIPTi" items="${lastIPTi}" cssClass="jsRequire"/>
-                    <span id='lastIPTiError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                    <span id='lastIPTiError' class='alertText formlyInvalid formlyAlert hide'>
                         <spring:message code="patient_last_IPTi"/> ${fn:escapeXml(required_msg)}
                     </span>
                 </div>
@@ -216,7 +215,7 @@
                         *:
                     </label>
                     <form:radiobuttons path="lastPenta" items="${lastPenta}" cssClass="jsRequire"/>
-                    <span id='lastPentaError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                    <span id='lastPentaError' class='alertText formlyInvalid formlyAlert hide'>
                         <spring:message code="patient_last_penta"/> ${fn:escapeXml(required_msg)}
                     </span>
                 </div>

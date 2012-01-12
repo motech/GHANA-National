@@ -3,10 +3,11 @@ package org.motechproject.ghana.national.domain.mobilemidwife;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.model.Time;
 
 @TypeDiscriminator("doc.type === 'MobileMidwifeEnrollment'")
-public class MobileMidwifeEnrollment {
+public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     @JsonProperty("type")
     private String type = "MobileMidwifeEnrollment";
     @JsonProperty
