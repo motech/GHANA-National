@@ -89,7 +89,13 @@ public class CwcFormMapper {
 
     public Map<String, Object> setViewAttributes() {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put(Constants.CARE_HISTORIES, Arrays.asList(CwcCareHistory.values()));
+
+        Map<CwcCareHistory, String> cwcCareHistories = new HashMap<CwcCareHistory, String>();
+        for (CwcCareHistory cwcCareHistory : CwcCareHistory.values()) {
+            cwcCareHistories.put(cwcCareHistory, cwcCareHistory.getDescription());
+        }
+
+        map.put(Constants.CARE_HISTORIES, cwcCareHistories);
         map.put(CWCController.REGISTRATION_OPTIONS, Arrays.asList(RegistrationToday.values()));
         map.put(Constants.LAST_IPTI, new HashMap<Integer, String>() {{
             put(1, Constants.IPTI_1);

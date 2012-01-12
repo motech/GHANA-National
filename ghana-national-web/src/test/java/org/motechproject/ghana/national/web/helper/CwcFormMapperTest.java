@@ -17,6 +17,7 @@ import org.openmrs.ConceptName;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -36,7 +37,13 @@ public class CwcFormMapperTest {
     public void shouldSetViewAttributes() {
         final CwcFormMapper cwcFormMapper = new CwcFormMapper();
         final Map<String, Object> actual = cwcFormMapper.setViewAttributes();
-        assertThat((List<CwcCareHistory>) actual.get(Constants.CARE_HISTORIES), is(Arrays.asList(CwcCareHistory.values())));
+
+        Map<CwcCareHistory, String> cwcCareHistories = new HashMap<CwcCareHistory, String>();
+        for (CwcCareHistory cwcCareHistory : CwcCareHistory.values()) {
+            cwcCareHistories.put(cwcCareHistory, cwcCareHistory.getDescription());
+        }
+
+        assertThat((Map<CwcCareHistory, String>) actual.get(Constants.CARE_HISTORIES), is(cwcCareHistories));
         assertThat((List<RegistrationToday>) actual.get(CWCController.REGISTRATION_OPTIONS), is(Arrays.asList(RegistrationToday.values())));
         assertThat((Map<Integer, String>) actual.get(Constants.LAST_IPTI), allOf(
                 hasEntry(1, Constants.IPTI_1),

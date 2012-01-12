@@ -70,13 +70,9 @@ public class RegisterCWCFormValidatorTest {
     @Test
     public void shouldRaiseFormErrorIfChildAgeIsAboveFive(){
         String motechId = "1234567";
-        String staffId = "477";
-        String facilityId = "32";
         when(mockPatientService.getAgeOfPatientByMotechId(motechId)).thenReturn(6);
-        when(mockFormValidator.validateIfStaffExists(staffId)).thenReturn(Collections.<FormError>emptyList());
-        when(mockFormValidator.validateIfFacilityExists(facilityId)).thenReturn(Collections.<FormError>emptyList());
         when(mockFormValidator.validatePatient(motechId, RegisterCWCFormValidator.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(Collections.<FormError>emptyList());
-        List<FormError> formErrors = registerCWCFormValidator.validate(motechId, staffId, facilityId);
+        List<FormError> formErrors = registerCWCFormValidator.validatePatient(motechId);
         assertEquals(formErrors.size(), 1);
     }
     

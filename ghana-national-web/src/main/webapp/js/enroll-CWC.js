@@ -8,7 +8,20 @@ $.CWCEnrollmentForm = function() {
         });
     };
 
+     var hasSelectedValidItem = function() {
+         var isValid = true;
+         $('.locationAlert').each(function(index) {
+             if ($(this).prev().is(":visible") && $(this).prev().find('option:selected').attr('parent') == 'select') {
+                 $(this).show();
+                 isValid = false;
+                 return false;
+             }
+         });
+         return isValid;
+     };
+
     var validate = function(cwcEnrollmentForm) {
+        hasSelectedValidItem();
         formValidator.clearMessages(cwcEnrollmentForm);
         formValidator.validatePhoneNumbers(cwcEnrollmentForm);
         formValidator.validateRequiredFields(cwcEnrollmentForm);
@@ -22,7 +35,10 @@ $(document).ready(function() {
     new $.CWCEnrollmentForm();
     new Field('countries').hasADependent(new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts'))));
     $('#sub-districts').change(function() {
+        if($(this).val() != '')
         facilities.show($(this));
+        else
+        $('#facilities').parent().hide();
     });
 
     $('input[name = "addHistory"]').change(function() {

@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CWCService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.RegisterCWCFormValidator;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.ghana.national.web.form.CWCEnrollmentForm;
@@ -18,7 +19,7 @@ import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,6 +46,9 @@ public class CWCControllerTest {
     RegisterCWCFormValidator mockregisterCWCFormValidator;
 
     @Mock
+    FormValidator mockFormValidator;
+
+    @Mock
     CWCService mockCwcService;
 
     @Mock
@@ -59,6 +63,7 @@ public class CWCControllerTest {
         ReflectionTestUtils.setField(cwcController, "cwcService", mockCwcService);
         ReflectionTestUtils.setField(cwcController, "cwcFormMapper", mockCwcFormMapper);
         ReflectionTestUtils.setField(cwcController, "registerCWCFormValidator", mockregisterCWCFormValidator);
+        ReflectionTestUtils.setField(cwcController, "formValidator", mockFormValidator);
     }
 
     @Test
@@ -151,7 +156,9 @@ public class CWCControllerTest {
         cwcEnrollmentForm.setLastIPTi(lastIPTi);
         cwcEnrollmentForm.setRegistrationToday(RegistrationToday.IN_PAST);
 
-        when(mockregisterCWCFormValidator.validate(patientMotechId, staffId, facilityId)).thenReturn(Collections.<FormError>emptyList());
+
+        when(mockFormValidator.validateIfStaffExists(staffId)).thenReturn(Collections.<FormError>emptyList());
+        when(mockregisterCWCFormValidator.validatePatient(patientMotechId)).thenReturn(Collections.<FormError>emptyList());
 
         cwcController.save(cwcEnrollmentForm, modelMap);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
@@ -188,12 +195,18 @@ public class CWCControllerTest {
         cwcEnrollmentForm.setFacilityForm(facilityForm);
         final ModelMap modelMap = new ModelMap();
 
-        when(mockregisterCWCFormValidator.validate(motechId, staffId, facilityId)).thenReturn(
-                Arrays.asList(new FormError("error1", "description1"), new FormError("error2", "description2"))
-        );
+        when(mockregisterCWCFormValidator.validatePatient(motechId)).thenReturn(
+                new ArrayList<FormError>() {{
+                    add(new FormError("error1", "description1"));
+                }});
+
+        when(mockFormValidator.validateIfStaffExists(staffId)).thenReturn(
+                new ArrayList<FormError>() {{
+                    add(new FormError("error2", "description2"));
+                }});
 
         final String result = cwcController.save(cwcEnrollmentForm, modelMap);
-        
+
         assertThat((String) modelMap.get("error"), is(equalTo("error1 description1\nerror2 description2\n")));
         assertThat(result, is(equalTo(CWCController.ENROLL_CWC_URL)));
         verifyZeroInteractions(mockCwcService);

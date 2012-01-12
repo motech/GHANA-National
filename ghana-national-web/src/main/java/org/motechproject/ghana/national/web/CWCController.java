@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CWCService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.RegisterCWCFormValidator;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.ghana.national.web.form.CWCEnrollmentForm;
@@ -46,6 +47,9 @@ public class CWCController {
     @Autowired
     RegisterCWCFormValidator registerCWCFormValidator;
 
+    @Autowired
+    FormValidator formValidator;
+
     private String error = "error";
     public static final String ENROLLMENT_CWC_FORM = "cwcEnrollmentForm";
     public static final String ENROLL_CWC_URL = "cwc/new";
@@ -87,8 +91,8 @@ public class CWCController {
         modelMap.mergeAttributes(cwcFormMapper.setViewAttributes());
         modelMap.mergeAttributes(facilityHelper.locationMap());
 
-        List<FormError> formErrors = registerCWCFormValidator.validate(cwcEnrollmentForm.getPatientMotechId(), 
-                cwcEnrollmentForm.getStaffId(), cwcEnrollmentForm.getFacilityForm().getFacilityId());
+        List<FormError> formErrors = registerCWCFormValidator.validatePatient(cwcEnrollmentForm.getPatientMotechId());
+        formErrors.addAll(formValidator.validateIfStaffExists(cwcEnrollmentForm.getStaffId()));
 
         String validationErrors = "";
         for (FormError formError : formErrors) {

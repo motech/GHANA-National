@@ -4,14 +4,12 @@ import org.motechproject.ghana.national.bean.RegisterCWCForm;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
-
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -33,19 +31,13 @@ public class RegisterCWCFormValidator extends FormValidator<RegisterCWCForm> {
     @ApiSession
     public List<FormError> validate(RegisterCWCForm formBean) {
         List<FormError> formErrors = super.validate(formBean);
-        formErrors.addAll(validate(formBean.getMotechId(), formBean.getStaffId(), formBean.getFacilityId()));
+        formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
+        formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
+        formErrors.addAll(validatePatient(formBean.getMotechId()));
         return formErrors;
     }
 
-    public List<FormError> validate(String motechId, String staffId, String facilityId) {
-        List<FormError> formErrors = new ArrayList<FormError>();
-        formErrors.addAll(formValidator.validateIfStaffExists(staffId));
-        formErrors.addAll(formValidator.validateIfFacilityExists(facilityId));
-        formErrors.addAll(validatePatient(motechId));
-        return formErrors;
-    }
-
-    private List<FormError> validatePatient(String motechId) {
+    public List<FormError> validatePatient(String motechId) {
         List<FormError> patientErrors = formValidator.validatePatient(motechId, MOTECH_ID_ATTRIBUTE_NAME);
         return !patientErrors.isEmpty() ? patientErrors : validateIfPatientIsAChild(motechId);
     }
@@ -56,6 +48,6 @@ public class RegisterCWCFormValidator extends FormValidator<RegisterCWCForm> {
                 add(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_ERR_MSG));
             }};
         }
-        return Collections.emptyList();
+        return new ArrayList<FormError>();
     }
 }

@@ -1,7 +1,9 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.CWCService;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
@@ -21,14 +23,20 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
     @Autowired
     CWCService cwcService;
 
+    @Autowired
+    FacilityService facilityService;
+
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.registerCWC")
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
         final RegisterCWCForm registerCWCForm = (RegisterCWCForm) event.getParameters().get(FORM_BEAN);
+
+        final Facility facility = facilityService.getFacilityByMotechId(registerCWCForm.getFacilityId());
+
         cwcService.enroll(new CwcVO(registerCWCForm.getStaffId(),
-                registerCWCForm.getFacilityId(),
+                facility.getMrsFacilityId(),
                 registerCWCForm.getRegistrationDate(),
                 registerCWCForm.getMotechId(),
                 registerCWCForm.getBcgDate(),

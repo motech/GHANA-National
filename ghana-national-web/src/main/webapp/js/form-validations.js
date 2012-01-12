@@ -18,11 +18,11 @@ function FormValidator() {
     this.validateFieldForMandatoryValue = function(field){
         var val = $(field).val();
         var fieldName = utilities.escapeDot(field.name);
-        if($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
+        if($(field).attr('type') == 'radio' || $(field).attr('type') == 'checkbox') {
             val = $("input[name='" + fieldName + "']:checked").val();
         }
         if(utilities.isNull(val)) {
-             $("#" + $(this).attr('id') + "Error").removeClass('hide');
+             $("#" + $(field).attr('id') + "Error").removeClass('hide');
         }
     }
 
