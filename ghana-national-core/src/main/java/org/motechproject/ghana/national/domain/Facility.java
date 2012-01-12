@@ -111,10 +111,6 @@ public class Facility extends MotechBaseDataObject {
         return phoneNumber;
     }
 
-//    public MRSFacility getMrsFacility() {
-//        return mrsFacility;
-//    }
-
     public String motechId() {
         return motechId;
     }
