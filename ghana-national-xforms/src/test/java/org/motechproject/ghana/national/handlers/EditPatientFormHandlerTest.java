@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.handlers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
@@ -17,6 +18,8 @@ public class EditPatientFormHandlerTest {
 
     @Mock
     PatientService mockPatientService;
+    @Mock
+    FacilityService mockFacilityService;
 
     EditPatientFormHandler editPatientFormHandler;
 
@@ -26,7 +29,9 @@ public class EditPatientFormHandlerTest {
         initMocks(this);
         editPatientFormHandler = new EditPatientFormHandler();
         ReflectionTestUtils.setField(editPatientFormHandler, "patientService", mockPatientService);
+        ReflectionTestUtils.setField(editPatientFormHandler, "facilityService", mockFacilityService);
     }
+
 
     @Test
     public void shouldBeRegisteredAsAListenerForRegisterPatientEvent() throws NoSuchMethodException {
@@ -38,5 +43,6 @@ public class EditPatientFormHandlerTest {
     public void shouldRunAsAdminUser() throws NoSuchMethodException {
         assertThat(editPatientFormHandler.getClass().getMethod("handleFormEvent", new Class[]{MotechEvent.class}).getAnnotation(LoginAsAdmin.class), is(not(equalTo(null))));
     }
+
 
 }

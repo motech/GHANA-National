@@ -6,7 +6,9 @@ import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllPatients;
+import org.motechproject.mrs.model.MRSEncounter;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.api.IdentifierNotUniqueException;
@@ -21,10 +23,12 @@ import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
 @Service
 public class PatientService {
     AllPatients allPatients;
+    AllEncounters allEncounters;
 
     @Autowired
-    public PatientService(AllPatients allPatients) {
+    public PatientService(AllPatients allPatients, AllEncounters allEncounters) {
         this.allPatients = allPatients;
+        this.allEncounters = allEncounters;
     }
 
     public String registerPatient(Patient patient, PatientType typeOfPatient, String parentId)
@@ -116,5 +120,9 @@ public class PatientService {
         if (personA != null && !personA.getId().toString().equals(updatedMother.getMrsPatient().getPerson().getId())) {
             allPatients.updateMotherChildRelationship(updatedMother.getMrsPatient().getPerson(), savedPatient.getMrsPatient().getPerson());
         }
+    }
+
+    public void saveEncounter(MRSEncounter mrsEncounter) {
+        allEncounters.save(mrsEncounter);
     }
 }

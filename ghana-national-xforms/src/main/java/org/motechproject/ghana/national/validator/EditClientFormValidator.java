@@ -30,7 +30,9 @@ public class EditClientFormValidator extends FormValidator<EditClientForm> {
     public List<FormError> validate(EditClientForm formBean) {
         List<FormError> formErrors = super.validate(formBean);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
-        formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
+        if (formBean.getFacilityId() != null) {
+            formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
+        }
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getUpdatePatientFacilityId()));
         formErrors.addAll(validateIfMotechId(formBean.getMotechId()));
         formErrors.addAll(validateIfMotherMotechId(formBean.getMotherMotechId()));
@@ -47,10 +49,10 @@ public class EditClientFormValidator extends FormValidator<EditClientForm> {
     }
 
     private List<FormError> validateIfMotherMotechId(String motherMotechId) {
-            if (motherMotechId != null && patientService.getPatientByMotechId(motherMotechId) == null) {
-                return new ArrayList<FormError>() {{
-                    add(new FormError("motherMotechId", NOT_FOUND));
-                }};
+        if (motherMotechId != null && patientService.getPatientByMotechId(motherMotechId) == null) {
+            return new ArrayList<FormError>() {{
+                add(new FormError("motherMotechId", NOT_FOUND));
+            }};
         }
         return Collections.emptyList();
     }

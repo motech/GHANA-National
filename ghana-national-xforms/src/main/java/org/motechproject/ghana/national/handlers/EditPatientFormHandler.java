@@ -8,12 +8,10 @@ import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.mrs.model.Attribute;
-import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.mrs.model.*;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
@@ -26,9 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.select;
+import static ch.lambdaj.Lambda.*;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -45,19 +41,34 @@ public class EditPatientFormHandler implements FormPublishHandler {
     @Autowired
     private FacilityService facilityService;
 
+    @Autowired
+    private StaffService staffService;
+    private static final String PATIENTEDITVISIT = "PATIENTEDITVISIT";
+
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.editPatient")
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
+
         EditClientForm editClientForm = (EditClientForm) event.getParameters().get(FORM_BEAN);
 
-        Patient existingPatient = patientService.getPatientByMotechId(editClientForm.getMotechId());
+        String motechId = editClientForm.getMotechId();
+        Patient existingPatient = patientService.getPatientByMotechId(motechId);
         MRSPatient existingMRSPatient = existingPatient.getMrsPatient();
 
-        String editPatientfacilityId = editClientForm.getFacilityId();
-        Facility editPatientFacility = facilityService.getFacilityByMotechId(editPatientfacilityId);
-        MRSFacility editPatientMRSFacility = editPatientFacility.mrsFacility();
+
+        String mrsFacilityIdFromForm = null;
+        String facilityMotechIdFromForm = null;
+        MRSFacility patientMRSFacilityFromForm = null;
+
+        if (editClientForm.getFacilityId() != null) {
+            facilityMotechIdFromForm = editClientForm.getFacilityId();
+            Facility patientFacilityFromForm = facilityService.getFacilityByMotechId(facilityMotechIdFromForm);
+            patientMRSFacilityFromForm = patientFacilityFromForm.getMrsFacility();
+            mrsFacilityIdFromForm = patientFacilityFromForm.getMrsFacilityId();
+        }
+
         MRSFacility existingOrUpdatedFacility = existingMRSPatient.getFacility();
 
         Date dateOfBirth = editClientForm.getDateOfBirth();
@@ -73,10 +84,13 @@ public class EditPatientFormHandler implements FormPublishHandler {
         String phoneNumber = editClientForm.getPhoneNumber();
         Date nhisExpires = editClientForm.getNhisExpires();
 
-        if (editPatientfacilityId != null) {
-            existingOrUpdatedFacility = new MRSFacility(editPatientfacilityId, editPatientMRSFacility.getName()
-                    , editPatientMRSFacility.getCountry(), editPatientMRSFacility.getRegion(),
-                    editPatientMRSFacility.getCountyDistrict(), editPatientMRSFacility.getStateProvince());
+        String facilityMotechIdWherePatientWasEdited = editClientForm.getUpdatePatientFacilityId();
+        String facilityIdWherePatientWasEdited = facilityService.getFacilityByMotechId(facilityMotechIdWherePatientWasEdited).getMrsFacilityId();
+
+        if (facilityMotechIdFromForm != null) {
+            existingOrUpdatedFacility = new MRSFacility(mrsFacilityIdFromForm, patientMRSFacilityFromForm.getName()
+                    , patientMRSFacilityFromForm.getCountry(), patientMRSFacilityFromForm.getRegion(),
+                    patientMRSFacilityFromForm.getCountyDistrict(), patientMRSFacilityFromForm.getStateProvince());
         }
 
 
@@ -104,32 +118,40 @@ public class EditPatientFormHandler implements FormPublishHandler {
             mrsPerson.gender(sex);
         }
 
-        if(address != null){
+        if (address != null) {
             mrsPerson.address(address);
         }
 
-        if(phoneNumber != null){
+        if (phoneNumber != null) {
             List<Attribute> attributes = mrsPerson.getAttributes();
             attributes.remove(getAttribute(attributes, PatientAttributes.PHONE_NUMBER.getAttribute()));
             mrsPerson.addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), phoneNumber));
         }
 
-        if(nhisNumber != null){
+        if (nhisNumber != null) {
             List<Attribute> attributes = mrsPerson.getAttributes();
             attributes.remove(getAttribute(attributes, PatientAttributes.NHIS_NUMBER.getAttribute()));
             mrsPerson.addAttribute(new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), nhisNumber));
         }
 
-        if(nhisExpires != null){
+        if (nhisExpires != null) {
             List<Attribute> attributes = mrsPerson.getAttributes();
             attributes.remove(getAttribute(attributes, PatientAttributes.NHIS_EXPIRY_DATE.getAttribute()));
             mrsPerson.addAttribute(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(nhisExpires)));
         }
 
-        MRSPatient updatedMRSPatient = new MRSPatient(existingMRSPatient.getMotechId(),existingMRSPatient.getPerson(),existingOrUpdatedFacility);
+        MRSPatient updatedMRSPatient = new MRSPatient(motechId, existingMRSPatient.getPerson(), existingOrUpdatedFacility);
+
+        String staffId = editClientForm.getStaffId();
+        List<MRSUser> mrsUsers = staffService.searchStaff(staffId, "", "", "", "", "");
+        MRSUser mrsUser = mrsUsers.get(0);
+        MRSPerson staffPerson = mrsUser.getPerson();
+        MRSEncounter mrsEncounter = new MRSEncounter(staffPerson.getId(), mrsUser.getId(), facilityIdWherePatientWasEdited,
+                editClientForm.getDate(), existingMRSPatient.getId(), null, PATIENTEDITVISIT);
 
         try {
             patientService.updatePatient(new Patient(updatedMRSPatient), null, motherMotechId);
+            patientService.saveEncounter(mrsEncounter);
         } catch (ParentNotFoundException ignored) {
         }
     }

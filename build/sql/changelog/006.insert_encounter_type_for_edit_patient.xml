@@ -1,0 +1,14 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="admin" id="1323410456950-1">
+        <insert tableName="encounter_type">
+            <column name="name" value="PATIENTEDITVISIT"/>
+            <column name="description" value="Ghana Patient Edit Visit"/>
+            <column name="creator" value="1"/>
+            <column name="date_created" value="2012-01-12 13:13:07"/>
+            <column name="retired" value="0"/>
+            <column name="uuid" value="3fa9d4zz-e8ec-11e0-8e86-a9cbfc8ed377"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

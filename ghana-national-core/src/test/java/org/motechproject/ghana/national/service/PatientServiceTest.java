@@ -8,7 +8,9 @@ import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllPatients;
+import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.openmrs.Person;
@@ -18,18 +20,10 @@ import org.openmrs.api.IdentifierNotUniqueException;
 import java.util.Arrays;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientServiceTest {
@@ -37,11 +31,13 @@ public class PatientServiceTest {
     PatientService patientService;
     @Mock
     private AllPatients mockAllPatients;
+    @Mock
+    private AllEncounters mockAllEncounters;
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(mockAllPatients);
+        patientService = new PatientService(mockAllPatients, mockAllEncounters);
     }
 
     @Test
@@ -207,6 +203,13 @@ public class PatientServiceTest {
         String motechId = "12345";
         patientService.getAgeOfPatientByMotechId(motechId);
         verify(mockAllPatients).getAgeOfPersonByMotechId(motechId);
+    }
+
+    @Test
+    public void shouldSaveEncounter() {
+        MRSEncounter mrsEncounter = mock(MRSEncounter.class);
+        patientService.saveEncounter(mrsEncounter);
+        verify(mockAllEncounters).save(mrsEncounter);
     }
 
 }
