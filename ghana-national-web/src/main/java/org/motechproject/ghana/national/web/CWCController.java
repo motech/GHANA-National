@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.web.form.CWCEnrollmentForm;
 import org.motechproject.ghana.national.web.helper.CwcFormMapper;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mobileforms.api.domain.FormError;
+import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -68,7 +69,15 @@ public class CWCController {
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     public String create(@RequestParam String motechPatientId, ModelMap modelMap) {
         Patient patient = patientService.getPatientByMotechId(motechPatientId);
-        modelMap.addAttribute(ENROLLMENT_CWC_FORM, cwcFormMapper.mapEncounterToView(cwcService.getEncounter(motechPatientId)));
+        MRSEncounter encounter = cwcService.getEncounter(motechPatientId);
+        CWCEnrollmentForm cwcEnrollmentForm;
+        if(encounter != null) {
+            cwcEnrollmentForm = cwcFormMapper.mapEncounterToView(encounter);
+        } else {
+            cwcEnrollmentForm = new CWCEnrollmentForm();
+            cwcEnrollmentForm.setPatientMotechId(motechPatientId);
+        }
+        modelMap.addAttribute(ENROLLMENT_CWC_FORM, cwcEnrollmentForm);
         modelMap.mergeAttributes(cwcFormMapper.setViewAttributes());
         modelMap.mergeAttributes(facilityHelper.locationMap());
 

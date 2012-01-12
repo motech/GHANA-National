@@ -1,6 +1,5 @@
 package org.motechproject.functional.pages.staff;
 
-import org.motechproject.functional.pages.BasePage;
 import org.motechproject.functional.pages.home.HomePage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,6 +31,10 @@ public class StaffPageElements extends HomePage {
     @FindBy(id = "user_role")
     @CacheLookup
     WebElement role;
+
+    @FindBy(id = "staffId")
+    @CacheLookup
+    WebElement staffId;
 
     public StaffPageElements withFirstName(String firstName) {
         this.firstName.clear();
@@ -67,6 +70,10 @@ public class StaffPageElements extends HomePage {
         Select selectRole = new Select(this.role);
         selectRole.selectByVisibleText(role);
         return this;
+    }
+
+    public String staffId() {
+        return staffId.getAttribute("value");
     }
 
     public static enum STAFF_ROLE{
