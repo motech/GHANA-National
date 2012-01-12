@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -70,7 +71,8 @@ public class RegisterCWCFormValidatorTest {
     public void shouldRaiseFormErrorIfChildAgeIsAboveFive(){
         String motechId = "1234567";
         when(mockPatientService.getAgeOfPatientByMotechId(motechId)).thenReturn(6);
-        List<FormError> formErrors = registerCWCFormValidator.validateIfPatientIsAChild(motechId);
+        when(mockFormValidator.validatePatient(motechId, RegisterCWCFormValidator.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(Collections.<FormError>emptyList());
+        List<FormError> formErrors = registerCWCFormValidator.validatePatient(motechId);
         assertEquals(formErrors.size(), 1);
     }
     

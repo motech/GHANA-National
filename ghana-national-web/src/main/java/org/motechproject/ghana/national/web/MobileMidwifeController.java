@@ -21,9 +21,10 @@ import java.util.Map;
 public class MobileMidwifeController {
 
     public static final String MOBILE_MIDWIFE_URL = "enroll/mobile-midwife/new";
+    @Autowired
     private MobileMidwifeFormValidator mobileMidwifeFormValidator;
 
-    public MobileMidwifeController(){
+    public MobileMidwifeController() {
     }
 
     @Autowired

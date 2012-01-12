@@ -8,7 +8,20 @@ $.CWCEnrollmentForm = function() {
         });
     };
 
+     var hasSelectedValidItem = function() {
+         var isValid = true;
+         $('.locationAlert').each(function(index) {
+             if ($(this).prev().is(":visible") && $(this).prev().find('option:selected').attr('parent') == 'select') {
+                 $(this).show();
+                 isValid = false;
+                 return false;
+             }
+         });
+         return isValid;
+     };
+
     var validate = function(cwcEnrollmentForm) {
+        hasSelectedValidItem();
         formValidator.clearMessages(cwcEnrollmentForm);
         formValidator.validatePhoneNumbers(cwcEnrollmentForm);
         formValidator.validateRequiredFields(cwcEnrollmentForm);
@@ -22,7 +35,10 @@ $(document).ready(function() {
     new $.CWCEnrollmentForm();
     new Field('countries').hasADependent(new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts'))));
     $('#sub-districts').change(function() {
+        if($(this).val() != '')
         facilities.show($(this));
+        else
+        $('#facilities').parent().hide();
     });
 
     $('input[name = "addHistory"]').change(function() {
@@ -63,7 +79,23 @@ $(document).ready(function() {
         }
     });
 
-    $('#regions').trigger('change');
+    $('#countries').trigger('change');
+    if($('input[name = "addHistory"]:checked')) {
+        $('input[name = "addHistory"]:checked').trigger('change');
+    }
+
+    if($('input[name = "careHistory"]:checked')) {
+        $('input[name = "careHistory"]:checked').trigger('change');
+    }
+
+    $('#registrationToday').change(function() {
+       if($(this).val() == 'TODAY') {
+        $('#registraionDateHolder').hide();
+       } else {
+        $('#registraionDateHolder').show();
+       }
+    });
+
     $('#registrationDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#bcgDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#lastOPVDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});

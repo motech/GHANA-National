@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -49,6 +48,6 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
                 add(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG));
             }};
         }
-        return Collections.emptyList();
+        return new ArrayList<FormError>();
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
@@ -41,7 +40,7 @@ public class FormValidator {
                 add(new FormError(patientIdAttribute, IS_NOT_ALIVE));
             }};
         }
-        return Collections.emptyList();
+        return new ArrayList<FormError>();
     }
 
     public List<FormError> validateIfFacilityExists(String facilityId) {
@@ -50,7 +49,7 @@ public class FormValidator {
                 add(new FormError(FACILITY_ID, NOT_FOUND));
             }};
         }
-        return Collections.emptyList();
+        return new ArrayList<FormError>();
     }
 
     public List<FormError> validateIfStaffExists(final String staffId) {
@@ -59,6 +58,6 @@ public class FormValidator {
                 add(new FormError(STAFF_ID, NOT_FOUND));
             }};
         }
-        return Collections.emptyList();
+        return new ArrayList<FormError>();
     }
 }

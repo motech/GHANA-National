@@ -35,20 +35,17 @@
     <div class="hidden-location hide">
         <motech:location id="regions" path="facilityForm.region" label="${facility_region} *"
                          defaultValue="${facility_region_select}" errorMsg="${facility_region_req_msg}"
-                         locations="${regions}"/>
-        <span id='facilitiesError' class='alertText formlyInvalid formlyAlert hide'>
-                ${fn:escapeXml(patient_facility)} ${fn:escapeXml(required_msg)}
-        </span>
+                         locations="${regions}" />
     </div>
     <div class="hidden-location hide">
         <motech:location id="districts" path="facilityForm.countyDistrict" label="${facility_district} *"
                          defaultValue="${facility_district_select}" errorMsg="${facility_district_req_msg}"
-                         locations="${districts}"/>
+                         locations="${districts}" />
     </div>
     <div class="hidden-location hide">
         <motech:location id="sub-districts" path="facilityForm.stateProvince" label="${facility_sub_district} *"
                          defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
-                         locations="${provinces}"/>
+                         locations="${provinces}" />
     </div>
     <div class="hide form-field">
         <label class="formLabel" for="facility">${fn:escapeXml(facility_facility_select)} *:</label>
@@ -58,5 +55,8 @@
                 <option parent="${facility.parent}" value="${facility.id}">${facility.name}</option>
             </c:forEach>
         </form:select>
+        <span id='facilitiesError' class='alertText formlyInvalid formlyAlert hide'>
+            ${fn:escapeXml(patient_facility)} ${fn:escapeXml(required_msg)}
+        </span>
     </div>
 </div>

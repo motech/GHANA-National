@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
@@ -44,7 +43,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
                 add(new FormError("motechId", "in use"));
             }};
         }
-        return Collections.emptyList();
+        return new ArrayList<FormError>();
     }
 
     private List<FormError> validateIfMotherMotechId(String motherMotechId, PatientType patientType) {
@@ -55,6 +54,6 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
                 }};
             }
         }
-        return Collections.emptyList();
+        return new ArrayList<FormError>();
     }
 }
