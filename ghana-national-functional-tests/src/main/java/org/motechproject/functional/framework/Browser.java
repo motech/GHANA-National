@@ -45,8 +45,16 @@ public class Browser {
         return new PatientPage(webDriver);
     }
 
+    public StaffPage getStaffPage() {
+        return new StaffPage(webDriver);
+    }
+
     public SearchPatientPage toSearchPatient(BasePage fromPage) {
         fromPage.waitForSuccessfulCompletion();
+        return new SearchPatientPage(webDriver);
+    }
+
+    public SearchPatientPage toSearchPatient() {
         return new SearchPatientPage(webDriver);
     }
 
@@ -64,7 +72,8 @@ public class Browser {
         return new MotechIdGeneratorPage(webDriver);
     }
 
-    public StaffPage getStaffPage() {
+    public StaffPage toStaffCreatePage(HomePage homePage) {
+        homePage.openCreateStaffPage();
         return new StaffPage(webDriver);
     }
 

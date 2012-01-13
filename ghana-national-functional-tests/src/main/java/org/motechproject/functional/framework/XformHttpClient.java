@@ -1,22 +1,24 @@
-package org.motechproject.ghana.national.functional.mobile;
+package org.motechproject.functional.framework;
 
 import com.jcraft.jzlib.ZInputStream;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.fcitmuk.epihandy.FormData;
-import org.fcitmuk.epihandy.FormDef;
-import org.fcitmuk.epihandy.QuestionData;
-import org.fcitmuk.epihandy.RequestHeader;
-import org.fcitmuk.epihandy.StudyData;
-import org.fcitmuk.epihandy.StudyDef;
+import org.fcitmuk.epihandy.*;
 import org.fcitmuk.epihandy.xform.EpihandyXform;
 import org.motechproject.ghana.national.domain.Constants;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -104,7 +106,7 @@ public class XformHttpClient {
         }
     }
 
-    static class XformResponse {
+    public static class XformResponse {
         private byte status;
         private int successCount;
         private int failureCount;
@@ -138,7 +140,7 @@ public class XformHttpClient {
         }
     }
 
-    static class Error {
+    public static class Error {
         private byte studyIndex;
         private short formIndex;
         private String error;
@@ -172,6 +174,35 @@ public class XformHttpClient {
                 }
             }
             return errorPairs;
+        }
+    }
+
+    public static class XFormParser {
+        public static String parse(String templateName, Map<String, String> data) throws Exception {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document document = db.parse(new File(XFormParser.class.getClassLoader().getResource(templateName).toURI()));
+
+            for (Map.Entry<String, String> entry : data.entrySet()) {
+                final NodeList nodeList = document.getElementsByTagName(entry.getKey());
+                if (nodeList == null || nodeList.getLength() == 0)
+                    continue;
+                final Node node = nodeList.item(0);
+                node.setTextContent(entry.getValue());
+            }
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(document);
+            StringWriter writer = null;
+            try {
+                writer = new StringWriter();
+                StreamResult result = new StreamResult(writer);
+                transformer.transform(source, result);
+                return writer.getBuffer().toString();
+            } finally {
+                IOUtils.closeQuietly(writer);
+            }
         }
     }
 }

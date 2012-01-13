@@ -2,15 +2,16 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
 import org.junit.Test;
+import org.motechproject.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Date;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.motechproject.functional.framework.XformHttpClient.XFormParser;
 import static org.testng.Assert.assertEquals;
 
 public class RegisterCWCMobileUploadTest {

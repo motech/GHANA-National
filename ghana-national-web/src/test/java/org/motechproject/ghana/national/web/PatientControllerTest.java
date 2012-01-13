@@ -3,7 +3,6 @@ package org.motechproject.ghana.national.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
@@ -199,7 +198,7 @@ public class PatientControllerTest {
         when(mockPatientHelper.getPatientVO(patientForm, mockFacility)).thenReturn(mockPatient);
         String url = patientController.update(patientForm, mockBindingResult, new ModelMap());
         assertThat(PatientController.EDIT_PATIENT_URL, is(url));
-        verify(mockPatientService).updatePatient(eq(mockPatient), eq(patientForm.getTypeOfPatient()), eq(patientForm.getParentId()));
+        verify(mockPatientService).updatePatient(eq(mockPatient), eq(patientForm.getParentId()));
 
     }
 }

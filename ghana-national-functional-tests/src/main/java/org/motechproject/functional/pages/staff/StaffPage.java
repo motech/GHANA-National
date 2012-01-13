@@ -1,5 +1,6 @@
 package org.motechproject.functional.pages.staff;
 
+import org.motechproject.functional.data.TestStaff;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -17,6 +18,16 @@ public class StaffPage extends StaffPageElements {
         PageFactory.initElements(driver, this);
     }
 
+    public void create(TestStaff staff) {
+        StaffPage staffPage = (StaffPage) withFirstName(staff.firstName())
+                .withMiddleName(staff.middleName())
+                .withLastName(staff.lastName())
+                .withEmailId(staff.emailId())
+                .withPhoneNumber(staff.phoneNumber())
+                .withRole(staff.role().getRole());
+        staffPage.submit();
+    }
+
     public void submit() {
         submit.click();
         waitForSuccessMessage();
@@ -30,4 +41,6 @@ public class StaffPage extends StaffPageElements {
     public void waitForSuccessMessage() {
         elementPoller.waitForElementClassName("success", driver);
     }
+
+
 }

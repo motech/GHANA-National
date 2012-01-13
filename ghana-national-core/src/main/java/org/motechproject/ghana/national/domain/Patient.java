@@ -14,6 +14,11 @@ public class Patient {
         this.mrsPatient = mrsPatient;
     }
 
+    public Patient(MRSPatient mrsPatient, String parentId) {
+        this.mrsPatient = mrsPatient;
+        this.parentId = parentId;
+    }
+
     public MRSPatient getMrsPatient() {
         return mrsPatient;
     }

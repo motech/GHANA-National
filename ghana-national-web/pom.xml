@@ -209,7 +209,7 @@
                         <configuration>
                             <target>
                                 <copy overwrite="true"
-                                      todir="${project.build.directory}/${pom.artifactId}-${pom.version}/WEB-INF/classes">
+                                      todir="${project.build.directory}/classes">
                                     <fileset
                                             dir="../ghana-national-common/src/test/resources"/>
                                 </copy>

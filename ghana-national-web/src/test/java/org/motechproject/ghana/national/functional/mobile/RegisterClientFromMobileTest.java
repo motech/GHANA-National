@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
+import org.motechproject.functional.framework.XformHttpClient;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
@@ -9,11 +10,13 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.motechproject.functional.framework.XformHttpClient.XFormParser;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertNull;
 
 
-public class RegisterClientMobileUploadTest {
+public class RegisterClientFromMobileTest {
+
     @Test
     public void shouldCheckForMandatoryFields() throws Exception {
 
