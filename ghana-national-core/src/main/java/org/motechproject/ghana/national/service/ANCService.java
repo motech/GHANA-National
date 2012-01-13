@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.service;
 
+import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.mrs.model.*;
@@ -24,9 +25,9 @@ public class ANCService {
     public static final String ANCREGVISIT = "ANCREGVISIT";
 
     public static final String CONCEPT_GRAVIDA = "GRAVIDA";
-    public static final String CONCEPT_HEIGHT = "HEIGHT";
+    public static final String CONCEPT_HEIGHT = "HEIGHT (CM)";
     public static final String CONCEPT_PARITY = "PARITY";
-    public static final String CONCEPT_EDD = "ESTIMATED DATE OF DELIVERY";
+    public static final String CONCEPT_EDD = "ESTIMATED DATE OF CONFINEMENT";
     public static final String CONCEPT_ANC_REG_NUM = "ANC REGISTRATION NUMBER";
     public static final String CONCEPT_IPT = "INTERMITTENT PREVENTATIVE TREATMENT DOSE";
     public static final String CONCEPT_TT = "TETANUS TOXOID DOSE";
@@ -39,13 +40,14 @@ public class ANCService {
         MRSPerson mrsPerson = mrsUser.getPerson();
         HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         Date observationDate = new Date();
+        Date registrationDate = (RegistrationToday.TODAY.equals(ancVO.getRegistrationToday())) ? observationDate : ancVO.getRegistrationDate();
 
         mrsObservations.add(new MRSObservation<Integer>(observationDate, CONCEPT_GRAVIDA, ancVO.getGravida()));
         mrsObservations.add(new MRSObservation<Double>(observationDate, CONCEPT_HEIGHT, ancVO.getHeight()));
         mrsObservations.add(new MRSObservation<Integer>(observationDate, CONCEPT_PARITY, ancVO.getParity()));
         mrsObservations.add(new MRSObservation<Date>(observationDate, CONCEPT_EDD, ancVO.getEstimatedDateOfDelivery()));
         mrsObservations.add(new MRSObservation<Boolean>(observationDate, CONCEPT_CONFINEMENT_CONFIRMED, ancVO.getDeliveryDateConfirmed()));
-        mrsObservations.add(new MRSObservation<String>(observationDate, CONCEPT_ANC_REG_NUM, ancVO.getSerialNumber()));
+        mrsObservations.add(new MRSObservation<String>(registrationDate, CONCEPT_ANC_REG_NUM, ancVO.getSerialNumber()));
 
         if (ancVO.getLastIPT() != null && ancVO.getLastIPTDate() != null) {
             mrsObservations.add(new MRSObservation<Integer>(ancVO.getLastIPTDate(), CONCEPT_IPT, convertToInt(ancVO.getLastIPT())));
@@ -54,7 +56,7 @@ public class ANCService {
             mrsObservations.add(new MRSObservation<Integer>(ancVO.getLastTTDate(), CONCEPT_TT, convertToInt(ancVO.getLastTT())));
         }
 
-        MRSEncounter mrsEncounter = new MRSEncounter(null, mrsPerson, mrsUser, mrsFacility, ancVO.getRegistrationDate(), mrsPatient, mrsObservations, ANCREGVISIT);
+        MRSEncounter mrsEncounter = new MRSEncounter(null, mrsPerson, mrsUser, mrsFacility, registrationDate, mrsPatient, mrsObservations, ANCREGVISIT);
 
         return allEncounters.save(mrsEncounter);
 

@@ -65,14 +65,7 @@ public class RegisterANCForm extends FormBean {
 
     @RegEx(pattern = "0[0-9]{9}")
     private String regPhone;
-
-    public String getRegPhone() {
-        return regPhone;
-    }
-
-    public void setRegPhone(String regPhone) {
-        this.regPhone = regPhone;
-    }
+    
 
     public String getStaffId() {
         return staffId;
@@ -98,6 +91,14 @@ public class RegisterANCForm extends FormBean {
         this.date = date;
     }
 
+    public RegistrationToday getRegDateToday() {
+        return regDateToday;
+    }
+
+    public void setRegDateToday(RegistrationToday regDateToday) {
+        this.regDateToday = regDateToday;
+    }
+
     public String getMotechId() {
         return motechId;
     }
@@ -112,46 +113,6 @@ public class RegisterANCForm extends FormBean {
 
     public void setEstDeliveryDate(Date estDeliveryDate) {
         this.estDeliveryDate = estDeliveryDate;
-    }
-
-    public Double getHeight() {
-        return height;
-    }
-
-    public void setHeight(Double height) {
-        this.height = height;
-    }
-
-    public Integer getGravida() {
-        return gravida;
-    }
-
-    public void setGravida(Integer gravida) {
-        this.gravida = gravida;
-    }
-
-    public Integer getParity() {
-        return parity;
-    }
-
-    public void setParity(Integer parity) {
-        this.parity = parity;
-    }
-
-    public String getAncRegNumber() {
-        return ancRegNumber;
-    }
-
-    public void setAncRegNumber(String ancRegNumber) {
-        this.ancRegNumber = ancRegNumber;
-    }
-
-    public RegistrationToday getRegDateToday() {
-        return regDateToday;
-    }
-
-    public void setRegDateToday(RegistrationToday regDateToday) {
-        this.regDateToday = regDateToday;
     }
 
     public Boolean getDeliveryDateConfirmed() {
@@ -200,5 +161,45 @@ public class RegisterANCForm extends FormBean {
 
     public void setLastTT(String lastTT) {
         this.lastTT = lastTT;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public Integer getGravida() {
+        return gravida;
+    }
+
+    public void setGravida(Integer gravida) {
+        this.gravida = gravida;
+    }
+
+    public Integer getParity() {
+        return parity;
+    }
+
+    public void setParity(Integer parity) {
+        this.parity = parity;
+    }
+
+    public String getAncRegNumber() {
+        return ancRegNumber;
+    }
+
+    public void setAncRegNumber(String ancRegNumber) {
+        this.ancRegNumber = ancRegNumber;
+    }
+
+    public String getRegPhone() {
+        return regPhone;
+    }
+
+    public void setRegPhone(String regPhone) {
+        this.regPhone = regPhone;
     }
 }
