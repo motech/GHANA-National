@@ -29,6 +29,7 @@ import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -91,7 +92,8 @@ public class EditPatientFormHandlerTest {
         String province = "province";
 
 
-        populateFormWithValues(facilityId, first, middle, last, dateOfBirth, address, patientId, nhisExpDate, nhisNumber, parentId, preferredName, sex, phoneNumber, facilityIdWherePatientWasEdited, staffId);
+        populateFormWithValues(facilityId, first, middle, last, dateOfBirth, address, patientId, nhisExpDate, nhisNumber,
+                parentId, preferredName, sex, phoneNumber, facilityIdWherePatientWasEdited, staffId);
 
         MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last).preferredName(preferred)
                 .dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
@@ -100,7 +102,6 @@ public class EditPatientFormHandlerTest {
         mrsPerson.addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.toString(),phoneNumber));
         final MRSPatient mrsPatient = new MRSPatient(patientId, mrsPerson, mrsFacility);
         final Patient patient = new Patient(mrsPatient);
-
 
         when(mockPatientService.getPatientByMotechId(patientId)).thenReturn(patient);
         when(mockFacilityService.getFacilityByMotechId(facilityId)).thenReturn(facility);
@@ -112,10 +113,13 @@ public class EditPatientFormHandlerTest {
         parameters.put(PatientRegistrationFormHandler.FORM_BEAN, editClientForm);
         MotechEvent event = new MotechEvent("subject", parameters);
 
-        assertResult(facilityId, country, region, district, state, first, middle, last, dateOfBirth, address, patientId, nhisNumber, preferredName, sex, phoneNumber, event);
+        assertResult(facilityId, country, region, district, state, first, middle, last, dateOfBirth, address, patientId, nhisNumber, preferredName, sex, phoneNumber, event , mrsFacilityWherePatientWasEdited , mrsPatient , mrsUser);
     }
 
-    private void populateFormWithValues(String facilityId, String first, String middle, String last, Date dateOfBirth, String address, String patientId, Date nhisExpDate, String nhisNumber, String parentId, String preferredName, String sex, String phoneNumber, String facilityIdWherePatientWasEdited, String staffId) {
+    private void populateFormWithValues(String facilityId, String first, String middle, String last, Date dateOfBirth,
+                                        String address, String patientId, Date nhisExpDate, String nhisNumber,
+                                        String parentId, String preferredName, String sex, String phoneNumber,
+                                        String facilityIdWherePatientWasEdited, String staffId) {
         editClientForm.setMotechId(patientId);
         editClientForm.setStaffId(staffId);
         editClientForm.setAddress(address);
@@ -133,16 +137,21 @@ public class EditPatientFormHandlerTest {
         editClientForm.setUpdatePatientFacilityId(facilityIdWherePatientWasEdited);
     }
 
-    private void assertResult(String facilityId, String country, String region, String district, String state, String first, String middle, String last, Date dateOfBirth, String address, String patientId, String nhisNumber, String preferredName, String sex, String phoneNumber, MotechEvent event) throws ParentNotFoundException {
+    private void assertResult(String facilityId, String country, String region, String district, String state,
+                              String first, String middle, String last, Date dateOfBirth, String address,
+                              String patientId, String nhisNumber, String preferredName, String sex, String phoneNumber, MotechEvent event, MRSFacility mrsFacilityWherePatientWasEdited, MRSPatient mrsPatient, MRSUser mrsUser) throws ParentNotFoundException {
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<PatientType> patientTypeArgumentCaptor = ArgumentCaptor.forClass(PatientType.class);
         ArgumentCaptor<String> motherIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<MRSEncounter> mrsEncounterArgumentCaptor = ArgumentCaptor.forClass(MRSEncounter.class);
         doReturn(patientId).when(mockPatientService).updatePatient(patientArgumentCaptor.capture(), patientTypeArgumentCaptor.capture(), motherIdCaptor.capture());
 
         editPatientFormHandler.handleFormEvent(event);
 
+        verify(mockPatientService).saveEncounter(mrsEncounterArgumentCaptor.capture());
         Patient savedPatient = patientArgumentCaptor.getValue();
         MRSPerson savedPerson = savedPatient.getMrsPatient().getPerson();
+        MRSEncounter mrsEncounter = mrsEncounterArgumentCaptor.getValue();
         assertThat(savedPerson.getAddress(), is(equalTo(address)));
         assertThat(savedPerson.getDateOfBirth(), is(equalTo(dateOfBirth)));
         assertThat(savedPatient.getMrsPatient().getFacility().getId(), is(equalTo(facilityId)));
@@ -162,6 +171,12 @@ public class EditPatientFormHandlerTest {
                 equalTo(PatientAttributes.PHONE_NUMBER.getAttribute())))).value(), is(equalTo(phoneNumber)));
 
         assertThat(motherIdCaptor.getValue(), is(equalTo(editClientForm.getMotherMotechId())));
+        assertThat(mrsEncounter.getEncounterType(),is(equalTo(EditPatientFormHandler.PATIENTEDITVISIT)));
+        assertThat(mrsEncounter.getDate(),is(equalTo(editClientForm.getDate())));
+        assertThat(mrsEncounter.getFacility().getId(),is(equalTo(mrsFacilityWherePatientWasEdited.getId())));
+        assertThat(mrsEncounter.getPatient().getId(),is(equalTo(mrsPatient.getPerson().getId())));
+        assertThat(mrsEncounter.getProvider().getId(),is(equalTo(mrsUser.getPerson().getId())));
+
     }
 
     @Test

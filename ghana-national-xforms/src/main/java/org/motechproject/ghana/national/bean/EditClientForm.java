@@ -45,7 +45,7 @@ public class EditClientForm extends FormBean {
 
     @Required
     private Date date;
-    @RegEx(pattern = "0[0-9]{9}")
+    @RegEx(pattern = "0[0-9]{9}") @MaxLength(size = 50)
     private String phoneNumber;
     public String getStaffId() {
         return staffId;

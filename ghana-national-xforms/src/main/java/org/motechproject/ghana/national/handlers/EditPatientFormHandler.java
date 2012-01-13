@@ -43,7 +43,7 @@ public class EditPatientFormHandler implements FormPublishHandler {
 
     @Autowired
     private StaffService staffService;
-    private static final String PATIENTEDITVISIT = "PATIENTEDITVISIT";
+    public static final String PATIENTEDITVISIT = "PATIENTEDITVISIT";
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.editPatient")
