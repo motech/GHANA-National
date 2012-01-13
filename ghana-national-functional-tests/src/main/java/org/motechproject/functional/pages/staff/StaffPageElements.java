@@ -1,6 +1,5 @@
 package org.motechproject.functional.pages.staff;
 
-import org.motechproject.functional.pages.BasePage;
 import org.motechproject.functional.pages.home.HomePage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,6 +31,10 @@ public class StaffPageElements extends HomePage {
     @FindBy(id = "user_role")
     @CacheLookup
     WebElement role;
+
+    @FindBy(id = "staffId")
+    @CacheLookup
+    WebElement staffId;
 
     public StaffPageElements withFirstName(String firstName) {
         this.firstName.clear();
@@ -69,34 +72,8 @@ public class StaffPageElements extends HomePage {
         return this;
     }
 
-    public static enum STAFF_ROLE{
-        SUPER_ADMIN("Super Admin (Super Administrator)", "Super Admin"),
-        FACILITY_ADMIN("Facility Admin (Facility Administrator)", "Facility Admin"),
-        CALL_CENTER_ADMIN("CallCenter Admin (Call Centre Administrator)", "CallCenter Admin"),
-        HEALTH_CARE_ADMIN("HealthCare Admin (Health Care Administrator)", "HealthCare Admin"),
-        HEALTH_EXT_WORKER("HEW (Health Extension Worker)", "HEW"),
-        COMMUNITY_HEALTH_WORKER("CHO (Community Health Officer)", "CHO"),
-        COMMUNITY_HEALTH_NURSE("CHN (Community Health Nurse)", "CHN"),
-        COMMUNITY_HEALTH_VOLUNTEER("CHV (Community Health Volunteer)", "CHV"),
-        COMMUNITY_HEALTH_OFFICER("HPO (Health Promotion Officer)", "HPO"),
-        FIELD_AGENT("FA (Motech Field Agent)", "FA"),
-        MOBILE_MIDWIFE_AGENT("MMA (Mobile Midwife Agent)", "MMA");
-
-        private String role;
-        private String shortName;
-
-        STAFF_ROLE(String role, String shortName) {
-            this.role = role;
-            this.shortName = shortName;
-        }
-
-        public String getRole() {
-            return role;
-        }
-
-        public String getShortName() {
-            return shortName;
-        }
+    public String staffId() {
+        return staffId.getAttribute("value");
     }
 
     public StaffPageElements(WebDriver webDriver) {

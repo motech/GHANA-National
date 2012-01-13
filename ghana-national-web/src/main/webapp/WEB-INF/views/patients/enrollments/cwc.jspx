@@ -39,7 +39,7 @@
         </div>
 
         <div>
-            <label for="motechPatientId" class="formLabel">
+            <label for="patientMotechId" class="formLabel">
                 <spring:message code="patient_motech_id"/>
                 *:
             </label>

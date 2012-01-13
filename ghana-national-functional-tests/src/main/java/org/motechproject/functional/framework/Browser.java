@@ -10,6 +10,7 @@ import org.motechproject.functional.pages.login.LoginPage;
 import org.motechproject.functional.pages.openmrs.MotechIdGeneratorPage;
 import org.motechproject.functional.pages.openmrs.OpenMRSHomePage;
 import org.motechproject.functional.pages.openmrs.OpenMRSLoginPage;
+import org.motechproject.functional.pages.patient.CWCEnrollmentPage;
 import org.motechproject.functional.pages.patient.PatientPage;
 import org.motechproject.functional.pages.patient.SearchPatientPage;
 import org.motechproject.functional.pages.staff.SearchStaffPage;
@@ -44,8 +45,16 @@ public class Browser {
         return new PatientPage(webDriver);
     }
 
+    public StaffPage getStaffPage() {
+        return new StaffPage(webDriver);
+    }
+
     public SearchPatientPage toSearchPatient(BasePage fromPage) {
         fromPage.waitForSuccessfulCompletion();
+        return new SearchPatientPage(webDriver);
+    }
+
+    public SearchPatientPage toSearchPatient() {
         return new SearchPatientPage(webDriver);
     }
 
@@ -63,13 +72,19 @@ public class Browser {
         return new MotechIdGeneratorPage(webDriver);
     }
 
-    public StaffPage getStaffPage() {
+    public StaffPage toStaffCreatePage(HomePage homePage) {
+        homePage.openCreateStaffPage();
         return new StaffPage(webDriver);
     }
 
     public SearchStaffPage toSearchStaffPage(HomePage fromPage) {
         fromPage.openSearchStaffPage();
         return new SearchStaffPage(webDriver);
+    }
+
+    public CWCEnrollmentPage toCWCEnrollmentForm(HomePage fromPage) {
+        fromPage.openCWCEnrollmentPage();
+        return new CWCEnrollmentPage(webDriver);
     }
 
     public void quit() {

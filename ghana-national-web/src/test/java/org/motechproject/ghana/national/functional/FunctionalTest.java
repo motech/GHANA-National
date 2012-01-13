@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.functional;
 
 import org.motechproject.functional.framework.Browser;
+import org.motechproject.functional.framework.Mobile;
 import org.motechproject.functional.util.ScreenShotCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -14,6 +15,9 @@ import java.lang.reflect.Method;
 public abstract class FunctionalTest extends AbstractTestNGSpringContextTests {
     @Autowired
     protected Browser browser;
+
+    @Autowired
+    protected Mobile mobile;
 
     @BeforeMethod
     public void baseTestSetup(Method method) {

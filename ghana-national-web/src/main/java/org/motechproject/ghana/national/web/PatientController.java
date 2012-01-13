@@ -88,14 +88,12 @@ public class PatientController {
     public String createPatient(PatientForm createPatientForm, BindingResult result, ModelMap modelMap) {
         Facility facility = facilityService.getFacility(createPatientForm.getFacilityId());
         try {
-            if (createPatientForm.getRegistrationMode().equals(RegistrationType.AUTO_GENERATE_ID)) {
-                createPatientForm.setMotechId(identifierGenerationService.newPatientId());
-            } else {
+            if (createPatientForm.getRegistrationMode().equals(RegistrationType.USE_PREPRINTED_ID)) {
                 if (!motechIdVerhoeffValidator.isValid(createPatientForm.getMotechId())) {
                     throw new UnallowedIdentifierException("User Id is not allowed");
                 }
             }
-            final String motechId = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
+            final String motechId = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility));
             if (StringUtils.isNotEmpty(motechId)) {
                 modelMap.put("successMessage", "Patient created successfully.");
                 return populateView(modelMap, motechId);
@@ -165,7 +163,7 @@ public class PatientController {
     public String update(PatientForm patientForm, BindingResult bindingResult, ModelMap modelMap) {
         try {
             String motechId = patientService.updatePatient(patientHelper.getPatientVO(patientForm, facilityService.getFacility(patientForm.getFacilityId())),
-                    patientForm.getTypeOfPatient(), patientForm.getParentId());
+                    patientForm.getParentId());
             modelMap.put("successMessage", "Patient edited successfully.");
             return populateView(modelMap, motechId);
         } catch (UnallowedIdentifierException e) {

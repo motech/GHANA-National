@@ -5,13 +5,11 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientAttributes;
-import org.motechproject.ghana.national.domain.PatientType;
-import org.motechproject.ghana.national.domain.RegistrationType;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.Attribute;
@@ -23,20 +21,20 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Date;
 import java.util.HashMap;
 
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.selectUnique;
+import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientRegistrationFormHandlerTest {
 
     @Mock
     PatientService mockPatientService;
+    @Mock
+    FacilityService mockFacilityService;
 
     PatientRegistrationFormHandler patientRegistrationFormHandler;
 
@@ -46,6 +44,7 @@ public class PatientRegistrationFormHandlerTest {
         initMocks(this);
         patientRegistrationFormHandler = new PatientRegistrationFormHandler();
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "patientService", mockPatientService);
+        ReflectionTestUtils.setField(patientRegistrationFormHandler, "facilityService", mockFacilityService);
     }
 
     @Test
@@ -57,7 +56,8 @@ public class PatientRegistrationFormHandlerTest {
         Date dateofBirth = new Date(10, 10, 2011);
         String district = "District";
         Boolean isBirthDateEstimated = true;
-        String facilityId = "FacilityID";
+        String motechFacilityId = "MotechFacilityID";
+        String facilityId = "Facility Id";
         String firstName = "FirstName";
         Boolean insured = true;
         String lastName = "LastName";
@@ -78,7 +78,7 @@ public class PatientRegistrationFormHandlerTest {
         registerClientForm.setDateOfBirth(dateofBirth);
         registerClientForm.setDistrict(district);
         registerClientForm.setEstimatedBirthDate(isBirthDateEstimated);
-        registerClientForm.setFacilityId(facilityId);
+        registerClientForm.setFacilityId(motechFacilityId);
         registerClientForm.setFirstName(firstName);
         registerClientForm.setInsured(insured);
         registerClientForm.setLastName(lastName);
@@ -98,9 +98,11 @@ public class PatientRegistrationFormHandlerTest {
         MotechEvent event = new MotechEvent("subject", parameters);
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
-        ArgumentCaptor<PatientType> patientTypeArgumentCaptor = ArgumentCaptor.forClass(PatientType.class);
-        ArgumentCaptor<String> parentIdCaptor = ArgumentCaptor.forClass(String.class);
-        doReturn(motechId).when(mockPatientService).registerPatient(patientArgumentCaptor.capture(), patientTypeArgumentCaptor.capture(), parentIdCaptor.capture());
+        doReturn(motechId).when(mockPatientService).registerPatient(patientArgumentCaptor.capture());
+
+        Facility facility = mock(Facility.class);
+        when(facility.mrsFacilityId()).thenReturn(facilityId);
+        doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
 
         patientRegistrationFormHandler.handleFormEvent(event);
 
@@ -127,10 +129,6 @@ public class PatientRegistrationFormHandlerTest {
                 equalTo(PatientAttributes.INSURED.getAttribute())))).value(), is(equalTo(insured.toString())));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.PHONE_NUMBER.getAttribute())))).value(), is(equalTo(phoneNumber)));
-
-        assertThat(parentIdCaptor.getValue(), is(equalTo(registerClientForm.getMotherMotechId())));
-        assertThat(patientTypeArgumentCaptor.getValue(), is(equalTo(patientType)));
-
     }
 
     @Test
