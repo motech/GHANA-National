@@ -107,7 +107,7 @@ public class EditPatientFormHandler implements FormPublishHandler {
                 editClientForm.getDate(), existingMRSPatient.getId(), null, PATIENTEDITVISIT);
 
         try {
-            patientService.updatePatient(patient, null);
+            patientService.updatePatient(patient);
             patientService.saveEncounter(mrsEncounter);
         } catch (ParentNotFoundException ignored) {
         }

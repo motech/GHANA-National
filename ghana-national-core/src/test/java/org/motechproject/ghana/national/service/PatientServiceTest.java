@@ -170,6 +170,7 @@ public class PatientServiceTest {
         when(mockAllPatients.update(mockPatient)).thenReturn(savedPatientId);
         MRSPerson mockPerson = mock(MRSPerson.class);
         MRSPatient mockMRSPatient = mock(MRSPatient.class);
+        when(mockPatient.getParentId()).thenReturn(parentId);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
         when(mockMRSPatient.getPerson()).thenReturn(mockPerson);
         when(mockAllPatients.getMotherRelationship(mockPerson)).thenReturn(null);
@@ -177,7 +178,7 @@ public class PatientServiceTest {
         doReturn(mockPatient).when(spyPatientService).getPatientByMotechId(savedPatientId);
         doNothing().when(spyPatientService).createRelationship(parentId, savedPatientId);
 
-        spyPatientService.updatePatient(mockPatient, parentId);
+        spyPatientService.updatePatient(mockPatient);
 
         verify(mockAllPatients).update(mockPatient);
         verify(spyPatientService).createRelationship(parentId, savedPatientId);
@@ -199,7 +200,7 @@ public class PatientServiceTest {
         doReturn(mockPatient).when(spyPatientService).getPatientByMotechId(savedPatientId);
         doNothing().when(spyPatientService).createRelationship(parentId, savedPatientId);
 
-        spyPatientService.updatePatient(mockPatient, parentId);
+        spyPatientService.updatePatient(mockPatient);
         verify(mockAllPatients).update(mockPatient);
         verify(mockAllPatients).voidMotherChildRelationship(mockPerson);
     }
@@ -213,6 +214,7 @@ public class PatientServiceTest {
         when(mockAllPatients.update(mockPatient)).thenReturn(savedPatientId);
         MRSPerson mockChildPerson = mock(MRSPerson.class);
         MRSPatient mockMRSPatient = mock(MRSPatient.class);
+        when(mockPatient.getParentId()).thenReturn(parentId);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
         when(mockMRSPatient.getPerson()).thenReturn(mockChildPerson);
 
@@ -232,7 +234,7 @@ public class PatientServiceTest {
         doReturn(mockMotherPatient).when(spyPatientService).getPatientByMotechId(parentId);
         doNothing().when(spyPatientService).createRelationship(parentId, savedPatientId);
 
-        spyPatientService.updatePatient(mockPatient, parentId);
+        spyPatientService.updatePatient(mockPatient);
 
         verify(mockAllPatients).update(mockPatient);
         verify(mockAllPatients).updateMotherChildRelationship(mockMotherPerson, mockChildPerson);

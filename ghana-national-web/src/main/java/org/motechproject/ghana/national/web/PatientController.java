@@ -162,8 +162,8 @@ public class PatientController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(PatientForm patientForm, BindingResult bindingResult, ModelMap modelMap) {
         try {
-            String motechId = patientService.updatePatient(patientHelper.getPatientVO(patientForm, facilityService.getFacility(patientForm.getFacilityId())),
-                    patientForm.getParentId());
+            String motechId = patientService.updatePatient(patientHelper.getPatientVO(patientForm, facilityService.getFacility(patientForm.getFacilityId()))
+            );
             modelMap.put("successMessage", "Patient edited successfully.");
             return populateView(modelMap, motechId);
         } catch (UnallowedIdentifierException e) {

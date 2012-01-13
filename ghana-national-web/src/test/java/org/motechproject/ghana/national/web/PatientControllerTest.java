@@ -198,7 +198,7 @@ public class PatientControllerTest {
         when(mockPatientHelper.getPatientVO(patientForm, mockFacility)).thenReturn(mockPatient);
         String url = patientController.update(patientForm, mockBindingResult, new ModelMap());
         assertThat(PatientController.EDIT_PATIENT_URL, is(url));
-        verify(mockPatientService).updatePatient(eq(mockPatient), eq(patientForm.getParentId()));
+        verify(mockPatientService).updatePatient(eq(mockPatient));
 
     }
 }

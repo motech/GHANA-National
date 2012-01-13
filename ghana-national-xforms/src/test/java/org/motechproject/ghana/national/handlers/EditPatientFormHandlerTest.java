@@ -141,7 +141,7 @@ public class EditPatientFormHandlerTest {
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<String> motherIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<MRSEncounter> mrsEncounterArgumentCaptor = ArgumentCaptor.forClass(MRSEncounter.class);
-        doReturn(patientId).when(mockPatientService).updatePatient(patientArgumentCaptor.capture(),motherIdCaptor.capture());
+        doReturn(patientId).when(mockPatientService).updatePatient(patientArgumentCaptor.capture());
 
         editPatientFormHandler.handleFormEvent(event);
 
