@@ -30,18 +30,23 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
     @ApiSession
     public List<FormError> validate(RegisterANCForm formBean) {
         List<FormError> formErrors = super.validate(formBean);
-        final List<FormError> patientFormErrors = formValidator.validatePatient(formBean.getMotechId(), MOTECH_ID_ATTRIBUTE_NAME);
-        if (!patientFormErrors.isEmpty()) {
-            formErrors.addAll(patientFormErrors);
-        } else {
-            formErrors.addAll(validatePatient(formBean.getMotechId()));
-        }
-        formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
+        formErrors.addAll(validatePatient(formBean.getMotechId(), formBean.getFacilityId(), formBean.getStaffId()));
         return formErrors;
     }
 
-    List<FormError> validatePatient(String motechId) {
+    public List<FormError> validatePatient(String patientId, String facilityId, String staffId) {
+        final List<FormError> patientFormErrors = formValidator.validatePatient(patientId, MOTECH_ID_ATTRIBUTE_NAME);
+        if (!patientFormErrors.isEmpty()) {
+            patientFormErrors.addAll(patientFormErrors);
+        } else {
+            patientFormErrors.addAll(validateGenderOfPatient(patientId));
+        }
+        patientFormErrors.addAll(formValidator.validateIfFacilityExists(facilityId));
+        patientFormErrors.addAll(formValidator.validateIfStaffExists(staffId));
+        return patientFormErrors;
+    }
+
+    List<FormError> validateGenderOfPatient(String motechId) {
         Patient patient = patientService.getPatientByMotechId(motechId);
         if (patient.getMrsPatient().getPerson().getGender().equals(Constants.PATIENT_GENDER_MALE)) {
             return new ArrayList<FormError>() {{

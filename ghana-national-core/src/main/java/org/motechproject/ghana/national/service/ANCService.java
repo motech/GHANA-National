@@ -41,22 +41,27 @@ public class ANCService {
         Date observationDate = new Date();
 
         mrsObservations.add(new MRSObservation<Integer>(observationDate, CONCEPT_GRAVIDA, ancVO.getGravida()));
-        mrsObservations.add(new MRSObservation<Float>(observationDate, CONCEPT_HEIGHT, ancVO.getHeight()));
+        mrsObservations.add(new MRSObservation<Double>(observationDate, CONCEPT_HEIGHT, ancVO.getHeight()));
         mrsObservations.add(new MRSObservation<Integer>(observationDate, CONCEPT_PARITY, ancVO.getParity()));
         mrsObservations.add(new MRSObservation<Date>(observationDate, CONCEPT_EDD, ancVO.getEstimatedDateOfDelivery()));
         mrsObservations.add(new MRSObservation<Boolean>(observationDate, CONCEPT_CONFINEMENT_CONFIRMED, ancVO.getDeliveryDateConfirmed()));
         mrsObservations.add(new MRSObservation<String>(observationDate, CONCEPT_ANC_REG_NUM, ancVO.getSerialNumber()));
 
         if (ancVO.getLastIPT() != null && ancVO.getLastIPTDate() != null) {
-            mrsObservations.add(new MRSObservation<Integer>(ancVO.getLastIPTDate(), CONCEPT_IPT, ancVO.getLastIPT()));
+            mrsObservations.add(new MRSObservation<Integer>(ancVO.getLastIPTDate(), CONCEPT_IPT, convertToInt(ancVO.getLastIPT())));
         }
         if (ancVO.getLastTT() != null && ancVO.getLastTTDate() != null) {
-            mrsObservations.add(new MRSObservation<Integer>(ancVO.getLastTTDate(), CONCEPT_TT, ancVO.getLastTT()));
+            mrsObservations.add(new MRSObservation<Integer>(ancVO.getLastTTDate(), CONCEPT_TT, convertToInt(ancVO.getLastTT())));
         }
 
         MRSEncounter mrsEncounter = new MRSEncounter(null, mrsPerson, mrsUser, mrsFacility, ancVO.getRegistrationDate(), mrsPatient, mrsObservations, ANCREGVISIT);
 
         return allEncounters.save(mrsEncounter);
 
+    }
+
+
+    private Integer convertToInt(String vaccineValue) {
+        return (vaccineValue != null) ? Integer.valueOf(vaccineValue) : null;
     }
 }

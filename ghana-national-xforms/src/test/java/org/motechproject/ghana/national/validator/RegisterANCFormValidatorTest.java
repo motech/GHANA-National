@@ -61,7 +61,7 @@ public class RegisterANCFormValidatorTest {
         String motechId = "1212";
         setupPatient(motechId, Constants.PATIENT_GENDER_MALE);
 
-        final List<FormError> formErrors = registerANCFormValidator.validatePatient(motechId);
+        final List<FormError> formErrors = registerANCFormValidator.validateGenderOfPatient(motechId);
 
         assertEquals(1, formErrors.size());
         assertThat(formErrors, hasItem(new FormError(RegisterANCFormValidator.MOTECH_ID_ATTRIBUTE_NAME, RegisterANCFormValidator.GENDER_ERROR_MSG)));
@@ -72,7 +72,7 @@ public class RegisterANCFormValidatorTest {
         String motechId = "1212";
         setupPatient(motechId, Constants.PATIENT_GENDER_FEMALE);
 
-        final List<FormError> formErrors = registerANCFormValidator.validatePatient(motechId);
+        final List<FormError> formErrors = registerANCFormValidator.validateGenderOfPatient(motechId);
 
         assertEquals(0, formErrors.size());
     }

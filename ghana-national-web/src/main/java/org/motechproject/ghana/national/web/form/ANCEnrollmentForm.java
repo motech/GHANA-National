@@ -14,7 +14,7 @@ public class ANCEnrollmentForm {
     private RegistrationToday registrationToday;
     private String serialNumber;
     private Date estimatedDateOfDelivery;
-    private Float height;
+    private Double height;
     private Integer gravida;
     private Integer parity;
     private Boolean addHistory;
@@ -22,10 +22,18 @@ public class ANCEnrollmentForm {
     private List<ANCCareHistory> careHistory;
     private String lastIPT;
     private String lastTT;
-    private Date lastIPTDate;
     private Date lastTTDate;
+    private Date lastIPTDate;
 
     public ANCEnrollmentForm() {
+    }
+
+    public Boolean getDeliveryDateConfirmed() {
+        return deliveryDateConfirmed;
+    }
+
+    public void setDeliveryDateConfirmed(Boolean deliveryDateConfirmed) {
+        this.deliveryDateConfirmed = deliveryDateConfirmed;
     }
 
     public ANCEnrollmentForm(String motechPatientId, String serialNumber, Date registrationDate) {
@@ -62,11 +70,11 @@ public class ANCEnrollmentForm {
         this.facilityForm = facilityForm;
     }
 
-    public Float getHeight() {
+    public Double getHeight() {
         return height;
     }
 
-    public void setHeight(Float height) {
+    public void setHeight(Double height) {
         this.height = height;
     }
 
