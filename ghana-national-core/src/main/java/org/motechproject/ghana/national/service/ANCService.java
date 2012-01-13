@@ -33,7 +33,7 @@ public class ANCService {
     public static final String CONCEPT_CONFINEMENT_CONFIRMED = "DATE OF CONFINEMENT CONFIRMED";
 
     public MRSEncounter enroll(ANCVO ancVO) {
-        MRSUser mrsUser = staffService.getUserById(ancVO.getStaffId());
+        MRSUser mrsUser = staffService.getUserByEmailIdOrMotechId(ancVO.getStaffId());
         MRSPatient mrsPatient = patientService.getPatientByMotechId(ancVO.getMotechPatientId()).getMrsPatient();
         MRSFacility mrsFacility = facilityService.getFacilityByMotechId(ancVO.getFacilityId()).mrsFacility();
         MRSPerson mrsPerson = mrsUser.getPerson();

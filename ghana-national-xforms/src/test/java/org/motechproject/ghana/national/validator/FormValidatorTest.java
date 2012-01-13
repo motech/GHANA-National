@@ -99,13 +99,13 @@ public class FormValidatorTest {
     @Test
     public void shouldValidateIfStaffExists() {
         String staffId = "1234567";
-        when(staffService.getUserById(staffId)).thenReturn(null);
+        when(staffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(null);
 
         List<FormError> formErrors = formValidator.validateIfStaffExists(staffId);
         assertThat(formErrors, hasItem(new FormError(FormValidator.STAFF_ID, NOT_FOUND)));
 
         MRSUser staff = mock(MRSUser.class);
-        when(staffService.getUserById(staffId)).thenReturn(staff);
+        when(staffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
 
         formErrors = formValidator.validateIfStaffExists(staffId);
         assertThat(formErrors, not(hasItem(new FormError(FormValidator.STAFF_ID, NOT_FOUND))));

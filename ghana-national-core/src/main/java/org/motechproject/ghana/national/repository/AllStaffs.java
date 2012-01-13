@@ -101,7 +101,7 @@ public class AllStaffs {
         return userAdaptor.getAllUsers();
     }
 
-    public MRSUser getUserById(String userId) {
+    public MRSUser getUserByEmailIdOrMotechId(String userId) {
         return userAdaptor.getUserByUserName(userId);
     }
 

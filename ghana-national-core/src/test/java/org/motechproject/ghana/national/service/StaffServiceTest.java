@@ -56,8 +56,8 @@ public class StaffServiceTest {
     @Test
     public void shouldGetUserById() {
         String userId = "124567";
-        service.getUserById(userId);
-        verify(allStaffs).getUserById(userId);
+        service.getUserByEmailIdOrMotechId(userId);
+        verify(allStaffs).getUserByEmailIdOrMotechId(userId);
     }
 
     @Test

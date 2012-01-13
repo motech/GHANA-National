@@ -41,8 +41,8 @@ public class StaffService {
         return allStaffs.getAllUsers();
     }
 
-    public MRSUser getUserById(String userId) {
-        return allStaffs.getUserById(userId);
+    public MRSUser getUserByEmailIdOrMotechId(String userId) {
+        return allStaffs.getUserByEmailIdOrMotechId(userId);
     }
 
     public List<MRSUser> searchStaff(String systemId, String firstName, String middleName, String lastName, String phoneNumber, String role) {

@@ -56,7 +56,7 @@ public class ANCServiceTest {
         MRSFacility mockMRSFacility = mock(MRSFacility.class);
         MRSPerson mockMRSPerson = mock(MRSPerson.class);
 
-        when(mockStaffService.getUserById(ancvo.getStaffId())).thenReturn(mockMRSUser);
+        when(mockStaffService.getUserByEmailIdOrMotechId(ancvo.getStaffId())).thenReturn(mockMRSUser);
         when(mockPatientService.getPatientByMotechId(ancvo.getMotechPatientId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
         when(mockFacilityService.getFacilityByMotechId(ancvo.getFacilityId())).thenReturn(mockFacility);
@@ -98,7 +98,7 @@ public class ANCServiceTest {
         MRSFacility mockMRSFacility = mock(MRSFacility.class);
         MRSPerson mockMRSPerson = mock(MRSPerson.class);
 
-        when(mockStaffService.getUserById(ancvo.getStaffId())).thenReturn(mockMRSUser);
+        when(mockStaffService.getUserByEmailIdOrMotechId(ancvo.getStaffId())).thenReturn(mockMRSUser);
         when(mockPatientService.getPatientByMotechId(ancvo.getMotechPatientId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
         when(mockFacilityService.getFacilityByMotechId(ancvo.getFacilityId())).thenReturn(mockFacility);

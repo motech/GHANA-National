@@ -39,7 +39,7 @@ public class CWCService {
    
 
     public MRSEncounter enroll(CwcVO cwc) {
-        MRSUser user = staffService.getUserById(cwc.getStaffId());
+        MRSUser user = staffService.getUserByEmailIdOrMotechId(cwc.getStaffId());
         String staffProviderId = user.getPerson().getId();
         String staffUserId = user.getId();
         String facilityId = cwc.getFacilityId();

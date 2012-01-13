@@ -20,7 +20,6 @@ import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -51,22 +50,15 @@ public class EditPatientFormHandlerTest {
         ReflectionTestUtils.setField(editPatientFormHandler, "staffService", mockStaffService);
     }
 
-
     @Test
     public void shouldCreateAnUpdatedPatientObject() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
-
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         String facilityId = "1";
-        String facilityName = "facility";
-        String country = "country";
-        String region = "region";
-        String district = "district";
-        String state = "state";
-        MRSFacility mrsFacility = new MRSFacility(facilityId, facilityName, country, region, district, state);
-        Facility facility = new Facility(mrsFacility);
-        facility.mrsFacilityId(facilityId);
         String updatedFacilityId = "2";
-        MRSFacility mrsFacilityWherePatientWasEdited = new MRSFacility(updatedFacilityId, facilityName, country, region, district, state);
+        String staffId = "654";
+        MRSFacility mrsFacility = new MRSFacility(facilityId);
+        Facility facility = new Facility(mrsFacility).mrsFacilityId(facilityId);
+        MRSFacility mrsFacilityWherePatientWasEdited = new MRSFacility(updatedFacilityId);
         Facility facilityWherePatientWasEdited = new Facility(mrsFacilityWherePatientWasEdited);
         facilityWherePatientWasEdited.mrsFacilityId(updatedFacilityId);
         String first = "first";
@@ -85,8 +77,6 @@ public class EditPatientFormHandlerTest {
         String sex = "M";
         String phoneNumber = "0123456789";
         String facilityIdWherePatientWasEdited = "999";
-        String staffId = "654";
-        String province = "province";
 
 
         populateFormWithValues(facilityId, first, middle, last, dateOfBirth, address, patientId, nhisExpDate, nhisNumber,
@@ -94,9 +84,9 @@ public class EditPatientFormHandlerTest {
 
         MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last).preferredName(preferred)
                 .dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
-        mrsPerson.addAttribute(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.toString(),nhisExpDate.toString()));
-        mrsPerson.addAttribute(new Attribute(PatientAttributes.NHIS_NUMBER.toString(),nhisNumber));
-        mrsPerson.addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.toString(),phoneNumber));
+        mrsPerson.addAttribute(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.toString(), nhisExpDate.toString()));
+        mrsPerson.addAttribute(new Attribute(PatientAttributes.NHIS_NUMBER.toString(), nhisNumber));
+        mrsPerson.addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.toString(), phoneNumber));
         final MRSPatient mrsPatient = new MRSPatient(patientId, mrsPerson, mrsFacility);
         final Patient patient = new Patient(mrsPatient);
 
@@ -105,12 +95,12 @@ public class EditPatientFormHandlerTest {
         when(mockFacilityService.getFacilityByMotechId(facilityIdWherePatientWasEdited)).thenReturn(facilityWherePatientWasEdited);
         MRSUser mrsUser = new MRSUser();
         mrsUser.person(mrsPerson);
-        when(mockStaffService.searchStaff(staffId, "", "", "", "", "")).thenReturn(Arrays.asList(mrsUser));
+        when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mrsUser);
 
         parameters.put(PatientRegistrationFormHandler.FORM_BEAN, editClientForm);
         MotechEvent event = new MotechEvent("subject", parameters);
 
-        assertResult(facilityId, country, region, district, state, first, middle, last, dateOfBirth, address, patientId, nhisNumber, preferredName, sex, phoneNumber, event , mrsFacilityWherePatientWasEdited , mrsPatient , mrsUser);
+        assertResult(facilityId, first, middle, last, dateOfBirth, address, patientId, nhisNumber, preferredName, sex, phoneNumber, event, mrsFacilityWherePatientWasEdited, mrsPatient, mrsUser);
     }
 
     private void populateFormWithValues(String facilityId, String first, String middle, String last, Date dateOfBirth,
@@ -135,8 +125,8 @@ public class EditPatientFormHandlerTest {
         editClientForm.setAddress(address);
     }
 
-    private void assertResult(String facilityId, String country, String region, String district, String state,
-                              String first, String middle, String last, Date dateOfBirth, String address,
+    private void assertResult(String facilityId, String first, String middle, String last,
+                              Date dateOfBirth, String address,
                               String patientId, String nhisNumber, String preferredName, String sex, String phoneNumber, MotechEvent event, MRSFacility mrsFacilityWherePatientWasEdited, MRSPatient mrsPatient, MRSUser mrsUser) throws ParentNotFoundException {
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<String> motherIdCaptor = ArgumentCaptor.forClass(String.class);
@@ -152,10 +142,6 @@ public class EditPatientFormHandlerTest {
         assertThat(savedPerson.getAddress(), is(equalTo(address)));
         assertThat(savedPerson.getDateOfBirth(), is(equalTo(dateOfBirth)));
         assertThat(savedPatient.getMrsPatient().getFacility().getId(), is(equalTo(facilityId)));
-        assertThat(savedPatient.getMrsPatient().getFacility().getCountry(), is(equalTo(country)));
-        assertThat(savedPatient.getMrsPatient().getFacility().getCountyDistrict(), is(equalTo(district)));
-        assertThat(savedPatient.getMrsPatient().getFacility().getRegion(), is(equalTo(region)));
-        assertThat(savedPatient.getMrsPatient().getFacility().getStateProvince(), is(equalTo(state)));
         assertThat(savedPerson.getFirstName(), is(equalTo(first)));
         assertThat(savedPerson.getLastName(), is(equalTo(last)));
         assertThat(savedPerson.getMiddleName(), is(equalTo(middle)));
@@ -169,11 +155,11 @@ public class EditPatientFormHandlerTest {
                 equalTo(PatientAttributes.PHONE_NUMBER.getAttribute())))).value(), is(equalTo(phoneNumber)));
 
         assertThat(savedPatient.getParentId(), is(equalTo(editClientForm.getMotherMotechId())));
-        assertThat(mrsEncounter.getEncounterType(),is(equalTo(EditPatientFormHandler.PATIENTEDITVISIT)));
-        assertThat(mrsEncounter.getDate(),is(equalTo(editClientForm.getDate())));
-        assertThat(mrsEncounter.getFacility().getId(),is(equalTo(mrsFacilityWherePatientWasEdited.getId())));
-        assertThat(mrsEncounter.getPatient().getId(),is(equalTo(mrsPatient.getPerson().getId())));
-        assertThat(mrsEncounter.getProvider().getId(),is(equalTo(mrsUser.getPerson().getId())));
+        assertThat(mrsEncounter.getEncounterType(), is(equalTo(EditPatientFormHandler.PATIENTEDITVISIT)));
+        assertThat(mrsEncounter.getDate(), is(equalTo(editClientForm.getDate())));
+        assertThat(mrsEncounter.getFacility().getId(), is(equalTo(mrsFacilityWherePatientWasEdited.getId())));
+        assertThat(mrsEncounter.getPatient().getId(), is(equalTo(mrsPatient.getPerson().getId())));
+        assertThat(mrsEncounter.getProvider().getId(), is(equalTo(mrsUser.getPerson().getId())));
 
     }
 

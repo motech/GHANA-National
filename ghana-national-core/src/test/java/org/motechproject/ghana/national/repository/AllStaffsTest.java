@@ -58,7 +58,7 @@ public class AllStaffsTest {
         String userId = "124567";
         MRSUser mrsUser = new MRSUser();
         when(userAdaptor.getUserByUserName(userId)).thenReturn(mrsUser);
-        assertThat(allStaffs.getUserById(userId), is(equalTo(mrsUser)));
+        assertThat(allStaffs.getUserByEmailIdOrMotechId(userId), is(equalTo(mrsUser)));
     }
 
     @Test
