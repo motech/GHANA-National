@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.functional.staff;
 
 
 import org.junit.runner.RunWith;
+import org.motechproject.functional.data.TestStaff;
 import org.motechproject.functional.pages.staff.SearchStaffPage;
 import org.motechproject.functional.pages.staff.StaffPage;
 import org.motechproject.functional.util.DataGenerator;
@@ -11,6 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
+import static org.motechproject.functional.data.TestStaff.STAFF_ROLE;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class StaffTest extends LoggedInUserFunctionalTest {
@@ -18,38 +21,26 @@ public class StaffTest extends LoggedInUserFunctionalTest {
     public void shouldCreateAStaffSearchForHerAndEditHer() {
         DataGenerator dataGenerator = new DataGenerator();
         String firstName = "First Name" + dataGenerator.randomString(5);
-        String middleName = "Middle Name";
-        String lastName = "Last Name";
-        String phoneNumber = dataGenerator.randomPhoneNumber();
-        String emailId = dataGenerator.randomEmailId();
-        StaffPage.STAFF_ROLE role = StaffPage.STAFF_ROLE.COMMUNITY_HEALTH_WORKER;
 
-        homePage.openCreateStaffPage();
-        StaffPage staffPage = browser.getStaffPage();
+        TestStaff staff = TestStaff.with(firstName);
 
-        staffPage
-                .withFirstName(firstName)
-                .withMiddleName(middleName)
-                .withLastName(lastName)
-                .withPhoneNumber(phoneNumber)
-                .withEmailId(emailId)
-                .withRole(role.getRole());
-        staffPage.submit();
+        StaffPage staffPage = browser.toStaffCreatePage(homePage);
+        staffPage.create(staff);
 
         SearchStaffPage searchStaffPage = browser.toSearchStaffPage(staffPage);
         searchStaffPage.withFirstName(firstName);
         searchStaffPage.search();
-        searchStaffPage.assertIfSearchReturned(firstName, middleName, lastName, phoneNumber, role.getShortName());
+        searchStaffPage.assertIfSearchReturned(staff.firstName(), staff.middleName(), staff.lastName(), staff.phoneNumber(), staff.role().getShortName());
 
         // update
-        searchStaffPage.clickEditLink(firstName, middleName, lastName, phoneNumber, role.getShortName());
+        searchStaffPage.clickEditLink(staff.firstName(), staff.middleName(), staff.lastName(), staff.phoneNumber(), staff.role().getShortName());
         staffPage = browser.getStaffPage();
 
         String newFirstName = "New First Name" + dataGenerator.randomString(5);
         String newMiddleName = "New Middle Name";
         String newLastName = "New Last Name";
         String newPhoneNumber = dataGenerator.randomPhoneNumber();
-        StaffPage.STAFF_ROLE newRole = StaffPage.STAFF_ROLE.FIELD_AGENT;
+        TestStaff.STAFF_ROLE newRole = STAFF_ROLE.FIELD_AGENT;
 
         staffPage
                 .withFirstName(newFirstName)

@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
 import org.motechproject.functional.data.TestPatient;
+import org.motechproject.functional.data.TestStaff;
 import org.motechproject.functional.pages.patient.CWCEnrollmentPage;
 import org.motechproject.functional.pages.patient.PatientPage;
 import org.motechproject.functional.pages.staff.StaffPage;
@@ -30,9 +31,13 @@ public class CWCTest extends LoggedInUserFunctionalTest {
 
     @Test(enabled = false)
     public void shouldEnrollForCWCForAPatient() {
-        homePage.openCreateStaffPage();
-        StaffPage staffPage = browser.getStaffPage();
-        String staffId = createStaff(staffPage);
+        String firstName = "First Name" + dataGenerator.randomString(5);
+        TestStaff staff = TestStaff.with(firstName);
+        StaffPage staffPage = browser.toStaffCreatePage(homePage);
+        staffPage.create(staff);
+
+        String staffId = staffPage.staffId();
+
         patientPage = browser.toCreatePatient(staffPage);
         createPatient();
         CWCEnrollmentPage cwcEnrollmentPage = browser.toCWCEnrollmentForm(patientPage);
@@ -49,25 +54,5 @@ public class CWCTest extends LoggedInUserFunctionalTest {
                 registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
                 patientType(TestPatient.PATIENT_TYPE.PATIENT_MOTHER).estimatedDateOfBirth(false);
         patientPage.create(patient);
-    }
-
-    private String createStaff(StaffPage staffPage) {
-        DataGenerator dataGenerator = new DataGenerator();
-        String firstName = "First Name" + dataGenerator.randomString(5);
-        String middleName = "Middle Name";
-        String lastName = "Last Name";
-        String phoneNumber = dataGenerator.randomPhoneNumber();
-        String emailId = dataGenerator.randomEmailId();
-        StaffPage.STAFF_ROLE role = StaffPage.STAFF_ROLE.COMMUNITY_HEALTH_WORKER;
-
-        staffPage
-                .withFirstName(firstName)
-                .withMiddleName(middleName)
-                .withLastName(lastName)
-                .withPhoneNumber(phoneNumber)
-                .withEmailId(emailId)
-                .withRole(role.getRole());
-        staffPage.submit();
-        return staffPage.staffId();
     }
 }

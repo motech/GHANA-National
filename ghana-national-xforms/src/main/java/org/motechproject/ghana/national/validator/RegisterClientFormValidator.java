@@ -32,12 +32,12 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         List<FormError> formErrors = super.validate(formBean);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        formErrors.addAll(validateIfMotechId(formBean.getMotechId(), formBean.getRegistrationMode()));
-        formErrors.addAll(validateIfMotherMotechId(formBean.getMotherMotechId(), formBean.getRegistrantType()));
+        formErrors.addAll(validateMotechId(formBean.getMotechId(), formBean.getRegistrationMode()));
+        formErrors.addAll(validateMotherMotechId(formBean.getMotherMotechId(), formBean.getRegistrantType()));
         return formErrors;
     }
 
-    private List<FormError> validateIfMotechId(String motechId, RegistrationType registrationType) {
+    private List<FormError> validateMotechId(String motechId, RegistrationType registrationType) {
         if (RegistrationType.USE_PREPRINTED_ID.equals(registrationType) && patientService.getPatientByMotechId(motechId) != null) {
             return new ArrayList<FormError>() {{
                 add(new FormError("motechId", "in use"));
@@ -46,7 +46,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         return new ArrayList<FormError>();
     }
 
-    private List<FormError> validateIfMotherMotechId(String motherMotechId, PatientType patientType) {
+    private List<FormError> validateMotherMotechId(String motherMotechId, PatientType patientType) {
         if (PatientType.CHILD_UNDER_FIVE.equals(patientType)) {
             if (motherMotechId == null || patientService.getPatientByMotechId(motherMotechId) == null) {
                 return new ArrayList<FormError>() {{

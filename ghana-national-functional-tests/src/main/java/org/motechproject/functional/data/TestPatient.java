@@ -2,13 +2,18 @@ package org.motechproject.functional.data;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 import org.motechproject.util.DateUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestPatient {
     private String region;
     private String district;
     private String subDistrict;
     private String facility;
+    private String facilityId;
     private String middleName;
     private String lastName;
     private String preferredName;
@@ -21,6 +26,8 @@ public class TestPatient {
     private boolean insured;
     private String motechId;
     private boolean female;
+    private String staffId;
+    private LocalDate registrationDate;
 
     public static TestPatient with(String firstName) {
         TestPatient testPatient = new TestPatient();
@@ -38,7 +45,39 @@ public class TestPatient {
 
         testPatient.firstName = firstName;
         testPatient.insured = false;
+        testPatient.patientType = PATIENT_TYPE.OTHER;
+        testPatient.estimatedDateOfBirth = false;
+        testPatient.facilityId = "13212";
+        testPatient.registrationDate = DateUtil.today();
         return testPatient;
+    }
+
+    public Map<String, String> forMobile(){
+        return new HashMap<String, String>(){{
+            put("registrationMode", registrationMode.name());
+            put("motechId", motechId);
+            put("registrantType", registrationMode.name());
+            put("firstName", firstName);
+            put("middleName", middleName);
+            put("lastName", lastName);
+            put("prefferedName", preferredName);
+            put("dateOfBirth", dateOfBirth.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
+            put("sex", genderCode());
+            put("insured", booleanCode(insured));
+            put("region", region);
+            put("district", district);
+            put("subDistrict", subDistrict);
+            put("facilityId", facilityId);
+            put("address", address);
+            put("registrantType", patientType.name());
+            put("estimatedBirthDate", booleanCode(estimatedDateOfBirth));
+            put("date", registrationDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
+            put("staffId", staffId);
+        }};
+    }
+
+    public String booleanCode(boolean value){
+        return value ? "Y" : "N";
     }
 
     public TestPatient registrationMode(PATIENT_REGN_MODE registrationMode) {
@@ -135,6 +174,11 @@ public class TestPatient {
 
     public TestPatient female(boolean female) {
         this.female = female;
+        return this;
+    }
+
+    public TestPatient staffId(String staffId){
+        this.staffId = staffId;
         return this;
     }
 

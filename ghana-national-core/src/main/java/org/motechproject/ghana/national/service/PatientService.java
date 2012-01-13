@@ -2,11 +2,11 @@ package org.motechproject.ghana.national.service;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.AllPatients;
+import org.motechproject.mrs.model.MRSPatient;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.api.IdentifierNotUniqueException;
@@ -21,18 +21,26 @@ import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
 @Service
 public class PatientService {
     AllPatients allPatients;
+    IdentifierGenerationService identifierGenerationService;
 
     @Autowired
-    public PatientService(AllPatients allPatients) {
+    public PatientService(AllPatients allPatients, IdentifierGenerationService identifierGenerationService) {
         this.allPatients = allPatients;
+        this.identifierGenerationService = identifierGenerationService;
     }
 
-    public String registerPatient(Patient patient, PatientType typeOfPatient, String parentId)
+    public String registerPatient(Patient patient)
             throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         try {
+
+            if(StringUtils.isEmpty(patient.getMrsPatient().getMotechId())){
+                MRSPatient mrsPatient = patient.getMrsPatient();
+                String motechId = identifierGenerationService.newPatientId();
+                patient = new Patient(new MRSPatient(mrsPatient.getId(), motechId, mrsPatient.getPerson(), mrsPatient.getFacility()), patient.getParentId());
+            }
             String savedPatientId = allPatients.save(patient);
-            if (StringUtils.isNotEmpty(parentId)) {
-                createRelationship(parentId, savedPatientId);
+            if (StringUtils.isNotEmpty(patient.getParentId())) {
+                createRelationship(patient.getParentId(), savedPatientId);
             }
             return savedPatientId;
         } catch (IdentifierNotUniqueException e) {
@@ -58,7 +66,7 @@ public class PatientService {
         return allPatients.search(emptyToNull(name), emptyToNull(motechId));
     }
 
-    public String updatePatient(Patient patient, PatientType typeOfPatient, String parentId) throws ParentNotFoundException {
+    public String updatePatient(Patient patient, String parentId) throws ParentNotFoundException {
         String savedPatientId = allPatients.update(patient);
         Patient savedPatient = getPatientByMotechId(savedPatientId);
         Relationship relationship = allPatients.getMotherRelationship(savedPatient.getMrsPatient().getPerson());
