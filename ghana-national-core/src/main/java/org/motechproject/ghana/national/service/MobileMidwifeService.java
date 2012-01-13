@@ -11,9 +11,8 @@ public class MobileMidwifeService {
     @Autowired
     private AllMobileMidwifeEnrollments allEnrollments;
 
-
-    public void save(MobileMidwifeEnrollment enrollment) {
-        allEnrollments.add(enrollment);
+    public void saveOrUpdate(MobileMidwifeEnrollment enrollment) {
+        allEnrollments.createOrUpdate(enrollment);
     }
 
     public MobileMidwifeEnrollment findBy(String patientId) {

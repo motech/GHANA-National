@@ -17,7 +17,7 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
     private DayOfWeek dayOfWeek;
     private Time timeOfDay;
     private Language language;
-    private LearnedFrom howLearned;
+    private LearnedFrom learnedFrom;
     private ReasonToJoin reasonToJoin;
     private String messageStartWeek;
 
@@ -76,8 +76,8 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
         return this;
     }
 
-    public MobileMidwifeEnrollmentBuilder howLearned(LearnedFrom howLearned) {
-        this.howLearned = howLearned;
+    public MobileMidwifeEnrollmentBuilder learnedFrom(LearnedFrom howLearned) {
+        this.learnedFrom = howLearned;
         return this;
     }
 

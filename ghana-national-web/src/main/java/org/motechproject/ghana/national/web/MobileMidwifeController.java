@@ -1,8 +1,10 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.validator.MobileMidwifeFormValidator;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
+import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 @Controller
 @RequestMapping(value = "/admin/enroll/mobile-midwife")
@@ -23,39 +28,53 @@ public class MobileMidwifeController {
     public static final String MOBILE_MIDWIFE_URL = "enroll/mobile-midwife/new";
     @Autowired
     private MobileMidwifeFormValidator mobileMidwifeFormValidator;
+    private MobileMidwifeService mobileMidwifeService;
 
     public MobileMidwifeController() {
     }
 
     @Autowired
-    public MobileMidwifeController(MobileMidwifeFormValidator mobileMidwifeFormValidator) {
+    public MobileMidwifeController(MobileMidwifeFormValidator mobileMidwifeFormValidator, MobileMidwifeService mobileMidwifeService) {
         this.mobileMidwifeFormValidator = mobileMidwifeFormValidator;
+        this.mobileMidwifeService = mobileMidwifeService;
     }
 
     @RequestMapping(value = "form", method = RequestMethod.GET)
     public String form(@RequestParam String motechPatientId, ModelMap modelMap){
-        return enroll(motechPatientId, modelMap);
-    }
 
-    @RequestMapping(value = "new", method = RequestMethod.GET)
-    public String enroll(@RequestParam String motechPatientId, ModelMap modelMap) {
-        modelMap.addAttribute("mobileMidwifeEnrollmentForm", new MobileMidwifeEnrollmentForm());
-        modelMap.addAttribute("serviceTypes", ServiceType.values());
-        modelMap.addAttribute("phoneOwnerships", PhoneOwnership.values());
-        modelMap.addAttribute("reasonsToJoin", ReasonToJoin.values());
-        modelMap.addAttribute("learnedFrom", LearnedFrom.values());
-        modelMap.addAttribute("languages", Language.values());
-        modelMap.addAttribute("mediums", Medium.values());
-        modelMap.addAttribute("dayOfWeeks", collectDayOfWeekOptions());
-        modelMap.addAttribute("messageStartWeeks", MessageStartWeek.messageStartWeeks());
+        MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findBy(motechPatientId);
+        MobileMidwifeEnrollmentForm enrollmentForm = midwifeEnrollment != null ? new MobileMidwifeEnrollmentForm(midwifeEnrollment)
+                : new MobileMidwifeEnrollmentForm().setPatientMotechId(motechPatientId);
+        addFormInfo(modelMap, enrollmentForm);
         return MOBILE_MIDWIFE_URL;
     }
 
     @ApiSession
     @RequestMapping(value = "save", method = RequestMethod.POST)
-    public String update(MobileMidwifeEnrollmentForm mobileMidwifeEnrollmentForm, BindingResult bindingResult, ModelMap modelMap) {
+    public String save(MobileMidwifeEnrollmentForm form, BindingResult bindingResult, ModelMap modelMap) {
+        List<FormError> formErrors = mobileMidwifeFormValidator.validateFacilityPatientAndStaff(form.getPatientMotechId(), form.getFacilityMotechId(), form.getStaffMotechId());
+        if (isNotEmpty(formErrors)) {
+            modelMap.addAttribute("formErrors", formErrors);
+            addFormInfo(modelMap, form);
+        } else {
+            MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findBy(form.getPatientMotechId());
+            midwifeEnrollment = form.createEnrollment(midwifeEnrollment != null ? midwifeEnrollment : new MobileMidwifeEnrollment());
+            mobileMidwifeService.saveOrUpdate(midwifeEnrollment);
+            addFormInfo(modelMap, new MobileMidwifeEnrollmentForm(midwifeEnrollment));
+        }
         return MOBILE_MIDWIFE_URL;
+    }
 
+    private void addFormInfo(ModelMap modelMap, MobileMidwifeEnrollmentForm enrollmentForm) {
+        modelMap.addAttribute("mobileMidwifeEnrollmentForm", enrollmentForm)
+                .addAttribute("serviceTypes", ServiceType.values())
+                .addAttribute("phoneOwnerships", PhoneOwnership.values())
+                .addAttribute("reasonsToJoin", ReasonToJoin.values())
+                .addAttribute("learnedFrom", LearnedFrom.values())
+                .addAttribute("languages", Language.values())
+                .addAttribute("mediums", Medium.values())
+                .addAttribute("dayOfWeeks", collectDayOfWeekOptions())
+                .addAttribute("messageStartWeeks", MessageStartWeek.messageStartWeeks());
     }
 
     private Map<String, String> collectDayOfWeekOptions() {

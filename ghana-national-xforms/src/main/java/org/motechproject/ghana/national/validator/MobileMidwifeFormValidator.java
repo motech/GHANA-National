@@ -8,6 +8,7 @@ import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -22,9 +23,15 @@ public class MobileMidwifeFormValidator extends FormValidator<MobileMidwifeForm>
     @ApiSession
     public List<FormError> validate(MobileMidwifeForm formBean) {
         List<FormError> formErrors = super.validate(formBean);
-        formErrors.addAll(formValidator.validatePatient(formBean.getPatientId(), PATIENT_ID_ATTRIBUTE_NAME));
-        formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
+        formErrors.addAll(validateFacilityPatientAndStaff(formBean.getPatientId(),formBean.getFacilityId(),formBean.getStaffId()));
+        return formErrors;
+    }
+
+    public List<FormError> validateFacilityPatientAndStaff(String patientId, String facilityId, String staffId) {
+        List<FormError> formErrors = new ArrayList<FormError>();
+        formErrors.addAll(formValidator.validatePatient(patientId, PATIENT_ID_ATTRIBUTE_NAME));
+        formErrors.addAll(formValidator.validateIfFacilityExists(facilityId));
+        formErrors.addAll(formValidator.validateIfStaffExists(staffId));
         return formErrors;
     }
 }

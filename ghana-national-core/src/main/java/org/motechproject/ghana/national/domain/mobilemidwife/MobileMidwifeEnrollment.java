@@ -33,7 +33,7 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     @JsonProperty
     private Language language;
     @JsonProperty
-    private LearnedFrom howLearned;
+    private LearnedFrom learnedFrom;
     @JsonProperty
     private ReasonToJoin reasonToJoin;
     @JsonProperty
@@ -86,8 +86,8 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         return language;
     }
 
-    public LearnedFrom getHowLearned() {
-        return howLearned;
+    public LearnedFrom getLearnedFrom() {
+        return learnedFrom;
     }
 
     public ReasonToJoin getReasonToJoin() {
@@ -96,5 +96,75 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
 
     public String getMessageStartWeek() {
         return messageStartWeek;
+    }
+
+    public MobileMidwifeEnrollment setPatientId(String patientId) {
+        this.patientId = patientId;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment setStaffId(String staffId) {
+        this.staffId = staffId;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment setConsent(Boolean consent) {
+        this.consent = consent;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment setServiceType(ServiceType serviceType) {
+        this.serviceType = serviceType;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment setPhoneOwnership(PhoneOwnership phoneOwnership) {
+        this.phoneOwnership = phoneOwnership;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment setMedium(Medium medium) {
+        this.medium = medium;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment setDayOfWeek(DayOfWeek dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment setTimeOfDay(Time timeOfDay) {
+        this.timeOfDay = timeOfDay;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment setLanguage(Language language) {
+        this.language = language;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment setLearnedFrom(LearnedFrom learnedFrom) {
+        this.learnedFrom = learnedFrom;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment setReasonToJoin(ReasonToJoin reasonToJoin) {
+        this.reasonToJoin = reasonToJoin;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment setMessageStartWeek(String messageStartWeek) {
+        this.messageStartWeek = messageStartWeek;
+        return this;
     }
 }

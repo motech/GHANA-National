@@ -42,9 +42,17 @@
         <spring:message code="hour_required_msg" var="hour_required_msg" htmlEscape="false"/>
         <spring:message code="minutes_required_msg" var="minutes_required_msg" htmlEscape="false"/>
 
+        <c:if test="${formErrors ne null}">
+            <div class="formlyAlerts formlyInvalid formlyAlert" style="display: block;">
+                <c:forEach items="${formErrors}" var="errorObj">
+                    <c:out value="${errorObj.parameter} "/><c:out value="${errorObj.error}"/><br/>    
+                </c:forEach>
+            </div>
+        </c:if>
         <div class="form-field">
             <label for="patientMotechId" class="formLabel">${fn:escapeXml(patient_motech_id)}: *</label>
             <form:input path="patientMotechId" size="20" cssClass="jsRequire" disabled="true"/>
+            <form:hidden path="patientMotechId" />
             <span id='patientMotechIdError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_motech_id)} ${fn:escapeXml(required_msg)}
             </span>
@@ -82,10 +90,9 @@
             <label class="formLabel" for="serviceType">${fn:escapeXml(service_type)} :*</label>
             <form:select id="serviceType" path="serviceType">
                 <option value="">${fn:escapeXml(service_type_select)}</option>
-                <c:forEach items="${serviceTypes}" var="serviceTypeOption">
-                    <option value="${serviceTypeOption.value}">${serviceTypeOption.displayName}</option>
-                </c:forEach>
+                <form:options items="${serviceTypes}" itemValue="value" itemLabel="displayName"/>
             </form:select>
+            
             <span id='serviceTypeError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(service_type)} ${fn:escapeXml(required_msg)}
             </span>
@@ -94,9 +101,7 @@
             <label class="formLabel" for="phoneOwnership">${fn:escapeXml(phone_ownership)} :*</label>
             <form:select id="phoneOwnership" path="phoneOwnership">
                 <option parent="select" value="">${fn:escapeXml(phone_ownership_select)}</option>
-                <c:forEach items="${phoneOwnerships}" var="phoneOwnershipOption">
-                    <option value="${phoneOwnershipOption.value}">${phoneOwnershipOption.displayName}</option>
-                </c:forEach>
+                <form:options items="${phoneOwnerships}" itemValue="value" itemLabel="displayName"/>
             </form:select>
             <span id='phoneOwnershipError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(phone_ownership)} ${fn:escapeXml(required_msg)}
@@ -108,11 +113,12 @@
         </div>
         <div class="hide form-field">
             <label class="formLabel" for="medium">${fn:escapeXml(medium)} :*</label>
+            <input type="hidden" id="mediumSelected" value="${mobileMidwifeEnrollmentForm.medium}" disabled="true"/>
             <form:select id="medium" path="medium">
                 <option parent="select" value="">${fn:escapeXml(medium_select)}</option>
                 <c:forEach items="${mediums}" var="mediumOption">
                     <c:forEach items="${mediumOption.phoneOwnerships}" var="phoneOwnershipOption">
-                        <option phoneOwnership="${phoneOwnershipOption.value}" value="${mediumOption.value}">${mediumOption.displayName}</option>
+                            <option phoneOwnership="${phoneOwnershipOption.value}" value="${mediumOption.value}">${mediumOption.displayName}</option>
                     </c:forEach>
                 </c:forEach>
             </form:select>
@@ -125,7 +131,12 @@
             <form:select id="dayOfWeek" path="dayOfWeek">
                 <option parent="select" value="">${fn:escapeXml(day_of_week_select)}</option>
                 <c:forEach items="${dayOfWeeks}" var="dayOfWeekOption">
-                    <option value="${dayOfWeekOption.key}">${dayOfWeekOption.value}</option>
+                    <c:if test="${dayOfWeekOption.key == mobileMidwifeEnrollmentForm.dayOfWeek}">
+                        <option value="${dayOfWeekOption.key}" selected="selected">${dayOfWeekOption.value}</option>
+                    </c:if>
+                    <c:if test="${dayOfWeekOption.key != mobileMidwifeEnrollmentForm.dayOfWeek}">
+                        <option value="${dayOfWeekOption.key}">${dayOfWeekOption.value}</option>
+                    </c:if>
                 </c:forEach>
             </form:select>
             <span id='dayOfWeekError' class='alertText formlyInvalid formlyAlert hide'>
@@ -133,7 +144,7 @@
             </span>
         </div>
         <div class="hide form-field">
-            <motech:time path="timeOfDay" label="${time_of_day} :*"
+            <motech:time time="${mobileMidwifeEnrollmentForm.timeOfDay}" path="timeOfDay" label="${time_of_day} :*"
                          default_select_hour_message="${fn:escapeXml(default_select_hour_message)}"
                          default_select_minute_message="${fn:escapeXml(default_select_minute_message)}"
                          hourErrorMessage="${fn:escapeXml(hour_required_msg)}"
@@ -143,6 +154,7 @@
         </div>
         <div class="hide form-field">
             <label class="formLabel" for="language">${fn:escapeXml(language)} :*</label>
+            <input type="hidden" id="languageSelected" value="${mobileMidwifeEnrollmentForm.language}" disabled="true"/>
             <form:select id="language" path="language">
                 <option parent="select" value="">${fn:escapeXml(language_select)}</option>
                 <c:forEach items="${languages}" var="languageOption">
@@ -161,9 +173,7 @@
             <label class="formLabel" for="learnedFrom">${fn:escapeXml(learned_from)} :*</label>
             <form:select id="learnedFrom" path="learnedFrom">
                 <option parent="select" value="">${fn:escapeXml(learned_from_select)}</option>
-                <c:forEach items="${learnedFrom}" var="learnedFromOption">
-                    <option value="${learnedFromOption.value}">${learnedFromOption.displayName}</option>
-                </c:forEach>
+                <form:options items="${learnedFrom}" itemValue="value" itemLabel="displayName"/>                
             </form:select>
             <span id='learnedFromError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(learned_from)} ${fn:escapeXml(required_msg)}
@@ -173,9 +183,7 @@
             <label class="formLabel" for="reasonToJoin">${fn:escapeXml(reason_to_join)} :*</label>
             <form:select id="reasonToJoin" path="reasonToJoin">
                 <option parent="select" value="">${fn:escapeXml(reason_to_join_select)}</option>
-                <c:forEach items="${reasonsToJoin}" var="reasonToJoinOption">
-                    <option value="${reasonToJoinOption.value}">${reasonToJoinOption.displayName}</option>
-                </c:forEach>
+                <form:options items="${reasonsToJoin}" itemValue="value" itemLabel="displayName"/>                
             </form:select>
             <span id='reasonToJoinError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(reason_to_join)} ${fn:escapeXml(required_msg)}
@@ -183,9 +191,10 @@
         </div>
         <div class="hide form-field">
             <label class="formLabel" for="messageStartWeek">${fn:escapeXml(message_start_week)} *:</label>
+            <input type="hidden" id="messageStartWeekSelected" value="${mobileMidwifeEnrollmentForm.messageStartWeek}" disabled="true"/>
             <form:select id="messageStartWeek" path="messageStartWeek">
                 <option parent="select" value="">${fn:escapeXml(message_start_week_select)}</option>
-                <c:forEach items="${messageStartWeeks}" var="messageStartWeek">
+                <c:forEach items="${messageStartWeeks}" var="messageStartWeek">                    
                     <option serviceType="${messageStartWeek.serviceType.value}" value="${messageStartWeek.value}">${messageStartWeek.displayText}</option>
                 </c:forEach>
             </form:select>
