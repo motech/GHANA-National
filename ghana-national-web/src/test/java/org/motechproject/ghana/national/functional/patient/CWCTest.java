@@ -28,7 +28,7 @@ public class CWCTest extends LoggedInUserFunctionalTest {
         dataGenerator = new DataGenerator();
     }
 
-    @Test
+    @Test(enabled = false)
     public void shouldEnrollForCWCForAPatient() {
         homePage.openCreateStaffPage();
         StaffPage staffPage = browser.getStaffPage();
