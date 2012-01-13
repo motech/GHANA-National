@@ -140,7 +140,17 @@ public class EditPatientFormHandler implements FormPublishHandler {
             mrsPerson.addAttribute(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(nhisExpires)));
         }
 
+        if(address != null){
+            mrsPerson.address(editClientForm.getAddress());
+        }
+
         MRSPatient updatedMRSPatient = new MRSPatient(motechId, existingMRSPatient.getPerson(), existingOrUpdatedFacility);
+        Patient patient;
+        if (editClientForm.getMotherMotechId() != null) {
+            patient = new Patient(updatedMRSPatient, editClientForm.getMotherMotechId());
+        } else {
+            patient = new Patient(existingMRSPatient);
+        }
 
         String staffId = editClientForm.getStaffId();
         List<MRSUser> mrsUsers = staffService.searchStaff(staffId, "", "", "", "", "");
@@ -150,7 +160,7 @@ public class EditPatientFormHandler implements FormPublishHandler {
                 editClientForm.getDate(), existingMRSPatient.getId(), null, PATIENTEDITVISIT);
 
         try {
-            patientService.updatePatient(new Patient(updatedMRSPatient), null, motherMotechId);
+            patientService.updatePatient(patient, null);
             patientService.saveEncounter(mrsEncounter);
         } catch (ParentNotFoundException ignored) {
         }

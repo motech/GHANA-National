@@ -8,7 +8,6 @@ import org.motechproject.ghana.national.bean.EditClientForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
-import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
@@ -28,9 +27,7 @@ import java.util.HashMap;
 import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class EditPatientFormHandlerTest {
@@ -135,16 +132,16 @@ public class EditPatientFormHandlerTest {
         editClientForm.setSex(sex);
         editClientForm.setPhoneNumber(phoneNumber);
         editClientForm.setUpdatePatientFacilityId(facilityIdWherePatientWasEdited);
+        editClientForm.setAddress(address);
     }
 
     private void assertResult(String facilityId, String country, String region, String district, String state,
                               String first, String middle, String last, Date dateOfBirth, String address,
                               String patientId, String nhisNumber, String preferredName, String sex, String phoneNumber, MotechEvent event, MRSFacility mrsFacilityWherePatientWasEdited, MRSPatient mrsPatient, MRSUser mrsUser) throws ParentNotFoundException {
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
-        ArgumentCaptor<PatientType> patientTypeArgumentCaptor = ArgumentCaptor.forClass(PatientType.class);
         ArgumentCaptor<String> motherIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<MRSEncounter> mrsEncounterArgumentCaptor = ArgumentCaptor.forClass(MRSEncounter.class);
-        doReturn(patientId).when(mockPatientService).updatePatient(patientArgumentCaptor.capture(), patientTypeArgumentCaptor.capture(), motherIdCaptor.capture());
+        doReturn(patientId).when(mockPatientService).updatePatient(patientArgumentCaptor.capture(),motherIdCaptor.capture());
 
         editPatientFormHandler.handleFormEvent(event);
 
@@ -162,6 +159,7 @@ public class EditPatientFormHandlerTest {
         assertThat(savedPerson.getFirstName(), is(equalTo(first)));
         assertThat(savedPerson.getLastName(), is(equalTo(last)));
         assertThat(savedPerson.getMiddleName(), is(equalTo(middle)));
+        assertThat(savedPerson.getAddress(), is(equalTo(address)));
         assertThat(savedPatient.getMrsPatient().getMotechId(), is(equalTo(patientId)));
         assertThat(savedPerson.getPreferredName(), is(equalTo(preferredName)));
         assertThat(savedPerson.getGender(), is(equalTo(sex)));
@@ -170,7 +168,7 @@ public class EditPatientFormHandlerTest {
         assertThat(((Attribute) selectUnique(savedPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.PHONE_NUMBER.getAttribute())))).value(), is(equalTo(phoneNumber)));
 
-        assertThat(motherIdCaptor.getValue(), is(equalTo(editClientForm.getMotherMotechId())));
+        assertThat(savedPatient.getParentId(), is(equalTo(editClientForm.getMotherMotechId())));
         assertThat(mrsEncounter.getEncounterType(),is(equalTo(EditPatientFormHandler.PATIENTEDITVISIT)));
         assertThat(mrsEncounter.getDate(),is(equalTo(editClientForm.getDate())));
         assertThat(mrsEncounter.getFacility().getId(),is(equalTo(mrsFacilityWherePatientWasEdited.getId())));
