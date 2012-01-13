@@ -29,7 +29,7 @@ public class CWCTest extends LoggedInUserFunctionalTest {
         dataGenerator = new DataGenerator();
     }
 
-    @Test(enabled = false)
+    @Test
     public void shouldEnrollForCWCForAPatient() {
         String firstName = "First Name" + dataGenerator.randomString(5);
         TestStaff staff = TestStaff.with(firstName);

@@ -16,7 +16,7 @@
 
     <form:form id="cwcEnrollmentForm" action="${fn:escapeXml(form_url)}" method="POST" title="CWC Enrollment"
                commandName="cwcEnrollmentForm">
-        <c:if test="${fn:length(errors) ge 0}">
+        <c:if test="${fn:length(errors) ne 0}">
             <div class="formlyAlerts formlyInvalid formlyAlert" style="display: block;">
                 <c:forEach items="${errors}" var="error">
                     <c:out value="${error}"/><br/>
