@@ -20,6 +20,12 @@ public class AllMobileMidwifeEnrollments extends MotechBaseRepository<MobileMidw
         super(MobileMidwifeEnrollment.class, db);
     }
 
+    public void createOrUpdate(MobileMidwifeEnrollment enrollment) {
+        if(enrollment.getId() == null)
+            super.add(enrollment);
+        else super.update(enrollment);
+    }
+    
     @View(name = "find_by_patientId", map = "function(doc){ if(doc.type === 'MobileMidwifeEnrollment') emit(doc.patientId,doc) }")
     public MobileMidwifeEnrollment findByPatientId(String patientId) {
         ViewQuery viewQuery = createQuery("find_by_patientId").key(patientId).includeDocs(true);

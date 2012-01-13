@@ -4,6 +4,8 @@ import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 
+import java.lang.String;
+
 public class MobileMidwifeEnrollmentForm {
     private String patientMotechId;
     private String staffMotechId;
@@ -21,6 +23,16 @@ public class MobileMidwifeEnrollmentForm {
     private String messageStartWeek;
 
     public MobileMidwifeEnrollmentForm() {
+    }
+
+    public MobileMidwifeEnrollmentForm(MobileMidwifeEnrollment enrollment) {
+        if (enrollment != null) {
+            this.setPatientMotechId(enrollment.getPatientId()).setStaffMotechId(enrollment.getStaffId()).setFacilityMotechId(enrollment.getFacilityId())
+                    .setConsent(enrollment.getConsent()).setServiceType(enrollment.getServiceType()).setPhoneOwnership(enrollment.getPhoneOwnership())
+                    .setPhoneNumber(enrollment.getPhoneNumber()).setMedium(enrollment.getMedium()).setDayOfWeek(enrollment.getDayOfWeek())
+                    .setTimeOfDay(enrollment.getTimeOfDay()).setLanguage(enrollment.getLanguage()).setLearnedFrom(enrollment.getLearnedFrom())
+                    .setReasonToJoin(enrollment.getReasonToJoin()).setMessageStartWeek(enrollment.getMessageStartWeek());
+        }
     }
 
     public String getStaffMotechId() {
@@ -75,63 +87,86 @@ public class MobileMidwifeEnrollmentForm {
         return patientMotechId;
     }
 
-    public void setPatientMotechId(String patientMotechId) {
+    public MobileMidwifeEnrollmentForm setPatientMotechId(String patientMotechId) {
         this.patientMotechId = patientMotechId;
+        return this;
     }
 
-    public void setStaffMotechId(String staffMotechId) {
+    public MobileMidwifeEnrollmentForm setStaffMotechId(String staffMotechId) {
         this.staffMotechId = staffMotechId;
+        return this;
     }
 
-    public void setConsent(Boolean consent) {
+    public MobileMidwifeEnrollmentForm setConsent(Boolean consent) {
         this.consent = consent;
+        return this;
     }
 
-    public void setServiceType(ServiceType serviceType) {
+    public MobileMidwifeEnrollmentForm setServiceType(ServiceType serviceType) {
         this.serviceType = serviceType;
+        return this;
     }
 
-    public void setPhoneOwnership(PhoneOwnership phoneOwnership) {
+    public MobileMidwifeEnrollmentForm setPhoneOwnership(PhoneOwnership phoneOwnership) {
         this.phoneOwnership = phoneOwnership;
+        return this;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public MobileMidwifeEnrollmentForm setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        return this;
     }
 
-    public void setMedium(Medium medium) {
+    public MobileMidwifeEnrollmentForm setMedium(Medium medium) {
         this.medium = medium;
+        return this;
     }
 
-    public void setDayOfWeek(DayOfWeek dayOfWeek) {
+    public MobileMidwifeEnrollmentForm setDayOfWeek(DayOfWeek dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
+        return this;
     }
 
-    public void setTimeOfDay(Time timeOfDay) {
+    public MobileMidwifeEnrollmentForm setTimeOfDay(Time timeOfDay) {
         this.timeOfDay = timeOfDay;
+        return this;
     }
 
-    public void setLanguage(Language language) {
+    public MobileMidwifeEnrollmentForm setLanguage(Language language) {
         this.language = language;
+        return this;
     }
 
-    public void setLearnedFrom(LearnedFrom learnedFrom) {
+    public MobileMidwifeEnrollmentForm setLearnedFrom(LearnedFrom learnedFrom) {
         this.learnedFrom = learnedFrom;
+        return this;
     }
 
-    public void setReasonToJoin(ReasonToJoin reasonToJoin) {
+    public MobileMidwifeEnrollmentForm setReasonToJoin(ReasonToJoin reasonToJoin) {
         this.reasonToJoin = reasonToJoin;
+        return this;
     }
 
-    public void setMessageStartWeek(String messageStartWeek) {
+    public MobileMidwifeEnrollmentForm setMessageStartWeek(String messageStartWeek) {
         this.messageStartWeek = messageStartWeek;
+        return this;
     }
 
     public String getFacilityMotechId() {
         return facilityMotechId;
     }
 
-    public void setFacilityMotechId(String facilityMotechId) {
+    public MobileMidwifeEnrollmentForm setFacilityMotechId(String facilityMotechId) {
         this.facilityMotechId = facilityMotechId;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment createEnrollment(MobileMidwifeEnrollment enrollment) {
+        enrollment.setStaffId(getStaffMotechId()).setPatientId(getPatientMotechId()).setFacilityId(getFacilityMotechId())
+                .setConsent(getConsent()).setDayOfWeek(getDayOfWeek()).setLearnedFrom(getLearnedFrom())
+                .setLanguage(getLanguage()).setMedium(getMedium()).setMessageStartWeek(getMessageStartWeek()).setPhoneNumber(getPhoneNumber())
+                .setPhoneOwnership(getPhoneOwnership()).setReasonToJoin(getReasonToJoin()).setServiceType(getServiceType())
+                .setTimeOfDay(getTimeOfDay());
+        return enrollment;
     }
 }

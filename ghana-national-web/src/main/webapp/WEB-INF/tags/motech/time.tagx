@@ -1,6 +1,7 @@
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:form="http://www.springframework.org/tags/form" version="2.0"
           xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:c="http://java.sun.com/jsp/jstl/core">
     <jsp:output omit-xml-declaration="yes"/>
+    <jsp:directive.attribute name="time" type="org.motechproject.model.Time" required="true" rtexprvalue="true"/>
     <jsp:directive.attribute name="path" type="java.lang.String" required="true" rtexprvalue="true"/>
     <jsp:directive.attribute name="label" type="java.lang.String" required="true" rtexprvalue="true"/>
     <jsp:directive.attribute name="required" type="java.lang.String" rtexprvalue="true"/>
@@ -15,18 +16,28 @@
         <c:set var="cssClass" value="jsRequire"/>
     </c:if>
 
-    <label for="${path}" class="formLabel">${fn:escapeXml(label)}</label>
+    <label for="${path}" class="formLabel">${fn:escapeXml(label)}</label>    
     <form:select id="${path}.hour" path="${path}.hour">
         <option value="">${fn:escapeXml(default_select_hour_message)}</option>
         <c:forEach var="i" begin="0" end="23" step="1">
-            <option value="${i}">${i}</option>
+            <c:if test="${time.hour == i}">
+                <option value="${i}" selected="selected">${i}</option>
+            </c:if>
+            <c:if test="${time.hour != i}">
+                <option value="${i}">${i}</option>
+            </c:if>
         </c:forEach>
     </form:select>
 
     <form:select id="${path}.minute" path="${path}.minute">
         <option value="">${fn:escapeXml(default_select_minute_message)}</option>
         <c:forEach var="i" begin="1" end="60" step="1">
-            <option value="${i}">${i}</option>
+            <c:if test="${time.minute == i}">
+                <option value="${i}" selected="selected">${i}</option>
+            </c:if>
+            <c:if test="${time.minute != i}">
+                <option value="${i}">${i}</option>
+            </c:if>
         </c:forEach>
     </form:select>
     <span id="${hourErrorMsgId}" class='alertText formlyInvalid formlyAlert hide'>

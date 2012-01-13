@@ -68,7 +68,7 @@ var language = utilities.lazyLoad(
                     return $(this).attr('phoneownership') == phoneOwnershipMatchValue && $(this).attr('medium') == mediumMatchValue;
                 });
                 language.instance().assignOptions(filteredOptions, allLanguageOptions[0]);
-            },
+            }
 
         }
     }
@@ -89,7 +89,7 @@ var messageStartWeek = utilities.lazyLoad(
                     return $(this).attr('servicetype') == serviceTypeMatchValue;
                 });
                 messageStartWeek.instance().assignOptions(filteredOptions, allMessageStartWeeksOptions[0]);
-            },
+            }
         }
     }
 );
@@ -102,7 +102,7 @@ var serviceType = utilities.lazyLoad(
                 instance.change(function(){
                     messageStartWeek.filterOptions(instance.find('option:selected').val(), allMessageStartWeeksOptions);
                 });
-            },
+            }
         }
     }
 );
@@ -185,9 +185,19 @@ $(document).ready(function() {
     var initialServiceTypeOptions = $('#messageStartWeek').find('option');
     serviceType.instance().onChangePopulateMessageStartWeek(messageStartWeek.instance(), initialServiceTypeOptions);
 
-    $('#phoneOwnership').trigger('change');
-    $('#medium').trigger('change');
-    $('#serviceType').trigger('change');
+    $("input[name=consent]:checked").trigger('change');
+
+    (function selectServiceTypeToFilterMessageStartWeek_AndFillSelectedValue () {
+        $('#serviceType').trigger('change');
+        $('#messageStartWeek').val($("#messageStartWeekSelected").val()).trigger('change');
+    })();
+
+    (function triggerPhoneOwnershipAndSetMediumAndLanguageToFilterDropDownValue_AndFillSelectedValue () {
+        $('#phoneOwnership').trigger('change');
+        // previously selected values is reselected via hidden params - for medium, location, messageStartWeek
+        $('#medium').val($("#mediumSelected").val()).trigger('change');
+        $('#language').val($("#languageSelected").val());        
+    })();
 
     $('#submitMobileMidwife').click(function() {
         var form = $('#mobileMidwifeEnrollmentForm');

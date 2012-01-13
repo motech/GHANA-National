@@ -41,7 +41,7 @@ public class CWCEnrollmentPage extends HomePage {
 
     @FindBy(id = "addHistory2")
     @CacheLookup
-    private WebElement no;
+    private WebElement  no;
 
     @FindBy(id = "countries")
     @CacheLookup
