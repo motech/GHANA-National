@@ -31,15 +31,15 @@ public class CWCTest extends LoggedInUserFunctionalTest {
 
     @Test
     public void shouldEnrollForCWCForAPatient() {
-        String firstName = "First Name" + dataGenerator.randomString(5);
-        TestStaff staff = TestStaff.with(firstName);
         StaffPage staffPage = browser.toStaffCreatePage(homePage);
-        staffPage.create(staff);
-
+        staffPage.create(TestStaff.with("First Name" + dataGenerator.randomString(5)));
         String staffId = staffPage.staffId();
 
         patientPage = browser.toCreatePatient(staffPage);
-        createPatient();
+        patientPage.create(TestPatient.with("First Name" + dataGenerator.randomString(5)).
+                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
+                patientType(TestPatient.PATIENT_TYPE.PATIENT_MOTHER).estimatedDateOfBirth(false));
+
         CWCEnrollmentPage cwcEnrollmentPage = browser.toCWCEnrollmentForm(patientPage);
 
         cwcEnrollmentPage.withStaffId(staffId).withRegistrationToday(RegistrationToday.IN_PAST.toString()).withSerialNumber("trew654gf")
@@ -49,10 +49,4 @@ public class CWCTest extends LoggedInUserFunctionalTest {
         assertTrue(cwcEnrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Client registered for CWC successfully."));
     }
 
-    private void createPatient() {
-        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.PATIENT_MOTHER).estimatedDateOfBirth(false);
-        patientPage.create(patient);
-    }
 }
