@@ -25,6 +25,8 @@ $.CWCEnrollmentForm = function() {
         formValidator.clearMessages(cwcEnrollmentForm);
         formValidator.validatePhoneNumbers(cwcEnrollmentForm);
         formValidator.validateRequiredFields(cwcEnrollmentForm);
+        formValidator.validateDate(cwcEnrollmentForm);
+        formValidator.validateDateBefore(cwcEnrollmentForm);
         return formValidator.hasErrors(cwcEnrollmentForm);
     };
 

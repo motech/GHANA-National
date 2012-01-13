@@ -15,18 +15,18 @@ public class ANCVO {
     private RegistrationToday registrationToday;
     private String serialNumber;
     private Date estimatedDateOfDelivery;
-    private Float height;
+    private Double height;
     private Integer gravida;
     private Integer parity;
     private Boolean addHistory;
     private Boolean deliveryDateConfirmed;
     private List<ANCCareHistory> careHistory;
-    private Integer lastIPT;
-    private Integer lastTT;
+    private String lastIPT;
+    private String lastTT;
     private Date lastIPTDate;
     private Date lastTTDate;
 
-    public ANCVO(String staffId, String facilityId, String motechPatientId, Date registrationDate, RegistrationToday registrationToday, String serialNumber, Date estimatedDateOfDelivery, Float height, Integer gravida, Integer parity, Boolean addHistory, Boolean deliveryDateConfirmed, List<ANCCareHistory> careHistory, Integer lastIPT, Integer lastTT, Date lastIPTDate, Date lastTTDate) {
+    public ANCVO(String staffId, String facilityId, String motechPatientId, Date registrationDate, RegistrationToday registrationToday, String serialNumber, Date estimatedDateOfDelivery, Double height, Integer gravida, Integer parity, Boolean addHistory, Boolean deliveryDateConfirmed, List<ANCCareHistory> careHistory, String lastIPT, String lastTT, Date lastIPTDate, Date lastTTDate) {
         this.staffId = staffId;
         this.facilityId = facilityId;
         this.motechPatientId = motechPatientId;
@@ -74,7 +74,7 @@ public class ANCVO {
         return estimatedDateOfDelivery;
     }
 
-    public Float getHeight() {
+    public Double getHeight() {
         return height;
     }
 
@@ -98,11 +98,11 @@ public class ANCVO {
         return careHistory;
     }
 
-    public Integer getLastIPT() {
+    public String getLastIPT() {
         return lastIPT;
     }
 
-    public Integer getLastTT() {
+    public String getLastTT() {
         return lastTT;
     }
 

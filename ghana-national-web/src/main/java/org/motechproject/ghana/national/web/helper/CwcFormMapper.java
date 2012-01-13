@@ -13,7 +13,6 @@ import org.openmrs.Concept;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -93,7 +92,14 @@ public class CwcFormMapper {
         }
 
         map.put(Constants.CARE_HISTORIES, cwcCareHistories);
-        map.put(CWCController.REGISTRATION_OPTIONS, Arrays.asList(RegistrationToday.values()));
+
+        Map<RegistrationToday, String> registrationTodayValues = new HashMap<RegistrationToday, String>();
+
+        for (RegistrationToday registrationToday : RegistrationToday.values()) {
+            registrationTodayValues.put(registrationToday, registrationToday.getDescription());
+        }
+
+        map.put(CWCController.REGISTRATION_OPTIONS, registrationTodayValues);
         map.put(Constants.LAST_IPTI, new HashMap<Integer, String>() {{
             put(1, Constants.IPTI_1);
             put(2, Constants.IPTI_2);

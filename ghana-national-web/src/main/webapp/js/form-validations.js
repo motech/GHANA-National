@@ -16,13 +16,17 @@ function FormValidator() {
     }
     
     this.validateFieldForMandatoryValue = function(field){
+        //select & text
         var val = $(field).val();
-        var fieldName = utilities.escapeDot(field.name);
+        var fieldName = $(field).attr("id");
+
+        //radio & checkbox
         if($(field).attr('type') == 'radio' || $(field).attr('type') == 'checkbox') {
+            fieldName = utilities.escapeDot(field.name);
             val = $("input[name='" + fieldName + "']:checked").val();
         }
         if(utilities.isNull(val)) {
-             $("#" + $(field).attr('id') + "Error").removeClass('hide');
+             $("#" + fieldName + "Error").removeClass('hide');
         }
     }
 

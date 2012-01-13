@@ -18,7 +18,7 @@ public class RegisterANCForm extends FormBean {
     @MaxLength(size = 50)
     @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String staffId;
-    
+
     @Required
     @MaxLength(size = 50)
     @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
@@ -33,10 +33,10 @@ public class RegisterANCForm extends FormBean {
     @RegEx(pattern = MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
-    
+
     @Required
     private Date estDeliveryDate;
-    
+
     @Required
     private Boolean deliveryDateConfirmed;
 
@@ -46,16 +46,20 @@ public class RegisterANCForm extends FormBean {
     private Date lastIPTDate;
 
     private Date lastTTDate;
-    
+
+    private String lastIPT;
+
+    private String lastTT;
+
     @Required
-    private Integer height;
-    
+    private Double height;
+
     @Required
     private Integer gravida;
 
     @Required
     private Integer parity;
-    
+
     @Required
     private String ancRegNumber;
 
@@ -110,11 +114,11 @@ public class RegisterANCForm extends FormBean {
         this.estDeliveryDate = estDeliveryDate;
     }
 
-    public Integer getHeight() {
+    public Double getHeight() {
         return height;
     }
 
-    public void setHeight(Integer height) {
+    public void setHeight(Double height) {
         this.height = height;
     }
 
@@ -180,5 +184,21 @@ public class RegisterANCForm extends FormBean {
 
     public void setLastTTDate(Date lastTTDate) {
         this.lastTTDate = lastTTDate;
+    }
+
+    public String getLastIPT() {
+        return lastIPT;
+    }
+
+    public void setLastIPT(String lastIPT) {
+        this.lastIPT = lastIPT;
+    }
+
+    public String getLastTT() {
+        return lastTT;
+    }
+
+    public void setLastTT(String lastTT) {
+        this.lastTT = lastTT;
     }
 }

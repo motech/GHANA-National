@@ -13,6 +13,7 @@ import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.util.DateUtil;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -31,6 +32,7 @@ public class ANCControllerTest {
     private FacilityHelper facilityHelper;
     @Mock
     private ANCService ancService;
+    private BindingResult bindingResult;
 
     @Before
     public void setUp() {
@@ -66,13 +68,13 @@ public class ANCControllerTest {
         ancEnrollmentForm.setEstimatedDateOfDelivery(new Date());
         ancEnrollmentForm.setGravida(10);
         ancEnrollmentForm.setParity(10);
-        ancEnrollmentForm.setHeight(Float.valueOf("170.5"));
+        ancEnrollmentForm.setHeight(Double.valueOf("170.5"));
         ancEnrollmentForm.setRegistrationToday(RegistrationToday.TODAY);
         ancEnrollmentForm.setFacilityForm(facilityForm);
 
         ModelMap modelMap = new ModelMap();
 
-        ancController.save(ancEnrollmentForm, modelMap);
+        ancController.save(ancEnrollmentForm, modelMap,bindingResult);
 
         ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
 //        verify(ancService).save(captor.capture());
