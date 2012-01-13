@@ -15,11 +15,9 @@ import org.motechproject.mrs.model.MRSUser;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -43,8 +41,14 @@ public class CwcFormMapperTest {
             cwcCareHistories.put(cwcCareHistory, cwcCareHistory.getDescription());
         }
 
+        Map<RegistrationToday, String> registrationTodayValues = new HashMap<RegistrationToday, String>();
+
+        for (RegistrationToday registrationToday : RegistrationToday.values()) {
+            registrationTodayValues.put(registrationToday, registrationToday.getDescription());
+        }
+
         assertThat((Map<CwcCareHistory, String>) actual.get(Constants.CARE_HISTORIES), is(cwcCareHistories));
-        assertThat((List<RegistrationToday>) actual.get(CWCController.REGISTRATION_OPTIONS), is(Arrays.asList(RegistrationToday.values())));
+        assertThat((Map<RegistrationToday, String>) actual.get(CWCController.REGISTRATION_OPTIONS), is(registrationTodayValues));
         assertThat((Map<Integer, String>) actual.get(Constants.LAST_IPTI), allOf(
                 hasEntry(1, Constants.IPTI_1),
                 hasEntry(2, Constants.IPTI_2),

@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CWCService;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -51,11 +54,12 @@ public class CWCController {
     @Autowired
     FormValidator formValidator;
 
-    private String error = "error";
+    private String errors = "errors";
     public static final String ENROLLMENT_CWC_FORM = "cwcEnrollmentForm";
     public static final String ENROLL_CWC_URL = "cwc/new";
     public static final String PATIENT_NOT_FOUND = "Patient Not Found";
     public static final String PATIENT_IS_NOT_A_CHILD = "Patient is Not A Child";
+    public static final String STAFF_ID_NOT_FOUND = "Staff Not Found";
     public static final String REGISTRATION_OPTIONS = "registrationOptions";
 
     @InitBinder
@@ -82,12 +86,12 @@ public class CWCController {
         modelMap.mergeAttributes(facilityHelper.locationMap());
 
         if (patient == null) {
-            modelMap.addAttribute(error, PATIENT_NOT_FOUND);
+            modelMap.addAttribute(errors, Arrays.asList(PATIENT_NOT_FOUND));
             return ENROLL_CWC_URL;
         }
 
         if (patientService.getAgeOfPatientByMotechId(motechPatientId) >= 5) {
-            modelMap.addAttribute(error, PATIENT_IS_NOT_A_CHILD);
+            modelMap.addAttribute(errors, Arrays.asList(PATIENT_IS_NOT_A_CHILD));
             return ENROLL_CWC_URL;
         }
         return ENROLL_CWC_URL;
@@ -103,14 +107,21 @@ public class CWCController {
         List<FormError> formErrors = registerCWCFormValidator.validatePatient(cwcEnrollmentForm.getPatientMotechId());
         formErrors.addAll(formValidator.validateIfStaffExists(cwcEnrollmentForm.getStaffId()));
 
-        String validationErrors = "";
+        List<String> validationErrors = new ArrayList<String>();
         for (FormError formError : formErrors) {
-            validationErrors += formError.getParameter() + " " + formError.getError();
-            validationErrors += "\n";
+            if(formError.getParameter().equals(RegisterCWCFormValidator.CHILD_AGE_PARAMETER))  {
+                validationErrors.add(PATIENT_IS_NOT_A_CHILD);
+            }
+            if(formError.getParameter().equals(FormValidator.STAFF_ID)) {
+                validationErrors.add(STAFF_ID_NOT_FOUND);
+            }
+            if(formError.getParameter().equals(RegisterCWCFormValidator.MOTECH_ID_ATTRIBUTE_NAME)) {
+                validationErrors.add("Patient " + StringUtils.capitalize(formError.getError()));
+            }
         }
         
         if(!validationErrors.isEmpty()) {
-            modelMap.addAttribute(error, validationErrors);
+            modelMap.addAttribute(errors, validationErrors);
             return ENROLL_CWC_URL;
         }
 

@@ -23,9 +23,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -102,7 +105,7 @@ public class CWCControllerTest {
         when(mockPatientService.getPatientByMotechId(motechPatientId)).thenReturn(null);
 
         final String actualResult = cwcController.create(motechPatientId, modelMap);
-        assertThat((String) modelMap.get("error"), is(CWCController.PATIENT_NOT_FOUND));
+        assertThat((List<String>) modelMap.get("errors"), hasItem(CWCController.PATIENT_NOT_FOUND));
         assertThat(actualResult, is(CWCController.ENROLL_CWC_URL));
     }
 
@@ -114,7 +117,7 @@ public class CWCControllerTest {
         when(mockPatientService.getPatientByMotechId(motechPatientId)).thenReturn(mockPatient);
         when(mockPatientService.getAgeOfPatientByMotechId(motechPatientId)).thenReturn(10);
         final String actualResult = cwcController.create(motechPatientId, modelMap);
-        assertThat((String) modelMap.get("error"), is(CWCController.PATIENT_IS_NOT_A_CHILD));
+        assertThat((List<String>) modelMap.get("errors"), hasItem(CWCController.PATIENT_IS_NOT_A_CHILD));
         assertThat(actualResult, is(CWCController.ENROLL_CWC_URL));
     }
 
@@ -197,17 +200,19 @@ public class CWCControllerTest {
 
         when(mockregisterCWCFormValidator.validatePatient(motechId)).thenReturn(
                 new ArrayList<FormError>() {{
-                    add(new FormError("error1", "description1"));
+                    add(new FormError(RegisterCWCFormValidator.CHILD_AGE_PARAMETER, "description1"));
+                    add(new FormError(RegisterCWCFormValidator.MOTECH_ID_ATTRIBUTE_NAME, "description2"));
                 }});
 
         when(mockFormValidator.validateIfStaffExists(staffId)).thenReturn(
                 new ArrayList<FormError>() {{
-                    add(new FormError("error2", "description2"));
+                    add(new FormError(FormValidator.STAFF_ID, "description3"));
                 }});
 
         final String result = cwcController.save(cwcEnrollmentForm, modelMap);
 
-        assertThat((String) modelMap.get("error"), is(equalTo("error1 description1\nerror2 description2\n")));
+        assertThat((List<String>) modelMap.get("errors"), hasItems(CWCController.PATIENT_IS_NOT_A_CHILD,
+                "Patient Description2", CWCController.STAFF_ID_NOT_FOUND));
         assertThat(result, is(equalTo(CWCController.ENROLL_CWC_URL)));
         verifyZeroInteractions(mockCwcService);
         verify(mockCwcFormMapper).setViewAttributes();
