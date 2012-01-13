@@ -27,10 +27,10 @@ public class EditClientFromMobileTest {
         assertEquals(errors.size(), 1);
         final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
 
-        assertThat(errorsMap.get("date"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("facilityId"), hasItem("is mandatory"));
         assertThat(errorsMap.get("staffId"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("updatePatientFacilityId"), hasItem("is mandatory"));
         assertThat(errorsMap.get("motechId"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("date"), hasItem("is mandatory"));
     }
 
     @Test

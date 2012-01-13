@@ -33,12 +33,6 @@ public class PatientService {
         this.identifierGenerationService = identifierGenerationService;
     }
 
-    @Autowired
-    public PatientService(AllPatients allPatients, IdentifierGenerationService identifierGenerationService) {
-        this.allPatients = allPatients;
-        this.identifierGenerationService = identifierGenerationService;
-    }
-
     public String registerPatient(Patient patient)
             throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         try {
