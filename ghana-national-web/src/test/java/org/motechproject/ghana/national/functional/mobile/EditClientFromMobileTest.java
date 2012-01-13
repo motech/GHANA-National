@@ -48,7 +48,6 @@ public class EditClientFromMobileTest {
         assertEquals(errors.size(), 1);
         final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
 
-        assertThat(errorsMap.get("date"), hasItem("not found"));
         assertThat(errorsMap.get("facilityId"), hasItem("not found"));
         assertThat(errorsMap.get("staffId"), hasItem("not found"));
         assertThat(errorsMap.get("motechId"), hasItem("not found"));
