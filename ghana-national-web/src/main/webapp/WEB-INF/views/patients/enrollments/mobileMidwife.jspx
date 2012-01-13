@@ -49,6 +49,9 @@
                 </c:forEach>
             </div>
         </c:if>
+        <c:if test="${successMessage ne null}">
+              <br/><span class="success"><c:out value="${successMessage}"/></span><br/><br/>
+        </c:if>        
         <div class="form-field">
             <label for="patientMotechId" class="formLabel">${fn:escapeXml(patient_motech_id)}: *</label>
             <form:input path="patientMotechId" size="20" cssClass="jsRequire" disabled="true"/>

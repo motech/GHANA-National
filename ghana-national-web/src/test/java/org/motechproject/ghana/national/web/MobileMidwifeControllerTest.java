@@ -6,6 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
+import org.motechproject.ghana.national.tools.Messages;
 import org.motechproject.ghana.national.validator.MobileMidwifeFormValidator;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
 import org.motechproject.mobileforms.api.domain.FormError;
@@ -25,6 +26,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.TestUtils.isEq;
+import static org.motechproject.ghana.national.web.MobileMidwifeController.*;
 
 public class MobileMidwifeControllerTest {
 
@@ -32,12 +34,14 @@ public class MobileMidwifeControllerTest {
     private MobileMidwifeFormValidator mobileMidwifeFormValidator;
     @Mock
     private MobileMidwifeService mobileMidwifeService;
+    @Mock
+    private Messages messages;
     MobileMidwifeController controller;
 
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new MobileMidwifeController(mobileMidwifeFormValidator, mobileMidwifeService);
+        controller = new MobileMidwifeController(mobileMidwifeFormValidator, mobileMidwifeService, messages);
     }
 
     @Test
@@ -46,16 +50,19 @@ public class MobileMidwifeControllerTest {
         String facilityId = "facilityI";
         String staffId = "staffId";
         MobileMidwifeEnrollmentForm form = defaultForm(patientId, facilityId, staffId);
+
         when(mobileMidwifeService.findBy(patientId)).thenReturn(null);
         when(mobileMidwifeFormValidator.validateFacilityPatientAndStaff(patientId,facilityId,staffId)).thenReturn(Collections.<FormError>emptyList());
+
         ModelMap modelMap = new ModelMap();
         String editUrl = controller.save(form, null, modelMap);
 
+        assertThat(editUrl, isEq(MOBILE_MIDWIFE_URL));
         verify(mobileMidwifeFormValidator).validateFacilityPatientAndStaff(form.getPatientMotechId(), form.getFacilityMotechId(), form.getStaffMotechId());
+
         ArgumentCaptor<MobileMidwifeEnrollment> enrollment = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         verify(mobileMidwifeService).saveOrUpdate(enrollment.capture());
         assertFormWithEnrollment((MobileMidwifeEnrollmentForm) modelMap.get("mobileMidwifeEnrollmentForm"), enrollment.getValue());
-        assertThat(editUrl, isEq(MobileMidwifeController.MOBILE_MIDWIFE_URL));
     }
 
     @Test
@@ -63,10 +70,15 @@ public class MobileMidwifeControllerTest {
         String patientId = "patientId";
         String facilityId = "facilityI";
         String staffId = "staffId";
+        String successMsg = "Changes successful";
+
         MobileMidwifeEnrollmentForm form = defaultForm(patientId, facilityId, staffId);
         MobileMidwifeEnrollment existingEnrollment = defaultForm(patientId, "oldFacilityId", "oldStaffId").createEnrollment(new MobileMidwifeEnrollment());
+
         when(mobileMidwifeService.findBy(patientId)).thenReturn(existingEnrollment);
         when(mobileMidwifeFormValidator.validateFacilityPatientAndStaff(patientId,facilityId,staffId)).thenReturn(Collections.<FormError>emptyList());
+        when(messages.message(SUCCESS_MESSAGE)).thenReturn(successMsg);
+
         ModelMap modelMap = new ModelMap();
         String editUrl = controller.save(form, null, modelMap);
 
@@ -74,7 +86,9 @@ public class MobileMidwifeControllerTest {
         ArgumentCaptor<MobileMidwifeEnrollment> enrollment = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         verify(mobileMidwifeService).saveOrUpdate(enrollment.capture());
         assertFormWithEnrollment((MobileMidwifeEnrollmentForm) modelMap.get("mobileMidwifeEnrollmentForm"), enrollment.getValue());
-        assertThat(editUrl, isEq(MobileMidwifeController.MOBILE_MIDWIFE_URL));
+
+        assertThat(editUrl, isEq(MOBILE_MIDWIFE_URL));
+        assertThat((String) modelMap.get("successMessage"), isEq(successMsg));
     }
 
     @Test
@@ -84,6 +98,7 @@ public class MobileMidwifeControllerTest {
         String staffId = "staffId";
         ModelMap map=new ModelMap();
         MobileMidwifeEnrollmentForm form = defaultForm(patientId, facilityId, staffId);
+
         when(mobileMidwifeFormValidator.validateFacilityPatientAndStaff(patientId,facilityId,staffId)).thenReturn(new ArrayList<FormError>(){{
             add(new FormError("error1","description1"));
             add(new FormError("error2","description2"));
@@ -93,10 +108,11 @@ public class MobileMidwifeControllerTest {
 
         verify(mobileMidwifeFormValidator).validateFacilityPatientAndStaff(form.getPatientMotechId(), form.getFacilityMotechId(), form.getStaffMotechId());
         verify(mobileMidwifeService,never()).saveOrUpdate((MobileMidwifeEnrollment)any());
+
         List<FormError> errors = (List<FormError>) map.get("formErrors");
         assertThat("description1",is(equalTo(errors.get(0).getError())));
         assertThat("description2",is(equalTo(errors.get(1).getError())));
-        assertThat(editUrl, isEq(MobileMidwifeController.MOBILE_MIDWIFE_URL));
+        assertThat(editUrl, isEq(MOBILE_MIDWIFE_URL));
         assertEquals(form, map.get("mobileMidwifeEnrollmentForm"));
     }
 

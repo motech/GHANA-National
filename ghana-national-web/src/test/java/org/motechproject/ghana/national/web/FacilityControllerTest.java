@@ -10,11 +10,10 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.tools.Messages;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.model.MRSUser;
-import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
@@ -23,29 +22,21 @@ import org.springframework.validation.FieldError;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.web.FacilityController.EDIT_FACILITY_VIEW;
-import static org.motechproject.ghana.national.web.FacilityController.FACILITY_FORM;
-import static org.motechproject.ghana.national.web.FacilityController.FACILITY_ID;
+import static org.motechproject.ghana.national.web.FacilityController.*;
 
 public class FacilityControllerTest {
     FacilityController facilityController;
     @Mock
     FacilityService mockFacilityService;
     @Mock
-    MessageSource mockMessageSource;
+    Messages mockMessages;
     @Mock
     BindingResult mockBindingResult;
 
@@ -56,7 +47,7 @@ public class FacilityControllerTest {
         initMocks(this);
         facilityHelper = new FacilityHelper();
         ReflectionTestUtils.setField(facilityHelper, "facilityService", mockFacilityService);
-        facilityController = new FacilityController(mockFacilityService, mockMessageSource, facilityHelper);
+        facilityController = new FacilityController(mockFacilityService, mockMessages, facilityHelper);
         mockBindingResult = mock(BindingResult.class);
     }
 
@@ -116,7 +107,7 @@ public class FacilityControllerTest {
         final String message = "Facility already exists.";
         final FacilityController spyFacilitiesController = spy(facilityController);
         doThrow(new FacilityAlreadyFoundException()).when(mockFacilityService).create(facility, country, region, district, province, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
-        when(mockMessageSource.getMessage("facility_already_exists", null, Locale.getDefault())).thenReturn(message);
+        when(mockMessages.message("facility_already_exists")).thenReturn(message);
 
         final FacilityForm createFacilityForm = new FacilityForm();
         createFacilityForm.setName(facility);
