@@ -45,6 +45,18 @@ var medium = utilities.lazyLoad(
                 instance.change(function(){
                     language.filterOptions(phoneOwnership.selectedValue(), medium.instance().selectedValue(), allLanguageOptions);
                 });
+            },
+            onChangeShowChoiceOfDayAndTimeForVoice : function() {
+                instance.change(function(selection) {
+
+                     if($(this).val() == 'VOICE') {
+                        $('#dayOfWeekRow').show();
+                        $('#timeOfDayRow').show();
+                     } else {
+                        $('#dayOfWeekRow').hide();
+                        $('#timeOfDayRow').hide();
+                     }
+                });
             }
         }
     }
@@ -110,7 +122,8 @@ var serviceType = utilities.lazyLoad(
 var consent = utilities.lazyLoad(
     function(){
         var instance = $('input[name=consent]');
-        var idsOfFieldsDependentToConsent = ['serviceType', 'phoneOwnership', 'phoneNumber', 'medium', 'dayOfWeek', 'timeOfDay\\.hour', 'timeOfDay\\.minute', 'language', 'learnedFrom', 'reasonToJoin', 'messageStartWeek'];
+        var idsOfFieldsDependentToConsent = ['serviceType', 'phoneOwnership', 'phoneNumber', 'medium', 'dayOfWeek', 'timeOfDay\\.hour', 'timeOfDay\\.minute', 'language',
+            'learnedFrom', 'reasonToJoin', 'messageStartWeek'];
         return{
             validateDependentMandatoryFields : function(){
                 if($('input[name=consent]:checked').val() == 'true'){
@@ -178,6 +191,7 @@ $(document).ready(function() {
     var initialLanguageOptions = $('#language').find('option');
     phoneOwnership.instance().onChangePopulateLanguage(language.instance(), medium.instance(), initialLanguageOptions);
     medium.instance().onChangePopulateLanguage(language.instance(), phoneOwnership.instance(), initialLanguageOptions);
+    medium.instance().onChangeShowChoiceOfDayAndTimeForVoice();
 
     var initialMediumOptions = $('#medium').find('option');
     phoneOwnership.instance().onChangePopulateMediums(medium.instance(), initialMediumOptions);

@@ -129,7 +129,7 @@
                 ${fn:escapeXml(medium)} ${fn:escapeXml(required_msg)}
             </span>
         </div>
-        <div class="hide form-field">
+        <div class="hide form-field" id="dayOfWeekRow">
             <label class="formLabel" for="dayOfWeek">${fn:escapeXml(day_of_week)} :*</label>
             <form:select id="dayOfWeek" path="dayOfWeek">
                 <option parent="select" value="">${fn:escapeXml(day_of_week_select)}</option>
@@ -146,7 +146,7 @@
                 ${fn:escapeXml(day_of_week)} ${fn:escapeXml(required_msg)}
             </span>
         </div>
-        <div class="hide form-field">
+        <div class="hide form-field" id="timeOfDayRow">
             <motech:time time="${mobileMidwifeEnrollmentForm.timeOfDay}" path="timeOfDay" label="${time_of_day} :*"
                          default_select_hour_message="${fn:escapeXml(default_select_hour_message)}"
                          default_select_minute_message="${fn:escapeXml(default_select_minute_message)}"
