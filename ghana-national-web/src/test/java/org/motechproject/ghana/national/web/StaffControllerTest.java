@@ -104,7 +104,7 @@ public class StaffControllerTest {
             put("password", "P@ssw0rd");
         }};
         when(mockStaffService.saveUser(any(MRSUser.class))).thenReturn(test);
-        when(mockStaffService.getUserById(openMRSUser.getSystemId())).thenReturn(openMRSUser);
+        when(mockStaffService.getUserByEmailIdOrMotechId(openMRSUser.getSystemId())).thenReturn(openMRSUser);
 
         String view = controller.create(form, bindingResult, model);
 
@@ -250,7 +250,7 @@ public class StaffControllerTest {
                 asList(new Attribute(PERSON_ATTRIBUTE_TYPE_EMAIL, email),
                 new Attribute(PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER, phoneNumber), new Attribute(PERSON_ATTRIBUTE_TYPE_STAFF_TYPE, role)));
         MRSUser mrsUser = new MRSUser().systemId(staffId).securityRole(role).person(mrsPerson);
-        when(mockStaffService.getUserById(staffId)).thenReturn(mrsUser);
+        when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mrsUser);
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setParameter("Id", staffId);
@@ -297,7 +297,7 @@ public class StaffControllerTest {
         StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, role, "HPO", "");
         ModelMap modelMap = new ModelMap();
         MRSUser mockMRSUser = staffForm.createUser().systemId("1234");
-        when(mockStaffService.getUserById(staffId)).thenReturn(mockMRSUser);
+        when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mockMRSUser);
         when(mockStaffService.changePasswordByEmailId(email)).thenReturn(password);
         final HashMap userData = new HashMap();
         userData.put(OpenMRSUserAdaptor.USER_KEY, mockMRSUser);
@@ -344,7 +344,7 @@ public class StaffControllerTest {
         final HashMap userData = new HashMap();
         userData.put(OpenMRSUserAdaptor.USER_KEY, mockMRSUser);
         when(mockStaffService.updateUser(Matchers.<MRSUser>any())).thenReturn(userData);
-        when(mockStaffService.getUserById(staffId)).thenReturn(mockMRSUser);
+        when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mockMRSUser);
 
         String result = controller.update(staffForm, mock(BindingResult.class), modelMap);
 
@@ -374,7 +374,7 @@ public class StaffControllerTest {
         when(mockMRSPerson.getMiddleName()).thenReturn("");
         when(mockMRSPerson.getLastName()).thenReturn(last);
 
-        when(mockStaffService.getUserById(staffId)).thenReturn(mrsUser);
+        when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mrsUser);
         when(mockStaffService.changePasswordByEmailId(email)).thenReturn(password);
         final HashMap userData = new HashMap();
         userData.put(OpenMRSUserAdaptor.USER_KEY, mrsUser);
@@ -415,7 +415,7 @@ public class StaffControllerTest {
         StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, role, "HPO", "newemail@e.com");
         ModelMap modelMap = new ModelMap();
         MRSUser mockMRSUser = mock(MRSUser.class);
-        when(mockStaffService.getUserById(email)).thenReturn(mockMRSUser);
+        when(mockStaffService.getUserByEmailIdOrMotechId(email)).thenReturn(mockMRSUser);
 
         final BindingResult mockBindingResult = mock(BindingResult.class);
         final String result = controller.update(staffForm, mockBindingResult, modelMap);

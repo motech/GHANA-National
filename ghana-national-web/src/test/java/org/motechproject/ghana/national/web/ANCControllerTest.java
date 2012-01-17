@@ -1,50 +1,55 @@
 package org.motechproject.ghana.national.web;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.ANCService;
+import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
-import org.motechproject.util.DateUtil;
+import org.motechproject.mobileforms.api.domain.FormError;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
+import static junit.framework.Assert.assertEquals;
 import static org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ANCControllerTest {
     private ANCController ancController;
     @Mock
-    private FacilityHelper facilityHelper;
+    private FacilityHelper mockFacilityHelper;
     @Mock
-    private ANCService ancService;
-    private BindingResult bindingResult;
+    private ANCService mockANCService;
+    @Mock
+    private RegisterANCFormValidator mockValidator;
 
     @Before
     public void setUp() {
         initMocks(this);
-        ancController = new ANCController(facilityHelper, ancService);
+        ancController = new ANCController();
+        ReflectionTestUtils.setField(ancController, "ancService", mockANCService);
+        ReflectionTestUtils.setField(ancController, "facilityHelper", mockFacilityHelper);
+        ReflectionTestUtils.setField(ancController, "registerANCFormValidator", mockValidator);
     }
 
     @Test
-    @Ignore("wip")
-    public void shouldAddPageAttributesAndDisplayNewForm() {
+    public void shouldAddCareHistoryAttributesAndDisplayNewForm() {
         ModelMap modelMap = new ModelMap();
-        String motechPatientId = "motechPatientId";
+        String motechPatientId = "1212121";
         String ancUrl = ancController.enroll(motechPatientId, modelMap);
         ANCEnrollmentForm ancEnrollmentForm = (ANCEnrollmentForm) modelMap.get("ancEnrollmentForm");
 
@@ -53,48 +58,97 @@ public class ANCControllerTest {
         assertTrue(reflectionEquals(modelMap.get("careHistories"), Arrays.asList("TT", "IPT")));
         assertTrue(reflectionEquals(modelMap.get("lastIPT"), Arrays.asList("IPT 1", "IPT 2", "IPT 3")));
         assertTrue(reflectionEquals(modelMap.get("lastTT"), Arrays.asList("TT 1", "TT 2", "TT 3", "TT 4", "TT 5")));
-        verify(facilityHelper).locationMap();
+        verify(mockFacilityHelper).locationMap();
     }
 
     @Test
-    @Ignore("wip")
-    public void shouldSaveANCEnrollmentDetails() {
-        FacilityForm facilityForm = new FacilityForm();
-        ANCEnrollmentForm ancEnrollmentForm = new ANCEnrollmentForm("patientId", "serialNUMBER", DateUtil.now().toDate());
-        ancEnrollmentForm.setLastIPT("IPT 1");
-        ancEnrollmentForm.setLastIPTDate(new Date());
-        ancEnrollmentForm.setLastTT("TT 1");
-        ancEnrollmentForm.setLastTTDate(new Date());
-        ancEnrollmentForm.setEstimatedDateOfDelivery(new Date());
-        ancEnrollmentForm.setGravida(10);
-        ancEnrollmentForm.setParity(10);
-        ancEnrollmentForm.setHeight(Double.valueOf("170.5"));
-        ancEnrollmentForm.setRegistrationToday(RegistrationToday.TODAY);
-        ancEnrollmentForm.setFacilityForm(facilityForm);
-
+    public void shouldSaveANCEnrollment() {
         ModelMap modelMap = new ModelMap();
+        ANCEnrollmentForm ancEnrollmentForm = createTestANCEnrollmentForm();
+        when(mockValidator.validatePatient(ancEnrollmentForm.getMotechPatientId(), ancEnrollmentForm.getFacilityForm().getFacilityId(), ancEnrollmentForm.getStaffId())).thenReturn(Arrays.<FormError>asList());
+        final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
 
-        ancController.save(ancEnrollmentForm, modelMap,bindingResult);
+        ancController.save(ancEnrollmentForm, modelMap);
+        verify(mockANCService).enroll(captor.capture());
+        final ANCVO ancVO = captor.getValue();
 
-        ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
-//        verify(ancService).save(captor.capture());
-        ANCVO vo = captor.getValue();
-        assertVo(ancEnrollmentForm, vo);
+        compareANCEnrollmentFormWithANCVO(ancEnrollmentForm, ancVO);
+        assertTrue(modelMap.containsKey("success"));
+        checkIfCareHistoryAttributesArePlacedInModelMap(modelMap, ancEnrollmentForm);
     }
 
-    private void assertVo(ANCEnrollmentForm ancEnrollmentForm, ANCVO vo) {
-        assertThat(ancEnrollmentForm.getMotechPatientId(), is(equalTo(vo.getMotechPatientId())));
-        assertThat(ancEnrollmentForm.getSerialNumber(), is(equalTo(vo.getSerialNumber())));
-        assertThat(ancEnrollmentForm.getEstimatedDateOfDelivery(), is(equalTo(vo.getEstimatedDateOfDelivery())));
-        assertThat(ancEnrollmentForm.getFacilityForm().getFacilityId(), is(equalTo(vo.getFacilityId())));
-        assertThat(ancEnrollmentForm.getGravida(), is(equalTo(vo.getGravida())));
-        assertThat(ancEnrollmentForm.getParity(), is(equalTo(vo.getParity())));
-        assertThat(ancEnrollmentForm.getHeight(), is(equalTo(vo.getHeight())));
-//        assertThat(ancEnrollmentForm.getLastIPT(), is(equalTo(vo.getLastIPT())));
-//        assertThat(ancEnrollmentForm.getLastTT(), is(equalTo(vo.getLastTT())));
-//        assertThat(ancEnrollmentForm.getLastTTDate(), is(equalTo(vo.getLastTTDate())));
-//        assertThat(ancEnrollmentForm.getLastIPTDate(), is(equalTo(vo.getLastIPTDate())));
-//        assertThat(ancEnrollmentForm.getRegistrationToday(), is(equalTo(vo.getRegistrationToday())));
-//        assertThat(ancEnrollmentForm.getRegistrationDate(), is(equalTo(vo.getRegistrationDate())));
+    @Test
+    public void shouldNotSaveANCEnrollmentDuringValidationErrors() {
+        ModelMap modelMap = new ModelMap();
+        ANCEnrollmentForm ancEnrollmentForm = createTestANCEnrollmentForm();
+        ArrayList<FormError> errors = new ArrayList<FormError>();
+        FormError motechIdError = new FormError("motechId", "MotechId NOT FOUND");
+        errors.add(motechIdError);
+        FormError staffIdError = new FormError("staffId", "staffId not found");
+        errors.add(staffIdError);
+
+        when(mockValidator.validatePatient(ancEnrollmentForm.getMotechPatientId(), ancEnrollmentForm.getFacilityForm().getFacilityId(), ancEnrollmentForm.getStaffId())).thenReturn(errors);
+
+        ancController.save(ancEnrollmentForm, modelMap);
+        verify(mockANCService, never()).enroll(null);
+        assertTrue(modelMap.containsKey("validationErrors"));
+
+        ArrayList<FormError> errorsFromModelMap = (ArrayList<FormError>) modelMap.get("validationErrors");
+        assertEquals(2, errorsFromModelMap.size());
+        assertTrue(errorsFromModelMap.contains(motechIdError));
+        assertTrue(errorsFromModelMap.contains(staffIdError));
+        checkIfCareHistoryAttributesArePlacedInModelMap(modelMap, ancEnrollmentForm);
     }
+
+    private void checkIfCareHistoryAttributesArePlacedInModelMap(ModelMap modelMap, ANCEnrollmentForm ancEnrollmentForm) {
+        assertTrue(modelMap.containsKey("ancEnrollmentForm"));
+        assertTrue(modelMap.containsKey("careHistories"));
+        assertTrue(modelMap.containsKey("lastTT"));
+        assertTrue(modelMap.containsKey("lastIPT"));
+        assertEquals(ancEnrollmentForm, modelMap.get("ancEnrollmentForm"));
+    }
+
+    private void compareANCEnrollmentFormWithANCVO(ANCEnrollmentForm ancEnrollmentForm, ANCVO ancVO) {
+        assertEquals(ancEnrollmentForm.getAddHistory(), ancVO.getAddHistory());
+        assertEquals(ancEnrollmentForm.getSerialNumber(), ancVO.getSerialNumber());
+        assertEquals(ancEnrollmentForm.getRegistrationDate(), ancVO.getRegistrationDate());
+        assertEquals(ancEnrollmentForm.getDeliveryDateConfirmed(), ancVO.getDeliveryDateConfirmed());
+        assertEquals(ancEnrollmentForm.getEstimatedDateOfDelivery(), ancVO.getEstimatedDateOfDelivery());
+        assertEquals(ancEnrollmentForm.getFacilityForm().getFacilityId(), ancVO.getFacilityId());
+        assertEquals(ancEnrollmentForm.getGravida(), ancVO.getGravida());
+        assertEquals(ancEnrollmentForm.getHeight(), ancVO.getHeight());
+        assertEquals(ancEnrollmentForm.getLastIPT(), ancVO.getLastIPT());
+        assertEquals(ancEnrollmentForm.getLastIPTDate(), ancVO.getLastIPTDate());
+        assertEquals(ancEnrollmentForm.getLastTT(), ancVO.getLastTT());
+        assertEquals(ancEnrollmentForm.getLastTTDate(), ancVO.getLastTTDate());
+        assertEquals(ancEnrollmentForm.getMotechPatientId(), ancVO.getMotechPatientId());
+        assertEquals(ancEnrollmentForm.getParity(), ancVO.getParity());
+        assertEquals(ancEnrollmentForm.getRegistrationToday(), ancVO.getRegistrationToday());
+        assertEquals(ancEnrollmentForm.getStaffId(), ancVO.getStaffId());
+    }
+
+    private ANCEnrollmentForm createTestANCEnrollmentForm() {
+        ANCEnrollmentForm ancEnrollmentForm = new ANCEnrollmentForm();
+        ancEnrollmentForm.setAddHistory(true);
+        ancEnrollmentForm.setSerialNumber("12432423423");
+        ancEnrollmentForm.setRegistrationDate(new Date());
+        ancEnrollmentForm.setDeliveryDateConfirmed(true);
+        ancEnrollmentForm.setEstimatedDateOfDelivery(new Date(2012, 3, 4));
+        FacilityForm facilityForm = new FacilityForm();
+        facilityForm.setFacilityId("21212");
+        ancEnrollmentForm.setFacilityForm(facilityForm);
+        ancEnrollmentForm.setGravida(3);
+        ancEnrollmentForm.setHeight(4.67);
+        ancEnrollmentForm.setLastIPT("4");
+        ancEnrollmentForm.setLastIPTDate(new Date(2011, 8, 8));
+        ancEnrollmentForm.setLastTT("5");
+        ancEnrollmentForm.setLastTTDate(new Date(2011, 7, 6));
+        ancEnrollmentForm.setMotechPatientId("343423423");
+        ancEnrollmentForm.setParity(3);
+        ancEnrollmentForm.setRegistrationToday(RegistrationToday.IN_PAST);
+        ancEnrollmentForm.setStaffId("2331");
+        return ancEnrollmentForm;
+    }
+
+
 }

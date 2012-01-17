@@ -34,4 +34,9 @@ public class Utility {
     public static String emptyToNull(String string) {
         return (StringUtils.isEmpty(string.trim())) ? null : string;
     }
+
+    public static <V> V nullSafe(V value, V defaultValue) {
+        return value != null ? value : defaultValue;
+    }
+
 }

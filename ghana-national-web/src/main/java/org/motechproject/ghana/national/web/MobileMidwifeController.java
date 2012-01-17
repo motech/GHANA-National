@@ -2,13 +2,13 @@ package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
-import org.motechproject.ghana.national.tools.Messages;
 import org.motechproject.ghana.national.validator.MobileMidwifeFormValidator;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
@@ -27,16 +28,16 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 public class MobileMidwifeController {
 
     public static final String MOBILE_MIDWIFE_URL = "enroll/mobile-midwife/new";
-    public static final String SUCCESS_MESSAGE = "changes_saved_successfully";
+    public static final String SUCCESS_MESSAGE = "mobilemidwife_enroll_success";
     private MobileMidwifeFormValidator mobileMidwifeFormValidator;
     private MobileMidwifeService mobileMidwifeService;
-    private Messages messages;
+    private MessageSource messages;
 
     public MobileMidwifeController() {
     }
 
     @Autowired
-    public MobileMidwifeController(MobileMidwifeFormValidator mobileMidwifeFormValidator, MobileMidwifeService mobileMidwifeService, Messages messages) {
+    public MobileMidwifeController(MobileMidwifeFormValidator mobileMidwifeFormValidator, MobileMidwifeService mobileMidwifeService, MessageSource messages) {
         this.mobileMidwifeFormValidator = mobileMidwifeFormValidator;
         this.mobileMidwifeService = mobileMidwifeService;
         this.messages = messages;
@@ -64,7 +65,7 @@ public class MobileMidwifeController {
             midwifeEnrollment = form.createEnrollment(midwifeEnrollment != null ? midwifeEnrollment : new MobileMidwifeEnrollment());
             mobileMidwifeService.saveOrUpdate(midwifeEnrollment);
             addFormInfo(modelMap, new MobileMidwifeEnrollmentForm(midwifeEnrollment))
-                    .addAttribute("successMessage", messages.message(SUCCESS_MESSAGE));
+                    .addAttribute("successMessage", messages.getMessage(SUCCESS_MESSAGE, null, Locale.getDefault()));
         }
         return MOBILE_MIDWIFE_URL;
     }

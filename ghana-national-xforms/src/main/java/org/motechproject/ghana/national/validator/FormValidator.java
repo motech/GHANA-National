@@ -53,7 +53,7 @@ public class FormValidator {
     }
 
     public List<FormError> validateIfStaffExists(final String staffId) {
-        if (staffService.getUserById(staffId) == null) {
+        if (staffService.getUserByEmailIdOrMotechId(staffId) == null) {
             return new ArrayList<FormError>() {{
                 add(new FormError(STAFF_ID, NOT_FOUND));
             }};

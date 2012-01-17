@@ -99,14 +99,14 @@ public class StaffController {
     public String edit(ModelMap modelMap, HttpServletRequest httpServletRequest) {
         String staffId = httpServletRequest.getParameter(STAFF_SEQUENTIAL_ID);
         staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
-        return staffHelper.getStaffForId(modelMap, staffService.getUserById(staffId));
+        return staffHelper.getStaffForId(modelMap, staffService.getUserByEmailIdOrMotechId(staffId));
     }
 
     @ApiSession
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid StaffForm staffForm, BindingResult bindingResult, ModelMap modelMap) {
         MRSUser mrsUser = staffForm.createUser();
-        if (!staffForm.getCurrentEmail().equals(staffForm.getNewEmail()) && staffService.getUserById(staffForm.getNewEmail()) != null) {
+        if (!staffForm.getCurrentEmail().equals(staffForm.getNewEmail()) && staffService.getUserByEmailIdOrMotechId(staffForm.getNewEmail()) != null) {
             handleUserAlreadyExistsError(modelMap, bindingResult);
             return NEW_STAFF_URL;
         }

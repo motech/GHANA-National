@@ -81,7 +81,7 @@ public class CWCServiceTest {
         final String staffPersonId = "32";
         person.id(staffPersonId);
         mrsUser.person(person);
-        when(mockStaffService.getUserById(staffId)).thenReturn(mrsUser);
+        when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mrsUser);
         final String patientId = "24324";
         final Patient patient = new Patient(new MRSPatient(patientId));
         when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(patient);
@@ -138,7 +138,7 @@ public class CWCServiceTest {
         final String staffPersonId = "32";
         person.id(staffPersonId);
         mrsUser.person(person);
-        when(mockStaffService.getUserById(staffId)).thenReturn(mrsUser);
+        when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mrsUser);
         final String patientId = "24324";
         final Patient patient = new Patient(new MRSPatient(patientId));
         when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(patient);

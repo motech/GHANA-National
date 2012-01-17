@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.EditClientForm;
 import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
@@ -21,12 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import static ch.lambdaj.Lambda.*;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.hamcrest.Matchers.equalTo;
+import static org.motechproject.ghana.national.tools.Utility.nullSafe;
 
 
 @Component
@@ -51,134 +50,73 @@ public class EditPatientFormHandler implements FormPublishHandler {
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
 
-        EditClientForm editClientForm = (EditClientForm) event.getParameters().get(FORM_BEAN);
+        EditClientForm form = (EditClientForm) event.getParameters().get(FORM_BEAN);
 
-        String motechId = editClientForm.getMotechId();
-        Patient existingPatient = patientService.getPatientByMotechId(motechId);
-        MRSPatient existingMRSPatient = existingPatient.getMrsPatient();
-
-
-        String mrsFacilityIdFromForm = null;
-        String facilityMotechIdFromForm = null;
-        MRSFacility patientMRSFacilityFromForm = null;
-
-        if (editClientForm.getFacilityId() != null) {
-            facilityMotechIdFromForm = editClientForm.getFacilityId();
-            Facility patientFacilityFromForm = facilityService.getFacilityByMotechId(facilityMotechIdFromForm);
-            patientMRSFacilityFromForm = patientFacilityFromForm.mrsFacility();
-            mrsFacilityIdFromForm = patientFacilityFromForm.getMrsFacilityId();
-        }
-
-        MRSFacility existingOrUpdatedFacility = existingMRSPatient.getFacility();
-
-        Date dateOfBirth = editClientForm.getDateOfBirth();
-        MRSPerson mrsPerson = existingMRSPatient.getPerson();
-        String firstName = editClientForm.getFirstName();
-        String middleName = editClientForm.getMiddleName();
-        String lastName = editClientForm.getLastName();
-        String preferredName = editClientForm.getPrefferedName();
-        String sex = editClientForm.getSex();
-        String motherMotechId = editClientForm.getMotherMotechId();
-        String address = editClientForm.getAddress();
-        String nhisNumber = editClientForm.getNhis();
-        String phoneNumber = editClientForm.getPhoneNumber();
-        Date nhisExpires = editClientForm.getNhisExpires();
-
-        String facilityMotechIdWherePatientWasEdited = editClientForm.getUpdatePatientFacilityId();
-        String facilityIdWherePatientWasEdited = facilityService.getFacilityByMotechId(facilityMotechIdWherePatientWasEdited).getMrsFacilityId();
-
-        existingOrUpdatedFacility = checkFieldsToBeUpdated(editClientForm, mrsFacilityIdFromForm, facilityMotechIdFromForm,
-                patientMRSFacilityFromForm, existingOrUpdatedFacility, dateOfBirth, mrsPerson, firstName, middleName, lastName,
-                preferredName, sex, address, nhisNumber, phoneNumber, nhisExpires);
-
-        MRSPatient updatedMRSPatient = new MRSPatient(motechId, existingMRSPatient.getPerson(), existingOrUpdatedFacility);
-        Patient patient;
-        if (editClientForm.getMotherMotechId() != null) {
-            patient = new Patient(updatedMRSPatient, motherMotechId);
-        } else {
-            patient = new Patient(existingMRSPatient);
-        }
-
-        String staffId = editClientForm.getStaffId();
-        List<MRSUser> mrsUsers = staffService.searchStaff(staffId, "", "", "", "", "");
-        MRSUser mrsUser = mrsUsers.get(0);
-        MRSPerson staffPerson = mrsUser.getPerson();
-        MRSEncounter mrsEncounter = new MRSEncounter(staffPerson.getId(), mrsUser.getId(), facilityIdWherePatientWasEdited,
-                editClientForm.getDate(), existingMRSPatient.getId(), null, PATIENTEDITVISIT);
-
+        MRSPatient patientFromDb = null;
         try {
-            patientService.updatePatient(patient);
-            patientService.saveEncounter(mrsEncounter);
-        } catch (ParentNotFoundException ignored) {
+            patientFromDb = updatePatient(form);
+            createEncounter(form, patientFromDb);
+
+        } catch (Exception e) {
+            log.error("Encountered exception while updating patient", e);
         }
     }
 
-    private MRSFacility checkFieldsToBeUpdated(EditClientForm editClientForm, String mrsFacilityIdFromForm, String facilityMotechIdFromForm, MRSFacility patientMRSFacilityFromForm, MRSFacility existingOrUpdatedFacility, Date dateOfBirth, MRSPerson mrsPerson, String firstName, String middleName, String lastName, String preferredName, String sex, String address, String nhisNumber, String phoneNumber, Date nhisExpires) {
-        if (facilityMotechIdFromForm != null) {
-            existingOrUpdatedFacility = new MRSFacility(mrsFacilityIdFromForm, patientMRSFacilityFromForm.getName()
-                    , patientMRSFacilityFromForm.getCountry(), patientMRSFacilityFromForm.getRegion(),
-                    patientMRSFacilityFromForm.getCountyDistrict(), patientMRSFacilityFromForm.getStateProvince());
+    private MRSPatient updatePatient(EditClientForm form) throws ParentNotFoundException {
+        String motechId = form.getMotechId();
+        Patient existingPatient = patientService.getPatientByMotechId(motechId);
+
+        MRSPatient patientFromDb = existingPatient.getMrsPatient();
+        String facilityId = hasValue(form.getFacilityId()) ? facilityService.getFacilityByMotechId(form.getFacilityId()).mrsFacilityId() : patientFromDb.getFacility().getId();
+
+        MRSPerson personFromDb = patientFromDb.getPerson();
+
+        List<Attribute> attributesFromDb = personFromDb.getAttributes();
+        MRSPerson person = new MRSPerson().dateOfBirth(nullSafe(form.getDateOfBirth(), personFromDb.getDateOfBirth())).
+                firstName(nullSafe(form.getFirstName(), personFromDb.getFirstName())).
+                middleName(nullSafe(form.getMiddleName(), personFromDb.getMiddleName())).
+                lastName(nullSafe(form.getLastName(), personFromDb.getLastName())).
+                preferredName(nullSafe(form.getPrefferedName(), personFromDb.getPreferredName())).
+                gender(nullSafe(form.getSex(), personFromDb.getGender())).
+                address(nullSafe(form.getAddress(), personFromDb.getAddress()));
+
+        if (form.getNhis() != null) {
+            person.addAttribute(replaceValueFromDbIfNotProvided(PatientAttributes.NHIS_NUMBER.getAttribute(), form.getNhis(), attributesFromDb));
+        }
+        if (form.getPhoneNumber() != null) {
+            person.addAttribute(replaceValueFromDbIfNotProvided(PatientAttributes.PHONE_NUMBER.getAttribute(), form.getPhoneNumber(), attributesFromDb));
+        }
+        if (form.getNhisExpires() != null) {
+            person.addAttribute(replaceValueFromDbIfNotProvided(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(form.getNhisExpires()), attributesFromDb));
         }
 
+        person.birthDateEstimated(personFromDb.getBirthDateEstimated());
 
-        if (firstName != null) {
-            mrsPerson.firstName(firstName);
-        }
-
-        if (middleName != null) {
-            mrsPerson.middleName(middleName);
-        }
-
-        if (lastName != null) {
-            mrsPerson.lastName(lastName);
-        }
-
-        if (preferredName != null) {
-            mrsPerson.preferredName(preferredName);
-        }
-
-        if (dateOfBirth != null) {
-            mrsPerson.dateOfBirth(dateOfBirth);
-        }
-
-        if (sex != null) {
-            mrsPerson.gender(sex);
-        }
-
-        if (address != null) {
-            mrsPerson.address(address);
-        }
-
-        if (phoneNumber != null) {
-            List<Attribute> attributes = mrsPerson.getAttributes();
-            removePreviousAttributesAndAddNewAttributes(mrsPerson, phoneNumber, attributes, PatientAttributes.PHONE_NUMBER.getAttribute());
-        }
-
-        if (nhisNumber != null) {
-            List<Attribute> attributes = mrsPerson.getAttributes();
-            removePreviousAttributesAndAddNewAttributes(mrsPerson, nhisNumber, attributes, PatientAttributes.NHIS_NUMBER.getAttribute());
-
-        }
-
-        if (nhisExpires != null) {
-            List<Attribute> attributes = mrsPerson.getAttributes();
-            attributes.remove(getAttribute(attributes, PatientAttributes.NHIS_EXPIRY_DATE.getAttribute()));
-            mrsPerson.addAttribute(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(nhisExpires)));
-        }
-
-        if (address != null) {
-            mrsPerson.address(editClientForm.getAddress());
-        }
-        return existingOrUpdatedFacility;
+        Patient patient = new Patient(new MRSPatient(motechId, person, new MRSFacility(facilityId)), form.getMotherMotechId());
+        patientService.updatePatient(patient);
+        return patientFromDb;
     }
 
-    private void removePreviousAttributesAndAddNewAttributes(MRSPerson mrsPerson, String newAttributeValue, List<Attribute> attributes, String attributeKey) {
-        attributes.remove(getAttribute(attributes, attributeKey));
-        mrsPerson.addAttribute(new Attribute(attributeKey, newAttributeValue));
+    private void createEncounter(EditClientForm form, MRSPatient patientFromDb) {
+        MRSUser user = staffService.getUserByEmailIdOrMotechId(form.getStaffId());
+        String facilityIdWhereUserDetailsWasEdited = facilityService.getFacilityByMotechId(form.getUpdatePatientFacilityId()).getMrsFacilityId();
+        MRSEncounter mrsEncounter = new MRSEncounter(user.getPerson().getId(), user.getId(), facilityIdWhereUserDetailsWasEdited,
+                form.getDate(), patientFromDb.getId(), null, PATIENTEDITVISIT);
+
+        patientService.saveEncounter(mrsEncounter);
+    }
+
+    private Attribute replaceValueFromDbIfNotProvided(String attributeName, String attributeValue, List<Attribute> attributesFromDb) {
+        Attribute attributeFromDb = getAttribute(attributesFromDb, attributeName);
+        return hasValue(attributeValue) ? new Attribute(attributeName, attributeValue) : attributeFromDb;
     }
 
     public Attribute getAttribute(List<Attribute> attributes, String key) {
         List<Attribute> filteredItems = select(attributes, having(on(Attribute.class).name(), equalTo(key)));
         return isNotEmpty(filteredItems) ? filteredItems.get(0) : null;
+    }
+
+    private boolean hasValue(Object value) {
+        return value != null;
     }
 }
