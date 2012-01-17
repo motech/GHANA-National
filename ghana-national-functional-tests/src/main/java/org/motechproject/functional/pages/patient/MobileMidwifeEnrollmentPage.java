@@ -1,6 +1,8 @@
 package org.motechproject.functional.pages.patient;
 
 import org.motechproject.functional.pages.home.HomePage;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -173,5 +175,18 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
 
     public String medium() {
         return attrValue(medium, "value");
+    }
+
+    public boolean validate() {
+
+        if(consentYes.isSelected()) {
+            WebElement dayOfWeekRow = find(new By.ById("dayOfWeekRow"));
+            WebElement timeOfDayRow = find(new By.ById("timeOfDayRow"));
+
+            if(Medium.VOICE.toString().equals(this.medium()))
+                return dayOfWeekRow.isDisplayed() && timeOfDayRow.isDisplayed();
+            return !dayOfWeekRow.isDisplayed() && !timeOfDayRow.isDisplayed();
+        }
+        return !medium.isDisplayed();
     }
 }

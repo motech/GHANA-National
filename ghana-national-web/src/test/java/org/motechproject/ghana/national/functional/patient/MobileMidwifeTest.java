@@ -46,20 +46,30 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
          dataGenerator = new DataGenerator();
     }
 
-//    @Test
-//    public void shouldNotSubmitEnrollPatientForMobileMidwifeProgramIfHasAnyValueMissing() {
-//
-//        MobileMidwifeEnrollmentPage enrollmentPage = goToMobileMidwifePage(homePage, patient);
-//        fillDefaultEnrollmentAndSubmit(enrollmentPage);
-//        assertTrue(enrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Enrolled successfully."));
-//    }
+    @Test
+    public void shouldNotSubmitDayOfWeekAndTimeOfDayForSMSMedium_ForMobileMidwifeEnrollment() {
+
+        MobileMidwifeEnrollmentPage enrollmentPage = goToMobileMidwifePage(homePage, patient);
+        enrollmentPage.withStaffMotechId(staff.motechId()).withFacilityMotechId(patient.facilityId()).withConsent(true)
+                .withServiceType(ServiceType.PREGNANCY.toString()) .withPhoneOwnership(PhoneOwnership.PERSONAL.toString())
+                .withMedium(Medium.SMS.toString());
+
+        assertTrue(enrollmentPage.validate());
+
+        enrollmentPage.withMedium(Medium.VOICE.toString()).withDayOfWeek(DayOfWeek.Sunday.toString())
+                .withTime("10", "2");
+        assertTrue(enrollmentPage.validate());
+
+        enrollmentPage.withConsent(false);
+        assertTrue(enrollmentPage.validate());
+    }
         
     @Test
     public void shouldCreateAndEditMobileMidwifeProgramEnrollmentForPatient() {
 
 
         MobileMidwifeEnrollmentPage enrollmentPage = goToMobileMidwifePage(homePage, patient);
-        enrollmentPage = fillDefaultEnrollmentAndSubmit(enrollmentPage);
+        enrollmentPage = createPregnancyEnrollmentAndSubmit(enrollmentPage);
 
         assertTrue(enrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Enrolled successfully."));
         
@@ -87,15 +97,15 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
         return browser.toMobileMidwifeEnrollmentForm(patientPage);
     }
 
-    private MobileMidwifeEnrollmentPage fillDefaultEnrollmentAndSubmit(MobileMidwifeEnrollmentPage enrollmentPage) {
+    private MobileMidwifeEnrollmentPage createPregnancyEnrollmentAndSubmit(MobileMidwifeEnrollmentPage enrollmentPage) {
+
+        assertTrue(enrollmentPage.validate());
         enrollmentPage.withStaffMotechId(staff.motechId())
                 .withFacilityMotechId(patient.facilityId()).withConsent(true)
                 .withServiceType(ServiceType.PREGNANCY.toString())
                 .withPhoneOwnership(PhoneOwnership.PERSONAL.toString())
                 .withPhoneNumber("0967891000")
                 .withMedium(Medium.SMS.toString())
-                .withDayOfWeek(DayOfWeek.Sunday.toString())
-                .withTime("10", "2")
                 .withLanguage(Language.EN.toString())
                 .withLearnedFrom(LearnedFrom.MOTECH_FIELD_AGENT.toString())
                 .withReasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH.toString())

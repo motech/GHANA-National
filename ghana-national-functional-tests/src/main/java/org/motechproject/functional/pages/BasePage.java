@@ -1,6 +1,7 @@
 package org.motechproject.functional.pages;
 
 import org.motechproject.functional.util.*;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -32,6 +33,10 @@ public class BasePage<T> {
         Select selectRegion = new Select(webElement);
         selectRegion.selectByValue(value);
         return (T) this;
+    }
+
+    protected WebElement find(By by) {
+        return driver.findElement(by);
     }
 
     protected String attrValue(WebElement webElement, String key) {
