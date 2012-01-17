@@ -1,21 +1,34 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.motechproject.functional.framework.XformHttpClient;
-import org.testng.annotations.Test;
+import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
+import org.motechproject.ghana.national.functional.Generator.StaffGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static junit.framework.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.motechproject.functional.framework.XformHttpClient.XFormParser;
-import static org.testng.Assert.assertEquals;
-import static org.testng.AssertJUnit.assertNull;
+import static org.testng.AssertJUnit.assertEquals;
 
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:/testApplicationContext.xml"})
 public class EditClientFromMobileTest {
+
+    @Autowired
+    StaffGenerator staffGenerator;
+    @Autowired
+    FacilityGenerator facilityGenerator;
 
     @Test
     public void shouldCheckForMandatoryFields() throws Exception {
@@ -66,5 +79,11 @@ public class EditClientFromMobileTest {
         assertEquals(errors.size(), 1);
         final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
         assertNull(errorsMap.get("firstName"));
+    }
+
+    @Test
+    public void shouldUpdatePatientIfNoErrorsAreFound() {
+        String staffId = staffGenerator.createDummyStaffAndReturnStaffId();
+        String facilityId = facilityGenerator.createDummyFacilityAndReturnFacilityId();
     }
 }
