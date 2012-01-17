@@ -14,7 +14,7 @@ import org.motechproject.model.Time;
  * Time: 4:26 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MobileMidWifeIncludeForm extends FormBean {
+public abstract class MobileMidWifeIncludeForm extends FormBean {
 
     @Required
     private Boolean consent;

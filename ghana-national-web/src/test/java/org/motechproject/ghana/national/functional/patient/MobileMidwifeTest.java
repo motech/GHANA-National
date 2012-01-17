@@ -21,7 +21,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
+@ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml","cl"})
 public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
 
     @Autowired

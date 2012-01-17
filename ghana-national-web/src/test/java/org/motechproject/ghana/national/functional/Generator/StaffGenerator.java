@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.functional.Generator;
 
 import org.motechproject.ghana.national.web.StaffController;
 import org.motechproject.ghana.national.web.form.StaffForm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.mock;
 @Component
 public class StaffGenerator {
 
+    @Autowired
     StaffController staffController;
 
     public StaffGenerator() {

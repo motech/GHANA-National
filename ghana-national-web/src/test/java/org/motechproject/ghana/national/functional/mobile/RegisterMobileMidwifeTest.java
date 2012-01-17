@@ -2,9 +2,19 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.xpath.operations.Bool;
+import org.junit.runner.RunWith;
 import org.motechproject.functional.framework.XformHttpClient;
+import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
+import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
+import org.motechproject.ghana.national.functional.Generator.StaffGenerator;
+import org.motechproject.ghana.national.web.FacilityController;
+import org.motechproject.ghana.national.web.PatientController;
+import org.motechproject.ghana.national.web.StaffController;
 import org.openmrs.Patient;
 import org.openmrs.Person;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
@@ -16,7 +26,20 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.motechproject.functional.framework.XformHttpClient.XFormParser;
 import static org.testng.Assert.assertEquals;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml","classpath:/testApplicationContext.xml"})
 public class RegisterMobileMidwifeTest {
+
+
+    @Autowired
+    StaffGenerator staffGenerator;
+
+    @Autowired
+    PatientGenerator patientGenerator;
+
+    @Autowired
+    FacilityGenerator facilityGenerator;
+
 
     @Test
     public void shouldValidateIfPatientIsAlreadyRegistered() throws Exception {
@@ -77,16 +100,19 @@ public class RegisterMobileMidwifeTest {
         assertThat(errorsMap.get("consent"), hasItem("is mandatory"));
     }
 
+
     @Test
     public void shouldRegisterForMobileMidWifeProgramIfValidationsPass() throws Exception{
-        String patientId = "1234";
 
+        final String staffId=staffGenerator.createDummyStaffAndReturnStaffId();
+        final String facilityId=facilityGenerator.createDummyFacilityAndReturnFacilityId();
+        final String patientId = patientGenerator.createDummyPatientAndReturnPatientId(facilityId);
 
       final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(new HashMap<String, String>() {{
 
-          put("patientId",  patientId);
-            put("staffId","5678");
-            put("facilityId","576475");
+            put("patientId",patientId);
+            put("staffId",staffId);
+            put("facilityId",facilityId);
             put("consent", "Y");
         }});
 

@@ -46,156 +46,176 @@ public class PatientForm {
         this.sex = patient.getMrsPatient().getPerson().getGender();
     }
 
-    public void setRegistrationMode(RegistrationType registrationMode) {
+    public PatientForm setRegistrationMode(RegistrationType registrationMode) {
         this.registrationMode = registrationMode;
+        return this;
     }
 
     public String getMotechId() {
         return motechId;
     }
 
-    public void setMotechId(String motechId) {
+    public PatientForm setMotechId(String motechId) {
         this.motechId = motechId;
+        return this;
     }
 
     public PatientType getTypeOfPatient() {
         return typeOfPatient;
     }
 
-    public void setTypeOfPatient(PatientType typeOfPatient) {
+    public PatientForm setTypeOfPatient(PatientType typeOfPatient) {
         this.typeOfPatient = typeOfPatient;
+        return this;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public PatientForm setFirstName(String firstName) {
         this.firstName = firstName;
+        return this;
     }
 
     public String getMiddleName() {
         return middleName;
     }
 
-    public void setMiddleName(String middleName) {
+    public PatientForm setMiddleName(String middleName) {
         this.middleName = middleName;
+        return this;
     }
 
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public PatientForm setLastName(String lastName) {
         this.lastName = lastName;
+        return this;
     }
 
     public String getPreferredName() {
         return preferredName;
     }
 
-    public void setPreferredName(String preferredName) {
+    public PatientForm setPreferredName(String preferredName) {
         this.preferredName = preferredName;
+        return this;
     }
 
     public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public PatientForm setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+        return this;
     }
 
     public Boolean getEstimatedDateOfBirth() {
         return estimatedDateOfBirth;
     }
 
-    public void setEstimatedDateOfBirth(Boolean estimatedDateOfBirth) {
+    public PatientForm setEstimatedDateOfBirth(Boolean estimatedDateOfBirth) {
         this.estimatedDateOfBirth = estimatedDateOfBirth;
+        return this;
     }
 
     public String getSex() {
         return sex;
     }
 
-    public void setSex(String sex) {
+    public PatientForm setSex(String sex) {
         this.sex = sex;
+        return this;
     }
 
     public Boolean getInsured() {
         return insured;
     }
 
-    public void setInsured(Boolean insured) {
+    public PatientForm setInsured(Boolean insured) {
         this.insured = insured;
+        return this;
     }
 
     public String getNhisNumber() {
         return nhisNumber;
     }
 
-    public void setNhisNumber(String nhisNumber) {
+    public PatientForm setNhisNumber(String nhisNumber) {
         this.nhisNumber = nhisNumber;
+        return this;
     }
 
     public Date getNhisExpirationDate() {
         return nhisExpirationDate;
     }
 
-    public void setNhisExpirationDate(Date nhisExpirationDate) {
+    public PatientForm setNhisExpirationDate(Date nhisExpirationDate) {
         this.nhisExpirationDate = nhisExpirationDate;
+        return this;
     }
 
     public String getRegion() {
         return region;
     }
 
-    public void setRegion(String region) {
+    public PatientForm setRegion(String region) {
         this.region = region;
+        return this;
     }
 
     public String getDistrict() {
         return district;
     }
 
-    public void setDistrict(String district) {
+    public PatientForm setDistrict(String district) {
         this.district = district;
+        return this;
     }
 
     public String getSubDistrict() {
         return subDistrict;
     }
 
-    public void setSubDistrict(String subDistrict) {
+    public PatientForm setSubDistrict(String subDistrict) {
         this.subDistrict = subDistrict;
+        return this;
     }
 
     public String getFacilityId() {
         return facilityId;
     }
 
-    public void setFacilityId(String facilityId) {
+    public PatientForm setFacilityId(String facilityId) {
         this.facilityId = facilityId;
+        return this;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public PatientForm setAddress(String address) {
         this.address = address;
+        return this;
     }
 
     public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(String parentId) {
+    public PatientForm setParentId(String parentId) {
         this.parentId = parentId;
+        return this;
     }
 
-    public void setFacilityName(String facilityName) {
+    public PatientForm setFacilityName(String facilityName) {
         this.facilityName = facilityName;
+        return this;
     }
 
     public String getFacilityName() {
@@ -206,7 +226,8 @@ public class PatientForm {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public PatientForm setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        return this;
     }
 }
