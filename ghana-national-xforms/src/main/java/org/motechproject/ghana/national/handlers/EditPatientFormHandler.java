@@ -67,7 +67,7 @@ public class EditPatientFormHandler implements FormPublishHandler {
         Patient existingPatient = patientService.getPatientByMotechId(motechId);
 
         MRSPatient patientFromDb = existingPatient.getMrsPatient();
-        String facilityId = hasValue(form.getFacilityId())? facilityService.getFacilityByMotechId(form.getFacilityId()).mrsFacilityId():patientFromDb.getFacility().getId();
+        String facilityId = hasValue(form.getFacilityId()) ? facilityService.getFacilityByMotechId(form.getFacilityId()).mrsFacilityId() : patientFromDb.getFacility().getId();
 
         MRSPerson personFromDb = patientFromDb.getPerson();
 
@@ -78,10 +78,19 @@ public class EditPatientFormHandler implements FormPublishHandler {
                 lastName(nullSafe(form.getLastName(), personFromDb.getLastName())).
                 preferredName(nullSafe(form.getPrefferedName(), personFromDb.getPreferredName())).
                 gender(nullSafe(form.getSex(), personFromDb.getGender())).
-                address(nullSafe(form.getAddress(), personFromDb.getAddress())).
-                addAttribute(replaceValueFromDbIfNotProvided(PatientAttributes.NHIS_NUMBER.getAttribute(), form.getNhis(), attributesFromDb)).
-                addAttribute(replaceValueFromDbIfNotProvided(PatientAttributes.PHONE_NUMBER.getAttribute(), form.getPhoneNumber(), attributesFromDb)).
-                addAttribute(replaceValueFromDbIfNotProvided(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(form.getNhisExpires()), attributesFromDb));
+                address(nullSafe(form.getAddress(), personFromDb.getAddress()));
+
+        if (form.getNhis() != null) {
+            person.addAttribute(replaceValueFromDbIfNotProvided(PatientAttributes.NHIS_NUMBER.getAttribute(), form.getNhis(), attributesFromDb));
+        }
+        if (form.getPhoneNumber() != null) {
+            person.addAttribute(replaceValueFromDbIfNotProvided(PatientAttributes.PHONE_NUMBER.getAttribute(), form.getPhoneNumber(), attributesFromDb));
+        }
+        if (form.getNhisExpires() != null) {
+            person.addAttribute(replaceValueFromDbIfNotProvided(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(form.getNhisExpires()), attributesFromDb));
+        }
+
+        person.birthDateEstimated(personFromDb.getBirthDateEstimated());
 
         Patient patient = new Patient(new MRSPatient(motechId, person, new MRSFacility(facilityId)), form.getMotherMotechId());
         patientService.updatePatient(patient);
@@ -99,7 +108,7 @@ public class EditPatientFormHandler implements FormPublishHandler {
 
     private Attribute replaceValueFromDbIfNotProvided(String attributeName, String attributeValue, List<Attribute> attributesFromDb) {
         Attribute attributeFromDb = getAttribute(attributesFromDb, attributeName);
-        return hasValue(attributeValue)? new Attribute(attributeName, attributeValue): attributeFromDb;
+        return hasValue(attributeValue) ? new Attribute(attributeName, attributeValue) : attributeFromDb;
     }
 
     public Attribute getAttribute(List<Attribute> attributes, String key) {
@@ -107,7 +116,7 @@ public class EditPatientFormHandler implements FormPublishHandler {
         return isNotEmpty(filteredItems) ? filteredItems.get(0) : null;
     }
 
-    private boolean hasValue(Object value){
+    private boolean hasValue(Object value) {
         return value != null;
     }
 }

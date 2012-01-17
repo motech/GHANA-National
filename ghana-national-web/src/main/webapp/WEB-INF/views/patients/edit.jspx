@@ -84,7 +84,7 @@
                 htmlEscape="false"/>
 <spring:message code="patient_phone_number" var="patient_phone_number" htmlEscape="false"/>
 
-    <div class="form-width-40">
+    <div class="form-width-60">
         <div class="form-field">
             <label class="formLabel" for="motechId">${fn:escapeXml(patient_motech_id)}:</label>
             <form:input path="motechId" cssClass="jsRequire" size="20" label="${fn:escapeXml(patient_motech_id)}"
@@ -273,12 +273,12 @@
         <form:textarea path="address" cssClass="jsRequire" size="200" label="${fn:escapeXml(patient_address)}"/>
     </div>
     <input type="button" id="submitNewPatient" value="Submit"/>
-</div>
+    </div>
 <div class="enrollment_link_section">
     <h3><label>Enrollment:</label></h3>
     <a href="${pageContext.servletContext.contextPath}/admin/anc/new?motechPatientId=${patientForm.motechId}">ANC</a> <br/>
     <a id="cwcenrollment" href="${pageContext.servletContext.contextPath}/admin/cwc/new?motechPatientId=${patientForm.motechId}">CWC</a> <br/>
-    <a href="${pageContext.servletContext.contextPath}/admin/enroll/mobile-midwife/form?motechPatientId=${patientForm.motechId}">MobileMidwife</a>
+    <a id="mobileMidwifeEnrollmentLink" href="${pageContext.servletContext.contextPath}/admin/enroll/mobile-midwife/form?motechPatientId=${patientForm.motechId}">MobileMidwife</a>
 </div>
 </form:form>
 </div>

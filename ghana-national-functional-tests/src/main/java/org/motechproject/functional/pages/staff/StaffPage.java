@@ -26,6 +26,7 @@ public class StaffPage extends StaffPageElements {
                 .withPhoneNumber(staff.phoneNumber())
                 .withRole(staff.role().getRole());
         staffPage.submit();
+        staff.motechId(staffPage.staffId());
     }
 
     public void submit() {

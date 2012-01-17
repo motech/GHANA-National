@@ -27,7 +27,7 @@ public class FacilityTest extends LoggedInUserFunctionalTest {
         String newRegion = "Ashanti";
         String newPhoneNumber = dataGenerator.randomPhoneNumber();
 
-        FacilityPage facilityPage = browser.toFacitlityPage(homePage);
+        FacilityPage facilityPage = browser.toFacilityPage(homePage);
 
         facilityPage
                 .withName(name)

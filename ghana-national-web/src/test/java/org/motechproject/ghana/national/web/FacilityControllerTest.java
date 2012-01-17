@@ -10,10 +10,10 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.service.FacilityService;
-import org.motechproject.ghana.national.tools.Messages;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mrs.model.MRSFacility;
+import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
@@ -22,6 +22,7 @@ import org.springframework.validation.FieldError;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -36,7 +37,7 @@ public class FacilityControllerTest {
     @Mock
     FacilityService mockFacilityService;
     @Mock
-    Messages mockMessages;
+    MessageSource mockMessageSource;
     @Mock
     BindingResult mockBindingResult;
 
@@ -47,7 +48,7 @@ public class FacilityControllerTest {
         initMocks(this);
         facilityHelper = new FacilityHelper();
         ReflectionTestUtils.setField(facilityHelper, "facilityService", mockFacilityService);
-        facilityController = new FacilityController(mockFacilityService, mockMessages, facilityHelper);
+        facilityController = new FacilityController(mockFacilityService, mockMessageSource, facilityHelper);
         mockBindingResult = mock(BindingResult.class);
     }
 
@@ -107,7 +108,7 @@ public class FacilityControllerTest {
         final String message = "Facility already exists.";
         final FacilityController spyFacilitiesController = spy(facilityController);
         doThrow(new FacilityAlreadyFoundException()).when(mockFacilityService).create(facility, country, region, district, province, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
-        when(mockMessages.message("facility_already_exists")).thenReturn(message);
+        when(mockMessageSource.getMessage("facility_already_exists", null, Locale.getDefault())).thenReturn(message);
 
         final FacilityForm createFacilityForm = new FacilityForm();
         createFacilityForm.setName(facility);
