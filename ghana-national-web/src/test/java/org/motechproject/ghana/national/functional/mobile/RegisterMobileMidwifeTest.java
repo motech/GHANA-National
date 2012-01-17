@@ -24,6 +24,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.HashMap;
@@ -38,6 +40,7 @@ import static org.motechproject.functional.framework.XformHttpClient.XFormParser
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
+@TransactionConfiguration(defaultRollback=true, transactionManager = "transactionManager")
 public class RegisterMobileMidwifeTest extends AbstractJUnit4SpringContextTests{
 
 
@@ -113,6 +116,7 @@ public class RegisterMobileMidwifeTest extends AbstractJUnit4SpringContextTests{
 
 
    @Test
+   @Transactional(readOnly = true)
     public void shouldRegisterForMobileMidWifeProgramIfValidationsPass() throws Exception{
 
         final String staffId=staffGenerator.createDummyStaffAndReturnStaffId();
@@ -121,11 +125,11 @@ public class RegisterMobileMidwifeTest extends AbstractJUnit4SpringContextTests{
 
       final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(new HashMap<String, String>() {{
 
-            put("patientId",patientId);
-            put("staffId",staffId);
-            put("facilityId",facilityId);
-            put("consent", "Y");
-        }});
+          put("patientId", patientId);
+          put("staffId", staffId);
+          put("facilityId", facilityId);
+          put("consent", "Y");
+      }});
 
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 0);

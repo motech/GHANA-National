@@ -31,7 +31,6 @@ public class FacilityGenerator {
 
     @LoginAsAdmin
     @ApiSession
-    @Transactional(readOnly = true)
     public String createDummyFacilityAndReturnFacilityId(){
         FacilityForm facilityForm = createFacilityForm();
         BindingResult mockBindingResult = mock(BindingResult.class);
@@ -48,10 +47,10 @@ public class FacilityGenerator {
         String region = "Western Ghana";
         String province = "Province";
         String district = "District";
-        String phoneNumber = "0123456780";
-        String addPhoneNumber1 = "0123456788";
-        String addPhoneNumber2 = "0123456787";
-        String addPhoneNumber3 = "0123456784";
+        String phoneNumber = "0123456789";
+        String addPhoneNumber1 = "0123456785";
+        String addPhoneNumber2 = "0123456786";
+        String addPhoneNumber3 = "0123456787";
         facilityForm.setName(name);
         facilityForm.setCountry(country);
         facilityForm.setRegion(region);

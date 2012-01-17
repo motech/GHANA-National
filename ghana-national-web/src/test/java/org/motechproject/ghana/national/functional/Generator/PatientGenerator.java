@@ -34,7 +34,6 @@ public class PatientGenerator {
 
     @LoginAsAdmin
     @ApiSession
-    @Transactional(readOnly = true)
     public String createDummyPatientAndReturnPatientId(String facilityId){
         PatientForm patientForm = new PatientForm().setFirstName("firstName").setLastName("lastName").setDateOfBirth(new Date()).setSex("Female").setFacilityId(facilityId)
                 .setRegistrationMode(RegistrationType.AUTO_GENERATE_ID);

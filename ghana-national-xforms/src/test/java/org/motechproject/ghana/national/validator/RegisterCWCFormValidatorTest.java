@@ -43,7 +43,7 @@ public class RegisterCWCFormValidatorTest {
         String motechId = "1234567";
         String staffId = "345";
         String facilityId = "1234";
-        RegisterCWCForm registerCWCForm = setUpFormBean(facilityId, staffId,new Date(),"23232322",RegistrationToday.TODAY, motechId);
+        RegisterCWCForm registerCWCForm = setUpFormBean(facilityId, staffId,new Date(),"23232322",RegistrationToday.TODAY, motechId, Boolean.FALSE);
         List<FormError> formErrors = registerCWCFormValidator.validate(registerCWCForm);
         verify(mockFormValidator).validatePatient(eq(motechId), eq(RegisterCWCFormValidator.MOTECH_ID_ATTRIBUTE_NAME));
         verify(mockFormValidator).validateIfStaffExists(eq(staffId));
@@ -58,7 +58,7 @@ public class RegisterCWCFormValidatorTest {
         String motechId = "1234567";
         String staffId = "345";
         String facilityId = "1234";
-        RegisterCWCForm registerCWCForm = setUpFormBean(facilityId, staffId,new Date(),"23232322",RegistrationToday.TODAY, motechId);
+        RegisterCWCForm registerCWCForm = setUpFormBean(facilityId, staffId,new Date(),"23232322",RegistrationToday.TODAY, motechId, Boolean.FALSE);
 
         registerCWCFormValidator.validate(registerCWCForm);
 
@@ -76,7 +76,7 @@ public class RegisterCWCFormValidatorTest {
         assertEquals(formErrors.size(), 1);
     }
     
-    private RegisterCWCForm setUpFormBean(String facilityId, String staffId, Date date, String serialNumber, RegistrationToday registrationToday, String motechId) {
+    private RegisterCWCForm setUpFormBean(String facilityId, String staffId, Date date, String serialNumber, RegistrationToday registrationToday, String motechId, Boolean consent) {
         RegisterCWCForm registerCWCForm = new RegisterCWCForm();
         registerCWCForm.setFacilityId(facilityId);
         registerCWCForm.setStaffId(staffId);
@@ -86,6 +86,7 @@ public class RegisterCWCFormValidatorTest {
         registerCWCForm.setMotechId(motechId);
         registerCWCForm.setAddHistory(true);
         registerCWCForm.setAddCareHistory("addCare");
+        registerCWCForm.setConsent(consent);
         return registerCWCForm;
     }
 

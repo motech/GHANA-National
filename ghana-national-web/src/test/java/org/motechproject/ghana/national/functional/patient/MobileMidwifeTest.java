@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.is;
 import static org.testng.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml","cl"})
+@ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
 
     @Autowired

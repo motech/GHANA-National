@@ -34,7 +34,6 @@ public class StaffGenerator {
 
     @LoginAsAdmin
     @ApiSession
-    @Transactional(readOnly = true)
     public String createDummyStaffAndReturnStaffId() {
         StaffForm staffForm = createStaffForm();
         BindingResult mockBindingResult = mock(BindingResult.class);
@@ -45,7 +44,7 @@ public class StaffGenerator {
 
     private StaffForm createStaffForm() {
         return new StaffForm().setFirstName("firstName").setMiddleName("middleName").setLastName("lastName")
-                .setPhoneNumber("0987654321").setNewRole("Super Admin").setNewEmail("blah@b.com");
+                .setPhoneNumber("0987654321").setNewRole("Super Admin").setNewEmail("blah@blah.com");
 
     }
 
