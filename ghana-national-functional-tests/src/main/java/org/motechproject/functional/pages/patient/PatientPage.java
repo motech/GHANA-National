@@ -256,6 +256,10 @@ public class PatientPage extends HomePage {
         patientPage.submit();
     }
 
+    public String motechId() {
+        return motechId.getAttribute("value");
+    }
+
     @Override
     public void waitForSuccessfulCompletion() {
         elementPoller.waitForElementClassName("success", driver);

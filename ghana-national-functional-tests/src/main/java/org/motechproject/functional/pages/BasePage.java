@@ -34,6 +34,10 @@ public class BasePage<T> {
         return (T) this;
     }
 
+    protected String attrValue(WebElement webElement, String key) {
+        return webElement.getAttribute(key);
+    }
+
     public void waitForSuccessfulCompletion() {
     }
 }

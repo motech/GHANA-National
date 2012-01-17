@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.functional.patient;
 import org.junit.runner.RunWith;
 import org.motechproject.functional.data.TestPatient;
 import org.motechproject.functional.data.TestStaff;
+import org.motechproject.functional.pages.home.HomePage;
 import org.motechproject.functional.pages.patient.MobileMidwifeEnrollmentPage;
 import org.motechproject.functional.pages.patient.PatientPage;
 import org.motechproject.functional.pages.staff.StaffPage;
@@ -18,6 +19,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.testng.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -27,21 +31,63 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
     @Autowired
     private IdentifierGenerationService identifierGenerationService;
     private DataGenerator dataGenerator;
+    private TestStaff staff;
+    private TestPatient patient;
+
+    @org.testng.annotations.BeforeClass
+    protected void runOnce() {
+        login();
+        staff = createStaff("Staff Jence");
+        createPatient("Samy Johnson");
+    }
 
     @BeforeMethod
     public void setUp() {
-        dataGenerator = new DataGenerator();
+         dataGenerator = new DataGenerator();
     }
 
+//    @Test
+//    public void shouldNotSubmitEnrollPatientForMobileMidwifeProgramIfHasAnyValueMissing() {
+//
+//        MobileMidwifeEnrollmentPage enrollmentPage = goToMobileMidwifePage(homePage, patient);
+//        fillDefaultEnrollmentAndSubmit(enrollmentPage);
+//        assertTrue(enrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Enrolled successfully."));
+//    }
+        
     @Test
-    public void shouldEnrollPatientForMobileMidwifeProgram() {
+    public void shouldCreateAndEditMobileMidwifeProgramEnrollmentForPatient() {
 
-        TestStaff staff = createStaff("Staff Jence");
-        PatientPage patientPage = browser.toCreatePatient(homePage);
-        TestPatient patient = createPatient(patientPage, "Samy Johnson"  + dataGenerator.randomString(5));
 
-        MobileMidwifeEnrollmentPage enrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientPage);
+        MobileMidwifeEnrollmentPage enrollmentPage = goToMobileMidwifePage(homePage, patient);
+        enrollmentPage = fillDefaultEnrollmentAndSubmit(enrollmentPage);
 
+        assertTrue(enrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Enrolled successfully."));
+        
+        enrollmentPage.withStaffMotechId(staff.motechId())
+                .withFacilityMotechId(patient.facilityId()).withConsent(true)
+                .withServiceType(ServiceType.CHILD_CARE.toString())
+                .withPhoneOwnership(PhoneOwnership.HOUSEHOLD.toString())
+                .withPhoneNumber("0999111100")
+                .withMedium(Medium.VOICE.toString())
+                .withDayOfWeek(DayOfWeek.Sunday.toString())
+                .withTime("10", "2")
+                .withLanguage(Language.FAN.toString())
+                .withLearnedFrom(LearnedFrom.POSTERS_ADS.toString())
+                .withReasonToJoin(ReasonToJoin.FAMILY_FRIEND_DELIVERED.toString())
+                .withMessageStartWeek(MessageStartWeek.messageStartWeeks().get(40 + 10).getValue())
+                .submit();
+        enrollmentPage = browser.toMobileMidwifeEnrollmentForm(enrollmentPage);
+        assertTrue(enrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Enrolled successfully."));
+        assertThat(enrollmentPage.serviceType(), is(equalTo(ServiceType.CHILD_CARE.toString())));
+        assertThat(enrollmentPage.medium(), is(equalTo(Medium.VOICE.toString())));
+    }
+
+    private MobileMidwifeEnrollmentPage goToMobileMidwifePage(HomePage homePage, TestPatient patient) {
+        PatientPage patientPage = browser.openPatientPageBySearch(homePage, patient);
+        return browser.toMobileMidwifeEnrollmentForm(patientPage);
+    }
+
+    private MobileMidwifeEnrollmentPage fillDefaultEnrollmentAndSubmit(MobileMidwifeEnrollmentPage enrollmentPage) {
         enrollmentPage.withStaffMotechId(staff.motechId())
                 .withFacilityMotechId(patient.facilityId()).withConsent(true)
                 .withServiceType(ServiceType.PREGNANCY.toString())
@@ -55,7 +101,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
                 .withReasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH.toString())
                 .withMessageStartWeek(MessageStartWeek.messageStartWeeks().get(2).getValue())
                 .submit();
-        assertTrue(enrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Enrolled successfully."));
+        return browser.toMobileMidwifeEnrollmentForm(enrollmentPage);
     }
 
     private TestPatient createPatient(PatientPage patientPage, String patientName) {
@@ -63,7 +109,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
                 registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
                 patientType(TestPatient.PATIENT_TYPE.PATIENT_MOTHER).estimatedDateOfBirth(false);
         patientPage.create(patient);
-        return patient;
+        return patient.motechId(browser.toCreatePatientSuccess(patientPage).motechId());
     }
 
     private TestStaff createStaff(String firstName) {
@@ -72,5 +118,9 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
         staffPage.create(staff);
         return staff;
     }
-
+    
+    private void createPatient(String patientName) {
+        PatientPage patientPage = browser.toCreatePatient(homePage);
+        patient = createPatient(patientPage, patientName + new DataGenerator().randomString(5));
+    }
 }

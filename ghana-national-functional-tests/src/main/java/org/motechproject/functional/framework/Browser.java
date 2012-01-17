@@ -2,6 +2,7 @@ package org.motechproject.functional.framework;
 
 import org.motechproject.functional.TestEnvironmentConfiguration;
 import org.motechproject.functional.base.WebDriverProvider;
+import org.motechproject.functional.data.TestPatient;
 import org.motechproject.functional.pages.BasePage;
 import org.motechproject.functional.pages.facility.FacilityPage;
 import org.motechproject.functional.pages.facility.SearchFacilityPage;
@@ -43,6 +44,12 @@ public class Browser {
 
     public PatientPage toCreatePatient(HomePage homePage) {
         homePage.openCreatePatientPage();
+        return new PatientPage(webDriver);
+    }
+
+
+    public PatientPage toCreatePatientSuccess(PatientPage patientPage) {
+        patientPage.waitForSuccessfulCompletion();
         return new PatientPage(webDriver);
     }
 
@@ -93,6 +100,11 @@ public class Browser {
         return new MobileMidwifeEnrollmentPage(webDriver);
     }
 
+    public MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentForm(HomePage fromPage) {
+        fromPage.waitForSuccessfulCompletion();
+        return new MobileMidwifeEnrollmentPage(webDriver);
+    }
+
     public void quit() {
         webDriver.quit();
     }
@@ -113,5 +125,13 @@ public class Browser {
 
     public void captureScreenShot() {
         new ScreenShotCaptor().capture(webDriver);
+    }
+
+    public PatientPage openPatientPageBySearch(HomePage homePage, TestPatient patient) {
+        SearchPatientPage searchPatientPage = toSearchPatient(homePage);
+        searchPatientPage.searchWithMotechId(patient.motechId());
+        searchPatientPage.open(patient);
+        searchPatientPage.waitForPageToLoad();
+        return new PatientPage(webDriver);
     }
 }
