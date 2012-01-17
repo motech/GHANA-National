@@ -166,4 +166,12 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
     public void waitForSuccessfulCompletion() {
         elementPoller.waitForElementClassName("success", driver);
     }
+
+    public String serviceType() {
+        return attrValue(serviceType, "value");
+    }
+
+    public String medium() {
+        return attrValue(medium, "value");
+    }
 }
