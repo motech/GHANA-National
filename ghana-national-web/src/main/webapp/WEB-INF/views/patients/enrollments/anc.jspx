@@ -18,8 +18,10 @@
         <spring:message code="required_msg" var="required_msg" htmlEscape="false"/>
         <spring:message code="incorrect_msg" var="incorrect_msg" htmlEscape="false"/>
         <spring:message code="patient_motech_id" var="patient_motech_id" htmlEscape="false"/>
+        <spring:message code="staff_id" var="staff_id" htmlEscape="false"/>
         <spring:message code="patient_serial_number" var="patient_serial_number" htmlEscape="false"/>
         <spring:message code="estimatedDateOfDelivery" var="estimatedDateOfDelivery" htmlEscape="false"/>
+        <spring:message code="delivery_date_confirmed" var="delivery_date_confirmed" htmlEscape="false"/>
         <spring:message code="registration_today?" var="registration_today?" htmlEscape="false"/>
         <spring:message code="registration_today" var="registration_today" htmlEscape="false"/>
         <spring:message code="registration_date" var="registration_date" htmlEscape="false"/>
@@ -41,6 +43,13 @@
 
 
 
+        <div>
+            <label for="staffId" class="formLabel"><spring:message code="staff_id"/> *:</label>
+            <form:input path="staffId" size="20" cssClass="jsRequire" />
+            <span id='staffIdError' class='alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(staff_id)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
         <div>
             <label for="motechPatientId" class="formLabel"><spring:message code="patient_motech_id"/> *:</label>
             <form:input path="motechPatientId" size="20" cssClass="jsRequire" readonly="true"/>
@@ -94,6 +103,21 @@
             <span id='eddError' class='alertText formlyInvalid formlyAlert hide'>
                     ${fn:escapeXml(estimatedDateOfDelivery)} ${fn:escapeXml(required_msg)}
             </span>
+        </div>
+
+        <div>
+            <label for="deliveryDateConfirmed" class="formLabel"><spring:message code="delivery_date_confirmed"/> *:</label>
+            <div class="form-field">
+                <form:radiobutton cssClass="jsRequire" path="deliveryDateConfirmed" value="true"
+                                  label="${fn:escapeXml(yes)}"/>
+                <form:radiobutton cssClass="jsRequire" path="deliveryDateConfirmed" value="false"
+                                  label="${fn:escapeXml(no)}"/>
+            </div>
+
+                <span id='deliveryDateConfirmedError' class='alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(delivery_date_confirmed)} ${fn:escapeXml(required_msg)}
+                </span>
+
         </div>
 
         <div id="registrationTodayHolder" class="form-field">
