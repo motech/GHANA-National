@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.web.StaffController;
 import org.motechproject.ghana.national.web.form.StaffForm;
 
+
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 
@@ -45,6 +46,7 @@ public class StaffGenerator {
     private StaffForm createStaffForm() {
         return new StaffForm().setFirstName("firstName").setMiddleName("middleName").setLastName("lastName")
                 .setPhoneNumber("0987654321").setNewRole("Super Admin").setNewEmail("blah@b.com");
+
     }
 
 }

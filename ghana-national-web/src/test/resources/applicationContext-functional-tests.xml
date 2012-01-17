@@ -13,6 +13,7 @@
     <context:component-scan base-package="org.motechproject.ghana.national.functional"/>
     <context:component-scan base-package="org.motechproject.functional"/>
     <util:properties id="functionalTestProperties" location="classpath:functional-test.properties"/>
+
     <import resource="classpath*:testApplicationContext.xml"/>
     <bean id="identifierGenerationService"
     class="org.motechproject.ghana.national.service.IdentifierGenerationService"/>
@@ -20,4 +21,5 @@
     <bean id="transactionManager"
     class="org.springframework.orm.hibernate3.HibernateTransactionManager"
     p:sessionFactory-ref="sessionFactory"/>
+
 </beans>

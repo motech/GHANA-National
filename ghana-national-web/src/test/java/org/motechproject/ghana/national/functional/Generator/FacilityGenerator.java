@@ -2,12 +2,15 @@ package org.motechproject.ghana.national.functional.Generator;
 
 import org.motechproject.ghana.national.web.FacilityController;
 import org.motechproject.ghana.national.web.form.FacilityForm;
+import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 
@@ -28,6 +31,7 @@ public class FacilityGenerator {
 
     @LoginAsAdmin
     @ApiSession
+    @Transactional(readOnly = true)
     public String createDummyFacilityAndReturnFacilityId(){
         FacilityForm facilityForm = createFacilityForm();
         BindingResult mockBindingResult = mock(BindingResult.class);
@@ -44,10 +48,10 @@ public class FacilityGenerator {
         String region = "Western Ghana";
         String province = "Province";
         String district = "District";
-        String phoneNumber = "0123456789";
-        String addPhoneNumber1 = "0123456787";
-        String addPhoneNumber2 = "0123456786";
-        String addPhoneNumber3 = "0123456783";
+        String phoneNumber = "0123456780";
+        String addPhoneNumber1 = "0123456788";
+        String addPhoneNumber2 = "0123456787";
+        String addPhoneNumber3 = "0123456784";
         facilityForm.setName(name);
         facilityForm.setCountry(country);
         facilityForm.setRegion(region);
