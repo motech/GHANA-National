@@ -3,6 +3,8 @@
        xmlns:util="http://www.springframework.org/schema/util"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+
+       xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
@@ -11,8 +13,11 @@
     <context:component-scan base-package="org.motechproject.ghana.national.functional"/>
     <context:component-scan base-package="org.motechproject.functional"/>
     <util:properties id="functionalTestProperties" location="classpath:functional-test.properties"/>
-
-    <bean id="identifierGenerationService" class="org.motechproject.ghana.national.service.IdentifierGenerationService"/>
+    <import resource="classpath*:testApplicationContext.xml"/>
+    <bean id="identifierGenerationService"
+    class="org.motechproject.ghana.national.service.IdentifierGenerationService"/>
     <util:properties id="ghanaNationalProperties" location="classpath:ghana-national.properties"/>
-
+    <bean id="transactionManager"
+    class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+    p:sessionFactory-ref="sessionFactory"/>
 </beans>

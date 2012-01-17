@@ -3,6 +3,10 @@ package org.motechproject.ghana.national.functional.Generator;
 import org.motechproject.ghana.national.web.FacilityController;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.advice.LoginAsAdmin;
+
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -22,6 +26,8 @@ public class FacilityGenerator {
         this.facilityController = facilityController;
     }
 
+    @LoginAsAdmin
+    @ApiSession
     public String createDummyFacilityAndReturnFacilityId(){
         FacilityForm facilityForm = createFacilityForm();
         BindingResult mockBindingResult = mock(BindingResult.class);
