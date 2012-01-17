@@ -112,7 +112,7 @@
         </div>
         <div class="hide form-field">
             <motech:phone path="phoneNumber" label="${patient_phone_number} :*"
-                          errorMsg="${phone_number_incorrect_msg}" required="false"/>
+                          errorMsg="${phone_number_incorrect_msg}" required="true"/>
         </div>
         <div class="hide form-field">
             <label class="formLabel" for="medium">${fn:escapeXml(medium)} :*</label>

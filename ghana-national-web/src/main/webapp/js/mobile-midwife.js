@@ -199,6 +199,14 @@ $(document).ready(function() {
         $('#language').val($("#languageSelected").val());        
     })();
 
+    $("#phoneOwnership").change(function() {
+        if ($(this).val() === 'PUBLIC') {
+            $('#phoneNumber').removeClass('jsRequire');
+        } else {
+            $('#phoneNumber').addClass('jsRequire');
+        }
+    });
+
     $('#submitMobileMidwife').click(function() {
         var form = $('#mobileMidwifeEnrollmentForm');
         if (!validate(form)){
