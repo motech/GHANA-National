@@ -10,8 +10,10 @@ import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
 import org.motechproject.ghana.national.web.form.FacilityForm;
+import org.motechproject.ghana.national.web.helper.ANCFormMapper;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mobileforms.api.domain.FormError;
+import org.motechproject.mrs.model.MRSEncounter;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 
@@ -21,9 +23,6 @@ import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
 import static org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -36,6 +35,8 @@ public class ANCControllerTest {
     private ANCService mockANCService;
     @Mock
     private RegisterANCFormValidator mockValidator;
+    @Mock
+    private ANCFormMapper mockANCFormMapper;
 
     @Before
     public void setUp() {
@@ -44,16 +45,17 @@ public class ANCControllerTest {
         ReflectionTestUtils.setField(ancController, "ancService", mockANCService);
         ReflectionTestUtils.setField(ancController, "facilityHelper", mockFacilityHelper);
         ReflectionTestUtils.setField(ancController, "registerANCFormValidator", mockValidator);
+        ReflectionTestUtils.setField(ancController, "ancFormMapper", mockANCFormMapper);
     }
 
     @Test
     public void shouldAddCareHistoryAttributesAndDisplayNewForm() {
         ModelMap modelMap = new ModelMap();
         String motechPatientId = "1212121";
-        String ancUrl = ancController.enroll(motechPatientId, modelMap);
+        String ancUrl = ancController.newANC(motechPatientId, modelMap);
         ANCEnrollmentForm ancEnrollmentForm = (ANCEnrollmentForm) modelMap.get("ancEnrollmentForm");
 
-        assertThat(ancUrl, is(equalTo(ANCController.ANC_URL)));
+        assertEquals(ANCController.ENROLL_ANC_URL, ancUrl);
         assertTrue("Form attributes are not equal", reflectionEquals(ancEnrollmentForm, new ANCEnrollmentForm(motechPatientId)));
         assertTrue(reflectionEquals(modelMap.get("careHistories"), Arrays.asList("TT", "IPT")));
         assertTrue(reflectionEquals(modelMap.get("lastIPT"), Arrays.asList("IPT 1", "IPT 2", "IPT 3")));
@@ -65,7 +67,7 @@ public class ANCControllerTest {
     public void shouldSaveANCEnrollment() {
         ModelMap modelMap = new ModelMap();
         ANCEnrollmentForm ancEnrollmentForm = createTestANCEnrollmentForm();
-        when(mockValidator.validatePatient(ancEnrollmentForm.getMotechPatientId(), ancEnrollmentForm.getFacilityForm().getFacilityId(), ancEnrollmentForm.getStaffId())).thenReturn(Arrays.<FormError>asList());
+        when(mockValidator.validatePatientFacilityStaff(ancEnrollmentForm.getMotechPatientId(), ancEnrollmentForm.getFacilityForm().getFacilityId(), ancEnrollmentForm.getStaffId())).thenReturn(Arrays.<FormError>asList());
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
 
         ancController.save(ancEnrollmentForm, modelMap);
@@ -87,7 +89,7 @@ public class ANCControllerTest {
         FormError staffIdError = new FormError("staffId", "staffId not found");
         errors.add(staffIdError);
 
-        when(mockValidator.validatePatient(ancEnrollmentForm.getMotechPatientId(), ancEnrollmentForm.getFacilityForm().getFacilityId(), ancEnrollmentForm.getStaffId())).thenReturn(errors);
+        when(mockValidator.validatePatientFacilityStaff(ancEnrollmentForm.getMotechPatientId(), ancEnrollmentForm.getFacilityForm().getFacilityId(), ancEnrollmentForm.getStaffId())).thenReturn(errors);
 
         ancController.save(ancEnrollmentForm, modelMap);
         verify(mockANCService, never()).enroll(null);
@@ -100,12 +102,49 @@ public class ANCControllerTest {
         checkIfCareHistoryAttributesArePlacedInModelMap(modelMap, ancEnrollmentForm);
     }
 
+    @Test
+    public void shouldPopulateEncounterInfoIfEncounterExists(){
+        String motechPatientId = "1";
+        ModelMap modelMap = new ModelMap();
+        ANCEnrollmentForm ancEnrollmentForm = createTestANCEnrollmentForm();
+        ArrayList<FormError> errors = new ArrayList<FormError>();
+
+        MRSEncounter mrsEncounter = new MRSEncounter();
+
+        when(mockValidator.validatePatient(motechPatientId)).thenReturn(errors);
+        when(mockANCService.getEncounter(motechPatientId)).thenReturn(mrsEncounter);
+        when(mockANCFormMapper.convertMRSEncounterToView(mrsEncounter)).thenReturn(ancEnrollmentForm);
+
+        ancController.newANC(motechPatientId, modelMap);
+        assertTrue(modelMap.containsKey("ancEnrollmentForm"));
+        assertTrue(reflectionEquals(modelMap.get("ancEnrollmentForm"),ancEnrollmentForm));
+
+        checkIfCareHistoryAttributesArePlacedInModelMap(modelMap, ancEnrollmentForm);
+    }
+
+
+    @Test
+    public void shouldThrowErrorsWhenThePatientIsNotFoundAndNotFemaleWhileRenderingANCPage() {
+        String motechPatientId = "1";
+        ModelMap modelMap = new ModelMap();
+        ANCEnrollmentForm ancEnrollmentForm = new ANCEnrollmentForm(motechPatientId);
+        ArrayList<FormError> errors = new ArrayList<FormError>() {{
+            add(new FormError("motechId", "should be female for registering into ANC"));
+        }};
+        when(mockValidator.validatePatient(motechPatientId)).thenReturn(errors);
+        ancController.newANC(motechPatientId, modelMap);
+        assertTrue(modelMap.containsKey("ancEnrollmentForm"));
+
+        checkIfCareHistoryAttributesArePlacedInModelMap(modelMap, ancEnrollmentForm);
+    }
+
+
     private void checkIfCareHistoryAttributesArePlacedInModelMap(ModelMap modelMap, ANCEnrollmentForm ancEnrollmentForm) {
         assertTrue(modelMap.containsKey("ancEnrollmentForm"));
         assertTrue(modelMap.containsKey("careHistories"));
         assertTrue(modelMap.containsKey("lastTT"));
         assertTrue(modelMap.containsKey("lastIPT"));
-        assertEquals(ancEnrollmentForm, modelMap.get("ancEnrollmentForm"));
+        assertTrue(reflectionEquals(ancEnrollmentForm, modelMap.get("ancEnrollmentForm")));
     }
 
     private void compareANCEnrollmentFormWithANCVO(ANCEnrollmentForm ancEnrollmentForm, ANCVO ancVO) {
