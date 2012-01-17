@@ -4,10 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.domain.ANCCareHistory;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.mrs.model.*;
@@ -76,14 +73,14 @@ public class ANCServiceTest {
         assertEquals(8, actualEncounter.getObservations().size());
         assertEquals(registrationDate, actualEncounter.getDate());
         final HashSet<MRSObservation> expectedObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Integer>(observationDate, ANCService.CONCEPT_GRAVIDA, ancvo.getGravida()));
-            add(new MRSObservation<Double>(observationDate, ANCService.CONCEPT_HEIGHT, ancvo.getHeight()));
-            add(new MRSObservation<Integer>(observationDate, ANCService.CONCEPT_PARITY, ancvo.getParity()));
-            add(new MRSObservation<Date>(observationDate, ANCService.CONCEPT_EDD, ancvo.getEstimatedDateOfDelivery()));
-            add(new MRSObservation<Boolean>(observationDate, ANCService.CONCEPT_CONFINEMENT_CONFIRMED, ancvo.getDeliveryDateConfirmed()));
-            add(new MRSObservation<String>(observationDate, ANCService.CONCEPT_ANC_REG_NUM, ancvo.getSerialNumber()));
-            add(new MRSObservation<Integer>(ancvo.getLastIPTDate(), ANCService.CONCEPT_IPT, Integer.valueOf(ancvo.getLastIPT())));
-            add(new MRSObservation<Integer>(ancvo.getLastTTDate(), ANCService.CONCEPT_TT, Integer.valueOf(ancvo.getLastTT())));
+            add(new MRSObservation<Integer>(observationDate, Constants.CONCEPT_GRAVIDA, ancvo.getGravida()));
+            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_HEIGHT, ancvo.getHeight()));
+            add(new MRSObservation<Integer>(observationDate, Constants.CONCEPT_PARITY, ancvo.getParity()));
+            add(new MRSObservation<Date>(observationDate, Constants.CONCEPT_EDD, ancvo.getEstimatedDateOfDelivery()));
+            add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, ancvo.getDeliveryDateConfirmed()));
+            add(new MRSObservation<String>(observationDate, Constants.CONCEPT_ANC_REG_NUM, ancvo.getSerialNumber()));
+            add(new MRSObservation<Integer>(ancvo.getLastIPTDate(), Constants.CONCEPT_IPT, Integer.valueOf(ancvo.getLastIPT())));
+            add(new MRSObservation<Integer>(ancvo.getLastTTDate(), Constants.CONCEPT_TT, Integer.valueOf(ancvo.getLastTT())));
         }};
 
         assertReflectionEquals(actualEncounter.getObservations(), expectedObservations, ReflectionComparatorMode.LENIENT_DATES, ReflectionComparatorMode.LENIENT_ORDER);
@@ -120,12 +117,12 @@ public class ANCServiceTest {
         assertEquals(6, actualEncounter.getObservations().size());
         assertEquals(registrationDate, actualEncounter.getDate());
         final HashSet<MRSObservation> expectedObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Integer>(observationDate, ANCService.CONCEPT_GRAVIDA, ancvo.getGravida()));
-            add(new MRSObservation<Double>(observationDate, ANCService.CONCEPT_HEIGHT, ancvo.getHeight()));
-            add(new MRSObservation<Integer>(observationDate, ANCService.CONCEPT_PARITY, ancvo.getParity()));
-            add(new MRSObservation<Date>(observationDate, ANCService.CONCEPT_EDD, ancvo.getEstimatedDateOfDelivery()));
-            add(new MRSObservation<Boolean>(observationDate, ANCService.CONCEPT_CONFINEMENT_CONFIRMED, ancvo.getDeliveryDateConfirmed()));
-            add(new MRSObservation<String>(observationDate, ANCService.CONCEPT_ANC_REG_NUM, ancvo.getSerialNumber()));
+            add(new MRSObservation<Integer>(observationDate, Constants.CONCEPT_GRAVIDA, ancvo.getGravida()));
+            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_HEIGHT, ancvo.getHeight()));
+            add(new MRSObservation<Integer>(observationDate, Constants.CONCEPT_PARITY, ancvo.getParity()));
+            add(new MRSObservation<Date>(observationDate, Constants.CONCEPT_EDD, ancvo.getEstimatedDateOfDelivery()));
+            add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, ancvo.getDeliveryDateConfirmed()));
+            add(new MRSObservation<String>(observationDate, Constants.CONCEPT_ANC_REG_NUM, ancvo.getSerialNumber()));
         }};
 
         assertReflectionEquals(actualEncounter.getObservations(), expectedObservations, ReflectionComparatorMode.LENIENT_DATES, ReflectionComparatorMode.LENIENT_ORDER);
@@ -161,12 +158,12 @@ public class ANCServiceTest {
         assertEquals(mockMRSPerson, actualEncounter.getProvider());
         assertEquals(6, actualEncounter.getObservations().size());
         final HashSet<MRSObservation> expectedObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Integer>(observationDate, ANCService.CONCEPT_GRAVIDA, ancvo.getGravida()));
-            add(new MRSObservation<Double>(observationDate, ANCService.CONCEPT_HEIGHT, ancvo.getHeight()));
-            add(new MRSObservation<Integer>(observationDate, ANCService.CONCEPT_PARITY, ancvo.getParity()));
-            add(new MRSObservation<Date>(observationDate, ANCService.CONCEPT_EDD, ancvo.getEstimatedDateOfDelivery()));
-            add(new MRSObservation<Boolean>(observationDate, ANCService.CONCEPT_CONFINEMENT_CONFIRMED, ancvo.getDeliveryDateConfirmed()));
-            add(new MRSObservation<String>(observationDate, ANCService.CONCEPT_ANC_REG_NUM, ancvo.getSerialNumber()));
+            add(new MRSObservation<Integer>(observationDate, Constants.CONCEPT_GRAVIDA, ancvo.getGravida()));
+            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_HEIGHT, ancvo.getHeight()));
+            add(new MRSObservation<Integer>(observationDate, Constants.CONCEPT_PARITY, ancvo.getParity()));
+            add(new MRSObservation<Date>(observationDate, Constants.CONCEPT_EDD, ancvo.getEstimatedDateOfDelivery()));
+            add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, ancvo.getDeliveryDateConfirmed()));
+            add(new MRSObservation<String>(observationDate, Constants.CONCEPT_ANC_REG_NUM, ancvo.getSerialNumber()));
         }};
 
         assertReflectionEquals(actualEncounter.getObservations(), expectedObservations, ReflectionComparatorMode.LENIENT_DATES, ReflectionComparatorMode.LENIENT_ORDER);
