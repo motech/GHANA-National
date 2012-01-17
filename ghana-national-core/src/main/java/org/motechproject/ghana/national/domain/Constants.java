@@ -68,4 +68,13 @@ public class Constants {
     public static final String CONCEPT_IMMUNIZATIONS_ORDERED = "IMMUNIZATIONS ORDERED";
     public static final String CONCEPT_CWC_REG_NUMBER = "CWC REGISTRATION NUMBER";
 
+    public static final String CONCEPT_GRAVIDA = "GRAVIDA";
+    public static final String CONCEPT_HEIGHT = "HEIGHT (CM)";
+    public static final String CONCEPT_PARITY = "PARITY";
+    public static final String CONCEPT_EDD = "ESTIMATED DATE OF CONFINEMENT";
+    public static final String CONCEPT_ANC_REG_NUM = "ANC REGISTRATION NUMBER";
+    public static final String CONCEPT_IPT = "INTERMITTENT PREVENTATIVE TREATMENT DOSE";
+    public static final String CONCEPT_TT = "TETANUS TOXOID DOSE";
+    public static final String CONCEPT_CONFINEMENT_CONFIRMED = "DATE OF CONFINEMENT CONFIRMED";
+
 }

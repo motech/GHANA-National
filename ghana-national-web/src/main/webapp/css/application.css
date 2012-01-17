@@ -164,15 +164,15 @@ nav ul li a:active, nav ul li a.current {
 
 /*Enrollment to a program*/
 
-.form-width-40 {
-    width: 40%;
+.form-width-60 {
+    width: 60%;
     float:left;
 }
 
 .enrollment_link_section {
     border: 1px solid #EEEEEE;
     padding:1%;
-    float: left;
+    float: right;
     width: 20%;
 }
 

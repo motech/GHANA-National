@@ -1,11 +1,14 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.service.ANCService;
+import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
+import org.motechproject.ghana.national.web.helper.ANCFormMapper;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mobileforms.api.domain.FormError;
+import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -27,13 +30,19 @@ import java.util.List;
 @RequestMapping("admin/anc")
 public class ANCController {
 
-    public static final String ANC_URL = "anc/new";
+    public static final String ENROLL_ANC_URL = "anc/new";
     @Autowired
     private FacilityHelper facilityHelper;
     @Autowired
     private ANCService ancService;
     @Autowired
     RegisterANCFormValidator registerANCFormValidator;
+    @Autowired
+    PatientService patientService;
+    @Autowired
+    ANCFormMapper ancFormMapper;
+
+    public static final String PATIENT_NOT_FOUND = "Patient Not Found";
 
     public ANCController() {
     }
@@ -47,28 +56,36 @@ public class ANCController {
 
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
-    public String enroll(@RequestParam("motechPatientId") String motechPatientId, ModelMap modelMap) {
-        modelMap.put("ancEnrollmentForm", new ANCEnrollmentForm(motechPatientId));
+    public String newANC(@RequestParam("motechPatientId") String motechPatientId, ModelMap modelMap) {
+        List<FormError> formErrors = registerANCFormValidator.validatePatient(motechPatientId);
+        ANCEnrollmentForm enrollmentForm = new ANCEnrollmentForm(motechPatientId);
+        if (formErrors.isEmpty()) {
+            MRSEncounter mrsEncounter = ancService.getEncounter(motechPatientId);
+            enrollmentForm = (mrsEncounter == null) ? enrollmentForm : ancFormMapper.convertMRSEncounterToView(mrsEncounter);
+        } else {
+            modelMap.addAttribute("validationErrors", formErrors);
+        }
+        modelMap.put("ancEnrollmentForm", enrollmentForm);
         addCareHistoryValues(modelMap);
-        return ANC_URL;
+        return ENROLL_ANC_URL;
     }
 
     @ApiSession
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String save(@Valid ANCEnrollmentForm ancEnrollmentForm, ModelMap modelMap) {
-        List<FormError> formErrors = registerANCFormValidator.validatePatient(ancEnrollmentForm.getMotechPatientId(),
-                ancEnrollmentForm.getFacilityForm().getFacilityId(), ancEnrollmentForm.getStaffId());
+        List<FormError> formErrors = registerANCFormValidator.validatePatientAndStaff(ancEnrollmentForm.getMotechPatientId(),
+                 ancEnrollmentForm.getStaffId());
 
-        if(formErrors.isEmpty()){
+        if (formErrors.isEmpty()) {
             ancService.enroll(createANCVO(ancEnrollmentForm));
             modelMap.addAttribute("success", "Client registered for ANC successfully.");
-        }else{
-            modelMap.addAttribute("validationErrors",formErrors);
+        } else {
+            modelMap.addAttribute("validationErrors", formErrors);
         }
 
         modelMap.put("ancEnrollmentForm", ancEnrollmentForm);
         addCareHistoryValues(modelMap);
-        return ANC_URL;
+        return ENROLL_ANC_URL;
     }
 
     private ANCVO createANCVO(ANCEnrollmentForm ancForm) {
