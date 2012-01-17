@@ -108,7 +108,7 @@
 
         <div>
             <label for="estimatedDateOfDelivery" class="formLabel"><spring:message code="estimatedDateOfDelivery"/> *:</label>
-            <form:input path="estimatedDateOfDelivery" readonly="true" size="20" cssClass="jsRequire jsBefore jsDate"/>
+            <form:input path="estimatedDateOfDelivery" readonly="true" size="20" cssClass="jsRequire jsDate"/>
             <span id='eddError' class='alertText formlyInvalid formlyAlert hide'>
                     ${fn:escapeXml(estimatedDateOfDelivery)} ${fn:escapeXml(required_msg)}
             </span>
