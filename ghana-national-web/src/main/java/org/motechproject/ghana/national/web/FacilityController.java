@@ -4,11 +4,11 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.service.FacilityService;
-import org.motechproject.ghana.national.tools.Messages;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequestMapping(value = "/admin/facilities")
@@ -31,7 +32,7 @@ public class FacilityController {
     public static final String FACILITY_ID = "Id";
 
     private FacilityService facilityService;
-    private Messages messages;
+    private MessageSource messageSource;
     private FacilityHelper facilityHelper;
     private static final String NEW_FACILITY_REDIRECT_URL = "/admin/facilities/new";
 
@@ -39,9 +40,9 @@ public class FacilityController {
     }
 
     @Autowired
-    public FacilityController(FacilityService facilityService, Messages messages, FacilityHelper facilityHelper) {
+    public FacilityController(FacilityService facilityService, MessageSource messageSource, FacilityHelper facilityHelper) {
         this.facilityService = facilityService;
-        this.messages = messages;
+        this.messageSource = messageSource;
         this.facilityHelper = facilityHelper;
     }
 
@@ -63,7 +64,7 @@ public class FacilityController {
                     createFacilityForm.getAdditionalPhoneNumber1(), createFacilityForm.getAdditionalPhoneNumber2(),
                     createFacilityForm.getAdditionalPhoneNumber3());
         } catch (FacilityAlreadyFoundException e) {
-            facilityHelper.handleExistingFacilityError(bindingResult, modelMap, messages.message("facility_already_exists"), FACILITY_FORM);
+            facilityHelper.handleExistingFacilityError(bindingResult, modelMap, messageSource.getMessage("facility_already_exists", null, Locale.getDefault()), FACILITY_FORM);
             modelMap.mergeAttributes(facilityHelper.locationMap());
             return NEW_FACILITY_VIEW;
         }

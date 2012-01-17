@@ -76,8 +76,8 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
         return this;
     }
 
-    public MobileMidwifeEnrollmentBuilder learnedFrom(LearnedFrom howLearned) {
-        this.learnedFrom = howLearned;
+    public MobileMidwifeEnrollmentBuilder learnedFrom(LearnedFrom learnedFrom) {
+        this.learnedFrom = learnedFrom;
         return this;
     }
 

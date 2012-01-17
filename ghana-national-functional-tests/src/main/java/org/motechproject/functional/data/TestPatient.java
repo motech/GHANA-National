@@ -106,6 +106,10 @@ public class TestPatient {
         return facility;
     }
 
+    public String facilityId() {
+        return facilityId;
+    }
+
     public String middleName() {
         return middleName;
     }
