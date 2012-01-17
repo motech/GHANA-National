@@ -1,7 +1,10 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
+import org.apache.xpath.operations.Bool;
 import org.motechproject.functional.framework.XformHttpClient;
+import org.openmrs.Patient;
+import org.openmrs.Person;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
@@ -72,6 +75,23 @@ public class RegisterMobileMidwifeTest {
         assertThat(errorsMap.get("facilityId"), hasItem("is mandatory"));
         assertThat(errorsMap.get("patientId"), hasItem("is mandatory"));
         assertThat(errorsMap.get("consent"), hasItem("is mandatory"));
+    }
+
+    @Test
+    public void shouldRegisterForMobileMidWifeProgramIfValidationsPass() throws Exception{
+        String patientId = "1234";
+
+
+      final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(new HashMap<String, String>() {{
+
+          put("patientId",  patientId);
+            put("staffId","5678");
+            put("facilityId","576475");
+            put("consent", "Y");
+        }});
+
+        final List<XformHttpClient.Error> errors = xformResponse.getErrors();
+        assertEquals(errors.size(), 0);
     }
 
     private XformHttpClient.XformResponse setupMobileMidwifeFormAndUpload(Map<String, String> data) throws Exception {

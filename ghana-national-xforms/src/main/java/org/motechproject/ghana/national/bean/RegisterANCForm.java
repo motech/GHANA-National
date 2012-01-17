@@ -10,7 +10,7 @@ import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 
 import java.util.Date;
 
-public class RegisterANCForm extends FormBean {
+public class RegisterANCForm extends MobileMidWifeIncludeForm {
     public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
     public static final String MOTECH_ID_PATTERN = "[0-9]{7}";
 
