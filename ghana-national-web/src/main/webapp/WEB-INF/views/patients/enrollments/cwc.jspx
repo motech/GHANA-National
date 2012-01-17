@@ -76,7 +76,7 @@
             </span>
         </div>
 
-        <div id="registraionDateHolder" class="form-field">
+        <div id="registraionDateHolder" class="form-field hide">
             <label class="formLabel" for="registrationDate">
                 <spring:message code="registration_date"/>
                 *:
