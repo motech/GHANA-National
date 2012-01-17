@@ -30,14 +30,14 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
     @ApiSession
     public List<FormError> validate(RegisterANCForm formBean) {
         List<FormError> formErrors = super.validate(formBean);
-        formErrors.addAll(validatePatientFacilityStaff(formBean.getMotechId(), formBean.getFacilityId(), formBean.getStaffId()));
+        formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
+        formErrors.addAll(validatePatientAndStaff(formBean.getMotechId(), formBean.getStaffId()));
         return formErrors;
     }
 
-    public List<FormError> validatePatientFacilityStaff(String motechId, String facilityId, String staffId) {
+    public List<FormError> validatePatientAndStaff(String motechId, String staffId) {
         List<FormError> formErrors = new ArrayList<FormError>();
         formErrors.addAll(validatePatient(motechId));
-        formErrors.addAll(formValidator.validateIfFacilityExists(facilityId));
         formErrors.addAll(formValidator.validateIfStaffExists(staffId));
         return formErrors;
     }

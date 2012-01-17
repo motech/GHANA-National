@@ -67,7 +67,7 @@ public class ANCControllerTest {
     public void shouldSaveANCEnrollment() {
         ModelMap modelMap = new ModelMap();
         ANCEnrollmentForm ancEnrollmentForm = createTestANCEnrollmentForm();
-        when(mockValidator.validatePatientFacilityStaff(ancEnrollmentForm.getMotechPatientId(), ancEnrollmentForm.getFacilityForm().getFacilityId(), ancEnrollmentForm.getStaffId())).thenReturn(Arrays.<FormError>asList());
+        when(mockValidator.validatePatientAndStaff(ancEnrollmentForm.getMotechPatientId(), ancEnrollmentForm.getStaffId())).thenReturn(Arrays.<FormError>asList());
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
 
         ancController.save(ancEnrollmentForm, modelMap);
@@ -89,7 +89,7 @@ public class ANCControllerTest {
         FormError staffIdError = new FormError("staffId", "staffId not found");
         errors.add(staffIdError);
 
-        when(mockValidator.validatePatientFacilityStaff(ancEnrollmentForm.getMotechPatientId(), ancEnrollmentForm.getFacilityForm().getFacilityId(), ancEnrollmentForm.getStaffId())).thenReturn(errors);
+        when(mockValidator.validatePatientAndStaff(ancEnrollmentForm.getMotechPatientId(),ancEnrollmentForm.getStaffId())).thenReturn(errors);
 
         ancController.save(ancEnrollmentForm, modelMap);
         verify(mockANCService, never()).enroll(null);

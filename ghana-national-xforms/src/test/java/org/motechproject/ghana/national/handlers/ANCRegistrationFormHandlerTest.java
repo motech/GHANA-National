@@ -1,25 +1,25 @@
 package org.motechproject.ghana.national.handlers;
 
-import org.ektorp.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterANCForm;
-import org.motechproject.ghana.national.domain.ANCCareHistory;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.ANCService;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.ANCVO;
-import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.model.MotechEvent;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 
@@ -28,6 +28,8 @@ public class ANCRegistrationFormHandlerTest {
     private ANCRegistrationFormHandler ancRegistrationFormHandler;
     @Mock
     private ANCService mockANCService;
+    @Mock
+    private FacilityService mockFacilityService;
 
 
     @Before
@@ -35,6 +37,7 @@ public class ANCRegistrationFormHandlerTest {
         initMocks(this);
         ancRegistrationFormHandler = new ANCRegistrationFormHandler();
         ReflectionTestUtils.setField(ancRegistrationFormHandler, "ancService", mockANCService);
+        ReflectionTestUtils.setField(ancRegistrationFormHandler, "facilityService", mockFacilityService);
     }
 
     @Test
@@ -58,6 +61,11 @@ public class ANCRegistrationFormHandlerTest {
         registerANCForm.setRegPhone("045353453434");
         registerANCForm.setStaffId("2331");
 
+        Facility facility = mock(Facility.class);
+        String mrsFacilityId = "343";
+
+        when(mockFacilityService.getFacilityByMotechId(registerANCForm.getFacilityId())).thenReturn(facility);
+        when(facility.getMrsFacilityId()).thenReturn(mrsFacilityId);
         ancRegistrationFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseDataEntry.registerANC", new HashMap<String, Object>() {{
             put("formBean", registerANCForm);
         }}));
@@ -65,26 +73,23 @@ public class ANCRegistrationFormHandlerTest {
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
         verify(mockANCService).enroll(captor.capture());
         final ANCVO ancVO = captor.getValue();
-        compareANCVOWithFormValuesGiven(registerANCForm, ancVO);
-    }
 
-    private void compareANCVOWithFormValuesGiven(RegisterANCForm registerANCForm, ANCVO ancVO) {
         assertEquals(registerANCForm.getAddHistory(), ancVO.getAddHistory());
-        assertEquals(registerANCForm.getAncRegNumber(),ancVO.getSerialNumber());
-        assertEquals(registerANCForm.getDate(),ancVO.getRegistrationDate());
-        assertEquals(registerANCForm.getDeliveryDateConfirmed(),ancVO.getDeliveryDateConfirmed());
-        assertEquals(registerANCForm.getEstDeliveryDate(),ancVO.getEstimatedDateOfDelivery());
-        assertEquals(registerANCForm.getFacilityId(),ancVO.getFacilityId());
-        assertEquals(registerANCForm.getGravida(),ancVO.getGravida());
-        assertEquals(registerANCForm.getHeight(),ancVO.getHeight());
-        assertEquals(registerANCForm.getLastIPT(),ancVO.getLastIPT());
-        assertEquals(registerANCForm.getLastIPTDate(),ancVO.getLastIPTDate());
-        assertEquals(registerANCForm.getLastTT(),ancVO.getLastTT());
-        assertEquals(registerANCForm.getLastTTDate(),ancVO.getLastTTDate());
-        assertEquals(registerANCForm.getMotechId(),ancVO.getMotechPatientId());
-        assertEquals(registerANCForm.getParity(),ancVO.getParity());
-        assertEquals(registerANCForm.getRegDateToday(),ancVO.getRegistrationToday());
-        assertEquals(registerANCForm.getStaffId(),ancVO.getStaffId());
+        assertEquals(registerANCForm.getAncRegNumber(), ancVO.getSerialNumber());
+        assertEquals(registerANCForm.getDate(), ancVO.getRegistrationDate());
+        assertEquals(registerANCForm.getDeliveryDateConfirmed(), ancVO.getDeliveryDateConfirmed());
+        assertEquals(registerANCForm.getEstDeliveryDate(), ancVO.getEstimatedDateOfDelivery());
+        assertEquals(registerANCForm.getGravida(), ancVO.getGravida());
+        assertEquals(registerANCForm.getHeight(), ancVO.getHeight());
+        assertEquals(registerANCForm.getLastIPT(), ancVO.getLastIPT());
+        assertEquals(registerANCForm.getLastIPTDate(), ancVO.getLastIPTDate());
+        assertEquals(registerANCForm.getLastTT(), ancVO.getLastTT());
+        assertEquals(registerANCForm.getLastTTDate(), ancVO.getLastTTDate());
+        assertEquals(registerANCForm.getMotechId(), ancVO.getMotechPatientId());
+        assertEquals(registerANCForm.getParity(), ancVO.getParity());
+        assertEquals(registerANCForm.getRegDateToday(), ancVO.getRegistrationToday());
+        assertEquals(registerANCForm.getStaffId(), ancVO.getStaffId());
+        assertEquals(mrsFacilityId, ancVO.getFacilityId());
     }
 
 }

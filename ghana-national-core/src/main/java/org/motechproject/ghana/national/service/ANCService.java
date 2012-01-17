@@ -30,7 +30,7 @@ public class ANCService {
     public MRSEncounter enroll(ANCVO ancVO) {
         MRSUser mrsUser = staffService.getUserByEmailIdOrMotechId(ancVO.getStaffId());
         MRSPatient mrsPatient = patientService.getPatientByMotechId(ancVO.getMotechPatientId()).getMrsPatient();
-        MRSFacility mrsFacility = facilityService.getFacilityByMotechId(ancVO.getFacilityId()).mrsFacility();
+        MRSFacility mrsFacility = facilityService.getFacility(ancVO.getFacilityId()).mrsFacility();
         MRSPerson mrsPerson = mrsUser.getPerson();
         HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         Date observationDate = new Date();

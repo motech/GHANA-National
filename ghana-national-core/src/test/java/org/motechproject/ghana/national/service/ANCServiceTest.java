@@ -57,7 +57,7 @@ public class ANCServiceTest {
         when(mockStaffService.getUserByEmailIdOrMotechId(ancvo.getStaffId())).thenReturn(mockMRSUser);
         when(mockPatientService.getPatientByMotechId(ancvo.getMotechPatientId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
-        when(mockFacilityService.getFacilityByMotechId(ancvo.getFacilityId())).thenReturn(mockFacility);
+        when(mockFacilityService.getFacility(ancvo.getFacilityId())).thenReturn(mockFacility);
         when(mockFacility.mrsFacility()).thenReturn(mockMRSFacility);
         when(mockMRSUser.getPerson()).thenReturn(mockMRSPerson);
 
@@ -101,7 +101,7 @@ public class ANCServiceTest {
         when(mockStaffService.getUserByEmailIdOrMotechId(ancvo.getStaffId())).thenReturn(mockMRSUser);
         when(mockPatientService.getPatientByMotechId(ancvo.getMotechPatientId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
-        when(mockFacilityService.getFacilityByMotechId(ancvo.getFacilityId())).thenReturn(mockFacility);
+        when(mockFacilityService.getFacility(ancvo.getFacilityId())).thenReturn(mockFacility);
         when(mockFacility.mrsFacility()).thenReturn(mockMRSFacility);
         when(mockMRSUser.getPerson()).thenReturn(mockMRSPerson);
 
@@ -143,7 +143,7 @@ public class ANCServiceTest {
         when(mockStaffService.getUserByEmailIdOrMotechId(ancvo.getStaffId())).thenReturn(mockMRSUser);
         when(mockPatientService.getPatientByMotechId(ancvo.getMotechPatientId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
-        when(mockFacilityService.getFacilityByMotechId(ancvo.getFacilityId())).thenReturn(mockFacility);
+        when(mockFacilityService.getFacility(ancvo.getFacilityId())).thenReturn(mockFacility);
         when(mockFacility.mrsFacility()).thenReturn(mockMRSFacility);
         when(mockMRSUser.getPerson()).thenReturn(mockMRSPerson);
 

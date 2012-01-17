@@ -73,8 +73,8 @@ public class ANCController {
     @ApiSession
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String save(@Valid ANCEnrollmentForm ancEnrollmentForm, ModelMap modelMap) {
-        List<FormError> formErrors = registerANCFormValidator.validatePatientFacilityStaff(ancEnrollmentForm.getMotechPatientId(),
-                ancEnrollmentForm.getFacilityForm().getFacilityId(), ancEnrollmentForm.getStaffId());
+        List<FormError> formErrors = registerANCFormValidator.validatePatientAndStaff(ancEnrollmentForm.getMotechPatientId(),
+                 ancEnrollmentForm.getStaffId());
 
         if (formErrors.isEmpty()) {
             ancService.enroll(createANCVO(ancEnrollmentForm));

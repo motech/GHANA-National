@@ -1,7 +1,9 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterANCForm;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.ANCService;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
@@ -20,6 +22,8 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
 
     @Autowired
     ANCService ancService;
+    @Autowired
+    private FacilityService facilityService;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.registerANC")
@@ -27,8 +31,9 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
         RegisterANCForm registerANCForm = (RegisterANCForm) event.getParameters().get(FORM_BEAN);
+         final Facility facility = facilityService.getFacilityByMotechId(registerANCForm.getFacilityId());
 
-        ANCVO ancvo = new ANCVO(registerANCForm.getStaffId(), registerANCForm.getFacilityId(),
+        ANCVO ancvo = new ANCVO(registerANCForm.getStaffId(), facility.getMrsFacilityId(),
                 registerANCForm.getMotechId(), registerANCForm.getDate(), registerANCForm.getRegDateToday(),
                 registerANCForm.getAncRegNumber(), registerANCForm.getEstDeliveryDate(), registerANCForm.getHeight(),
                 registerANCForm.getGravida(), registerANCForm.getParity(), registerANCForm.getAddHistory(), registerANCForm.getDeliveryDateConfirmed(),
