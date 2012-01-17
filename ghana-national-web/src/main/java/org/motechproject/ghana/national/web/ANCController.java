@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +28,7 @@ import java.util.List;
 public class ANCController {
 
     public static final String ANC_URL = "anc/new";
+    @Autowired
     private FacilityHelper facilityHelper;
     @Autowired
     private ANCService ancService;
@@ -37,10 +36,6 @@ public class ANCController {
     RegisterANCFormValidator registerANCFormValidator;
 
     public ANCController() {
-    }
-
-    public ANCController(FacilityHelper facilityHelper, ANCService ancService) {
-        //To change body of created methods use File | Settings | File Templates.
     }
 
     @InitBinder
@@ -54,27 +49,25 @@ public class ANCController {
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String enroll(@RequestParam("motechPatientId") String motechPatientId, ModelMap modelMap) {
         modelMap.put("ancEnrollmentForm", new ANCEnrollmentForm(motechPatientId));
-        addPageAttributes(modelMap);
+        addCareHistoryValues(modelMap);
         return ANC_URL;
     }
 
     @ApiSession
     @RequestMapping(value = "save", method = RequestMethod.POST)
-    public String save(@Valid ANCEnrollmentForm ancEnrollmentForm, ModelMap modelMap, BindingResult bindingResult) {
+    public String save(@Valid ANCEnrollmentForm ancEnrollmentForm, ModelMap modelMap) {
         List<FormError> formErrors = registerANCFormValidator.validatePatient(ancEnrollmentForm.getMotechPatientId(),
                 ancEnrollmentForm.getFacilityForm().getFacilityId(), ancEnrollmentForm.getStaffId());
 
-        if (formErrors != null) {
-            for (FormError formError : formErrors) {
-                bindingResult.addError(new ObjectError(formError.getParameter(), formError.getError()));
-            }
-            modelMap.mergeAttributes(bindingResult.getModel());
-        } else {
+        if(formErrors.isEmpty()){
             ancService.enroll(createANCVO(ancEnrollmentForm));
             modelMap.addAttribute("success", "Client registered for ANC successfully.");
+        }else{
+            modelMap.addAttribute("validationErrors",formErrors);
         }
+
         modelMap.put("ancEnrollmentForm", ancEnrollmentForm);
-        addPageAttributes(modelMap);
+        addCareHistoryValues(modelMap);
         return ANC_URL;
     }
 
@@ -88,7 +81,7 @@ public class ANCController {
     }
 
 
-    private void addPageAttributes(ModelMap modelMap) {
+    private void addCareHistoryValues(ModelMap modelMap) {
         modelMap.put("careHistories", Arrays.asList("TT", "IPT"));
         modelMap.put("lastIPT", Arrays.asList("IPT 1", "IPT 2", "IPT 3"));
         modelMap.put("lastTT", Arrays.asList("TT 1", "TT 2", "TT 3", "TT 4", "TT 5"));
