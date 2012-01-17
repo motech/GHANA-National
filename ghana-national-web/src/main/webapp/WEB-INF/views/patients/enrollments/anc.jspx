@@ -39,16 +39,6 @@
         <spring:message code="registration_in_past_in_other_facility_display"
                         var="registration_in_past_in_other_facility_display" htmlEscape="false"/>
 
-        <c:if test="${validationErrors ne null}">
-            <div class="formlyAlerts formlyInvalid formlyAlert" style="display: block;">
-                <c:forEach items="${validationErrors}" var="errorObj">
-                    <c:out value="${errorObj.parameter} "/><c:out value="${errorObj.error}"/><br/>
-                </c:forEach>
-            </div>
-        </c:if>
-        <c:if test="${success ne null}">
-              <br/><span class="success"><c:out value="${success}"/></span><br/><br/>
-        </c:if> 
 
 
         <div>
