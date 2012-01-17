@@ -27,7 +27,7 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 public class MobileMidwifeController {
 
     public static final String MOBILE_MIDWIFE_URL = "enroll/mobile-midwife/new";
-    public static final String SUCCESS_MESSAGE = "changes_saved_successfully";
+    public static final String SUCCESS_MESSAGE = "mobilemidwife_enroll_success";
     private MobileMidwifeFormValidator mobileMidwifeFormValidator;
     private MobileMidwifeService mobileMidwifeService;
     private Messages messages;
