@@ -6,17 +6,18 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
-import org.motechproject.ghana.national.tools.Messages;
 import org.motechproject.ghana.national.validator.MobileMidwifeFormValidator;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
+import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,7 +27,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.TestUtils.isEq;
-import static org.motechproject.ghana.national.web.MobileMidwifeController.*;
+import static org.motechproject.ghana.national.web.MobileMidwifeController.MOBILE_MIDWIFE_URL;
+import static org.motechproject.ghana.national.web.MobileMidwifeController.SUCCESS_MESSAGE;
 
 public class MobileMidwifeControllerTest {
 
@@ -35,7 +37,7 @@ public class MobileMidwifeControllerTest {
     @Mock
     private MobileMidwifeService mobileMidwifeService;
     @Mock
-    private Messages messages;
+    private MessageSource messages;
     MobileMidwifeController controller;
 
     @Before
@@ -77,7 +79,7 @@ public class MobileMidwifeControllerTest {
 
         when(mobileMidwifeService.findBy(patientId)).thenReturn(existingEnrollment);
         when(mobileMidwifeFormValidator.validateFacilityPatientAndStaff(patientId,facilityId,staffId)).thenReturn(Collections.<FormError>emptyList());
-        when(messages.message(SUCCESS_MESSAGE)).thenReturn(successMsg);
+        when(messages.getMessage(SUCCESS_MESSAGE, null, Locale.getDefault())).thenReturn(successMsg);
 
         ModelMap modelMap = new ModelMap();
         String editUrl = controller.save(form, null, modelMap);

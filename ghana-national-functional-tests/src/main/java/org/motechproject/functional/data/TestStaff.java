@@ -7,6 +7,7 @@ public class TestStaff {
     private String phoneNumber;
     private String emailId;
     private STAFF_ROLE role;
+    private String motechId;
 
     public static TestStaff with(String firstName){
         TestStaff testStaff = new TestStaff();
@@ -39,8 +40,16 @@ public class TestStaff {
         return emailId;
     }
 
+    public String motechId() {
+        return motechId;
+    }
+
     public STAFF_ROLE role() {
         return role;
+    }
+
+    public void motechId(String motechId) {
+        this.motechId = motechId;
     }
 
     public static enum STAFF_ROLE{

@@ -3,6 +3,7 @@ package org.motechproject.functional.pages;
 import org.motechproject.functional.util.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 public class BasePage<T> {
     protected JavascriptExecutor javascriptExecutor = new JavascriptExecutor();
@@ -24,6 +25,12 @@ public class BasePage<T> {
     protected T enter(WebElement webElement, String value) {
         webElement.clear();
         webElement.sendKeys(value);
+        return (T) this;
+    }
+
+    protected T select(WebElement webElement, String value) {
+        Select selectRegion = new Select(webElement);
+        selectRegion.selectByValue(value);
         return (T) this;
     }
 
