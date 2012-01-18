@@ -52,8 +52,8 @@ public class ANCFormMapperTest {
             add(new MRSObservation<Date>(observationDate, Constants.CONCEPT_EDD, estimatedDateOfDelivery));
             add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, deliveryDateConfirmed));
             add(new MRSObservation<String>(observationDate, Constants.CONCEPT_ANC_REG_NUM, serialNumber));
-            add(new MRSObservation<String>(observationDate, Constants.CONCEPT_IPT, "2"));
-            add(new MRSObservation<String>(observationDate, Constants.CONCEPT_TT, "3"));
+            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_IPT, 2.0));
+            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_TT, 3.0));
         }};
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
         MRSEncounter mrsEncounter = new MRSEncounter("1", new MRSPerson().id(providerId),
