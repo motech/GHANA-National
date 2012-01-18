@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web;
 
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.service.ANCService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
@@ -77,7 +78,7 @@ public class ANCController {
                  ancEnrollmentForm.getStaffId());
 
         if (formErrors.isEmpty()) {
-            ancService.enroll(createANCVO(ancEnrollmentForm));
+            ancService.enroll(createANCVO(ancEnrollmentForm), Constants.ENCOUNTER_ANCREGVISIT);
             modelMap.addAttribute("success", "Updated successfully.");
         } else {
             modelMap.addAttribute("validationErrors", formErrors);

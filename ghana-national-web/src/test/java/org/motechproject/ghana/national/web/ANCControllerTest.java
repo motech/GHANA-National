@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.ANCService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
@@ -71,7 +72,7 @@ public class ANCControllerTest {
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
 
         ancController.save(ancEnrollmentForm, modelMap);
-        verify(mockANCService).enroll(captor.capture());
+        verify(mockANCService).enroll(captor.capture(), eq(Constants.ENCOUNTER_ANCREGVISIT));
         final ANCVO ancVO = captor.getValue();
 
         compareANCEnrollmentFormWithANCVO(ancEnrollmentForm, ancVO);
@@ -92,7 +93,7 @@ public class ANCControllerTest {
         when(mockValidator.validatePatientAndStaff(ancEnrollmentForm.getMotechPatientId(),ancEnrollmentForm.getStaffId())).thenReturn(errors);
 
         ancController.save(ancEnrollmentForm, modelMap);
-        verify(mockANCService, never()).enroll(null);
+        verify(mockANCService, never()).enroll(null, Constants.ENCOUNTER_ANCREGVISIT);
         assertTrue(modelMap.containsKey("validationErrors"));
 
         ArrayList<FormError> errorsFromModelMap = (ArrayList<FormError>) modelMap.get("validationErrors");
