@@ -44,8 +44,10 @@ public class ANCTest extends LoggedInUserFunctionalTest {
 
         ancEnrollmentPage.withStaffId(staffId).withRegistrationToday(RegistrationToday.IN_PAST.toString()).withSerialNumber("trew654gf")
                 .withCountry("Ghana").withRegion("Central Region").withDistrict("Awutu Senya").withSubDistrict("Awutu")
-                .withRegistrationDate(DateUtil.newDate(2011, 11, 30)).withAddHistory(false).withFacility("Awutu HC").withHeight(123.4)
-                .withGravida("3").withParity("4").withDeliveryDateConfirmed(true).withEstimatedDateOfDelivery(DateUtil.newDate(2011, 11, 30)).submit();
+                .withRegistrationDate(DateUtil.newDate(2011, 11, 30)).withAddHistory(true).withFacility("Awutu HC").withHeight(123.4)
+                .withGravida("3").withParity("4").withDeliveryDateConfirmed(true).withEstimatedDateOfDelivery(DateUtil.newDate(2011, 11, 30))
+                .withIPT(true).withTT(true).withLastIPTValue1(true).withLastTTValue1(true).
+                withIPTDate(DateUtil.newDate(2011, 10, 10)).withTTDate(DateUtil.newDate(2011, 10, 10)).submit();
 
         assertTrue(ancEnrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Updated successfully."));
     }

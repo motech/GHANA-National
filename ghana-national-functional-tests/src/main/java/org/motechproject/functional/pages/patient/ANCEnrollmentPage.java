@@ -90,6 +90,30 @@ public class ANCEnrollmentPage extends HomePage {
     @CacheLookup
     private WebElement notconfirmed;
 
+    @FindBy(id = "careHistory2")
+    @CacheLookup
+    private WebElement iptCareHistory;
+
+    @FindBy(id = "careHistory1")
+    @CacheLookup
+    private WebElement ttCareHistory;
+
+    @FindBy(id = "lastTT1")
+    @CacheLookup
+    private WebElement lastTT1;
+
+    @FindBy(id = "lastIPT1")
+    @CacheLookup
+    private WebElement lastIPT1;
+
+    @FindBy(id = "lastIPTDateHolder")
+    @CacheLookup
+    private WebElement lastIPTDate;
+
+    @FindBy(id = "jsTT")
+    @CacheLookup
+    private WebElement lastTTDate;
+
     public ANCEnrollmentPage(WebDriver webDriver) {
         super(webDriver);
         elementPoller.waitForElementID("submitANC", driver);
@@ -186,6 +210,41 @@ public class ANCEnrollmentPage extends HomePage {
 
     public ANCEnrollmentPage withEstimatedDateOfDelivery(LocalDate date) {
         dateSelector.select(estimatedDateOfDelivery, date, driver);
+        return this;
+    }
+
+    public ANCEnrollmentPage withTT(Boolean ttValue) {
+        if (ttValue)
+            ttCareHistory.click();
+        return this;
+    }
+
+    public ANCEnrollmentPage withLastTTValue1(Boolean lastTTValue1) {
+        if (lastTTValue1)
+            lastTT1.click();
+        return this;
+    }
+
+    public ANCEnrollmentPage withLastIPTValue1(Boolean lastTPTValue1) {
+        if (lastTPTValue1)
+            lastIPT1.click();
+        return this;
+    }
+
+
+    public ANCEnrollmentPage withIPT(Boolean iptValue) {
+        if (iptValue)
+            iptCareHistory.click();
+        return this;
+    }
+
+    public ANCEnrollmentPage withIPTDate(LocalDate date) {
+        dateSelector.select(lastIPTDate, date, driver);
+        return this;
+    }
+
+    public ANCEnrollmentPage withTTDate(LocalDate date) {
+        dateSelector.select(lastTTDate, date, driver);
         return this;
     }
 
