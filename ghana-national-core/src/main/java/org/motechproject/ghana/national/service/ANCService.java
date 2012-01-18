@@ -26,7 +26,6 @@ public class ANCService {
     public static final String ANCREGVISIT = "ANCREGVISIT";
 
 
-
     public MRSEncounter enroll(ANCVO ancVO) {
         MRSUser mrsUser = staffService.getUserByEmailIdOrMotechId(ancVO.getStaffId());
         MRSPatient mrsPatient = patientService.getPatientByMotechId(ancVO.getMotechPatientId()).getMrsPatient();
