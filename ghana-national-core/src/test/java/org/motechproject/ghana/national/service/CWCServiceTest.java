@@ -86,7 +86,7 @@ public class CWCServiceTest {
         final Patient patient = new Patient(new MRSPatient(patientId));
         when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(patient);
 
-        cwcService.enroll(cwcVO);
+        cwcService.enroll(cwcVO, Constants.ENCOUNTER_CWCREGVISIT);
 
         ArgumentCaptor<MRSEncounter> captor = ArgumentCaptor.forClass(MRSEncounter.class);
         verify(mockAllEncounters).save(captor.capture());
@@ -96,7 +96,7 @@ public class CWCServiceTest {
         assertThat(actualEncounter.getFacility().getId(), is(equalTo(facilityId)));
         assertThat(actualEncounter.getDate(), is(equalTo(registartionDate)));
         assertThat(actualEncounter.getPatient().getId(), is(equalTo(patientId)));
-        assertThat(actualEncounter.getEncounterType(), is(equalTo(CWCService.CWCREGVISIT)));
+        assertThat(actualEncounter.getEncounterType(), is(equalTo(Constants.ENCOUNTER_CWCREGVISIT)));
         assertThat(actualEncounter.getObservations().size(), is(8));
         final HashSet<MRSObservation> expected = new HashSet<MRSObservation>() {{
             add(new MRSObservation(lastBCGDate, Constants.CONCEPT_IMMUNIZATIONS_ORDERED, null));
@@ -143,7 +143,7 @@ public class CWCServiceTest {
         final Patient patient = new Patient(new MRSPatient(patientId));
         when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(patient);
 
-        cwcService.enroll(cwcVO);
+        cwcService.enroll(cwcVO, Constants.ENCOUNTER_CWCREGVISIT);
 
         ArgumentCaptor<MRSEncounter> captor = ArgumentCaptor.forClass(MRSEncounter.class);
         verify(mockAllEncounters).save(captor.capture());

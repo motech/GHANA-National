@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.CWCService;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -49,6 +50,6 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
                 registerCWCForm.getLastOPV(),
                 registerCWCForm.getLastIPTiDate(),
                 registerCWCForm.getLastIPTi(),
-                registerCWCForm.getSerialNumber()));
+                registerCWCForm.getSerialNumber()), Constants.ENCOUNTER_CWCREGVISIT);
     }
 }
