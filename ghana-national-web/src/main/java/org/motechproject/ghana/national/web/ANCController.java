@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web;
 
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.service.ANCService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
@@ -24,6 +25,7 @@ import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -77,7 +79,7 @@ public class ANCController {
                  ancEnrollmentForm.getStaffId());
 
         if (formErrors.isEmpty()) {
-            ancService.enroll(createANCVO(ancEnrollmentForm));
+            ancService.enroll(createANCVO(ancEnrollmentForm), Constants.ENCOUNTER_ANCREGVISIT);
             modelMap.addAttribute("success", "Updated successfully.");
         } else {
             modelMap.addAttribute("validationErrors", formErrors);
@@ -100,8 +102,21 @@ public class ANCController {
 
     private void addCareHistoryValues(ModelMap modelMap) {
         modelMap.put("careHistories", Arrays.asList("TT", "IPT"));
-        modelMap.put("lastIPT", Arrays.asList("IPT 1", "IPT 2", "IPT 3"));
-        modelMap.put("lastTT", Arrays.asList("TT 1", "TT 2", "TT 3", "TT 4", "TT 5"));
+        HashMap<Integer,String> lastIPTValues = new HashMap<Integer, String>();
+        lastIPTValues.put(1,"IPT 1");
+        lastIPTValues.put(2,"IPT 2");
+        lastIPTValues.put(3,"IPT 3");
+
+        HashMap<Integer,String> lastTTValues = new HashMap<Integer, String>();
+        lastTTValues.put(1,"TT 1");
+        lastTTValues.put(2,"TT 2");
+        lastTTValues.put(3,"TT 3");
+        lastTTValues.put(4,"TT 4");
+        lastTTValues.put(5,"TT 5");
+
+        modelMap.put("lastIPT", lastIPTValues);
+        modelMap.put("lastTT", lastTTValues);
+
         modelMap.mergeAttributes(facilityHelper.locationMap());
     }
 }

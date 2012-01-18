@@ -34,13 +34,10 @@ public class CWCService {
     @Autowired
     AllEncounters allEncounters;
 
-    public static final String CWCREGVISIT = "CWCREGVISIT";
-
-    public static final String REGCLIENTCWC= "REGCLIENTCWC";
-
    
 
-    public MRSEncounter enroll(CwcVO cwc,String encounterType) {
+
+    public MRSEncounter enroll(CwcVO cwc, String encounterType) {
         MRSUser user = staffService.getUserByEmailIdOrMotechId(cwc.getStaffId());
         String staffProviderId = user.getPerson().getId();
         String staffUserId = user.getId();
@@ -80,5 +77,6 @@ public class CWCService {
 
     public MRSEncounter getEncounter(String motechId,String encounterType) {
         return allEncounters.fetchLatest(motechId,encounterType );
+
     }
 }

@@ -26,11 +26,7 @@ public class ANCService {
     @Autowired
     MobileMidwifeService mobileMidwifeService;
 
-    public static final String ANCREGVISIT = "ANCREGVISIT";
-
-
-
-    public MRSEncounter enroll(ANCVO ancVO) {
+    public MRSEncounter enroll(ANCVO ancVO, String encounterType) {
         MRSUser mrsUser = staffService.getUserByEmailIdOrMotechId(ancVO.getStaffId());
         MRSPatient mrsPatient = patientService.getPatientByMotechId(ancVO.getMotechPatientId()).getMrsPatient();
         MRSFacility mrsFacility = facilityService.getFacility(ancVO.getFacilityId()).mrsFacility();
@@ -39,12 +35,18 @@ public class ANCService {
         Date observationDate = new Date();
         Date registrationDate = (RegistrationToday.TODAY.equals(ancVO.getRegistrationToday())) ? observationDate : ancVO.getRegistrationDate();
 
-        mrsObservations.add(new MRSObservation<Integer>(observationDate, Constants.CONCEPT_GRAVIDA, ancVO.getGravida()));
-        mrsObservations.add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_HEIGHT, ancVO.getHeight()));
-        mrsObservations.add(new MRSObservation<Integer>(observationDate, Constants.CONCEPT_PARITY, ancVO.getParity()));
-        mrsObservations.add(new MRSObservation<Date>(observationDate, Constants.CONCEPT_EDD, ancVO.getEstimatedDateOfDelivery()));
-        mrsObservations.add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, ancVO.getDeliveryDateConfirmed()));
-        mrsObservations.add(new MRSObservation<String>(registrationDate, Constants.CONCEPT_ANC_REG_NUM, ancVO.getSerialNumber()));
+        if (ancVO.getGravida() != null)
+            mrsObservations.add(new MRSObservation<Integer>(observationDate, Constants.CONCEPT_GRAVIDA, ancVO.getGravida()));
+        if (ancVO.getHeight() != null)
+            mrsObservations.add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_HEIGHT, ancVO.getHeight()));
+        if (ancVO.getParity() != null)
+            mrsObservations.add(new MRSObservation<Integer>(observationDate, Constants.CONCEPT_PARITY, ancVO.getParity()));
+        if (ancVO.getEstimatedDateOfDelivery() != null)
+            mrsObservations.add(new MRSObservation<Date>(observationDate, Constants.CONCEPT_EDD, ancVO.getEstimatedDateOfDelivery()));
+        if (ancVO.getDeliveryDateConfirmed() != null)
+            mrsObservations.add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, ancVO.getDeliveryDateConfirmed()));
+        if (ancVO.getSerialNumber() != null)
+            mrsObservations.add(new MRSObservation<String>(registrationDate, Constants.CONCEPT_ANC_REG_NUM, ancVO.getSerialNumber()));
 
         if (ancVO.getLastIPT() != null && ancVO.getLastIPTDate() != null) {
             mrsObservations.add(new MRSObservation<Integer>(ancVO.getLastIPTDate(), Constants.CONCEPT_IPT, convertToInt(ancVO.getLastIPT())));
@@ -53,20 +55,20 @@ public class ANCService {
             mrsObservations.add(new MRSObservation<Integer>(ancVO.getLastTTDate(), Constants.CONCEPT_TT, convertToInt(ancVO.getLastTT())));
         }
 
-        MRSEncounter mrsEncounter = new MRSEncounter(null, mrsPerson, mrsUser, mrsFacility, registrationDate, mrsPatient, mrsObservations, ANCREGVISIT);
+        MRSEncounter mrsEncounter = new MRSEncounter(null, mrsPerson, mrsUser, mrsFacility, registrationDate, mrsPatient, mrsObservations, encounterType);
 
         return allEncounters.save(mrsEncounter);
 
     }
 
     public MRSEncounter enrollWithMobileMidwife(ANCVO ancVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {
-        MRSEncounter mrsEncounter = enroll(ancVO);
+        MRSEncounter mrsEncounter = enroll(ancVO, Constants.ENCOUNTER_ANCREGVISIT);
         mobileMidwifeService.createOrUpdateEnrollment(mobileMidwifeEnrollment);
         return mrsEncounter;
     }
 
     public MRSEncounter getEncounter(String motechId) {
-        return allEncounters.fetchLatest(motechId, ANCREGVISIT);
+        return allEncounters.fetchLatest(motechId, Constants.ENCOUNTER_ANCREGVISIT);
     }
 
     private Integer convertToInt(String vaccineValue) {

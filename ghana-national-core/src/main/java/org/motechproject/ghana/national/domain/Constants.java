@@ -77,4 +77,7 @@ public class Constants {
     public static final String CONCEPT_TT = "TETANUS TOXOID DOSE";
     public static final String CONCEPT_CONFINEMENT_CONFIRMED = "DATE OF CONFINEMENT CONFIRMED";
 
+    public static final String ENCOUNTER_ANCREGVISIT = "ANCREGVISIT";
+    public static final String ENCOUNTER_CWCREGVISIT = "CWCREGVISIT";
+    public static final String REGCLIENTCWC= "REGCLIENTCWC";
 }

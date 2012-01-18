@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.web;
 
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CWCService;
@@ -145,7 +146,7 @@ public class CWCController {
                 cwcEnrollmentForm.getLastOPV(),
                 cwcEnrollmentForm.getLastIPTiDate(),
                 cwcEnrollmentForm.getLastIPTi(),
-                cwcEnrollmentForm.getSerialNumber()),CWCREGVISIT);
+                cwcEnrollmentForm.getSerialNumber()), Constants.ENCOUNTER_CWCREGVISIT);
         modelMap.addAttribute("success", "Client registered for CWC successfully.");
         return ENROLL_CWC_URL;
     }

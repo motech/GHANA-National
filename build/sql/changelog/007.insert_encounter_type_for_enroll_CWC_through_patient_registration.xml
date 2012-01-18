@@ -8,7 +8,7 @@
             <column name="creator" value="1"/>
             <column name="date_created" value="2012-01-18 15:31:07"/>
             <column name="retired" value="0"/>
-            <column name="uuid" value="3fa9d4zz-e8ec-11e0-8e86-a9cbfc8ed377"/>
+            <column name="uuid" value="3fa9d4jj-e8ec-11e0-8e86-a9cbfc8ed377"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

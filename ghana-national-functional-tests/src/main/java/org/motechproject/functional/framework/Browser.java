@@ -11,10 +11,7 @@ import org.motechproject.functional.pages.login.LoginPage;
 import org.motechproject.functional.pages.openmrs.MotechIdGeneratorPage;
 import org.motechproject.functional.pages.openmrs.OpenMRSHomePage;
 import org.motechproject.functional.pages.openmrs.OpenMRSLoginPage;
-import org.motechproject.functional.pages.patient.CWCEnrollmentPage;
-import org.motechproject.functional.pages.patient.MobileMidwifeEnrollmentPage;
-import org.motechproject.functional.pages.patient.PatientPage;
-import org.motechproject.functional.pages.patient.SearchPatientPage;
+import org.motechproject.functional.pages.patient.*;
 import org.motechproject.functional.pages.staff.SearchStaffPage;
 import org.motechproject.functional.pages.staff.StaffPage;
 import org.motechproject.functional.util.ScreenShotCaptor;
@@ -93,6 +90,11 @@ public class Browser {
     public CWCEnrollmentPage toCWCEnrollmentForm(HomePage fromPage) {
         fromPage.openCWCEnrollmentPage();
         return new CWCEnrollmentPage(webDriver);
+    }
+
+    public ANCEnrollmentPage toANCEnrollmentForm(HomePage fromPage) {
+        fromPage.openANCEnrollmentPage();
+        return new ANCEnrollmentPage(webDriver);
     }
 
     public MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentForm(PatientPage fromPage) {
