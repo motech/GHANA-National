@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CWCRegistrationFormHandler implements FormPublishHandler {
     public static final String FORM_BEAN = "formBean";
+    static final String CWCREGVISIT = "CWCREGVISIT";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -49,6 +50,6 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
                 registerCWCForm.getLastOPV(),
                 registerCWCForm.getLastIPTiDate(),
                 registerCWCForm.getLastIPTi(),
-                registerCWCForm.getSerialNumber()));
+                registerCWCForm.getSerialNumber()),CWCREGVISIT);
     }
 }

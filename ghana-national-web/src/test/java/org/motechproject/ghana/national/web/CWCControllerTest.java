@@ -30,6 +30,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -165,7 +166,7 @@ public class CWCControllerTest {
 
         cwcController.save(cwcEnrollmentForm, modelMap);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
-        verify(mockCwcService).enroll(captor.capture());
+        verify(mockCwcService).enroll(captor.capture(),eq(CWCController.CWCREGVISIT));
         final CwcVO cwcVO = captor.getValue();
 
         assertThat(staffId, is(cwcVO.getStaffId()));

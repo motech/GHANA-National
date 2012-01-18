@@ -61,6 +61,7 @@ public class CWCController {
     public static final String PATIENT_IS_NOT_A_CHILD = "Patient is Not A Child";
     public static final String STAFF_ID_NOT_FOUND = "Staff Not Found";
     public static final String REGISTRATION_OPTIONS = "registrationOptions";
+    static final String CWCREGVISIT = "CWCREGVISIT";
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -73,7 +74,7 @@ public class CWCController {
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     public String create(@RequestParam String motechPatientId, ModelMap modelMap) {
         Patient patient = patientService.getPatientByMotechId(motechPatientId);
-        MRSEncounter encounter = cwcService.getEncounter(motechPatientId);
+        MRSEncounter encounter = cwcService.getEncounter(motechPatientId,CWCREGVISIT);
         CWCEnrollmentForm cwcEnrollmentForm;
         if(encounter != null) {
             cwcEnrollmentForm = cwcFormMapper.mapEncounterToView(encounter);
@@ -144,7 +145,7 @@ public class CWCController {
                 cwcEnrollmentForm.getLastOPV(),
                 cwcEnrollmentForm.getLastIPTiDate(),
                 cwcEnrollmentForm.getLastIPTi(),
-                cwcEnrollmentForm.getSerialNumber()));
+                cwcEnrollmentForm.getSerialNumber()),CWCREGVISIT);
         modelMap.addAttribute("success", "Client registered for CWC successfully.");
         return ENROLL_CWC_URL;
     }

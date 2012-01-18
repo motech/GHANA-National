@@ -63,6 +63,33 @@ public class RegisterClientForm extends FormBean {
     @RegEx(pattern = "0[0-9]{9}")
     private String regPhone;
 
+    //CWC REGISTRATION FIELDS
+    @Required
+    private String cwcRegNumber;
+
+    @Required
+    private Boolean addHistory;
+
+    @Required
+    private String addChildHistory;
+
+    private Date bcgDate;
+    private Date lastOPVDate;
+    private Date lastVitaminADate;
+    private Date lastIPTiDate;
+    private Date yellowFeverDate;
+    private Date lastPentaDate;
+    private Date measlesDate;
+
+    private Integer lastOPV;
+    private Integer lastIPTi;
+    private Integer lastPenta;
+
+
+    //ANC REGISTRATION DETAILS
+
+
+
     public String getRegPhone() {
         return regPhone;
     }
@@ -262,5 +289,109 @@ public class RegisterClientForm extends FormBean {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    public String getCwcRegNumber() {
+        return cwcRegNumber;
+    }
+
+    public void setCwcRegNumber(String cwcRegNumber) {
+        this.cwcRegNumber = cwcRegNumber;
+    }
+
+    public Boolean getAddHistory() {
+        return addHistory;
+    }
+
+    public void setAddHistory(Boolean addHistory) {
+        this.addHistory = addHistory;
+    }
+
+    public String getAddChildHistory() {
+        return addChildHistory;
+    }
+
+    public void setAddChildHistory(String addChildHistory) {
+        this.addChildHistory = addChildHistory;
+    }
+
+    public Date getBcgDate() {
+        return bcgDate;
+    }
+
+    public void setBcgDate(Date bcgDate) {
+        this.bcgDate = bcgDate;
+    }
+
+    public Date getLastOPVDate() {
+        return lastOPVDate;
+    }
+
+    public void setLastOPVDate(Date lastOPVDate) {
+        this.lastOPVDate = lastOPVDate;
+    }
+
+    public Date getLastVitaminADate() {
+        return lastVitaminADate;
+    }
+
+    public void setLastVitaminADate(Date lastVitaminADate) {
+        this.lastVitaminADate = lastVitaminADate;
+    }
+
+    public Date getLastIPTiDate() {
+        return lastIPTiDate;
+    }
+
+    public void setLastIPTiDate(Date lastIPTiDate) {
+        this.lastIPTiDate = lastIPTiDate;
+    }
+
+    public Date getYellowFeverDate() {
+        return yellowFeverDate;
+    }
+
+    public void setYellowFeverDate(Date yellowFeverDate) {
+        this.yellowFeverDate = yellowFeverDate;
+    }
+
+    public Date getLastPentaDate() {
+        return lastPentaDate;
+    }
+
+    public void setLastPentaDate(Date lastPentaDate) {
+        this.lastPentaDate = lastPentaDate;
+    }
+
+    public Date getMeaslesDate() {
+        return measlesDate;
+    }
+
+    public void setMeaslesDate(Date measlesDate) {
+        this.measlesDate = measlesDate;
+    }
+
+    public Integer getLastOPV() {
+        return lastOPV;
+    }
+
+    public void setLastOPV(Integer lastOPV) {
+        this.lastOPV = lastOPV;
+    }
+
+    public Integer getLastIPTi() {
+        return lastIPTi;
+    }
+
+    public void setLastIPTi(Integer lastIPTi) {
+        this.lastIPTi = lastIPTi;
+    }
+
+    public Integer getLastPenta() {
+        return lastPenta;
+    }
+
+    public void setLastPenta(Integer lastPenta) {
+        this.lastPenta = lastPenta;
     }
 }

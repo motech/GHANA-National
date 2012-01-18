@@ -13,6 +13,8 @@ import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
+
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
@@ -36,6 +38,9 @@ public class RegisterClientFormValidatorTest {
     private MotechIdVerhoeffValidator mockMotechIdVerhoeffValidator;
     @Mock
     private FormValidator formValidator;
+    @Mock
+    private RegisterCWCFormValidator mockCWCformValidator;
+
 
     @Before
     public void setUp() {
@@ -43,6 +48,7 @@ public class RegisterClientFormValidatorTest {
         registerClientFormValidator = new RegisterClientFormValidator();
         ReflectionTestUtils.setField(registerClientFormValidator, "formValidator", formValidator);
         ReflectionTestUtils.setField(registerClientFormValidator, "patientService", mockPatientService);
+        ReflectionTestUtils.setField(registerClientFormValidator, "cwcFormValidator", mockCWCformValidator);
     }
 
     @Test
@@ -70,6 +76,7 @@ public class RegisterClientFormValidatorTest {
     public void shouldNotReturnErrorIfPatientTypeIsNotChildAndMothersMotechIdIsNotPresent() {
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(null);
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.PREGNANT_MOTHER);
+
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
         verify(mockPatientService, never()).getPatientByMotechId(Matchers.<String>any());
     }
@@ -81,6 +88,7 @@ public class RegisterClientFormValidatorTest {
         Patient patientMock = mock(Patient.class);
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patientMock);
         when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
+
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("motechId", "in use")));
 
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(null);
@@ -92,6 +100,8 @@ public class RegisterClientFormValidatorTest {
     public void shouldNotValidateMotechIdOfThePatientIfRegistrationModeIsNotPrePrintedId() {
         String motechId = "12345";
         when(mockRegisterClientForm.getRegistrationMode()).thenReturn(RegistrationType.AUTO_GENERATE_ID);
+
+
         when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motechId", NOT_FOUND))));
         verify(mockPatientService, never()).getPatientByMotechId(anyString());
@@ -101,6 +111,7 @@ public class RegisterClientFormValidatorTest {
     public void shouldVerifyIfStaffIdIsValidOrNot() {
         String staffId = "21";
         when(mockRegisterClientForm.getStaffId()).thenReturn(staffId);
+
         registerClientFormValidator.validate(mockRegisterClientForm);
         verify(formValidator).validateIfStaffExists(eq(staffId));
     }
@@ -109,6 +120,8 @@ public class RegisterClientFormValidatorTest {
     public void shouldVerifyIfFacilityIdIsValidOrNot() {
         String facilityId = "21";
         when(mockRegisterClientForm.getFacilityId()).thenReturn(facilityId);
+
+
         registerClientFormValidator.validate(mockRegisterClientForm);
         verify(formValidator).validateIfFacilityExists(eq(facilityId));
     }

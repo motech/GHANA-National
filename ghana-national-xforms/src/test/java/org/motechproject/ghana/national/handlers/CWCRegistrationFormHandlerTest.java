@@ -18,6 +18,7 @@ import java.util.HashMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -83,7 +84,7 @@ public class CWCRegistrationFormHandlerTest {
         }}));
 
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
-        verify(mockCwcService).enroll(captor.capture());
+        verify(mockCwcService).enroll(captor.capture(),eq(CWCService.CWCREGVISIT));
         final CwcVO cwcVO = captor.getValue();
 
         assertThat(staffId, is(cwcVO.getStaffId()));

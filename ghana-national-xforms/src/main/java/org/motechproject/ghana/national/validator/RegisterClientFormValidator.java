@@ -24,16 +24,23 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     @Autowired
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
 
+    @Autowired
+    private RegisterCWCFormValidator cwcFormValidator;
+
 
     @Override
     @LoginAsAdmin
     @ApiSession
     public List<FormError> validate(RegisterClientForm formBean) {
+        String motechId = formBean.getMotechId();
         List<FormError> formErrors = super.validate(formBean);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        formErrors.addAll(validateMotechId(formBean.getMotechId(), formBean.getRegistrationMode()));
+        formErrors.addAll(validateMotechId(motechId, formBean.getRegistrationMode()));
         formErrors.addAll(validateMotherMotechId(formBean.getMotherMotechId(), formBean.getRegistrantType()));
+        if (PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType())) {
+            formErrors.addAll(cwcFormValidator.validatePatient(motechId));
+        }
         return formErrors;
     }
 

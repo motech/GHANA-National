@@ -44,7 +44,7 @@ public class StaffGenerator {
 
     private StaffForm createStaffForm() {
         return new StaffForm().setFirstName("firstName").setMiddleName("middleName").setLastName("lastName")
-                .setPhoneNumber("0987654321").setNewRole("Super Admin").setNewEmail("blah@blah.com");
+                .setPhoneNumber("0987654321").setNewRole("Super Admin").setNewEmail("gansac@blah.com");
 
     }
 

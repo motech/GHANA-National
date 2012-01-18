@@ -3,9 +3,12 @@ package org.motechproject.ghana.national.handlers;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
+import org.motechproject.ghana.national.domain.PatientType;
+import org.motechproject.ghana.national.service.CWCService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.tools.Utility;
+import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.Attribute;
@@ -28,10 +31,16 @@ import java.util.List;
 public class PatientRegistrationFormHandler implements FormPublishHandler {
 
     public static final String FORM_BEAN = "formBean";
+
+    public static final String REGCLIENTCWC= "REGCLIENTCWC";
+
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private PatientService patientService;
+
+    @Autowired
+    private CWCService cwcService;
 
     @Autowired
     private FacilityService facilityService;
@@ -59,6 +68,13 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             MRSPatient mrsPatient = new MRSPatient(registerClientForm.getMotechId(), mrsPerson, new MRSFacility(facilityId));
 
             patientService.registerPatient(new Patient(mrsPatient, registerClientForm.getMotherMotechId()));
+
+            if(registerClientForm.getRegistrantType().equals(PatientType.CHILD_UNDER_FIVE)){
+                cwcService.enroll(new CwcVO(registerClientForm.getStaffId(), registerClientForm.getFacilityId(), registerClientForm.getDate(),
+                        registerClientForm.getMotechId(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
+                        registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
+                        registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber()),CWCService.REGCLIENTCWC);
+            }
         } catch (Exception e) {
             log.error("Exception while saving patient", e);
         }

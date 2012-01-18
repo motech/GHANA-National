@@ -86,7 +86,7 @@ public class CWCServiceTest {
         final Patient patient = new Patient(new MRSPatient(patientId));
         when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(patient);
 
-        cwcService.enroll(cwcVO);
+        cwcService.enroll(cwcVO,CWCService.CWCREGVISIT);
 
         ArgumentCaptor<MRSEncounter> captor = ArgumentCaptor.forClass(MRSEncounter.class);
         verify(mockAllEncounters).save(captor.capture());
@@ -143,7 +143,7 @@ public class CWCServiceTest {
         final Patient patient = new Patient(new MRSPatient(patientId));
         when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(patient);
 
-        cwcService.enroll(cwcVO);
+        cwcService.enroll(cwcVO,CWCService.CWCREGVISIT);
 
         ArgumentCaptor<MRSEncounter> captor = ArgumentCaptor.forClass(MRSEncounter.class);
         verify(mockAllEncounters).save(captor.capture());
