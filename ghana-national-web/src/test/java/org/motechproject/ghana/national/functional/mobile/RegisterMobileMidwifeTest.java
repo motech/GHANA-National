@@ -1,29 +1,16 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
-import org.apache.xpath.operations.Bool;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.functional.framework.XformHttpClient;
-import org.motechproject.ghana.national.functional.FunctionalTest;
 import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
 import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
 import org.motechproject.ghana.national.functional.Generator.StaffGenerator;
-import org.motechproject.ghana.national.repository.AllStaffs;
-import org.motechproject.ghana.national.service.StaffService;
-import org.motechproject.ghana.national.web.FacilityController;
-import org.motechproject.ghana.national.web.PatientController;
-import org.motechproject.ghana.national.web.StaffController;
-import org.motechproject.openmrs.advice.ApiSession;
-import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.api.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -119,9 +106,9 @@ public class RegisterMobileMidwifeTest extends AbstractJUnit4SpringContextTests{
    @Transactional(readOnly = true)
     public void shouldRegisterForMobileMidWifeProgramIfValidationsPass() throws Exception{
 
-        final String staffId=staffGenerator.createDummyStaffAndReturnStaffId();
-        final String facilityId=facilityGenerator.createDummyFacilityAndReturnFacilityId();
-        final String patientId = patientGenerator.createDummyPatientAndReturnPatientId(facilityId);
+        final String staffId=staffGenerator.createStaffAndReturnStaffId();
+        final String facilityId=facilityGenerator.createFacilityAndReturnFacilityId();
+        final String patientId = patientGenerator.createPatientAndReturnPatientId(facilityId);
 
       final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(new HashMap<String, String>() {{
 

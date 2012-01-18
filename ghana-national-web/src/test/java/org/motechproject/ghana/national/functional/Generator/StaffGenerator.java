@@ -3,11 +3,8 @@ package org.motechproject.ghana.national.functional.Generator;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.web.StaffController;
 import org.motechproject.ghana.national.web.form.StaffForm;
-
-
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +29,10 @@ public class StaffGenerator {
         this.allFacilities = allFacilities;
     }
 
+    @Transactional(readOnly = true)
     @LoginAsAdmin
     @ApiSession
-    public String createDummyStaffAndReturnStaffId() {
+    public String createStaffAndReturnStaffId() {
         StaffForm staffForm = createStaffForm();
         BindingResult mockBindingResult = mock(BindingResult.class);
         ModelMap modelMap = new ModelMap();
@@ -44,7 +42,7 @@ public class StaffGenerator {
 
     private StaffForm createStaffForm() {
         return new StaffForm().setFirstName("firstName").setMiddleName("middleName").setLastName("lastName")
-                .setPhoneNumber("0987654321").setNewRole("Super Admin").setNewEmail("blah@blah.com");
+                .setPhoneNumber("0987654321").setNewRole("Super Admin").setNewEmail("test@test.com");
 
     }
 

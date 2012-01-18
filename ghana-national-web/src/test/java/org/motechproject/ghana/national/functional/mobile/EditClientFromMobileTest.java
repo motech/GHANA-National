@@ -1,10 +1,12 @@
 package org.motechproject.ghana.national.functional.mobile;
 
-import org.apache.commons.collections.MapUtils;
+import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
+import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
 import org.motechproject.ghana.national.functional.Generator.StaffGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,19 +24,21 @@ import static org.testng.AssertJUnit.assertEquals;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:/testApplicationContext.xml"})
+@ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class EditClientFromMobileTest {
 
     @Autowired
     StaffGenerator staffGenerator;
     @Autowired
     FacilityGenerator facilityGenerator;
+    @Autowired
+    PatientGenerator patientGenerator;
 
     @Test
     public void shouldCheckForMandatoryFields() throws Exception {
 
-        final XformHttpClient.XformResponse xformResponse = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
-                "NurseDataEntry", XFormParser.parse("edit-client-template.xml", MapUtils.EMPTY_MAP));
+        final XformHttpClient.XformResponse xformResponse = setupEditClientFormAndUpload(new HashMap<String, String>() {{
+        }});
 
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);
@@ -48,14 +52,12 @@ public class EditClientFromMobileTest {
 
     @Test
     public void shouldGiveErrorIfIdsAreNotFound() throws Exception {
-        final XformHttpClient.XformResponse xformResponse = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
-                "NurseDataEntry", XFormParser.parse("edit-client-template.xml", new HashMap<String, String>() {{
+        final XformHttpClient.XformResponse xformResponse = setupEditClientFormAndUpload(new HashMap<String, String>() {{
             put("facilityId", "testFacilityId");
-            put("motechId" , "testMotechId");
-            put("staffId" , "testStaffId");
-            put("motherMotechId" , "testMotherMotechId");
-
-        }}));
+            put("motechId", "testMotechId");
+            put("staffId", "testStaffId");
+            put("motherMotechId", "testMotherMotechId");
+        }});
 
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);
@@ -70,10 +72,9 @@ public class EditClientFromMobileTest {
     @Test
     public void shouldNotGiveErrorForFirstNameIfGiven() throws Exception {
 
-        final XformHttpClient.XformResponse xformResponse = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
-                "NurseDataEntry", XFormParser.parse("edit-client-template.xml", new HashMap<String, String>() {{
+        final XformHttpClient.XformResponse xformResponse = setupEditClientFormAndUpload(new HashMap<String, String>() {{
             put("firstName", "Joe");
-        }}));
+        }});
 
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);
@@ -82,8 +83,25 @@ public class EditClientFromMobileTest {
     }
 
     @Test
-    public void shouldUpdatePatientIfNoErrorsAreFound() {
-        String staffId = staffGenerator.createDummyStaffAndReturnStaffId();
-        String facilityId = facilityGenerator.createDummyFacilityAndReturnFacilityId();
+    @Ignore
+    public void shouldUpdatePatientIfNoErrorsAreFound() throws Exception {
+        final String staffId = staffGenerator.createStaffAndReturnStaffId();
+        final String facilityId = facilityGenerator.createFacilityAndReturnFacilityId();
+        final String patientId = patientGenerator.createPatientAndReturnPatientId(facilityId);
+        final String date = "2011-01-01";
+        final XformHttpClient.XformResponse xformResponse = setupEditClientFormAndUpload(new HashMap<String, String>() {{
+            put("facilityId", facilityId);
+            put("motechId", patientId);
+            put("staffId", staffId);
+            put("date", date);
+        }});
+
+        final List<XformHttpClient.Error> errors = xformResponse.getErrors();
+        Assert.assertEquals(errors.size(), 0);
+    }
+
+    private XformHttpClient.XformResponse setupEditClientFormAndUpload(Map<String, String> data) throws Exception {
+        return XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
+                "NurseDataEntry", XFormParser.parse("mobile-midwife-template.xml", data));
     }
 }
