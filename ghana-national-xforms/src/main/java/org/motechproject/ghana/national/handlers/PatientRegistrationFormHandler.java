@@ -33,8 +33,6 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
 
     public static final String FORM_BEAN = "formBean";
 
-    public static final String REGCLIENTCWC= "REGCLIENTCWC";
-
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired

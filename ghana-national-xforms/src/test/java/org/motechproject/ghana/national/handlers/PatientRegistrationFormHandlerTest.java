@@ -167,7 +167,7 @@ public class PatientRegistrationFormHandlerTest {
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         patientRegistrationFormHandler.handleFormEvent(event);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
-        verify(mockCwcService).enroll(captor.capture(), eq(PatientRegistrationFormHandler.REGCLIENTCWC));
+        verify(mockCwcService).enroll(captor.capture(), eq(Constants.REGCLIENTCWC));
         final CwcVO cwcVO = captor.getValue();
 
         assertCWCRegistration(motechFacilityId, motechId, registartionDate, lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, staffId, lastPenta, lastOPV, cwcVO);
