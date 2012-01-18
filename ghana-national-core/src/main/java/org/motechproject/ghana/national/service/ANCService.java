@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.service;
 
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.mrs.model.*;
@@ -22,6 +23,8 @@ public class ANCService {
     PatientService patientService;
     @Autowired
     FacilityService facilityService;
+    @Autowired
+    MobileMidwifeService mobileMidwifeService;
 
     public static final String ANCREGVISIT = "ANCREGVISIT";
 
@@ -54,6 +57,12 @@ public class ANCService {
 
         return allEncounters.save(mrsEncounter);
 
+    }
+
+    public MRSEncounter enrollWithMobileMidwife(ANCVO ancVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {
+        MRSEncounter mrsEncounter = enroll(ancVO);
+        mobileMidwifeService.createOrUpdateEnrollment(mobileMidwifeEnrollment);
+        return mrsEncounter;
     }
 
     public MRSEncounter getEncounter(String motechId) {

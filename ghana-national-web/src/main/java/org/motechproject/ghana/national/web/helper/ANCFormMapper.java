@@ -39,7 +39,7 @@ public class ANCFormMapper {
             Object value = mrsObservation.getValue();
 
             if (Constants.CONCEPT_GRAVIDA.equals(conceptName)) {
-                ancEnrollmentForm.setGravida((Integer) value);
+                ancEnrollmentForm.setGravida(((Double) value).intValue());
             }
             if (Constants.CONCEPT_ANC_REG_NUM.equals(conceptName)) {
                 ancEnrollmentForm.setSerialNumber((String) value);
@@ -48,7 +48,7 @@ public class ANCFormMapper {
                 ancEnrollmentForm.setHeight((Double) value);
             }
             if (Constants.CONCEPT_PARITY.equals(conceptName)) {
-                ancEnrollmentForm.setParity((Integer) value);
+                ancEnrollmentForm.setParity(((Double) value).intValue());
             }
             if (Constants.CONCEPT_CONFINEMENT_CONFIRMED.equals(conceptName)) {
                 ancEnrollmentForm.setDeliveryDateConfirmed((Boolean) value);

@@ -177,7 +177,7 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
         return attrValue(medium, "value");
     }
 
-    public boolean validate() {
+    public boolean validateMedium() {
 
         if(consentYes.isSelected()) {
             WebElement dayOfWeekRow = find(new By.ById("dayOfWeekRow"));

@@ -8,35 +8,54 @@ import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.model.DayOfWeek;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class MobileMidwifeServiceTest {
     @Mock
-    private AllMobileMidwifeEnrollments enrollments;
+    private AllMobileMidwifeEnrollments allEnrollments;
     private MobileMidwifeService service;
 
     public MobileMidwifeServiceTest() {
         initMocks(this);
         service = new MobileMidwifeService();
-        ReflectionTestUtils.setField(service, "allEnrollments", enrollments);
+        ReflectionTestUtils.setField(service, "allEnrollments", allEnrollments);
     }
 
     @Test
-    public void shouldCreateOrUpdateMobileMidwifeEnrollment() {
+    public void shouldCreateMobileMidwifeEnrollmentIfNotExists() {
+        String patientId = "patientId";
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
-                patientId("patientId").staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday)
+                patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday)
                 .build();
-        service.saveOrUpdate(enrollment);
-        verify(enrollments).createOrUpdate(enrollment);
+        when(allEnrollments.findByPatientId(patientId)).thenReturn(null);
+
+        service.createOrUpdateEnrollment(enrollment);
+        verify(allEnrollments).add(enrollment);
     }
     
+    @Test
+    public void shouldRemoveExistingAndCreateMobileMidwifeEnrollmentIfNotExists() {
+        String patientId = "patientId";
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
+                patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday)
+                .build();
+        MobileMidwifeEnrollment existingEnrollment = mock(MobileMidwifeEnrollment.class);
+        when(allEnrollments.findByPatientId(patientId)).thenReturn(existingEnrollment);
+
+        service.createOrUpdateEnrollment(enrollment);
+        verify(allEnrollments).remove(existingEnrollment);
+        verify(allEnrollments).add(enrollment);
+    }
+
     @Test
     public void shouldFindMobileMidwifeEnrollmentByPatientId() {
 
         String patientId = "patientId";
         service.findBy(patientId);
-        verify(enrollments).findByPatientId(patientId);
+        verify(allEnrollments).findByPatientId(patientId);
     }
 
 }

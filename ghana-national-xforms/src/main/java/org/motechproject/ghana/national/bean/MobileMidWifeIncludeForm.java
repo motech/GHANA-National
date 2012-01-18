@@ -7,16 +7,11 @@ import org.motechproject.mobileforms.api.validator.annotations.Required;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 
-/**
- * Created by IntelliJ IDEA.
- * User: sanjana
- * Date: 13/1/12
- * Time: 4:26 PM
- * To change this template use File | Settings | File Templates.
- */
-public abstract class MobileMidWifeIncludeForm extends FormBean {
+public abstract class MobileMidWifeIncludeForm<T> extends FormBean {
 
     @Required
+    private Boolean enroll;
+
     private Boolean consent;
 
     private ServiceType serviceType;
@@ -30,7 +25,7 @@ public abstract class MobileMidWifeIncludeForm extends FormBean {
     private Language language;
     private LearnedFrom learnedFrom;
     @RegEx(pattern = "(CURRENTLY_PREGNANT|RECENTLY_DELIVERED|FAMILY_FRIEND_PREGNANT|FAMILY_FRIEND_DELIVERED|PLANNING_PREGNANCY_INFO|KNOW_MORE_PREGNANCY_CHILDBIRTH|WORK_WITH_WOMEN_NEWBORNS)")
-    private String reasonToJoin;
+    private ReasonToJoin reasonToJoin;
     @RegEx(pattern = "([5-9]{1}|[1-8]{1}[0-9]{1}|9[0-2]{1})")
     private String messageStartWeek;
 
@@ -38,7 +33,7 @@ public abstract class MobileMidWifeIncludeForm extends FormBean {
         return consent;
     }
 
-    public Medium getMediumStripingOwnership(){
+    public Medium getMediumStripingOwnership() {
         return medium != null ? Medium.valueOf(medium.substring(medium.indexOf("_") + 1)) : null;
     }
 
@@ -46,60 +41,68 @@ public abstract class MobileMidWifeIncludeForm extends FormBean {
         return serviceType;
     }
 
-    public void setServiceType(ServiceType serviceType) {
+    public MobileMidWifeIncludeForm setServiceType(ServiceType serviceType) {
         this.serviceType = serviceType;
+        return this;
     }
 
     public PhoneOwnership getPhoneOwnership() {
         return phoneOwnership;
     }
 
-    public void setPhoneOwnership(PhoneOwnership phoneOwnership) {
+    public MobileMidWifeIncludeForm setPhoneOwnership(PhoneOwnership phoneOwnership) {
         this.phoneOwnership = phoneOwnership;
+        return this;
     }
 
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public MobileMidWifeIncludeForm setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        return this;
     }
 
     public String getMedium() {
         return medium;
     }
 
-    public void setMedium(String medium) {
+    public MobileMidWifeIncludeForm setMedium(String medium) {
         this.medium = medium;
+        return this;
     }
 
-    public void setConsent(Boolean consent) {
+    public MobileMidWifeIncludeForm setConsent(Boolean consent) {
         this.consent = consent;
+        return this;
     }
 
     public Time getTimeOfDay() {
         return timeOfDay;
     }
 
-    public void setTimeOfDay(Time timeOfDay) {
+    public MobileMidWifeIncludeForm setTimeOfDay(Time timeOfDay) {
         this.timeOfDay = timeOfDay;
+        return this;
     }
 
     public String getMessageStartWeek() {
         return messageStartWeek;
     }
 
-    public void setMessageStartWeek(String messageStartWeek) {
+    public MobileMidWifeIncludeForm setMessageStartWeek(String messageStartWeek) {
         this.messageStartWeek = messageStartWeek;
+        return this;
     }
 
     public DayOfWeek getDayOfWeek() {
         return dayOfWeek;
     }
 
-    public void setDayOfWeek(DayOfWeek dayOfWeek) {
+    public MobileMidWifeIncludeForm setDayOfWeek(DayOfWeek dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
+        return this;
     }
 
     public Language getLanguage() {
@@ -110,19 +113,38 @@ public abstract class MobileMidWifeIncludeForm extends FormBean {
         return learnedFrom;
     }
 
-    public void setLearnedFrom(LearnedFrom learnedFrom) {
+    public MobileMidWifeIncludeForm setLearnedFrom(LearnedFrom learnedFrom) {
         this.learnedFrom = learnedFrom;
+        return this;
     }
 
-    public String getReasonToJoin() {
+    public ReasonToJoin getReasonToJoin() {
         return reasonToJoin;
     }
 
-    public void setReasonToJoin(String reasonToJoin) {
+    public MobileMidWifeIncludeForm setReasonToJoin(ReasonToJoin reasonToJoin) {
         this.reasonToJoin = reasonToJoin;
+        return this;
     }
 
-    public void setLanguage(Language language) {
+    public MobileMidWifeIncludeForm setLanguage(Language language) {
         this.language = language;
+        return this;
+    }
+
+    public Boolean isEnrolledForProgram() {
+        return enroll;
+    }
+
+    public MobileMidWifeIncludeForm setEnroll(Boolean enrollForProgram) {
+        this.enroll = enrollForProgram;
+        return this;
+    }
+
+    public MobileMidwifeEnrollment fillEnrollment(MobileMidwifeEnrollment enrollment) {
+        return enrollment.setConsent(getConsent()).setServiceType(getServiceType()).setPhoneOwnership(getPhoneOwnership())
+                .setPhoneNumber(getPhoneNumber()).setMedium(Medium.value(getMedium())).setDayOfWeek(getDayOfWeek())
+                .setTimeOfDay(getTimeOfDay()).setLanguage(getLanguage()).setLearnedFrom(getLearnedFrom())
+                .setReasonToJoin(getReasonToJoin()).setMessageStartWeek(getMessageStartWeek());
     }
 }

@@ -78,7 +78,7 @@ public class ANCController {
 
         if (formErrors.isEmpty()) {
             ancService.enroll(createANCVO(ancEnrollmentForm));
-            modelMap.addAttribute("success", "Client registered for ANC successfully.");
+            modelMap.addAttribute("success", "Updated successfully.");
         } else {
             modelMap.addAttribute("validationErrors", formErrors);
         }

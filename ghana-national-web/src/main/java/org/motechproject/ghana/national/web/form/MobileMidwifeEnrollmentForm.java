@@ -161,7 +161,8 @@ public class MobileMidwifeEnrollmentForm {
         return this;
     }
 
-    public MobileMidwifeEnrollment createEnrollment(MobileMidwifeEnrollment enrollment) {
+    public MobileMidwifeEnrollment createEnrollment() {
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment();
         enrollment.setStaffId(getStaffMotechId()).setPatientId(getPatientMotechId()).setFacilityId(getFacilityMotechId())
                 .setConsent(getConsent()).setDayOfWeek(getDayOfWeek()).setLearnedFrom(getLearnedFrom())
                 .setLanguage(getLanguage()).setMedium(getMedium()).setMessageStartWeek(getMessageStartWeek()).setPhoneNumber(getPhoneNumber())
