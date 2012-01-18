@@ -47,7 +47,6 @@
                          defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
                          locations="${provinces}" />
     </div>
-    <input type="text" value="${facilityForm.facilityId}"/>
 
     <div class="hide form-field">
         <label class="formLabel" for="facility">${fn:escapeXml(facility_facility_select)} *:</label>
