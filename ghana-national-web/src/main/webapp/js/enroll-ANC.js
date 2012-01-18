@@ -66,18 +66,18 @@ $(document).ready(function() {
         facilities.show($(this));
     });
 
-    $('#registrationToday').change(function() {
-        if ($(this).val() == "IN_PAST") {
-            $('#registrationDateHolder').show();
-            $('#registrationDate').addClass('jsRequire');
-        }
-
-        if ($(this).val() == "TODAY" || $(this).val() == "IN_PAST_IN_OTHER_FACILITY") {
-            $('#registrationDateHolder').hide();
-            $('#registrationDate').removeClass('jsRequire');
-        }
-    });
-
+//    $('#registrationToday').change(function() {
+//        if ($(this).val() == "IN_PAST") {
+//            $('#registrationDateHolder').show();
+//            $('#registrationDate').addClass('jsRequire');
+//        }
+//
+//        if ($(this).val() == "TODAY" || $(this).val() == "IN_PAST_IN_OTHER_FACILITY") {
+//            $('#registrationDateHolder').hide();
+//            $('#registrationDate').removeClass('jsRequire');
+//        }
+//    });
+//
     $('input[name = "addHistory"]').change(function() {
         if ($(this).val() == "true") {
             $("#jsCareHistory").show();
@@ -97,9 +97,28 @@ $(document).ready(function() {
     });
 
     $('#regions').trigger('change');
+    $('input').trigger('change');
 
     $('#registrationDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#estimatedDateOfDelivery').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#lastTTDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#lastIPTDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
+
+
+    if($("input[name='addHistory']:checked").val() == true) {
+        $('#addHistory1').trigger('change');
+
+        if($("input[name='lastTT']:checked").val() != undefined)
+            $('#careHistory1').attr('checked','checked');
+        if($("input[name='lastIPT']:checked").val() != undefined)
+            $('#careHistory2').attr('checked','checked');
+
+        if($('#careHistory1').attr('checked') == 'checked')
+           $('#careHistory1').trigger('change');
+        if($('#careHistory2').attr('checked') == 'checked')
+           $('#careHistory2').trigger('change');
+    }
+
+
+
 });

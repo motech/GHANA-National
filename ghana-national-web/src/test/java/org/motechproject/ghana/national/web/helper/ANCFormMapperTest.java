@@ -26,9 +26,9 @@ public class ANCFormMapperTest {
     @Test
     public void shouldCreateANCEnrollmentFormFromMRSEncounter() {
         final Date observationDate = new Date();
-        final Integer gravida = 3;
+        final Double gravida = 3.0;
         final Double height = 123.4;
-        final Integer parity = 3;
+        final Double parity = 3.0;
         final Boolean deliveryDateConfirmed = true;
         final Date estimatedDateOfDelivery = new Date();
         final String serialNumber = "1A23WN3";
@@ -46,14 +46,14 @@ public class ANCFormMapperTest {
 
 
         final HashSet<MRSObservation> observations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Integer>(observationDate, Constants.CONCEPT_GRAVIDA, gravida));
+            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_GRAVIDA, gravida));
             add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_HEIGHT, height));
-            add(new MRSObservation<Integer>(observationDate, Constants.CONCEPT_PARITY, parity));
+            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_PARITY, parity));
             add(new MRSObservation<Date>(observationDate, Constants.CONCEPT_EDD, estimatedDateOfDelivery));
             add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, deliveryDateConfirmed));
             add(new MRSObservation<String>(observationDate, Constants.CONCEPT_ANC_REG_NUM, serialNumber));
-            add(new MRSObservation<String>(observationDate, Constants.CONCEPT_IPT, "2"));
-            add(new MRSObservation<String>(observationDate, Constants.CONCEPT_TT, "3"));
+            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_IPT, 2.0));
+            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_TT, 3.0));
         }};
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
         MRSEncounter mrsEncounter = new MRSEncounter("1", new MRSPerson().id(providerId),
@@ -70,9 +70,9 @@ public class ANCFormMapperTest {
         assertThat(ancEnrollmentForm.getFacilityForm().getStateProvince(), is(equalTo(facility.getStateProvince())));
         assertThat(ancEnrollmentForm.getFacilityForm().getRegion(), is(equalTo(facility.getRegion())));
 
-        assertThat(ancEnrollmentForm.getGravida(), is(equalTo(gravida)));
+        assertThat(ancEnrollmentForm.getGravida(), is(equalTo(gravida.intValue())));
         assertThat(ancEnrollmentForm.getHeight(), is(equalTo(height)));
-        assertThat(ancEnrollmentForm.getParity(), is(equalTo(parity)));
+        assertThat(ancEnrollmentForm.getParity(), is(equalTo(parity.intValue())));
         assertThat(ancEnrollmentForm.getDeliveryDateConfirmed(), is(equalTo(deliveryDateConfirmed)));
         assertThat(ancEnrollmentForm.getEstimatedDateOfDelivery(), is(equalTo(estimatedDateOfDelivery)));
         assertThat(ancEnrollmentForm.getSerialNumber(), is(equalTo(serialNumber)));

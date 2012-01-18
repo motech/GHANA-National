@@ -37,6 +37,8 @@
         <spring:message code="patient_parity" var="patient_parity" htmlEscape="false"/>
         <spring:message code="yes" var="yes" htmlEscape="false"/>
         <spring:message code="no" var="no" htmlEscape="false"/>
+        <spring:message code="yes" var="confirmed" htmlEscape="false"/>
+        <spring:message code="no" var="notconfirmed" htmlEscape="false"/>
 
         <spring:message code="registration_in_past_in_other_facility_display"
                         var="registration_in_past_in_other_facility_display" htmlEscape="false"/>
@@ -106,10 +108,12 @@
             </span>
         </div>
 
-        <div>
-            <label for="estimatedDateOfDelivery" class="formLabel"><spring:message code="estimatedDateOfDelivery"/> *:</label>
-            <form:input path="estimatedDateOfDelivery" readonly="true" size="20" cssClass="jsRequire jsDate"/>
-            <span id='eddError' class='alertText formlyInvalid formlyAlert hide'>
+
+        <div id="estimatedDateOfDeliveryHolder">
+            <label for="estimatedDateOfDelivery" class="formLabel" id="estimatedDateOfDeliveryLabel">
+                <spring:message code="estimatedDateOfDelivery"/> *:</label>
+            <form:input path="estimatedDateOfDelivery" readonly="true" size="20" cssClass="jsRequire jsDate"  label="${fn:escapeXml(estimatedDateOfDelivery)}"/>
+            <span id='estimatedDateOfDeliveryError' class='alertText formlyInvalid formlyAlert hide'>
                     ${fn:escapeXml(estimatedDateOfDelivery)} ${fn:escapeXml(required_msg)}
             </span>
         </div>
@@ -118,9 +122,9 @@
             <label for="deliveryDateConfirmed" class="formLabel"><spring:message code="delivery_date_confirmed"/> *:</label>
             <div class="form-field">
                 <form:radiobutton cssClass="jsRequire" path="deliveryDateConfirmed" value="true"
-                                  label="${fn:escapeXml(yes)}"/>
+                                  label="${fn:escapeXml(confirmed)}"/>
                 <form:radiobutton cssClass="jsRequire" path="deliveryDateConfirmed" value="false"
-                                  label="${fn:escapeXml(no)}"/>
+                                  label="${fn:escapeXml(notconfirmed)}"/>
             </div>
 
                 <span id='deliveryDateConfirmedError' class='alertText formlyInvalid formlyAlert hide'>
@@ -138,10 +142,10 @@
             </form:select>
         </div>
 
-        <div id="registrationDateHolder" class="form-field hide">
+        <div id="registrationDateHolder" class="form-field">
             <label class="formLabel" for="registrationDate" id="registrationDateLabel"><spring:message
                     code="registration_date"/> *:</label>
-            <form:input readonly="true" path="registrationDate" cssClass="jsDate jsBefore" size="20"
+            <form:input readonly="true" path="registrationDate" cssClass="jsRequire jsDate jsBefore" size="20"
                         label="${fn:escapeXml(registration_date)}"/>
             <span id='registrationDateError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(registration_date)} ${fn:escapeXml(required_msg)}
@@ -157,7 +161,7 @@
             </span>
         </div>
 
-        <div id="jsCareHistory" class="hide">
+        <div id="jsCareHistory">
             <div class="form-field">
                 <label for="careHistories" class="formLabel">
                     <spring:message code="patient_care_history"/>
@@ -166,10 +170,10 @@
                 <form:checkboxes path="careHistory" items="${requestScope.careHistories}" cssClass="jsRequire"/>
             </div>
 
-            <div id="jsIPT" class="hide">
+            <div id="jsIPT">
                 <div class="form-field">
                     <label for="lastIPT" class="formLabel"> <spring:message code="patient_last_IPT"/> *: </label>
-                    <form:radiobuttons path="lastIPT" items="${requestScope.lastIPT}" cssClass="jsRequire"/>
+                    <form:radiobuttons path="lastIPT" items="${lastIPT}" cssClass="jsRequire"/>
                      <span id='lastIPTError' class='alertText formlyInvalid formlyAlert hide'>
                         ${fn:escapeXml(patient_last_IPT)} ${fn:escapeXml(incorrect_msg)}
                     </span>
@@ -180,10 +184,10 @@
                     <form:input path="lastIPTDate" cssClass="jsDate jsRequire"/>
                 </div>
             </div>
-            <div id="jsTT" class="hide">
+            <div id="jsTT">
                 <div class="form-field">
                     <label for="lastTT" class="formLabel"> <spring:message code="patient_last_TT"/> *: </label>
-                    <form:radiobuttons path="lastTT" items="${requestScope.lastTT}" cssClass="jsRequire"/>
+                    <form:radiobuttons path="lastTT" items="${lastTT}" cssClass="jsRequire"/>
                     <span id='lastTTError' class='alertText formlyInvalid formlyAlert hide'>
                         ${fn:escapeXml(patient_last_TT)} ${fn:escapeXml(incorrect_msg)}
                     </span>

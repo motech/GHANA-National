@@ -39,7 +39,7 @@ public class ANCFormMapper {
             Object value = mrsObservation.getValue();
 
             if (Constants.CONCEPT_GRAVIDA.equals(conceptName)) {
-                ancEnrollmentForm.setGravida((Integer) value);
+                ancEnrollmentForm.setGravida(((Double) value).intValue());
             }
             if (Constants.CONCEPT_ANC_REG_NUM.equals(conceptName)) {
                 ancEnrollmentForm.setSerialNumber((String) value);
@@ -48,7 +48,7 @@ public class ANCFormMapper {
                 ancEnrollmentForm.setHeight((Double) value);
             }
             if (Constants.CONCEPT_PARITY.equals(conceptName)) {
-                ancEnrollmentForm.setParity((Integer) value);
+                ancEnrollmentForm.setParity(((Double) value).intValue());
             }
             if (Constants.CONCEPT_CONFINEMENT_CONFIRMED.equals(conceptName)) {
                 ancEnrollmentForm.setDeliveryDateConfirmed((Boolean) value);
@@ -57,12 +57,14 @@ public class ANCFormMapper {
                 ancEnrollmentForm.setEstimatedDateOfDelivery((Date) value);
             }
             if (Constants.CONCEPT_IPT.equals(conceptName)) {
-                ancEnrollmentForm.setLastIPT((String) value);
+                Integer lastIPT = ((Double) value).intValue();
+                ancEnrollmentForm.setLastIPT(lastIPT.toString());
                 ancEnrollmentForm.setLastIPTDate(mrsObservation.getDate());
                 ancEnrollmentForm.setAddHistory(true);
             }
             if (Constants.CONCEPT_TT.equals(conceptName)) {
-                ancEnrollmentForm.setLastTT((String) value);
+                Integer lastTT = ((Double) value).intValue();
+                ancEnrollmentForm.setLastTT(lastTT.toString());
                 ancEnrollmentForm.setLastTTDate(mrsObservation.getDate());
                 ancEnrollmentForm.setAddHistory(true);
 
