@@ -36,7 +36,7 @@
         <spring:message code="patient_gravida" var="patient_gravida" htmlEscape="false"/>
         <spring:message code="patient_parity" var="patient_parity" htmlEscape="false"/>
         <spring:message code="yes" var="yes" htmlEscape="false"/>
-        <spring:message code="yes" var="yes" htmlEscape="false"/>
+        <spring:message code="no" var="no" htmlEscape="false"/>
         <spring:message code="yes" var="confirmed" htmlEscape="false"/>
         <spring:message code="no" var="notconfirmed" htmlEscape="false"/>
 
