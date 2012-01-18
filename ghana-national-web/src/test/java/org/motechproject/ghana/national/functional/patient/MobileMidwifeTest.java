@@ -1,3 +1,4 @@
+
 package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
