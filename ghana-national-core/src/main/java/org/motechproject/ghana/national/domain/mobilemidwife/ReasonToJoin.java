@@ -1,5 +1,7 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
+
 public enum ReasonToJoin{
     CURRENTLY_PREGNANT("Currently pregnant"),
     RECENTLY_DELIVERED("Recently delivery"),
@@ -17,6 +19,10 @@ public enum ReasonToJoin{
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public static ReasonToJoin value(String input) {
+       return isNotEmpty(input) ? ReasonToJoin.valueOf(input) : null;
     }
 
     public String getValue(){

@@ -63,7 +63,7 @@ public class MobileMidwifeControllerTest {
         verify(mobileMidwifeFormValidator).validateFacilityPatientAndStaff(form.getPatientMotechId(), form.getFacilityMotechId(), form.getStaffMotechId());
 
         ArgumentCaptor<MobileMidwifeEnrollment> enrollment = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        verify(mobileMidwifeService).saveOrUpdate(enrollment.capture());
+        verify(mobileMidwifeService).createOrUpdateEnrollment(enrollment.capture());
         assertFormWithEnrollment((MobileMidwifeEnrollmentForm) modelMap.get("mobileMidwifeEnrollmentForm"), enrollment.getValue());
     }
 
@@ -75,7 +75,7 @@ public class MobileMidwifeControllerTest {
         String successMsg = "Changes successful";
 
         MobileMidwifeEnrollmentForm form = defaultForm(patientId, facilityId, staffId);
-        MobileMidwifeEnrollment existingEnrollment = defaultForm(patientId, "oldFacilityId", "oldStaffId").createEnrollment(new MobileMidwifeEnrollment());
+        MobileMidwifeEnrollment existingEnrollment = defaultForm(patientId, "oldFacilityId", "oldStaffId").createEnrollment();
 
         when(mobileMidwifeService.findBy(patientId)).thenReturn(existingEnrollment);
         when(mobileMidwifeFormValidator.validateFacilityPatientAndStaff(patientId,facilityId,staffId)).thenReturn(Collections.<FormError>emptyList());
@@ -86,7 +86,7 @@ public class MobileMidwifeControllerTest {
 
         verify(mobileMidwifeFormValidator).validateFacilityPatientAndStaff(form.getPatientMotechId(), form.getFacilityMotechId(), form.getStaffMotechId());
         ArgumentCaptor<MobileMidwifeEnrollment> enrollment = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        verify(mobileMidwifeService).saveOrUpdate(enrollment.capture());
+        verify(mobileMidwifeService).createOrUpdateEnrollment(enrollment.capture());
         assertFormWithEnrollment((MobileMidwifeEnrollmentForm) modelMap.get("mobileMidwifeEnrollmentForm"), enrollment.getValue());
 
         assertThat(editUrl, isEq(MOBILE_MIDWIFE_URL));
@@ -109,7 +109,7 @@ public class MobileMidwifeControllerTest {
         String editUrl = controller.save(form, null, map);
 
         verify(mobileMidwifeFormValidator).validateFacilityPatientAndStaff(form.getPatientMotechId(), form.getFacilityMotechId(), form.getStaffMotechId());
-        verify(mobileMidwifeService,never()).saveOrUpdate((MobileMidwifeEnrollment)any());
+        verify(mobileMidwifeService,never()).createOrUpdateEnrollment((MobileMidwifeEnrollment)any());
 
         List<FormError> errors = (List<FormError>) map.get("formErrors");
         assertThat("description1",is(equalTo(errors.get(0).getError())));

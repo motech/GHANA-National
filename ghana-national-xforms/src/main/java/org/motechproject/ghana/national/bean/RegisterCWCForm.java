@@ -1,8 +1,8 @@
 package org.motechproject.ghana.national.bean;
 
 import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.validator.field.MotechId;
-import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
@@ -209,5 +209,13 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
 
     public void setLastPenta(Integer lastPenta) {
         this.lastPenta = lastPenta;
+    }
+
+    public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
+        if(isEnrolledForProgram()) {
+        MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment());
+        return enrollment.setStaffId(getStaffId()).setFacilityId(getFacilityId()).setPatientId(getMotechId());
+        }
+        return null;
     }
 }
