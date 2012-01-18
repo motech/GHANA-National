@@ -57,12 +57,14 @@ public class ANCFormMapper {
                 ancEnrollmentForm.setEstimatedDateOfDelivery((Date) value);
             }
             if (Constants.CONCEPT_IPT.equals(conceptName)) {
-                ancEnrollmentForm.setLastIPT((String) value);
+                Integer lastIPT = ((Double) value).intValue();
+                ancEnrollmentForm.setLastIPT(lastIPT.toString());
                 ancEnrollmentForm.setLastIPTDate(mrsObservation.getDate());
                 ancEnrollmentForm.setAddHistory(true);
             }
             if (Constants.CONCEPT_TT.equals(conceptName)) {
-                ancEnrollmentForm.setLastTT((String) value);
+                Integer lastTT = ((Double) value).intValue();
+                ancEnrollmentForm.setLastTT(lastTT.toString());
                 ancEnrollmentForm.setLastTTDate(mrsObservation.getDate());
                 ancEnrollmentForm.setAddHistory(true);
 
