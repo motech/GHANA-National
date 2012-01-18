@@ -82,16 +82,17 @@ public class EditClientFromMobileTest {
         assertNull(errorsMap.get("firstName"));
     }
 
-    @Test
     @Ignore
+    @Test
     public void shouldUpdatePatientIfNoErrorsAreFound() throws Exception {
         final String staffId = staffGenerator.createStaffAndReturnStaffId();
         final String facilityId = facilityGenerator.createFacilityAndReturnFacilityId();
         final String patientId = patientGenerator.createPatientAndReturnPatientId(facilityId);
+        final String facilityMotechId = facilityGenerator.getFacilityMotechId();
         final String date = "2011-01-01";
         final XformHttpClient.XformResponse xformResponse = setupEditClientFormAndUpload(new HashMap<String, String>() {{
-            put("facilityId", facilityId);
             put("motechId", patientId);
+            put("updatePatientFacilityId", facilityMotechId);
             put("staffId", staffId);
             put("date", date);
         }});
@@ -102,6 +103,6 @@ public class EditClientFromMobileTest {
 
     private XformHttpClient.XformResponse setupEditClientFormAndUpload(Map<String, String> data) throws Exception {
         return XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
-                "NurseDataEntry", XFormParser.parse("mobile-midwife-template.xml", data));
+                "NurseDataEntry", XFormParser.parse("edit-client-template.xml", data));
     }
 }

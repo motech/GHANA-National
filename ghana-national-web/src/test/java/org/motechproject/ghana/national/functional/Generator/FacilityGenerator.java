@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.functional.Generator;
 
+import org.motechproject.functional.util.DataGenerator;
 import org.motechproject.ghana.national.web.FacilityController;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -13,6 +14,9 @@ public class FacilityGenerator {
 
     @Autowired
     FacilityController facilityController;
+    DataGenerator dataGenerator;
+
+    FacilityForm createdFacility;
 
     public FacilityGenerator() {
     }
@@ -27,30 +31,31 @@ public class FacilityGenerator {
         FacilityForm facilityForm = createFacilityForm();
         ModelMap modelMap = new ModelMap();
         facilityController.create(facilityForm, null, modelMap);
-        FacilityForm createdFacility = (FacilityForm) modelMap.get(FacilityController.FACILITY_FORM);
+        createdFacility = (FacilityForm) modelMap.get(FacilityController.FACILITY_FORM);
+        return createdFacility.getId();
+    }
+
+    public String getFacilityMotechId(){
         return createdFacility.getFacilityId();
     }
 
     private FacilityForm createFacilityForm() {
         FacilityForm facilityForm = new FacilityForm();
-        String name = "Dummy Facility";
-        String country = "Ghana";
-        String region = "Western Ghana";
-        String province = "Province";
-        String district = "District";
-        String phoneNumber = "0123456789";
-        String addPhoneNumber1 = "0123456785";
-        String addPhoneNumber2 = "0123456786";
-        String addPhoneNumber3 = "0123456787";
+        dataGenerator = new DataGenerator();
+        String randomString = dataGenerator.randomString(4);
+        String name = "Dummy Facility" + randomString;
+        String country = "Country";
+        String region = "Western Region";
+        String province = "Test Province";
+        String district = "Test District";
+        String phoneNumber = dataGenerator.randomPhoneNumber();
+        facilityForm.setId(randomString);
         facilityForm.setName(name);
         facilityForm.setCountry(country);
         facilityForm.setRegion(region);
         facilityForm.setCountyDistrict(district);
         facilityForm.setStateProvince(province);
         facilityForm.setPhoneNumber(phoneNumber);
-        facilityForm.setAdditionalPhoneNumber1(addPhoneNumber1);
-        facilityForm.setAdditionalPhoneNumber2(addPhoneNumber2);
-        facilityForm.setAdditionalPhoneNumber3(addPhoneNumber3);
         return facilityForm;
     }
 }

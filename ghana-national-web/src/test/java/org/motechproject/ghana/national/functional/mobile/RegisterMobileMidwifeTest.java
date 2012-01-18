@@ -12,8 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
-
 
 import java.util.HashMap;
 import java.util.List;
@@ -103,18 +101,18 @@ public class RegisterMobileMidwifeTest extends AbstractJUnit4SpringContextTests{
 
 
    @Test
-   @Transactional(readOnly = true)
     public void shouldRegisterForMobileMidWifeProgramIfValidationsPass() throws Exception{
 
-        final String staffId=staffGenerator.createStaffAndReturnStaffId();
-        final String facilityId=facilityGenerator.createFacilityAndReturnFacilityId();
+        final String staffId = staffGenerator.createStaffAndReturnStaffId();
+        final String facilityId = facilityGenerator.createFacilityAndReturnFacilityId();
         final String patientId = patientGenerator.createPatientAndReturnPatientId(facilityId);
+       final String facilityMotechId = facilityGenerator.getFacilityMotechId();
 
-      final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(new HashMap<String, String>() {{
+       final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(new HashMap<String, String>() {{
 
           put("patientId", patientId);
           put("staffId", staffId);
-          put("facilityId", facilityId);
+          put("facilityId", facilityMotechId);
           put("consent", "Y");
       }});
 

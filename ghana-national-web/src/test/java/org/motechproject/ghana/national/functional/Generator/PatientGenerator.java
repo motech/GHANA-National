@@ -3,7 +3,6 @@ package org.motechproject.ghana.national.functional.Generator;
 
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.web.PatientController;
-import org.motechproject.ghana.national.web.StaffController;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
@@ -34,10 +33,11 @@ public class PatientGenerator {
     @ApiSession
     public String createPatientAndReturnPatientId(String facilityId){
         PatientForm patientForm = new PatientForm().setFirstName("firstName").setLastName("lastName").setDateOfBirth(new Date()).setSex("Female").setFacilityId(facilityId)
-                .setRegistrationMode(RegistrationType.AUTO_GENERATE_ID);
+                .setRegistrationMode(RegistrationType.AUTO_GENERATE_ID).setEstimatedDateOfBirth(false);
         BindingResult mockBindingResult = mock(BindingResult.class);
         ModelMap modelMap = new ModelMap();
         patientController.createPatient(patientForm, mockBindingResult, modelMap);
-        return (String) modelMap.get(StaffController.STAFF_ID);
+        PatientForm createdPatientForm = (PatientForm) modelMap.get(PatientController.PATIENT_FORM);
+        return createdPatientForm.getMotechId();
     }
 }
