@@ -23,7 +23,7 @@ import static org.testng.Assert.assertTrue;
 public class ANCTest extends LoggedInUserFunctionalTest {
     private PatientPage patientPage;
     private DataGenerator dataGenerator;
-
+                                                     
     @BeforeMethod
     public void setUp() {
         dataGenerator = new DataGenerator();
