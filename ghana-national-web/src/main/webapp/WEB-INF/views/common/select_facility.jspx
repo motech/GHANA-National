@@ -47,13 +47,24 @@
                          defaultValue="${facility_sub_district_select}" errorMsg="${facility_sub_district_req_msg}"
                          locations="${provinces}" />
     </div>
+    <input type="text" value="${facilityForm.facilityId}"/>
+
     <div class="hide form-field">
         <label class="formLabel" for="facility">${fn:escapeXml(facility_facility_select)} *:</label>
         <form:select path="facilityForm.facilityId" cssClass="jsRequire" id="facilities">
             <option value="" parent="select">Select Facility</option>
             <c:forEach items="${facilities}" var="facility">
-                <option parent="${facility.parent}" value="${facility.id}">${facility.name}</option>
-            </c:forEach>
+                <c:choose>
+                    <c:when test="${facility.id eq facilityForm.facilityId}">
+                        <option parent="${facility.parent}" value="${facility.id}" selected="selected">
+                            ${facility.name}
+                        </option>
+                    </c:when>
+                    <c:otherwise>
+                        <option parent="${facility.parent}" value="${facility.id}">${facility.name}</option>
+                    </c:otherwise>
+                </c:choose>
+		</c:forEach>
         </form:select>
         <span id='facilitiesError' class='alertText formlyInvalid formlyAlert hide'>
             ${fn:escapeXml(patient_facility)} ${fn:escapeXml(required_msg)}
