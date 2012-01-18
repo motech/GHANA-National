@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterANCForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.ANCService;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -40,6 +41,6 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
                 null, registerANCForm.getLastIPT(), registerANCForm.getLastTT(),
                 registerANCForm.getLastIPTDate(), registerANCForm.getLastTTDate());
 
-        ancService.enroll(ancvo);
+        ancService.enroll(ancvo, Constants.ENCOUNTER_ANCREGVISIT);
     }
 }

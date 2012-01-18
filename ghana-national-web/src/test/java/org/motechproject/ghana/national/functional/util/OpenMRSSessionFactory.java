@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 
 @Component
-public class SessionFactory implements FactoryBean {
+public class OpenMRSSessionFactory implements FactoryBean {
     @Override
     public Object getObject() throws Exception {
         try {

@@ -67,7 +67,7 @@ public class ANCServiceTest {
         when(mockFacility.mrsFacility()).thenReturn(mockMRSFacility);
         when(mockMRSUser.getPerson()).thenReturn(mockMRSPerson);
 
-        ancService.enroll(ancvo);
+        ancService.enroll(ancvo, Constants.ENCOUNTER_ANCREGVISIT);
 
         ArgumentCaptor<MRSEncounter> captor = ArgumentCaptor.forClass(MRSEncounter.class);
         verify(mockAllEncounters).save(captor.capture());
@@ -111,7 +111,7 @@ public class ANCServiceTest {
         when(mockFacility.mrsFacility()).thenReturn(mockMRSFacility);
         when(mockMRSUser.getPerson()).thenReturn(mockMRSPerson);
 
-        ancService.enroll(ancvo);
+        ancService.enroll(ancvo, Constants.ENCOUNTER_ANCREGVISIT);
 
         ArgumentCaptor<MRSEncounter> captor = ArgumentCaptor.forClass(MRSEncounter.class);
         verify(mockAllEncounters).save(captor.capture());
@@ -153,7 +153,7 @@ public class ANCServiceTest {
         when(mockFacility.mrsFacility()).thenReturn(mockMRSFacility);
         when(mockMRSUser.getPerson()).thenReturn(mockMRSPerson);
 
-        ancService.enroll(ancvo);
+        ancService.enroll(ancvo, Constants.ENCOUNTER_ANCREGVISIT);
 
         ArgumentCaptor<MRSEncounter> captor = ArgumentCaptor.forClass(MRSEncounter.class);
         verify(mockAllEncounters).save(captor.capture());
@@ -180,7 +180,7 @@ public class ANCServiceTest {
 
         ancService = spy(ancService);
         MRSEncounter mrsEncounter = mock(MRSEncounter.class);
-        doReturn(mrsEncounter).when(ancService).enroll(Matchers.<ANCVO>any());
+        doReturn(mrsEncounter).when(ancService).enroll(Matchers.<ANCVO>any(), eq(Constants.ENCOUNTER_ANCREGVISIT));
 
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment();
         MRSEncounter actualEncounter = ancService.enrollWithMobileMidwife(mock(ANCVO.class), mobileMidwifeEnrollment);
