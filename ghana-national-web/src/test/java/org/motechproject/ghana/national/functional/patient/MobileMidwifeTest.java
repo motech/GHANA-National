@@ -54,14 +54,14 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
                 .withServiceType(ServiceType.PREGNANCY.toString()) .withPhoneOwnership(PhoneOwnership.PERSONAL.toString())
                 .withMedium(Medium.SMS.toString());
 
-        assertTrue(enrollmentPage.validate());
+        assertTrue(enrollmentPage.validateMedium());
 
         enrollmentPage.withMedium(Medium.VOICE.toString()).withDayOfWeek(DayOfWeek.Sunday.toString())
                 .withTime("10", "2");
-        assertTrue(enrollmentPage.validate());
+        assertTrue(enrollmentPage.validateMedium());
 
         enrollmentPage.withConsent(false);
-        assertTrue(enrollmentPage.validate());
+        assertTrue(enrollmentPage.validateMedium());
     }
         
     @Test
@@ -71,7 +71,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
         MobileMidwifeEnrollmentPage enrollmentPage = goToMobileMidwifePage(homePage, patient);
         enrollmentPage = createPregnancyEnrollmentAndSubmit(enrollmentPage);
 
-        assertTrue(enrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Enrolled successfully."));
+        assertTrue(enrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Updated successfully."));
         
         enrollmentPage.withStaffMotechId(staff.motechId())
                 .withFacilityMotechId(patient.facilityId()).withConsent(true)
@@ -87,7 +87,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
                 .withMessageStartWeek(MessageStartWeek.messageStartWeeks().get(40 + 10).getValue())
                 .submit();
         enrollmentPage = browser.toMobileMidwifeEnrollmentForm(enrollmentPage);
-        assertTrue(enrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Enrolled successfully."));
+        assertTrue(enrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Updated successfully."));
         assertThat(enrollmentPage.serviceType(), is(equalTo(ServiceType.CHILD_CARE.toString())));
         assertThat(enrollmentPage.medium(), is(equalTo(Medium.VOICE.toString())));
     }
@@ -99,7 +99,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
 
     private MobileMidwifeEnrollmentPage createPregnancyEnrollmentAndSubmit(MobileMidwifeEnrollmentPage enrollmentPage) {
 
-        assertTrue(enrollmentPage.validate());
+        assertTrue(enrollmentPage.validateMedium());
         enrollmentPage.withStaffMotechId(staff.motechId())
                 .withFacilityMotechId(patient.facilityId()).withConsent(true)
                 .withServiceType(ServiceType.PREGNANCY.toString())

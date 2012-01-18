@@ -3,7 +3,9 @@ package org.motechproject.ghana.national.domain.mobilemidwife;
 import java.util.Arrays;
 import java.util.List;
 
-public enum Medium{
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
+
+public enum Medium {
     SMS("SMS", Arrays.asList(PhoneOwnership.PERSONAL, PhoneOwnership.HOUSEHOLD)),
     VOICE("Voice", Arrays.asList(PhoneOwnership.PERSONAL, PhoneOwnership.PUBLIC, PhoneOwnership.HOUSEHOLD));
     private String displayName;
@@ -20,6 +22,10 @@ public enum Medium{
 
     public String getValue(){
         return name();
+    }
+
+    public static Medium value(String input) {
+       return isNotEmpty(input) ? Medium.valueOf(input) : null;
     }
 
     public List<PhoneOwnership> getPhoneOwnerships() {

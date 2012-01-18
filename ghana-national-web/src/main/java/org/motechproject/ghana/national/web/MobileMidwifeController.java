@@ -61,9 +61,8 @@ public class MobileMidwifeController {
             addFormInfo(modelMap, form).
                     addAttribute("formErrors", formErrors);
         } else {
-            MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findBy(form.getPatientMotechId());
-            midwifeEnrollment = form.createEnrollment(midwifeEnrollment != null ? midwifeEnrollment : new MobileMidwifeEnrollment());
-            mobileMidwifeService.saveOrUpdate(midwifeEnrollment);
+            MobileMidwifeEnrollment midwifeEnrollment = form.createEnrollment();
+            mobileMidwifeService.createOrUpdateEnrollment(midwifeEnrollment);
             addFormInfo(modelMap, new MobileMidwifeEnrollmentForm(midwifeEnrollment))
                     .addAttribute("successMessage", messages.getMessage(SUCCESS_MESSAGE, null, Locale.getDefault()));
         }
