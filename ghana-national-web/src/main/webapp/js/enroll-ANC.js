@@ -100,7 +100,7 @@ $(document).ready(function() {
     $('input').trigger('change');
 
     $('#registrationDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
-    $('#estimatedDateOfDelivery').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
+    $('#estimatedDateOfDelivery').datepicker({dateFormat: "dd/mm/yy", maxDate: '+1y', buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '-1:+1:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#lastTTDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#lastIPTDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
 
