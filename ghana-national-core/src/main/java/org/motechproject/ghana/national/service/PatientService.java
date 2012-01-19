@@ -16,6 +16,7 @@ import org.openmrs.api.InvalidCheckDigitException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
@@ -132,5 +133,11 @@ public class PatientService {
 
     public void saveEncounter(MRSEncounter mrsEncounter) {
         allEncounters.save(mrsEncounter);
+    }
+
+    public void deceasePatient(String patientMotechId, Date dateOfDeath) {
+        Patient patient = getPatientByMotechId(patientMotechId);
+        patient.getMrsPatient().getPerson().dead(true);
+        allPatients.update(patient);
     }
 }
