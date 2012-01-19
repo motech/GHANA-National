@@ -50,7 +50,7 @@ public class StaffTest extends LoggedInUserFunctionalTest {
                 .withRole(newRole.getRole());
         staffPage.update();
 
-        // search
+        // searchWithName
         searchStaffPage = browser.toSearchStaffPage(staffPage);
         searchStaffPage.withFirstName(newFirstName);
         searchStaffPage.search();

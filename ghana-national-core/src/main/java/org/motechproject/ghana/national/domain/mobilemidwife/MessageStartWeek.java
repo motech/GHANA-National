@@ -1,5 +1,7 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
+import ca.uhn.hl7v2.model.v25.datatype.ST;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -39,6 +41,17 @@ public class MessageStartWeek {
 
     public ServiceType getServiceType() {
         return serviceType;
+    }
+
+    public static MessageStartWeek valueOf(String value){
+        int messageStartWeek = Integer.parseInt(value);
+        if(messageStartWeek >=5 && messageStartWeek <=40){
+            return new MessageStartWeek(value, "Pregnancy-week " + value, ServiceType.PREGNANCY);
+        }else if(messageStartWeek >= 41 && messageStartWeek <= 92){
+            return new MessageStartWeek(value, "Baby-week " + value, ServiceType.CHILD_CARE);
+        }else {
+            return null;
+        }
     }
 
     public static List<MessageStartWeek> messageStartWeeks(){

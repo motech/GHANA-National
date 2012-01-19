@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.functional.facility;
 
 import org.junit.runner.RunWith;
+import org.motechproject.functional.data.TestFacility;
 import org.motechproject.functional.pages.facility.FacilityPage;
 import org.motechproject.functional.pages.facility.SearchFacilityPage;
 import org.motechproject.functional.util.DataGenerator;
@@ -17,39 +18,27 @@ public class FacilityTest extends LoggedInUserFunctionalTest {
     @Test
     public void shouldCreateAFaclitySearchItAndEditTheDetailsOfIt() {
         String name = "Test Facility" + dataGenerator.randomString(5);
-        String country = "Ghana";
-        String region = "Central Region";
-        String district = "Awutu Senya";
-        String subDistrict = "Bawjiase";
-        String phoneNumber = dataGenerator.randomPhoneNumber();
 
         String newName = "New Test Facility" + dataGenerator.randomString(5);
         String newRegion = "Ashanti";
         String newPhoneNumber = dataGenerator.randomPhoneNumber();
 
         FacilityPage facilityPage = browser.toFacilityPage(homePage);
-
-        facilityPage
-                .withName(name)
-                .withCountry(country)
-                .withRegion(region)
-                .withDistrict(district)
-                .withSubDistrict(subDistrict)
-                .withPhoneNum(phoneNumber).submit();
+        TestFacility facility = TestFacility.with(name);
+        facilityPage.save(facility);
 
         SearchFacilityPage searchFacilityPage = browser.toSearchFacility(facilityPage);
         searchFacilityPage.withName(name).search();
-        searchFacilityPage.assertIfSearchReturned(name, country, region, district, subDistrict, phoneNumber);
+        searchFacilityPage.displaying(facility);
 
-        searchFacilityPage.clickEditLink(name, country, region, district, subDistrict, phoneNumber);
+        searchFacilityPage.clickEditLink(facility);
         facilityPage = browser.getFacilityPage();
-        facilityPage
-                .withName(newName)
-                .withRegion(newRegion)
-                .withPhoneNum(newPhoneNumber).submit();
+
+        TestFacility facilityWithUpdates = TestFacility.with(newName).region(newRegion).phoneNumber(newPhoneNumber);
+        facilityPage.save(facilityWithUpdates);
 
         searchFacilityPage = browser.toSearchFacility(facilityPage);
-        searchFacilityPage.withCountry(country).withRegion(newRegion).search();
-        searchFacilityPage.assertIfSearchReturned(newName, country, newRegion, "", "", newPhoneNumber);
+        searchFacilityPage.withCountry(facility.country()).withRegion(newRegion).search();
+        searchFacilityPage.displaying(facilityWithUpdates);
     }
 }

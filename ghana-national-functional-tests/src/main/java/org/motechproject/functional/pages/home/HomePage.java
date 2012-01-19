@@ -10,10 +10,6 @@ import org.openqa.selenium.support.FindBy;
 
 public class HomePage extends BasePage {
 
-    @FindBy(id = "cwcenrollment")
-    @CacheLookup
-    WebElement cwcEnrollment;
-
     @FindBy(id = "ancenrollment")
     @CacheLookup
     private WebElement ancEnrollment;
@@ -49,10 +45,6 @@ public class HomePage extends BasePage {
 
     public void openSearchPatientPage() {
         selectMenu("Patient", "searchpatient");
-    }
-
-    public void openCWCEnrollmentPage() {
-        cwcEnrollment.click();
     }
 
     public boolean isLogoutLinkVisible() {

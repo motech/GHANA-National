@@ -41,11 +41,16 @@ public class HtmlTableParser {
         }
         boolean matches = true;
         for (Map.Entry<String, String> entry : data.entrySet()) {
-            if (!rowText.get(headings.indexOf(entry.getKey())).equals(entry.getValue())) {
+            String columnText = rowText.get(headings.indexOf(entry.getKey()));
+            if (!columnText.equals(blankIfNull(entry.getValue()))) {
                 matches = false;
                 break;
             }
         }
         return matches;
+    }
+
+    private String blankIfNull(String value) {
+        return value == null ? "" : value;
     }
 }

@@ -1,8 +1,8 @@
 package org.motechproject.functional.pages.patient;
 
+import org.motechproject.functional.data.TestMobileMidwifeEnrollment;
 import org.motechproject.functional.pages.home.HomePage;
-import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
-import org.openqa.selenium.By;
+import org.motechproject.ghana.national.domain.mobilemidwife.MessageStartWeek;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -100,8 +100,8 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
         return this;
     }
 
-    public MobileMidwifeEnrollmentPage withConsent(Boolean history) {
-        if (history)
+    public MobileMidwifeEnrollmentPage withConsent(Boolean consent) {
+        if (consent)
             consentYes.click();
         else
             consentNo.click();
@@ -159,9 +159,8 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
         return this;
     }
     
-    public void submit() {
+    private void submit() {
         submit.click();
-        waitForSuccessfulCompletion();
     }
 
     @Override
@@ -177,16 +176,54 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
         return attrValue(medium, "value");
     }
 
-    public boolean validateMedium() {
+    public WebElement getDayOfWeek() {
+        return dayOfWeek;
+    }
 
-        if(consentYes.isSelected()) {
-            WebElement dayOfWeekRow = find(new By.ById("dayOfWeekRow"));
-            WebElement timeOfDayRow = find(new By.ById("timeOfDayRow"));
+    public WebElement getHourOfDay() {
+        return hourOfDay;
+    }
 
-            if(Medium.VOICE.toString().equals(this.medium()))
-                return dayOfWeekRow.isDisplayed() && timeOfDayRow.isDisplayed();
-            return !dayOfWeekRow.isDisplayed() && !timeOfDayRow.isDisplayed();
+    public void enroll(TestMobileMidwifeEnrollment testMobileMidwifeEnrollment){
+        this.withStaffMotechId(testMobileMidwifeEnrollment.staffId())
+                .withFacilityMotechId(testMobileMidwifeEnrollment.facilityId())
+                .withConsent(testMobileMidwifeEnrollment.consent())
+                .withServiceType(testMobileMidwifeEnrollment.serviceType())
+                .withPhoneOwnership(testMobileMidwifeEnrollment.phoneOwnership())
+                .withPhoneNumber(testMobileMidwifeEnrollment.phoneNumber())
+                .withMedium(testMobileMidwifeEnrollment.medium())
+                .withLanguage(testMobileMidwifeEnrollment.language())
+                .withLearnedFrom(testMobileMidwifeEnrollment.learnedFrom())
+                .withReasonToJoin(testMobileMidwifeEnrollment.reasonToJoin())
+                .withMessageStartWeek(testMobileMidwifeEnrollment.messageStartWeek())
+                .submit();
+    }
+
+    private String valueOf(WebElement webElement){
+        return webElement.getAttribute("value");
+    }
+
+    public Boolean consent(){
+        if(consentYes.isSelected()){
+            return Boolean.TRUE;
+        }else if (consentNo.isSelected()){
+            return Boolean.FALSE;
+        }else {
+            return null;
         }
-        return !medium.isDisplayed();
+    }
+
+    public TestMobileMidwifeEnrollment details() {
+        return new TestMobileMidwifeEnrollment().staffId(valueOf(staffMotechId))
+                .facilityId(valueOf(facilityMotechId))
+                .consent(consent())
+                .serviceType(valueOf(serviceType))
+                .phoneOwnership(valueOf(phoneOwnership))
+                .phoneNumber(valueOf(phoneNumber))
+                .medium(valueOf(medium))
+                .language(valueOf(language))
+                .learnedFrom(valueOf(learnedFrom))
+                .reasonToJoin(valueOf(reasonToJoin))
+                .messageStartWeek(MessageStartWeek.valueOf(valueOf(messageStartWeek)));
     }
 }

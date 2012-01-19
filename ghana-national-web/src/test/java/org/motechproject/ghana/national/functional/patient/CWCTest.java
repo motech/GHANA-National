@@ -4,7 +4,9 @@ import org.junit.runner.RunWith;
 import org.motechproject.functional.data.TestPatient;
 import org.motechproject.functional.data.TestStaff;
 import org.motechproject.functional.pages.patient.CWCEnrollmentPage;
+import org.motechproject.functional.pages.patient.PatientEditPage;
 import org.motechproject.functional.pages.patient.PatientPage;
+import org.motechproject.functional.pages.patient.SearchPatientPage;
 import org.motechproject.functional.pages.staff.StaffPage;
 import org.motechproject.functional.util.DataGenerator;
 import org.motechproject.ghana.national.domain.RegistrationToday;
@@ -21,7 +23,6 @@ import static org.testng.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class CWCTest extends LoggedInUserFunctionalTest {
-    private PatientPage patientPage;
     private DataGenerator dataGenerator;
 
     @BeforeMethod
@@ -35,12 +36,18 @@ public class CWCTest extends LoggedInUserFunctionalTest {
         staffPage.create(TestStaff.with("First Name" + dataGenerator.randomString(5)));
         String staffId = staffPage.staffId();
 
-        patientPage = browser.toCreatePatient(staffPage);
-        patientPage.create(TestPatient.with("First Name" + dataGenerator.randomString(5)).
+        PatientPage patientPage = browser.toCreatePatient(staffPage);
+        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.PATIENT_MOTHER).estimatedDateOfBirth(false));
+                patientType(TestPatient.PATIENT_TYPE.PATIENT_MOTHER).estimatedDateOfBirth(false);
+        patientPage.create(patient);
 
-        CWCEnrollmentPage cwcEnrollmentPage = browser.toCWCEnrollmentForm(patientPage);
+        SearchPatientPage searchPatientPage = browser.toSearchPatient(homePage);
+        searchPatientPage.searchWithName(patient.firstName());
+
+        PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, patient);
+
+        CWCEnrollmentPage cwcEnrollmentPage = browser.toEnrollCWCPage(patientEditPage);
 
         cwcEnrollmentPage.withStaffId(staffId).withRegistrationToday(RegistrationToday.IN_PAST.toString()).withSerialNumber("trew654gf")
                 .withCountry("Ghana").withRegion("Central Region").withDistrict("Awutu Senya").withSubDistrict("Awutu")

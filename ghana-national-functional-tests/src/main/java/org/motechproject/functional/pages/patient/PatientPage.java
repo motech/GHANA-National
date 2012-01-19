@@ -107,10 +107,6 @@ public class PatientPage extends HomePage {
     @CacheLookup
     private WebElement subDistrict;
 
-    @FindBy(id = "mobileMidwifeEnrollmentLink")
-    @CacheLookup
-    private WebElement mobileMidwifeEnrollmentLink;
-
     public PatientPage(WebDriver webDriver) {
         super(webDriver);
         elementPoller.waitForElementID("submitNewPatient", driver);
@@ -265,7 +261,4 @@ public class PatientPage extends HomePage {
         elementPoller.waitForElementClassName("success", driver);
     }
 
-    public void openMobileMidwifeEnrollmentForm() {
-       mobileMidwifeEnrollmentLink.click();
-    }
 }

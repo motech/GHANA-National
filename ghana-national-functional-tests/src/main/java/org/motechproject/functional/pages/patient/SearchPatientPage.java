@@ -63,8 +63,13 @@ public class SearchPatientPage extends HomePage {
         elementPoller.waitForElementID("patientsReturnedBySearch", driver);
     }
 
-    public void search(String searchString) {
-        withName(searchString);
+    public void searchWithName(String name) {
+        withName(name);
+        search();
+    }
+
+    public void searchWithMotechId(String id) {
+        withMotechId(id);
         search();
     }
 
@@ -80,6 +85,11 @@ public class SearchPatientPage extends HomePage {
         assertTrue(map.toString(), htmlTableParser.hasRow(driver, searchResultTableId, map));
     }
 
+    public void clickEditLink(TestPatient patient) {
+        htmlTableParser.clickEditLink(driver, searchResultTableId, mapTableRowDataWithColumns(
+                patient.firstName(), patient.middleName(), patient.lastName(), patient.genderCode(), patient.dateOfBirth().toString("dd-MM-YYYY")));
+    }
+
     private Map<String, String> mapTableRowDataWithColumns(final String firstName, final String middleName, final String lastName, final String gender, final String dateOfBirth) {
         return new HashMap<String, String>() {{
             put("First Name", firstName);
@@ -88,11 +98,6 @@ public class SearchPatientPage extends HomePage {
             put("Date of Birth", dateOfBirth);
             put("Sex", gender);
         }};
-    }
-
-    public void searchWithMotechId(String id) {
-        withMotechId(id);
-        search();
     }
 
     public void open(TestPatient patient) {
