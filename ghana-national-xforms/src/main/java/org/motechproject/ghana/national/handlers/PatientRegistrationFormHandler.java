@@ -68,9 +68,9 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
 
             patientService.registerPatient(new Patient(mrsPatient, registerClientForm.getMotherMotechId()));
 
-            if(registerClientForm.getRegistrantType().equals(PatientType.CHILD_UNDER_FIVE)){
+            if (registerClientForm.getRegistrantType().equals(PatientType.CHILD_UNDER_FIVE)) {
                 cwcService.enroll(new CwcVO(registerClientForm.getStaffId(), registerClientForm.getFacilityId(), registerClientForm.getDate(),
-                        registerClientForm.getMotechId(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
+                        registerClientForm.getMotechId(), registerClientForm.getAddChildHistory(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
                         registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
                         registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber()), Constants.REGCLIENTCWC);
             }

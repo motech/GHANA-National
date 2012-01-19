@@ -1,5 +1,7 @@
 package org.motechproject.ghana.national.bean;
 
+import org.motechproject.ghana.national.domain.ANCCareHistory;
+import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.validator.field.MotechId;
@@ -11,6 +13,7 @@ import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
 
 import java.util.Date;
+import java.util.List;
 
 public class RegisterClientForm extends FormBean {
     public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
@@ -68,7 +71,8 @@ public class RegisterClientForm extends FormBean {
 
     private Boolean addHistory;
 
-    private String addChildHistory;
+    private List<CwcCareHistory> addChildHistory;
+    private List<ANCCareHistory> addMotherHistory;
 
     private Date bcgDate;
     private Date lastOPVDate;
@@ -304,14 +308,6 @@ public class RegisterClientForm extends FormBean {
         this.addHistory = addHistory;
     }
 
-    public String getAddChildHistory() {
-        return addChildHistory;
-    }
-
-    public void setAddChildHistory(String addChildHistory) {
-        this.addChildHistory = addChildHistory;
-    }
-
     public Date getBcgDate() {
         return bcgDate;
     }
@@ -390,5 +386,21 @@ public class RegisterClientForm extends FormBean {
 
     public void setLastPenta(Integer lastPenta) {
         this.lastPenta = lastPenta;
+    }
+
+    public List<CwcCareHistory> getAddChildHistory() {
+        return addChildHistory;
+    }
+
+    public void setAddChildHistory(List<CwcCareHistory> addChildHistory) {
+        this.addChildHistory = addChildHistory;
+    }
+
+    public List<ANCCareHistory> getAddMotherHistory() {
+        return addMotherHistory;
+    }
+
+    public void setAddMotherHistory(List<ANCCareHistory> addMotherHistory) {
+        this.addMotherHistory = addMotherHistory;
     }
 }

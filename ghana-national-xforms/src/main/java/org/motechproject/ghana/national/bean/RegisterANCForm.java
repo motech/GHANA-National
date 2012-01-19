@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
+import org.motechproject.ghana.national.domain.ANCCareHistory;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.validator.field.MotechId;
@@ -9,6 +10,7 @@ import org.motechproject.mobileforms.api.validator.annotations.Required;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 
 import java.util.Date;
+import java.util.List;
 
 public class RegisterANCForm extends MobileMidWifeIncludeForm {
     public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
@@ -65,6 +67,8 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
 
     @RegEx(pattern = "0[0-9]{9}")
     private String regPhone;
+
+    private List<ANCCareHistory> addCareHistory;
     
 
     public String getStaffId() {
@@ -201,6 +205,14 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
 
     public void setRegPhone(String regPhone) {
         this.regPhone = regPhone;
+    }
+
+    public List<ANCCareHistory> getAddCareHistory() {
+        return addCareHistory;
+    }
+
+    public void setAddCareHistory(List<ANCCareHistory> addCareHistory) {
+        this.addCareHistory = addCareHistory;
     }
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {

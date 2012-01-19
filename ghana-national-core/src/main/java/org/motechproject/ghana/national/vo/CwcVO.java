@@ -1,6 +1,9 @@
 package org.motechproject.ghana.national.vo;
 
+import org.motechproject.ghana.national.domain.CwcCareHistory;
+
 import java.util.Date;
+import java.util.List;
 
 public class CwcVO {
 
@@ -8,6 +11,7 @@ public class CwcVO {
     private String facilityId;
     private Date registrationDate;
     private String patientMotechId;
+    private List<CwcCareHistory> careHistories;
     private Date bcgDate;
     private Date vitADate;
     private Date measlesDate;
@@ -20,12 +24,13 @@ public class CwcVO {
     private Integer lastIPTi;
     private String serialNumber;
 
-    public CwcVO(String staffId, String facilityId, Date registrationDate, String patientMotechId, Date bcgDate, Date vitADate,
+    public CwcVO(String staffId, String facilityId, Date registrationDate, String patientMotechId, List<CwcCareHistory> careHistories, Date bcgDate, Date vitADate,
                  Date measlesDate, Date yfDate, Date lastPentaDate, Integer lastPenta, Date lastOPVDate, Integer lastOPV, Date lastIPTiDate, Integer lastIPTi, String serialNumber) {
         this.staffId = staffId;
         this.facilityId = facilityId;
         this.registrationDate = registrationDate;
         this.patientMotechId = patientMotechId;
+        this.careHistories = careHistories;
         this.bcgDate = bcgDate;
         this.vitADate = vitADate;
         this.measlesDate = measlesDate;
@@ -97,5 +102,9 @@ public class CwcVO {
 
     public String getSerialNumber() {
         return serialNumber;
+    }
+
+    public List<CwcCareHistory> getCareHistories() {
+        return careHistories;
     }
 }

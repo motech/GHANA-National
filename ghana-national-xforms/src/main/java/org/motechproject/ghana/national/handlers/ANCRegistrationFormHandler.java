@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterANCForm;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.ANCService;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -38,7 +37,7 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
                 registerANCForm.getMotechId(), registerANCForm.getDate(), registerANCForm.getRegDateToday(),
                 registerANCForm.getAncRegNumber(), registerANCForm.getEstDeliveryDate(), registerANCForm.getHeight(),
                 registerANCForm.getGravida(), registerANCForm.getParity(), registerANCForm.getAddHistory(), registerANCForm.getDeliveryDateConfirmed(),
-                null, registerANCForm.getLastIPT(), registerANCForm.getLastTT(),
+                registerANCForm.getAddCareHistory(), registerANCForm.getLastIPT(), registerANCForm.getLastTT(),
                 registerANCForm.getLastIPTDate(), registerANCForm.getLastTTDate());
 
         ancService.enrollWithMobileMidwife(ancvo, registerANCForm.createMobileMidwifeEnrollment());

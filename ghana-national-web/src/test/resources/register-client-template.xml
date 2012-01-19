@@ -725,75 +725,75 @@
                  type="xsd:string" visible="false()" action="show" required="true()"/>
         <xf:bind id="lastIPT" nodeset="/patientRegistration/lastIPT" type="xsd:string" visible="false()"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory
-            = '1' and /patientRegistration/addHistory = '1'"
+            = 'IPT' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastIPTDate" nodeset="/patientRegistration/lastIPTDate" type="xsd:date"
                  visible="false()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory
-            = '1' and /patientRegistration/addHistory = '1'"
+            = 'IPT' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastTT" nodeset="/patientRegistration/lastTT" type="xsd:string" visible="false()"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory
-            = '2' and /patientRegistration/addHistory = '1'"
+            = 'TT' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastTTDate" nodeset="/patientRegistration/lastTTDate" type="xsd:date" visible="false()"
                  action="show" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory
-            = '2' and /patientRegistration/addHistory = '1'"
+            = 'TT' and /patientRegistration/addHistory = '1'"
                  required="true()"/>
         <xf:bind id="bcgDate" nodeset="/patientRegistration/bcgDate" type="xsd:date" visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
-            = '5' and /patientRegistration/addHistory = '1'"
+            = 'BCG' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
         <xf:bind id="lastOPV" nodeset="/patientRegistration/lastOPV" type="xsd:string" visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
-            = '6' and /patientRegistration/addHistory = '1'"
+            = 'OPV' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastOPVDate" nodeset="/patientRegistration/lastOPVDate" type="xsd:date"
                  visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
-            = '6' and /patientRegistration/addHistory = '1'"
+            = 'OPV' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
         <xf:bind id="lastPenta" nodeset="/patientRegistration/lastPenta" type="xsd:string" visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
-            = '7' and /patientRegistration/addHistory = '1'"
+            = 'PENTA' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastPentaDate" nodeset="/patientRegistration/lastPentaDate" type="xsd:date"
                  visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
-            = '7' and /patientRegistration/addHistory = '1'"
+            = 'PENTA' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
         <xf:bind id="measlesDate" nodeset="/patientRegistration/measlesDate" type="xsd:date"
                  visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
-            = '8' and /patientRegistration/addHistory = '1'"
+            = 'MEASLES' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
         <xf:bind id="yellowFeverDate" nodeset="/patientRegistration/yellowFeverDate" type="xsd:date"
                  visible="false()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
-            = '9' and /patientRegistration/addHistory = '1'"
+            = 'YF' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastIPTI" nodeset="/patientRegistration/lastIPTI" type="xsd:string" visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
-            = '4' and /patientRegistration/addHistory = '1'"
+            = 'IPTI' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastIPTIDate" nodeset="/patientRegistration/lastIPTIDate" type="xsd:date"
                  visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
-            = '4' and /patientRegistration/addHistory = '1'"
+            = 'IPTI' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
         <xf:bind id="lastVitaminADate" nodeset="/patientRegistration/lastVitaminADate" type="xsd:date"
                  visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
-            = '3' and /patientRegistration/addHistory = '1'"
+            = 'VITA_A' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
         <xf:bind action="show" id="whyNoHistory" nodeset="/patientRegistration/whyNoHistory"
@@ -1129,42 +1129,42 @@
             <xf:label>Add Care History</xf:label>
             <xf:item id="1">
                 <xf:label>IPT</xf:label>
-                <xf:value>1</xf:value>
+                <xf:value>IPT</xf:value>
             </xf:item>
             <xf:item id="2">
                 <xf:label>TT</xf:label>
-                <xf:value>2</xf:value>
+                <xf:value>TT</xf:value>
             </xf:item>
         </xf:select>
         <xf:select bind="addChildHistory">
             <xf:label>Add Care History</xf:label>
             <xf:item id="3">
                 <xf:label>Vit A (Ch)</xf:label>
-                <xf:value>3</xf:value>
+                <xf:value>VITA_A</xf:value>
             </xf:item>
             <xf:item id="4">
                 <xf:label>IPTi (Ch)</xf:label>
-                <xf:value>4</xf:value>
+                <xf:value>IPTI</xf:value>
             </xf:item>
             <xf:item id="5">
                 <xf:label>BCG</xf:label>
-                <xf:value>5</xf:value>
+                <xf:value>BCG</xf:value>
             </xf:item>
             <xf:item id="6">
                 <xf:label>OPV</xf:label>
-                <xf:value>6</xf:value>
+                <xf:value>OPV</xf:value>
             </xf:item>
             <xf:item id="7">
                 <xf:label>Penta</xf:label>
-                <xf:value>7</xf:value>
+                <xf:value>PENTA</xf:value>
             </xf:item>
             <xf:item id="8">
                 <xf:label>Measles</xf:label>
-                <xf:value>8</xf:value>
+                <xf:value>MEASLES</xf:value>
             </xf:item>
             <xf:item id="9">
                 <xf:label>YF</xf:label>
-                <xf:value>9</xf:value>
+                <xf:value>YF</xf:value>
             </xf:item>
         </xf:select>
         <xf:select1 bind="lastIPT">
@@ -1332,7 +1332,7 @@
                 <xf:value>N</xf:value>
             </xf:item>
         </xf:select1>
-         <xf:select1 bind="serviceType">
+        <xf:select1 bind="serviceType">
             <xf:label>MM Service</xf:label>
             <xf:item id="PREGNANCY">
                 <xf:label>Pregnancy</xf:label>
@@ -1464,7 +1464,7 @@
                 <xf:value>RADIO</xf:value>
             </xf:item>
         </xf:select1>
-           <xf:select1 bind="messageStartWeek">
+        <xf:select1 bind="messageStartWeek">
             <xf:label>Week to begin messages</xf:label>
             <xf:itemset
                     nodeset="instance('messageStartWeek')/item[@parent=instance('patientRegistration')/serviceType]">

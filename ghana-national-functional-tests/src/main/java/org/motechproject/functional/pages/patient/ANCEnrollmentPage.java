@@ -112,6 +112,10 @@ public class ANCEnrollmentPage extends HomePage {
 
     @FindBy(id = "jsTT")
     @CacheLookup
+    private WebElement lastTTDateHolder;
+
+    @FindBy(id = "lastTTDate")
+    @CacheLookup
     private WebElement lastTTDate;
 
     public ANCEnrollmentPage(WebDriver webDriver) {
@@ -244,8 +248,32 @@ public class ANCEnrollmentPage extends HomePage {
     }
 
     public ANCEnrollmentPage withTTDate(LocalDate date) {
-        dateSelector.select(lastTTDate, date, driver);
+        dateSelector.select(lastTTDateHolder, date, driver);
         return this;
+    }
+
+    public String getGravida() {
+        return gravida.getAttribute("value");
+    }
+
+    public WebElement getStaffId() {
+        return staffId;
+    }
+
+    public String getFacilities() {
+        return new Select(facilities).getFirstSelectedOption().getText();
+    }
+
+    public String getHeight() {
+        return height.getAttribute("value");
+    }
+
+    public boolean getTtCareHistory() {
+        return ttCareHistory.isSelected();
+    }
+
+    public String getLastTTDate() {
+        return lastTTDate.getAttribute("value");
     }
 
     public void submit() {
