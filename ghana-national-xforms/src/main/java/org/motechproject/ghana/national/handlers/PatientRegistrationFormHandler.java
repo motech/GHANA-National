@@ -68,15 +68,15 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             String facilityId = facilityService.getFacilityByMotechId(registerClientForm.getFacilityId()).mrsFacilityId();
             MRSPatient mrsPatient = new MRSPatient(registerClientForm.getMotechId(), mrsPerson, new MRSFacility(facilityId));
 
-            patientService.registerPatient(new Patient(mrsPatient, registerClientForm.getMotherMotechId()));
+            String patientMotechId = patientService.registerPatient(new Patient(mrsPatient, registerClientForm.getMotherMotechId()));
 
             if (PatientType.CHILD_UNDER_FIVE.equals(registerClientForm.getRegistrantType())) {
-                cwcService.enroll(new CwcVO(registerClientForm.getStaffId(), registerClientForm.getFacilityId(), registerClientForm.getDate(),
-                        registerClientForm.getMotechId(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
+                cwcService.enroll(new CwcVO(registerClientForm.getStaffId(), facilityId, registerClientForm.getDate(),
+                        patientMotechId, registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
                         registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
                         registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber()), Constants.REGCLIENTCWC);
             } else if (PatientType.PREGNANT_MOTHER.equals(registerClientForm.getRegistrantType())) {
-                ancService.enroll(new ANCVO(registerClientForm.getStaffId(), registerClientForm.getFacilityId(), registerClientForm.getMotherMotechId(), registerClientForm.getDate()
+                ancService.enroll(new ANCVO(registerClientForm.getStaffId(), facilityId, patientMotechId, registerClientForm.getDate()
                         , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),
                         registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(),null , registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
                         registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate()),Constants.REGCLIENTANC);

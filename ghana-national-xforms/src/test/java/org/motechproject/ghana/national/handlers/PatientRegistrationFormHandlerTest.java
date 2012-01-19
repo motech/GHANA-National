@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.handlers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.*;
@@ -84,6 +85,7 @@ public class PatientRegistrationFormHandlerTest {
         String sex = "M";
         String subDistrict = "SubDistrict";
         String phoneNumber = "0123456789";
+        final String staffId = "456";
         PatientType patientType = PatientType.CHILD_UNDER_FIVE;
 
         RegisterClientForm registerClientForm = createRegisterClientForm(address, dateofBirth, district, isBirthDateEstimated,
@@ -117,7 +119,7 @@ public class PatientRegistrationFormHandlerTest {
     }
 
     @Test
-    public void shouldRegisterForCWC() {
+    public void shouldRegisterForCWC() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
         HashMap<String, Object> parameters = new HashMap<String, Object>();
 
         String address = "Address";
@@ -168,6 +170,8 @@ public class PatientRegistrationFormHandlerTest {
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
 
         when(mockCWCService.enroll(any(CwcVO.class), anyString())).thenReturn(null);
+
+        when(mockPatientService.registerPatient(any(Patient.class))).thenReturn(motechId);
         when(facility.mrsFacilityId()).thenReturn(motechFacilityId);
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         patientRegistrationFormHandler.handleFormEvent(event);
@@ -180,7 +184,7 @@ public class PatientRegistrationFormHandlerTest {
     }
 
     @Test
-    public void shouldRegisterForANC() {
+    public void shouldRegisterForANC() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
 
         HashMap<String, Object> parameters = new HashMap<String, Object>();
 
@@ -189,7 +193,6 @@ public class PatientRegistrationFormHandlerTest {
         String district = "District";
         Boolean isBirthDateEstimated = true;
         String motechFacilityId = "MotechFacilityID";
-        String facilityId = "Facility Id";
         String firstName = "FirstName";
         Boolean insured = true;
         String lastName = "LastName";
@@ -230,6 +233,8 @@ public class PatientRegistrationFormHandlerTest {
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
 
         when(mockANCService.enroll(any(ANCVO.class), anyString())).thenReturn(null);
+        when(mockPatientService.registerPatient(any(Patient.class))).thenReturn(motechId);
+
         when(facility.mrsFacilityId()).thenReturn(motechFacilityId);
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         patientRegistrationFormHandler.handleFormEvent(event);
@@ -237,13 +242,13 @@ public class PatientRegistrationFormHandlerTest {
         verify(mockANCService).enroll(captor.capture(), eq(Constants.REGCLIENTANC));
         final ANCVO ancVO= captor.getValue();
 
-        assertANCRegistration(motechFacilityId , parentId , expDeliveryDate , deliveryDateConfirmed , height ,gravida , parity , lastIPTDate , lastTTDate , lastIPT , lastTT , ancVO);
+        assertANCRegistration(motechFacilityId , motechId, expDeliveryDate , deliveryDateConfirmed , height ,gravida , parity , lastIPTDate , lastTTDate , lastIPT , lastTT , ancVO);
 
     }
 
-    private void assertANCRegistration(String motechFacilityId, String parentId, Date expDeliveryDate, Boolean deliveryDateConfirmed, Double height, Integer gravida, Integer parity, Date lastIPTDate, Date lastTTDate, String lastIPT, String lastTT, ANCVO ancVO) {
+    private void assertANCRegistration(String motechFacilityId, String motechId, Date expDeliveryDate, Boolean deliveryDateConfirmed, Double height, Integer gravida, Integer parity, Date lastIPTDate, Date lastTTDate, String lastIPT, String lastTT, ANCVO ancVO) {
         assertThat(motechFacilityId, is(ancVO.getFacilityId()));
-        assertThat(parentId, is(ancVO.getMotechPatientId()));
+        assertThat(motechId, is(ancVO.getMotechPatientId()));
         assertThat(expDeliveryDate, is(ancVO.getEstimatedDateOfDelivery()));
         assertThat(deliveryDateConfirmed, is(ancVO.getDeliveryDateConfirmed()));
         assertThat(height, is(ancVO.getHeight()));
