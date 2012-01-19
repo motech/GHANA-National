@@ -1,9 +1,6 @@
 package org.motechproject.ghana.national.builders;
 
-import org.motechproject.ghana.national.bean.AbstractMobileMidWifeForm;
-import org.motechproject.ghana.national.bean.MobileMidWifeIncludeForm;
-import org.motechproject.ghana.national.bean.MobileMidwifeForm;
-import org.motechproject.ghana.national.bean.RegisterANCForm;
+import org.motechproject.ghana.national.bean.*;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
@@ -129,9 +126,16 @@ public class MobileMidwifeBuilder {
 
     public void buildRegisterANCForm(RegisterANCForm registerANCForm) {
         buildIncludeMobileForm(registerANCForm);
-        registerANCForm.setStaffId(staffId);
-        registerANCForm.setFacilityId(facilityId);
-        registerANCForm.setMotechId(patientId);
+        if(staffId != null) registerANCForm.setStaffId(staffId);
+        if(facilityId != null) registerANCForm.setFacilityId(facilityId);
+        if(patientId != null) registerANCForm.setMotechId(patientId);
+    }
+
+    public void buildRegisterCWCForm(RegisterCWCForm registerCWCForm) {
+        buildIncludeMobileForm(registerCWCForm);
+        if(staffId != null) registerCWCForm.setStaffId(staffId);
+        if(facilityId != null) registerCWCForm.setFacilityId(facilityId);
+        if(patientId != null) registerCWCForm.setMotechId(patientId);
     }
 
     private void buildIncludeMobileForm(MobileMidWifeIncludeForm includeForm) {

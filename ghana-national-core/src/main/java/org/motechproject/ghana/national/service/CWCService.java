@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.service;
 
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -34,8 +35,8 @@ public class CWCService {
     @Autowired
     AllEncounters allEncounters;
 
-   
-
+    @Autowired
+    MobileMidwifeService mobileMidwifeService;
 
     public MRSEncounter enroll(CwcVO cwc, String encounterType) {
         MRSUser user = staffService.getUserByEmailIdOrMotechId(cwc.getStaffId());
@@ -73,6 +74,12 @@ public class CWCService {
         MRSEncounter mrsEncounter = new MRSEncounter(staffProviderId, staffUserId, facilityId,
                 registrationDate, patientMotechId, mrsObservations, encounterType);
         return allEncounters.save(mrsEncounter);
+    }
+
+    public MRSEncounter enrollWithMobileMidwife(CwcVO cwcVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {
+        MRSEncounter mrsEncounter = enroll(cwcVO, Constants.ENCOUNTER_CWCREGVISIT);
+        mobileMidwifeService.createOrUpdateEnrollment(mobileMidwifeEnrollment);
+        return mrsEncounter;
     }
 
     public MRSEncounter getEncounter(String motechId,String encounterType) {

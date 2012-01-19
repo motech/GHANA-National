@@ -3,16 +3,14 @@ package org.motechproject.ghana.national.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.CwcVO;
-import org.motechproject.mrs.model.MRSEncounter;
-import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSPerson;
-import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.mrs.model.*;
 import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
@@ -23,9 +21,11 @@ import java.util.HashSet;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 public class CWCServiceTest {
@@ -44,6 +44,9 @@ public class CWCServiceTest {
     @Mock
     OpenMRSConceptAdaptor mockOpenMRSConceptAdaptor;
 
+    @Mock
+    MobileMidwifeService mockMockMidwifeService;
+
     @Before
     public void setUp() {
         cwcService = new CWCService();
@@ -52,6 +55,7 @@ public class CWCServiceTest {
         ReflectionTestUtils.setField(cwcService, "patientService", mockPatientService);
         ReflectionTestUtils.setField(cwcService, "allEncounters", mockAllEncounters);
         ReflectionTestUtils.setField(cwcService, "openMRSConceptAdaptor", mockOpenMRSConceptAdaptor);
+        setField(cwcService, "mobileMidwifeService", mockMockMidwifeService);
     }
 
     @Test
@@ -150,5 +154,20 @@ public class CWCServiceTest {
         MRSEncounter actualEncounter = captor.getValue();
         assertThat(actualEncounter.getObservations().size(), is(1));
     }
+
+    @Test
+    public void shouldEnrollCWCWithMobileMidwife() {
+
+        cwcService = spy(cwcService);
+        MRSEncounter mrsEncounter = mock(MRSEncounter.class);
+        doReturn(mrsEncounter).when(cwcService).enroll(Matchers.<CwcVO>any(), eq(Constants.ENCOUNTER_CWCREGVISIT));
+
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment();
+        MRSEncounter actualEncounter = cwcService.enrollWithMobileMidwife(mock(CwcVO.class), mobileMidwifeEnrollment);
+
+        assertSame(mrsEncounter, actualEncounter);
+        verify(mockMockMidwifeService).createOrUpdateEnrollment(mobileMidwifeEnrollment);
+    }
+
 
 }

@@ -65,6 +65,7 @@ public class ANCRegistrationFormHandlerTest {
         registerANCForm.setRegDateToday(RegistrationToday.IN_PAST);
         registerANCForm.setRegPhone("045353453434");
         registerANCForm.setStaffId("2331");
+        registerANCForm.setFacilityId("facility");
         setMobileMidwifeEnrollment(registerANCForm);
 
         Facility facility = mock(Facility.class);
@@ -122,8 +123,7 @@ public class ANCRegistrationFormHandlerTest {
     }
 
     private void setMobileMidwifeEnrollment(RegisterANCForm registerANCForm) {
-        new MobileMidwifeBuilder().staffId("staffId").facilityId("facilityId").patientId("patientId")
-                .enroll(true)
+        new MobileMidwifeBuilder().enroll(true)
                 .consent(true).dayOfWeek(DayOfWeek.Monday).language(Language.EN).learnedFrom(LearnedFrom.FRIEND).format("PERS_VOICE")
                 .timeOfDay(new Time(10, 02)).messageStartWeek("10").phoneNumber("9500012343")
                 .phoneOwnership(PhoneOwnership.PERSONAL).reasonToJoin(ReasonToJoin.FAMILY_FRIEND_DELIVERED)
