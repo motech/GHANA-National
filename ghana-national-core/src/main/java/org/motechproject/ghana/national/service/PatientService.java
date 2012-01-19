@@ -138,6 +138,7 @@ public class PatientService {
     public void deceasePatient(String patientMotechId, Date dateOfDeath) {
         Patient patient = getPatientByMotechId(patientMotechId);
         patient.getMrsPatient().getPerson().dead(true);
+        patient.getMrsPatient().getPerson().deathDate(dateOfDeath);
         allPatients.update(patient);
     }
 }
