@@ -6,6 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllEncounters;
@@ -15,8 +16,10 @@ import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -75,7 +78,8 @@ public class CWCServiceTest {
         final int lastOPV = 0;
         final String facilityId = "3232";
         final String serialNumber = "wewew";
-        CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId, lastBCGDate, lastVitADate,
+        List<CwcCareHistory> cwcCareHistories = Arrays.asList(CwcCareHistory.VITA_A,CwcCareHistory.IPTI);
+        CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId,cwcCareHistories, lastBCGDate, lastVitADate,
                 lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi, serialNumber);
 
         final MRSUser mrsUser = new MRSUser();
@@ -132,7 +136,8 @@ public class CWCServiceTest {
         final Integer lastOPV = null;
         final String facilityId = "3232";
         String serialNumber = "wewew";
-        CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId, lastBCGDate, lastVitADate,
+        List<CwcCareHistory> cwcCareHistories = Arrays.asList(CwcCareHistory.VITA_A,CwcCareHistory.IPTI);
+        CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId,cwcCareHistories, lastBCGDate, lastVitADate,
                 lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi, serialNumber);
 
         final MRSUser mrsUser = new MRSUser();

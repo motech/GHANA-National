@@ -136,6 +136,7 @@ public class CWCController {
                 cwcEnrollmentForm.getFacilityForm().getFacilityId(),
                 registrationDate,
                 cwcEnrollmentForm.getPatientMotechId(),
+                null,
                 cwcEnrollmentForm.getBcgDate(),
                 cwcEnrollmentForm.getVitADate(),
                 cwcEnrollmentForm.getMeaslesDate(),

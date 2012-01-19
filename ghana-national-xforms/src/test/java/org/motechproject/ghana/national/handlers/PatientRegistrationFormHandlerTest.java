@@ -179,7 +179,7 @@ public class PatientRegistrationFormHandlerTest {
         verify(mockCWCService).enroll(captor.capture(), eq(Constants.REGCLIENTCWC));
         final CwcVO cwcVO = captor.getValue();
 
-        assertCWCRegistration(motechFacilityId , motechId , registartionDate , lastBCGDate , lastVitADate , lastMeaslesDate , lastYfDate , lastPentaDate , lastOPVDate , lastIPTiDate , staffId , lastPenta , lastOPV , cwcVO);
+        assertCWCRegistration(motechFacilityId, motechId, registartionDate, lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, staffId, lastPenta, lastOPV, cwcVO);
 
     }
 
@@ -240,9 +240,9 @@ public class PatientRegistrationFormHandlerTest {
         patientRegistrationFormHandler.handleFormEvent(event);
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
         verify(mockANCService).enroll(captor.capture(), eq(Constants.REGCLIENTANC));
-        final ANCVO ancVO= captor.getValue();
+        final ANCVO ancVO = captor.getValue();
 
-        assertANCRegistration(motechFacilityId , motechId, expDeliveryDate , deliveryDateConfirmed , height ,gravida , parity , lastIPTDate , lastTTDate , lastIPT , lastTT , ancVO);
+        assertANCRegistration(motechFacilityId, motechId, expDeliveryDate, deliveryDateConfirmed, height, gravida, parity, lastIPTDate, lastTTDate, lastIPT, lastTT, ancVO);
 
     }
 
