@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.functional.patient;
 
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.motechproject.functional.data.TestPatient;
 import org.motechproject.functional.data.TestStaff;
@@ -31,7 +30,6 @@ public class ANCTest extends LoggedInUserFunctionalTest {
     }
 
     @Test
-    @Ignore
     public void shouldEnrollForANCForAPatient() {
         StaffPage staffPage = browser.toStaffCreatePage(homePage);
         staffPage.create(TestStaff.with("First Name" + dataGenerator.randomString(5)));
