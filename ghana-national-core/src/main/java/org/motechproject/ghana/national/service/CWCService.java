@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.service;
 
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllEncounters;
@@ -48,26 +49,28 @@ public class CWCService {
         String patientMotechId = patient.getMrsPatient().getId();
 
         HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
-        if (cwc.getBcgDate() != null) {
-            mrsObservations.add(new MRSObservation<Concept>(cwc.getBcgDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_BCG)));
-        }
-        if (cwc.getVitADate() != null) {
-            mrsObservations.add(new MRSObservation<Concept>(cwc.getVitADate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_VITA)));
-        }
-        if (cwc.getMeaslesDate() != null) {
-            mrsObservations.add(new MRSObservation<Concept>(cwc.getMeaslesDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_MEASLES)));
-        }
-        if (cwc.getYfDate() != null) {
-            mrsObservations.add(new MRSObservation<Concept>(cwc.getYfDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_YF)));
-        }
-        if (cwc.getLastPenta() != null) {
-            mrsObservations.add(new MRSObservation<Integer>(cwc.getLastPentaDate(), Constants.CONCEPT_PENTA, cwc.getLastPenta()));
-        }
-        if (cwc.getLastOPV() != null) {
-            mrsObservations.add(new MRSObservation<Integer>(cwc.getLastOPVDate(),Constants.CONCEPT_OPV, cwc.getLastOPV()));
-        }
-        if (cwc.getLastIPTi() != null) {
-            mrsObservations.add(new MRSObservation<Integer>(cwc.getLastIPTiDate(), Constants.CONCEPT_IPTI, cwc.getLastIPTi()));
+        if (cwc.getCareHistories() != null) {
+            if (cwc.getCareHistories().contains(CwcCareHistory.BCG)) {
+                mrsObservations.add(new MRSObservation<Concept>(cwc.getBcgDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_BCG)));
+            }
+            if (cwc.getCareHistories().contains(CwcCareHistory.VITA_A)) {
+                mrsObservations.add(new MRSObservation<Concept>(cwc.getVitADate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_VITA)));
+            }
+            if (cwc.getCareHistories().contains(CwcCareHistory.MEASLES)) {
+                mrsObservations.add(new MRSObservation<Concept>(cwc.getMeaslesDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_MEASLES)));
+            }
+            if (cwc.getCareHistories().contains(CwcCareHistory.YF)) {
+                mrsObservations.add(new MRSObservation<Concept>(cwc.getYfDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED, openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_YF)));
+            }
+            if (cwc.getCareHistories().contains(CwcCareHistory.PENTA)) {
+                mrsObservations.add(new MRSObservation<Integer>(cwc.getLastPentaDate(), Constants.CONCEPT_PENTA, cwc.getLastPenta()));
+            }
+            if (cwc.getCareHistories().contains(CwcCareHistory.OPV)) {
+                mrsObservations.add(new MRSObservation<Integer>(cwc.getLastOPVDate(), Constants.CONCEPT_OPV, cwc.getLastOPV()));
+            }
+            if (cwc.getCareHistories().contains(CwcCareHistory.IPTI)) {
+                mrsObservations.add(new MRSObservation<Integer>(cwc.getLastIPTiDate(), Constants.CONCEPT_IPTI, cwc.getLastIPTi()));
+            }
         }
         mrsObservations.add(new MRSObservation<String>(cwc.getRegistrationDate(), Constants.CONCEPT_CWC_REG_NUMBER, cwc.getSerialNumber()));
 
@@ -82,8 +85,8 @@ public class CWCService {
         return mrsEncounter;
     }
 
-    public MRSEncounter getEncounter(String motechId,String encounterType) {
-        return allEncounters.fetchLatest(motechId,encounterType );
+    public MRSEncounter getEncounter(String motechId, String encounterType) {
+        return allEncounters.fetchLatest(motechId, encounterType);
 
     }
 }

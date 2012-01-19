@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.service;
 
+import org.motechproject.ghana.national.domain.ANCCareHistory;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -47,18 +48,17 @@ public class ANCService {
             mrsObservations.add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, ancVO.getDeliveryDateConfirmed()));
         if (ancVO.getSerialNumber() != null)
             mrsObservations.add(new MRSObservation<String>(registrationDate, Constants.CONCEPT_ANC_REG_NUM, ancVO.getSerialNumber()));
-
-        if (ancVO.getLastIPT() != null && ancVO.getLastIPTDate() != null) {
-            mrsObservations.add(new MRSObservation<Integer>(ancVO.getLastIPTDate(), Constants.CONCEPT_IPT, convertToInt(ancVO.getLastIPT())));
-        }
-        if (ancVO.getLastTT() != null && ancVO.getLastTTDate() != null) {
-            mrsObservations.add(new MRSObservation<Integer>(ancVO.getLastTTDate(), Constants.CONCEPT_TT, convertToInt(ancVO.getLastTT())));
+        if (ancVO.getCareHistory() != null) {
+            if (ancVO.getCareHistory().contains(ANCCareHistory.IPT)) {
+                mrsObservations.add(new MRSObservation<Integer>(ancVO.getLastIPTDate(), Constants.CONCEPT_IPT, convertToInt(ancVO.getLastIPT())));
+            }
+            if (ancVO.getCareHistory().contains(ANCCareHistory.TT)) {
+                mrsObservations.add(new MRSObservation<Integer>(ancVO.getLastTTDate(), Constants.CONCEPT_TT, convertToInt(ancVO.getLastTT())));
+            }
         }
 
         MRSEncounter mrsEncounter = new MRSEncounter(null, mrsPerson, mrsUser, mrsFacility, registrationDate, mrsPatient, mrsObservations, encounterType);
-
         return allEncounters.save(mrsEncounter);
-
     }
 
     public MRSEncounter enrollWithMobileMidwife(ANCVO ancVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {

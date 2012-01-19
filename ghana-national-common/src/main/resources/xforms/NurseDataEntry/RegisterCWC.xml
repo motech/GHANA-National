@@ -496,47 +496,47 @@
                  type="xsd:string" visible="false()" action="show" required="true()"/>
         <xf:bind id="lastVitaminADate" nodeset="/CWCRegistration/lastVitaminADate" type="xsd:date"
                  visible="false()"
-                 relevant="/CWCRegistration/addCareHistory = '1' and /CWCRegistration/addHistory = '1'"
+                 relevant="/CWCRegistration/addCareHistory = 'VITA_A' and /CWCRegistration/addHistory = '1'"
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
         <xf:bind id="lastIPTi" nodeset="/CWCRegistration/lastIPTi" type="xsd:string" visible="false()"
-                 relevant="/CWCRegistration/addCareHistory= '2' and /CWCRegistration/addHistory = '1'"
+                 relevant="/CWCRegistration/addCareHistory= 'IPTI' and /CWCRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastIPTiDate" nodeset="/CWCRegistration/lastIPTiDate" type="xsd:date"
                  visible="false()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
-                 relevant="/CWCRegistration/addCareHistory = '2' and /CWCRegistration/addHistory = '1'"
+                 relevant="/CWCRegistration/addCareHistory = 'IPTI' and /CWCRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="bcgDate" nodeset="/CWCRegistration/bcgDate" type="xsd:date" visible="false()"
-                 relevant="/CWCRegistration/addCareHistory= '3' and /CWCRegistration/addHistory = '1'"
+                 relevant="/CWCRegistration/addCareHistory= 'BCG' and /CWCRegistration/addHistory = '1'"
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
         <xf:bind id="lastOPV" nodeset="/CWCRegistration/lastOPV" type="xsd:string" visible="false()"
-                 relevant="/CWCRegistration/addCareHistory = '4' and /CWCRegistration/addHistory = '1'"
+                 relevant="/CWCRegistration/addCareHistory = 'OPV' and /CWCRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastOPVDate" nodeset="/CWCRegistration/lastOPVDate" type="xsd:date"
                  visible="false()"
-                 relevant="/CWCRegistration/addCareHistory = '4' and /CWCRegistration/addHistory = '1'"
+                 relevant="/CWCRegistration/addCareHistory = 'OPV' and /CWCRegistration/addHistory = '1'"
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
         <xf:bind id="lastPenta" nodeset="/CWCRegistration/lastPenta" type="xsd:string" visible="false()"
-                 relevant="/CWCRegistration/addCareHistory  = '5' and /CWCRegistration/addHistory = '1'"
+                 relevant="/CWCRegistration/addCareHistory  = 'PENTA' and /CWCRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastPentaDate" nodeset="/CWCRegistration/lastPentaDate" type="xsd:date"
                  visible="false()"
-                 relevant="/CWCRegistration/addCareHistory  = '5' and /CWCRegistration/addHistory = '1'"
+                 relevant="/CWCRegistration/addCareHistory  = 'PENTA' and /CWCRegistration/addHistory = '1'"
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
         <xf:bind id="measlesDate" nodeset="/CWCRegistration/measlesDate" type="xsd:date"
                  visible="false()"
-                 relevant="/CWCRegistration/addCareHistory = '6' and /CWCRegistration/addHistory = '1'"
+                 relevant="/CWCRegistration/addCareHistory = 'MEASLES' and /CWCRegistration/addHistory = '1'"
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
         <xf:bind id="yellowFeverDate" nodeset="/CWCRegistration/yellowFeverDate" type="xsd:date"
                  visible="false()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"
                  relevant="/CWCRegistration/addCareHistory
-            = '7' and /CWCRegistration/addHistory = '1'"
+            = 'YF' and /CWCRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="enroll" nodeset="/CWCRegistration/enroll" required="true()" type="xsd:string"/>
         <xf:bind action="show" id="consent" nodeset="/CWCRegistration/consent" relevant="/CWCRegistration/enroll = 'Y'"
@@ -622,31 +622,31 @@
             <xf:label>Add Care History</xf:label>
             <xf:item id="1">
                 <xf:label>Vit A (Ch)</xf:label>
-                <xf:value>1</xf:value>
+                <xf:value>VITA_A</xf:value>
             </xf:item>
             <xf:item id="2">
                 <xf:label>IPTi (Ch)</xf:label>
-                <xf:value>2</xf:value>
+                <xf:value>IPTI</xf:value>
             </xf:item>
             <xf:item id="3">
                 <xf:label>BCG</xf:label>
-                <xf:value>3</xf:value>
+                <xf:value>BCG</xf:value>
             </xf:item>
             <xf:item id="4">
                 <xf:label>OPV</xf:label>
-                <xf:value>4</xf:value>
+                <xf:value>OPV</xf:value>
             </xf:item>
             <xf:item id="5">
                 <xf:label>Penta</xf:label>
-                <xf:value>5</xf:value>
+                <xf:value>PENTA</xf:value>
             </xf:item>
             <xf:item id="6">
                 <xf:label>Measles</xf:label>
-                <xf:value>6</xf:value>
+                <xf:value>MEASLES</xf:value>
             </xf:item>
             <xf:item id="7">
                 <xf:label>YF</xf:label>
-                <xf:value>7</xf:value>
+                <xf:value>YF</xf:value>
             </xf:item>
         </xf:select>
         <xf:input bind="bcgDate">

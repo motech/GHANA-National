@@ -32,15 +32,16 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
-        final RegisterCWCForm registerCWCForm = (RegisterCWCForm) event.getParameters().get(FORM_BEAN);
+        RegisterCWCForm registerCWCForm = (RegisterCWCForm) event.getParameters().get(FORM_BEAN);
 
-        final Facility facility = facilityService.getFacilityByMotechId(registerCWCForm.getFacilityId());
+        Facility facility = facilityService.getFacilityByMotechId(registerCWCForm.getFacilityId());
+
 
         cwcService.enrollWithMobileMidwife(new CwcVO(registerCWCForm.getStaffId(),
                 facility.getMrsFacilityId(),
                 registerCWCForm.getRegistrationDate(),
                 registerCWCForm.getMotechId(),
-                null,
+                registerCWCForm.getAddCareHistory(),
                 registerCWCForm.getBcgDate(),
                 registerCWCForm.getLastVitaminADate(),
                 registerCWCForm.getMeaslesDate(),

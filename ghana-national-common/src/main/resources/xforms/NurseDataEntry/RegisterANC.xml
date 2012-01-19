@@ -504,19 +504,19 @@
                  relevant="/ANCRegistration/addHistory = '1'" type="xsd:string" visible="false()" action="show"
                  required="true()"/>
         <xf:bind id="lastIPT" nodeset="/ANCRegistration/lastIPT" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = '1' and /ANCRegistration/addHistory = '1'"
+                 relevant="/ANCRegistration/addCareHistory = 'IPT' and /ANCRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastIPTDate" nodeset="/ANCRegistration/lastIPTDate" type="xsd:date" visible="false()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
-                 relevant="/ANCRegistration/addCareHistory = '1' and /ANCRegistration/addHistory = '1'" action="show"
+                 relevant="/ANCRegistration/addCareHistory = 'IPT' and /ANCRegistration/addHistory = '1'" action="show"
                  required="true()"/>
         <xf:bind id="lastTT" nodeset="/ANCRegistration/lastTT" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = '2' and /ANCRegistration/addHistory = '1'"
+                 relevant="/ANCRegistration/addCareHistory = 'TT' and /ANCRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastTTDate" nodeset="/ANCRegistration/lastTTDate" type="xsd:date" visible="false()" action="show"
                  constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"
-                 relevant="/ANCRegistration/addCareHistory = '2' and /ANCRegistration/addHistory = '1'"
+                 relevant="/ANCRegistration/addCareHistory = 'TT' and /ANCRegistration/addHistory = '1'"
                  required="true()"/>
         <xf:bind id="enroll" nodeset="/ANCRegistration/enroll" required="true()" type="xsd:string"/>
         <xf:bind action="show" id="consent" nodeset="/ANCRegistration/consent" relevant="/ANCRegistration/enroll = 'Y'"
@@ -625,11 +625,11 @@
             <xf:label>Add Care History</xf:label>
             <xf:item id="1">
                 <xf:label>IPT</xf:label>
-                <xf:value>1</xf:value>
+                <xf:value>IPT</xf:value>
             </xf:item>
             <xf:item id="2">
                 <xf:label>TT</xf:label>
-                <xf:value>2</xf:value>
+                <xf:value>TT</xf:value>
             </xf:item>
         </xf:select>
         <xf:select1 bind="lastIPT">

@@ -11,22 +11,27 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.CwcVO;
-import org.motechproject.mrs.model.*;
+import org.motechproject.mrs.model.MRSEncounter;
+import org.motechproject.mrs.model.MRSObservation;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
@@ -78,8 +83,7 @@ public class CWCServiceTest {
         final int lastOPV = 0;
         final String facilityId = "3232";
         final String serialNumber = "wewew";
-        List<CwcCareHistory> cwcCareHistories = Arrays.asList(CwcCareHistory.VITA_A,CwcCareHistory.IPTI);
-        CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId,cwcCareHistories, lastBCGDate, lastVitADate,
+        CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId, Arrays.asList(CwcCareHistory.values()), lastBCGDate, lastVitADate,
                 lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi, serialNumber);
 
         final MRSUser mrsUser = new MRSUser();
@@ -136,8 +140,7 @@ public class CWCServiceTest {
         final Integer lastOPV = null;
         final String facilityId = "3232";
         String serialNumber = "wewew";
-        List<CwcCareHistory> cwcCareHistories = Arrays.asList(CwcCareHistory.VITA_A,CwcCareHistory.IPTI);
-        CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId,cwcCareHistories, lastBCGDate, lastVitADate,
+        CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId, new ArrayList<CwcCareHistory>(), lastBCGDate, lastVitADate,
                 lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi, serialNumber);
 
         final MRSUser mrsUser = new MRSUser();

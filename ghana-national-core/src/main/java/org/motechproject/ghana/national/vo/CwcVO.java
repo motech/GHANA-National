@@ -11,7 +11,7 @@ public class CwcVO {
     private String facilityId;
     private Date registrationDate;
     private String patientMotechId;
-    private List<CwcCareHistory> cwcCareHistories;
+    private List<CwcCareHistory> careHistories;
     private Date bcgDate;
     private Date vitADate;
     private Date measlesDate;
@@ -24,13 +24,13 @@ public class CwcVO {
     private Integer lastIPTi;
     private String serialNumber;
 
-    public CwcVO(String staffId, String facilityId, Date registrationDate, String patientMotechId, List<CwcCareHistory> cwcCareHistories, Date bcgDate, Date vitADate,
+    public CwcVO(String staffId, String facilityId, Date registrationDate, String patientMotechId, List<CwcCareHistory> careHistories, Date bcgDate, Date vitADate,
                  Date measlesDate, Date yfDate, Date lastPentaDate, Integer lastPenta, Date lastOPVDate, Integer lastOPV, Date lastIPTiDate, Integer lastIPTi, String serialNumber) {
         this.staffId = staffId;
         this.facilityId = facilityId;
         this.registrationDate = registrationDate;
         this.patientMotechId = patientMotechId;
-        this.cwcCareHistories = cwcCareHistories;
+        this.careHistories = careHistories;
         this.bcgDate = bcgDate;
         this.vitADate = vitADate;
         this.measlesDate = measlesDate;
@@ -104,11 +104,7 @@ public class CwcVO {
         return serialNumber;
     }
 
-    public List<CwcCareHistory> getCwcCareHistories() {
-        return cwcCareHistories;
-    }
-
-    public void setCwcCareHistories(List<CwcCareHistory> cwcCareHistories) {
-        this.cwcCareHistories = cwcCareHistories;
+    public List<CwcCareHistory> getCareHistories() {
+        return careHistories;
     }
 }

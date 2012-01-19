@@ -66,18 +66,6 @@ $(document).ready(function() {
         facilities.show($(this));
     });
 
-//    $('#registrationToday').change(function() {
-//        if ($(this).val() == "IN_PAST") {
-//            $('#registrationDateHolder').show();
-//            $('#registrationDate').addClass('jsRequire');
-//        }
-//
-//        if ($(this).val() == "TODAY" || $(this).val() == "IN_PAST_IN_OTHER_FACILITY") {
-//            $('#registrationDateHolder').hide();
-//            $('#registrationDate').removeClass('jsRequire');
-//        }
-//    });
-//
     $('input[name = "addHistory"]').change(function() {
         if ($(this).val() == "true") {
             $("#jsCareHistory").show();
@@ -105,7 +93,7 @@ $(document).ready(function() {
     $('#lastIPTDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
 
 
-    if($("input[name='addHistory']:checked").val() == true) {
+    if($("input[name='addHistory']:checked").val() == "true") {
         $('#addHistory1').trigger('change');
 
         if($("input[name='lastTT']:checked").val() != undefined)
@@ -118,7 +106,4 @@ $(document).ready(function() {
         if($('#careHistory2').attr('checked') == 'checked')
            $('#careHistory2').trigger('change');
     }
-
-
-
 });

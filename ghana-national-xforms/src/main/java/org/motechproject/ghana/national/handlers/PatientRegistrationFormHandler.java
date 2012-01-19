@@ -78,17 +78,16 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
 
             if (PatientType.CHILD_UNDER_FIVE.equals(registerClientForm.getRegistrantType())) {
                 cwcService.enrollWithMobileMidwife(new CwcVO(registerClientForm.getStaffId(), facilityId, registerClientForm.getDate(),
-                        patientMotechId, null, registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
+                        patientMotechId, registerClientForm.getAddChildHistory(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
                         registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
                         registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber()), mobileMidwifeEnrollment);
             } else if (PatientType.PREGNANT_MOTHER.equals(registerClientForm.getRegistrantType())) {
                 ancService.enrollWithMobileMidwife(new ANCVO(registerClientForm.getStaffId(), facilityId, patientMotechId, registerClientForm.getDate()
                         , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),
-                        registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), null
+                        registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), registerClientForm.getAddMotherHistory()
                         , registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
                         registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate()), mobileMidwifeEnrollment);
             }
-
         } catch (Exception e) {
             log.error("Exception while saving patient", e);
         }

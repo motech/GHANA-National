@@ -14,13 +14,16 @@ import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.util.DateUtil;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.api.IdentifierNotUniqueException;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -252,6 +255,23 @@ public class PatientServiceTest {
         MRSEncounter mrsEncounter = mock(MRSEncounter.class);
         patientService.saveEncounter(mrsEncounter);
         verify(mockAllEncounters).save(mrsEncounter);
+    }
+    
+    @Test
+    public void shouldDeceasePatient() {
+        Date dateOfDeath = DateUtil.now().minusDays(2).toDate();
+        String patientMotechId = "patientMotechId";
+        MRSPerson person = new MRSPerson();
+        person.dead(false);
+        Patient patient = new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("id")));
+
+        when(mockAllPatients.patientByMotechId(patientMotechId)).thenReturn(patient);
+        patientService.deceasePatient(patientMotechId, dateOfDeath);
+
+        verify(mockAllPatients).update(patient);
+        assertTrue("Patient Expected to be dead, but is still alive", patient.getMrsPatient().getPerson().isDead());
+        assertThat(patient.getMrsPatient().getPerson().deathDate(), is(dateOfDeath));
+
     }
 
 }

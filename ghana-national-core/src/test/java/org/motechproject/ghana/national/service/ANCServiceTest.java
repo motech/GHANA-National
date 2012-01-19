@@ -5,20 +5,36 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.ANCCareHistory;
+import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.ANCVO;
-import org.motechproject.mrs.model.*;
+import org.motechproject.mrs.model.MRSEncounter;
+import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSObservation;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.mrs.model.MRSUser;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
@@ -51,7 +67,7 @@ public class ANCServiceTest {
     @Test
     public void shouldEnrollANC() throws Exception {
         Date registrationDate = new Date(2012, 3, 1);
-        final ANCVO ancvo = createTestANCVO("3", new Date(2011, 12, 9), "4", new Date(2011, 7, 5), RegistrationToday.IN_PAST, registrationDate);
+        final ANCVO ancvo = createTestANCVO("3", new Date(2011, 12, 9), "4", new Date(2011, 7, 5), RegistrationToday.IN_PAST, registrationDate, Arrays.asList(ANCCareHistory.IPT, ANCCareHistory.TT));
         final Date observationDate = new Date();
         MRSUser mockMRSUser = mock(MRSUser.class);
         Patient mockPatient = mock(Patient.class);
@@ -95,7 +111,7 @@ public class ANCServiceTest {
     @Test
     public void shouldNotAddObsIfValueNotGiven() {
         Date registrationDate = new Date(2012, 1, 1);
-        final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.IN_PAST_IN_OTHER_FACILITY, registrationDate);
+        final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.IN_PAST_IN_OTHER_FACILITY, registrationDate, new ArrayList<ANCCareHistory>());
         final Date observationDate = new Date();
         MRSUser mockMRSUser = mock(MRSUser.class);
         Patient mockPatient = mock(Patient.class);
@@ -130,14 +146,12 @@ public class ANCServiceTest {
             add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, ancvo.getDeliveryDateConfirmed()));
             add(new MRSObservation<String>(observationDate, Constants.CONCEPT_ANC_REG_NUM, ancvo.getSerialNumber()));
         }};
-
         assertReflectionEquals(actualEncounter.getObservations(), expectedObservations, ReflectionComparatorMode.LENIENT_DATES, ReflectionComparatorMode.LENIENT_ORDER);
-
     }
 
     @Test
     public void shouldSetRegistrationDateAsCurrentDateIfRegistrationToday() {
-        final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.TODAY, new Date(2012, 1, 1));
+        final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.TODAY, new Date(2012, 1, 1), new ArrayList<ANCCareHistory>());
         final Date observationDate = new Date();
         MRSUser mockMRSUser = mock(MRSUser.class);
         Patient mockPatient = mock(Patient.class);
@@ -189,9 +203,10 @@ public class ANCServiceTest {
         verify(mockMockMidwifeService).createOrUpdateEnrollment(mobileMidwifeEnrollment);
     }
 
-    private ANCVO createTestANCVO(String ipt, Date iptDate, String tt, Date ttDate, RegistrationToday registrationToday, Date registrationDate) {
+    private ANCVO createTestANCVO(String ipt, Date iptDate, String tt, Date ttDate, RegistrationToday registrationToday, Date registrationDate, List<ANCCareHistory> careHistory) {
         return new ANCVO("12345", "3434343", "1213343", registrationDate, registrationToday, "2321322", new Date(),
-                12.34, 12, 34, true, true, new ArrayList<ANCCareHistory>(), ipt, tt, iptDate, ttDate);
+                12.34, 12, 34, true, true, careHistory, ipt, tt, iptDate, ttDate);
     }
+
 
 }
