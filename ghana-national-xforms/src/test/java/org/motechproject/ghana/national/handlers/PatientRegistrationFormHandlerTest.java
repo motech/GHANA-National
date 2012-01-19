@@ -14,8 +14,7 @@ import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnroll
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
-import org.motechproject.ghana.national.service.ANCService;
-import org.motechproject.ghana.national.service.CWCService;
+import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.vo.ANCVO;
@@ -33,11 +32,8 @@ import java.util.HashMap;
 import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientRegistrationFormHandlerTest {
@@ -46,14 +42,10 @@ public class PatientRegistrationFormHandlerTest {
     PatientService mockPatientService;
     @Mock
     FacilityService mockFacilityService;
-
     @Mock
-    CWCService mockCWCService;
+    CareService mockCareService;
 
     PatientRegistrationFormHandler patientRegistrationFormHandler;
-    @Mock
-    ANCService mockANCService;
-
 
     @Before
     public void setUp() {
@@ -61,8 +53,7 @@ public class PatientRegistrationFormHandlerTest {
         patientRegistrationFormHandler = new PatientRegistrationFormHandler();
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "facilityService", mockFacilityService);
-        ReflectionTestUtils.setField(patientRegistrationFormHandler, "cwcService", mockCWCService);
-        ReflectionTestUtils.setField(patientRegistrationFormHandler, "ancService", mockANCService);
+        ReflectionTestUtils.setField(patientRegistrationFormHandler, "careService", mockCareService);
     }
 
     @Test
@@ -174,13 +165,15 @@ public class PatientRegistrationFormHandlerTest {
         when(facility.mrsFacilityId()).thenReturn(facilityId);
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
 
-        when(mockCWCService.enroll(any(CwcVO.class), anyString())).thenReturn(null);
 
         when(mockPatientService.registerPatient(any(Patient.class))).thenReturn(motechId);
+        when(mockCareService.enroll(any(CwcVO.class))).thenReturn(null);
+        when(facility.mrsFacilityId()).thenReturn(motechFacilityId);
+        doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
-        verify(mockCWCService).enrollWithMobileMidwife(captor.capture(), mobileMidwifeEnrollmentArgumentCaptor.capture());
+        verify(mockCareService).enroll(captor.capture());
         final CwcVO cwcVO = captor.getValue();
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
@@ -239,15 +232,17 @@ public class PatientRegistrationFormHandlerTest {
         when(facility.mrsFacilityId()).thenReturn(facilityId);
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
 
-        when(mockANCService.enroll(any(ANCVO.class), anyString())).thenReturn(null);
         when(mockPatientService.registerPatient(any(Patient.class))).thenReturn(motechId);
 
+        when(mockCareService.enroll(any(ANCVO.class))).thenReturn(null);
+        when(facility.mrsFacilityId()).thenReturn(motechFacilityId);
+        doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
-        verify(mockANCService).enrollWithMobileMidwife(captor.capture(), mobileMidwifeEnrollmentArgumentCaptor.capture());
         final ANCVO ancVO = captor.getValue();
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
+        verify(mockCareService).enroll(captor.capture());
 
         assertANCRegistration(facilityId, motechId, expDeliveryDate, deliveryDateConfirmed, height, gravida, parity, lastIPTDate, lastTTDate, lastIPT, lastTT, staffId, ancVO, mobileMidwifeEnrollment);
 
@@ -363,7 +358,7 @@ public class PatientRegistrationFormHandlerTest {
 
     private void assertANCRegistration(String facilityId, String motechId, Date expDeliveryDate, Boolean deliveryDateConfirmed, Double height, Integer gravida, Integer parity, Date lastIPTDate, Date lastTTDate, String lastIPT, String lastTT, String staffId, ANCVO ancVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {
         assertThat(facilityId, is(ancVO.getFacilityId()));
-        assertThat(motechId, is(ancVO.getMotechPatientId()));
+        assertThat(motechId, is(ancVO.getPatientMotechId()));
         assertThat(expDeliveryDate, is(ancVO.getEstimatedDateOfDelivery()));
         assertThat(deliveryDateConfirmed, is(ancVO.getDeliveryDateConfirmed()));
         assertThat(height, is(ancVO.getHeight()));

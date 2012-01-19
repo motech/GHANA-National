@@ -2,7 +2,7 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.service.CWCService;
+import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
@@ -22,7 +22,7 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    CWCService cwcService;
+    CareService careService;
 
     @Autowired
     FacilityService facilityService;
@@ -37,7 +37,7 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
         Facility facility = facilityService.getFacilityByMotechId(registerCWCForm.getFacilityId());
 
 
-        cwcService.enrollWithMobileMidwife(new CwcVO(registerCWCForm.getStaffId(),
+        careService.enroll(new CwcVO(registerCWCForm.getStaffId(),
                 facility.getMrsFacilityId(),
                 registerCWCForm.getRegistrationDate(),
                 registerCWCForm.getMotechId(),

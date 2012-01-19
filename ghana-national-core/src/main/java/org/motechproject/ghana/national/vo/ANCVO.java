@@ -54,7 +54,7 @@ public class ANCVO {
         return facilityId;
     }
 
-    public String getMotechPatientId() {
+    public String getPatientMotechId() {
         return motechPatientId;
     }
 

@@ -271,7 +271,6 @@ public class PatientServiceTest {
         verify(mockAllPatients).update(patient);
         assertTrue("Patient Expected to be dead, but is still alive", patient.getMrsPatient().getPerson().isDead());
         assertThat(patient.getMrsPatient().getPerson().deathDate(), is(dateOfDeath));
-
     }
 
 }
