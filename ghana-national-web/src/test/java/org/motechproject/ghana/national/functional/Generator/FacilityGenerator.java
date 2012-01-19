@@ -21,6 +21,7 @@ public class FacilityGenerator {
     public FacilityGenerator() {
     }
 
+    @Autowired
     public FacilityGenerator(FacilityController facilityController) {
         this.facilityController = facilityController;
     }

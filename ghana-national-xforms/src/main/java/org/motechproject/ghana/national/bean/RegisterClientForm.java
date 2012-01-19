@@ -64,13 +64,10 @@ public class RegisterClientForm extends FormBean {
     private String regPhone;
 
     //CWC REGISTRATION FIELDS
-    @Required
     private String cwcRegNumber;
 
-    @Required
     private Boolean addHistory;
 
-    @Required
     private String addChildHistory;
 
     private Date bcgDate;
