@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationToday;
-import org.motechproject.ghana.national.service.CWCService;
+import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.RegisterCWCFormValidator;
@@ -24,14 +24,8 @@ import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CWCControllerTest {
@@ -50,7 +44,7 @@ public class CWCControllerTest {
     FormValidator mockFormValidator;
 
     @Mock
-    CWCService mockCwcService;
+    CareService mockCareService;
 
     @Mock
     CwcFormMapper mockCwcFormMapper;
@@ -61,7 +55,7 @@ public class CWCControllerTest {
         cwcController = new CWCController();
         ReflectionTestUtils.setField(cwcController, "patientService", mockPatientService);
         ReflectionTestUtils.setField(cwcController, "facilityHelper", mockFacilityHelper);
-        ReflectionTestUtils.setField(cwcController, "cwcService", mockCwcService);
+        ReflectionTestUtils.setField(cwcController, "careService", mockCareService);
         ReflectionTestUtils.setField(cwcController, "cwcFormMapper", mockCwcFormMapper);
         ReflectionTestUtils.setField(cwcController, "registerCWCFormValidator", mockregisterCWCFormValidator);
         ReflectionTestUtils.setField(cwcController, "formValidator", mockFormValidator);
@@ -163,7 +157,7 @@ public class CWCControllerTest {
 
         cwcController.save(cwcEnrollmentForm, modelMap);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
-        verify(mockCwcService).enroll(captor.capture(), eq(Constants.ENCOUNTER_CWCREGVISIT));
+        verify(mockCareService).enroll(captor.capture());
         final CwcVO cwcVO = captor.getValue();
 
         assertThat(staffId, is(cwcVO.getStaffId()));
@@ -212,7 +206,7 @@ public class CWCControllerTest {
         assertThat((List<String>) modelMap.get("errors"), hasItems(CWCController.PATIENT_IS_NOT_A_CHILD,
                 "Patient Description2", CWCController.STAFF_ID_NOT_FOUND));
         assertThat(result, is(equalTo(CWCController.ENROLL_CWC_URL)));
-        verifyZeroInteractions(mockCwcService);
+        verifyZeroInteractions(mockCareService);
         verify(mockCwcFormMapper).setViewAttributes();
         verify(mockFacilityHelper).locationMap();
     }

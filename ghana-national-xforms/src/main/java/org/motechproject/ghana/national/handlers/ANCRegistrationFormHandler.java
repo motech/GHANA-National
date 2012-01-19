@@ -2,7 +2,7 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterANCForm;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.service.ANCService;
+import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
@@ -21,7 +21,7 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    ANCService ancService;
+    CareService careService;
     @Autowired
     private FacilityService facilityService;
 
@@ -40,6 +40,6 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
                 registerANCForm.getAddCareHistory(), registerANCForm.getLastIPT(), registerANCForm.getLastTT(),
                 registerANCForm.getLastIPTDate(), registerANCForm.getLastTTDate());
 
-        ancService.enrollWithMobileMidwife(ancvo, registerANCForm.createMobileMidwifeEnrollment());
+        careService.enroll(ancvo, registerANCForm.createMobileMidwifeEnrollment());
     }
 }

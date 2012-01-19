@@ -9,7 +9,7 @@ import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
-import org.motechproject.ghana.national.service.ANCService;
+import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.model.DayOfWeek;
@@ -32,7 +32,7 @@ public class ANCRegistrationFormHandlerTest {
 
     private ANCRegistrationFormHandler ancRegistrationFormHandler;
     @Mock
-    private ANCService mockANCService;
+    private CareService careService;
     @Mock
     private FacilityService mockFacilityService;
 
@@ -41,7 +41,7 @@ public class ANCRegistrationFormHandlerTest {
     public void setUp() {
         initMocks(this);
         ancRegistrationFormHandler = new ANCRegistrationFormHandler();
-        ReflectionTestUtils.setField(ancRegistrationFormHandler, "ancService", mockANCService);
+        ReflectionTestUtils.setField(ancRegistrationFormHandler, "careService", careService);
         ReflectionTestUtils.setField(ancRegistrationFormHandler, "facilityService", mockFacilityService);
     }
 
@@ -79,7 +79,7 @@ public class ANCRegistrationFormHandlerTest {
 
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
         final ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        verify(mockANCService).enrollWithMobileMidwife(captor.capture(), mobileMidwifeEnrollmentCaptor.capture() );
+        verify(careService).enroll(captor.capture(), mobileMidwifeEnrollmentCaptor.capture() );
         final ANCVO ancVO = captor.getValue();
 
         assertEquals(registerANCForm.getAddHistory(), ancVO.getAddHistory());
@@ -93,7 +93,7 @@ public class ANCRegistrationFormHandlerTest {
         assertEquals(registerANCForm.getLastIPTDate(), ancVO.getLastIPTDate());
         assertEquals(registerANCForm.getLastTT(), ancVO.getLastTT());
         assertEquals(registerANCForm.getLastTTDate(), ancVO.getLastTTDate());
-        assertEquals(registerANCForm.getMotechId(), ancVO.getMotechPatientId());
+        assertEquals(registerANCForm.getMotechId(), ancVO.getPatientMotechId());
         assertEquals(registerANCForm.getParity(), ancVO.getParity());
         assertEquals(registerANCForm.getRegDateToday(), ancVO.getRegistrationToday());
         assertEquals(registerANCForm.getStaffId(), ancVO.getStaffId());

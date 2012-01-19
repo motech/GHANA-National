@@ -1,9 +1,11 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterClientForm;
-import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.service.ANCService;
-import org.motechproject.ghana.national.service.CWCService;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientAttributes;
+import org.motechproject.ghana.national.domain.PatientType;
+import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.tools.Utility;
@@ -38,10 +40,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
     private PatientService patientService;
 
     @Autowired
-    private CWCService cwcService;
-
-    @Autowired
-    private ANCService ancService;
+    private CareService careService;
 
     @Autowired
     private FacilityService facilityService;
@@ -71,15 +70,15 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             patientService.registerPatient(new Patient(mrsPatient, registerClientForm.getMotherMotechId()));
 
             if (registerClientForm.getRegistrantType().equals(PatientType.CHILD_UNDER_FIVE)) {
-                cwcService.enroll(new CwcVO(registerClientForm.getStaffId(), registerClientForm.getFacilityId(), registerClientForm.getDate(),
+                careService.enroll(new CwcVO(registerClientForm.getStaffId(), registerClientForm.getFacilityId(), registerClientForm.getDate(),
                         registerClientForm.getMotechId(), registerClientForm.getAddChildHistory(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
                         registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
-                        registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber()), Constants.REGCLIENTCWC);
+                        registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber()));
             } else if (PatientType.PREGNANT_MOTHER.equals(registerClientForm.getRegistrantType())) {
-                ancService.enroll(new ANCVO(registerClientForm.getStaffId(), registerClientForm.getFacilityId(), registerClientForm.getMotherMotechId(), registerClientForm.getDate()
+                careService.enroll(new ANCVO(registerClientForm.getStaffId(), registerClientForm.getFacilityId(), registerClientForm.getMotherMotechId(), registerClientForm.getDate()
                         , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),
                         registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), registerClientForm.getAddMotherHistory(), registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
-                        registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate()), Constants.REGCLIENTANC);
+                        registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate()));
             }
         } catch (Exception e) {
             log.error("Exception while saving patient", e);

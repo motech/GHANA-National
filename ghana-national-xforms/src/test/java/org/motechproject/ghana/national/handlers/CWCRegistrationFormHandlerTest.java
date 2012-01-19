@@ -8,7 +8,7 @@ import org.motechproject.ghana.national.bean.RegisterCWCForm;
 import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
-import org.motechproject.ghana.national.service.CWCService;
+import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.model.DayOfWeek;
@@ -30,7 +30,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class CWCRegistrationFormHandlerTest {
 
     @Mock
-    private CWCService mockCwcService;
+    private CareService careService;
 
     @Mock
     private FacilityService mockFacilityService;
@@ -41,7 +41,7 @@ public class CWCRegistrationFormHandlerTest {
     public void setUp() {
         initMocks(this);
         formHandler = new CWCRegistrationFormHandler();
-        ReflectionTestUtils.setField(formHandler, "cwcService", mockCwcService);
+        ReflectionTestUtils.setField(formHandler, "careService", careService);
         ReflectionTestUtils.setField(formHandler, "facilityService", mockFacilityService);
     }
 
@@ -90,7 +90,7 @@ public class CWCRegistrationFormHandlerTest {
 
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
         final ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        verify(mockCwcService).enrollWithMobileMidwife(captor.capture(), mobileMidwifeEnrollmentCaptor.capture());
+        verify(careService).enroll(captor.capture(), mobileMidwifeEnrollmentCaptor.capture());
         final CwcVO cwcVO = captor.getValue();
 
         assertThat(staffId, is(cwcVO.getStaffId()));

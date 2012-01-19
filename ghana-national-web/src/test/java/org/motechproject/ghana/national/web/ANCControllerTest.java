@@ -6,7 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.RegistrationToday;
-import org.motechproject.ghana.national.service.ANCService;
+import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
@@ -34,7 +34,7 @@ public class ANCControllerTest {
     @Mock
     private FacilityHelper mockFacilityHelper;
     @Mock
-    private ANCService mockANCService;
+    private CareService mockCareService;
     @Mock
     private RegisterANCFormValidator mockValidator;
     @Mock
@@ -44,7 +44,7 @@ public class ANCControllerTest {
     public void setUp() {
         initMocks(this);
         ancController = new ANCController();
-        ReflectionTestUtils.setField(ancController, "ancService", mockANCService);
+        ReflectionTestUtils.setField(ancController, "careService", mockCareService);
         ReflectionTestUtils.setField(ancController, "facilityHelper", mockFacilityHelper);
         ReflectionTestUtils.setField(ancController, "registerANCFormValidator", mockValidator);
         ReflectionTestUtils.setField(ancController, "ancFormMapper", mockANCFormMapper);
@@ -84,7 +84,7 @@ public class ANCControllerTest {
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
 
         ancController.save(ancEnrollmentForm, modelMap);
-        verify(mockANCService).enroll(captor.capture(), eq(Constants.ENCOUNTER_ANCREGVISIT));
+        verify(mockCareService).enroll(captor.capture());
         final ANCVO ancVO = captor.getValue();
 
         compareANCEnrollmentFormWithANCVO(ancEnrollmentForm, ancVO);
@@ -105,7 +105,7 @@ public class ANCControllerTest {
         when(mockValidator.validatePatientAndStaff(ancEnrollmentForm.getMotechPatientId(),ancEnrollmentForm.getStaffId())).thenReturn(errors);
 
         ancController.save(ancEnrollmentForm, modelMap);
-        verify(mockANCService, never()).enroll(null, Constants.ENCOUNTER_ANCREGVISIT);
+        verify(mockCareService, never()).enroll((ANCVO) null);
         assertTrue(modelMap.containsKey("validationErrors"));
 
         ArrayList<FormError> errorsFromModelMap = (ArrayList<FormError>) modelMap.get("validationErrors");
@@ -125,7 +125,7 @@ public class ANCControllerTest {
         MRSEncounter mrsEncounter = new MRSEncounter();
 
         when(mockValidator.validatePatient(motechPatientId)).thenReturn(errors);
-        when(mockANCService.getEncounter(motechPatientId)).thenReturn(mrsEncounter);
+        when(mockCareService.getEncounter(motechPatientId,Constants.ENCOUNTER_ANCREGVISIT)).thenReturn(mrsEncounter);
         when(mockANCFormMapper.convertMRSEncounterToView(mrsEncounter)).thenReturn(ancEnrollmentForm);
 
         ancController.newANC(motechPatientId, modelMap);
@@ -173,7 +173,7 @@ public class ANCControllerTest {
         assertEquals(ancEnrollmentForm.getLastIPTDate(), ancVO.getLastIPTDate());
         assertEquals(ancEnrollmentForm.getLastTT(), ancVO.getLastTT());
         assertEquals(ancEnrollmentForm.getLastTTDate(), ancVO.getLastTTDate());
-        assertEquals(ancEnrollmentForm.getMotechPatientId(), ancVO.getMotechPatientId());
+        assertEquals(ancEnrollmentForm.getMotechPatientId(), ancVO.getPatientMotechId());
         assertEquals(ancEnrollmentForm.getParity(), ancVO.getParity());
         assertEquals(ancEnrollmentForm.getRegistrationToday(), ancVO.getRegistrationToday());
         assertEquals(ancEnrollmentForm.getStaffId(), ancVO.getStaffId());

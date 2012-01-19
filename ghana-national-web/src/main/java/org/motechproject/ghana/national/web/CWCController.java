@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationToday;
-import org.motechproject.ghana.national.service.CWCService;
+import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.RegisterCWCFormValidator;
@@ -41,7 +41,7 @@ public class CWCController {
     PatientService patientService;
 
     @Autowired
-    CWCService cwcService;
+    CareService careService;
 
     @Autowired
     FacilityHelper facilityHelper;
@@ -75,7 +75,7 @@ public class CWCController {
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     public String create(@RequestParam String motechPatientId, ModelMap modelMap) {
         Patient patient = patientService.getPatientByMotechId(motechPatientId);
-        MRSEncounter encounter = cwcService.getEncounter(motechPatientId,CWCREGVISIT);
+        MRSEncounter encounter = careService.getEncounter(motechPatientId,CWCREGVISIT);
         CWCEnrollmentForm cwcEnrollmentForm;
         if(encounter != null) {
             cwcEnrollmentForm = cwcFormMapper.mapEncounterToView(encounter);
@@ -131,7 +131,7 @@ public class CWCController {
         if (cwcEnrollmentForm.getRegistrationToday().equals(RegistrationToday.TODAY)) {
             registrationDate = new Date();
         }
-        cwcService.enroll(new CwcVO(
+        careService.enroll(new CwcVO(
                 cwcEnrollmentForm.getStaffId(),
                 cwcEnrollmentForm.getFacilityForm().getFacilityId(),
                 registrationDate,
@@ -147,7 +147,7 @@ public class CWCController {
                 cwcEnrollmentForm.getLastOPV(),
                 cwcEnrollmentForm.getLastIPTiDate(),
                 cwcEnrollmentForm.getLastIPTi(),
-                cwcEnrollmentForm.getSerialNumber()), Constants.ENCOUNTER_CWCREGVISIT);
+                cwcEnrollmentForm.getSerialNumber()));
         modelMap.addAttribute("success", "Client registered for CWC successfully.");
         return ENROLL_CWC_URL;
     }

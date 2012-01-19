@@ -1,7 +1,7 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.service.ANCService;
+import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
@@ -36,7 +36,7 @@ public class ANCController {
     @Autowired
     private FacilityHelper facilityHelper;
     @Autowired
-    private ANCService ancService;
+    private CareService careService;
     @Autowired
     RegisterANCFormValidator registerANCFormValidator;
     @Autowired
@@ -62,7 +62,7 @@ public class ANCController {
         List<FormError> formErrors = registerANCFormValidator.validatePatient(motechPatientId);
         ANCEnrollmentForm enrollmentForm = new ANCEnrollmentForm(motechPatientId);
         if (formErrors.isEmpty()) {
-            MRSEncounter mrsEncounter = ancService.getEncounter(motechPatientId);
+            MRSEncounter mrsEncounter = careService.getEncounter(motechPatientId, Constants.ENCOUNTER_ANCREGVISIT);
             enrollmentForm = (mrsEncounter == null) ? enrollmentForm : ancFormMapper.convertMRSEncounterToView(mrsEncounter);
         } else {
             modelMap.addAttribute("validationErrors", formErrors);
@@ -79,7 +79,7 @@ public class ANCController {
                  ancEnrollmentForm.getStaffId());
 
         if (formErrors.isEmpty()) {
-            ancService.enroll(createANCVO(ancEnrollmentForm), Constants.ENCOUNTER_ANCREGVISIT);
+            careService.enroll(createANCVO(ancEnrollmentForm));
             modelMap.addAttribute("success", "Updated successfully.");
         } else {
             modelMap.addAttribute("validationErrors", formErrors);
