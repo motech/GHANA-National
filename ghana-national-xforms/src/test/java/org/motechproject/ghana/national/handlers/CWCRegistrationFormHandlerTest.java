@@ -5,21 +5,24 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
-import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.CWCService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.CwcVO;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
 import java.util.HashMap;
 
+import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -36,7 +39,7 @@ public class CWCRegistrationFormHandlerTest {
 
     @Before
     public void setUp() {
-         initMocks(this);
+        initMocks(this);
         formHandler = new CWCRegistrationFormHandler();
         ReflectionTestUtils.setField(formHandler, "cwcService", mockCwcService);
         ReflectionTestUtils.setField(formHandler, "facilityService", mockFacilityService);
@@ -76,16 +79,18 @@ public class CWCRegistrationFormHandlerTest {
         registerCWCForm.setLastOPV(lastOPV);
         registerCWCForm.setLastIPTiDate(lastIPTiDate);
         registerCWCForm.setLastIPTi(lastIPTi);
+        setMobileMidwifeEnrollment(registerCWCForm);
 
         final String facilityId = "11";
         when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(new Facility(new MRSFacility(facilityId)));
 
-        formHandler.handleFormEvent(new MotechEvent("", new HashMap<String, Object>(){{
+        formHandler.handleFormEvent(new MotechEvent("", new HashMap<String, Object>() {{
             put("formBean", registerCWCForm);
         }}));
 
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
-        verify(mockCwcService).enroll(captor.capture(), eq(Constants.ENCOUNTER_CWCREGVISIT));
+        final ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
+        verify(mockCwcService).enrollWithMobileMidwife(captor.capture(), mobileMidwifeEnrollmentCaptor.capture());
         final CwcVO cwcVO = captor.getValue();
 
         assertThat(staffId, is(cwcVO.getStaffId()));
@@ -101,5 +106,38 @@ public class CWCRegistrationFormHandlerTest {
         assertThat(lastOPVDate, is(cwcVO.getLastOPVDate()));
         assertThat(lastOPV, is(cwcVO.getLastOPV()));
         assertThat(lastIPTiDate, is(cwcVO.getLastIPTiDate()));
+
+        assertMobileMidwifeFormEnrollment(registerCWCForm, mobileMidwifeEnrollmentCaptor.getValue());
+    }
+
+    private void assertMobileMidwifeFormEnrollment(RegisterCWCForm exptectedForm, MobileMidwifeEnrollment actual) {
+
+        if (exptectedForm.isEnrolledForProgram()) {
+            assertNotNull(exptectedForm.getConsent());
+        }
+        assertThat(actual.getConsent(), is(exptectedForm.getConsent()));
+        assertThat(actual.getStaffId(), is(exptectedForm.getStaffId()));
+        assertThat(actual.getFacilityId(), is(exptectedForm.getFacilityId()));
+        assertThat(actual.getPatientId(), is(exptectedForm.getMotechId()));
+        assertThat(actual.getServiceType(), is(exptectedForm.getServiceType()));
+        assertThat(actual.getReasonToJoin(), is(exptectedForm.getReasonToJoin()));
+        assertThat(actual.getMedium(), is(exptectedForm.getMediumStripingOwnership()));
+        assertThat(actual.getDayOfWeek(), is(exptectedForm.getDayOfWeek()));
+        assertThat(actual.getTimeOfDay(), is(exptectedForm.getTimeOfDay()));
+        assertThat(actual.getLanguage(), is(exptectedForm.getLanguage()));
+        assertThat(actual.getLearnedFrom(), is(exptectedForm.getLearnedFrom()));
+        assertThat(actual.getPhoneNumber(), is(exptectedForm.getPhoneNumber()));
+        assertThat(actual.getPhoneOwnership(), is(exptectedForm.getPhoneOwnership()));
+    }
+
+    private void setMobileMidwifeEnrollment(RegisterCWCForm registerCWCForm) {
+        new MobileMidwifeBuilder()
+                .enroll(true)
+                .consent(true).dayOfWeek(DayOfWeek.Monday).language(Language.EN).learnedFrom(LearnedFrom.FRIEND).format("PERS_VOICE")
+                .timeOfDay(new Time(10, 02)).messageStartWeek("10").phoneNumber("9500012343")
+                .phoneOwnership(PhoneOwnership.PERSONAL).reasonToJoin(ReasonToJoin.FAMILY_FRIEND_DELIVERED)
+                .serviceType(ServiceType.CHILD_CARE)
+                .buildRegisterCWCForm(registerCWCForm);
+
     }
 }

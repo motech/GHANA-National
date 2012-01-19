@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.CWCService;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -37,7 +36,7 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
 
         final Facility facility = facilityService.getFacilityByMotechId(registerCWCForm.getFacilityId());
 
-        cwcService.enroll(new CwcVO(registerCWCForm.getStaffId(),
+        cwcService.enrollWithMobileMidwife(new CwcVO(registerCWCForm.getStaffId(),
                 facility.getMrsFacilityId(),
                 registerCWCForm.getRegistrationDate(),
                 registerCWCForm.getMotechId(),
@@ -51,6 +50,7 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
                 registerCWCForm.getLastOPV(),
                 registerCWCForm.getLastIPTiDate(),
                 registerCWCForm.getLastIPTi(),
-                registerCWCForm.getSerialNumber()), Constants.ENCOUNTER_CWCREGVISIT);
+                registerCWCForm.getSerialNumber()),
+                registerCWCForm.createMobileMidwifeEnrollment());
     }
 }

@@ -41,6 +41,6 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
                 null, registerANCForm.getLastIPT(), registerANCForm.getLastTT(),
                 registerANCForm.getLastIPTDate(), registerANCForm.getLastTTDate());
 
-        ancService.enroll(ancvo, Constants.ENCOUNTER_ANCREGVISIT);
+        ancService.enrollWithMobileMidwife(ancvo, registerANCForm.createMobileMidwifeEnrollment());
     }
 }

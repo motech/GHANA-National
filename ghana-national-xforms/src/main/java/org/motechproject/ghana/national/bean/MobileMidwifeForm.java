@@ -1,18 +1,12 @@
 package org.motechproject.ghana.national.bean;
 
-import org.motechproject.ghana.national.domain.mobilemidwife.*;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.validator.field.MotechId;
-import org.motechproject.mobileforms.api.domain.FormBean;
-import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
-import org.motechproject.model.DayOfWeek;
-import org.motechproject.model.Time;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
 
-public class MobileMidwifeForm extends MobileMidWifeIncludeForm {
-    public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
-    public static final String MOTECH_ID_PATTERN = "[0-9]{7}";
+public class MobileMidwifeForm extends AbstractMobileMidWifeForm {
 
     @Required
     @MotechId(validator = VerhoeffValidator.class)
@@ -24,8 +18,8 @@ public class MobileMidwifeForm extends MobileMidWifeIncludeForm {
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String patientId;
 
-
-
+    @Required
+    private Boolean consent;
 
     public String getStaffId() {
         return staffId;
@@ -43,7 +37,6 @@ public class MobileMidwifeForm extends MobileMidWifeIncludeForm {
         this.facilityId = facilityId;
     }
 
-
     public String getPatientId() {
         return patientId;
     }
@@ -52,5 +45,17 @@ public class MobileMidwifeForm extends MobileMidWifeIncludeForm {
         this.patientId = patientId;
     }
 
+    public Boolean getConsent() {
+        return consent;
+    }
 
+    public void setConsent(Boolean consent) {
+        this.consent = consent;
+    }
+
+    public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
+        MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment());
+        return enrollment.setStaffId(getStaffId()).setFacilityId(getFacilityId()).setPatientId(getPatientId())
+                .setConsent(getConsent());
+    }
 }
