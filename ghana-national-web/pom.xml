@@ -257,17 +257,6 @@
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.1.26</version>
                 <configuration>
-                    <scanIntervalSeconds>0</scanIntervalSeconds>
-                    <scanTargetPatterns>
-                        <scanTargetPattern>
-                            <directory>target</directory>
-                            <includes>
-                                <include>**/*.xml</include>
-                                <include>**/*.properties</include>
-                                <include>**/*.class</include>
-                            </includes>
-                        </scanTargetPattern>
-                    </scanTargetPatterns>
                     <stopPort>9999</stopPort>
                     <stopKey>foo</stopKey>
                     <skip>${openmrs.skip}</skip>
