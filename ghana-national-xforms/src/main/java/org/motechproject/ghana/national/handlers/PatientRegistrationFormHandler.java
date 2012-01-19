@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.ANCService;
 import org.motechproject.ghana.national.service.CWCService;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -70,17 +71,22 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
 
             String patientMotechId = patientService.registerPatient(new Patient(mrsPatient, registerClientForm.getMotherMotechId()));
 
+            MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment();
+            if (mobileMidwifeEnrollment != null) {
+                mobileMidwifeEnrollment.setFacilityId(facilityId);
+            }
+
             if (PatientType.CHILD_UNDER_FIVE.equals(registerClientForm.getRegistrantType())) {
-                cwcService.enroll(new CwcVO(registerClientForm.getStaffId(), facilityId, registerClientForm.getDate(),
+                cwcService.enrollWithMobileMidwife(new CwcVO(registerClientForm.getStaffId(), facilityId, registerClientForm.getDate(),
                         patientMotechId, null, registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
                         registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
-                        registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber()), Constants.REGCLIENTCWC);
+                        registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber()), mobileMidwifeEnrollment);
             } else if (PatientType.PREGNANT_MOTHER.equals(registerClientForm.getRegistrantType())) {
-                ancService.enroll(new ANCVO(registerClientForm.getStaffId(), facilityId, patientMotechId, registerClientForm.getDate()
+                ancService.enrollWithMobileMidwife(new ANCVO(registerClientForm.getStaffId(), facilityId, patientMotechId, registerClientForm.getDate()
                         , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),
                         registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), null
                         , registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
-                        registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate()), Constants.REGCLIENTANC);
+                        registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate()), mobileMidwifeEnrollment);
             }
 
         } catch (Exception e) {

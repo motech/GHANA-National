@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.bean;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.RegistrationType;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
@@ -13,26 +14,34 @@ import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
 
 import java.util.Date;
 
-public class RegisterClientForm extends FormBean {
+public class RegisterClientForm extends MobileMidWifeIncludeForm {
     public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
     public static final String NAME_PATTERN = "[0-9.\\-\\s]*[a-zA-Z]?[a-zA-Z0-9.\\-\\s]*";
     public static final String MOTECH_ID_PATTERN = "[0-9]{7}";
 
     @Required
     private RegistrationType registrationMode;
-    @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
+    @RegEx(pattern = MOTECH_ID_PATTERN)
+    @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
-    @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
+    @RegEx(pattern = MOTECH_ID_PATTERN)
+    @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motherMotechId;
     @Required
     private PatientType registrantType;
-    @Required @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
+    @Required
+    @MaxLength(size = 100)
+    @RegEx(pattern = NAME_PATTERN)
     private String firstName;
-    @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
+    @MaxLength(size = 100)
+    @RegEx(pattern = NAME_PATTERN)
     private String middleName;
-    @Required @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
+    @Required
+    @MaxLength(size = 100)
+    @RegEx(pattern = NAME_PATTERN)
     private String lastName;
-    @MaxLength(size = 50) @RegEx(pattern = NAME_PATTERN)
+    @MaxLength(size = 50)
+    @RegEx(pattern = NAME_PATTERN)
     private String prefferedName;
     @Required
     private Date dateOfBirth;
@@ -42,19 +51,25 @@ public class RegisterClientForm extends FormBean {
     private String sex;
     @Required
     private Boolean insured;
-    @MaxLength(size = 30) @RegEx(pattern = "[a-zA-Z0-9.,'/\\\\-\\_\\s]+")
+    @MaxLength(size = 30)
+    @RegEx(pattern = "[a-zA-Z0-9.,'/\\\\-\\_\\s]+")
     private String nhis;
     private Date nhisExpires;
     private String region;
     private String district;
     private String subDistrict;
-    @Required @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
+    @Required
+    @MaxLength(size = 50)
+    @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String facilityId;
-    @Required @MaxLength(size = 50)
+    @Required
+    @MaxLength(size = 50)
     private String address;
     private String sender;
-    private Boolean enroll;
-    @Required @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN) @MotechId(validator = VerhoeffValidator.class)
+    @Required
+    @MaxLength(size = 50)
+    @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
+    @MotechId(validator = VerhoeffValidator.class)
     private String staffId;
     @Required
     private Date date;
@@ -107,22 +122,12 @@ public class RegisterClientForm extends FormBean {
     private String lastTT;
 
 
-
     public String getRegPhone() {
         return regPhone;
     }
 
     public void setRegPhone(String regPhone) {
         this.regPhone = regPhone;
-    }
-
-
-    public Boolean getEnroll() {
-        return enroll;
-    }
-
-    public void setEnroll(Boolean enroll) {
-        this.enroll = enroll;
     }
 
     public String getStaffId() {
@@ -499,5 +504,13 @@ public class RegisterClientForm extends FormBean {
 
     public void setLastTT(String lastTT) {
         this.lastTT = lastTT;
+    }
+
+    public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
+        if (isEnrolledForProgram()) {
+            MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment());
+            return enrollment.setStaffId(getStaffId()).setPatientId(getMotechId());
+        }
+        return null;
     }
 }
