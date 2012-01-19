@@ -48,8 +48,9 @@ public class TestStaff {
         return role;
     }
 
-    public void motechId(String motechId) {
+    public TestStaff motechId(String motechId) {
         this.motechId = motechId;
+        return this;
     }
 
     public static enum STAFF_ROLE{

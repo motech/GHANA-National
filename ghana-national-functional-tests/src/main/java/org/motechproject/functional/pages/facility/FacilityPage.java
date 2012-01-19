@@ -1,7 +1,6 @@
 package org.motechproject.functional.pages.facility;
 
-import org.motechproject.functional.base.WebDriverProvider;
-import org.motechproject.functional.pages.BasePage;
+import org.motechproject.functional.data.TestFacility;
 import org.motechproject.functional.pages.home.HomePage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -9,10 +8,13 @@ import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 public class FacilityPage extends HomePage {
+
+    @FindBy(name = "facilityId")
+    @CacheLookup
+    private WebElement facilityId;
+
     @FindBy(name = "country")
     @CacheLookup
     private WebElement country;
@@ -54,26 +56,34 @@ public class FacilityPage extends HomePage {
     }
 
     public FacilityPage withCountry(String country) {
-        Select selectCountry = new Select(this.country);
-        selectCountry.selectByValue(country);
+        if(country != null){
+            Select selectCountry = new Select(this.country);
+            selectCountry.selectByValue(country);
+        }
         return this;
     }
 
     public FacilityPage withRegion(String region) {
-        Select selectRegion = new Select(this.region);
-        selectRegion.selectByValue(region);
+        if (region != null) {
+            Select selectRegion = new Select(this.region);
+            selectRegion.selectByValue(region);
+        }
         return this;
     }
 
     public FacilityPage withDistrict(String district) {
-        Select selectDistrict = new Select(this.district);
-        selectDistrict.selectByValue(district);
+        if(district != null){
+            Select selectDistrict = new Select(this.district);
+            selectDistrict.selectByValue(district);
+        }
         return this;
     }
 
     public FacilityPage withSubDistrict(String subDistrict) {
-        Select selectSubDistrict = new Select(this.subDistrict);
-        selectSubDistrict.selectByValue(subDistrict);
+        if(subDistrict != null){
+            Select selectSubDistrict = new Select(this.subDistrict);
+            selectSubDistrict.selectByValue(subDistrict);
+        }
         return this;
     }
 
@@ -88,8 +98,22 @@ public class FacilityPage extends HomePage {
         waitForSuccessMessage();
     }
 
-    public void waitForSuccessMessage(){
+    public void waitForSuccessMessage() {
         elementPoller.waitForElementClassName("success", driver);
+    }
+
+    public void save(TestFacility facility) {
+        this.withName(facility.name())
+                .withCountry(facility.country())
+                .withRegion(facility.region())
+                .withDistrict(facility.district())
+                .withSubDistrict(facility.subDistrict())
+                .withPhoneNum(facility.phoneNumber())
+                .submit();
+    }
+
+    public String facilityId() {
+        return facilityId.getAttribute("value");
     }
 }
 

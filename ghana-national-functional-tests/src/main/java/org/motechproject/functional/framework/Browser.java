@@ -44,12 +44,6 @@ public class Browser {
         return new PatientPage(webDriver);
     }
 
-
-    public PatientPage toCreatePatientSuccess(PatientPage patientPage) {
-        patientPage.waitForSuccessfulCompletion();
-        return new PatientPage(webDriver);
-    }
-
     public StaffPage getStaffPage() {
         return new StaffPage(webDriver);
     }
@@ -87,9 +81,14 @@ public class Browser {
         return new SearchStaffPage(webDriver);
     }
 
-    public CWCEnrollmentPage toCWCEnrollmentForm(HomePage fromPage) {
-        fromPage.openCWCEnrollmentPage();
+    public CWCEnrollmentPage toEnrollCWCPage(PatientEditPage patientEditPage) {
+        patientEditPage.clickOnEnrollCWCLink();
         return new CWCEnrollmentPage(webDriver);
+    }
+
+    public PatientEditPage toPatientEditPage(SearchPatientPage searchPatientPage, TestPatient patient) {
+        searchPatientPage.clickEditLink(patient);
+        return new PatientEditPage(webDriver);
     }
 
     public ANCEnrollmentPage toANCEnrollmentForm(HomePage fromPage) {
@@ -97,13 +96,8 @@ public class Browser {
         return new ANCEnrollmentPage(webDriver);
     }
 
-    public MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentForm(PatientPage fromPage) {
-        fromPage.openMobileMidwifeEnrollmentForm();
-        return new MobileMidwifeEnrollmentPage(webDriver);
-    }
-
-    public MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentForm(HomePage fromPage) {
-        fromPage.waitForSuccessfulCompletion();
+    public MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentForm(PatientEditPage patientEditPage) {
+        patientEditPage.clickEnrollMobileMidwifeLink();
         return new MobileMidwifeEnrollmentPage(webDriver);
     }
 

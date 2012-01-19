@@ -37,13 +37,13 @@ public class PatientTest extends LoggedInUserFunctionalTest {
                 patientType(TestPatient.PATIENT_TYPE.PATIENT_MOTHER).estimatedDateOfBirth(false);
         patientPage.create(patient);
         SearchPatientPage searchPatientPage = browser.toSearchPatient(patientPage);
-        searchPatientPage.search(patient.firstName());
+        searchPatientPage.searchWithName(patient.firstName());
         searchPatientPage.displaying(patient);
 
-        searchPatientPage.search("Middle");
+        searchPatientPage.searchWithName("Middle");
         searchPatientPage.displaying(patient);
 
-        searchPatientPage.search("Las");
+        searchPatientPage.searchWithName("Las");
         searchPatientPage.displaying(patient);
     }
 
@@ -63,7 +63,7 @@ public class PatientTest extends LoggedInUserFunctionalTest {
         mobile.upload(MobileForm.registerClientForm(), patient.forMobile());
 
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
-        searchPatientPage.search(patient.firstName());
+        searchPatientPage.searchWithName(patient.firstName());
         searchPatientPage.displaying(patient);
     }
 

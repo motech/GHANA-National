@@ -1,5 +1,6 @@
 package org.motechproject.functional.pages.facility;
 
+import org.motechproject.functional.data.TestFacility;
 import org.motechproject.functional.pages.BasePage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -89,8 +90,8 @@ public class SearchFacilityPage extends BasePage {
         waitForSearchResultsToLoad();
     }
 
-    public void clickEditLink(final String name, final String country, final String region, final String district, final String subDistrict, final String phoneNumber) {
-        htmlTableParser.clickEditLink(driver, searchResultTableId, mapTableRowDataWithColumns(name, country, region, district, subDistrict, phoneNumber));
+    public void clickEditLink(TestFacility facility) {
+        htmlTableParser.clickEditLink(driver, searchResultTableId, mapTableRowDataWithColumns(facility.name(), facility.country(), facility.region(), facility.district(), facility.subDistrict(), facility.phoneNumber()));
     }
 
     public void assertIfSearchReturned(String name, String country, String region, String district, String subDistrict, String phoneNumber) {
@@ -106,5 +107,9 @@ public class SearchFacilityPage extends BasePage {
             put("Sub-District", subDistrict);
             put("Phone number", phoneNumber);
         }};
+    }
+
+    public void displaying(TestFacility facility) {
+        assertIfSearchReturned(facility.name(), facility.country(), facility.region(), facility.district(), facility.subDistrict(), facility.phoneNumber());
     }
 }

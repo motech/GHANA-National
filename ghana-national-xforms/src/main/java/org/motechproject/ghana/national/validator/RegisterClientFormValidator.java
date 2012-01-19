@@ -23,7 +23,6 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     private PatientService patientService;
     @Autowired
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
-
     @Autowired
     private RegisterCWCFormValidator cwcFormValidator;
 
