@@ -9,6 +9,7 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,15 +32,16 @@ public class ClientDeathFormHandlerTest {
     @Test
     public void shouldDeceaseThePatient() {
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("formBean", clientForm());
+        Date deathDate = DateUtil.now().toDate();
+        parameters.put("formBean", clientForm(deathDate));
         MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.clientDeath", parameters);
         clientDeathFormHandler.handleFormEvent(event);
-        verify(mockPatientService).deceasePatient("motechId", dateOfDeath);
+        verify(mockPatientService).deceasePatient("motechId", deathDate);
     }
 
-    private ClientDeathForm clientForm() {
+    private ClientDeathForm clientForm(Date deathDate) {
         ClientDeathForm clientDeathForm = new ClientDeathForm();
-        clientDeathForm.setDate(DateUtil.now().toDate());
+        clientDeathForm.setDate(deathDate);
         clientDeathForm.setFacilityId("facilityId");
         clientDeathForm.setMotechId("motechId");
         clientDeathForm.setStaffId("staffId");

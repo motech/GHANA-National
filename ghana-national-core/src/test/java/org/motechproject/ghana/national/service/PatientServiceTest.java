@@ -263,7 +263,6 @@ public class PatientServiceTest {
         String patientMotechId = "patientMotechId";
         MRSPerson person = new MRSPerson();
         person.dead(false);
-        person.deathDate(dateOfDeath);
         Patient patient = new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("id")));
 
         when(mockAllPatients.patientByMotechId(patientMotechId)).thenReturn(patient);
