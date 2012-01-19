@@ -1,42 +1,48 @@
 [
     {
-        "name" : "NurseDataEntry",
-        "forms" : [
+        "name":"NurseDataEntry",
+        "forms":[
             {
-                "name" : "registerPatient",
-                "fileName" :  "RegisterClient.xml",
+                "name":"registerPatient",
+                "fileName":"RegisterClient.xml",
                 "bean":"org.motechproject.ghana.national.bean.RegisterClientForm",
-                "validator": "org.motechproject.ghana.national.validator.RegisterClientFormValidator"
+                "validator":"org.motechproject.ghana.national.validator.RegisterClientFormValidator"
             },
             {
-                "name" : "mobileMidwife",
-                "fileName" :  "MobileMidwife.xml",
+                "name":"mobileMidwife",
+                "fileName":"MobileMidwife.xml",
                 "bean":"org.motechproject.ghana.national.bean.MobileMidwifeForm",
-                "validator": "org.motechproject.ghana.national.validator.MobileMidwifeFormValidator"
+                "validator":"org.motechproject.ghana.national.validator.MobileMidwifeFormValidator"
             },
             {
-                "name" : "registerANC",
-                "fileName" :  "RegisterANC.xml",
+                "name":"registerANC",
+                "fileName":"RegisterANC.xml",
                 "bean":"org.motechproject.ghana.national.bean.RegisterANCForm",
-                "validator": "org.motechproject.ghana.national.validator.RegisterANCFormValidator"
+                "validator":"org.motechproject.ghana.national.validator.RegisterANCFormValidator"
             },
             {
-                "name" : "registerCWC",
-                "fileName" :  "RegisterCWC.xml",
+                "name":"registerCWC",
+                "fileName":"RegisterCWC.xml",
                 "bean":"org.motechproject.ghana.national.bean.RegisterCWCForm",
-                "validator": "org.motechproject.ghana.national.validator.RegisterCWCFormValidator"
+                "validator":"org.motechproject.ghana.national.validator.RegisterCWCFormValidator"
             },
             {
-                "name" : "editPatient",
-                "fileName" :  "EditClient.xml",
+                "name":"editPatient",
+                "fileName":"EditClient.xml",
                 "bean":"org.motechproject.ghana.national.bean.EditClientForm",
-                "validator": "org.motechproject.ghana.national.validator.EditClientFormValidator"
+                "validator":"org.motechproject.ghana.national.validator.EditClientFormValidator"
             },
             {
-                "name" : "careHistory",
-                "fileName" :  "CareHistory.xml",
+                "name":"careHistory",
+                "fileName":"CareHistory.xml",
                 "bean":"org.motechproject.ghana.national.bean.CareHistoryForm",
-                "validator": "org.motechproject.ghana.national.validator.CareHistoryFormValidator"
+                "validator":"org.motechproject.ghana.national.validator.CareHistoryFormValidator"
+            },
+            {
+                "name":"clientDeath",
+                "fileName":"ClientDeath.xml",
+                "bean":"org.motechproject.ghana.national.bean.ClientDeathForm",
+                "validator":"org.motechproject.ghana.national.validator.ClientDeathFormValidator"
             }
         ]
     }
