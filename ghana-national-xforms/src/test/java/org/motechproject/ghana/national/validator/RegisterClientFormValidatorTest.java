@@ -25,6 +25,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.domain.Constants.CHILD_AGE_ERR_MSG;
+import static org.motechproject.ghana.national.domain.Constants.CHILD_AGE_PARAMETER;
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
 
 public class RegisterClientFormValidatorTest {
@@ -40,6 +42,8 @@ public class RegisterClientFormValidatorTest {
     private FormValidator formValidator;
     @Mock
     private RegisterCWCFormValidator mockCWCformValidator;
+    @Mock
+    private RegisterANCFormValidator mockANCFormValidator;
 
 
     @Before
@@ -49,6 +53,7 @@ public class RegisterClientFormValidatorTest {
         ReflectionTestUtils.setField(registerClientFormValidator, "formValidator", formValidator);
         ReflectionTestUtils.setField(registerClientFormValidator, "patientService", mockPatientService);
         ReflectionTestUtils.setField(registerClientFormValidator, "cwcFormValidator", mockCWCformValidator);
+        ReflectionTestUtils.setField(registerClientFormValidator, "ancFormValidator", mockANCFormValidator);
     }
 
     @Test
@@ -124,5 +129,23 @@ public class RegisterClientFormValidatorTest {
 
         registerClientFormValidator.validate(mockRegisterClientForm);
         verify(formValidator).validateIfFacilityExists(eq(facilityId));
+    }
+
+    @Test
+    public void shouldReturnErrorIfChildAgeIsGreaterThanFive(){
+        String motechId = "12234";
+        when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
+        when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
+        registerClientFormValidator.validate(mockRegisterClientForm);
+        verify(mockCWCformValidator).validatePatient(motechId);
+    }
+
+    @Test
+    public void shouldReturnErrorIfMotherIsNotFemale(){
+        String motherMotechId = "12234";
+        when(mockRegisterClientForm.getMotherMotechId()).thenReturn(motherMotechId);
+        when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.PREGNANT_MOTHER);
+        registerClientFormValidator.validate(mockRegisterClientForm);
+        verify(mockANCFormValidator).validatePatient(motherMotechId);
     }
 }

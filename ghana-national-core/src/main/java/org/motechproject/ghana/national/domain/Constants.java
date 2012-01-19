@@ -80,4 +80,10 @@ public class Constants {
     public static final String ENCOUNTER_ANCREGVISIT = "ANCREGVISIT";
     public static final String ENCOUNTER_CWCREGVISIT = "CWCREGVISIT";
     public static final String REGCLIENTCWC= "REGCLIENTCWC";
+    public static final String REGCLIENTANC= "REGCLIENTANC";
+
+    //CWC Validators
+    public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
+    public static final String CHILD_AGE_PARAMETER = "childAge";
+    public static final String CHILD_AGE_ERR_MSG = "child cannot be more than 5 years old";
 }

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.domain.FormError;
@@ -45,12 +46,12 @@ public class RegisterCWCFormValidatorTest {
         String facilityId = "1234";
         RegisterCWCForm registerCWCForm = setUpFormBean(facilityId, staffId,new Date(),"23232322",RegistrationToday.TODAY, motechId, Boolean.FALSE);
         List<FormError> formErrors = registerCWCFormValidator.validate(registerCWCForm);
-        verify(mockFormValidator).validatePatient(eq(motechId), eq(RegisterCWCFormValidator.MOTECH_ID_ATTRIBUTE_NAME));
+        verify(mockFormValidator).validatePatient(eq(motechId), eq(Constants.MOTECH_ID_ATTRIBUTE_NAME));
         verify(mockFormValidator).validateIfStaffExists(eq(staffId));
         verify(mockFormValidator).validateIfFacilityExists(eq(facilityId));
 
         assertEquals(formErrors.size(), 1);
-        assertThat(formErrors, hasItem(new FormError(RegisterCWCFormValidator.MOTECH_ID_ATTRIBUTE_NAME, "is invalid")));
+        assertThat(formErrors, hasItem(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, "is invalid")));
     }
 
     @Test
@@ -62,7 +63,7 @@ public class RegisterCWCFormValidatorTest {
 
         registerCWCFormValidator.validate(registerCWCForm);
 
-        verify(mockFormValidator).validatePatient(eq(motechId), eq(RegisterCWCFormValidator.MOTECH_ID_ATTRIBUTE_NAME));
+        verify(mockFormValidator).validatePatient(eq(motechId), eq(Constants.MOTECH_ID_ATTRIBUTE_NAME));
         verify(mockFormValidator).validateIfStaffExists(eq(staffId));
         verify(mockFormValidator).validateIfFacilityExists(eq(facilityId));
     }
@@ -71,7 +72,7 @@ public class RegisterCWCFormValidatorTest {
     public void shouldRaiseFormErrorIfChildAgeIsAboveFive(){
         String motechId = "1234567";
         when(mockPatientService.getAgeOfPatientByMotechId(motechId)).thenReturn(6);
-        when(mockFormValidator.validatePatient(motechId, RegisterCWCFormValidator.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(Collections.<FormError>emptyList());
+        when(mockFormValidator.validatePatient(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(Collections.<FormError>emptyList());
         List<FormError> formErrors = registerCWCFormValidator.validatePatient(motechId);
         assertEquals(formErrors.size(), 1);
     }

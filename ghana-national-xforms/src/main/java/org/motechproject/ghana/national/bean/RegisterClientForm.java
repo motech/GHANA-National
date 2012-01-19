@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.bean;
 
 import org.motechproject.ghana.national.domain.PatientType;
+import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
@@ -77,13 +78,33 @@ public class RegisterClientForm extends FormBean {
     private Date yellowFeverDate;
     private Date lastPentaDate;
     private Date measlesDate;
-
     private Integer lastOPV;
     private Integer lastIPTi;
     private Integer lastPenta;
 
-
     //ANC REGISTRATION DETAILS
+
+    private String addMotherHistory;
+
+    private String ancRegNumber;
+
+    private Date expDeliveryDate;
+
+    private Boolean deliveryDateConfirmed;
+
+    private Double height;
+
+    private Integer gravida;
+
+    private Integer parity;
+
+    private Date lastIPTDate;
+
+    private Date lastTTDate;
+
+    private String lastIPT;
+
+    private String lastTT;
 
 
 
@@ -390,5 +411,93 @@ public class RegisterClientForm extends FormBean {
 
     public void setLastPenta(Integer lastPenta) {
         this.lastPenta = lastPenta;
+    }
+
+    public String getAddMotherHistory() {
+        return addMotherHistory;
+    }
+
+    public void setAddMotherHistory(String addMotherHistory) {
+        this.addMotherHistory = addMotherHistory;
+    }
+
+    public String getAncRegNumber() {
+        return ancRegNumber;
+    }
+
+    public void setAncRegNumber(String ancRegNumber) {
+        this.ancRegNumber = ancRegNumber;
+    }
+
+    public Date getExpDeliveryDate() {
+        return expDeliveryDate;
+    }
+
+    public void setExpDeliveryDate(Date expDeliveryDate) {
+        this.expDeliveryDate = expDeliveryDate;
+    }
+
+    public Boolean getDeliveryDateConfirmed() {
+        return deliveryDateConfirmed;
+    }
+
+    public void setDeliveryDateConfirmed(Boolean deliveryDateConfirmed) {
+        this.deliveryDateConfirmed = deliveryDateConfirmed;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public Integer getGravida() {
+        return gravida;
+    }
+
+    public void setGravida(Integer gravida) {
+        this.gravida = gravida;
+    }
+
+    public Integer getParity() {
+        return parity;
+    }
+
+    public void setParity(Integer parity) {
+        this.parity = parity;
+    }
+
+    public Date getLastIPTDate() {
+        return lastIPTDate;
+    }
+
+    public void setLastIPTDate(Date lastIPTDate) {
+        this.lastIPTDate = lastIPTDate;
+    }
+
+    public Date getLastTTDate() {
+        return lastTTDate;
+    }
+
+    public void setLastTTDate(Date lastTTDate) {
+        this.lastTTDate = lastTTDate;
+    }
+
+    public String getLastIPT() {
+        return lastIPT;
+    }
+
+    public void setLastIPT(String lastIPT) {
+        this.lastIPT = lastIPT;
+    }
+
+    public String getLastTT() {
+        return lastTT;
+    }
+
+    public void setLastTT(String lastTT) {
+        this.lastTT = lastTT;
     }
 }

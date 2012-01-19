@@ -26,6 +26,9 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     @Autowired
     private RegisterCWCFormValidator cwcFormValidator;
 
+    @Autowired
+    private RegisterANCFormValidator ancFormValidator;
+
 
     @Override
     @LoginAsAdmin
@@ -39,6 +42,9 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         formErrors.addAll(validateMotherMotechId(formBean.getMotherMotechId(), formBean.getRegistrantType()));
         if (PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType())) {
             formErrors.addAll(cwcFormValidator.validatePatient(motechId));
+        }
+        else if(PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType())){
+            formErrors.addAll(ancFormValidator.validatePatient(formBean.getMotherMotechId()));
         }
         return formErrors;
     }

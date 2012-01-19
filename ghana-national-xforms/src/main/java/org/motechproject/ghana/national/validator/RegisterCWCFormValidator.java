@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.validator;
 
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
@@ -14,10 +15,6 @@ import java.util.List;
 
 @Component
 public class RegisterCWCFormValidator extends FormValidator<RegisterCWCForm> {
-
-    public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
-    public static final String CHILD_AGE_PARAMETER = "childAge";
-    public static final String CHILD_AGE_ERR_MSG = "child cannot be more than 5 years old";
 
     @Autowired
     private PatientService patientService;
@@ -38,14 +35,14 @@ public class RegisterCWCFormValidator extends FormValidator<RegisterCWCForm> {
     }
 
     public List<FormError> validatePatient(String motechId) {
-        List<FormError> patientErrors = formValidator.validatePatient(motechId, MOTECH_ID_ATTRIBUTE_NAME);
+        List<FormError> patientErrors = formValidator.validatePatient(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
         return !patientErrors.isEmpty() ? patientErrors : validateIfPatientIsAChild(motechId);
     }
 
     private List<FormError> validateIfPatientIsAChild(String motechId) {
         if (motechId != null && patientService.getAgeOfPatientByMotechId(motechId) >= 5) {
             return new ArrayList<FormError>() {{
-                add(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_ERR_MSG));
+                add(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_ERR_MSG));
             }};
         }
         return new ArrayList<FormError>();

@@ -27,11 +27,7 @@
                 <address/>
                 <phoneNumber/>
                 <cwcRegNumber/>
-                <cwcRegDateToday/>
-                <cwcRegDate/>
                 <ancRegNumber/>
-                <ancRegDateToday/>
-                <ancRegDate/>
                 <height/>
                 <gravida/>
                 <parity/>
@@ -676,25 +672,9 @@
         <xf:bind action="show" id="cwcRegNumber" nodeset="/patientRegistration/cwcRegNumber"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE'"
                  type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="cwcRegDateToday" nodeset="/patientRegistration/cwcRegDateToday"
-                 relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE'" required="true()"
-                 type="xsd:string" visible="false()"/>
-        <xf:bind action="show" constraint=". &lt;= 'today()'" id="cwcRegDate"
-                 message="Invalid date: date entered is in the future"
-                 nodeset="/patientRegistration/cwcRegDate"
-                 relevant="/patientRegistration/cwcRegDateToday = 'N'" visible="false()" required="true()"
-                 type="xsd:date"/>
         <xf:bind action="show" id="ancRegNumber" nodeset="/patientRegistration/ancRegNumber"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER'"
                  type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="ancRegDateToday" nodeset="/patientRegistration/ancRegDateToday"
-                 relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER'" required="true()"
-                 type="xsd:string" visible="false()"/>
-        <xf:bind action="show" constraint=". &lt;= 'today()'" id="ancRegDate"
-                 message="Invalid date: date entered is in the future"
-                 nodeset="/patientRegistration/ancRegDate"
-                 relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/ancRegDateToday != '0'" visible="false()" required="true()"
-                 type="xsd:date"/>
         <xf:bind action="show" constraint=". &gt;= 60 and . &lt;= 200" id="height"
                  message="Value out of range: must be between 60 and 200"
                  nodeset="/patientRegistration/height"
@@ -1070,40 +1050,8 @@
         <xf:input bind="cwcRegNumber">
             <xf:label>CWC Serial Number</xf:label>
         </xf:input>
-        <xf:select1 bind="cwcRegDateToday">
-            <xf:label>CWC Registration Today?</xf:label>
-            <xf:item id="Y">
-                <xf:label>Today</xf:label>
-                <xf:value>Y</xf:value>
-            </xf:item>
-            <xf:item id="N">
-                <xf:label>In the past</xf:label>
-                <xf:value>N</xf:value>
-            </xf:item>
-        </xf:select1>
-        <xf:input bind="cwcRegDate">
-            <xf:label>CWC Registraton Date</xf:label>
-        </xf:input>
         <xf:input bind="ancRegNumber">
             <xf:label>ANC Serial Number</xf:label>
-        </xf:input>
-        <xf:select1 bind="ancRegDateToday">
-            <xf:label>ANC Registration Today?</xf:label>
-            <xf:item id="0">
-                <xf:label>Today</xf:label>
-                <xf:value>0</xf:value>
-            </xf:item>
-            <xf:item id="1">
-                <xf:label>In the past</xf:label>
-                <xf:value>1</xf:value>
-            </xf:item>
-            <xf:item id="2">
-                <xf:label>In the past in other facility</xf:label>
-                <xf:value>2</xf:value>
-            </xf:item>
-        </xf:select1>
-        <xf:input bind="ancRegDate">
-            <xf:label>ANC Registraton Date</xf:label>
         </xf:input>
         <xf:input bind="height">
             <xf:label>Height (cm)</xf:label>
