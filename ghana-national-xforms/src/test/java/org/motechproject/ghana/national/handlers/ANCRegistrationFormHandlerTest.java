@@ -5,19 +5,25 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterANCForm;
-import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.ANCService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.ANCVO;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.model.Time;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -59,6 +65,7 @@ public class ANCRegistrationFormHandlerTest {
         registerANCForm.setRegDateToday(RegistrationToday.IN_PAST);
         registerANCForm.setRegPhone("045353453434");
         registerANCForm.setStaffId("2331");
+        setMobileMidwifeEnrollment(registerANCForm);
 
         Facility facility = mock(Facility.class);
         String mrsFacilityId = "343";
@@ -70,7 +77,8 @@ public class ANCRegistrationFormHandlerTest {
         }}));
 
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
-        verify(mockANCService).enroll(captor.capture(), eq(Constants.ENCOUNTER_ANCREGVISIT));
+        final ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
+        verify(mockANCService).enrollWithMobileMidwife(captor.capture(), mobileMidwifeEnrollmentCaptor.capture() );
         final ANCVO ancVO = captor.getValue();
 
         assertEquals(registerANCForm.getAddHistory(), ancVO.getAddHistory());
@@ -89,6 +97,39 @@ public class ANCRegistrationFormHandlerTest {
         assertEquals(registerANCForm.getRegDateToday(), ancVO.getRegistrationToday());
         assertEquals(registerANCForm.getStaffId(), ancVO.getStaffId());
         assertEquals(mrsFacilityId, ancVO.getFacilityId());
+
+        assertMobileMidwifeFormEnrollment(registerANCForm, mobileMidwifeEnrollmentCaptor.getValue());
+    }
+
+    private void assertMobileMidwifeFormEnrollment(RegisterANCForm exptectedForm, MobileMidwifeEnrollment actual) {
+
+        if(exptectedForm.isEnrolledForProgram()) {
+            assertNotNull(exptectedForm.getConsent());
+        }
+        assertThat(actual.getConsent(), is(exptectedForm.getConsent()));
+        assertThat(actual.getStaffId(), is(exptectedForm.getStaffId()));
+        assertThat(actual.getFacilityId(), is(exptectedForm.getFacilityId()));
+        assertThat(actual.getPatientId(), is(exptectedForm.getMotechId()));
+        assertThat(actual.getServiceType(), is(exptectedForm.getServiceType()));
+        assertThat(actual.getReasonToJoin(), is(exptectedForm.getReasonToJoin()));
+        assertThat(actual.getMedium(), is(exptectedForm.getMediumStripingOwnership()));
+        assertThat(actual.getDayOfWeek(), is(exptectedForm.getDayOfWeek()));
+        assertThat(actual.getTimeOfDay(), is(exptectedForm.getTimeOfDay()));
+        assertThat(actual.getLanguage(), is(exptectedForm.getLanguage()));
+        assertThat(actual.getLearnedFrom(), is(exptectedForm.getLearnedFrom()));
+        assertThat(actual.getPhoneNumber(), is(exptectedForm.getPhoneNumber()));
+        assertThat(actual.getPhoneOwnership(), is(exptectedForm.getPhoneOwnership()));
+    }
+
+    private void setMobileMidwifeEnrollment(RegisterANCForm registerANCForm) {
+        new MobileMidwifeBuilder().staffId("staffId").facilityId("facilityId").patientId("patientId")
+                .enroll(true)
+                .consent(true).dayOfWeek(DayOfWeek.Monday).language(Language.EN).learnedFrom(LearnedFrom.FRIEND).format("PERS_VOICE")
+                .timeOfDay(new Time(10, 02)).messageStartWeek("10").phoneNumber("9500012343")
+                .phoneOwnership(PhoneOwnership.PERSONAL).reasonToJoin(ReasonToJoin.FAMILY_FRIEND_DELIVERED)
+                .serviceType(ServiceType.CHILD_CARE)
+                .buildRegisterANCForm(registerANCForm);
+
     }
 
 }

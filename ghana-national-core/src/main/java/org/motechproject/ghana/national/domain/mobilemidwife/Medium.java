@@ -1,31 +1,52 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 public enum Medium {
-    SMS("SMS", Arrays.asList(PhoneOwnership.PERSONAL, PhoneOwnership.HOUSEHOLD)),
-    VOICE("Voice", Arrays.asList(PhoneOwnership.PERSONAL, PhoneOwnership.PUBLIC, PhoneOwnership.HOUSEHOLD));
+    SMS("SMS", asList(PhoneOwnership.PERSONAL, PhoneOwnership.HOUSEHOLD), new HashSet<String>(asList(Medium.TEXT_SMS_MEDIUM))),
+    VOICE("Voice", asList(PhoneOwnership.PERSONAL, PhoneOwnership.PUBLIC, PhoneOwnership.HOUSEHOLD));
     private String displayName;
     private List<PhoneOwnership> phoneOwnerships;
+    private Set<String> keys;
+
+    public static final String TEXT_SMS_MEDIUM = "TEXT";
 
     Medium(String displayName, List<PhoneOwnership> phoneOwnerships) {
         this.displayName = displayName;
         this.phoneOwnerships = phoneOwnerships;
     }
 
+    Medium(String displayName, List<PhoneOwnership> phoneOwnerships, Set<String> keysToFindMedium) {
+        this.displayName = displayName;
+        this.phoneOwnerships = phoneOwnerships;
+        this.keys = keysToFindMedium;
+    }
+
     public String getDisplayName() {
         return displayName;
     }
 
-    public String getValue(){
+    public String getValue() {
         return name();
     }
 
-    public static Medium value(String input) {
-       return isNotEmpty(input) ? Medium.valueOf(input) : null;
+    public boolean hasKey(String key) {
+        return keys != null && keys.contains(key);
+    }
+
+    public static Medium get(String input) {
+        if (isNotEmpty(input)) {
+            for (Medium medium : values()) {
+                if (medium.name().equals(input) || medium.hasKey(input)) return medium;
+            }
+            throw new IllegalArgumentException("Invalid value for enum medium - " + input);
+        }
+        return null;
     }
 
     public List<PhoneOwnership> getPhoneOwnerships() {

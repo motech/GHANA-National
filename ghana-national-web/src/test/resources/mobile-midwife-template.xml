@@ -10,7 +10,7 @@
                 <serviceType/>
                 <phoneOwnership/>
                 <phoneNumber/>
-                <medium/>
+                <format/>
                 <dayOfWeek/>
                 <timeOfDay/>
                 <language/>
@@ -21,7 +21,7 @@
                 <formname>mobileMidwife</formname>
             </mobileMidwifeRegistration>
         </xf:instance>
-        <xf:instance id="medium">
+        <xf:instance id="format">
             <dynamiclist>
                 <item id="PERS_VOICE" parent="PERSONAL">
                     <label>Voice</label>
