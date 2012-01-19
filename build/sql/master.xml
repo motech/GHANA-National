@@ -11,4 +11,5 @@
     <include file="../build/sql/changelog/005.migration-staff-role-names.xml"/>
     <include file="../build/sql/changelog/006.insert_encounter_type_for_edit_patient.xml"/>
     <include file="../build/sql/changelog/007.insert_encounter_type_for_enroll_CWC_through_patient_registration.xml"/>
+    <include file="../build/sql/changelog/008.insert_encounter_type_for_enroll_ANC_through_patient_registration.xml"/>
 </databaseChangeLog>

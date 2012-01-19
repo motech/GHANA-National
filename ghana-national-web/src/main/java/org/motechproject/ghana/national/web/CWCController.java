@@ -111,13 +111,13 @@ public class CWCController {
 
         List<String> validationErrors = new ArrayList<String>();
         for (FormError formError : formErrors) {
-            if(formError.getParameter().equals(RegisterCWCFormValidator.CHILD_AGE_PARAMETER))  {
+            if(formError.getParameter().equals(Constants.CHILD_AGE_PARAMETER))  {
                 validationErrors.add(PATIENT_IS_NOT_A_CHILD);
             }
             if(formError.getParameter().equals(FormValidator.STAFF_ID)) {
                 validationErrors.add(STAFF_ID_NOT_FOUND);
             }
-            if(formError.getParameter().equals(RegisterCWCFormValidator.MOTECH_ID_ATTRIBUTE_NAME)) {
+            if(formError.getParameter().equals(Constants.MOTECH_ID_ATTRIBUTE_NAME)) {
                 validationErrors.add("Patient " + StringUtils.capitalize(formError.getError()));
             }
         }

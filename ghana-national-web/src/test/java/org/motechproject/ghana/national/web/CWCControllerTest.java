@@ -198,8 +198,8 @@ public class CWCControllerTest {
 
         when(mockregisterCWCFormValidator.validatePatient(motechId)).thenReturn(
                 new ArrayList<FormError>() {{
-                    add(new FormError(RegisterCWCFormValidator.CHILD_AGE_PARAMETER, "description1"));
-                    add(new FormError(RegisterCWCFormValidator.MOTECH_ID_ATTRIBUTE_NAME, "description2"));
+                    add(new FormError(Constants.CHILD_AGE_PARAMETER, "description1"));
+                    add(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, "description2"));
                 }});
 
         when(mockFormValidator.validateIfStaffExists(staffId)).thenReturn(
