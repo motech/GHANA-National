@@ -24,6 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.junit.Assert.assertTrue;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 
@@ -113,5 +114,11 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
 
         assertFalse(enrollmentPage.getDayOfWeek().isDisplayed());
         assertFalse(enrollmentPage.getHourOfDay().isDisplayed());
+
+        enrollmentPage.withConsent(true)
+                .withPhoneOwnership(PhoneOwnership.PERSONAL.toString())
+                .withMedium(Medium.VOICE.toString());
+        assertTrue(enrollmentPage.getDayOfWeek().isDisplayed());
+        assertTrue(enrollmentPage.getHourOfDay().isDisplayed());                
     }
 }
