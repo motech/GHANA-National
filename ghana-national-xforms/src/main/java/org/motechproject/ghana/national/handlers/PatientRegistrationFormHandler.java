@@ -74,26 +74,21 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             }
 
             if (registerClientForm.getRegistrantType().equals(PatientType.CHILD_UNDER_FIVE)) {
-                CwcVO cwcVO = new CwcVO(registerClientForm.getStaffId(), registerClientForm.getFacilityId(), registerClientForm.getDate(),
+                CwcVO cwcVO = new CwcVO(registerClientForm.getStaffId(), facilityId, registerClientForm.getDate(),
                         motechId, registerClientForm.getAddChildHistory(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
                         registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
                         registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber());
 
-                if (mobileMidwifeEnrollment == null) {
-                    careService.enroll(cwcVO);
-                } else {
                     careService.enroll(cwcVO, mobileMidwifeEnrollment);
-                }
+
             } else if (PatientType.PREGNANT_MOTHER.equals(registerClientForm.getRegistrantType())) {
-                ANCVO ancVO = new ANCVO(registerClientForm.getStaffId(), registerClientForm.getFacilityId(), registerClientForm.getMotherMotechId(), registerClientForm.getDate()
+                ANCVO ancVO = new ANCVO(registerClientForm.getStaffId(), facilityId, motechId, registerClientForm.getDate()
                         , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),
                         registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), registerClientForm.getAddMotherHistory(), registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
                         registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate());
-                if (mobileMidwifeEnrollment == null) {
-                    careService.enroll(ancVO);
-                } else {
+
                     careService.enroll(ancVO, mobileMidwifeEnrollment);
-                }
+
             }
         } catch (Exception
                 e) {

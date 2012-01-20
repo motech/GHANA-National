@@ -106,7 +106,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
         PatientPage patientPage = browser.toCreatePatient(homePage);
         patientPage.create(patient);
 
-        MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, patientPage);;
+        MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, patientPage);
         enrollmentPage.withConsent(true)
                 .withPhoneOwnership(PhoneOwnership.PERSONAL.toString())
                 .withMedium(Medium.SMS.toString());
