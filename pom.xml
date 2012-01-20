@@ -262,9 +262,12 @@
                 <configuration>
                     <argLine>-XX:MaxPermSize=1024M</argLine>
                     <printSummary>true</printSummary>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*IT.java</include>
+                        <include>**/repository/*Test.java</include>
+                    </includes>
                     <excludes>
-                        <exclude>**/*IT.java</exclude>
-                        <exclude>**/repository/*Test.java</exclude>
                         <exclude>**/functional/**/*Test.java</exclude>
                     </excludes>
                 </configuration>
@@ -276,7 +279,7 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                            <testNGArtifactName>none:none</testNGArtifactName>
+                            <junitArtifactName>none:none</junitArtifactName>
                         </configuration>
                     </execution>
                     <execution>
@@ -286,7 +289,7 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                            <junitArtifactName>none:none</junitArtifactName>
+                            <testNGArtifactName>none:none</testNGArtifactName>
                         </configuration>
                     </execution>
                 </executions>
@@ -307,8 +310,8 @@
                 <configuration>
                     <printSummary>true</printSummary>
                     <includes>
-                        <include>**/*IT.java</include>
-                        <include>**/repository/*Test.java</include>
+                        <!--<include>**/*IT.java</include>-->
+                        <!--<include>**/repository/*Test.java</include>-->
                         <include>**/functional/**/*Test.java</include>
                     </includes>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
