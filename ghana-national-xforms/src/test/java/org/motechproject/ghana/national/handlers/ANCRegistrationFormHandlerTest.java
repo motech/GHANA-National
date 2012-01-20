@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
@@ -34,6 +35,8 @@ public class ANCRegistrationFormHandlerTest {
     @Mock
     private CareService careService;
     @Mock
+    private MobileMidwifeService mockMobileMidwifeService;
+    @Mock
     private FacilityService mockFacilityService;
 
 
@@ -43,6 +46,7 @@ public class ANCRegistrationFormHandlerTest {
         ancRegistrationFormHandler = new ANCRegistrationFormHandler();
         ReflectionTestUtils.setField(ancRegistrationFormHandler, "careService", careService);
         ReflectionTestUtils.setField(ancRegistrationFormHandler, "facilityService", mockFacilityService);
+        ReflectionTestUtils.setField(ancRegistrationFormHandler, "mobileMidwifeService", mockMobileMidwifeService);
     }
 
     @Test
@@ -79,7 +83,8 @@ public class ANCRegistrationFormHandlerTest {
 
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
         final ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        verify(careService).enroll(captor.capture(), mobileMidwifeEnrollmentCaptor.capture() );
+        verify(careService).enroll(captor.capture());
+        verify(mockMobileMidwifeService).createOrUpdateEnrollment(mobileMidwifeEnrollmentCaptor.capture());
         final ANCVO ancVO = captor.getValue();
 
         assertEquals(registerANCForm.getAddHistory(), ancVO.getAddHistory());

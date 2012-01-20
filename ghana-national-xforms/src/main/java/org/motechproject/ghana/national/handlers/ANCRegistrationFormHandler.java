@@ -2,8 +2,10 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterANCForm;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
@@ -23,6 +25,8 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
     @Autowired
     CareService careService;
     @Autowired
+    MobileMidwifeService mobileMidwifeService;
+    @Autowired
     private FacilityService facilityService;
 
     @Override
@@ -40,6 +44,10 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
                 registerANCForm.getAddCareHistory(), registerANCForm.getLastIPT(), registerANCForm.getLastTT(),
                 registerANCForm.getLastIPTDate(), registerANCForm.getLastTTDate());
 
-        careService.enroll(ancvo, registerANCForm.createMobileMidwifeEnrollment());
+        careService.enroll(ancvo);
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = registerANCForm.createMobileMidwifeEnrollment();
+        if(mobileMidwifeEnrollment != null){
+            mobileMidwifeService.createOrUpdateEnrollment(mobileMidwifeEnrollment);
+        }
     }
 }

@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.service;
 
 import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -48,28 +47,10 @@ public class CareService {
                                 prepareObservations(cwc));
     }
 
-    public MRSEncounter enroll(CwcVO cwcVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {
-        MRSEncounter mrsEncounter = enroll(cwcVO);
-        if (mobileMidwifeEnrollment != null) {
-            enroll(mobileMidwifeEnrollment);
-        }
-        return mrsEncounter;
-    }
-
     public MRSEncounter enroll(ANCVO ancVO) {
         Date registrationDate = (RegistrationToday.TODAY.equals(ancVO.getRegistrationToday())) ? DateUtil.now().toDate() : ancVO.getRegistrationDate();
         return persistEncounter(ancVO.getPatientMotechId(), ancVO.getStaffId(), ancVO.getFacilityId(),
                 Constants.ENCOUNTER_ANCREGVISIT, registrationDate, prepareObservations(ancVO));
-    }
-
-    public MRSEncounter enroll(ANCVO ancVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {
-        MRSEncounter mrsEncounter = enroll(ancVO);
-        enroll(mobileMidwifeEnrollment);
-        return mrsEncounter;
-    }
-
-    private void enroll(MobileMidwifeEnrollment mobileMidwifeEnrollment) {
-        mobileMidwifeService.createOrUpdateEnrollment(mobileMidwifeEnrollment);
     }
 
     private MRSEncounter persistEncounter(String patientMotechId, String staffId, String facilityId, String encounterType, Date registrationDate,

@@ -6,10 +6,8 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.mrs.model.*;
@@ -23,11 +21,9 @@ import org.unitils.reflectionassert.ReflectionComparatorMode;
 import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -152,20 +148,6 @@ public class CareServiceTest {
     }
 
     @Test
-    public void shouldEnrollCWCWithMobileMidwife() {
-
-        CareService careServiceSpy = spy(careService);
-        MRSEncounter mrsEncounter = mock(MRSEncounter.class);
-        doReturn(mrsEncounter).when(careServiceSpy).enroll(Matchers.<CwcVO>any());
-
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment();
-        MRSEncounter actualEncounter = careServiceSpy.enroll(mock(CwcVO.class), mobileMidwifeEnrollment);
-
-        assertSame(mrsEncounter, actualEncounter);
-        verify(mockMockMidwifeService).createOrUpdateEnrollment(mobileMidwifeEnrollment);
-    }
-
-    @Test
     public void shouldEnrollANC() throws Exception {
         String facilityId = "facility id";
         String patientId = "patient id";
@@ -279,20 +261,6 @@ public class CareServiceTest {
     }
 
     @Test
-    public void shouldEnrollANCWithMobileMidwife() {
-
-        CareService careServiceSpy = spy(careService);
-        MRSEncounter mrsEncounter = mock(MRSEncounter.class);
-        doReturn(mrsEncounter).when(careServiceSpy).enroll(Matchers.<ANCVO>any());
-
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment();
-        MRSEncounter actualEncounter = careServiceSpy.enroll(mock(ANCVO.class), mobileMidwifeEnrollment);
-
-        assertSame(mrsEncounter, actualEncounter);
-        verify(mockMockMidwifeService).createOrUpdateEnrollment(mobileMidwifeEnrollment);
-    }
-
-    @Test
     public void shouldSaveCareHistoryDetails() {
         CareService careServiceSpy = spy(careService);
 
@@ -376,15 +344,6 @@ public class CareServiceTest {
         assertThat(encounterThatWasSaved.getDate(), is(equalTo(registrationDate)));
         assertThat(encounterThatWasSaved.getPatient().getId(), is(equalTo(patientId)));
         assertThat(encounterThatWasSaved.getEncounterType(), is(equalTo(encounterType)));
-    }
-
-    @Test
-    public void shouldNotEnrollToMobileMidWifeIfEnrollmentIsNull() {
-        CareService careServiceSpy = spy(careService);
-        MRSEncounter mrsEncounter = mock(MRSEncounter.class);
-        doReturn(mrsEncounter).when(careServiceSpy).enroll(Matchers.<CwcVO>any());
-        careServiceSpy.enroll(mock(CwcVO.class), null);
-        verifyZeroInteractions(mockMockMidwifeService);
     }
 
 }
