@@ -24,6 +24,7 @@ import org.unitils.reflectionassert.ReflectionComparatorMode;
 import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -319,6 +320,14 @@ public class CareServiceTest {
         assertThat(encounterThatWasSaved.getEncounterType(), is(equalTo(encounterType)));
     }
 
+    @Test
+    public void shouldNotEnrollToMobileMidWifeIfEnrollmentIsNull() {
+        CareService careServiceSpy = spy(careService);
+        MRSEncounter mrsEncounter = mock(MRSEncounter.class);
+        doReturn(mrsEncounter).when(careServiceSpy).enroll(Matchers.<CwcVO>any());
+        careServiceSpy.enroll(mock(CwcVO.class), null);
+        verifyZeroInteractions(mockMockMidwifeService);
+    }
 
 
 }

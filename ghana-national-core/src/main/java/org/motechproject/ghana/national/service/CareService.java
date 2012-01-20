@@ -48,12 +48,14 @@ public class CareService {
 
     public MRSEncounter enroll(CwcVO cwcVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {
         MRSEncounter mrsEncounter = enroll(cwcVO);
-        enroll(mobileMidwifeEnrollment);
+        if (mobileMidwifeEnrollment != null) {
+            enroll(mobileMidwifeEnrollment);
+        }
         return mrsEncounter;
     }
 
     public MRSEncounter enroll(ANCVO ancVO) {
-        Date registrationDate = (RegistrationToday.TODAY.equals(ancVO.getRegistrationToday())) ? DateUtil.now().toDate(): ancVO.getRegistrationDate();
+        Date registrationDate = (RegistrationToday.TODAY.equals(ancVO.getRegistrationToday())) ? DateUtil.now().toDate() : ancVO.getRegistrationDate();
         return persistEncounter(ancVO.getPatientMotechId(), ancVO.getStaffId(), ancVO.getFacilityId(), Constants.ENCOUNTER_ANCREGVISIT, registrationDate, prepareObservations(ancVO));
     }
 

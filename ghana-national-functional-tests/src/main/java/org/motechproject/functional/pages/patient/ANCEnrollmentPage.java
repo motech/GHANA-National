@@ -1,7 +1,7 @@
 package org.motechproject.functional.pages.patient;
 
-import org.joda.time.LocalDate;
 import org.motechproject.functional.pages.home.HomePage;
+import org.joda.time.LocalDate;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
