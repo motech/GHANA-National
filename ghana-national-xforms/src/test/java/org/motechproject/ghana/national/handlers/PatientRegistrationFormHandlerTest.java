@@ -12,6 +12,7 @@ import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatExcept
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.vo.CwcVO;
@@ -40,6 +41,8 @@ public class PatientRegistrationFormHandlerTest {
     FacilityService mockFacilityService;
     @Mock
     CareService mockCareService;
+    @Mock
+    MobileMidwifeService mockMobileMidwifeService;
 
     PatientRegistrationFormHandler patientRegistrationFormHandler;
 
@@ -50,6 +53,7 @@ public class PatientRegistrationFormHandlerTest {
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "careService", mockCareService);
+        ReflectionTestUtils.setField(patientRegistrationFormHandler, "mobileMidwifeService", mockMobileMidwifeService);
     }
 
     @Test
@@ -167,7 +171,8 @@ public class PatientRegistrationFormHandlerTest {
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
-        verify(mockCareService).enroll(captor.capture() , mobileMidwifeEnrollmentArgumentCaptor.capture());
+        verify(mockCareService).enroll(captor.capture());
+        verify(mockMobileMidwifeService).createOrUpdateEnrollment(mobileMidwifeEnrollmentArgumentCaptor.capture());
         final CwcVO cwcVO = captor.getValue();
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
@@ -232,7 +237,9 @@ public class PatientRegistrationFormHandlerTest {
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
-        verify(mockCareService).enroll(captor.capture() , mobileMidwifeEnrollmentArgumentCaptor.capture());
+        verify(mockCareService).enroll(captor.capture());
+        verify(mockMobileMidwifeService).createOrUpdateEnrollment(mobileMidwifeEnrollmentArgumentCaptor.capture());
+
         final ANCVO ancVO = captor.getValue();
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 

@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.ghana.national.vo.ANCVO;
@@ -41,6 +42,9 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
     private CareService careService;
 
     @Autowired
+    private MobileMidwifeService mobileMidwifeService;
+
+    @Autowired
     private FacilityService facilityService;
 
     @Override
@@ -66,11 +70,12 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             String motechId = registerClientForm.getMotechId();
             MRSPatient mrsPatient = new MRSPatient(motechId, mrsPerson, new MRSFacility(facilityId));
 
-            String patientDBId = patientService.registerPatient(new Patient(mrsPatient, registerClientForm.getMotherMotechId()));
+            patientService.registerPatient(new Patient(mrsPatient, registerClientForm.getMotherMotechId()));
 
             MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment();
             if (mobileMidwifeEnrollment != null) {
                 mobileMidwifeEnrollment.setFacilityId(facilityId);
+                mobileMidwifeService.createOrUpdateEnrollment(mobileMidwifeEnrollment);
             }
 
             if (registerClientForm.getRegistrantType().equals(PatientType.CHILD_UNDER_FIVE)) {
@@ -79,7 +84,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
                         registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
                         registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber());
 
-                    careService.enroll(cwcVO, mobileMidwifeEnrollment);
+                    careService.enroll(cwcVO);
 
             } else if (PatientType.PREGNANT_MOTHER.equals(registerClientForm.getRegistrantType())) {
                 ANCVO ancVO = new ANCVO(registerClientForm.getStaffId(), facilityId, motechId, registerClientForm.getDate()
@@ -87,7 +92,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
                         registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), registerClientForm.getAncCareHistories(), registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
                         registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate());
 
-                    careService.enroll(ancVO, mobileMidwifeEnrollment);
+                    careService.enroll(ancVO);
 
             }
         } catch (Exception

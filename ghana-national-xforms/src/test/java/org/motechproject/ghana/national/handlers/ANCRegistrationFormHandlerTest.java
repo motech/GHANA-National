@@ -10,11 +10,13 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.LearnedFrom;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
 import org.motechproject.ghana.national.domain.mobilemidwife.ReasonToJoin;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
@@ -37,6 +39,8 @@ public class ANCRegistrationFormHandlerTest {
     @Mock
     private CareService careService;
     @Mock
+    private MobileMidwifeService mockMobileMidwifeService;
+    @Mock
     private FacilityService mockFacilityService;
 
 
@@ -46,6 +50,7 @@ public class ANCRegistrationFormHandlerTest {
         ancRegistrationFormHandler = new ANCRegistrationFormHandler();
         ReflectionTestUtils.setField(ancRegistrationFormHandler, "careService", careService);
         ReflectionTestUtils.setField(ancRegistrationFormHandler, "facilityService", mockFacilityService);
+        ReflectionTestUtils.setField(ancRegistrationFormHandler, "mobileMidwifeService", mockMobileMidwifeService);
     }
 
     @Test
@@ -81,6 +86,7 @@ public class ANCRegistrationFormHandlerTest {
         }}));
 
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
+        final ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         verify(careService).enroll(captor.capture());
         final ANCVO ancVO = captor.getValue();
 
