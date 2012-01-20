@@ -152,8 +152,8 @@
                          default_select_minute_message="${fn:escapeXml(default_select_minute_message)}"
                          hourErrorMessage="${fn:escapeXml(hour_required_msg)}"
                          minutesErrorMessage="${fn:escapeXml(minutes_required_msg)}"
-                         hourErrorMsgId="timeOfDay.hourError"
-                         minutesErrorMsgId="timeOfDay.minuteError" required="false"/>
+                         hourErrorMsgId="timeOfDayHourError"
+                         minutesErrorMsgId="timeOfDayMinuteError" required="false"/>
         </div>
         <div class="hide form-field">
             <label class="formLabel" for="language">${fn:escapeXml(language)} :*</label>

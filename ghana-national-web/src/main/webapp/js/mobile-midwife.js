@@ -14,6 +14,13 @@ var phoneOwnership = utilities.lazyLoad(
                 instance.change(function(){
                     language.filterOptions(phoneOwnership.instance().selectedValue(), medium.selectedValue(), allLanguageOptions);
                 });
+            },
+            onChangeToPublicOwnershipMakePhoneNumberLabelNonMandatory : function() {
+                instance.change(function() {
+//                   if($('#phoneOwnership').val() === 'PUBLIC' )
+//                        $('#phoneNumberRequired').hide();
+//                    else $('#phoneNumberRequired').show();
+                });
             }
         }
     }
@@ -122,12 +129,14 @@ var serviceType = utilities.lazyLoad(
 var consent = utilities.lazyLoad(
     function(){
         var instance = $('input[name=consent]');
-        var idsOfFieldsDependentToConsent = ['serviceType', 'phoneOwnership', 'phoneNumber', 'medium', 'dayOfWeek', 'timeOfDay\\.hour', 'timeOfDay\\.minute', 'language',
+        var idsOfFieldsDependentToConsent = ['serviceType', 'phoneOwnership', 'phoneNumber', 'medium', 'dayOfWeek', 'timeOfDayHour', 'timeOfDayMinute', 'language',
             'learnedFrom', 'reasonToJoin', 'messageStartWeek'];
         return{
             validateDependentMandatoryFields : function(){
                 if($('input[name=consent]:checked').val() == 'true'){
                     $.each(idsOfFieldsDependentToConsent, function(index, id){
+                        if(id === "phoneNumber" && $('#phoneOwnership').val() == 'PUBLIC')
+                            return;
                         formValidator.validateFieldForMandatoryValue($('#' + id)[0]);
                     });
                 }
@@ -190,6 +199,7 @@ $(document).ready(function() {
 
     var initialLanguageOptions = $('#language').find('option');
     phoneOwnership.instance().onChangePopulateLanguage(language.instance(), medium.instance(), initialLanguageOptions);
+    phoneOwnership.instance().onChangeToPublicOwnershipMakePhoneNumberLabelNonMandatory();
     medium.instance().onChangePopulateLanguage(language.instance(), phoneOwnership.instance(), initialLanguageOptions);
     medium.instance().onChangeShowChoiceOfDayAndTimeForVoice();
 
