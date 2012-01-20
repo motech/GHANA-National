@@ -279,7 +279,7 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                            <junitArtifactName>none:none</junitArtifactName>
+                            <testNGArtifactName>none:none</testNGArtifactName>
                         </configuration>
                     </execution>
                     <execution>
@@ -289,7 +289,7 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                            <testNGArtifactName>none:none</testNGArtifactName>
+                            <junitArtifactName>none:none</junitArtifactName>
                         </configuration>
                     </execution>
                 </executions>
