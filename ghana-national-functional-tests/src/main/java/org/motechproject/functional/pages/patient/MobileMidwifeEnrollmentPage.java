@@ -51,11 +51,11 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
     @CacheLookup
     private WebElement dayOfWeek;
 
-    @FindBy(id = "timeOfDay.hour")
+    @FindBy(id = "timeOfDayHour")
     @CacheLookup
     private WebElement hourOfDay;
 
-    @FindBy(id = "timeOfDay.minute")
+    @FindBy(id = "timeOfDayMinute")
     @CacheLookup
     private WebElement minuteOfDay;
 

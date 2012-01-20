@@ -148,6 +148,7 @@
         </div>
         <div class="hide form-field" id="timeOfDayRow">
             <motech:time time="${mobileMidwifeEnrollmentForm.timeOfDay}" path="timeOfDay" label="${time_of_day} :*"
+                         maxTimeInclusive="23:00" minTimeInclusive="5:00"
                          default_select_hour_message="${fn:escapeXml(default_select_hour_message)}"
                          default_select_minute_message="${fn:escapeXml(default_select_minute_message)}"
                          hourErrorMessage="${fn:escapeXml(hour_required_msg)}"
