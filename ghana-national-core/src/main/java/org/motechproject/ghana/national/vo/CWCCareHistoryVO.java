@@ -7,6 +7,7 @@ import java.util.List;
 
 public class CWCCareHistoryVO {
 
+    private Boolean addCareHistory;
     private List<CwcCareHistory> cwcCareHistories;
     private Date bcgDate;
     private Date vitADate;
@@ -19,8 +20,9 @@ public class CWCCareHistoryVO {
     private Date lastIPTiDate;
     private Integer lastIPTi;
 
-    public CWCCareHistoryVO(List<CwcCareHistory> careHistories, Date bcgDate, Date vitADate, Date measlesDate, Date yfDate, Date lastPentaDate,
+    public CWCCareHistoryVO(Boolean addCareHistory, List<CwcCareHistory> careHistories, Date bcgDate, Date vitADate, Date measlesDate, Date yfDate, Date lastPentaDate,
                             Integer lastPenta, Date lastOPVDate, Integer lastOPV, Integer lastIPTi, Date lastIPTiDate) {
+        this.addCareHistory = addCareHistory;
         this.cwcCareHistories=careHistories;
         this.bcgDate=bcgDate;
         this.vitADate=vitADate;
@@ -76,5 +78,9 @@ public class CWCCareHistoryVO {
 
     public Integer getLastIPTi() {
         return lastIPTi;
+    }
+
+    public Boolean getAddCareHistory() {
+        return addCareHistory;
     }
 }

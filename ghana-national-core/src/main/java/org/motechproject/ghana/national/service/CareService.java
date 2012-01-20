@@ -89,7 +89,7 @@ public class CareService {
     Set<MRSObservation> addObservationsOnANCHistory(ANCCareHistoryVO ancCareHistoryVO) {
         List<ANCCareHistory> careHistories=ancCareHistoryVO.getCareHistory();
         Set<MRSObservation> historyObservations = new HashSet<MRSObservation>();
-        if (careHistories != null) {
+        if (careHistories != null && ancCareHistoryVO.getAddCareHistory()) {
             if (careHistories.contains(ANCCareHistory.IPT)) {
                 historyObservations.add(new MRSObservation<Integer>(ancCareHistoryVO.getLastIPTDate(), Constants.CONCEPT_IPT,
                                         Integer.parseInt(ancCareHistoryVO.getLastIPT())));
@@ -113,7 +113,7 @@ public class CareService {
     Set<MRSObservation> addObservationsOnCWCHistory(CWCCareHistoryVO cwcCareHistoryVO) {
         List<CwcCareHistory> cwcCareHistory = cwcCareHistoryVO.getCwcCareHistories();
         Set<MRSObservation> historyObservations = new HashSet<MRSObservation>();
-        if (cwcCareHistory != null) {
+        if (cwcCareHistory != null && cwcCareHistoryVO.getAddCareHistory()) {
             if (cwcCareHistory.contains(CwcCareHistory.BCG)) {
                 historyObservations.add(new MRSObservation<Concept>(cwcCareHistoryVO.getBcgDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED,
                                         openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_BCG)));

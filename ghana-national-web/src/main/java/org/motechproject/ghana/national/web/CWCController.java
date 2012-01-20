@@ -147,7 +147,8 @@ public class CWCController {
                 cwcEnrollmentForm.getLastOPV(),
                 cwcEnrollmentForm.getLastIPTiDate(),
                 cwcEnrollmentForm.getLastIPTi(),
-                cwcEnrollmentForm.getSerialNumber()));
+                cwcEnrollmentForm.getSerialNumber(),
+                cwcEnrollmentForm.getAddHistory()));
         modelMap.addAttribute("success", "Client registered for CWC successfully.");
         return ENROLL_CWC_URL;
     }
