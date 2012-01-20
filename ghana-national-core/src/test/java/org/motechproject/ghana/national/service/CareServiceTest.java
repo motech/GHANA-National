@@ -98,7 +98,7 @@ public class CareServiceTest {
         final int lastOPV = 0;
         final String serialNumber = "wewew";
         CwcVO cwcVO = new CwcVO(staffId, facilityId, registrationDate, patientMotechId, Arrays.asList(CwcCareHistory.values()), lastBCGDate, lastVitADate,
-                lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi, serialNumber);
+                lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi, serialNumber, true);
 
         setupStaffAndPatient(patientId, patientMotechId, staffId, staffPersonId);
 
@@ -135,7 +135,7 @@ public class CareServiceTest {
         String serialNumber = "serial number";
 
         CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId, new ArrayList<CwcCareHistory>(), null, null,
-                null, null, null, null, null, null, null, null, serialNumber);
+                null, null, null, null, null, null, null, null, serialNumber, false);
 
         setupStaffAndPatient(patientId, patientMotechId, staffId, staffPersonId);
 
@@ -315,7 +315,7 @@ public class CareServiceTest {
     private ANCVO createTestANCVO(String ipt, Date iptDate, String tt, Date ttDate, RegistrationToday registrationToday, Date registrationDate,
                                   String facilityId, String staffId, String patientMotechId, List<ANCCareHistory> careHistories) {
         return new ANCVO(staffId, facilityId, patientMotechId, registrationDate, registrationToday, "2321322", new Date(),
-                12.34, 12, 34, true, true, careHistories, ipt, tt, iptDate, ttDate);
+                12.34, 12, 34, true, true, careHistories, ipt, tt, iptDate, ttDate, true);
     }
 
     private void setupStaffAndPatient(String patientId, String patientMotechId, String staffId, String staffPersonId) {

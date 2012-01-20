@@ -7,6 +7,7 @@ import java.util.List;
 
 public class ANCCareHistoryVO {
 
+    Boolean addCareHistory;
     List<ANCCareHistory> careHistory;
     String lastIPT;
     String lastTT;
@@ -14,7 +15,8 @@ public class ANCCareHistoryVO {
     Date lastIPTDate;
 
 
-    public ANCCareHistoryVO(List<ANCCareHistory> careHistory, String lastIPT, String lastTT, Date lastIPTDate, Date lastTTDate) {
+    public ANCCareHistoryVO(Boolean addCareHistory, List<ANCCareHistory> careHistory, String lastIPT, String lastTT, Date lastIPTDate, Date lastTTDate) {
+        this.addCareHistory = addCareHistory;
         this.careHistory=careHistory;
         this.lastIPT=lastIPT;
         this.lastTT=lastTT;
@@ -40,5 +42,9 @@ public class ANCCareHistoryVO {
 
     public Date getLastTTDate() {
         return lastTTDate;
+    }
+
+    public Boolean getAddCareHistory() {
+        return addCareHistory;
     }
 }

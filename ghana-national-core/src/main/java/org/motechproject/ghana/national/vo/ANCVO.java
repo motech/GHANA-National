@@ -24,7 +24,7 @@ public class ANCVO {
 
     public ANCVO(String staffId, String facilityId, String motechPatientId, Date registrationDate, RegistrationToday registrationToday, String serialNumber,
                  Date estimatedDateOfDelivery, Double height, Integer gravida, Integer parity, Boolean addHistory, Boolean deliveryDateConfirmed,
-                 List<ANCCareHistory> careHistory, String lastIPT, String lastTT, Date lastIPTDate, Date lastTTDate) {
+                 List<ANCCareHistory> careHistory, String lastIPT, String lastTT, Date lastIPTDate, Date lastTTDate, Boolean addCareHistory) {
         this.staffId = staffId;
         this.facilityId = facilityId;
         this.motechPatientId = motechPatientId;
@@ -37,7 +37,7 @@ public class ANCVO {
         this.parity = parity;
         this.addHistory = addHistory;
         this.deliveryDateConfirmed = deliveryDateConfirmed;
-        this.ancCareHistoryVO=new ANCCareHistoryVO(careHistory,lastIPT,lastTT,lastIPTDate,lastTTDate);
+        this.ancCareHistoryVO=new ANCCareHistoryVO(addCareHistory, careHistory,lastIPT,lastTT,lastIPTDate,lastTTDate);
     }
 
     public String getStaffId() {

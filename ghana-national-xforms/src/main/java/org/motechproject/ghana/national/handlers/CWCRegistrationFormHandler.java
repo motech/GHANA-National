@@ -55,7 +55,8 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
                 registerCWCForm.getLastOPV(),
                 registerCWCForm.getLastIPTiDate(),
                 registerCWCForm.getLastIPTi(),
-                registerCWCForm.getSerialNumber()));
+                registerCWCForm.getSerialNumber(),
+                registerCWCForm.getAddHistory()));
 
         MobileMidwifeEnrollment mobileMidwifeEnrollment = registerCWCForm.createMobileMidwifeEnrollment();
         if(mobileMidwifeEnrollment != null){
