@@ -52,8 +52,8 @@ public class TestPatient {
         return testPatient;
     }
 
-    public Map<String, String> forMobile(){
-        return new HashMap<String, String>(){{
+    public Map<String, String> forMobile() {
+        return new HashMap<String, String>() {{
             put("registrationMode", registrationMode.name());
             put("motechId", motechId);
             put("registrantType", registrationMode.name());
@@ -76,7 +76,7 @@ public class TestPatient {
         }};
     }
 
-    public String booleanCode(boolean value){
+    public String booleanCode(boolean value) {
         return value ? "Y" : "N";
     }
 
@@ -181,7 +181,7 @@ public class TestPatient {
         return this;
     }
 
-    public TestPatient staffId(String staffId){
+    public TestPatient staffId(String staffId) {
         this.staffId = staffId;
         return this;
     }

@@ -280,6 +280,10 @@ public class ANCEnrollmentPage extends HomePage {
         submit.click();
         waitForSuccessfulCompletion();
     }
+    
+    public String motechId() {
+        return motechPatientId.getAttribute("value");
+    }
 
     @Override
     public void waitForSuccessfulCompletion() {

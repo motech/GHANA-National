@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.ANCCareHistory;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.PatientType;
@@ -12,6 +13,7 @@ import org.motechproject.mobileforms.api.validator.annotations.Required;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,19 +24,27 @@ public class RegisterClientForm extends FormBean {
 
     @Required
     private RegistrationType registrationMode;
-    @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
+    @RegEx(pattern = MOTECH_ID_PATTERN)
+    @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
-    @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
+    @RegEx(pattern = MOTECH_ID_PATTERN)
+    @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motherMotechId;
     @Required
     private PatientType registrantType;
-    @Required @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
+    @Required
+    @MaxLength(size = 100)
+    @RegEx(pattern = NAME_PATTERN)
     private String firstName;
-    @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
+    @MaxLength(size = 100)
+    @RegEx(pattern = NAME_PATTERN)
     private String middleName;
-    @Required @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
+    @Required
+    @MaxLength(size = 100)
+    @RegEx(pattern = NAME_PATTERN)
     private String lastName;
-    @MaxLength(size = 50) @RegEx(pattern = NAME_PATTERN)
+    @MaxLength(size = 50)
+    @RegEx(pattern = NAME_PATTERN)
     private String prefferedName;
     @Required
     private Date dateOfBirth;
@@ -44,19 +54,26 @@ public class RegisterClientForm extends FormBean {
     private String sex;
     @Required
     private Boolean insured;
-    @MaxLength(size = 30) @RegEx(pattern = "[a-zA-Z0-9.,'/\\\\-\\_\\s]+")
+    @MaxLength(size = 30)
+    @RegEx(pattern = "[a-zA-Z0-9.,'/\\\\-\\_\\s]+")
     private String nhis;
     private Date nhisExpires;
     private String region;
     private String district;
     private String subDistrict;
-    @Required @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
+    @Required
+    @MaxLength(size = 50)
+    @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String facilityId;
-    @Required @MaxLength(size = 50)
+    @Required
+    @MaxLength(size = 50)
     private String address;
     private String sender;
     private Boolean enroll;
-    @Required @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN) @MotechId(validator = VerhoeffValidator.class)
+    @Required
+    @MaxLength(size = 50)
+    @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
+    @MotechId(validator = VerhoeffValidator.class)
     private String staffId;
     @Required
     private Date date;
@@ -71,8 +88,8 @@ public class RegisterClientForm extends FormBean {
 
     private Boolean addHistory;
 
-    private List<CwcCareHistory> addChildHistory;
-    private List<ANCCareHistory> addMotherHistory;
+    private String addChildHistory;
+    private String addMotherHistory;
 
     private Date bcgDate;
     private Date lastOPVDate;
@@ -86,7 +103,6 @@ public class RegisterClientForm extends FormBean {
     private Integer lastPenta;
 
     //ANC REGISTRATION DETAILS
-
 
     private String ancRegNumber;
 
@@ -107,7 +123,6 @@ public class RegisterClientForm extends FormBean {
     private String lastIPT;
 
     private String lastTT;
-
 
 
     public String getRegPhone() {
@@ -407,20 +422,20 @@ public class RegisterClientForm extends FormBean {
         this.lastPenta = lastPenta;
     }
 
-    public List<CwcCareHistory> getAddChildHistory() {
-        return addChildHistory;
-    }
-
-    public void setAddChildHistory(List<CwcCareHistory> addChildHistory) {
-        this.addChildHistory = addChildHistory;
-    }
-
-    public List<ANCCareHistory> getAddMotherHistory() {
+    public String getAddMotherHistory() {
         return addMotherHistory;
     }
 
-    public void setAddMotherHistory(List<ANCCareHistory> addMotherHistory) {
+    public void setAddMotherHistory(String addMotherHistory) {
         this.addMotherHistory = addMotherHistory;
+    }
+
+    public String getAddChildHistory() {
+        return addChildHistory;
+    }
+
+    public void setAddChildHistory(String addChildHistory) {
+        this.addChildHistory = addChildHistory;
     }
 
     public String getAncRegNumber() {
@@ -501,5 +516,25 @@ public class RegisterClientForm extends FormBean {
 
     public void setLastTT(String lastTT) {
         this.lastTT = lastTT;
+    }
+
+    public List<ANCCareHistory> getAncCareHistories() {
+        List<ANCCareHistory> ancCareHistories = new ArrayList<ANCCareHistory>();
+        if (StringUtils.isNotEmpty(addMotherHistory)) {
+            for (String value : addMotherHistory.split(" ")) {
+                ancCareHistories.add(ANCCareHistory.valueOf(value));
+            }
+        }
+        return ancCareHistories;
+    }
+
+    public List<CwcCareHistory> getCWCCareHistories() {
+        List<CwcCareHistory> cwcCareHistories = new ArrayList<CwcCareHistory>();
+        if (StringUtils.isNotEmpty(addChildHistory)) {
+            for (String value : addChildHistory.split(" ")) {
+                cwcCareHistories.add(CwcCareHistory.valueOf(value));
+            }
+        }
+        return cwcCareHistories;
     }
 }

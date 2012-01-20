@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.ANCCareHistory;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -9,6 +10,7 @@ import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -68,8 +70,8 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
     @RegEx(pattern = "0[0-9]{9}")
     private String regPhone;
 
-    private List<ANCCareHistory> addCareHistory;
-    
+    private String addCareHistory;
+
 
     public String getStaffId() {
         return staffId;
@@ -207,20 +209,30 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
         this.regPhone = regPhone;
     }
 
-    public List<ANCCareHistory> getAddCareHistory() {
+    public String getAddCareHistory() {
         return addCareHistory;
     }
 
-    public void setAddCareHistory(List<ANCCareHistory> addCareHistory) {
+    public void setAddCareHistory(String addCareHistory) {
         this.addCareHistory = addCareHistory;
     }
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
-        if(isEnrolledForProgram()) {
+        if (isEnrolledForProgram()) {
             MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment());
             return enrollment.setStaffId(getStaffId()).setFacilityId(getFacilityId()).setPatientId(getMotechId());
         }
         return null;
+    }
+
+    public List<ANCCareHistory> getANCCareHistories() {
+        List<ANCCareHistory> ancCareHistories = new ArrayList<ANCCareHistory>();
+        if (StringUtils.isNotEmpty(addCareHistory)) {
+            for (String value : addCareHistory.split(" ")) {
+                ancCareHistories.add(ANCCareHistory.valueOf(value));
+            }
+        }
+        return ancCareHistories;
     }
 }
 

@@ -246,7 +246,6 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(lastTT, is(ancVO.getLastTT()));
     }
 
-
     private RegisterClientForm createRegisterClientFormForCWCEnrollment(String address, Date dateofBirth, String district, Boolean birthDateEstimated, String motechFacilityId, String firstName, Boolean insured, String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId, String preferredName, String region, RegistrationType registrationMode, String sex, String subDistrict, String phoneNumber, PatientType patientType, Date registartionDate, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, String staffId, int lastPenta, int lastOPV, int lastIPTi) {
         RegisterClientForm registerClientForm = createRegisterClientForm(address, dateofBirth, district, birthDateEstimated,
                 motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, preferredName, region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
@@ -282,7 +281,6 @@ public class PatientRegistrationFormHandlerTest {
         return registerClientForm;
     }
 
-
     private RegisterClientForm createRegisterClientForm(String address, Date dateofBirth, String district, Boolean birthDateEstimated, String motechFacilityId, String firstName, Boolean insured, String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId, String preferredName, String region, RegistrationType registrationMode, String sex, String subDistrict, String phoneNumber, PatientType patientType, String staffId) {
         RegisterClientForm registerClientForm = new RegisterClientForm();
         registerClientForm.setStaffId(staffId);
@@ -308,7 +306,6 @@ public class PatientRegistrationFormHandlerTest {
         registerClientForm.setPhoneNumber(phoneNumber);
         return registerClientForm;
     }
-
 
     private void assertRegisterPatient(String address, Date dateofBirth, Boolean birthDateEstimated, String facilityId, String firstName, Boolean insured, String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String preferredName, String sex, String phoneNumber, Patient savedPatient, MRSPerson mrsPerson) {
         assertThat(mrsPerson.getAddress(), is(equalTo(address)));
@@ -349,5 +346,4 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(lastIPTiDate, is(cwcVO.getLastIPTiDate()));
         assertThat(staffId, is(cwcVO.getStaffId()));
     }
-
 }

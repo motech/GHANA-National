@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.validator;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -11,7 +12,6 @@ import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -88,7 +88,7 @@ public class RegisterCWCFormValidatorTest {
         registerCWCForm.setRegistrationToday(registrationToday);
         registerCWCForm.setMotechId(motechId);
         registerCWCForm.setAddHistory(true);
-        registerCWCForm.setAddCareHistory(Arrays.asList(CwcCareHistory.values()));
+        registerCWCForm.setAddCareHistory(StringUtils.join(CwcCareHistory.values(), " "));
         registerCWCForm.setConsent(consent);
         return registerCWCForm;
     }

@@ -41,7 +41,7 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
                 facility.getMrsFacilityId(),
                 registerCWCForm.getRegistrationDate(),
                 registerCWCForm.getMotechId(),
-                registerCWCForm.getAddCareHistory(), registerCWCForm.getBcgDate(),
+                registerCWCForm.getCWCCareHistories(), registerCWCForm.getBcgDate(),
                 registerCWCForm.getLastVitaminADate(),
                 registerCWCForm.getMeaslesDate(),
                 registerCWCForm.getYellowFeverDate(),

@@ -30,16 +30,20 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
-        RegisterANCForm registerANCForm = (RegisterANCForm) event.getParameters().get(FORM_BEAN);
-         final Facility facility = facilityService.getFacilityByMotechId(registerANCForm.getFacilityId());
+        try {
+            RegisterANCForm registerANCForm = (RegisterANCForm) event.getParameters().get(FORM_BEAN);
+            final Facility facility = facilityService.getFacilityByMotechId(registerANCForm.getFacilityId());
 
-        ANCVO ancvo = new ANCVO(registerANCForm.getStaffId(), facility.getMrsFacilityId(),
-                registerANCForm.getMotechId(), registerANCForm.getDate(), registerANCForm.getRegDateToday(),
-                registerANCForm.getAncRegNumber(), registerANCForm.getEstDeliveryDate(), registerANCForm.getHeight(),
-                registerANCForm.getGravida(), registerANCForm.getParity(), registerANCForm.getAddHistory(), registerANCForm.getDeliveryDateConfirmed(),
-                registerANCForm.getAddCareHistory(), registerANCForm.getLastIPT(), registerANCForm.getLastTT(),
-                registerANCForm.getLastIPTDate(), registerANCForm.getLastTTDate());
+            ANCVO ancvo = new ANCVO(registerANCForm.getStaffId(), facility.getMrsFacilityId(),
+                    registerANCForm.getMotechId(), registerANCForm.getDate(), registerANCForm.getRegDateToday(),
+                    registerANCForm.getAncRegNumber(), registerANCForm.getEstDeliveryDate(), registerANCForm.getHeight(),
+                    registerANCForm.getGravida(), registerANCForm.getParity(), registerANCForm.getAddHistory(), registerANCForm.getDeliveryDateConfirmed(),
+                    registerANCForm.getANCCareHistories(), registerANCForm.getLastIPT(), registerANCForm.getLastTT(),
+                    registerANCForm.getLastIPTDate(), registerANCForm.getLastTTDate());
 
-        careService.enroll(ancvo, registerANCForm.createMobileMidwifeEnrollment());
+            careService.enroll(ancvo);
+        } catch (Exception e) {
+            log.error("Exception while creating an ANC encounter", e);
+        }
     }
 }

@@ -2,8 +2,11 @@ package org.motechproject.ghana.national.functional.patient;
 
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
+import org.motechproject.functional.data.TestANCEnrollment;
 import org.motechproject.functional.data.TestPatient;
 import org.motechproject.functional.data.TestStaff;
+import org.motechproject.functional.framework.XformHttpClient;
+import org.motechproject.functional.mobileforms.MobileForm;
 import org.motechproject.functional.pages.patient.ANCEnrollmentPage;
 import org.motechproject.functional.pages.patient.PatientEditPage;
 import org.motechproject.functional.pages.patient.PatientPage;
@@ -105,6 +108,34 @@ public class ANCTest extends LoggedInUserFunctionalTest {
         assertEquals(updatedHeight, Double.parseDouble(ancEnrollmentPage.getHeight()));
         assertFalse(ancEnrollmentPage.getTtCareHistory());
         assertFalse(ancEnrollmentPage.getDriver().findElement(By.id("lastTTDate")).isDisplayed());
+    }
+
+    @Test
+    public void shouldCreateANCForAPatientWithMobileDeviceAndSearchForItInWeb() {
+        DataGenerator dataGenerator = new DataGenerator();
+        StaffPage staffPage = browser.toStaffCreatePage(homePage);
+        staffPage.create(TestStaff.with("First Name" + dataGenerator.randomString(5)));
+
+        String staffId = staffPage.staffId();
+        String patientFirstName = "First Name" + dataGenerator.randomString(5);
+        TestPatient testPatient = TestPatient.with(patientFirstName).
+                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
+                patientType(TestPatient.PATIENT_TYPE.PATIENT_MOTHER).estimatedDateOfBirth(false);
+
+        patientPage = browser.toCreatePatient(staffPage);
+        patientPage.create(testPatient);
+
+        final TestANCEnrollment testANCEnrollment = new TestANCEnrollment().with(patientPage.motechId(), staffId, "13212");
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerANCForm(), testANCEnrollment.forMobile());
+
+        assertEquals(1, response.getSuccessCount());
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithName(testPatient.firstName());
+        searchPatientPage.displaying(testPatient);
+
+        PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, testPatient);
+        ANCEnrollmentPage ancEnrollmentPage = browser.toANCEnrollmentForm(patientEditPage);
+        assertEquals(testANCEnrollment.motechPatientId(), ancEnrollmentPage.motechId());
     }
 
     private PatientEditPage searchPatient(String patientFirstName, TestPatient testPatient, ANCEnrollmentPage ancEnrollmentPage) {
