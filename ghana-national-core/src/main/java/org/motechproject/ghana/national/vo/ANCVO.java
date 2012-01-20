@@ -20,13 +20,11 @@ public class ANCVO {
     private Integer parity;
     private Boolean addHistory;
     private Boolean deliveryDateConfirmed;
-    private List<ANCCareHistory> careHistory;
-    private String lastIPT;
-    private String lastTT;
-    private Date lastIPTDate;
-    private Date lastTTDate;
+    private ANCCareHistoryVO ancCareHistoryVO;
 
-    public ANCVO(String staffId, String facilityId, String motechPatientId, Date registrationDate, RegistrationToday registrationToday, String serialNumber, Date estimatedDateOfDelivery, Double height, Integer gravida, Integer parity, Boolean addHistory, Boolean deliveryDateConfirmed, List<ANCCareHistory> careHistory, String lastIPT, String lastTT, Date lastIPTDate, Date lastTTDate) {
+    public ANCVO(String staffId, String facilityId, String motechPatientId, Date registrationDate, RegistrationToday registrationToday, String serialNumber,
+                 Date estimatedDateOfDelivery, Double height, Integer gravida, Integer parity, Boolean addHistory, Boolean deliveryDateConfirmed,
+                 List<ANCCareHistory> careHistory, String lastIPT, String lastTT, Date lastIPTDate, Date lastTTDate) {
         this.staffId = staffId;
         this.facilityId = facilityId;
         this.motechPatientId = motechPatientId;
@@ -39,11 +37,7 @@ public class ANCVO {
         this.parity = parity;
         this.addHistory = addHistory;
         this.deliveryDateConfirmed = deliveryDateConfirmed;
-        this.careHistory = careHistory;
-        this.lastIPT = lastIPT;
-        this.lastTT = lastTT;
-        this.lastIPTDate = lastIPTDate;
-        this.lastTTDate = lastTTDate;
+        this.ancCareHistoryVO=new ANCCareHistoryVO(careHistory,lastIPT,lastTT,lastIPTDate,lastTTDate);
     }
 
     public String getStaffId() {
@@ -94,23 +88,7 @@ public class ANCVO {
         return deliveryDateConfirmed;
     }
 
-    public List<ANCCareHistory> getCareHistory() {
-        return careHistory;
-    }
-
-    public String getLastIPT() {
-        return lastIPT;
-    }
-
-    public String getLastTT() {
-        return lastTT;
-    }
-
-    public Date getLastIPTDate() {
-        return lastIPTDate;
-    }
-
-    public Date getLastTTDate() {
-        return lastTTDate;
+    public ANCCareHistoryVO getAncCareHistoryVO() {
+        return ancCareHistoryVO;
     }
 }

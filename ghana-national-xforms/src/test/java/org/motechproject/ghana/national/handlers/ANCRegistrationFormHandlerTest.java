@@ -89,10 +89,10 @@ public class ANCRegistrationFormHandlerTest {
         assertEquals(registerANCForm.getEstDeliveryDate(), ancVO.getEstimatedDateOfDelivery());
         assertEquals(registerANCForm.getGravida(), ancVO.getGravida());
         assertEquals(registerANCForm.getHeight(), ancVO.getHeight());
-        assertEquals(registerANCForm.getLastIPT(), ancVO.getLastIPT());
-        assertEquals(registerANCForm.getLastIPTDate(), ancVO.getLastIPTDate());
-        assertEquals(registerANCForm.getLastTT(), ancVO.getLastTT());
-        assertEquals(registerANCForm.getLastTTDate(), ancVO.getLastTTDate());
+        assertEquals(registerANCForm.getLastIPT(), ancVO.getAncCareHistoryVO().getLastIPT());
+        assertEquals(registerANCForm.getLastIPTDate(), ancVO.getAncCareHistoryVO().getLastIPTDate());
+        assertEquals(registerANCForm.getLastTT(), ancVO.getAncCareHistoryVO().getLastTT());
+        assertEquals(registerANCForm.getLastTTDate(), ancVO.getAncCareHistoryVO().getLastTTDate());
         assertEquals(registerANCForm.getMotechId(), ancVO.getPatientMotechId());
         assertEquals(registerANCForm.getParity(), ancVO.getParity());
         assertEquals(registerANCForm.getRegDateToday(), ancVO.getRegistrationToday());
