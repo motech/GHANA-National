@@ -11,37 +11,19 @@ public class CwcVO {
     private String facilityId;
     private Date registrationDate;
     private String patientMotechId;
-    private List<CwcCareHistory> careHistories;
-    private Date bcgDate;
-    private Date vitADate;
-    private Date measlesDate;
-    private Date yfDate;
-    private Date lastPentaDate;
-    private Integer lastPenta;
-    private Date lastOPVDate;
-    private Integer lastOPV;
-    private Date lastIPTiDate;
-    private Integer lastIPTi;
     private String serialNumber;
+    private CWCCareHistoryVO cwcCareHistoryVO;
 
-    public CwcVO(String staffId, String facilityId, Date registrationDate, String patientMotechId, List<CwcCareHistory> careHistories, Date bcgDate, Date vitADate,
-                 Date measlesDate, Date yfDate, Date lastPentaDate, Integer lastPenta, Date lastOPVDate, Integer lastOPV, Date lastIPTiDate, Integer lastIPTi, String serialNumber) {
+    public CwcVO(String staffId, String facilityId, Date registrationDate, String patientMotechId, List<CwcCareHistory> careHistories, Date bcgDate,
+                 Date vitADate,Date measlesDate, Date yfDate, Date lastPentaDate, Integer lastPenta, Date lastOPVDate, Integer lastOPV, Date lastIPTiDate,
+                 Integer lastIPTi, String serialNumber) {
         this.staffId = staffId;
         this.facilityId = facilityId;
         this.registrationDate = registrationDate;
         this.patientMotechId = patientMotechId;
-        this.careHistories = careHistories;
-        this.bcgDate = bcgDate;
-        this.vitADate = vitADate;
-        this.measlesDate = measlesDate;
-        this.yfDate = yfDate;
-        this.lastPentaDate = lastPentaDate;
-        this.lastPenta = lastPenta;
-        this.lastOPVDate = lastOPVDate;
-        this.lastOPV = lastOPV;
-        this.lastIPTiDate = lastIPTiDate;
-        this.lastIPTi = lastIPTi;
         this.serialNumber = serialNumber;
+        this.cwcCareHistoryVO=new CWCCareHistoryVO(careHistories, bcgDate, vitADate, measlesDate, yfDate,lastPentaDate,lastPenta,lastOPVDate,
+                                                   lastOPV,lastIPTi,lastIPTiDate);
     }
 
     public String getStaffId() {
@@ -60,51 +42,11 @@ public class CwcVO {
         return patientMotechId;
     }
 
-    public Date getBcgDate() {
-        return bcgDate;
-    }
-
-    public Date getVitADate() {
-        return vitADate;
-    }
-
-    public Date getMeaslesDate() {
-        return measlesDate;
-    }
-
-    public Date getYfDate() {
-        return yfDate;
-    }
-
-    public Date getLastPentaDate() {
-        return lastPentaDate;
-    }
-
-    public Integer getLastPenta() {
-        return lastPenta;
-    }
-
-    public Date getLastOPVDate() {
-        return lastOPVDate;
-    }
-
-    public Integer getLastOPV() {
-        return lastOPV;
-    }
-
-    public Date getLastIPTiDate() {
-        return lastIPTiDate;
-    }
-
-    public Integer getLastIPTi() {
-        return lastIPTi;
-    }
-
     public String getSerialNumber() {
         return serialNumber;
     }
 
-    public List<CwcCareHistory> getCareHistories() {
-        return careHistories;
+    public CWCCareHistoryVO getCWCCareHistoryVO() {
+        return cwcCareHistoryVO;
     }
 }

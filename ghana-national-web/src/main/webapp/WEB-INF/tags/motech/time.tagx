@@ -11,6 +11,13 @@
     <jsp:directive.attribute name="hourErrorMessage" type="java.lang.String" rtexprvalue="true"/>
     <jsp:directive.attribute name="minutesErrorMsgId" type="java.lang.String" required="true" rtexprvalue="true"/>
     <jsp:directive.attribute name="minutesErrorMessage" type="java.lang.String" rtexprvalue="true"/>
+    <jsp:directive.attribute name="minTimeInclusive" type="java.lang.String" />
+    <jsp:directive.attribute name="maxTimeInclusive" type="java.lang.String" />
+
+    <c:set var="minTimeTokens" value="${fn:split(minTimeInclusive, ':')}" />
+    <c:set var="maxTimeTokens" value="${fn:split(maxTimeInclusive, ':')}" />
+    <c:set var="minHours" value="${minTimeTokens[0]}" />
+    <c:set var="maxHours" value="${maxTimeTokens[0]}" />
 
     <c:if test="${required}">
         <c:set var="cssClass" value="jsRequire"/>
@@ -19,7 +26,7 @@
     <label for="${path}" class="formLabel">${fn:escapeXml(label)}</label>    
     <form:select id="${path}Hour" path="${path}.hour">
         <option value="">${fn:escapeXml(default_select_hour_message)}</option>
-        <c:forEach var="i" begin="0" end="23" step="1">
+        <c:forEach var="i" begin="${minHours}" end="${maxHours}" step="1">
             <c:if test="${time.hour == i}">
                 <option value="${i}" selected="selected">${i}</option>
             </c:if>

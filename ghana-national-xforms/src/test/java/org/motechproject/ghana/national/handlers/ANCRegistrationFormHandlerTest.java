@@ -8,7 +8,11 @@ import org.motechproject.ghana.national.bean.RegisterANCForm;
 import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.RegistrationToday;
-import org.motechproject.ghana.national.domain.mobilemidwife.*;
+import org.motechproject.ghana.national.domain.mobilemidwife.Language;
+import org.motechproject.ghana.national.domain.mobilemidwife.LearnedFrom;
+import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
+import org.motechproject.ghana.national.domain.mobilemidwife.ReasonToJoin;
+import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.ANCVO;
@@ -21,10 +25,9 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 
@@ -78,8 +81,7 @@ public class ANCRegistrationFormHandlerTest {
         }}));
 
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
-        final ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        verify(careService).enroll(captor.capture(), mobileMidwifeEnrollmentCaptor.capture() );
+        verify(careService).enroll(captor.capture());
         final ANCVO ancVO = captor.getValue();
 
         assertEquals(registerANCForm.getAddHistory(), ancVO.getAddHistory());
@@ -89,37 +91,15 @@ public class ANCRegistrationFormHandlerTest {
         assertEquals(registerANCForm.getEstDeliveryDate(), ancVO.getEstimatedDateOfDelivery());
         assertEquals(registerANCForm.getGravida(), ancVO.getGravida());
         assertEquals(registerANCForm.getHeight(), ancVO.getHeight());
-        assertEquals(registerANCForm.getLastIPT(), ancVO.getLastIPT());
-        assertEquals(registerANCForm.getLastIPTDate(), ancVO.getLastIPTDate());
-        assertEquals(registerANCForm.getLastTT(), ancVO.getLastTT());
-        assertEquals(registerANCForm.getLastTTDate(), ancVO.getLastTTDate());
+        assertEquals(registerANCForm.getLastIPT(), ancVO.getAncCareHistoryVO().getLastIPT());
+        assertEquals(registerANCForm.getLastIPTDate(), ancVO.getAncCareHistoryVO().getLastIPTDate());
+        assertEquals(registerANCForm.getLastTT(), ancVO.getAncCareHistoryVO().getLastTT());
+        assertEquals(registerANCForm.getLastTTDate(), ancVO.getAncCareHistoryVO().getLastTTDate());
         assertEquals(registerANCForm.getMotechId(), ancVO.getPatientMotechId());
         assertEquals(registerANCForm.getParity(), ancVO.getParity());
         assertEquals(registerANCForm.getRegDateToday(), ancVO.getRegistrationToday());
         assertEquals(registerANCForm.getStaffId(), ancVO.getStaffId());
         assertEquals(mrsFacilityId, ancVO.getFacilityId());
-
-        assertMobileMidwifeFormEnrollment(registerANCForm, mobileMidwifeEnrollmentCaptor.getValue());
-    }
-
-    private void assertMobileMidwifeFormEnrollment(RegisterANCForm exptectedForm, MobileMidwifeEnrollment actual) {
-
-        if(exptectedForm.isEnrolledForProgram()) {
-            assertNotNull(exptectedForm.getConsent());
-        }
-        assertThat(actual.getConsent(), is(exptectedForm.getConsent()));
-        assertThat(actual.getStaffId(), is(exptectedForm.getStaffId()));
-        assertThat(actual.getFacilityId(), is(exptectedForm.getFacilityId()));
-        assertThat(actual.getPatientId(), is(exptectedForm.getMotechId()));
-        assertThat(actual.getServiceType(), is(exptectedForm.getServiceType()));
-        assertThat(actual.getReasonToJoin(), is(exptectedForm.getReasonToJoin()));
-        assertThat(actual.getMedium(), is(exptectedForm.getMediumStripingOwnership()));
-        assertThat(actual.getDayOfWeek(), is(exptectedForm.getDayOfWeek()));
-        assertThat(actual.getTimeOfDay(), is(exptectedForm.getTimeOfDay()));
-        assertThat(actual.getLanguage(), is(exptectedForm.getLanguage()));
-        assertThat(actual.getLearnedFrom(), is(exptectedForm.getLearnedFrom()));
-        assertThat(actual.getPhoneNumber(), is(exptectedForm.getPhoneNumber()));
-        assertThat(actual.getPhoneOwnership(), is(exptectedForm.getPhoneOwnership()));
     }
 
     private void setMobileMidwifeEnrollment(RegisterANCForm registerANCForm) {

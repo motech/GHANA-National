@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterClientForm;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.domain.PatientType;
@@ -13,10 +14,7 @@ import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.mrs.model.Attribute;
-import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.mrs.model.*;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
@@ -65,27 +63,42 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
                     attributes(getPatientAttributes(registerClientForm));
 
             String facilityId = facilityService.getFacilityByMotechId(registerClientForm.getFacilityId()).mrsFacilityId();
-            MRSPatient mrsPatient = new MRSPatient(registerClientForm.getMotechId(), mrsPerson, new MRSFacility(facilityId));
+            String motechId = registerClientForm.getMotechId();
+            MRSPatient mrsPatient = new MRSPatient(motechId, mrsPerson, new MRSFacility(facilityId));
 
-            patientService.registerPatient(new Patient(mrsPatient, registerClientForm.getMotherMotechId()));
+            String patientDBId = patientService.registerPatient(new Patient(mrsPatient, registerClientForm.getMotherMotechId()));
+
+            MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment();
+            if (mobileMidwifeEnrollment != null) {
+                mobileMidwifeEnrollment.setFacilityId(facilityId);
+            }
 
             if (registerClientForm.getRegistrantType().equals(PatientType.CHILD_UNDER_FIVE)) {
-                careService.enroll(new CwcVO(registerClientForm.getStaffId(), registerClientForm.getFacilityId(), registerClientForm.getDate(),
-                        registerClientForm.getMotechId(), registerClientForm.getCWCCareHistories(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
+                CwcVO cwcVO = new CwcVO(registerClientForm.getStaffId(), facilityId, registerClientForm.getDate(),
+                        motechId, registerClientForm.getCWCCareHistories(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
                         registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
-                        registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber()));
+                        registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber());
+
+                    careService.enroll(cwcVO, mobileMidwifeEnrollment);
+
             } else if (PatientType.PREGNANT_MOTHER.equals(registerClientForm.getRegistrantType())) {
-                careService.enroll(new ANCVO(registerClientForm.getStaffId(), registerClientForm.getFacilityId(), registerClientForm.getMotherMotechId(), registerClientForm.getDate()
+                ANCVO ancVO = new ANCVO(registerClientForm.getStaffId(), facilityId, motechId, registerClientForm.getDate()
                         , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),
                         registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), registerClientForm.getAncCareHistories(), registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
-                        registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate()));
+                        registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate());
+
+                    careService.enroll(ancVO, mobileMidwifeEnrollment);
+
             }
-        } catch (Exception e) {
+        } catch (Exception
+                e) {
             log.error("Exception while saving patient", e);
         }
     }
 
-    private List<Attribute> getPatientAttributes(RegisterClientForm registerClientForm) {
+    private List<Attribute> getPatientAttributes
+            (RegisterClientForm
+                     registerClientForm) {
         List<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), registerClientForm.getPhoneNumber()));
         attributes.add(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), Utility.safeToString(registerClientForm.getNhisExpires())));

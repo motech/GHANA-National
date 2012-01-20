@@ -24,6 +24,7 @@ public class CareHistoryFormHandler implements FormPublishHandler {
     @Autowired
     private CareService careService;
 
+    public static final String ENCOUNTER_PATIENTHISTORY = "PATIENTHISTORY";
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.careHistory")
     @LoginAsAdmin

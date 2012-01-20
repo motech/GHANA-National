@@ -97,15 +97,15 @@ public class CWCRegistrationFormHandlerTest {
         assertThat(facilityId, is(facilityId));
         assertThat(registartionDate, is(cwcVO.getRegistrationDate()));
         assertThat(patientMotechId, is(cwcVO.getPatientMotechId()));
-        assertThat(lastBCGDate, is(cwcVO.getBcgDate()));
-        assertThat(lastVitADate, is(cwcVO.getVitADate()));
-        assertThat(lastMeaslesDate, is(cwcVO.getMeaslesDate()));
-        assertThat(lastYfDate, is(cwcVO.getYfDate()));
-        assertThat(lastPentaDate, is(cwcVO.getLastPentaDate()));
-        assertThat(lastPenta, is(cwcVO.getLastPenta()));
-        assertThat(lastOPVDate, is(cwcVO.getLastOPVDate()));
-        assertThat(lastOPV, is(cwcVO.getLastOPV()));
-        assertThat(lastIPTiDate, is(cwcVO.getLastIPTiDate()));
+        assertThat(lastBCGDate, is(cwcVO.getCWCCareHistoryVO().getBcgDate()));
+        assertThat(lastVitADate, is(cwcVO.getCWCCareHistoryVO().getVitADate()));
+        assertThat(lastMeaslesDate, is(cwcVO.getCWCCareHistoryVO().getMeaslesDate()));
+        assertThat(lastYfDate, is(cwcVO.getCWCCareHistoryVO().getYfDate()));
+        assertThat(lastPentaDate, is(cwcVO.getCWCCareHistoryVO().getLastPentaDate()));
+        assertThat(lastPenta, is(cwcVO.getCWCCareHistoryVO().getLastPenta()));
+        assertThat(lastOPVDate, is(cwcVO.getCWCCareHistoryVO().getLastOPVDate()));
+        assertThat(lastOPV, is(cwcVO.getCWCCareHistoryVO().getLastOPV()));
+        assertThat(lastIPTiDate, is(cwcVO.getCWCCareHistoryVO().getLastIPTiDate()));
 
         assertMobileMidwifeFormEnrollment(registerCWCForm, mobileMidwifeEnrollmentCaptor.getValue());
     }
