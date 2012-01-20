@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web;
 
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.validator.MobileMidwifeFormValidator;
@@ -56,7 +57,8 @@ public class MobileMidwifeController {
     @ApiSession
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String save(MobileMidwifeEnrollmentForm form, BindingResult bindingResult, ModelMap modelMap) {
-        List<FormError> formErrors = mobileMidwifeFormValidator.validateFacilityPatientAndStaff(form.getPatientMotechId(), form.getFacilityMotechId(), form.getStaffMotechId());
+        List<FormError> formErrors = mobileMidwifeFormValidator.validateFacilityPatientAndStaff(form.getPatientMotechId(),
+                form.getFacilityMotechId(), form.getStaffMotechId(), form.getMedium(), form.getTimeOfDay());
         if (isNotEmpty(formErrors)) {
             addFormInfo(modelMap, form).
                     addAttribute("formErrors", formErrors);
@@ -78,7 +80,9 @@ public class MobileMidwifeController {
                 .addAttribute("languages", Language.values())
                 .addAttribute("mediums", Medium.values())
                 .addAttribute("dayOfWeeks", collectDayOfWeekOptions())
-                .addAttribute("messageStartWeeks", MessageStartWeek.messageStartWeeks());
+                .addAttribute("messageStartWeeks", MessageStartWeek.messageStartWeeks())
+                .addAttribute("minTimeOfDay", Constants.MOBILE_MIDWIFE_MIN_TIMEOFDAY_FOR_VOICE)
+                .addAttribute("maxTimeOfDay", Constants.MOBILE_MIDWIFE_MAX_TIMEOFDAY_FOR_VOICE);
     }
 
     private Map<String, String> collectDayOfWeekOptions() {

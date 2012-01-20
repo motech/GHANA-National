@@ -4,12 +4,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.MobileMidwifeForm;
+import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
+import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.mobileforms.api.domain.FormError;
+import org.motechproject.model.Time;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class MobileMidwifeFormValidatorTest {
@@ -41,4 +46,30 @@ public class MobileMidwifeFormValidatorTest {
         verify(formValidator).validateIfStaffExists(eq(staffId));
         verify(formValidator).validateIfFacilityExists(eq(facilityId));
     }
+
+    @Test
+    public void shouldValidateTimeOfDayForVoiceAsPreferredMedium() {
+        MobileMidwifeForm form = with(new Time(22, 59)).buildMobileMidwifeForm();
+        List<FormError> errors = mobileMidwifeFormValidator.validate(form);
+        assertEquals(0, errors.size());
+
+        form = with(new Time(5, 00)).buildMobileMidwifeForm();
+        errors = mobileMidwifeFormValidator.validate(form);
+        assertEquals(0, errors.size());
+
+        form = with(new Time(4, 59)).buildMobileMidwifeForm();
+        errors = mobileMidwifeFormValidator.validate(form);
+        assertEquals(Constants.MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE, errors.get(0).getError());
+
+        form = with(new Time(23, 01)).buildMobileMidwifeForm();
+        errors = mobileMidwifeFormValidator.validate(form);
+        assertEquals(Constants.MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE, errors.get(0).getError());
+    }
+
+    private MobileMidwifeBuilder with(Time timeOfDay) {
+        return new MobileMidwifeBuilder().patientId("1234568").staffId("465").facilityId("13161").consent(true)
+                .format("PERS_VOICE").timeOfDay(timeOfDay);
+    }
+
+
 }
