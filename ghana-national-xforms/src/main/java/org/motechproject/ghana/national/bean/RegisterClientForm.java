@@ -7,7 +7,6 @@ import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.validator.field.MotechId;
-import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
@@ -517,7 +516,7 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
     }
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
-        if (isEnrolledForProgram()) {
+        if (isEnrolledForMobileMidwifeProgram()) {
             MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment());
             return enrollment.setStaffId(getStaffId()).setPatientId(getMotechId());
         }

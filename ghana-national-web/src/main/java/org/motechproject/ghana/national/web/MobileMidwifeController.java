@@ -3,7 +3,7 @@ package org.motechproject.ghana.national.web;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
-import org.motechproject.ghana.national.validator.MobileMidwifeFormValidator;
+import org.motechproject.ghana.national.validator.MobileMidwifeValidator;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.DayOfWeek;
@@ -30,7 +30,7 @@ public class MobileMidwifeController {
 
     public static final String MOBILE_MIDWIFE_URL = "enroll/mobile-midwife/new";
     public static final String SUCCESS_MESSAGE = "mobilemidwife_enroll_success";
-    private MobileMidwifeFormValidator mobileMidwifeFormValidator;
+    private MobileMidwifeValidator mobileMidwifeValidator;
     private MobileMidwifeService mobileMidwifeService;
     private MessageSource messages;
 
@@ -38,8 +38,8 @@ public class MobileMidwifeController {
     }
 
     @Autowired
-    public MobileMidwifeController(MobileMidwifeFormValidator mobileMidwifeFormValidator, MobileMidwifeService mobileMidwifeService, MessageSource messages) {
-        this.mobileMidwifeFormValidator = mobileMidwifeFormValidator;
+    public MobileMidwifeController(MobileMidwifeValidator mobileMidwifeValidator, MobileMidwifeService mobileMidwifeService, MessageSource messages) {
+        this.mobileMidwifeValidator = mobileMidwifeValidator;
         this.mobileMidwifeService = mobileMidwifeService;
         this.messages = messages;
     }
@@ -57,13 +57,12 @@ public class MobileMidwifeController {
     @ApiSession
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String save(MobileMidwifeEnrollmentForm form, BindingResult bindingResult, ModelMap modelMap) {
-        List<FormError> formErrors = mobileMidwifeFormValidator.validateFacilityPatientAndStaff(form.getPatientMotechId(),
-                form.getFacilityMotechId(), form.getStaffMotechId(), form.getMedium(), form.getTimeOfDay());
+        MobileMidwifeEnrollment midwifeEnrollment = form.createEnrollment();
+        List<FormError> formErrors = mobileMidwifeValidator.validate(midwifeEnrollment);
         if (isNotEmpty(formErrors)) {
             addFormInfo(modelMap, form).
                     addAttribute("formErrors", formErrors);
-        } else {
-            MobileMidwifeEnrollment midwifeEnrollment = form.createEnrollment();
+        } else {            
             mobileMidwifeService.createOrUpdateEnrollment(midwifeEnrollment);
             addFormInfo(modelMap, new MobileMidwifeEnrollmentForm(midwifeEnrollment))
                     .addAttribute("successMessage", messages.getMessage(SUCCESS_MESSAGE, null, Locale.getDefault()));

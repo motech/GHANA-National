@@ -14,18 +14,16 @@ public abstract class MobileMidWifeIncludeForm extends AbstractMobileMidWifeForm
         return consent;
     }
 
-    public MobileMidWifeIncludeForm setConsent(Boolean consent) {
+    public void setConsent(Boolean consent) {
         this.consent = consent;
-        return this;
     }
 
-    public Boolean isEnrolledForProgram() {
+    public Boolean isEnrolledForMobileMidwifeProgram() {
         return enroll != null ? enroll : false;
     }
 
-    public MobileMidWifeIncludeForm setEnroll(Boolean enrollForProgram) {
+    public void setEnroll(Boolean enrollForProgram) {
         this.enroll = enrollForProgram;
-        return this;
     }
 
     public MobileMidwifeEnrollment fillEnrollment(MobileMidwifeEnrollment enrollment) {

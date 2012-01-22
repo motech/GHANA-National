@@ -218,7 +218,7 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
     }
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
-        if (isEnrolledForProgram()) {
+        if (isEnrolledForMobileMidwifeProgram()) {
             MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment());
             return enrollment.setStaffId(getStaffId()).setFacilityId(getFacilityId()).setPatientId(getMotechId());
         }

@@ -23,8 +23,8 @@
                 <enroll/>
                 <consent/>
                 <serviceType/>
-                <ownership/>
-                <regPhone/>
+                <phoneOwnership/>
+                <phoneNumber/>
                 <format/>
                 <language/>
                 <dayOfWeek/>
@@ -523,10 +523,10 @@
                  required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="serviceType" nodeset="/ANCRegistration/serviceType"
                  relevant="/ANCRegistration/consent = Y" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="ownership" nodeset="/ANCRegistration/ownership"
+        <xf:bind action="show" id="phoneOwnership" nodeset="/ANCRegistration/phoneOwnership"
                  relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="regPhone" nodeset="/ANCRegistration/regPhone"
-                 relevant="/ANCRegistration/ownership = 'PERSONAL' or /ANCRegistration/ownership = 'HOUSEHOLD'"
+        <xf:bind action="show" id="phoneNumber" nodeset="/ANCRegistration/phoneNumber"
+                 relevant="/ANCRegistration/phoneOwnership = 'PERSONAL' or /ANCRegistration/phoneOwnership = 'HOUSEHOLD'"
                  required="true()"
                  type="xsd:int" visible="false()" constraint=". &lt;= 999999999"
                  message="Number too large. It should be 10 digits long"/>
@@ -709,7 +709,7 @@
                 <xf:value>CHILD_CARE</xf:value>
             </xf:item>
         </xf:select1>
-        <xf:select1 bind="ownership">
+        <xf:select1 bind="phoneOwnership">
             <xf:label>Phone ownership</xf:label>
             <xf:item id="PERSONAL">
                 <xf:label>Personal phone</xf:label>
@@ -724,12 +724,12 @@
                 <xf:value>PUBLIC</xf:value>
             </xf:item>
         </xf:select1>
-        <xf:input bind="regPhone">
+        <xf:input bind="phoneNumber">
             <xf:label>Phone number</xf:label>
         </xf:input>
         <xf:select1 bind="format">
             <xf:label>Message format</xf:label>
-            <xf:itemset nodeset="instance('format')/item[@parent=instance('ANCRegistration')/ownership]">
+            <xf:itemset nodeset="instance('format')/item[@parent=instance('ANCRegistration')/phoneOwnership]">
                 <xf:label ref="label"/>
                 <xf:value ref="value"/>
             </xf:itemset>

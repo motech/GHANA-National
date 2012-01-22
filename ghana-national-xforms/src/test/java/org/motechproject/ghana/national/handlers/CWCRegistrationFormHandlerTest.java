@@ -117,7 +117,7 @@ public class CWCRegistrationFormHandlerTest {
 
     private void assertMobileMidwifeFormEnrollment(RegisterCWCForm exptectedForm, MobileMidwifeEnrollment actual) {
 
-        if (exptectedForm.isEnrolledForProgram()) {
+        if (exptectedForm.isEnrolledForMobileMidwifeProgram()) {
             assertNotNull(exptectedForm.getConsent());
         }
         assertThat(actual.getConsent(), is(exptectedForm.getConsent()));
