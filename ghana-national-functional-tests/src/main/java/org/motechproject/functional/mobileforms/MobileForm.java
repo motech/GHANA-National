@@ -13,6 +13,10 @@ public class MobileForm {
         return new MobileForm("NurseDataEntry", "register-anc-template.xml");
     }
 
+    public static MobileForm careHistoryForm() {
+        return new MobileForm("NurseDataEntry", "care-history-template.xml");
+    }
+
     public MobileForm(String studyName, String xmlTemplateName) {
         this.studyName = studyName;
         this.xmlTemplateName = xmlTemplateName;

@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.motechproject.ghana.national.domain.ANCCareHistory;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.handlers.CareHistoryFormHandlerTest;
+import org.motechproject.ghana.national.vo.CareHistoryVO;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +39,19 @@ public class CareHistoryFormTest {
     public void shouldReturnACareHistoryVOInstanceGivenAFormInstance(){
         String facilityId = "facilityId";
         CareHistoryForm historyForm = CareHistoryFormHandlerTest.careHistoryFormWithCwcDetails(facilityId);
-        CareHistoryFormHandlerTest.assertCareHistoryDeatils(historyForm.careHistoryVO(facilityId), historyForm, historyForm.getFacilityId());
+        CareHistoryVO careHistoryVO = historyForm.careHistoryVO(facilityId);
+        CareHistoryFormHandlerTest.assertCareHistoryDeatils(careHistoryVO, historyForm, historyForm.getFacilityId());
+        assertThat(careHistoryVO.getCwcCareHistoryVO().getAddCareHistory(), is(equalTo(true)));
+        assertThat(careHistoryVO.getAncCareHistoryVO().getAddCareHistory(), is(equalTo(true)));
+
+    }
+
+    @Test
+    public void shouldSetAncAndCwcAddCareHistoryBooleanFlagToFalseIfNoHistoriesWereAdded(){
+        CareHistoryForm historyForm = new CareHistoryForm();
+        String facilityId = "facilityId";
+        CareHistoryVO careHistoryVO = historyForm.careHistoryVO(facilityId);
+        assertThat(careHistoryVO.getCwcCareHistoryVO().getAddCareHistory(), is(equalTo(false)));
+        assertThat(careHistoryVO.getAncCareHistoryVO().getAddCareHistory(), is(equalTo(false)));
     }
 }
