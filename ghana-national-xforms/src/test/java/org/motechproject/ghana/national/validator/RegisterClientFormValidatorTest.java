@@ -59,6 +59,7 @@ public class RegisterClientFormValidatorTest {
         String mothersMotechId = "100";
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(mothersMotechId);
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
+        when(mockRegisterClientForm.getDateOfBirth()).thenReturn(new Date(99,9,9));
         Patient patientsMotherMock = mock(Patient.class);
         when(mockPatientService.getPatientByMotechId(mothersMotechId)).thenReturn(patientsMotherMock);
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
@@ -70,6 +71,7 @@ public class RegisterClientFormValidatorTest {
     @Test
     public void shouldReturnErrorIfPatientTypeIsChildAndMothersMotechIdIsNotPresent() {
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(null);
+        when(mockRegisterClientForm.getDateOfBirth()).thenReturn(new Date(99,9,9));
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("motherMotechId", NOT_FOUND)));
         verify(mockPatientService, never()).getPatientByMotechId(Matchers.<String>any());
