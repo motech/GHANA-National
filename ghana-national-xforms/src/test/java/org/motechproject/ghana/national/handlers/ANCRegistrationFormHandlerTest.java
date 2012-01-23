@@ -5,31 +5,23 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterANCForm;
-import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
+import org.motechproject.ghana.national.domain.ANCCareHistory;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.RegistrationToday;
-import org.motechproject.ghana.national.domain.mobilemidwife.Language;
-import org.motechproject.ghana.national.domain.mobilemidwife.LearnedFrom;
-import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
-import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
-import org.motechproject.ghana.national.domain.mobilemidwife.ReasonToJoin;
-import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
+import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
 import org.motechproject.ghana.national.vo.ANCVO;
-import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.model.Time;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 
@@ -63,6 +55,7 @@ public class ANCRegistrationFormHandlerTest {
         registerANCForm.setEstDeliveryDate(new Date(2012, 3, 4));
         registerANCForm.setFacilityId("12345");
         registerANCForm.setGravida(3);
+        registerANCForm.setAddCareHistory("IPT TT");
         registerANCForm.setHeight(4.67);
         registerANCForm.setLastIPT("4");
         registerANCForm.setLastIPTDate(new Date(2011, 8, 8));
@@ -74,7 +67,6 @@ public class ANCRegistrationFormHandlerTest {
         registerANCForm.setRegPhone("045353453434");
         registerANCForm.setStaffId("2331");
         registerANCForm.setFacilityId("facility");
-        setMobileMidwifeEnrollment(registerANCForm);
 
         Facility facility = mock(Facility.class);
         String mrsFacilityId = "343";
@@ -86,36 +78,29 @@ public class ANCRegistrationFormHandlerTest {
         }}));
 
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
-        final ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         verify(careService).enroll(captor.capture());
         final ANCVO ancVO = captor.getValue();
 
         assertEquals(registerANCForm.getAddHistory(), ancVO.getAddHistory());
+        assertANCCareHistoryDetails(registerANCForm.getANCCareHistories(), registerANCForm.getLastIPT(), registerANCForm.getLastIPTDate(), registerANCForm.getLastTT(), registerANCForm.getLastTTDate(), ancVO.getAncCareHistoryVO());
+        assertEquals(registerANCForm.getMotechId(), ancVO.getPatientMotechId());
         assertEquals(registerANCForm.getAncRegNumber(), ancVO.getSerialNumber());
         assertEquals(registerANCForm.getDate(), ancVO.getRegistrationDate());
         assertEquals(registerANCForm.getDeliveryDateConfirmed(), ancVO.getDeliveryDateConfirmed());
         assertEquals(registerANCForm.getEstDeliveryDate(), ancVO.getEstimatedDateOfDelivery());
         assertEquals(registerANCForm.getGravida(), ancVO.getGravida());
         assertEquals(registerANCForm.getHeight(), ancVO.getHeight());
-        assertEquals(registerANCForm.getLastIPT(), ancVO.getAncCareHistoryVO().getLastIPT());
-        assertEquals(registerANCForm.getLastIPTDate(), ancVO.getAncCareHistoryVO().getLastIPTDate());
-        assertEquals(registerANCForm.getLastTT(), ancVO.getAncCareHistoryVO().getLastTT());
-        assertEquals(registerANCForm.getLastTTDate(), ancVO.getAncCareHistoryVO().getLastTTDate());
-        assertEquals(registerANCForm.getMotechId(), ancVO.getPatientMotechId());
         assertEquals(registerANCForm.getParity(), ancVO.getParity());
         assertEquals(registerANCForm.getRegDateToday(), ancVO.getRegistrationToday());
         assertEquals(registerANCForm.getStaffId(), ancVO.getStaffId());
         assertEquals(mrsFacilityId, ancVO.getFacilityId());
     }
-
-    private void setMobileMidwifeEnrollment(RegisterANCForm registerANCForm) {
-        new MobileMidwifeBuilder().enroll(true)
-                .consent(true).dayOfWeek(DayOfWeek.Monday).language(Language.EN).learnedFrom(LearnedFrom.FRIEND).format("PERS_VOICE")
-                .timeOfDay(new Time(10, 02)).messageStartWeek("10").phoneNumber("9500012343")
-                .phoneOwnership(PhoneOwnership.PERSONAL).reasonToJoin(ReasonToJoin.FAMILY_FRIEND_DELIVERED)
-                .serviceType(ServiceType.CHILD_CARE)
-                .buildRegisterANCForm(registerANCForm);
-
+    
+    public static void assertANCCareHistoryDetails(List<ANCCareHistory> addCareHistory, String lastIPT, Date lastIPTDate, String lastTT, Date lastTTDate, ANCCareHistoryVO ancCareHistoryVO) {
+        assertEquals(addCareHistory, ancCareHistoryVO.getCareHistory());
+        assertEquals(lastIPT, ancCareHistoryVO.getLastIPT());
+        assertEquals(lastIPTDate, ancCareHistoryVO.getLastIPTDate());
+        assertEquals(lastTT, ancCareHistoryVO.getLastTT());
+        assertEquals(lastTTDate, ancCareHistoryVO.getLastTTDate());
     }
-
 }

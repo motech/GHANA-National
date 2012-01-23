@@ -6,11 +6,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
 import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
+import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
+import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
@@ -20,6 +22,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -83,6 +86,7 @@ public class CWCRegistrationFormHandlerTest {
         registerCWCForm.setLastOPV(lastOPV);
         registerCWCForm.setLastIPTiDate(lastIPTiDate);
         registerCWCForm.setLastIPTi(lastIPTi);
+        registerCWCForm.setAddCareHistory("VITA_A IPTI BCG OPV PENTA MEASLES YF");
         setMobileMidwifeEnrollment(registerCWCForm);
 
         final String facilityId = "11";
@@ -102,17 +106,22 @@ public class CWCRegistrationFormHandlerTest {
         assertThat(facilityId, is(facilityId));
         assertThat(registartionDate, is(cwcVO.getRegistrationDate()));
         assertThat(patientMotechId, is(cwcVO.getPatientMotechId()));
-        assertThat(lastBCGDate, is(cwcVO.getCWCCareHistoryVO().getBcgDate()));
-        assertThat(lastVitADate, is(cwcVO.getCWCCareHistoryVO().getVitADate()));
-        assertThat(lastMeaslesDate, is(cwcVO.getCWCCareHistoryVO().getMeaslesDate()));
-        assertThat(lastYfDate, is(cwcVO.getCWCCareHistoryVO().getYfDate()));
-        assertThat(lastPentaDate, is(cwcVO.getCWCCareHistoryVO().getLastPentaDate()));
-        assertThat(lastPenta, is(cwcVO.getCWCCareHistoryVO().getLastPenta()));
-        assertThat(lastOPVDate, is(cwcVO.getCWCCareHistoryVO().getLastOPVDate()));
-        assertThat(lastOPV, is(cwcVO.getCWCCareHistoryVO().getLastOPV()));
-        assertThat(lastIPTiDate, is(cwcVO.getCWCCareHistoryVO().getLastIPTiDate()));
+        assertCwcCareHistoryDetails(registerCWCForm.getCWCCareHistories(), lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, lastPenta, lastOPV, cwcVO.getCWCCareHistoryVO());
 
         assertMobileMidwifeFormEnrollment(registerCWCForm, mobileMidwifeEnrollmentCaptor.getValue());
+    }
+
+    public static void assertCwcCareHistoryDetails(List<CwcCareHistory> cwcCareHistories, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, int lastPenta, int lastOPV, CWCCareHistoryVO cwcCareHistoryVO) {
+        assertThat(cwcCareHistories, is(cwcCareHistoryVO.getCwcCareHistories()));
+        assertThat(lastBCGDate, is(cwcCareHistoryVO.getBcgDate()));
+        assertThat(lastVitADate, is(cwcCareHistoryVO.getVitADate()));
+        assertThat(lastMeaslesDate, is(cwcCareHistoryVO.getMeaslesDate()));
+        assertThat(lastYfDate, is(cwcCareHistoryVO.getYfDate()));
+        assertThat(lastPentaDate, is(cwcCareHistoryVO.getLastPentaDate()));
+        assertThat(lastPenta, is(cwcCareHistoryVO.getLastPenta()));
+        assertThat(lastOPVDate, is(cwcCareHistoryVO.getLastOPVDate()));
+        assertThat(lastOPV, is(cwcCareHistoryVO.getLastOPV()));
+        assertThat(lastIPTiDate, is(cwcCareHistoryVO.getLastIPTiDate()));
     }
 
     private void assertMobileMidwifeFormEnrollment(RegisterCWCForm exptectedForm, MobileMidwifeEnrollment actual) {

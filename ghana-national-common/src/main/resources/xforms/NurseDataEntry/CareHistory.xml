@@ -36,41 +36,41 @@
              constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
     <xf:bind id="addHistory" nodeset="/careHistory/addHistory" type="xsd:string" required="true()"/>
     <xf:bind id="lastIPT" nodeset="/careHistory/lastIPT" type="xsd:string" visible="false()"
-             relevant="/careHistory/addHistory = '1'" action="show" required="true()"/>
+             relevant="/careHistory/addHistory = 'IPT'" action="show" required="true()"/>
     <xf:bind id="lastIPTDate" nodeset="/careHistory/lastIPTDate" type="xsd:date" visible="false()"
              constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
-             relevant="/careHistory/addHistory = '1'" action="show" required="true()"/>
+             relevant="/careHistory/addHistory = 'IPT'" action="show" required="true()"/>
     <xf:bind id="lastTT" nodeset="/careHistory/lastTT" type="xsd:string" visible="false()"
-             relevant="/careHistory/addHistory = '2'" action="show" required="true()"/>
+             relevant="/careHistory/addHistory = 'TT'" action="show" required="true()"/>
     <xf:bind id="lastTTDate" nodeset="/careHistory/lastTTDate" type="xsd:date" visible="false()" action="show"
              constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
-             relevant="/careHistory/addHistory = '2'" required="true()"/>
+             relevant="/careHistory/addHistory = 'TT'" required="true()"/>
     <xf:bind id="bcgDate" nodeset="/careHistory/bcgDate" type="xsd:date" visible="false()"
-             relevant="/careHistory/addHistory = '5'" action="show" required="true()"
+             relevant="/careHistory/addHistory = 'BCG'" action="show" required="true()"
              constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
     <xf:bind id="lastOPV" nodeset="/careHistory/lastOPV" type="xsd:string" visible="false()"
-             relevant="/careHistory/addHistory = '6'" action="show" required="true()"/>
+             relevant="/careHistory/addHistory = 'OPV'" action="show" required="true()"/>
     <xf:bind id="lastOPVDate" nodeset="/careHistory/lastOPVDate" type="xsd:date" visible="false()"
-             relevant="/careHistory/addHistory = '6'" action="show" required="true()"
+             relevant="/careHistory/addHistory = 'OPV'" action="show" required="true()"
              constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
     <xf:bind id="lastPenta" nodeset="/careHistory/lastPenta" type="xsd:string" visible="false()"
-             relevant="/careHistory/addHistory = '7'" action="show" required="true()"/>
+             relevant="/careHistory/addHistory = 'PENTA'" action="show" required="true()"/>
     <xf:bind id="lastPentaDate" nodeset="/careHistory/lastPentaDate" type="xsd:date" visible="false()"
-             relevant="/careHistory/addHistory = '7'" action="show" required="true()"
+             relevant="/careHistory/addHistory = 'PENTA'" action="show" required="true()"
              constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
     <xf:bind id="measlesDate" nodeset="/careHistory/measlesDate" type="xsd:date" visible="false()"
-             relevant="/careHistory/addHistory = '8'" action="show" required="true()"
+             relevant="/careHistory/addHistory = 'MEASLES'" action="show" required="true()"
              constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
     <xf:bind id="yellowFeverDate" nodeset="/careHistory/yellowFeverDate" type="xsd:date" visible="false()"
              constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
-             relevant="/careHistory/addHistory = '9'" action="show" required="true()"/>
+             relevant="/careHistory/addHistory = 'YF'" action="show" required="true()"/>
     <xf:bind id="lastIPTI" nodeset="/careHistory/lastIPTI" type="xsd:string" visible="false()"
-             relevant="/careHistory/addHistory = '4'" action="show" required="true()"/>
+             relevant="/careHistory/addHistory = 'IPTI'" action="show" required="true()"/>
     <xf:bind id="lastIPTIDate" nodeset="/careHistory/lastIPTIDate" type="xsd:date" visible="false()"
-             relevant="/careHistory/addHistory = '4'" action="show" required="true()"
+             relevant="/careHistory/addHistory = 'IPTI'" action="show" required="true()"
              constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
     <xf:bind id="lastVitaminADate" nodeset="/careHistory/lastVitaminADate" type="xsd:date" visible="false()"
-             relevant="/careHistory/addHistory = '3'" action="show" required="true()" constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
+             relevant="/careHistory/addHistory = 'VITA_A'" action="show" required="true()" constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
     <xf:bind id="formtype" nodeset="/careHistory/formtype" type="xsd:string" required="true()" visible="false()"/>
     <xf:bind id="formname" nodeset="/careHistory/formname" type="xsd:string" required="true()" visible="false()"/>
   </xf:model>
@@ -92,39 +92,39 @@
       <xf:label>Add History</xf:label>
       <xf:item id="1">
         <xf:label>IPT</xf:label>
-        <xf:value>1</xf:value>
+        <xf:value>IPT</xf:value>
       </xf:item>
       <xf:item id="2">
         <xf:label>TT</xf:label>
-        <xf:value>2</xf:value>
+        <xf:value>TT</xf:value>
       </xf:item>
       <xf:item id="3">
         <xf:label>Vit A (Ch)</xf:label>
-        <xf:value>3</xf:value>
+        <xf:value>VITA_A</xf:value>
       </xf:item>
       <xf:item id="4">
         <xf:label>IPTi (Ch)</xf:label>
-        <xf:value>4</xf:value>
+        <xf:value>IPTI</xf:value>
       </xf:item>
       <xf:item id="5">
         <xf:label>BCG</xf:label>
-        <xf:value>5</xf:value>
+        <xf:value>BCG</xf:value>
       </xf:item>
       <xf:item id="6">
         <xf:label>OPV</xf:label>
-        <xf:value>6</xf:value>
+        <xf:value>OPV</xf:value>
       </xf:item>
       <xf:item id="7">
         <xf:label>Penta</xf:label>
-        <xf:value>7</xf:value>
+        <xf:value>PENTA</xf:value>
       </xf:item>
       <xf:item id="8">
         <xf:label>Measles</xf:label>
-        <xf:value>8</xf:value>
+        <xf:value>MEASLES</xf:value>
       </xf:item>
       <xf:item id="9">
         <xf:label>YF</xf:label>
-        <xf:value>9</xf:value>
+        <xf:value>YF</xf:value>
       </xf:item>
     </xf:select>
     <xf:select1 bind="lastIPT">
