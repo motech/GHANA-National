@@ -10,6 +10,7 @@ import org.openmrs.Relationship;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 import static ch.lambdaj.Lambda.convert;
@@ -67,5 +68,9 @@ public class AllPatients {
 
     public Relationship voidMotherChildRelationship(MRSPerson child) {
         return openMRSRelationshipAdaptor.voidRelationship(child.getId());
+    }
+
+    public void saveCauseOfDeath(Date dateOfDeath, String mrsPatientId) {
+       patientAdaptor.savePatientCauseOfDeathObservation(mrsPatientId, "NONE", dateOfDeath);
     }
 }

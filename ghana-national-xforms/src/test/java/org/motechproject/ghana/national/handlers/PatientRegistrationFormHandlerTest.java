@@ -172,7 +172,7 @@ public class PatientRegistrationFormHandlerTest {
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
         verify(mockCareService).enroll(captor.capture());
-        verify(mockMobileMidwifeService).createOrUpdateEnrollment(mobileMidwifeEnrollmentArgumentCaptor.capture());
+        verify(mockMobileMidwifeService).register(mobileMidwifeEnrollmentArgumentCaptor.capture());
         final CwcVO cwcVO = captor.getValue();
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
@@ -238,7 +238,7 @@ public class PatientRegistrationFormHandlerTest {
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
         verify(mockCareService).enroll(captor.capture());
-        verify(mockMobileMidwifeService).createOrUpdateEnrollment(mobileMidwifeEnrollmentArgumentCaptor.capture());
+        verify(mockMobileMidwifeService).register(mobileMidwifeEnrollmentArgumentCaptor.capture());
 
         final ANCVO ancVO = captor.getValue();
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();

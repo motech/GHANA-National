@@ -118,19 +118,16 @@
             </span>
         </div>
 
-        <div>
+        <div class="form-field">
             <label for="deliveryDateConfirmed" class="formLabel"><spring:message code="delivery_date_confirmed"/> *:</label>
-            <div class="form-field">
-                <form:radiobutton cssClass="jsRequire" path="deliveryDateConfirmed" value="true"
-                                  label="${fn:escapeXml(confirmed)}"/>
-                <form:radiobutton cssClass="jsRequire" path="deliveryDateConfirmed" value="false"
-                                  label="${fn:escapeXml(notconfirmed)}"/>
-            </div>
+                    <form:radiobutton cssClass="jsRequire" path="deliveryDateConfirmed" value="true"
+                                      label="${fn:escapeXml(confirmed)}"/>
+                    <form:radiobutton cssClass="jsRequire" path="deliveryDateConfirmed" value="false"
+                                      label="${fn:escapeXml(notconfirmed)}"/>
 
-                <span id='deliveryDateConfirmedError' class='alertText formlyInvalid formlyAlert hide'>
-                    ${fn:escapeXml(delivery_date_confirmed)} ${fn:escapeXml(required_msg)}
-                </span>
-
+            <span id='deliveryDateConfirmedError' class='alertText formlyInvalid formlyAlert hide'>
+            ${fn:escapeXml(delivery_date_confirmed)} ${fn:escapeXml(required_msg)}
+            </span>
         </div>
 
         <div id="registrationTodayHolder" class="form-field">

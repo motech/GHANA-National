@@ -790,31 +790,31 @@
             <xf:label>Day of week to receive messages</xf:label>
             <xf:item id="monday">
                 <xf:label>Monday</xf:label>
-                <xf:value>monday</xf:value>
+                <xf:value>Monday</xf:value>
             </xf:item>
             <xf:item id="tuesday">
                 <xf:label>Tuesday</xf:label>
-                <xf:value>tuesday</xf:value>
+                <xf:value>Tuesday</xf:value>
             </xf:item>
             <xf:item id="wednesday">
                 <xf:label>Wednesday</xf:label>
-                <xf:value>wednesday</xf:value>
+                <xf:value>Wednesday</xf:value>
             </xf:item>
             <xf:item id="thursday">
                 <xf:label>Thursday</xf:label>
-                <xf:value>thursday</xf:value>
+                <xf:value>Thursday</xf:value>
             </xf:item>
             <xf:item id="friday">
                 <xf:label>Friday</xf:label>
-                <xf:value>friday</xf:value>
+                <xf:value>Friday</xf:value>
             </xf:item>
             <xf:item id="saturday">
                 <xf:label>Saturday</xf:label>
-                <xf:value>saturday</xf:value>
+                <xf:value>Saturday</xf:value>
             </xf:item>
             <xf:item id="sunday">
                 <xf:label>Sunday</xf:label>
-                <xf:value>sunday</xf:value>
+                <xf:value>Sunday</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="timeOfDay">

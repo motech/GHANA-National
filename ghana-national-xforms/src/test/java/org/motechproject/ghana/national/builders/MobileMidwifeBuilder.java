@@ -124,18 +124,20 @@ public class MobileMidwifeBuilder {
         mobileMidwifeForm.setTimeOfDay(timeOfDay);
     }
 
-    public void buildRegisterANCForm(RegisterANCForm registerANCForm) {
+    public RegisterANCForm buildRegisterANCForm(RegisterANCForm registerANCForm) {
         buildIncludeMobileForm(registerANCForm);
         if(staffId != null) registerANCForm.setStaffId(staffId);
         if(facilityId != null) registerANCForm.setFacilityId(facilityId);
         if(patientId != null) registerANCForm.setMotechId(patientId);
+        return registerANCForm;
     }
 
-    public void buildRegisterCWCForm(RegisterCWCForm registerCWCForm) {
+    public RegisterCWCForm buildRegisterCWCForm(RegisterCWCForm registerCWCForm) {
         buildIncludeMobileForm(registerCWCForm);
         if(staffId != null) registerCWCForm.setStaffId(staffId);
         if(facilityId != null) registerCWCForm.setFacilityId(facilityId);
         if(patientId != null) registerCWCForm.setMotechId(patientId);
+        return registerCWCForm;
     }
 
     private void buildIncludeMobileForm(MobileMidWifeIncludeForm includeForm) {

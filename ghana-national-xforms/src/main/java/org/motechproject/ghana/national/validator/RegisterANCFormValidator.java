@@ -4,6 +4,7 @@ import org.aspectj.apache.bcel.classfile.ConstantString;
 import org.motechproject.ghana.national.bean.RegisterANCForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -23,6 +25,12 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
     @Autowired
     private PatientService patientService;
 
+    @Autowired
+    private MobileMidwifeValidator mobileMidwifeValidator;
+
+    static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
+    static final String GENDER_ERROR_MSG = "should be female for registering into ANC";
+
     @Override
     @LoginAsAdmin
     @ApiSession
@@ -30,6 +38,7 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
         List<FormError> formErrors = super.validate(formBean);
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(validatePatientAndStaff(formBean.getMotechId(), formBean.getStaffId()));
+        formErrors.addAll(validateMobileMidwifeIfEnrolled(formBean));
         return formErrors;
     }
 
@@ -58,5 +67,10 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
             }};
         }
         return new ArrayList<FormError>();
+    }
+
+    private List<FormError> validateMobileMidwifeIfEnrolled(RegisterANCForm formBean) {
+        MobileMidwifeEnrollment midwifeEnrollment = formBean.createMobileMidwifeEnrollment();
+        return midwifeEnrollment != null ? mobileMidwifeValidator.validateForIncludeForm(midwifeEnrollment) : Collections.<FormError>emptyList();
     }
 }

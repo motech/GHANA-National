@@ -75,7 +75,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment();
             if (mobileMidwifeEnrollment != null) {
                 mobileMidwifeEnrollment.setFacilityId(facilityId);
-                mobileMidwifeService.createOrUpdateEnrollment(mobileMidwifeEnrollment);
+                mobileMidwifeService.register(mobileMidwifeEnrollment);
             }
 
             if (registerClientForm.getRegistrantType().equals(PatientType.CHILD_UNDER_FIVE)) {

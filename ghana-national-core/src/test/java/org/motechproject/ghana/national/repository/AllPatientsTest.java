@@ -8,8 +8,8 @@ import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.services.MRSPatientAdaptor;
-import org.motechproject.openmrs.services.OpenMRSPersonAdaptor;
 import org.motechproject.openmrs.services.OpenMRSRelationshipAdaptor;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
@@ -167,6 +167,14 @@ public class AllPatientsTest {
         allPatients.getAgeOfPersonByMotechId(motechId);
 
         verify(mockMrsPatientAdaptor).getAgeOfPatientByMotechId(motechId);
+    }
+
+    @Test
+    public void shouldSaveCauseOfDeath() {
+        String mrsPatientId = "patientId";
+        Date dateOfDeath = DateUtil.now().toDate();
+        allPatients.saveCauseOfDeath(dateOfDeath, mrsPatientId);
+        verify(mockMrsPatientAdaptor).savePatientCauseOfDeathObservation(mrsPatientId, "NONE", dateOfDeath);
     }
 
 }

@@ -24,7 +24,19 @@ public class MobileMidwifeValidator {
     public List<FormError> validate(MobileMidwifeEnrollment enrollment) {
         List<FormError> formErrors = new ArrayList<FormError>();
         formErrors.addAll(validateFacilityPatientAndStaff(enrollment));
+        formErrors.addAll(validateFieldValues(enrollment));
+        return formErrors;
+    }
+
+    public List<FormError> validateFieldValues(MobileMidwifeEnrollment enrollment) {
+        List<FormError> formErrors = new ArrayList<FormError>();
         formErrors.addAll(validateTime(enrollment));
+        return formErrors;
+    }
+
+    public List<FormError> validateForIncludeForm(MobileMidwifeEnrollment enrollment) {
+        List<FormError> formErrors = new ArrayList<FormError>();
+        formErrors.addAll(validateFieldValues(enrollment));
         return formErrors;
     }
 
@@ -36,7 +48,7 @@ public class MobileMidwifeValidator {
         return formErrors;
     }
 
-    private List<FormError> validateTime(MobileMidwifeEnrollment enrollment) {
+    List<FormError> validateTime(MobileMidwifeEnrollment enrollment) {
 
         if (Medium.VOICE.equals(enrollment.getMedium())) {
             Time maxTime = Constants.MOBILE_MIDWIFE_MAX_TIMEOFDAY_FOR_VOICE;

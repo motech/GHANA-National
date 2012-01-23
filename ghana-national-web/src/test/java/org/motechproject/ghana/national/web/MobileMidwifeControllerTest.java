@@ -64,7 +64,7 @@ public class MobileMidwifeControllerTest {
         ArgumentCaptor<MobileMidwifeEnrollment> enrollment = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
 
         verify(mobileMidwifeValidator).validate(enrollment.capture());
-        verify(mobileMidwifeService).createOrUpdateEnrollment(enrollment.getValue());
+        verify(mobileMidwifeService).register(enrollment.getValue());
         assertFormWithEnrollment((MobileMidwifeEnrollmentForm) modelMap.get("mobileMidwifeEnrollmentForm"), enrollment.getValue());
     }
 
@@ -87,7 +87,7 @@ public class MobileMidwifeControllerTest {
 
         ArgumentCaptor<MobileMidwifeEnrollment> enrollment = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         verify(mobileMidwifeValidator).validate(enrollment.capture());
-        verify(mobileMidwifeService).createOrUpdateEnrollment(enrollment.getValue());
+        verify(mobileMidwifeService).register(enrollment.getValue());
         assertFormWithEnrollment((MobileMidwifeEnrollmentForm) modelMap.get("mobileMidwifeEnrollmentForm"), enrollment.getValue());
 
         assertThat(editUrl, isEq(MOBILE_MIDWIFE_URL));
@@ -110,7 +110,7 @@ public class MobileMidwifeControllerTest {
         String editUrl = controller.save(form, null, map);
 
         verify(mobileMidwifeValidator).validate(Matchers.<MobileMidwifeEnrollment>any());
-        verify(mobileMidwifeService,never()).createOrUpdateEnrollment((MobileMidwifeEnrollment)any());
+        verify(mobileMidwifeService,never()).register((MobileMidwifeEnrollment)any());
 
         List<FormError> errors = (List<FormError>) map.get("formErrors");
         assertThat("description1",is(equalTo(errors.get(0).getError())));
