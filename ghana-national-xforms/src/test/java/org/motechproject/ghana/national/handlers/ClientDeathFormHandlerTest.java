@@ -35,7 +35,9 @@ public class ClientDeathFormHandlerTest {
         Date deathDate = DateUtil.now().toDate();
         parameters.put("formBean", clientForm(deathDate));
         MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.clientDeath", parameters);
+
         clientDeathFormHandler.handleFormEvent(event);
+
         verify(mockPatientService).deceasePatient("motechId", deathDate);
     }
 
@@ -47,4 +49,5 @@ public class ClientDeathFormHandlerTest {
         clientDeathForm.setStaffId("staffId");
         return clientDeathForm;
     }
+
 }

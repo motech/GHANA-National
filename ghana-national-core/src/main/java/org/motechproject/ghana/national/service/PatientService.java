@@ -140,5 +140,6 @@ public class PatientService {
         patient.getMrsPatient().getPerson().dead(true);
         patient.getMrsPatient().getPerson().deathDate(dateOfDeath);
         allPatients.update(patient);
+        allPatients.saveCauseOfDeath(dateOfDeath, patient.getMrsPatient().getId());
     }
 }

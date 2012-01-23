@@ -11,7 +11,7 @@ public class AllEncounters {
 
     @Autowired
     OpenMRSEncounterAdaptor openMRSEncounterAdaptor;
-    
+
     public MRSEncounter save(MRSEncounter mrsEncounter) {
         return openMRSEncounterAdaptor.createEncounter(mrsEncounter);
     }
