@@ -2,11 +2,8 @@ package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
 import org.motechproject.functional.data.TestPatient;
-import org.motechproject.functional.data.TestStaff;
-import org.motechproject.functional.mobileforms.MobileForm;
 import org.motechproject.functional.pages.patient.PatientPage;
 import org.motechproject.functional.pages.patient.SearchPatientPage;
-import org.motechproject.functional.pages.staff.StaffPage;
 import org.motechproject.functional.util.DataGenerator;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
@@ -34,7 +31,7 @@ public class PatientTest extends LoggedInUserFunctionalTest {
 
         TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.PATIENT_MOTHER).estimatedDateOfBirth(false);
+                patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
         patientPage.create(patient);
         SearchPatientPage searchPatientPage = browser.toSearchPatient(patientPage);
         searchPatientPage.searchWithName(patient.firstName());
@@ -44,26 +41,6 @@ public class PatientTest extends LoggedInUserFunctionalTest {
         searchPatientPage.displaying(patient);
 
         searchPatientPage.searchWithName("Las");
-        searchPatientPage.displaying(patient);
-    }
-
-    @Test
-    public void shouldCreateAPatientWithMobileDeviceAndSearchForHerByName(){
-        DataGenerator dataGenerator = new DataGenerator();
-        String firstName = "First Name" + dataGenerator.randomString(5);
-
-        StaffPage staffPage = browser.toStaffCreatePage(homePage);
-        staffPage.create(TestStaff.with(firstName));
-
-        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.OTHER).estimatedDateOfBirth(false).
-                staffId(staffPage.staffId());
-
-        mobile.upload(MobileForm.registerClientForm(), patient.forMobile());
-
-        SearchPatientPage searchPatientPage = browser.toSearchPatient();
-        searchPatientPage.searchWithName(patient.firstName());
         searchPatientPage.displaying(patient);
     }
 

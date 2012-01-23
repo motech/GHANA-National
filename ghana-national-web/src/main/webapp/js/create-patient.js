@@ -9,7 +9,7 @@ $(document).ready(function() {
     $('#typeOfPatient').change(function() {
         ($(this).val() == 'CHILD_UNDER_FIVE') ? $('#parentId').parent().show() : $('#parentId').parent().hide();
 
-        if($(this).val() == 'PATIENT_MOTHER') {
+        if($(this).val() == 'PREGNANT_MOTHER') {
             disableGenderForMother();
         } else {
             $('#sex2').attr('checked', false);

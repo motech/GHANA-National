@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.validator;
 
 import org.motechproject.ghana.national.bean.RegisterClientForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.service.PatientService;
@@ -8,10 +9,12 @@ import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
@@ -23,12 +26,6 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     private PatientService patientService;
     @Autowired
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
-    @Autowired
-    private RegisterCWCFormValidator cwcFormValidator;
-
-    @Autowired
-    private RegisterANCFormValidator ancFormValidator;
-
 
     @Override
     @LoginAsAdmin
@@ -41,12 +38,20 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         formErrors.addAll(validateMotechId(motechId, formBean.getRegistrationMode()));
         formErrors.addAll(validateMotherMotechId(formBean.getMotherMotechId(), formBean.getRegistrantType()));
         if (PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType())) {
-            formErrors.addAll(cwcFormValidator.validatePatient(motechId));
+            formErrors.addAll(validateIfPatientIsChild(formBean.getDateOfBirth()));
         }
-        else if(PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType())){
-            formErrors.addAll(ancFormValidator.validatePatient(formBean.getMotherMotechId()));
+        if (PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType())){
+            formErrors.addAll(validateIfPatientIsAFemale(formBean.getSex()));
         }
         return formErrors;
+    }
+
+    private List<FormError> validateIfPatientIsChild(Date dateOfBirth) {
+        ArrayList<FormError> formError = new ArrayList<FormError>();
+        if (DateUtil.getDifferenceOfDatesInYears(dateOfBirth) >= 5) {
+            formError.add(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_ERR_MSG));
+        }
+        return formError;
     }
 
     private List<FormError> validateMotechId(String motechId, RegistrationType registrationType) {
@@ -67,5 +72,13 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
             }
         }
         return new ArrayList<FormError>();
+    }
+
+    private List<FormError> validateIfPatientIsAFemale(String gender) {
+        ArrayList<FormError> formError = new ArrayList<FormError>();
+        if (Constants.PATIENT_GENDER_MALE.equals(gender)) {
+            formError.add(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, Constants.GENDER_ERROR_MSG));
+        }
+        return formError;
     }
 }

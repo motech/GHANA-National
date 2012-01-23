@@ -51,7 +51,7 @@ public class RegisterANCFormValidatorTest {
         setupPatient(motechId, Constants.PATIENT_GENDER_FEMALE);
         registerANCFormValidator.validate(formBean);
 
-        verify(formValidator).validatePatient(eq(motechId), eq(RegisterANCFormValidator.MOTECH_ID_ATTRIBUTE_NAME));
+        verify(formValidator).validatePatient(eq(motechId), eq(Constants.MOTECH_ID_ATTRIBUTE_NAME));
         verify(formValidator).validateIfStaffExists(eq(staffId));
         verify(formValidator).validateIfFacilityExists(eq(facilityId));
     }
@@ -64,7 +64,7 @@ public class RegisterANCFormValidatorTest {
         final List<FormError> formErrors = registerANCFormValidator.validateGenderOfPatient(motechId);
 
         assertEquals(1, formErrors.size());
-        assertThat(formErrors, hasItem(new FormError(RegisterANCFormValidator.MOTECH_ID_ATTRIBUTE_NAME, RegisterANCFormValidator.GENDER_ERROR_MSG)));
+        assertThat(formErrors, hasItem(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, Constants.GENDER_ERROR_MSG)));
     }
 
     @Test

@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
@@ -14,10 +15,13 @@ import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
@@ -40,10 +44,6 @@ public class RegisterClientFormValidatorTest {
     private MotechIdVerhoeffValidator mockMotechIdVerhoeffValidator;
     @Mock
     private FormValidator formValidator;
-    @Mock
-    private RegisterCWCFormValidator mockCWCformValidator;
-    @Mock
-    private RegisterANCFormValidator mockANCFormValidator;
 
 
     @Before
@@ -52,8 +52,6 @@ public class RegisterClientFormValidatorTest {
         registerClientFormValidator = new RegisterClientFormValidator();
         ReflectionTestUtils.setField(registerClientFormValidator, "formValidator", formValidator);
         ReflectionTestUtils.setField(registerClientFormValidator, "patientService", mockPatientService);
-        ReflectionTestUtils.setField(registerClientFormValidator, "cwcFormValidator", mockCWCformValidator);
-        ReflectionTestUtils.setField(registerClientFormValidator, "ancFormValidator", mockANCFormValidator);
     }
 
     @Test
@@ -136,8 +134,13 @@ public class RegisterClientFormValidatorTest {
         String motechId = "12234";
         when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
-        registerClientFormValidator.validate(mockRegisterClientForm);
-        verify(mockCWCformValidator).validatePatient(motechId);
+        when(mockRegisterClientForm.getDateOfBirth()).thenReturn(new Date(99,9,9));
+        when(formValidator.validateIfFacilityExists("212")).thenReturn(new ArrayList<FormError>());
+        when(formValidator.validateIfStaffExists("212")).thenReturn(new ArrayList<FormError>());
+
+        List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm);
+        assertThat(formErrors,hasItem(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_ERR_MSG)));
+
     }
 
     @Test
@@ -145,7 +148,11 @@ public class RegisterClientFormValidatorTest {
         String motherMotechId = "12234";
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(motherMotechId);
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.PREGNANT_MOTHER);
-        registerClientFormValidator.validate(mockRegisterClientForm);
-        verify(mockANCFormValidator).validatePatient(motherMotechId);
+        when(mockRegisterClientForm.getSex()).thenReturn(Constants.PATIENT_GENDER_MALE);
+        when(formValidator.validateIfFacilityExists("212")).thenReturn(new ArrayList<FormError>());
+        when(formValidator.validateIfStaffExists("212")).thenReturn(new ArrayList<FormError>());
+
+        List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm);
+        assertThat(formErrors, hasItem(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, Constants.GENDER_ERROR_MSG)));
     }
 }

@@ -1,7 +1,30 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.junit.runner.RunWith;
+import org.motechproject.functional.data.TestANC;
+import org.motechproject.functional.data.TestPatient;
+import org.motechproject.functional.data.TestRegClient;
+import org.motechproject.functional.data.TestStaff;
 import org.motechproject.functional.framework.XformHttpClient;
+import org.motechproject.functional.mobileforms.MobileForm;
+import org.motechproject.functional.pages.patient.ANCEnrollmentPage;
+import org.motechproject.functional.pages.patient.PatientEditPage;
+import org.motechproject.functional.pages.patient.SearchPatientPage;
+import org.motechproject.functional.pages.staff.StaffPage;
+import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
+import org.motechproject.ghana.national.service.CareService;
+import org.motechproject.ghana.national.service.IdentifierGenerationService;
+import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.advice.LoginAsAdmin;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
@@ -10,12 +33,20 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
 import static org.motechproject.functional.framework.XformHttpClient.XFormParser;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.AssertJUnit.assertNull;
+import static org.testng.AssertJUnit.assertTrue;
 
 
-public class RegisterClientFromMobileTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
+public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
+
+    @Autowired
+    private IdentifierGenerationService identifierGenerationService;
 
     @Test
     public void shouldCheckForMandatoryFields() throws Exception {
@@ -54,4 +85,25 @@ public class RegisterClientFromMobileTest {
         final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
         assertNull(errorsMap.get("firstName"));
     }
+
+    @Test
+    public void shouldCreateAPatientWithMobileDeviceAndSearchForHerByName(){
+        DataGenerator dataGenerator = new DataGenerator();
+        String firstName = "First Name" + dataGenerator.randomString(5);
+
+        StaffPage staffPage = browser.toStaffCreatePage(homePage);
+        staffPage.create(TestStaff.with(firstName));
+
+        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).
+                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
+                patientType(TestPatient.PATIENT_TYPE.OTHER).estimatedDateOfBirth(false).
+                staffId(staffPage.staffId());
+
+        mobile.upload(MobileForm.registerClientForm(), patient.forMobile());
+
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithName(patient.firstName());
+        searchPatientPage.displaying(patient);
+    }
+
 }

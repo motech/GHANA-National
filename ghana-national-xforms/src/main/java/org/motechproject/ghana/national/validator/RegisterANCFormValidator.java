@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.validator;
 
+import org.aspectj.apache.bcel.classfile.ConstantString;
 import org.motechproject.ghana.national.bean.RegisterANCForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
@@ -22,9 +23,6 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
     @Autowired
     private PatientService patientService;
 
-    static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
-    static final String GENDER_ERROR_MSG = "should be female for registering into ANC";
-
     @Override
     @LoginAsAdmin
     @ApiSession
@@ -43,7 +41,7 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
     }
 
     public List<FormError> validatePatient(String patientId) {
-        final List<FormError> patientFormErrors = formValidator.validatePatient(patientId, MOTECH_ID_ATTRIBUTE_NAME);
+        final List<FormError> patientFormErrors = formValidator.validatePatient(patientId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
         if (!patientFormErrors.isEmpty()) {
             patientFormErrors.addAll(patientFormErrors);
         } else {
@@ -56,7 +54,7 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
         Patient patient = patientService.getPatientByMotechId(motechId);
         if (patient.getMrsPatient().getPerson().getGender().equals(Constants.PATIENT_GENDER_MALE)) {
             return new ArrayList<FormError>() {{
-                add(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG));
+                add(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, Constants.GENDER_ERROR_MSG));
             }};
         }
         return new ArrayList<FormError>();

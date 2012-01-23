@@ -176,6 +176,10 @@ public class TestPatient {
         return StringUtils.isNotEmpty(motechId);
     }
 
+    public LocalDate getRegistrationDate() {
+        return registrationDate;
+    }
+
     public TestPatient female(boolean female) {
         this.female = female;
         return this;
@@ -188,5 +192,5 @@ public class TestPatient {
 
     public static enum PATIENT_REGN_MODE {AUTO_GENERATE_ID, USE_PREPRINTED_ID}
 
-    public static enum PATIENT_TYPE {PATIENT_MOTHER, CHILD_UNDER_FIVE, OTHER}
+    public static enum PATIENT_TYPE {PREGNANT_MOTHER, CHILD_UNDER_FIVE, OTHER}
 }

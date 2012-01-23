@@ -87,6 +87,7 @@ public class Constants {
     public static final String CHILD_AGE_PARAMETER = "childAge";
     public static final String CHILD_AGE_ERR_MSG = "child cannot be more than 5 years old";
     public static final String ENCOUNTER_PATIENTHISTORY = "PATIENTHISTORY";
+    public static final String GENDER_ERROR_MSG = "should be female for registering into ANC";
 
     // Mobile Midwife
     public static final Time MOBILE_MIDWIFE_MIN_TIMEOFDAY_FOR_VOICE = new Time(5,0);

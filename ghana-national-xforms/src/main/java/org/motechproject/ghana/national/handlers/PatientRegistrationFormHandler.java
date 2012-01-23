@@ -82,7 +82,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
                 CwcVO cwcVO = new CwcVO(registerClientForm.getStaffId(), facilityId, registerClientForm.getDate(),
                         motechId, registerClientForm.getCWCCareHistories(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
                         registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
-                        registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber(), null);
+                        registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber(), registerClientForm.getAddHistory());
 
                     careService.enroll(cwcVO);
 
@@ -90,7 +90,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
                 ANCVO ancVO = new ANCVO(registerClientForm.getStaffId(), facilityId, motechId, registerClientForm.getDate()
                         , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),
                         registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), registerClientForm.getAncCareHistories(), registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
-                        registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate(), null);
+                        registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate(), registerClientForm.getAddHistory());
 
                     careService.enroll(ancVO);
 

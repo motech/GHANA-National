@@ -118,6 +118,10 @@ public class ANCEnrollmentPage extends HomePage {
     @CacheLookup
     private WebElement lastTTDate;
 
+    @FindBy(id = "estimatedDateOfDelivery")
+    @CacheLookup
+    private WebElement estimatedDateOfDeliveryValue;
+
     public ANCEnrollmentPage(WebDriver webDriver) {
         super(webDriver);
         elementPoller.waitForElementID("submitANC", driver);
@@ -235,12 +239,12 @@ public class ANCEnrollmentPage extends HomePage {
         return this;
     }
 
-
     public ANCEnrollmentPage withIPT(Boolean iptValue) {
         if (iptValue)
             iptCareHistory.click();
         return this;
     }
+
 
     public ANCEnrollmentPage withIPTDate(LocalDate date) {
         dateSelector.select(lastIPTDate, date, driver);
@@ -256,8 +260,12 @@ public class ANCEnrollmentPage extends HomePage {
         return gravida.getAttribute("value");
     }
 
-    public WebElement getStaffId() {
-        return staffId;
+    public String getMotechPatientId() {
+        return motechPatientId.getAttribute("value");
+    }
+
+    public String getStaffId() {
+        return staffId.getAttribute("value");
     }
 
     public String getFacilities() {
@@ -276,6 +284,30 @@ public class ANCEnrollmentPage extends HomePage {
         return lastTTDate.getAttribute("value");
     }
 
+    public String getLastTT1() {
+        return lastTT1.getAttribute("value");
+    }
+
+    public String getLastIPT1() {
+        return lastIPT1.getAttribute("value");
+    }
+
+    public String getLastIPTDate() {
+        return lastIPTDate.getAttribute("value");
+    }
+
+    public String getSerialNumber() {
+        return serialNumber.getAttribute("value");
+    }
+
+    public String getRegistrationDate() {
+        return registrationDate.getAttribute("value");
+    }
+
+    public String getEstimatedDateOfDelivery() {
+        return estimatedDateOfDelivery.getAttribute("value");
+    }
+
     public void submit() {
         submit.click();
         waitForSuccessfulCompletion();
@@ -285,8 +317,18 @@ public class ANCEnrollmentPage extends HomePage {
         return motechPatientId.getAttribute("value");
     }
 
+
     @Override
     public void waitForSuccessfulCompletion() {
         elementPoller.waitForElementClassName("success", driver);
+    }
+
+    public String getParity() {
+        return parity.getAttribute("value");
+    }
+
+    public String getEstimatedDateOfDeliveryValue() {
+        return estimatedDateOfDeliveryValue.getAttribute("value");
+
     }
 }
