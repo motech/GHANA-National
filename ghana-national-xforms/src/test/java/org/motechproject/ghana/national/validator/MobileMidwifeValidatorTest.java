@@ -12,9 +12,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class MobileMidwifeValidatorTest {
@@ -63,6 +65,32 @@ public class MobileMidwifeValidatorTest {
         enrollment = with(new Time(23, 01));
         errors = mobileMidwifeValidator.validate(enrollment);
         assertEquals(Constants.MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE, errors.get(0).getError());
+    }
+
+    @Test
+    public void shouldValidateFieldValuesForEnrollment() {
+
+        MobileMidwifeEnrollment enrollment = with(new Time(5,1));
+        mobileMidwifeValidator = spy(mobileMidwifeValidator);
+        mobileMidwifeValidator.validateFieldValues(enrollment);
+        
+        verify(mobileMidwifeValidator).validateTime(enrollment);
+        verify(formValidator, never()).validatePatient(anyString(), anyString());
+        verify(formValidator, never()).validateIfStaffExists(anyString());
+        verify(formValidator, never()).validateIfFacilityExists(anyString());
+    }
+
+    @Test
+    public void shouldValidateIncludeFormCheckForCommonFieldValuesAnd_NeverCheckForFacilityPatientAndStaffExistence() {
+
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment().setPatientId("1234567").setFacilityId("13161")
+                .setStaffId("465");
+        mobileMidwifeValidator = spy(mobileMidwifeValidator);
+        doReturn(emptyList()).when(mobileMidwifeValidator).validateFieldValues(enrollment);
+
+        mobileMidwifeValidator.validateForIncludeForm(enrollment);
+
+        verify(mobileMidwifeValidator).validateFieldValues(enrollment);
     }
 
     private MobileMidwifeEnrollment with(Time timeOfDay) {
