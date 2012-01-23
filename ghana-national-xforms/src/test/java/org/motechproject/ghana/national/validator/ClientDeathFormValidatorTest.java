@@ -4,32 +4,33 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ClientDeathForm;
+import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.select;
+import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ClientDeathFormValidatorTest {
     private ClientDeathFormValidator clientDeathFormValidator;
     @Mock
     private FormValidator mockFormValidator;
+    @Mock
+    private PatientService mockPatientService;
 
     @Before
     public void setUp() {
         initMocks(this);
         clientDeathFormValidator = new ClientDeathFormValidator();
         ReflectionTestUtils.setField(clientDeathFormValidator, "formValidator", mockFormValidator);
+        ReflectionTestUtils.setField(clientDeathFormValidator, "patientService", mockPatientService);
     }
     
     @Test
