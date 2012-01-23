@@ -1,5 +1,7 @@
 package org.motechproject.ghana.national.domain;
 
+import org.motechproject.model.Time;
+
 public class Constants {
     //security roles
     public static final String SECURITY_ROLE_SUPER = "System Developer";
@@ -85,4 +87,11 @@ public class Constants {
     public static final String CHILD_AGE_PARAMETER = "childAge";
     public static final String CHILD_AGE_ERR_MSG = "child cannot be more than 5 years old";
     public static final String ENCOUNTER_PATIENTHISTORY = "PATIENTHISTORY";
+    public static final String GENDER_ERROR_MSG = "should be female for registering into ANC";
+
+    // Mobile Midwife
+    public static final Time MOBILE_MIDWIFE_MIN_TIMEOFDAY_FOR_VOICE = new Time(5,0);
+    public static final Time MOBILE_MIDWIFE_MAX_TIMEOFDAY_FOR_VOICE = new Time(23,0);
+    public static final String MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE = "Time of day should be between 5:00 and 23:00 hours";
+
 }

@@ -2,43 +2,55 @@ package org.motechproject.ghana.national.validator;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.MobileMidwifeForm;
+import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.model.Time;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
+import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class MobileMidwifeFormValidatorTest {
     private MobileMidwifeFormValidator mobileMidwifeFormValidator;
 
     @Mock
-    private org.motechproject.ghana.national.validator.FormValidator formValidator;
+    private MobileMidwifeValidator mobileMidwifeValidator;
 
     @Before
     public void setUp(){
         initMocks(this);
         mobileMidwifeFormValidator = new MobileMidwifeFormValidator();
-        ReflectionTestUtils.setField(mobileMidwifeFormValidator, "formValidator", formValidator);
+        ReflectionTestUtils.setField(mobileMidwifeFormValidator, "mobileMidwifeValidator", mobileMidwifeValidator);
     }
 
     @Test
     public void shouldValidateMobileMidwifeForm() {
-        MobileMidwifeForm formBean = mock(MobileMidwifeForm.class);
         String patientId = "1231231";
         String staffId = "11";
         String facilityId = "34";
-        when(formBean.getPatientId()).thenReturn(patientId);
-        when(formBean.getStaffId()).thenReturn(staffId);
-        when(formBean.getFacilityId()).thenReturn(facilityId);
+        Time timeOfDay = new Time(22, 10);
+        MobileMidwifeForm formBean = new MobileMidwifeBuilder().patientId(patientId).staffId(staffId).facilityId(facilityId)
+                .consent(true).format("PERS_VOICE").timeOfDay(timeOfDay).buildMobileMidwifeForm();
 
         mobileMidwifeFormValidator.validate(formBean);
 
-        verify(formValidator).validatePatient( eq(patientId), eq(MobileMidwifeFormValidator.PATIENT_ID_ATTRIBUTE_NAME));
-        verify(formValidator).validateIfStaffExists(eq(staffId));
-        verify(formValidator).validateIfFacilityExists(eq(facilityId));
+        ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
+        verify(mobileMidwifeValidator).validate(mobileMidwifeEnrollmentCaptor.capture());
+        MobileMidwifeEnrollment actualEnrollment = mobileMidwifeEnrollmentCaptor.getValue();
+
+        assertThat(actualEnrollment.getFacilityId(), is(equalTo(facilityId)));
+        assertThat(actualEnrollment.getPatientId(), is(equalTo(patientId)));
+        assertThat(actualEnrollment.getStaffId(), is(equalTo(staffId)));
+        assertTrue(actualEnrollment.getConsent());
+        assertThat(actualEnrollment.getMedium(), is(Medium.VOICE));
+        assertThat(actualEnrollment.getTimeOfDay(), is(timeOfDay));
     }
 }

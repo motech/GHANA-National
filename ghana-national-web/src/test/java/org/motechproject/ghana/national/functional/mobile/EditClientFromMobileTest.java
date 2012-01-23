@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.functional.data.TestPatient;
 import org.motechproject.functional.framework.XformHttpClient;
-import org.motechproject.functional.mobileforms.MobileForm;
 import org.motechproject.functional.pages.patient.SearchPatientPage;
 import org.motechproject.functional.util.DataGenerator;
 import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
@@ -93,30 +92,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
         assertNull(errorsMap.get("firstName"));
     }
 
-    // TODO: TEST NOT COMPLETE
-    @Ignore
-    @Test
-    public void shouldUpdatePatientIfNoErrorsAreFound() throws Exception {
 
-        DataGenerator dataGenerator = new DataGenerator();
-
-        String facilityMotechId = facilityGenerator.createFacilityAndReturnFacilityId(browser, homePage);
-//        String facilityId = facilityGenerator.getFacilityId(facilityMotechId);
-        String staffId = staffGenerator.createStaffAndReturnStaffId(browser, homePage);
-        final String patientId = patientGenerator.createPatientAndReturnPatientId(browser, homePage);
-
-        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.OTHER).estimatedDateOfBirth(false).
-                staffId(staffId);
-
-        mobile.upload(MobileForm.editClientForm(), patient.forMobileEdit());
-
-        SearchPatientPage searchPatientPage = browser.toSearchPatient();
-        searchPatientPage.searchWithName(patient.firstName());
-        searchPatientPage.displaying(patient);
-
-    }
 
     private XformHttpClient.XformResponse setupEditClientFormAndUpload(Map<String, String> data) throws Exception {
         return XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",

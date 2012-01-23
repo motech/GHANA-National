@@ -169,10 +169,10 @@ public class ANCControllerTest {
         assertEquals(ancEnrollmentForm.getFacilityForm().getFacilityId(), ancVO.getFacilityId());
         assertEquals(ancEnrollmentForm.getGravida(), ancVO.getGravida());
         assertEquals(ancEnrollmentForm.getHeight(), ancVO.getHeight());
-        assertEquals(ancEnrollmentForm.getLastIPT(), ancVO.getLastIPT());
-        assertEquals(ancEnrollmentForm.getLastIPTDate(), ancVO.getLastIPTDate());
-        assertEquals(ancEnrollmentForm.getLastTT(), ancVO.getLastTT());
-        assertEquals(ancEnrollmentForm.getLastTTDate(), ancVO.getLastTTDate());
+        assertEquals(ancEnrollmentForm.getLastIPT(), ancVO.getAncCareHistoryVO().getLastIPT());
+        assertEquals(ancEnrollmentForm.getLastIPTDate(), ancVO.getAncCareHistoryVO().getLastIPTDate());
+        assertEquals(ancEnrollmentForm.getLastTT(), ancVO.getAncCareHistoryVO().getLastTT());
+        assertEquals(ancEnrollmentForm.getLastTTDate(), ancVO.getAncCareHistoryVO().getLastTTDate());
         assertEquals(ancEnrollmentForm.getMotechPatientId(), ancVO.getPatientMotechId());
         assertEquals(ancEnrollmentForm.getParity(), ancVO.getParity());
         assertEquals(ancEnrollmentForm.getRegistrationToday(), ancVO.getRegistrationToday());

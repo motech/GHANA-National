@@ -123,6 +123,10 @@ public class PatientEditPage extends HomePage{
         cwcEnrollment.click();
     }
 
+    public void clickOnEnrollANCLink() {
+        ancEnrollment.click();
+    }
+
     public void clickEnrollMobileMidwifeLink() {
        mobileMidwifeEnrollmentLink.click();
     }

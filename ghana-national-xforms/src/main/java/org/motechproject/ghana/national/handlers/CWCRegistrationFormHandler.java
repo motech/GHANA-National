@@ -2,8 +2,10 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
@@ -25,6 +27,9 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
     CareService careService;
 
     @Autowired
+    MobileMidwifeService mobileMidwifeService;
+
+    @Autowired
     FacilityService facilityService;
 
     @Override
@@ -36,13 +41,11 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
 
         Facility facility = facilityService.getFacilityByMotechId(registerCWCForm.getFacilityId());
 
-
         careService.enroll(new CwcVO(registerCWCForm.getStaffId(),
                 facility.getMrsFacilityId(),
                 registerCWCForm.getRegistrationDate(),
                 registerCWCForm.getMotechId(),
-                registerCWCForm.getAddCareHistory(),
-                registerCWCForm.getBcgDate(),
+                registerCWCForm.getCWCCareHistories(), registerCWCForm.getBcgDate(),
                 registerCWCForm.getLastVitaminADate(),
                 registerCWCForm.getMeaslesDate(),
                 registerCWCForm.getYellowFeverDate(),
@@ -52,7 +55,12 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
                 registerCWCForm.getLastOPV(),
                 registerCWCForm.getLastIPTiDate(),
                 registerCWCForm.getLastIPTi(),
-                registerCWCForm.getSerialNumber()),
-                registerCWCForm.createMobileMidwifeEnrollment());
+                registerCWCForm.getSerialNumber(),
+                registerCWCForm.getAddHistory()));
+
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = registerCWCForm.createMobileMidwifeEnrollment();
+        if(mobileMidwifeEnrollment != null){
+            mobileMidwifeService.register(mobileMidwifeEnrollment);
+        }
     }
 }

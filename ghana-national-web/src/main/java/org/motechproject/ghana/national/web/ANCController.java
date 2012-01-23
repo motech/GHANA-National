@@ -96,9 +96,8 @@ public class ANCController {
                 ancForm.getSerialNumber(), ancForm.getEstimatedDateOfDelivery(), ancForm.getHeight(),
                 ancForm.getGravida(), ancForm.getParity(), ancForm.getAddHistory(), ancForm.getDeliveryDateConfirmed(),
                 ancForm.getCareHistory(), ancForm.getLastIPT(), ancForm.getLastTT(),
-                ancForm.getLastIPTDate(), ancForm.getLastTTDate());
+                ancForm.getLastIPTDate(), ancForm.getLastTTDate(), ancForm.getAddHistory());
     }
-
 
     private void addCareHistoryValues(ModelMap modelMap) {
         modelMap.put("careHistories", Arrays.asList("TT", "IPT"));

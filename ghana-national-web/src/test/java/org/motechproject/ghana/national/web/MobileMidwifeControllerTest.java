@@ -3,10 +3,11 @@ package org.motechproject.ghana.national.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
-import org.motechproject.ghana.national.validator.MobileMidwifeFormValidator;
+import org.motechproject.ghana.national.validator.MobileMidwifeValidator;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.DayOfWeek;
@@ -33,7 +34,7 @@ import static org.motechproject.ghana.national.web.MobileMidwifeController.SUCCE
 public class MobileMidwifeControllerTest {
 
     @Mock
-    private MobileMidwifeFormValidator mobileMidwifeFormValidator;
+    private MobileMidwifeValidator mobileMidwifeValidator;
     @Mock
     private MobileMidwifeService mobileMidwifeService;
     @Mock
@@ -43,7 +44,7 @@ public class MobileMidwifeControllerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new MobileMidwifeController(mobileMidwifeFormValidator, mobileMidwifeService, messages);
+        controller = new MobileMidwifeController(mobileMidwifeValidator, mobileMidwifeService, messages);
     }
 
     @Test
@@ -51,19 +52,19 @@ public class MobileMidwifeControllerTest {
         String patientId = "patientId";
         String facilityId = "facilityI";
         String staffId = "staffId";
-        MobileMidwifeEnrollmentForm form = defaultForm(patientId, facilityId, staffId);
+        MobileMidwifeEnrollmentForm form = defaultForm(patientId, facilityId, staffId, Medium.VOICE, new Time(23, 45));
 
         when(mobileMidwifeService.findBy(patientId)).thenReturn(null);
-        when(mobileMidwifeFormValidator.validateFacilityPatientAndStaff(patientId,facilityId,staffId)).thenReturn(Collections.<FormError>emptyList());
+        when(mobileMidwifeValidator.validate(Matchers.<MobileMidwifeEnrollment>any())).thenReturn(Collections.<FormError>emptyList());
 
         ModelMap modelMap = new ModelMap();
         String editUrl = controller.save(form, null, modelMap);
 
         assertThat(editUrl, isEq(MOBILE_MIDWIFE_URL));
-        verify(mobileMidwifeFormValidator).validateFacilityPatientAndStaff(form.getPatientMotechId(), form.getFacilityMotechId(), form.getStaffMotechId());
-
         ArgumentCaptor<MobileMidwifeEnrollment> enrollment = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        verify(mobileMidwifeService).createOrUpdateEnrollment(enrollment.capture());
+
+        verify(mobileMidwifeValidator).validate(enrollment.capture());
+        verify(mobileMidwifeService).register(enrollment.getValue());
         assertFormWithEnrollment((MobileMidwifeEnrollmentForm) modelMap.get("mobileMidwifeEnrollmentForm"), enrollment.getValue());
     }
 
@@ -74,19 +75,19 @@ public class MobileMidwifeControllerTest {
         String staffId = "staffId";
         String successMsg = "Changes successful";
 
-        MobileMidwifeEnrollmentForm form = defaultForm(patientId, facilityId, staffId);
-        MobileMidwifeEnrollment existingEnrollment = defaultForm(patientId, "oldFacilityId", "oldStaffId").createEnrollment();
+        MobileMidwifeEnrollmentForm form = defaultForm(patientId, facilityId, staffId, Medium.SMS, new Time(23, 45));
+        MobileMidwifeEnrollment existingEnrollment = defaultForm(patientId, "oldFacilityId", "oldStaffId", Medium.VOICE, new Time(23, 45)).createEnrollment();
 
         when(mobileMidwifeService.findBy(patientId)).thenReturn(existingEnrollment);
-        when(mobileMidwifeFormValidator.validateFacilityPatientAndStaff(patientId,facilityId,staffId)).thenReturn(Collections.<FormError>emptyList());
+        when(mobileMidwifeValidator.validate(Matchers.<MobileMidwifeEnrollment>any())).thenReturn(Collections.<FormError>emptyList());
         when(messages.getMessage(SUCCESS_MESSAGE, null, Locale.getDefault())).thenReturn(successMsg);
 
         ModelMap modelMap = new ModelMap();
         String editUrl = controller.save(form, null, modelMap);
 
-        verify(mobileMidwifeFormValidator).validateFacilityPatientAndStaff(form.getPatientMotechId(), form.getFacilityMotechId(), form.getStaffMotechId());
         ArgumentCaptor<MobileMidwifeEnrollment> enrollment = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        verify(mobileMidwifeService).createOrUpdateEnrollment(enrollment.capture());
+        verify(mobileMidwifeValidator).validate(enrollment.capture());
+        verify(mobileMidwifeService).register(enrollment.getValue());
         assertFormWithEnrollment((MobileMidwifeEnrollmentForm) modelMap.get("mobileMidwifeEnrollmentForm"), enrollment.getValue());
 
         assertThat(editUrl, isEq(MOBILE_MIDWIFE_URL));
@@ -99,17 +100,17 @@ public class MobileMidwifeControllerTest {
         String facilityId = "facilityI";
         String staffId = "staffId";
         ModelMap map=new ModelMap();
-        MobileMidwifeEnrollmentForm form = defaultForm(patientId, facilityId, staffId);
+        MobileMidwifeEnrollmentForm form = defaultForm(patientId, facilityId, staffId, Medium.VOICE, new Time(23, 45));
 
-        when(mobileMidwifeFormValidator.validateFacilityPatientAndStaff(patientId,facilityId,staffId)).thenReturn(new ArrayList<FormError>(){{
+        when(mobileMidwifeValidator.validate(Matchers.<MobileMidwifeEnrollment>any())).thenReturn(new ArrayList<FormError>(){{
             add(new FormError("error1","description1"));
             add(new FormError("error2","description2"));
         }});
 
         String editUrl = controller.save(form, null, map);
 
-        verify(mobileMidwifeFormValidator).validateFacilityPatientAndStaff(form.getPatientMotechId(), form.getFacilityMotechId(), form.getStaffMotechId());
-        verify(mobileMidwifeService,never()).createOrUpdateEnrollment((MobileMidwifeEnrollment)any());
+        verify(mobileMidwifeValidator).validate(Matchers.<MobileMidwifeEnrollment>any());
+        verify(mobileMidwifeService,never()).register((MobileMidwifeEnrollment)any());
 
         List<FormError> errors = (List<FormError>) map.get("formErrors");
         assertThat("description1",is(equalTo(errors.get(0).getError())));
@@ -118,10 +119,11 @@ public class MobileMidwifeControllerTest {
         assertEquals(form, map.get("mobileMidwifeEnrollmentForm"));
     }
 
-    private MobileMidwifeEnrollmentForm defaultForm(String patientId, String facilityId, String staffId) {
+    private MobileMidwifeEnrollmentForm defaultForm(String patientId, String facilityId, String staffId, Medium medium, Time timeOfDay) {
         return new MobileMidwifeEnrollmentForm()
+                .setMedium(medium)
                 .setPatientMotechId(patientId).setFacilityMotechId(facilityId).setStaffMotechId(staffId)
-                .setTimeOfDay(new Time(23, 45)).setConsent(true).setDayOfWeek(DayOfWeek.Monday).setLanguage(Language.EN)
+                .setTimeOfDay(timeOfDay).setConsent(true).setDayOfWeek(DayOfWeek.Monday).setLanguage(Language.EN)
                 .setLearnedFrom(LearnedFrom.POSTERS_ADS).setMedium(Medium.SMS)
                 .setMessageStartWeek("5").setPhoneNumber("9900011234")
                 .setPhoneOwnership(PhoneOwnership.PERSONAL).setReasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH)

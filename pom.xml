@@ -262,9 +262,12 @@
                 <configuration>
                     <argLine>-XX:MaxPermSize=1024M</argLine>
                     <printSummary>true</printSummary>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*IT.java</include>
+                        <include>**/repository/*Test.java</include>
+                    </includes>
                     <excludes>
-                        <exclude>**/*IT.java</exclude>
-                        <exclude>**/repository/*Test.java</exclude>
                         <exclude>**/functional/**/*Test.java</exclude>
                     </excludes>
                 </configuration>
@@ -307,8 +310,8 @@
                 <configuration>
                     <printSummary>true</printSummary>
                     <includes>
-                        <include>**/*IT.java</include>
-                        <include>**/repository/*Test.java</include>
+                        <!--<include>**/*IT.java</include>-->
+                        <!--<include>**/repository/*Test.java</include>-->
                         <include>**/functional/**/*Test.java</include>
                     </includes>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>

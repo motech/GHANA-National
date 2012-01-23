@@ -1,8 +1,10 @@
 package org.motechproject.ghana.national.validator;
 
+import org.aspectj.apache.bcel.classfile.ConstantString;
 import org.motechproject.ghana.national.bean.RegisterANCForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -21,6 +24,9 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
 
     @Autowired
     private PatientService patientService;
+
+    @Autowired
+    private MobileMidwifeValidator mobileMidwifeValidator;
 
     static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
     static final String GENDER_ERROR_MSG = "should be female for registering into ANC";
@@ -32,6 +38,7 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
         List<FormError> formErrors = super.validate(formBean);
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(validatePatientAndStaff(formBean.getMotechId(), formBean.getStaffId()));
+        formErrors.addAll(validateMobileMidwifeIfEnrolled(formBean));
         return formErrors;
     }
 
@@ -43,7 +50,7 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
     }
 
     public List<FormError> validatePatient(String patientId) {
-        final List<FormError> patientFormErrors = formValidator.validatePatient(patientId, MOTECH_ID_ATTRIBUTE_NAME);
+        final List<FormError> patientFormErrors = formValidator.validatePatient(patientId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
         if (!patientFormErrors.isEmpty()) {
             patientFormErrors.addAll(patientFormErrors);
         } else {
@@ -56,9 +63,14 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
         Patient patient = patientService.getPatientByMotechId(motechId);
         if (patient.getMrsPatient().getPerson().getGender().equals(Constants.PATIENT_GENDER_MALE)) {
             return new ArrayList<FormError>() {{
-                add(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG));
+                add(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, Constants.GENDER_ERROR_MSG));
             }};
         }
         return new ArrayList<FormError>();
+    }
+
+    private List<FormError> validateMobileMidwifeIfEnrolled(RegisterANCForm formBean) {
+        MobileMidwifeEnrollment midwifeEnrollment = formBean.createMobileMidwifeEnrollment();
+        return midwifeEnrollment != null ? mobileMidwifeValidator.validateForIncludeForm(midwifeEnrollment) : Collections.<FormError>emptyList();
     }
 }

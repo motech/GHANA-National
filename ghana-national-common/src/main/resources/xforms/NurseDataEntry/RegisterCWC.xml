@@ -24,8 +24,8 @@
                 <enroll/>
                 <consent/>
                 <serviceType/>
-                <ownership/>
-                <regPhone/>
+                <phoneOwnership/>
+                <phoneNumber/>
                 <format/>
                 <language/>
                 <dayOfWeek/>
@@ -543,11 +543,11 @@
                  required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="serviceType" nodeset="/CWCRegistration/serviceType"
                  relevant="/CWCRegistration/consent = Y" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="ownership" nodeset="/CWCRegistration/ownership"
+        <xf:bind action="show" id="phoneOwnership" nodeset="/CWCRegistration/phoneOwnership"
                  relevant="/CWCRegistration/consent = 'Y'" required="true()" type="xsd:string"
                  visible="false()"/>
-        <xf:bind action="show" id="regPhone" nodeset="/CWCRegistration/regPhone"
-                 relevant="/CWCRegistration/ownership = 'PERSONAL' or /CWCRegistration/ownership = 'HOUSEHOLD'"
+        <xf:bind action="show" id="phoneNumber" nodeset="/CWCRegistration/phoneNumber"
+                 relevant="/CWCRegistration/phoneOwnership = 'PERSONAL' or /CWCRegistration/phoneOwnership = 'HOUSEHOLD'"
                  required="true()" type="xsd:int" constraint=". &lt;= 999999999"
                  message="Number too large. It should be 10 digits long"/>
         <xf:bind action="show" id="format" nodeset="/CWCRegistration/format"
@@ -753,7 +753,7 @@
                 <xf:value>CHILD_CARE</xf:value>
             </xf:item>
         </xf:select1>
-        <xf:select1 bind="ownership">
+        <xf:select1 bind="phoneOwnership">
             <xf:label>Phone ownership</xf:label>
             <xf:item id="PERSONAL">
                 <xf:label>Personal phone</xf:label>
@@ -768,13 +768,13 @@
                 <xf:value>PUBLIC</xf:value>
             </xf:item>
         </xf:select1>
-        <xf:input bind="regPhone">
+        <xf:input bind="phoneNumber">
             <xf:label>Phone number</xf:label>
         </xf:input>
         <xf:select1 bind="format">
             <xf:label>Message format</xf:label>
             <xf:itemset
-                    nodeset="instance('format')/item[@parent=instance('CWCRegistration')/ownership]">
+                    nodeset="instance('format')/item[@parent=instance('CWCRegistration')/phoneOwnership]">
                 <xf:label ref="label"/>
                 <xf:value ref="value"/>
             </xf:itemset>
@@ -790,31 +790,31 @@
             <xf:label>Day of week to receive messages</xf:label>
             <xf:item id="monday">
                 <xf:label>Monday</xf:label>
-                <xf:value>monday</xf:value>
+                <xf:value>Monday</xf:value>
             </xf:item>
             <xf:item id="tuesday">
                 <xf:label>Tuesday</xf:label>
-                <xf:value>tuesday</xf:value>
+                <xf:value>Tuesday</xf:value>
             </xf:item>
             <xf:item id="wednesday">
                 <xf:label>Wednesday</xf:label>
-                <xf:value>wednesday</xf:value>
+                <xf:value>Wednesday</xf:value>
             </xf:item>
             <xf:item id="thursday">
                 <xf:label>Thursday</xf:label>
-                <xf:value>thursday</xf:value>
+                <xf:value>Thursday</xf:value>
             </xf:item>
             <xf:item id="friday">
                 <xf:label>Friday</xf:label>
-                <xf:value>friday</xf:value>
+                <xf:value>Friday</xf:value>
             </xf:item>
             <xf:item id="saturday">
                 <xf:label>Saturday</xf:label>
-                <xf:value>saturday</xf:value>
+                <xf:value>Saturday</xf:value>
             </xf:item>
             <xf:item id="sunday">
                 <xf:label>Sunday</xf:label>
-                <xf:value>sunday</xf:value>
+                <xf:value>Sunday</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="timeOfDay">

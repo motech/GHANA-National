@@ -12,7 +12,7 @@ public class HomePage extends BasePage {
 
     @FindBy(id = "ancenrollment")
     @CacheLookup
-    private WebElement ancEnrollment;
+    public WebElement ancEnrollment;
 
     public HomePage(WebDriver webDriver) {
         super(webDriver);

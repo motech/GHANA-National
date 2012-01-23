@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -9,6 +10,7 @@ import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +46,7 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
     private Boolean addHistory;
 
     @Required
-    private List<CwcCareHistory> addCareHistory;
+    private String addCareHistory;
 
     @RegEx(pattern = "0[0-9]{9}")
     private String regPhone;
@@ -125,11 +127,11 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
         this.addHistory = addHistory;
     }
 
-    public List<CwcCareHistory> getAddCareHistory() {
+    public String getAddCareHistory() {
         return addCareHistory;
     }
 
-    public void setAddCareHistory(List<CwcCareHistory> addCareHistory) {
+    public void setAddCareHistory(String addCareHistory) {
         this.addCareHistory = addCareHistory;
     }
 
@@ -214,10 +216,20 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
     }
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
-        if(isEnrolledForProgram()) {
-        MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment());
-        return enrollment.setStaffId(getStaffId()).setFacilityId(getFacilityId()).setPatientId(getMotechId());
+        if(isEnrolledForMobileMidwifeProgram()) {
+            MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment());
+            return enrollment.setStaffId(getStaffId()).setFacilityId(getFacilityId()).setPatientId(getMotechId());
         }
         return null;
+    }
+
+    public List<CwcCareHistory> getCWCCareHistories() {
+        final ArrayList<CwcCareHistory> cwcCareHistories = new ArrayList<CwcCareHistory>();
+        if (StringUtils.isNotEmpty(addCareHistory)) {
+            for (String value : addCareHistory.split(" ")) {
+                cwcCareHistories.add(CwcCareHistory.valueOf(value));
+            }
+        }
+        return cwcCareHistories;
     }
 }

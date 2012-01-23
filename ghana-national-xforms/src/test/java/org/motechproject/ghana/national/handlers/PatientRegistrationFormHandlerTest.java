@@ -1,13 +1,9 @@
 package org.motechproject.ghana.national.handlers;
 
-import org.eclipse.jdt.internal.compiler.lookup.TypeBinding;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.bean.MobileMidWifeIncludeForm;
-import org.motechproject.ghana.national.bean.MobileMidwifeForm;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -16,6 +12,7 @@ import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatExcept
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.vo.CwcVO;
@@ -44,6 +41,8 @@ public class PatientRegistrationFormHandlerTest {
     FacilityService mockFacilityService;
     @Mock
     CareService mockCareService;
+    @Mock
+    MobileMidwifeService mockMobileMidwifeService;
 
     PatientRegistrationFormHandler patientRegistrationFormHandler;
 
@@ -54,6 +53,7 @@ public class PatientRegistrationFormHandlerTest {
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "careService", mockCareService);
+        ReflectionTestUtils.setField(patientRegistrationFormHandler, "mobileMidwifeService", mockMobileMidwifeService);
     }
 
     @Test
@@ -171,7 +171,8 @@ public class PatientRegistrationFormHandlerTest {
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
-        verify(mockCareService).enroll(captor.capture() , mobileMidwifeEnrollmentArgumentCaptor.capture());
+        verify(mockCareService).enroll(captor.capture());
+        verify(mockMobileMidwifeService).register(mobileMidwifeEnrollmentArgumentCaptor.capture());
         final CwcVO cwcVO = captor.getValue();
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
@@ -236,7 +237,9 @@ public class PatientRegistrationFormHandlerTest {
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
-        verify(mockCareService).enroll(captor.capture() , mobileMidwifeEnrollmentArgumentCaptor.capture());
+        verify(mockCareService).enroll(captor.capture());
+        verify(mockMobileMidwifeService).register(mobileMidwifeEnrollmentArgumentCaptor.capture());
+
         final ANCVO ancVO = captor.getValue();
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
@@ -337,15 +340,15 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(facilityId, is(cwcVO.getFacilityId()));
         assertThat(registartionDate, is(cwcVO.getRegistrationDate()));
         assertThat(motechId, is(cwcVO.getPatientMotechId()));
-        assertThat(lastBCGDate, is(cwcVO.getBcgDate()));
-        assertThat(lastVitADate, is(cwcVO.getVitADate()));
-        assertThat(lastMeaslesDate, is(cwcVO.getMeaslesDate()));
-        assertThat(lastYfDate, is(cwcVO.getYfDate()));
-        assertThat(lastPentaDate, is(cwcVO.getLastPentaDate()));
-        assertThat(lastPenta, is(cwcVO.getLastPenta()));
-        assertThat(lastOPVDate, is(cwcVO.getLastOPVDate()));
-        assertThat(lastOPV, is(cwcVO.getLastOPV()));
-        assertThat(lastIPTiDate, is(cwcVO.getLastIPTiDate()));
+        assertThat(lastBCGDate, is(cwcVO.getCWCCareHistoryVO().getBcgDate()));
+        assertThat(lastVitADate, is(cwcVO.getCWCCareHistoryVO().getVitADate()));
+        assertThat(lastMeaslesDate, is(cwcVO.getCWCCareHistoryVO().getMeaslesDate()));
+        assertThat(lastYfDate, is(cwcVO.getCWCCareHistoryVO().getYfDate()));
+        assertThat(lastPentaDate, is(cwcVO.getCWCCareHistoryVO().getLastPentaDate()));
+        assertThat(lastPenta, is(cwcVO.getCWCCareHistoryVO().getLastPenta()));
+        assertThat(lastOPVDate, is(cwcVO.getCWCCareHistoryVO().getLastOPVDate()));
+        assertThat(lastOPV, is(cwcVO.getCWCCareHistoryVO().getLastOPV()));
+        assertThat(lastIPTiDate, is(cwcVO.getCWCCareHistoryVO().getLastIPTiDate()));
         assertThat(staffId, is(cwcVO.getStaffId()));
         assertThat(staffId, is(mobileMidwifeEnrollment.getStaffId()));
         assertThat(facilityId, is(mobileMidwifeEnrollment.getFacilityId()));
@@ -360,10 +363,10 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(height, is(ancVO.getHeight()));
         assertThat(gravida, is(ancVO.getGravida()));
         assertThat(parity, is(ancVO.getParity()));
-        assertThat(lastIPTDate, is(ancVO.getLastIPTDate()));
-        assertThat(lastTTDate, is(ancVO.getLastTTDate()));
-        assertThat(lastIPT, is(ancVO.getLastIPT()));
-        assertThat(lastTT, is(ancVO.getLastTT()));
+        assertThat(lastIPTDate, is(ancVO.getAncCareHistoryVO().getLastIPTDate()));
+        assertThat(lastTTDate, is(ancVO.getAncCareHistoryVO().getLastTTDate()));
+        assertThat(lastIPT, is(ancVO.getAncCareHistoryVO().getLastIPT()));
+        assertThat(lastTT, is(ancVO.getAncCareHistoryVO().getLastTT()));
         assertThat(staffId, is(mobileMidwifeEnrollment.getStaffId()));
         assertThat(facilityId, is(mobileMidwifeEnrollment.getFacilityId()));
         assertThat(motechId, is(mobileMidwifeEnrollment.getPatientId()));

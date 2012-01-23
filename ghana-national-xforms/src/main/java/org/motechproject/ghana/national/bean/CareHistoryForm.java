@@ -1,14 +1,23 @@
 package org.motechproject.ghana.national.bean;
 
+import org.apache.commons.lang.StringUtils;
+import org.motechproject.ghana.national.domain.ANCCareHistory;
+import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.validator.field.MotechId;
+import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
+import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
+import org.motechproject.ghana.national.vo.CareHistoryVO;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class CareHistoryForm extends FormBean {
+
     @Required
     @MotechId(validator = VerhoeffValidator.class)
     private String staffId;
@@ -31,13 +40,13 @@ public class CareHistoryForm extends FormBean {
     private String lastTT;
     private Date lastTTDate;
     private Date bcgDate;
-    private String lastOPV;
+    private Integer lastOPV;
     private Date lastOPVDate;
-    private String lastPenta;
+    private Integer lastPenta;
     private Date lastPentaDate;
     private Date measlesDate;
     private Date yellowFeverDate;
-    private String lastIPTI;
+    private Integer lastIPTI;
     private Date lastIPTIDate;
     private Date lastVitaminADate;
 
@@ -121,11 +130,11 @@ public class CareHistoryForm extends FormBean {
         this.bcgDate = bcgDate;
     }
 
-    public String getLastOPV() {
+    public Integer getLastOPV() {
         return lastOPV;
     }
 
-    public void setLastOPV(String lastOPV) {
+    public void setLastOPV(Integer lastOPV) {
         this.lastOPV = lastOPV;
     }
 
@@ -137,11 +146,11 @@ public class CareHistoryForm extends FormBean {
         this.lastOPVDate = lastOPVDate;
     }
 
-    public String getLastPenta() {
+    public Integer getLastPenta() {
         return lastPenta;
     }
 
-    public void setLastPenta(String lastPenta) {
+    public void setLastPenta(Integer lastPenta) {
         this.lastPenta = lastPenta;
     }
 
@@ -169,11 +178,11 @@ public class CareHistoryForm extends FormBean {
         this.yellowFeverDate = yellowFeverDate;
     }
 
-    public String getLastIPTI() {
+    public Integer getLastIPTI() {
         return lastIPTI;
     }
 
-    public void setLastIPTI(String lastIPTI) {
+    public void setLastIPTI(Integer lastIPTI) {
         this.lastIPTI = lastIPTI;
     }
 
@@ -191,5 +200,46 @@ public class CareHistoryForm extends FormBean {
 
     public void setLastVitaminADate(Date lastVitaminADate) {
         this.lastVitaminADate = lastVitaminADate;
+    }
+
+    public List<ANCCareHistory> getANCCareHistories() {
+        String[] selectedCareHistories = StringUtils.isNotEmpty(addHistory) ? addHistory.split(" ") : new String[]{};
+        final List<String> ancCareHistories = new ArrayList<String>();
+        for (ANCCareHistory ancCareHistory : ANCCareHistory.values()) {
+            ancCareHistories.add(ancCareHistory.name());
+        }
+
+        List<ANCCareHistory> filteredCareHistories = new ArrayList<ANCCareHistory>();
+        for (String history : selectedCareHistories) {
+            if (ancCareHistories.contains(history)) {
+                filteredCareHistories.add(ANCCareHistory.valueOf(history));
+            }
+        }
+        return filteredCareHistories;
+    }
+
+    public List<CwcCareHistory> getCWCCareHistories() {
+        String[] selectedCareHistories = StringUtils.isNotEmpty(addHistory) ? addHistory.split(" ") : new String[]{};
+        final List<String> cwcCareHistories = new ArrayList<String>();
+        for (CwcCareHistory cwcCareHistory : CwcCareHistory.values()) {
+            cwcCareHistories.add(cwcCareHistory.name());
+        }
+
+        List<CwcCareHistory> filteredCareHistories = new ArrayList<CwcCareHistory>();
+        for (String history : selectedCareHistories) {
+            if (cwcCareHistories.contains(history)) {
+                filteredCareHistories.add(CwcCareHistory.valueOf(history));
+            }
+        }
+        return filteredCareHistories;
+    }
+
+    public CareHistoryVO careHistoryVO(String facilityId) {
+        List<ANCCareHistory> ancCareHistories = getANCCareHistories();
+        List<CwcCareHistory> cwcCareHistories = getCWCCareHistories();
+        ANCCareHistoryVO ancCareHistoryVO = new ANCCareHistoryVO(ancCareHistories.size() > 0, ancCareHistories, lastIPT, lastTT, lastIPTDate, lastTTDate);
+        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(cwcCareHistories.size() > 0, cwcCareHistories, bcgDate, lastVitaminADate, measlesDate, yellowFeverDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTI, lastIPTDate);
+
+        return new CareHistoryVO(staffId, facilityId, motechId, date, ancCareHistoryVO, cwcCareHistoryVO);
     }
 }

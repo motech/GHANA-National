@@ -26,6 +26,6 @@ public class MobileMidwifeFormHandler implements FormPublishHandler {
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
         final MobileMidwifeForm mobileMidwifeForm = (MobileMidwifeForm) event.getParameters().get(FORM_BEAN);
-        mobileMidwifeService.createOrUpdateEnrollment(mobileMidwifeForm.createMobileMidwifeEnrollment());
+        mobileMidwifeService.register(mobileMidwifeForm.createMobileMidwifeEnrollment());
     }
 }
