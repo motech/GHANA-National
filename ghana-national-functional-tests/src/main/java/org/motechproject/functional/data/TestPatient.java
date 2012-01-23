@@ -14,6 +14,7 @@ public class TestPatient {
     private String subDistrict;
     private String facility;
     private String facilityId;
+    private String facilityIdWherePatientIsEdited;
     private String middleName;
     private String lastName;
     private String preferredName;
@@ -52,6 +53,12 @@ public class TestPatient {
         return testPatient;
     }
 
+    public Map<String, String> editFromMobile() {
+        Map<String, String> map = forMobile();
+        map.put("updatePatientFacilityId", facilityIdWherePatientIsEdited);
+        return map;
+    }
+
     public Map<String, String> forMobile() {
         return new HashMap<String, String>() {{
             put("registrationMode", registrationMode.name());
@@ -76,7 +83,7 @@ public class TestPatient {
         }};
     }
 
-    public String booleanCode(boolean value){
+    public String booleanCode(boolean value) {
         return value ? "Y" : "N";
     }
 
@@ -187,6 +194,21 @@ public class TestPatient {
 
     public TestPatient staffId(String staffId) {
         this.staffId = staffId;
+        return this;
+    }
+
+    public TestPatient middleName(String middleName) {
+        this.middleName = middleName;
+        return this;
+    }
+
+    public TestPatient lastName(String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
+
+    public TestPatient facilityIdWherePatientIsEdited(String facilityIdWherePatientIsEdited) {
+        this.facilityIdWherePatientIsEdited = facilityIdWherePatientIsEdited;
         return this;
     }
 

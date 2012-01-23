@@ -256,9 +256,20 @@ public class PatientPage extends HomePage {
         return motechId.getAttribute("value");
     }
 
+    public String firstName() {
+        return firstName.getAttribute("value");
+    }
+
+    public String middleName() {
+        return middleName.getAttribute("value");
+    }
+
+    public String lastName() {
+        return lastName.getAttribute("value");
+    }
+
     @Override
     public void waitForSuccessfulCompletion() {
         elementPoller.waitForElementClassName("success", driver);
     }
-
 }
