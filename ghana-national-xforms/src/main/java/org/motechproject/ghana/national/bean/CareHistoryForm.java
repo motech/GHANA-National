@@ -235,8 +235,10 @@ public class CareHistoryForm extends FormBean {
     }
 
     public CareHistoryVO careHistoryVO(String facilityId) {
-        ANCCareHistoryVO ancCareHistoryVO = new ANCCareHistoryVO(null, getANCCareHistories(), lastIPT, lastTT, lastIPTDate, lastTTDate);
-        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(null, getCWCCareHistories(), bcgDate, lastVitaminADate, measlesDate, yellowFeverDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTI, lastIPTDate);
+        List<ANCCareHistory> ancCareHistories = getANCCareHistories();
+        List<CwcCareHistory> cwcCareHistories = getCWCCareHistories();
+        ANCCareHistoryVO ancCareHistoryVO = new ANCCareHistoryVO(ancCareHistories.size() > 0, ancCareHistories, lastIPT, lastTT, lastIPTDate, lastTTDate);
+        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(cwcCareHistories.size() > 0, cwcCareHistories, bcgDate, lastVitaminADate, measlesDate, yellowFeverDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTI, lastIPTDate);
 
         return new CareHistoryVO(staffId, facilityId, motechId, date, ancCareHistoryVO, cwcCareHistoryVO);
     }
