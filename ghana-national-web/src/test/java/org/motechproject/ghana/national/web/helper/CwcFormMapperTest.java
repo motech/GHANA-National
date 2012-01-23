@@ -95,10 +95,10 @@ public class CwcFormMapperTest {
         Date iptiDate = new Date();
         Date opvDate = new Date();
         Date pentaDate = new Date();
-        Integer iptiValue = 0;
+        Double iptiValue = 0.0;
         String serialNum = "serial number";
-        Integer pentaValue = 2;
-        Integer opvValue = 1;
+        Double pentaValue = 2.0;
+        Double opvValue = 1.0;
         String name = "name";
         String country = "country";
         String region = "region";
@@ -133,11 +133,11 @@ public class CwcFormMapperTest {
         assertThat(cwcEnrollmentForm.getYfDate(), is(equalTo(yfDate)));
         assertThat(cwcEnrollmentForm.getVitADate(), is(equalTo(vitaDate)));
         assertThat(cwcEnrollmentForm.getLastIPTiDate(), is(equalTo(iptiDate)));
-        assertThat(cwcEnrollmentForm.getLastIPTi(), is(equalTo(iptiValue)));
+        assertThat(cwcEnrollmentForm.getLastIPTi(), is(equalTo(iptiValue.intValue())));
         assertThat(cwcEnrollmentForm.getLastPentaDate(), is(equalTo(pentaDate)));
-        assertThat(cwcEnrollmentForm.getLastPenta(), is(equalTo(pentaValue)));
+        assertThat(cwcEnrollmentForm.getLastPenta(), is(equalTo(pentaValue.intValue())));
         assertThat(cwcEnrollmentForm.getLastOPVDate(), is(equalTo(opvDate)));
-        assertThat(cwcEnrollmentForm.getLastOPV(), is(equalTo(opvValue)));
+        assertThat(cwcEnrollmentForm.getLastOPV(), is(equalTo(opvValue.intValue())));
         assertThat(cwcEnrollmentForm.getSerialNumber(), is(equalTo(serialNum)));
 
 

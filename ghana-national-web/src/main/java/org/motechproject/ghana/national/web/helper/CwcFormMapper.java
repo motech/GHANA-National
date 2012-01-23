@@ -61,18 +61,18 @@ public class CwcFormMapper {
             }
             if (Constants.CONCEPT_IPTI.equals(observation.getConceptName())) {
                 cwcEnrollmentForm.setLastIPTiDate(observation.getDate());
-                cwcEnrollmentForm.setLastIPTi((Integer) observation.getValue());
+                cwcEnrollmentForm.setLastIPTi(((Double) observation.getValue()).intValue());
                 careHistories.add(CwcCareHistory.IPTI);
             }
 
             if (Constants.CONCEPT_PENTA.equals(observation.getConceptName())) {
                 cwcEnrollmentForm.setLastPentaDate(observation.getDate());
-                cwcEnrollmentForm.setLastPenta((Integer) observation.getValue());
+                cwcEnrollmentForm.setLastPenta(((Double) observation.getValue()).intValue());
                 careHistories.add(CwcCareHistory.PENTA);
             }
             if (Constants.CONCEPT_OPV.equals(observation.getConceptName())) {
                 cwcEnrollmentForm.setLastOPVDate(observation.getDate());
-                cwcEnrollmentForm.setLastOPV((Integer) observation.getValue());
+                cwcEnrollmentForm.setLastOPV(((Double) observation.getValue()).intValue());
                 careHistories.add(CwcCareHistory.OPV);
             }
             cwcEnrollmentForm.setCareHistory(careHistories);
