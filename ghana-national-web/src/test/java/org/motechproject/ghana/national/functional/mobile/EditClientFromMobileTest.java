@@ -1,13 +1,18 @@
 package org.motechproject.ghana.national.functional.mobile;
 
-import junit.framework.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.functional.data.TestPatient;
 import org.motechproject.functional.framework.XformHttpClient;
+import org.motechproject.functional.mobileforms.MobileForm;
+import org.motechproject.functional.pages.patient.SearchPatientPage;
+import org.motechproject.functional.util.DataGenerator;
 import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
 import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
 import org.motechproject.ghana.national.functional.Generator.StaffGenerator;
+import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -25,7 +30,7 @@ import static org.testng.AssertJUnit.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class EditClientFromMobileTest {
+public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
 
     @Autowired
     StaffGenerator staffGenerator;
@@ -33,6 +38,12 @@ public class EditClientFromMobileTest {
     FacilityGenerator facilityGenerator;
     @Autowired
     PatientGenerator patientGenerator;
+    DataGenerator dataGenerator;
+
+    @Before
+    public void setUp() {
+        dataGenerator = new DataGenerator();
+    }
 
     @Test
     public void shouldCheckForMandatoryFields() throws Exception {
@@ -82,23 +93,29 @@ public class EditClientFromMobileTest {
         assertNull(errorsMap.get("firstName"));
     }
 
+    // TODO: TEST NOT COMPLETE
     @Ignore
     @Test
     public void shouldUpdatePatientIfNoErrorsAreFound() throws Exception {
-        final String staffId = staffGenerator.createStaffAndReturnStaffId();
-        final String facilityId = facilityGenerator.createFacilityAndReturnFacilityId();
-        final String patientId = patientGenerator.createPatientAndReturnPatientId(facilityId);
-        final String facilityMotechId = facilityGenerator.getFacilityMotechId();
-        final String date = "2011-01-01";
-        final XformHttpClient.XformResponse xformResponse = setupEditClientFormAndUpload(new HashMap<String, String>() {{
-            put("motechId", patientId);
-            put("updatePatientFacilityId", facilityMotechId);
-            put("staffId", staffId);
-            put("date", date);
-        }});
 
-        final List<XformHttpClient.Error> errors = xformResponse.getErrors();
-        Assert.assertEquals(errors.size(), 0);
+        DataGenerator dataGenerator = new DataGenerator();
+
+        String facilityMotechId = facilityGenerator.createFacilityAndReturnFacilityId(browser, homePage);
+//        String facilityId = facilityGenerator.getFacilityId(facilityMotechId);
+        String staffId = staffGenerator.createStaffAndReturnStaffId(browser, homePage);
+        final String patientId = patientGenerator.createPatientAndReturnPatientId(browser, homePage);
+
+        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).
+                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
+                patientType(TestPatient.PATIENT_TYPE.OTHER).estimatedDateOfBirth(false).
+                staffId(staffId);
+
+        mobile.upload(MobileForm.editClientForm(), patient.forMobileEdit());
+
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithName(patient.firstName());
+        searchPatientPage.displaying(patient);
+
     }
 
     private XformHttpClient.XformResponse setupEditClientFormAndUpload(Map<String, String> data) throws Exception {

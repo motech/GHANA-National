@@ -1,43 +1,42 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.functional.framework.XformHttpClient;
+import org.motechproject.functional.util.DataGenerator;
 import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
 import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
 import org.motechproject.ghana.national.functional.Generator.StaffGenerator;
+import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.motechproject.functional.framework.XformHttpClient.XFormParser;
-
+import static org.testng.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-@TransactionConfiguration(defaultRollback=true, transactionManager = "transactionManager")
-public class RegisterMobileMidwifeTest extends AbstractJUnit4SpringContextTests{
-
-
-
+public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
     @Autowired
     StaffGenerator staffGenerator;
     @Autowired
     PatientGenerator patientGenerator;
-
     @Autowired
     FacilityGenerator facilityGenerator;
+    DataGenerator dataGenerator;
 
+    @BeforeMethod
+    public void setUp() {
+        dataGenerator = new DataGenerator();
+    }
 
     @Test
     public void shouldValidateIfPatientIsAlreadyRegistered() throws Exception {
@@ -98,23 +97,18 @@ public class RegisterMobileMidwifeTest extends AbstractJUnit4SpringContextTests{
         assertThat(errorsMap.get("consent"), hasItem("is mandatory"));
     }
 
+    @Test
+    public void shouldRegisterForMobileMidWifeProgramIfValidationsPass() throws Exception {
+        final String staffId = staffGenerator.createStaffAndReturnStaffId(browser, homePage);
+        final String facilityMotechId = facilityGenerator.createFacilityAndReturnFacilityId(browser, homePage);
+        final String patientId = patientGenerator.createPatientAndReturnPatientId(browser, homePage);
 
-
-   @Test
-    public void shouldRegisterForMobileMidWifeProgramIfValidationsPass() throws Exception{
-
-        final String staffId = staffGenerator.createStaffAndReturnStaffId();
-        final String facilityId = facilityGenerator.createFacilityAndReturnFacilityId();
-        final String patientId = patientGenerator.createPatientAndReturnPatientId(facilityId);
-       final String facilityMotechId = facilityGenerator.getFacilityMotechId();
-
-       final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(new HashMap<String, String>() {{
-
-          put("patientId", patientId);
-          put("staffId", staffId);
-          put("facilityId", facilityMotechId);
-          put("consent", "Y");
-      }});
+        final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(new HashMap<String, String>() {{
+            put("patientId", patientId);
+            put("staffId", staffId);
+            put("facilityId", facilityMotechId);
+            put("consent", "Y");
+        }});
 
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 0);
@@ -123,8 +117,6 @@ public class RegisterMobileMidwifeTest extends AbstractJUnit4SpringContextTests{
 
     private XformHttpClient.XformResponse setupMobileMidwifeFormAndUpload(Map<String, String> data) throws Exception {
         return XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
-                "NurseDataEntry", XFormParser.parse("mobile-midwife-template.xml", data));
+                "NurseDataEntry", XformHttpClient.XFormParser.parse("mobile-midwife-template.xml", data));
     }
-
-
 }

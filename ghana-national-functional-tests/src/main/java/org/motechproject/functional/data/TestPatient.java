@@ -28,6 +28,7 @@ public class TestPatient {
     private boolean female;
     private String staffId;
     private LocalDate registrationDate;
+    private String facilityIdWherePatientWasEdited;
 
     public static TestPatient with(String firstName) {
         TestPatient testPatient = new TestPatient();
@@ -53,6 +54,16 @@ public class TestPatient {
     }
 
     public Map<String, String> forMobile(){
+        return populateFormWithValues();
+    }
+
+    public Map<String, String> forMobileEdit(){
+        Map<String, String> map = populateFormWithValues();
+        map.put("updatePatientFacilityId", "13212");
+        return map;
+    }
+
+    private Map<String, String> populateFormWithValues() {
         return new HashMap<String, String>(){{
             put("registrationMode", registrationMode.name());
             put("motechId", motechId);
@@ -181,8 +192,18 @@ public class TestPatient {
         return this;
     }
 
+    public TestPatient registrationDate (LocalDate registrationDate) {
+        this.registrationDate = registrationDate;
+        return this;
+    }
+
     public TestPatient staffId(String staffId){
         this.staffId = staffId;
+        return this;
+    }
+
+    public TestPatient facilityId(String facilityId) {
+        this.facilityId = facilityId;
         return this;
     }
 

@@ -61,6 +61,8 @@ public class XformHttpClient {
             final FormDef formDef = EpihandyXform.getFormDef(EpihandyXform.getDocument(new StringReader(string)));
             studyDef.addForm(formDef);
             final FormData formData = new FormData(formDef);
+            hackDate(formData, "/editPatient/date");
+            hackDate(formData, "/editPatient/nhisExpires");
             hackDate(formData, "/patientRegistration/date");
             hackDate(formData, "/patientRegistration/dateOfBirth");
             hackDate(formData, "/ANCRegistration/date");
