@@ -60,7 +60,7 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
 
         MobileMidwifeEnrollment mobileMidwifeEnrollment = registerCWCForm.createMobileMidwifeEnrollment();
         if(mobileMidwifeEnrollment != null){
-            mobileMidwifeService.createOrUpdateEnrollment(mobileMidwifeEnrollment);
+            mobileMidwifeService.register(mobileMidwifeEnrollment);
         }
     }
 }

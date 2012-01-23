@@ -32,7 +32,7 @@ public class MobileMidwifeServiceTest {
                 .build();
         when(allEnrollments.findByPatientId(patientId)).thenReturn(null);
 
-        service.createOrUpdateEnrollment(enrollment);
+        service.register(enrollment);
         verify(allEnrollments).add(enrollment);
     }
     
@@ -45,7 +45,7 @@ public class MobileMidwifeServiceTest {
         MobileMidwifeEnrollment existingEnrollment = mock(MobileMidwifeEnrollment.class);
         when(allEnrollments.findByPatientId(patientId)).thenReturn(existingEnrollment);
 
-        service.createOrUpdateEnrollment(enrollment);
+        service.register(enrollment);
         verify(allEnrollments).remove(existingEnrollment);
         verify(allEnrollments).add(enrollment);
     }

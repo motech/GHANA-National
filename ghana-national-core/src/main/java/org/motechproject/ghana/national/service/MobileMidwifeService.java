@@ -11,7 +11,7 @@ public class MobileMidwifeService {
     @Autowired
     private AllMobileMidwifeEnrollments allEnrollments;
 
-    public void createOrUpdateEnrollment(MobileMidwifeEnrollment enrollment) {
+    public void register(MobileMidwifeEnrollment enrollment) {
         MobileMidwifeEnrollment existingEnrollment = findBy(enrollment.getPatientId());
         if(existingEnrollment != null) allEnrollments.remove(existingEnrollment);
         allEnrollments.add(enrollment);

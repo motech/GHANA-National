@@ -99,7 +99,7 @@ public class CWCRegistrationFormHandlerTest {
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
         final ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         verify(careService).enroll(captor.capture());
-        verify(mobileMidwifeService).createOrUpdateEnrollment(mobileMidwifeEnrollmentCaptor.capture());
+        verify(mobileMidwifeService).register(mobileMidwifeEnrollmentCaptor.capture());
         final CwcVO cwcVO = captor.getValue();
 
         assertThat(staffId, is(cwcVO.getStaffId()));

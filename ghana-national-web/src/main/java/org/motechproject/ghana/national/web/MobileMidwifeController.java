@@ -63,7 +63,7 @@ public class MobileMidwifeController {
             addFormInfo(modelMap, form).
                     addAttribute("formErrors", formErrors);
         } else {            
-            mobileMidwifeService.createOrUpdateEnrollment(midwifeEnrollment);
+            mobileMidwifeService.register(midwifeEnrollment);
             addFormInfo(modelMap, new MobileMidwifeEnrollmentForm(midwifeEnrollment))
                     .addAttribute("successMessage", messages.getMessage(SUCCESS_MESSAGE, null, Locale.getDefault()));
         }

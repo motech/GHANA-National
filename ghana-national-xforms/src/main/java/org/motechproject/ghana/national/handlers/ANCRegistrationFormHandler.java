@@ -48,7 +48,7 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
         careService.enroll(ancvo);
         MobileMidwifeEnrollment mobileMidwifeEnrollment = registerANCForm.createMobileMidwifeEnrollment();
         if(mobileMidwifeEnrollment != null){
-            mobileMidwifeService.createOrUpdateEnrollment(mobileMidwifeEnrollment);
+            mobileMidwifeService.register(mobileMidwifeEnrollment);
         }
         } catch (Exception e) {
             log.error("Exception while creating an ANC encounter", e);

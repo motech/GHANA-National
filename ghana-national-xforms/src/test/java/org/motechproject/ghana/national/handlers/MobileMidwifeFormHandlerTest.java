@@ -51,7 +51,7 @@ public class MobileMidwifeFormHandlerTest {
         }}));
 
         final ArgumentCaptor<MobileMidwifeEnrollment> captor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        verify(mockMobileMidwifeService).createOrUpdateEnrollment(captor.capture());
+        verify(mockMobileMidwifeService).register(captor.capture());
         final MobileMidwifeEnrollment enrollment = captor.getValue();
 
         assertFormWithEnrollment(form, enrollment);
