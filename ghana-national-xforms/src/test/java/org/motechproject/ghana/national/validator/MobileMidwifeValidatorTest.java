@@ -62,6 +62,10 @@ public class MobileMidwifeValidatorTest {
         enrollment = with(null).setPhoneOwnership(PhoneOwnership.PUBLIC);
         errors = mobileMidwifeValidator.validate(enrollment);
         assertEquals(0, errors.size());
+
+        enrollment = with(new Time(null, null)).setPhoneOwnership(PhoneOwnership.PUBLIC);
+        errors = mobileMidwifeValidator.validate(enrollment);
+        assertEquals(0, errors.size());
     }
 
     @Test

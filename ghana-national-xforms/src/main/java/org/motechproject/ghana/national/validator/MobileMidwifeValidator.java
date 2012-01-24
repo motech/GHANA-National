@@ -51,11 +51,9 @@ public class MobileMidwifeValidator {
 
     List<FormError> validateTime(MobileMidwifeEnrollment enrollment) {
 
-        if (Medium.VOICE.equals(enrollment.getMedium())) {
+        if (Medium.VOICE.equals(enrollment.getMedium()) && !PUBLIC.equals(enrollment.getPhoneOwnership())) {
             Time timeOfDay = enrollment.getTimeOfDay();
-
             if (timeOfDay == null) {
-                if (!PUBLIC.equals(enrollment.getPhoneOwnership()))
                     return asList(new FormError("", MOBILE_MIDWIFE_VOICE_TIMEOFDAYREQUIRED_MESSAGE));
             } else if (!withinValidTimeRange(timeOfDay))
                 return asList(new FormError("", MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE));
