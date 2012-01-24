@@ -93,5 +93,6 @@ public class Constants {
     public static final Time MOBILE_MIDWIFE_MIN_TIMEOFDAY_FOR_VOICE = new Time(5,0);
     public static final Time MOBILE_MIDWIFE_MAX_TIMEOFDAY_FOR_VOICE = new Time(23,0);
     public static final String MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE = "Time of day should be between 5:00 and 23:00 hours";
+    public static final String MOBILE_MIDWIFE_VOICE_TIMEOFDAYREQUIRED_MESSAGE = "Time of day should be specified.";
 
 }
