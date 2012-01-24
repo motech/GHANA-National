@@ -87,7 +87,6 @@ public class CwcFormMapperTest {
         when(bcgValue.getName()).thenReturn(new ConceptName(Constants.CONCEPT_BCG, Locale.getDefault()));
         when(vitaValue.getName()).thenReturn(new ConceptName(Constants.CONCEPT_VITA, Locale.getDefault()));
 
-
         Date measlesDate = new Date();
         Date yfDate = new Date();
         Date bcgDate = new Date();
@@ -120,7 +119,6 @@ public class CwcFormMapperTest {
 
         assertThat(cwcEnrollmentForm.getPatientMotechId(), is(equalTo(patientId)));
         assertThat(cwcEnrollmentForm.getStaffId(), is(equalTo(creatorId)));
-        assertThat(cwcEnrollmentForm.getAddHistory(), is(true));
         assertThat(cwcEnrollmentForm.getFacilityForm().getFacilityId(), is(equalTo(facility.getId())));
         assertThat(cwcEnrollmentForm.getFacilityForm().getCountry(), is(equalTo(facility.getCountry())));
         assertThat(cwcEnrollmentForm.getFacilityForm().getCountyDistrict(), is(equalTo(facility.getCountyDistrict())));
@@ -139,8 +137,44 @@ public class CwcFormMapperTest {
         assertThat(cwcEnrollmentForm.getLastOPVDate(), is(equalTo(opvDate)));
         assertThat(cwcEnrollmentForm.getLastOPV(), is(equalTo(opvValue.intValue())));
         assertThat(cwcEnrollmentForm.getSerialNumber(), is(equalTo(serialNum)));
+        assertThat(cwcEnrollmentForm.getAddHistory(), is(equalTo(true)));
+    }
 
+    @Test
+    public void shouldConvertEncounterToFormViewAndSetAddHistoryToFalseIfNoObservationsAreFound() {
+        final CwcFormMapper cwcFormMapper = new CwcFormMapper();
 
+        String providerId = "121";
+        String creatorId = "3232";
+        String facilityId = "32";
+        Date registrationDate = new Date();
+        String patientId = "2343";
+        final HashSet<MRSObservation> observations = new HashSet<MRSObservation>();
+
+        String serialNum = "serial number";
+        String name = "name";
+        String country = "country";
+        String region = "region";
+        String county = "county";
+        String province = "province";
+        observations.add(new MRSObservation(registrationDate, Constants.CONCEPT_CWC_REG_NUMBER, serialNum));
+        MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
+        MRSEncounter mrsEncounter = new MRSEncounter("1", new MRSPerson().id(providerId),
+                new MRSUser().systemId(creatorId), facility, registrationDate, new MRSPatient(patientId, null, null), observations, "type");
+
+        final CWCEnrollmentForm cwcEnrollmentForm = cwcFormMapper.mapEncounterToView(mrsEncounter);
+
+        assertThat(cwcEnrollmentForm.getPatientMotechId(), is(equalTo(patientId)));
+        assertThat(cwcEnrollmentForm.getStaffId(), is(equalTo(creatorId)));
+        assertThat(cwcEnrollmentForm.getFacilityForm().getFacilityId(), is(equalTo(facility.getId())));
+        assertThat(cwcEnrollmentForm.getFacilityForm().getCountry(), is(equalTo(facility.getCountry())));
+        assertThat(cwcEnrollmentForm.getFacilityForm().getCountyDistrict(), is(equalTo(facility.getCountyDistrict())));
+        assertThat(cwcEnrollmentForm.getFacilityForm().getName(), is(equalTo(facility.getName())));
+        assertThat(cwcEnrollmentForm.getFacilityForm().getStateProvince(), is(equalTo(facility.getStateProvince())));
+        assertThat(cwcEnrollmentForm.getFacilityForm().getRegion(), is(equalTo(facility.getRegion())));
+
+        assertThat(cwcEnrollmentForm.getSerialNumber(), is(equalTo(serialNum)));
+        assertThat(cwcEnrollmentForm.getAddHistory(), is(equalTo(false)));
     }
 
 }
