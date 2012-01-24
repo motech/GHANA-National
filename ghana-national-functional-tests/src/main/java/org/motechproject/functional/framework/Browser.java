@@ -114,6 +114,10 @@ public class Browser {
         return new FacilityPage(webDriver);
     }
 
+    public PatientPage getPatientPage() {
+        return new PatientPage(webDriver);
+    }
+
     public SearchFacilityPage toSearchFacility(HomePage fromPage) {
         fromPage.openSearchFaclityPage();
         return new SearchFacilityPage(webDriver);

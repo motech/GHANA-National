@@ -1,11 +1,12 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.functional.data.TestPatient;
 import org.motechproject.functional.framework.XformHttpClient;
+import org.motechproject.functional.mobileforms.MobileForm;
+import org.motechproject.functional.pages.patient.PatientPage;
 import org.motechproject.functional.pages.patient.SearchPatientPage;
 import org.motechproject.functional.util.DataGenerator;
 import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
@@ -22,15 +23,14 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
-import static org.motechproject.functional.framework.XformHttpClient.XFormParser;
+import static org.hamcrest.Matchers.is;
 import static org.testng.AssertJUnit.assertEquals;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
-
     @Autowired
     StaffGenerator staffGenerator;
     @Autowired
@@ -92,10 +92,38 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
         assertNull(errorsMap.get("firstName"));
     }
 
+    @org.testng.annotations.Test
+    public void shouldUpdatePatientIfNoErrorsAreFound() throws Exception {
+        DataGenerator dataGenerator = new DataGenerator();
+
+        String facilityMotechId = facilityGenerator.createFacilityAndReturnFacilityId(browser, homePage);
+        String staffId = staffGenerator.createStaffAndReturnStaffId(browser, homePage);
+        final String patientId = patientGenerator.createPatientAndReturnPatientId(browser, homePage);
+
+        TestPatient patient = TestPatient.with("Updated First Name" + dataGenerator.randomString(5)).
+                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
+                patientType(TestPatient.PATIENT_TYPE.OTHER).estimatedDateOfBirth(false)
+                .middleName("Updated Middle Name").lastName("Updated Last Name").
+                        staffId(staffId).motechId(patientId).facilityIdWherePatientIsEdited(facilityMotechId);
+
+        mobile.upload(MobileForm.editClientForm(), patient.editFromMobile());
+
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithMotechId(patientId);
+        searchPatientPage.displaying(patient);
+
+        searchPatientPage.clickEditLink(patient);
+        PatientPage patientPage = browser.getPatientPage();
+        assertThat(patientPage.motechId(), is(equalTo(patient.motechId())));
+        assertThat(patientPage.firstName(), is(equalTo(patient.firstName())));
+        assertThat(patientPage.middleName(), is(equalTo(patient.middleName())));
+        assertThat(patientPage.lastName(), is(equalTo(patient.lastName())));
+
+    }
 
 
     private XformHttpClient.XformResponse setupEditClientFormAndUpload(Map<String, String> data) throws Exception {
         return XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
-                "NurseDataEntry", XFormParser.parse("edit-client-template.xml", data));
+                "NurseDataEntry", XformHttpClient.XFormParser.parse("edit-client-template.xml", data));
     }
 }

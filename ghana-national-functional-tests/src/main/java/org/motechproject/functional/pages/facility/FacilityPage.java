@@ -15,6 +15,10 @@ public class FacilityPage extends HomePage {
     @CacheLookup
     private WebElement facilityId;
 
+    @FindBy(name = "id")
+    @CacheLookup
+    private WebElement id;
+
     @FindBy(name = "country")
     @CacheLookup
     private WebElement country;
@@ -115,5 +119,11 @@ public class FacilityPage extends HomePage {
     public String facilityId() {
         return facilityId.getAttribute("value");
     }
+
+    public String id() {
+        return id.getAttribute("value");
+    }
+
+
 }
 

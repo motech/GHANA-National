@@ -51,6 +51,12 @@ public class SearchFacilityPage extends BasePage {
     }
 
 
+    public SearchFacilityPage withFacilityId(String motechId){
+        this.id.clear();
+        this.id.sendKeys(motechId);
+        return this;
+    }
+
     public SearchFacilityPage withName(String name) {
         this.name.clear();
         this.name.sendKeys(name);
