@@ -15,12 +15,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class FacilityServiceTest {
@@ -69,8 +68,66 @@ public class FacilityServiceTest {
         assertThat(savedFacility.additionalPhoneNumber3(), is(equalTo(additionalPhoneNumber3)));
     }
 
+    @Test(expected = FacilityAlreadyFoundException.class)
+    public void shouldThrowExceptionIfFacilityAlreadyExists() throws FacilityAlreadyFoundException {
+        String facilityId = "23";
+        String facilityName = "name";
+        String country = "country";
+        String region = "region";
+        String district = "";
+        String province = "";
+
+        List<Facility> facilities = Arrays.asList(new Facility(new MRSFacility(facilityName, country, region, district, province)));
+        String phoneNumber = "Phone";
+        MRSFacility mrsFacility = new MRSFacility(facilityId, facilityName, country, region, district, province);
+        FacilityService service = spy(facilityService);
+        try {
+            service.isDuplicate(facilities, mrsFacility, phoneNumber);
+        } catch (FacilityAlreadyFoundException e) {
+            assertThat(e.getMessage(), is("facility_already_exists"));
+            throw e;
+        }
+        fail("Expected an exception");
+    }
+
+    @Test(expected = FacilityAlreadyFoundException.class)
+    public void shouldThrowExceptionIfPhoneNumberOfTheFacilityIsAlreadyPresent() throws FacilityAlreadyFoundException {
+        String phoneNumber = "phone";
+        try {
+            facilityService.isDuplicatePhoneNumber(phoneNumber, Arrays.asList(new Facility(new MRSFacility("random")).phoneNumber(phoneNumber)));
+        } catch (FacilityAlreadyFoundException e) {
+            assertThat(e.getMessage(), is("facility_phone_not_unique"));
+            throw e;
+        }
+        fail("Expected facility already found exception but not thrown");
+    }
+
+
+    @Test(expected = FacilityAlreadyFoundException.class)
+    public void ShouldNotCreateAFacilityIfAlreadyExists() throws FacilityAlreadyFoundException {
+        String facilityName = "name";
+        String country = "country";
+        String region = "region";
+        String district = "district";
+        String province = "province";
+        when(mockAllFacilities.facilities()).thenReturn(Arrays.asList(new Facility(new MRSFacility(facilityName, country, region, district, province))));
+        facilityService.create(facilityName, country, region, district, province, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
+    }
+
+    @Test(expected = FacilityAlreadyFoundException.class)
+    public void ShouldNotCreateFacilityIfPhoneNumberAlreadyExists() throws FacilityAlreadyFoundException {
+        String facilityName = "name";
+        String country = "country";
+        String region = "region";
+        String district = "district";
+        String province = "province";
+        String testPhoneNumber = "0123456789";
+        when(mockAllFacilities.facilities()).thenReturn(Arrays.asList(new Facility().phoneNumber(testPhoneNumber)));
+        facilityService.create(facilityName, country, region, district, province, testPhoneNumber, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
+    }
+
     @Test
-    public void shouldUpdateAFacility() throws FacilityNotFoundException {
+    public void shouldUpdateAFacility() throws FacilityNotFoundException, FacilityAlreadyFoundException {
         String id = "1";
         String facilityId = "12345678";
         String facilityName = "name";
@@ -105,34 +162,35 @@ public class FacilityServiceTest {
         assertThat(savedFacility.additionalPhoneNumber3(), is(equalTo(additionalPhoneNumber3)));
     }
 
+    @Test(expected = FacilityAlreadyFoundException.class)
+    public void shouldNotUpdateFacilityIfItMatchesWithSomeOtherFacility() throws FacilityAlreadyFoundException, FacilityNotFoundException {
+        String id = "1";
+        String facilityId = "12345678";
+        String facilityName = "name";
+        String country = "country";
+        String region = "region";
+        String district = "district";
+        String province = "province";
+        String phoneNumber = "1";
+        String additionalPhoneNumber1 = "2";
+        String additionalPhoneNumber2 = "3";
+        String additionalPhoneNumber3 = "4";
+
+        Facility mockFacility = mock(Facility.class);
+
+        when(mockAllFacilities.facilities()).thenReturn(Arrays.asList(new Facility(new MRSFacility(facilityName, country, region, district, province))));
+        when(mockAllFacilities.getFacility(id)).thenReturn(mockFacility);
+        Facility facility = createFacilityVO(id, facilityId, facilityName, country, region, district, province, phoneNumber, additionalPhoneNumber1, additionalPhoneNumber2, additionalPhoneNumber3);
+        facilityService.update(facility);
+
+    }
+
+
     @Test(expected = FacilityNotFoundException.class)
-    public void shouldNotUpdateFacilityIfFacilityIsNotFound() throws FacilityNotFoundException {
+    public void shouldNotUpdateFacilityIfFacilityIsNotFound() throws FacilityNotFoundException, FacilityAlreadyFoundException {
         String facilityId = "123456";
         when(mockAllFacilities.getFacility(facilityId)).thenReturn(null);
         facilityService.update(createFacilityVO(facilityId, null, null, null, null, null, null, null, null, null, null));
-    }
-
-    @Test(expected = FacilityAlreadyFoundException.class)
-    public void ShouldNotCreateAFacilityIfAlreadyExists() throws FacilityAlreadyFoundException {
-        String facilityName = "name";
-        String country = "country";
-        String region = "region";
-        String district = "district";
-        String province = "province";
-        when(mockAllFacilities.facilities()).thenReturn(Arrays.asList(new Facility(new MRSFacility(facilityName, country, region, district, province))));
-        facilityService.create(facilityName, country, region, district, province, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
-    }
-
-    @Test(expected = FacilityAlreadyFoundException.class)
-    public void ShouldNotCreateFacilityIfPhoneNumberAlreadyExists() throws FacilityAlreadyFoundException {
-        String facilityName = "name";
-        String country = "country";
-        String region = "region";
-        String district = "district";
-        String province = "province";
-        String testPhoneNumber = "0123456789";
-        when(mockAllFacilities.facilities()).thenReturn(Arrays.asList(new Facility().phoneNumber(testPhoneNumber)));
-        facilityService.create(facilityName, country, region, district, province, testPhoneNumber, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
     @Test
