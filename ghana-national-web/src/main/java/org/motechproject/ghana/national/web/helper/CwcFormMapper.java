@@ -35,7 +35,6 @@ public class CwcFormMapper {
         cwcEnrollmentForm.setStaffId(encounter.getCreator().getSystemId());
 
         Set<MRSObservation> observations = encounter.getObservations();
-        cwcEnrollmentForm.setAddHistory(!observations.isEmpty());
         final ArrayList<CwcCareHistory> careHistories = new ArrayList<CwcCareHistory>();
         for (MRSObservation observation : observations) {
 
@@ -80,6 +79,7 @@ public class CwcFormMapper {
                 cwcEnrollmentForm.setSerialNumber((String) observation.getValue());
             }
         }
+        cwcEnrollmentForm.setAddHistory(!careHistories.isEmpty());
         return cwcEnrollmentForm;
     }
 

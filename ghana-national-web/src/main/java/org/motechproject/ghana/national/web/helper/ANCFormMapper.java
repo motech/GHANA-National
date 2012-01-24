@@ -32,8 +32,8 @@ public class ANCFormMapper {
         ancEnrollmentForm.setStaffId(mrsEncounter.getCreator().getSystemId());
 
         Set<MRSObservation> observations = mrsEncounter.getObservations();
-        ancEnrollmentForm.setAddHistory(!observations.isEmpty());
 
+        ancEnrollmentForm.setAddHistory(false);
         for (MRSObservation mrsObservation : observations) {
             String conceptName = mrsObservation.getConceptName();
             Object value = mrsObservation.getValue();
@@ -67,7 +67,6 @@ public class ANCFormMapper {
                 ancEnrollmentForm.setLastTT(lastTT.toString());
                 ancEnrollmentForm.setLastTTDate(mrsObservation.getDate());
                 ancEnrollmentForm.setAddHistory(true);
-
             }
         }
         return ancEnrollmentForm;

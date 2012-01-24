@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.Time;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -49,12 +50,27 @@ public class MobileMidwifeValidatorTest {
     }
 
     @Test
-    public void shouldValidateTimeOfDayForVoiceAsPreferredMedium() {
+    public void shouldValidatePreferredTimeOfDayExistForVoiceAndNonPublicPhoneOwners() {
+        MobileMidwifeEnrollment enrollment = with(new Time(22, 59)).setPhoneOwnership(PhoneOwnership.PERSONAL);
+        List<FormError> errors = mobileMidwifeValidator.validate(enrollment);
+        assertEquals(0, errors.size());
+
+        enrollment = with(null).setPhoneOwnership(PhoneOwnership.PERSONAL);
+        errors = mobileMidwifeValidator.validate(enrollment);
+        assertEquals(Constants.MOBILE_MIDWIFE_VOICE_TIMEOFDAYREQUIRED_MESSAGE, errors.get(0).getError());
+
+        enrollment = with(null).setPhoneOwnership(PhoneOwnership.PUBLIC);
+        errors = mobileMidwifeValidator.validate(enrollment);
+        assertEquals(0, errors.size());
+    }
+
+    @Test
+    public void shouldValidatePreferredTimeOfDayWithinRangeForVoiceAsPreferredMedium() {
         MobileMidwifeEnrollment enrollment = with(new Time(22, 59));
         List<FormError> errors = mobileMidwifeValidator.validate(enrollment);
         assertEquals(0, errors.size());
 
-        enrollment = with(new Time(5, 00));
+        enrollment = with(new Time(5, 0));
         errors = mobileMidwifeValidator.validate(enrollment);
         assertEquals(0, errors.size());
 
@@ -62,7 +78,7 @@ public class MobileMidwifeValidatorTest {
         errors = mobileMidwifeValidator.validate(enrollment);
         assertEquals(Constants.MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE, errors.get(0).getError());
 
-        enrollment = with(new Time(23, 01));
+        enrollment = with(new Time(23, 1));
         errors = mobileMidwifeValidator.validate(enrollment);
         assertEquals(Constants.MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE, errors.get(0).getError());
     }

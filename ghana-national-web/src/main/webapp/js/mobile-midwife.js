@@ -15,11 +15,17 @@ var phoneOwnership = utilities.lazyLoad(
                     language.filterOptions(phoneOwnership.instance().selectedValue(), medium.selectedValue(), allLanguageOptions);
                 });
             },
-            onChangeToPublicOwnershipMakePhoneNumberLabelNonMandatory : function() {
+            onChangeToPublicOwnershipDisablePhoneFields : function() {
                 instance.change(function() {
-//                   if($('#phoneOwnership').val() === 'PUBLIC' )
-//                        $('#phoneNumberRequired').hide();
-//                    else $('#phoneNumberRequired').show();
+                   if ($('#phoneOwnership').val() === 'PUBLIC' ) {
+                        $('#phoneNumberRow').hide();
+                        $('#timeOfDayRow').hide();
+                        $('#dayOfWeekRow').hide();
+                   } else {
+                       $('#phoneNumberRow').show();
+                       $('#timeOfDayRow').show();
+                       $('#dayOfWeekRow').show();
+                   }
                 });
             }
         }
@@ -56,7 +62,7 @@ var medium = utilities.lazyLoad(
             onChangeShowChoiceOfDayAndTimeForVoice : function() {
                 instance.change(function(selection) {
 
-                     if($(this).val() == 'VOICE') {
+                     if($(this).val() == 'VOICE' && $('#phoneOwnership').val() != 'PUBLIC' ) {
                         $('#dayOfWeekRow').show();
                         $('#timeOfDayRow').show();
                      } else {
@@ -199,7 +205,7 @@ $(document).ready(function() {
 
     var initialLanguageOptions = $('#language').find('option');
     phoneOwnership.instance().onChangePopulateLanguage(language.instance(), medium.instance(), initialLanguageOptions);
-    phoneOwnership.instance().onChangeToPublicOwnershipMakePhoneNumberLabelNonMandatory();
+    phoneOwnership.instance().onChangeToPublicOwnershipDisablePhoneFields();
     medium.instance().onChangePopulateLanguage(language.instance(), phoneOwnership.instance(), initialLanguageOptions);
     medium.instance().onChangeShowChoiceOfDayAndTimeForVoice();
 
@@ -222,14 +228,6 @@ $(document).ready(function() {
         $('#medium').val($("#mediumSelected").val()).trigger('change');
         $('#language').val($("#languageSelected").val());        
     })();
-
-    $("#phoneOwnership").change(function() {
-        if ($(this).val() === 'PUBLIC') {
-            $('#phoneNumber').removeClass('jsRequire');
-        } else {
-            $('#phoneNumber').addClass('jsRequire');
-        }
-    });
 
     $('#submitMobileMidwife').click(function() {
         var form = $('#mobileMidwifeEnrollmentForm');
