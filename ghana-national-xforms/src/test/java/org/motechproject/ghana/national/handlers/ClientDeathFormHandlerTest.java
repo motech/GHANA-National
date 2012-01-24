@@ -33,20 +33,23 @@ public class ClientDeathFormHandlerTest {
     public void shouldDeceaseThePatient() {
         Map<String, Object> parameters = new HashMap<String, Object>();
         Date deathDate = DateUtil.now().toDate();
-        parameters.put("formBean", clientForm(deathDate));
+        String comment = null;
+        String causeOfDeath = "NONE";
+        parameters.put("formBean", clientForm(deathDate, causeOfDeath, comment));
         MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.clientDeath", parameters);
 
         clientDeathFormHandler.handleFormEvent(event);
-
-        verify(mockPatientService).deceasePatient("motechId", deathDate);
+        verify(mockPatientService).deceasePatient("motechId", deathDate, causeOfDeath, comment);
     }
 
-    private ClientDeathForm clientForm(Date deathDate) {
+    private ClientDeathForm clientForm(Date deathDate, String causeOfDeath, String comment) {
         ClientDeathForm clientDeathForm = new ClientDeathForm();
         clientDeathForm.setDate(deathDate);
         clientDeathForm.setFacilityId("facilityId");
         clientDeathForm.setMotechId("motechId");
         clientDeathForm.setStaffId("staffId");
+        clientDeathForm.setCauseOfDeath(causeOfDeath);
+        clientDeathForm.setComment(comment);
         return clientDeathForm;
     }
 
