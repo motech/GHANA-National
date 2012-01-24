@@ -1,6 +1,19 @@
+var formElements = function() {
+    return {
+        show : function(elemId) {
+            if(consent.instance().isFieldDependentOnConsent(elemId)) {
+               if (consent.instance().isConsentYes())
+                    $(elemId).show();
+            } else {
+                    $(elemId).show();
+            }
+        }
+    }
+}();
+
 var phoneOwnership = utilities.lazyLoad(
     function(){
-        var instance = $('#phoneOwnership')
+        var instance = $('#phoneOwnership');
         return {
             selectedValue : function(){
                 return instance.find('option:selected').val();
@@ -15,11 +28,17 @@ var phoneOwnership = utilities.lazyLoad(
                     language.filterOptions(phoneOwnership.instance().selectedValue(), medium.selectedValue(), allLanguageOptions);
                 });
             },
-            onChangeToPublicOwnershipMakePhoneNumberLabelNonMandatory : function() {
+            onChangeToPublicOwnershipDisablePhoneFields : function() {
                 instance.change(function() {
-//                   if($('#phoneOwnership').val() === 'PUBLIC' )
-//                        $('#phoneNumberRequired').hide();
-//                    else $('#phoneNumberRequired').show();
+                   if ($('#phoneOwnership').val() === 'PUBLIC' ) {
+                        $('#phoneNumberRow').hide();
+                        $('#timeOfDayRow').hide();
+                        $('#dayOfWeekRow').hide();
+                   } else {
+                       formElements.show('#phoneNumberRow');
+                       formElements.show('#timeOfDayRow');
+                       formElements.show('#dayOfWeekRow');
+                   }
                 });
             }
         }
@@ -56,9 +75,9 @@ var medium = utilities.lazyLoad(
             onChangeShowChoiceOfDayAndTimeForVoice : function() {
                 instance.change(function(selection) {
 
-                     if($(this).val() == 'VOICE') {
-                        $('#dayOfWeekRow').show();
-                        $('#timeOfDayRow').show();
+                     if($(this).val() == 'VOICE' && $('#phoneOwnership').val() != 'PUBLIC' ) {
+                        formElements.show('#timeOfDayRow');
+                        formElements.show('#dayOfWeekRow');
                      } else {
                         $('#dayOfWeekRow').hide();
                         $('#timeOfDayRow').hide();
@@ -128,10 +147,13 @@ var serviceType = utilities.lazyLoad(
 
 var consent = utilities.lazyLoad(
     function(){
-        var instance = $('input[name=consent]');
+        var consentElement = $('input[name=consent]');
         var idsOfFieldsDependentToConsent = ['serviceType', 'phoneOwnership', 'phoneNumber', 'medium', 'dayOfWeek', 'timeOfDayHour', 'timeOfDayMinute', 'language',
             'learnedFrom', 'reasonToJoin', 'messageStartWeek'];
-        return{
+        consentElement.isConsentYes = function () {
+                 return $('input[name=consent]:checked').val() == 'true';
+        };
+        return {
             validateDependentMandatoryFields : function(){
                 if($('input[name=consent]:checked').val() == 'true'){
                     $.each(idsOfFieldsDependentToConsent, function(index, id){
@@ -141,8 +163,14 @@ var consent = utilities.lazyLoad(
                     });
                 }
             },
+            isFieldDependentOnConsent : function (elemId) {
+                 return $.inArray(elemId,idsOfFieldsDependentToConsent);
+            },
+            isConsentYes : function () {
+                 return consentElement.isConsentYes();
+            },
             handleDependentFields : function(){
-                instance.change(function(){
+                consentElement.change(function(){
 
                     var clearAndHideField = function(id){
                         var field = $('#' + id);
@@ -169,8 +197,7 @@ var consent = utilities.lazyLoad(
                         });
                     }
 
-                    var consent = $('input[name=consent]:checked').val();
-                    if(consent == 'true'){
+                    if(consentElement.isConsentYes()){
                         showFieldsDependentOnConsent();
                     }else{
                         clearAndHideFieldsDependentOnConsent();
@@ -194,12 +221,11 @@ $(document).ready(function() {
 
         return formValidator.hasErrors(form);
     }
-
     consent.instance().handleDependentFields();
 
     var initialLanguageOptions = $('#language').find('option');
     phoneOwnership.instance().onChangePopulateLanguage(language.instance(), medium.instance(), initialLanguageOptions);
-    phoneOwnership.instance().onChangeToPublicOwnershipMakePhoneNumberLabelNonMandatory();
+    phoneOwnership.instance().onChangeToPublicOwnershipDisablePhoneFields();
     medium.instance().onChangePopulateLanguage(language.instance(), phoneOwnership.instance(), initialLanguageOptions);
     medium.instance().onChangeShowChoiceOfDayAndTimeForVoice();
 
@@ -222,14 +248,6 @@ $(document).ready(function() {
         $('#medium').val($("#mediumSelected").val()).trigger('change');
         $('#language').val($("#languageSelected").val());        
     })();
-
-    $("#phoneOwnership").change(function() {
-        if ($(this).val() === 'PUBLIC') {
-            $('#phoneNumber').removeClass('jsRequire');
-        } else {
-            $('#phoneNumber').addClass('jsRequire');
-        }
-    });
 
     $('#submitMobileMidwife').click(function() {
         var form = $('#mobileMidwifeEnrollmentForm');

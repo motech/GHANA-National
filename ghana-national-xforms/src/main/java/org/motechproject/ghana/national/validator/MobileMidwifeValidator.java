@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.validator;
 
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.mobileforms.api.domain.FormError;
@@ -13,6 +12,8 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.motechproject.ghana.national.domain.Constants.*;
+import static org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership.PUBLIC;
 
 @Component
 public class MobileMidwifeValidator {
@@ -51,15 +52,21 @@ public class MobileMidwifeValidator {
     List<FormError> validateTime(MobileMidwifeEnrollment enrollment) {
 
         if (Medium.VOICE.equals(enrollment.getMedium())) {
-            Time maxTime = Constants.MOBILE_MIDWIFE_MAX_TIMEOFDAY_FOR_VOICE;
-            Time minTime = Constants.MOBILE_MIDWIFE_MIN_TIMEOFDAY_FOR_VOICE;
-
             Time timeOfDay = enrollment.getTimeOfDay();
-            if (!timeOfDay.ge(minTime) || !timeOfDay.le(maxTime)) {
-                return asList(new FormError("", Constants.MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE));
-            }
+
+            if (timeOfDay == null) {
+                if (!PUBLIC.equals(enrollment.getPhoneOwnership()))
+                    return asList(new FormError("", MOBILE_MIDWIFE_VOICE_TIMEOFDAYREQUIRED_MESSAGE));
+            } else if (!withinValidTimeRange(timeOfDay))
+                return asList(new FormError("", MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE));
         }
         return emptyList();
+    }
+
+    private boolean withinValidTimeRange(Time timeOfDay) {
+        Time maxTime = MOBILE_MIDWIFE_MAX_TIMEOFDAY_FOR_VOICE;
+        Time minTime = MOBILE_MIDWIFE_MIN_TIMEOFDAY_FOR_VOICE;
+        return (timeOfDay.ge(minTime) && timeOfDay.le(maxTime));
     }
 
 
