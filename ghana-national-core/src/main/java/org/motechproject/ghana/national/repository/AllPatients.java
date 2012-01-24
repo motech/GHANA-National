@@ -70,7 +70,7 @@ public class AllPatients {
         return openMRSRelationshipAdaptor.voidRelationship(child.getId());
     }
 
-    public void saveCauseOfDeath(Date dateOfDeath, String mrsPatientId) {
-       patientAdaptor.savePatientCauseOfDeathObservation(mrsPatientId, "NONE", dateOfDeath);
+    public void saveCauseOfDeath(Date dateOfDeath, String mrsPatientId, String causeOfDeath, String comment) {
+       patientAdaptor.savePatientCauseOfDeathObservation(mrsPatientId, causeOfDeath, dateOfDeath, comment);
     }
 }

@@ -173,8 +173,10 @@ public class AllPatientsTest {
     public void shouldSaveCauseOfDeath() {
         String mrsPatientId = "patientId";
         Date dateOfDeath = DateUtil.now().toDate();
-        allPatients.saveCauseOfDeath(dateOfDeath, mrsPatientId);
-        verify(mockMrsPatientAdaptor).savePatientCauseOfDeathObservation(mrsPatientId, "NONE", dateOfDeath);
+        String causeOfDeath = "NONE";
+        String comment = null;
+        allPatients.saveCauseOfDeath(dateOfDeath, mrsPatientId, causeOfDeath, comment);
+        verify(mockMrsPatientAdaptor).savePatientCauseOfDeathObservation(mrsPatientId, causeOfDeath, dateOfDeath, comment);
     }
 
 }

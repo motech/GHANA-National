@@ -267,10 +267,12 @@ public class PatientServiceTest {
         Patient patient = new Patient(new MRSPatient(mrsPatientId, patientMotechId, person, new MRSFacility("id")));
 
         when(mockAllPatients.patientByMotechId(patientMotechId)).thenReturn(patient);
-        patientService.deceasePatient(patientMotechId, dateOfDeath);
+        String causeOfDeath = "OTHER";
+        String comment = null;
+        patientService.deceasePatient(patientMotechId, dateOfDeath, causeOfDeath, comment);
 
         verify(mockAllPatients).update(patient);
-        verify(mockAllPatients).saveCauseOfDeath(dateOfDeath, mrsPatientId);
+        verify(mockAllPatients).saveCauseOfDeath(dateOfDeath, mrsPatientId, "OTHER NON-CODED", comment);
         assertTrue("Patient Expected to be dead, but is still alive", patient.getMrsPatient().getPerson().isDead());
         assertThat(patient.getMrsPatient().getPerson().deathDate(), is(dateOfDeath));
     }

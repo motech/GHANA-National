@@ -17,6 +17,10 @@ public class ClientDeathForm extends FormBean {
 
     @Required private Date date;
 
+    @Required private String causeOfDeath;
+
+    private String comment;
+
     public String getMotechId() {
         return motechId;
     }
@@ -47,5 +51,21 @@ public class ClientDeathForm extends FormBean {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getCauseOfDeath() {
+        return causeOfDeath;
+    }
+
+    public void setCauseOfDeath(String causeOfDeath) {
+        this.causeOfDeath = causeOfDeath;
     }
 }
