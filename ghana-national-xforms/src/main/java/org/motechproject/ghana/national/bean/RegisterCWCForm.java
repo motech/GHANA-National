@@ -45,7 +45,6 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
     @Required
     private Boolean addHistory;
 
-    @Required
     private String addCareHistory;
 
     @RegEx(pattern = "0[0-9]{9}")
