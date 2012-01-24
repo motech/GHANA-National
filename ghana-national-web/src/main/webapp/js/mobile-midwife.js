@@ -1,6 +1,19 @@
+var formElements = function() {
+    return {
+        show : function(elemId) {
+            if(consent.instance().isFieldDependentOnConsent(elemId)) {
+               if (consent.instance().isConsentYes())
+                    $(elemId).show();
+            } else {
+                    $(elemId).show();
+            }
+        }
+    }
+}();
+
 var phoneOwnership = utilities.lazyLoad(
     function(){
-        var instance = $('#phoneOwnership')
+        var instance = $('#phoneOwnership');
         return {
             selectedValue : function(){
                 return instance.find('option:selected').val();
@@ -22,9 +35,9 @@ var phoneOwnership = utilities.lazyLoad(
                         $('#timeOfDayRow').hide();
                         $('#dayOfWeekRow').hide();
                    } else {
-                       $('#phoneNumberRow').show();
-                       $('#timeOfDayRow').show();
-                       $('#dayOfWeekRow').show();
+                       formElements.show('#phoneNumberRow');
+                       formElements.show('#timeOfDayRow');
+                       formElements.show('#dayOfWeekRow');
                    }
                 });
             }
@@ -63,8 +76,8 @@ var medium = utilities.lazyLoad(
                 instance.change(function(selection) {
 
                      if($(this).val() == 'VOICE' && $('#phoneOwnership').val() != 'PUBLIC' ) {
-                        $('#dayOfWeekRow').show();
-                        $('#timeOfDayRow').show();
+                        formElements.show('#timeOfDayRow');
+                        formElements.show('#dayOfWeekRow');
                      } else {
                         $('#dayOfWeekRow').hide();
                         $('#timeOfDayRow').hide();
@@ -134,10 +147,13 @@ var serviceType = utilities.lazyLoad(
 
 var consent = utilities.lazyLoad(
     function(){
-        var instance = $('input[name=consent]');
+        var consentElement = $('input[name=consent]');
         var idsOfFieldsDependentToConsent = ['serviceType', 'phoneOwnership', 'phoneNumber', 'medium', 'dayOfWeek', 'timeOfDayHour', 'timeOfDayMinute', 'language',
             'learnedFrom', 'reasonToJoin', 'messageStartWeek'];
-        return{
+        consentElement.isConsentYes = function () {
+                 return $('input[name=consent]:checked').val() == 'true';
+        };
+        return {
             validateDependentMandatoryFields : function(){
                 if($('input[name=consent]:checked').val() == 'true'){
                     $.each(idsOfFieldsDependentToConsent, function(index, id){
@@ -147,8 +163,14 @@ var consent = utilities.lazyLoad(
                     });
                 }
             },
+            isFieldDependentOnConsent : function (elemId) {
+                 return $.inArray(elemId,idsOfFieldsDependentToConsent);
+            },
+            isConsentYes : function () {
+                 return consentElement.isConsentYes();
+            },
             handleDependentFields : function(){
-                instance.change(function(){
+                consentElement.change(function(){
 
                     var clearAndHideField = function(id){
                         var field = $('#' + id);
@@ -175,8 +197,7 @@ var consent = utilities.lazyLoad(
                         });
                     }
 
-                    var consent = $('input[name=consent]:checked').val();
-                    if(consent == 'true'){
+                    if(consentElement.isConsentYes()){
                         showFieldsDependentOnConsent();
                     }else{
                         clearAndHideFieldsDependentOnConsent();
@@ -200,7 +221,6 @@ $(document).ready(function() {
 
         return formValidator.hasErrors(form);
     }
-
     consent.instance().handleDependentFields();
 
     var initialLanguageOptions = $('#language').find('option');
