@@ -64,7 +64,7 @@ public class FacilityController {
                     createFacilityForm.getAdditionalPhoneNumber1(), createFacilityForm.getAdditionalPhoneNumber2(),
                     createFacilityForm.getAdditionalPhoneNumber3());
         } catch (FacilityAlreadyFoundException e) {
-            facilityHelper.handleExistingFacilityError(bindingResult, modelMap, messageSource.getMessage("facility_already_exists", null, Locale.getDefault()), FACILITY_FORM);
+            facilityHelper.handleExistingFacilityError(bindingResult, modelMap, messageSource.getMessage(e.getMessage(), null, Locale.getDefault()), FACILITY_FORM);
             modelMap.mergeAttributes(facilityHelper.locationMap());
             return NEW_FACILITY_VIEW;
         }
@@ -115,6 +115,10 @@ public class FacilityController {
             modelMap.put("successMessage", "Facility edited successfully.");
         } catch (FacilityNotFoundException e) {
             return "redirect:" + NEW_FACILITY_REDIRECT_URL;
+        } catch (FacilityAlreadyFoundException e) {
+            facilityHelper.handleExistingFacilityError(bindingResult, modelMap, messageSource.getMessage(e.getMessage(), null, Locale.getDefault()), FACILITY_FORM);
+            modelMap.mergeAttributes(facilityHelper.locationMap());
+            return EDIT_FACILITY_VIEW;
         }
         return EDIT_FACILITY_VIEW;
     }

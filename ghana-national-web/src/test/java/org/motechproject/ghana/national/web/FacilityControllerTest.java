@@ -107,7 +107,7 @@ public class FacilityControllerTest {
         final String province = "province";
         final String message = "Facility already exists.";
         final FacilityController spyFacilitiesController = spy(facilityController);
-        doThrow(new FacilityAlreadyFoundException()).when(mockFacilityService).create(facility, country, region, district, province, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
+        doThrow(new FacilityAlreadyFoundException("facility_already_exists")).when(mockFacilityService).create(facility, country, region, district, province, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
         when(mockMessageSource.getMessage("facility_already_exists", null, Locale.getDefault())).thenReturn(message);
 
         final FacilityForm createFacilityForm = new FacilityForm();
@@ -244,7 +244,7 @@ public class FacilityControllerTest {
     }
 
     @Test
-    public void shouldUpdateAFacility() throws FacilityNotFoundException {
+    public void shouldUpdateAFacility() throws FacilityNotFoundException, FacilityAlreadyFoundException {
         String id = "12";
         String facilityId = "12345678";
         String facilityName = "name";
