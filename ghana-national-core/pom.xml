@@ -190,6 +190,7 @@
                             <url>${mysql.url}/${mysql.db}</url>
                             <username>${mysql.user}</username>
                             <password>${mysql.password}</password>
+                            <skip>${drop.db.skip}</skip>
                         </configuration>
                         <goals>
                             <goal>update</goal>

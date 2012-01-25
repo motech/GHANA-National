@@ -23,8 +23,14 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
                 facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).
                 learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).
                 messageStartWeek("pregnancy week17").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
-                .build();
+                .active(true).build();
+        MobileMidwifeEnrollment expired = new MobileMidwifeEnrollmentBuilder().patientId(patientId).
+                facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).
+                learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).
+                messageStartWeek("pregnancy week17").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
+                .active(false).build();
         allEnrollments.add(expected);
+        allEnrollments.add(expired);
         MobileMidwifeEnrollment actualEnrollment = allEnrollments.findByPatientId(patientId);
         assertMobileMidwifeEnrollment(expected, actualEnrollment);
     }

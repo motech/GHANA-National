@@ -38,6 +38,8 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     private ReasonToJoin reasonToJoin;
     @JsonProperty
     private String messageStartWeek;
+    @JsonProperty
+    private Boolean active;
 
     public MobileMidwifeEnrollment() {
     }
@@ -166,5 +168,32 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     public MobileMidwifeEnrollment setMessageStartWeek(String messageStartWeek) {
         this.messageStartWeek = messageStartWeek;
         return this;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public static MobileMidwifeEnrollment cloneNew(MobileMidwifeEnrollment midwifeEnrollment) {
+        final MobileMidwifeEnrollment newEnrollment = new MobileMidwifeEnrollment();
+        newEnrollment.setMessageStartWeek(midwifeEnrollment.getMessageStartWeek());
+        newEnrollment.setDayOfWeek(midwifeEnrollment.getDayOfWeek());
+        newEnrollment.setLearnedFrom(midwifeEnrollment.getLearnedFrom());
+        newEnrollment.setReasonToJoin(midwifeEnrollment.getReasonToJoin());
+        newEnrollment.setServiceType(midwifeEnrollment.getServiceType());
+        newEnrollment.setConsent(midwifeEnrollment.getConsent());
+        newEnrollment.setFacilityId(midwifeEnrollment.getFacilityId());
+        newEnrollment.setStaffId(midwifeEnrollment.getStaffId());
+        newEnrollment.setLanguage(midwifeEnrollment.getLanguage());
+        newEnrollment.setMedium(midwifeEnrollment.getMedium());
+        newEnrollment.setPatientId(midwifeEnrollment.getPatientId());
+        newEnrollment.setPhoneNumber(midwifeEnrollment.getPhoneNumber());
+        newEnrollment.setPhoneOwnership(midwifeEnrollment.getPhoneOwnership());
+        newEnrollment.setTimeOfDay(midwifeEnrollment.getTimeOfDay());
+        return newEnrollment;
     }
 }

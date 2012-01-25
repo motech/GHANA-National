@@ -20,6 +20,7 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
     private LearnedFrom learnedFrom;
     private ReasonToJoin reasonToJoin;
     private String messageStartWeek;
+    private Boolean active;
 
     public MobileMidwifeEnrollmentBuilder patientId(String patientId) {
         this.patientId = patientId;
@@ -88,6 +89,11 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
 
     public MobileMidwifeEnrollmentBuilder messageStartWeek(String messageStartWeek) {
         this.messageStartWeek = messageStartWeek;
+        return this;
+    }
+    
+    public MobileMidwifeEnrollmentBuilder active(Boolean active) {
+        this.active = active;
         return this;
     }
 

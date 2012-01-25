@@ -72,6 +72,23 @@ public class AllPatientsTest {
         final Patient actualPatient = allPatients.patientByMotechId(patientId);
         assertNull(actualPatient);
     }
+    
+    @Test
+    public void shouldReturnMotechIdByPatientId() {
+       String patientId="123";
+        final MRSPatient mrsPatient = mock(MRSPatient.class);
+        when(mockMrsPatientAdaptor.getPatient(patientId)).thenReturn(mrsPatient);
+        Patient actualPatient = allPatients.patientByOpenmrsId(patientId);
+        assertThat(actualPatient.getMrsPatient(),is(equalTo(mrsPatient)));
+    }
+
+    @Test
+    public void shouldReturnNullForMotechIdByPatientIdIfNotFound() {
+       String patientId="123";
+        when(mockMrsPatientAdaptor.getPatient(patientId)).thenReturn(null);
+        Patient actualPatient = allPatients.patientByOpenmrsId(patientId);
+        assertNull(actualPatient);
+    }
 
     @Test
     public void shouldFetchPatientById() {

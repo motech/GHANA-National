@@ -13,7 +13,11 @@ public class MobileMidwifeService {
 
     public void register(MobileMidwifeEnrollment enrollment) {
         MobileMidwifeEnrollment existingEnrollment = findBy(enrollment.getPatientId());
-        if(existingEnrollment != null) allEnrollments.remove(existingEnrollment);
+        if(existingEnrollment != null) {
+            existingEnrollment.setActive(false);
+            allEnrollments.update(existingEnrollment);
+        }
+        enrollment.setActive(true);
         allEnrollments.add(enrollment);
     }
 

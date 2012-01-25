@@ -8,6 +8,8 @@ import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.model.DayOfWeek;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,7 +48,9 @@ public class MobileMidwifeServiceTest {
         when(allEnrollments.findByPatientId(patientId)).thenReturn(existingEnrollment);
 
         service.register(enrollment);
-        verify(allEnrollments).remove(existingEnrollment);
+        assertTrue(enrollment.getActive());
+        verify(existingEnrollment).setActive(eq(false));
+        verify(allEnrollments).update(existingEnrollment);
         verify(allEnrollments).add(enrollment);
     }
 

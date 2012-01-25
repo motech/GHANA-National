@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.repository;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
@@ -26,11 +27,10 @@ public class AllMobileMidwifeEnrollments extends MotechBaseRepository<MobileMidw
         else super.update(enrollment);
     }
     
-    @View(name = "find_by_patientId", map = "function(doc){ if(doc.type === 'MobileMidwifeEnrollment') emit(doc.patientId,doc) }")
+    @View(name = "find_by_patientId", map = "function(doc){ if(doc.type === 'MobileMidwifeEnrollment') emit([doc.patientId, doc.active],doc) }")
     public MobileMidwifeEnrollment findByPatientId(String patientId) {
-        ViewQuery viewQuery = createQuery("find_by_patientId").key(patientId).includeDocs(true);
+        ViewQuery viewQuery = createQuery("find_by_patientId").key(ComplexKey.of(patientId, true)).includeDocs(true);
         List<MobileMidwifeEnrollment> enrollments = db.queryView(viewQuery, MobileMidwifeEnrollment.class);
         return CollectionUtils.isEmpty(enrollments) ? null : enrollments.get(0);
     }
-
 }

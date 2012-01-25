@@ -23,6 +23,7 @@
             <list>
                 <ref bean="staffTypeSeed"/>
                 <ref bean="facilitySeed"/>
+                <ref bean="mobileMidwifeSeed"/>
             </list>
         </constructor-arg>
     </bean>

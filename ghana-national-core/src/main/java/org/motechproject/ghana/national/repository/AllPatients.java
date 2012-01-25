@@ -27,6 +27,11 @@ public class AllPatients {
         final MRSPatient savedPatient = patientAdaptor.savePatient(patient.getMrsPatient());
         return savedPatient.getMotechId();
     }
+    
+    public Patient patientByOpenmrsId(String patientId) {
+        MRSPatient mrsPatient = patientAdaptor.getPatient(patientId);
+        return (mrsPatient != null) ? new Patient(mrsPatient) : null;
+    }
 
     public Patient patientByMotechId(String id) {
         MRSPatient mrsPatient = getPatientByMotechId(id);
