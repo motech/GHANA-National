@@ -1,6 +1,8 @@
 package org.motechproject.functional.pages.patient;
 
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.motechproject.functional.data.TestCWCEnrollment;
 import org.motechproject.functional.pages.home.HomePage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -8,6 +10,10 @@ import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
+
+import static com.thoughtworks.selenium.SeleneseTestBase.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class CWCEnrollmentPage extends HomePage {
 
@@ -49,7 +55,7 @@ public class CWCEnrollmentPage extends HomePage {
 
     @FindBy(id = "facilities")
     @CacheLookup
-    private WebElement facilities;
+    private WebElement facility;
 
     @FindBy(id = "districts")
     @CacheLookup
@@ -62,6 +68,86 @@ public class CWCEnrollmentPage extends HomePage {
     @FindBy(id = "regions")
     @CacheLookup
     private WebElement region;
+
+    @FindBy(id = "bcgDate")
+    @CacheLookup
+    private WebElement bcgDate;
+
+    @FindBy(id = "lastOPVDate")
+    @CacheLookup
+    private WebElement lastOPVDate;
+
+    @FindBy(id = "vitADate")
+    @CacheLookup
+    private WebElement lastVitaminADate;
+
+    @FindBy(id = "lastIPTiDate")
+    @CacheLookup
+    private WebElement lastIPTiDate;
+
+    @FindBy(id = "yfDate")
+    @CacheLookup
+    private WebElement yellowFeverDate;
+
+    @FindBy(id = "lastPentaDate")
+    @CacheLookup
+    private WebElement lastPentaDate;
+
+    @FindBy(id = "measlesDate")
+    @CacheLookup
+    private WebElement measlesDate;
+
+    @FindBy(id = "lastOPV")
+    @CacheLookup
+    private WebElement lastOPV;
+
+    @FindBy(id = "lastOPV1")
+    @CacheLookup
+    private WebElement lastOPV1;
+
+    @FindBy(id = "lastOPV2")
+    @CacheLookup
+    private WebElement lastOPV2;
+
+    @FindBy(id = "lastOPV3")
+    @CacheLookup
+    private WebElement lastOPV3;
+
+    @FindBy(id = "lastOPV4")
+    @CacheLookup
+    private WebElement lastOPV4;
+
+    @FindBy(id = "lastIPTi")
+    @CacheLookup
+    private WebElement lastIPTi;
+
+    @FindBy(id = "lastIPTi1")
+    @CacheLookup
+    private WebElement lastIPTi1;
+
+    @FindBy(id = "lastIPTi2")
+    @CacheLookup
+    private WebElement lastIPTi2;
+
+    @FindBy(id = "lastIPTi3")
+    @CacheLookup
+    private WebElement lastIPTi3;
+
+    @FindBy(id = "lastPenta")
+    @CacheLookup
+    private WebElement lastPenta;
+
+    @FindBy(id = "lastPenta1")
+    @CacheLookup
+    private WebElement lastPenta1;
+
+    @FindBy(id = "lastPenta2")
+    @CacheLookup
+    private WebElement lastPenta2;
+
+    @FindBy(id = "lastPenta3")
+    @CacheLookup
+    private WebElement lastPenta3;
 
     @FindBy(id = "enrollCWC")
     @CacheLookup
@@ -97,7 +183,7 @@ public class CWCEnrollmentPage extends HomePage {
     }
 
     public CWCEnrollmentPage withFacility(String facility) {
-        Select selectFacility = new Select(this.facilities);
+        Select selectFacility = new Select(this.facility);
         selectFacility.selectByVisibleText(facility);
         return this;
     }
@@ -142,5 +228,130 @@ public class CWCEnrollmentPage extends HomePage {
     @Override
     public void waitForSuccessfulCompletion() {
         elementPoller.waitForElementClassName("success", driver);
+    }
+
+    public String getPatientMotechId() {
+        return patientMotechId.getAttribute("value");
+    }
+
+    public String getStaffId() {
+        return staffId.getAttribute("value");
+    }
+
+    public String getSerialNumber() {
+        return serialNumber.getAttribute("value");
+    }
+
+    public String getRegistrationToday() {
+        return registrationToday.getAttribute("value");
+    }
+
+    public String getRegistrationDate() {
+        return registrationDate.getAttribute("value");
+    }
+
+
+    public String getCountry() {
+        return country.getAttribute("value");
+    }
+
+    public String getFacility() {
+        return new Select(facility).getFirstSelectedOption().getText();
+    }
+
+    public String getDistrict() {
+        return district.getAttribute("value");
+    }
+
+    public String getSubDistrict() {
+        return subDistrict.getAttribute("value");
+    }
+
+    public String getRegion() {
+        return region.getAttribute("value");
+    }
+
+    public String getBcgDate() {
+        return bcgDate.getAttribute("value");
+    }
+
+    public String getLastIPTiDate() {
+        return lastIPTiDate.getAttribute("value");
+    }
+
+    public String getYellowFeverDate() {
+        return yellowFeverDate.getAttribute("value");
+    }
+
+    public String getLastPentaDate() {
+        return lastPentaDate.getAttribute("value");
+    }
+
+    public String getMeaslesDate() {
+        return measlesDate.getAttribute("value");
+    }
+
+    public String getLastOPV() {
+        if(lastOPV1.isSelected()){
+            return "0";
+        }else if (lastOPV2.isSelected()){
+            return "1";
+        }else if (lastOPV3.isSelected()){
+            return "2";
+        }else if (lastOPV4.isSelected()){
+            return "3";
+        }
+        return "-1";
+    }
+
+    public String getLastIPTi() {
+        if(lastIPTi1.isSelected()){
+            return "1";
+        }else if(lastIPTi2.isSelected()){
+            return "2";
+        }else if(lastIPTi3.isSelected()){
+            return "3";
+        }
+        return "-1";
+    }
+
+    public String getLastPenta() {
+        if(lastPenta1.isSelected()){
+            return "1";
+        }else if (lastPenta2.isSelected()){
+            return "2";
+        }else if(lastPenta3.isSelected()){
+            return "3";
+        }
+        return "4";
+    }
+
+    public String getLastOPVDate() {
+        return lastOPVDate.getAttribute("value");
+    }
+
+    public String getLastVitaminADate() {
+        return lastVitaminADate.getAttribute("value");
+    }
+
+    public void displaying(TestCWCEnrollment cwcEnrollmentDetails) {
+        assertEquals(getStaffId(), cwcEnrollmentDetails.getStaffId());
+        assertEquals(getSerialNumber(), cwcEnrollmentDetails.getSerialNumber());
+        assertEquals(getRegion(), cwcEnrollmentDetails.getRegion());
+        assertEquals(getDistrict(), cwcEnrollmentDetails.getDistrict());
+        assertEquals(getSubDistrict(), cwcEnrollmentDetails.getSubDistrict());
+        assertEquals(getRegistrationDate(), cwcEnrollmentDetails.getRegistrationDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy")));
+        assertEquals(getFacility(), cwcEnrollmentDetails.getFacility());
+        assertThat(getBcgDate(),is(cwcEnrollmentDetails.getBcgDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
+        assertThat(getLastIPTiDate(),is(cwcEnrollmentDetails.getLastIPTiDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
+        assertThat(getLastOPVDate(),is(cwcEnrollmentDetails.getLastOPVDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
+        assertThat(getLastPentaDate(),is(cwcEnrollmentDetails.getLastPentaDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
+        assertThat(getLastVitaminADate(),is(cwcEnrollmentDetails.getLastVitaminADate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
+        assertThat(getMeaslesDate(),is(cwcEnrollmentDetails.getMeaslesDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
+        assertThat(getYellowFeverDate(),is(cwcEnrollmentDetails.getYellowFeverDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
+        assertThat(getLastIPTi(),is(cwcEnrollmentDetails.getLastIPTi().toString()));
+        assertThat(getLastOPV(),is(cwcEnrollmentDetails.getLastOPV().toString()));
+        assertThat(getLastPenta(),is(cwcEnrollmentDetails.getLastPenta().toString()));
+
     }
 }

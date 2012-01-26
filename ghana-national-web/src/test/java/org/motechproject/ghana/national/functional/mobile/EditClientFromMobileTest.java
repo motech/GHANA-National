@@ -96,9 +96,9 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
     public void shouldUpdatePatientIfNoErrorsAreFound() throws Exception {
         DataGenerator dataGenerator = new DataGenerator();
 
-        String facilityMotechId = facilityGenerator.createFacilityAndReturnFacilityId(browser, homePage);
-        String staffId = staffGenerator.createStaffAndReturnStaffId(browser, homePage);
-        final String patientId = patientGenerator.createPatientAndReturnPatientId(browser, homePage);
+        String facilityMotechId = facilityGenerator.createFacility(browser, homePage);
+        String staffId = staffGenerator.createStaff(browser, homePage);
+        final String patientId = patientGenerator.createPatient(browser, homePage);
 
         TestPatient patient = TestPatient.with("Updated First Name" + dataGenerator.randomString(5)).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).

@@ -63,11 +63,23 @@ public class XformHttpClient {
             final FormData formData = new FormData(formDef);
             hackDate(formData, "/editPatient/date");
             hackDate(formData, "/editPatient/nhisExpires");
-            hackDate(formData, "/patientRegistration/date");
-            hackDate(formData, "/patientRegistration/dateOfBirth");
             hackDate(formData, "/ANCRegistration/date");
             hackDate(formData, "/ANCRegistration/estDeliveryDate");
             hackDate(formData, "/CWCRegistration/registrationDate");
+            hackDate(formData, "/patientRegistration/date");
+            hackDate(formData, "/patientRegistration/dateOfBirth");
+            hackDate(formData, "/patientRegistration/lastIPTDate");
+            hackDate(formData, "/patientRegistration/lastTTDate");
+            hackDate(formData, "/patientRegistration/bcgDate");
+            hackDate(formData, "/patientRegistration/lastOPVDate");
+            hackDate(formData, "/patientRegistration/lastPentaDate");
+            hackDate(formData, "/patientRegistration/measlesDate");
+            hackDate(formData, "/patientRegistration/yellowFeverDate");
+            hackDate(formData, "/patientRegistration/lastIPTiDate");
+            hackDate(formData, "/patientRegistration/lastVitaminADate");
+            hackDate(formData, "/patientRegistration/expDeliveryDate");
+            hackDate(formData, "/ANCRegistration/lastTTDate");
+            hackDate(formData, "/ANCRegistration/lastIPTDate");
             formsList.add(formData);
         }
         final StudyData studyData = new StudyData(studyDef);

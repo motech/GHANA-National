@@ -12,6 +12,7 @@ public class Mobile {
         try {
             return XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
                     mobileForm.getStudyName(), XformHttpClient.XFormParser.parse(mobileForm.getXmlTemplateName(), templateData));
+
         } catch (Exception e) {
             throw new MotechException("Encountered error while uploading mobile form", e);
         }

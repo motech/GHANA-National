@@ -45,8 +45,8 @@
                 <lastPentaDate/>
                 <measlesDate/>
                 <yellowFeverDate/>
-                <lastIPTI/>
-                <lastIPTIDate/>
+                <lastIPTi/>
+                <lastIPTiDate/>
                 <lastVitaminADate/>
                 <whyNoHistory/>
                 <expDeliveryDate/>
@@ -54,7 +54,7 @@
                 <enroll/>
                 <consent/>
                 <serviceType/>
-                <ownership/>
+                <phoneOwnership/>
                 <regPhone/>
                 <format/>
                 <language/>
@@ -760,11 +760,11 @@
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
             = 'YF' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
-        <xf:bind id="lastIPTI" nodeset="/patientRegistration/lastIPTI" type="xsd:string" visible="false()"
+        <xf:bind id="lastIPTi" nodeset="/patientRegistration/lastIPTi" type="xsd:string" visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
             = 'IPTI' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
-        <xf:bind id="lastIPTIDate" nodeset="/patientRegistration/lastIPTIDate" type="xsd:date"
+        <xf:bind id="lastIPTiDate" nodeset="/patientRegistration/lastIPTiDate" type="xsd:date"
                  visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
             = 'IPTI' and /patientRegistration/addHistory = '1'"
@@ -793,11 +793,11 @@
                  visible="false()"/>
         <xf:bind action="show" id="serviceType" nodeset="/patientRegistration/serviceType"
                  relevant="/patientRegistration/consent = Y" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="ownership" nodeset="/patientRegistration/ownership"
+        <xf:bind action="show" id="phoneOwnership" nodeset="/patientRegistration/phoneOwnership"
                  relevant="/patientRegistration/consent = 'Y'" required="true()" type="xsd:string"
                  visible="false()"/>
         <xf:bind action="show" id="regPhone" nodeset="/patientRegistration/regPhone"
-                 relevant="/patientRegistration/ownership = 'PERSONAL' or /patientRegistration/ownership = 'HOUSEHOLD'"
+                 relevant="/patientRegistration/phoneOwnership = 'PERSONAL' or /patientRegistration/phoneOwnership = 'HOUSEHOLD'"
                  required="true()" type="xsd:int" constraint=". &lt;= 999999999"
                  message="Number too large. It should be 10 digits long"/>
         <xf:bind action="show" id="format" nodeset="/patientRegistration/format"
@@ -1208,7 +1208,7 @@
         <xf:input bind="yellowFeverDate">
             <xf:label>YF date</xf:label>
         </xf:input>
-        <xf:select1 bind="lastIPTI">
+        <xf:select1 bind="lastIPTi">
             <xf:label>Last IPTi</xf:label>
             <xf:item id="1">
                 <xf:label>IPTi 1</xf:label>
@@ -1223,7 +1223,7 @@
                 <xf:value>3</xf:value>
             </xf:item>
         </xf:select1>
-        <xf:input bind="lastIPTIDate">
+        <xf:input bind="lastIPTiDate">
             <xf:label>Last IPTi date</xf:label>
         </xf:input>
         <xf:input bind="lastVitaminADate">
@@ -1291,7 +1291,7 @@
                 <xf:value>CHILD_CARE</xf:value>
             </xf:item>
         </xf:select1>
-        <xf:select1 bind="ownership">
+        <xf:select1 bind="phoneOwnership">
             <xf:label>Phone ownership</xf:label>
             <xf:item id="PERSONAL">
                 <xf:label>Personal phone</xf:label>
@@ -1312,7 +1312,7 @@
         <xf:select1 bind="format">
             <xf:label>Message format</xf:label>
             <xf:itemset
-                    nodeset="instance('format')/item[@parent=instance('patientRegistration')/ownership]">
+                    nodeset="instance('format')/item[@parent=instance('patientRegistration')/phoneOwnership]">
                 <xf:label ref="label"/>
                 <xf:value ref="value"/>
             </xf:itemset>
@@ -1328,31 +1328,31 @@
             <xf:label>Day of week to receive messages</xf:label>
             <xf:item id="MONDAY">
                 <xf:label>Monday</xf:label>
-                <xf:value>MONDAY</xf:value>
+                <xf:value>Monday</xf:value>
             </xf:item>
             <xf:item id="TUESDAY">
                 <xf:label>Tuesday</xf:label>
-                <xf:value>TUESDAY</xf:value>
+                <xf:value>Thursday</xf:value>
             </xf:item>
             <xf:item id="WEDNESDAY">
                 <xf:label>Wednesday</xf:label>
-                <xf:value>WEDNESDAY</xf:value>
+                <xf:value>Wednesday</xf:value>
             </xf:item>
             <xf:item id="THURSDAY">
                 <xf:label>Thursday</xf:label>
-                <xf:value>THURSDAY</xf:value>
+                <xf:value>Thursday</xf:value>
             </xf:item>
             <xf:item id="FRIDAY">
                 <xf:label>Friday</xf:label>
-                <xf:value>FRIDAY</xf:value>
+                <xf:value>Friday</xf:value>
             </xf:item>
             <xf:item id="SATURDAY">
                 <xf:label>Saturday</xf:label>
-                <xf:value>SATURDAY</xf:value>
+                <xf:value>Saturday</xf:value>
             </xf:item>
             <xf:item id="SUNDAY">
                 <xf:label>Sunday</xf:label>
-                <xf:value>SUNDAY</xf:value>
+                <xf:value>Sunday</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="timeOfDay">

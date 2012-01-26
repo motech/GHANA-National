@@ -32,7 +32,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     @ApiSession
     public List<FormError> validate(RegisterClientForm formBean) {
         String motechId = formBean.getMotechId();
-        List<FormError> formErrors = super.validate(formBean);
+         List<FormError> formErrors = super.validate(formBean);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(validateMotechId(motechId, formBean.getRegistrationMode()));

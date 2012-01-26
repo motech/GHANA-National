@@ -14,6 +14,10 @@ public class HomePage extends BasePage {
     @CacheLookup
     public WebElement ancEnrollment;
 
+    @FindBy(id = "cwcenrollment")
+    @CacheLookup
+    public WebElement cwcEnrollment;
+
     public HomePage(WebDriver webDriver) {
         super(webDriver);
         elementPoller.waitForElementLinkText("Logout", webDriver);
@@ -73,6 +77,10 @@ public class HomePage extends BasePage {
 
     public void openANCEnrollmentPage() {
         ancEnrollment.click();
+    }
+
+    public void openCWCEnrollmentPage() {
+        cwcEnrollment.click();
     }
 }
 

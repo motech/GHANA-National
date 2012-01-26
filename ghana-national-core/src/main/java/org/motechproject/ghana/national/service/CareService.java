@@ -81,8 +81,10 @@ public class CareService {
             mrsObservations.add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, ancVO.getDeliveryDateConfirmed()));
         if (ancVO.getSerialNumber() != null)
             mrsObservations.add(new MRSObservation<String>(registrationDate, Constants.CONCEPT_ANC_REG_NUM, ancVO.getSerialNumber()));
-        Set<MRSObservation> historyObservations = addObservationsOnANCHistory(ancVO.getAncCareHistoryVO());
-        mrsObservations.addAll(historyObservations);
+        if (ancVO.getAddHistory()) {
+            Set<MRSObservation> historyObservations = addObservationsOnANCHistory(ancVO.getAncCareHistoryVO());
+            mrsObservations.addAll(historyObservations);
+        }
         return mrsObservations;
     }
 

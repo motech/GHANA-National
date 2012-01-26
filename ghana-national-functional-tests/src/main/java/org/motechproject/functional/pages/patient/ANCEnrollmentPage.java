@@ -1,5 +1,7 @@
 package org.motechproject.functional.pages.patient;
 
+import org.joda.time.format.DateTimeFormat;
+import org.motechproject.functional.data.TestANCEnrollment;
 import org.motechproject.functional.pages.home.HomePage;
 import org.joda.time.LocalDate;
 import org.openqa.selenium.WebDriver;
@@ -8,6 +10,8 @@ import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
+
+import static com.thoughtworks.selenium.SeleneseTestBase.assertEquals;
 
 public class ANCEnrollmentPage extends HomePage {
     @FindBy(id = "motechPatientId")
@@ -26,17 +30,21 @@ public class ANCEnrollmentPage extends HomePage {
     @CacheLookup
     private WebElement registrationToday;
 
+    @FindBy(id = "registrationDateHolder")
+    @CacheLookup
+    private WebElement registrationDateHolder;
+
     @FindBy(id = "registrationDate")
     @CacheLookup
     private WebElement registrationDate;
 
     @FindBy(id = "estimatedDateOfDeliveryHolder")
     @CacheLookup
-    private WebElement estimatedDateOfDelivery;
+    private WebElement estimatedDateOfDeliveryHolder;
 
-    @FindBy(id = "registrationDateHolder")
+    @FindBy(id = "estimatedDateOfDelivery")
     @CacheLookup
-    private WebElement registrationDateHolder;
+    private WebElement estimatedDateOfDelivery;
 
     @FindBy(id = "addHistory1")
     @CacheLookup
@@ -106,21 +114,21 @@ public class ANCEnrollmentPage extends HomePage {
     @CacheLookup
     private WebElement lastIPT1;
 
-    @FindBy(id = "lastIPTDateHolder")
+    @FindBy(id = "lastIPTDate")
     @CacheLookup
     private WebElement lastIPTDate;
 
-    @FindBy(id = "jsTT")
+    @FindBy(id = "lastIPTDateHolder")
     @CacheLookup
-    private WebElement lastTTDateHolder;
+    private WebElement lastIPTDateHolder;
 
     @FindBy(id = "lastTTDate")
     @CacheLookup
     private WebElement lastTTDate;
 
-    @FindBy(id = "estimatedDateOfDelivery")
+    @FindBy(id = "lastTTDateHolder")
     @CacheLookup
-    private WebElement estimatedDateOfDeliveryValue;
+    private WebElement lastTTDateHolder;
 
     public ANCEnrollmentPage(WebDriver webDriver) {
         super(webDriver);
@@ -134,9 +142,9 @@ public class ANCEnrollmentPage extends HomePage {
         return this;
     }
 
-    public ANCEnrollmentPage withHeight(double height) {
+    public ANCEnrollmentPage withHeight(String height) {
         this.height.clear();
-        this.height.sendKeys(Double.toString(height));
+        this.height.sendKeys(height);
         return this;
     }
 
@@ -171,6 +179,10 @@ public class ANCEnrollmentPage extends HomePage {
         Select selectSubDist = new Select(this.registrationToday);
         selectSubDist.selectByValue(registrationToday);
         return this;
+    }
+
+    public String getRegsitrationToday(){
+        return new Select(registrationToday).getFirstSelectedOption().getText();
     }
 
     public ANCEnrollmentPage withRegistrationDate(LocalDate registrationDate) {
@@ -217,12 +229,13 @@ public class ANCEnrollmentPage extends HomePage {
     }
 
     public ANCEnrollmentPage withEstimatedDateOfDelivery(LocalDate date) {
-        dateSelector.select(estimatedDateOfDelivery, date, driver);
+        dateSelector.select(estimatedDateOfDeliveryHolder, date, driver);
         return this;
     }
 
     public ANCEnrollmentPage withTT(Boolean ttValue) {
-        if (ttValue)
+        boolean selected = ttCareHistory.isSelected();
+        if (ttValue && !selected || !ttValue && selected)
             ttCareHistory.click();
         return this;
     }
@@ -240,14 +253,16 @@ public class ANCEnrollmentPage extends HomePage {
     }
 
     public ANCEnrollmentPage withIPT(Boolean iptValue) {
-        if (iptValue)
+        boolean selected = iptCareHistory.isSelected();
+        if ((iptValue && !selected) || (!iptValue && selected)){
             iptCareHistory.click();
+        }
         return this;
     }
 
 
     public ANCEnrollmentPage withIPTDate(LocalDate date) {
-        dateSelector.select(lastIPTDate, date, driver);
+        dateSelector.select(lastIPTDateHolder, date, driver);
         return this;
     }
 
@@ -268,7 +283,7 @@ public class ANCEnrollmentPage extends HomePage {
         return staffId.getAttribute("value");
     }
 
-    public String getFacilities() {
+    public String getFacility() {
         return new Select(facilities).getFirstSelectedOption().getText();
     }
 
@@ -304,8 +319,8 @@ public class ANCEnrollmentPage extends HomePage {
         return registrationDate.getAttribute("value");
     }
 
-    public String getEstimatedDateOfDelivery() {
-        return estimatedDateOfDelivery.getAttribute("value");
+    public String getEstimatedDateOfDeliveryHolder() {
+        return estimatedDateOfDeliveryHolder.getAttribute("value");
     }
 
     public void submit() {
@@ -327,8 +342,79 @@ public class ANCEnrollmentPage extends HomePage {
         return parity.getAttribute("value");
     }
 
-    public String getEstimatedDateOfDeliveryValue() {
-        return estimatedDateOfDeliveryValue.getAttribute("value");
+    public String getEstimatedDateOfDelivery() {
+        return estimatedDateOfDelivery.getAttribute("value");
 
+    }
+
+    public void save(TestANCEnrollment ancEnrollment) {
+        this.withStaffId(ancEnrollment.staffId())
+                .withRegistrationToday(ancEnrollment.registrationToday().name())
+                .withSerialNumber(ancEnrollment.serialNumber())
+                .withCountry(ancEnrollment.country())
+                .withRegion(ancEnrollment.region())
+                .withDistrict(ancEnrollment.district())
+                .withSubDistrict(ancEnrollment.subDistrict())
+                .withRegistrationDate(ancEnrollment.registrationDate())
+                .withAddHistory(ancEnrollment.addHistory())
+                .withFacility(ancEnrollment.facility())
+                .withHeight(ancEnrollment.height())
+                .withGravida(ancEnrollment.gravida())
+                .withParity(ancEnrollment.parity())
+                .withDeliveryDateConfirmed(ancEnrollment.deliveryDateConfirmed())
+                .withEstimatedDateOfDelivery(ancEnrollment.estimatedDateOfDelivery())
+                .withIPT(ancEnrollment.hasIPTHistory())
+                .withTT(ancEnrollment.hasTTHistory())
+                .withLastIPTValue(ancEnrollment.lastIPT())
+                .withLastTTValue(ancEnrollment.lastTT())
+                .withIPTDate(ancEnrollment.lastIPTDate())
+                .withTTDate(ancEnrollment.lastTTDate())
+                .submit();
+    }
+
+    public void displaying(TestANCEnrollment ancEnrollment){
+        assertEquals(getStaffId(), ancEnrollment.staffId());
+        assertEquals(getSerialNumber(), ancEnrollment.serialNumber());
+        assertEquals(getRegion(), ancEnrollment.region());
+        assertEquals(getDistrict(), ancEnrollment.district());
+        assertEquals(getSubDistrict(), ancEnrollment.subDistrict());
+        assertEquals(getRegistrationDate(), ancEnrollment.registrationDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy")));
+        assertEquals(getFacility(), ancEnrollment.facility());
+        assertEquals(getHeight(), ancEnrollment.height());
+        assertEquals(getGravida(), ancEnrollment.gravida());
+        assertEquals(getParity(), ancEnrollment.parity());
+        assertEquals(getEstimatedDateOfDelivery(), ancEnrollment.estimatedDateOfDelivery().toString(DateTimeFormat.forPattern("dd/MM/yyyy")));
+        assertEquals(getLastTTDate(), ancEnrollment.lastTTDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy")));
+        assertEquals(getLastTT1(), ancEnrollment.lastTT());
+        assertEquals(getLastIPTDate(), ancEnrollment.lastIPTDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy")));
+        assertEquals(getLastIPT1(), ancEnrollment.lastIPT());
+
+
+    }
+
+    private ANCEnrollmentPage withLastTTValue(String ttValue) {
+        if("1".equals(ttValue)){
+            withLastTTValue1(true);
+        }
+        return this;
+    }
+
+    private ANCEnrollmentPage withLastIPTValue(String iptValue) {
+        if ("1".equals(iptValue)){
+            withLastIPTValue1(true);
+        }
+        return this;
+    }
+
+    public String getRegion() {
+        return region.getAttribute("value");
+    }
+
+    public String getDistrict() {
+        return district.getAttribute("value");
+    }
+
+    public String getSubDistrict() {
+        return subDistrict.getAttribute("value");
     }
 }

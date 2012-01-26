@@ -2,15 +2,19 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
 import org.junit.runner.RunWith;
-import org.motechproject.functional.data.TestPatient;
-import org.motechproject.functional.data.TestStaff;
+import org.motechproject.functional.data.*;
 import org.motechproject.functional.framework.XformHttpClient;
 import org.motechproject.functional.mobileforms.MobileForm;
+import org.motechproject.functional.pages.patient.ANCEnrollmentPage;
+import org.motechproject.functional.pages.patient.CWCEnrollmentPage;
+import org.motechproject.functional.pages.patient.PatientEditPage;
 import org.motechproject.functional.pages.patient.SearchPatientPage;
 import org.motechproject.functional.pages.staff.StaffPage;
 import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -33,6 +37,9 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
 
     @Autowired
     private IdentifierGenerationService identifierGenerationService;
+
+    @Autowired
+    private PatientGenerator patientGenerator;
 
     @Test
     public void shouldCheckForMandatoryFields() throws Exception {
@@ -73,7 +80,7 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
     }
 
     @Test
-    public void shouldCreateAPatientWithMobileDeviceAndSearchForHerByName(){
+    public void shouldCreateAPatientWithMobileDeviceAndSearchForHerByName() {
         DataGenerator dataGenerator = new DataGenerator();
         String firstName = "First Name" + dataGenerator.randomString(5);
 
@@ -90,6 +97,83 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
         searchPatientPage.searchWithName(patient.firstName());
         searchPatientPage.displaying(patient);
+
+    }
+
+    @Test
+    public void shouldCreatePatientWithANCRegistrationInfoAndSearchForHer() {
+        DataGenerator dataGenerator = new DataGenerator();
+        String firstName = "Second ANC Name" + dataGenerator.randomString(5);
+
+        StaffPage staffPage = browser.toStaffCreatePage(homePage);
+        staffPage.create(TestStaff.with(firstName));
+        staffPage.waitForSuccessMessage();
+        String staffId = staffPage.staffId();
+
+        TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5)).
+                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
+                patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false).
+                staffId(staffId);
+
+        TestANCEnrollment ancEnrollmentDetails = TestANCEnrollment.create();
+
+        TestClientRegistration<TestANCEnrollment> testClientRegistration = new TestClientRegistration<TestANCEnrollment>(patient, ancEnrollmentDetails);
+
+        mobile.upload(MobileForm.registerClientForm(), testClientRegistration.forMobile());
+
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithName(patient.firstName());
+        searchPatientPage.displaying(patient);
+
+        PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
+        ANCEnrollmentPage ancEnrollmentPage = browser.toANCEnrollmentForm(editPage);
+
+        TestANCEnrollment exptectedANCEnrollment = testClientRegistration.getEnrollment()
+                .withStaffId(testClientRegistration.getPatient().staffId())
+                .withFacilityId(testClientRegistration.getPatient().facilityId())
+                .withMotechPatientId(testClientRegistration.getPatient().motechId())
+                .withRegistrationDate(testClientRegistration.getPatient().getRegistrationDate());
+
+        ancEnrollmentPage.displaying(exptectedANCEnrollment);
+    }
+
+    @Test
+    public void shouldCreatePatientWithCWCRegistrationInfoAndSearchForChild() {
+        DataGenerator dataGenerator = new DataGenerator();
+        String firstName = "Second ANC Name" + dataGenerator.randomString(5);
+
+        StaffPage staffPage = browser.toStaffCreatePage(homePage);
+        staffPage.create(TestStaff.with(firstName));
+        staffPage.waitForSuccessMessage();
+        String staffId = staffPage.staffId();
+
+        String motherMotechId = patientGenerator.createPatient(browser, homePage);
+
+        TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5)).
+                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
+                patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).
+                staffId(staffId).motherMotechId(motherMotechId).registrationDate(DateUtil.newDate(2000, 12, 12));
+
+        TestCWCEnrollment cwcEnrollmentDetails = TestCWCEnrollment.create();
+
+        TestClientRegistration<TestCWCEnrollment> testClientRegistration = new TestClientRegistration<TestCWCEnrollment>(patient, cwcEnrollmentDetails);
+
+        mobile.upload(MobileForm.registerClientForm(), testClientRegistration.forMobile());
+
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithName(patient.firstName());
+        searchPatientPage.displaying(patient);
+
+        PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
+
+        TestCWCEnrollment expectedCWCEnrollment = testClientRegistration.getEnrollment()
+                .withStaffId(testClientRegistration.getPatient().staffId())
+                .withFacilityId(testClientRegistration.getPatient().facilityId())
+                .withMotechPatientId(testClientRegistration.getPatient().motechId())
+                .withRegistrationDate(testClientRegistration.getPatient().getRegistrationDate());
+
+        CWCEnrollmentPage cwcEnrollmentPage = browser.toCWCEnrollmentForm(editPage);
+        cwcEnrollmentPage.displaying(expectedCWCEnrollment);
 
     }
 

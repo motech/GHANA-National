@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.functional.patient;
 
-import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
 import org.motechproject.functional.data.TestANCEnrollment;
 import org.motechproject.functional.data.TestPatient;
@@ -15,17 +14,12 @@ import org.motechproject.functional.pages.staff.StaffPage;
 import org.motechproject.functional.util.DataGenerator;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
-import org.motechproject.util.DateUtil;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
@@ -40,74 +34,36 @@ public class ANCTest extends LoggedInUserFunctionalTest {
 
     @Test
     public void shouldEnrollForANCForAPatientAndUpdate() {
+        // create
+
         StaffPage staffPage = browser.toStaffCreatePage(homePage);
-        staffPage.create(TestStaff.with("First Name" + dataGenerator.randomString(5)));
+        staffPage.create(TestStaff.with("staff first name" + dataGenerator.randomString(5)));
         String staffId = staffPage.staffId();
-        String patientFirstName = "First Name" + dataGenerator.randomString(5);
+
+        String patientFirstName = "patient first name" + dataGenerator.randomString(5);
         TestPatient testPatient = TestPatient.with(patientFirstName).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
-
         patientPage = browser.toCreatePatient(staffPage);
         patientPage.create(testPatient);
 
+        TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withStaffId(staffId).withRegistrationToday(RegistrationToday.IN_PAST);
         ANCEnrollmentPage ancEnrollmentPage = browser.toANCEnrollmentForm(patientPage);
-
-        String country = "Ghana";
-        String serialNumber = "trew654gf";
-        String subDistrict = "Awutu";
-        String district = "Awutu Senya";
-        String region = "Central Region";
-        LocalDate registrationDate = DateUtil.newDate(2011, 11, 30);
-        boolean addHistory = true;
-        String facility = "Awutu HC";
-        double height = 123.4;
-        LocalDate estimatedDeliveryDate = DateUtil.newDate(2011, 11, 30);
-        boolean deliveryDateConfirmed = true;
-        String parity = "4";
-        String gravida = "3";
-        boolean iptCareHistory = true;
-        boolean ttCareHistory = true;
-        boolean lastTPTValue1 = true;
-        boolean lastTTValue1 = true;
-        LocalDate ttDate = DateUtil.newDate(2011, 10, 10);
-        LocalDate iptDate = DateUtil.newDate(2011, 10, 10);
-
-
-        String updatedGravida = "5";
-        double updatedHeight = 134.2;
-
-
-        ancEnrollmentPage.withStaffId(staffId).withRegistrationToday(RegistrationToday.IN_PAST.toString()).withSerialNumber(serialNumber)
-                .withCountry(country).withRegion(region).withDistrict(district).withSubDistrict(subDistrict)
-                .withRegistrationDate(registrationDate).withAddHistory(addHistory).withFacility(facility).withHeight(height)
-                .withGravida(gravida).withParity(parity).withDeliveryDateConfirmed(deliveryDateConfirmed).withEstimatedDateOfDelivery(estimatedDeliveryDate)
-                .withIPT(iptCareHistory).withTT(ttCareHistory).withLastIPTValue1(lastTPTValue1).withLastTTValue1(lastTTValue1).
-                withIPTDate(iptDate).withTTDate(ttDate).submit();
-
-        assertTrue(ancEnrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Updated successfully."));
+        ancEnrollmentPage.save(ancEnrollment);
 
         PatientEditPage patientEditPage = searchPatient(patientFirstName, testPatient, ancEnrollmentPage);
         ancEnrollmentPage = browser.toANCEnrollmentForm(patientEditPage);
 
-        assertEquals(facility, ancEnrollmentPage.getFacilities());
-        assertEquals(height, Double.parseDouble(ancEnrollmentPage.getHeight()));
-        assertTrue(ancEnrollmentPage.getTtCareHistory());
-        assertEquals("10/10/2011", ancEnrollmentPage.getLastTTDate());
+        ancEnrollmentPage.displaying(ancEnrollment);
 
-        ancEnrollmentPage.withFacility(facility).withGravida(updatedGravida).withHeight(updatedHeight)
-                .withTT(true).submit();
-
-        final WebElement success = ancEnrollmentPage.getDriver().findElement(By.className("success"));
-        assertTrue(success.isDisplayed());
-        assertTrue(success.getText().equals("Updated successfully."));
+        // edit
+        ancEnrollment.withSubDistrict("Senya").withFacility("Senya HC").withGravida("4").withHeight("160.9");
+        ancEnrollmentPage.save(ancEnrollment);
 
         patientEditPage = searchPatient(patientFirstName, testPatient, ancEnrollmentPage);
         ancEnrollmentPage = browser.toANCEnrollmentForm(patientEditPage);
-        assertEquals(updatedGravida, ancEnrollmentPage.getGravida());
-        assertEquals(updatedHeight, Double.parseDouble(ancEnrollmentPage.getHeight()));
-        assertFalse(ancEnrollmentPage.getTtCareHistory());
-        assertFalse(ancEnrollmentPage.getDriver().findElement(By.id("lastTTDate")).isDisplayed());
+
+        ancEnrollmentPage.displaying(ancEnrollment);
     }
 
     @Test
@@ -125,8 +81,8 @@ public class ANCTest extends LoggedInUserFunctionalTest {
         patientPage = browser.toCreatePatient(staffPage);
         patientPage.create(testPatient);
 
-        final TestANCEnrollment testANCEnrollment = new TestANCEnrollment().with(patientPage.motechId(), staffId, "13212");
-        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerANCForm(), testANCEnrollment.forMobile());
+        TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withMotechPatientId(patientPage.motechId()).withStaffId(staffId);
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerANCForm(), ancEnrollment.forMobile());
 
         assertEquals(1, response.getSuccessCount());
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
@@ -135,7 +91,7 @@ public class ANCTest extends LoggedInUserFunctionalTest {
 
         PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, testPatient);
         ANCEnrollmentPage ancEnrollmentPage = browser.toANCEnrollmentForm(patientEditPage);
-        assertEquals(testANCEnrollment.motechPatientId(), ancEnrollmentPage.motechId());
+        ancEnrollmentPage.displaying(ancEnrollment);
     }
 
     private PatientEditPage searchPatient(String patientFirstName, TestPatient testPatient, ANCEnrollmentPage ancEnrollmentPage) {

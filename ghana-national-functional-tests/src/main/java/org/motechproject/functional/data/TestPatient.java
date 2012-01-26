@@ -29,6 +29,7 @@ public class TestPatient {
     private boolean female;
     private String staffId;
     private LocalDate registrationDate;
+    private String motherMotechId;
 
     public static TestPatient with(String firstName) {
         TestPatient testPatient = new TestPatient();
@@ -80,6 +81,7 @@ public class TestPatient {
             put("estimatedBirthDate", booleanCode(estimatedDateOfBirth));
             put("date", registrationDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
             put("staffId", staffId);
+            put("motherMotechId", motherMotechId);
         }};
     }
 
@@ -187,6 +189,11 @@ public class TestPatient {
         return registrationDate;
     }
 
+    public TestPatient registrationDate(LocalDate registrationDate){
+        this.registrationDate = registrationDate;
+        return this;
+    }
+
     public TestPatient female(boolean female) {
         this.female = female;
         return this;
@@ -195,6 +202,10 @@ public class TestPatient {
     public TestPatient staffId(String staffId) {
         this.staffId = staffId;
         return this;
+    }
+
+    public String staffId() {
+        return staffId;
     }
 
     public TestPatient middleName(String middleName) {
@@ -211,6 +222,16 @@ public class TestPatient {
         this.facilityIdWherePatientIsEdited = facilityIdWherePatientIsEdited;
         return this;
     }
+
+    public String motherMotechId() {
+        return motherMotechId;
+    }
+
+    public TestPatient motherMotechId(String motherMotechId) {
+        this.motherMotechId = motherMotechId;
+        return this;
+    }
+
 
     public static enum PATIENT_REGN_MODE {AUTO_GENERATE_ID, USE_PREPRINTED_ID}
 

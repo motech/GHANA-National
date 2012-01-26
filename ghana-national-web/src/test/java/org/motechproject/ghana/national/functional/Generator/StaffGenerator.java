@@ -13,10 +13,10 @@ public class StaffGenerator {
 
     @LoginAsAdmin
     @ApiSession
-    public String createStaffAndReturnStaffId(Browser browser, HomePage homePage) {
+    public String createStaff(Browser browser, HomePage homePage) {
         StaffPage staffPage = browser.toStaffCreatePage(homePage);
-        String firstName = "firstName";
-        staffPage.create(TestStaff.with(firstName));
+        staffPage.create(TestStaff.with("firstName"));
+        staffPage.waitForSuccessMessage();
         return staffPage.staffId();
     }
 }

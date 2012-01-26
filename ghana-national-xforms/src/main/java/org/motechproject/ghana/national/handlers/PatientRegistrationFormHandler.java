@@ -1,11 +1,8 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterClientForm;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientAttributes;
-import org.motechproject.ghana.national.domain.PatientType;
-import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
@@ -67,27 +64,28 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
                     attributes(getPatientAttributes(registerClientForm));
 
             String facilityId = facilityService.getFacilityByMotechId(registerClientForm.getFacilityId()).mrsFacilityId();
-            String motechId = registerClientForm.getMotechId();
-            MRSPatient mrsPatient = new MRSPatient(motechId, mrsPerson, new MRSFacility(facilityId));
+            MRSPatient mrsPatient = new MRSPatient(registerClientForm.getMotechId(), mrsPerson, new MRSFacility(facilityId));
 
-            patientService.registerPatient(new Patient(mrsPatient, registerClientForm.getMotherMotechId()));
+            String patientMotechId = patientService.registerPatient(new Patient(mrsPatient, registerClientForm.getMotherMotechId()));
 
-            MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment();
-            if (mobileMidwifeEnrollment != null) {
+            if (registerClientForm.isEnrolledForMobileMidwifeProgram()) {
+                MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment(patientMotechId);
                 mobileMidwifeEnrollment.setFacilityId(facilityId);
                 mobileMidwifeService.register(mobileMidwifeEnrollment);
             }
 
             if (registerClientForm.getRegistrantType().equals(PatientType.CHILD_UNDER_FIVE)) {
                 CwcVO cwcVO = new CwcVO(registerClientForm.getStaffId(), facilityId, registerClientForm.getDate(),
-                        motechId, registerClientForm.getCWCCareHistories(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
+                        patientMotechId, registerClientForm.getCWCCareHistories(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
                         registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
                         registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber(), registerClientForm.getAddHistory());
 
                     careService.enroll(cwcVO);
 
-            } else if (PatientType.PREGNANT_MOTHER.equals(registerClientForm.getRegistrantType())) {
-                ANCVO ancVO = new ANCVO(registerClientForm.getStaffId(), facilityId, motechId, registerClientForm.getDate()
+            }
+
+            if (PatientType.PREGNANT_MOTHER.equals(registerClientForm.getRegistrantType())) {
+                ANCVO ancVO = new ANCVO(registerClientForm.getStaffId(), facilityId, patientMotechId, registerClientForm.getDate()
                         , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),
                         registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), registerClientForm.getAncCareHistories(), registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
                         registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate(), registerClientForm.getAddHistory());

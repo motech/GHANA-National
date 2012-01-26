@@ -190,7 +190,7 @@
                     </span>
                 </div>
 
-                <div class="form-field">
+                <div id="lastTTDateHolder" class="form-field">
                     <label for="lastTTDate" class="formLabel"> <spring:message code="patient_last_TT_date"/> *: </label>
                     <form:input path="lastTTDate" cssClass="jsDate jsRequire"/>
                 </div>

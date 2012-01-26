@@ -84,7 +84,7 @@ public class PatientRegistrationFormHandlerTest {
         PatientType patientType = PatientType.CHILD_UNDER_FIVE;
 
         RegisterClientForm registerClientForm = createRegisterClientForm(address, dateofBirth, district, isBirthDateEstimated,
-                motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, preferredName, region, registrationMode, sex, subDistrict, phoneNumber, patientType, "defaultV");
+                motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, preferredName, region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
         parameters.put(PatientRegistrationFormHandler.FORM_BEAN, registerClientForm);
         MotechEvent event = new MotechEvent("subject", parameters);
 
@@ -170,10 +170,10 @@ public class PatientRegistrationFormHandlerTest {
         when(mockCareService.enroll(any(CwcVO.class))).thenReturn(null);
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
-        verify(mockCareService).enroll(captor.capture());
+        final ArgumentCaptor<CwcVO> cwcVOArgumentCaptor = ArgumentCaptor.forClass(CwcVO.class);
+        verify(mockCareService).enroll(cwcVOArgumentCaptor.capture());
         verify(mockMobileMidwifeService).register(mobileMidwifeEnrollmentArgumentCaptor.capture());
-        final CwcVO cwcVO = captor.getValue();
+        final CwcVO cwcVO = cwcVOArgumentCaptor.getValue();
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
 
@@ -221,7 +221,7 @@ public class PatientRegistrationFormHandlerTest {
         String lastTT = "lastTT";
 
         RegisterClientForm registerClientForm = createRegisterClientFormForANCEnrollment(address, dateofBirth, district, isBirthDateEstimated,
-                motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId,
+                motechFacilityId, firstName, insured, lastName, middleName, null, nhisExpDate, nhisNumber, parentId,
                 preferredName, region, registrationMode, sex, subDistrict, phoneNumber, patientType, expDeliveryDate, deliveryDateConfirmed, height, gravida, parity, lastIPTDate, lastTTDate, lastIPT, lastTT, staffId);
 
         parameters.put(PatientRegistrationFormHandler.FORM_BEAN, registerClientForm);
@@ -236,11 +236,11 @@ public class PatientRegistrationFormHandlerTest {
         when(mockCareService.enroll(any(ANCVO.class))).thenReturn(null);
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
-        verify(mockCareService).enroll(captor.capture());
+        final ArgumentCaptor<ANCVO> ancvoArgumentCaptor = ArgumentCaptor.forClass(ANCVO.class);
+        verify(mockCareService).enroll(ancvoArgumentCaptor.capture());
         verify(mockMobileMidwifeService).register(mobileMidwifeEnrollmentArgumentCaptor.capture());
 
-        final ANCVO ancVO = captor.getValue();
+        final ANCVO ancVO = ancvoArgumentCaptor.getValue();
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
         assertANCRegistration(facilityId, motechId, expDeliveryDate, deliveryDateConfirmed, height, gravida, parity, lastIPTDate, lastTTDate, lastIPT, lastTT, staffId, ancVO, mobileMidwifeEnrollment);

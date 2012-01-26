@@ -43,11 +43,11 @@ public class PatientService {
                 String motechId = identifierGenerationService.newPatientId();
                 patient = new Patient(new MRSPatient(mrsPatient.getId(), motechId, mrsPatient.getPerson(), mrsPatient.getFacility()), patient.getParentId());
             }
-            String savedPatientId = allPatients.save(patient);
+            String savedPatientMotechId = allPatients.save(patient);
             if (StringUtils.isNotEmpty(patient.getParentId())) {
-                createRelationship(patient.getParentId(), savedPatientId);
+                createRelationship(patient.getParentId(), savedPatientMotechId);
             }
-            return savedPatientId;
+            return savedPatientMotechId;
         } catch (IdentifierNotUniqueException e) {
             throw new PatientIdNotUniqueException();
         } catch (InvalidCheckDigitException e) {

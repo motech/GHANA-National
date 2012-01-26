@@ -39,8 +39,9 @@ public class Browser {
         return new HomePage(webDriver);
     }
 
-    public PatientPage toCreatePatient(HomePage homePage) {
-        homePage.openCreatePatientPage();
+    public PatientPage toCreatePatient(HomePage fromPage) {
+        fromPage.waitForSuccessfulCompletion();
+        fromPage.openCreatePatientPage();
         return new PatientPage(webDriver);
     }
 
@@ -71,12 +72,14 @@ public class Browser {
         return new MotechIdGeneratorPage(webDriver);
     }
 
-    public StaffPage toStaffCreatePage(HomePage homePage) {
-        homePage.openCreateStaffPage();
+    public StaffPage toStaffCreatePage(HomePage fromPage) {
+        fromPage.waitForSuccessfulCompletion();
+        fromPage.openCreateStaffPage();
         return new StaffPage(webDriver);
     }
 
     public SearchStaffPage toSearchStaffPage(HomePage fromPage) {
+        fromPage.waitForSuccessfulCompletion();
         fromPage.openSearchStaffPage();
         return new SearchStaffPage(webDriver);
     }
@@ -92,8 +95,15 @@ public class Browser {
     }
 
     public ANCEnrollmentPage toANCEnrollmentForm(HomePage fromPage) {
+        fromPage.waitForSuccessfulCompletion();
         fromPage.openANCEnrollmentPage();
         return new ANCEnrollmentPage(webDriver);
+    }
+
+    public CWCEnrollmentPage toCWCEnrollmentForm(HomePage fromPage) {
+        fromPage.waitForSuccessfulCompletion();
+        fromPage.openCWCEnrollmentPage();
+        return new CWCEnrollmentPage(webDriver);
     }
 
     public MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentForm(PatientEditPage patientEditPage) {
@@ -105,8 +115,9 @@ public class Browser {
         webDriver.quit();
     }
 
-    public FacilityPage toFacilityPage(HomePage homePage) {
-        homePage.openCreateFaclityPage();
+    public FacilityPage toFacilityPage(HomePage fromPage) {
+        fromPage.waitForSuccessfulCompletion();
+        fromPage.openCreateFaclityPage();
         return getFacilityPage();
     }
 
@@ -119,19 +130,12 @@ public class Browser {
     }
 
     public SearchFacilityPage toSearchFacility(HomePage fromPage) {
+        fromPage.waitForSuccessfulCompletion();
         fromPage.openSearchFaclityPage();
         return new SearchFacilityPage(webDriver);
     }
 
     public void captureScreenShot() {
         new ScreenShotCaptor().capture(webDriver);
-    }
-
-    public PatientPage openPatientPageBySearch(HomePage homePage, TestPatient patient) {
-        SearchPatientPage searchPatientPage = toSearchPatient(homePage);
-        searchPatientPage.searchWithMotechId(patient.motechId());
-        searchPatientPage.open(patient);
-        searchPatientPage.waitForPageToLoad();
-        return new PatientPage(webDriver);
     }
 }

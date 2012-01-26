@@ -515,11 +515,7 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
         return cwcCareHistories;
     }
 
-    public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
-        if (isEnrolledForMobileMidwifeProgram()) {
-            MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment());
-            return enrollment.setStaffId(getStaffId()).setPatientId(getMotechId());
-        }
-        return null;
+    public MobileMidwifeEnrollment createMobileMidwifeEnrollment(String patientMotechId) {
+        return fillEnrollment(new MobileMidwifeEnrollment()).setStaffId(getStaffId()).setPatientId(patientMotechId);
     }
 }
