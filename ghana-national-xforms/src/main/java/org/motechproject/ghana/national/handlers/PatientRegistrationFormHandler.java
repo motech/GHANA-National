@@ -1,18 +1,21 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterClientForm;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientAttributes;
+import org.motechproject.ghana.national.domain.PatientType;
+import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
-import org.motechproject.ghana.national.service.CareService;
-import org.motechproject.ghana.national.service.FacilityService;
-import org.motechproject.ghana.national.service.MobileMidwifeService;
-import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.mrs.model.*;
+import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
@@ -44,6 +47,9 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
     @Autowired
     private FacilityService facilityService;
 
+    @Autowired
+    private TextMessageService textMessageService;
+
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.registerPatient")
     @LoginAsAdmin
@@ -65,7 +71,8 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             String facilityId = facilityService.getFacilityByMotechId(registerClientForm.getFacilityId()).mrsFacilityId();
             MRSPatient mrsPatient = new MRSPatient(registerClientForm.getMotechId(), mrsPerson, new MRSFacility(facilityId));
 
-            String patientMotechId = patientService.registerPatient(new Patient(mrsPatient, registerClientForm.getMotherMotechId()));
+            Patient patient = new Patient(mrsPatient, registerClientForm.getMotherMotechId());
+            String patientMotechId = patientService.registerPatient(patient);
 
             if (registerClientForm.isEnrolledForMobileMidwifeProgram()) {
                 MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment(patientMotechId);
@@ -79,7 +86,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
                         registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
                         registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber(), registerClientForm.getAddHistory());
 
-                    careService.enroll(cwcVO);
+                careService.enroll(cwcVO);
 
             }
 
@@ -89,13 +96,18 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
                         registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), registerClientForm.getAncCareHistories(), registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
                         registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate(), registerClientForm.getAddHistory());
 
-                    careService.enroll(ancVO);
+                careService.enroll(ancVO);
 
             }
-        } catch (Exception
-                e) {
+            if (registerClientForm.getSender() != null) {
+                textMessageService.sendSMS(registerClientForm.getSender(), patient, "REGISTER_SUCCESS_SMS");
+            }
+        } catch (Exception e)
+
+        {
             log.error("Exception while saving patient", e);
         }
+
     }
 
     private List<Attribute> getPatientAttributes
