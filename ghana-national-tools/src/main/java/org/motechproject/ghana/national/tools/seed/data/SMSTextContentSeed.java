@@ -19,8 +19,8 @@ public class SMSTextContentSeed extends Seed {
     @Override
     protected void load() {
         try {
-            Configuration configuration = new Configuration("SMS", registrationSms);
-            allConfigurations.saveLocally(configuration);
+            Configuration configuration = new Configuration("REGISTER_SUCCESS_SMS", registrationSms);
+            allConfigurations.add(configuration);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

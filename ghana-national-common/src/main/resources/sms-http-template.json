@@ -1,6 +1,6 @@
 {
     "request": {
-        "urlPath": "http://smshost.com/sms/send",
+        "urlPath": "http://localhost:8080/ghana-national/sms/send",
         "queryParameters": {
             "recipients": "$recipients" ,
             "message": "$message"

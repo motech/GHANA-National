@@ -63,7 +63,7 @@
                             <includeArtifactIds>ghana-national-common</includeArtifactIds>
                             <includeGroupIds>org.motechproject</includeGroupIds>
                             <excludeTransitive>true</excludeTransitive>
-                            <includes>couchdb.properties,email.properties,ghana-national.properties,openmrs.properties,openmrs-data/**</includes>
+                            <includes>couchdb.properties,email.properties,ghana-national.properties,openmrs.properties,openmrs-data/**,osgi.properties,activemq.properties</includes>
                         </configuration>
                     </execution>
                 </executions>

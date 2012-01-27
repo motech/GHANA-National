@@ -15,16 +15,10 @@ import java.util.List;
 @Repository
 public class AllConfigurations extends MotechBaseRepository<Configuration> {
 
-//    @Autowired
-//    SmsService smsService;
 
     @Autowired
     public AllConfigurations(@Qualifier("couchDbConnector") CouchDbConnector db) {
         super(Configuration.class, db);
-    }
-
-    public void sendSMS(String recipient, String message) {
-//        smsService.sendSMS(recipient, message);
     }
 
     @View(name = "find_value_by_configuration_name", map = "function(doc) { if(doc.type === 'Configuration') emit(doc.propertyName, doc) }")
@@ -34,8 +28,5 @@ public class AllConfigurations extends MotechBaseRepository<Configuration> {
         return CollectionUtils.isEmpty(configurations) ? null : configurations.get(0);
     }
 
-    public void saveLocally(Configuration configuration) {
-        super.add(configuration);
-    }
 }
 

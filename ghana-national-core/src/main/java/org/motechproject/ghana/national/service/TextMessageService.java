@@ -15,7 +15,7 @@ public class TextMessageService {
     @Autowired
     AllConfigurations allConfigurations;
 
-    //@Autowired
+    @Autowired
     SmsService smsService;
 
     public void sendSMS(String recipient, Patient patient, String key) {
