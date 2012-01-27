@@ -1,12 +1,7 @@
 package org.motechproject.ghana.national.tools.seed.data.source;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.ghana.national.domain.mobilemidwife.Language;
-import org.motechproject.ghana.national.domain.mobilemidwife.LearnedFrom;
-import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
-import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
-import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
-import org.motechproject.ghana.national.domain.mobilemidwife.ReasonToJoin;
+import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class MobileMidwifeSource {
@@ -33,7 +29,7 @@ public class MobileMidwifeSource {
     }
 
     public List<HashMap<String, String>> getEnrollmentData() {
-        return jdbcTemplate.query("select program_name, person_id, start_date " +
+        return jdbcTemplate.query("select program_name, person_id, start_date, obs_id " +
                 "from motechmodule_enrollment " +
                 "where program_name != 'Expected Care Message Program'", new RowMapper<HashMap<String, String>>() {
             @Override
@@ -42,6 +38,7 @@ public class MobileMidwifeSource {
                 map.put("patientId", resultSet.getString("person_id"));
                 map.put("programName", resultSet.getString("program_name"));
                 map.put("startDate", resultSet.getString("start_date"));
+                map.put("obs_id", resultSet.getString("obs_id"));
                 return map;
             }
         });
@@ -65,12 +62,36 @@ public class MobileMidwifeSource {
         );
         return (list.isEmpty()) ? null : list.get(0);
     }
+
+    public Map<String, String> locationToProviderMapping(final String observationId) {
+        List<Map<String,String>> list = jdbcTemplate.query(new PreparedStatementCreator() {
+                    @Override
+                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                        PreparedStatement preparedStatement = connection.prepareStatement("select e.location_id, e.provider_id from encounter e, obs o  " +
+                                                                                          "where o.encounter_id = e.encounter_id and o.obs_id=?");
+                        preparedStatement.setString(1, observationId);
+                        return preparedStatement;
+                    }
+                },
+                new RowMapper<Map<String, String>>() {
+                    @Override
+                    public Map<String, String> mapRow(ResultSet resultSet, int i) throws SQLException {
+                        Map<String,String> result=new HashMap<String, String>();
+                        result.put("location_id",resultSet.getString("location_id"));
+                        result.put("provider_id",resultSet.getString("provider_id"));
+                        return result;
+                    }
+                }
+        );
+        return (list.isEmpty()) ? null : list.get(0);
+    }
     
-    public String getPatientStaffId(final String patientId){
+    public String getStaffId(final String patientId){
         List<String> list= jdbcTemplate.query(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                PreparedStatement preparedStatement=connection.prepareStatement("select u.system_id from users u, encounter e where e.provider_id = u.person_id and e.patient_id = ? limit 1");
+                PreparedStatement preparedStatement=connection.prepareStatement("select u.system_id from users u, encounter e where " +
+                                                                                "e.provider_id = u.person_id and e.patient_id = ? limit 1");
                 preparedStatement.setString(1,patientId);
                 return preparedStatement;
             }
