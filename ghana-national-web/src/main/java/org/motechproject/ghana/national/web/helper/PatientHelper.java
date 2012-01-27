@@ -33,7 +33,7 @@ public class PatientHelper {
         setAttribute(attributes, String.valueOf(createPatientForm.getPhoneNumber()), PatientAttributes.PHONE_NUMBER);
 
         MRSPerson mrsPerson = new MRSPerson().firstName(createPatientForm.getFirstName()).middleName(createPatientForm.getMiddleName())
-                .lastName(createPatientForm.getLastName()).preferredName(createPatientForm.getPreferredName()).dateOfBirth(createPatientForm.getDateOfBirth())
+                .lastName(createPatientForm.getLastName()).dateOfBirth(createPatientForm.getDateOfBirth())
                 .birthDateEstimated(createPatientForm.getEstimatedDateOfBirth()).gender(createPatientForm.getSex()).address(createPatientForm.getAddress()).attributes(attributes);
 
         MRSFacility mrsFacility = new MRSFacility(facility.mrsFacility().getId(), facility.name(), facility.country(), facility.region(),
@@ -67,7 +67,6 @@ public class PatientHelper {
         createPatientForm.setFirstName(mrsPerson.getFirstName());
         createPatientForm.setLastName(mrsPerson.getLastName());
         createPatientForm.setMiddleName(mrsPerson.getMiddleName());
-        createPatientForm.setPreferredName(mrsPerson.getPreferredName());
         createPatientForm.setMotechId(patientVO.getMrsPatient().getMotechId());
         createPatientForm.setSex(mrsPerson.getGender());
         final String parentId = patientVO.getParentId();

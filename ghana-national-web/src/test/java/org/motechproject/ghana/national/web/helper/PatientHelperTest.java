@@ -52,7 +52,6 @@ public class PatientHelperTest {
         createPatientForm.setInsured(false);
         createPatientForm.setLastName("lastNm");
         createPatientForm.setMiddleName("middlenm");
-        createPatientForm.setPreferredName("preferred");
         createPatientForm.setMotechId("12567");
         createPatientForm.setSex(Constants.PATIENT_GENDER_MALE);
         createPatientForm.setNhisExpirationDate(new Date());
@@ -92,7 +91,6 @@ public class PatientHelperTest {
         final MRSPerson person = mrsPatient.getPerson();
         assertThat(patientView.getAddress(), is(equalTo(person.getAddress())));
         assertThat(patientView.getFirstName(), is(equalTo(person.getFirstName())));
-        assertThat(patientView.getPreferredName(), is(equalTo(person.getPreferredName())));
         assertThat(patientView.getMiddleName(), is(equalTo(person.getMiddleName())));
         assertThat(patientView.getLastName(), is(equalTo(person.getLastName())));
         assertThat(patientView.getSex(), is(equalTo(person.getGender())));

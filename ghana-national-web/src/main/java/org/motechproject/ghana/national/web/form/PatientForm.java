@@ -15,7 +15,6 @@ public class PatientForm {
     private String firstName;
     private String middleName;
     private String lastName;
-    private String preferredName;
     private Date dateOfBirth;
     private Boolean estimatedDateOfBirth;
     private String sex;
@@ -93,15 +92,6 @@ public class PatientForm {
 
     public PatientForm setLastName(String lastName) {
         this.lastName = lastName;
-        return this;
-    }
-
-    public String getPreferredName() {
-        return preferredName;
-    }
-
-    public PatientForm setPreferredName(String preferredName) {
-        this.preferredName = preferredName;
         return this;
     }
 

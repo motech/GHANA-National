@@ -33,7 +33,6 @@ public class PatientFormTest {
         Date nhisExpDate = new Date(10, 10, 2022);
         String nhisNumber = "NhisNumber";
         String parentId = "ParentId";
-        String preferredName = "PreferredName";
         String region = "Region";
         RegistrationType registrationMode = RegistrationType.USE_PREPRINTED_ID;
         String sex = "M";
@@ -53,7 +52,6 @@ public class PatientFormTest {
         form.setNhisExpirationDate(nhisExpDate);
         form.setNhisNumber(nhisNumber);
         form.setParentId(parentId);
-        form.setPreferredName(preferredName);
         form.setRegion(region);
         form.setRegistrationMode(registrationMode);
         form.setSex(sex);
@@ -79,7 +77,6 @@ public class PatientFormTest {
         assertThat(mrsPerson.getLastName(), is(equalTo(lastName)));
         assertThat(mrsPerson.getMiddleName(), is(equalTo(middleName)));
         assertThat(patient.getMrsPatient().getMotechId(), is(equalTo(motechId)));
-        assertThat(mrsPerson.getPreferredName(), is(equalTo(preferredName)));
         assertThat(mrsPerson.getGender(), is(equalTo(sex)));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute())))).value(), is(equalTo(new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(nhisExpDate))));

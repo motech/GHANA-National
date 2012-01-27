@@ -28,7 +28,6 @@
         <spring:message code="patient_first_name" var="patient_first_name" htmlEscape="false"/>
         <spring:message code="patient_middle_name" var="patient_middle_name" htmlEscape="false"/>
         <spring:message code="patient_last_name" var="patient_last_name" htmlEscape="false"/>
-        <spring:message code="patient_preferred_name" var="patient_preferred_name" htmlEscape="false"/>
         <spring:message code="patient_date_of_birth" var="patient_date_of_birth" htmlEscape="false"/>
         <spring:message code="patient_date_of_birth_estimated" var="patient_date_of_birth_estimated"
                         htmlEscape="false"/>
@@ -140,10 +139,6 @@
                 ${fn:escapeXml(patient_last_name)} ${fn:escapeXml(required_msg)}
             </span>
         </div>
-        <div class="form-field">
-            <label class="formLabel" for="preferredName">${fn:escapeXml(patient_preferred_name)}:</label>
-            <form:input path="preferredName" size="20" label="${fn:escapeXml(patient_preferred_name)}"/>
-        </div>
         <div id="dateOfBirthHolder" class="form-field">
             <label class="formLabel" for="dateOfBirth">${fn:escapeXml(patient_date_of_birth)} *:</label>
             <form:input readonly="true" path="dateOfBirth" cssClass="jsRequire jsDate jsBefore" size="20"
@@ -204,14 +199,14 @@
                 </span>
             </div>
         </div>
-        <div class="form-field hide">
+        <div class="form-field">
             <label class="formLabel" for="nhisNumber">${fn:escapeXml(patient_nhis_number)} *:</label>
             <form:input path="nhisNumber" size="20" label="${fn:escapeXml(patient_nhis_number)}" cssClass="jsRequire"/>
             <span id='nhisNumberError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_nhis_number)} ${fn:escapeXml(required_msg)}
             </span>
         </div>
-        <div id="nhisExpDateHolder" class="form-field hide">
+        <div id="nhisExpDateHolder" class="form-field">
             <label class="formLabel" for="nhisExpirationDate">${fn:escapeXml(patient_nhis_expiration_date)} *:</label>
             <form:input path="nhisExpirationDate" size="20" label="${fn:escapeXml(patient_nhis_expiration_date)}"
                         cssClass="jsDate jsRequire"/>

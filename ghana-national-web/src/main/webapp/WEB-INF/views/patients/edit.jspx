@@ -37,7 +37,6 @@
 <spring:message code="patient_first_name" var="patient_first_name" htmlEscape="false"/>
 <spring:message code="patient_middle_name" var="patient_middle_name" htmlEscape="false"/>
 <spring:message code="patient_last_name" var="patient_last_name" htmlEscape="false"/>
-<spring:message code="patient_preferred_name" var="patient_preferred_name" htmlEscape="false"/>
 <spring:message code="patient_date_of_birth" var="patient_date_of_birth" htmlEscape="false"/>
 <spring:message code="patient_date_of_birth_estimated" var="patient_date_of_birth_estimated"
                 htmlEscape="false"/>
@@ -143,10 +142,6 @@
             <span id='lastNameError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_last_name)} ${fn:escapeXml(required_msg)}
             </span>
-    </div>
-    <div class="form-field">
-        <label class="formLabel" for="preferredName">${fn:escapeXml(patient_preferred_name)}:</label>
-        <form:input path="preferredName" size="20" label="${fn:escapeXml(patient_preferred_name)}"/>
     </div>
     <div class="form-field">
         <label class="formLabel" for="dateOfBirth">${fn:escapeXml(patient_date_of_birth)} *:</label>

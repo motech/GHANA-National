@@ -17,7 +17,6 @@ public class TestPatient {
     private String facilityIdWherePatientIsEdited;
     private String middleName;
     private String lastName;
-    private String preferredName;
     private String address;
     private LocalDate dateOfBirth;
     private String firstName;
@@ -40,7 +39,6 @@ public class TestPatient {
 
         testPatient.middleName = "Middle Name";
         testPatient.lastName = "Last Name";
-        testPatient.preferredName = "Preferred Name";
         testPatient.dateOfBirth = DateUtil.newDate(2009, 11, 30);
         testPatient.address = "Address";
         testPatient.female = true;
@@ -68,7 +66,6 @@ public class TestPatient {
             put("firstName", firstName);
             put("middleName", middleName);
             put("lastName", lastName);
-            put("prefferedName", preferredName);
             put("dateOfBirth", dateOfBirth.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
             put("sex", genderCode());
             put("insured", booleanCode(insured));
@@ -125,10 +122,6 @@ public class TestPatient {
 
     public String lastName() {
         return lastName;
-    }
-
-    public String preferredName() {
-        return preferredName;
     }
 
     public String address() {

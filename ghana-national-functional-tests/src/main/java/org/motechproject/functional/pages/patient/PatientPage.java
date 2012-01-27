@@ -239,7 +239,6 @@ public class PatientPage extends HomePage {
                 .withFirstName(patient.firstName())
                 .withMiddleName(patient.middleName())
                 .withLastName(patient.lastName())
-                .withPreferredName(patient.preferredName())
                 .withRegion(patient.region())
                 .withDistrict(patient.district())
                 .withSubDistrict(patient.subDistrict())

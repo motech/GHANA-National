@@ -45,6 +45,16 @@ $(document).ready(function() {
         }
     });
 
+    if ($('#notInsured').attr("checked")) {
+        $('#nhisNumber').parent().hide();
+        $('#nhisExpirationDate').parent().hide();
+    }
+
+    if ($('#insured').attr("checked")) {
+        $('#nhisNumber').parent().show();
+        $('#nhisExpirationDate').parent().show();
+    }
+
     $('#insured').click(function() {
         $('#nhisNumber').parent().show();
         $('#nhisExpirationDate').parent().show();
