@@ -1,7 +1,12 @@
 package org.motechproject.ghana.national.tools.seed.data.source;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.ghana.national.domain.mobilemidwife.*;
+import org.motechproject.ghana.national.domain.mobilemidwife.Language;
+import org.motechproject.ghana.national.domain.mobilemidwife.LearnedFrom;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
+import org.motechproject.ghana.national.domain.mobilemidwife.ReasonToJoin;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,11 +69,11 @@ public class MobileMidwifeSource {
     }
 
     public Map<String, String> locationToProviderMapping(final String observationId) {
-        List<Map<String,String>> list = jdbcTemplate.query(new PreparedStatementCreator() {
+        List<Map<String, String>> list = jdbcTemplate.query(new PreparedStatementCreator() {
                     @Override
                     public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                        PreparedStatement preparedStatement = connection.prepareStatement("select e.location_id, e.provider_id from encounter e, obs o  " +
-                                                                                          "where o.encounter_id = e.encounter_id and o.obs_id=?");
+                        PreparedStatement preparedStatement = connection.prepareStatement("select e.location_id, u.system_id from encounter e, obs o, users u  " +
+                                "where o.encounter_id = e.encounter_id and e.provider_id = u.person_id and o.obs_id=?");
                         preparedStatement.setString(1, observationId);
                         return preparedStatement;
                     }
@@ -76,33 +81,55 @@ public class MobileMidwifeSource {
                 new RowMapper<Map<String, String>>() {
                     @Override
                     public Map<String, String> mapRow(ResultSet resultSet, int i) throws SQLException {
-                        Map<String,String> result=new HashMap<String, String>();
-                        result.put("location_id",resultSet.getString("location_id"));
-                        result.put("provider_id",resultSet.getString("provider_id"));
+                        Map<String, String> result = new HashMap<String, String>();
+                        result.put("location_id", resultSet.getString("location_id"));
+                        result.put("system_id", resultSet.getString("system_id"));
                         return result;
+                    }
+                }
+        );
+        return (list.isEmpty()) ? new HashMap<String, String>(): list.get(0);
+    }
+
+    public String getStaffIdFromPatientEncounter(final String patientId) {
+        List<String> list = jdbcTemplate.query(new PreparedStatementCreator() {
+                    @Override
+                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                        PreparedStatement preparedStatement = connection.prepareStatement("select u.system_id from users u, encounter e where " +
+                                "e.provider_id = u.person_id and e.patient_id = ? limit 1");
+                        preparedStatement.setString(1, patientId);
+                        return preparedStatement;
+                    }
+                },
+                new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet resultSet, int i) throws SQLException {
+
+                        return resultSet.getString("system_id");
                     }
                 }
         );
         return (list.isEmpty()) ? null : list.get(0);
     }
-    
-    public String getStaffId(final String patientId){
-        List<String> list= jdbcTemplate.query(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                PreparedStatement preparedStatement=connection.prepareStatement("select u.system_id from users u, encounter e where " +
-                                                                                "e.provider_id = u.person_id and e.patient_id = ? limit 1");
-                preparedStatement.setString(1,patientId);
-                return preparedStatement;
-            }
-        },
-        new RowMapper<String>() {
-            @Override
-            public String mapRow(ResultSet resultSet, int i) throws SQLException {
 
-                return resultSet.getString("system_id");
-            }
-        });
+    public String getMotechStaffIdForMotechFacilityId(final String facilityId) {
+        List<String> list = jdbcTemplate.query(new PreparedStatementCreator() {
+                    @Override
+                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                        PreparedStatement preparedStatement = connection.prepareStatement("select u.system_id from encounter e, motechmodule_facility mf, users u " +
+                                "where mf.location_id = e.location_id and e.provider_id = u.person_id and mf.facility_id = ? limit 1");
+                        preparedStatement.setString(1, facilityId);
+                        return preparedStatement;
+                    }
+                },
+                new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet resultSet, int i) throws SQLException {
+
+                        return resultSet.getString("system_id");
+                    }
+                }
+        );
         return (list.isEmpty()) ? null : list.get(0);
     }
 

@@ -33,7 +33,7 @@ public class MobileMidwifeSeed extends Seed {
     AllFacilities allFacilities;
 
     private static Map<String, String> FACILITY_CACHE = new HashMap<String, String>();
-    private static Map<String, String> FACILITY_TO_STAFFID_CACHE = new HashMap<String, String>();
+    private static Map<String, String> STAFF_CACHE = new HashMap<String, String>();
 
     @Override
     protected void load() {
@@ -62,26 +62,30 @@ public class MobileMidwifeSeed extends Seed {
             ServiceType serviceType = (((String) newList.get(i).get("programName")).contains("Pregnancy")) ? ServiceType.PREGNANCY : ServiceType.CHILD_CARE;
             boolean active = i == 0;
             mobileMidwifeEnrollment = setEnrollmentDetails(mobileMidwifeEnrollment, patient, serviceType, active);
-            String key = setFacility(mobileMidwifeEnrollment, patient, newList.get(i));
-            setStaffId(mobileMidwifeEnrollment, patient, key, newList.get(i));
+            setFacility(mobileMidwifeEnrollment, patient, newList.get(i));
+            setStaffId(mobileMidwifeEnrollment, patient, newList.get(i));
 
         }
     }
 
-    private void setStaffId(MobileMidwifeEnrollment mobileMidwifeEnrollment, Patient patient, String facilityMotechId, Map<String, Object> map) {
+    private void setStaffId(MobileMidwifeEnrollment mobileMidwifeEnrollment, Patient patient, Map<String, Object> map) {
         String staffMotechId;
-        if (FACILITY_TO_STAFFID_CACHE.get(facilityMotechId) != null) {
-            staffMotechId = FACILITY_TO_STAFFID_CACHE.get(facilityMotechId);
+        String patientId = patient.getMrsPatient().getId();
+        String staffId = (String) map.get("systemId");
+        if (StringUtils.isNotBlank(staffId)) {
+            staffMotechId = staffId;
         } else {
-            String staffId = StringUtils.isBlank((String) map.get("staffId ")) ? patient.getMrsPatient().getId() : (String) map.get("staffId ");
-            staffMotechId = mobileMidwifeSource.getStaffId(staffId);
-            FACILITY_TO_STAFFID_CACHE.put(facilityMotechId, staffMotechId);
+            staffMotechId = mobileMidwifeSource.getStaffIdFromPatientEncounter(patientId);
+        }
+        if(staffMotechId == null) {
+            //child clients who don't have *ANY* encounters.
+            staffMotechId = mobileMidwifeSource.getMotechStaffIdForMotechFacilityId(mobileMidwifeEnrollment.getFacilityId());
         }
         mobileMidwifeEnrollment.setStaffId(staffMotechId);
         allMobileMidwifeEnrollments.add(mobileMidwifeEnrollment);
     }
 
-    private String setFacility(MobileMidwifeEnrollment mobileMidwifeEnrollment, Patient patient, Map<String, Object> map) {
+    private void setFacility(MobileMidwifeEnrollment mobileMidwifeEnrollment, Patient patient, Map<String, Object> map) {
         String facilityId;
         if (StringUtils.isBlank((String) map.get("facilityId"))) {
             if (patient.getMrsPatient().getFacility() == null) {
@@ -91,6 +95,7 @@ public class MobileMidwifeSeed extends Seed {
             }
         } else {
             facilityId = (String) map.get("facilityId");
+            if (facilityId.equals("33")) facilityId = "1"; //33 equals 'Ghana' country, so its an unknown location.
         }
 
         String facilityMotechId;
@@ -101,7 +106,6 @@ public class MobileMidwifeSeed extends Seed {
             FACILITY_CACHE.put(facilityId, facilityMotechId);
         }
         mobileMidwifeEnrollment.setFacilityId(facilityMotechId);
-        return facilityMotechId;
     }
 
     private MobileMidwifeEnrollment setEnrollmentDetails(MobileMidwifeEnrollment mobileMidwifeEnrollment, Patient patient, ServiceType serviceType, boolean active) {
@@ -144,7 +148,7 @@ public class MobileMidwifeSeed extends Seed {
                 String observationId = map.get("obs_id");
                 Map<String, String> locationProviderMap = mobileMidwifeSource.locationToProviderMapping(observationId);
                 newHashMap.put("facilityId", locationProviderMap.get("location_id"));
-                newHashMap.put("staffId", locationProviderMap.get("provider_id"));
+                newHashMap.put("systemId", locationProviderMap.get("system_id"));
             }
 
             newHashMap.put("patient", patient);
