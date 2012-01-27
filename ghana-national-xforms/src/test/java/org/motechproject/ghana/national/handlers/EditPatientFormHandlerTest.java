@@ -64,7 +64,6 @@ public class EditPatientFormHandlerTest {
         String first = "first";
         String middle = "middle";
         String last = "last";
-        String preferred = "preferred";
         Date dateOfBirth = new Date();
         String gender = "male";
         String address = "address";
@@ -73,16 +72,15 @@ public class EditPatientFormHandlerTest {
         Date nhisExpDate = new Date();
         String nhisNumber = "123";
         String parentId = "123";
-        String preferredName = "PreferredName";
         String sex = "M";
         String phoneNumber = "0123456789";
         String facilityIdWherePatientWasEdited = "999";
 
 
         populateFormWithValues(facilityId, first, middle, last, dateOfBirth, address, patientId, nhisExpDate, nhisNumber,
-                parentId, preferredName, sex, phoneNumber, facilityIdWherePatientWasEdited, staffId);
+                parentId, sex, phoneNumber, facilityIdWherePatientWasEdited, staffId);
 
-        MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last).preferredName(preferred)
+        MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last)
                 .dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
         mrsPerson.addAttribute(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.toString(), nhisExpDate.toString()));
         mrsPerson.addAttribute(new Attribute(PatientAttributes.NHIS_NUMBER.toString(), nhisNumber));
@@ -100,12 +98,12 @@ public class EditPatientFormHandlerTest {
         parameters.put(PatientRegistrationFormHandler.FORM_BEAN, editClientForm);
         MotechEvent event = new MotechEvent("subject", parameters);
 
-        assertResult(facilityId, first, middle, last, dateOfBirth, address, patientId, nhisNumber, preferredName, sex, phoneNumber, event, mrsFacilityWherePatientWasEdited, mrsPatient, mrsUser);
+        assertResult(facilityId, first, middle, last, dateOfBirth, address, patientId, nhisNumber, sex, phoneNumber, event, mrsFacilityWherePatientWasEdited, mrsPatient, mrsUser);
     }
 
     private void populateFormWithValues(String facilityId, String first, String middle, String last, Date dateOfBirth,
                                         String address, String patientId, Date nhisExpDate, String nhisNumber,
-                                        String parentId, String preferredName, String sex, String phoneNumber,
+                                        String parentId, String sex, String phoneNumber,
                                         String facilityIdWherePatientWasEdited, String staffId) {
         editClientForm.setMotechId(patientId);
         editClientForm.setStaffId(staffId);
@@ -118,7 +116,6 @@ public class EditPatientFormHandlerTest {
         editClientForm.setNhisExpires(nhisExpDate);
         editClientForm.setNhis(nhisNumber);
         editClientForm.setMotherMotechId(parentId);
-        editClientForm.setPrefferedName(preferredName);
         editClientForm.setSex(sex);
         editClientForm.setPhoneNumber(phoneNumber);
         editClientForm.setUpdatePatientFacilityId(facilityIdWherePatientWasEdited);
@@ -127,7 +124,7 @@ public class EditPatientFormHandlerTest {
 
     private void assertResult(String facilityId, String first, String middle, String last,
                               Date dateOfBirth, String address,
-                              String patientId, String nhisNumber, String preferredName, String sex, String phoneNumber, MotechEvent event, MRSFacility mrsFacilityWherePatientWasEdited, MRSPatient mrsPatient, MRSUser mrsUser) throws ParentNotFoundException {
+                              String patientId, String nhisNumber, String sex, String phoneNumber, MotechEvent event, MRSFacility mrsFacilityWherePatientWasEdited, MRSPatient mrsPatient, MRSUser mrsUser) throws ParentNotFoundException {
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<String> motherIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<MRSEncounter> mrsEncounterArgumentCaptor = ArgumentCaptor.forClass(MRSEncounter.class);
@@ -147,7 +144,6 @@ public class EditPatientFormHandlerTest {
         assertThat(savedPerson.getMiddleName(), is(equalTo(middle)));
         assertThat(savedPerson.getAddress(), is(equalTo(address)));
         assertThat(savedPatient.getMrsPatient().getMotechId(), is(equalTo(patientId)));
-        assertThat(savedPerson.getPreferredName(), is(equalTo(preferredName)));
         assertThat(savedPerson.getGender(), is(equalTo(sex)));
         assertThat(((Attribute) selectUnique(savedPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.NHIS_NUMBER.getAttribute())))).value(), is(equalTo(nhisNumber)));

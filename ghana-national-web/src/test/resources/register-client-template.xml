@@ -13,7 +13,6 @@
                 <firstName/>
                 <middleName/>
                 <lastName/>
-                <prefferedName/>
                 <dateOfBirth/>
                 <estimatedBirthDate/>
                 <sex>F</sex>
@@ -636,7 +635,6 @@
                  type="xsd:string"/>
         <xf:bind id="middleName" nodeset="/patientRegistration/middleName" type="xsd:string"/>
         <xf:bind id="lastName" nodeset="/patientRegistration/lastName" required="true()" type="xsd:string"/>
-        <xf:bind id="prefferedName" nodeset="/patientRegistration/prefferedName" type="xsd:string"/>
         <xf:bind constraint=". &lt;= 'today()'" id="dateOfBirth"
                  message="Invalid date: date entered is in the future"
                  nodeset="/patientRegistration/dateOfBirth"
@@ -877,9 +875,6 @@
         </xf:input>
         <xf:input bind="lastName">
             <xf:label>Last name</xf:label>
-        </xf:input>
-        <xf:input bind="prefferedName">
-            <xf:label>Preferred name</xf:label>
         </xf:input>
         <xf:input bind="dateOfBirth">
             <xf:label>Date of birth</xf:label>

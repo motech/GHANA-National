@@ -11,7 +11,6 @@
                 <firstName/>
                 <middleName/>
                 <lastName/>
-                <preferredName/>
                 <phoneNumber/>
                 <nhis/>
                 <nhisExpires/>
@@ -34,7 +33,6 @@
         <xf:bind id="firstName" nodeset="/editPatient/firstName" required="false()" type="xsd:string"/>
         <xf:bind id="middleName" nodeset="/editPatient/middleName" required="false()" type="xsd:string"/>
         <xf:bind id="lastName" nodeset="/editPatient/lastName" required="false()" type="xsd:string"/>
-        <xf:bind id="preferredName" nodeset="/editPatient/preferredName" required="false()" type="xsd:string"/>
         <xf:bind id="phoneNumber" nodeset="/editPatient/phoneNumber" type="xsd:int" constraint=". &lt;= 999999999"
                  message="Number too large. It should be 10 digits long"/>
         <xf:bind id="nhis" nodeset="/editPatient/nhis" type="xsd:string"/>
@@ -70,9 +68,6 @@
         </xf:input>
         <xf:input bind="lastName">
             <xf:label>Last Name</xf:label>
-        </xf:input>
-        <xf:input bind="preferredName">
-            <xf:label>Preferred Name</xf:label>
         </xf:input>
         <xf:input bind="phoneNumber">
             <xf:label>Phone number</xf:label>

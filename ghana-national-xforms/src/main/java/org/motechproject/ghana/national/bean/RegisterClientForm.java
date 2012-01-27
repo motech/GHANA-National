@@ -36,8 +36,6 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
     private String middleName;
     @Required @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
     private String lastName;
-    @MaxLength(size = 50) @RegEx(pattern = NAME_PATTERN)
-    private String prefferedName;
     @Required
     private Date dateOfBirth;
     @Required
@@ -159,10 +157,6 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
         return lastName;
     }
 
-    public String getPrefferedName() {
-        return prefferedName;
-    }
-
     public Date getDateOfBirth() {
         return dateOfBirth;
     }
@@ -233,10 +227,6 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public void setPrefferedName(String prefferedName) {
-        this.prefferedName = prefferedName;
     }
 
     public void setDateOfBirth(Date dateOfBirth) {

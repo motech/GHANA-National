@@ -53,7 +53,7 @@ public class AllPatientsTest {
         String patientId = "1000";
         Boolean birthDateEstimated = true;
 
-        MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last).preferredName(preferred)
+        MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last)
                 .dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
         final MRSPatient mrsPatient = new MRSPatient("", mrsPerson, facility);
         final Patient patient = new Patient(mrsPatient);
@@ -125,7 +125,7 @@ public class AllPatientsTest {
         String patientId = "1000";
         Boolean birthDateEstimated = true;
 
-        MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last).preferredName(preferred)
+        MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last)
                 .dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
         final MRSPatient mrsPatient = new MRSPatient("", mrsPerson, facility);
         final Patient patient = new Patient(mrsPatient);

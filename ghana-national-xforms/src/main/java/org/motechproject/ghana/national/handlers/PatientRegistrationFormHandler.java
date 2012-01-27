@@ -56,7 +56,6 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
                     firstName(registerClientForm.getFirstName()).
                     middleName(registerClientForm.getMiddleName()).
                     lastName(registerClientForm.getLastName()).
-                    preferredName(registerClientForm.getPrefferedName()).
                     dateOfBirth(registerClientForm.getDateOfBirth()).
                     birthDateEstimated(registerClientForm.getEstimatedBirthDate()).
                     gender(registerClientForm.getSex()).

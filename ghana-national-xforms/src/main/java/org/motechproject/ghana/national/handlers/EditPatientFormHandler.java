@@ -76,7 +76,6 @@ public class EditPatientFormHandler implements FormPublishHandler {
                 firstName(nullSafe(form.getFirstName(), personFromDb.getFirstName())).
                 middleName(nullSafe(form.getMiddleName(), personFromDb.getMiddleName())).
                 lastName(nullSafe(form.getLastName(), personFromDb.getLastName())).
-                preferredName(nullSafe(form.getPrefferedName(), personFromDb.getPreferredName())).
                 gender(nullSafe(form.getSex(), personFromDb.getGender())).
                 address(nullSafe(form.getAddress(), personFromDb.getAddress()));
 
