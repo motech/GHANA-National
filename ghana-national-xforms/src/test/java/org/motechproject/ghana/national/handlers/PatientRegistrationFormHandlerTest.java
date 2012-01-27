@@ -74,7 +74,6 @@ public class PatientRegistrationFormHandlerTest {
         Date nhisExpDate = new Date(10, 10, 2022);
         String nhisNumber = "NhisNumber";
         String parentId = "ParentId";
-        String preferredName = "PreferredName";
         String region = "Region";
         RegistrationType registrationMode = RegistrationType.USE_PREPRINTED_ID;
         String sex = "M";
@@ -84,7 +83,7 @@ public class PatientRegistrationFormHandlerTest {
         PatientType patientType = PatientType.CHILD_UNDER_FIVE;
 
         RegisterClientForm registerClientForm = createRegisterClientForm(address, dateofBirth, district, isBirthDateEstimated,
-                motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, preferredName, region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
+                motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
         parameters.put(PatientRegistrationFormHandler.FORM_BEAN, registerClientForm);
         MotechEvent event = new MotechEvent("subject", parameters);
 
@@ -99,7 +98,7 @@ public class PatientRegistrationFormHandlerTest {
 
         Patient savedPatient = patientArgumentCaptor.getValue();
         MRSPerson mrsPerson = savedPatient.getMrsPatient().getPerson();
-        assertRegisterPatient(address, dateofBirth, isBirthDateEstimated, facilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, preferredName, sex, phoneNumber, savedPatient, mrsPerson, parentId);
+        assertRegisterPatient(address, dateofBirth, isBirthDateEstimated, facilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, sex, phoneNumber, savedPatient, mrsPerson, parentId);
     }
 
     @Test
@@ -131,7 +130,6 @@ public class PatientRegistrationFormHandlerTest {
         Date nhisExpDate = new Date(10, 10, 2022);
         String nhisNumber = "NhisNumber";
         String parentId = "ParentId";
-        String preferredName = "PreferredName";
         String region = "Region";
         RegistrationType registrationMode = RegistrationType.USE_PREPRINTED_ID;
         String sex = "M";
@@ -155,7 +153,7 @@ public class PatientRegistrationFormHandlerTest {
 
         RegisterClientForm registerClientForm = createRegisterClientFormForCWCEnrollment(address, dateofBirth, district, isBirthDateEstimated,
                 motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId,
-                preferredName, region, registrationMode, sex, subDistrict, phoneNumber, patientType, registartionDate,
+                region, registrationMode, sex, subDistrict, phoneNumber, patientType, registartionDate,
                 lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, staffId, lastPenta, lastOPV, lastIPTi);
 
         parameters.put(PatientRegistrationFormHandler.FORM_BEAN, registerClientForm);
@@ -200,7 +198,6 @@ public class PatientRegistrationFormHandlerTest {
         Date nhisExpDate = new Date(10, 10, 2022);
         String nhisNumber = "NhisNumber";
         String parentId = "ParentId";
-        String preferredName = "PreferredName";
         String region = "Region";
         RegistrationType registrationMode = RegistrationType.USE_PREPRINTED_ID;
         String sex = "M";
@@ -222,7 +219,7 @@ public class PatientRegistrationFormHandlerTest {
 
         RegisterClientForm registerClientForm = createRegisterClientFormForANCEnrollment(address, dateofBirth, district, isBirthDateEstimated,
                 motechFacilityId, firstName, insured, lastName, middleName, null, nhisExpDate, nhisNumber, parentId,
-                preferredName, region, registrationMode, sex, subDistrict, phoneNumber, patientType, expDeliveryDate, deliveryDateConfirmed, height, gravida, parity, lastIPTDate, lastTTDate, lastIPT, lastTT, staffId);
+                region, registrationMode, sex, subDistrict, phoneNumber, patientType, expDeliveryDate, deliveryDateConfirmed, height, gravida, parity, lastIPTDate, lastTTDate, lastIPT, lastTT, staffId);
 
         parameters.put(PatientRegistrationFormHandler.FORM_BEAN, registerClientForm);
         MotechEvent event = new MotechEvent("subject", parameters);
@@ -247,9 +244,9 @@ public class PatientRegistrationFormHandlerTest {
 
     }
 
-    private RegisterClientForm createRegisterClientFormForCWCEnrollment(String address, Date dateofBirth, String district, Boolean birthDateEstimated, String motechFacilityId, String firstName, Boolean insured, String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId, String preferredName, String region, RegistrationType registrationMode, String sex, String subDistrict, String phoneNumber, PatientType patientType, Date registartionDate, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, String staffId, int lastPenta, int lastOPV, int lastIPTi) {
+    private RegisterClientForm createRegisterClientFormForCWCEnrollment(String address, Date dateofBirth, String district, Boolean birthDateEstimated, String motechFacilityId, String firstName, Boolean insured, String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId, String region, RegistrationType registrationMode, String sex, String subDistrict, String phoneNumber, PatientType patientType, Date registartionDate, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, String staffId, int lastPenta, int lastOPV, int lastIPTi) {
         RegisterClientForm registerClientForm = createRegisterClientForm(address, dateofBirth, district, birthDateEstimated,
-                motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, preferredName, region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
+                motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
         registerClientForm.setDate(registartionDate);
         registerClientForm.setBcgDate(lastBCGDate);
         registerClientForm.setLastVitaminADate(lastVitADate);
@@ -265,9 +262,9 @@ public class PatientRegistrationFormHandlerTest {
     }
 
 
-    private RegisterClientForm createRegisterClientFormForANCEnrollment(String address, Date dateofBirth, String district, Boolean birthDateEstimated, String motechFacilityId, String firstName, Boolean insured, String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId, String preferredName, String region, RegistrationType registrationMode, String sex, String subDistrict, String phoneNumber, PatientType patientType, Date expDeliveryDate, Boolean deliveryDateConfirmed, Double height, Integer gravida, Integer parity, Date lastIPTDate, Date lastTTDate, String lastIPT, String lastTT, String staffId) {
+    private RegisterClientForm createRegisterClientFormForANCEnrollment(String address, Date dateofBirth, String district, Boolean birthDateEstimated, String motechFacilityId, String firstName, Boolean insured, String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId, String region, RegistrationType registrationMode, String sex, String subDistrict, String phoneNumber, PatientType patientType, Date expDeliveryDate, Boolean deliveryDateConfirmed, Double height, Integer gravida, Integer parity, Date lastIPTDate, Date lastTTDate, String lastIPT, String lastTT, String staffId) {
         RegisterClientForm registerClientForm = createRegisterClientForm(address, dateofBirth, district, birthDateEstimated,
-                motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, preferredName, region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
+                motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
 
         registerClientForm.setExpDeliveryDate(expDeliveryDate);
         registerClientForm.setDeliveryDateConfirmed(deliveryDateConfirmed);
@@ -282,7 +279,8 @@ public class PatientRegistrationFormHandlerTest {
         return registerClientForm;
     }
 
-    private RegisterClientForm createRegisterClientForm(String address, Date dateofBirth, String district, Boolean birthDateEstimated, String motechFacilityId, String firstName, Boolean insured, String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId, String preferredName, String region, RegistrationType registrationMode, String sex, String subDistrict, String phoneNumber, PatientType patientType, String staffId) {
+    private RegisterClientForm createRegisterClientForm(String address, Date dateofBirth, String district, Boolean birthDateEstimated, String motechFacilityId, String firstName, Boolean insured,
+                                                        String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId, String region, RegistrationType registrationMode, String sex, String subDistrict, String phoneNumber, PatientType patientType, String staffId) {
         RegisterClientForm registerClientForm = new RegisterClientForm();
         registerClientForm.setEnroll(true);
         registerClientForm.setStaffId(staffId);
@@ -299,7 +297,6 @@ public class PatientRegistrationFormHandlerTest {
         registerClientForm.setNhisExpires(nhisExpDate);
         registerClientForm.setNhis(nhisNumber);
         registerClientForm.setMotherMotechId(parentId);
-        registerClientForm.setPrefferedName(preferredName);
         registerClientForm.setRegion(region);
         registerClientForm.setRegistrationMode(registrationMode);
         registerClientForm.setSex(sex);
@@ -310,7 +307,8 @@ public class PatientRegistrationFormHandlerTest {
     }
 
 
-    private void assertRegisterPatient(String address, Date dateofBirth, Boolean birthDateEstimated, String facilityId, String firstName, Boolean insured, String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String preferredName, String sex, String phoneNumber, Patient savedPatient, MRSPerson mrsPerson, String parentId) {
+    private void assertRegisterPatient(String address, Date dateofBirth, Boolean birthDateEstimated, String facilityId, String firstName, Boolean insured, String lastName,
+                                       String middleName, String motechId, Date nhisExpDate, String nhisNumber, String sex, String phoneNumber, Patient savedPatient, MRSPerson mrsPerson, String parentId) {
         assertThat(mrsPerson.getAddress(), is(equalTo(address)));
         assertThat(savedPatient.getParentId(), is(equalTo(parentId)));
         assertThat(mrsPerson.getDateOfBirth(), is(equalTo(dateofBirth)));
@@ -323,7 +321,6 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(mrsPerson.getLastName(), is(equalTo(lastName)));
         assertThat(mrsPerson.getMiddleName(), is(equalTo(middleName)));
         assertThat(savedPatient.getMrsPatient().getMotechId(), is(equalTo(motechId)));
-        assertThat(mrsPerson.getPreferredName(), is(equalTo(preferredName)));
         assertThat(mrsPerson.getGender(), is(equalTo(sex)));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute())))).value(), is(equalTo(nhisExpDate.toString())));

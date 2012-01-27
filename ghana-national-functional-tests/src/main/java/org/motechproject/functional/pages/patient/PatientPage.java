@@ -35,10 +35,6 @@ public class PatientPage extends HomePage {
     @CacheLookup
     private WebElement lastName;
 
-    @FindBy(id = "preferredName")
-    @CacheLookup
-    private WebElement preferredName;
-
     @FindBy(id = "dateOfBirthHolder")
     @CacheLookup
     private WebElement dateOfBirthHolder;
@@ -116,12 +112,6 @@ public class PatientPage extends HomePage {
     public PatientPage withAddress(String address) {
         this.address.clear();
         this.address.sendKeys(address);
-        return this;
-    }
-
-    public PatientPage withPreferredName(String preferredName) {
-        this.preferredName.clear();
-        this.preferredName.sendKeys(preferredName);
         return this;
     }
 

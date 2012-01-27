@@ -128,7 +128,7 @@ public class StaffControllerTest {
         StaffForm form = new StaffForm().setNewEmail("jack@daniels.com").setFirstName("Jack").setMiddleName("H").setLastName("Daniels")
             .setPhoneNumber("1234").setStaffId(userId).setNewRole(StaffType.Role.COMMUNITY_HEALTH_OPERATOR.key());
         ModelMap model = mock(ModelMap.class);
-        //final MRSUser openMRSuser = new MRSUser().person(new MRSPerson().firstName("f").middleName("m").preferredName("pf")).systemId(userId);
+        //final MRSUser openMRSuser = new MRSUser().person(new MRSPerson().firstName("f").middleName("m").systemId(userId);
         final MRSUser openMRSuser = form.createUser();
         Map test = new HashMap() {{
             put(OpenMRSUserAdaptor.USER_KEY, openMRSuser);

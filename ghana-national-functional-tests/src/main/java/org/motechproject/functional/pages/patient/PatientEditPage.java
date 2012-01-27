@@ -39,10 +39,6 @@ public class PatientEditPage extends HomePage{
     @CacheLookup
     private WebElement lastName;
 
-    @FindBy(id = "preferredName")
-    @CacheLookup
-    private WebElement preferredName;
-
     @FindBy(id = "dateOfBirthHolder")
     @CacheLookup
     private WebElement dateOfBirthHolder;

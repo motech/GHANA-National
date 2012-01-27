@@ -74,7 +74,6 @@ public class PatientHelperTest {
         person.firstName("firstNm");
         person.lastName("lastNm");
         person.middleName("middlenm");
-        person.preferredName("preferred");
         person.gender(Constants.PATIENT_GENDER_MALE);
         person.addAttribute(new Attribute(PatientAttributes.INSURED.getAttribute(), "false"));
         person.addAttribute(new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), "45326"));
