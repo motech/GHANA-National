@@ -5,4 +5,5 @@
 update person_name as target left join person_name as src on src.preferred = 0 set src.given_name = target.given_name where target.person_id = src.person_id;
 -- delete from person_name where person_name_id in (select src.person_name_id from person_name as src join person_name as target where src.person_id = target.person_id and src.preferred = target.preferred and src.person_name_id != target.person_name_id and src.voided = target.voided and src.date_created < target.date_created);
 delete src from person_name as src join person_name as target where src.person_id = target.person_id and src.preferred = target.preferred and src.person_name_id != target.person_name_id and src.voided = target.voided and src.date_created < target.date_created;
-delete from person_name where preferred = 1 and given_name != 'Super';
+delete from person_name where person_id in (select person_id from (select person_id from person_name where preferred = 0) as temp_deletion) and preferred = 1;
+
