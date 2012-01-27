@@ -10,10 +10,7 @@ import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnroll
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
-import org.motechproject.ghana.national.service.CareService;
-import org.motechproject.ghana.national.service.FacilityService;
-import org.motechproject.ghana.national.service.MobileMidwifeService;
-import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.model.MotechEvent;
@@ -43,6 +40,8 @@ public class PatientRegistrationFormHandlerTest {
     CareService mockCareService;
     @Mock
     MobileMidwifeService mockMobileMidwifeService;
+    @Mock
+    TextMessageService mockTextMessageService;
 
     PatientRegistrationFormHandler patientRegistrationFormHandler;
 
@@ -54,6 +53,7 @@ public class PatientRegistrationFormHandlerTest {
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "careService", mockCareService);
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "mobileMidwifeService", mockMobileMidwifeService);
+        ReflectionTestUtils.setField(patientRegistrationFormHandler, "textMessageService", mockTextMessageService);
     }
 
     @Test
@@ -99,6 +99,7 @@ public class PatientRegistrationFormHandlerTest {
         Patient savedPatient = patientArgumentCaptor.getValue();
         MRSPerson mrsPerson = savedPatient.getMrsPatient().getPerson();
         assertRegisterPatient(address, dateofBirth, isBirthDateEstimated, facilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, sex, phoneNumber, savedPatient, mrsPerson, parentId);
+        verify(mockTextMessageService).sendSMS(registerClientForm.getSender(), savedPatient, "REGISTER_SUCCESS_SMS");
     }
 
     @Test
@@ -282,6 +283,7 @@ public class PatientRegistrationFormHandlerTest {
     private RegisterClientForm createRegisterClientForm(String address, Date dateofBirth, String district, Boolean birthDateEstimated, String motechFacilityId, String firstName, Boolean insured,
                                                         String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId, String region, RegistrationType registrationMode, String sex, String subDistrict, String phoneNumber, PatientType patientType, String staffId) {
         RegisterClientForm registerClientForm = new RegisterClientForm();
+        registerClientForm.setSender("0987654321");
         registerClientForm.setEnroll(true);
         registerClientForm.setStaffId(staffId);
         registerClientForm.setAddress(address);
