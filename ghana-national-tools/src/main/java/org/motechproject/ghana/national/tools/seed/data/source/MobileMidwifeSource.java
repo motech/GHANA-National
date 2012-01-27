@@ -65,6 +65,25 @@ public class MobileMidwifeSource {
         );
         return (list.isEmpty()) ? null : list.get(0);
     }
+    
+    public String getPatientStaffId(final String patientId){
+        List<String> list= jdbcTemplate.query(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement preparedStatement=connection.prepareStatement("select u.system_id from users u, encounter e where e.provider_id = u.person_id and e.patient_id = ? limit 1");
+                preparedStatement.setString(1,patientId);
+                return preparedStatement;
+            }
+        },
+        new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet resultSet, int i) throws SQLException {
+
+                return resultSet.getString("system_id");
+            }
+        });
+        return (list.isEmpty()) ? null : list.get(0);
+    }
 
 
     public List<MobileMidwifeEnrollment> getPatients() {
@@ -145,16 +164,5 @@ public class MobileMidwifeSource {
             how = how.split(",")[0];
         }
         return how;
-    }
-
-    public static void main(String[] args) {
-//        System.out.println(",".contains(","));
-        System.out.println("select me.program_name as 'Program_Name', me.start_date as 'Start_Date', o.location_id, me.person_id, pi.identifier as 'MoTeCH_ID', u.system_id\n" +
-                "                from motechmodule_enrollment me, obs o, patient_identifier pi, users u\n" +
-                "                where o.obs_id = me.obs_id             \n" +
-                "                and me.person_id = pi.patient_id\n" +
-                "                and u.user_id = o.creator\n" +
-                "                and pi.identifier_type = 3                \n" +
-                "                and program_name in ('Weekly Pregnancy Message Program', 'Weekly Info Pregnancy Message Program')");
     }
 }
