@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.MobileMidwifeForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MobileMidwifeFormHandler implements FormPublishHandler {
-    public static final String FORM_BEAN = "formBean";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -25,7 +25,11 @@ public class MobileMidwifeFormHandler implements FormPublishHandler {
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
-        final MobileMidwifeForm mobileMidwifeForm = (MobileMidwifeForm) event.getParameters().get(FORM_BEAN);
-        mobileMidwifeService.register(mobileMidwifeForm.createMobileMidwifeEnrollment());
+        try {
+            final MobileMidwifeForm mobileMidwifeForm = (MobileMidwifeForm) event.getParameters().get(Constants.FORM_BEAN);
+            mobileMidwifeService.register(mobileMidwifeForm.createMobileMidwifeEnrollment());
+        } catch (Exception e) {
+            log.error("Exception occured in registering Mobile Midwife ", e);
+        }
     }
 }

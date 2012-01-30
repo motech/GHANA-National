@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.EditClientForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
@@ -95,7 +96,7 @@ public class EditPatientFormHandlerTest {
         mrsUser.person(mrsPerson);
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mrsUser);
 
-        parameters.put(PatientRegistrationFormHandler.FORM_BEAN, editClientForm);
+        parameters.put(Constants.FORM_BEAN, editClientForm);
         MotechEvent event = new MotechEvent("subject", parameters);
 
         assertResult(facilityId, first, middle, last, dateOfBirth, address, patientId, nhisNumber, sex, phoneNumber, event, mrsFacilityWherePatientWasEdited, mrsPatient, mrsUser);
@@ -169,6 +170,4 @@ public class EditPatientFormHandlerTest {
     public void shouldRunAsAdminUser() throws NoSuchMethodException {
         assertThat(editPatientFormHandler.getClass().getMethod("handleFormEvent", new Class[]{MotechEvent.class}).getAnnotation(LoginAsAdmin.class), is(not(equalTo(null))));
     }
-
-
 }

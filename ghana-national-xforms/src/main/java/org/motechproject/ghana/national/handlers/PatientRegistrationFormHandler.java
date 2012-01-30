@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterClientForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.domain.PatientType;
@@ -31,8 +32,6 @@ import java.util.List;
 @Component
 public class PatientRegistrationFormHandler implements FormPublishHandler {
 
-    public static final String FORM_BEAN = "formBean";
-
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -56,7 +55,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
         try {
-            RegisterClientForm registerClientForm = (RegisterClientForm) event.getParameters().get(FORM_BEAN);
+            RegisterClientForm registerClientForm = (RegisterClientForm) event.getParameters().get(Constants.FORM_BEAN);
 
             MRSPerson mrsPerson = new MRSPerson().
                     firstName(registerClientForm.getFirstName()).

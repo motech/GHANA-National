@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterANCForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.CareService;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ANCRegistrationFormHandler implements FormPublishHandler {
-    public static final String FORM_BEAN = "formBean";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -27,7 +27,7 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
     @Autowired
     MobileMidwifeService mobileMidwifeService;
     @Autowired
-    private FacilityService facilityService;
+    FacilityService facilityService;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.registerANC")
@@ -35,7 +35,7 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
         try {
-            RegisterANCForm registerANCForm = (RegisterANCForm) event.getParameters().get(FORM_BEAN);
+            RegisterANCForm registerANCForm = (RegisterANCForm) event.getParameters().get(Constants.FORM_BEAN);
             final Facility facility = facilityService.getFacilityByMotechId(registerANCForm.getFacilityId());
 
             ANCVO ancvo = new ANCVO(registerANCForm.getStaffId(), facility.getMrsFacilityId(),

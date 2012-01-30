@@ -8,7 +8,7 @@
         <motechId/>
         <datetime/>
         <formtype>data_entry</formtype>
-        <formname>deliverynotify-jf</formname>
+        <formname>deliveryNotify</formname>
       </deliverynotify>
     </xf:instance>
     <xf:bind id="staffId" nodeset="/deliverynotify/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>

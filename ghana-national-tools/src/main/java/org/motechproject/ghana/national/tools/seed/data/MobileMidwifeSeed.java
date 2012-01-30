@@ -33,7 +33,6 @@ public class MobileMidwifeSeed extends Seed {
     AllFacilities allFacilities;
 
     private static Map<String, String> FACILITY_CACHE = new HashMap<String, String>();
-    private static Map<String, String> STAFF_CACHE = new HashMap<String, String>();
 
     @Override
     protected void load() {

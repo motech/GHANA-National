@@ -84,7 +84,7 @@ public class PatientRegistrationFormHandlerTest {
 
         RegisterClientForm registerClientForm = createRegisterClientForm(address, dateofBirth, district, isBirthDateEstimated,
                 motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
-        parameters.put(PatientRegistrationFormHandler.FORM_BEAN, registerClientForm);
+        parameters.put(Constants.FORM_BEAN, registerClientForm);
         MotechEvent event = new MotechEvent("subject", parameters);
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
@@ -157,7 +157,7 @@ public class PatientRegistrationFormHandlerTest {
                 region, registrationMode, sex, subDistrict, phoneNumber, patientType, registartionDate,
                 lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, staffId, lastPenta, lastOPV, lastIPTi);
 
-        parameters.put(PatientRegistrationFormHandler.FORM_BEAN, registerClientForm);
+        parameters.put(Constants.FORM_BEAN, registerClientForm);
         MotechEvent event = new MotechEvent("subject", parameters);
 
         Facility facility = mock(Facility.class);
@@ -222,7 +222,7 @@ public class PatientRegistrationFormHandlerTest {
                 motechFacilityId, firstName, insured, lastName, middleName, null, nhisExpDate, nhisNumber, parentId,
                 region, registrationMode, sex, subDistrict, phoneNumber, patientType, expDeliveryDate, deliveryDateConfirmed, height, gravida, parity, lastIPTDate, lastTTDate, lastIPT, lastTT, staffId);
 
-        parameters.put(PatientRegistrationFormHandler.FORM_BEAN, registerClientForm);
+        parameters.put(Constants.FORM_BEAN, registerClientForm);
         MotechEvent event = new MotechEvent("subject", parameters);
 
         Facility facility = mock(Facility.class);
