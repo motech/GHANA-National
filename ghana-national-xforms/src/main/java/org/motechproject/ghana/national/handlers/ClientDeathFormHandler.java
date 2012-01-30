@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.ClientDeathForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ClientDeathFormHandler implements FormPublishHandler {
-    public static final String FORM_BEAN = "formBean";
     @Autowired private PatientService patientService;
 
     @Override
@@ -20,7 +20,7 @@ public class ClientDeathFormHandler implements FormPublishHandler {
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
-        ClientDeathForm clientDeathForm = (ClientDeathForm) event.getParameters().get(FORM_BEAN);
+        ClientDeathForm clientDeathForm = (ClientDeathForm) event.getParameters().get(Constants.FORM_BEAN);
         patientService.deceasePatient(clientDeathForm.getMotechId(), clientDeathForm.getDate(), clientDeathForm.getCauseOfDeath(), clientDeathForm.getComment());
     }
 }

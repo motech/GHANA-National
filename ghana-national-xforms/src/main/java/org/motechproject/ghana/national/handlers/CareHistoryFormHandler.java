@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.CareHistoryForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CareHistoryFormHandler implements FormPublishHandler {
 
-    public static final String FORM_BEAN = "formBean";
     Logger log = LoggerFactory.getLogger(CareHistoryFormHandler.class);
     @Autowired
     private OpenMRSConceptAdaptor openMrsConceptAdaptor;
@@ -35,7 +35,7 @@ public class CareHistoryFormHandler implements FormPublishHandler {
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
         try {
-            CareHistoryForm careHistoryForm = (CareHistoryForm) event.getParameters().get(FORM_BEAN);
+            CareHistoryForm careHistoryForm = (CareHistoryForm) event.getParameters().get(Constants.FORM_BEAN);
             String facilityId = facilityService.getFacilityByMotechId(careHistoryForm.getFacilityId()).getMrsFacilityId();
             careService.addCareHistory(careHistoryForm.careHistoryVO(facilityId));
         } catch (Exception e) {
