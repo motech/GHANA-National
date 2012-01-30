@@ -23,6 +23,7 @@
                 <entry key="org.motechproject.ghana.national.validator.EditClientFormValidator" value-ref="editClientFormValidator"/>
                 <entry key="org.motechproject.ghana.national.validator.CareHistoryFormValidator" value-ref="careHistoryFormValidator"/>
                 <entry key="org.motechproject.ghana.national.validator.ClientDeathFormValidator" value-ref="clientDeathFormValidator"/>
+                <entry key="org.motechproject.ghana.national.validator.DeliveryNotificationFormValidator" value-ref="deliveryNotificationFormValidator"/>
             </map>
         </property>
     </bean>

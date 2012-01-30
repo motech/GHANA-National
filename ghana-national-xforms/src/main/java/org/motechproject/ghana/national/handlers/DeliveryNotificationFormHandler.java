@@ -12,9 +12,11 @@ import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 
+@Component
 public class DeliveryNotificationFormHandler implements FormPublishHandler {
 
     static final String ENCOUNTER_TYPE = "PREGDELNOTIFYVISIT";
@@ -32,11 +34,10 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
         try {
             deliveryNotificationForm = (DeliveryNotificationForm) event.getParameters().get(Constants.FORM_BEAN);
             careService.persistEncounter(deliveryNotificationForm.getMotechId(), deliveryNotificationForm.getStaffId(),
-                    deliveryNotificationForm.getFacilityId(), ENCOUNTER_TYPE, deliveryNotificationForm.getDatetime(), new HashSet<MRSObservation>());
+                    deliveryNotificationForm.getFacilityId(), ENCOUNTER_TYPE, deliveryNotificationForm.getDatetime().toDate(), new HashSet<MRSObservation>());
         } catch (Exception e) {
             log.error("Exception occured in saving Delivery Notification details for: " + deliveryNotificationForm.getMotechId(), e);
         }
     }
-
 }
 

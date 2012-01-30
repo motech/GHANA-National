@@ -38,7 +38,7 @@ public class DeliveryNotificationFormUploadTest extends LoggedInUserFunctionalTe
             put("staffId", staffId);
             put("motechId", patientId);
             put("facilityId", facilityId);
-            put("datetime", "2010-02-02");
+            put("datetime", "2010-02-02 12:00:00 PM");
         }}));
 
         assertEquals(0, response.getErrors().size());

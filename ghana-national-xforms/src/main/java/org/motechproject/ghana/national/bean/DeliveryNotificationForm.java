@@ -1,20 +1,19 @@
 package org.motechproject.ghana.national.bean;
 
+import org.joda.time.DateTime;
 import org.motechproject.mobileforms.api.domain.FormBean;
-
-import java.util.Date;
 
 public class DeliveryNotificationForm extends FormBean {
     private String staffId;
     private String motechId;
     private String facilityId;
-    private Date datetime;
+    private DateTime datetime;
 
-    public Date getDatetime() {
+    public DateTime getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(Date datetime) {
+    public void setDatetime(DateTime datetime) {
         this.datetime = datetime;
     }
 

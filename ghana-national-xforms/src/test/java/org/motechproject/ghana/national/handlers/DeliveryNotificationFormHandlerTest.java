@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -10,7 +11,6 @@ import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class DeliveryNotificationFormHandlerTest {
         final String facilityId = "12";
         final String motechId = "1234567";
         final String staffId = "123456";
-        final Date datetime = new Date();
+        final DateTime datetime = new DateTime();
         Map<String, Object> parameter = new HashMap<String, Object>() {{
             DeliveryNotificationForm deliveryNotificationForm = new DeliveryNotificationForm() {{
                 setFacilityId(facilityId);
@@ -54,7 +54,7 @@ public class DeliveryNotificationFormHandlerTest {
         MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.deliveryNotify", parameter);
         deliveryNotificationFormHandler.handleFormEvent(event);
         final HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
-        verify(mockCareService).persistEncounter(motechId, staffId, facilityId, DeliveryNotificationFormHandler.ENCOUNTER_TYPE, datetime, mrsObservations);
+        verify(mockCareService).persistEncounter(motechId, staffId, facilityId, DeliveryNotificationFormHandler.ENCOUNTER_TYPE, datetime.toDate(), mrsObservations);
 
     }
 
