@@ -669,10 +669,10 @@
                  constraint=". &lt;= 999999999" message="Number too large. It should be 10 digits long"/>
         <xf:bind action="show" id="cwcRegNumber" nodeset="/patientRegistration/cwcRegNumber"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE'"
-                 type="xsd:string" visible="false()"/>
+                 type="xsd:string" visible="false()" required="true()"/>
         <xf:bind action="show" id="ancRegNumber" nodeset="/patientRegistration/ancRegNumber"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER'"
-                 type="xsd:string" visible="false()"/>
+                 type="xsd:string" visible="false()" required="true()"/>
         <xf:bind action="show" constraint=". &gt;= 60 and . &lt;= 200" id="height"
                  message="Value out of range: must be between 60 and 200"
                  nodeset="/patientRegistration/height"
