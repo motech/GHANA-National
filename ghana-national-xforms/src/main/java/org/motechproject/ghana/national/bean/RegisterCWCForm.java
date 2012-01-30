@@ -47,17 +47,6 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
 
     private String addCareHistory;
 
-    @RegEx(pattern = "0[0-9]{9}")
-    private String regPhone;
-
-    public String getRegPhone() {
-        return regPhone;
-    }
-
-    public void setRegPhone(String regPhone) {
-        this.regPhone = regPhone;
-    }
-
     private Date bcgDate;
     private Date lastOPVDate;
     private Date lastVitaminADate;

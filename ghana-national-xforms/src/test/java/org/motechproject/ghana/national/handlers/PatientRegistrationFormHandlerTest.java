@@ -177,7 +177,7 @@ public class PatientRegistrationFormHandlerTest {
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
 
-        assertCWCRegistration(facilityId, motechId, registartionDate, lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, staffId, lastPenta, lastOPV, cwcVO, mobileMidwifeEnrollment);
+        assertCWCRegistration(motechFacilityId, facilityId, motechId, registartionDate, lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, staffId, lastPenta, lastOPV, cwcVO, mobileMidwifeEnrollment);
 
     }
 
@@ -242,7 +242,7 @@ public class PatientRegistrationFormHandlerTest {
         final ANCVO ancVO = ancvoArgumentCaptor.getValue();
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
-        assertANCRegistration(facilityId, motechId, expDeliveryDate, deliveryDateConfirmed, height, gravida, parity, lastIPTDate, lastTTDate, lastIPT, lastTT, staffId, ancVO, mobileMidwifeEnrollment);
+        assertANCRegistration(motechFacilityId, facilityId, motechId, expDeliveryDate, deliveryDateConfirmed, height, gravida, parity, lastIPTDate, lastTTDate, lastIPT, lastTT, staffId, ancVO, mobileMidwifeEnrollment);
 
     }
 
@@ -305,7 +305,7 @@ public class PatientRegistrationFormHandlerTest {
         registerClientForm.setSex(sex);
         registerClientForm.setSubDistrict(subDistrict);
         registerClientForm.setRegistrantType(patientType);
-        registerClientForm.setPhoneNumber(phoneNumber);
+        registerClientForm.setMmRegPhone(phoneNumber);
         return registerClientForm;
     }
 
@@ -336,7 +336,7 @@ public class PatientRegistrationFormHandlerTest {
     }
 
 
-    private void assertCWCRegistration(String facilityId, String motechId, Date registartionDate, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, String staffId, int lastPenta, int lastOPV, CwcVO cwcVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {
+    private void assertCWCRegistration(String motechFacilityId, String facilityId, String motechId, Date registartionDate, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, String staffId, int lastPenta, int lastOPV, CwcVO cwcVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {
         assertThat(facilityId, is(cwcVO.getFacilityId()));
         assertThat(registartionDate, is(cwcVO.getRegistrationDate()));
         assertThat(motechId, is(cwcVO.getPatientMotechId()));
@@ -351,11 +351,11 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(lastIPTiDate, is(cwcVO.getCWCCareHistoryVO().getLastIPTiDate()));
         assertThat(staffId, is(cwcVO.getStaffId()));
         assertThat(staffId, is(mobileMidwifeEnrollment.getStaffId()));
-        assertThat(facilityId, is(mobileMidwifeEnrollment.getFacilityId()));
+        assertThat(motechFacilityId, is(mobileMidwifeEnrollment.getFacilityId()));
         assertThat(motechId, is(mobileMidwifeEnrollment.getPatientId()));
     }
 
-    private void assertANCRegistration(String facilityId, String motechId, Date expDeliveryDate, Boolean deliveryDateConfirmed, Double height, Integer gravida, Integer parity, Date lastIPTDate, Date lastTTDate, String lastIPT, String lastTT, String staffId, ANCVO ancVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {
+    private void assertANCRegistration(String motechFacilityId, String facilityId, String motechId, Date expDeliveryDate, Boolean deliveryDateConfirmed, Double height, Integer gravida, Integer parity, Date lastIPTDate, Date lastTTDate, String lastIPT, String lastTT, String staffId, ANCVO ancVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {
         assertThat(facilityId, is(ancVO.getFacilityId()));
         assertThat(motechId, is(ancVO.getPatientMotechId()));
         assertThat(expDeliveryDate, is(ancVO.getEstimatedDateOfDelivery()));
@@ -368,7 +368,7 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(lastIPT, is(ancVO.getAncCareHistoryVO().getLastIPT()));
         assertThat(lastTT, is(ancVO.getAncCareHistoryVO().getLastTT()));
         assertThat(staffId, is(mobileMidwifeEnrollment.getStaffId()));
-        assertThat(facilityId, is(mobileMidwifeEnrollment.getFacilityId()));
+        assertThat(motechFacilityId, is(mobileMidwifeEnrollment.getFacilityId()));
         assertThat(motechId, is(mobileMidwifeEnrollment.getPatientId()));
     }
 

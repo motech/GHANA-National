@@ -67,9 +67,6 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
     @Required
     private String ancRegNumber;
 
-    @RegEx(pattern = "0[0-9]{9}")
-    private String regPhone;
-
     private String addCareHistory;
 
 
@@ -199,14 +196,6 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
 
     public void setAncRegNumber(String ancRegNumber) {
         this.ancRegNumber = ancRegNumber;
-    }
-
-    public String getRegPhone() {
-        return regPhone;
-    }
-
-    public void setRegPhone(String regPhone) {
-        this.regPhone = regPhone;
     }
 
     public String getAddCareHistory() {

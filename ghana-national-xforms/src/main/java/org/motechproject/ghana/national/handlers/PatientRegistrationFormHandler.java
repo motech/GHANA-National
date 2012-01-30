@@ -75,7 +75,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
 
             if (registerClientForm.isEnrolledForMobileMidwifeProgram()) {
                 MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment(patientMotechId);
-                mobileMidwifeEnrollment.setFacilityId(facilityId);
+                mobileMidwifeEnrollment.setFacilityId(registerClientForm.getFacilityId());
                 mobileMidwifeService.register(mobileMidwifeEnrollment);
             }
 
@@ -113,7 +113,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             (RegisterClientForm
                      registerClientForm) {
         List<Attribute> attributes = new ArrayList<Attribute>();
-        attributes.add(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), registerClientForm.getPhoneNumber()));
+        attributes.add(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), registerClientForm.getMmRegPhone()));
         attributes.add(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), Utility.safeToString(registerClientForm.getNhisExpires())));
         attributes.add(new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), registerClientForm.getNhis()));
         attributes.add(new Attribute(PatientAttributes.INSURED.getAttribute(), Utility.safeToString(registerClientForm.getInsured())));

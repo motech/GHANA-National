@@ -3,18 +3,22 @@ package org.motechproject.functional.data;
 import org.motechproject.functional.util.DataGenerator;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TestMobileMidwifeEnrollment {
     private String staffId;
     private String facilityId;
     private Boolean consent;
     private ServiceType serviceType;
     private PhoneOwnership phoneOwnership;
-    private String phoneNumber;
+    private String mmRegPhone;
     private Medium medium;
     private Language language;
     private LearnedFrom learnedFrom;
     private ReasonToJoin reasonToJoin;
     private MessageStartWeek messageStartWeek;
+    private String patientId;
 
     public static TestMobileMidwifeEnrollment with(String staffId, String facilityId){
         TestMobileMidwifeEnrollment testMobileMidwifeEnrollment = new TestMobileMidwifeEnrollment();
@@ -22,7 +26,7 @@ public class TestMobileMidwifeEnrollment {
         testMobileMidwifeEnrollment.facilityId = facilityId;
         testMobileMidwifeEnrollment.consent = Boolean.TRUE;
         testMobileMidwifeEnrollment.serviceType = ServiceType.PREGNANCY;
-        testMobileMidwifeEnrollment.phoneNumber = new DataGenerator().randomPhoneNumber();
+        testMobileMidwifeEnrollment.mmRegPhone = new DataGenerator().randomPhoneNumber();
         testMobileMidwifeEnrollment.phoneOwnership = PhoneOwnership.PERSONAL;
         testMobileMidwifeEnrollment.medium = Medium.SMS;
         testMobileMidwifeEnrollment.language = Language.EN;
@@ -30,6 +34,55 @@ public class TestMobileMidwifeEnrollment {
         testMobileMidwifeEnrollment.reasonToJoin = ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH;
         testMobileMidwifeEnrollment.messageStartWeek = new MessageStartWeek("10", "Pregnancy-week 10", ServiceType.PREGNANCY);
         return testMobileMidwifeEnrollment;
+    }
+
+    public Map<String, String> forMobile(){
+        return new HashMap<String, String>(){{
+            put("staffId", staffId);
+            put("facilityId", facilityId);
+            put("patientId",patientId);
+            put("consent", toBooleanString(consent));
+            put("serviceType", serviceType.getValue());
+            put("phoneOwnership", phoneOwnership.getValue());
+            put("mmRegPhone", mmRegPhone);
+            String mediumForMobile = forMobile(medium, phoneOwnership);
+            if(mediumForMobile != null){
+                put("format", mediumForMobile);
+            }
+            put("language", language.getValue());
+            put("learnedFrom", learnedFrom.getValue());
+            put("reasonToJoin", reasonToJoin.getValue());
+            put("messageStartWeek", messageStartWeek.getValue());
+        }};
+    }
+
+    private String forMobile(Medium medium, PhoneOwnership phoneOwnership) {
+        if(medium.equals(Medium.VOICE) && phoneOwnership.equals(PhoneOwnership.PERSONAL)){
+            return "PERS_VOICE";
+        }else if (medium.equals(Medium.SMS) && phoneOwnership.equals(PhoneOwnership.PERSONAL)){
+            return "PERS_TEXT";
+        }else if(medium.equals(Medium.VOICE) && phoneOwnership.equals(PhoneOwnership.HOUSEHOLD)){
+            return "HSE_VOICE";
+        }else if (medium.equals(Medium.SMS) && phoneOwnership.equals(PhoneOwnership.HOUSEHOLD)){
+            return "HSE_TEXT";
+        }else if (medium.equals(Medium.VOICE) && phoneOwnership.equals(PhoneOwnership.PUBLIC)){
+            return "PUB_VOICE";
+        }
+        return null;
+    }
+
+    private String toBooleanString(Boolean bool) {
+        return bool ? "Y" : "N";
+    }
+
+
+    public Map<? extends String, ? extends String> forClientRegistrationThroughMobile(TestPatient patient) {
+        Map<String, String> enrollmentDetails = forMobile();
+        enrollmentDetails.put("staffId", patient.staffId());
+        enrollmentDetails.put("facilityId", patient.facilityId());
+        enrollmentDetails.put("motechId", patient.motechId());
+        enrollmentDetails.put("enroll", "Y");
+        return enrollmentDetails;
     }
 
     public String staffId() {
@@ -53,7 +106,7 @@ public class TestMobileMidwifeEnrollment {
     }
 
     public String phoneNumber() {
-        return phoneNumber;
+        return mmRegPhone;
     }
 
     public String medium() {
@@ -107,7 +160,7 @@ public class TestMobileMidwifeEnrollment {
     }
 
     public TestMobileMidwifeEnrollment phoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        this.mmRegPhone = phoneNumber;
         return this;
     }
 
@@ -155,7 +208,7 @@ public class TestMobileMidwifeEnrollment {
         if (medium != that.medium) return false;
         if (messageStartWeek != null ? !messageStartWeek.equals(that.messageStartWeek) : that.messageStartWeek != null)
             return false;
-        if (phoneNumber != null ? !phoneNumber.equals(that.phoneNumber) : that.phoneNumber != null) return false;
+        if (mmRegPhone != null ? !mmRegPhone.equals(that.mmRegPhone) : that.mmRegPhone != null) return false;
         if (phoneOwnership != that.phoneOwnership) return false;
         if (reasonToJoin != that.reasonToJoin) return false;
         if (serviceType != that.serviceType) return false;
@@ -171,7 +224,7 @@ public class TestMobileMidwifeEnrollment {
         result = 31 * result + (consent != null ? consent.hashCode() : 0);
         result = 31 * result + (serviceType != null ? serviceType.hashCode() : 0);
         result = 31 * result + (phoneOwnership != null ? phoneOwnership.hashCode() : 0);
-        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
+        result = 31 * result + (mmRegPhone != null ? mmRegPhone.hashCode() : 0);
         result = 31 * result + (medium != null ? medium.hashCode() : 0);
         result = 31 * result + (language != null ? language.hashCode() : 0);
         result = 31 * result + (learnedFrom != null ? learnedFrom.hashCode() : 0);
@@ -188,7 +241,7 @@ public class TestMobileMidwifeEnrollment {
                 ", consent=" + consent +
                 ", serviceType=" + serviceType +
                 ", phoneOwnership=" + phoneOwnership +
-                ", phoneNumber='" + phoneNumber + '\'' +
+                ", mmRegPhone='" + mmRegPhone + '\'' +
                 ", medium=" + medium +
                 ", language=" + language +
                 ", learnedFrom=" + learnedFrom +

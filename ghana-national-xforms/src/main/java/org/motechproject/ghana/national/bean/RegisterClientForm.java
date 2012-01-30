@@ -63,7 +63,7 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
     private String phoneNumber;
 
     @RegEx(pattern = "0[0-9]{9}")
-    private String regPhone;
+    private String mmRegPhone;
 
     //CWC REGISTRATION FIELDS
     private String cwcRegNumber;
@@ -86,35 +86,23 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
 
     //ANC REGISTRATION DETAILS
 
-
     private String ancRegNumber;
-
     private Date expDeliveryDate;
-
     private Boolean deliveryDateConfirmed;
-
     private Double height;
-
     private Integer gravida;
-
     private Integer parity;
-
     private Date lastIPTDate;
-
     private Date lastTTDate;
-
     private String lastIPT;
-
     private String lastTT;
 
-
-
-    public String getRegPhone() {
-        return regPhone;
+    public String getMmRegPhone() {
+        return mmRegPhone;
     }
 
-    public void setRegPhone(String regPhone) {
-        this.regPhone = regPhone;
+    public void setMmRegPhone(String mmRegPhone) {
+        this.mmRegPhone = mmRegPhone;
     }
 
     public String getStaffId() {
