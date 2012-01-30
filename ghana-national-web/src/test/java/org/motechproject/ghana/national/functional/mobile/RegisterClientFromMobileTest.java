@@ -160,9 +160,11 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
                 patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).
                 staffId(staffId).motherMotechId(motherMotechId).registrationDate(DateUtil.newDate(2000, 12, 12));
 
+        TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, patient.facilityId());
+
         TestCWCEnrollment cwcEnrollmentDetails = TestCWCEnrollment.create();
 
-        TestClientRegistration<TestCWCEnrollment> testClientRegistration = new TestClientRegistration<TestCWCEnrollment>(patient, cwcEnrollmentDetails);
+        TestClientRegistration<TestCWCEnrollment> testClientRegistration = new TestClientRegistration<TestCWCEnrollment>(patient, cwcEnrollmentDetails, mmEnrollmentDetails);
 
         mobile.upload(MobileForm.registerClientForm(), testClientRegistration.forMobile());
 
@@ -180,6 +182,13 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
 
         CWCEnrollmentPage cwcEnrollmentPage = browser.toCWCEnrollmentForm(editPage);
         cwcEnrollmentPage.displaying(expectedCWCEnrollment);
+
+        browser.toSearchPatient();
+        searchPatientPage.searchWithName(patient.firstName());
+        editPage = browser.toPatientEditPage(searchPatientPage, patient);
+        MobileMidwifeEnrollmentPage enrollmentPage = browser.toMobileMidwifeEnrollmentForm(editPage);
+
+        assertEquals(mmEnrollmentDetails, enrollmentPage.details());
 
     }
 

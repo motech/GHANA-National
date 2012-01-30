@@ -4,17 +4,12 @@ package org.motechproject.functional.data;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TestClientRegistration<T extends CareEnrollment>{
+public class TestClientRegistration<T extends CareEnrollment> {
 
     private TestPatient patient;
 
     private T enrollment;
     private TestMobileMidwifeEnrollment mobileMidwifeEnrollment;
-
-    public TestClientRegistration(TestPatient patient, T enrollment) {
-        this.patient = patient;
-        this.enrollment = enrollment;
-    }
 
     public TestClientRegistration(TestPatient patient, T enrollment, TestMobileMidwifeEnrollment mobileMidwifeEnrollment) {
         this.patient = patient;
@@ -26,9 +21,7 @@ public class TestClientRegistration<T extends CareEnrollment>{
         Map<String, String> map = new HashMap<String, String>();
         map.putAll(patient.forMobile());
         map.putAll(enrollment.forClientRegistrationThroughMobile(patient));
-        if(mobileMidwifeEnrollment != null){
-            map.putAll(mobileMidwifeEnrollment.forClientRegistrationThroughMobile(patient));
-        }
+        map.putAll(mobileMidwifeEnrollment.forClientRegistrationThroughMobile(patient));
         return map;
     }
 
