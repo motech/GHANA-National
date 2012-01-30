@@ -100,7 +100,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
 
             }
             if (registerClientForm.getSender() != null) {
-                textMessageService.sendSMS(registerClientForm.getSender(), patient, "REGISTER_SUCCESS_SMS");
+                textMessageService.sendSMS(registerClientForm.getSender(), patientMotechId, patient, "REGISTER_SUCCESS_SMS");
             }
         } catch (Exception e)
 
