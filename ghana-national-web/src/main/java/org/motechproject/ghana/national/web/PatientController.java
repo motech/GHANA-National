@@ -131,10 +131,6 @@ public class PatientController {
     private void processStaffId(String staffId) throws StaffNotFoundException {
         if (StringUtils.isNotEmpty(staffId) && staffService.getUserByEmailIdOrMotechId(staffId) == null){
             throw new StaffNotFoundException();
-        }else{
-            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String name = user.getUsername();
-            MRSUser staff = staffService.getUserByEmailIdOrMotechId(name);
         }
     }
 
