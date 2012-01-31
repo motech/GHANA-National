@@ -158,7 +158,7 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
         TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5)).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
                 patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).
-                staffId(staffId).motherMotechId(motherMotechId).registrationDate(DateUtil.newDate(2000, 12, 12));
+                staffId(staffId).motherMotechId(motherMotechId).registrationDate(DateUtil.newDate(2000, 12, 12)).dateOfBirth(DateUtil.newDate(2010,11,11));
 
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, patient.facilityId());
 

@@ -39,7 +39,7 @@ public class CWCTest extends LoggedInUserFunctionalTest {
         PatientPage patientPage = browser.toCreatePatient(staffPage);
         TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
+                patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).dateOfBirth(DateUtil.newDate(2010,11,11));
         patientPage.create(patient);
 
         SearchPatientPage searchPatientPage = browser.toSearchPatient(homePage);

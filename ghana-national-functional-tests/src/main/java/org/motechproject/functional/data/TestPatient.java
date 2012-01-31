@@ -52,29 +52,6 @@ public class TestPatient {
         return testPatient;
     }
 
-      public static TestPatient with(String firstName,String staffId) {
-          TestPatient testPatient = new TestPatient();
-          testPatient.staffId = staffId;
-          testPatient.region = "Central Region";
-          testPatient.district = "Awutu Senya";
-          testPatient.subDistrict = "Kasoa";
-          testPatient.facility = "Papaase CHPS";
-
-          testPatient.middleName = "Middle Name";
-          testPatient.lastName = "Last Name";
-          testPatient.dateOfBirth = DateUtil.newDate(2009, 11, 30);
-          testPatient.address = "Address";
-          testPatient.female = true;
-
-          testPatient.firstName = firstName;
-          testPatient.insured = false;
-          testPatient.patientType = PATIENT_TYPE.OTHER;
-          testPatient.estimatedDateOfBirth = false;
-          testPatient.facilityId = "13212";
-          testPatient.registrationDate = DateUtil.today();
-          return testPatient;
-    }
-
     public Map<String, String> editFromMobile() {
         Map<String, String> map = forMobile();
         map.put("updatePatientFacilityId", facilityIdWherePatientIsEdited);
@@ -207,6 +184,11 @@ public class TestPatient {
 
     public TestPatient registrationDate(LocalDate registrationDate){
         this.registrationDate = registrationDate;
+        return this;
+    }
+
+    public TestPatient dateOfBirth(LocalDate dateOfBirth){
+        this.dateOfBirth = dateOfBirth;
         return this;
     }
 

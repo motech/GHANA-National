@@ -34,7 +34,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
     FacilityGenerator facilityGenerator;
     @Autowired
     PatientGenerator patientGenerator;
-    DataGenerator dataGenerator  = new DataGenerator();
+    DataGenerator dataGenerator = new DataGenerator();
 
     @Test
     public void shouldCheckForMandatoryFields() throws Exception {
@@ -90,7 +90,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
 
         String facilityMotechId = facilityGenerator.createFacility(browser, homePage);
         String staffId = staffGenerator.createStaff(browser, homePage);
-        final String patientId = patientGenerator.createPatientWithStaff(browser, homePage,staffId);
+        final String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
 
         TestPatient patient = TestPatient.with("Updated First Name" + dataGenerator.randomString(5)).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
@@ -110,9 +110,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
         assertThat(patientPage.firstName(), is(equalTo(patient.firstName())));
         assertThat(patientPage.middleName(), is(equalTo(patient.middleName())));
         assertThat(patientPage.lastName(), is(equalTo(patient.lastName())));
-
     }
-
 
     private XformHttpClient.XformResponse setupEditClientFormAndUpload(Map<String, String> data) throws Exception {
         return XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",

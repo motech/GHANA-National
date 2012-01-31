@@ -20,7 +20,7 @@ public class PatientGenerator {
 
     @LoginAsAdmin
     @ApiSession
-    public String createPatient(Browser browser, HomePage homePage){
+    public String createPatient(Browser browser, HomePage homePage) {
         dataGenerator = new DataGenerator();
         PatientPage patientPage = browser.toCreatePatient(homePage);
 
@@ -35,13 +35,13 @@ public class PatientGenerator {
 
     @LoginAsAdmin
     @ApiSession
-    public String createPatientWithStaff(Browser browser, HomePage homePage,String staffId){
+    public String createPatientWithStaff(Browser browser, HomePage homePage, String staffId) {
         dataGenerator = new DataGenerator();
         PatientPage patientPage = browser.toCreatePatient(homePage);
 
-        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5),staffId).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
+        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5))
+                .registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).staffId(staffId)
+                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
 
         patientPage.create(patient);
         patientPage.waitForSuccessfulCompletion();
