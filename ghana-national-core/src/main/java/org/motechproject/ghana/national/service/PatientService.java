@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.service;
 
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
@@ -9,6 +10,7 @@ import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.util.DateUtil;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.api.IdentifierNotUniqueException;
@@ -26,15 +28,17 @@ public class PatientService {
     AllPatients allPatients;
     AllEncounters allEncounters;
     IdentifierGenerationService identifierGenerationService;
+    EncounterService encounterService;
 
     @Autowired
-    public PatientService(AllPatients allPatients, AllEncounters allEncounters , IdentifierGenerationService identifierGenerationService) {
+    public PatientService(AllPatients allPatients, AllEncounters allEncounters , IdentifierGenerationService identifierGenerationService,EncounterService encounterService) {
         this.allPatients = allPatients;
         this.allEncounters = allEncounters;
         this.identifierGenerationService = identifierGenerationService;
+        this.encounterService = encounterService;
     }
 
-    public String registerPatient(Patient patient)
+    public String registerPatient(Patient patient,String staffId)
             throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         try {
 
@@ -43,10 +47,13 @@ public class PatientService {
                 String motechId = identifierGenerationService.newPatientId();
                 patient = new Patient(new MRSPatient(mrsPatient.getId(), motechId, mrsPatient.getPerson(), mrsPatient.getFacility()), patient.getParentId());
             }
-            String savedPatientMotechId = allPatients.save(patient);
+            MRSPatient savedMRSPatient = allPatients.save(patient);
+            String savedPatientMotechId = savedMRSPatient.getMotechId();
+
             if (StringUtils.isNotEmpty(patient.getParentId())) {
                 createRelationship(patient.getParentId(), savedPatientMotechId);
             }
+            encounterService.persistEncounter(savedMRSPatient, staffId, patient.getMrsPatient().getFacility().getId(), Constants.ENCOUNTER_PATIENTREGVISIT, DateUtil.today().toDate(), null);
             return savedPatientMotechId;
         } catch (IdentifierNotUniqueException e) {
             throw new PatientIdNotUniqueException();

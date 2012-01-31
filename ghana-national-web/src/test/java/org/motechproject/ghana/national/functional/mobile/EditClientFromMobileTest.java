@@ -98,7 +98,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
 
         String facilityMotechId = facilityGenerator.createFacility(browser, homePage);
         String staffId = staffGenerator.createStaff(browser, homePage);
-        final String patientId = patientGenerator.createPatient(browser, homePage);
+        final String patientId = patientGenerator.createPatientWithStaff(browser, homePage,staffId);
 
         TestPatient patient = TestPatient.with("Updated First Name" + dataGenerator.randomString(5)).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).

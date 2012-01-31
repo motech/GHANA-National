@@ -8,9 +8,11 @@ import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
+import org.motechproject.ghana.national.exception.StaffNotFoundException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.form.SearchPatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
@@ -66,6 +68,8 @@ public class PatientController {
     private MotechIdVerhoeffValidator motechIdVerhoeffValidator;
 
     public static final String SEARCH_PATIENT_FORM = "searchPatientForm";
+    @Autowired
+    private StaffService staffService;
 
 
     @InitBinder
@@ -87,13 +91,23 @@ public class PatientController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createPatient(PatientForm createPatientForm, BindingResult result, ModelMap modelMap) {
         Facility facility = facilityService.getFacility(createPatientForm.getFacilityId());
+        String staffId = createPatientForm.getStaffId();
         try {
+            if (StringUtils.isNotEmpty(staffId) && staffService.getUserByEmailIdOrMotechId(staffId) == null){
+                throw new StaffNotFoundException();
+            }
+//            else{
+//                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//                String name = auth.getName(); //get logged in username
+//                System.out.println("------"+name);
+//            }
+
             if (createPatientForm.getRegistrationMode().equals(RegistrationType.USE_PREPRINTED_ID)) {
                 if (!motechIdVerhoeffValidator.isValid(createPatientForm.getMotechId())) {
                     throw new UnallowedIdentifierException("User Id is not allowed");
                 }
             }
-            final String motechId = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility));
+            final String motechId = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility),staffId);
             if (StringUtils.isNotEmpty(motechId)) {
                 modelMap.put("successMessage", "Patient created successfully.");
                 return populateView(modelMap, motechId);
@@ -109,6 +123,9 @@ public class PatientController {
             return NEW_PATIENT_URL;
         } catch (UnallowedIdentifierException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
+            return NEW_PATIENT_URL;
+        }catch (StaffNotFoundException e) {
+            handleError(result, modelMap, messageSource.getMessage("staff_id_not_found", null, Locale.getDefault()));
             return NEW_PATIENT_URL;
         } catch (ParseException ignored) {
         }

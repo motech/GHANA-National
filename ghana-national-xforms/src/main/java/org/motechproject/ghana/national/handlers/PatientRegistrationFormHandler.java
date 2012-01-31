@@ -72,7 +72,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             MRSPatient mrsPatient = new MRSPatient(registerClientForm.getMotechId(), mrsPerson, new MRSFacility(facilityId));
 
             Patient patient = new Patient(mrsPatient, registerClientForm.getMotherMotechId());
-            String patientMotechId = patientService.registerPatient(patient);
+            String patientMotechId = patientService.registerPatient(patient,registerClientForm.getStaffId());
 
             if (registerClientForm.isEnrolledForMobileMidwifeProgram()) {
                 MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment(patientMotechId);

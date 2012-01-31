@@ -60,7 +60,7 @@ public class AllPatientsTest {
         MRSPatient savedPatient = mock(MRSPatient.class);
         when(savedPatient.getMotechId()).thenReturn(patientId);
         when(mockMrsPatientAdaptor.savePatient(mrsPatient)).thenReturn(savedPatient);
-        final String savedMotechId = allPatients.save(patient);
+        final String savedMotechId = allPatients.save(patient).getMotechId();
         verify(mockMrsPatientAdaptor).savePatient(mrsPatient);
         assertThat(patientId, is(savedMotechId));
     }

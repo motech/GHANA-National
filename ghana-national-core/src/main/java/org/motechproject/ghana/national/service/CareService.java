@@ -7,7 +7,6 @@ import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
-import org.motechproject.openmrs.services.OpenMRSEncounterAdaptor;
 import org.motechproject.util.DateUtil;
 import org.openmrs.Concept;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,6 @@ import java.util.Set;
 
 @Service
 public class CareService {
-    @Autowired
-    OpenMRSEncounterAdaptor openMRSEncounterAdaptor;
 
     @Autowired
     StaffService staffService;
@@ -34,9 +31,6 @@ public class CareService {
 
     @Autowired
     AllEncounters allEncounters;
-
-    @Autowired
-    MobileMidwifeService mobileMidwifeService;
 
     public MRSEncounter getEncounter(String motechId, String encounterType) {
         return allEncounters.fetchLatest(motechId, encounterType);

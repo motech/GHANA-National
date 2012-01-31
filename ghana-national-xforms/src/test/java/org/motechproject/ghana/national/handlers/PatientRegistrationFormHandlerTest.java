@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static ch.lambdaj.Lambda.*;
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.any;
@@ -88,7 +89,8 @@ public class PatientRegistrationFormHandlerTest {
         MotechEvent event = new MotechEvent("subject", parameters);
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
-        doReturn(motechId).when(mockPatientService).registerPatient(patientArgumentCaptor.capture());
+        ArgumentCaptor<String> staffIdCaptor = ArgumentCaptor.forClass(String.class);
+        doReturn(motechId).when(mockPatientService).registerPatient(patientArgumentCaptor.capture(),staffIdCaptor.capture());
 
         Facility facility = mock(Facility.class);
         when(facility.mrsFacilityId()).thenReturn(facilityId);
@@ -100,6 +102,7 @@ public class PatientRegistrationFormHandlerTest {
         MRSPerson mrsPerson = savedPatient.getMrsPatient().getPerson();
         assertRegisterPatient(address, dateofBirth, isBirthDateEstimated, facilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, sex, phoneNumber, savedPatient, mrsPerson, parentId);
         verify(mockTextMessageService).sendSMS(registerClientForm.getSender(), savedPatient, "REGISTER_SUCCESS_SMS");
+        assertEquals(staffIdCaptor.getValue(),staffId);
     }
 
     @Test
@@ -165,7 +168,7 @@ public class PatientRegistrationFormHandlerTest {
         when(facility.mrsFacilityId()).thenReturn(facilityId);
 
 
-        when(mockPatientService.registerPatient(any(Patient.class))).thenReturn(motechId);
+        when(mockPatientService.registerPatient(any(Patient.class),any(String.class))).thenReturn(motechId);
         when(mockCareService.enroll(any(CwcVO.class))).thenReturn(null);
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
@@ -229,7 +232,7 @@ public class PatientRegistrationFormHandlerTest {
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         when(facility.mrsFacilityId()).thenReturn(facilityId);
 
-        when(mockPatientService.registerPatient(any(Patient.class))).thenReturn(motechId);
+        when(mockPatientService.registerPatient(any(Patient.class),any(String.class))).thenReturn(motechId);
 
         when(mockCareService.enroll(any(ANCVO.class))).thenReturn(null);
         patientRegistrationFormHandler.handleFormEvent(event);

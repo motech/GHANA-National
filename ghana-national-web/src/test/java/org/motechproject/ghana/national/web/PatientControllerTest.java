@@ -13,6 +13,7 @@ import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.form.SearchPatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
@@ -20,6 +21,7 @@ import org.motechproject.ghana.national.web.helper.PatientHelper;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
@@ -42,9 +44,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientControllerTest {
@@ -65,12 +65,15 @@ public class PatientControllerTest {
     BindingResult mockBindingResult;
     @Mock
     MotechIdVerhoeffValidator mockMotechIdVerhoeffValidator;
+    @Mock
+    private StaffService mockStaffService;
 
     @Before
     public void setUp() {
         initMocks(this);
         patientController = new PatientController();
         ReflectionTestUtils.setField(patientController, "patientService", mockPatientService);
+        ReflectionTestUtils.setField(patientController, "staffService", mockStaffService);
         ReflectionTestUtils.setField(patientController, "patientHelper", mockPatientHelper);
         ReflectionTestUtils.setField(patientController, "facilityHelper", mockFacilityHelper);
         ReflectionTestUtils.setField(patientController, "facilityService", mockFacilityService);
@@ -107,6 +110,20 @@ public class PatientControllerTest {
     }
 
     @Test
+    public void shouldNotSavePatientIfStaffIdGivenIsInValid() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
+        PatientForm createPatientForm = new PatientForm();
+        createPatientForm.setStaffId(null);
+        createPatientForm.setMotechId("1267");
+        createPatientForm.setFacilityId("12");
+        Facility mockFacility = mock(Facility.class);
+        when(mockFacilityService.getFacility(createPatientForm.getFacilityId())).thenReturn(mockFacility);
+        createPatientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
+        String view = patientController.createPatient(createPatientForm, mockBindingResult, new ModelMap());
+        verify(mockPatientService,never()).registerPatient(any(Patient.class),any(String.class));
+        assertEquals("patients/new", view);
+    }
+
+    @Test
     public void shouldSaveUserForValidId() {
         PatientForm createPatientForm = new PatientForm();
         final String motechId = "1267";
@@ -115,13 +132,17 @@ public class PatientControllerTest {
         String facilityName = "facilityName";
         createPatientForm.setFacilityId(facilityId);
         Facility mockFacility = mock(Facility.class);
+        String staffId="1234";
+        createPatientForm.setStaffId(staffId);
+        MRSUser mockStaff = mock(MRSUser.class);
+        when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mockStaff);
         when(mockFacilityService.getFacility(createPatientForm.getFacilityId())).thenReturn(mockFacility);
         when(mockFacility.name()).thenReturn(facilityName);
         createPatientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
         ModelMap modelMap = new ModelMap();
         when(mockMotechIdVerhoeffValidator.isValid(motechId)).thenReturn(true);
         String view = patientController.createPatient(createPatientForm, mockBindingResult, modelMap);
-        assertEquals(view, "patients/success");
+        assertEquals("patients/success", view);
     }
 
     @Test

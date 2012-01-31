@@ -23,11 +23,10 @@ public class AllPatients {
     @Autowired
     private OpenMRSRelationshipAdaptor openMRSRelationshipAdaptor;
 
-    public String save(Patient patient) {
-        final MRSPatient savedPatient = patientAdaptor.savePatient(patient.getMrsPatient());
-        return savedPatient.getMotechId();
+    public MRSPatient save(Patient patient) {
+        return patientAdaptor.savePatient(patient.getMrsPatient());
     }
-    
+
     public Patient patientByOpenmrsId(String patientId) {
         MRSPatient mrsPatient = patientAdaptor.getPatient(patientId);
         return (mrsPatient != null) ? new Patient(mrsPatient) : null;

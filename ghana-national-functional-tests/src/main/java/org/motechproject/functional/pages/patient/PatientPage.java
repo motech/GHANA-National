@@ -103,6 +103,10 @@ public class PatientPage extends HomePage {
     @CacheLookup
     private WebElement subDistrict;
 
+    @FindBy(id = "staffId")
+    @CacheLookup
+    private WebElement staffId;
+
     public PatientPage(WebDriver webDriver) {
         super(webDriver);
         elementPoller.waitForElementID("submitNewPatient", driver);
@@ -118,6 +122,12 @@ public class PatientPage extends HomePage {
     public PatientPage withMotechId(String motechId) {
         this.motechId.clear();
         this.motechId.sendKeys(motechId);
+        return this;
+    }
+
+    public PatientPage withStaffId(String staffId){
+        this.staffId.clear();
+        this.staffId.sendKeys(staffId);
         return this;
     }
 
@@ -235,7 +245,8 @@ public class PatientPage extends HomePage {
                 .withFacility(patient.facility())
                 .withAddress(patient.address())
                 .withGender(patient.isFemale())
-                .withDateofBirth(patient.dateOfBirth());
+                .withDateofBirth(patient.dateOfBirth())
+                .withStaffId(patient.staffId());
         if (patient.hasMotechId())
             patientPage.withMotechId(patient.motechId());
         patientPage.submit();

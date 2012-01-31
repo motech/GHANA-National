@@ -26,7 +26,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 public class CareServiceTest {
@@ -55,7 +54,6 @@ public class CareServiceTest {
         ReflectionTestUtils.setField(careService, "patientService", mockPatientService);
         ReflectionTestUtils.setField(careService, "allEncounters", mockAllEncounters);
         ReflectionTestUtils.setField(careService, "openMRSConceptAdaptor", mockOpenMRSConceptAdaptor);
-        setField(careService, "mobileMidwifeService", mockMockMidwifeService);
         final DateTime now = DateTime.now();
 
         DateTimeSourceUtil.SourceInstance = new DateTimeSource() {
