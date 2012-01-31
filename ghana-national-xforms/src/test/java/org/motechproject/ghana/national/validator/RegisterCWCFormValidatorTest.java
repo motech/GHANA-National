@@ -42,7 +42,7 @@ public class RegisterCWCFormValidatorTest {
     private MobileMidwifeValidator mockMobileMidwifeValidator;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         initMocks(this);
         registerCWCFormValidator = new RegisterCWCFormValidator();
         setField(registerCWCFormValidator, "formValidator", mockFormValidator);
@@ -51,11 +51,11 @@ public class RegisterCWCFormValidatorTest {
     }
 
     @Test
-    public void shouldRaiseFormErrorIfMotechIdIsInvalid(){
+    public void shouldRaiseFormErrorIfMotechIdIsInvalid() {
         String motechId = "1234567";
         String staffId = "345";
         String facilityId = "1234";
-        RegisterCWCForm registerCWCForm = setUpFormBean(facilityId, staffId,new Date(),"23232322",RegistrationToday.TODAY, motechId, Boolean.FALSE);
+        RegisterCWCForm registerCWCForm = setUpFormBean(facilityId, staffId, new Date(), "23232322", RegistrationToday.TODAY, motechId, Boolean.FALSE);
         List<FormError> formErrors = registerCWCFormValidator.validate(registerCWCForm);
         verify(mockFormValidator).validatePatient(eq(motechId), eq(Constants.MOTECH_ID_ATTRIBUTE_NAME));
         verify(mockFormValidator).validateIfStaffExists(eq(staffId));
@@ -66,11 +66,11 @@ public class RegisterCWCFormValidatorTest {
     }
 
     @Test
-    public void shouldValidateCWCForm(){
+    public void shouldValidateCWCForm() {
         String motechId = "1234567";
         String staffId = "345";
         String facilityId = "1234";
-        RegisterCWCForm registerCWCForm = setUpFormBean(facilityId, staffId,new Date(),"23232322",RegistrationToday.TODAY, motechId, Boolean.FALSE);
+        RegisterCWCForm registerCWCForm = setUpFormBean(facilityId, staffId, new Date(), "23232322", RegistrationToday.TODAY, motechId, Boolean.FALSE);
 
         registerCWCFormValidator.validate(registerCWCForm);
 
@@ -79,7 +79,7 @@ public class RegisterCWCFormValidatorTest {
         verify(mockFormValidator).validateIfFacilityExists(eq(facilityId));
         verify(mockMobileMidwifeValidator, never()).validateForIncludeForm(any(MobileMidwifeEnrollment.class));
     }
-    
+
     @Test
     public void shouldValidateMobileMidwifeIfEnrolledAlongWithCWCForm() {
         String motechId = "1231231";
@@ -99,16 +99,15 @@ public class RegisterCWCFormValidatorTest {
         assertThat(captor.getValue().getPatientId(), is(org.hamcrest.Matchers.equalTo(motechId)));
         assertThat(captor.getValue().getFacilityId(), is(org.hamcrest.Matchers.equalTo(facilityId)));
     }
-    
+
     @Test
-    public void shouldRaiseFormErrorIfChildAgeIsAboveFive(){
+    public void shouldRaiseFormErrorIfChildAgeIsAboveFive() {
         String motechId = "1234567";
-        when(mockPatientService.getAgeOfPatientByMotechId(motechId)).thenReturn(6);
         when(mockFormValidator.validatePatient(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(Collections.<FormError>emptyList());
-        List<FormError> formErrors = registerCWCFormValidator.validatePatient(motechId);
-        assertEquals(formErrors.size(), 1);
+        registerCWCFormValidator.validatePatient(motechId);
+        verify(mockFormValidator).validateIfPatientIsAChild(motechId);
     }
-    
+
     private RegisterCWCForm setUpFormBean(String facilityId, String staffId, Date date, String serialNumber, RegistrationToday registrationToday, String motechId, Boolean consent) {
         RegisterCWCForm registerCWCForm = new RegisterCWCForm();
         registerCWCForm.setFacilityId(facilityId);
@@ -122,6 +121,4 @@ public class RegisterCWCFormValidatorTest {
         registerCWCForm.setConsent(consent);
         return registerCWCForm;
     }
-
-
 }

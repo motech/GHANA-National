@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
 import org.motechproject.ghana.national.domain.Configuration;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.repository.AllConfigurations;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,14 @@ public class SMSTextContentSeed extends Seed {
     @Value("#{message['registration_sms']}")
     String registrationSms;
 
+    @Value("#{message['delivery_notification_sms']}")
+    String deliveryNotificationSms;
+
     @Override
     protected void load() {
         try {
-            Configuration configuration = new Configuration("REGISTER_SUCCESS_SMS", registrationSms);
-            allConfigurations.add(configuration);
-
+            allConfigurations.add(new Configuration(Constants.REGISTER_SUCCESS_SMS, registrationSms));
+            allConfigurations.add(new Configuration(Constants.DELIVERY_NOTIFICATION_SMS, deliveryNotificationSms));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

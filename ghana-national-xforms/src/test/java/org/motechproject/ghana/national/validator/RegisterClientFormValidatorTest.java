@@ -125,7 +125,7 @@ public class RegisterClientFormValidatorTest {
         when(formValidator.validateIfStaffExists("212")).thenReturn(new ArrayList<FormError>());
 
         List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm);
-        assertThat(formErrors,hasItem(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_ERR_MSG)));
+        assertThat(formErrors,hasItem(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_MORE_ERR_MSG)));
 
     }
 

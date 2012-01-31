@@ -105,7 +105,7 @@ public class PatientRegistrationFormHandlerTest {
         MRSPerson mrsPerson = savedPatient.getMrsPatient().getPerson();
 
         assertRegisterPatient(address, dateofBirth, isBirthDateEstimated, facilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, sex, phoneNumber, savedPatient, mrsPerson, parentId);
-        verify(mockTextMessageService).sendSMS(registerClientForm.getSender(), motechId, savedPatient, "REGISTER_SUCCESS_SMS");
+        verify(mockTextMessageService).sendSMS(registerClientForm.getSender(), motechId, savedPatient, Constants.REGISTER_SUCCESS_SMS);
     }
 
     @Test

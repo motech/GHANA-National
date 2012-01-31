@@ -39,7 +39,7 @@ public class TestPatient {
 
         testPatient.middleName = "Middle Name";
         testPatient.lastName = "Last Name";
-        testPatient.dateOfBirth = DateUtil.newDate(2009, 11, 30);
+        testPatient.dateOfBirth = DateUtil.newDate(1999, 11, 30);
         testPatient.address = "Address";
         testPatient.female = true;
 

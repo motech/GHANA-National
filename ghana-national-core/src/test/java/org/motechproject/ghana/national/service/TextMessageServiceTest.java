@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Configuration;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllConfigurations;
 import org.motechproject.mrs.model.MRSPatient;
@@ -13,7 +14,9 @@ import org.motechproject.sms.api.service.SmsService;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
@@ -53,10 +56,10 @@ public class TextMessageServiceTest {
         Configuration configuration = new Configuration();
         configuration.setPropertyName("SMS");
         configuration.setValue("test message ${motechId} ${firstName} ${lastName}");
-        when(mockAllConfigurations.getConfigurationValue("REGISTER_SUCCESS_SMS")).thenReturn(configuration);
+        when(mockAllConfigurations.getConfigurationValue(Constants.REGISTER_SUCCESS_SMS)).thenReturn(configuration);
 
         String someRecipient = "someRecipient";
-        textMessageService.sendSMS(someRecipient, motechId , mockPatient, "REGISTER_SUCCESS_SMS");
+        textMessageService.sendSMS(someRecipient, motechId , mockPatient, Constants.REGISTER_SUCCESS_SMS);
         ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockSMSService).sendSMS(eq(someRecipient), messageCaptor.capture());
         String message = messageCaptor.getValue();

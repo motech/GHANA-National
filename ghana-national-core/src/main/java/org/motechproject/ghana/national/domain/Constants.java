@@ -86,15 +86,20 @@ public class Constants {
     //CWC Validators
     public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
     public static final String CHILD_AGE_PARAMETER = "childAge";
-    public static final String CHILD_AGE_ERR_MSG = "child cannot be more than 5 years old";
+    public static final String CHILD_AGE_MORE_ERR_MSG = "child cannot be more than 5 years old";
+    public static final String AGE_LESS_ERR_MSG = "patient cannot be less than 5 years old";
     public static final String GENDER_ERROR_MSG = "should be female for registering into ANC";
 
     // Mobile Midwife
-    public static final Time MOBILE_MIDWIFE_MIN_TIMEOFDAY_FOR_VOICE = new Time(5,0);
-    public static final Time MOBILE_MIDWIFE_MAX_TIMEOFDAY_FOR_VOICE = new Time(23,0);
+    public static final Time MOBILE_MIDWIFE_MIN_TIMEOFDAY_FOR_VOICE = new Time(5, 0);
+    public static final Time MOBILE_MIDWIFE_MAX_TIMEOFDAY_FOR_VOICE = new Time(23, 0);
     public static final String MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE = "Time of day should be between 5:00 and 23:00 hours";
     public static final String MOBILE_MIDWIFE_VOICE_TIMEOFDAYREQUIRED_MESSAGE = "Time of day should be specified.";
 
     public static final String MOTECH_ID_PATTERN = "[0-9]{7}";
     public static final String FORM_BEAN = "formBean";
+
+    //SMS
+    public static final String REGISTER_SUCCESS_SMS = "REGISTER_SUCCESS_SMS";
+    public static final String DELIVERY_NOTIFICATION_SMS = "DELIVERY_NOTIFICATION_SMS";
 }

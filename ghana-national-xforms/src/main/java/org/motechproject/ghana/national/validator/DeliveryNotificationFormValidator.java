@@ -25,6 +25,8 @@ public class DeliveryNotificationFormValidator extends FormValidator<DeliveryNot
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(formValidator.validatePatient(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
+        formErrors.addAll(formValidator.validateIfPatientIsFemale(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
+        formErrors.addAll(formValidator.validateIfPatientIsNotAChild(formBean.getMotechId()));
         return formErrors;
     }
 }

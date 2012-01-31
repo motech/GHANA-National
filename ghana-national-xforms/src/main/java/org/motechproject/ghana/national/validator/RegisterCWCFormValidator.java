@@ -11,7 +11,6 @@ import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,16 +40,7 @@ public class RegisterCWCFormValidator extends FormValidator<RegisterCWCForm> {
 
     public List<FormError> validatePatient(String motechId) {
         List<FormError> patientErrors = formValidator.validatePatient(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
-        return !patientErrors.isEmpty() ? patientErrors : validateIfPatientIsAChild(motechId);
-    }
-
-    private List<FormError> validateIfPatientIsAChild(String motechId) {
-        if (motechId != null && patientService.getAgeOfPatientByMotechId(motechId) >= 5) {
-            return new ArrayList<FormError>() {{
-                add(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_ERR_MSG));
-            }};
-        }
-        return new ArrayList<FormError>();
+        return !patientErrors.isEmpty() ? patientErrors : formValidator.validateIfPatientIsAChild(motechId);
     }
 
     private List<FormError> validateMobileMidwifeIfEnrolled(RegisterCWCForm formBean) {

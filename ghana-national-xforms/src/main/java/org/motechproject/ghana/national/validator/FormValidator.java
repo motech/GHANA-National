@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.validator;
 
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -59,5 +60,37 @@ public class FormValidator {
             }};
         }
         return new ArrayList<FormError>();
+    }
+
+    public List<FormError> validateIfPatientIsFemale(String patientId, final String attributeName) {
+        final Patient patient = patientService.getPatientByMotechId(patientId);
+        if (patient.getMrsPatient().getPerson().getGender().equals(Constants.PATIENT_GENDER_MALE)) {
+            return new ArrayList<FormError>() {{
+                add(new FormError(attributeName, Constants.GENDER_ERROR_MSG));
+            }};
+        }
+        return new ArrayList<FormError>();
+    }
+
+    public List<FormError> validateIfPatientIsAChild(String motechId) {
+        if (isNotAChild(motechId)) {
+            return new ArrayList<FormError>() {{
+                add(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_MORE_ERR_MSG));
+            }};
+        }
+        return new ArrayList<FormError>();
+    }
+
+    public List<FormError> validateIfPatientIsNotAChild(String motechId) {
+        if (!isNotAChild(motechId)) {
+            return new ArrayList<FormError>() {{
+                add(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.AGE_LESS_ERR_MSG));
+            }};
+        }
+        return new ArrayList<FormError>();
+    }
+
+    private boolean isNotAChild(String motechId) {
+        return motechId != null && patientService.getAgeOfPatientByMotechId(motechId) >= 5;
     }
 }

@@ -73,42 +73,49 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             MRSPatient mrsPatient = new MRSPatient(registerClientForm.getMotechId(), mrsPerson, new MRSFacility(facilityId));
 
             Patient patient = new Patient(mrsPatient, registerClientForm.getMotherMotechId());
-            String patientMotechId = patientService.registerPatient(patient,registerClientForm.getStaffId());
+            String patientMotechId = patientService.registerPatient(patient, registerClientForm.getStaffId());
 
-            if (registerClientForm.isEnrolledForMobileMidwifeProgram()) {
-                MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment(patientMotechId);
-                mobileMidwifeEnrollment.setFacilityId(registerClientForm.getFacilityId());
-                mobileMidwifeService.register(mobileMidwifeEnrollment);
-            }
+            registerForMobileMidwifeProgram(registerClientForm, patientMotechId);
+            registerForCWC(registerClientForm, facilityId, patientMotechId);
+            registerForANC(registerClientForm, facilityId, patientMotechId);
 
-            if (registerClientForm.getRegistrantType().equals(PatientType.CHILD_UNDER_FIVE)) {
-                CwcVO cwcVO = new CwcVO(registerClientForm.getStaffId(), facilityId, registerClientForm.getDate(),
-                        patientMotechId, registerClientForm.getCWCCareHistories(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
-                        registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
-                        registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber(), registerClientForm.getAddHistory());
-
-                careService.enroll(cwcVO);
-
-            }
-
-            if (PatientType.PREGNANT_MOTHER.equals(registerClientForm.getRegistrantType())) {
-                ANCVO ancVO = new ANCVO(registerClientForm.getStaffId(), facilityId, patientMotechId, registerClientForm.getDate()
-                        , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),
-                        registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), registerClientForm.getAncCareHistories(), registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
-                        registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate(), registerClientForm.getAddHistory());
-
-                careService.enroll(ancVO);
-
-            }
             if (registerClientForm.getSender() != null) {
-                textMessageService.sendSMS(registerClientForm.getSender(), patientMotechId, patient, "REGISTER_SUCCESS_SMS");
+                textMessageService.sendSMS(registerClientForm.getSender(), patientMotechId, patient, Constants.REGISTER_SUCCESS_SMS);
             }
-        } catch (Exception e)
-
-        {
+        } catch (Exception e) {
             log.error("Exception while saving patient", e);
         }
 
+    }
+
+    private void registerForMobileMidwifeProgram(RegisterClientForm registerClientForm, String patientMotechId) {
+        if (registerClientForm.isEnrolledForMobileMidwifeProgram()) {
+            MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment(patientMotechId);
+            mobileMidwifeEnrollment.setFacilityId(registerClientForm.getFacilityId());
+            mobileMidwifeService.register(mobileMidwifeEnrollment);
+        }
+    }
+
+    private void registerForANC(RegisterClientForm registerClientForm, String facilityId, String patientMotechId) {
+        if (PatientType.PREGNANT_MOTHER.equals(registerClientForm.getRegistrantType())) {
+            ANCVO ancVO = new ANCVO(registerClientForm.getStaffId(), facilityId, patientMotechId, registerClientForm.getDate()
+                    , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),
+                    registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), registerClientForm.getAncCareHistories(), registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
+                    registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate(), registerClientForm.getAddHistory());
+
+            careService.enroll(ancVO);
+        }
+    }
+
+    private void registerForCWC(RegisterClientForm registerClientForm, String facilityId, String patientMotechId) {
+        if (registerClientForm.getRegistrantType().equals(PatientType.CHILD_UNDER_FIVE)) {
+            CwcVO cwcVO = new CwcVO(registerClientForm.getStaffId(), facilityId, registerClientForm.getDate(),
+                    patientMotechId, registerClientForm.getCWCCareHistories(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
+                    registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
+                    registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getCwcRegNumber(), registerClientForm.getAddHistory());
+
+            careService.enroll(cwcVO);
+        }
     }
 
     private List<Attribute> getPatientAttributes

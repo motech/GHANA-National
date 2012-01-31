@@ -49,7 +49,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     private List<FormError> validateIfPatientIsChild(Date dateOfBirth) {
         ArrayList<FormError> formError = new ArrayList<FormError>();
         if (DateUtil.getDifferenceOfDatesInYears(dateOfBirth) >= 5) {
-            formError.add(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_ERR_MSG));
+            formError.add(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_MORE_ERR_MSG));
         }
         return formError;
     }

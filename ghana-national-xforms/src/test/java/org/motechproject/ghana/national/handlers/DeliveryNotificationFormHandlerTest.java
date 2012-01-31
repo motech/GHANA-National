@@ -5,9 +5,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
+import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.service.CareService;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.TextMessageService;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSObservation;
+import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -20,6 +28,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class DeliveryNotificationFormHandlerTest {
@@ -29,11 +38,23 @@ public class DeliveryNotificationFormHandlerTest {
     @Mock
     CareService mockCareService;
 
+    @Mock
+    TextMessageService mockTextMessageService;
+
+    @Mock
+    FacilityService mockFacilityService;
+
+    @Mock
+    PatientService mockPatientService;
+
     @Before
     public void setUp() {
         initMocks(this);
         deliveryNotificationFormHandler = new DeliveryNotificationFormHandler();
         ReflectionTestUtils.setField(deliveryNotificationFormHandler, "careService", mockCareService);
+        ReflectionTestUtils.setField(deliveryNotificationFormHandler, "patientService", mockPatientService);
+        ReflectionTestUtils.setField(deliveryNotificationFormHandler, "facilityService", mockFacilityService);
+        ReflectionTestUtils.setField(deliveryNotificationFormHandler, "textMessageService", mockTextMessageService);
     }
 
     @Test
@@ -52,14 +73,21 @@ public class DeliveryNotificationFormHandlerTest {
             put("formBean", deliveryNotificationForm);
         }};
         MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.deliveryNotify", parameter);
+        final Patient patient = new Patient(new MRSPatient(motechId, null, new MRSFacility(facilityId)));
+        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
+        String facilityPhoneNumber = "1234567890";
+        when(mockFacilityService.getFacility(facilityId)).thenReturn(new Facility(new MRSFacility(facilityId)).phoneNumber(facilityPhoneNumber));
+
         deliveryNotificationFormHandler.handleFormEvent(event);
+
         final HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         verify(mockCareService).persistEncounter(motechId, staffId, facilityId, DeliveryNotificationFormHandler.ENCOUNTER_TYPE, datetime.toDate(), mrsObservations);
-
+        verify(mockTextMessageService).sendSMS(facilityPhoneNumber, motechId, patient, Constants.DELIVERY_NOTIFICATION_SMS);
     }
 
     @Test
     public void shouldRunAsAdminUser() throws NoSuchMethodException {
-        assertThat(deliveryNotificationFormHandler.getClass().getMethod("handleFormEvent", new Class[]{MotechEvent.class}).getAnnotation(LoginAsAdmin.class), is(not(equalTo(null))));
+        assertThat(deliveryNotificationFormHandler.getClass().getMethod("handleFormEvent",
+                new Class[]{MotechEvent.class}).getAnnotation(LoginAsAdmin.class), is(not(equalTo(null))));
     }
 }

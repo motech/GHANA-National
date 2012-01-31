@@ -37,6 +37,8 @@ public class DeliveryNotificationFormValidatorTest {
         verify(formValidator).validateIfStaffExists(formBean.getStaffId());
         verify(formValidator).validateIfFacilityExists(formBean.getFacilityId());
         verify(formValidator).validatePatient(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME);
+        verify(formValidator).validateIfPatientIsFemale(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME);
+        verify(formValidator).validateIfPatientIsNotAChild(formBean.getMotechId());
     }
 
     @Test

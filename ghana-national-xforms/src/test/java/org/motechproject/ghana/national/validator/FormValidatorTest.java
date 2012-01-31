@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.validator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -16,6 +17,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
@@ -109,5 +111,41 @@ public class FormValidatorTest {
 
         formErrors = formValidator.validateIfStaffExists(staffId);
         assertThat(formErrors, not(hasItem(new FormError(FormValidator.STAFF_ID, NOT_FOUND))));
+    }
+
+    @Test
+    public void shouldThrowErrorIfThePatientIsMale() {
+        String motechId = "1";
+        setupPatient(Constants.PATIENT_GENDER_MALE, motechId);
+        final List<FormError> formErrors = formValidator.validateIfPatientIsFemale(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
+        assertEquals(1, formErrors.size());
+        assertThat(formErrors, hasItem(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, Constants.GENDER_ERROR_MSG)));
+    }
+
+    @Test
+    public void shouldNotThrowErrorIfThePatientIsFemale() {
+        String motechId = "1";
+        setupPatient(Constants.PATIENT_GENDER_FEMALE, motechId);
+        final List<FormError> formErrors = formValidator.validateIfPatientIsFemale(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
+        assertEquals(0, formErrors.size());
+    }
+
+    @Test
+    public void shouldRaiseFormErrorIfChildAgeIsAboveFive() {
+        String motechId = "1234567";
+        when(patientService.getAgeOfPatientByMotechId(motechId)).thenReturn(6);
+        List<FormError> formErrors = formValidator.validateIfPatientIsAChild(motechId);
+        assertEquals(formErrors.size(), 1);
+    }
+
+    private Patient setupPatient(String gender, String motechId) {
+        Patient patientMock = mock(Patient.class);
+        MRSPatient mrsPatient = mock(MRSPatient.class);
+        MRSPerson mrsPerson = mock(MRSPerson.class);
+        when(patientService.getPatientByMotechId(motechId)).thenReturn(patientMock);
+        when(patientMock.getMrsPatient()).thenReturn(mrsPatient);
+        when(mrsPatient.getPerson()).thenReturn(mrsPerson);
+        when(mrsPerson.getGender()).thenReturn(gender);
+        return patientMock;
     }
 }
