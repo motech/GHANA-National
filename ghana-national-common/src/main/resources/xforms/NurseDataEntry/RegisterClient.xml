@@ -811,8 +811,7 @@
                  relevant="/patientRegistration/format = 'PERS_VOICE' or /patientRegistration/format = 'HSE_VOICE'"
                  required="true()" type="xsd:time" visible="false()"/>
         <xf:bind action="show" id="reasonToJoin" nodeset="/patientRegistration/reasonToJoin"
-                 relevant="/patientRegistration/enroll = 'Y' and /patientRegistration/consent = 'Y' and
-            /patientRegistration/registrantType = 'OTHER'"
+                 relevant="/patientRegistration/enroll = 'Y' and /patientRegistration/consent = 'Y'"
                  required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="learnedFrom" nodeset="/patientRegistration/learnedFrom"
                  relevant="/patientRegistration/consent = 'Y'" required="true()" type="xsd:string"
