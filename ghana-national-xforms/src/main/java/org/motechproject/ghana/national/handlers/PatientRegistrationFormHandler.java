@@ -25,7 +25,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -114,7 +116,11 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
                      registerClientForm) {
         List<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), registerClientForm.getMmRegPhone()));
-        attributes.add(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), Utility.safeToString(registerClientForm.getNhisExpires())));
+
+        Date nhisExpirationDate = registerClientForm.getNhisExpires();
+        if (nhisExpirationDate != null) {
+            attributes.add(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(nhisExpirationDate)));
+        }
         attributes.add(new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), registerClientForm.getNhis()));
         attributes.add(new Attribute(PatientAttributes.INSURED.getAttribute(), Utility.safeToString(registerClientForm.getInsured())));
         return attributes;

@@ -23,6 +23,7 @@ import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -373,7 +374,8 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(savedPatient.getMrsPatient().getMotechId(), is(equalTo(motechId)));
         assertThat(mrsPerson.getGender(), is(equalTo(sex)));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
-                equalTo(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute())))).value(), is(equalTo(nhisExpDate.toString())));
+                equalTo(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute())))).value(),
+                is(equalTo(new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(nhisExpDate))));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.NHIS_NUMBER.getAttribute())))).value(), is(equalTo(nhisNumber)));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
