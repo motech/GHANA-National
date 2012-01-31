@@ -7,9 +7,9 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.mrs.model.*;
-import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,7 +46,7 @@ public class EncounterServiceTest{
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mrsUser);
         MRSPatient mrsPatient = new MRSPatient("45454");
 
-        MRSEncounter mrsEncounter = encounterService.persistEncounter(mrsPatient, staffId, facilityId, Constants.ENCOUNTER_PATIENTREGVISIT, DateUtil.today().toDate(), mrsObservations);
+        MRSEncounter mrsEncounter = encounterService.persistEncounter(mrsPatient, staffId, facilityId, Constants.ENCOUNTER_PATIENTREGVISIT, new Date(2011, 9, 1), mrsObservations);
 
         ArgumentCaptor<MRSEncounter> mrsEncounterArgumentCaptor = ArgumentCaptor.forClass(MRSEncounter.class);
         verify(mockAllEncounters).save(mrsEncounterArgumentCaptor.capture());
