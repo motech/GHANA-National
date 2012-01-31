@@ -199,6 +199,7 @@ public class PatientControllerTest {
     @Test
     public void shouldUpdatePatientWithEditedInfo() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
         String motechId = "12345";
+        String staffId="1234";
         final MRSPerson mrsPerson = new MRSPerson();
         mrsPerson.firstName("fname");
         mrsPerson.middleName("mname");
@@ -213,13 +214,17 @@ public class PatientControllerTest {
         String facilityName = "facilityName";
         patientForm.setFacilityId(facilityId);
         Facility mockFacility = mock(Facility.class);
+        patientForm.setStaffId(staffId);
+        MRSUser mockStaff = mock(MRSUser.class);
+        when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mockStaff);
+
         when(mockFacilityService.getFacility(patientForm.getFacilityId())).thenReturn(mockFacility);
         when(mockFacility.name()).thenReturn(facilityName);
         when(mockFacilityService.getFacility(facilityId)).thenReturn(mockFacility);
         when(mockPatientHelper.getPatientVO(patientForm, mockFacility)).thenReturn(mockPatient);
         String url = patientController.update(patientForm, mockBindingResult, new ModelMap());
         assertThat(PatientController.EDIT_PATIENT_URL, is(url));
-        verify(mockPatientService).updatePatient(eq(mockPatient));
+        verify(mockPatientService).updatePatient(eq(mockPatient),eq(staffId));
 
     }
 }

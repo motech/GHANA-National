@@ -78,7 +78,7 @@ public class PatientService {
         return allPatients.search(emptyToNull(name), emptyToNull(motechId));
     }
 
-    public String updatePatient(Patient patient) throws ParentNotFoundException {
+    public String updatePatient(Patient patient, String staffId) throws ParentNotFoundException {
         String savedPatientId = allPatients.update(patient);
         Patient savedPatient = getPatientByMotechId(savedPatientId);
         Relationship relationship = allPatients.getMotherRelationship(savedPatient.getMrsPatient().getPerson());
@@ -92,6 +92,7 @@ public class PatientService {
         if (relationship != null && StringUtils.isNotEmpty(patient.getParentId())) {
             updateRelationship(patient.getParentId(), savedPatient, relationship);
         }
+        encounterService.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(), Constants.ENCOUNTER_PATIENTEDITVISIT, DateUtil.today().toDate(), null);
         return savedPatientId;
     }
 

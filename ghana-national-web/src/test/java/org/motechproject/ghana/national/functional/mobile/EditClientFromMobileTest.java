@@ -1,7 +1,5 @@
 package org.motechproject.ghana.national.functional.mobile;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.functional.data.TestPatient;
 import org.motechproject.functional.framework.XformHttpClient;
@@ -16,6 +14,7 @@ import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,9 +22,7 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.testng.AssertJUnit.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,12 +34,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
     FacilityGenerator facilityGenerator;
     @Autowired
     PatientGenerator patientGenerator;
-    DataGenerator dataGenerator;
-
-    @Before
-    public void setUp() {
-        dataGenerator = new DataGenerator();
-    }
+    DataGenerator dataGenerator  = new DataGenerator();
 
     @Test
     public void shouldCheckForMandatoryFields() throws Exception {
@@ -92,7 +84,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
         assertNull(errorsMap.get("firstName"));
     }
 
-    @org.testng.annotations.Test
+    @Test
     public void shouldUpdatePatientIfNoErrorsAreFound() throws Exception {
         DataGenerator dataGenerator = new DataGenerator();
 

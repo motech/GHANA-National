@@ -201,12 +201,21 @@ public class PatientServiceTest {
         when(mockPatient.getParentId()).thenReturn(parentId);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
         when(mockMRSPatient.getPerson()).thenReturn(mockPerson);
+        MRSFacility mockMRSFacility = mock(MRSFacility.class);
+        when(mockMRSPatient.getFacility()).thenReturn(mockMRSFacility);
+        String facilityId = "13161";
+        when(mockMRSFacility.getId()).thenReturn(facilityId);
         when(mockAllPatients.getMotherRelationship(mockPerson)).thenReturn(null);
         final PatientService spyPatientService = spy(patientService);
         doReturn(mockPatient).when(spyPatientService).getPatientByMotechId(savedPatientId);
         doNothing().when(spyPatientService).createRelationship(parentId, savedPatientId);
 
-        spyPatientService.updatePatient(mockPatient);
+        String staffId = "468";
+        MRSEncounter mockMRSEncounter= mock(MRSEncounter.class);
+        when(mockEncounterService.persistEncounter(mockMRSPatient, staffId,facilityId, Constants.ENCOUNTER_PATIENTREGVISIT,new Date(),null)).thenReturn(mockMRSEncounter);
+
+
+        spyPatientService.updatePatient(mockPatient,"1234");
 
         verify(mockAllPatients).update(mockPatient);
         verify(spyPatientService).createRelationship(parentId, savedPatientId);
@@ -228,7 +237,15 @@ public class PatientServiceTest {
         doReturn(mockPatient).when(spyPatientService).getPatientByMotechId(savedPatientId);
         doNothing().when(spyPatientService).createRelationship(parentId, savedPatientId);
 
-        spyPatientService.updatePatient(mockPatient);
+        MRSFacility mockMRSFacility = mock(MRSFacility.class);
+        when(mockMRSPatient.getFacility()).thenReturn(mockMRSFacility);
+        String facilityId = "13161";
+        when(mockMRSFacility.getId()).thenReturn(facilityId);
+        String staffId = "468";
+        MRSEncounter mockMRSEncounter= mock(MRSEncounter.class);
+        when(mockEncounterService.persistEncounter(mockMRSPatient, staffId,facilityId, Constants.ENCOUNTER_PATIENTREGVISIT,new Date(),null)).thenReturn(mockMRSEncounter);
+
+        spyPatientService.updatePatient(mockPatient,staffId);
         verify(mockAllPatients).update(mockPatient);
         verify(mockAllPatients).voidMotherChildRelationship(mockPerson);
     }
@@ -256,13 +273,20 @@ public class PatientServiceTest {
         Patient mockMotherPatient = mock(Patient.class);
         when(mockMotherPatient.getMrsPatient()).thenReturn(mockMotherMRSPatient);
         when(mockMotherMRSPatient.getPerson()).thenReturn(mockMotherPerson);
+        MRSFacility mockMRSFacility = mock(MRSFacility.class);
+        when(mockMRSPatient.getFacility()).thenReturn(mockMRSFacility);
+        String facilityId = "13161";
+        when(mockMRSFacility.getId()).thenReturn(facilityId);
+        String staffId = "468";
+        MRSEncounter mockMRSEncounter= mock(MRSEncounter.class);
+        when(mockEncounterService.persistEncounter(mockMRSPatient, staffId,facilityId, Constants.ENCOUNTER_PATIENTREGVISIT,new Date(),null)).thenReturn(mockMRSEncounter);
 
         final PatientService spyPatientService = spy(patientService);
         doReturn(mockPatient).when(spyPatientService).getPatientByMotechId(savedPatientId);
         doReturn(mockMotherPatient).when(spyPatientService).getPatientByMotechId(parentId);
         doNothing().when(spyPatientService).createRelationship(parentId, savedPatientId);
 
-        spyPatientService.updatePatient(mockPatient);
+        spyPatientService.updatePatient(mockPatient,"");
 
         verify(mockAllPatients).update(mockPatient);
         verify(mockAllPatients).updateMotherChildRelationship(mockMotherPerson, mockChildPerson);

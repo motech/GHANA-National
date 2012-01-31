@@ -82,6 +82,7 @@ public class Constants {
     public static final String ENCOUNTER_ANCREGVISIT = "ANCREGVISIT";
     public static final String ENCOUNTER_CWCREGVISIT = "CWCREGVISIT";
     public static final String ENCOUNTER_PATIENTREGVISIT = "PATIENTREGVISIT";
+    public static final String ENCOUNTER_PATIENTEDITVISIT = "PATIENTEDITVISIT";
 
     //CWC Validators
     public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";

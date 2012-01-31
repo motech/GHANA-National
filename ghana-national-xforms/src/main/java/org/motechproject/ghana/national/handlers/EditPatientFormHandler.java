@@ -7,10 +7,12 @@ import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.mrs.model.*;
+import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
@@ -38,9 +40,6 @@ public class EditPatientFormHandler implements FormPublishHandler {
     @Autowired
     private FacilityService facilityService;
 
-    @Autowired
-    private StaffService staffService;
-    public static final String PATIENTEDITVISIT = "PATIENTEDITVISIT";
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.editPatient")
@@ -53,7 +52,6 @@ public class EditPatientFormHandler implements FormPublishHandler {
         MRSPatient patientFromDb = null;
         try {
             patientFromDb = updatePatient(form);
-            createEncounter(form, patientFromDb);
 
         } catch (Exception e) {
             log.error("Encountered exception while updating patient", e);
@@ -90,17 +88,8 @@ public class EditPatientFormHandler implements FormPublishHandler {
         person.birthDateEstimated(personFromDb.getBirthDateEstimated());
 
         Patient patient = new Patient(new MRSPatient(motechId, person, new MRSFacility(facilityId)), form.getMotherMotechId());
-        patientService.updatePatient(patient);
+        patientService.updatePatient(patient,form.getStaffId());
         return patientFromDb;
-    }
-
-    private void createEncounter(EditClientForm form, MRSPatient patientFromDb) {
-        MRSUser user = staffService.getUserByEmailIdOrMotechId(form.getStaffId());
-        String facilityIdWhereUserDetailsWasEdited = facilityService.getFacilityByMotechId(form.getUpdatePatientFacilityId()).getMrsFacilityId();
-        MRSEncounter mrsEncounter = new MRSEncounter(user.getPerson().getId(), user.getId(), facilityIdWhereUserDetailsWasEdited,
-                form.getDate(), patientFromDb.getId(), null, PATIENTEDITVISIT);
-
-        patientService.saveEncounter(mrsEncounter);
     }
 
     private Attribute replaceValueFromDbIfNotProvided(String attributeName, String attributeValue, List<Attribute> attributesFromDb) {

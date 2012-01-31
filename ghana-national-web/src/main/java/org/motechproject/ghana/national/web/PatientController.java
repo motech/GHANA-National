@@ -17,12 +17,15 @@ import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.form.SearchPatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.ghana.national.web.helper.PatientHelper;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.openmrs.patient.UnallowedIdentifierException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -93,14 +96,7 @@ public class PatientController {
         Facility facility = facilityService.getFacility(createPatientForm.getFacilityId());
         String staffId = createPatientForm.getStaffId();
         try {
-            if (StringUtils.isNotEmpty(staffId) && staffService.getUserByEmailIdOrMotechId(staffId) == null){
-                throw new StaffNotFoundException();
-            }
-//            else{
-//                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//                String name = auth.getName(); //get logged in username
-//                System.out.println("------"+name);
-//            }
+            processStaffId(staffId);
 
             if (createPatientForm.getRegistrationMode().equals(RegistrationType.USE_PREPRINTED_ID)) {
                 if (!motechIdVerhoeffValidator.isValid(createPatientForm.getMotechId())) {
@@ -130,6 +126,16 @@ public class PatientController {
         } catch (ParseException ignored) {
         }
         return SUCCESS;
+    }
+
+    private void processStaffId(String staffId) throws StaffNotFoundException {
+        if (StringUtils.isNotEmpty(staffId) && staffService.getUserByEmailIdOrMotechId(staffId) == null){
+            throw new StaffNotFoundException();
+        }else{
+            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String name = user.getUsername();
+            MRSUser staff = staffService.getUserByEmailIdOrMotechId(name);
+        }
     }
 
     private String populateView(ModelMap modelMap, String motechId) throws ParseException {
@@ -179,8 +185,10 @@ public class PatientController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(PatientForm patientForm, BindingResult bindingResult, ModelMap modelMap) {
         try {
-            String motechId = patientService.updatePatient(patientHelper.getPatientVO(patientForm, facilityService.getFacility(patientForm.getFacilityId()))
-            );
+            String staffId = patientForm.getStaffId();
+            processStaffId(staffId);
+            String motechId = patientService.updatePatient(patientHelper.getPatientVO(patientForm,
+                    facilityService.getFacility(patientForm.getFacilityId())), staffId);
             modelMap.put("successMessage", "Patient edited successfully.");
             return populateView(modelMap, motechId);
         } catch (UnallowedIdentifierException e) {
@@ -190,6 +198,9 @@ public class PatientController {
             return NEW_PATIENT_URL;
         } catch (ParentNotFoundException e) {
             handleError(bindingResult, modelMap, messageSource.getMessage("patient_parent_not_found", null, Locale.getDefault()));
+            return NEW_PATIENT_URL;
+        }catch (StaffNotFoundException e) {
+            handleError(bindingResult, modelMap, messageSource.getMessage("staff_id_not_found", null, Locale.getDefault()));
             return NEW_PATIENT_URL;
         }
     }
