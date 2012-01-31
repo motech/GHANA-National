@@ -1,8 +1,5 @@
 package org.motechproject.ghana.national.service;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -24,20 +21,16 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
-import org.motechproject.util.DateTimeSourceUtil;
 import org.motechproject.util.DateUtil;
-import org.motechproject.util.datetime.DateTimeSource;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TimeZone;
 
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -75,25 +68,6 @@ public class CareServiceTest {
         ReflectionTestUtils.setField(careService, "patientService", mockPatientService);
         ReflectionTestUtils.setField(careService, "allEncounters", mockAllEncounters);
         ReflectionTestUtils.setField(careService, "openMRSConceptAdaptor", mockOpenMRSConceptAdaptor);
-        final DateTime now = DateTime.now();
-
-        DateTimeSourceUtil.SourceInstance = new DateTimeSource() {
-            @Override
-            public DateTimeZone timeZone() {
-                TimeZone tz = Calendar.getInstance().getTimeZone();
-                return DateTimeZone.forTimeZone(tz);
-            }
-
-            @Override
-            public DateTime now() {
-                return now;
-            }
-
-            @Override
-            public LocalDate today() {
-                return DateUtil.today();
-            }
-        };
     }
 
     @Test
@@ -375,7 +349,7 @@ public class CareServiceTest {
         assertThat(encounterThatWasSaved.getProvider().getId(), is(equalTo(staffPersonId)));
         assertThat(encounterThatWasSaved.getCreator().getId(), is(equalTo(staffId)));
         assertThat(encounterThatWasSaved.getFacility().getId(), is(equalTo(facilityId)));
-        assertThat(encounterThatWasSaved.getDate(), is(equalTo(registrationDate)));
+        assertThat(encounterThatWasSaved.getDate().toString(), is(equalTo(registrationDate.toString())));
         assertThat(encounterThatWasSaved.getPatient().getId(), is(equalTo(patientId)));
         assertThat(encounterThatWasSaved.getEncounterType(), is(equalTo(encounterType)));
     }

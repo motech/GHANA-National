@@ -89,8 +89,8 @@ public class CareService {
     }
 
     private HashSet<MRSObservation> registerPregnancy(ANCVO ancVO) {
-        final MRSObservation observation = new MRSObservation(ancVO.getRegistrationDate(), Constants.CONCEPT_PREGNANCY, null);
         final Date date = new Date();
+        final MRSObservation observation = new MRSObservation(date, Constants.CONCEPT_PREGNANCY, null);
         if (ancVO.getEstimatedDateOfDelivery() != null) {
             observation.addDependantObservation(new MRSObservation<Date>(date, Constants.CONCEPT_EDD, ancVO.getEstimatedDateOfDelivery()));
         }
@@ -98,7 +98,9 @@ public class CareService {
             observation.addDependantObservation(new MRSObservation<Boolean>(date, Constants.CONCEPT_CONFINEMENT_CONFIRMED, ancVO.getDeliveryDateConfirmed()));
         }
         observation.addDependantObservation(new MRSObservation<Boolean>(date, Constants.CONCEPT_PREGNANCY_STATUS, true));
-        return new HashSet<MRSObservation>() {{ add(observation); }};
+        return new HashSet<MRSObservation>() {{
+            add(observation);
+        }};
     }
 
     Set<MRSObservation> addObservationsOnANCHistory(ANCCareHistoryVO ancCareHistoryVO) {
