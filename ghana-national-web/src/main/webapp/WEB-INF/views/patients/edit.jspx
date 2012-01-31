@@ -24,6 +24,7 @@
 <div class="formlyAlerts">
     <form:errors path="parentId" element="div" cssClass="formlyInvalid formlyAlert" cssStyle="display: block;"/>
 </div>
+<spring:message code="staff_id" var="staff_id" htmlEscape="false"/>
 <spring:message code="patient_registration_mode" var="patient_registration_mode" htmlEscape="false"/>
 <spring:message code="patient_registration_mode_1_label" var="patient_registration_mode_1" htmlEscape="false"/>
 <spring:message code="patient_registration_mode_2_label" var="patient_registration_mode_2" htmlEscape="false"/>
@@ -82,6 +83,14 @@
 <spring:message code="phone_number_incorrect_msg" var="phone_number_incorrect_msg"
                 htmlEscape="false"/>
 <spring:message code="patient_phone_number" var="patient_phone_number" htmlEscape="false"/>
+
+    <div>
+        <label for="staffId" class="formLabel"><spring:message code="staff_id"/> :</label>
+        <form:input path="staffId" size="20"/>
+                <span id='staffIdError' class='alertText formlyInvalid formlyAlert hide'>
+                        ${fn:escapeXml(staff_id)} ${fn:escapeXml(required_msg)}
+                </span>
+    </div>
 
     <div class="form-width-60">
         <div class="form-field">

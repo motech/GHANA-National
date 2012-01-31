@@ -9,6 +9,7 @@ import java.util.Date;
 public class PatientForm {
     private RegistrationType registrationMode;
 
+    private String staffId;
     private String motechId;
     private String parentId;
     private PatientType typeOfPatient;
@@ -34,6 +35,14 @@ public class PatientForm {
     }
 
     public PatientForm() {
+    }
+
+    public String getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
     }
 
     public PatientForm(Patient patient) {

@@ -23,6 +23,7 @@ import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -91,7 +92,8 @@ public class PatientRegistrationFormHandlerTest {
         MotechEvent event = new MotechEvent("subject", parameters);
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
-        doReturn(motechId).when(mockPatientService).registerPatient(patientArgumentCaptor.capture());
+        ArgumentCaptor<String> staffIdCaptor = ArgumentCaptor.forClass(String.class);
+        doReturn(motechId).when(mockPatientService).registerPatient(patientArgumentCaptor.capture(),staffIdCaptor.capture());
 
         Facility facility = mock(Facility.class);
         when(facility.mrsFacilityId()).thenReturn(facilityId);
@@ -157,7 +159,7 @@ public class PatientRegistrationFormHandlerTest {
         RegistrationType registrationMode = RegistrationType.USE_PREPRINTED_ID;
         String sex = "M";
         String subDistrict = "SubDistrict";
-        String phoneNumber = "0123456789";
+        String phoneNumber = "0123123123";
         PatientType patientType = PatientType.CHILD_UNDER_FIVE;
 
         final Date registartionDate = new Date(2011, 9, 1);
@@ -200,7 +202,7 @@ public class PatientRegistrationFormHandlerTest {
         when(facility.mrsFacilityId()).thenReturn(facilityId);
 
 
-        when(mockPatientService.registerPatient(any(Patient.class))).thenReturn(motechId);
+        when(mockPatientService.registerPatient(any(Patient.class),any(String.class))).thenReturn(motechId);
         doNothing().when(mockCareService).enroll(any(CwcVO.class));
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
@@ -211,7 +213,7 @@ public class PatientRegistrationFormHandlerTest {
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
         assertCWCRegistration(motechFacilityId, facilityId, motechId, registartionDate, lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, staffId, lastPenta, lastOPV, cwcVO, mobileMidwifeEnrollment);
-        assertMobileMidwifeRegistration(mobileMidwifeEnrollment, staffId, motechFacilityId, motechId, serviceType, reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, phoneNumber, phoneOwnership, consent);
+        assertMobileMidwifeRegistration(mobileMidwifeEnrollment, staffId, motechFacilityId, motechId, serviceType, reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, mmRegPhone, phoneOwnership, consent);
     }
 
     @Test
@@ -237,7 +239,7 @@ public class PatientRegistrationFormHandlerTest {
         RegistrationType registrationMode = RegistrationType.USE_PREPRINTED_ID;
         String sex = "M";
         String subDistrict = "SubDistrict";
-        String phoneNumber = "0123456789";
+        String phoneNumber = "0123123123";
         PatientType patientType = PatientType.PREGNANT_MOTHER;
         final String staffId = "456";
 
@@ -278,7 +280,7 @@ public class PatientRegistrationFormHandlerTest {
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         when(facility.mrsFacilityId()).thenReturn(facilityId);
 
-        when(mockPatientService.registerPatient(any(Patient.class))).thenReturn(motechId);
+        when(mockPatientService.registerPatient(any(Patient.class),any(String.class))).thenReturn(motechId);
 
         doNothing().when(mockCareService).enroll(any(ANCVO.class));
         patientRegistrationFormHandler.handleFormEvent(event);
@@ -291,7 +293,7 @@ public class PatientRegistrationFormHandlerTest {
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
         assertANCRegistration(facilityId, motechId, expDeliveryDate, deliveryDateConfirmed, height, gravida, parity, lastIPTDate, lastTTDate, lastIPT, lastTT, staffId, ancVO);
-        assertMobileMidwifeRegistration(mobileMidwifeEnrollment, staffId, motechFacilityId, motechId, serviceType, reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, phoneNumber, phoneOwnership, consent);
+        assertMobileMidwifeRegistration(mobileMidwifeEnrollment, staffId, motechFacilityId, motechId, serviceType, reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, mmRegPhone, phoneOwnership, consent);
     }
 
     private RegisterClientForm createRegisterClientFormForCWCEnrollment(String address, Date dateofBirth, String district, Boolean birthDateEstimated, String motechFacilityId, String firstName, Boolean insured, String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId, String region, RegistrationType registrationMode, String sex, String subDistrict, String phoneNumber, PatientType patientType, Date registartionDate, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, String staffId, int lastPenta, int lastOPV, int lastIPTi) {
@@ -352,7 +354,7 @@ public class PatientRegistrationFormHandlerTest {
         registerClientForm.setSex(sex);
         registerClientForm.setSubDistrict(subDistrict);
         registerClientForm.setRegistrantType(patientType);
-        registerClientForm.setMmRegPhone(phoneNumber);
+        registerClientForm.setPhoneNumber(phoneNumber);
         return registerClientForm;
     }
 
@@ -373,7 +375,8 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(savedPatient.getMrsPatient().getMotechId(), is(equalTo(motechId)));
         assertThat(mrsPerson.getGender(), is(equalTo(sex)));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
-                equalTo(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute())))).value(), is(equalTo(nhisExpDate.toString())));
+                equalTo(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute())))).value(),
+                is(equalTo(new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(nhisExpDate))));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.NHIS_NUMBER.getAttribute())))).value(), is(equalTo(nhisNumber)));
         assertThat(((Attribute) selectUnique(mrsPerson.getAttributes(), having(on(Attribute.class).name(),
@@ -425,7 +428,7 @@ public class PatientRegistrationFormHandlerTest {
         registerClientForm.setTimeOfDay(timeOfDay);
         registerClientForm.setLanguage(language);
         registerClientForm.setLearnedFrom(learnedFrom);
-        registerClientForm.setPhoneNumber(phoneNumber);
+        registerClientForm.setMmRegPhone(phoneNumber);
         registerClientForm.setPhoneOwnership(phoneOwnership);
         registerClientForm.setConsent(consent);
     }

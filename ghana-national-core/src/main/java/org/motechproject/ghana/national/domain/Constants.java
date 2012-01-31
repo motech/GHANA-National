@@ -5,8 +5,6 @@ import org.motechproject.model.Time;
 public class Constants {
     //security roles
     public static final String SECURITY_ROLE_SUPER = "System Developer";
-    public static final String SECURITY_ROLE_PROVIDER = "Provider";
-    public static final String SECURITY_ROLE_CALL_CENTER = "Create/Edit MoTeCH Data";
 
     //person attributes
     public static final String PERSON_ATTRIBUTE_TYPE_EMAIL = "Email";
@@ -41,8 +39,6 @@ public class Constants {
     public static final String PATTERN_YYYY_MM_DD = "yyyy-MM-dd";
 
     public static final String NOT_FOUND = "not found";
-
-
 
     public static final String CARE_HISTORIES = "careHistories";
     public static final String LAST_IPTI = "lastIPTi";
@@ -84,6 +80,9 @@ public class Constants {
     public static final String ENCOUNTER_CWCREGVISIT = "CWCREGVISIT";
     public static final String ENCOUNTER_PATIENTHISTORY = "PATIENTHISTORY";
     public static final String ENCOUNTER_PREGREGVISIT = "PREGREGVISIT";
+    public static final String ENCOUNTER_PATIENTREGVISIT = "PATIENTREGVISIT";
+    public static final String ENCOUNTER_PATIENTEDITVISIT = "PATIENTEDITVISIT";
+
     //CWC Validators
     public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
     public static final String CHILD_AGE_PARAMETER = "childAge";

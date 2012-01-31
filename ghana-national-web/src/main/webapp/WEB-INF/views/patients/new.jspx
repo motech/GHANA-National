@@ -23,6 +23,7 @@
         <spring:message code="patient_registration_mode_2_value" var="patient_registration_mode_2_value"
                         htmlEscape="false"/>
         <spring:message code="patient_motech_id" var="patient_motech_id" htmlEscape="false"/>
+        <spring:message code="staff_id" var="staff_id" htmlEscape="false"/>
         <spring:message code="patient_type" var="patient_type" htmlEscape="false"/>
         <spring:message code="patient_mothers_motech_id" var="patient_mothers_motech_id" htmlEscape="false"/>
         <spring:message code="patient_first_name" var="patient_first_name" htmlEscape="false"/>
@@ -72,6 +73,14 @@
         <spring:message code="incorrect_msg" var="incorrect_msg" htmlEscape="false"/>
         <spring:message code="phone_number_incorrect_msg" var="phone_number_incorrect_msg" htmlEscape="false"/>
         <spring:message code="patient_phone_number" var="patient_phone_number" htmlEscape="false"/>
+
+        <div>
+            <label for="staffId" class="formLabel"><spring:message code="staff_id"/> :</label>
+            <form:input path="staffId" size="20"/>
+            <span id='staffIdError' class='alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(staff_id)} ${fn:escapeXml(required_msg)}
+            </span>
+        </div>
 
         <div class="form-field">
             <label class="formLabel" for="registrationMode">${fn:escapeXml(patient_registration_mode)}:</label>
