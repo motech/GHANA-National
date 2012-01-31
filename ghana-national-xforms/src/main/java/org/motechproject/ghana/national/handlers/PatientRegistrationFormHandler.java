@@ -115,7 +115,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             (RegisterClientForm
                      registerClientForm) {
         List<Attribute> attributes = new ArrayList<Attribute>();
-        attributes.add(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), registerClientForm.getMmRegPhone()));
+        attributes.add(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), registerClientForm.getPhoneNumber()));
 
         Date nhisExpirationDate = registerClientForm.getNhisExpires();
         if (nhisExpirationDate != null) {
