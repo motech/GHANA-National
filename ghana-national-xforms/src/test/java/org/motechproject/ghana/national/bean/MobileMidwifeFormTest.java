@@ -41,7 +41,7 @@ public class MobileMidwifeFormTest {
         assertThat(actual.getTimeOfDay(), is(exptectedForm.getTimeOfDay()));
         assertThat(actual.getLanguage(), is(exptectedForm.getLanguage()));
         assertThat(actual.getLearnedFrom(), is(exptectedForm.getLearnedFrom()));
-        assertThat(actual.getPhoneNumber(), is(exptectedForm.getPhoneNumber()));
+        assertThat(actual.getPhoneNumber(), is(exptectedForm.getMmRegPhone()));
         assertThat(actual.getPhoneOwnership(), is(exptectedForm.getPhoneOwnership()));
         assertThat(actual.getConsent(), is(exptectedForm.getConsent()));
     }

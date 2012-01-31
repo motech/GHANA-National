@@ -11,7 +11,7 @@ public abstract class AbstractMobileMidWifeForm extends FormBean {
     private ServiceType serviceType;
     private PhoneOwnership phoneOwnership;
     @RegEx(pattern = "0[0-9]{9}")
-    private String phoneNumber;
+    private String mmRegPhone;
     @RegEx(pattern = "([A-Z]+_VOICE|[A-Z]+_TEXT)")
     private String format;
     private DayOfWeek dayOfWeek;
@@ -42,12 +42,12 @@ public abstract class AbstractMobileMidWifeForm extends FormBean {
         this.phoneOwnership = phoneOwnership;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getMmRegPhone() {
+        return mmRegPhone;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setMmRegPhone(String mmRegPhone) {
+        this.mmRegPhone = mmRegPhone;
     }
 
     public String getFormat() {
@@ -108,7 +108,7 @@ public abstract class AbstractMobileMidWifeForm extends FormBean {
 
     public MobileMidwifeEnrollment fillEnrollment(MobileMidwifeEnrollment enrollment) {
         return enrollment.setServiceType(getServiceType()).setPhoneOwnership(getPhoneOwnership())
-                .setPhoneNumber(getPhoneNumber()).setMedium(getMediumStripingOwnership()).setDayOfWeek(getDayOfWeek())
+                .setPhoneNumber(getMmRegPhone()).setMedium(getMediumStripingOwnership()).setDayOfWeek(getDayOfWeek())
                 .setTimeOfDay(getTimeOfDay()).setLanguage(getLanguage()).setLearnedFrom(getLearnedFrom())
                 .setReasonToJoin(getReasonToJoin()).setMessageStartWeek(getMessageStartWeek());
     }

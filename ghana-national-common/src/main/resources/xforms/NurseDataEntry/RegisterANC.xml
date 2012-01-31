@@ -24,7 +24,7 @@
                 <consent/>
                 <serviceType/>
                 <phoneOwnership/>
-                <phoneNumber/>
+                <mmRegPhone/>
                 <format/>
                 <language/>
                 <dayOfWeek/>
@@ -525,7 +525,7 @@
                  relevant="/ANCRegistration/consent = Y" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="phoneOwnership" nodeset="/ANCRegistration/phoneOwnership"
                  relevant="/ANCRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="phoneNumber" nodeset="/ANCRegistration/phoneNumber"
+        <xf:bind action="show" id="mmRegPhone" nodeset="/ANCRegistration/mmRegPhone"
                  relevant="/ANCRegistration/phoneOwnership = 'PERSONAL' or /ANCRegistration/phoneOwnership = 'HOUSEHOLD'"
                  required="true()"
                  type="xsd:int" visible="false()" constraint=". &lt;= 999999999"
@@ -724,7 +724,7 @@
                 <xf:value>PUBLIC</xf:value>
             </xf:item>
         </xf:select1>
-        <xf:input bind="phoneNumber">
+        <xf:input bind="mmRegPhone">
             <xf:label>Phone number</xf:label>
         </xf:input>
         <xf:select1 bind="format">

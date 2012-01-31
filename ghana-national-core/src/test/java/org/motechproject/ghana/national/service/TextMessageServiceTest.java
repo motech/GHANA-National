@@ -32,7 +32,6 @@ public class TextMessageServiceTest {
         textMessageService = new TextMessageService();
         setField(textMessageService, "allConfigurations", mockAllConfigurations);
         setField(textMessageService, "smsService", mockSMSService);
-
     }
 
     @Test
@@ -57,7 +56,7 @@ public class TextMessageServiceTest {
         when(mockAllConfigurations.getConfigurationValue("REGISTER_SUCCESS_SMS")).thenReturn(configuration);
 
         String someRecipient = "someRecipient";
-        textMessageService.sendSMS(someRecipient, mockPatient, "REGISTER_SUCCESS_SMS");
+        textMessageService.sendSMS(someRecipient, motechId , mockPatient, "REGISTER_SUCCESS_SMS");
         ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockSMSService).sendSMS(eq(someRecipient), messageCaptor.capture());
         String message = messageCaptor.getValue();

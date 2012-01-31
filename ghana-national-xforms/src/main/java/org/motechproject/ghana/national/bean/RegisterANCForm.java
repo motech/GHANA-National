@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.bean;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.ANCCareHistory;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.validator.field.MotechId;
@@ -16,7 +17,6 @@ import java.util.List;
 
 public class RegisterANCForm extends MobileMidWifeIncludeForm {
     public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
-    public static final String MOTECH_ID_PATTERN = "[0-9]{7}";
 
     @Required
     @MaxLength(size = 50)
@@ -34,7 +34,7 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
     private RegistrationToday regDateToday;
 
     @Required
-    @RegEx(pattern = MOTECH_ID_PATTERN)
+    @RegEx(pattern = Constants.MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
 
@@ -66,9 +66,6 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
 
     @Required
     private String ancRegNumber;
-
-    @RegEx(pattern = "0[0-9]{9}")
-    private String regPhone;
 
     private String addCareHistory;
 
@@ -199,14 +196,6 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
 
     public void setAncRegNumber(String ancRegNumber) {
         this.ancRegNumber = ancRegNumber;
-    }
-
-    public String getRegPhone() {
-        return regPhone;
-    }
-
-    public void setRegPhone(String regPhone) {
-        this.regPhone = regPhone;
     }
 
     public String getAddCareHistory() {

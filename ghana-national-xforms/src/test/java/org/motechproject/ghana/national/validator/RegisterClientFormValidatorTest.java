@@ -21,16 +21,9 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.domain.Constants.CHILD_AGE_ERR_MSG;
-import static org.motechproject.ghana.national.domain.Constants.CHILD_AGE_PARAMETER;
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
 
 public class RegisterClientFormValidatorTest {
@@ -55,7 +48,7 @@ public class RegisterClientFormValidatorTest {
     }
 
     @Test
-    public void shouldValidateIfAPatientIsAvailableWithIdAsMothersMotechId() {
+    public void shouldValidateIfAPatientIsAvailableWithIdAsMothersMotechIdIfMotherMotechIdIsGiven() {
         String mothersMotechId = "100";
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(mothersMotechId);
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
@@ -64,17 +57,8 @@ public class RegisterClientFormValidatorTest {
         when(mockPatientService.getPatientByMotechId(mothersMotechId)).thenReturn(patientsMotherMock);
         assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
 
-        when(mockPatientService.getPatientByMotechId(mothersMotechId)).thenReturn(null);
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("motherMotechId", NOT_FOUND)));
-    }
-
-    @Test
-    public void shouldReturnErrorIfPatientTypeIsChildAndMothersMotechIdIsNotPresent() {
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(null);
-        when(mockRegisterClientForm.getDateOfBirth()).thenReturn(new Date(99,9,9));
-        when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("motherMotechId", NOT_FOUND)));
-        verify(mockPatientService, never()).getPatientByMotechId(Matchers.<String>any());
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
     }
 
     @Test

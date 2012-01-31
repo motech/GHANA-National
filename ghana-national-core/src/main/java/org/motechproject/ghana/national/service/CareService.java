@@ -47,7 +47,7 @@ public class CareService {
                 Constants.ENCOUNTER_ANCREGVISIT, registrationDate, prepareObservations(ancVO));
     }
 
-    private MRSEncounter persistEncounter(String patientMotechId, String staffId, String facilityId, String encounterType, Date registrationDate,
+    public MRSEncounter persistEncounter(String patientMotechId, String staffId, String facilityId, String encounterType, Date registrationDate,
                                           Set<MRSObservation> mrsObservations) {
         MRSUser user = staffService.getUserByEmailIdOrMotechId(staffId);
         String staffProviderId = user.getPerson().getId();

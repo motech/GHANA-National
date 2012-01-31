@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterClientForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.domain.PatientType;
@@ -24,14 +25,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
 @Component
 public class PatientRegistrationFormHandler implements FormPublishHandler {
-
-    public static final String FORM_BEAN = "formBean";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -56,7 +57,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
         try {
-            RegisterClientForm registerClientForm = (RegisterClientForm) event.getParameters().get(FORM_BEAN);
+            RegisterClientForm registerClientForm = (RegisterClientForm) event.getParameters().get(Constants.FORM_BEAN);
 
             MRSPerson mrsPerson = new MRSPerson().
                     firstName(registerClientForm.getFirstName()).
@@ -76,7 +77,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
 
             if (registerClientForm.isEnrolledForMobileMidwifeProgram()) {
                 MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment(patientMotechId);
-                mobileMidwifeEnrollment.setFacilityId(facilityId);
+                mobileMidwifeEnrollment.setFacilityId(registerClientForm.getFacilityId());
                 mobileMidwifeService.register(mobileMidwifeEnrollment);
             }
 
@@ -100,7 +101,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
 
             }
             if (registerClientForm.getSender() != null) {
-                textMessageService.sendSMS(registerClientForm.getSender(), patient, "REGISTER_SUCCESS_SMS");
+                textMessageService.sendSMS(registerClientForm.getSender(), patientMotechId, patient, "REGISTER_SUCCESS_SMS");
             }
         } catch (Exception e)
 
@@ -114,8 +115,12 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             (RegisterClientForm
                      registerClientForm) {
         List<Attribute> attributes = new ArrayList<Attribute>();
-        attributes.add(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), registerClientForm.getPhoneNumber()));
-        attributes.add(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), Utility.safeToString(registerClientForm.getNhisExpires())));
+        attributes.add(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), registerClientForm.getMmRegPhone()));
+
+        Date nhisExpirationDate = registerClientForm.getNhisExpires();
+        if (nhisExpirationDate != null) {
+            attributes.add(new Attribute(PatientAttributes.NHIS_EXPIRY_DATE.getAttribute(), new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).format(nhisExpirationDate)));
+        }
         attributes.add(new Attribute(PatientAttributes.NHIS_NUMBER.getAttribute(), registerClientForm.getNhis()));
         attributes.add(new Attribute(PatientAttributes.INSURED.getAttribute(), Utility.safeToString(registerClientForm.getInsured())));
         return attributes;

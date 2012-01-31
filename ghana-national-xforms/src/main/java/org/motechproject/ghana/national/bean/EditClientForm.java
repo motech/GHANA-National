@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
@@ -13,11 +14,10 @@ import java.util.Date;
 public class EditClientForm extends FormBean {
     public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
     public static final String NAME_PATTERN = "[0-9.\\-\\s]*[a-zA-Z]?[a-zA-Z0-9.\\-\\s]*";
-    public static final String MOTECH_ID_PATTERN = "[0-9]{7}";
 
-    @Required @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
+    @Required @RegEx(pattern = Constants.MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
-    @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
+    @RegEx(pattern = Constants.MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motherMotechId;
     @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
     private String firstName;

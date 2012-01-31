@@ -65,7 +65,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
 
     private List<FormError> validateMotherMotechId(String motherMotechId, PatientType patientType) {
         if (PatientType.CHILD_UNDER_FIVE.equals(patientType)) {
-            if (motherMotechId == null || patientService.getPatientByMotechId(motherMotechId) == null) {
+            if (motherMotechId != null && patientService.getPatientByMotechId(motherMotechId) == null) {
                 return new ArrayList<FormError>() {{
                     add(new FormError("motherMotechId", NOT_FOUND));
                 }};

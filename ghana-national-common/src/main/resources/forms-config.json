@@ -43,6 +43,12 @@
                 "fileName":"ClientDeath.xml",
                 "bean":"org.motechproject.ghana.national.bean.ClientDeathForm",
                 "validator":"org.motechproject.ghana.national.validator.ClientDeathFormValidator"
+            },
+            {
+                "name":"deliveryNotify",
+                "fileName":"DeliveryNotification.xml",
+                "bean":"org.motechproject.ghana.national.bean.DeliveryNotificationForm",
+                "validator":"org.motechproject.ghana.national.validator.DeliveryNotificationFormValidator"
             }
         ]
     }

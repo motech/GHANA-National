@@ -59,8 +59,10 @@ public class XformHttpClient {
         Vector<FormData> formsList = new Vector<FormData>();
         for (String string : xmlStrings) {
             final FormDef formDef = EpihandyXform.getFormDef(EpihandyXform.getDocument(new StringReader(string)));
-            studyDef.addForm(formDef);
-            final FormData formData = new FormData(formDef);
+            hackDynamicLists(formDef);
+
+            FormData formData = new FormData(formDef);
+            studyDef.addForm(formData.getDef());
             hackDate(formData, "/editPatient/date");
             hackDate(formData, "/editPatient/nhisExpires");
             hackDate(formData, "/ANCRegistration/date");
@@ -80,11 +82,58 @@ public class XformHttpClient {
             hackDate(formData, "/patientRegistration/expDeliveryDate");
             hackDate(formData, "/ANCRegistration/lastTTDate");
             hackDate(formData, "/ANCRegistration/lastIPTDate");
+            hackDate(formData, "/deliveryNotify/datetime");
             formsList.add(formData);
         }
         final StudyData studyData = new StudyData(studyDef);
         studyData.addForms(formsList);
         studyData.write(dataOutputStream);
+    }
+
+    private static void assignOptionsFromDynamicDefs(FormDef formDef, List<DynamicOptionDependency> dynamicOptionDependencies) {
+        if (dynamicOptionDependencies.size() > 0) {
+            DynamicOptionDependency dependency = dynamicOptionDependencies.remove(0);
+            boolean independent = true;
+            for (DynamicOptionDependency dynamicOptionDependency : dynamicOptionDependencies) {
+                if (dependency.dependsOn == dynamicOptionDependency.getId()) {
+                    independent = false;
+                    break;
+                }
+            }
+            if (independent) {
+                DynamicOptionDef dynamicOptions = formDef.getDynamicOptions(dependency.getDependsOn());
+                QuestionDef dependsOnQuestion = formDef.getQuestion(dependency.getDependsOn());
+                Vector dependsOnQuestionOptions = dependsOnQuestion.getOptions();
+                String dependsOnQuestionDefaultValue = dependsOnQuestion.getDefaultValue();
+                byte parentOptionId = -1;
+                for (Object dependsOnQuestionOption : dependsOnQuestionOptions) {
+                    OptionDef dependsOnQuestionOption1 = (OptionDef) dependsOnQuestionOption;
+                    if (dependsOnQuestionOption1.getVariableName().equals(dependsOnQuestionDefaultValue)) {
+                        parentOptionId = dependsOnQuestionOption1.getId();
+                        break;
+                    }
+                }
+                formDef.getQuestion(dependency.getId()).setOptions((parentOptionId != -1) ? dynamicOptions.getParentToChildOptions().get(parentOptionId) : new Vector());
+            } else {
+                dynamicOptionDependencies.add(dependency);
+            }
+            assignOptionsFromDynamicDefs(formDef, dynamicOptionDependencies);
+        }
+    }
+
+    private static void hackDynamicLists(FormDef formDef) throws ParseException {
+        Hashtable dynamicOptions = formDef.getDynamicOptions();
+        if (dynamicOptions != null) {
+
+            List<DynamicOptionDependency> dependencies = new ArrayList<DynamicOptionDependency>();
+
+            for (Object entry : dynamicOptions.entrySet()) {
+                Map.Entry<Byte, DynamicOptionDef> dynamicOptionsDefEntry = (Map.Entry<Byte, DynamicOptionDef>) entry;
+                dependencies.add(new DynamicOptionDependency(dynamicOptionsDefEntry.getValue().getQuestionId(), dynamicOptionsDefEntry.getKey()));
+            }
+            assignOptionsFromDynamicDefs(formDef, dependencies);
+
+        }
     }
 
     private static void hackDate(FormData formData, String variableName) throws ParseException {
@@ -217,6 +266,32 @@ public class XformHttpClient {
             } finally {
                 IOUtils.closeQuietly(writer);
             }
+        }
+    }
+
+    public static class DynamicOptionDependency {
+        private byte id;
+        private byte dependsOn;
+
+        public DynamicOptionDependency(byte id, byte dependsOn) {
+            this.id = id;
+            this.dependsOn = dependsOn;
+        }
+
+        public byte getId() {
+            return id;
+        }
+
+        public byte getDependsOn() {
+            return dependsOn;
+        }
+
+        @Override
+        public String toString() {
+            return "DynamicOptionDependency{" +
+                    "id=" + id +
+                    ", dependsOn=" + dependsOn +
+                    '}';
         }
     }
 }

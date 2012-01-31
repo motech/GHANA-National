@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.CareService;
@@ -19,8 +20,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CWCRegistrationFormHandler implements FormPublishHandler {
-    public static final String FORM_BEAN = "formBean";
-    static final String CWCREGVISIT = "CWCREGVISIT";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -37,30 +36,35 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
-        RegisterCWCForm registerCWCForm = (RegisterCWCForm) event.getParameters().get(FORM_BEAN);
+        RegisterCWCForm registerCWCForm = null;
+        try {
+            registerCWCForm = (RegisterCWCForm) event.getParameters().get(Constants.FORM_BEAN);
 
-        Facility facility = facilityService.getFacilityByMotechId(registerCWCForm.getFacilityId());
+            Facility facility = facilityService.getFacilityByMotechId(registerCWCForm.getFacilityId());
 
-        careService.enroll(new CwcVO(registerCWCForm.getStaffId(),
-                facility.getMrsFacilityId(),
-                registerCWCForm.getRegistrationDate(),
-                registerCWCForm.getMotechId(),
-                registerCWCForm.getCWCCareHistories(), registerCWCForm.getBcgDate(),
-                registerCWCForm.getLastVitaminADate(),
-                registerCWCForm.getMeaslesDate(),
-                registerCWCForm.getYellowFeverDate(),
-                registerCWCForm.getLastPentaDate(),
-                registerCWCForm.getLastPenta(),
-                registerCWCForm.getLastOPVDate(),
-                registerCWCForm.getLastOPV(),
-                registerCWCForm.getLastIPTiDate(),
-                registerCWCForm.getLastIPTi(),
-                registerCWCForm.getSerialNumber(),
-                registerCWCForm.getAddHistory()));
+            careService.enroll(new CwcVO(registerCWCForm.getStaffId(),
+                    facility.getMrsFacilityId(),
+                    registerCWCForm.getRegistrationDate(),
+                    registerCWCForm.getMotechId(),
+                    registerCWCForm.getCWCCareHistories(), registerCWCForm.getBcgDate(),
+                    registerCWCForm.getLastVitaminADate(),
+                    registerCWCForm.getMeaslesDate(),
+                    registerCWCForm.getYellowFeverDate(),
+                    registerCWCForm.getLastPentaDate(),
+                    registerCWCForm.getLastPenta(),
+                    registerCWCForm.getLastOPVDate(),
+                    registerCWCForm.getLastOPV(),
+                    registerCWCForm.getLastIPTiDate(),
+                    registerCWCForm.getLastIPTi(),
+                    registerCWCForm.getSerialNumber(),
+                    registerCWCForm.getAddHistory()));
 
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = registerCWCForm.createMobileMidwifeEnrollment();
-        if(mobileMidwifeEnrollment != null){
-            mobileMidwifeService.register(mobileMidwifeEnrollment);
+            MobileMidwifeEnrollment mobileMidwifeEnrollment = registerCWCForm.createMobileMidwifeEnrollment();
+            if (mobileMidwifeEnrollment != null) {
+                mobileMidwifeService.register(mobileMidwifeEnrollment);
+            }
+        } catch (Exception e) {
+            log.error("Exception occured in saving CWC Registration details for: " + registerCWCForm.getMotechId(), e);
         }
     }
 }

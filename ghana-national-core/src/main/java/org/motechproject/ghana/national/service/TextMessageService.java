@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.service;
 
+import org.motechproject.ghana.national.domain.Auditable;
 import org.motechproject.ghana.national.domain.Configuration;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllConfigurations;
@@ -18,13 +19,15 @@ public class TextMessageService {
     @Autowired
     SmsService smsService;
 
-    public void sendSMS(String recipient, Patient patient, String key) {
+    @Auditable
+    public String sendSMS(String recipient, String patientMotechId, Patient patient, String key) {
         MRSPatient mrsPatient = patient.getMrsPatient();
         MRSPerson person = mrsPatient.getPerson();
         Configuration configuration = allConfigurations.getConfigurationValue(key);
         String message = configuration.getValue();
-        String messageWithTemplate = message.replace("${motechId}", mrsPatient.getMotechId()).replace("${firstName}",
+        String messageWithTemplate = message.replace("${motechId}", patientMotechId).replace("${firstName}",
                 person.getFirstName()).replace("${lastName}", person.getLastName());
         smsService.sendSMS(recipient, messageWithTemplate);
+        return messageWithTemplate;
     }
 }

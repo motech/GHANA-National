@@ -64,7 +64,6 @@ public class ANCRegistrationFormHandlerTest {
         registerANCForm.setMotechId("343423423");
         registerANCForm.setParity(3);
         registerANCForm.setRegDateToday(RegistrationToday.IN_PAST);
-        registerANCForm.setRegPhone("045353453434");
         registerANCForm.setStaffId("2331");
         registerANCForm.setFacilityId("facility");
 

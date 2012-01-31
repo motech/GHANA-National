@@ -9,7 +9,7 @@
                 <consent/>
                 <serviceType/>
                 <phoneOwnership/>
-                <phoneNumber/>
+                <mmRegPhone/>
                 <format/>
                 <dayOfWeek/>
                 <timeOfDay/>
@@ -472,7 +472,7 @@
                  relevant="/mobileMidwifeRegistration/consent = Y" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="phoneOwnership" nodeset="/mobileMidwifeRegistration/phoneOwnership"
                  relevant="/mobileMidwifeRegistration/consent = 'Y'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="phoneNumber" nodeset="/mobileMidwifeRegistration/phoneNumber"
+        <xf:bind action="show" id="mmRegPhone" nodeset="/mobileMidwifeRegistration/mmRegPhone"
                  relevant="/mobileMidwifeRegistration/phoneOwnership = 'PERSONAL' or /mobileMidwifeRegistration/phoneOwnership = 'HOUSEHOLD'"
                  visible="false()" required="true()" type="xsd:int" constraint=". &lt;= 999999999"
                  message="Number too large. It should be 10 digits long"/>
@@ -545,7 +545,7 @@
                 <xf:value>PUBLIC</xf:value>
             </xf:item>
         </xf:select1>
-        <xf:input bind="phoneNumber">
+        <xf:input bind="mmRegPhone">
             <xf:label>Phone number</xf:label>
         </xf:input>
         <xf:select1 bind="format">

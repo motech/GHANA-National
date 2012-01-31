@@ -117,7 +117,7 @@ public class MobileMidwifeBuilder {
         mobileMidwifeForm.setLearnedFrom(learnedFrom);
         mobileMidwifeForm.setFormat(format);
         mobileMidwifeForm.setMessageStartWeek(messageStartWeek);
-        mobileMidwifeForm.setPhoneNumber(phoneNumber);
+        mobileMidwifeForm.setMmRegPhone(phoneNumber);
         mobileMidwifeForm.setPhoneOwnership(phoneOwnership);
         mobileMidwifeForm.setReasonToJoin(reasonToJoin);
         mobileMidwifeForm.setServiceType(serviceType);

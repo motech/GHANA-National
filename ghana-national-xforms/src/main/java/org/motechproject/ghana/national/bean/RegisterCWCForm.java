@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.bean;
 
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -16,7 +17,6 @@ import java.util.List;
 
 public class RegisterCWCForm extends MobileMidWifeIncludeForm {
     public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
-    public static final String MOTECH_ID_PATTERN = "[0-9]{7}";
 
     @Required
     @MaxLength(size = 50)
@@ -32,7 +32,7 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
     private Date registrationDate;
 
     @Required
-    @RegEx(pattern = MOTECH_ID_PATTERN)
+    @RegEx(pattern = Constants.MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
 
@@ -46,17 +46,6 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
     private Boolean addHistory;
 
     private String addCareHistory;
-
-    @RegEx(pattern = "0[0-9]{9}")
-    private String regPhone;
-
-    public String getRegPhone() {
-        return regPhone;
-    }
-
-    public void setRegPhone(String regPhone) {
-        this.regPhone = regPhone;
-    }
 
     private Date bcgDate;
     private Date lastOPVDate;

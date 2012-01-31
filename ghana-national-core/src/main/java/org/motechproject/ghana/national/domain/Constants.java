@@ -96,4 +96,6 @@ public class Constants {
     public static final String MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE = "Time of day should be between 5:00 and 23:00 hours";
     public static final String MOBILE_MIDWIFE_VOICE_TIMEOFDAYREQUIRED_MESSAGE = "Time of day should be specified.";
 
+    public static final String MOTECH_ID_PATTERN = "[0-9]{7}";
+    public static final String FORM_BEAN = "formBean";
 }

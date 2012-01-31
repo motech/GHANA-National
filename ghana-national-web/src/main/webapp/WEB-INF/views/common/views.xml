@@ -5,5 +5,4 @@
     <definition extends="default" name="common/dashboard">
         <put-attribute name="body" value="/WEB-INF/views/common/dashboard.jspx"/>
     </definition>
-
 </tiles-definitions>

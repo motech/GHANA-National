@@ -30,8 +30,6 @@ import static org.motechproject.ghana.national.tools.Utility.nullSafe;
 
 @Component
 public class EditPatientFormHandler implements FormPublishHandler {
-
-    public static final String FORM_BEAN = "formBean";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -50,7 +48,7 @@ public class EditPatientFormHandler implements FormPublishHandler {
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
 
-        EditClientForm form = (EditClientForm) event.getParameters().get(FORM_BEAN);
+        EditClientForm form = (EditClientForm) event.getParameters().get(Constants.FORM_BEAN);
 
         MRSPatient patientFromDb = null;
         try {
