@@ -1,13 +1,20 @@
 package org.motechproject.ghana.national.service;
 
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.ANCCareHistory;
+import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.CwcCareHistory;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.repository.AllEncounters;
-import org.motechproject.ghana.national.vo.*;
+import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
+import org.motechproject.ghana.national.vo.ANCVO;
+import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
+import org.motechproject.ghana.national.vo.CareHistoryVO;
+import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
-import org.motechproject.openmrs.services.OpenMRSEncounterAdaptor;
 import org.motechproject.util.DateUtil;
 import org.openmrs.Concept;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +27,6 @@ import java.util.Set;
 
 @Service
 public class CareService {
-    @Autowired
-    OpenMRSEncounterAdaptor openMRSEncounterAdaptor;
 
     @Autowired
     StaffService staffService;
@@ -35,26 +40,25 @@ public class CareService {
     @Autowired
     AllEncounters allEncounters;
 
-    @Autowired
-    MobileMidwifeService mobileMidwifeService;
-
     public MRSEncounter getEncounter(String motechId, String encounterType) {
         return allEncounters.fetchLatest(motechId, encounterType);
     }
 
-    public MRSEncounter enroll(CwcVO cwc) {
-        return persistEncounter(cwc.getPatientMotechId(), cwc.getStaffId(), cwc.getFacilityId(), Constants.ENCOUNTER_CWCREGVISIT, cwc.getRegistrationDate(),
-                                prepareObservations(cwc));
+    public void enroll(CwcVO cwc) {
+        persistEncounter(cwc.getPatientMotechId(), cwc.getStaffId(), cwc.getFacilityId(), Constants.ENCOUNTER_CWCREGVISIT, cwc.getRegistrationDate(),
+                prepareObservations(cwc));
     }
 
-    public MRSEncounter enroll(ANCVO ancVO) {
+    public void enroll(ANCVO ancVO) {
         Date registrationDate = (RegistrationToday.TODAY.equals(ancVO.getRegistrationToday())) ? DateUtil.now().toDate() : ancVO.getRegistrationDate();
-        return persistEncounter(ancVO.getPatientMotechId(), ancVO.getStaffId(), ancVO.getFacilityId(),
+        persistEncounter(ancVO.getPatientMotechId(), ancVO.getStaffId(), ancVO.getFacilityId(),
                 Constants.ENCOUNTER_ANCREGVISIT, registrationDate, prepareObservations(ancVO));
+        persistEncounter(ancVO.getPatientMotechId(), ancVO.getStaffId(), ancVO.getFacilityId(),
+                Constants.ENCOUNTER_PREGREGVISIT, registrationDate, registerPregnancy(ancVO));
     }
 
     public MRSEncounter persistEncounter(String patientMotechId, String staffId, String facilityId, String encounterType, Date registrationDate,
-                                          Set<MRSObservation> mrsObservations) {
+                                         Set<MRSObservation> mrsObservations) {
         MRSUser user = staffService.getUserByEmailIdOrMotechId(staffId);
         String staffProviderId = user.getPerson().getId();
         String staffUserId = user.getId();
@@ -75,10 +79,6 @@ public class CareService {
             mrsObservations.add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_HEIGHT, ancVO.getHeight()));
         if (ancVO.getParity() != null)
             mrsObservations.add(new MRSObservation<Integer>(observationDate, Constants.CONCEPT_PARITY, ancVO.getParity()));
-        if (ancVO.getEstimatedDateOfDelivery() != null)
-            mrsObservations.add(new MRSObservation<Date>(observationDate, Constants.CONCEPT_EDD, ancVO.getEstimatedDateOfDelivery()));
-        if (ancVO.getDeliveryDateConfirmed() != null)
-            mrsObservations.add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, ancVO.getDeliveryDateConfirmed()));
         if (ancVO.getSerialNumber() != null)
             mrsObservations.add(new MRSObservation<String>(registrationDate, Constants.CONCEPT_ANC_REG_NUM, ancVO.getSerialNumber()));
         if (ancVO.getAddHistory()) {
@@ -88,17 +88,30 @@ public class CareService {
         return mrsObservations;
     }
 
+    private HashSet<MRSObservation> registerPregnancy(ANCVO ancVO) {
+        final MRSObservation observation = new MRSObservation(ancVO.getRegistrationDate(), Constants.CONCEPT_PREGNANCY, null);
+        final Date date = new Date();
+        if (ancVO.getEstimatedDateOfDelivery() != null) {
+            observation.addDependantObservation(new MRSObservation<Date>(date, Constants.CONCEPT_EDD, ancVO.getEstimatedDateOfDelivery()));
+        }
+        if (ancVO.getDeliveryDateConfirmed() != null) {
+            observation.addDependantObservation(new MRSObservation<Boolean>(date, Constants.CONCEPT_CONFINEMENT_CONFIRMED, ancVO.getDeliveryDateConfirmed()));
+        }
+        observation.addDependantObservation(new MRSObservation<Boolean>(date, Constants.CONCEPT_PREGNANCY_STATUS, true));
+        return new HashSet<MRSObservation>() {{ add(observation); }};
+    }
+
     Set<MRSObservation> addObservationsOnANCHistory(ANCCareHistoryVO ancCareHistoryVO) {
-        List<ANCCareHistory> careHistories=ancCareHistoryVO.getCareHistory();
+        List<ANCCareHistory> careHistories = ancCareHistoryVO.getCareHistory();
         Set<MRSObservation> historyObservations = new HashSet<MRSObservation>();
         if (careHistories != null && ancCareHistoryVO.getAddCareHistory()) {
             if (careHistories.contains(ANCCareHistory.IPT)) {
                 historyObservations.add(new MRSObservation<Integer>(ancCareHistoryVO.getLastIPTDate(), Constants.CONCEPT_IPT,
-                                        Integer.parseInt(ancCareHistoryVO.getLastIPT())));
+                        Integer.parseInt(ancCareHistoryVO.getLastIPT())));
             }
             if (careHistories.contains(ANCCareHistory.TT)) {
                 historyObservations.add(new MRSObservation<Integer>(ancCareHistoryVO.getLastTTDate(), Constants.CONCEPT_TT,
-                                        Integer.parseInt(ancCareHistoryVO.getLastTT())));
+                        Integer.parseInt(ancCareHistoryVO.getLastTT())));
             }
         }
         return historyObservations;
@@ -118,19 +131,19 @@ public class CareService {
         if (cwcCareHistory != null && cwcCareHistoryVO.getAddCareHistory()) {
             if (cwcCareHistory.contains(CwcCareHistory.BCG)) {
                 historyObservations.add(new MRSObservation<Concept>(cwcCareHistoryVO.getBcgDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED,
-                                        openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_BCG)));
+                        openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_BCG)));
             }
             if (cwcCareHistory.contains(CwcCareHistory.VITA_A)) {
                 historyObservations.add(new MRSObservation<Concept>(cwcCareHistoryVO.getVitADate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED,
-                                        openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_VITA)));
+                        openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_VITA)));
             }
             if (cwcCareHistory.contains(CwcCareHistory.MEASLES)) {
                 historyObservations.add(new MRSObservation<Concept>(cwcCareHistoryVO.getMeaslesDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED,
-                                        openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_MEASLES)));
+                        openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_MEASLES)));
             }
             if (cwcCareHistory.contains(CwcCareHistory.YF)) {
                 historyObservations.add(new MRSObservation<Concept>(cwcCareHistoryVO.getYfDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED,
-                                        openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_YF)));
+                        openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_YF)));
             }
             if (cwcCareHistory.contains(CwcCareHistory.PENTA)) {
                 historyObservations.add(new MRSObservation<Integer>(cwcCareHistoryVO.getLastPentaDate(), Constants.CONCEPT_PENTA, cwcCareHistoryVO.getLastPenta()));
@@ -145,8 +158,8 @@ public class CareService {
         return historyObservations;
     }
 
-    private Set<MRSObservation> addObservationsForCareHistory(final CareHistoryVO careHistoryVO){
-        Set<MRSObservation> historyObservations = new HashSet<MRSObservation>(){{
+    private Set<MRSObservation> addObservationsForCareHistory(final CareHistoryVO careHistoryVO) {
+        Set<MRSObservation> historyObservations = new HashSet<MRSObservation>() {{
             addAll(addObservationsOnANCHistory(careHistoryVO.getAncCareHistoryVO()));
             addAll(addObservationsOnCWCHistory(careHistoryVO.getCwcCareHistoryVO()));
         }};

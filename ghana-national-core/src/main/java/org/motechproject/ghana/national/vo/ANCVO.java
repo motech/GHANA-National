@@ -37,7 +37,7 @@ public class ANCVO {
         this.parity = parity;
         this.addHistory = addHistory;
         this.deliveryDateConfirmed = deliveryDateConfirmed;
-        this.ancCareHistoryVO=new ANCCareHistoryVO(addCareHistory, careHistory,lastIPT,lastTT,lastIPTDate,lastTTDate);
+        this.ancCareHistoryVO = new ANCCareHistoryVO(addCareHistory, careHistory, lastIPT, lastTT, lastIPTDate, lastTTDate);
     }
 
     public String getStaffId() {

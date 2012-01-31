@@ -64,6 +64,8 @@ public class ANCController {
         if (formErrors.isEmpty()) {
             MRSEncounter mrsEncounter = careService.getEncounter(motechPatientId, Constants.ENCOUNTER_ANCREGVISIT);
             enrollmentForm = (mrsEncounter == null) ? enrollmentForm : ancFormMapper.convertMRSEncounterToView(mrsEncounter);
+            MRSEncounter pregnancyInfoEncounter = careService.getEncounter(motechPatientId, Constants.ENCOUNTER_PREGREGVISIT);
+            ancFormMapper.populatePregnancyInfo(pregnancyInfoEncounter, enrollmentForm);
         } else {
             modelMap.addAttribute("validationErrors", formErrors);
         }

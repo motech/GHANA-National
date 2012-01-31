@@ -33,8 +33,6 @@ public class ANCFormMapperTest {
         final Double gravida = 3.0;
         final Double height = 123.4;
         final Double parity = 3.0;
-        final Boolean deliveryDateConfirmed = true;
-        final Date estimatedDateOfDelivery = new Date();
         final String serialNumber = "1A23WN3";
 
         String providerId = "121";
@@ -48,13 +46,10 @@ public class ANCFormMapperTest {
         String county = "county";
         String province = "province";
 
-
         final HashSet<MRSObservation> observations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_GRAVIDA, gravida));
             add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_HEIGHT, height));
             add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_PARITY, parity));
-            add(new MRSObservation<Date>(observationDate, Constants.CONCEPT_EDD, estimatedDateOfDelivery));
-            add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, deliveryDateConfirmed));
             add(new MRSObservation<String>(observationDate, Constants.CONCEPT_ANC_REG_NUM, serialNumber));
             add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_IPT, 2.0));
             add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_TT, 3.0));
@@ -77,14 +72,13 @@ public class ANCFormMapperTest {
         assertThat(ancEnrollmentForm.getGravida(), is(equalTo(gravida.intValue())));
         assertThat(ancEnrollmentForm.getHeight(), is(equalTo(height)));
         assertThat(ancEnrollmentForm.getParity(), is(equalTo(parity.intValue())));
-        assertThat(ancEnrollmentForm.getDeliveryDateConfirmed(), is(equalTo(deliveryDateConfirmed)));
-        assertThat(ancEnrollmentForm.getEstimatedDateOfDelivery(), is(equalTo(estimatedDateOfDelivery)));
+
+
         assertThat(ancEnrollmentForm.getSerialNumber(), is(equalTo(serialNumber)));
         assertThat(ancEnrollmentForm.getLastIPT(), is(equalTo("2")));
         assertThat(ancEnrollmentForm.getLastTT(), is(equalTo("3")));
 
     }
-
 
     @Test
     public void shouldCreateANCEnrollmentFormFromMRSEncounterWhenNoObservationsFound() {
@@ -92,8 +86,6 @@ public class ANCFormMapperTest {
         final Double gravida = 3.0;
         final Double height = 123.4;
         final Double parity = 3.0;
-        final Boolean deliveryDateConfirmed = true;
-        final Date estimatedDateOfDelivery = new Date();
         final String serialNumber = "1A23WN3";
 
         String providerId = "121";
@@ -111,8 +103,6 @@ public class ANCFormMapperTest {
             add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_GRAVIDA, gravida));
             add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_HEIGHT, height));
             add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_PARITY, parity));
-            add(new MRSObservation<Date>(observationDate, Constants.CONCEPT_EDD, estimatedDateOfDelivery));
-            add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, deliveryDateConfirmed));
             add(new MRSObservation<String>(observationDate, Constants.CONCEPT_ANC_REG_NUM, serialNumber));
         }};
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
@@ -132,9 +122,26 @@ public class ANCFormMapperTest {
         assertThat(ancEnrollmentForm.getGravida(), is(equalTo(gravida.intValue())));
         assertThat(ancEnrollmentForm.getHeight(), is(equalTo(height)));
         assertThat(ancEnrollmentForm.getParity(), is(equalTo(parity.intValue())));
-        assertThat(ancEnrollmentForm.getDeliveryDateConfirmed(), is(equalTo(deliveryDateConfirmed)));
-        assertThat(ancEnrollmentForm.getEstimatedDateOfDelivery(), is(equalTo(estimatedDateOfDelivery)));
         assertThat(ancEnrollmentForm.getSerialNumber(), is(equalTo(serialNumber)));
         assertThat(ancEnrollmentForm.getAddHistory(), is(equalTo(false)));
+    }
+    
+    @Test
+    public void shouldPopulatePregnancyObservationInfoToView() {
+        final Date observationDate = new Date();
+        final Boolean deliveryDateConfirmed = true;
+        final Date estimatedDateOfDelivery = new Date();
+        final HashSet<MRSObservation> observations = new HashSet<MRSObservation>() {{
+            add(new MRSObservation<Date>(observationDate, Constants.CONCEPT_EDD, estimatedDateOfDelivery));
+            add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, deliveryDateConfirmed));
+            add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_PREGNANCY_STATUS, true));
+        }};
+
+        ANCEnrollmentForm ancEnrollmentForm = new ANCEnrollmentForm();
+        MRSEncounter mrsEncounter = new MRSEncounter(null, null, null, null, null, null, observations, null);
+        ancFormMapper.populatePregnancyInfo(mrsEncounter, ancEnrollmentForm);
+        
+        assertThat(ancEnrollmentForm.getDeliveryDateConfirmed(), is(equalTo(deliveryDateConfirmed)));
+        assertThat(ancEnrollmentForm.getEstimatedDateOfDelivery(), is(equalTo(estimatedDateOfDelivery)));
     }
 }

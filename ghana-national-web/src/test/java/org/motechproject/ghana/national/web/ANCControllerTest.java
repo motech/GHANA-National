@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.RegistrationToday;
@@ -130,11 +131,11 @@ public class ANCControllerTest {
 
         ancController.newANC(motechPatientId, modelMap);
         assertTrue(modelMap.containsKey("ancEnrollmentForm"));
-        assertTrue(reflectionEquals(modelMap.get("ancEnrollmentForm"),ancEnrollmentForm));
-
+        assertTrue(reflectionEquals(modelMap.get("ancEnrollmentForm"), ancEnrollmentForm));
+        verify(mockCareService, times(2)).getEncounter(eq(motechPatientId), anyString());
+        verify(mockANCFormMapper).populatePregnancyInfo(Matchers.<MRSEncounter>any(), eq(ancEnrollmentForm));
         checkIfCareHistoryAttributesArePlacedInModelMap(modelMap, ancEnrollmentForm);
     }
-
 
     @Test
     public void shouldThrowErrorsWhenThePatientIsNotFoundAndNotFemaleWhileRenderingANCPage() {
@@ -150,7 +151,6 @@ public class ANCControllerTest {
 
         checkIfCareHistoryAttributesArePlacedInModelMap(modelMap, ancEnrollmentForm);
     }
-
 
     private void checkIfCareHistoryAttributesArePlacedInModelMap(ModelMap modelMap, ANCEnrollmentForm ancEnrollmentForm) {
         assertTrue(modelMap.containsKey("ancEnrollmentForm"));
@@ -201,6 +201,4 @@ public class ANCControllerTest {
         ancEnrollmentForm.setStaffId("2331");
         return ancEnrollmentForm;
     }
-
-
 }

@@ -16,8 +16,8 @@ public class ANCFormMapper {
 
     public ANCEnrollmentForm convertMRSEncounterToView(MRSEncounter mrsEncounter) {
         ANCEnrollmentForm ancEnrollmentForm = new ANCEnrollmentForm();
-        final FacilityForm facilityForm = new FacilityForm();
-        final MRSFacility facility = mrsEncounter.getFacility();
+        FacilityForm facilityForm = new FacilityForm();
+        MRSFacility facility = mrsEncounter.getFacility();
         facilityForm.setCountry(facility.getCountry());
         facilityForm.setRegion(facility.getRegion());
         facilityForm.setCountyDistrict(facility.getCountyDistrict());
@@ -50,12 +50,6 @@ public class ANCFormMapper {
             if (Constants.CONCEPT_PARITY.equals(conceptName)) {
                 ancEnrollmentForm.setParity(((Double) value).intValue());
             }
-            if (Constants.CONCEPT_CONFINEMENT_CONFIRMED.equals(conceptName)) {
-                ancEnrollmentForm.setDeliveryDateConfirmed((Boolean) value);
-            }
-            if (Constants.CONCEPT_EDD.equals(conceptName)) {
-                ancEnrollmentForm.setEstimatedDateOfDelivery((Date) value);
-            }
             if (Constants.CONCEPT_IPT.equals(conceptName)) {
                 Integer lastIPT = ((Double) value).intValue();
                 ancEnrollmentForm.setLastIPT(lastIPT.toString());
@@ -70,5 +64,23 @@ public class ANCFormMapper {
             }
         }
         return ancEnrollmentForm;
+    }
+
+    public void populatePregnancyInfo(MRSEncounter mrsEncounter, ANCEnrollmentForm ancEnrollmentForm) {
+        if (mrsEncounter == null) {
+            return;
+        }
+        Set<MRSObservation> observations = mrsEncounter.getObservations();
+        for (MRSObservation mrsObservation : observations) {
+            String pregnancyObservationConceptName = mrsObservation.getConceptName();
+            Object pregnancyObservationValue = mrsObservation.getValue();
+
+            if (Constants.CONCEPT_CONFINEMENT_CONFIRMED.equals(pregnancyObservationConceptName)) {
+                ancEnrollmentForm.setDeliveryDateConfirmed((Boolean) pregnancyObservationValue);
+            }
+            if (Constants.CONCEPT_EDD.equals(pregnancyObservationConceptName)) {
+                ancEnrollmentForm.setEstimatedDateOfDelivery((Date) pregnancyObservationValue);
+            }
+        }
     }
 }

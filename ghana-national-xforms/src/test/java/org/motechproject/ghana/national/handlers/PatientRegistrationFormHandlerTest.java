@@ -201,7 +201,7 @@ public class PatientRegistrationFormHandlerTest {
 
 
         when(mockPatientService.registerPatient(any(Patient.class))).thenReturn(motechId);
-        when(mockCareService.enroll(any(CwcVO.class))).thenReturn(null);
+        doNothing().when(mockCareService).enroll(any(CwcVO.class));
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         final ArgumentCaptor<CwcVO> cwcVOArgumentCaptor = ArgumentCaptor.forClass(CwcVO.class);
@@ -280,7 +280,7 @@ public class PatientRegistrationFormHandlerTest {
 
         when(mockPatientService.registerPatient(any(Patient.class))).thenReturn(motechId);
 
-        when(mockCareService.enroll(any(ANCVO.class))).thenReturn(null);
+        doNothing().when(mockCareService).enroll(any(ANCVO.class));
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         final ArgumentCaptor<ANCVO> ancvoArgumentCaptor = ArgumentCaptor.forClass(ANCVO.class);

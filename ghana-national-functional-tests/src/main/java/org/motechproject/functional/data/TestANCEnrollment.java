@@ -15,7 +15,7 @@ import static org.joda.time.format.DateTimeFormat.forPattern;
 import static org.motechproject.functional.util.MobileFormUtils.updateFieldByNameAndValue;
 import static org.motechproject.functional.util.MobileFormUtils.updateFieldName;
 
-public class TestANCEnrollment implements CareEnrollment{
+public class TestANCEnrollment implements CareEnrollment {
     private String staffId;
     private String facilityId;
     private String motechPatientId;
@@ -105,7 +105,7 @@ public class TestANCEnrollment implements CareEnrollment{
         return enrollmentDetails;
     }
 
-        public String booleanCodeForAddHistory(boolean value) {
+    public String booleanCodeForAddHistory(boolean value) {
         return value ? "1" : "0";
     }
 

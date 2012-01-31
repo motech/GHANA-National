@@ -65,7 +65,9 @@ public class EditPatientFormHandler implements FormPublishHandler {
         Patient existingPatient = patientService.getPatientByMotechId(motechId);
 
         MRSPatient patientFromDb = existingPatient.getMrsPatient();
-        String facilityId = hasValue(form.getFacilityId()) ? facilityService.getFacilityByMotechId(form.getFacilityId()).mrsFacilityId() : patientFromDb.getFacility().getId();
+        String facilityId = hasValue(form.getFacilityId()) ?
+                facilityService.getFacilityByMotechId(form.getFacilityId()).mrsFacilityId()
+                : patientFromDb.getFacility().getId();
 
         MRSPerson personFromDb = patientFromDb.getPerson();
 

@@ -69,7 +69,6 @@ public class Constants {
     public static final String CONCEPT_BCG = "BACILLE CAMILE-GUERIN VACCINATION";
     public static final String CONCEPT_IMMUNIZATIONS_ORDERED = "IMMUNIZATIONS ORDERED";
     public static final String CONCEPT_CWC_REG_NUMBER = "CWC REGISTRATION NUMBER";
-
     public static final String CONCEPT_GRAVIDA = "GRAVIDA";
     public static final String CONCEPT_HEIGHT = "HEIGHT (CM)";
     public static final String CONCEPT_PARITY = "PARITY";
@@ -78,15 +77,17 @@ public class Constants {
     public static final String CONCEPT_IPT = "INTERMITTENT PREVENTATIVE TREATMENT DOSE";
     public static final String CONCEPT_TT = "TETANUS TOXOID DOSE";
     public static final String CONCEPT_CONFINEMENT_CONFIRMED = "DATE OF CONFINEMENT CONFIRMED";
+    public static final String CONCEPT_PREGNANCY = "PREGNANCY";
+    public static final String CONCEPT_PREGNANCY_STATUS = "PREGNANCY STATUS";
 
     public static final String ENCOUNTER_ANCREGVISIT = "ANCREGVISIT";
     public static final String ENCOUNTER_CWCREGVISIT = "CWCREGVISIT";
-
+    public static final String ENCOUNTER_PATIENTHISTORY = "PATIENTHISTORY";
+    public static final String ENCOUNTER_PREGREGVISIT = "PREGREGVISIT";
     //CWC Validators
     public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
     public static final String CHILD_AGE_PARAMETER = "childAge";
     public static final String CHILD_AGE_ERR_MSG = "child cannot be more than 5 years old";
-    public static final String ENCOUNTER_PATIENTHISTORY = "PATIENTHISTORY";
     public static final String GENDER_ERROR_MSG = "should be female for registering into ANC";
 
     // Mobile Midwife

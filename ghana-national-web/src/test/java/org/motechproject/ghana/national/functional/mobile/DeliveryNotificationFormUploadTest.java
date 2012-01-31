@@ -41,6 +41,6 @@ public class DeliveryNotificationFormUploadTest extends LoggedInUserFunctionalTe
             put("datetime", "2010-02-02 12:00:00 PM");
         }}));
 
-        assertEquals(0, response.getErrors().size());
+        assertEquals(1, response.getSuccessCount());
     }
 }
