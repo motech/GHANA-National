@@ -1,8 +1,8 @@
 package org.motechproject.ghana.national.functional;
 
-import org.motechproject.functional.data.TestUser;
-import org.motechproject.functional.pages.home.HomePage;
-import org.motechproject.functional.pages.login.LoginPage;
+import org.motechproject.ghana.national.functional.data.TestUser;
+import org.motechproject.ghana.national.functional.pages.home.HomePage;
+import org.motechproject.ghana.national.functional.pages.login.LoginPage;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 

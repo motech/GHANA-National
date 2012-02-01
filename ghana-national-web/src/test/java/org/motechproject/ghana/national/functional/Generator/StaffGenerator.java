@@ -1,9 +1,9 @@
 package org.motechproject.ghana.national.functional.Generator;
 
-import org.motechproject.functional.data.TestStaff;
-import org.motechproject.functional.framework.Browser;
-import org.motechproject.functional.pages.home.HomePage;
-import org.motechproject.functional.pages.staff.StaffPage;
+import org.motechproject.ghana.national.functional.data.TestStaff;
+import org.motechproject.ghana.national.functional.framework.Browser;
+import org.motechproject.ghana.national.functional.pages.home.HomePage;
+import org.motechproject.ghana.national.functional.pages.staff.StaffPage;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.stereotype.Component;

@@ -1,14 +1,14 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.junit.runner.RunWith;
-import org.motechproject.functional.data.TestCareHistory;
-import org.motechproject.functional.data.TestPatient;
-import org.motechproject.functional.data.TestStaff;
-import org.motechproject.functional.framework.Mobile;
-import org.motechproject.functional.mobileforms.MobileForm;
-import org.motechproject.functional.pages.patient.PatientPage;
-import org.motechproject.functional.pages.staff.StaffPage;
-import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.ghana.national.functional.data.TestCareHistory;
+import org.motechproject.ghana.national.functional.data.TestPatient;
+import org.motechproject.ghana.national.functional.data.TestStaff;
+import org.motechproject.ghana.national.functional.framework.Mobile;
+import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
+import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
+import org.motechproject.ghana.national.functional.pages.staff.StaffPage;
+import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;

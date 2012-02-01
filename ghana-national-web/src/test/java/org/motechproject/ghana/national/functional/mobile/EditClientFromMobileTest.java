@@ -1,12 +1,12 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.junit.runner.RunWith;
-import org.motechproject.functional.data.TestPatient;
-import org.motechproject.functional.framework.XformHttpClient;
-import org.motechproject.functional.mobileforms.MobileForm;
-import org.motechproject.functional.pages.patient.PatientPage;
-import org.motechproject.functional.pages.patient.SearchPatientPage;
-import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.ghana.national.functional.data.TestPatient;
+import org.motechproject.ghana.national.functional.framework.XformHttpClient;
+import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
+import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
+import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
+import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
 import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
 import org.motechproject.ghana.national.functional.Generator.StaffGenerator;

@@ -2,8 +2,8 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
 import org.junit.runner.RunWith;
-import org.motechproject.functional.framework.XformHttpClient;
-import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.ghana.national.functional.framework.XformHttpClient;
+import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
 import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
 import org.motechproject.ghana.national.functional.Generator.StaffGenerator;

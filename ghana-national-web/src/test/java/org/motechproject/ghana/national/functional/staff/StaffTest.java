@@ -2,17 +2,17 @@ package org.motechproject.ghana.national.functional.staff;
 
 
 import org.junit.runner.RunWith;
-import org.motechproject.functional.data.TestStaff;
-import org.motechproject.functional.pages.staff.SearchStaffPage;
-import org.motechproject.functional.pages.staff.StaffPage;
-import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.ghana.national.functional.data.TestStaff;
+import org.motechproject.ghana.national.functional.pages.staff.SearchStaffPage;
+import org.motechproject.ghana.national.functional.pages.staff.StaffPage;
+import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
-import static org.motechproject.functional.data.TestStaff.STAFF_ROLE;
+import static org.motechproject.ghana.national.functional.data.TestStaff.STAFF_ROLE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})

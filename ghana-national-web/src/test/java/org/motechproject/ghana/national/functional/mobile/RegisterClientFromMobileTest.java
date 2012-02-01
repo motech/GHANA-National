@@ -2,12 +2,12 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
 import org.junit.runner.RunWith;
-import org.motechproject.functional.data.*;
-import org.motechproject.functional.framework.XformHttpClient;
-import org.motechproject.functional.mobileforms.MobileForm;
-import org.motechproject.functional.pages.patient.*;
-import org.motechproject.functional.pages.staff.StaffPage;
-import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.ghana.national.functional.data.*;
+import org.motechproject.ghana.national.functional.framework.XformHttpClient;
+import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
+import org.motechproject.ghana.national.functional.pages.patient.*;
+import org.motechproject.ghana.national.functional.pages.staff.StaffPage;
+import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
@@ -23,7 +23,7 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.motechproject.functional.framework.XformHttpClient.XFormParser;
+import static org.motechproject.ghana.national.functional.framework.XformHttpClient.XFormParser;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertNull;
 

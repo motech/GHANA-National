@@ -1,9 +1,9 @@
 package org.motechproject.ghana.national.functional.login;
 
 import org.junit.runner.RunWith;
-import org.motechproject.functional.data.TestUser;
-import org.motechproject.functional.pages.home.HomePage;
-import org.motechproject.functional.pages.login.LoginPage;
+import org.motechproject.ghana.national.functional.data.TestUser;
+import org.motechproject.ghana.national.functional.pages.home.HomePage;
+import org.motechproject.ghana.national.functional.pages.login.LoginPage;
 import org.motechproject.ghana.national.functional.FunctionalTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

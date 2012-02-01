@@ -1,10 +1,10 @@
 package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
-import org.motechproject.functional.data.TestPatient;
-import org.motechproject.functional.pages.patient.PatientPage;
-import org.motechproject.functional.pages.patient.SearchPatientPage;
-import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.ghana.national.functional.data.TestPatient;
+import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
+import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
+import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.springframework.beans.factory.annotation.Autowired;

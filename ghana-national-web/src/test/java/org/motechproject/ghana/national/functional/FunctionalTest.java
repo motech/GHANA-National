@@ -1,8 +1,8 @@
 package org.motechproject.ghana.national.functional;
 
-import org.motechproject.functional.framework.Browser;
-import org.motechproject.functional.framework.Mobile;
-import org.motechproject.functional.util.ScreenShotCaptor;
+import org.motechproject.ghana.national.functional.framework.Browser;
+import org.motechproject.ghana.national.functional.framework.Mobile;
+import org.motechproject.ghana.national.functional.util.ScreenShotCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.ITestResult;

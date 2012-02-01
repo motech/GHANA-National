@@ -1,11 +1,11 @@
 package org.motechproject.ghana.national.functional.Generator;
 
 
-import org.motechproject.functional.data.TestPatient;
-import org.motechproject.functional.framework.Browser;
-import org.motechproject.functional.pages.home.HomePage;
-import org.motechproject.functional.pages.patient.PatientPage;
-import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.ghana.national.functional.data.TestPatient;
+import org.motechproject.ghana.national.functional.framework.Browser;
+import org.motechproject.ghana.national.functional.pages.home.HomePage;
+import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
+import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.stereotype.Component;

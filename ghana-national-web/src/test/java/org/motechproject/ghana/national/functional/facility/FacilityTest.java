@@ -1,10 +1,10 @@
 package org.motechproject.ghana.national.functional.facility;
 
 import org.junit.runner.RunWith;
-import org.motechproject.functional.data.TestFacility;
-import org.motechproject.functional.pages.facility.FacilityPage;
-import org.motechproject.functional.pages.facility.SearchFacilityPage;
-import org.motechproject.functional.util.DataGenerator;
+import org.motechproject.ghana.national.functional.data.TestFacility;
+import org.motechproject.ghana.national.functional.pages.facility.FacilityPage;
+import org.motechproject.ghana.national.functional.pages.facility.SearchFacilityPage;
+import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
