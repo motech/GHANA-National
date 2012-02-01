@@ -292,28 +292,28 @@
                         <exclude>**/functional/**/*Test.java</exclude>
                     </excludes>
                 </configuration>
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>test-junit</id>-->
-                        <!--<phase>test</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>test</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<testNGArtifactName>none:none</testNGArtifactName>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                    <!--<execution>-->
-                        <!--<id>test-testng</id>-->
-                        <!--<phase>test</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>test</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<junitArtifactName>none:none</junitArtifactName>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <testNGArtifactName>none:none</testNGArtifactName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-testng</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <junitArtifactName>none:none</junitArtifactName>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <!--FAILSAFE FOR INTEGRATION TESTS-->
             <plugin>
