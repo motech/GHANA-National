@@ -84,7 +84,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
         assertNull(errorsMap.get("firstName"));
     }
 
-    @Test
+    @Test(enabled = false)
     public void shouldUpdatePatientIfNoErrorsAreFound() throws Exception {
         DataGenerator dataGenerator = new DataGenerator();
 

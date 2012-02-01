@@ -46,7 +46,7 @@ public class CWCTest extends LoggedInUserFunctionalTest {
         TestPatient patient = TestPatient.with(patientFirstName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE)
                 .estimatedDateOfBirth(false)
-                .dateOfBirth(DateUtil.newDate(DateUtil.today().getYear() - 1,11,11));
+                .dateOfBirth(DateUtil.newDate(DateUtil.today().getYear() - 1, 11, 11));
 
         patientPage.create(patient);
 
@@ -75,7 +75,7 @@ public class CWCTest extends LoggedInUserFunctionalTest {
         cwcEnrollmentPage.displaying(testCWCEnrollment);
     }
 
-    @Test
+    @Test(enabled = false)
     public void shouldCreateCWCForAPatientWithMobileDeviceAndSearchForItInWeb() {
         DataGenerator dataGenerator = new DataGenerator();
         StaffPage staffPage = browser.toStaffCreatePage(homePage);
@@ -86,7 +86,7 @@ public class CWCTest extends LoggedInUserFunctionalTest {
         TestPatient testPatient = TestPatient.with(patientFirstName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE)
                 .estimatedDateOfBirth(false)
-                .dateOfBirth(DateUtil.newDate(DateUtil.today().getYear() - 1,11,11));
+                .dateOfBirth(DateUtil.newDate(DateUtil.today().getYear() - 1, 11, 11));
 
         PatientPage patientPage = browser.toCreatePatient(staffPage);
         patientPage.create(testPatient);
