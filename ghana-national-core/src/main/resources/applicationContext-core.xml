@@ -29,7 +29,6 @@
         <constructor-arg value="ghana-national"/>
     </bean>
 
-    <bean class="org.motechproject.ghana.national.service.TextMessageServiceAspect"/>
     <beans:import resource="classpath:applicationContext-email.xml"/>
     <beans:import resource="classpath:applicationSmsAPI.xml"/>
 

@@ -11,6 +11,7 @@
     <context:spring-configured/>
     <context:component-scan base-package="org.motechproject.ghana.national.functional"/>
     <context:component-scan base-package="org.motechproject.functional"/>
+    <context:component-scan base-package=" org.motechproject.deliverytools.outboundendpoint"/>
     <util:properties id="functionalTestProperties" location="classpath:functional-test.properties"/>
 
     <bean id="identifierGenerationService"
