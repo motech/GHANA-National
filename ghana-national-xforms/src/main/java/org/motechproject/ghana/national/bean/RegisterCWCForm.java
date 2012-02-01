@@ -205,7 +205,7 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
         if(isEnrolledForMobileMidwifeProgram()) {
-            MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment());
+            MobileMidwifeEnrollment enrollment = fillEnrollment(MobileMidwifeEnrollment.newEnrollment());
             return enrollment.setStaffId(getStaffId()).setFacilityId(getFacilityId()).setPatientId(getMotechId());
         }
         return null;

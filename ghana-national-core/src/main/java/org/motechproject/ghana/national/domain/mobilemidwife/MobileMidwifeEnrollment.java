@@ -2,9 +2,12 @@ package org.motechproject.ghana.national.domain.mobilemidwife;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
+import org.joda.time.LocalDate;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.model.Time;
+import org.motechproject.server.messagecampaign.contract.CampaignRequest;
+import org.motechproject.util.DateUtil;
 
 @TypeDiscriminator("doc.type === 'MobileMidwifeEnrollment'")
 public class MobileMidwifeEnrollment extends MotechBaseDataObject {
@@ -40,8 +43,14 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     private String messageStartWeek;
     @JsonProperty
     private Boolean active;
+    @JsonProperty
+    private LocalDate enrollmentDate;
 
     public MobileMidwifeEnrollment() {
+    }
+
+    public static MobileMidwifeEnrollment newEnrollment() {
+        return new MobileMidwifeEnrollment().setEnrollmentDate(DateUtil.today());
     }
 
     public String getPatientId() {
@@ -178,8 +187,18 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         this.active = active;
     }
 
+    public LocalDate getEnrollmentDate() {
+        return enrollmentDate;
+    }
+
+    public MobileMidwifeEnrollment setEnrollmentDate(LocalDate enrollmentDate) {
+        this.enrollmentDate = enrollmentDate;
+        return this;
+    }
+
     public static MobileMidwifeEnrollment cloneNew(MobileMidwifeEnrollment midwifeEnrollment) {
         final MobileMidwifeEnrollment newEnrollment = new MobileMidwifeEnrollment();
+        newEnrollment.setEnrollmentDate(midwifeEnrollment.getEnrollmentDate());
         newEnrollment.setMessageStartWeek(midwifeEnrollment.getMessageStartWeek());
         newEnrollment.setDayOfWeek(midwifeEnrollment.getDayOfWeek());
         newEnrollment.setLearnedFrom(midwifeEnrollment.getLearnedFrom());
@@ -195,5 +214,9 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         newEnrollment.setPhoneOwnership(midwifeEnrollment.getPhoneOwnership());
         newEnrollment.setTimeOfDay(midwifeEnrollment.getTimeOfDay());
         return newEnrollment;
+    }
+
+    public CampaignRequest createCampaignRequest() {
+        return new CampaignRequest(patientId, serviceType.name(), null, enrollmentDate);
     }
 }

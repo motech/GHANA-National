@@ -61,6 +61,11 @@
             <type>zip</type>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-message-campaign</artifactId>
+            <version>0.8-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>
@@ -102,7 +107,7 @@
                             <includeGroupIds>org.motechproject</includeGroupIds>
                             <excludeTransitive>true</excludeTransitive>
                             <includes>
-                                openmrs-data/**, sms-http-template.json, osgi.properties, activemq.properties
+                                openmrs-data/**, sms-http-template.json, osgi.properties, activemq.properties, quartz.properties
                             </includes>
                         </configuration>
                     </execution>
