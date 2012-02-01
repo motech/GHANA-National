@@ -222,7 +222,7 @@
             <span id='nhisExpirationDateError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_nhis_expiration_date)} ${fn:escapeXml(required_msg)}
             </span>
-            <span id='nhisExpirationDateDateError' class='alertText formlyInvalid formlyAlert hide'>
+            <span id='nhisExpirationDateFormatError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_nhis_expiration_date)} ${fn:escapeXml(incorrect_msg)}
             </span>
         </div>

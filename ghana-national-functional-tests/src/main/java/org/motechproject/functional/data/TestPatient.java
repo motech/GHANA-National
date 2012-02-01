@@ -30,8 +30,10 @@ public class TestPatient {
     private LocalDate registrationDate;
     private String motherMotechId;
 
-    public static TestPatient with(String firstName) {
+    public static TestPatient with(String firstName, String staffId) {
         TestPatient testPatient = new TestPatient();
+        testPatient.staffId = staffId;
+        testPatient.registrationMode = TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID;
         testPatient.region = "Central Region";
         testPatient.district = "Awutu Senya";
         testPatient.subDistrict = "Kasoa";
@@ -194,11 +196,6 @@ public class TestPatient {
 
     public TestPatient female(boolean female) {
         this.female = female;
-        return this;
-    }
-
-    public TestPatient staffId(String staffId) {
-        this.staffId = staffId;
         return this;
     }
 

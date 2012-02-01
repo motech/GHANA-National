@@ -1,51 +1,31 @@
 package org.motechproject.ghana.national.service;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.domain.ANCCareHistory;
-import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.CwcCareHistory;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllEncounters;
-import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
-import org.motechproject.ghana.national.vo.ANCVO;
-import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
-import org.motechproject.ghana.national.vo.CareHistoryVO;
-import org.motechproject.ghana.national.vo.CwcVO;
-import org.motechproject.mrs.model.MRSEncounter;
-import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSPerson;
-import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.ghana.national.vo.*;
+import org.motechproject.mrs.model.*;
 import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
+import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
-public class CareServiceTest {
+public class CareServiceTest extends BaseUnitTest {
     CareService careService;
 
     @Mock
@@ -68,6 +48,8 @@ public class CareServiceTest {
         ReflectionTestUtils.setField(careService, "patientService", mockPatientService);
         ReflectionTestUtils.setField(careService, "allEncounters", mockAllEncounters);
         ReflectionTestUtils.setField(careService, "openMRSConceptAdaptor", mockOpenMRSConceptAdaptor);
+        DateTime currentDate = DateTime.now();
+        mockCurrentDate(currentDate);
     }
 
     @Test
@@ -349,7 +331,7 @@ public class CareServiceTest {
         assertThat(encounterThatWasSaved.getProvider().getId(), is(equalTo(staffPersonId)));
         assertThat(encounterThatWasSaved.getCreator().getId(), is(equalTo(staffId)));
         assertThat(encounterThatWasSaved.getFacility().getId(), is(equalTo(facilityId)));
-        assertThat(encounterThatWasSaved.getDate().toString(), is(equalTo(registrationDate.toString())));
+        assertThat(encounterThatWasSaved.getDate(), is(equalTo(registrationDate)));
         assertThat(encounterThatWasSaved.getPatient().getId(), is(equalTo(patientId)));
         assertThat(encounterThatWasSaved.getEncounterType(), is(equalTo(encounterType)));
     }

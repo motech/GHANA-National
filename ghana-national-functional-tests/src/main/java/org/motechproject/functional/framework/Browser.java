@@ -94,16 +94,10 @@ public class Browser {
         return new PatientEditPage(webDriver);
     }
 
-    public ANCEnrollmentPage toANCEnrollmentForm(HomePage fromPage) {
-        fromPage.waitForSuccessfulCompletion();
-        fromPage.openANCEnrollmentPage();
+    public ANCEnrollmentPage toEnrollANCPage(PatientEditPage patientEditPage) {
+        patientEditPage.waitForSuccessfulCompletion();
+        patientEditPage.clickOnEnrollANCLink();
         return new ANCEnrollmentPage(webDriver);
-    }
-
-    public CWCEnrollmentPage toCWCEnrollmentForm(HomePage fromPage) {
-        fromPage.waitForSuccessfulCompletion();
-        fromPage.openCWCEnrollmentPage();
-        return new CWCEnrollmentPage(webDriver);
     }
 
     public MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentForm(PatientEditPage patientEditPage) {

@@ -181,7 +181,7 @@ public class ANCEnrollmentPage extends HomePage {
         return this;
     }
 
-    public String getRegsitrationToday(){
+    public String getRegsitrationToday() {
         return new Select(registrationToday).getFirstSelectedOption().getText();
     }
 
@@ -254,7 +254,7 @@ public class ANCEnrollmentPage extends HomePage {
 
     public ANCEnrollmentPage withIPT(Boolean iptValue) {
         boolean selected = iptCareHistory.isSelected();
-        if ((iptValue && !selected) || (!iptValue && selected)){
+        if ((iptValue && !selected) || (!iptValue && selected)) {
             iptCareHistory.click();
         }
         return this;
@@ -327,7 +327,7 @@ public class ANCEnrollmentPage extends HomePage {
         submit.click();
         waitForSuccessfulCompletion();
     }
-    
+
     public String motechId() {
         return motechPatientId.getAttribute("value");
     }
@@ -348,7 +348,7 @@ public class ANCEnrollmentPage extends HomePage {
     }
 
     public void save(TestANCEnrollment ancEnrollment) {
-        this.withStaffId(ancEnrollment.staffId())
+        withStaffId(ancEnrollment.staffId())
                 .withRegistrationToday(ancEnrollment.registrationToday().name())
                 .withSerialNumber(ancEnrollment.serialNumber())
                 .withCountry(ancEnrollment.country())
@@ -364,15 +364,21 @@ public class ANCEnrollmentPage extends HomePage {
                 .withDeliveryDateConfirmed(ancEnrollment.deliveryDateConfirmed())
                 .withEstimatedDateOfDelivery(ancEnrollment.estimatedDateOfDelivery())
                 .withIPT(ancEnrollment.hasIPTHistory())
-                .withTT(ancEnrollment.hasTTHistory())
-                .withLastIPTValue(ancEnrollment.lastIPT())
-                .withLastTTValue(ancEnrollment.lastTT())
-                .withIPTDate(ancEnrollment.lastIPTDate())
-                .withTTDate(ancEnrollment.lastTTDate())
-                .submit();
+                .withTT(ancEnrollment.hasTTHistory());
+
+        if (ancEnrollment.hasIPTHistory()) {
+            withLastIPTValue(ancEnrollment.lastIPT())
+                .withIPTDate(ancEnrollment.lastIPTDate());
+        }
+
+        if (ancEnrollment.hasTTHistory()) {
+            withLastTTValue(ancEnrollment.lastTT())
+                .withTTDate(ancEnrollment.lastTTDate());
+        }
+        submit();
     }
 
-    public void displaying(TestANCEnrollment ancEnrollment){
+    public void displaying(TestANCEnrollment ancEnrollment) {
         assertEquals(getStaffId(), ancEnrollment.staffId());
         assertEquals(getSerialNumber(), ancEnrollment.serialNumber());
         assertEquals(getRegion(), ancEnrollment.region());
@@ -393,14 +399,14 @@ public class ANCEnrollmentPage extends HomePage {
     }
 
     private ANCEnrollmentPage withLastTTValue(String ttValue) {
-        if("1".equals(ttValue)){
+        if ("1".equals(ttValue)) {
             withLastTTValue1(true);
         }
         return this;
     }
 
     private ANCEnrollmentPage withLastIPTValue(String iptValue) {
-        if ("1".equals(iptValue)){
+        if ("1".equals(iptValue)) {
             withLastIPTValue1(true);
         }
         return this;

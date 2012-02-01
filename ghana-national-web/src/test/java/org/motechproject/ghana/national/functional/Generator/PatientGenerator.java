@@ -24,8 +24,7 @@ public class PatientGenerator {
         dataGenerator = new DataGenerator();
         PatientPage patientPage = browser.toCreatePatient(homePage);
 
-        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).staffId(staffId).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
+        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
 
         patientPage.create(patient);

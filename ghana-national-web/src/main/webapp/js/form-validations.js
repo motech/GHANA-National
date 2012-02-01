@@ -57,7 +57,7 @@ function FormValidator() {
             }
 
             if(!valid) {
-                $("#" + this.name + "DateError").removeClass('hide');
+                $("#" + this.name + "FormatError").removeClass('hide');
             }
         });
     }

@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
+import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.util.DateUtil;
 
 import java.util.*;
@@ -17,6 +18,7 @@ public class TestCWCEnrollment implements CareEnrollment {
     private String staffId;
     private String facilityId;
     private String motechPatientId;
+    private RegistrationToday registrationToday;
     private LocalDate registrationDate;
     private String serialNumber;
     private Boolean addHistory;
@@ -28,9 +30,9 @@ public class TestCWCEnrollment implements CareEnrollment {
     private LocalDate yellowFeverDate;
     private LocalDate lastPentaDate;
     private LocalDate measlesDate;
-    private Integer lastOPV;
-    private Integer lastIPTi;
-    private Integer lastPenta;
+    private String lastOPV;
+    private String lastIPTi;
+    private String lastPenta;
     private String country;
     private String region;
     private String district;
@@ -51,8 +53,8 @@ public class TestCWCEnrollment implements CareEnrollment {
 
     public static TestCWCEnrollment create() {
         final TestCWCEnrollment enrollment = new TestCWCEnrollment();
-
-        enrollment.registrationDate = new LocalDate(2011, 2, 2);
+        enrollment.registrationToday = RegistrationToday.IN_PAST;
+        enrollment.registrationDate = DateUtil.newDate(2011, 2, 2);
         enrollment.serialNumber = "serialNumber";
         enrollment.addHistory = true;
         enrollment.addCareHistory = Arrays.asList(CwcCareHistory.values());
@@ -63,9 +65,9 @@ public class TestCWCEnrollment implements CareEnrollment {
         enrollment.yellowFeverDate = DateUtil.newDate(2000, 11, 5);
         enrollment.lastPentaDate = DateUtil.newDate(2000, 11, 6);
         enrollment.measlesDate = DateUtil.newDate(2000, 11, 7);
-        enrollment.lastOPV = 1;
-        enrollment.lastIPTi = 2;
-        enrollment.lastPenta = 3;
+        enrollment.lastOPV = "1";
+        enrollment.lastIPTi = "2";
+        enrollment.lastPenta = "3";
         enrollment.country = "Ghana";
         enrollment.region = "Central Region";
         enrollment.district = "Awutu Senya";
@@ -81,6 +83,7 @@ public class TestCWCEnrollment implements CareEnrollment {
             put("staffId", staffId);
             put("facilityId", facilityId);
             put("motechId", motechPatientId);
+            put("registrationToday", registrationToday.name());
             put("registrationDate", registrationDate.toString(forPattern("yyyy-MM-dd")));
             put("serialNumber", serialNumber);
             put("addHistory", booleanCodeForAddHistory(addHistory));
@@ -96,9 +99,9 @@ public class TestCWCEnrollment implements CareEnrollment {
             put("yellowFeverDate", yellowFeverDate.toString(forPattern("yyyy-MM-dd")));
             put("lastPentaDate", lastPentaDate.toString(forPattern("yyyy-MM-dd")));
             put("measlesDate", measlesDate.toString(forPattern("yyyy-MM-dd")));
-            put("lastPenta", lastPenta.toString());
-            put("lastOPV", lastOPV.toString());
-            put("lastIPTi", lastIPTi.toString());
+            put("lastPenta", lastPenta);
+            put("lastOPV", lastOPV);
+            put("lastIPTi", lastIPTi);
 
         }};
 
@@ -168,6 +171,16 @@ public class TestCWCEnrollment implements CareEnrollment {
 
     public TestCWCEnrollment withAddCareHistory(List<CwcCareHistory> addCareHistory) {
         this.addCareHistory = addCareHistory;
+        bcgDate = null;
+        lastIPTiDate = null;
+        lastIPTi = null;
+        lastOPV = null;
+        lastOPVDate = null;
+        lastPenta = null;
+        lastPentaDate = null;
+        lastVitaminADate = null;
+        measlesDate = null;
+        yellowFeverDate = null;
         return this;
     }
 
@@ -234,29 +247,29 @@ public class TestCWCEnrollment implements CareEnrollment {
         return this;
     }
 
-    public Integer getLastOPV() {
+    public String getLastOPV() {
         return lastOPV;
     }
 
-    public TestCWCEnrollment withLastOPV(Integer lastOPV) {
+    public TestCWCEnrollment withLastOPV(String lastOPV) {
         this.lastOPV = lastOPV;
         return this;
     }
 
-    public Integer getLastIPTi() {
+    public String getLastIPTi() {
         return lastIPTi;
     }
 
-    public TestCWCEnrollment withLastIPTi(Integer lastIPTi) {
+    public TestCWCEnrollment withLastIPTi(String lastIPTi) {
         this.lastIPTi = lastIPTi;
         return this;
     }
 
-    public Integer getLastPenta() {
+    public String getLastPenta() {
         return lastPenta;
     }
 
-    public TestCWCEnrollment withLastPenta(Integer lastPenta) {
+    public TestCWCEnrollment withLastPenta(String lastPenta) {
         this.lastPenta = lastPenta;
         return this;
     }
@@ -299,6 +312,38 @@ public class TestCWCEnrollment implements CareEnrollment {
 
     public void setFacility(String facility) {
         this.facility = facility;
+    }
+
+    public RegistrationToday getRegistrationToday() {
+        return registrationToday;
+    }
+
+    public Boolean hasBcgHistory() {
+        return addCareHistory.contains(CwcCareHistory.BCG);
+    }
+
+    public Boolean hasIPTiHistory() {
+        return addCareHistory.contains(CwcCareHistory.IPTI);
+    }
+
+    public Boolean hasOPVHistory() {
+        return addCareHistory.contains(CwcCareHistory.OPV);
+    }
+
+    public Boolean hasPentaHistory() {
+        return addCareHistory.contains(CwcCareHistory.PENTA);
+    }
+
+    public Boolean hasVitaminAHistory() {
+        return addCareHistory.contains(CwcCareHistory.VITA_A);
+    }
+
+    public Boolean hasMeaslesHistory() {
+        return addCareHistory.contains(CwcCareHistory.MEASLES);
+    }
+
+    public Boolean hasYellowFeverHistory() {
+        return addCareHistory.contains(CwcCareHistory.YF);
     }
 }
 

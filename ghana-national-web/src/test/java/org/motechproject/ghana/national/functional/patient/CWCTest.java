@@ -1,24 +1,29 @@
 package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
+import org.motechproject.functional.data.TestCWCEnrollment;
 import org.motechproject.functional.data.TestPatient;
 import org.motechproject.functional.data.TestStaff;
+import org.motechproject.functional.framework.XformHttpClient;
+import org.motechproject.functional.mobileforms.MobileForm;
+import org.motechproject.functional.pages.BasePage;
 import org.motechproject.functional.pages.patient.CWCEnrollmentPage;
 import org.motechproject.functional.pages.patient.PatientEditPage;
 import org.motechproject.functional.pages.patient.PatientPage;
 import org.motechproject.functional.pages.patient.SearchPatientPage;
 import org.motechproject.functional.pages.staff.StaffPage;
 import org.motechproject.functional.util.DataGenerator;
-import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.util.DateUtil;
-import org.openqa.selenium.By;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertTrue;
+import java.util.Arrays;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
@@ -37,23 +42,75 @@ public class CWCTest extends LoggedInUserFunctionalTest {
         String staffId = staffPage.staffId();
 
         PatientPage patientPage = browser.toCreatePatient(staffPage);
-        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).staffId(staffId).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).dateOfBirth(DateUtil.newDate(2010,11,11));
+        String patientFirstName = "First Name" + dataGenerator.randomString(5);
+        TestPatient patient = TestPatient.with(patientFirstName, staffId)
+                .patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE)
+                .estimatedDateOfBirth(false)
+                .dateOfBirth(DateUtil.newDate(DateUtil.today().getYear() - 1,11,11));
+
         patientPage.create(patient);
 
+        // create
         SearchPatientPage searchPatientPage = browser.toSearchPatient(homePage);
         searchPatientPage.searchWithName(patient.firstName());
 
+        TestCWCEnrollment testCWCEnrollment = TestCWCEnrollment.create().withStaffId(staffId);
+
         PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, patient);
-
         CWCEnrollmentPage cwcEnrollmentPage = browser.toEnrollCWCPage(patientEditPage);
+        cwcEnrollmentPage.save(testCWCEnrollment);
 
-        cwcEnrollmentPage.withStaffId(staffId).withRegistrationToday(RegistrationToday.IN_PAST.toString()).withSerialNumber("trew654gf")
-                .withCountry("Ghana").withRegion("Central Region").withDistrict("Awutu Senya").withSubDistrict("Awutu")
-                .withRegistrationDate(DateUtil.newDate(2011, 11, 30)).withAddHistory(false).withFacility("Awutu HC").submit();
-        
-        assertTrue(cwcEnrollmentPage.getDriver().findElement(By.className("success")).getText().equals("Client registered for CWC successfully."));
+        patientEditPage = searchPatient(patientFirstName, patient, cwcEnrollmentPage);
+        cwcEnrollmentPage = browser.toEnrollCWCPage(patientEditPage);
+
+        cwcEnrollmentPage.displaying(testCWCEnrollment);
+
+        // edit
+        testCWCEnrollment.withAddCareHistory(Arrays.asList(CwcCareHistory.MEASLES)).withMeaslesDate(DateUtil.newDate(2006, 12, 2));
+        cwcEnrollmentPage.save(testCWCEnrollment);
+
+        patientEditPage = searchPatient(patientFirstName, patient, cwcEnrollmentPage);
+        cwcEnrollmentPage = browser.toEnrollCWCPage(patientEditPage);
+
+        cwcEnrollmentPage.displaying(testCWCEnrollment);
+    }
+
+    @Test
+    public void shouldCreateCWCForAPatientWithMobileDeviceAndSearchForItInWeb() {
+        DataGenerator dataGenerator = new DataGenerator();
+        StaffPage staffPage = browser.toStaffCreatePage(homePage);
+        staffPage.create(TestStaff.with("First Name" + dataGenerator.randomString(5)));
+
+        String staffId = staffPage.staffId();
+        String patientFirstName = "First Name" + dataGenerator.randomString(5);
+        TestPatient testPatient = TestPatient.with(patientFirstName, staffId)
+                .patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE)
+                .estimatedDateOfBirth(false)
+                .dateOfBirth(DateUtil.newDate(DateUtil.today().getYear() - 1,11,11));
+
+        PatientPage patientPage = browser.toCreatePatient(staffPage);
+        patientPage.create(testPatient);
+
+        TestCWCEnrollment cwcEnrollment = TestCWCEnrollment.create().withMotechPatientId(patientPage.motechId()).withStaffId(staffId);
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), cwcEnrollment.forMobile());
+
+        assertEquals(1, response.getSuccessCount());
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithName(testPatient.firstName());
+        searchPatientPage.displaying(testPatient);
+
+        PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, testPatient);
+        CWCEnrollmentPage cwcEnrollmentPage = browser.toEnrollCWCPage(patientEditPage);
+        cwcEnrollmentPage.displaying(cwcEnrollment);
+    }
+
+    private PatientEditPage searchPatient(String patientFirstName, TestPatient testPatient, BasePage basePage) {
+        SearchPatientPage searchPatientPage = browser.toSearchPatient(basePage);
+
+        searchPatientPage.searchWithName(patientFirstName);
+        searchPatientPage.displaying(testPatient);
+
+        return browser.toPatientEditPage(searchPatientPage, testPatient);
     }
 
 }

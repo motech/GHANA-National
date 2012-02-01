@@ -16,6 +16,10 @@ public class MobileForm {
         return new MobileForm("NurseDataEntry", "register-anc-template.xml");
     }
 
+    public static MobileForm registerCWCForm() {
+        return new MobileForm("NurseDataEntry", "register-cwc-template.xml");
+    }
+
     public static MobileForm careHistoryForm() {
         return new MobileForm("NurseDataEntry", "care-history-template.xml");
     }

@@ -35,10 +35,8 @@ public class CareHistoryTest extends LoggedInUserFunctionalTest{
         StaffPage staffPage = browser.toStaffCreatePage(homePage);
         staffPage.create(TestStaff.with("Staff First Name" + dataGenerator.randomString(5)));
 
-        TestPatient patient = TestPatient.with("Patient First Name" + dataGenerator.randomString(5)).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.OTHER).estimatedDateOfBirth(false).
-                staffId(staffPage.staffId());
+        TestPatient patient = TestPatient.with("Patient First Name" + dataGenerator.randomString(5), staffPage.staffId()).
+                patientType(TestPatient.PATIENT_TYPE.OTHER).estimatedDateOfBirth(false);
 
         PatientPage patientPage = browser.toCreatePatient(staffPage);
         patientPage.create(patient);

@@ -33,9 +33,8 @@ public class PatientTest extends LoggedInUserFunctionalTest {
         final String staffId = staffGenerator.createStaff(browser, homePage);
         PatientPage patientPage = browser.toCreatePatient(homePage);
 
-        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).staffId(staffId).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
+        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
+                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
         patientPage.create(patient);
         SearchPatientPage searchPatientPage = browser.toSearchPatient(patientPage);
         searchPatientPage.searchWithName(patient.firstName());
@@ -53,7 +52,7 @@ public class PatientTest extends LoggedInUserFunctionalTest {
         final String staffId = staffGenerator.createStaff(browser, homePage);
         PatientPage patientPage = browser.toCreatePatient(homePage);
 
-        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).staffId(staffId).
+        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.USE_PREPRINTED_ID).
                 patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).
                 motechId(identifierGenerationService.newPatientId());
