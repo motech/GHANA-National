@@ -217,7 +217,7 @@
                     </execution>
                     <execution>
                         <id>setup-quartz-schema</id>
-                        <phase>pre-integration-test</phase>
+                        <phase>process-resources</phase>
                         <configuration>
                             <target>
                                 <echo message="Quartz schema loading: START"/>
