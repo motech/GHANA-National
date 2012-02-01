@@ -37,6 +37,12 @@
             <version>${motech-platform.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-testing-utils</artifactId>
+            <version>${motech-platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
@@ -60,6 +66,11 @@
             <classifier>resources</classifier>
             <type>zip</type>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-message-campaign</artifactId>
+            <version>0.8-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
@@ -102,7 +113,7 @@
                             <includeGroupIds>org.motechproject</includeGroupIds>
                             <excludeTransitive>true</excludeTransitive>
                             <includes>
-                                openmrs-data/**, sms-http-template.json, osgi.properties, activemq.properties
+                                openmrs-data/**, sms-http-template.json, osgi.properties, activemq.properties, quartz.properties
                             </includes>
                         </configuration>
                     </execution>
@@ -198,6 +209,36 @@
                                     <arg value="DELETE"/>
                                     <arg value="http://${couchdb.server}:${couchdb.port}/ghana-national-test"/>
                                 </exec>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>setup-quartz-schema</id>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Quartz schema loading: START"/>
+                                <path id="dependencies">
+                                    <fileset file="../build/lib/mysql-connector-java-5.1.13.jar"/>
+                                </path>
+                                <sql driver="${mysql.driver}"
+                                     url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.dbQuartz}?autoReconnect=true"
+                                     userid="${mysql.user}"
+                                     classpathref="dependencies"
+                                     password="${mysql.password}">
+                                    drop database ${mysql.dbQuartz};
+                                    create database ${mysql.dbQuartz};
+                                </sql>
+                                <sql driver="${mysql.driver}"
+                                     url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.dbQuartz}?autoReconnect=true"
+                                     userid="${mysql.user}"
+                                     classpathref="dependencies"
+                                     password="${mysql.password}"
+                                     src="../build/sql/tables_mysql_innodb.sql"/>
+                                <echo message="Quartz schema loading: END"/>
                             </target>
                         </configuration>
                         <goals>

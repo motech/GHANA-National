@@ -92,11 +92,13 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
         String staffId = staffGenerator.createStaff(browser, homePage);
         final String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
 
-        TestPatient patient = TestPatient.with("Updated First Name" + dataGenerator.randomString(5)).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.OTHER).estimatedDateOfBirth(false)
-                .middleName("Updated Middle Name").lastName("Updated Last Name").
-                        staffId(staffId).motechId(patientId).facilityIdWherePatientIsEdited(facilityMotechId);
+        TestPatient patient = TestPatient.with("Updated First Name" + dataGenerator.randomString(5), staffId)
+                .patientType(TestPatient.PATIENT_TYPE.OTHER)
+                .estimatedDateOfBirth(false)
+                .middleName("Updated Middle Name")
+                .lastName("Updated Last Name")
+                .motechId(patientId)
+                .facilityIdWherePatientIsEdited(facilityMotechId);
 
         mobile.upload(MobileForm.editClientForm(), patient.editFromMobile());
 

@@ -9,7 +9,7 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
     <context:property-placeholder location="classpath*:*.properties" ignore-unresolvable="true"/>
     <beans:import resource="classpath:applicationOpenmrsAPI.xml"/>
-
+    <beans:import resource="classpath*:applicationMessageCampaign.xml"/>
 
     <context:annotation-config/>
     <context:spring-configured/>
@@ -29,7 +29,6 @@
         <constructor-arg value="ghana-national"/>
     </bean>
 
-    <bean class="org.motechproject.ghana.national.service.TextMessageServiceAspect"/>
     <beans:import resource="classpath:applicationContext-email.xml"/>
     <beans:import resource="classpath:applicationSmsAPI.xml"/>
 

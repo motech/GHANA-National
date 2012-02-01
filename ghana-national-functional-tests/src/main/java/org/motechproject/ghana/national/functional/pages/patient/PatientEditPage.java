@@ -115,6 +115,10 @@ public class PatientEditPage extends HomePage{
     @CacheLookup
     WebElement cwcEnrollment;
 
+    @FindBy(id = "ancenrollment")
+    @CacheLookup
+    public WebElement ancEnrollment;
+
     public void clickOnEnrollCWCLink() {
         cwcEnrollment.click();
     }

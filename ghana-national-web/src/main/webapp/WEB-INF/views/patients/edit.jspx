@@ -85,8 +85,8 @@
 <spring:message code="patient_phone_number" var="patient_phone_number" htmlEscape="false"/>
 
     <div>
-        <label for="staffId" class="formLabel"><spring:message code="staff_id"/> :</label>
-        <form:input path="staffId" size="20"/>
+        <label for="staffId" class="formLabel"><spring:message code="staff_id"/> *:</label>
+        <form:input path="staffId" size="20" cssClass="jsRequire"/>
                 <span id='staffIdError' class='alertText formlyInvalid formlyAlert hide'>
                         ${fn:escapeXml(staff_id)} ${fn:escapeXml(required_msg)}
                 </span>
@@ -230,7 +230,7 @@
             <span id='nhisExpirationDateError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_nhis_expiration_date)} ${fn:escapeXml(required_msg)}
             </span>
-            <span id='nhisExpirationDateDateError' class='alertText formlyInvalid formlyAlert hide'>
+            <span id='nhisExpirationDateFormatError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_nhis_expiration_date)} ${fn:escapeXml(incorrect_msg)}
             </span>
     </div>

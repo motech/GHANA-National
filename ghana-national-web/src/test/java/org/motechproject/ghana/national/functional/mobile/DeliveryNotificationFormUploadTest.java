@@ -31,7 +31,7 @@ public class DeliveryNotificationFormUploadTest extends LoggedInUserFunctionalTe
 
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String facilityId = facilityGenerator.createFacility(browser, homePage);
-        final String patientId = patientGenerator.createPatient(browser, homePage);
+        final String patientId = patientGenerator.createPatientWithStaff(browser, homePage,staffId);
 
         final XformHttpClient.XformResponse response = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
                 "NurseDataEntry", XformHttpClient.XFormParser.parse("delivery-notification-template.xml", new HashMap<String, String>() {{

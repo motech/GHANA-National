@@ -1,19 +1,20 @@
 package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.data.TestStaff;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
+import org.motechproject.ghana.national.functional.pages.BasePage;
 import org.motechproject.ghana.national.functional.pages.patient.ANCEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.pages.staff.StaffPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
-import org.motechproject.ghana.national.domain.RegistrationToday;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.BeforeMethod;
@@ -41,18 +42,20 @@ public class ANCTest extends LoggedInUserFunctionalTest {
         String staffId = staffPage.staffId();
 
         String patientFirstName = "patient first name" + dataGenerator.randomString(5);
-        TestPatient testPatient = TestPatient.with(patientFirstName).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
+        TestPatient testPatient = TestPatient.with(patientFirstName, staffId)
+                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
+                .estimatedDateOfBirth(false);
+        
         patientPage = browser.toCreatePatient(staffPage);
         patientPage.create(testPatient);
 
         TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withStaffId(staffId).withRegistrationToday(RegistrationToday.IN_PAST);
-        ANCEnrollmentPage ancEnrollmentPage = browser.toANCEnrollmentForm(patientPage);
+        PatientEditPage patientEditPage = searchPatient(patientFirstName, testPatient, patientPage);
+        ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
         ancEnrollmentPage.save(ancEnrollment);
 
-        PatientEditPage patientEditPage = searchPatient(patientFirstName, testPatient, ancEnrollmentPage);
-        ancEnrollmentPage = browser.toANCEnrollmentForm(patientEditPage);
+        patientEditPage = searchPatient(patientFirstName, testPatient, ancEnrollmentPage);
+        ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
 
         ancEnrollmentPage.displaying(ancEnrollment);
 
@@ -61,7 +64,7 @@ public class ANCTest extends LoggedInUserFunctionalTest {
         ancEnrollmentPage.save(ancEnrollment);
 
         patientEditPage = searchPatient(patientFirstName, testPatient, ancEnrollmentPage);
-        ancEnrollmentPage = browser.toANCEnrollmentForm(patientEditPage);
+        ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
 
         ancEnrollmentPage.displaying(ancEnrollment);
     }
@@ -74,9 +77,9 @@ public class ANCTest extends LoggedInUserFunctionalTest {
 
         String staffId = staffPage.staffId();
         String patientFirstName = "First Name" + dataGenerator.randomString(5);
-        TestPatient testPatient = TestPatient.with(patientFirstName).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
+        TestPatient testPatient = TestPatient.with(patientFirstName, staffId)
+                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
+                .estimatedDateOfBirth(false);
 
         patientPage = browser.toCreatePatient(staffPage);
         patientPage.create(testPatient);
@@ -90,12 +93,12 @@ public class ANCTest extends LoggedInUserFunctionalTest {
         searchPatientPage.displaying(testPatient);
 
         PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, testPatient);
-        ANCEnrollmentPage ancEnrollmentPage = browser.toANCEnrollmentForm(patientEditPage);
+        ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
         ancEnrollmentPage.displaying(ancEnrollment);
     }
 
-    private PatientEditPage searchPatient(String patientFirstName, TestPatient testPatient, ANCEnrollmentPage ancEnrollmentPage) {
-        SearchPatientPage searchPatientPage = browser.toSearchPatient(ancEnrollmentPage);
+    private PatientEditPage searchPatient(String patientFirstName, TestPatient testPatient, BasePage basePage) {
+        SearchPatientPage searchPatientPage = browser.toSearchPatient(basePage);
 
         searchPatientPage.searchWithName(patientFirstName);
         searchPatientPage.displaying(testPatient);

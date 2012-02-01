@@ -54,7 +54,7 @@ public class MobileMidwifeForm extends AbstractMobileMidWifeForm {
     }
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
-        MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment());
+        MobileMidwifeEnrollment enrollment = fillEnrollment(MobileMidwifeEnrollment.newEnrollment());
         return enrollment.setStaffId(getStaffId()).setFacilityId(getFacilityId()).setPatientId(getPatientId())
                 .setConsent(getConsent());
     }

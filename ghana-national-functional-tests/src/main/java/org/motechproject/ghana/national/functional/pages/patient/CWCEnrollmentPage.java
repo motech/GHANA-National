@@ -47,7 +47,7 @@ public class CWCEnrollmentPage extends HomePage {
 
     @FindBy(id = "addHistory2")
     @CacheLookup
-    private WebElement  no;
+    private WebElement no;
 
     @FindBy(id = "countries")
     @CacheLookup
@@ -73,29 +73,57 @@ public class CWCEnrollmentPage extends HomePage {
     @CacheLookup
     private WebElement bcgDate;
 
+    @FindBy(id = "bcgDateHolder")
+    @CacheLookup
+    private WebElement bcgDateHolder;
+
     @FindBy(id = "lastOPVDate")
     @CacheLookup
     private WebElement lastOPVDate;
+
+    @FindBy(id = "lastOPVDateHolder")
+    @CacheLookup
+    private WebElement lastOPVDateHolder;
 
     @FindBy(id = "vitADate")
     @CacheLookup
     private WebElement lastVitaminADate;
 
+    @FindBy(id = "vitADateHolder")
+    @CacheLookup
+    private WebElement lastVitaminADateHolder;
+
     @FindBy(id = "lastIPTiDate")
     @CacheLookup
     private WebElement lastIPTiDate;
+
+    @FindBy(id = "lastIPTiDateHolder")
+    @CacheLookup
+    private WebElement lastIPTiDateHolder;
 
     @FindBy(id = "yfDate")
     @CacheLookup
     private WebElement yellowFeverDate;
 
+    @FindBy(id = "yfDateHolder")
+    @CacheLookup
+    private WebElement yellowFeverDateHolder;
+
     @FindBy(id = "lastPentaDate")
     @CacheLookup
     private WebElement lastPentaDate;
 
+    @FindBy(id = "lastPentaDateHolder")
+    @CacheLookup
+    private WebElement lastPentaDateHolder;
+
     @FindBy(id = "measlesDate")
     @CacheLookup
     private WebElement measlesDate;
+
+    @FindBy(id = "measlesDateHolder")
+    @CacheLookup
+    private WebElement measlesDateHolder;
 
     @FindBy(id = "lastOPV")
     @CacheLookup
@@ -152,7 +180,35 @@ public class CWCEnrollmentPage extends HomePage {
     @FindBy(id = "enrollCWC")
     @CacheLookup
     private WebElement submit;
-    
+
+    @FindBy(id = "careHistory4")
+    @CacheLookup
+    private WebElement bcgCareHistory;
+
+    @FindBy(id = "careHistory2")
+    @CacheLookup
+    private WebElement iptiCareHistory;
+
+    @FindBy(id = "careHistory6")
+    @CacheLookup
+    private WebElement opvCareHistory;
+
+    @FindBy(id = "careHistory7")
+    @CacheLookup
+    private WebElement pentaCareHistory;
+
+    @FindBy(id = "careHistory3")
+    @CacheLookup
+    private WebElement vitaminAHistory;
+
+    @FindBy(id = "careHistory5")
+    @CacheLookup
+    private WebElement measlesHistory;
+
+    @FindBy(id = "careHistory1")
+    @CacheLookup
+    private WebElement yellowFeverHistory;
+
     public CWCEnrollmentPage(WebDriver webDriver) {
         super(webDriver);
         elementPoller.waitForElementID("enrollCWC", driver);
@@ -292,38 +348,38 @@ public class CWCEnrollmentPage extends HomePage {
     }
 
     public String getLastOPV() {
-        if(lastOPV1.isSelected()){
+        if (lastOPV1.isSelected()) {
             return "0";
-        }else if (lastOPV2.isSelected()){
+        } else if (lastOPV2.isSelected()) {
             return "1";
-        }else if (lastOPV3.isSelected()){
+        } else if (lastOPV3.isSelected()) {
             return "2";
-        }else if (lastOPV4.isSelected()){
+        } else if (lastOPV4.isSelected()) {
             return "3";
         }
         return "-1";
     }
 
     public String getLastIPTi() {
-        if(lastIPTi1.isSelected()){
+        if (lastIPTi1.isSelected()) {
             return "1";
-        }else if(lastIPTi2.isSelected()){
+        } else if (lastIPTi2.isSelected()) {
             return "2";
-        }else if(lastIPTi3.isSelected()){
+        } else if (lastIPTi3.isSelected()) {
             return "3";
         }
         return "-1";
     }
 
     public String getLastPenta() {
-        if(lastPenta1.isSelected()){
+        if (lastPenta1.isSelected()) {
             return "1";
-        }else if (lastPenta2.isSelected()){
+        } else if (lastPenta2.isSelected()) {
             return "2";
-        }else if(lastPenta3.isSelected()){
+        } else if (lastPenta3.isSelected()) {
             return "3";
         }
-        return "4";
+        return "-1";
     }
 
     public String getLastOPVDate() {
@@ -342,16 +398,190 @@ public class CWCEnrollmentPage extends HomePage {
         assertEquals(getSubDistrict(), cwcEnrollmentDetails.getSubDistrict());
         assertEquals(getRegistrationDate(), cwcEnrollmentDetails.getRegistrationDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy")));
         assertEquals(getFacility(), cwcEnrollmentDetails.getFacility());
-        assertThat(getBcgDate(),is(cwcEnrollmentDetails.getBcgDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
-        assertThat(getLastIPTiDate(),is(cwcEnrollmentDetails.getLastIPTiDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
-        assertThat(getLastOPVDate(),is(cwcEnrollmentDetails.getLastOPVDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
-        assertThat(getLastPentaDate(),is(cwcEnrollmentDetails.getLastPentaDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
-        assertThat(getLastVitaminADate(),is(cwcEnrollmentDetails.getLastVitaminADate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
-        assertThat(getMeaslesDate(),is(cwcEnrollmentDetails.getMeaslesDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
-        assertThat(getYellowFeverDate(),is(cwcEnrollmentDetails.getYellowFeverDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy"))));
-        assertThat(getLastIPTi(),is(cwcEnrollmentDetails.getLastIPTi().toString()));
-        assertThat(getLastOPV(),is(cwcEnrollmentDetails.getLastOPV().toString()));
-        assertThat(getLastPenta(),is(cwcEnrollmentDetails.getLastPenta().toString()));
+        assertThat(getBcgDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getBcgDate())));
+        assertThat(getLastIPTiDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastIPTiDate())));
+        assertThat(getLastOPVDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastOPVDate())));
+        assertThat(getLastPentaDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastPentaDate())));
+        assertThat(getLastVitaminADate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastVitaminADate())));
+        assertThat(getMeaslesDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getMeaslesDate())));
+        assertThat(getYellowFeverDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getYellowFeverDate())));
+        assertThat(nullSafeInteger(getLastIPTi()), is(cwcEnrollmentDetails.getLastIPTi()));
+        assertThat(nullSafeInteger(getLastOPV()), is(cwcEnrollmentDetails.getLastOPV()));
+        assertThat(nullSafeInteger(getLastPenta()), is(cwcEnrollmentDetails.getLastPenta()));
+    }
 
+    public String nullSafeDateFormatting(LocalDate date){
+        return date == null? "": date.toString(DateTimeFormat.forPattern("dd/MM/yyyy"));
+    }
+
+    public String nullSafeInteger(String value){
+        return "-1".equals(value) ? null : value;
+    }
+
+    public void save(TestCWCEnrollment enrollment) {
+        withStaffId(enrollment.getStaffId())
+                .withSerialNumber(enrollment.getSerialNumber())
+                .withCountry(enrollment.getCountry())
+                .withRegion(enrollment.getRegion())
+                .withDistrict(enrollment.getDistrict())
+                .withSubDistrict(enrollment.getSubDistrict())
+                .withFacility(enrollment.getFacility())
+                .withRegistrationToday(enrollment.getRegistrationToday().name())
+                .withRegistrationDate(enrollment.getRegistrationDate())
+                .withAddHistory(enrollment.getAddHistory())
+                .withHasBcgHistory(enrollment.hasBcgHistory())
+                .withHasIPTiHistory(enrollment.hasIPTiHistory())
+                .withHasOPVHistory(enrollment.hasOPVHistory())
+                .withHasPentaHistory(enrollment.hasPentaHistory())
+                .withHasLastVitaminAHistory(enrollment.hasVitaminAHistory())
+                .withHasMeaslesHistory(enrollment.hasMeaslesHistory())
+                .withHasYellowFeverHistory(enrollment.hasYellowFeverHistory());
+
+        if(enrollment.hasBcgHistory()){
+            withBcgDate(enrollment.getBcgDate());
+        }
+        if(enrollment.hasIPTiHistory()){
+            withLastIPTiDate(enrollment.getLastIPTiDate())
+                .withLastIPTi(enrollment.getLastIPTi());
+        }
+        if(enrollment.hasOPVHistory()){
+            withLastOPVDate(enrollment.getLastOPVDate())
+                .withLastOPV(enrollment.getLastOPV());
+        }
+        if(enrollment.hasPentaHistory()){
+            withLastPentaDate(enrollment.getLastPentaDate())
+                .withLastPenta(enrollment.getLastPenta());
+        }
+        if(enrollment.hasVitaminAHistory()){
+            withLastVitaminADate(enrollment.getLastVitaminADate());
+        }
+        if(enrollment.hasMeaslesHistory()) {
+            withMeaslesDate(enrollment.getMeaslesDate());
+        }
+        if(enrollment.hasYellowFeverHistory()) {
+            withYellowFeverDate(enrollment.getYellowFeverDate());
+        }
+        submit();
+
+    }
+
+    private CWCEnrollmentPage withHasYellowFeverHistory(Boolean hasYellowFeverHistory) {
+        boolean selected = yellowFeverHistory.isSelected();
+        if (hasYellowFeverHistory && !selected || !hasYellowFeverHistory && selected)
+            yellowFeverHistory.click();
+        return this;
+    }
+
+    private CWCEnrollmentPage withHasMeaslesHistory(Boolean hasMeaslesHistory) {
+        boolean selected = measlesHistory.isSelected();
+        if (hasMeaslesHistory && !selected || !hasMeaslesHistory && selected)
+            measlesHistory.click();
+        return this;
+    }
+
+    private CWCEnrollmentPage withHasLastVitaminAHistory(Boolean hasVitaminAHistory) {
+        boolean selected = vitaminAHistory.isSelected();
+        if (hasVitaminAHistory && !selected || !hasVitaminAHistory && selected)
+            vitaminAHistory.click();
+        return this;
+    }
+
+    private CWCEnrollmentPage withHasPentaHistory(Boolean hasPentaHistory) {
+        boolean selected = pentaCareHistory.isSelected();
+        if (hasPentaHistory && !selected || !hasPentaHistory && selected)
+            pentaCareHistory.click();
+        return this;
+    }
+
+    private CWCEnrollmentPage withHasOPVHistory(Boolean hasOPVHistory) {
+        boolean selected = opvCareHistory.isSelected();
+        if (hasOPVHistory && !selected || !hasOPVHistory && selected)
+            opvCareHistory.click();
+        return this;
+    }
+
+    private CWCEnrollmentPage withHasIPTiHistory(Boolean hasIPTiHistory) {
+        boolean selected = iptiCareHistory.isSelected();
+        if (hasIPTiHistory && !selected || !hasIPTiHistory && selected)
+            iptiCareHistory.click();
+        return this;
+    }
+
+    private CWCEnrollmentPage withHasBcgHistory(Boolean hasBcgHistory) {
+        boolean selected = bcgCareHistory.isSelected();
+        if (hasBcgHistory && !selected || !hasBcgHistory && selected)
+            bcgCareHistory.click();
+        return this;
+    }
+
+    private CWCEnrollmentPage withLastPenta(String lastPenta) {
+        if ("1".equals(lastPenta)) {
+            lastPenta1.click();
+        } else if ("2".equals(lastPenta)) {
+            lastPenta2.click();
+        } else if ("3".equals(lastPenta)) {
+            lastPenta3.click();
+        }
+        return null;
+    }
+
+    private CWCEnrollmentPage withLastIPTi(String lastIPTi) {
+        if ("1".equals(lastIPTi)) {
+            lastIPTi1.click();
+        } else if ("2".equals(lastIPTi)) {
+            lastIPTi2.click();
+        } else if ("3".equals(lastIPTi)) {
+            lastIPTi3.click();
+        }
+        return this;
+    }
+
+    private CWCEnrollmentPage withLastOPV(String lastOPV) {
+        if ("0".equals(lastOPV)) {
+            lastOPV1.click();
+        } else if ("1".equals(lastOPV)) {
+            lastOPV2.click();
+        } else if ("2".equals(lastOPV)) {
+            lastOPV3.click();
+        } else if ("3".equals(lastOPV)) {
+            lastOPV4.click();
+        }
+        return this;
+    }
+
+
+    private CWCEnrollmentPage withYellowFeverDate(LocalDate yellowFeverDate) {
+        dateSelector.select(yellowFeverDateHolder, yellowFeverDate, driver);
+        return this;
+    }
+
+    private CWCEnrollmentPage withMeaslesDate(LocalDate measlesDate) {
+        dateSelector.select(measlesDateHolder, measlesDate, driver);
+        return this;
+    }
+
+    private CWCEnrollmentPage withLastVitaminADate(LocalDate lastVitaminADate) {
+        dateSelector.select(lastVitaminADateHolder, lastVitaminADate, driver);
+        return this;
+    }
+
+    private CWCEnrollmentPage withLastPentaDate(LocalDate lastPentaDate) {
+        dateSelector.select(lastPentaDateHolder, lastPentaDate, driver);
+        return this;
+    }
+
+    private CWCEnrollmentPage withLastOPVDate(LocalDate lastOPVDate) {
+        dateSelector.select(lastOPVDateHolder, lastOPVDate, driver);
+        return this;
+    }
+
+    private CWCEnrollmentPage withLastIPTiDate(LocalDate lastIPTiDate) {
+        dateSelector.select(lastIPTiDateHolder, lastIPTiDate, driver);
+        return this;
+    }
+
+    private CWCEnrollmentPage withBcgDate(LocalDate bcgDate) {
+        dateSelector.select(bcgDateHolder, bcgDate, driver);
+        return this;
     }
 }

@@ -6,10 +6,14 @@ import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.server.messagecampaign.contract.CampaignRequest;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertThat;
 
 public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
 
@@ -58,6 +62,18 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
         
         MobileMidwifeEnrollment updatedEnrollment = allEnrollments.get(createdEnrollment.getId());
         assertEquals(updatedFacilityId, updatedEnrollment.getFacilityId());
+    }
+
+    @Test
+    public void shouldCreateCampaignRequestFromEnrollment() {
+        ServiceType serviceType = ServiceType.PREGNANCY;
+        String patientId = "patientId";
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
+                .setServiceType(serviceType);
+        CampaignRequest campaignRequest = mobileMidwifeEnrollment.createCampaignRequest();
+        assertThat(campaignRequest.campaignName(), is(serviceType.name()));
+        assertThat(campaignRequest.externalId(), is(patientId));
+        assertThat(campaignRequest.referenceDate(), is(DateUtil.today()));
     }
 
     private void assertMobileMidwifeEnrollment(MobileMidwifeEnrollment expected, MobileMidwifeEnrollment actual) {

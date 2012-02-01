@@ -20,12 +20,11 @@ public class PatientGenerator {
 
     @LoginAsAdmin
     @ApiSession
-    public String createPatient(Browser browser, HomePage homePage) {
+    public String createPatientWithStaff(Browser browser, HomePage homePage, String staffId) {
         dataGenerator = new DataGenerator();
         PatientPage patientPage = browser.toCreatePatient(homePage);
 
-        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
+        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
 
         patientPage.create(patient);
@@ -33,18 +32,4 @@ public class PatientGenerator {
         return patientPage.motechId();
     }
 
-    @LoginAsAdmin
-    @ApiSession
-    public String createPatientWithStaff(Browser browser, HomePage homePage, String staffId) {
-        dataGenerator = new DataGenerator();
-        PatientPage patientPage = browser.toCreatePatient(homePage);
-
-        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5))
-                .registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).staffId(staffId)
-                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
-
-        patientPage.create(patient);
-        patientPage.waitForSuccessfulCompletion();
-        return patientPage.motechId();
-    }
 }

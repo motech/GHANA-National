@@ -37,15 +37,11 @@ public class TestANCEnrollment implements CareEnrollment {
     private String district;
     private String subDistrict;
     private String facility;
-    private Boolean hasIPTHistory;
-    private Boolean hasTTHistory;
     private String country;
 
     public static TestANCEnrollment create() {
         final TestANCEnrollment enrollment = new TestANCEnrollment();
 
-        enrollment.hasIPTHistory = Boolean.TRUE;
-        enrollment.hasTTHistory = Boolean.TRUE;
         enrollment.registrationDate = DateUtil.today();
         enrollment.registrationToday = RegistrationToday.TODAY;
         enrollment.serialNumber = "serialNumber";
@@ -317,11 +313,11 @@ public class TestANCEnrollment implements CareEnrollment {
     }
 
     public Boolean hasIPTHistory() {
-        return hasIPTHistory;
+        return addCareHistory.contains(ANCCareHistory.IPT);
     }
 
     public Boolean hasTTHistory() {
-        return hasTTHistory;
+        return addCareHistory.contains(ANCCareHistory.TT);
     }
 
     public String country() {

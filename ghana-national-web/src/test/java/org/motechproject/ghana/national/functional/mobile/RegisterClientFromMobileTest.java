@@ -84,10 +84,8 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
         StaffPage staffPage = browser.toStaffCreatePage(homePage);
         staffPage.create(TestStaff.with(firstName));
 
-        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5)).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.OTHER).estimatedDateOfBirth(false).
-                staffId(staffPage.staffId());
+        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffPage.staffId()).
+                patientType(TestPatient.PATIENT_TYPE.OTHER).estimatedDateOfBirth(false);
 
         mobile.upload(MobileForm.registerClientForm(), patient.forMobile());
 
@@ -107,10 +105,8 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
         staffPage.waitForSuccessMessage();
         String staffId = staffPage.staffId();
 
-        TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5)).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
-                patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false).
-                staffId(staffId);
+        TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5), staffId).
+                patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
 
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, patient.facilityId());
 
@@ -125,7 +121,7 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
         searchPatientPage.displaying(patient);
 
         PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
-        ANCEnrollmentPage ancEnrollmentPage = browser.toANCEnrollmentForm(editPage);
+        ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(editPage);
 
         TestANCEnrollment exptectedANCEnrollment = testClientRegistration.getEnrollment()
                 .withStaffId(testClientRegistration.getPatient().staffId())
@@ -146,19 +142,18 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
     @Test
     public void shouldCreatePatientWithCWCRegistrationInfoAndSearchForChild() {
         DataGenerator dataGenerator = new DataGenerator();
-        String firstName = "Second ANC Name" + dataGenerator.randomString(5);
+        String firstName = "Second CWC Name" + dataGenerator.randomString(5);
 
         StaffPage staffPage = browser.toStaffCreatePage(homePage);
         staffPage.create(TestStaff.with(firstName));
         staffPage.waitForSuccessMessage();
         String staffId = staffPage.staffId();
 
-        String motherMotechId = patientGenerator.createPatient(browser, homePage);
+        String motherMotechId = patientGenerator.createPatientWithStaff(browser, homePage,staffId);
 
-        TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5)).
-                registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
+        TestPatient patient = TestPatient.with("Second CWC Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).
-                staffId(staffId).motherMotechId(motherMotechId).registrationDate(DateUtil.newDate(2000, 12, 12)).dateOfBirth(DateUtil.newDate(2010,11,11));
+                motherMotechId(motherMotechId).registrationDate(DateUtil.newDate(2000, 12, 12)).dateOfBirth(DateUtil.newDate(2010,11,11));
 
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, patient.facilityId());
 
@@ -172,15 +167,14 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
         searchPatientPage.searchWithName(patient.firstName());
         searchPatientPage.displaying(patient);
 
-        PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
-
         TestCWCEnrollment expectedCWCEnrollment = testClientRegistration.getEnrollment()
                 .withStaffId(testClientRegistration.getPatient().staffId())
                 .withFacilityId(testClientRegistration.getPatient().facilityId())
                 .withMotechPatientId(testClientRegistration.getPatient().motechId())
                 .withRegistrationDate(testClientRegistration.getPatient().getRegistrationDate());
 
-        CWCEnrollmentPage cwcEnrollmentPage = browser.toCWCEnrollmentForm(editPage);
+        PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
+        CWCEnrollmentPage cwcEnrollmentPage = browser.toEnrollCWCPage(editPage);
         cwcEnrollmentPage.displaying(expectedCWCEnrollment);
 
         browser.toSearchPatient();

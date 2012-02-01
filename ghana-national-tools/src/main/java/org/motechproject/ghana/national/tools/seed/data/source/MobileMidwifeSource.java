@@ -156,7 +156,7 @@ public class MobileMidwifeSource {
                     @Override
                     public MobileMidwifeEnrollment mapRow(ResultSet resultSet, int i) throws SQLException {
                         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment();
-
+                        // TODO: to set enrolled date
                         enrollment.setPatientId(resultSet.getString(1));
 
                         enrollment.setPhoneNumber(resultSet.getString(2));
