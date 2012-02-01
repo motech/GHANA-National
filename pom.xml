@@ -292,28 +292,28 @@
                         <exclude>**/functional/**/*Test.java</exclude>
                     </excludes>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>test-junit</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <testNGArtifactName>none:none</testNGArtifactName>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>test-testng</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <junitArtifactName>none:none</junitArtifactName>
-                        </configuration>
-                    </execution>
-                </executions>
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>test-junit</id>-->
+                        <!--<phase>test</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>test</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<testNGArtifactName>none:none</testNGArtifactName>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                    <!--<execution>-->
+                        <!--<id>test-testng</id>-->
+                        <!--<phase>test</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>test</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<junitArtifactName>none:none</junitArtifactName>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
             </plugin>
             <!--FAILSAFE FOR INTEGRATION TESTS-->
             <plugin>
@@ -331,6 +331,11 @@
                 <configuration>
                     <printSummary>true</printSummary>
                     <argLine>-javaagent:${jacoco.agent.path}=destfile=${jacoco.file.path}</argLine>
+                    <excludes>
+                        <exclude>**/*Test.java</exclude>
+                        <exclude>**/*IT.java</exclude>
+                        <exclude>**/repository/*Test.java</exclude>
+                    </excludes>
                     <includes>
                         <include>**/functional/**/*Test.java</include>
                     </includes>
