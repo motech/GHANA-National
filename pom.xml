@@ -243,6 +243,27 @@
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>1.0-beta-2</version>
+                <configuration>
+
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <instrumentation>
+                        <excludes>
+                            <exclude>org/motechproject/functional/**/*.class</exclude>
+                            <exclude>org/motechproject/ghana/national/tools/**/*Test.class</exclude>
+                        </excludes>
+                    </instrumentation>
+                </configuration>
+            </plugin>
             <!--COMPILER -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -309,9 +330,8 @@
                 </executions>
                 <configuration>
                     <printSummary>true</printSummary>
+                    <argLine>-javaagent:${jacoco.agent.path}=destfile=${jacoco.file.path}</argLine>
                     <includes>
-                        <!--<include>**/*IT.java</include>-->
-                        <!--<include>**/repository/*Test.java</include>-->
                         <include>**/functional/**/*Test.java</include>
                     </includes>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
@@ -340,39 +360,8 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <aggregate>true</aggregate>
-                    <check>
-                        <haltOnFailure>false</haltOnFailure>
-                        <branchRate>70</branchRate>
-                        <totalBranchRate>70</totalBranchRate>
-                        <packageBranchRate>70</packageBranchRate>
-                    </check>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.5.1</version>
-            </plugin>
-        </plugins>
-    </reporting>
     <!--PROFILES-->
     <profiles>
         <profile>
