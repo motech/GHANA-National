@@ -215,6 +215,36 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>setup-quartz-schema</id>
+                        <phase>pre-integration-test</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Quartz schema loading: START"/>
+                                <path id="dependencies">
+                                    <fileset file="../build/lib/mysql-connector-java-5.1.13.jar"/>
+                                </path>
+                                <sql driver="${mysql.driver}"
+                                     url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.dbQuartz}?autoReconnect=true"
+                                     userid="${mysql.user}"
+                                     classpathref="dependencies"
+                                     password="${mysql.password}">
+                                    drop database ${mysql.dbQuartz};
+                                    create database ${mysql.dbQuartz};
+                                </sql>
+                                <sql driver="${mysql.driver}"
+                                     url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.dbQuartz}?autoReconnect=true"
+                                     userid="${mysql.user}"
+                                     classpathref="dependencies"
+                                     password="${mysql.password}"
+                                     src="../build/sql/tables_mysql_innodb.sql"/>
+                                <echo message="Quartz schema loading: END"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
