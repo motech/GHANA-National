@@ -153,7 +153,7 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
         staffPage.waitForSuccessMessage();
         String staffId = staffPage.staffId();
 
-        String motherMotechId = patientGenerator.createPatient(browser, homePage);
+        String motherMotechId = patientGenerator.createPatientWithStaff(browser, homePage,staffId);
 
         TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5)).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).

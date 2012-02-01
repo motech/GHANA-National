@@ -41,7 +41,7 @@ public class ANCTest extends LoggedInUserFunctionalTest {
         String staffId = staffPage.staffId();
 
         String patientFirstName = "patient first name" + dataGenerator.randomString(5);
-        TestPatient testPatient = TestPatient.with(patientFirstName).
+        TestPatient testPatient = TestPatient.with(patientFirstName).staffId(staffId).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
         patientPage = browser.toCreatePatient(staffPage);
@@ -74,7 +74,7 @@ public class ANCTest extends LoggedInUserFunctionalTest {
 
         String staffId = staffPage.staffId();
         String patientFirstName = "First Name" + dataGenerator.randomString(5);
-        TestPatient testPatient = TestPatient.with(patientFirstName).
+        TestPatient testPatient = TestPatient.with(patientFirstName).staffId(staffId).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID).
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
 

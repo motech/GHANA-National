@@ -68,7 +68,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
 
         // create
         String patientFirstName = "Samy Johnson" + new DataGenerator().randomString(5);
-        TestPatient patient = TestPatient.with(patientFirstName).registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID);
+        TestPatient patient = TestPatient.with(patientFirstName).staffId(staff.motechId()).registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID);
 
         PatientPage patientPage = browser.toCreatePatient(homePage);
         patientPage.create(patient);
@@ -102,7 +102,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
 
         // create
         String patientFirstName = "Samy Johnson" + new DataGenerator().randomString(5);
-        TestPatient patient = TestPatient.with(patientFirstName).registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID);
+        TestPatient patient = TestPatient.with(patientFirstName).staffId(staff.motechId()).registrationMode(TestPatient.PATIENT_REGN_MODE.AUTO_GENERATE_ID);
 
         PatientPage patientPage = browser.toCreatePatient(homePage);
         patientPage.create(patient);

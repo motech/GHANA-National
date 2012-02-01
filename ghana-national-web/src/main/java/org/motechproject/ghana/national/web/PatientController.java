@@ -17,15 +17,12 @@ import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.form.SearchPatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.ghana.national.web.helper.PatientHelper;
-import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.openmrs.patient.UnallowedIdentifierException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -94,16 +91,15 @@ public class PatientController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createPatient(PatientForm createPatientForm, BindingResult result, ModelMap modelMap) {
         Facility facility = facilityService.getFacility(createPatientForm.getFacilityId());
-        String staffId = createPatientForm.getStaffId();
         try {
+            String staffId = createPatientForm.getStaffId();
             processStaffId(staffId);
-
             if (createPatientForm.getRegistrationMode().equals(RegistrationType.USE_PREPRINTED_ID)) {
                 if (!motechIdVerhoeffValidator.isValid(createPatientForm.getMotechId())) {
                     throw new UnallowedIdentifierException("User Id is not allowed");
                 }
             }
-            final String motechId = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility),staffId);
+            final String motechId = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility), staffId);
             if (StringUtils.isNotEmpty(motechId)) {
                 modelMap.put("successMessage", "Patient created successfully.");
                 return populateView(modelMap, motechId);
@@ -120,7 +116,7 @@ public class PatientController {
         } catch (UnallowedIdentifierException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
             return NEW_PATIENT_URL;
-        }catch (StaffNotFoundException e) {
+        } catch (StaffNotFoundException e) {
             handleError(result, modelMap, messageSource.getMessage("staff_id_not_found", null, Locale.getDefault()));
             return NEW_PATIENT_URL;
         } catch (ParseException ignored) {
@@ -129,7 +125,7 @@ public class PatientController {
     }
 
     private void processStaffId(String staffId) throws StaffNotFoundException {
-        if (StringUtils.isNotEmpty(staffId) && staffService.getUserByEmailIdOrMotechId(staffId) == null){
+        if (StringUtils.isNotEmpty(staffId) && (staffService.getUserByEmailIdOrMotechId(staffId) == null)) {
             throw new StaffNotFoundException();
         }
     }
@@ -189,15 +185,15 @@ public class PatientController {
             return populateView(modelMap, motechId);
         } catch (UnallowedIdentifierException e) {
             handleError(bindingResult, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
-            return NEW_PATIENT_URL;
+            return EDIT_PATIENT_URL;
         } catch (ParseException ignored) {
-            return NEW_PATIENT_URL;
+            return EDIT_PATIENT_URL;
         } catch (ParentNotFoundException e) {
             handleError(bindingResult, modelMap, messageSource.getMessage("patient_parent_not_found", null, Locale.getDefault()));
-            return NEW_PATIENT_URL;
-        }catch (StaffNotFoundException e) {
+            return EDIT_PATIENT_URL;
+        } catch (StaffNotFoundException e) {
             handleError(bindingResult, modelMap, messageSource.getMessage("staff_id_not_found", null, Locale.getDefault()));
-            return NEW_PATIENT_URL;
+            return EDIT_PATIENT_URL;
         }
     }
 }

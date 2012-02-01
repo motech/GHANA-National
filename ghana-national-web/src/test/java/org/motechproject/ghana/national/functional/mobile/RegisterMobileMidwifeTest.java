@@ -101,7 +101,7 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
     public void shouldRegisterForMobileMidWifeProgramIfValidationsPass() throws Exception {
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String facilityMotechId = facilityGenerator.createFacility(browser, homePage);
-        final String patientId = patientGenerator.createPatient(browser, homePage);
+        final String patientId = patientGenerator.createPatientWithStaff(browser, homePage,staffId);
 
         final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(new HashMap<String, String>() {{
             put("patientId", patientId);
