@@ -26,6 +26,8 @@
         <environment>qa</environment>
         <openmrs.skip>false</openmrs.skip>
         <drop.db.skip>false</drop.db.skip>
+        <jacoco.agent.path>${project.basedir}/../build/lib/jacocoagent.jar</jacoco.agent.path>
+        <jacoco.file.path>${project.build.directory}/jacoco.exec</jacoco.file.path>
     </properties>
     <repositories>
         <repository>
@@ -251,19 +253,6 @@
 
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <instrumentation>
-                        <excludes>
-                            <exclude>org/motechproject/functional/**/*.class</exclude>
-                            <exclude>org/motechproject/ghana/national/tools/**/*Test.class</exclude>
-                        </excludes>
-                    </instrumentation>
-                </configuration>
-            </plugin>
             <!--COMPILER -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -285,7 +274,6 @@
                     <printSummary>true</printSummary>
                     <includes>
                         <include>**/*Test.java</include>
-                        <include>**/*IT.java</include>
                         <include>**/repository/*Test.java</include>
                     </includes>
                     <excludes>
@@ -331,11 +319,6 @@
                 <configuration>
                     <printSummary>true</printSummary>
                     <argLine>-javaagent:${jacoco.agent.path}=destfile=${jacoco.file.path}</argLine>
-                    <excludes>
-                        <exclude>**/*Test.java</exclude>
-                        <exclude>**/*IT.java</exclude>
-                        <exclude>**/repository/*Test.java</exclude>
-                    </excludes>
                     <includes>
                         <include>**/functional/**/*Test.java</include>
                     </includes>
