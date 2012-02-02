@@ -9,12 +9,10 @@ import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
-import org.motechproject.ghana.national.functional.data.TestStaff;
 import org.motechproject.ghana.national.functional.pages.BasePage;
 import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
-import org.motechproject.ghana.national.functional.pages.staff.StaffPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -37,7 +35,6 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
     protected void setupStaff() {
         login();
         staffId = staffGenerator.createStaff(browser, homePage);
-        facilityId = facilityGenerator.createFacility(browser, homePage);
         logout();
     }
 
@@ -53,7 +50,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
         TestPatient patient = TestPatient.with("Samy Johnson" + new DataGenerator().randomString(5), staffId);
         String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
 
-        TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, facilityId);
+        TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId);
 
         MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, homePage);
         enrollmentPage.enroll(enrollmentDetails);

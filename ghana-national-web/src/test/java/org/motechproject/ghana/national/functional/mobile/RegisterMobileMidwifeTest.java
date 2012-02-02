@@ -96,14 +96,14 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
     @Test
     public void shouldRegisterForMobileMidWifeProgramIfValidationsPass() throws Exception {
         final String staffId = staffGenerator.createStaff(browser, homePage);
-        final String facilityId = facilityGenerator.createFacility(browser, homePage);
+//        final String facilityId = facilityGenerator.createFacility(browser, homePage);
 
         TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
 
         final String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
 
-        TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, facilityId).patientId(patientId);
+        TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId);
 
         final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerMobileMidwifeForm(), mmEnrollmentDetails.forMobile());
 
