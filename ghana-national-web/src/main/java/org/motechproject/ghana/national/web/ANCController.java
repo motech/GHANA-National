@@ -23,10 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("admin/anc")
@@ -103,12 +100,12 @@ public class ANCController {
 
     private void addCareHistoryValues(ModelMap modelMap) {
         modelMap.put("careHistories", Arrays.asList("TT", "IPT"));
-        HashMap<Integer,String> lastIPTValues = new HashMap<Integer, String>();
+        HashMap<Integer,String> lastIPTValues = new LinkedHashMap<Integer, String>();
         lastIPTValues.put(1,"IPT 1");
         lastIPTValues.put(2,"IPT 2");
         lastIPTValues.put(3,"IPT 3");
 
-        HashMap<Integer,String> lastTTValues = new HashMap<Integer, String>();
+        HashMap<Integer,String> lastTTValues = new LinkedHashMap<Integer, String>();
         lastTTValues.put(1,"TT 1");
         lastTTValues.put(2,"TT 2");
         lastTTValues.put(3,"TT 3");

@@ -194,6 +194,11 @@ public class TestMobileMidwifeEnrollment {
         return this;
     }
 
+    public TestMobileMidwifeEnrollment patientId(String patientId) {
+        this.patientId = patientId;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -209,6 +214,7 @@ public class TestMobileMidwifeEnrollment {
         if (messageStartWeek != null ? !messageStartWeek.equals(that.messageStartWeek) : that.messageStartWeek != null)
             return false;
         if (mmRegPhone != null ? !mmRegPhone.equals(that.mmRegPhone) : that.mmRegPhone != null) return false;
+        if (patientId != null ? !patientId.equals(that.patientId) : that.patientId != null) return false;
         if (phoneOwnership != that.phoneOwnership) return false;
         if (reasonToJoin != that.reasonToJoin) return false;
         if (serviceType != that.serviceType) return false;
@@ -230,6 +236,7 @@ public class TestMobileMidwifeEnrollment {
         result = 31 * result + (learnedFrom != null ? learnedFrom.hashCode() : 0);
         result = 31 * result + (reasonToJoin != null ? reasonToJoin.hashCode() : 0);
         result = 31 * result + (messageStartWeek != null ? messageStartWeek.hashCode() : 0);
+        result = 31 * result + (patientId != null ? patientId.hashCode() : 0);
         return result;
     }
 
@@ -247,6 +254,7 @@ public class TestMobileMidwifeEnrollment {
                 ", learnedFrom=" + learnedFrom +
                 ", reasonToJoin=" + reasonToJoin +
                 ", messageStartWeek=" + messageStartWeek +
+                ", patientId='" + patientId + '\'' +
                 '}';
     }
 }

@@ -5,22 +5,16 @@ import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
-import org.motechproject.ghana.national.functional.data.TestStaff;
-import org.motechproject.ghana.national.functional.framework.XformHttpClient;
-import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
 import org.motechproject.ghana.national.functional.pages.BasePage;
 import org.motechproject.ghana.national.functional.pages.patient.ANCEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
-import org.motechproject.ghana.national.functional.pages.staff.StaffPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import static org.testng.AssertJUnit.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
@@ -36,17 +30,14 @@ public class ANCTest extends LoggedInUserFunctionalTest {
     @Test
     public void shouldEnrollForANCForAPatientAndUpdate() {
         // create
-
-        StaffPage staffPage = browser.toStaffCreatePage(homePage);
-        staffPage.create(TestStaff.with("staff first name" + dataGenerator.randomString(5)));
-        String staffId = staffPage.staffId();
+        String staffId = staffGenerator.createStaff(browser, homePage);
 
         String patientFirstName = "patient first name" + dataGenerator.randomString(5);
         TestPatient testPatient = TestPatient.with(patientFirstName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
         
-        patientPage = browser.toCreatePatient(staffPage);
+        patientPage = browser.toCreatePatient(homePage);
         patientPage.create(testPatient);
 
         TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withStaffId(staffId).withRegistrationToday(RegistrationToday.IN_PAST);
@@ -66,34 +57,6 @@ public class ANCTest extends LoggedInUserFunctionalTest {
         patientEditPage = searchPatient(patientFirstName, testPatient, ancEnrollmentPage);
         ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
 
-        ancEnrollmentPage.displaying(ancEnrollment);
-    }
-
-    @Test
-    public void shouldCreateANCForAPatientWithMobileDeviceAndSearchForItInWeb() {
-        DataGenerator dataGenerator = new DataGenerator();
-        StaffPage staffPage = browser.toStaffCreatePage(homePage);
-        staffPage.create(TestStaff.with("First Name" + dataGenerator.randomString(5)));
-
-        String staffId = staffPage.staffId();
-        String patientFirstName = "First Name" + dataGenerator.randomString(5);
-        TestPatient testPatient = TestPatient.with(patientFirstName, staffId)
-                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
-                .estimatedDateOfBirth(false);
-
-        patientPage = browser.toCreatePatient(staffPage);
-        patientPage.create(testPatient);
-
-        TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withMotechPatientId(patientPage.motechId()).withStaffId(staffId);
-        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerANCForm(), ancEnrollment.forMobile());
-
-        assertEquals(1, response.getSuccessCount());
-        SearchPatientPage searchPatientPage = browser.toSearchPatient();
-        searchPatientPage.searchWithName(testPatient.firstName());
-        searchPatientPage.displaying(testPatient);
-
-        PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, testPatient);
-        ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
         ancEnrollmentPage.displaying(ancEnrollment);
     }
 

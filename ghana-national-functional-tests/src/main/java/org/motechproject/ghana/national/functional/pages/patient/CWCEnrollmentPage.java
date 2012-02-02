@@ -181,7 +181,7 @@ public class CWCEnrollmentPage extends HomePage {
     @CacheLookup
     private WebElement submit;
 
-    @FindBy(id = "careHistory4")
+    @FindBy(id = "careHistory1")
     @CacheLookup
     private WebElement bcgCareHistory;
 
@@ -189,23 +189,23 @@ public class CWCEnrollmentPage extends HomePage {
     @CacheLookup
     private WebElement iptiCareHistory;
 
-    @FindBy(id = "careHistory6")
+    @FindBy(id = "careHistory4")
     @CacheLookup
     private WebElement opvCareHistory;
 
-    @FindBy(id = "careHistory7")
+    @FindBy(id = "careHistory5")
     @CacheLookup
     private WebElement pentaCareHistory;
 
-    @FindBy(id = "careHistory3")
+    @FindBy(id = "careHistory6")
     @CacheLookup
     private WebElement vitaminAHistory;
 
-    @FindBy(id = "careHistory5")
+    @FindBy(id = "careHistory3")
     @CacheLookup
     private WebElement measlesHistory;
 
-    @FindBy(id = "careHistory1")
+    @FindBy(id = "careHistory7")
     @CacheLookup
     private WebElement yellowFeverHistory;
 

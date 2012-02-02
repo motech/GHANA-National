@@ -39,18 +39,6 @@ public class TestCWCEnrollment implements CareEnrollment {
     private String subDistrict;
     private String facility;
 
-    @Override
-    public Map<String, String> forClientRegistrationThroughMobile(TestPatient patient) {
-        Map<String, String> enrollmentDetails = forMobile();
-        updateFieldName(enrollmentDetails, "addCareHistory", "addChildHistory");
-        updateFieldName(enrollmentDetails, "serialNumber", "cwcRegNumber");
-        updateFieldByNameAndValue(enrollmentDetails, "registrationDate", "date", patient.getRegistrationDate().toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
-        enrollmentDetails.put("staffId", patient.staffId());
-        enrollmentDetails.put("facilityId", patient.facilityId());
-        enrollmentDetails.put("motechId", patient.motechId());
-        return enrollmentDetails;
-    }
-
     public static TestCWCEnrollment create() {
         final TestCWCEnrollment enrollment = new TestCWCEnrollment();
         enrollment.registrationToday = RegistrationToday.IN_PAST;
@@ -77,6 +65,24 @@ public class TestCWCEnrollment implements CareEnrollment {
         return enrollment;
     }
 
+    @Override
+    public Map<String, String> forClientRegistrationThroughMobile(TestPatient patient) {
+        Map<String, String> enrollmentDetails = forMobile();
+        updateFieldName(enrollmentDetails, "addCareHistory", "addChildHistory");
+        updateFieldName(enrollmentDetails, "serialNumber", "cwcRegNumber");
+        updateFieldByNameAndValue(enrollmentDetails, "registrationDate", "date", patient.getRegistrationDate().toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
+        enrollmentDetails.put("staffId", patient.staffId());
+        enrollmentDetails.put("facilityId", patient.facilityId());
+        enrollmentDetails.put("motechId", patient.motechId());
+        return enrollmentDetails;
+    }
+
+    public Map<String, String> withMobileMidwifeEnrollmentThroughMobile(TestMobileMidwifeEnrollment mmEnrollmentDetails) {
+        Map<String, String> enrollmentDetails = mmEnrollmentDetails.forMobile();
+        enrollmentDetails.putAll(forMobile());
+        enrollmentDetails.put("enroll", "Y");
+        return enrollmentDetails;
+    }
 
     public Map<String, String> forMobile() {
         return new HashMap<java.lang.String, java.lang.String>() {{
