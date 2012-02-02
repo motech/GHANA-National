@@ -17,7 +17,7 @@ public class TestClientRegistration<T extends CareEnrollment> {
         this.mobileMidwifeEnrollment = mobileMidwifeEnrollment;
     }
 
-    public Map<String, String> forMobile() {
+    public Map<String, String> withProgramEnrollmentThroughMobile() {
         Map<String, String> map = new HashMap<String, String>();
         map.putAll(patient.forMobile());
         map.putAll(enrollment.forClientRegistrationThroughMobile(patient));

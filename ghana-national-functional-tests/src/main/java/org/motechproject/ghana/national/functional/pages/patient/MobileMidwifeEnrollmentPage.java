@@ -263,6 +263,7 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
 
     public TestMobileMidwifeEnrollment details() {
         return new TestMobileMidwifeEnrollment().staffId(valueOf(staffMotechId))
+                .patientId(valueOf(patientMotechId))
                 .consent(consent())
                 .country(valueOf(country))
                 .district(valueOf(district))

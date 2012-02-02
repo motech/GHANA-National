@@ -131,4 +131,7 @@ public class PatientEditPage extends HomePage{
        mobileMidwifeEnrollmentLink.click();
     }
 
+    public String patientId() {
+        return motechId.getAttribute("value");
+    }
 }

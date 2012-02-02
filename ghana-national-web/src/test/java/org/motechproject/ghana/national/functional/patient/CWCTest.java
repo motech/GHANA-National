@@ -5,15 +5,11 @@ import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestCWCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
-import org.motechproject.ghana.national.functional.data.TestStaff;
-import org.motechproject.ghana.national.functional.framework.XformHttpClient;
-import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
 import org.motechproject.ghana.national.functional.pages.BasePage;
 import org.motechproject.ghana.national.functional.pages.patient.CWCEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
-import org.motechproject.ghana.national.functional.pages.staff.StaffPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,8 +18,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
-
-import static org.testng.AssertJUnit.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
@@ -37,11 +31,9 @@ public class CWCTest extends LoggedInUserFunctionalTest {
 
     @Test
     public void shouldEnrollForCWCForAPatient() {
-        StaffPage staffPage = browser.toStaffCreatePage(homePage);
-        staffPage.create(TestStaff.with("First Name" + dataGenerator.randomString(5)));
-        String staffId = staffPage.staffId();
+        String staffId = staffGenerator.createStaff(browser, homePage);
 
-        PatientPage patientPage = browser.toCreatePatient(staffPage);
+        PatientPage patientPage = browser.toCreatePatient(homePage);
         String patientFirstName = "First Name" + dataGenerator.randomString(5);
         TestPatient patient = TestPatient.with(patientFirstName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE)
@@ -73,35 +65,6 @@ public class CWCTest extends LoggedInUserFunctionalTest {
         cwcEnrollmentPage = browser.toEnrollCWCPage(patientEditPage);
 
         cwcEnrollmentPage.displaying(testCWCEnrollment);
-    }
-
-    @Test(enabled = false)
-    public void shouldCreateCWCForAPatientWithMobileDeviceAndSearchForItInWeb() {
-        DataGenerator dataGenerator = new DataGenerator();
-        StaffPage staffPage = browser.toStaffCreatePage(homePage);
-        staffPage.create(TestStaff.with("First Name" + dataGenerator.randomString(5)));
-
-        String staffId = staffPage.staffId();
-        String patientFirstName = "First Name" + dataGenerator.randomString(5);
-        TestPatient testPatient = TestPatient.with(patientFirstName, staffId)
-                .patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE)
-                .estimatedDateOfBirth(false)
-                .dateOfBirth(DateUtil.newDate(DateUtil.today().getYear() - 1, 11, 11));
-
-        PatientPage patientPage = browser.toCreatePatient(staffPage);
-        patientPage.create(testPatient);
-
-        TestCWCEnrollment cwcEnrollment = TestCWCEnrollment.create().withMotechPatientId(patientPage.motechId()).withStaffId(staffId);
-        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), cwcEnrollment.forMobile());
-
-        assertEquals(1, response.getSuccessCount());
-        SearchPatientPage searchPatientPage = browser.toSearchPatient();
-        searchPatientPage.searchWithName(testPatient.firstName());
-        searchPatientPage.displaying(testPatient);
-
-        PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, testPatient);
-        CWCEnrollmentPage cwcEnrollmentPage = browser.toEnrollCWCPage(patientEditPage);
-        cwcEnrollmentPage.displaying(cwcEnrollment);
     }
 
     private PatientEditPage searchPatient(String patientFirstName, TestPatient testPatient, BasePage basePage) {

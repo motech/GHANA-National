@@ -8,28 +8,28 @@ import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.springframework.stereotype.Component;
 
-@Component
 public class PatientGenerator {
-
-    private DataGenerator dataGenerator;
-
-    public PatientGenerator() {
-    }
 
     @LoginAsAdmin
     @ApiSession
     public String createPatientWithStaff(Browser browser, HomePage homePage, String staffId) {
-        dataGenerator = new DataGenerator();
-        PatientPage patientPage = browser.toCreatePatient(homePage);
-
+        DataGenerator dataGenerator = new DataGenerator();
         TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
 
+        return createPatientWithStaff(patient, browser, homePage);
+    }
+
+    @LoginAsAdmin
+    @ApiSession
+    public String createPatientWithStaff(TestPatient patient, Browser browser, HomePage homePage) {
+        PatientPage patientPage = browser.toCreatePatient(homePage);
         patientPage.create(patient);
         patientPage.waitForSuccessfulCompletion();
         return patientPage.motechId();
     }
+
+
 
 }

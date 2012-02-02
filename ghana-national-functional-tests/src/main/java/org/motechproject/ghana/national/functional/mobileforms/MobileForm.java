@@ -20,8 +20,12 @@ public class MobileForm {
         return new MobileForm("NurseDataEntry", "register-cwc-template.xml");
     }
 
-    public static MobileForm careHistoryForm() {
-        return new MobileForm("NurseDataEntry", "care-history-template.xml");
+    public static MobileForm deliveryNotificationForm() {
+        return new MobileForm("NurseDataEntry", "delivery-notification-template.xml");
+    }
+
+    public static MobileForm registerMobileMidwifeForm() {
+        return new MobileForm("NurseDataEntry", "mobile-midwife-template.xml");
     }
 
     public MobileForm(String studyName, String xmlTemplateName) {

@@ -256,6 +256,11 @@ public class TestMobileMidwifeEnrollment {
         return this;
     }
 
+    public TestMobileMidwifeEnrollment patientId(String patientId) {
+        this.patientId = patientId;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -267,6 +272,7 @@ public class TestMobileMidwifeEnrollment {
         if (country != null ? !country.equals(that.country) : that.country != null) return false;
         if (district != null ? !district.equals(that.district) : that.district != null) return false;
         if (facility != null ? !facility.equals(that.facility) : that.facility != null) return false;
+//        if (facilityId != null ? !facilityId.equals(that.facilityId) : that.facilityId != null) return false;
         if (language != that.language) return false;
         if (learnedFrom != that.learnedFrom) return false;
         if (medium != that.medium) return false;
@@ -287,6 +293,7 @@ public class TestMobileMidwifeEnrollment {
     @Override
     public int hashCode() {
         int result = staffId != null ? staffId.hashCode() : 0;
+//        result = 31 * result + (facilityId != null ? facilityId.hashCode() : 0);
         result = 31 * result + (consent != null ? consent.hashCode() : 0);
         result = 31 * result + (serviceType != null ? serviceType.hashCode() : 0);
         result = 31 * result + (phoneOwnership != null ? phoneOwnership.hashCode() : 0);
@@ -309,6 +316,7 @@ public class TestMobileMidwifeEnrollment {
     public String toString() {
         return "TestMobileMidwifeEnrollment{" +
                 "staffId='" + staffId + '\'' +
+//                ", facilityId='" + facilityId + '\'' +
                 ", consent=" + consent +
                 ", serviceType=" + serviceType +
                 ", phoneOwnership=" + phoneOwnership +

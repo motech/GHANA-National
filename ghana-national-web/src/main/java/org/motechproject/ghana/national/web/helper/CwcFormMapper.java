@@ -12,10 +12,7 @@ import org.motechproject.mrs.model.MRSObservation;
 import org.openmrs.Concept;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class CwcFormMapper {
@@ -86,32 +83,33 @@ public class CwcFormMapper {
     public Map<String, Object> setViewAttributes() {
         Map<String, Object> map = new HashMap<String, Object>();
 
-        Map<CwcCareHistory, String> cwcCareHistories = new HashMap<CwcCareHistory, String>();
-        for (CwcCareHistory cwcCareHistory : CwcCareHistory.values()) {
+        List<CwcCareHistory> careHistories = Arrays.asList(CwcCareHistory.BCG, CwcCareHistory.IPTI,
+                CwcCareHistory.MEASLES, CwcCareHistory.OPV, CwcCareHistory.PENTA, CwcCareHistory.VITA_A, CwcCareHistory.YF);
+
+        Map<CwcCareHistory, String> cwcCareHistories = new LinkedHashMap<CwcCareHistory, String>();
+        for (CwcCareHistory cwcCareHistory : careHistories) {
             cwcCareHistories.put(cwcCareHistory, cwcCareHistory.getDescription());
         }
-
         map.put(Constants.CARE_HISTORIES, cwcCareHistories);
 
-        Map<RegistrationToday, String> registrationTodayValues = new HashMap<RegistrationToday, String>();
-
-        for (RegistrationToday registrationToday : RegistrationToday.values()) {
+        Map<RegistrationToday, String> registrationTodayValues = new LinkedHashMap<RegistrationToday, String>();
+        for (RegistrationToday registrationToday : Arrays.asList(RegistrationToday.TODAY, RegistrationToday.IN_PAST, RegistrationToday.IN_PAST_IN_OTHER_FACILITY)) {
             registrationTodayValues.put(registrationToday, registrationToday.getDescription());
         }
 
         map.put(CWCController.REGISTRATION_OPTIONS, registrationTodayValues);
-        map.put(Constants.LAST_IPTI, new HashMap<Integer, String>() {{
+        map.put(Constants.LAST_IPTI, new LinkedHashMap<Integer, String>() {{
             put(1, Constants.IPTI_1);
             put(2, Constants.IPTI_2);
             put(3, Constants.IPTI_3);
         }});
-        map.put(Constants.LAST_OPV, new HashMap<Integer, String>() {{
+        map.put(Constants.LAST_OPV, new LinkedHashMap<Integer, String>() {{
             put(0, Constants.OPV_0);
             put(1, Constants.OPV_1);
             put(2, Constants.OPV_2);
             put(3, Constants.OPV_3);
         }});
-        map.put(Constants.LAST_PENTA, new HashMap<Integer, String>() {{
+        map.put(Constants.LAST_PENTA, new LinkedHashMap<Integer, String>() {{
             put(1, Constants.PENTA_1);
             put(2, Constants.PENTA_2);
             put(3, Constants.PENTA_3);

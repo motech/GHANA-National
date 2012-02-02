@@ -7,14 +7,12 @@ import org.motechproject.ghana.national.domain.mobilemidwife.MessageStartWeek;
 import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
-import org.motechproject.ghana.national.functional.data.TestFacility;
 import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.data.TestStaff;
 import org.motechproject.ghana.national.functional.pages.BasePage;
 import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
-import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.pages.staff.StaffPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
@@ -32,75 +30,53 @@ import static org.testng.AssertJUnit.assertTrue;
 public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
 
     private DataGenerator dataGenerator;
-    private TestFacility facility;
-    private TestStaff staff;
+    private String facilityId;
+    private String staffId;
 
     @org.testng.annotations.BeforeClass
     protected void setupStaff() {
-        DataGenerator dataGenerator = new DataGenerator();
         login();
-
-        StaffPage staffPage = browser.toStaffCreatePage(homePage);
-        this.staff = TestStaff.with("Staff Jence" + dataGenerator.randomString(5));
-        TestStaff staff = this.staff;
-        staffPage.create(staff);
-        staffPage.waitForSuccessMessage();
-        staff.motechId(staffPage.staffId());
-
+        staffId = staffGenerator.createStaff(browser, homePage);
+        facilityId = facilityGenerator.createFacility(browser, homePage);
         logout();
     }
 
     @BeforeMethod
     public void setUp() {
-         dataGenerator = new DataGenerator();
+        dataGenerator = new DataGenerator();
     }
 
     @Test
     public void shouldEnrollAPatientToMobileMidwifeProgramAndEditEnrollmentDetails() {
 
         // create
-        String patientFirstName = "Samy Johnson" + new DataGenerator().randomString(5);
-        TestPatient patient = TestPatient.with(patientFirstName, staff.motechId());
+        TestPatient patient = TestPatient.with("Samy Johnson" + new DataGenerator().randomString(5), staffId);
+        String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
 
-        PatientPage patientPage = browser.toCreatePatient(homePage);
-        patientPage.create(patient);
+        TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, facilityId);
 
-
-        TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staff.motechId());
-
-        MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, patientPage);
+        MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, homePage);
         enrollmentPage.enroll(enrollmentDetails);
 
         enrollmentPage = toMobileMidwifeEnrollmentPage(patient, enrollmentPage);
-        TestMobileMidwifeEnrollment midwifeEnrollmentPageDetails = enrollmentPage.details();
-        assertEquals(enrollmentDetails, midwifeEnrollmentPageDetails);
+        assertEquals(enrollmentDetails, enrollmentPage.details());
 
         // edit
         enrollmentDetails.withServiceType(ServiceType.CHILD_CARE).withMessageStartWeek(new MessageStartWeek("45", "Baby-week 45", ServiceType.CHILD_CARE));
         enrollmentPage.enroll(enrollmentDetails);
 
         enrollmentPage = toMobileMidwifeEnrollmentPage(patient, enrollmentPage);
-        assertEquals(enrollmentDetails, enrollmentPage.details());
-    }
-
-    private MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentPage(TestPatient patient, BasePage basePage) {
-        SearchPatientPage searchPatientPage = browser.toSearchPatient(basePage);
-        searchPatientPage.searchWithName(patient.firstName());
-        PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, patient);
-        return browser.toMobileMidwifeEnrollmentForm(patientEditPage);
+        assertEquals(enrollmentDetails.patientId(patientId), enrollmentPage.details());
     }
 
     @Test
     public void shouldNotSubmitDayOfWeekAndTimeOfDayForSMSMedium_ForMobileMidwifeEnrollment() {
 
         // create
-        String patientFirstName = "Samy Johnson" + new DataGenerator().randomString(5);
-        TestPatient patient = TestPatient.with(patientFirstName, staff.motechId());
+        TestPatient patient = TestPatient.with("Samy Johnson" + new DataGenerator().randomString(5), staffId);
+        patientGenerator.createPatientWithStaff(patient, browser, homePage);
 
-        PatientPage patientPage = browser.toCreatePatient(homePage);
-        patientPage.create(patient);
-
-        MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, patientPage);
+        MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, homePage);
         enrollmentPage.withConsent(true)
                 .withPhoneOwnership(PhoneOwnership.PERSONAL.toString())
                 .withMedium(Medium.SMS.toString());
@@ -113,5 +89,12 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
                 .withMedium(Medium.VOICE.toString());
         assertTrue(enrollmentPage.getDayOfWeek().isDisplayed());
         assertTrue(enrollmentPage.getHourOfDay().isDisplayed());
+    }
+
+    private MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentPage(TestPatient patient, BasePage basePage) {
+        SearchPatientPage searchPatientPage = browser.toSearchPatient(basePage);
+        searchPatientPage.searchWithName(patient.firstName());
+        PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, patient);
+        return browser.toMobileMidwifeEnrollmentForm(patientEditPage);
     }
 }
