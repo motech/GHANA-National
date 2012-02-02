@@ -19,21 +19,38 @@ public class TestMobileMidwifeEnrollment {
     private ReasonToJoin reasonToJoin;
     private MessageStartWeek messageStartWeek;
     private String patientId;
+    private String region;
+    private String district;
+    private String subDistrict;
+    private String facility;
+    private String country;
+
+
+    public static TestMobileMidwifeEnrollment with(String staffId){
+        TestMobileMidwifeEnrollment enrollment = new TestMobileMidwifeEnrollment();
+        enrollment.staffId = staffId;
+        enrollment.country = "Ghana";
+        enrollment.region = "Central Region";
+        enrollment.district = "Awutu Senya";
+        enrollment.subDistrict = "Kasoa";
+        enrollment.facility = "Papaase CHPS";
+        enrollment.consent = Boolean.TRUE;
+        enrollment.serviceType = ServiceType.PREGNANCY;
+        enrollment.mmRegPhone = new DataGenerator().randomPhoneNumber();
+        enrollment.phoneOwnership = PhoneOwnership.PERSONAL;
+        enrollment.medium = Medium.SMS;
+        enrollment.language = Language.EN;
+        enrollment.learnedFrom = LearnedFrom.MOTECH_FIELD_AGENT;
+        enrollment.reasonToJoin = ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH;
+        enrollment.messageStartWeek = new MessageStartWeek("10", "Pregnancy-week 10", ServiceType.PREGNANCY);
+        enrollment.facilityId="13212";
+        return enrollment;
+    }
 
     public static TestMobileMidwifeEnrollment with(String staffId, String facilityId){
-        TestMobileMidwifeEnrollment testMobileMidwifeEnrollment = new TestMobileMidwifeEnrollment();
-        testMobileMidwifeEnrollment.staffId = staffId;
-        testMobileMidwifeEnrollment.facilityId = facilityId;
-        testMobileMidwifeEnrollment.consent = Boolean.TRUE;
-        testMobileMidwifeEnrollment.serviceType = ServiceType.PREGNANCY;
-        testMobileMidwifeEnrollment.mmRegPhone = new DataGenerator().randomPhoneNumber();
-        testMobileMidwifeEnrollment.phoneOwnership = PhoneOwnership.PERSONAL;
-        testMobileMidwifeEnrollment.medium = Medium.SMS;
-        testMobileMidwifeEnrollment.language = Language.EN;
-        testMobileMidwifeEnrollment.learnedFrom = LearnedFrom.MOTECH_FIELD_AGENT;
-        testMobileMidwifeEnrollment.reasonToJoin = ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH;
-        testMobileMidwifeEnrollment.messageStartWeek = new MessageStartWeek("10", "Pregnancy-week 10", ServiceType.PREGNANCY);
-        return testMobileMidwifeEnrollment;
+        TestMobileMidwifeEnrollment midwifeEnrollment = TestMobileMidwifeEnrollment.with(staffId);
+        midwifeEnrollment.facilityId = facilityId;
+        return midwifeEnrollment;
     }
 
     public Map<String, String> forMobile(){
@@ -69,6 +86,26 @@ public class TestMobileMidwifeEnrollment {
             return "PUB_VOICE";
         }
         return null;
+    }
+
+    public String region() {
+        return region;
+    }
+
+    public String district() {
+        return district;
+    }
+
+    public String subDistrict() {
+        return subDistrict;
+    }
+
+    public String facility() {
+        return facility;
+    }
+
+    public String country() {
+        return country;
     }
 
     private String toBooleanString(Boolean bool) {
@@ -194,6 +231,31 @@ public class TestMobileMidwifeEnrollment {
         return this;
     }
 
+    public TestMobileMidwifeEnrollment region(String region) {
+        this.region = region;
+        return this;
+    }
+
+    public TestMobileMidwifeEnrollment district(String district) {
+        this.district = district;
+        return this;
+    }
+
+    public TestMobileMidwifeEnrollment subDistrict(String subDistrict) {
+        this.subDistrict = subDistrict;
+        return this;
+    }
+
+    public TestMobileMidwifeEnrollment facility(String facility) {
+        this.facility = facility;
+        return this;
+    }
+
+    public TestMobileMidwifeEnrollment country(String country) {
+        this.country = country;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -202,17 +264,22 @@ public class TestMobileMidwifeEnrollment {
         TestMobileMidwifeEnrollment that = (TestMobileMidwifeEnrollment) o;
 
         if (consent != null ? !consent.equals(that.consent) : that.consent != null) return false;
-        if (facilityId != null ? !facilityId.equals(that.facilityId) : that.facilityId != null) return false;
+        if (country != null ? !country.equals(that.country) : that.country != null) return false;
+        if (district != null ? !district.equals(that.district) : that.district != null) return false;
+        if (facility != null ? !facility.equals(that.facility) : that.facility != null) return false;
         if (language != that.language) return false;
         if (learnedFrom != that.learnedFrom) return false;
         if (medium != that.medium) return false;
         if (messageStartWeek != null ? !messageStartWeek.equals(that.messageStartWeek) : that.messageStartWeek != null)
             return false;
         if (mmRegPhone != null ? !mmRegPhone.equals(that.mmRegPhone) : that.mmRegPhone != null) return false;
+        if (patientId != null ? !patientId.equals(that.patientId) : that.patientId != null) return false;
         if (phoneOwnership != that.phoneOwnership) return false;
         if (reasonToJoin != that.reasonToJoin) return false;
+        if (region != null ? !region.equals(that.region) : that.region != null) return false;
         if (serviceType != that.serviceType) return false;
         if (staffId != null ? !staffId.equals(that.staffId) : that.staffId != null) return false;
+        if (subDistrict != null ? !subDistrict.equals(that.subDistrict) : that.subDistrict != null) return false;
 
         return true;
     }
@@ -220,7 +287,6 @@ public class TestMobileMidwifeEnrollment {
     @Override
     public int hashCode() {
         int result = staffId != null ? staffId.hashCode() : 0;
-        result = 31 * result + (facilityId != null ? facilityId.hashCode() : 0);
         result = 31 * result + (consent != null ? consent.hashCode() : 0);
         result = 31 * result + (serviceType != null ? serviceType.hashCode() : 0);
         result = 31 * result + (phoneOwnership != null ? phoneOwnership.hashCode() : 0);
@@ -230,6 +296,12 @@ public class TestMobileMidwifeEnrollment {
         result = 31 * result + (learnedFrom != null ? learnedFrom.hashCode() : 0);
         result = 31 * result + (reasonToJoin != null ? reasonToJoin.hashCode() : 0);
         result = 31 * result + (messageStartWeek != null ? messageStartWeek.hashCode() : 0);
+        result = 31 * result + (patientId != null ? patientId.hashCode() : 0);
+        result = 31 * result + (region != null ? region.hashCode() : 0);
+        result = 31 * result + (district != null ? district.hashCode() : 0);
+        result = 31 * result + (subDistrict != null ? subDistrict.hashCode() : 0);
+        result = 31 * result + (facility != null ? facility.hashCode() : 0);
+        result = 31 * result + (country != null ? country.hashCode() : 0);
         return result;
     }
 
@@ -237,7 +309,6 @@ public class TestMobileMidwifeEnrollment {
     public String toString() {
         return "TestMobileMidwifeEnrollment{" +
                 "staffId='" + staffId + '\'' +
-                ", facilityId='" + facilityId + '\'' +
                 ", consent=" + consent +
                 ", serviceType=" + serviceType +
                 ", phoneOwnership=" + phoneOwnership +
@@ -247,6 +318,12 @@ public class TestMobileMidwifeEnrollment {
                 ", learnedFrom=" + learnedFrom +
                 ", reasonToJoin=" + reasonToJoin +
                 ", messageStartWeek=" + messageStartWeek +
+                ", patientId='" + patientId + '\'' +
+                ", region='" + region + '\'' +
+                ", district='" + district + '\'' +
+                ", subDistrict='" + subDistrict + '\'' +
+                ", facility='" + facility + '\'' +
+                ", country='" + country + '\'' +
                 '}';
     }
 }

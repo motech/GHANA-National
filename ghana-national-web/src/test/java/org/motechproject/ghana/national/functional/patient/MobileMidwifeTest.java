@@ -2,31 +2,30 @@
 package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
+import org.motechproject.ghana.national.domain.mobilemidwife.MessageStartWeek;
+import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
+import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
+import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestFacility;
 import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.data.TestStaff;
 import org.motechproject.ghana.national.functional.pages.BasePage;
-import org.motechproject.ghana.national.functional.pages.facility.FacilityPage;
 import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.pages.staff.StaffPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
-import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
-import org.motechproject.ghana.national.domain.mobilemidwife.MessageStartWeek;
-import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
-import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.junit.Assert.assertTrue;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
@@ -48,13 +47,6 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
         staffPage.waitForSuccessMessage();
         staff.motechId(staffPage.staffId());
 
-        FacilityPage facilityPage = browser.toFacilityPage(staffPage);
-        this.facility = TestFacility.with("Test facility" + dataGenerator.randomString(5));
-        TestFacility facility = this.facility;
-        facilityPage.save(facility);
-        facilityPage.waitForSuccessMessage();
-        facility.facilityId(facilityPage.facilityId());
-
         logout();
     }
 
@@ -74,13 +66,14 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
         patientPage.create(patient);
 
 
-        TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staff.motechId(), facility.facilityId());
+        TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staff.motechId());
 
         MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, patientPage);
         enrollmentPage.enroll(enrollmentDetails);
 
         enrollmentPage = toMobileMidwifeEnrollmentPage(patient, enrollmentPage);
-        assertEquals(enrollmentDetails, enrollmentPage.details());
+        TestMobileMidwifeEnrollment midwifeEnrollmentPageDetails = enrollmentPage.details();
+        assertEquals(enrollmentDetails, midwifeEnrollmentPageDetails);
 
         // edit
         enrollmentDetails.withServiceType(ServiceType.CHILD_CARE).withMessageStartWeek(new MessageStartWeek("45", "Baby-week 45", ServiceType.CHILD_CARE));
@@ -119,6 +112,6 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
                 .withPhoneOwnership(PhoneOwnership.PERSONAL.toString())
                 .withMedium(Medium.VOICE.toString());
         assertTrue(enrollmentPage.getDayOfWeek().isDisplayed());
-        assertTrue(enrollmentPage.getHourOfDay().isDisplayed());                
+        assertTrue(enrollmentPage.getHourOfDay().isDisplayed());
     }
 }

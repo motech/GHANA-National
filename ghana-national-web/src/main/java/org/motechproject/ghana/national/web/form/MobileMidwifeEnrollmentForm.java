@@ -4,12 +4,10 @@ import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 
-import static org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment.newEnrollment;
-
 public class MobileMidwifeEnrollmentForm {
     private String patientMotechId;
     private String staffMotechId;
-    private String facilityMotechId;
+    private FacilityForm facilityForm;
     private Boolean consent;
     private ServiceType serviceType;
     private PhoneOwnership phoneOwnership;
@@ -25,14 +23,13 @@ public class MobileMidwifeEnrollmentForm {
     public MobileMidwifeEnrollmentForm() {
     }
 
-    public MobileMidwifeEnrollmentForm(MobileMidwifeEnrollment enrollment) {
-        if (enrollment != null) {
-            this.setPatientMotechId(enrollment.getPatientId()).setStaffMotechId(enrollment.getStaffId()).setFacilityMotechId(enrollment.getFacilityId())
-                    .setConsent(enrollment.getConsent()).setServiceType(enrollment.getServiceType()).setPhoneOwnership(enrollment.getPhoneOwnership())
-                    .setPhoneNumber(enrollment.getPhoneNumber()).setMedium(enrollment.getMedium()).setDayOfWeek(enrollment.getDayOfWeek())
-                    .setTimeOfDay(enrollment.getTimeOfDay()).setLanguage(enrollment.getLanguage()).setLearnedFrom(enrollment.getLearnedFrom())
-                    .setReasonToJoin(enrollment.getReasonToJoin()).setMessageStartWeek(enrollment.getMessageStartWeek());
-        }
+    public FacilityForm getFacilityForm() {
+        return facilityForm;
+    }
+
+    public MobileMidwifeEnrollmentForm setFacilityForm(FacilityForm facilityForm) {
+        this.facilityForm = facilityForm;
+        return this;
     }
 
     public String getStaffMotechId() {
@@ -152,22 +149,4 @@ public class MobileMidwifeEnrollmentForm {
         return this;
     }
 
-    public String getFacilityMotechId() {
-        return facilityMotechId;
-    }
-
-    public MobileMidwifeEnrollmentForm setFacilityMotechId(String facilityMotechId) {
-        this.facilityMotechId = facilityMotechId;
-        return this;
-    }
-
-    public MobileMidwifeEnrollment createEnrollment() {
-        MobileMidwifeEnrollment enrollment = newEnrollment();
-        enrollment.setStaffId(getStaffMotechId()).setPatientId(getPatientMotechId()).setFacilityId(getFacilityMotechId())
-                .setConsent(getConsent()).setDayOfWeek(getDayOfWeek()).setLearnedFrom(getLearnedFrom())
-                .setLanguage(getLanguage()).setMedium(getMedium()).setMessageStartWeek(getMessageStartWeek()).setPhoneNumber(getPhoneNumber())
-                .setPhoneOwnership(getPhoneOwnership()).setReasonToJoin(getReasonToJoin()).setServiceType(getServiceType())
-                .setTimeOfDay(getTimeOfDay());
-        return enrollment;
-    }
 }

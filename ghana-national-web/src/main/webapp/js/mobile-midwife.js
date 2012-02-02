@@ -226,6 +226,13 @@ var consent = utilities.lazyLoad(
         );
 
 $(document).ready(function() {
+    new Field('countries').hasADependent(new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts'))));
+
+    $('#sub-districts').change(function() {
+        facilities.show($(this));
+    });
+    $('#regions').trigger('change');
+    $('input').trigger('change');
 
     $("#mobileMidwifeEnrollmentForm").formly({'onBlur':false, 'theme':'Light'});
 
