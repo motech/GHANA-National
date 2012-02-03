@@ -1,13 +1,14 @@
 package org.motechproject.ghana.national.functional.mobile;
 
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
@@ -74,6 +75,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
     }
 
     @Test
+    @Ignore
     public void shouldUpdatePatientIfNoErrorsAreFound() throws Exception {
         DataGenerator dataGenerator = new DataGenerator();
 
