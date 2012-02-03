@@ -277,7 +277,7 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
                 .language(valueOf(language))
                 .learnedFrom(valueOf(learnedFrom))
                 .reasonToJoin(valueOf(reasonToJoin))
-                .messageStartWeek(MessageStartWeek.valueOf(valueOf(messageStartWeek)));
+                .messageStartWeek(MessageStartWeek.findBy(valueOf(messageStartWeek)));
     }
 
 }

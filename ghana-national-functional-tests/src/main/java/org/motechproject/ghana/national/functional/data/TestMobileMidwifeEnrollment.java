@@ -42,7 +42,7 @@ public class TestMobileMidwifeEnrollment {
         enrollment.language = Language.EN;
         enrollment.learnedFrom = LearnedFrom.MOTECH_FIELD_AGENT;
         enrollment.reasonToJoin = ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH;
-        enrollment.messageStartWeek = new MessageStartWeek("10", "Pregnancy-week 10", ServiceType.PREGNANCY);
+        enrollment.messageStartWeek = new MessageStartWeek("10", 10, "Pregnancy-week 10", ServiceType.PREGNANCY);
         enrollment.facilityId="13212";
         return enrollment;
     }
@@ -69,7 +69,7 @@ public class TestMobileMidwifeEnrollment {
             put("language", language.getValue());
             put("learnedFrom", learnedFrom.getValue());
             put("reasonToJoin", reasonToJoin.getValue());
-            put("messageStartWeek", messageStartWeek.getValue());
+            put("messageStartWeek", messageStartWeek.getKey());
         }};
     }
 
@@ -163,7 +163,7 @@ public class TestMobileMidwifeEnrollment {
     }
 
     public String messageStartWeek() {
-        return messageStartWeek.getValue();
+        return messageStartWeek.getKey();
     }
 
     public TestMobileMidwifeEnrollment withServiceType(ServiceType serviceType){

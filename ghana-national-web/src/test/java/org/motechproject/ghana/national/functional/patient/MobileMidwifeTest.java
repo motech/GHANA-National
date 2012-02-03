@@ -3,7 +3,6 @@ package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
-import org.motechproject.ghana.national.domain.mobilemidwife.MessageStartWeek;
 import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
@@ -19,9 +18,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import static org.motechproject.ghana.national.domain.mobilemidwife.MessageStartWeek.findBy;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
@@ -59,7 +59,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
         assertEquals(enrollmentDetails, enrollmentPage.details());
 
         // edit
-        enrollmentDetails.withServiceType(ServiceType.CHILD_CARE).withMessageStartWeek(new MessageStartWeek("45", "Baby-week 45", ServiceType.CHILD_CARE));
+        enrollmentDetails.withServiceType(ServiceType.CHILD_CARE).withMessageStartWeek(findBy("45"));
         enrollmentPage.enroll(enrollmentDetails);
 
         enrollmentPage = toMobileMidwifeEnrollmentPage(patient, enrollmentPage);

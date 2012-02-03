@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -68,6 +69,7 @@ public class MobileMidwifeControllerTest {
         MobileMidwifeEnrollment midwifeEnrollment = controller.createEnrollment(enrollmentForm);
         assertEquals(facilityId, midwifeEnrollment.getFacilityId());
         assertFormWithEnrollment(enrollmentForm, midwifeEnrollment);
+        assertEquals(new LocalDate(), midwifeEnrollment.getEnrollmentDateTime().toLocalDate());
     }
 
     @Test
@@ -100,7 +102,7 @@ public class MobileMidwifeControllerTest {
         String successMsg = "Changes successful";
 
         MobileMidwifeEnrollmentForm form = createEnrollmentForm(patientId, locationId, "staffId", Medium.SMS, new Time(23, 45));
-        MobileMidwifeEnrollment existingEnrollment = new MobileMidwifeEnrollment();
+        MobileMidwifeEnrollment existingEnrollment = MobileMidwifeEnrollment.newEnrollment();
         existingEnrollment.setPatientId(patientId);
         existingEnrollment.setFacilityId("oldFacilityId");
         existingEnrollment.setStaffId("oldStaffId");

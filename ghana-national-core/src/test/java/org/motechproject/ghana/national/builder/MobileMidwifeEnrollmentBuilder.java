@@ -99,6 +99,6 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
 
     @Override
     public MobileMidwifeEnrollment build() {
-        return generate(new MobileMidwifeEnrollment());
+        return generate(MobileMidwifeEnrollment.newEnrollment());
     }
 }

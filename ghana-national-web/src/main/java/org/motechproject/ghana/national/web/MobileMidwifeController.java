@@ -125,7 +125,7 @@ public class MobileMidwifeController {
     }
 
     MobileMidwifeEnrollment createEnrollment(MobileMidwifeEnrollmentForm form) {
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment();
+        MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment();
         String facilityId = facilityService.getFacility(form.getFacilityForm().getFacilityId()).getMotechId();
 
         enrollment.setStaffId(form.getStaffMotechId()).setPatientId(form.getPatientMotechId()).setFacilityId(facilityId)
