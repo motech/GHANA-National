@@ -2,7 +2,9 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.OutPatientVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.EncounterService;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSObservation;
@@ -29,6 +31,9 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
 
     @Autowired
     EncounterService encounterService;
+
+    @Autowired
+    FacilityService facilityService;
 
     @Autowired
     private MRSPatientAdaptor patientAdaptor;
@@ -80,7 +85,8 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
                 observationList.add(commentsObs);
 
             }
-            encounterService.persistEncounter(mrsPatient, formBean.getStaffId(), formBean.getFacilityId(), ENCOUNTER_TYPE, formBean.getVisitDate(), observationList);
+            Facility facility = facilityService.getFacilityByMotechId(formBean.getFacilityId());
+            encounterService.persistEncounter(mrsPatient, formBean.getStaffId(), facility.mrsFacilityId(), ENCOUNTER_TYPE, formBean.getVisitDate(), observationList);
 
         } catch (Exception e) {
             log.error("Exception occured in saving Delivery Notification details for: " + formBean.getMotechId(), e);

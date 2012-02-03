@@ -7,7 +7,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.OutPatientVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.EncounterService;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
@@ -38,12 +40,16 @@ public class OutPatientVisitFormHandlerTest {
     @Mock
     MRSPatientAdaptor mockMRSPatientAdaptor;
 
+    @Mock
+    FacilityService mockFacilityService;
+
     @Before
     public void setUp() {
         initMocks(this);
         handler = new OutPatientVisitFormHandler();
         ReflectionTestUtils.setField(handler, "encounterService", mockEncounterService);
         ReflectionTestUtils.setField(handler, "patientAdaptor", mockMRSPatientAdaptor);
+        ReflectionTestUtils.setField(handler, "facilityService", mockFacilityService);
     }
 
     @Test
@@ -51,6 +57,7 @@ public class OutPatientVisitFormHandlerTest {
 
         final OutPatientVisitForm form = new OutPatientVisitForm();
         String staffId = "staffId";
+        String motechFacilityId = "motechFacilityId";
         String facilityId = "facilityId";
         Date visitDate = DateUtil.today().toDate();
         int secondDiagnosis = 65;
@@ -63,7 +70,7 @@ public class OutPatientVisitFormHandlerTest {
 
         form.setNewCase(isNewCase);
         form.setStaffId(staffId);
-        form.setFacilityId(facilityId);
+        form.setFacilityId(motechFacilityId);
         form.setMotechId(motechId);
         form.setVisitDate(visitDate);
         String comments = "comments";
@@ -77,8 +84,13 @@ public class OutPatientVisitFormHandlerTest {
         MotechEvent motechEvent = new MotechEvent("form.validation.successful.NurseDataEntry.opvVisit", new HashMap<String, Object>() {{
             put(Constants.FORM_BEAN, form);
         }});
+
         MRSPatient mockMrsPatient = mock(MRSPatient.class);
+        Facility mockFacility = mock(Facility.class);
+
         when(mockMRSPatientAdaptor.getPatientByMotechId(motechId)).thenReturn(mockMrsPatient);
+        when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(mockFacility);
+        when(mockFacility.mrsFacilityId()).thenReturn(facilityId);
 
         handler.handleFormEvent(motechEvent);
 
