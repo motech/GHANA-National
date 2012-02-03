@@ -10,6 +10,15 @@
     <modelVersion>4.0.0</modelVersion>
     <name>ghana-national-common</name>
     <artifactId>ghana-national-common</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-delivery-tools-web</artifactId>
+            <version>0.3-SNAPSHOT</version>
+            <type>war</type>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
