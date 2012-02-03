@@ -46,12 +46,16 @@ public class OutPatientVisitForm extends FormBean {
 
     private Integer otherSecondaryDiagnosis;
 
+    private Boolean rdtGiven;
+
+    private Boolean rdtPositive;
+
+    private Boolean actTreated;
+
     @Required
     private Boolean referred;
 
     private String comments;
-
-    private String sex;
 
     public String getStaffId() {
         return staffId;
@@ -157,6 +161,30 @@ public class OutPatientVisitForm extends FormBean {
         this.otherSecondaryDiagnosis = otherSecondaryDiagnosis;
     }
 
+    public Boolean getRdtGiven() {
+        return rdtGiven;
+    }
+
+    public void setRdtGiven(Boolean rdtGiven) {
+        this.rdtGiven = rdtGiven;
+    }
+
+    public Boolean getRdtPositive() {
+        return rdtPositive;
+    }
+
+    public void setRdtPositive(Boolean rdtPositive) {
+        this.rdtPositive = rdtPositive;
+    }
+
+    public Boolean getActTreated() {
+        return actTreated;
+    }
+
+    public void setActTreated(Boolean actTreated) {
+        this.actTreated = actTreated;
+    }
+
     public Boolean getReferred() {
         return referred;
     }
@@ -173,11 +201,4 @@ public class OutPatientVisitForm extends FormBean {
         this.comments = comments;
     }
 
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
 }

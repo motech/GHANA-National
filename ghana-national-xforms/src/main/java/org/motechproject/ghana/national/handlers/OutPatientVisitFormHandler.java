@@ -12,7 +12,9 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.services.MRSPatientAdaptor;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
+import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
 import org.motechproject.server.event.annotations.MotechListener;
+import org.openmrs.Concept;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,9 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
     @Autowired
     private MRSPatientAdaptor patientAdaptor;
     public static int OTHER_DIAGNOSIS = 78;
+
+     @Autowired
+     OpenMRSConceptAdaptor openMRSConceptAdaptor;
 
 
     @Override
@@ -85,6 +90,21 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
                 observationList.add(commentsObs);
 
             }
+
+            if (Boolean.TRUE.equals(formBean.getRdtGiven())) {
+                MRSObservation rdtGivenObs;
+                if(Boolean.TRUE.equals(formBean.getRdtPositive()))
+                    rdtGivenObs = new MRSObservation<Concept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST,openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_POSITIVE) );
+                else
+                    rdtGivenObs=  new MRSObservation<Concept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST,openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_NEGATIVE) );
+                observationList.add(rdtGivenObs);
+            }
+
+            if (formBean.getActTreated() != null) {
+                MRSObservation actTreatedObs = new MRSObservation<Boolean>(formBean.getVisitDate(), Constants.CONCEPT_ACT_TREATMENT, formBean.getActTreated());
+                observationList.add(actTreatedObs);
+            }
+
             Facility facility = facilityService.getFacilityByMotechId(formBean.getFacilityId());
             encounterService.persistEncounter(mrsPatient, formBean.getStaffId(), facility.mrsFacilityId(), ENCOUNTER_TYPE, formBean.getVisitDate(), observationList);
 

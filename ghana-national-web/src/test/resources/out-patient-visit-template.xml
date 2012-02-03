@@ -9,7 +9,6 @@
                 <registrantType/>
                 <motechId/>
                 <serialNumber/>
-                <sex/>
                 <insured/>
                 <newCase/>
                 <newPatient/>
@@ -17,6 +16,9 @@
                 <otherDiagnosis/>
                 <secondDiagnosis/>
                 <otherSecondaryDiagnosis/>
+                <rdtGiven/>
+                <rdtPositive/>
+                <actTreated/>
                 <referred/>
                 <comments/>
                 <formtype>data_entry</formtype>
@@ -29,13 +31,11 @@
                  constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
         <xf:bind id="serialNumber" nodeset="/opvVisit/serialNumber" type="xsd:string" required="true()"/>
         <xf:bind id="registrantType" nodeset="/opvVisit/registrantType" required="true()"
-        type="xsd:string"/>
+                 type="xsd:string"/>
         <xf:bind action="show" id="motechId" nodeset="/opvVisit/motechId"
-                 relevant="/opvVisit/registrantType = 'PREGNANT_MOTHER' or /opvVisit/registrantType = 'CHILD_UNDER_FIVE'" type="xsd:int"
-                 visible="false()" constraint=". &gt; 999999 and . &lt; 10000000"
+                 type="xsd:int" visible="true()" constraint=". &gt; 999999 and . &lt; 10000000"
                  message="MoTeCH ID must be 7 digits long" required="true()"/>
-        <xf:bind action="show" id="sex" nodeset="/opvVisit/sex" relevant="/opvVisit/registrantType = 'CHILD_UNDER_FIVE' or /opvVisit/registrantType = 'OTHER'"
-                 required="true()" type="xsd:string" visible="false()"/>
+
         <xf:bind constraint=". &lt;= 'today()'" id="visitDate"
                  message="Invalid visitDate: visitDate specified is in the future" nodeset="/opvVisit/visitDate"
                  required="true()" type="xsd:date"/>
@@ -50,6 +50,14 @@
         <xf:bind action="show" constraint=". &gt;= 1 and . &lt;= 76" id="otherSecondaryDiagnosis"
                  message="Invalid diagnosis: value must be between 1 and 76" nodeset="/opvVisit/otherSecondaryDiagnosis"
                  relevant="/opvVisit/secondDiagnosis = '78'" required="true()" type="xsd:int" visible="false()"/>
+        <xf:bind action="show" id="rdtGiven" nodeset="/opvVisit/rdtGiven"
+                 relevant="/opvVisit/diagnosis = '63' or /opvVisit/diagnosis = '64' or /opvVisit/diagnosis = '10' or /opvVisit/diagnosis = '11' or /opvVisit/diagnosis = '13' or /opvVisit/diagnosis = '12' or /opvVisit/secondDiagnosis = '63' or /opvVisit/secondDiagnosis = '64' or /opvVisit/secondDiagnosis = '10' or /opvVisit/secondDiagnosis = '11' or /opvVisit/secondDiagnosis = '13' or /opvVisit/secondDiagnosis = '12'"
+                 required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="rdtPositive" nodeset="/opvVisit/rdtPositive" relevant="/opvVisit/rdtGiven = 'Y'"
+                 required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="actTreated" nodeset="/opvVisit/actTreated"
+                 relevant="/opvVisit/diagnosis = '63' or /opvVisit/diagnosis = '64' or /opvVisit/secondDiagnosis = '63' or /opvVisit/secondDiagnosis = '64'"
+                 required="true()" type="xsd:string" visible="false()"/>
         <xf:bind id="referred" nodeset="/opvVisit/referred" required="true()" type="xsd:string"/>
         <xf:bind id="comments" nodeset="/opvVisit/comments" type="xsd:string" required="false()"/>
         <xf:bind id="formtype" nodeset="/opvVisit/formtype" required="true()" type="xsd:string" visible="false()"/>
@@ -87,17 +95,6 @@
         <xf:input bind="serialNumber">
             <xf:label>Serial number</xf:label>
         </xf:input>
-        <xf:select1 bind="sex">
-            <xf:label>Sex</xf:label>
-            <xf:item id="M">
-                <xf:label>Male</xf:label>
-                <xf:value>M</xf:value>
-            </xf:item>
-            <xf:item id="F">
-                <xf:label>Female</xf:label>
-                <xf:value>F</xf:value>
-            </xf:item>
-        </xf:select1>
         <xf:select1 bind="insured">
             <xf:label>Insured</xf:label>
             <xf:item id="Y">
@@ -231,6 +228,39 @@
         <xf:input bind="otherSecondaryDiagnosis">
             <xf:label>Code for additional diagnosis</xf:label>
         </xf:input>
+        <xf:select1 bind="rdtGiven">
+            <xf:label>RDT given</xf:label>
+            <xf:item id="Y">
+                <xf:label>Yes</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+            <xf:item id="N">
+                <xf:label>No</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="rdtPositive">
+            <xf:label>RDT result</xf:label>
+            <xf:item id="N">
+                <xf:label>Negative</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+            <xf:item id="Y">
+                <xf:label>Positive</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="actTreated">
+            <xf:label>ACT given?</xf:label>
+            <xf:item id="Y">
+                <xf:label>Yes</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+            <xf:item id="N">
+                <xf:label>No</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
         <xf:select1 bind="referred">
             <xf:label>Referred</xf:label>
             <xf:item id="Y">
