@@ -49,6 +49,12 @@
                 "fileName":"DeliveryNotification.xml",
                 "bean":"org.motechproject.ghana.national.bean.DeliveryNotificationForm",
                 "validator":"org.motechproject.ghana.national.validator.DeliveryNotificationFormValidator"
+            },
+            {
+                "name":"opvVisit",
+                "fileName":"OutPatientVisit.xml",
+                "bean":"org.motechproject.ghana.national.bean.OutPatientVisitForm",
+                "validator":"org.motechproject.ghana.national.validator.OutPatientVisitFormValidator"
             }
         ]
     }

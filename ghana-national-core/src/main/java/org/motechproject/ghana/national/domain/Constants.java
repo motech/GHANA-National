@@ -82,6 +82,17 @@ public class Constants {
     public static final String ENCOUNTER_PREGREGVISIT = "PREGREGVISIT";
     public static final String ENCOUNTER_PATIENTREGVISIT = "PATIENTREGVISIT";
     public static final String ENCOUNTER_PATIENTEDITVISIT = "PATIENTEDITVISIT";
+    public static final String CONCEPT_INSURED = "INSURED";
+    public static final String CONCEPT_NEW_CASE = "NEW CASE";
+    public static final String CONCEPT_NEW_PATIENT = "NEW PATIENT";
+    public static final String CONCEPT_REFERRED = "REFERRED";
+    public static final String CONCEPT_PRIMARY_DIAGNOSIS = "PRIMARY DIAGNOSIS ";
+    public static final String CONCEPT_SECONDARY_DIAGNOSIS = "SECONDARY DIAGNOSIS";
+    public static final String CONCEPT_COMMENTS = "COMMENTS";
+    public static final String CONCEPT_MALARIA_RAPID_TEST = "MALARIA RAPID TEST";
+    public static final String CONCEPT_POSITIVE = "POSITIVE";
+    public static final String CONCEPT_NEGATIVE = "NEGATIVE";
+    public static final String CONCEPT_ACT_TREATMENT = "ACT TREATMENT";
 
     //CWC Validators
     public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
