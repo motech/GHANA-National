@@ -8,7 +8,7 @@
                 "name" : "Pregnancy Message",
                 "formats" : ["SMS"],
                 "languages" : ["en"],
-                "messageKey": "pregnancy-calendar-week-{Offset}-{WeekDay}",
+                "messageKey": "PREGNANCY-cw{Offset}-{WeekDay}",
                 "calendarStartOfWeek" : "Sunday",
                 "weekDaysApplicable" : ["Monday", "Wednesday", "Friday"],
                 "deliverTime" : "10:30"
@@ -26,7 +26,7 @@
                 "name" : "ChildCare Message",
                 "formats" : ["SMS"],
                 "languages" : ["en"],
-                "messageKey": "childcare-calendar-week-{Offset}-{WeekDay}",
+                "messageKey": "CHILD_CARE-cw{Offset}-{WeekDay}",
                 "calendarStartOfWeek" : "Sunday",
                 "weekDaysApplicable" : ["Monday", "Wednesday", "Friday"],
                 "deliverTime" : "10:30"

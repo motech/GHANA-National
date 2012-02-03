@@ -13,9 +13,16 @@ public class CouchDB {
     @Autowired
     @Qualifier("couchDbConnector")
     private CouchDbConnector dbConnector;
+    @Autowired
+    @Qualifier("cmsLiteDatabase")
+    private CouchDbConnector cmsLiteDatabase;
 
     public void recreate() {
-        String dbName = dbConnector.getDatabaseName();
+        recreate(dbConnector.getDatabaseName());
+        recreate(cmsLiteDatabase.getDatabaseName());
+    }
+
+    private void recreate(String dbName) {
         couchDbInstance.deleteDatabase(dbName);
         couchDbInstance.createDatabase(dbName);
     }

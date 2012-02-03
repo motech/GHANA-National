@@ -10,6 +10,7 @@
     <context:property-placeholder location="classpath*:*.properties" ignore-unresolvable="true"/>
     <beans:import resource="classpath:applicationOpenmrsAPI.xml"/>
     <beans:import resource="classpath*:applicationMessageCampaign.xml"/>
+    <beans:import resource="classpath*:applicationCmsLiteApi.xml"/>
 
     <context:annotation-config/>
     <context:spring-configured/>
