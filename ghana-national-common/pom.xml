@@ -16,7 +16,6 @@
             <artifactId>motech-delivery-tools-web</artifactId>
             <version>0.3-SNAPSHOT</version>
             <type>war</type>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 
@@ -37,6 +36,21 @@
                             <descriptors>
                                 <descriptor>src/main/assembly/resources.xml</descriptor>
                             </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeArtifactIds>motech-delivery-tools-web</includeArtifactIds>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

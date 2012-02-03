@@ -317,8 +317,7 @@
                                     <contextPath>/openmrs</contextPath>
                                 </contextHandler>
                                 <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
-                                    <war>ghana-national-common/build/motech-delivery-tools-web-0.3-SNAPSHOT.war
-                                    </war>
+                                    <war>ghana-national-common/target/lib/motech-delivery-tools-web-0.3-SNAPSHOT.war</war>
                                     <contextPath>/deliverytools</contextPath>
                                 </contextHandler>
                             </contextHandlers>
