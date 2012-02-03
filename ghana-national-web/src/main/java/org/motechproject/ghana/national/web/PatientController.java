@@ -99,10 +99,10 @@ public class PatientController {
                     throw new UnallowedIdentifierException("User Id is not allowed");
                 }
             }
-            final String motechId = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility), staffId);
-            if (StringUtils.isNotEmpty(motechId)) {
+            Patient patient = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility), staffId);
+            if (StringUtils.isNotEmpty(patient.getMotechId())) {
                 modelMap.put("successMessage", "Patient created successfully.");
-                return populateView(modelMap, motechId);
+                return populateView(modelMap, patient.getMotechId());
             }
         } catch (ParentNotFoundException e) {
             handleError(result, modelMap, messageSource.getMessage("patient_parent_not_found", null, Locale.getDefault()));

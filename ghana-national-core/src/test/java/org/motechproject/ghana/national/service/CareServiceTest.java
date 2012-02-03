@@ -1,15 +1,20 @@
 package org.motechproject.ghana.national.service;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.configuration.CareScheduleNames;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.*;
+import org.motechproject.model.Time;
 import org.motechproject.mrs.model.*;
 import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
+import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
+import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -18,6 +23,7 @@ import org.unitils.reflectionassert.ReflectionComparatorMode;
 import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -40,6 +46,11 @@ public class CareServiceTest extends BaseUnitTest {
     @Mock
     OpenMRSConceptAdaptor mockOpenMRSConceptAdaptor;
 
+    @Mock
+    ScheduleTrackingService mockScheduleTrackingService;
+
+    private DateTime currentDate;
+
     @Before
     public void setUp() {
         careService = new CareService();
@@ -48,7 +59,9 @@ public class CareServiceTest extends BaseUnitTest {
         ReflectionTestUtils.setField(careService, "patientService", mockPatientService);
         ReflectionTestUtils.setField(careService, "allEncounters", mockAllEncounters);
         ReflectionTestUtils.setField(careService, "openMRSConceptAdaptor", mockOpenMRSConceptAdaptor);
-        DateTime currentDate = DateTime.now();
+        ReflectionTestUtils.setField(careService, "scheduleTrackingService", mockScheduleTrackingService);
+
+        currentDate = DateTime.now();
         mockCurrentDate(currentDate);
     }
 
@@ -131,7 +144,7 @@ public class CareServiceTest extends BaseUnitTest {
         String staffPersonId = "staff person id";
         Date registrationDate = new Date(2012, 3, 1);
         final ANCVO ancvo = createTestANCVO("3", new Date(2011, 12, 9), "4", new Date(2011, 7, 5), RegistrationToday.IN_PAST, registrationDate, facilityId,
-                staffUserId, patientMotechId, Arrays.asList(ANCCareHistory.values()));
+                staffUserId, patientMotechId, Arrays.asList(ANCCareHistory.values()), new Date());
 
         setupStaffAndPatient(patientId, patientMotechId, staffUserId, staffPersonId);
 
@@ -186,7 +199,7 @@ public class CareServiceTest extends BaseUnitTest {
         String staffUserId = "staff user id";
         String staffPersonId = "staff person id";
         final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.TODAY, new Date(2012, 1, 1), facilityId, staffUserId, patientMotechId,
-                new ArrayList<ANCCareHistory>());
+                new ArrayList<ANCCareHistory>(), new Date());
 
         setupStaffAndPatient(patientId, patientMotechId, staffUserId, staffPersonId);
 
@@ -223,7 +236,7 @@ public class CareServiceTest extends BaseUnitTest {
         String staffPersonId = "staff person id";
         Date registrationDate = new Date(2012, 1, 1);
         final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.IN_PAST_IN_OTHER_FACILITY, registrationDate, facilityId, staffUserId,
-                patientMotechId, new ArrayList<ANCCareHistory>());
+                patientMotechId, new ArrayList<ANCCareHistory>(), new Date());
 
         setupStaffAndPatient(patientId, patientMotechId, staffUserId, staffPersonId);
 
@@ -302,9 +315,34 @@ public class CareServiceTest extends BaseUnitTest {
                 ReflectionComparatorMode.LENIENT_ORDER);
     }
 
+    @Test
+    public void shouldCreateAExpectedPregnancyScheduleWhileRegisteringAPatientToANCProgram() {
+        String facilityId = "facility id";
+        String patientId = "patient id";
+        String patientMotechId = "patient motech id";
+        String staffUserId = "staff user id";
+        String staffPersonId = "staff person id";
+        Date estimatedDateOfDelivery = DateUtil.newDate(2000, 1, 1).toDate();
+        final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.IN_PAST_IN_OTHER_FACILITY, DateUtil.newDate(2000, 1, 1).toDate(), facilityId, staffUserId,
+                patientMotechId, new ArrayList<ANCCareHistory>(), estimatedDateOfDelivery);
+
+        setupStaffAndPatient(patientId, patientMotechId, staffUserId, staffPersonId);
+
+        careService.enroll(ancvo);
+
+        ArgumentCaptor<EnrollmentRequest> enrollmentRequestArgumentCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockScheduleTrackingService).enroll(enrollmentRequestArgumentCaptor.capture());
+
+        EnrollmentRequest requestPassedToScheduleTracker = enrollmentRequestArgumentCaptor.getValue();
+        assertThat(requestPassedToScheduleTracker.getExternalId(), is(equalTo(patientId)));
+        assertThat(requestPassedToScheduleTracker.getScheduleName(), is(equalTo(CareScheduleNames.DELIVERY)));
+        assertThat(requestPassedToScheduleTracker.getPreferredAlertTime(), is(equalTo(new Time(currentDate.toLocalTime()))));
+        assertThat(requestPassedToScheduleTracker.getReferenceDate(), any(LocalDate.class));
+    }
+
     private ANCVO createTestANCVO(String ipt, Date iptDate, String tt, Date ttDate, RegistrationToday registrationToday, Date registrationDate,
-                                  String facilityId, String staffId, String patientMotechId, List<ANCCareHistory> careHistories) {
-        return new ANCVO(staffId, facilityId, patientMotechId, registrationDate, registrationToday, "2321322", new Date(),
+                                  String facilityId, String staffId, String patientMotechId, List<ANCCareHistory> careHistories, Date estimatedDateOfDelivery) {
+        return new ANCVO(staffId, facilityId, patientMotechId, registrationDate, registrationToday, "2321322", estimatedDateOfDelivery,
                 12.34, 12, 34, true, true, careHistories, ipt, tt, iptDate, ttDate, true);
     }
 
@@ -317,6 +355,7 @@ public class CareServiceTest extends BaseUnitTest {
 
         when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
+        when(mockPatient.getMRSPatientId()).thenReturn(patientId);
         when(mockMRSPatient.getId()).thenReturn(patientId);
 
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mockMRSUser);

@@ -48,8 +48,8 @@ public class TextMessageServiceTest {
         String lastName = "Charlie";
 
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
+        when(mockPatient.getMotechId()).thenReturn(motechId);
         when(mockMRSPatient.getPerson()).thenReturn(mockPerson);
-        when(mockMRSPatient.getMotechId()).thenReturn(motechId);
         when(mockPerson.getFirstName()).thenReturn(firstName);
         when(mockPerson.getLastName()).thenReturn(lastName);
 
@@ -59,7 +59,7 @@ public class TextMessageServiceTest {
         when(mockAllConfigurations.getConfigurationValue(Constants.REGISTER_SUCCESS_SMS)).thenReturn(configuration);
 
         String someRecipient = "someRecipient";
-        textMessageService.sendSMS(someRecipient, motechId , mockPatient, Constants.REGISTER_SUCCESS_SMS);
+        textMessageService.sendSMS(someRecipient, mockPatient, Constants.REGISTER_SUCCESS_SMS);
         ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockSMSService).sendSMS(eq(someRecipient), messageCaptor.capture());
         String message = messageCaptor.getValue();

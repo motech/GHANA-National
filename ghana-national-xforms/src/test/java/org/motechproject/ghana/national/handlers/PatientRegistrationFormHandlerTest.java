@@ -18,6 +18,7 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
@@ -93,7 +94,8 @@ public class PatientRegistrationFormHandlerTest {
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<String> staffIdCaptor = ArgumentCaptor.forClass(String.class);
-        doReturn(motechId).when(mockPatientService).registerPatient(patientArgumentCaptor.capture(), staffIdCaptor.capture());
+        Patient savedPatient = new Patient(new MRSPatient(motechId, null, null));
+        doReturn(savedPatient).when(mockPatientService).registerPatient(patientArgumentCaptor.capture(), staffIdCaptor.capture());
 
         Facility facility = mock(Facility.class);
         when(facility.mrsFacilityId()).thenReturn(facilityId);
@@ -101,11 +103,11 @@ public class PatientRegistrationFormHandlerTest {
 
         patientRegistrationFormHandler.handleFormEvent(event);
 
-        Patient savedPatient = patientArgumentCaptor.getValue();
-        MRSPerson mrsPerson = savedPatient.getMrsPatient().getPerson();
+        Patient patientPassedToRegisterService = patientArgumentCaptor.getValue();
+        MRSPerson mrsPerson = patientPassedToRegisterService.getMrsPatient().getPerson();
 
-        assertRegisterPatient(address, dateofBirth, isBirthDateEstimated, facilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, sex, phoneNumber, savedPatient, mrsPerson, parentId);
-        verify(mockTextMessageService).sendSMS(registerClientForm.getSender(), motechId, savedPatient, Constants.REGISTER_SUCCESS_SMS);
+        assertRegisterPatient(address, dateofBirth, isBirthDateEstimated, facilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, sex, phoneNumber, patientPassedToRegisterService, mrsPerson, parentId);
+        verify(mockTextMessageService).sendSMS(registerClientForm.getSender(), savedPatient, Constants.REGISTER_SUCCESS_SMS);
     }
 
     @Test
@@ -169,7 +171,7 @@ public class PatientRegistrationFormHandlerTest {
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         when(facility.mrsFacilityId()).thenReturn(facilityId);
 
-        when(mockPatientService.registerPatient(any(Patient.class), any(String.class))).thenReturn(motechId);
+        when(mockPatientService.registerPatient(any(Patient.class), any(String.class))).thenReturn(new Patient(new MRSPatient(motechId, null, null)));
 
         parameters.put(Constants.FORM_BEAN, registerClientForm);
         patientRegistrationFormHandler.handleFormEvent(event);
@@ -240,8 +242,7 @@ public class PatientRegistrationFormHandlerTest {
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         when(facility.mrsFacilityId()).thenReturn(facilityId);
 
-
-        when(mockPatientService.registerPatient(any(Patient.class), any(String.class))).thenReturn(motechId);
+        when(mockPatientService.registerPatient(any(Patient.class),any(String.class))).thenReturn(new Patient(new MRSPatient(motechId, null, null)));
         doNothing().when(mockCareService).enroll(any(CwcVO.class));
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
@@ -319,7 +320,7 @@ public class PatientRegistrationFormHandlerTest {
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         when(facility.mrsFacilityId()).thenReturn(facilityId);
 
-        when(mockPatientService.registerPatient(any(Patient.class), any(String.class))).thenReturn(motechId);
+        when(mockPatientService.registerPatient(any(Patient.class),any(String.class))).thenReturn(new Patient(new MRSPatient(motechId, null, null)));
 
         doNothing().when(mockCareService).enroll(any(ANCVO.class));
         patientRegistrationFormHandler.handleFormEvent(event);

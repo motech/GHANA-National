@@ -31,4 +31,12 @@ public class Patient {
         this.parentId = parentId;
         return this;
     }
+    
+    public String getMRSPatientId() {
+        return mrsPatient.getId();
+    }
+
+    public String getMotechId() {
+        return mrsPatient.getMotechId();
+    }
 }

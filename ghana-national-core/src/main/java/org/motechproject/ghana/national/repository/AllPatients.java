@@ -23,8 +23,9 @@ public class AllPatients {
     @Autowired
     private OpenMRSRelationshipAdaptor openMRSRelationshipAdaptor;
 
-    public MRSPatient save(Patient patient) {
-        return patientAdaptor.savePatient(patient.getMrsPatient());
+    public Patient save(Patient patient) {
+        MRSPatient mrsPatient = patientAdaptor.savePatient(patient.getMrsPatient());
+        return new Patient(mrsPatient, patient.getParentId());
     }
 
     public Patient patientByOpenmrsId(String patientId) {
