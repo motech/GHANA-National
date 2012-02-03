@@ -19,10 +19,7 @@ import org.motechproject.mrs.model.MRSEncounter;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 import static org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals;
@@ -57,12 +54,12 @@ public class ANCControllerTest {
         String motechPatientId = "1212121";
         String ancUrl = ancController.newANC(motechPatientId, modelMap);
         ANCEnrollmentForm ancEnrollmentForm = (ANCEnrollmentForm) modelMap.get("ancEnrollmentForm");
-        HashMap<Integer,String> lastIPTValues = new HashMap<Integer, String>();
+        HashMap<Integer,String> lastIPTValues = new LinkedHashMap<Integer, String>();
         lastIPTValues.put(1,"IPT 1");
         lastIPTValues.put(2,"IPT 2");
         lastIPTValues.put(3,"IPT 3");
 
-        HashMap<Integer,String> lastTTValues = new HashMap<Integer, String>();
+        HashMap<Integer,String> lastTTValues = new LinkedHashMap<Integer, String>();
         lastTTValues.put(1,"TT 1");
         lastTTValues.put(2,"TT 2");
         lastTTValues.put(3,"TT 3");

@@ -2,17 +2,15 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
+import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.*;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
 import org.motechproject.ghana.national.functional.pages.patient.*;
-import org.motechproject.ghana.national.functional.pages.staff.StaffPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
-import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.service.IdentifierGenerationService;
 import org.motechproject.util.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
@@ -23,7 +21,6 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.motechproject.ghana.national.functional.framework.XformHttpClient.XFormParser;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertNull;
 
@@ -32,17 +29,16 @@ import static org.testng.AssertJUnit.assertNull;
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
 
-    @Autowired
-    private IdentifierGenerationService identifierGenerationService;
+    DataGenerator dataGenerator;
 
-    @Autowired
-    private PatientGenerator patientGenerator;
+    public RegisterClientFromMobileTest() {
+        this.dataGenerator = new DataGenerator();
+    }
 
     @Test
     public void shouldCheckForMandatoryFields() throws Exception {
 
-        final XformHttpClient.XformResponse xformResponse = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
-                "NurseDataEntry", XFormParser.parse("register-client-template.xml", MapUtils.EMPTY_MAP));
+        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerClientForm(), MapUtils.EMPTY_MAP);
 
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);
@@ -65,10 +61,9 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
     @Test
     public void shouldNotGiveErrorForFirstNameIfGiven() throws Exception {
 
-        final XformHttpClient.XformResponse xformResponse = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
-                "NurseDataEntry", XFormParser.parse("register-client-template.xml", new HashMap<String, String>() {{
+        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerClientForm(), new HashMap<String, String>() {{
             put("firstName", "Joe");
-        }}));
+        }});
 
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);
@@ -78,13 +73,9 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
 
     @Test
     public void shouldCreateAPatientWithMobileDeviceAndSearchForHerByName() {
-        DataGenerator dataGenerator = new DataGenerator();
-        String firstName = "First Name" + dataGenerator.randomString(5);
+        String staffId = staffGenerator.createStaff(browser, homePage);
 
-        StaffPage staffPage = browser.toStaffCreatePage(homePage);
-        staffPage.create(TestStaff.with(firstName));
-
-        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffPage.staffId()).
+        TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.OTHER).estimatedDateOfBirth(false);
 
         mobile.upload(MobileForm.registerClientForm(), patient.forMobile());
@@ -97,13 +88,7 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
 
     @Test
     public void shouldCreatePatientWithANCRegistrationInfoAndSearchForHer() {
-        DataGenerator dataGenerator = new DataGenerator();
-        String firstName = "Second ANC Name" + dataGenerator.randomString(5);
-
-        StaffPage staffPage = browser.toStaffCreatePage(homePage);
-        staffPage.create(TestStaff.with(firstName));
-        staffPage.waitForSuccessMessage();
-        String staffId = staffPage.staffId();
+        String staffId = staffGenerator.createStaff(browser, homePage);
 
         TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
@@ -114,13 +99,15 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
 
         TestClientRegistration<TestANCEnrollment> testClientRegistration = new TestClientRegistration<TestANCEnrollment>(patient, ancEnrollmentDetails, mmEnrollmentDetails);
 
-        mobile.upload(MobileForm.registerClientForm(), testClientRegistration.forMobile());
+        mobile.upload(MobileForm.registerClientForm(), testClientRegistration.withProgramEnrollmentThroughMobile());
 
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
         searchPatientPage.searchWithName(patient.firstName());
         searchPatientPage.displaying(patient);
 
         PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
+        String patientId = editPage.patientId();
+
         ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(editPage);
 
         TestANCEnrollment exptectedANCEnrollment = testClientRegistration.getEnrollment()
@@ -136,18 +123,12 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
         editPage = browser.toPatientEditPage(searchPatientPage, patient);
         MobileMidwifeEnrollmentPage enrollmentPage = browser.toMobileMidwifeEnrollmentForm(editPage);
 
-        assertEquals(mmEnrollmentDetails, enrollmentPage.details());
+        assertEquals(mmEnrollmentDetails.patientId(patientId), enrollmentPage.details());
     }
 
     @Test
     public void shouldCreatePatientWithCWCRegistrationInfoAndSearchForChild() {
-        DataGenerator dataGenerator = new DataGenerator();
-        String firstName = "Second CWC Name" + dataGenerator.randomString(5);
-
-        StaffPage staffPage = browser.toStaffCreatePage(homePage);
-        staffPage.create(TestStaff.with(firstName));
-        staffPage.waitForSuccessMessage();
-        String staffId = staffPage.staffId();
+        String staffId = staffGenerator.createStaff(browser, homePage);
 
         String motherMotechId = patientGenerator.createPatientWithStaff(browser, homePage,staffId);
 
@@ -161,7 +142,7 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
 
         TestClientRegistration<TestCWCEnrollment> testClientRegistration = new TestClientRegistration<TestCWCEnrollment>(patient, cwcEnrollmentDetails, mmEnrollmentDetails);
 
-        mobile.upload(MobileForm.registerClientForm(), testClientRegistration.forMobile());
+        mobile.upload(MobileForm.registerClientForm(), testClientRegistration.withProgramEnrollmentThroughMobile());
 
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
         searchPatientPage.searchWithName(patient.firstName());
@@ -174,6 +155,8 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
                 .withRegistrationDate(testClientRegistration.getPatient().getRegistrationDate());
 
         PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
+        String patientId = editPage.patientId();
+
         CWCEnrollmentPage cwcEnrollmentPage = browser.toEnrollCWCPage(editPage);
         cwcEnrollmentPage.displaying(expectedCWCEnrollment);
 
@@ -182,8 +165,7 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
         editPage = browser.toPatientEditPage(searchPatientPage, patient);
         MobileMidwifeEnrollmentPage enrollmentPage = browser.toMobileMidwifeEnrollmentForm(editPage);
 
-        assertEquals(mmEnrollmentDetails, enrollmentPage.details());
-
+        assertEquals(mmEnrollmentDetails.patientId(patientId), enrollmentPage.details());
     }
 
 }

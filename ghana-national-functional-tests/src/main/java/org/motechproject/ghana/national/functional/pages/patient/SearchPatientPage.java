@@ -82,7 +82,8 @@ public class SearchPatientPage extends HomePage {
     public void displaying(TestPatient patient) {
         Map<String, String> map = mapTableRowDataWithColumns(patient.firstName(), patient.middleName(), patient.lastName(),
                 patient.genderCode(), patient.dateOfBirth().toString("dd-MM-YYYY"));
-        assertTrue(map.toString(), htmlTableParser.hasRow(driver, searchResultTableId, map));
+//        assertTrue(map.toString(), htmlTableParser.hasRow(driver, searchResultTableId, map));
+        assertTrue(htmlTableParser.hasRow(driver, searchResultTableId, map));
     }
 
     public void clickEditLink(TestPatient patient) {

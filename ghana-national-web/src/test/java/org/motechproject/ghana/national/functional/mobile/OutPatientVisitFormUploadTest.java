@@ -26,13 +26,6 @@ import static org.joda.time.format.DateTimeFormat.forPattern;
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class OutPatientVisitFormUploadTest extends LoggedInUserFunctionalTest {
 
-    @Autowired
-    StaffGenerator staffGenerator;
-    @Autowired
-    FacilityGenerator facilityGenerator;
-    @Autowired
-    PatientGenerator patientGenerator;
-
     @Test
     public void shouldUploadOutPatientVisitFormSuccessfullyIfValidInputIsGiven() throws Exception {
         final String staffId = staffGenerator.createStaff(browser, homePage);

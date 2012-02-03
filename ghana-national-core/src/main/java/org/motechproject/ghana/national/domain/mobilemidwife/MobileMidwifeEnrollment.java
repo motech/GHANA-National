@@ -2,7 +2,7 @@ package org.motechproject.ghana.national.domain.mobilemidwife;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
-import org.joda.time.LocalDate;
+import org.joda.time.DateTime;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.model.Time;
@@ -44,13 +44,13 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     @JsonProperty
     private Boolean active;
     @JsonProperty
-    private LocalDate enrollmentDate;
+    private DateTime enrollmentDateTime;
 
     public MobileMidwifeEnrollment() {
     }
 
     public static MobileMidwifeEnrollment newEnrollment() {
-        return new MobileMidwifeEnrollment().setEnrollmentDate(DateUtil.today());
+        return new MobileMidwifeEnrollment().setEnrollmentDateTime(DateUtil.now());
     }
 
     public String getPatientId() {
@@ -187,18 +187,18 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         this.active = active;
     }
 
-    public LocalDate getEnrollmentDate() {
-        return enrollmentDate;
+    public DateTime getEnrollmentDateTime() {
+        return enrollmentDateTime;
     }
 
-    public MobileMidwifeEnrollment setEnrollmentDate(LocalDate enrollmentDate) {
-        this.enrollmentDate = enrollmentDate;
+    public MobileMidwifeEnrollment setEnrollmentDateTime(DateTime enrollmentDateTime) {
+        this.enrollmentDateTime = enrollmentDateTime;
         return this;
     }
 
     public static MobileMidwifeEnrollment cloneNew(MobileMidwifeEnrollment midwifeEnrollment) {
         final MobileMidwifeEnrollment newEnrollment = new MobileMidwifeEnrollment();
-        newEnrollment.setEnrollmentDate(midwifeEnrollment.getEnrollmentDate());
+        newEnrollment.setEnrollmentDateTime(midwifeEnrollment.getEnrollmentDateTime());
         newEnrollment.setMessageStartWeek(midwifeEnrollment.getMessageStartWeek());
         newEnrollment.setDayOfWeek(midwifeEnrollment.getDayOfWeek());
         newEnrollment.setLearnedFrom(midwifeEnrollment.getLearnedFrom());
@@ -217,6 +217,7 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     }
 
     public CampaignRequest createCampaignRequest() {
-        return new CampaignRequest(patientId, serviceType.name(), null, enrollmentDate);
+        Time reminderTime = new Time(enrollmentDateTime.getHourOfDay(), enrollmentDateTime.getMinuteOfHour());
+        return new CampaignRequest(patientId, serviceType.name(), reminderTime, enrollmentDateTime.toLocalDate(), MessageStartWeek.findBy(messageStartWeek).getWeek());
     }
 }

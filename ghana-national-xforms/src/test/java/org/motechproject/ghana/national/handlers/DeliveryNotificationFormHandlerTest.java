@@ -82,7 +82,7 @@ public class DeliveryNotificationFormHandlerTest {
 
         final HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         verify(mockCareService).persistEncounter(motechId, staffId, facilityId, DeliveryNotificationFormHandler.ENCOUNTER_TYPE, datetime.toDate(), mrsObservations);
-        verify(mockTextMessageService).sendSMS(facilityPhoneNumber, motechId, patient, Constants.DELIVERY_NOTIFICATION_SMS);
+        verify(mockTextMessageService).sendSMS(facilityPhoneNumber, patient, Constants.DELIVERY_NOTIFICATION_SMS);
     }
 
     @Test

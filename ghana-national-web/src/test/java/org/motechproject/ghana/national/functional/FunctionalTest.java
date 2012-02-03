@@ -1,5 +1,8 @@
 package org.motechproject.ghana.national.functional;
 
+import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
+import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
+import org.motechproject.ghana.national.functional.Generator.StaffGenerator;
 import org.motechproject.ghana.national.functional.framework.Browser;
 import org.motechproject.ghana.national.functional.framework.Mobile;
 import org.motechproject.ghana.national.functional.util.ScreenShotCaptor;
@@ -15,9 +18,12 @@ import java.lang.reflect.Method;
 public abstract class FunctionalTest extends AbstractTestNGSpringContextTests {
     @Autowired
     protected Browser browser;
-
     @Autowired
     protected Mobile mobile;
+
+    protected StaffGenerator staffGenerator = new StaffGenerator();
+    protected FacilityGenerator facilityGenerator = new FacilityGenerator();
+    protected PatientGenerator patientGenerator = new PatientGenerator();
 
     @BeforeMethod
     public void baseTestSetup(Method method) {

@@ -18,6 +18,7 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
@@ -93,7 +94,8 @@ public class PatientRegistrationFormHandlerTest {
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<String> staffIdCaptor = ArgumentCaptor.forClass(String.class);
-        doReturn(motechId).when(mockPatientService).registerPatient(patientArgumentCaptor.capture(),staffIdCaptor.capture());
+        Patient savedPatient = new Patient(new MRSPatient(motechId, null, null));
+        doReturn(savedPatient).when(mockPatientService).registerPatient(patientArgumentCaptor.capture(), staffIdCaptor.capture());
 
         Facility facility = mock(Facility.class);
         when(facility.mrsFacilityId()).thenReturn(facilityId);
@@ -101,11 +103,11 @@ public class PatientRegistrationFormHandlerTest {
 
         patientRegistrationFormHandler.handleFormEvent(event);
 
-        Patient savedPatient = patientArgumentCaptor.getValue();
-        MRSPerson mrsPerson = savedPatient.getMrsPatient().getPerson();
+        Patient patientPassedToRegisterService = patientArgumentCaptor.getValue();
+        MRSPerson mrsPerson = patientPassedToRegisterService.getMrsPatient().getPerson();
 
-        assertRegisterPatient(address, dateofBirth, isBirthDateEstimated, facilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, sex, phoneNumber, savedPatient, mrsPerson, parentId);
-        verify(mockTextMessageService).sendSMS(registerClientForm.getSender(), motechId, savedPatient, Constants.REGISTER_SUCCESS_SMS);
+        assertRegisterPatient(address, dateofBirth, isBirthDateEstimated, facilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, sex, phoneNumber, patientPassedToRegisterService, mrsPerson, parentId);
+        verify(mockTextMessageService).sendSMS(registerClientForm.getSender(), savedPatient, Constants.REGISTER_SUCCESS_SMS);
     }
 
     @Test
@@ -120,19 +122,58 @@ public class PatientRegistrationFormHandlerTest {
     }
 
     @Test
-    public void shouldNotRegisterForMobileMidwifeIfConsentIsNotGiven(){
-        String facilityId = "facility id";
-        Facility facility = mock(Facility.class);
-        doReturn(facility).when(mockFacilityService).getFacilityByMotechId(Matchers.<String>any());
-        when(facility.mrsFacilityId()).thenReturn(facilityId);
-
-
+    public void shouldNotRegisterForMobileMidwifeIfConsentIsNotGiven() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
         HashMap<String, Object> parameters = new HashMap<String, Object>();
-        RegisterClientForm registerClientForm = new RegisterClientForm();
-        registerClientForm.setEnroll(Boolean.FALSE);
+
+        String address = "Address";
+        Date dateofBirth = new Date(10, 10, 2011);
+        String district = "District";
+        Boolean isBirthDateEstimated = true;
+        String motechFacilityId = "MotechFacilityID";
+        String facilityId = "Facility Id";
+        String firstName = "FirstName";
+        Boolean insured = true;
+        String lastName = "LastName";
+        String middleName = "MiddleName";
+        String motechId = "motechId";
+        Date nhisExpDate = new Date(10, 10, 2022);
+        String nhisNumber = "NhisNumber";
+        String parentId = "ParentId";
+        String region = "Region";
+        RegistrationType registrationMode = RegistrationType.USE_PREPRINTED_ID;
+        String sex = "M";
+        String subDistrict = "SubDistrict";
+        String phoneNumber = "0123123123";
+        PatientType patientType = PatientType.CHILD_UNDER_FIVE;
+
+        ServiceType serviceType = ServiceType.PREGNANCY;
+        ReasonToJoin reasonToJoin = ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH;
+        Medium medium = Medium.SMS;
+        DayOfWeek dayOfWeek = DayOfWeek.Monday;
+        Time timeOfDay = new Time(10, 30);
+        Language language = Language.EN;
+        LearnedFrom learnedFrom = LearnedFrom.FRIEND;
+        String mmRegPhone = "0123456789";
+        PhoneOwnership phoneOwnership = PhoneOwnership.HOUSEHOLD;
+        Boolean consent = Boolean.FALSE;
+        boolean enroll = false;
+        String staffId = "123";
+        RegisterClientForm registerClientForm = createRegisterClientForm(address, dateofBirth, district, isBirthDateEstimated,
+                motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId,
+                region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
+
+        addMobileMidwifeRegistrationDetails(registerClientForm, serviceType, reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, mmRegPhone, phoneOwnership, consent, enroll);
 
         parameters.put(Constants.FORM_BEAN, registerClientForm);
         MotechEvent event = new MotechEvent("subject", parameters);
+
+        Facility facility = mock(Facility.class);
+        doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
+        when(facility.mrsFacilityId()).thenReturn(facilityId);
+
+        when(mockPatientService.registerPatient(any(Patient.class), any(String.class))).thenReturn(new Patient(new MRSPatient(motechId, null, null)));
+
+        parameters.put(Constants.FORM_BEAN, registerClientForm);
         patientRegistrationFormHandler.handleFormEvent(event);
         verify(mockMobileMidwifeService, never()).register(Matchers.<MobileMidwifeEnrollment>any());
     }
@@ -201,8 +242,7 @@ public class PatientRegistrationFormHandlerTest {
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         when(facility.mrsFacilityId()).thenReturn(facilityId);
 
-
-        when(mockPatientService.registerPatient(any(Patient.class),any(String.class))).thenReturn(motechId);
+        when(mockPatientService.registerPatient(any(Patient.class),any(String.class))).thenReturn(new Patient(new MRSPatient(motechId, null, null)));
         doNothing().when(mockCareService).enroll(any(CwcVO.class));
         patientRegistrationFormHandler.handleFormEvent(event);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
@@ -280,7 +320,7 @@ public class PatientRegistrationFormHandlerTest {
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         when(facility.mrsFacilityId()).thenReturn(facilityId);
 
-        when(mockPatientService.registerPatient(any(Patient.class),any(String.class))).thenReturn(motechId);
+        when(mockPatientService.registerPatient(any(Patient.class),any(String.class))).thenReturn(new Patient(new MRSPatient(motechId, null, null)));
 
         doNothing().when(mockCareService).enroll(any(ANCVO.class));
         patientRegistrationFormHandler.handleFormEvent(event);
@@ -419,7 +459,7 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(ancVO.getAncCareHistoryVO().getLastTT(), is(lastTT));
     }
 
-    private void addMobileMidwifeRegistrationDetails(RegisterClientForm registerClientForm, ServiceType serviceType, ReasonToJoin reasonToJoin, Medium medium, DayOfWeek dayOfWeek, Time timeOfDay, Language language, LearnedFrom learnedFrom, String phoneNumber, PhoneOwnership phoneOwnership, Boolean consent, boolean enroll){
+    private void addMobileMidwifeRegistrationDetails(RegisterClientForm registerClientForm, ServiceType serviceType, ReasonToJoin reasonToJoin, Medium medium, DayOfWeek dayOfWeek, Time timeOfDay, Language language, LearnedFrom learnedFrom, String phoneNumber, PhoneOwnership phoneOwnership, Boolean consent, boolean enroll) {
         registerClientForm.setEnroll(enroll);
         registerClientForm.setServiceType(serviceType);
         registerClientForm.setReasonToJoin(reasonToJoin);
@@ -433,7 +473,7 @@ public class PatientRegistrationFormHandlerTest {
         registerClientForm.setConsent(consent);
     }
 
-    private void assertMobileMidwifeRegistration(MobileMidwifeEnrollment mobileMidwifeEnrollment, String staffId, String motechFacilityId, String motechId, ServiceType serviceType, ReasonToJoin reasonToJoin, Medium medium, DayOfWeek dayOfWeek, Time timeOfDay, Language language, LearnedFrom learnedFrom, String phoneNumber, PhoneOwnership phoneOwnership, Boolean consent){
+    private void assertMobileMidwifeRegistration(MobileMidwifeEnrollment mobileMidwifeEnrollment, String staffId, String motechFacilityId, String motechId, ServiceType serviceType, ReasonToJoin reasonToJoin, Medium medium, DayOfWeek dayOfWeek, Time timeOfDay, Language language, LearnedFrom learnedFrom, String phoneNumber, PhoneOwnership phoneOwnership, Boolean consent) {
         assertThat(mobileMidwifeEnrollment.getStaffId(), is(staffId));
         assertThat(mobileMidwifeEnrollment.getFacilityId(), is(motechFacilityId));
         assertThat(mobileMidwifeEnrollment.getPatientId(), is(motechId));

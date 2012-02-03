@@ -15,12 +15,12 @@ public class MobileMidwifeCampaign {
         this.campaignService = campaignService;
     }
 
-    public Boolean startFor(MobileMidwifeEnrollment enrollment) {
+    public Boolean start(MobileMidwifeEnrollment enrollment) {
         campaignService.startFor(enrollment.createCampaignRequest());
         return true;
     }
 
-    public Boolean stopExpired(MobileMidwifeEnrollment enrollment) {
+    public Boolean stop(MobileMidwifeEnrollment enrollment) {
         campaignService.stopAll(enrollment.createCampaignRequest());
         return true;
     }

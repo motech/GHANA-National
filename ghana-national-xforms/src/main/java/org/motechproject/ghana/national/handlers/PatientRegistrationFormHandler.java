@@ -73,14 +73,14 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             MRSPatient mrsPatient = new MRSPatient(registerClientForm.getMotechId(), mrsPerson, new MRSFacility(facilityId));
 
             Patient patient = new Patient(mrsPatient, registerClientForm.getMotherMotechId());
-            String patientMotechId = patientService.registerPatient(patient, registerClientForm.getStaffId());
+            Patient savedPatient = patientService.registerPatient(patient, registerClientForm.getStaffId());
 
-            registerForMobileMidwifeProgram(registerClientForm, patientMotechId);
-            registerForCWC(registerClientForm, facilityId, patientMotechId);
-            registerForANC(registerClientForm, facilityId, patientMotechId);
+            registerForMobileMidwifeProgram(registerClientForm, savedPatient.getMotechId());
+            registerForCWC(registerClientForm, facilityId, savedPatient.getMotechId());
+            registerForANC(registerClientForm, facilityId, savedPatient.getMotechId());
 
             if (registerClientForm.getSender() != null) {
-                textMessageService.sendSMS(registerClientForm.getSender(), patientMotechId, patient, Constants.REGISTER_SUCCESS_SMS);
+                textMessageService.sendSMS(registerClientForm.getSender(), savedPatient, Constants.REGISTER_SUCCESS_SMS);
             }
         } catch (Exception e) {
             log.error("Exception while saving patient", e);

@@ -38,7 +38,7 @@ public class PatientService {
         this.encounterService = encounterService;
     }
 
-    public String registerPatient(Patient patient,String staffId)
+    public Patient registerPatient(Patient patient, String staffId)
             throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         try {
 
@@ -47,14 +47,13 @@ public class PatientService {
                 String motechId = identifierGenerationService.newPatientId();
                 patient = new Patient(new MRSPatient(mrsPatient.getId(), motechId, mrsPatient.getPerson(), mrsPatient.getFacility()), patient.getParentId());
             }
-            MRSPatient savedMRSPatient = allPatients.save(patient);
-            String savedPatientMotechId = savedMRSPatient.getMotechId();
+            Patient savedPatient = allPatients.save(patient);
 
             if (StringUtils.isNotEmpty(patient.getParentId())) {
-                createRelationship(patient.getParentId(), savedPatientMotechId);
+                createRelationship(patient.getParentId(), savedPatient.getMotechId());
             }
-            encounterService.persistEncounter(savedMRSPatient, staffId, patient.getMrsPatient().getFacility().getId(), Constants.ENCOUNTER_PATIENTREGVISIT, DateUtil.today().toDate(), null);
-            return savedPatientMotechId;
+            encounterService.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(), Constants.ENCOUNTER_PATIENTREGVISIT, DateUtil.today().toDate(), null);
+            return savedPatient;
         } catch (IdentifierNotUniqueException e) {
             throw new PatientIdNotUniqueException();
         } catch (InvalidCheckDigitException e) {

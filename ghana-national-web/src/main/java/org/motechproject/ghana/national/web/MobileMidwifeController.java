@@ -1,10 +1,14 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.validator.MobileMidwifeValidator;
+import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
+import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -33,45 +37,71 @@ public class MobileMidwifeController {
     private MobileMidwifeValidator mobileMidwifeValidator;
     private MobileMidwifeService mobileMidwifeService;
     private MessageSource messages;
+    private FacilityHelper facilityHelper;
+    private FacilityService facilityService;
 
     public MobileMidwifeController() {
     }
 
     @Autowired
-    public MobileMidwifeController(MobileMidwifeValidator mobileMidwifeValidator, MobileMidwifeService mobileMidwifeService, MessageSource messages) {
+    public MobileMidwifeController(MobileMidwifeValidator mobileMidwifeValidator, MobileMidwifeService mobileMidwifeService, MessageSource messages, FacilityHelper facilityHelper,FacilityService facilityService) {
         this.mobileMidwifeValidator = mobileMidwifeValidator;
         this.mobileMidwifeService = mobileMidwifeService;
         this.messages = messages;
+        this.facilityHelper=facilityHelper;
+        this.facilityService = facilityService;
     }
 
+    @ApiSession
     @RequestMapping(value = "form", method = RequestMethod.GET)
     public String form(@RequestParam String motechPatientId, ModelMap modelMap){
 
         MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findBy(motechPatientId);
-        MobileMidwifeEnrollmentForm enrollmentForm = midwifeEnrollment != null ? new MobileMidwifeEnrollmentForm(midwifeEnrollment)
+        MobileMidwifeEnrollmentForm enrollmentForm = midwifeEnrollment != null ? createMobileMidwifeEnrollmentForm(midwifeEnrollment)
                 : new MobileMidwifeEnrollmentForm().setPatientMotechId(motechPatientId);
         addFormInfo(modelMap, enrollmentForm);
         return MOBILE_MIDWIFE_URL;
     }
 
+    private MobileMidwifeEnrollmentForm createMobileMidwifeEnrollmentForm(MobileMidwifeEnrollment enrollment) {
+        MobileMidwifeEnrollmentForm enrollmentForm = new MobileMidwifeEnrollmentForm();
+        if (enrollment != null) {
+            enrollmentForm.setPatientMotechId(enrollment.getPatientId()).setStaffMotechId(enrollment.getStaffId()).
+                    setConsent(enrollment.getConsent()).setServiceType(enrollment.getServiceType()).setPhoneOwnership(enrollment.getPhoneOwnership())
+                    .setPhoneNumber(enrollment.getPhoneNumber()).setMedium(enrollment.getMedium()).setDayOfWeek(enrollment.getDayOfWeek())
+                    .setTimeOfDay(enrollment.getTimeOfDay()).setLanguage(enrollment.getLanguage()).setLearnedFrom(enrollment.getLearnedFrom())
+                    .setReasonToJoin(enrollment.getReasonToJoin()).setMessageStartWeek(enrollment.getMessageStartWeek());
+
+            Facility facility = facilityService.getFacilityByMotechId(enrollment.getFacilityId());
+            FacilityForm facilityForm = new FacilityForm();
+            facilityForm.setFacilityId(facility.getMrsFacilityId());
+            facilityForm.setCountry(facility.country());
+            facilityForm.setRegion(facility.region());
+            facilityForm.setCountyDistrict(facility.district());
+            facilityForm.setStateProvince(facility.province());
+            enrollmentForm.setFacilityForm(facilityForm);
+        }
+        return enrollmentForm;
+    }
+
     @ApiSession
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String save(MobileMidwifeEnrollmentForm form, BindingResult bindingResult, ModelMap modelMap) {
-        MobileMidwifeEnrollment midwifeEnrollment = form.createEnrollment();
+        MobileMidwifeEnrollment midwifeEnrollment = createEnrollment(form);
         List<FormError> formErrors = mobileMidwifeValidator.validate(midwifeEnrollment);
         if (isNotEmpty(formErrors)) {
             addFormInfo(modelMap, form).
                     addAttribute("formErrors", formErrors);
-        } else {            
+        } else {
             mobileMidwifeService.register(midwifeEnrollment);
-            addFormInfo(modelMap, new MobileMidwifeEnrollmentForm(midwifeEnrollment))
+            addFormInfo(modelMap, form)
                     .addAttribute("successMessage", messages.getMessage(SUCCESS_MESSAGE, null, Locale.getDefault()));
         }
         return MOBILE_MIDWIFE_URL;
     }
 
     private ModelMap addFormInfo(ModelMap modelMap, MobileMidwifeEnrollmentForm enrollmentForm) {
-        return modelMap.addAttribute("mobileMidwifeEnrollmentForm", enrollmentForm)
+        modelMap.addAttribute("mobileMidwifeEnrollmentForm", enrollmentForm)
                 .addAttribute("serviceTypes", ServiceType.values())
                 .addAttribute("phoneOwnerships", PhoneOwnership.values())
                 .addAttribute("reasonsToJoin", ReasonToJoin.values())
@@ -82,6 +112,8 @@ public class MobileMidwifeController {
                 .addAttribute("messageStartWeeks", MessageStartWeek.messageStartWeeks())
                 .addAttribute("minTimeOfDay", Constants.MOBILE_MIDWIFE_MIN_TIMEOFDAY_FOR_VOICE)
                 .addAttribute("maxTimeOfDay", Constants.MOBILE_MIDWIFE_MAX_TIMEOFDAY_FOR_VOICE);
+        modelMap.mergeAttributes(facilityHelper.locationMap());
+        return modelMap;
     }
 
     private Map<String, String> collectDayOfWeekOptions() {
@@ -90,5 +122,17 @@ public class MobileMidwifeController {
             options.put(option.name(), option.name());
         }
         return options;
+    }
+
+    MobileMidwifeEnrollment createEnrollment(MobileMidwifeEnrollmentForm form) {
+        MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment();
+        String facilityId = facilityService.getFacility(form.getFacilityForm().getFacilityId()).getMotechId();
+
+        enrollment.setStaffId(form.getStaffMotechId()).setPatientId(form.getPatientMotechId()).setFacilityId(facilityId)
+                .setConsent(form.getConsent()).setDayOfWeek(form.getDayOfWeek()).setLearnedFrom(form.getLearnedFrom())
+                .setLanguage(form.getLanguage()).setMedium(form.getMedium()).setMessageStartWeek(form.getMessageStartWeek()).setPhoneNumber(form.getPhoneNumber())
+                .setPhoneOwnership(form.getPhoneOwnership()).setReasonToJoin(form.getReasonToJoin()).setServiceType(form.getServiceType())
+                .setTimeOfDay(form.getTimeOfDay());
+        return enrollment;
     }
 }

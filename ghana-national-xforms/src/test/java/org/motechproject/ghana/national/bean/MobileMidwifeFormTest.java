@@ -45,7 +45,7 @@ public class MobileMidwifeFormTest {
         assertThat(actual.getPhoneNumber(), is(exptectedForm.getMmRegPhone()));
         assertThat(actual.getPhoneOwnership(), is(exptectedForm.getPhoneOwnership()));
         assertThat(actual.getConsent(), is(exptectedForm.getConsent()));
-        assertThat(actual.getEnrollmentDate(), is(new LocalDate()));
+        assertThat(actual.getEnrollmentDateTime().toLocalDate(), is(new LocalDate()));
     }
 
 }

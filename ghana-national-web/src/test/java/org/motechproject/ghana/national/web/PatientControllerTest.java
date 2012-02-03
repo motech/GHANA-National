@@ -23,6 +23,7 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.MessageSource;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -69,7 +70,7 @@ public class PatientControllerTest {
     private StaffService mockStaffService;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         initMocks(this);
         patientController = new PatientController();
         ReflectionTestUtils.setField(patientController, "patientService", mockPatientService);
@@ -81,6 +82,7 @@ public class PatientControllerTest {
         ReflectionTestUtils.setField(patientController, "motechIdVerhoeffValidator", mockMotechIdVerhoeffValidator);
         ReflectionTestUtils.setField(patientController, "identifierGenerationService", mockIdentifierGenerationService);
         mockBindingResult = mock(BindingResult.class);
+        when(mockPatientService.registerPatient(any(Patient.class), any(String.class))).thenReturn(new Patient(new MRSPatient(null, null, null)));
     }
 
     @Test
@@ -161,7 +163,7 @@ public class PatientControllerTest {
         SearchPatientForm searchPatientForm = new SearchPatientForm(name, motechId);
 
         String firstName = "firstName";
-        Date dateOfBirth = new Date(2000, 11, 11);
+        Date dateOfBirth = DateUtil.newDate(2000, 11, 11).toDate();
         String sex = "M";
         String lastName = "lastName";
         String middleName = "middleName";
@@ -204,7 +206,7 @@ public class PatientControllerTest {
         mrsPerson.firstName("fname");
         mrsPerson.middleName("mname");
         mrsPerson.lastName("lname");
-        mrsPerson.dateOfBirth(new Date(2000, 11, 11));
+        mrsPerson.dateOfBirth(DateUtil.newDate(2000, 11, 11).toDate());
         mrsPerson.gender("male");
 
         MRSFacility mrsFacility = new MRSFacility("name", "country", "region", "countyDistrict", "stateProvince");

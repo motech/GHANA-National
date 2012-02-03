@@ -3,10 +3,17 @@
      xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+
+
+
     <spring:url value="/resources/js/mobile-midwife.js" var="enrollMobileMidwifeJsUrl"/>
     <spring:url value="/admin/enroll/mobile-midwife/save" var="updateAction"/>
-
     <script src="${enrollMobileMidwifeJsUrl}" type="text/javascript"><!--closing tag needed--></script>
+
+    <script src="${pageContext.servletContext.contextPath}/resources/js/facility-fields.js" type="text/javascript"><!--closing tag needed--></script>
+
+    <script src="${pageContext.servletContext.contextPath}/resources/js/form-validations.js"
+            type="text/javascript"><!-- required for FF3 and Opera --></script>
 
     <form:form id="mobileMidwifeEnrollmentForm" action="${fn:escapeXml(updateAction)}" method="POST"
                title="Mobile Midwife Enrollment"
@@ -14,7 +21,6 @@
         <spring:message code="patient_motech_id" var="patient_motech_id" htmlEscape="false"/>
         <spring:message code="required_msg" var="required_msg" htmlEscape="false"/>
         <spring:message code="staff_id" var="staff_id" htmlEscape="false"/>
-        <spring:message code="facility_id" var="facility_id" htmlEscape="false"/>
         <spring:message code="consent" var="consent" htmlEscape="false"/>
         <spring:message code="service_type" var="service_type" htmlEscape="false"/>
         <spring:message code="service_type_select" var="service_type_select" htmlEscape="false"/>
@@ -67,13 +73,9 @@
                 ${fn:escapeXml(staff_id)} ${fn:escapeXml(required_msg)}
             </span>
         </div>
-        <div class="form-field">
-            <label for="facilityMotechId" class="formLabel">${fn:escapeXml(facility_id)}: *</label>
-            <form:input path="facilityMotechId" size="20" cssClass="jsRequire"/>
-            <span id='facilityMotechIdError' class='alertText formlyInvalid formlyAlert hide'>
-                ${fn:escapeXml(facility_id)} ${fn:escapeXml(required_msg)}
-            </span>
-        </div>
+
+        <jsp:include page="/WEB-INF/views/common/select_facility.jspx"/>
+
         <div class="form-field">
             <label class="formLabel" for="consent">${fn:escapeXml(consent)} :*
             </label>
@@ -199,7 +201,7 @@
             <form:select id="messageStartWeek" path="messageStartWeek">
                 <option parent="select" value="">${fn:escapeXml(message_start_week_select)}</option>
                 <c:forEach items="${messageStartWeeks}" var="messageStartWeek">                    
-                    <option serviceType="${messageStartWeek.serviceType.value}" value="${messageStartWeek.value}">${messageStartWeek.displayText}</option>
+                    <option serviceType="${messageStartWeek.serviceType.value}" value="${messageStartWeek.key}">${messageStartWeek.displayText}</option>
                 </c:forEach>
             </form:select>
             <span id='messageStartWeekError' class='alertText formlyInvalid formlyAlert hide'>

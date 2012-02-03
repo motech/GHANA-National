@@ -1,20 +1,15 @@
 package org.motechproject.ghana.national.service;
 
-import org.motechproject.ghana.national.domain.ANCCareHistory;
-import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.CwcCareHistory;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllEncounters;
-import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
-import org.motechproject.ghana.national.vo.ANCVO;
-import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
-import org.motechproject.ghana.national.vo.CareHistoryVO;
-import org.motechproject.ghana.national.vo.CwcVO;
+import org.motechproject.ghana.national.vo.*;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
+import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
+import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.motechproject.util.DateUtil;
 import org.openmrs.Concept;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +22,6 @@ import java.util.Set;
 
 @Service
 public class CareService {
-
     @Autowired
     StaffService staffService;
 
@@ -40,32 +34,43 @@ public class CareService {
     @Autowired
     AllEncounters allEncounters;
 
+    @Autowired
+    ScheduleTrackingService scheduleTrackingService;
+
     public MRSEncounter getEncounter(String motechId, String encounterType) {
         return allEncounters.fetchLatest(motechId, encounterType);
     }
 
     public void enroll(CwcVO cwc) {
-        persistEncounter(cwc.getPatientMotechId(), cwc.getStaffId(), cwc.getFacilityId(), Constants.ENCOUNTER_CWCREGVISIT, cwc.getRegistrationDate(),
+        Patient patient = patientService.getPatientByMotechId(cwc.getPatientMotechId());
+        persistEncounter(patient, cwc.getStaffId(), cwc.getFacilityId(), Constants.ENCOUNTER_CWCREGVISIT, cwc.getRegistrationDate(),
                 prepareObservations(cwc));
     }
 
     public void enroll(ANCVO ancVO) {
         Date registrationDate = (RegistrationToday.TODAY.equals(ancVO.getRegistrationToday())) ? DateUtil.now().toDate() : ancVO.getRegistrationDate();
-        persistEncounter(ancVO.getPatientMotechId(), ancVO.getStaffId(), ancVO.getFacilityId(),
+        Patient patient = patientService.getPatientByMotechId(ancVO.getPatientMotechId());
+        persistEncounter(patient, ancVO.getStaffId(), ancVO.getFacilityId(),
                 Constants.ENCOUNTER_ANCREGVISIT, registrationDate, prepareObservations(ancVO));
-        persistEncounter(ancVO.getPatientMotechId(), ancVO.getStaffId(), ancVO.getFacilityId(),
+        persistEncounter(patient, ancVO.getStaffId(), ancVO.getFacilityId(),
                 Constants.ENCOUNTER_PREGREGVISIT, registrationDate, registerPregnancy(ancVO));
+
+        EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, DateUtil.newDate(ancVO.getEstimatedDateOfDelivery()));
+        scheduleTrackingService.enroll(enrollmentRequest);
     }
 
-    public MRSEncounter persistEncounter(String patientMotechId, String staffId, String facilityId, String encounterType, Date registrationDate,
+    public MRSEncounter persistEncounter(Patient patient, String staffId, String facilityId, String encounterType, Date registrationDate,
                                          Set<MRSObservation> mrsObservations) {
+        String patientId = patient.getMrsPatient().getId();
+        return persistEncounter(patientId, staffId, facilityId, encounterType, registrationDate, mrsObservations);
+    }
+
+    public MRSEncounter persistEncounter(String patientMotechId, String staffId, String facilityId, String encounterType, Date registrationDate, Set<MRSObservation> mrsObservations) {
         MRSUser user = staffService.getUserByEmailIdOrMotechId(staffId);
         String staffProviderId = user.getPerson().getId();
         String staffUserId = user.getId();
-        Patient patient = patientService.getPatientByMotechId(patientMotechId);
-        String patientId = patient.getMrsPatient().getId();
         MRSEncounter mrsEncounter = new MRSEncounter(staffProviderId, staffUserId, facilityId,
-                registrationDate, patientId, mrsObservations, encounterType);
+                registrationDate, patientMotechId, mrsObservations, encounterType);
         return allEncounters.save(mrsEncounter);
     }
 
@@ -161,15 +166,15 @@ public class CareService {
     }
 
     private Set<MRSObservation> addObservationsForCareHistory(final CareHistoryVO careHistoryVO) {
-        Set<MRSObservation> historyObservations = new HashSet<MRSObservation>() {{
+        return new HashSet<MRSObservation>() {{
             addAll(addObservationsOnANCHistory(careHistoryVO.getAncCareHistoryVO()));
             addAll(addObservationsOnCWCHistory(careHistoryVO.getCwcCareHistoryVO()));
         }};
-        return historyObservations;
     }
 
     public MRSEncounter addCareHistory(CareHistoryVO careHistory) {
-        return persistEncounter(careHistory.getPatientMotechId(), careHistory.getStaffId(), careHistory.getFacilityId(), Constants.ENCOUNTER_PATIENTHISTORY, careHistory.getDate(),
+        Patient patient = patientService.getPatientByMotechId(careHistory.getPatientMotechId());
+        return persistEncounter(patient, careHistory.getStaffId(), careHistory.getFacilityId(), Constants.ENCOUNTER_PATIENTHISTORY, careHistory.getDate(),
                 addObservationsForCareHistory(careHistory));
     }
 }

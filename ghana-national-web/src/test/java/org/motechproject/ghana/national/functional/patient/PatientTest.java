@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
-import org.motechproject.ghana.national.functional.Generator.StaffGenerator;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
@@ -17,11 +16,11 @@ import org.testng.annotations.Test;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class PatientTest extends LoggedInUserFunctionalTest {
+
     @Autowired
     private IdentifierGenerationService identifierGenerationService;
+
     private DataGenerator dataGenerator;
-    @Autowired
-    StaffGenerator staffGenerator;
 
     @BeforeMethod
     public void setUp() {

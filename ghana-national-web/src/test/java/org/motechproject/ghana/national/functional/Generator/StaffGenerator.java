@@ -6,9 +6,7 @@ import org.motechproject.ghana.national.functional.pages.home.HomePage;
 import org.motechproject.ghana.national.functional.pages.staff.StaffPage;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.springframework.stereotype.Component;
 
-@Component
 public class StaffGenerator {
 
     @LoginAsAdmin

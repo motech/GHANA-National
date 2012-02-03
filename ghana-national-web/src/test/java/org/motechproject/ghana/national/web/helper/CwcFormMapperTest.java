@@ -6,26 +6,16 @@ import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.web.CWCController;
 import org.motechproject.ghana.national.web.form.CWCEnrollmentForm;
-import org.motechproject.mrs.model.MRSEncounter;
-import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSPerson;
-import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.mrs.model.*;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,35 +26,41 @@ public class CwcFormMapperTest {
         final CwcFormMapper cwcFormMapper = new CwcFormMapper();
         final Map<String, Object> actual = cwcFormMapper.setViewAttributes();
 
-        Map<CwcCareHistory, String> cwcCareHistories = new HashMap<CwcCareHistory, String>();
-        for (CwcCareHistory cwcCareHistory : CwcCareHistory.values()) {
-            cwcCareHistories.put(cwcCareHistory, cwcCareHistory.getDescription());
-        }
+        assertEquals(new LinkedHashMap<CwcCareHistory, String>() {{
+            put(CwcCareHistory.BCG, CwcCareHistory.BCG.getDescription());
+            put(CwcCareHistory.IPTI, CwcCareHistory.IPTI.getDescription());
+            put(CwcCareHistory.MEASLES, CwcCareHistory.MEASLES.getDescription());
+            put(CwcCareHistory.OPV, CwcCareHistory.OPV.getDescription());
+            put(CwcCareHistory.PENTA, CwcCareHistory.PENTA.getDescription());
+            put(CwcCareHistory.VITA_A, CwcCareHistory.VITA_A.getDescription());
+            put(CwcCareHistory.YF, CwcCareHistory.YF.getDescription());
+        }}, actual.get(Constants.CARE_HISTORIES));
 
-        Map<RegistrationToday, String> registrationTodayValues = new HashMap<RegistrationToday, String>();
+        assertEquals(new LinkedHashMap<RegistrationToday, String>() {{
+            put(RegistrationToday.TODAY, RegistrationToday.TODAY.getDescription());
+            put(RegistrationToday.IN_PAST, RegistrationToday.IN_PAST.getDescription());
+            put(RegistrationToday.IN_PAST_IN_OTHER_FACILITY, RegistrationToday.IN_PAST_IN_OTHER_FACILITY.getDescription());
+        }}, actual.get(CWCController.REGISTRATION_OPTIONS));
 
-        for (RegistrationToday registrationToday : RegistrationToday.values()) {
-            registrationTodayValues.put(registrationToday, registrationToday.getDescription());
-        }
+        assertEquals(new LinkedHashMap<Integer, String>() {{
+            put(1, Constants.IPTI_1);
+            put(2, Constants.IPTI_2);
+            put(3, Constants.IPTI_3);
+        }}, actual.get(Constants.LAST_IPTI));
 
-        assertThat((Map<CwcCareHistory, String>) actual.get(Constants.CARE_HISTORIES), is(cwcCareHistories));
-        assertThat((Map<RegistrationToday, String>) actual.get(CWCController.REGISTRATION_OPTIONS), is(registrationTodayValues));
-        assertThat((Map<Integer, String>) actual.get(Constants.LAST_IPTI), allOf(
-                hasEntry(1, Constants.IPTI_1),
-                hasEntry(2, Constants.IPTI_2),
-                hasEntry(3, Constants.IPTI_3)
-        ));
-        assertThat((Map<Integer, String>) actual.get(Constants.LAST_OPV), allOf(
-                hasEntry(0, Constants.OPV_0),
-                hasEntry(1, Constants.OPV_1),
-                hasEntry(2, Constants.OPV_2),
-                hasEntry(3, Constants.OPV_3)
-        ));
-        assertThat((Map<Integer, String>) actual.get(Constants.LAST_PENTA), allOf(
-                hasEntry(1, Constants.PENTA_1),
-                hasEntry(2, Constants.PENTA_2),
-                hasEntry(3, Constants.PENTA_3)
-        ));
+        assertEquals(new LinkedHashMap<Integer, String>() {{
+            put(0, Constants.OPV_0);
+            put(1, Constants.OPV_1);
+            put(2, Constants.OPV_2);
+            put(3, Constants.OPV_3);
+        }}, actual.get(Constants.LAST_OPV));
+
+        assertEquals(new LinkedHashMap<Integer, String>() {{
+            put(1, Constants.PENTA_1);
+            put(2, Constants.PENTA_2);
+            put(3, Constants.PENTA_3);
+
+        }}, actual.get(Constants.LAST_PENTA));
     }
 
     @Test

@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.Select;
 
 public class MobileMidwifeEnrollmentPage extends HomePage {
 
@@ -19,9 +20,26 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
     @CacheLookup
     private WebElement staffMotechId;
 
-    @FindBy(id = "facilityMotechId")
+    @FindBy(id = "countries")
     @CacheLookup
-    private WebElement facilityMotechId;
+    private WebElement country;
+
+    @FindBy(id = "facilities")
+    @CacheLookup
+    private WebElement facilities;
+
+    @FindBy(id = "districts")
+    @CacheLookup
+    private WebElement district;
+
+    @FindBy(id = "sub-districts")
+    @CacheLookup
+    private WebElement subDistrict;
+
+    @FindBy(id = "regions")
+    @CacheLookup
+    private WebElement region;
+
 
     @FindBy(id = "consentYes")
     @CacheLookup
@@ -95,11 +113,6 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
         return this;
     }
 
-    public MobileMidwifeEnrollmentPage withFacilityMotechId(String facilityMotechId) {
-        enter(this.facilityMotechId, facilityMotechId);
-        return this;
-    }
-
     public MobileMidwifeEnrollmentPage withConsent(Boolean consent) {
         if (consent)
             consentYes.click();
@@ -158,7 +171,38 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
         select(this.messageStartWeek, messageStartWeek);
         return this;
     }
-    
+
+    public MobileMidwifeEnrollmentPage withFacility(String facility) {
+        Select selectFacility = new Select(this.facilities);
+        selectFacility.selectByVisibleText(facility);
+        return this;
+    }
+
+    public MobileMidwifeEnrollmentPage withCountry(String country) {
+        Select selectCountry = new Select(this.country);
+        selectCountry.selectByValue(country);
+        return this;
+    }
+
+    public MobileMidwifeEnrollmentPage withRegion(String region) {
+        Select selectRegion = new Select(this.region);
+        selectRegion.selectByValue(region);
+        return this;
+    }
+
+    public MobileMidwifeEnrollmentPage withDistrict(String district) {
+        Select selectDistrict = new Select(this.district);
+        selectDistrict.selectByValue(district);
+        return this;
+    }
+
+    public MobileMidwifeEnrollmentPage withSubDistrict(String subDistrict) {
+        Select selectSubDistrict = new Select(this.subDistrict);
+        selectSubDistrict.selectByValue(subDistrict);
+        return this;
+    }
+
+
     private void submit() {
         submit.click();
     }
@@ -184,10 +228,14 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
         return hourOfDay;
     }
 
-    public void enroll(TestMobileMidwifeEnrollment testMobileMidwifeEnrollment){
+    public void enroll(TestMobileMidwifeEnrollment testMobileMidwifeEnrollment) {
         this.withStaffMotechId(testMobileMidwifeEnrollment.staffId())
-                .withFacilityMotechId(testMobileMidwifeEnrollment.facilityId())
                 .withConsent(testMobileMidwifeEnrollment.consent())
+                .withCountry(testMobileMidwifeEnrollment.country())
+                .withRegion(testMobileMidwifeEnrollment.region())
+                .withDistrict(testMobileMidwifeEnrollment.district())
+                .withSubDistrict(testMobileMidwifeEnrollment.subDistrict())
+                .withFacility(testMobileMidwifeEnrollment.facility())
                 .withServiceType(testMobileMidwifeEnrollment.serviceType())
                 .withPhoneOwnership(testMobileMidwifeEnrollment.phoneOwnership())
                 .withPhoneNumber(testMobileMidwifeEnrollment.phoneNumber())
@@ -199,24 +247,29 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
                 .submit();
     }
 
-    private String valueOf(WebElement webElement){
+    private String valueOf(WebElement webElement) {
         return webElement.getAttribute("value");
     }
 
-    public Boolean consent(){
-        if(consentYes.isSelected()){
+    public Boolean consent() {
+        if (consentYes.isSelected()) {
             return Boolean.TRUE;
-        }else if (consentNo.isSelected()){
+        } else if (consentNo.isSelected()) {
             return Boolean.FALSE;
-        }else {
+        } else {
             return null;
         }
     }
 
     public TestMobileMidwifeEnrollment details() {
         return new TestMobileMidwifeEnrollment().staffId(valueOf(staffMotechId))
-                .facilityId(valueOf(facilityMotechId))
+                .patientId(valueOf(patientMotechId))
                 .consent(consent())
+                .country(valueOf(country))
+                .district(valueOf(district))
+                .subDistrict(valueOf(subDistrict))
+                .region(valueOf(region))
+                .facility(new Select(facilities).getFirstSelectedOption().getText())
                 .serviceType(valueOf(serviceType))
                 .phoneOwnership(valueOf(phoneOwnership))
                 .phoneNumber(valueOf(phoneNumber))
@@ -224,6 +277,7 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
                 .language(valueOf(language))
                 .learnedFrom(valueOf(learnedFrom))
                 .reasonToJoin(valueOf(reasonToJoin))
-                .messageStartWeek(MessageStartWeek.valueOf(valueOf(messageStartWeek)));
+                .messageStartWeek(MessageStartWeek.findBy(valueOf(messageStartWeek)));
     }
+
 }

@@ -132,4 +132,8 @@ public class Browser {
     public void captureScreenShot() {
         new ScreenShotCaptor().capture(webDriver);
     }
+
+    public SearchFacilityPage toFacilityPage() {
+        return new SearchFacilityPage(webDriver);  
+    }
 }

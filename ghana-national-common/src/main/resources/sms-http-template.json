@@ -1,6 +1,6 @@
 {
     "request": {
-        "urlPath": "http://localhost:8080/ghana-national/sms/send",
+        "urlPath": "http://localhost:8080/ghana-national/motech-delivery-tools/outbound/receive",
         "queryParameters": {
             "recipients": "$recipients" ,
             "message": "$message"

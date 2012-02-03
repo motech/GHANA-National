@@ -2,13 +2,15 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
 import org.junit.runner.RunWith;
-import org.motechproject.ghana.national.functional.framework.XformHttpClient;
-import org.motechproject.ghana.national.functional.util.DataGenerator;
-import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
-import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
-import org.motechproject.ghana.national.functional.Generator.StaffGenerator;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
+import org.motechproject.ghana.national.functional.data.TestPatient;
+import org.motechproject.ghana.national.functional.framework.XformHttpClient;
+import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
+import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEnrollmentPage;
+import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
+import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
+import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.BeforeMethod;
@@ -19,18 +21,12 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
-    @Autowired
-    StaffGenerator staffGenerator;
-    @Autowired
-    PatientGenerator patientGenerator;
-    @Autowired
-    FacilityGenerator facilityGenerator;
     DataGenerator dataGenerator;
 
     @BeforeMethod
@@ -40,7 +36,7 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
 
     @Test
     public void shouldValidateIfPatientIsAlreadyRegistered() throws Exception {
-        final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(new HashMap<String, String>() {{
+        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerMobileMidwifeForm(), new HashMap<String, String>() {{
             put("patientId", "someinvalidpatientid");
         }});
 
@@ -55,7 +51,7 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
 
     @Test
     public void shouldValidateIfStaffIsAlreadyRegistered() throws Exception {
-        final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(new HashMap<String, String>() {{
+        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerMobileMidwifeForm(), new HashMap<String, String>() {{
             put("staffId", "someinvalidstaffid");
         }});
 
@@ -70,7 +66,7 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
 
     @Test
     public void shouldValidateIfFacilityIsAlreadyRegistered() throws Exception {
-        final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(new HashMap<String, String>() {{
+        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerMobileMidwifeForm(), new HashMap<String, String>() {{
             put("facilityId", "someinvalidFacilityid");
         }});
 
@@ -85,7 +81,7 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
 
     @Test
     public void shouldValidateForMandatoryFields() throws Exception {
-        final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(MapUtils.EMPTY_MAP);
+        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerMobileMidwifeForm(), MapUtils.EMPTY_MAP);
 
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);
@@ -100,23 +96,26 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
     @Test
     public void shouldRegisterForMobileMidWifeProgramIfValidationsPass() throws Exception {
         final String staffId = staffGenerator.createStaff(browser, homePage);
-        final String facilityMotechId = facilityGenerator.createFacility(browser, homePage);
-        final String patientId = patientGenerator.createPatientWithStaff(browser, homePage,staffId);
+//        final String facilityId = facilityGenerator.createFacility(browser, homePage);
 
-        final XformHttpClient.XformResponse xformResponse = setupMobileMidwifeFormAndUpload(new HashMap<String, String>() {{
-            put("patientId", patientId);
-            put("staffId", staffId);
-            put("facilityId", facilityMotechId);
-            put("consent", "Y");
-        }});
+        TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5), staffId).
+                patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
 
-        final List<XformHttpClient.Error> errors = xformResponse.getErrors();
-        assertEquals(errors.size(), 0);
+        final String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
 
-    }
+        TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId);
 
-    private XformHttpClient.XformResponse setupMobileMidwifeFormAndUpload(Map<String, String> data) throws Exception {
-        return XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
-                "NurseDataEntry", XformHttpClient.XFormParser.parse("mobile-midwife-template.xml", data));
+        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerMobileMidwifeForm(), mmEnrollmentDetails.forMobile());
+
+        assertThat(xformResponse.getSuccessCount(), is(equalTo(1)));
+
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithMotechId(patientId);
+        searchPatientPage.displaying(patient);
+
+        PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
+
+        MobileMidwifeEnrollmentPage enrollmentPage = browser.toMobileMidwifeEnrollmentForm(editPage);
+        assertEquals(mmEnrollmentDetails, enrollmentPage.details());
     }
 }

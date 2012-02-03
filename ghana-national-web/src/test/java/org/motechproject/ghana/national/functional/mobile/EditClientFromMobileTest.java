@@ -1,17 +1,13 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
-import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
-import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
-import org.motechproject.ghana.national.functional.Generator.StaffGenerator;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
@@ -28,18 +24,11 @@ import static org.testng.AssertJUnit.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
-    @Autowired
-    StaffGenerator staffGenerator;
-    @Autowired
-    FacilityGenerator facilityGenerator;
-    @Autowired
-    PatientGenerator patientGenerator;
-    DataGenerator dataGenerator = new DataGenerator();
 
     @Test
     public void shouldCheckForMandatoryFields() throws Exception {
 
-        final XformHttpClient.XformResponse xformResponse = setupEditClientFormAndUpload(new HashMap<String, String>() {{
+        XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.editClientForm(), new HashMap<String, String>() {{
         }});
 
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
@@ -54,7 +43,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
 
     @Test
     public void shouldGiveErrorIfIdsAreNotFound() throws Exception {
-        final XformHttpClient.XformResponse xformResponse = setupEditClientFormAndUpload(new HashMap<String, String>() {{
+        XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.editClientForm(), new HashMap<String, String>() {{
             put("facilityId", "testFacilityId");
             put("motechId", "testMotechId");
             put("staffId", "testStaffId");
@@ -63,8 +52,8 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
 
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);
-        final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
 
+        final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
         assertThat(errorsMap.get("facilityId"), hasItem("not found"));
         assertThat(errorsMap.get("staffId"), hasItem("not found"));
         assertThat(errorsMap.get("motechId"), hasItem("not found"));
@@ -74,14 +63,14 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
     @Test
     public void shouldNotGiveErrorForFirstNameIfGiven() throws Exception {
 
-        final XformHttpClient.XformResponse xformResponse = setupEditClientFormAndUpload(new HashMap<String, String>() {{
+        XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.editClientForm(), new HashMap<String, String>() {{
             put("firstName", "Joe");
         }});
 
-        final List<XformHttpClient.Error> errors = xformResponse.getErrors();
+        List<XformHttpClient.Error> errors = xformResponse.getErrors();
+
         assertEquals(errors.size(), 1);
-        final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
-        assertNull(errorsMap.get("firstName"));
+        assertNull(errors.iterator().next().getErrors().get("firstName"));
     }
 
     @Test(enabled = false)
@@ -90,7 +79,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
 
         String facilityMotechId = facilityGenerator.createFacility(browser, homePage);
         String staffId = staffGenerator.createStaff(browser, homePage);
-        final String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
+        String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
 
         TestPatient patient = TestPatient.with("Updated First Name" + dataGenerator.randomString(5), staffId)
                 .patientType(TestPatient.PATIENT_TYPE.OTHER)
@@ -112,10 +101,5 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
         assertThat(patientPage.firstName(), is(equalTo(patient.firstName())));
         assertThat(patientPage.middleName(), is(equalTo(patient.middleName())));
         assertThat(patientPage.lastName(), is(equalTo(patient.lastName())));
-    }
-
-    private XformHttpClient.XformResponse setupEditClientFormAndUpload(Map<String, String> data) throws Exception {
-        return XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
-                "NurseDataEntry", XformHttpClient.XFormParser.parse("edit-client-template.xml", data));
     }
 }
