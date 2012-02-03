@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.functional.mobile;
 
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestPatient;
@@ -74,8 +73,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
         assertNull(errors.iterator().next().getErrors().get("firstName"));
     }
 
-    @Test
-    @Ignore
+    @Test(enabled = false)
     public void shouldUpdatePatientIfNoErrorsAreFound() throws Exception {
         DataGenerator dataGenerator = new DataGenerator();
 
