@@ -38,6 +38,11 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
+            <artifactId>motech-cmslite-api</artifactId>
+            <version>0.8-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
             <artifactId>motech-testing-utils</artifactId>
             <version>${motech-platform.version}</version>
             <scope>test</scope>
@@ -125,7 +130,7 @@
                             <excludeTransitive>true</excludeTransitive>
                             <includes>
                                 openmrs-data/**, sms-http-template.json, osgi.properties, activemq.properties,
-                                quartz.properties,scheduletracking.properties,schedules/**
+                                quartz.properties,scheduletracking.properties,schedules/**,programs/**, messageCampaign.properties
                             </includes>
                         </configuration>
                     </execution>

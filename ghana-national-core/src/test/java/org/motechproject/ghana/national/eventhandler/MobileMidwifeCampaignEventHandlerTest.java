@@ -1,0 +1,91 @@
+package org.motechproject.ghana.national.eventhandler;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.motechproject.cmslite.api.model.ContentNotFoundException;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
+import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.TextMessageService;
+import org.motechproject.model.MotechEvent;
+import org.motechproject.server.messagecampaign.EventKeys;
+
+import java.util.HashMap;
+
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.server.messagecampaign.scheduler.MessageCampaignScheduler.INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT;
+
+public class MobileMidwifeCampaignEventHandlerTest {
+
+    MobileMidwifeCampaignEventHandler handler;
+    @Mock
+    MobileMidwifeService mockMobileMidwifeService;
+    @Mock
+    PatientService mockPatientService;
+    @Mock
+    TextMessageService mockTextMessageService;
+
+    @Before
+    public void init() {
+        initMocks(this);
+        handler = new MobileMidwifeCampaignEventHandler(mockMobileMidwifeService, mockTextMessageService, mockPatientService);
+    }
+
+    @Test
+    public void shouldSendSMSForEnrollmentWithSMSMedium() throws ContentNotFoundException {
+        ServiceType serviceType = ServiceType.CHILD_CARE;
+        String patientId = "1234568";
+        String mobileNumber = "9845312345";
+        String messageKey = "childcare-calendar-week-33-Monday";
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
+                .setServiceType(serviceType).setMedium(Medium.SMS).setPhoneNumber(mobileNumber);
+        Patient patient = mock(Patient.class);
+        when(mockMobileMidwifeService.findBy(patientId)).thenReturn(mobileMidwifeEnrollment);
+        when(mockPatientService.getPatientByMotechId(patientId)).thenReturn(patient);
+
+        handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), messageKey));
+        verify(mockTextMessageService).sendLocalizedSMS(mobileNumber, patient, messageKey);
+    }
+
+    @Test
+    public void shouldNotSendSMSForEnrollmentWithNonSMSMedium() throws ContentNotFoundException {
+        ServiceType serviceType = ServiceType.PREGNANCY;
+        String patientId = "1234568";
+        String messageKey = "pregnancy-calendar-week-33-Monday";
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
+                .setServiceType(serviceType).setMedium(Medium.VOICE).setPhoneNumber("9845312345");
+        when(mockMobileMidwifeService.findBy(patientId)).thenReturn(mobileMidwifeEnrollment);
+
+        handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), messageKey));
+        verify(mockTextMessageService, never()).sendLocalizedSMS(Matchers.<String>any(), Matchers.<Patient>any(), Matchers.<String>any());
+    }
+
+    @Test
+    public void shouldSendUnregisterUserIfItIsTheLastEventForTheProgram() throws ContentNotFoundException {
+        ServiceType serviceType = ServiceType.CHILD_CARE;
+        String patientId = "1234568";
+        String messageKey = "childcare-calendar-week-33-Monday";
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
+                .setServiceType(serviceType).setMedium(Medium.SMS).setPhoneNumber("9845312345");
+        when(mockMobileMidwifeService.findBy(patientId)).thenReturn(mobileMidwifeEnrollment);
+
+        MotechEvent lastEvent = motechEvent(patientId, serviceType.name(), messageKey).setLastEvent(true);
+        handler.sendProgramMessage(lastEvent);
+        verify(mockMobileMidwifeService).unregister(mobileMidwifeEnrollment);
+    }
+
+     private MotechEvent motechEvent(String externalId, String campaignName, String messageKey) {
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(EventKeys.CAMPAIGN_NAME_KEY, campaignName);
+        parameters.put(EventKeys.MESSAGE_KEY, messageKey);
+        parameters.put(EventKeys.EXTERNAL_ID_KEY, externalId);
+        return new MotechEvent(INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT, parameters);
+    }
+
+}

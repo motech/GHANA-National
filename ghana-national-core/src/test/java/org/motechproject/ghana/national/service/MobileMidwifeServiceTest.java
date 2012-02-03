@@ -71,14 +71,27 @@ public class MobileMidwifeServiceTest {
         MobileMidwifeEnrollment existingEnrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
                 patientId(patientId).consent(true).build();
         when(allEnrollments.findByPatientId(patientId)).thenReturn(existingEnrollment);
+        service = spy(service);
 
         service.register(enrollment);
         assertTrue(enrollment.getActive());
-        assertFalse(existingEnrollment.getActive());
-        verify(allEnrollments).update(existingEnrollment);
-        verify(mockMobileMidwifeCampaign).stop(existingEnrollment);
+        verify(service).unregister(existingEnrollment);
         verify(allEnrollments).add(enrollment);
         verify(mockMobileMidwifeCampaign).start(enrollment);
+    }
+    
+    @Test
+    public void shouldDeactivateEnrollmentAndClearScheduleOnUnregister() {
+        String patientId = "patientId";
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
+                patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday)
+                .build();
+        when(allEnrollments.findByPatientId(patientId)).thenReturn(enrollment);
+
+        service.unregister(enrollment);
+        assertFalse(enrollment.getActive());
+        verify(allEnrollments).update(enrollment);
+        verify(mockMobileMidwifeCampaign).stop(enrollment);
     }
 
     @Test
