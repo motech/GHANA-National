@@ -32,5 +32,11 @@
             <artifactId>motech-platform-server-api</artifactId>
             <version>${motech-platform.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.unitils</groupId>
+            <artifactId>unitils-core</artifactId>
+            <version>3.3</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
