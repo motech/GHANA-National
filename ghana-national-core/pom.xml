@@ -123,7 +123,8 @@
                             <includeGroupIds>org.motechproject</includeGroupIds>
                             <excludeTransitive>true</excludeTransitive>
                             <includes>
-                                openmrs-data/**, sms-http-template.json, osgi.properties, activemq.properties, quartz.properties,scheduletracking.properties,schedules/**
+                                openmrs-data/**, sms-http-template.json, osgi.properties, activemq.properties,
+                                quartz.properties,scheduletracking.properties,schedules/**
                             </includes>
                         </configuration>
                     </execution>
@@ -226,6 +227,29 @@
                         </goals>
                     </execution>
                     <execution>
+                        <id>drop-quartz-schema</id>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Dropping Quartz"/>
+                                <path id="dependencies">
+                                    <fileset file="../build/lib/mysql-connector-java-5.1.13.jar"/>
+                                </path>
+                                <sql driver="${mysql.driver}"
+                                     url="jdbc:mysql://${mysql.server}:${mysql.port}?autoReconnect=true"
+                                     userid="${mysql.user}"
+                                     classpathref="dependencies"
+                                     password="${mysql.password}"
+                                     onerror="continue">
+                                    drop database ${mysql.dbQuartz};
+                                </sql>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>setup-quartz-schema</id>
                         <phase>process-resources</phase>
                         <configuration>
@@ -235,11 +259,10 @@
                                     <fileset file="../build/lib/mysql-connector-java-5.1.13.jar"/>
                                 </path>
                                 <sql driver="${mysql.driver}"
-                                     url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.dbQuartz}?autoReconnect=true"
+                                     url="jdbc:mysql://${mysql.server}:${mysql.port}?autoReconnect=true"
                                      userid="${mysql.user}"
                                      classpathref="dependencies"
                                      password="${mysql.password}">
-                                    drop database ${mysql.dbQuartz};
                                     create database ${mysql.dbQuartz};
                                 </sql>
                                 <sql driver="${mysql.driver}"
