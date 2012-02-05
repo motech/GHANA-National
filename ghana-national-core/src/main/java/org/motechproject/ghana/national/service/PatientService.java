@@ -91,7 +91,8 @@ public class PatientService {
         if (relationship != null && StringUtils.isNotEmpty(patient.getParentId())) {
             updateRelationship(patient.getParentId(), savedPatient, relationship);
         }
-        encounterService.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(), Constants.ENCOUNTER_PATIENTEDITVISIT, DateUtil.today().toDate(), null);
+        encounterService.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(),
+                Constants.ENCOUNTER_PATIENTEDITVISIT, DateUtil.today().toDate(), null);
         return savedPatientId;
     }
 

@@ -13,7 +13,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ClientDeathFormHandler implements FormPublishHandler {
-    @Autowired private PatientService patientService;
+
+    @Autowired
+    private PatientService patientService;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.clientDeath")

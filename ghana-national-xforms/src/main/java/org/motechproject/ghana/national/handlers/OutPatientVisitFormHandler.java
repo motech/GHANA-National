@@ -26,9 +26,6 @@ import java.util.Set;
 @Component
 public class OutPatientVisitFormHandler implements FormPublishHandler {
 
-
-    static final String ENCOUNTER_TYPE = "OUTPATIENTVISIT";
-
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -41,8 +38,8 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
     private MRSPatientAdapter patientAdapter;
     public static int OTHER_DIAGNOSIS = 78;
 
-     @Autowired
-     OpenMRSConceptAdapter openMRSConceptAdapter;
+    @Autowired
+    OpenMRSConceptAdapter openMRSConceptAdapter;
 
 
     @Override
@@ -93,10 +90,10 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
 
             if (Boolean.TRUE.equals(formBean.getRdtGiven())) {
                 MRSObservation rdtGivenObs;
-                if(Boolean.TRUE.equals(formBean.getRdtPositive()))
-                    rdtGivenObs = new MRSObservation<Concept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST,openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_POSITIVE) );
+                if (Boolean.TRUE.equals(formBean.getRdtPositive()))
+                    rdtGivenObs = new MRSObservation<Concept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST, openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_POSITIVE));
                 else
-                    rdtGivenObs=  new MRSObservation<Concept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST,openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_NEGATIVE) );
+                    rdtGivenObs = new MRSObservation<Concept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST, openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_NEGATIVE));
                 observationList.add(rdtGivenObs);
             }
 
@@ -106,7 +103,8 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
             }
 
             Facility facility = facilityService.getFacilityByMotechId(formBean.getFacilityId());
-            encounterService.persistEncounter(mrsPatient, formBean.getStaffId(), facility.mrsFacilityId(), ENCOUNTER_TYPE, formBean.getVisitDate(), observationList);
+            encounterService.persistEncounter(mrsPatient, formBean.getStaffId(), facility.mrsFacilityId(), Constants.ENCOUNTER_OUTPATIENTVISIT,
+                    formBean.getVisitDate(), observationList);
 
         } catch (Exception e) {
             log.error("Exception occured in saving Delivery Notification details for: " + formBean.getMotechId(), e);

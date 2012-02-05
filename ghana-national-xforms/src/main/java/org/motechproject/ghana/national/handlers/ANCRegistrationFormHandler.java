@@ -24,8 +24,10 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
 
     @Autowired
     CareService careService;
+
     @Autowired
     MobileMidwifeService mobileMidwifeService;
+
     @Autowired
     FacilityService facilityService;
 
@@ -36,7 +38,7 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
     public void handleFormEvent(MotechEvent event) {
         try {
             RegisterANCForm registerANCForm = (RegisterANCForm) event.getParameters().get(Constants.FORM_BEAN);
-            final Facility facility = facilityService.getFacilityByMotechId(registerANCForm.getFacilityId());
+            Facility facility = facilityService.getFacilityByMotechId(registerANCForm.getFacilityId());
 
             ANCVO ancvo = new ANCVO(registerANCForm.getStaffId(), facility.getMrsFacilityId(),
                     registerANCForm.getMotechId(), registerANCForm.getDate(), registerANCForm.getRegDateToday(),
@@ -45,11 +47,11 @@ public class ANCRegistrationFormHandler implements FormPublishHandler {
                     registerANCForm.getANCCareHistories(), registerANCForm.getLastIPT(), registerANCForm.getLastTT(),
                     registerANCForm.getLastIPTDate(), registerANCForm.getLastTTDate(), registerANCForm.getAddHistory());
 
-        careService.enroll(ancvo);
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = registerANCForm.createMobileMidwifeEnrollment();
-        if(mobileMidwifeEnrollment != null){
-            mobileMidwifeService.register(mobileMidwifeEnrollment);
-        }
+            careService.enroll(ancvo);
+            MobileMidwifeEnrollment mobileMidwifeEnrollment = registerANCForm.createMobileMidwifeEnrollment();
+            if (mobileMidwifeEnrollment != null) {
+                mobileMidwifeService.register(mobileMidwifeEnrollment);
+            }
         } catch (Exception e) {
             log.error("Exception while creating an ANC encounter", e);
         }

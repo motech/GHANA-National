@@ -17,12 +17,11 @@ public class EncounterService {
     @Autowired
     StaffService staffService;
 
-
     @Autowired
     AllEncounters allEncounters;
 
-    public MRSEncounter persistEncounter(MRSPatient mrsPatient, String staffId, String facilityId, String encounterType, Date registrationDate,
-                                         Set<MRSObservation> mrsObservations) {
+    public MRSEncounter persistEncounter(MRSPatient mrsPatient, String staffId, String facilityId, String encounterType,
+                                         Date registrationDate, Set<MRSObservation> mrsObservations) {
         MRSUser user = staffService.getUserByEmailIdOrMotechId(staffId);
         String staffProviderId = user.getPerson().getId();
         String staffUserId = user.getId();
@@ -31,5 +30,4 @@ public class EncounterService {
                 registrationDate, patientId, mrsObservations, encounterType);
         return allEncounters.save(mrsEncounter);
     }
-
 }

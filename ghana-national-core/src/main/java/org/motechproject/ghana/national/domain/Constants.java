@@ -74,14 +74,6 @@ public class Constants {
     public static final String CONCEPT_TT = "TETANUS TOXOID DOSE";
     public static final String CONCEPT_CONFINEMENT_CONFIRMED = "DATE OF CONFINEMENT CONFIRMED";
     public static final String CONCEPT_PREGNANCY = "PREGNANCY";
-    public static final String CONCEPT_PREGNANCY_STATUS = "PREGNANCY STATUS";
-
-    public static final String ENCOUNTER_ANCREGVISIT = "ANCREGVISIT";
-    public static final String ENCOUNTER_CWCREGVISIT = "CWCREGVISIT";
-    public static final String ENCOUNTER_PATIENTHISTORY = "PATIENTHISTORY";
-    public static final String ENCOUNTER_PREGREGVISIT = "PREGREGVISIT";
-    public static final String ENCOUNTER_PATIENTREGVISIT = "PATIENTREGVISIT";
-    public static final String ENCOUNTER_PATIENTEDITVISIT = "PATIENTEDITVISIT";
     public static final String CONCEPT_INSURED = "INSURED";
     public static final String CONCEPT_NEW_CASE = "NEW CASE";
     public static final String CONCEPT_NEW_PATIENT = "NEW PATIENT";
@@ -93,6 +85,16 @@ public class Constants {
     public static final String CONCEPT_POSITIVE = "POSITIVE";
     public static final String CONCEPT_NEGATIVE = "NEGATIVE";
     public static final String CONCEPT_ACT_TREATMENT = "ACT TREATMENT";
+    public static final String CONCEPT_PREGNANCY_STATUS = "PREGNANCY STATUS";
+
+    public static final String ENCOUNTER_ANCREGVISIT = "ANCREGVISIT";
+    public static final String ENCOUNTER_CWCREGVISIT = "CWCREGVISIT";
+    public static final String ENCOUNTER_PATIENTHISTORY = "PATIENTHISTORY";
+    public static final String ENCOUNTER_PREGREGVISIT = "PREGREGVISIT";
+    public static final String ENCOUNTER_PATIENTREGVISIT = "PATIENTREGVISIT";
+    public static final String ENCOUNTER_PATIENTEDITVISIT = "PATIENTEDITVISIT";
+    public static final String ENCOUNTER_PREGDELNOTIFYVISIT = "PREGDELNOTIFYVISIT";
+    public static final String ENCOUNTER_OUTPATIENTVISIT = "OUTPATIENTVISIT";
 
     //CWC Validators
     public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";

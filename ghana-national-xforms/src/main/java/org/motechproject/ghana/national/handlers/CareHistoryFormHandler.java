@@ -20,14 +20,15 @@ import org.springframework.stereotype.Component;
 public class CareHistoryFormHandler implements FormPublishHandler {
 
     Logger log = LoggerFactory.getLogger(CareHistoryFormHandler.class);
+
     @Autowired
     private OpenMRSConceptAdapter openMrsConceptAdapter;
+
     @Autowired
     private CareService careService;
+
     @Autowired
     private FacilityService facilityService;
-
-    public static final String ENCOUNTER_PATIENTHISTORY = "PATIENTHISTORY";
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.careHistory")

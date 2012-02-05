@@ -81,7 +81,8 @@ public class DeliveryNotificationFormHandlerTest {
         deliveryNotificationFormHandler.handleFormEvent(event);
 
         final HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
-        verify(mockCareService).persistEncounter(motechId, staffId, facilityId, DeliveryNotificationFormHandler.ENCOUNTER_TYPE, datetime.toDate(), mrsObservations);
+        verify(mockCareService).persistEncounter(motechId, staffId, facilityId, Constants.ENCOUNTER_PREGDELNOTIFYVISIT,
+                datetime.toDate(), mrsObservations);
         verify(mockTextMessageService).sendSMS(facilityPhoneNumber, patient, Constants.DELIVERY_NOTIFICATION_SMS);
     }
 

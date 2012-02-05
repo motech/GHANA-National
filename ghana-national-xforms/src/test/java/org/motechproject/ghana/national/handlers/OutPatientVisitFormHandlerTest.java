@@ -72,7 +72,7 @@ public class OutPatientVisitFormHandlerTest {
         boolean isReferred = true;
         boolean isInsured = true;
         int diagnosis = 10;
-        String motechId="motechId";
+        String motechId = "motechId";
         boolean rdtGiven = true;
         boolean rdtPositive = false;
         boolean actTreated = false;
@@ -100,7 +100,7 @@ public class OutPatientVisitFormHandlerTest {
 
         MRSPatient mockMrsPatient = mock(MRSPatient.class);
         Facility mockFacility = mock(Facility.class);
-        Concept mockConcept=mock(Concept.class);
+        Concept mockConcept = mock(Concept.class);
 
         when(mockMRSPatientAdapter.getPatientByMotechId(motechId)).thenReturn(mockMrsPatient);
         when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(mockFacility);
@@ -111,7 +111,8 @@ public class OutPatientVisitFormHandlerTest {
 
         ArgumentCaptor<Set> argumentCaptor = ArgumentCaptor.forClass(Set.class);
 
-        verify(mockEncounterService).persistEncounter(eq(mockMrsPatient), eq(staffId), eq(facilityId), eq(OutPatientVisitFormHandler.ENCOUNTER_TYPE), eq(visitDate), argumentCaptor.capture());
+        verify(mockEncounterService).persistEncounter(eq(mockMrsPatient), eq(staffId), eq(facilityId),
+                eq(Constants.ENCOUNTER_OUTPATIENTVISIT), eq(visitDate), argumentCaptor.capture());
 
         Set<MRSObservation> actualObservations = argumentCaptor.getValue();
 
@@ -123,8 +124,9 @@ public class OutPatientVisitFormHandlerTest {
         expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_SECONDARY_DIAGNOSIS, secondDiagnosis));
         expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_REFERRED, isReferred));
         expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_COMMENTS, comments));
-        expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_MALARIA_RAPID_TEST,mockOpenMRSConceptAdapter.getConceptByName(Constants.CONCEPT_NEGATIVE)));
-        expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_ACT_TREATMENT,actTreated));
+        expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_MALARIA_RAPID_TEST,
+                mockOpenMRSConceptAdapter.getConceptByName(Constants.CONCEPT_NEGATIVE)));
+        expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_ACT_TREATMENT, actTreated));
 
         assertReflectionEquals(actualObservations, expectedObservations, ReflectionComparatorMode.LENIENT_DATES,
                 ReflectionComparatorMode.LENIENT_ORDER);

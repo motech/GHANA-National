@@ -24,7 +24,6 @@ import java.util.HashSet;
 @Component
 public class DeliveryNotificationFormHandler implements FormPublishHandler {
 
-    static final String ENCOUNTER_TYPE = "PREGDELNOTIFYVISIT";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -48,7 +47,8 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
         try {
             deliveryNotificationForm = (DeliveryNotificationForm) event.getParameters().get(Constants.FORM_BEAN);
             careService.persistEncounter(deliveryNotificationForm.getMotechId(), deliveryNotificationForm.getStaffId(),
-                    deliveryNotificationForm.getFacilityId(), ENCOUNTER_TYPE, deliveryNotificationForm.getDatetime().toDate(), new HashSet<MRSObservation>());
+                    deliveryNotificationForm.getFacilityId(), Constants.ENCOUNTER_PREGDELNOTIFYVISIT,
+                    deliveryNotificationForm.getDatetime().toDate(), new HashSet<MRSObservation>());
             sendDeliveryNotificationMessage(deliveryNotificationForm.getMotechId());
         } catch (Exception e) {
             log.error("Exception occured in saving Delivery Notification details for: " + deliveryNotificationForm.getMotechId(), e);
