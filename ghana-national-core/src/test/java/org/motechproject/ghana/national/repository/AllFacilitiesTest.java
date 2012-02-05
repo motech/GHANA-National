@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.services.MRSFacilityAdaptor;
+import org.motechproject.mrs.services.MRSFacilityAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -24,7 +24,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class AllFacilitiesTest extends BaseIntegrationTest {
 
     @Mock
-    MRSFacilityAdaptor mockMrsFacilityAdaptor;
+    MRSFacilityAdapter mockMrsFacilityAdapter;
 
     @Autowired
     private AllFacilities allFacilities;
@@ -32,7 +32,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
     @Before
     public void init() {
         initMocks(this);
-        ReflectionTestUtils.setField(allFacilities, "facilityAdaptor", mockMrsFacilityAdaptor);
+        ReflectionTestUtils.setField(allFacilities, "facilityAdapter", mockMrsFacilityAdapter);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         final int initialSize = allFacilities.getAll().size();
 
         final String facilityId = "12";
-        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(new MRSFacility(facilityId, facilityName,
+        when(mockMrsFacilityAdapter.saveFacility(mrsFacility)).thenReturn(new MRSFacility(facilityId, facilityName,
                 "country", "region", "district", "province"));
 
         allFacilities.add(facility);
@@ -78,10 +78,10 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         Facility facility = new Facility(mrsFacility)
                 .phoneNumber(phoneNumber);
 
-        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(new MRSFacility(mrsFacilityId, facilityName,
+        when(mockMrsFacilityAdapter.saveFacility(mrsFacility)).thenReturn(new MRSFacility(mrsFacilityId, facilityName,
                 "country", "region", "district", "province"));
         allFacilities.add(facility);
-        when(mockMrsFacilityAdaptor.getFacilities(facilityName)).thenReturn(Arrays.asList(mrsFacility));
+        when(mockMrsFacilityAdapter.getFacilities(facilityName)).thenReturn(Arrays.asList(mrsFacility));
 
         final List<Facility> actualFacilities = allFacilities.facilitiesByName(facilityName);
 
@@ -101,7 +101,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
 
         final MRSFacility mrsFacility = new MRSFacility(mrsFacilityId,
                 facilityName, country, region, district, province);
-        when(mockMrsFacilityAdaptor.getFacilities(facilityName)).thenReturn(Arrays.asList(mrsFacility));
+        when(mockMrsFacilityAdapter.getFacilities(facilityName)).thenReturn(Arrays.asList(mrsFacility));
 
         final List<Facility> actualFacilities = allFacilities.facilitiesByName(facilityName);
 
@@ -123,11 +123,11 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         final String province = "Province 1";
         final MRSFacility facility = new MRSFacility(mrsFacilityId, facilityName, country, region, district, province);
 
-        when(mockMrsFacilityAdaptor.saveFacility(facility)).thenReturn(new MRSFacility(mrsFacilityId, facilityName,
+        when(mockMrsFacilityAdapter.saveFacility(facility)).thenReturn(new MRSFacility(mrsFacilityId, facilityName,
                 country, region, district, province));
         allFacilities.add(new Facility(facility));
 
-        when(mockMrsFacilityAdaptor.getFacilities()).thenReturn(Arrays.asList(facility));
+        when(mockMrsFacilityAdapter.getFacilities()).thenReturn(Arrays.asList(facility));
         final List<Facility> actualFacilities = allFacilities.facilities();
         final Facility actualFacility = actualFacilities.iterator().next();
         assertThat(actualFacilities.size(), is(equalTo(1)));
@@ -153,10 +153,10 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         final Facility facility2 = new Facility(new MRSFacility("2", "name2", "country", "region", "district", "province"));
         final Facility facility3 = new Facility(new MRSFacility("3", "name3", "country", "region", "district", "province"));
         final Facility facility4 = new Facility(new MRSFacility("4", "name4", "country", "region", "district", "province"));
-        when(mockMrsFacilityAdaptor.saveFacility(facility1.mrsFacility())).thenReturn(anyFacility1);
-        when(mockMrsFacilityAdaptor.saveFacility(facility2.mrsFacility())).thenReturn(anyFacility2);
-        when(mockMrsFacilityAdaptor.saveFacility(facility3.mrsFacility())).thenReturn(anyFacility3);
-        when(mockMrsFacilityAdaptor.saveFacility(facility4.mrsFacility())).thenReturn(anyFacility4);
+        when(mockMrsFacilityAdapter.saveFacility(facility1.mrsFacility())).thenReturn(anyFacility1);
+        when(mockMrsFacilityAdapter.saveFacility(facility2.mrsFacility())).thenReturn(anyFacility2);
+        when(mockMrsFacilityAdapter.saveFacility(facility3.mrsFacility())).thenReturn(anyFacility3);
+        when(mockMrsFacilityAdapter.saveFacility(facility4.mrsFacility())).thenReturn(anyFacility4);
         allFacilities.add(facility1);
         allFacilities.add(facility2);
         allFacilities.add(facility3);
@@ -177,15 +177,15 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
 
         final MRSFacility mrsFacility = new MRSFacility(facilityId, name, country, region, district, province);
 
-        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(mrsFacility);
+        when(mockMrsFacilityAdapter.saveFacility(mrsFacility)).thenReturn(mrsFacility);
         allFacilities.add(facility("123460987", null, null, null, mrsFacility).motechId(facilityId));
 
-        when(mockMrsFacilityAdaptor.getFacility(facilityId)).thenReturn(mrsFacility);
+        when(mockMrsFacilityAdapter.getFacility(facilityId)).thenReturn(mrsFacility);
 
         Facility facility;
         assertFacility(allFacilities.getFacility(facilityId), facilityId, name, country, region, district, province);
 
-        when(mockMrsFacilityAdaptor.getFacility(facilityId)).thenReturn(null);
+        when(mockMrsFacilityAdapter.getFacility(facilityId)).thenReturn(null);
         facility = allFacilities.getFacility(facilityId);
         assertThat(facility, is(equalTo(null)));
     }
@@ -200,7 +200,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         MRSFacility mrsFacility = mock(MRSFacility.class);
 
         doReturn(motechFacility).when(allFacilitiesSpy).findByMotechFacilityId(motechFacilityId);
-        when(mockMrsFacilityAdaptor.getFacility(mrsFacilityId)).thenReturn(mrsFacility);
+        when(mockMrsFacilityAdapter.getFacility(mrsFacilityId)).thenReturn(mrsFacility);
 
         Facility returnedFacility = allFacilitiesSpy.getFacilityByMotechId(motechFacilityId);
         assertThat(returnedFacility.motechId(), is(equalTo(motechFacilityId)));
@@ -215,7 +215,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         String country = "Country";
         MRSFacility mrsFacility = new MRSFacility(mrsFacilityId, "facilityName", country, "Region", null, null);
         String phoneNumber = "9911002288";
-        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(mrsFacility);
+        when(mockMrsFacilityAdapter.saveFacility(mrsFacility)).thenReturn(mrsFacility);
         allFacilities.add(facility(phoneNumber, null, null, null, mrsFacility));
 
         assertThat(allFacilities.findByMrsFacilityId(mrsFacilityId).phoneNumber(), is(phoneNumber));
@@ -226,7 +226,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         String motechFacilityId = "1346789";
         String mrsFacilityId = "100";
         MRSFacility mrsFacility = new MRSFacility(mrsFacilityId);
-        when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(mrsFacility);
+        when(mockMrsFacilityAdapter.saveFacility(mrsFacility)).thenReturn(mrsFacility);
         allFacilities.add(facility(
                 "9911002288", null, null, null, mrsFacility).motechId(motechFacilityId));
 
@@ -266,7 +266,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         final MRSFacility mrsFacility = new MRSFacility(facilityName);
         Facility facility = facility(phoneNumber, additionalPhone1, additionalPhone2, additionalPhone3, mrsFacility);
 
-         when(mockMrsFacilityAdaptor.saveFacility(mrsFacility)).thenReturn(new MRSFacility(facilityId, facilityName,
+         when(mockMrsFacilityAdapter.saveFacility(mrsFacility)).thenReturn(new MRSFacility(facilityId, facilityName,
                 "country", "region", "district", "province"));
         allFacilities.add(facility);
 

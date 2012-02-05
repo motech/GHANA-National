@@ -9,7 +9,7 @@ import org.ektorp.support.View;
 import org.motechproject.dao.MotechBaseRepository;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.services.MRSFacilityAdaptor;
+import org.motechproject.mrs.services.MRSFacilityAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -26,12 +26,12 @@ import static org.hamcrest.core.Is.is;
 
 @Repository
 public class AllFacilities extends MotechBaseRepository<Facility> {
-    private MRSFacilityAdaptor facilityAdaptor;
+    private MRSFacilityAdapter facilityAdapter;
 
     @Autowired
-    public AllFacilities(@Qualifier("couchDbConnector") CouchDbConnector db, MRSFacilityAdaptor facilityAdaptor) {
+    public AllFacilities(@Qualifier("couchDbConnector") CouchDbConnector db, MRSFacilityAdapter facilityAdapter) {
         super(Facility.class, db);
-        this.facilityAdaptor = facilityAdaptor;
+        this.facilityAdapter = facilityAdapter;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
     }
 
     private void saveMRSFacility(Facility facility) {
-        final MRSFacility savedFacility = facilityAdaptor.saveFacility(facility.mrsFacility());
+        final MRSFacility savedFacility = facilityAdapter.saveFacility(facility.mrsFacility());
         facility.mrsFacilityId(savedFacility.getId());
     }
 
@@ -62,11 +62,11 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
     }
 
     public List<Facility> facilitiesByName(String name) {
-        return getFacilitiesWithAllInfo(facilityAdaptor.getFacilities(name));
+        return getFacilitiesWithAllInfo(facilityAdapter.getFacilities(name));
     }
 
     public List<Facility> facilities() {
-        final List<MRSFacility> mrsFacilities = facilityAdaptor.getFacilities();
+        final List<MRSFacility> mrsFacilities = facilityAdapter.getFacilities();
         final ArrayList<Facility> facilities = new ArrayList<Facility>();
         for (MRSFacility mrsFacility : mrsFacilities) {
             Facility facility = findByMrsFacilityId(mrsFacility.getId());
@@ -93,7 +93,7 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
     }
 
     public Facility getFacility(String mrsFacilityId) {
-        MRSFacility mrsFacility = facilityAdaptor.getFacility(mrsFacilityId);
+        MRSFacility mrsFacility = facilityAdapter.getFacility(mrsFacilityId);
         return (mrsFacility != null) ? findByMrsFacilityId(mrsFacilityId).mrsFacility(mrsFacility) : null;
     }
 
@@ -122,6 +122,6 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
 
     public Facility getFacilityByMotechId(String motechFacilityId) {
         Facility facility = findByMotechFacilityId(motechFacilityId);
-        return (facility != null) ? facility.mrsFacility(facilityAdaptor.getFacility(facility.mrsFacilityId())) : null;
+        return (facility != null) ? facility.mrsFacility(facilityAdapter.getFacility(facility.mrsFacilityId())) : null;
     }
 }

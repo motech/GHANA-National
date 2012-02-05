@@ -8,7 +8,7 @@ import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
+import org.motechproject.openmrs.services.OpenMRSConceptAdapter;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class CareHistoryFormHandler implements FormPublishHandler {
 
     Logger log = LoggerFactory.getLogger(CareHistoryFormHandler.class);
     @Autowired
-    private OpenMRSConceptAdaptor openMrsConceptAdaptor;
+    private OpenMRSConceptAdapter openMrsConceptAdapter;
     @Autowired
     private CareService careService;
     @Autowired

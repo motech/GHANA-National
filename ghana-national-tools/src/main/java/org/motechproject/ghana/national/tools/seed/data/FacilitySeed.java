@@ -6,7 +6,7 @@ import org.motechproject.ghana.national.tools.seed.Seed;
 import org.motechproject.ghana.national.tools.seed.data.source.FacilitySource;
 import org.motechproject.ghana.national.tools.seed.data.source.OldGhanaFacility;
 import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.services.MRSFacilityAdaptor;
+import org.motechproject.mrs.services.MRSFacilityAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +26,7 @@ public class FacilitySeed extends Seed {
     FacilitySource facilitySource;
 
     @Autowired
-    MRSFacilityAdaptor facilityAdaptor;
+    MRSFacilityAdapter facilityAdapter;
 
     @Override
     protected void load() {
@@ -44,7 +44,7 @@ public class FacilitySeed extends Seed {
     }
 
     private List<Facility> facilities() {
-        final List<MRSFacility> mrsFacilities = facilityAdaptor.getFacilities();
+        final List<MRSFacility> mrsFacilities = facilityAdapter.getFacilities();
         final ArrayList<Facility> facilities = new ArrayList<Facility>();
         for (MRSFacility mrsFacility : mrsFacilities) {
             Facility facility = new Facility();

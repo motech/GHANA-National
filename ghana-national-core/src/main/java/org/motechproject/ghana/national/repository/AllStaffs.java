@@ -8,7 +8,7 @@ import org.motechproject.ghana.national.tools.StartsWithMatcher;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSUser;
-import org.motechproject.mrs.services.MRSUserAdaptor;
+import org.motechproject.mrs.services.MRSUserAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,12 +21,12 @@ import static org.hamcrest.Matchers.equalTo;
 public class AllStaffs {
 
     private AllStaffTypes allStaffTypes;
-    private MRSUserAdaptor userAdaptor;
+    private MRSUserAdapter userAdapter;
 
     @Autowired
-    public AllStaffs(AllStaffTypes allStaffTypes, MRSUserAdaptor userAdaptor) {
+    public AllStaffs(AllStaffTypes allStaffTypes, MRSUserAdapter userAdapter) {
         this.allStaffTypes = allStaffTypes;
-        this.userAdaptor = userAdaptor;
+        this.userAdapter = userAdapter;
     }
 
     public List<MRSUser> searchStaff(String systemId, String firstName, String middleName, String lastName, String phoneNumber, String role) {
@@ -80,17 +80,17 @@ public class AllStaffs {
     }
 
     public Map saveUser(MRSUser mrsUser) throws UserAlreadyExistsException {
-        return userAdaptor.saveUser(mrsUser);
+        return userAdapter.saveUser(mrsUser);
     }
 
     public Map updateUser(MRSUser mrsUser) {
-        return userAdaptor.updateUser(mrsUser);
+        return userAdapter.updateUser(mrsUser);
     }
 
     public String changePasswordByEmailId(String emailId) {
         String password = "";
         try {
-            password = userAdaptor.setNewPasswordForUser(emailId);
+            password = userAdapter.setNewPasswordForUser(emailId);
         } catch (Exception e) {
             password = "";
         }
@@ -98,11 +98,11 @@ public class AllStaffs {
     }
 
     public List<MRSUser> getAllUsers() {
-        return userAdaptor.getAllUsers();
+        return userAdapter.getAllUsers();
     }
 
     public MRSUser getUserByEmailIdOrMotechId(String userId) {
-        return userAdaptor.getUserByUserName(userId);
+        return userAdapter.getUserByUserName(userId);
     }
 
     private class UserFirstNameComparator implements Comparator<MRSUser> {

@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
     <name>ghana-national-xforms</name>
     <artifactId>ghana-national-xforms</artifactId>
-
     <dependencies>
         <dependency>
             <groupId>org.motechproject</groupId>

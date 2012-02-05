@@ -9,10 +9,10 @@ import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.services.MRSPatientAdaptor;
+import org.motechproject.mrs.services.MRSPatientAdapter;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
+import org.motechproject.openmrs.services.OpenMRSConceptAdapter;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.openmrs.Concept;
 import org.slf4j.Logger;
@@ -38,11 +38,11 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
     FacilityService facilityService;
 
     @Autowired
-    private MRSPatientAdaptor patientAdaptor;
+    private MRSPatientAdapter patientAdapter;
     public static int OTHER_DIAGNOSIS = 78;
 
      @Autowired
-     OpenMRSConceptAdaptor openMRSConceptAdaptor;
+     OpenMRSConceptAdapter openMRSConceptAdapter;
 
 
     @Override
@@ -53,7 +53,7 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
         OutPatientVisitForm formBean = null;
         try {
             formBean = (OutPatientVisitForm) motechEvent.getParameters().get(Constants.FORM_BEAN);
-            MRSPatient mrsPatient = patientAdaptor.getPatientByMotechId(formBean.getMotechId());
+            MRSPatient mrsPatient = patientAdapter.getPatientByMotechId(formBean.getMotechId());
             Set<MRSObservation> observationList = new HashSet<MRSObservation>();
 
             if (formBean.getInsured() != null) {
@@ -94,9 +94,9 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
             if (Boolean.TRUE.equals(formBean.getRdtGiven())) {
                 MRSObservation rdtGivenObs;
                 if(Boolean.TRUE.equals(formBean.getRdtPositive()))
-                    rdtGivenObs = new MRSObservation<Concept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST,openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_POSITIVE) );
+                    rdtGivenObs = new MRSObservation<Concept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST,openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_POSITIVE) );
                 else
-                    rdtGivenObs=  new MRSObservation<Concept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST,openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_NEGATIVE) );
+                    rdtGivenObs=  new MRSObservation<Concept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST,openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_NEGATIVE) );
                 observationList.add(rdtGivenObs);
             }
 

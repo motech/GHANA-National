@@ -1,7 +1,7 @@
 package org.motechproject.ghana.national.repository;
 
 import org.motechproject.mrs.model.MRSEncounter;
-import org.motechproject.openmrs.services.OpenMRSEncounterAdaptor;
+import org.motechproject.openmrs.services.OpenMRSEncounterAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Repository;
 public class AllEncounters {
 
     @Autowired
-    OpenMRSEncounterAdaptor openMRSEncounterAdaptor;
+    OpenMRSEncounterAdapter openMRSEncounterAdapter;
 
     public MRSEncounter save(MRSEncounter mrsEncounter) {
-        return openMRSEncounterAdaptor.createEncounter(mrsEncounter);
+        return openMRSEncounterAdapter.createEncounter(mrsEncounter);
     }
     
     public MRSEncounter fetchLatest(String motechId, String encounterType) {
-        return openMRSEncounterAdaptor.getLatestEncounterByPatientMotechId(motechId, encounterType);
+        return openMRSEncounterAdapter.getLatestEncounterByPatientMotechId(motechId, encounterType);
     }
 }

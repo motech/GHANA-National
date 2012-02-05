@@ -16,7 +16,7 @@ import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
-import org.motechproject.openmrs.services.OpenMRSUserAdaptor;
+import org.motechproject.openmrs.services.OpenMRSUserAdapter;
 import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.ui.ModelMap;
@@ -100,7 +100,7 @@ public class StaffControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         ModelMap model = mock(ModelMap.class);
         Map test = new HashMap() {{
-            put(OpenMRSUserAdaptor.USER_KEY, openMRSUser);
+            put(OpenMRSUserAdapter.USER_KEY, openMRSUser);
             put("password", "P@ssw0rd");
         }};
         when(mockStaffService.saveUser(any(MRSUser.class))).thenReturn(test);
@@ -131,8 +131,8 @@ public class StaffControllerTest {
         //final MRSUser openMRSuser = new MRSUser().person(new MRSPerson().firstName("f").middleName("m").systemId(userId);
         final MRSUser openMRSuser = form.createUser();
         Map test = new HashMap() {{
-            put(OpenMRSUserAdaptor.USER_KEY, openMRSuser);
-            put(OpenMRSUserAdaptor.PASSWORD_USER_KEY, "P@ssw0rd");
+            put(OpenMRSUserAdapter.USER_KEY, openMRSuser);
+            put(OpenMRSUserAdapter.PASSWORD_USER_KEY, "P@ssw0rd");
         }};
         when(mockStaffService.saveUser(any(MRSUser.class))).thenReturn(test);
         when(mockIdentifierGenerationService.newStaffId()).thenReturn(userId);
@@ -300,7 +300,7 @@ public class StaffControllerTest {
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mockMRSUser);
         when(mockStaffService.changePasswordByEmailId(email)).thenReturn(password);
         final HashMap userData = new HashMap();
-        userData.put(OpenMRSUserAdaptor.USER_KEY, mockMRSUser);
+        userData.put(OpenMRSUserAdapter.USER_KEY, mockMRSUser);
         when(mockStaffService.updateUser(Matchers.<MRSUser>any())).thenReturn(userData);
 
         String result = controller.update(staffForm, mock(BindingResult.class), modelMap);
@@ -342,7 +342,7 @@ public class StaffControllerTest {
 
         when(mockStaffService.changePasswordByEmailId(email)).thenReturn(password);
         final HashMap userData = new HashMap();
-        userData.put(OpenMRSUserAdaptor.USER_KEY, mockMRSUser);
+        userData.put(OpenMRSUserAdapter.USER_KEY, mockMRSUser);
         when(mockStaffService.updateUser(Matchers.<MRSUser>any())).thenReturn(userData);
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mockMRSUser);
 
@@ -377,7 +377,7 @@ public class StaffControllerTest {
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mrsUser);
         when(mockStaffService.changePasswordByEmailId(email)).thenReturn(password);
         final HashMap userData = new HashMap();
-        userData.put(OpenMRSUserAdaptor.USER_KEY, mrsUser);
+        userData.put(OpenMRSUserAdapter.USER_KEY, mrsUser);
         when(mockStaffService.updateUser(Matchers.<MRSUser>any())).thenReturn(userData);
 
         String result = controller.update(staffForm, mock(BindingResult.class), modelMap);

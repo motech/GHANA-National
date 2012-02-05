@@ -9,7 +9,7 @@ import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
-import org.motechproject.mrs.services.MRSUserAdaptor;
+import org.motechproject.mrs.services.MRSUserAdapter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,12 +28,12 @@ public class AllStaffsTest {
     @Mock
     private AllStaffTypes allStaffTypes;
     @Mock
-    private MRSUserAdaptor userAdaptor;
+    private MRSUserAdapter userAdapter;
 
     @Before
     public void setUp() {
         initMocks(this);
-        allStaffs = new AllStaffs(allStaffTypes, userAdaptor);
+        allStaffs = new AllStaffs(allStaffTypes, userAdapter);
     }
 
     @Test
@@ -50,14 +50,14 @@ public class AllStaffsTest {
     @Test
     public void shouldGetAllUsers() {
         allStaffs.getAllUsers();
-        verify(userAdaptor).getAllUsers();
+        verify(userAdapter).getAllUsers();
     }
 
     @Test
     public void shouldGetUserById() {
         String userId = "124567";
         MRSUser mrsUser = new MRSUser();
-        when(userAdaptor.getUserByUserName(userId)).thenReturn(mrsUser);
+        when(userAdapter.getUserByUserName(userId)).thenReturn(mrsUser);
         assertThat(allStaffs.getUserByEmailIdOrMotechId(userId), is(equalTo(mrsUser)));
     }
 
@@ -65,7 +65,7 @@ public class AllStaffsTest {
     public void shouldChangePasswordGivenEmailId() throws UserAlreadyExistsException {
         final String emailId = "a@a.com";
         allStaffs.changePasswordByEmailId(emailId);
-        verify(userAdaptor).setNewPasswordForUser(emailId);
+        verify(userAdapter).setNewPasswordForUser(emailId);
     }
 
     @Test

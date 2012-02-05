@@ -12,7 +12,7 @@ import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.*;
-import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
+import org.motechproject.openmrs.services.OpenMRSConceptAdapter;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.motechproject.testing.utils.BaseUnitTest;
@@ -44,7 +44,7 @@ public class CareServiceTest extends BaseUnitTest {
     AllEncounters mockAllEncounters;
 
     @Mock
-    OpenMRSConceptAdaptor mockOpenMRSConceptAdaptor;
+    OpenMRSConceptAdapter mockOpenMRSConceptAdapter;
 
     @Mock
     ScheduleTrackingService mockScheduleTrackingService;
@@ -58,7 +58,7 @@ public class CareServiceTest extends BaseUnitTest {
         ReflectionTestUtils.setField(careService, "staffService", mockStaffService);
         ReflectionTestUtils.setField(careService, "patientService", mockPatientService);
         ReflectionTestUtils.setField(careService, "allEncounters", mockAllEncounters);
-        ReflectionTestUtils.setField(careService, "openMRSConceptAdaptor", mockOpenMRSConceptAdaptor);
+        ReflectionTestUtils.setField(careService, "openMRSConceptAdapter", mockOpenMRSConceptAdapter);
         ReflectionTestUtils.setField(careService, "scheduleTrackingService", mockScheduleTrackingService);
 
         currentDate = DateTime.now();

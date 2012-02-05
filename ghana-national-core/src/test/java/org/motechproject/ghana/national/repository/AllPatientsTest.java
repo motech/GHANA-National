@@ -7,8 +7,8 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
-import org.motechproject.mrs.services.MRSPatientAdaptor;
-import org.motechproject.openmrs.services.OpenMRSRelationshipAdaptor;
+import org.motechproject.mrs.services.MRSPatientAdapter;
+import org.motechproject.openmrs.services.OpenMRSRelationshipAdapter;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -28,16 +28,16 @@ public class AllPatientsTest {
     AllPatients allPatients;
 
     @Mock
-    MRSPatientAdaptor mockMrsPatientAdaptor;
+    MRSPatientAdapter mockMrsPatientAdapter;
     @Mock
-    OpenMRSRelationshipAdaptor mockOpenMRSRelationshipAdaptor;
+    OpenMRSRelationshipAdapter mockOpenMRSRelationshipAdapter;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
         allPatients = new AllPatients();
-        ReflectionTestUtils.setField(allPatients, "patientAdaptor", mockMrsPatientAdaptor);
-        ReflectionTestUtils.setField(allPatients, "openMRSRelationshipAdaptor", mockOpenMRSRelationshipAdaptor);
+        ReflectionTestUtils.setField(allPatients, "patientAdapter", mockMrsPatientAdapter);
+        ReflectionTestUtils.setField(allPatients, "openMRSRelationshipAdapter", mockOpenMRSRelationshipAdapter);
     }
 
     @Test
@@ -59,16 +59,16 @@ public class AllPatientsTest {
         final Patient patient = new Patient(mrsPatient);
         MRSPatient savedPatient = mock(MRSPatient.class);
         when(savedPatient.getMotechId()).thenReturn(patientId);
-        when(mockMrsPatientAdaptor.savePatient(mrsPatient)).thenReturn(savedPatient);
+        when(mockMrsPatientAdapter.savePatient(mrsPatient)).thenReturn(savedPatient);
         final String savedMotechId = allPatients.save(patient).getMotechId();
-        verify(mockMrsPatientAdaptor).savePatient(mrsPatient);
+        verify(mockMrsPatientAdapter).savePatient(mrsPatient);
         assertThat(patientId, is(savedMotechId));
     }
 
     @Test
     public void shouldReturnNullIfFetchPatientByIdIsNull() {
         final String patientId = "1";
-        when(mockMrsPatientAdaptor.getPatientByMotechId(patientId)).thenReturn(null);
+        when(mockMrsPatientAdapter.getPatientByMotechId(patientId)).thenReturn(null);
         final Patient actualPatient = allPatients.patientByMotechId(patientId);
         assertNull(actualPatient);
     }
@@ -77,7 +77,7 @@ public class AllPatientsTest {
     public void shouldReturnMotechIdByPatientId() {
        String patientId="123";
         final MRSPatient mrsPatient = mock(MRSPatient.class);
-        when(mockMrsPatientAdaptor.getPatient(patientId)).thenReturn(mrsPatient);
+        when(mockMrsPatientAdapter.getPatient(patientId)).thenReturn(mrsPatient);
         Patient actualPatient = allPatients.patientByOpenmrsId(patientId);
         assertThat(actualPatient.getMrsPatient(),is(equalTo(mrsPatient)));
     }
@@ -85,7 +85,7 @@ public class AllPatientsTest {
     @Test
     public void shouldReturnNullForMotechIdByPatientIdIfNotFound() {
        String patientId="123";
-        when(mockMrsPatientAdaptor.getPatient(patientId)).thenReturn(null);
+        when(mockMrsPatientAdapter.getPatient(patientId)).thenReturn(null);
         Patient actualPatient = allPatients.patientByOpenmrsId(patientId);
         assertNull(actualPatient);
     }
@@ -94,7 +94,7 @@ public class AllPatientsTest {
     public void shouldFetchPatientById() {
         final String patientId = "1";
         MRSPatient patient = new MRSPatient(patientId);
-        when(mockMrsPatientAdaptor.getPatientByMotechId(patientId)).thenReturn(patient);
+        when(mockMrsPatientAdapter.getPatientByMotechId(patientId)).thenReturn(patient);
         final Patient actualPatient = allPatients.patientByMotechId(patientId);
         assertThat(actualPatient.getMrsPatient(), is(patient));
     }
@@ -105,7 +105,7 @@ public class AllPatientsTest {
         String motechId = "id";
         MRSPatient returnedMrsPatient = new MRSPatient(motechId);
         List<MRSPatient> returnedMrsPatientList = Arrays.asList(returnedMrsPatient);
-        when(mockMrsPatientAdaptor.search(name, motechId)).thenReturn(returnedMrsPatientList);
+        when(mockMrsPatientAdapter.search(name, motechId)).thenReturn(returnedMrsPatientList);
         List<Patient> returnedPatient = allPatients.search(name, motechId);
         assertThat(returnedPatient.size(), is(equalTo(1)));
         assertThat(returnedPatient.get(0).getMrsPatient(), is(equalTo(returnedMrsPatient)));
@@ -129,7 +129,7 @@ public class AllPatientsTest {
                 .dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
         final MRSPatient mrsPatient = new MRSPatient("", mrsPerson, facility);
         final Patient patient = new Patient(mrsPatient);
-        when(mockMrsPatientAdaptor.updatePatient(patient.getMrsPatient())).thenReturn(patientId);
+        when(mockMrsPatientAdapter.updatePatient(patient.getMrsPatient())).thenReturn(patientId);
         final String motechIdForUpdatedPatient = allPatients.update(patient);
         assertThat(patientId, is(motechIdForUpdatedPatient));
     }
@@ -143,7 +143,7 @@ public class AllPatientsTest {
         when(mockMother.getId()).thenReturn(motherId);
         when(mockChild.getId()).thenReturn(childId);
         allPatients.createMotherChildRelationship(mockMother, mockChild);
-        verify(mockOpenMRSRelationshipAdaptor).createMotherChildRelationship(motherId,childId);
+        verify(mockOpenMRSRelationshipAdapter).createMotherChildRelationship(motherId,childId);
     }
 
     @Test
@@ -155,7 +155,7 @@ public class AllPatientsTest {
         when(mockMother.getId()).thenReturn(motherId);
         when(mockChild.getId()).thenReturn(childId);
         allPatients.updateMotherChildRelationship(mockMother, mockChild);
-        verify(mockOpenMRSRelationshipAdaptor).updateMotherRelationship(motherId, childId);
+        verify(mockOpenMRSRelationshipAdapter).updateMotherRelationship(motherId, childId);
     }
 
     @Test
@@ -164,7 +164,7 @@ public class AllPatientsTest {
         String childId = "234";
         when(mockChild.getId()).thenReturn(childId);
         allPatients.voidMotherChildRelationship(mockChild);
-        verify(mockOpenMRSRelationshipAdaptor).voidRelationship(childId);
+        verify(mockOpenMRSRelationshipAdapter).voidRelationship(childId);
     }
 
     @Test
@@ -173,17 +173,17 @@ public class AllPatientsTest {
         String childId = "234";
         when(mockChild.getId()).thenReturn(childId);
         allPatients.getMotherRelationship(mockChild);
-        verify(mockOpenMRSRelationshipAdaptor).getMotherRelationship(childId);
+        verify(mockOpenMRSRelationshipAdapter).getMotherRelationship(childId);
     }
 
     @Test
     public void shouldGetAgeOfAPerson() {
         String motechId = "1234567";
 
-        when(mockMrsPatientAdaptor.getAgeOfPatientByMotechId(motechId)).thenReturn(3);
+        when(mockMrsPatientAdapter.getAgeOfPatientByMotechId(motechId)).thenReturn(3);
         allPatients.getAgeOfPersonByMotechId(motechId);
 
-        verify(mockMrsPatientAdaptor).getAgeOfPatientByMotechId(motechId);
+        verify(mockMrsPatientAdapter).getAgeOfPatientByMotechId(motechId);
     }
 
     @Test
@@ -193,7 +193,7 @@ public class AllPatientsTest {
         String causeOfDeath = "NONE";
         String comment = null;
         allPatients.saveCauseOfDeath(dateOfDeath, mrsPatientId, causeOfDeath, comment);
-        verify(mockMrsPatientAdaptor).savePatientCauseOfDeathObservation(mrsPatientId, causeOfDeath, dateOfDeath, comment);
+        verify(mockMrsPatientAdapter).savePatientCauseOfDeathObservation(mrsPatientId, causeOfDeath, dateOfDeath, comment);
     }
 
 }

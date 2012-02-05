@@ -10,7 +10,7 @@ import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
-import org.motechproject.openmrs.services.OpenMRSUserAdaptor;
+import org.motechproject.openmrs.services.OpenMRSUserAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -79,11 +79,11 @@ public class StaffController {
 
         try {
             userData = staffService.saveUser(mrsUser);
-            final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdaptor.USER_KEY);
+            final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdapter.USER_KEY);
             modelMap.put(STAFF_ID, openMRSUser.getSystemId());
             modelMap.put(STAFF_NAME, openMRSUser.getPerson().getFullName());
             if (StaffType.Role.isAdmin(roleOfStaff)) {
-                emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUserName(), (String) userData.get(OpenMRSUserAdaptor.PASSWORD_USER_KEY));
+                emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUserName(), (String) userData.get(OpenMRSUserAdapter.PASSWORD_USER_KEY));
             }
             modelMap.put("successMessage", "Staff created successfully.Email with login credentials sent (to admin users only).");
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
@@ -111,7 +111,7 @@ public class StaffController {
             return NEW_STAFF_URL;
         }
         Map userData = staffService.updateUser(mrsUser);
-        final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdaptor.USER_KEY);
+        final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdapter.USER_KEY);
         if (StaffType.Role.isAdmin(staffForm.getNewRole()) && !staffForm.getNewRole().equals(staffForm.getCurrentRole())) {
             String newPassword = staffService.changePasswordByEmailId(staffForm.getNewEmail());
             emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUserName(), newPassword);

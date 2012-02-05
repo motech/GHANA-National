@@ -7,7 +7,7 @@ import org.motechproject.ghana.national.vo.*;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSUser;
-import org.motechproject.openmrs.services.OpenMRSConceptAdaptor;
+import org.motechproject.openmrs.services.OpenMRSConceptAdapter;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.motechproject.util.DateUtil;
@@ -29,7 +29,7 @@ public class CareService {
     PatientService patientService;
 
     @Autowired
-    OpenMRSConceptAdaptor openMRSConceptAdaptor;
+    OpenMRSConceptAdapter openMRSConceptAdapter;
 
     @Autowired
     AllEncounters allEncounters;
@@ -138,19 +138,19 @@ public class CareService {
         if (cwcCareHistory != null && cwcCareHistoryVO.getAddCareHistory()) {
             if (cwcCareHistory.contains(CwcCareHistory.BCG)) {
                 historyObservations.add(new MRSObservation<Concept>(cwcCareHistoryVO.getBcgDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED,
-                        openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_BCG)));
+                        openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_BCG)));
             }
             if (cwcCareHistory.contains(CwcCareHistory.VITA_A)) {
                 historyObservations.add(new MRSObservation<Concept>(cwcCareHistoryVO.getVitADate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED,
-                        openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_VITA)));
+                        openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_VITA)));
             }
             if (cwcCareHistory.contains(CwcCareHistory.MEASLES)) {
                 historyObservations.add(new MRSObservation<Concept>(cwcCareHistoryVO.getMeaslesDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED,
-                        openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_MEASLES)));
+                        openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_MEASLES)));
             }
             if (cwcCareHistory.contains(CwcCareHistory.YF)) {
                 historyObservations.add(new MRSObservation<Concept>(cwcCareHistoryVO.getYfDate(), Constants.CONCEPT_IMMUNIZATIONS_ORDERED,
-                        openMRSConceptAdaptor.getConceptByName(Constants.CONCEPT_YF)));
+                        openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_YF)));
             }
             if (cwcCareHistory.contains(CwcCareHistory.PENTA)) {
                 historyObservations.add(new MRSObservation<Integer>(cwcCareHistoryVO.getLastPentaDate(), Constants.CONCEPT_PENTA, cwcCareHistoryVO.getLastPenta()));

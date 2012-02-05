@@ -9,7 +9,7 @@ import org.motechproject.ghana.national.web.form.PasswordResetForm;
 import org.motechproject.ghana.national.web.security.LoginSuccessHandler;
 import org.motechproject.mrs.security.MRSSecurityUser;
 import org.motechproject.mrs.services.MRSException;
-import org.motechproject.mrs.services.MRSUserAdaptor;
+import org.motechproject.mrs.services.MRSUserAdapter;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -32,7 +32,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PasswordResetControllerTest {
     @Mock
-    private MRSUserAdaptor mockUserService;
+    private MRSUserAdapter mockUserService;
 
     private PasswordResetController passwordResetController;
 
