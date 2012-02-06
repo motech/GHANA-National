@@ -27,9 +27,16 @@ public class AllMobileMidwifeEnrollments extends MotechBaseRepository<MobileMidw
         else super.update(enrollment);
     }
     
-    @View(name = "find_by_patientId", map = "function(doc){ if(doc.type === 'MobileMidwifeEnrollment') emit([doc.patientId, doc.active],doc) }")
+    @View(name = "find_active_by_patientId", map = "function(doc){ if(doc.type === 'MobileMidwifeEnrollment') emit([doc.patientId, doc.active],doc) }")
+    public MobileMidwifeEnrollment findActiveByPatientId(String patientId) {
+        ViewQuery viewQuery = createQuery("find_active_by_patientId").key(ComplexKey.of(patientId, true)).includeDocs(true);
+        List<MobileMidwifeEnrollment> enrollments = db.queryView(viewQuery, MobileMidwifeEnrollment.class);
+        return CollectionUtils.isEmpty(enrollments) ? null : enrollments.get(0);
+    }
+
+    @View(name = "findByPatientId3", map = "function(doc){ if(doc.type === 'MobileMidwifeEnrollment') emit([doc.patientId, doc.enrollmentDateTime], doc) }")
     public MobileMidwifeEnrollment findByPatientId(String patientId) {
-        ViewQuery viewQuery = createQuery("find_by_patientId").key(ComplexKey.of(patientId, true)).includeDocs(true);
+        ViewQuery viewQuery = createQuery("findByPatientId3").key(ComplexKey.of(patientId, ComplexKey.emptyObject())).includeDocs(true);
         List<MobileMidwifeEnrollment> enrollments = db.queryView(viewQuery, MobileMidwifeEnrollment.class);
         return CollectionUtils.isEmpty(enrollments) ? null : enrollments.get(0);
     }

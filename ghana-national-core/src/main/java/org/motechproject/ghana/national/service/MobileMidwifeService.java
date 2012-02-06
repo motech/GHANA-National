@@ -17,13 +17,13 @@ public class MobileMidwifeService {
         unregister(findBy(enrollment.getPatientId()));
         enrollment.setActive(true);
         allEnrollments.add(enrollment);
-        if(enrollment.getConsent()) {
+        if (enrollment.getConsent()) {
             mobileMidwifeCampaign.start(enrollment);
         }
     }
 
     public void unregister(MobileMidwifeEnrollment enrollment) {
-         if(enrollment != null) {
+        if (enrollment != null) {
             enrollment.setActive(false);
             allEnrollments.update(enrollment);
             if (enrollment.getConsent()) mobileMidwifeCampaign.stop(enrollment);
@@ -31,6 +31,10 @@ public class MobileMidwifeService {
     }
 
     public MobileMidwifeEnrollment findBy(String patientId) {
+        return allEnrollments.findActiveByPatientId(patientId);
+    }
+
+    public MobileMidwifeEnrollment findLatestEnrollment(String patientId) {
         return allEnrollments.findByPatientId(patientId);
     }
 }

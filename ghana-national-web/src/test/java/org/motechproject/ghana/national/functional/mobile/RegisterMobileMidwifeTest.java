@@ -90,7 +90,6 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
         assertThat(errorsMap.get("staffId"), hasItem("is mandatory"));
         assertThat(errorsMap.get("facilityId"), hasItem("is mandatory"));
         assertThat(errorsMap.get("patientId"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("consent"), hasItem("is mandatory"));
     }
 
     @Test

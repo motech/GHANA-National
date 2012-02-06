@@ -1,7 +1,7 @@
 package org.motechproject.ghana.national.functional.data;
 
-import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
+import org.motechproject.ghana.national.functional.util.DataGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +58,7 @@ public class TestMobileMidwifeEnrollment {
             put("staffId", staffId);
             put("facilityId", facilityId);
             put("patientId",patientId);
+            put("action", "REGISTER");
             put("consent", toBooleanString(consent));
             put("serviceType", serviceType.getValue());
             put("phoneOwnership", phoneOwnership.getValue());

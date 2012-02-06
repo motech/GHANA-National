@@ -33,7 +33,7 @@ public class MobileMidwifeServiceTest {
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
                 patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday)
                 .build();
-        when(allEnrollments.findByPatientId(patientId)).thenReturn(null);
+        when(allEnrollments.findActiveByPatientId(patientId)).thenReturn(null);
 
         service.register(enrollment);
         verify(allEnrollments).add(enrollment);
@@ -54,7 +54,7 @@ public class MobileMidwifeServiceTest {
         String patientId = "patienId";
         MobileMidwifeEnrollment existingEnrollmentWithNoConsent = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
                 patientId(patientId).staffId("staff13").consent(false).build();
-        when(allEnrollments.findByPatientId(patientId)).thenReturn(existingEnrollmentWithNoConsent);
+        when(allEnrollments.findActiveByPatientId(patientId)).thenReturn(existingEnrollmentWithNoConsent);
 
         service.register(new MobileMidwifeEnrollmentBuilder().patientId(patientId).consent(true).build());
 
@@ -70,7 +70,7 @@ public class MobileMidwifeServiceTest {
                 .build();
         MobileMidwifeEnrollment existingEnrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
                 patientId(patientId).consent(true).build();
-        when(allEnrollments.findByPatientId(patientId)).thenReturn(existingEnrollment);
+        when(allEnrollments.findActiveByPatientId(patientId)).thenReturn(existingEnrollment);
         service = spy(service);
 
         service.register(enrollment);
@@ -86,7 +86,7 @@ public class MobileMidwifeServiceTest {
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
                 patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday)
                 .build();
-        when(allEnrollments.findByPatientId(patientId)).thenReturn(enrollment);
+        when(allEnrollments.findActiveByPatientId(patientId)).thenReturn(enrollment);
 
         service.unregister(enrollment);
         assertFalse(enrollment.getActive());
@@ -96,9 +96,15 @@ public class MobileMidwifeServiceTest {
 
     @Test
     public void shouldFindMobileMidwifeEnrollmentByPatientId() {
-
         String patientId = "patientId";
         service.findBy(patientId);
+        verify(allEnrollments).findActiveByPatientId(patientId);
+    }
+
+    @Test
+    public void shouldFindLatestMobileMidwifeEnrollmentByPatientId() {
+        String patientId = "patientId";
+        service.findLatestEnrollment(patientId);
         verify(allEnrollments).findByPatientId(patientId);
     }
 

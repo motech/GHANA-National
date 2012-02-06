@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.repository;
 
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
@@ -31,7 +32,7 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
                 .active(false).build();
         allEnrollments.add(expected);
         allEnrollments.add(expired);
-        MobileMidwifeEnrollment actualEnrollment = allEnrollments.findByPatientId(patientId);
+        MobileMidwifeEnrollment actualEnrollment = allEnrollments.findActiveByPatientId(patientId);
         assertMobileMidwifeEnrollment(expected, actualEnrollment);
     }
 
@@ -73,6 +74,26 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
         assertEquals(expected.getPhoneOwnership(), actual.getPhoneOwnership());        
         assertEquals(expected.getTimeOfDay(), actual.getTimeOfDay());
         assertEquals(expected.getMessageStartWeek(), actual.getMessageStartWeek());
+    }
+
+    @Test
+    @Ignore
+    public void shouldFindTheLatestEnrollmentForAPatientId() {
+        String patientId = "1234567";
+        MobileMidwifeEnrollment expected = new MobileMidwifeEnrollmentBuilder().patientId(patientId).
+                facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).
+                learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).
+                messageStartWeek("pregnancy week17").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
+                .active(true).build();
+        MobileMidwifeEnrollment expired = new MobileMidwifeEnrollmentBuilder().patientId(patientId).
+                facilityId("23431").staffId("123456").consent(true).dayOfWeek(DayOfWeek.Wednesday).
+                learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).
+                messageStartWeek("pregnancy week18").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654320")
+                .active(false).build();
+        allEnrollments.add(expected);
+        allEnrollments.add(expired);
+        MobileMidwifeEnrollment actualEnrollment = allEnrollments.findByPatientId(patientId);
+        assertMobileMidwifeEnrollment(expired, actualEnrollment);
     }
 
     @After

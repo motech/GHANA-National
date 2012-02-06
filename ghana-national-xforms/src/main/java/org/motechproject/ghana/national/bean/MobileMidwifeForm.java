@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
+import org.motechproject.ghana.national.domain.RegisterClientAction;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
@@ -19,6 +20,8 @@ public class MobileMidwifeForm extends AbstractMobileMidWifeForm {
     private String patientId;
 
     @Required
+    private RegisterClientAction action;
+
     private Boolean consent;
 
     public String getStaffId() {
@@ -51,6 +54,14 @@ public class MobileMidwifeForm extends AbstractMobileMidWifeForm {
 
     public void setConsent(Boolean consent) {
         this.consent = consent;
+    }
+
+    public RegisterClientAction getAction() {
+        return action;
+    }
+
+    public void setAction(RegisterClientAction action) {
+        this.action = action;
     }
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
