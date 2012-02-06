@@ -112,7 +112,4 @@ public class Constants {
     public static final String MOTECH_ID_PATTERN = "[0-9]{7}";
     public static final String FORM_BEAN = "formBean";
 
-    //SMS
-    public static final String REGISTER_SUCCESS_SMS = "REGISTER_SUCCESS_SMS";
-    public static final String DELIVERY_NOTIFICATION_SMS = "DELIVERY_NOTIFICATION_SMS";
 }

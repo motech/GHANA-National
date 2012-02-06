@@ -1,6 +1,9 @@
 package org.motechproject.ghana.national.eventhandler;
 
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.SMS;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -13,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-import static org.motechproject.ghana.national.domain.mobilemidwife.Medium.SMS;
 import static org.motechproject.server.messagecampaign.EventKeys.MESSAGE_CAMPAIGN_SEND_EVENT_SUBJECT;
 
 @Service
@@ -44,7 +46,12 @@ public class MobileMidwifeCampaignEventHandler {
     }
 
     private void sendMessage(String patientId, MobileMidwifeEnrollment enrollment, String messageKey) throws ContentNotFoundException {
-        if(SMS.equals(enrollment.getMedium()))
-            textMessageService.sendLocalizedSMS(enrollment.getPhoneNumber(), patientService.getPatientByMotechId(patientId), messageKey);
+        final Patient patient = patientService.getPatientByMotechId(patientId);
+
+        if (Medium.SMS.equals(enrollment.getMedium())) {
+            String template = textMessageService.getSMSTemplate(messageKey);
+            SMS sms = SMS.fromTemplate(template).fillPatientDetails(patient.getMotechId(), patient.getFirstName(), patient.getLastName());
+            textMessageService.sendSMS(enrollment.getPhoneNumber(), sms);
+        }
     }
 }

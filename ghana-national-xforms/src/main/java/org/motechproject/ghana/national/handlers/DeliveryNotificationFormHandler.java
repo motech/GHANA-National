@@ -1,15 +1,17 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
+import org.motechproject.ghana.national.configuration.TextMessageTemplates;
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.SMS;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.TextMessageService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
@@ -57,10 +59,11 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
 
     private void sendDeliveryNotificationMessage(String motechId) {
         Patient patient = patientService.getPatientByMotechId(motechId);
-        MRSFacility facility = patient.getMrsPatient().getFacility();
-        if (facility != null) {
-            String facilityPhoneNumber = facilityService.getFacility(facility.getId()).phoneNumber();
-            textMessageService.sendSMS(facilityPhoneNumber, patient, Constants.DELIVERY_NOTIFICATION_SMS);
+        if (patient.getMrsPatient().getFacility() != null) {
+            Facility facility = facilityService.getFacility(patient.getMrsPatient().getFacility().getId());
+            String template = textMessageService.getSMSTemplate(TextMessageTemplates.DELIVERY_NOTIFICATION_SMS[0]);
+            SMS sms = SMS.fromTemplate(template).fillPatientDetails(patient.getMotechId(), patient.getFirstName(), patient.getLastName());
+            textMessageService.sendSMS(facility, sms);
         }
     }
 }

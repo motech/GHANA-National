@@ -39,4 +39,12 @@ public class Patient {
     public String getMotechId() {
         return mrsPatient.getMotechId();
     }
+
+    public String getFirstName(){
+        return mrsPatient.getPerson().getFirstName();
+    }
+
+    public String getLastName() {
+        return mrsPatient.getPerson().getLastName();
+    }
 }
