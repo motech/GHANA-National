@@ -43,8 +43,11 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     private String messageStartWeek;
     @JsonProperty
     private Boolean active;
+    // TODO: can be ignored or saved
     @JsonProperty
     private DateTime enrollmentDateTime;
+    @JsonProperty
+    private DateTime cycleStartDate;
 
     public MobileMidwifeEnrollment() {
     }
@@ -191,6 +194,15 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         return enrollmentDateTime;
     }
 
+    public DateTime getCycleStartDate() {
+        return cycleStartDate;
+    }
+
+    public MobileMidwifeEnrollment setCycleStartDate(DateTime cycleStartDate) {
+        this.cycleStartDate = cycleStartDate;
+        return this;
+    }
+
     public MobileMidwifeEnrollment setEnrollmentDateTime(DateTime enrollmentDateTime) {
         this.enrollmentDateTime = enrollmentDateTime;
         return this;
@@ -217,7 +229,7 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     }
 
     public CampaignRequest createCampaignRequest() {
-        Time reminderTime = new Time(enrollmentDateTime.getHourOfDay(), enrollmentDateTime.getMinuteOfHour());
-        return new CampaignRequest(patientId, serviceType.name(), reminderTime, enrollmentDateTime.toLocalDate(), MessageStartWeek.findBy(messageStartWeek).getWeek());
+        Time reminderTime = new Time(cycleStartDate.getHourOfDay(), cycleStartDate.getMinuteOfHour());
+        return new CampaignRequest(patientId, serviceType.name(), reminderTime, cycleStartDate.toLocalDate(), MessageStartWeek.findBy(messageStartWeek).getWeek());
     }
 }

@@ -14,7 +14,8 @@ public class MobileMidwifeService {
     private MobileMidwifeCampaign mobileMidwifeCampaign;
 
     public void register(MobileMidwifeEnrollment enrollment) {
-        unregister(findActiveBy(enrollment.getPatientId()));
+        MobileMidwifeEnrollment existingEnrollment = findActiveBy(enrollment.getPatientId());
+        unregister(existingEnrollment);
         enrollment.setActive(true);
         allEnrollments.add(enrollment);
         if (enrollment.getConsent()) {
