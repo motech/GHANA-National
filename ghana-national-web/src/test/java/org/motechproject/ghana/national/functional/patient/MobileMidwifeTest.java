@@ -2,6 +2,7 @@
 package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.domain.RegisterClientAction;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
@@ -50,13 +51,14 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
         TestPatient patient = TestPatient.with("Samy Johnson" + new DataGenerator().randomString(5), staffId);
         String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
 
-        TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId);
+        TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId).action(RegisterClientAction.REGISTER.name());
 
         MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, homePage);
         enrollmentPage.enroll(enrollmentDetails);
 
         enrollmentPage = toMobileMidwifeEnrollmentPage(patient, enrollmentPage);
-        assertEquals(enrollmentDetails, enrollmentPage.details());
+        TestMobileMidwifeEnrollment midwifeEnrollment = enrollmentPage.details();
+        assertEquals(enrollmentDetails, midwifeEnrollment);
 
         // edit
         enrollmentDetails.withServiceType(ServiceType.CHILD_CARE).withMessageStartWeek(findBy("45"));

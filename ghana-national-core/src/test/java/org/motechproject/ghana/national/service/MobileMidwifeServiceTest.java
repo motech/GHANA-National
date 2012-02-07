@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.model.DayOfWeek;
 
@@ -31,19 +32,24 @@ public class MobileMidwifeServiceTest {
     public void shouldCreateMobileMidwifeEnrollmentAndCreateScheduleIfNotRegisteredAlready() {
         String patientId = "patientId";
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
-                patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday)
+                patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday).phoneOwnership(PhoneOwnership.HOUSEHOLD)
                 .build();
         when(allEnrollments.findActiveBy(patientId)).thenReturn(null);
 
         service.register(enrollment);
-        verify(allEnrollments).add(enrollment);
+        verifyCreateNewEnrollment(enrollment);
         verify(mockMobileMidwifeCampaign).start(enrollment);
+    }
+
+    private void verifyCreateNewEnrollment(MobileMidwifeEnrollment enrollment) {
+        verify(mockMobileMidwifeCampaign).nearestCycleDate(enrollment);
+        verify(allEnrollments).add(enrollment);
     }
 
     @Test
     public void shouldCreateNewScheduleOnlyIfEnrolledWithConsentYes() {
         MobileMidwifeEnrollment enrollmentWithNoConsent = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
-                patientId("patienId").staffId("staff13").consent(false).build();
+                patientId("patienId").staffId("staff13").consent(false).phoneOwnership(PhoneOwnership.PERSONAL).build();
         service.register(enrollmentWithNoConsent);
         verify(allEnrollments).add(enrollmentWithNoConsent);
         verify(mockMobileMidwifeCampaign, never()).start(enrollmentWithNoConsent);
@@ -53,10 +59,10 @@ public class MobileMidwifeServiceTest {
     public void shouldStopScheduleOnlyIfEnrolledWithConsentYes() {
         String patientId = "patienId";
         MobileMidwifeEnrollment existingEnrollmentWithNoConsent = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
-                patientId(patientId).staffId("staff13").consent(false).build();
+                patientId(patientId).staffId("staff13").consent(false).phoneOwnership(PhoneOwnership.PERSONAL).build();
         when(allEnrollments.findActiveBy(patientId)).thenReturn(existingEnrollmentWithNoConsent);
 
-        service.register(new MobileMidwifeEnrollmentBuilder().patientId(patientId).consent(true).build());
+        service.register(new MobileMidwifeEnrollmentBuilder().patientId(patientId).phoneOwnership(PhoneOwnership.HOUSEHOLD).consent(true).build());
 
         verify(allEnrollments).update(existingEnrollmentWithNoConsent);
         verify(mockMobileMidwifeCampaign, never()).stop(existingEnrollmentWithNoConsent);
@@ -66,29 +72,29 @@ public class MobileMidwifeServiceTest {
     public void shouldDeactivateExistingEnrollmentAndCampaign_AndCreateNewEnrollmentIfEnrolledAlready() {
         String patientId = "patientId";
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
-                patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday)
+                patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday).phoneOwnership(PhoneOwnership.PERSONAL)
                 .build();
         MobileMidwifeEnrollment existingEnrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
-                patientId(patientId).consent(true).build();
+                patientId(patientId).consent(true).phoneOwnership(PhoneOwnership.HOUSEHOLD).build();
         when(allEnrollments.findActiveBy(patientId)).thenReturn(existingEnrollment);
         service = spy(service);
 
         service.register(enrollment);
         assertTrue(enrollment.getActive());
-        verify(service).unregister(existingEnrollment);
-        verify(allEnrollments).add(enrollment);
+        verify(service).unregister(patientId);
+        verifyCreateNewEnrollment(enrollment);
         verify(mockMobileMidwifeCampaign).start(enrollment);
     }
-    
+
     @Test
     public void shouldDeactivateEnrollmentAndClearScheduleOnUnregister() {
         String patientId = "patientId";
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
-                patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday)
+                patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday).phoneOwnership(PhoneOwnership.PERSONAL)
                 .build();
         when(allEnrollments.findActiveBy(patientId)).thenReturn(enrollment);
 
-        service.unregister(enrollment);
+        service.unregister(patientId);
         assertFalse(enrollment.getActive());
         verify(allEnrollments).update(enrollment);
         verify(mockMobileMidwifeCampaign).stop(enrollment);
@@ -106,6 +112,16 @@ public class MobileMidwifeServiceTest {
         String patientId = "patientId";
         service.findLatestEnrollment(patientId);
         verify(allEnrollments).findLatestEnrollment(patientId);
+    }
+
+    @Test
+    public void shouldCreateEnrollmentAndNotCreateScheduleIfUsersPhoneOwnership_IsPUBLIC() {
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().consent(true).phoneOwnership(PhoneOwnership.PUBLIC).build();
+
+        service.register(enrollment);
+        verify(allEnrollments).add(enrollment);
+        verify(mockMobileMidwifeCampaign, never()).nearestCycleDate(enrollment);
+        verify(mockMobileMidwifeCampaign, never()).start(enrollment);
     }
 
 }

@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
@@ -45,6 +46,8 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     private Boolean active;
     @JsonProperty
     private DateTime enrollmentDateTime;
+    @JsonIgnore
+    private DateTime scheduleStartDate;
 
     public MobileMidwifeEnrollment() {
     }
@@ -191,6 +194,15 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         return enrollmentDateTime;
     }
 
+    public DateTime getScheduleStartDate() {
+        return scheduleStartDate;
+    }
+
+    public MobileMidwifeEnrollment setScheduleStartDate(DateTime scheduleStartDate) {
+        this.scheduleStartDate = scheduleStartDate;
+        return this;
+    }
+
     public MobileMidwifeEnrollment setEnrollmentDateTime(DateTime enrollmentDateTime) {
         this.enrollmentDateTime = enrollmentDateTime;
         return this;
@@ -216,8 +228,17 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         return newEnrollment;
     }
 
-    public CampaignRequest createCampaignRequest() {
-        Time reminderTime = new Time(enrollmentDateTime.getHourOfDay(), enrollmentDateTime.getMinuteOfHour());
-        return new CampaignRequest(patientId, serviceType.name(), reminderTime, enrollmentDateTime.toLocalDate(), MessageStartWeek.findBy(messageStartWeek).getWeek());
+    public boolean campaignApplicable() {
+        return getConsent() && !PhoneOwnership.PUBLIC.equals(getPhoneOwnership());
     }
+
+    public CampaignRequest createCampaignRequest() {
+        Time reminderTime = new Time(scheduleStartDate.getHourOfDay(), scheduleStartDate.getMinuteOfHour());
+        return new CampaignRequest(patientId, serviceType.name(), reminderTime, scheduleStartDate.toLocalDate(), MessageStartWeek.findBy(messageStartWeek).getWeek());
+    }
+
+    public CampaignRequest stopCampaignRequest() {
+        return new CampaignRequest(patientId, serviceType.name(), null, null);
+    }
+
 }

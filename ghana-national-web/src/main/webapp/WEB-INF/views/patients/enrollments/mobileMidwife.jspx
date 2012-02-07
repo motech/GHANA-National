@@ -48,6 +48,9 @@
         <spring:message code="hour_required_msg" var="hour_required_msg" htmlEscape="false"/>
         <spring:message code="minutes_required_msg" var="minutes_required_msg" htmlEscape="false"/>
         <spring:message code="status" var="status" htmlEscape="false"/>
+        <spring:message code="action" var="action" htmlEscape="false"/>
+        <spring:message code="register_action" var="register_action" htmlEscape="false"/>
+        <spring:message code="unregister_action" var="unregister_action" htmlEscape="false"/>
 
         <c:if test="${formErrors ne null}">
             <div class="formlyAlerts formlyInvalid formlyAlert" style="display: block;">
@@ -76,6 +79,19 @@
         </div>
 
         <jsp:include page="/WEB-INF/views/common/select_facility.jspx"/>
+
+        <div class="form-field">
+           <label class="formLabel" for="action">${fn:escapeXml(action)} :*</label>
+            <div class="radio">
+                <form:radiobutton id="register" cssClass="jsRequire" path="action" value="REGISTER"
+                                  label="${fn:escapeXml(register_action)}"/>
+                <form:radiobutton id="unregister" cssClass="jsRequire " path="action" value="UN_REGISTER"
+                                  label="${fn:escapeXml(unregister_action)}"/>
+            </div>
+           <span id='actionError' class='alertText formlyInvalid formlyAlert hide'>
+               ${fn:escapeXml(action)} ${fn:escapeXml(required_msg)}
+           </span>
+       </div>
 
         <div class="form-field">
             <label class="formLabel" for="consent">${fn:escapeXml(consent)} :*

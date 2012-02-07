@@ -14,19 +14,22 @@ public class MobileMidwifeService {
     private MobileMidwifeCampaign mobileMidwifeCampaign;
 
     public void register(MobileMidwifeEnrollment enrollment) {
-        unregister(findActiveBy(enrollment.getPatientId()));
+        unregister(enrollment.getPatientId());
         enrollment.setActive(true);
         allEnrollments.add(enrollment);
-        if (enrollment.getConsent()) {
+
+        if (enrollment.campaignApplicable()) {
+            enrollment.setScheduleStartDate(mobileMidwifeCampaign.nearestCycleDate(enrollment));
             mobileMidwifeCampaign.start(enrollment);
         }
     }
 
-    public void unregister(MobileMidwifeEnrollment enrollment) {
+    public void unregister(String patientId) {
+        MobileMidwifeEnrollment enrollment = findActiveBy(patientId);
         if (enrollment != null) {
             enrollment.setActive(false);
             allEnrollments.update(enrollment);
-            if (enrollment.getConsent()) mobileMidwifeCampaign.stop(enrollment);
+            if (enrollment.campaignApplicable()) mobileMidwifeCampaign.stop(enrollment);
         }
     }
 
