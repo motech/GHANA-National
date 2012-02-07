@@ -1,8 +1,11 @@
 package org.motechproject.ghana.national.bean;
 
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
+import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
@@ -14,10 +17,12 @@ public class OutPatientVisitForm extends FormBean {
     @Required
     @MotechId(validator = VerhoeffValidator.class)
     private String staffId;
+
     @Required
     @MotechId(validator = VerhoeffValidator.class)
     private String facilityId;
-    @Required
+
+    @RegEx(pattern = Constants.MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
 
@@ -25,11 +30,23 @@ public class OutPatientVisitForm extends FormBean {
     private PatientType registrantType;
 
     @Required
+    private Boolean visitor;
+
+    @Required
     private Date visitDate;
+
+    private Date dateOfBirth;
+
     @Required
     private String serialNumber;
-    @Required
+
     private Boolean insured;
+
+    @MaxLength(size = 30)
+    @RegEx(pattern = "[a-zA-Z0-9.,'/\\\\-\\_\\s]+")
+    private String nhis;
+
+    private Date nhisExpires;
 
     @Required
     private Boolean newCase;
@@ -89,12 +106,28 @@ public class OutPatientVisitForm extends FormBean {
         this.registrantType = registrantType;
     }
 
+    public Boolean isVisitor() {
+        return visitor;
+    }
+
+    public void setVisitor(Boolean visitor) {
+        this.visitor = visitor;
+    }
+
     public Date getVisitDate() {
         return visitDate;
     }
 
     public void setVisitDate(Date visitDate) {
         this.visitDate = visitDate;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getSerialNumber() {
@@ -111,6 +144,22 @@ public class OutPatientVisitForm extends FormBean {
 
     public void setInsured(Boolean insured) {
         this.insured = insured;
+    }
+
+    public String getNhis() {
+        return nhis;
+    }
+
+    public void setNhis(String nhis) {
+        this.nhis = nhis;
+    }
+
+    public Date getNhisExpires() {
+        return nhisExpires;
+    }
+
+    public void setNhisExpires(Date nhisExpires) {
+        this.nhisExpires = nhisExpires;
     }
 
     public Boolean getNewCase() {

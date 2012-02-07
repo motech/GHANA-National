@@ -23,6 +23,7 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
     private String messageStartWeek;
     private Boolean active;
     private DateTime enrollmentDateTime;
+    private DateTime cycleStartDate;
 
     public MobileMidwifeEnrollmentBuilder patientId(String patientId) {
         this.patientId = patientId;
@@ -98,12 +99,17 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
         this.active = active;
         return this;
     }
-
+    
     public MobileMidwifeEnrollmentBuilder enrollmentDateTime(DateTime enrollmentDateTime){
         this.enrollmentDateTime = enrollmentDateTime;
         return this;
     }
 
+    public MobileMidwifeEnrollmentBuilder cycleStartDate(DateTime cycleStartDate){
+            this.cycleStartDate  = cycleStartDate;
+           return this;
+     }    
+    
     @Override
     public MobileMidwifeEnrollment build() {
         return generate(MobileMidwifeEnrollment.newEnrollment());

@@ -16,11 +16,12 @@ import org.motechproject.ghana.national.functional.pages.staff.SearchStaffPage;
 import org.motechproject.ghana.national.functional.pages.staff.StaffPage;
 import org.motechproject.ghana.national.functional.util.ScreenShotCaptor;
 import org.openqa.selenium.WebDriver;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Browser {
+public class Browser implements DisposableBean {
     private WebDriver webDriver;
     private ApplicationURLs applicationURLs;
 
@@ -135,5 +136,10 @@ public class Browser {
 
     public SearchFacilityPage toFacilityPage() {
         return new SearchFacilityPage(webDriver);  
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        quit();
     }
 }

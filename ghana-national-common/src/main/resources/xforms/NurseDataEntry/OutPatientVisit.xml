@@ -5,11 +5,15 @@
             <opvVisit id="6" name="Outpatient Visit">
                 <staffId/>
                 <facilityId/>
+                <serialNumber/>
                 <visitDate/>
                 <registrantType/>
+                <visitor/>
                 <motechId/>
-                <serialNumber/>
+                <dateOfBirth/>
                 <insured/>
+                <nhis/>
+                <nhisExpires/>
                 <newCase/>
                 <newPatient/>
                 <diagnosis/>
@@ -30,16 +34,27 @@
         <xf:bind id="facilityId" nodeset="/opvVisit/facilityId" required="true()" type="xsd:int"
                  constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
         <xf:bind id="serialNumber" nodeset="/opvVisit/serialNumber" type="xsd:string" required="true()"/>
-        <xf:bind id="registrantType" nodeset="/opvVisit/registrantType" required="true()"
-                 type="xsd:string"/>
-        <xf:bind action="show" id="motechId" nodeset="/opvVisit/motechId"
-                 type="xsd:int" visible="true()" constraint=". &gt; 999999 and . &lt; 10000000"
-                 message="MoTeCH ID must be 7 digits long" required="true()"/>
-
         <xf:bind constraint=". &lt;= 'today()'" id="visitDate"
                  message="Invalid visitDate: visitDate specified is in the future" nodeset="/opvVisit/visitDate"
                  required="true()" type="xsd:date"/>
-        <xf:bind id="insured" nodeset="/opvVisit/insured" required="true()" type="xsd:string"/>
+
+        <xf:bind id="registrantType" nodeset="/opvVisit/registrantType" required="true()"
+                 type="xsd:string"/>
+        <xf:bind id="visitor" nodeset="/opvVisit/visitor" required="true()" type="xsd:string"/>
+        <xf:bind action="show" id="motechId" nodeset="/opvVisit/motechId"
+                 type="xsd:int" visible="false()" constraint=". &gt; 999999 and . &lt; 10000000"
+                 relevant="/opvVisit/visitor = 'N'"
+                 message="MoTeCH ID must be 7 digits long" required="true()"/>
+        <xf:bind action="show" constraint=". &lt;= 'today()'" id="dateOfBirth"
+                 message="Invalid birthDate: birthDate specified is in the future" nodeset="/opvVisit/dateOfBirth"
+                 required="true()" relevant="/opvVisit/visitor = 'Y'" type="xsd:date" visible="false()"/>
+        <xf:bind action="show" id="insured" nodeset="/opvVisit/insured" required="true()" relevant="/opvVisit/visitor = 'Y'" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="nhis" nodeset="/opvVisit/nhis"
+                 relevant="/opvVisit/visitor = 'Y' and /opvVisit/insured = 'Y'" type="xsd:string" visible="false()"
+                 required="true()"/>
+        <xf:bind action="show" id="nhisExpires" nodeset="/opvVisit/nhisExpires"
+                 relevant="/opvVisit/visitor = 'Y' and /opvVisit/insured = 'Y'" type="xsd:date" visible="false()"
+                 required="true()"/>
         <xf:bind id="newCase" nodeset="/opvVisit/newCase" required="true()" type="xsd:string"/>
         <xf:bind id="newPatient" nodeset="/opvVisit/newPatient" required="true()" type="xsd:string"/>
         <xf:bind id="diagnosis" nodeset="/opvVisit/diagnosis" required="true()" type="xsd:string"/>
@@ -71,6 +86,12 @@
         <xf:input bind="facilityId">
             <xf:label>Facility ID</xf:label>
         </xf:input>
+        <xf:input bind="serialNumber">
+            <xf:label>Serial number</xf:label>
+        </xf:input>
+         <xf:input bind="visitDate">
+            <xf:label>Visit date</xf:label>
+        </xf:input>
         <xf:select1 bind="registrantType">
             <xf:label>Client type</xf:label>
             <xf:item id="PREGNANT_MOTHER">
@@ -86,15 +107,23 @@
                 <xf:value>OTHER</xf:value>
             </xf:item>
         </xf:select1>
+        <xf:select1 bind="visitor">
+            <xf:label>visitor</xf:label>
+            <xf:item id="Y">
+                <xf:label>Yes</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+            <xf:item id="N">
+                <xf:label>No</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
         <xf:input bind="motechId">
             <xf:label>MoTeCH ID</xf:label>
         </xf:input>
-        <xf:input bind="visitDate">
-            <xf:label>Visit date</xf:label>
-        </xf:input>
-        <xf:input bind="serialNumber">
-            <xf:label>Serial number</xf:label>
-        </xf:input>
+         <xf:input bind="dateOfBirth">
+            <xf:label>Date Of Birth</xf:label>
+        </xf:input>     
         <xf:select1 bind="insured">
             <xf:label>Insured</xf:label>
             <xf:item id="Y">
@@ -106,6 +135,12 @@
                 <xf:value>N</xf:value>
             </xf:item>
         </xf:select1>
+        <xf:input bind="nhis">
+            <xf:label>NHIS Number</xf:label>
+        </xf:input>
+        <xf:input bind="nhisExpires">
+            <xf:label>NHIS Expiry Date</xf:label>
+        </xf:input>
         <xf:select1 bind="newCase">
             <xf:label>Case status</xf:label>
             <xf:item id="Y">
