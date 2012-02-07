@@ -35,7 +35,7 @@ public class MobileMidwifeCampaign {
     }
 
     public Boolean stop(MobileMidwifeEnrollment enrollment) {
-        campaignService.stopAll(enrollment.createCampaignRequest());
+        campaignService.stopAll(enrollment.stopCampaignRequest());
         return true;
     }
 

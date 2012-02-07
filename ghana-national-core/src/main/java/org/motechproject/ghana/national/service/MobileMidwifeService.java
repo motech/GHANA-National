@@ -18,7 +18,9 @@ public class MobileMidwifeService {
         unregister(existingEnrollment);
         enrollment.setActive(true);
         allEnrollments.add(enrollment);
-        if (enrollment.getConsent()) {
+
+        if (enrollment.campaignApplicable()) {
+            enrollment.setScheduleStartDate(mobileMidwifeCampaign.nearestCycleDate(enrollment));
             mobileMidwifeCampaign.start(enrollment);
         }
     }
@@ -27,7 +29,7 @@ public class MobileMidwifeService {
         if (enrollment != null) {
             enrollment.setActive(false);
             allEnrollments.update(enrollment);
-            if (enrollment.getConsent()) mobileMidwifeCampaign.stop(enrollment);
+            if (enrollment.campaignApplicable()) mobileMidwifeCampaign.stop(enrollment);
         }
     }
 

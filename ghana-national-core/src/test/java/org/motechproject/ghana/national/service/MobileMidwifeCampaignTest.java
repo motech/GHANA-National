@@ -38,7 +38,7 @@ public class MobileMidwifeCampaignTest {
 
     @Test
     public void shouldStartCampaignservice() {
-        MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment().setServiceType(PREGNANCY).setMessageStartWeek("33").setCycleStartDate(new DateTime());
+        MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment().setServiceType(PREGNANCY).setMessageStartWeek("33").setScheduleStartDate(new DateTime());
         campaign.start(enrollment);
         verify(mockMessageCampaignService).startFor(any(CampaignRequest.class));
     }
@@ -46,7 +46,7 @@ public class MobileMidwifeCampaignTest {
     @Test
     public void shouldStopCampaignservice() {
         MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment().setServiceType(ServiceType.CHILD_CARE)
-                .setMessageStartWeek("53").setCycleStartDate(new DateTime());
+                .setMessageStartWeek("53").setScheduleStartDate(new DateTime());
         campaign.stop(enrollment);
         verify(mockMessageCampaignService).stopAll(any(CampaignRequest.class));
 

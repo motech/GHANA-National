@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
@@ -43,11 +44,10 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     private String messageStartWeek;
     @JsonProperty
     private Boolean active;
-    // TODO: can be ignored or saved
     @JsonProperty
     private DateTime enrollmentDateTime;
-    @JsonProperty
-    private DateTime cycleStartDate;
+    @JsonIgnore
+    private DateTime scheduleStartDate;
 
     public MobileMidwifeEnrollment() {
     }
@@ -194,12 +194,12 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         return enrollmentDateTime;
     }
 
-    public DateTime getCycleStartDate() {
-        return cycleStartDate;
+    public DateTime getScheduleStartDate() {
+        return scheduleStartDate;
     }
 
-    public MobileMidwifeEnrollment setCycleStartDate(DateTime cycleStartDate) {
-        this.cycleStartDate = cycleStartDate;
+    public MobileMidwifeEnrollment setScheduleStartDate(DateTime scheduleStartDate) {
+        this.scheduleStartDate = scheduleStartDate;
         return this;
     }
 
@@ -228,8 +228,17 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         return newEnrollment;
     }
 
-    public CampaignRequest createCampaignRequest() {
-        Time reminderTime = new Time(cycleStartDate.getHourOfDay(), cycleStartDate.getMinuteOfHour());
-        return new CampaignRequest(patientId, serviceType.name(), reminderTime, cycleStartDate.toLocalDate(), MessageStartWeek.findBy(messageStartWeek).getWeek());
+    public boolean campaignApplicable() {
+        return getConsent() && !PhoneOwnership.PUBLIC.equals(getPhoneOwnership());
     }
+
+    public CampaignRequest createCampaignRequest() {
+        Time reminderTime = new Time(scheduleStartDate.getHourOfDay(), scheduleStartDate.getMinuteOfHour());
+        return new CampaignRequest(patientId, serviceType.name(), reminderTime, scheduleStartDate.toLocalDate(), MessageStartWeek.findBy(messageStartWeek).getWeek());
+    }
+
+    public CampaignRequest stopCampaignRequest() {
+        return new CampaignRequest(patientId, serviceType.name(), null, null);
+    }
+
 }
