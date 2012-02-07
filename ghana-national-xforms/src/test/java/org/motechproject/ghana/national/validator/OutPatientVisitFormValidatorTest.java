@@ -4,8 +4,8 @@ package org.motechproject.ghana.national.validator;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
 import org.motechproject.ghana.national.bean.OutPatientVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.PatientType;
@@ -13,13 +13,11 @@ import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class OutPatientVisitFormValidatorTest {
@@ -38,6 +36,7 @@ public class OutPatientVisitFormValidatorTest {
     public void shouldVerifyValidationCallsIfPatientIsAFemale() {
         OutPatientVisitForm formBean = new OutPatientVisitForm();
         formBean.setRegistrantType(PatientType.PREGNANT_MOTHER);
+        formBean.setVisitor(false);
         setExpectations(formBean);
 
         validator.validate(formBean);
@@ -51,6 +50,7 @@ public class OutPatientVisitFormValidatorTest {
     public void shouldVerifyValidationCallsIfPatientIsAChild() {
         OutPatientVisitForm formBean = new OutPatientVisitForm();
         formBean.setRegistrantType(PatientType.CHILD_UNDER_FIVE);
+        formBean.setVisitor(false);
         setExpectations(formBean);
 
         validator.validate(formBean);
@@ -78,6 +78,7 @@ public class OutPatientVisitFormValidatorTest {
         outPatientVisitForm.setMotechId("111");
         outPatientVisitForm.setStaffId("222");
         outPatientVisitForm.setFacilityId("33");
+        outPatientVisitForm.setVisitor(false);
         List<FormError> staffFormErrors = new ArrayList<FormError>() {
             {
                 add(new FormError("test1", "error1"));
@@ -102,6 +103,18 @@ public class OutPatientVisitFormValidatorTest {
         assertTrue(CollectionUtils.isSubCollection(staffFormErrors, actualFormErrors));
         assertTrue(CollectionUtils.isSubCollection(facilityFormErrors, actualFormErrors));
         assertTrue(CollectionUtils.isSubCollection(patientFormErrors, actualFormErrors));
+    }
+
+    @Test
+    public void shouldNotValidatePatientIfVisitor(){
+        OutPatientVisitForm formBean = new OutPatientVisitForm();
+        formBean.setVisitor(true);
+
+        validator.validate(formBean);
+
+        verify(formValidator).validateIfStaffExists(formBean.getStaffId());
+        verify(formValidator).validateIfFacilityExists(formBean.getFacilityId());
+        verifyNoMoreInteractions(formValidator);
     }
 
 }
