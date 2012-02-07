@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.builder;
 
+import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
@@ -21,6 +22,7 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
     private ReasonToJoin reasonToJoin;
     private String messageStartWeek;
     private Boolean active;
+    private DateTime enrollmentDateTime;
 
     public MobileMidwifeEnrollmentBuilder patientId(String patientId) {
         this.patientId = patientId;
@@ -94,6 +96,11 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
     
     public MobileMidwifeEnrollmentBuilder active(Boolean active) {
         this.active = active;
+        return this;
+    }
+
+    public MobileMidwifeEnrollmentBuilder enrollmentDateTime(DateTime enrollmentDateTime){
+        this.enrollmentDateTime = enrollmentDateTime;
         return this;
     }
 

@@ -7,7 +7,10 @@ import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.sql.Date;
 
 import static junit.framework.Assert.*;
 import static org.junit.Assert.assertNotSame;
@@ -77,23 +80,25 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
     }
 
     @Test
-    @Ignore
-    public void shouldFindTheLatestEnrollmentForAPatientId() {
-        String patientId = "1234567";
-        MobileMidwifeEnrollment expected = new MobileMidwifeEnrollmentBuilder().patientId(patientId).
-                facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).
-                learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).
-                messageStartWeek("pregnancy week17").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
+    public void shouldFindLatestEnrollment(){
+        Date date = new Date(2001,9,9);
+        String patientId = "131612";
+        MobileMidwifeEnrollment enrollment1 = new MobileMidwifeEnrollmentBuilder().patientId(patientId).
+                facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Monday).active(true).
+                learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).enrollmentDateTime(DateUtil.newDateTime(date))
+                .messageStartWeek("pregnancy week17").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
                 .active(true).build();
-        MobileMidwifeEnrollment expired = new MobileMidwifeEnrollmentBuilder().patientId(patientId).
-                facilityId("23431").staffId("123456").consent(true).dayOfWeek(DayOfWeek.Wednesday).
-                learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).
-                messageStartWeek("pregnancy week18").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654320")
-                .active(false).build();
-        allEnrollments.add(expected);
-        allEnrollments.add(expired);
+        MobileMidwifeEnrollment enrollment2 = new MobileMidwifeEnrollmentBuilder().patientId(patientId).
+                facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Monday).active(false).
+                learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).enrollmentDateTime(DateUtil.now())
+                .messageStartWeek("pregnancy week17").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
+                .build();
+
+        allEnrollments.add(enrollment2);
+        allEnrollments.add(enrollment1);
         MobileMidwifeEnrollment actualEnrollment = allEnrollments.findByPatientId(patientId);
-        assertMobileMidwifeEnrollment(expired, actualEnrollment);
+        assertMobileMidwifeEnrollment(enrollment2,actualEnrollment);
+
     }
 
     @After

@@ -13,6 +13,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.sort;
+
 @Repository
 public class AllMobileMidwifeEnrollments extends MotechBaseRepository<MobileMidwifeEnrollment> {
 
@@ -34,10 +37,13 @@ public class AllMobileMidwifeEnrollments extends MotechBaseRepository<MobileMidw
         return CollectionUtils.isEmpty(enrollments) ? null : enrollments.get(0);
     }
 
-    @View(name = "findByPatientId3", map = "function(doc){ if(doc.type === 'MobileMidwifeEnrollment') emit([doc.patientId, doc.enrollmentDateTime], doc) }")
+    @View(name = "find_by_patientId", map = "function(doc){ if(doc.type === 'MobileMidwifeEnrollment') emit([doc.patientId], doc) }")
     public MobileMidwifeEnrollment findByPatientId(String patientId) {
-        ViewQuery viewQuery = createQuery("findByPatientId3").key(ComplexKey.of(patientId, ComplexKey.emptyObject())).includeDocs(true);
+        ViewQuery viewQuery = createQuery("find_by_patientId").key(ComplexKey.of(patientId)).includeDocs(true);
         List<MobileMidwifeEnrollment> enrollments = db.queryView(viewQuery, MobileMidwifeEnrollment.class);
-        return CollectionUtils.isEmpty(enrollments) ? null : enrollments.get(0);
+        final List<MobileMidwifeEnrollment> sortedEnrollments = sort(enrollments,
+                on(MobileMidwifeEnrollment.class).getEnrollmentDateTime());
+
+        return CollectionUtils.isEmpty(enrollments) ? null : enrollments.get(sortedEnrollments.size()-1);
     }
 }
