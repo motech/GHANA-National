@@ -56,7 +56,7 @@ public class MobileMidwifeController {
     @RequestMapping(value = "form", method = RequestMethod.GET)
     public String form(@RequestParam String motechPatientId, ModelMap modelMap){
 
-        MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findBy(motechPatientId);
+        MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findLatestEnrollment(motechPatientId);
         MobileMidwifeEnrollmentForm enrollmentForm = midwifeEnrollment != null ? createMobileMidwifeEnrollmentForm(midwifeEnrollment)
                 : new MobileMidwifeEnrollmentForm().setPatientMotechId(motechPatientId);
         addFormInfo(modelMap, enrollmentForm);
@@ -70,7 +70,7 @@ public class MobileMidwifeController {
                     setConsent(enrollment.getConsent()).setServiceType(enrollment.getServiceType()).setPhoneOwnership(enrollment.getPhoneOwnership())
                     .setPhoneNumber(enrollment.getPhoneNumber()).setMedium(enrollment.getMedium()).setDayOfWeek(enrollment.getDayOfWeek())
                     .setTimeOfDay(enrollment.getTimeOfDay()).setLanguage(enrollment.getLanguage()).setLearnedFrom(enrollment.getLearnedFrom())
-                    .setReasonToJoin(enrollment.getReasonToJoin()).setMessageStartWeek(enrollment.getMessageStartWeek());
+                    .setReasonToJoin(enrollment.getReasonToJoin()).setMessageStartWeek(enrollment.getMessageStartWeek()).setStatus(enrollment.getActive() ? "ACTIVE" : "INACTIVE");
 
             Facility facility = facilityService.getFacilityByMotechId(enrollment.getFacilityId());
             FacilityForm facilityForm = new FacilityForm();

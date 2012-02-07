@@ -24,11 +24,13 @@ public class TestMobileMidwifeEnrollment {
     private String subDistrict;
     private String facility;
     private String country;
+    private String status;
 
 
     public static TestMobileMidwifeEnrollment with(String staffId){
         TestMobileMidwifeEnrollment enrollment = new TestMobileMidwifeEnrollment();
         enrollment.staffId = staffId;
+        enrollment.status = "ACTIVE";
         enrollment.country = "Ghana";
         enrollment.region = "Central Region";
         enrollment.district = "Awutu Senya";
@@ -53,12 +55,12 @@ public class TestMobileMidwifeEnrollment {
         return midwifeEnrollment;
     }
 
-    public Map<String, String> forMobile(){
+    public Map<String, String> forMobile(final String action){
         return new HashMap<String, String>(){{
             put("staffId", staffId);
             put("facilityId", facilityId);
             put("patientId",patientId);
-            put("action", "REGISTER");
+            put("action", action);
             put("consent", toBooleanString(consent));
             put("serviceType", serviceType.getValue());
             put("phoneOwnership", phoneOwnership.getValue());
@@ -89,6 +91,15 @@ public class TestMobileMidwifeEnrollment {
         return null;
     }
 
+    public String status() {
+        return status;
+    }
+
+    public TestMobileMidwifeEnrollment status(String status) {
+        this.status = status;
+        return this;
+    }
+
     public String region() {
         return region;
     }
@@ -115,7 +126,7 @@ public class TestMobileMidwifeEnrollment {
 
 
     public Map<? extends String, ? extends String> forClientRegistrationThroughMobile(TestPatient patient) {
-        Map<String, String> enrollmentDetails = forMobile();
+        Map<String, String> enrollmentDetails = forMobile("REGISTER");
         enrollmentDetails.put("staffId", patient.staffId());
         enrollmentDetails.put("facilityId", patient.facilityId());
         enrollmentDetails.put("motechId", patient.motechId());
@@ -279,13 +290,14 @@ public class TestMobileMidwifeEnrollment {
         if (medium != that.medium) return false;
         if (messageStartWeek != null ? !messageStartWeek.equals(that.messageStartWeek) : that.messageStartWeek != null)
             return false;
-        if (mmRegPhone != null ? !mmRegPhone.equals(that.mmRegPhone) : that.mmRegPhone != null) return false;
+//        if (mmRegPhone != null ? !mmRegPhone.equals(that.mmRegPhone) : that.mmRegPhone != null) return false;
         if (patientId != null ? !patientId.equals(that.patientId) : that.patientId != null) return false;
         if (phoneOwnership != that.phoneOwnership) return false;
         if (reasonToJoin != that.reasonToJoin) return false;
         if (region != null ? !region.equals(that.region) : that.region != null) return false;
         if (serviceType != that.serviceType) return false;
         if (staffId != null ? !staffId.equals(that.staffId) : that.staffId != null) return false;
+        if (status != null ? !status.equals(that.status) : that.status != null) return false;
         if (subDistrict != null ? !subDistrict.equals(that.subDistrict) : that.subDistrict != null) return false;
 
         return true;
@@ -298,7 +310,7 @@ public class TestMobileMidwifeEnrollment {
         result = 31 * result + (consent != null ? consent.hashCode() : 0);
         result = 31 * result + (serviceType != null ? serviceType.hashCode() : 0);
         result = 31 * result + (phoneOwnership != null ? phoneOwnership.hashCode() : 0);
-        result = 31 * result + (mmRegPhone != null ? mmRegPhone.hashCode() : 0);
+//        result = 31 * result + (mmRegPhone != null ? mmRegPhone.hashCode() : 0);
         result = 31 * result + (medium != null ? medium.hashCode() : 0);
         result = 31 * result + (language != null ? language.hashCode() : 0);
         result = 31 * result + (learnedFrom != null ? learnedFrom.hashCode() : 0);
@@ -310,6 +322,7 @@ public class TestMobileMidwifeEnrollment {
         result = 31 * result + (subDistrict != null ? subDistrict.hashCode() : 0);
         result = 31 * result + (facility != null ? facility.hashCode() : 0);
         result = 31 * result + (country != null ? country.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
         return result;
     }
 
@@ -321,7 +334,7 @@ public class TestMobileMidwifeEnrollment {
                 ", consent=" + consent +
                 ", serviceType=" + serviceType +
                 ", phoneOwnership=" + phoneOwnership +
-                ", mmRegPhone='" + mmRegPhone + '\'' +
+//                ", mmRegPhone='" + mmRegPhone + '\'' +
                 ", medium=" + medium +
                 ", language=" + language +
                 ", learnedFrom=" + learnedFrom +
@@ -333,6 +346,7 @@ public class TestMobileMidwifeEnrollment {
                 ", subDistrict='" + subDistrict + '\'' +
                 ", facility='" + facility + '\'' +
                 ", country='" + country + '\'' +
+                ", status='" + status + '\'' +
                 '}';
     }
 }

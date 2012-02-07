@@ -19,6 +19,7 @@ public class MobileMidwifeEnrollmentForm {
     private LearnedFrom learnedFrom;
     private ReasonToJoin reasonToJoin;
     private String messageStartWeek;
+    private String status;
 
     public MobileMidwifeEnrollmentForm() {
     }
@@ -82,6 +83,15 @@ public class MobileMidwifeEnrollmentForm {
 
     public String getPatientMotechId() {
         return patientMotechId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public MobileMidwifeEnrollmentForm setStatus(String status) {
+        this.status = status;
+        return this;
     }
 
     public MobileMidwifeEnrollmentForm setPatientMotechId(String patientMotechId) {

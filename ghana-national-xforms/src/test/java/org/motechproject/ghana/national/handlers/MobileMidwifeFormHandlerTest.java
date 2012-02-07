@@ -58,7 +58,7 @@ public class MobileMidwifeFormHandlerTest {
         final String facilityId = "11";
         final MobileMidwifeForm form = MobileMidwifeFormTest.setupFormData(staffId, facilityId);
         form.setAction(RegisterClientAction.UN_REGISTER);
-        when(mockMobileMidwifeService.findBy("patientId")).thenReturn(form.createMobileMidwifeEnrollment());
+        when(mockMobileMidwifeService.findActiveBy("patientId")).thenReturn(form.createMobileMidwifeEnrollment());
 
         formHandler.handleFormEvent(new MotechEvent("", new HashMap<String, Object>(){{
             put("formBean", form);

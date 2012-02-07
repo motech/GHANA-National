@@ -29,7 +29,7 @@ public class MobileMidwifeFormHandler implements FormPublishHandler {
         try {
             final MobileMidwifeForm mobileMidwifeForm = (MobileMidwifeForm) event.getParameters().get(Constants.FORM_BEAN);
             if (RegisterClientAction.UN_REGISTER.equals(mobileMidwifeForm.getAction())) {
-                mobileMidwifeService.unregister(mobileMidwifeService.findBy(mobileMidwifeForm.getPatientId()));
+                mobileMidwifeService.unregister(mobileMidwifeService.findActiveBy(mobileMidwifeForm.getPatientId()));
                 return;
             }
 

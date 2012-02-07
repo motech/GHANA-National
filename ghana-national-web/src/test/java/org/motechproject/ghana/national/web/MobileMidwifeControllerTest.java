@@ -20,10 +20,7 @@ import org.motechproject.model.Time;
 import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -58,9 +55,32 @@ public class MobileMidwifeControllerTest {
     }
 
     @Test
+    public void shouldRetrieveEnrollmentForAPatient() {
+        String patientId = "12344";
+        MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment();
+        enrollment.setActive(true);
+        String locationId = "facilityMotechId";
+        enrollment.setFacilityId(locationId);
+        when(mobileMidwifeService.findLatestEnrollment(patientId)).thenReturn(enrollment);
+        when(mockFacilityHelper.locationMap()).thenReturn(new HashMap());
+        Facility mockFacility = mock(Facility.class);
+        when(mockFacilityService.getFacilityByMotechId(locationId)).thenReturn(mockFacility);
+        String facilityId = "13161";
+        when(mockFacility.getMotechId()).thenReturn(facilityId);
+
+        ModelMap modelMap = new ModelMap();
+        controller.form(patientId, modelMap);
+
+        MobileMidwifeEnrollmentForm enrollmentForm = (MobileMidwifeEnrollmentForm) modelMap.get("mobileMidwifeEnrollmentForm");
+        assertFormWithEnrollment(enrollmentForm, enrollment);
+        assertThat(enrollmentForm.getStatus(), is("ACTIVE"));
+
+    }
+
+    @Test
     public void shouldCreateMobileMidwifeEnrollmentFromEnrollmentForm() {
         String locationId = "54";
-        MobileMidwifeEnrollmentForm enrollmentForm =createEnrollmentForm("12344", locationId, "345", Medium.SMS, new Time(23, 45));
+        MobileMidwifeEnrollmentForm enrollmentForm = createEnrollmentForm("12344", locationId, "345", Medium.SMS, new Time(23, 45));
         Facility mockFacility = mock(Facility.class);
         when(mockFacilityService.getFacility(locationId)).thenReturn(mockFacility);
         String facilityId = "13161";
@@ -78,7 +98,7 @@ public class MobileMidwifeControllerTest {
         String locationId = "54";
         MobileMidwifeEnrollmentForm form = createEnrollmentForm("12344", locationId, "345", Medium.SMS, new Time(23, 45));
 
-        when(mobileMidwifeService.findBy(patientId)).thenReturn(null);
+        when(mobileMidwifeService.findActiveBy(patientId)).thenReturn(null);
         when(mobileMidwifeValidator.validate(Matchers.<MobileMidwifeEnrollment>any())).thenReturn(Collections.<FormError>emptyList());
         Facility mockFacility = mock(Facility.class);
         when(mockFacilityService.getFacility(locationId)).thenReturn(mockFacility);
@@ -107,9 +127,9 @@ public class MobileMidwifeControllerTest {
         existingEnrollment.setFacilityId("oldFacilityId");
         existingEnrollment.setStaffId("oldStaffId");
         existingEnrollment.setMedium(Medium.VOICE);
-        existingEnrollment.setTimeOfDay(new Time(23,45));
+        existingEnrollment.setTimeOfDay(new Time(23, 45));
 
-        when(mobileMidwifeService.findBy(patientId)).thenReturn(existingEnrollment);
+        when(mobileMidwifeService.findActiveBy(patientId)).thenReturn(existingEnrollment);
         when(mobileMidwifeValidator.validate(Matchers.<MobileMidwifeEnrollment>any())).thenReturn(Collections.<FormError>emptyList());
         Facility mockFacility = mock(Facility.class);
         when(mockFacilityService.getFacility(locationId)).thenReturn(mockFacility);
@@ -155,7 +175,7 @@ public class MobileMidwifeControllerTest {
     }
 
 
-    private MobileMidwifeEnrollmentForm createEnrollmentForm(String patientId, String locationId,String staffId, Medium medium, Time timeOfDay){
+    private MobileMidwifeEnrollmentForm createEnrollmentForm(String patientId, String locationId, String staffId, Medium medium, Time timeOfDay) {
         FacilityForm facilityForm = new FacilityForm();
         facilityForm.setFacilityId(locationId);
         MobileMidwifeEnrollmentForm form = new MobileMidwifeEnrollmentForm()

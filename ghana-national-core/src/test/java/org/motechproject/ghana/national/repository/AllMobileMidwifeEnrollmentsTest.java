@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.repository;
 
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
@@ -35,7 +34,7 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
                 .active(false).build();
         allEnrollments.add(expected);
         allEnrollments.add(expired);
-        MobileMidwifeEnrollment actualEnrollment = allEnrollments.findActiveByPatientId(patientId);
+        MobileMidwifeEnrollment actualEnrollment = allEnrollments.findActiveBy(patientId);
         assertMobileMidwifeEnrollment(expected, actualEnrollment);
     }
 
@@ -59,7 +58,7 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
         enrollmentToUpdate.setFacilityId(updatedFacilityId);
 
         allEnrollments.createOrUpdate(enrollmentToUpdate);
-        
+
         MobileMidwifeEnrollment updatedEnrollment = allEnrollments.get(createdEnrollment.getId());
         assertEquals(updatedFacilityId, updatedEnrollment.getFacilityId());
     }
@@ -74,14 +73,14 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
         assertEquals(expected.getLearnedFrom(), actual.getLearnedFrom());
         assertEquals(expected.getLanguage(), actual.getLanguage());
         assertEquals(expected.getServiceType(), actual.getServiceType());
-        assertEquals(expected.getPhoneOwnership(), actual.getPhoneOwnership());        
+        assertEquals(expected.getPhoneOwnership(), actual.getPhoneOwnership());
         assertEquals(expected.getTimeOfDay(), actual.getTimeOfDay());
         assertEquals(expected.getMessageStartWeek(), actual.getMessageStartWeek());
     }
 
     @Test
-    public void shouldFindLatestEnrollment(){
-        Date date = new Date(2001,9,9);
+    public void shouldFindLatestEnrollment() {
+        Date date = new Date(2001, 9, 9);
         String patientId = "131612";
         MobileMidwifeEnrollment enrollment1 = new MobileMidwifeEnrollmentBuilder().patientId(patientId).
                 facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Monday).active(true).
@@ -96,8 +95,8 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
 
         allEnrollments.add(enrollment2);
         allEnrollments.add(enrollment1);
-        MobileMidwifeEnrollment actualEnrollment = allEnrollments.findByPatientId(patientId);
-        assertMobileMidwifeEnrollment(enrollment2,actualEnrollment);
+        MobileMidwifeEnrollment actualEnrollment = allEnrollments.findLatestEnrollment(patientId);
+        assertMobileMidwifeEnrollment(enrollment2, actualEnrollment);
 
     }
 

@@ -55,7 +55,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
         MRSPerson person = new MRSPerson().firstName("firstname").lastName("lastname");
         Patient patient = new Patient(new MRSPatient("motechid", person, new MRSFacility("")));
 
-        when(mockMobileMidwifeService.findBy(patientId)).thenReturn(mobileMidwifeEnrollment);
+        when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
         when(mockPatientService.getPatientByMotechId(patientId)).thenReturn(patient);
         when(mockTextMessageService.getSMSTemplate(messageKey)).thenReturn(messageTemplate);
 
@@ -70,7 +70,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
         String messageKey = "pregnancy-calendar-week-33-Monday";
         MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
                 .setServiceType(serviceType).setMedium(Medium.VOICE).setPhoneNumber("9845312345");
-        when(mockMobileMidwifeService.findBy(patientId)).thenReturn(mobileMidwifeEnrollment);
+        when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 
         handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), messageKey));
         verify(mockTextMessageService, never()).sendSMS(Matchers.<Facility>any(), Matchers.<SMS>any());
@@ -83,7 +83,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
         String messageKey = "childcare-calendar-week-33-Monday";
         MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
                 .setServiceType(serviceType).setMedium(Medium.SMS).setPhoneNumber("9845312345");
-        when(mockMobileMidwifeService.findBy(patientId)).thenReturn(mobileMidwifeEnrollment);
+        when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 
         MRSPerson person = new MRSPerson().firstName("firstname").lastName("lastname");
         Patient patient = new Patient(new MRSPatient("motechid", person, new MRSFacility("")));

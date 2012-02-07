@@ -47,6 +47,7 @@
         <spring:message code="no" var="no" htmlEscape="false"/>
         <spring:message code="hour_required_msg" var="hour_required_msg" htmlEscape="false"/>
         <spring:message code="minutes_required_msg" var="minutes_required_msg" htmlEscape="false"/>
+        <spring:message code="status" var="status" htmlEscape="false"/>
 
         <c:if test="${formErrors ne null}">
             <div class="formlyAlerts formlyInvalid formlyAlert" style="display: block;">
@@ -196,7 +197,7 @@
             </span>
         </div>
         <div class="hide form-field">
-            <label class="formLabel" for="messageStartWeek">${fn:escapeXml(message_start_week)} *:</label>
+            <label class="formLabel" for="messageStartWeek">${fn:escapeXml(message_start_week)} :*</label>
             <input type="hidden" id="messageStartWeekSelected" value="${mobileMidwifeEnrollmentForm.messageStartWeek}" disabled="true"/>
             <form:select id="messageStartWeek" path="messageStartWeek">
                 <option parent="select" value="">${fn:escapeXml(message_start_week_select)}</option>
@@ -208,6 +209,12 @@
                 ${fn:escapeXml(message_start_week )} ${fn:escapeXml(required_msg)}
             </span>
         </div>
+
+         <div class="form-field">
+            <label for="status" class="formLabel">${fn:escapeXml(status)}:</label>
+            <form:input path="status" size="20" disabled="true"/>
+        </div>
+
         <input type="button" id="submitMobileMidwife" value="Submit"/>
     </form:form>
 </div>

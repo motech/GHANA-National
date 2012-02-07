@@ -38,7 +38,7 @@ public class MobileMidwifeCampaignEventHandler {
         Map params = event.getParameters();
         String patientId = (String) params.get(EventKeys.EXTERNAL_ID_KEY);
 
-        MobileMidwifeEnrollment enrollment = mobileMidwifeService.findBy(patientId);
+        MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(patientId);
         String messageKey = (String) event.getParameters().get(EventKeys.MESSAGE_KEY);
 
         sendMessage(patientId, enrollment, messageKey);
