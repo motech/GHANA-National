@@ -514,7 +514,7 @@
         <xf:select1 bind="action">
             <xf:label>Action</xf:label>
             <xf:item id="REGISTER">
-                <xf:label>Register</xf:label>
+                <xf:label>Register/Modify</xf:label>
                 <xf:value>REGISTER</xf:value>
             </xf:item>
             <xf:item id="UN_REGISTER">
