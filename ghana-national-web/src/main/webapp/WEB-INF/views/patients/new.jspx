@@ -36,9 +36,6 @@
         <spring:message code="patient_insured" var="patient_insured" htmlEscape="false"/>
         <spring:message code="patient_nhis_number" var="patient_nhis_number" htmlEscape="false"/>
         <spring:message code="patient_nhis_expiration_date" var="patient_nhis_expiration_date" htmlEscape="false"/>
-        <spring:message code="patient_region" var="patient_region" htmlEscape="false"/>
-        <spring:message code="patient_district" var="patient_district" htmlEscape="false"/>
-        <spring:message code="patient_sub_district" var="patient_sub_district" htmlEscape="false"/>
         <spring:message code="patient_facility" var="patient_facility" htmlEscape="false"/>
         <spring:message code="patient_address" var="patient_address" htmlEscape="false"/>
         <spring:message code="yes" var="yes" htmlEscape="false"/>
@@ -230,7 +227,7 @@
             <motech:location id="regions" path="region" label="${facility_region} *:"
                              defaultValue="${facility_region_select}" errorMsg="${facility_region_req_msg}"
                              locations="${regions}"/>
-            <span id='facilityIdError' class='alertText formlyInvalid formlyAlert hide'>
+            <span id='facilitiesError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(patient_facility)} ${fn:escapeXml(required_msg)}
             </span>
         </div>

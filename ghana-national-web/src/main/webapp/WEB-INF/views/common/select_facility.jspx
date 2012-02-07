@@ -28,8 +28,8 @@
                 <form:option parent="${country}" value="${country}">${country}</form:option>
             </c:forEach>
         </form:select>
-            <span id='countriesError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
-                ${fn:escapeXml(facility_country_req_msg)}
+            <span id='facilitiesError' class='locationAlert alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(patient_facility)} ${fn:escapeXml(required_msg)}
             </span>
     </div>
     <div class="hidden-location hide">
