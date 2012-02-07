@@ -93,8 +93,8 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
                 .messageStartWeek("pregnancy week17").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
                 .build();
 
-        allEnrollments.add(enrollment2);
         allEnrollments.add(enrollment1);
+        allEnrollments.add(enrollment2);
         MobileMidwifeEnrollment actualEnrollment = allEnrollments.findLatestEnrollment(patientId);
         assertMobileMidwifeEnrollment(enrollment2, actualEnrollment);
 

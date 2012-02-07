@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.functional.pages.patient;
 
+import org.motechproject.ghana.national.domain.RegisterClientAction;
 import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
 import org.motechproject.ghana.national.functional.pages.home.HomePage;
 import org.motechproject.ghana.national.domain.mobilemidwife.MessageStartWeek;
@@ -101,6 +102,14 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
     @CacheLookup
     private WebElement status;
 
+    @FindBy(id = "register")
+    @CacheLookup
+    private WebElement actionRegister;
+
+    @FindBy(id = "unregister")
+    @CacheLookup
+    private WebElement actionUnregister;
+
     public MobileMidwifeEnrollmentPage(WebDriver webDriver) {
         super(webDriver);
         elementPoller.waitForElementID("submitMobileMidwife", driver);
@@ -158,6 +167,14 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
 
     public MobileMidwifeEnrollmentPage withLanguage(String language) {
         select(this.language, language);
+        return this;
+    }
+
+     public MobileMidwifeEnrollmentPage withAction(String action) {
+        if (RegisterClientAction.REGISTER.name().equals(action))
+            actionRegister.click();
+        else
+            actionUnregister.click();
         return this;
     }
 
@@ -248,6 +265,7 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
                 .withLearnedFrom(testMobileMidwifeEnrollment.learnedFrom())
                 .withReasonToJoin(testMobileMidwifeEnrollment.reasonToJoin())
                 .withMessageStartWeek(testMobileMidwifeEnrollment.messageStartWeek())
+                .withAction(testMobileMidwifeEnrollment.action())
                 .submit();
     }
 
@@ -266,7 +284,7 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
     }
 
     public TestMobileMidwifeEnrollment details() {
-        return new TestMobileMidwifeEnrollment().staffId(valueOf(staffMotechId))
+        TestMobileMidwifeEnrollment midwifeEnrollment = new TestMobileMidwifeEnrollment().staffId(valueOf(staffMotechId))
                 .patientId(valueOf(patientMotechId))
                 .consent(consent())
                 .country(valueOf(country))
@@ -283,6 +301,7 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
                 .reasonToJoin(valueOf(reasonToJoin))
                 .status(valueOf(status))
                 .messageStartWeek(MessageStartWeek.findBy(valueOf(messageStartWeek)));
+        return midwifeEnrollment;
     }
 
 }

@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.RegisterClientAction;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
@@ -90,14 +91,19 @@ public class MobileMidwifeController {
         MobileMidwifeEnrollment midwifeEnrollment = createEnrollment(form);
         List<FormError> formErrors = mobileMidwifeValidator.validate(midwifeEnrollment);
         if (isNotEmpty(formErrors)) {
-            addFormInfo(modelMap, form).
-                    addAttribute("formErrors", formErrors);
+            addFormInfo(modelMap, form).addAttribute("formErrors", formErrors);
         } else {
-            mobileMidwifeService.register(midwifeEnrollment);
-            addFormInfo(modelMap, form)
-                    .addAttribute("successMessage", messages.getMessage(SUCCESS_MESSAGE, null, Locale.getDefault()));
+            mobileMidwifeRegistration(form, midwifeEnrollment);
+            addFormInfo(modelMap, form).addAttribute("successMessage", messages.getMessage(SUCCESS_MESSAGE, null, Locale.getDefault()));
         }
         return MOBILE_MIDWIFE_URL;
+    }
+
+    private void mobileMidwifeRegistration(MobileMidwifeEnrollmentForm form, MobileMidwifeEnrollment midwifeEnrollment) {
+        if(RegisterClientAction.REGISTER.name().equals(form.getAction()))
+            mobileMidwifeService.register(midwifeEnrollment);
+        else
+            mobileMidwifeService.unregister(form.getPatientMotechId());
     }
 
     private ModelMap addFormInfo(ModelMap modelMap, MobileMidwifeEnrollmentForm enrollmentForm) {

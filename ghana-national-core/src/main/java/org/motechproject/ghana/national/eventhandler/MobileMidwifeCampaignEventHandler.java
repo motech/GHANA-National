@@ -42,7 +42,7 @@ public class MobileMidwifeCampaignEventHandler {
         String messageKey = (String) event.getParameters().get(EventKeys.MESSAGE_KEY);
 
         sendMessage(patientId, enrollment, messageKey);
-        if (event.isLastEvent()) mobileMidwifeService.unregister(enrollment);
+        if (event.isLastEvent()) mobileMidwifeService.unregister(patientId);
     }
 
     private void sendMessage(String patientId, MobileMidwifeEnrollment enrollment, String messageKey) throws ContentNotFoundException {

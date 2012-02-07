@@ -92,7 +92,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
 
         MotechEvent lastEvent = motechEvent(patientId, serviceType.name(), messageKey).setLastEvent(true);
         handler.sendProgramMessage(lastEvent);
-        verify(mockMobileMidwifeService).unregister(mobileMidwifeEnrollment);
+        verify(mockMobileMidwifeService).unregister(patientId);
     }
 
      private MotechEvent motechEvent(String externalId, String campaignName, String messageKey) {

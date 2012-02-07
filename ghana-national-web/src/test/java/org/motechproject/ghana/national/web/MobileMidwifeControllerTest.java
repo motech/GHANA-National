@@ -47,6 +47,8 @@ public class MobileMidwifeControllerTest {
     private FacilityHelper mockFacilityHelper;
     @Mock
     private FacilityService mockFacilityService;
+    private static final String ACTION_REGISTER = "REGISTER";
+    private static final String ACTION_UNREGISTER = "UN_REGISTER";
 
     @Before
     public void setUp() {
@@ -80,7 +82,7 @@ public class MobileMidwifeControllerTest {
     @Test
     public void shouldCreateMobileMidwifeEnrollmentFromEnrollmentForm() {
         String locationId = "54";
-        MobileMidwifeEnrollmentForm enrollmentForm = createEnrollmentForm("12344", locationId, "345", Medium.SMS, new Time(23, 45));
+        MobileMidwifeEnrollmentForm enrollmentForm = createEnrollmentForm("12344", locationId, "345", Medium.SMS, new Time(23, 45), ACTION_REGISTER);
         Facility mockFacility = mock(Facility.class);
         when(mockFacilityService.getFacility(locationId)).thenReturn(mockFacility);
         String facilityId = "13161";
@@ -93,10 +95,10 @@ public class MobileMidwifeControllerTest {
     }
 
     @Test
-    public void shouldValidateAndCreateANewMobileMidwifeEnrollment() {
+    public void shouldValidateAndCreateANewMobileMidwifeEnrollmentIfActionIsRegister() {
         String patientId = "patientId";
         String locationId = "54";
-        MobileMidwifeEnrollmentForm form = createEnrollmentForm("12344", locationId, "345", Medium.SMS, new Time(23, 45));
+        MobileMidwifeEnrollmentForm form = createEnrollmentForm("12344", locationId, "345", Medium.SMS, new Time(23, 45), ACTION_REGISTER);
 
         when(mobileMidwifeService.findActiveBy(patientId)).thenReturn(null);
         when(mobileMidwifeValidator.validate(Matchers.<MobileMidwifeEnrollment>any())).thenReturn(Collections.<FormError>emptyList());
@@ -116,12 +118,36 @@ public class MobileMidwifeControllerTest {
     }
 
     @Test
+    public void shouldInActivateMobileMidwifeEnrollmentIfActionIsUnRegister() {
+        String locationId = "54";
+        String patientId = "12344";
+        MobileMidwifeEnrollmentForm form = createEnrollmentForm(patientId, locationId, "345", Medium.SMS, new Time(23, 45), ACTION_UNREGISTER);
+
+        MobileMidwifeEnrollment mockEnrollment = mock(MobileMidwifeEnrollment.class);
+        when(mobileMidwifeService.findActiveBy(patientId)).thenReturn(mockEnrollment);
+        when(mobileMidwifeValidator.validate(Matchers.<MobileMidwifeEnrollment>any())).thenReturn(Collections.<FormError>emptyList());
+        Facility mockFacility = mock(Facility.class);
+        when(mockFacilityService.getFacility(locationId)).thenReturn(mockFacility);
+        when(mockFacility.getMotechId()).thenReturn("13161");
+
+        ModelMap modelMap = new ModelMap();
+        String editUrl = controller.save(form, null, modelMap);
+
+        assertThat(editUrl, isEq(MOBILE_MIDWIFE_URL));
+        ArgumentCaptor<MobileMidwifeEnrollment> enrollment = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
+
+        verify(mobileMidwifeValidator).validate(enrollment.capture());
+        verify(mobileMidwifeService).unregister(patientId);
+        assertFormWithEnrollment((MobileMidwifeEnrollmentForm) modelMap.get("mobileMidwifeEnrollmentForm"), enrollment.getValue());
+    }
+
+    @Test
     public void shouldValidateAndUpdateExistingMobileMidwifeEnrollment() {
         String patientId = "patientId";
         String locationId = "54";
         String successMsg = "Changes successful";
 
-        MobileMidwifeEnrollmentForm form = createEnrollmentForm(patientId, locationId, "staffId", Medium.SMS, new Time(23, 45));
+        MobileMidwifeEnrollmentForm form = createEnrollmentForm(patientId, locationId, "staffId", Medium.SMS, new Time(23, 45), ACTION_REGISTER);
         MobileMidwifeEnrollment existingEnrollment = MobileMidwifeEnrollment.newEnrollment();
         existingEnrollment.setPatientId(patientId);
         existingEnrollment.setFacilityId("oldFacilityId");
@@ -153,7 +179,7 @@ public class MobileMidwifeControllerTest {
         ModelMap map = new ModelMap();
         String locationId = "54";
 
-        MobileMidwifeEnrollmentForm enrollmentForm = createEnrollmentForm("patientId", locationId, "staffId", Medium.VOICE, new Time(23, 45));
+        MobileMidwifeEnrollmentForm enrollmentForm = createEnrollmentForm("patientId", locationId, "staffId", Medium.VOICE, new Time(23, 45), ACTION_REGISTER);
         when(mobileMidwifeValidator.validate(Matchers.<MobileMidwifeEnrollment>any())).thenReturn(new ArrayList<FormError>() {{
             add(new FormError("error1", "description1"));
             add(new FormError("error2", "description2"));
@@ -175,7 +201,7 @@ public class MobileMidwifeControllerTest {
     }
 
 
-    private MobileMidwifeEnrollmentForm createEnrollmentForm(String patientId, String locationId, String staffId, Medium medium, Time timeOfDay) {
+    private MobileMidwifeEnrollmentForm createEnrollmentForm(String patientId, String locationId, String staffId, Medium medium, Time timeOfDay, String action) {
         FacilityForm facilityForm = new FacilityForm();
         facilityForm.setFacilityId(locationId);
         MobileMidwifeEnrollmentForm form = new MobileMidwifeEnrollmentForm()
@@ -185,7 +211,7 @@ public class MobileMidwifeControllerTest {
                 .setLearnedFrom(LearnedFrom.POSTERS_ADS).setMedium(Medium.SMS)
                 .setMessageStartWeek("5").setPhoneNumber("9900011234")
                 .setPhoneOwnership(PhoneOwnership.PERSONAL).setReasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH)
-                .setServiceType(ServiceType.PREGNANCY).setFacilityForm(facilityForm);
+                .setServiceType(ServiceType.PREGNANCY).setFacilityForm(facilityForm).setAction(action);
 
         return form;
     }

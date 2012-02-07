@@ -58,18 +58,15 @@ public class MobileMidwifeFormHandlerTest {
         final String facilityId = "11";
         final MobileMidwifeForm form = MobileMidwifeFormTest.setupFormData(staffId, facilityId);
         form.setAction(RegisterClientAction.UN_REGISTER);
-        when(mockMobileMidwifeService.findActiveBy("patientId")).thenReturn(form.createMobileMidwifeEnrollment());
+        String patientId = "patientId";
+        when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(form.createMobileMidwifeEnrollment());
 
         formHandler.handleFormEvent(new MotechEvent("", new HashMap<String, Object>(){{
             put("formBean", form);
         }}));
 
-        final ArgumentCaptor<MobileMidwifeEnrollment> captor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        verify(mockMobileMidwifeService).unregister(captor.capture());
+        verify(mockMobileMidwifeService).unregister(patientId);
         verify(mockMobileMidwifeService, never()).register(Matchers.<MobileMidwifeEnrollment>any());
-        final MobileMidwifeEnrollment enrollment = captor.getValue();
-
-        MobileMidwifeFormTest.assertFormWithEnrollment(form, enrollment);
     }
 
 }
