@@ -5,9 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
+import org.motechproject.ghana.national.configuration.TextMessageTemplates;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.SMS;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -16,6 +18,7 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -24,11 +27,8 @@ import java.util.HashSet;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class DeliveryNotificationFormHandlerTest {
@@ -73,17 +73,22 @@ public class DeliveryNotificationFormHandlerTest {
             put("formBean", deliveryNotificationForm);
         }};
         MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.deliveryNotify", parameter);
-        final Patient patient = new Patient(new MRSPatient(motechId, null, new MRSFacility(facilityId)));
+
+        MRSPerson person = new MRSPerson().firstName("firstname").lastName("lastname");
+        Patient patient = new Patient(new MRSPatient("motechid", person, new MRSFacility(facilityId)));
+
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
-        String facilityPhoneNumber = "1234567890";
-        when(mockFacilityService.getFacility(facilityId)).thenReturn(new Facility(new MRSFacility(facilityId)).phoneNumber(facilityPhoneNumber));
+        Facility facility = mock(Facility.class);
+        when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
+
+        when(mockTextMessageService.getSMSTemplate(TextMessageTemplates.DELIVERY_NOTIFICATION_SMS[0])).thenReturn("${motechId}-${firstName}-${lastName}");
 
         deliveryNotificationFormHandler.handleFormEvent(event);
 
         final HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         verify(mockCareService).persistEncounter(motechId, staffId, facilityId, Constants.ENCOUNTER_PREGDELNOTIFYVISIT,
                 datetime.toDate(), mrsObservations);
-        verify(mockTextMessageService).sendSMS(facilityPhoneNumber, patient, Constants.DELIVERY_NOTIFICATION_SMS);
+        verify(mockTextMessageService).sendSMS(facility, SMS.fromSMSText("motechid-firstname-lastname"));
     }
 
     @Test

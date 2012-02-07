@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.builders;
 
 import org.motechproject.ghana.national.bean.*;
+import org.motechproject.ghana.national.domain.RegisterClientAction;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
@@ -24,6 +25,7 @@ public class MobileMidwifeBuilder {
     private Boolean consent;
 
     private Boolean enroll;
+    private RegisterClientAction registerAction;
 
     public MobileMidwifeBuilder serviceType(ServiceType serviceType) {
         this.serviceType = serviceType;
@@ -106,6 +108,7 @@ public class MobileMidwifeBuilder {
         mobileMidwifeForm.setStaffId(staffId);
         mobileMidwifeForm.setFacilityId(facilityId);
         mobileMidwifeForm.setPatientId(patientId);
+        mobileMidwifeForm.setAction(registerAction);
         mobileMidwifeForm.setConsent(consent);
         fillAbstractFormFields(mobileMidwifeForm);
         return mobileMidwifeForm;
@@ -144,5 +147,10 @@ public class MobileMidwifeBuilder {
         fillAbstractFormFields(includeForm);
         includeForm.setConsent(consent);
         includeForm.setEnroll(enroll);
+    }
+
+    public MobileMidwifeBuilder registrationAction(RegisterClientAction register) {
+        registerAction = register;
+        return this;
     }
 }

@@ -89,7 +89,7 @@ public class TestANCEnrollment implements CareEnrollment {
     }
 
     public Map<String, String> withMobileMidwifeEnrollmentThroughMobile(TestMobileMidwifeEnrollment mmEnrollmentDetails) {
-        Map<String, String> enrollmentDetails = mmEnrollmentDetails.forMobile();
+        Map<String, String> enrollmentDetails = mmEnrollmentDetails.forMobile("REGISTER");
         enrollmentDetails.putAll(forMobile());
         enrollmentDetails.put("enroll", "Y");
         return enrollmentDetails;

@@ -90,13 +90,11 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
         assertThat(errorsMap.get("staffId"), hasItem("is mandatory"));
         assertThat(errorsMap.get("facilityId"), hasItem("is mandatory"));
         assertThat(errorsMap.get("patientId"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("consent"), hasItem("is mandatory"));
     }
 
     @Test
     public void shouldRegisterForMobileMidWifeProgramIfValidationsPass() throws Exception {
         final String staffId = staffGenerator.createStaff(browser, homePage);
-//        final String facilityId = facilityGenerator.createFacility(browser, homePage);
 
         TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
@@ -105,7 +103,7 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
 
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId);
 
-        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerMobileMidwifeForm(), mmEnrollmentDetails.forMobile());
+        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerMobileMidwifeForm(), mmEnrollmentDetails.forMobile("REGISTER"));
 
         assertThat(xformResponse.getSuccessCount(), is(equalTo(1)));
 
@@ -117,5 +115,33 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
 
         MobileMidwifeEnrollmentPage enrollmentPage = browser.toMobileMidwifeEnrollmentForm(editPage);
         assertEquals(mmEnrollmentDetails, enrollmentPage.details());
+    }
+
+    @Test
+    public void shouldUnregisterFromMobileMidwifeProgram() {
+        final String staffId = staffGenerator.createStaff(browser, homePage);
+
+        TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5), staffId).
+                patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
+
+        final String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
+
+        TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId);
+
+        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerMobileMidwifeForm(), mmEnrollmentDetails.forMobile("REGISTER"));
+        assertThat("Registration to Mobile Midwife failed", xformResponse.getSuccessCount(), is(equalTo(1)));
+
+        TestMobileMidwifeEnrollment mmUnregisterDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId).status("INACTIVE");
+        final XformHttpClient.XformResponse unregisterMMResponse = mobile.upload(MobileForm.registerMobileMidwifeForm(), mmUnregisterDetails.forMobile("UN_REGISTER"));
+        assertThat("UnRegistration to Mobile Midwife failed", unregisterMMResponse.getSuccessCount(), is(equalTo(1)));
+
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithMotechId(patientId);
+        searchPatientPage.displaying(patient);
+
+        PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
+
+        MobileMidwifeEnrollmentPage enrollmentPage = browser.toMobileMidwifeEnrollmentForm(editPage);
+        assertEquals(mmUnregisterDetails, enrollmentPage.details());
     }
 }

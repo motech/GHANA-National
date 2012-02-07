@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.bean;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
+import org.motechproject.ghana.national.domain.RegisterClientAction;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
@@ -28,7 +29,7 @@ public class MobileMidwifeFormTest {
                 .consent(true).dayOfWeek(DayOfWeek.Monday).language(Language.EN).learnedFrom(LearnedFrom.FRIEND).format("PERS_VOICE")
                 .timeOfDay(new Time(10, 0)).messageStartWeek("10").phoneNumber("9500012343")
                 .phoneOwnership(PhoneOwnership.PERSONAL).reasonToJoin(ReasonToJoin.FAMILY_FRIEND_DELIVERED)
-                .serviceType(ServiceType.CHILD_CARE);
+                .serviceType(ServiceType.CHILD_CARE).registrationAction(RegisterClientAction.REGISTER);
     }
 
     public static void assertFormWithEnrollment(MobileMidwifeForm exptectedForm, MobileMidwifeEnrollment actual) {

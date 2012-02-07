@@ -97,6 +97,10 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
     @CacheLookup
     private WebElement submit;
 
+    @FindBy(id = "status")
+    @CacheLookup
+    private WebElement status;
+
     public MobileMidwifeEnrollmentPage(WebDriver webDriver) {
         super(webDriver);
         elementPoller.waitForElementID("submitMobileMidwife", driver);
@@ -277,6 +281,7 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
                 .language(valueOf(language))
                 .learnedFrom(valueOf(learnedFrom))
                 .reasonToJoin(valueOf(reasonToJoin))
+                .status(valueOf(status))
                 .messageStartWeek(MessageStartWeek.findBy(valueOf(messageStartWeek)));
     }
 

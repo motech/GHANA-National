@@ -6,6 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
+import org.motechproject.ghana.national.configuration.TextMessageTemplates;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
@@ -101,13 +102,15 @@ public class PatientRegistrationFormHandlerTest {
         when(facility.mrsFacilityId()).thenReturn(facilityId);
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
 
+        when(mockTextMessageService.getSMSTemplate(TextMessageTemplates.REGISTER_SUCCESS_SMS[0])).thenReturn("${motechId}-${firstName}-${lastName}");
+
         patientRegistrationFormHandler.handleFormEvent(event);
 
         Patient patientPassedToRegisterService = patientArgumentCaptor.getValue();
         MRSPerson mrsPerson = patientPassedToRegisterService.getMrsPatient().getPerson();
 
         assertRegisterPatient(address, dateofBirth, isBirthDateEstimated, facilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, sex, phoneNumber, patientPassedToRegisterService, mrsPerson, parentId);
-        verify(mockTextMessageService).sendSMS(registerClientForm.getSender(), savedPatient, Constants.REGISTER_SUCCESS_SMS);
+        verify(mockTextMessageService).sendSMS(registerClientForm.getSender(), SMS.fromSMSText("motechId-FirstName-LastName"));
     }
 
     @Test
