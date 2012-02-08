@@ -46,7 +46,7 @@ public class MobileMidwifeCampaign {
         return DateUtil.nextApplicableWeekDay(fromDate, applicableDays);
     }
 
-    private String programMessageKey(ServiceType serviceType) {
+    String programMessageKey(ServiceType serviceType) {
         Map<ServiceType, String> messageMap = new HashMap<ServiceType, String>() {{
             put(ServiceType.PREGNANCY, PREGNANCY_MESSAGE_NAME);
             put(ServiceType.CHILD_CARE, CHILDCARE_MESSAGE_NAME);

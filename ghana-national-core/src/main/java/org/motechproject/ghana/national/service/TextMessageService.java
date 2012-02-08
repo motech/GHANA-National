@@ -20,16 +20,24 @@ public class TextMessageService {
     @Autowired
     private CMSLiteService cmsLiteService;
 
-    public String getSMSTemplate(String key) {
+    public String getSMSTemplate(String language, String key) {
         try {
-            return cmsLiteService.getStringContent(Locale.getDefault().getLanguage(), key).getValue();
+            return cmsLiteService.getStringContent(language, key).getValue();
         } catch (ContentNotFoundException e) {
             throw new MotechException("Encountered error while retrieving SMS template", e);
         }
     }
 
+    public String getSMSTemplate(String key) {
+        return getSMSTemplate(defaultLanguage(), key);
+    }
+
     public SMS getSMS(String templateKey, Map<String, String> placeholderValues) {
-        return SMS.fromTemplate(getSMSTemplate(templateKey)).fill(placeholderValues);
+        return SMS.fromTemplate(getSMSTemplate(defaultLanguage(), templateKey)).fill(placeholderValues);
+    }
+
+    public SMS getSMS(String language, String templateKey, Map<String, String> placeholderValues) {
+        return SMS.fromTemplate(getSMSTemplate(language, templateKey)).fill(placeholderValues);
     }
 
     public void sendSMS(Facility facility, SMS sms) {
@@ -38,5 +46,9 @@ public class TextMessageService {
 
     public void sendSMS(String phoneNumber, SMS sms) {
         smsService.sendSMS(phoneNumber, sms.getText());
+    }
+
+    private String defaultLanguage() {
+        return Locale.getDefault().getLanguage();
     }
 }

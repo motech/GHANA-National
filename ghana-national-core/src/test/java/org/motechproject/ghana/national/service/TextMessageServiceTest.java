@@ -55,7 +55,7 @@ public class TextMessageServiceTest {
     }
 
     @Test
-    public void shouldCreateSMSMessageTextFromMessageTemplateKeyAndRuntimeParameters() throws ContentNotFoundException {
+    public void shouldCreateSMSMessageTextFromMessageTemplateKeyDefaultLocaleAndRuntimeParameters() throws ContentNotFoundException {
         String templateKey = "template key";
         StringContent stringConent = mock(StringContent.class);
         when(stringConent.getValue()).thenReturn("placeholder");
@@ -65,5 +65,17 @@ public class TextMessageServiceTest {
         }});
         assertThat(sms, is(equalTo(SMS.fromSMSText("value"))));
     }
-
+    
+    @Test
+    public void shouldCreateSMSMessageTextFromMessageTemplateKey_GivenLanguageAndRuntimeParameters() throws ContentNotFoundException {
+        String templateKey = "template key";
+        StringContent stringConent = mock(StringContent.class);
+        when(stringConent.getValue()).thenReturn("placeholder");
+        String language = "EN";
+        when(mockCMSLiteService.getStringContent(language, templateKey)).thenReturn(stringConent);
+        SMS sms = textMessageService.getSMS(language, templateKey, new HashMap<String, String>() {{
+            put("placeholder", "value");
+        }});
+        assertThat(sms, is(equalTo(SMS.fromSMSText("value"))));
+    }    
 }

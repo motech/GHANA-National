@@ -8,7 +8,9 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.model.Time;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
-import org.motechproject.util.DateUtil;
+
+import static org.motechproject.util.DateUtil.now;
+import static org.motechproject.util.DateUtil.setTimeZone;
 
 @TypeDiscriminator("doc.type === 'MobileMidwifeEnrollment'")
 public class MobileMidwifeEnrollment extends MotechBaseDataObject {
@@ -53,7 +55,7 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     }
 
     public static MobileMidwifeEnrollment newEnrollment() {
-        return new MobileMidwifeEnrollment().setEnrollmentDateTime(DateUtil.now());
+        return new MobileMidwifeEnrollment().setEnrollmentDateTime(now());
     }
 
     public String getPatientId() {
@@ -81,6 +83,7 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     }
 
     public String getPhoneNumber() {
+
         return phoneNumber;
     }
 
@@ -191,7 +194,7 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     }
 
     public DateTime getEnrollmentDateTime() {
-        return enrollmentDateTime;
+        return setTimeZone(enrollmentDateTime);
     }
 
     public DateTime getScheduleStartDate() {

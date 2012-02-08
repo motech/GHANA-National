@@ -16,6 +16,7 @@
     <context:spring-configured/>
     <aop:aspectj-autoproxy/>
     <context:component-scan base-package="org.motechproject.ghana.national"/>
+    <context:component-scan base-package="org.motechproject.sms.http"/>
 
     <util:properties id="couchdbProperties" location="classpath:couchdb.properties"/>
     <util:properties id="ghanaNationalProperties" location="classpath:ghana-national.properties"/>
@@ -33,4 +34,5 @@
     <beans:import resource="classpath:applicationContext-email.xml"/>
     <beans:import resource="classpath:applicationSmsAPI.xml"/>
     <beans:import resource="classpath:applicationSchedulerTrackingAPI.xml"/>
+    <bean id="commonsHttpClient" class="org.apache.commons.httpclient.HttpClient" />
 </beans>

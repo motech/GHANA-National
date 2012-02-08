@@ -22,7 +22,7 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
     private ReasonToJoin reasonToJoin;
     private String messageStartWeek;
     private Boolean active;
-    private DateTime enrollmentDateTime;
+    private DateTime enrollmentDateTime = new DateTime();
     private DateTime scheduleStartDate;
 
     public MobileMidwifeEnrollmentBuilder patientId(String patientId) {
@@ -112,6 +112,6 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
     
     @Override
     public MobileMidwifeEnrollment build() {
-        return generate(MobileMidwifeEnrollment.newEnrollment());
+        return generate(new MobileMidwifeEnrollment());
     }
 }
