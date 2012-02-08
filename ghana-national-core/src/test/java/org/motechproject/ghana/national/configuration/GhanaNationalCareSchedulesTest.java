@@ -44,7 +44,7 @@ public class GhanaNationalCareSchedulesTest extends BaseUnitTest {
 
         AllEnrollments allEnrollments = mock(AllEnrollments.class);
         MotechSchedulerService motechSchedulerService = mock(MotechSchedulerService.class);
-        EnrollmentService enrollmentService = new EnrollmentService(allTrackedSchedules, motechSchedulerService);
+        EnrollmentService enrollmentService = new EnrollmentService(allTrackedSchedules, allEnrollments, null, null);
         ScheduleTrackingServiceImpl scheduleTrackingService = new ScheduleTrackingServiceImpl(allTrackedSchedules, allEnrollments, enrollmentService);
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest("123", CareScheduleNames.DELIVERY, preferredAlertTime, conceptionDate);
         scheduleTrackingService.enroll(enrollmentRequest);

@@ -90,6 +90,27 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
         assertTrue(enrollmentPage.getHourOfDay().isDisplayed());
     }
 
+    @Test
+    public void shouldRegisterAndUnRegisterMMEnrollmentAndInactivateTheSame(){
+        // Create Test Data
+        TestPatient patient = TestPatient.with("Samy Johnson" + new DataGenerator().randomString(5), staffId);
+        String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
+
+        // Create MM enrollment - register
+        TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId).action(RegisterClientAction.REGISTER.name());
+        MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, homePage);
+        enrollmentPage.enroll(enrollmentDetails);
+
+        //unregister in edit
+        MobileMidwifeEnrollmentPage enrollmentEditPage = toMobileMidwifeEnrollmentPage(patient,homePage);
+        TestMobileMidwifeEnrollment enrollmentUpdateDetails = enrollmentEditPage.details().action(RegisterClientAction.UN_REGISTER.name());
+        enrollmentEditPage.enroll(enrollmentUpdateDetails);
+
+        //verification after unregistration
+        MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = toMobileMidwifeEnrollmentPage(patient, homePage);
+        assertEquals(enrollmentUpdateDetails.status("INACTIVE"),mobileMidwifeEnrollmentPage.details());
+    }
+
     private MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentPage(TestPatient patient, BasePage basePage) {
         SearchPatientPage searchPatientPage = browser.toSearchPatient(basePage);
         searchPatientPage.searchWithName(patient.firstName());
