@@ -6,7 +6,7 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMS;
-import org.motechproject.ghana.national.service.CareService;
+import org.motechproject.ghana.national.service.EncounterService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.TextMessageService;
@@ -29,7 +29,7 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    CareService careService;
+    EncounterService encounterService;
 
     @Autowired
     PatientService patientService;
@@ -48,8 +48,10 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
         DeliveryNotificationForm deliveryNotificationForm = null;
         try {
             deliveryNotificationForm = (DeliveryNotificationForm) event.getParameters().get(Constants.FORM_BEAN);
-            careService.persistEncounter(deliveryNotificationForm.getMotechId(), deliveryNotificationForm.getStaffId(),
-                    deliveryNotificationForm.getFacilityId(), Constants.ENCOUNTER_PREGDELNOTIFYVISIT,
+            Patient patient = patientService.getPatientByMotechId(deliveryNotificationForm.getMotechId());
+            Facility facility = facilityService.getFacilityByMotechId(deliveryNotificationForm.getFacilityId());
+            encounterService.persistEncounter(patient.getMrsPatient(), deliveryNotificationForm.getStaffId(),
+                    facility.getMrsFacilityId(), Constants.ENCOUNTER_PREGDELNOTIFYVISIT,
                     deliveryNotificationForm.getDatetime().toDate(), new HashSet<MRSObservation>());
             sendDeliveryNotificationMessage(deliveryNotificationForm.getMotechId());
         } catch (Exception e) {

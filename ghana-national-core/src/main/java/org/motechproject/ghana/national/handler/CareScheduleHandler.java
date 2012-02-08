@@ -31,7 +31,6 @@ public class CareScheduleHandler {
     private AllFacilities allFacilities;
     private Logger logger = LoggerFactory.getLogger(CareScheduleHandler.class);
 
-
     @Autowired
     public CareScheduleHandler(AllPatients allPatients, TextMessageService textMessageService, AllFacilities allFacilities) {
         this.allPatients = allPatients;
