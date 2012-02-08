@@ -9,7 +9,7 @@ $.UserFormValidator = function() {
         $("#phone_error").html('').hide();
         $("#email_error").html('').hide();
         $("#role_error").html('').hide();
-//        $("#firstName.errors").html('').hide();
+        $("#firstName.errors").html('').hide();
     };
 
     this.validate = function(form) {
@@ -24,11 +24,7 @@ $.UserFormValidator = function() {
         if ($("#user_middle_name").val().length != 0) {
             isValid = validateRegEx(name_reg, $("#user_middle_name").val(), "Please enter valid middle name", $("#middleName_error"));
         }
-        if ($("#phoneNumber").val().length == 0 || !phone_regex.test($("#phoneNumber").val())) {
-                        isValid = false;
-                        $("#phone_error").html("Incorrect Phone Number");
-                        $("#phone_error").show();
-                    }
+
         var regexMatch = $("#user_role option:selected").text().match(/\(.*?\)/);
         var role = (regexMatch != null) ? regexMatch[0].substring(1, regexMatch[0].length - 1) : null;
         if (role == null) {
