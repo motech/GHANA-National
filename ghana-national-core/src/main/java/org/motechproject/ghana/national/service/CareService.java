@@ -65,7 +65,7 @@ public class CareService {
         return persistEncounter(patientId, staffId, facilityId, encounterType, registrationDate, mrsObservations);
     }
 
-    public MRSEncounter persistEncounter(String patientMotechId, String staffId, String facilityId, String encounterType,
+    MRSEncounter persistEncounter(String patientMotechId, String staffId, String facilityId, String encounterType,
                                          Date registrationDate, Set<MRSObservation> mrsObservations) {
         MRSUser user = staffService.getUserByEmailIdOrMotechId(staffId);
         String staffProviderId = user.getPerson().getId();

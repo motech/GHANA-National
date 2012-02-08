@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.Date;
 
 import static junit.framework.Assert.*;
-import static org.junit.Assert.assertNotSame;
+import static org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollmentTest.assertEnrollment;
 
 public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
 
@@ -26,6 +26,7 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
                 facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).
                 learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).
                 messageStartWeek("pregnancy week17").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
+                .reasonToJoin(ReasonToJoin.FAMILY_FRIEND_DELIVERED)
                 .active(true).build();
         MobileMidwifeEnrollment expired = new MobileMidwifeEnrollmentBuilder().patientId(patientId).
                 facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).
@@ -35,7 +36,7 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
         allEnrollments.add(expected);
         allEnrollments.add(expired);
         MobileMidwifeEnrollment actualEnrollment = allEnrollments.findActiveBy(patientId);
-        assertMobileMidwifeEnrollment(expected, actualEnrollment);
+        assertEnrollment(expected, actualEnrollment);
     }
 
     @Test
@@ -63,21 +64,6 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
         assertEquals(updatedFacilityId, updatedEnrollment.getFacilityId());
     }
 
-    private void assertMobileMidwifeEnrollment(MobileMidwifeEnrollment expected, MobileMidwifeEnrollment actual) {
-        assertNotSame(expected, actual);
-        assertEquals(expected.getPatientId(), actual.getPatientId());
-        assertEquals(expected.getFacilityId(), actual.getFacilityId());
-        assertEquals(expected.getStaffId(), actual.getStaffId());
-        assertEquals(expected.getConsent(), actual.getConsent());
-        assertEquals(expected.getDayOfWeek(), actual.getDayOfWeek());
-        assertEquals(expected.getLearnedFrom(), actual.getLearnedFrom());
-        assertEquals(expected.getLanguage(), actual.getLanguage());
-        assertEquals(expected.getServiceType(), actual.getServiceType());
-        assertEquals(expected.getPhoneOwnership(), actual.getPhoneOwnership());
-        assertEquals(expected.getTimeOfDay(), actual.getTimeOfDay());
-        assertEquals(expected.getMessageStartWeek(), actual.getMessageStartWeek());
-    }
-
     @Test
     public void shouldFindLatestEnrollment() {
         Date date = new Date(2001, 9, 9);
@@ -96,8 +82,7 @@ public class AllMobileMidwifeEnrollmentsTest extends BaseIntegrationTest {
         allEnrollments.add(enrollment1);
         allEnrollments.add(enrollment2);
         MobileMidwifeEnrollment actualEnrollment = allEnrollments.findLatestEnrollment(patientId);
-        assertMobileMidwifeEnrollment(enrollment2, actualEnrollment);
-
+        assertEnrollment(enrollment2, actualEnrollment);
     }
 
     @After

@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.eventhandler;
+package org.motechproject.ghana.national.handler;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +8,7 @@ import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMS;
+import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.server.messagecampaign.scheduler.MessageCampaignScheduler.INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class MobileMidwifeCampaignEventHandlerTest {
 
@@ -39,7 +41,10 @@ public class MobileMidwifeCampaignEventHandlerTest {
     @Before
     public void init() {
         initMocks(this);
-        handler = new MobileMidwifeCampaignEventHandler(mockMobileMidwifeService, mockTextMessageService, mockPatientService);
+        handler = new MobileMidwifeCampaignEventHandler();
+        setField(handler, "mobileMidwifeService", mockMobileMidwifeService);
+        setField(handler, "textMessageService", mockTextMessageService);
+        setField(handler, "patientService", mockPatientService);
     }
 
     @Test
@@ -49,15 +54,16 @@ public class MobileMidwifeCampaignEventHandlerTest {
         String mobileNumber = "9845312345";
         String messageKey = "childcare-calendar-week-33-Monday";
         String messageTemplate = "${motechId}-${firstName}-${lastName}";
+        Language language = Language.EN;
         MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
-                .setServiceType(serviceType).setMedium(Medium.SMS).setPhoneNumber(mobileNumber);
+                .setServiceType(serviceType).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber(mobileNumber);
 
         MRSPerson person = new MRSPerson().firstName("firstname").lastName("lastname");
         Patient patient = new Patient(new MRSPatient("motechid", person, new MRSFacility("")));
 
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
         when(mockPatientService.getPatientByMotechId(patientId)).thenReturn(patient);
-        when(mockTextMessageService.getSMSTemplate(messageKey)).thenReturn(messageTemplate);
+        when(mockTextMessageService.getSMSTemplate(language.name(), messageKey)).thenReturn(messageTemplate);
 
         handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), messageKey));
         verify(mockTextMessageService).sendSMS(mobileNumber, SMS.fromSMSText("motechid-firstname-lastname"));
@@ -81,14 +87,15 @@ public class MobileMidwifeCampaignEventHandlerTest {
         ServiceType serviceType = ServiceType.CHILD_CARE;
         String patientId = "1234568";
         String messageKey = "childcare-calendar-week-33-Monday";
+        Language language = Language.EN;
         MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
-                .setServiceType(serviceType).setMedium(Medium.SMS).setPhoneNumber("9845312345");
+                .setServiceType(serviceType).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber("9845312345");
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 
         MRSPerson person = new MRSPerson().firstName("firstname").lastName("lastname");
         Patient patient = new Patient(new MRSPatient("motechid", person, new MRSFacility("")));
         when(mockPatientService.getPatientByMotechId(patientId)).thenReturn(patient);
-        when(mockTextMessageService.getSMSTemplate(messageKey)).thenReturn("${motechId}-${firstName}-${lastName}");
+        when(mockTextMessageService.getSMSTemplate(language.name(), messageKey)).thenReturn("${motechId}-${firstName}-${lastName}");
 
         MotechEvent lastEvent = motechEvent(patientId, serviceType.name(), messageKey).setLastEvent(true);
         handler.sendProgramMessage(lastEvent);
