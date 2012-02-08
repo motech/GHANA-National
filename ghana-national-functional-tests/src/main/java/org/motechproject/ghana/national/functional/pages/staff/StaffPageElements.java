@@ -8,15 +8,15 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 
 public class StaffPageElements extends HomePage {
-    @FindBy(id = "user_first_name")
+    @FindBy(id = "firstName")
     @CacheLookup
     WebElement firstName;
 
-    @FindBy(id = "user_middle_name")
+    @FindBy(id = "middleName")
     @CacheLookup
     WebElement middleName;
 
-    @FindBy(id = "user_last_name")
+    @FindBy(id = "lastName")
     @CacheLookup
     WebElement lastName;
 
@@ -24,11 +24,11 @@ public class StaffPageElements extends HomePage {
     @CacheLookup
     WebElement phoneNumber;
 
-    @FindBy(id = "user_email")
+    @FindBy(id = "newEmail")
     @CacheLookup
     WebElement emailId;
 
-    @FindBy(id = "user_role")
+    @FindBy(id = "newRole")
     @CacheLookup
     WebElement role;
 
