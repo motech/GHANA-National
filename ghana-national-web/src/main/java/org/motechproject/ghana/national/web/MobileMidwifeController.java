@@ -45,21 +45,21 @@ public class MobileMidwifeController {
     }
 
     @Autowired
-    public MobileMidwifeController(MobileMidwifeValidator mobileMidwifeValidator, MobileMidwifeService mobileMidwifeService, MessageSource messages, FacilityHelper facilityHelper,FacilityService facilityService) {
+    public MobileMidwifeController(MobileMidwifeValidator mobileMidwifeValidator, MobileMidwifeService mobileMidwifeService, MessageSource messages, FacilityHelper facilityHelper, FacilityService facilityService) {
         this.mobileMidwifeValidator = mobileMidwifeValidator;
         this.mobileMidwifeService = mobileMidwifeService;
         this.messages = messages;
-        this.facilityHelper=facilityHelper;
+        this.facilityHelper = facilityHelper;
         this.facilityService = facilityService;
     }
 
     @ApiSession
     @RequestMapping(value = "form", method = RequestMethod.GET)
-    public String form(@RequestParam String motechPatientId, ModelMap modelMap){
+    public String form(@RequestParam String motechPatientId, ModelMap modelMap) {
 
         MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findLatestEnrollment(motechPatientId);
         MobileMidwifeEnrollmentForm enrollmentForm = midwifeEnrollment != null ? createMobileMidwifeEnrollmentForm(midwifeEnrollment)
-                : new MobileMidwifeEnrollmentForm().setPatientMotechId(motechPatientId);
+                : new MobileMidwifeEnrollmentForm().setPatientMotechId(motechPatientId).setStatus("ACTIVE");
         addFormInfo(modelMap, enrollmentForm);
         return MOBILE_MIDWIFE_URL;
     }
@@ -100,10 +100,12 @@ public class MobileMidwifeController {
     }
 
     private void mobileMidwifeRegistration(MobileMidwifeEnrollmentForm form, MobileMidwifeEnrollment midwifeEnrollment) {
-        if(RegisterClientAction.REGISTER.name().equals(form.getAction()))
+        if (RegisterClientAction.REGISTER.name().equals(form.getAction())) {
             mobileMidwifeService.register(midwifeEnrollment);
-        else
+        } else {
             mobileMidwifeService.unregister(form.getPatientMotechId());
+            form.setStatus("INACTIVE");
+        }
     }
 
     private ModelMap addFormInfo(ModelMap modelMap, MobileMidwifeEnrollmentForm enrollmentForm) {
@@ -124,7 +126,7 @@ public class MobileMidwifeController {
 
     private Map<String, String> collectDayOfWeekOptions() {
         Map<String, String> options = new LinkedHashMap<String, String>();
-        for(DayOfWeek option : DayOfWeek.values()){
+        for (DayOfWeek option : DayOfWeek.values()) {
             options.put(option.name(), option.name());
         }
         return options;
@@ -138,7 +140,7 @@ public class MobileMidwifeController {
                 .setConsent(form.getConsent()).setDayOfWeek(form.getDayOfWeek()).setLearnedFrom(form.getLearnedFrom())
                 .setLanguage(form.getLanguage()).setMedium(form.getMedium()).setMessageStartWeek(form.getMessageStartWeek()).setPhoneNumber(form.getPhoneNumber())
                 .setPhoneOwnership(form.getPhoneOwnership()).setReasonToJoin(form.getReasonToJoin()).setServiceType(form.getServiceType())
-                .setTimeOfDay(form.getTimeOfDay());
+                .setTimeOfDay(form.getTimeOfDay()).setActive(form.getStatus().equals("ACTIVE"));
         return enrollment;
     }
 }
