@@ -26,24 +26,24 @@
             <form:input id="staff_id" path="staffId" size="20" label="${fn:escapeXml(staff_id)}"/>
         </div>
         <div>
-            <label class="formLabel" for="user_first_name">${fn:escapeXml(user_first_name)}:</label>
-            <form:input id="user_first_name" path="firstName" size="20" label="${fn:escapeXml(user_first_name)}"/>
+            <label class="formLabel" for="firstName">${fn:escapeXml(user_first_name)}:</label>
+            <form:input path="firstName" size="20" label="${fn:escapeXml(user_first_name)}"/>
         </div>
         <div>
-            <label class="formLabel" for="user_middle_name">${fn:escapeXml(user_middle_name)}:</label>
-            <form:input id="user_middle_name" path="middleName" size="20" label="${fn:escapeXml(user_middle_name)}"/>
+            <label class="formLabel" for="middleName">${fn:escapeXml(user_middle_name)}:</label>
+            <form:input path="middleName" size="20" label="${fn:escapeXml(user_middle_name)}"/>
         </div>
         <div>
-            <label class="formLabel" for="user_last_name">${fn:escapeXml(user_last_name)}:</label>
-            <form:input id="user_last_name" path="lastName" size="20" label="${fn:escapeXml(user_last_name)}"/>
+            <label class="formLabel" for="lastName">${fn:escapeXml(user_last_name)}:</label>
+            <form:input  path="lastName" size="20" label="${fn:escapeXml(user_last_name)}"/>
         </div>
         <div>
-            <label class="formLabel" for="user_phone">${fn:escapeXml(user_phone)}:</label>
-            <form:input id="user_phone" path="phoneNumber" size="20" label="${fn:escapeXml(user_phone)}"/>
+            <label class="formLabel" for="phoneNumber">${fn:escapeXml(user_phone)}:</label>
+            <form:input path="phoneNumber" size="20" label="${fn:escapeXml(user_phone)}"/>
         </div>
         <div>
-            <label class="formLabel" for="user_role">${fn:escapeXml(user_role)}:</label>
-            <form:select id="user_role" path="newRole">
+            <label class="formLabel" for="newRole">${fn:escapeXml(user_role)}:</label>
+            <form:select path="newRole">
                 <option parent="select" value="">${fn:escapeXml(user_role_select)}</option>
                 <c:forEach items="${roles}" var="role">
                     <option value="${role.key}">${role.key} (${role.value})</option>
