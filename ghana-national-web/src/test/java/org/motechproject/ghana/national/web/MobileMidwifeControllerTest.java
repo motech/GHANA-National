@@ -211,7 +211,7 @@ public class MobileMidwifeControllerTest {
                 .setLearnedFrom(LearnedFrom.POSTERS_ADS).setMedium(Medium.SMS)
                 .setMessageStartWeek("5").setPhoneNumber("9900011234")
                 .setPhoneOwnership(PhoneOwnership.PERSONAL).setReasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH)
-                .setServiceType(ServiceType.PREGNANCY).setFacilityForm(facilityForm).setAction(action);
+                .setServiceType(ServiceType.PREGNANCY).setFacilityForm(facilityForm).setAction(action).setStatus(action.equals("REGISTER") ? "ACTIVE" : "INACTIVE");
 
         return form;
     }
@@ -227,6 +227,7 @@ public class MobileMidwifeControllerTest {
         assertThat(form.getPhoneNumber(), isEq(enrollment.getPhoneNumber()));
         assertThat(form.getPhoneOwnership(), isEq(enrollment.getPhoneOwnership()));
         assertThat(form.getTimeOfDay(), isEq(enrollment.getTimeOfDay()));
+        assertThat(form.getStatus(), isEq(enrollment.getActive() ? "ACTIVE" : "INACTIVE"));
     }
 
 

@@ -62,6 +62,8 @@ public class CWCRegistrationFormHandler implements FormPublishHandler {
             MobileMidwifeEnrollment mobileMidwifeEnrollment = registerCWCForm.createMobileMidwifeEnrollment();
             if (mobileMidwifeEnrollment != null) {
                 mobileMidwifeService.register(mobileMidwifeEnrollment);
+            }else{
+                mobileMidwifeService.unregister(registerCWCForm.getMotechId());
             }
         } catch (Exception e) {
             log.error("Exception occured in saving CWC Registration details for: " + registerCWCForm.getMotechId(), e);
