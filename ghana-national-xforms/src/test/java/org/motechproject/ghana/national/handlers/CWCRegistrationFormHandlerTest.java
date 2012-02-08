@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.handlers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
 import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
@@ -26,7 +27,10 @@ import java.util.List;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isIn;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -109,6 +113,41 @@ public class CWCRegistrationFormHandlerTest {
         assertCwcCareHistoryDetails(registerCWCForm.getCWCCareHistories(), lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, lastPenta, lastOPV, cwcVO.getCWCCareHistoryVO());
 
         assertMobileMidwifeFormEnrollment(registerCWCForm, mobileMidwifeEnrollmentCaptor.getValue());
+    }
+
+    @Test
+    public void shouldUnRegisterForMobileMidWifeIfNotEnrolled() {
+        final RegisterCWCForm registerCWCForm = new RegisterCWCForm();
+
+        final Date registartionDate = new Date(2011, 9, 1);
+        final String staffId = "456";
+        final String patientMotechId = "1234567";
+        final String facilityMotechId = "3232";
+
+        registerCWCForm.setStaffId(staffId);
+        registerCWCForm.setFacilityId(facilityMotechId);
+        registerCWCForm.setRegistrationDate(registartionDate);
+        registerCWCForm.setMotechId(patientMotechId);
+        registerCWCForm.setEnroll(false);
+
+        final String facilityId = "11";
+        when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(new Facility(new MRSFacility(facilityId)));
+
+        formHandler.handleFormEvent(new MotechEvent("", new HashMap<String, Object>() {{
+            put("formBean", registerCWCForm);
+        }}));
+
+        final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
+        verify(careService).enroll(captor.capture());
+        verify(mobileMidwifeService).unregister(patientMotechId);
+        verify(mobileMidwifeService, never()).register(Matchers.<MobileMidwifeEnrollment>any());
+        final CwcVO cwcVO = captor.getValue();
+
+        assertThat(staffId, is(cwcVO.getStaffId()));
+        assertThat(facilityId, is(facilityId));
+        assertThat(registartionDate, is(cwcVO.getRegistrationDate()));
+        assertThat(patientMotechId, is(cwcVO.getPatientMotechId()));
+
     }
 
     public static void assertCwcCareHistoryDetails(List<CwcCareHistory> cwcCareHistories, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, int lastPenta, int lastOPV, CWCCareHistoryVO cwcCareHistoryVO) {
