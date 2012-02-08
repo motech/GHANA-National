@@ -78,13 +78,12 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
 
             if (registerClientForm.getSender() != null) {
                 String template = textMessageService.getSMSTemplate(TextMessageTemplates.REGISTER_SUCCESS_SMS[0]);
-                SMS sms = SMS.fromTemplate(template).fillPatientDetails(patient.getMotechId(), patient.getFirstName(), patient.getLastName());
+                SMS sms = SMS.fromTemplate(template).fillPatientDetails(savedPatient.getMotechId(), patient.getFirstName(), patient.getLastName());
                 textMessageService.sendSMS(registerClientForm.getSender(), sms);
             }
         } catch (Exception e) {
             log.error("Exception while saving patient", e);
         }
-
     }
 
     private void registerForMobileMidwifeProgram(RegisterClientForm registerClientForm, String patientMotechId) {
