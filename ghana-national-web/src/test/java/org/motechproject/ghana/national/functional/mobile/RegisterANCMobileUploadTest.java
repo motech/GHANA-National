@@ -70,7 +70,7 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
         assertThat(errorsMap.get("motechId"), hasItem("not found"));
     }
 
-    @Test(enabled =false)
+    @Test
     public void shouldCreateANCForAPatientWithMobileDeviceAndSearchForItInWeb() {
         DataGenerator dataGenerator = new DataGenerator();
 
