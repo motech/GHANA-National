@@ -7,7 +7,6 @@ $.UserFormValidator = function() {
         formValidator.validatePhoneNumbers(form);
         if ($("#middleName").val().length != 0) {
             if(validateRegEx(name_reg, $("#middleName").val(), "Please enter valid middle name", $("#middleNameError")));
-            $("#middleNameError").show();
         }
         var regexMatch = $("#newRole option:selected").text().match(/\(.*?\)/);
         var role = (regexMatch != null) ? regexMatch[0].substring(1, regexMatch[0].length - 1) : null;

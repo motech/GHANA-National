@@ -29,7 +29,7 @@
         <div>
             <label class="formLabel" for="middleName">${fn:escapeXml(user_middle_name)}:</label>
             <form:input path="middleName" size="20" label="${fn:escapeXml(user_middle_name)}"/>
-            <span id='middleNameError' class='alertText formlyInvalid formlyAlert hide'></span>                            tr
+            <span id='middleNameError' class='alertText formlyInvalid formlyAlert hide'></span>
         </div>
         <div>
             <label class="formLabel" for="lastName">${fn:escapeXml(user_last_name)} *:</label>
