@@ -224,6 +224,10 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
         return attrValue(medium, "value");
     }
 
+    public String status() {
+        return attrValue(status, "value");
+    }
+
     public WebElement getDayOfWeek() {
         return dayOfWeek;
     }

@@ -84,6 +84,12 @@ public class TestCWCEnrollment implements CareEnrollment {
         return enrollmentDetails;
     }
 
+    public Map<String, String> withoutMobileMidwifeEnrollmentThroughMobile() {
+        Map<String, String> enrollmentDetails = forMobile();
+        enrollmentDetails.put("enroll", "N");
+        return enrollmentDetails;
+    }
+
     public Map<String, String> forMobile() {
         return new HashMap<java.lang.String, java.lang.String>() {{
             put("staffId", staffId);
