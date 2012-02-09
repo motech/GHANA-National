@@ -3,10 +3,10 @@ package org.motechproject.ghana.national.service;
 import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
+import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.messagecampaign.dao.AllMessageCampaigns;
 import org.motechproject.server.messagecampaign.service.MessageCampaignService;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,7 +43,7 @@ public class MobileMidwifeCampaign {
         DateTime fromDate = enrollment.getEnrollmentDateTime();
         ServiceType serviceType = enrollment.getServiceType();
         List<DayOfWeek> applicableDays = allMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), programMessageKey(serviceType));
-        return DateUtil.nextApplicableWeekDay(fromDate, applicableDays);
+        return Utility.nextApplicableWeekDay(fromDate, applicableDays);
     }
 
     String programMessageKey(ServiceType serviceType) {
