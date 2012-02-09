@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.functional.data;
 
-import org.motechproject.ghana.national.domain.RegisterClientAction;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 
@@ -26,13 +25,11 @@ public class TestMobileMidwifeEnrollment {
     private String facility;
     private String country;
     private String status;
-    private String action;
 
 
     public static TestMobileMidwifeEnrollment with(String staffId){
         TestMobileMidwifeEnrollment enrollment = new TestMobileMidwifeEnrollment();
         enrollment.staffId = staffId;
-        enrollment.action = RegisterClientAction.REGISTER.name();
         enrollment.status = "ACTIVE";
         enrollment.country = "Ghana";
         enrollment.region = "Central Region";
@@ -92,15 +89,6 @@ public class TestMobileMidwifeEnrollment {
             return "PUB_VOICE";
         }
         return null;
-    }
-
-    public String action() {
-        return action;
-    }
-
-    public TestMobileMidwifeEnrollment action(String action) {
-        this.action = action;
-        return this;
     }
 
     public String status() {

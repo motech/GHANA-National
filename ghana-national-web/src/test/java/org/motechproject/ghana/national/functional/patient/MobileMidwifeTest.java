@@ -2,7 +2,6 @@
 package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
-import org.motechproject.ghana.national.domain.RegisterClientAction;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
@@ -19,9 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import static org.motechproject.ghana.national.domain.mobilemidwife.MessageStartWeek.findBy;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -51,7 +48,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
         TestPatient patient = TestPatient.with("Samy Johnson" + new DataGenerator().randomString(5), staffId);
         String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
 
-        TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId).action(RegisterClientAction.REGISTER.name());
+        TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId);
 
         MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, homePage);
         enrollmentPage.enroll(enrollmentDetails);
@@ -88,27 +85,6 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
                 .withMedium(Medium.VOICE.toString());
         assertTrue(enrollmentPage.getDayOfWeek().isDisplayed());
         assertTrue(enrollmentPage.getHourOfDay().isDisplayed());
-    }
-
-    @Test
-    public void shouldRegisterAndUnRegisterMMEnrollmentAndInactivateTheSame(){
-        // Create Test Data
-        TestPatient patient = TestPatient.with("Samy Johnson" + new DataGenerator().randomString(5), staffId);
-        String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
-
-        // Create MM enrollment - register
-        TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId).action(RegisterClientAction.REGISTER.name());
-        MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, homePage);
-        enrollmentPage.enroll(enrollmentDetails);
-
-        //unregister in edit
-        MobileMidwifeEnrollmentPage enrollmentEditPage = toMobileMidwifeEnrollmentPage(patient,homePage);
-        TestMobileMidwifeEnrollment enrollmentUpdateDetails = enrollmentEditPage.details().action(RegisterClientAction.UN_REGISTER.name());
-        enrollmentEditPage.enroll(enrollmentUpdateDetails);
-
-        //verification after unregistration
-        MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = toMobileMidwifeEnrollmentPage(patient, homePage);
-        assertEquals(enrollmentUpdateDetails.status("INACTIVE"),mobileMidwifeEnrollmentPage.details());
     }
 
     private MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentPage(TestPatient patient, BasePage basePage) {

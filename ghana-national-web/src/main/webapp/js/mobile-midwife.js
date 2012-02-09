@@ -220,38 +220,10 @@ var consent = utilities.lazyLoad(
                         }
 
                     });
-                },
-                show : function () {
-                    $('#consentContainer').show();
-                    consentElement.addClass('jsRequire');
-                    $('#fieldsForRegistration').show();
-                },
-                hide : function() {
-                    $('#consentContainer').hide();
-                    consentElement.removeClass('jsRequire');
-                    $('#fieldsForRegistration').hide();
                 }
             }
         }
         );
-
-var registrationAction = utilities.lazyLoad(function () {
-    var instance = $('input[name=action]');
-    instance.isRegisterAction = function() {
-        return $('input[name=action]:checked').val() === 'REGISTER';
-    };
-    return {
-        handleAction : function() {
-            instance.change(function() {
-                if (instance.isRegisterAction()) {
-                    consent.instance().show();
-                } else {
-                    consent.instance().hide();
-                }
-            });
-        }
-    }
-});
 
 $(document).ready(function() {
     new Field('countries').hasADependent(new Field('regions').hasADependent(new Field('districts').hasADependent(new Field('sub-districts'))));
@@ -273,7 +245,6 @@ $(document).ready(function() {
         return formValidator.hasErrors(form);
     }
     consent.instance().handleDependentFields();
-    registrationAction.instance().handleAction();
 
     var initialLanguageOptions = $('#language').find('option');
     phoneOwnership.instance().onChangePopulateLanguage(language.instance(), medium.instance(), initialLanguageOptions);

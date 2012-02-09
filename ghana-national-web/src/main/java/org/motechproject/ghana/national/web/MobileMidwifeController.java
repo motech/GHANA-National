@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.RegisterClientAction;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
@@ -100,12 +99,7 @@ public class MobileMidwifeController {
     }
 
     private void mobileMidwifeRegistration(MobileMidwifeEnrollmentForm form, MobileMidwifeEnrollment midwifeEnrollment) {
-        if (RegisterClientAction.REGISTER.name().equals(form.getAction())) {
-            mobileMidwifeService.register(midwifeEnrollment);
-        } else {
-            mobileMidwifeService.unregister(form.getPatientMotechId());
-            form.setStatus("INACTIVE");
-        }
+        mobileMidwifeService.register(midwifeEnrollment);
     }
 
     private ModelMap addFormInfo(ModelMap modelMap, MobileMidwifeEnrollmentForm enrollmentForm) {

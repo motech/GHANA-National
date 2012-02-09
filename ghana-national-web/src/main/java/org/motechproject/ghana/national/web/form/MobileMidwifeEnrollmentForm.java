@@ -20,7 +20,6 @@ public class MobileMidwifeEnrollmentForm {
     private ReasonToJoin reasonToJoin;
     private String messageStartWeek;
     private String status;
-    private String action;
 
     public MobileMidwifeEnrollmentForm() {
     }
@@ -88,15 +87,6 @@ public class MobileMidwifeEnrollmentForm {
 
     public String getStatus() {
         return status;
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public MobileMidwifeEnrollmentForm setAction(String action) {
-        this.action = action;
-        return this;
     }
 
     public MobileMidwifeEnrollmentForm setStatus(String status) {
