@@ -3,11 +3,16 @@ package org.motechproject.ghana.national.tools;
 import ch.lambdaj.function.convert.Converter;
 import ch.lambdaj.group.Group;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.model.DayOfWeek;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static org.motechproject.model.DayOfWeek.getDayOfWeek;
 
 public class Utility {
     public static Converter<String, Set<String>> mapConverter(final Group<Facility> facilityGroup) {
@@ -37,6 +42,23 @@ public class Utility {
 
     public static <V> V nullSafe(V value, V defaultValue) {
         return value != null ? value : defaultValue;
+    }
+
+    //TODO :Already in platform, but problem in finding method
+    public static DateTime nextApplicableWeekDay(DateTime fromDate, List<DayOfWeek> applicableDays) {
+        fromDate = fromDate.dayOfMonth().addToCopy(1);
+        int dayOfWeek = fromDate.getDayOfWeek();
+        int noOfDaysToNearestCycleDate = 0;
+        int WEEK_MAX_DAY = DayOfWeek.Sunday.getValue();
+        for (int currentDayOfWeek = dayOfWeek, dayCount = 0; dayCount <= WEEK_MAX_DAY; dayCount++) {
+            if (applicableDays.contains(getDayOfWeek(currentDayOfWeek))) {
+                noOfDaysToNearestCycleDate = dayCount;
+                break;
+            }
+            if (currentDayOfWeek == WEEK_MAX_DAY) currentDayOfWeek = 1;
+            else currentDayOfWeek++;
+        }
+        return fromDate.dayOfMonth().addToCopy(noOfDaysToNearestCycleDate);
     }
 
 }
