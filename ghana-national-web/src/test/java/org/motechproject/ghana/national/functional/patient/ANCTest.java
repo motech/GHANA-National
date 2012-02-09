@@ -27,7 +27,7 @@ public class ANCTest extends LoggedInUserFunctionalTest {
         dataGenerator = new DataGenerator();
     }
 
-    @Test
+    @Test(enabled = false)
     public void shouldEnrollForANCForAPatientAndUpdate() {
         // create
         String staffId = staffGenerator.createStaff(browser, homePage);

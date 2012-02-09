@@ -22,9 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -70,7 +68,7 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
         assertThat(errorsMap.get("motechId"), hasItem("not found"));
     }
 
-    @Test
+    @Test(enabled = false)
     public void shouldCreateANCForAPatientWithMobileDeviceAndSearchForItInWeb() {
         DataGenerator dataGenerator = new DataGenerator();
 
