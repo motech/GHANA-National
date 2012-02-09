@@ -111,6 +111,10 @@ public class PatientEditPage extends HomePage{
     @CacheLookup
     private WebElement mobileMidwifeEnrollmentLink;
 
+    @FindBy(id = "mobileMidwifeUnenrollmentLink")
+    @CacheLookup
+    private WebElement mobileMidwifeUnEnrollmentLink;
+
     @FindBy(id = "cwcenrollment")
     @CacheLookup
     WebElement cwcEnrollment;
@@ -129,6 +133,10 @@ public class PatientEditPage extends HomePage{
 
     public void clickEnrollMobileMidwifeLink() {
        mobileMidwifeEnrollmentLink.click();
+    }
+
+    public void clickUnEnrollMobileMidwifeLink() {
+       mobileMidwifeUnEnrollmentLink.click();
     }
 
     public String patientId() {

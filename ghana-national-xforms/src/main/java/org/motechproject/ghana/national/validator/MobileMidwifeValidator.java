@@ -42,10 +42,14 @@ public class MobileMidwifeValidator {
     }
 
     private List<FormError> validateFacilityPatientAndStaff(MobileMidwifeEnrollment enrollment) {
+        return validateFacilityPatientAndStaff(enrollment.getPatientId(), enrollment.getFacilityId(), enrollment.getStaffId());
+    }
+
+    public List<FormError> validateFacilityPatientAndStaff(String patientId, String facilityId, String staffId) {
         List<FormError> formErrors = new ArrayList<FormError>();
-        formErrors.addAll(formValidator.validatePatient(enrollment.getPatientId(), PATIENT_ID_ATTRIBUTE_NAME));
-        formErrors.addAll(formValidator.validateIfFacilityExists(enrollment.getFacilityId()));
-        formErrors.addAll(formValidator.validateIfStaffExists(enrollment.getStaffId()));
+        formErrors.addAll(formValidator.validatePatient(patientId, PATIENT_ID_ATTRIBUTE_NAME));
+        formErrors.addAll(formValidator.validateIfFacilityExists(facilityId));
+        formErrors.addAll(formValidator.validateIfStaffExists(staffId));
         return formErrors;
     }
 

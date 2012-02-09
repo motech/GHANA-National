@@ -7,13 +7,11 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationType;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
-import org.motechproject.ghana.national.service.FacilityService;
-import org.motechproject.ghana.national.service.IdentifierGenerationService;
-import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.service.StaffService;
+import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.form.SearchPatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
@@ -68,6 +66,8 @@ public class PatientControllerTest {
     MotechIdVerhoeffValidator mockMotechIdVerhoeffValidator;
     @Mock
     private StaffService mockStaffService;
+    @Mock
+    private MobileMidwifeService mobileMidwifeService;
 
     @Before
     public void setUp() throws Exception {
@@ -81,6 +81,7 @@ public class PatientControllerTest {
         ReflectionTestUtils.setField(patientController, "messageSource", mockMessageSource);
         ReflectionTestUtils.setField(patientController, "motechIdVerhoeffValidator", mockMotechIdVerhoeffValidator);
         ReflectionTestUtils.setField(patientController, "identifierGenerationService", mockIdentifierGenerationService);
+        ReflectionTestUtils.setField(patientController, "mobileMidwifeService", mobileMidwifeService);
         mockBindingResult = mock(BindingResult.class);
         when(mockPatientService.registerPatient(any(Patient.class), any(String.class))).thenReturn(new Patient(new MRSPatient(null, null, null)));
     }
@@ -190,10 +191,11 @@ public class PatientControllerTest {
     public void shouldReturnEditPatientForm() {
         final ModelMap modelMap = new ModelMap();
 
+        String motechId = "";
+        when(mobileMidwifeService.findActiveBy(motechId)).thenReturn(new MobileMidwifeEnrollment());
         when(mockFacilityHelper.locationMap()).thenReturn(new HashMap<String, Object>() {{
             put("key", new Object());
         }});
-        String motechId = "";
         final String edit = patientController.edit(modelMap, motechId);
         assertThat(edit, is(equalTo(PatientController.EDIT_PATIENT_URL)));
     }

@@ -23,5 +23,8 @@
     <definition extends="default" name="enroll/mobile-midwife/new">
         <put-attribute name="body" value="/WEB-INF/views/patients/enrollments/mobileMidwife.jspx"/>
     </definition>
+    <definition extends="default" name="unenroll/mobile-midwife">
+        <put-attribute name="body" value="/WEB-INF/views/patients/enrollments/unregisterMobileMidwife.jspx"/>
+    </definition>
 </tiles-definitions>
 

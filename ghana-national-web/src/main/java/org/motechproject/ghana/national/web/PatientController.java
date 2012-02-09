@@ -9,10 +9,7 @@ import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.exception.StaffNotFoundException;
-import org.motechproject.ghana.national.service.FacilityService;
-import org.motechproject.ghana.national.service.IdentifierGenerationService;
-import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.service.StaffService;
+import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.form.SearchPatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
@@ -70,6 +67,8 @@ public class PatientController {
     public static final String SEARCH_PATIENT_FORM = "searchPatientForm";
     @Autowired
     private StaffService staffService;
+    @Autowired
+    private MobileMidwifeService mobileMidwifeService;
 
 
     @InitBinder
@@ -164,6 +163,7 @@ public class PatientController {
         } catch (ParseException ignored) {
         }
         modelMap.mergeAttributes(facilityHelper.locationMap());
+        modelMap.put("registerForMobileMidwife", mobileMidwifeService.findActiveBy(motechId) != null);
         return PatientController.EDIT_PATIENT_URL;
     }
 

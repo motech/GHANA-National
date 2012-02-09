@@ -7,9 +7,11 @@ import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
+import org.motechproject.ghana.national.functional.data.TestMobileMidwifeUnEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.pages.BasePage;
 import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEnrollmentPage;
+import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeUnEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
@@ -66,6 +68,29 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
     }
 
     @Test
+    public void shouldEnrollAPatientToMobileMidwifeProgramAndUnEnroll() {
+        // create
+        TestPatient patient = TestPatient.with("Samy Johnson" + new DataGenerator().randomString(5), staffId);
+        String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
+
+        TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId);
+
+        MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, homePage);
+        enrollmentPage.enroll(enrollmentDetails);
+
+        enrollmentPage = toMobileMidwifeEnrollmentPage(patient, enrollmentPage);
+        TestMobileMidwifeEnrollment midwifeEnrollment = enrollmentPage.details();
+        assertEquals("Enrollment details doesn't match", enrollmentDetails, midwifeEnrollment);
+
+        TestMobileMidwifeUnEnrollment unEnrollment = TestMobileMidwifeUnEnrollment.with(staffId).patientId(patientId);
+        MobileMidwifeUnEnrollmentPage unEnrollmentPage = toMobileMidwifeUnEnrollmentPage(patient, enrollmentPage);
+        unEnrollmentPage.unenroll(unEnrollment);
+
+        enrollmentPage = toMobileMidwifeEnrollmentPage(patient, enrollmentPage);
+        assertEquals("Enrollment details doesn't match after un-enrollment", enrollmentDetails.status("INACTIVE"), enrollmentPage.details());
+    }
+
+    @Test
     public void shouldNotSubmitDayOfWeekAndTimeOfDayForSMSMedium_ForMobileMidwifeEnrollment() {
 
         // create
@@ -92,5 +117,12 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
         searchPatientPage.searchWithName(patient.firstName());
         PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, patient);
         return browser.toMobileMidwifeEnrollmentForm(patientEditPage);
+    }
+
+    private MobileMidwifeUnEnrollmentPage toMobileMidwifeUnEnrollmentPage(TestPatient patient, BasePage basePage) {
+        SearchPatientPage searchPatientPage = browser.toSearchPatient(basePage);
+        searchPatientPage.searchWithName(patient.firstName());
+        PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, patient);
+        return browser.toMobileMidwifeUnEnrollmentForm(patientEditPage);
     }
 }

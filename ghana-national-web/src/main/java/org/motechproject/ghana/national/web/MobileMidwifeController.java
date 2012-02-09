@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.validator.MobileMidwifeValidator;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
+import org.motechproject.ghana.national.web.form.MobileMidwifeUnEnrollForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.DayOfWeek;
@@ -29,10 +30,10 @@ import java.util.Map;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 @Controller
-@RequestMapping(value = "/admin/enroll/mobile-midwife")
 public class MobileMidwifeController {
 
     public static final String MOBILE_MIDWIFE_URL = "enroll/mobile-midwife/new";
+    public static final String MOBILE_MIDWIFE_UNREGISTER_URL = "unenroll/mobile-midwife";
     public static final String SUCCESS_MESSAGE = "mobilemidwife_enroll_success";
     private MobileMidwifeValidator mobileMidwifeValidator;
     private MobileMidwifeService mobileMidwifeService;
@@ -53,12 +54,12 @@ public class MobileMidwifeController {
     }
 
     @ApiSession
-    @RequestMapping(value = "form", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/enroll/mobile-midwife/form", method = RequestMethod.GET)
     public String form(@RequestParam String motechPatientId, ModelMap modelMap) {
 
         MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findLatestEnrollment(motechPatientId);
         MobileMidwifeEnrollmentForm enrollmentForm = midwifeEnrollment != null ? createMobileMidwifeEnrollmentForm(midwifeEnrollment)
-                : new MobileMidwifeEnrollmentForm().setPatientMotechId(motechPatientId).setStatus("ACTIVE");
+                : new MobileMidwifeEnrollmentForm().setPatientMotechId(motechPatientId);
         addFormInfo(modelMap, enrollmentForm);
         return MOBILE_MIDWIFE_URL;
     }
@@ -85,7 +86,7 @@ public class MobileMidwifeController {
     }
 
     @ApiSession
-    @RequestMapping(value = "save", method = RequestMethod.POST)
+    @RequestMapping(value = "/admin/enroll/mobile-midwife/save", method = RequestMethod.POST)
     public String save(MobileMidwifeEnrollmentForm form, BindingResult bindingResult, ModelMap modelMap) {
         MobileMidwifeEnrollment midwifeEnrollment = createEnrollment(form);
         List<FormError> formErrors = mobileMidwifeValidator.validate(midwifeEnrollment);
@@ -98,7 +99,34 @@ public class MobileMidwifeController {
         return MOBILE_MIDWIFE_URL;
     }
 
+    @ApiSession
+    @RequestMapping(value = "/admin/unenroll/mobile-midwife")
+    public String unregisterView(@RequestParam String motechPatientId, ModelMap modelMap) {
+        MobileMidwifeUnEnrollForm form = new MobileMidwifeUnEnrollForm();
+        form.setPatientMotechId(motechPatientId);
+        modelMap.put("mobileMidwifeUnEnrollForm", form);
+        modelMap.mergeAttributes(facilityHelper.locationMap());
+        return MOBILE_MIDWIFE_UNREGISTER_URL;
+    }
+
+    @ApiSession
+    @RequestMapping(value = "/admin/unenroll/mobile-midwife/save")
+    public String unregister(MobileMidwifeUnEnrollForm form, ModelMap modelMap) {
+        String patientMotechId = form.getPatientMotechId();
+        List<FormError> formErrors = mobileMidwifeValidator.validateFacilityPatientAndStaff(patientMotechId,
+                facilityService.getFacility(form.getFacilityForm().getFacilityId()).getMotechId(), form.getStaffMotechId());
+        if (formErrors.isEmpty()) {
+            mobileMidwifeService.unregister(patientMotechId);
+            modelMap.put("successMessage", "Successfully unregistered");
+        }
+        modelMap.put("formErrors", formErrors);
+        modelMap.put("mobileMidwifeUnEnrollForm", form);
+        modelMap.mergeAttributes(facilityHelper.locationMap());
+        return MOBILE_MIDWIFE_UNREGISTER_URL;
+    }
+
     private void mobileMidwifeRegistration(MobileMidwifeEnrollmentForm form, MobileMidwifeEnrollment midwifeEnrollment) {
+        form.setStatus("ACTIVE");
         mobileMidwifeService.register(midwifeEnrollment);
     }
 

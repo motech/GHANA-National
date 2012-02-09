@@ -106,6 +106,11 @@ public class Browser implements DisposableBean {
         return new MobileMidwifeEnrollmentPage(webDriver);
     }
 
+    public MobileMidwifeUnEnrollmentPage toMobileMidwifeUnEnrollmentForm(PatientEditPage patientEditPage) {
+        patientEditPage.clickUnEnrollMobileMidwifeLink();
+        return new MobileMidwifeUnEnrollmentPage(webDriver);
+    }
+
     public void quit() {
         webDriver.quit();
     }

@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,16 +14,19 @@ import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.validator.MobileMidwifeValidator;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
+import org.motechproject.ghana.national.web.form.MobileMidwifeUnEnrollForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
+import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
 
 import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -146,6 +150,61 @@ public class MobileMidwifeControllerTest {
 
         assertThat(editUrl, isEq(MOBILE_MIDWIFE_URL));
         assertThat((String) modelMap.get("successMessage"), isEq(successMsg));
+    }
+
+    @Test
+    public void shouldUnregisterPatientFromMobileMidwifeEnrollment() {
+        String patientId = "patientId";
+        String staffId = "staffId";
+        String facilityId = "facilityId";
+        String facilityMotechId = "facilityMotechId";
+
+        MobileMidwifeUnEnrollForm mobileMidwifeUnenrollForm = new MobileMidwifeUnEnrollForm();
+        mobileMidwifeUnenrollForm.setPatientMotechId(patientId);
+        FacilityForm facilityForm = new FacilityForm();
+        facilityForm.setFacilityId(facilityId);
+        mobileMidwifeUnenrollForm.setFacilityForm(facilityForm);
+        mobileMidwifeUnenrollForm.setStaffMotechId(staffId);
+
+        Facility facility = new Facility(new MRSFacility(facilityId));
+        facility.motechId(facilityMotechId);
+        when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
+        when(mobileMidwifeValidator.validateFacilityPatientAndStaff(patientId, facilityMotechId, staffId)).thenReturn(Collections.EMPTY_LIST);
+        ModelMap modelMap = new ModelMap();
+
+        controller.unregister(mobileMidwifeUnenrollForm, modelMap);
+
+        assertTrue(CollectionUtils.isEmpty((Collection) modelMap.get("formErrors")));
+        verify(mobileMidwifeService).unregister(patientId);
+    }
+
+    @Test
+    public void shouldNotUnregisterPatientFromMobileMidwifeEnrollmentWhenFormErrorsOccur() {
+        String patientId = "patientId";
+        String staffId = "staffId";
+        String facilityId = "facilityId";
+        String facilityMotechId = "facilityMotechId";
+
+        MobileMidwifeUnEnrollForm mobileMidwifeUnenrollForm = new MobileMidwifeUnEnrollForm();
+        mobileMidwifeUnenrollForm.setPatientMotechId(patientId);
+        FacilityForm facilityForm = new FacilityForm();
+        facilityForm.setFacilityId(facilityId);
+        mobileMidwifeUnenrollForm.setFacilityForm(facilityForm);
+        mobileMidwifeUnenrollForm.setStaffMotechId(staffId);
+
+        Facility facility = new Facility(new MRSFacility(facilityId));
+        facility.motechId(facilityMotechId);
+        when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
+        when(mobileMidwifeValidator.validateFacilityPatientAndStaff(patientId, facilityMotechId, staffId)).thenReturn(new ArrayList<FormError>() {{
+            add(new FormError("staffId", "not valid"));
+        }});
+        ModelMap modelMap = new ModelMap();
+
+        controller.unregister(mobileMidwifeUnenrollForm, modelMap);
+
+        List<FormError> formErrors = (List<FormError>) modelMap.get("formErrors");
+        assertThat(formErrors.get(0).getParameter(), is("staffId"));
+        verify(mobileMidwifeService, never()).unregister(patientId);
     }
 
     @Test
