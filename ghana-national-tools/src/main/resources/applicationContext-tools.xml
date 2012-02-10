@@ -24,7 +24,7 @@
                 <ref bean="staffTypeSeed"/>
                 <ref bean="facilitySeed"/>
                 <ref bean="SMSTextContentSeed"/>
-                <ref bean="mobileMidwifeSeed"/>
+                <ref bean="mobileMidwifeMigrationSeed"/>
                 <ref bean="mobileMidwifeMessageSeed"/>
             </list>
         </constructor-arg>

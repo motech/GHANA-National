@@ -194,7 +194,7 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     }
 
     public DateTime getEnrollmentDateTime() {
-        return setTimeZone(enrollmentDateTime);
+        return enrollmentDateTime == null ? null : setTimeZone(enrollmentDateTime);
     }
 
     public DateTime getScheduleStartDate() {

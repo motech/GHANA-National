@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component
-public class MobileMidwifeSeed extends Seed {
+public class MobileMidwifeMigrationSeed extends Seed {
 
     @Autowired
     MobileMidwifeSource mobileMidwifeSource;
@@ -51,7 +51,6 @@ public class MobileMidwifeSeed extends Seed {
             }
             sortEnrollmentsByDate(newList);
             addMobileMidwifeEnrollmentDataToDB(mobileMidwifeEnrollment, newList);
-
         }
     }
 
