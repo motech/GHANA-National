@@ -45,4 +45,8 @@ public class BasePage<T> {
 
     public void waitForSuccessfulCompletion() {
     }
+    
+    public void waitFor(WebElement element) {
+        elementPoller.waitForElementID(element.getAttribute("id"), driver);
+    }
 }

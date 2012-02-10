@@ -253,6 +253,7 @@ public class ANCEnrollmentPage extends HomePage {
     }
 
     public ANCEnrollmentPage withIPT(Boolean iptValue) {
+        waitFor(iptCareHistory);
         boolean selected = iptCareHistory.isSelected();
         if ((iptValue && !selected) || (!iptValue && selected)) {
             iptCareHistory.click();

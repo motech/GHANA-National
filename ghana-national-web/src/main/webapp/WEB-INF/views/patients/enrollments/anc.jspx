@@ -133,6 +133,7 @@
         <div id="registrationTodayHolder" class="form-field">
             <label class="formLabel" for="registrationToday"><spring:message code="registration_today?"/> *:</label>
             <form:select path="registrationToday" id="registrationToday" cssClass="jsRequire">
+                <option value="">Select a Value</option>
                 <option value="${fn:escapeXml(registration_today)}">${fn:escapeXml(registration_today_display)}</option>
                 <option value="${fn:escapeXml(registration_in_past)}">${fn:escapeXml(registration_in_past_display)}</option>
                 <option value="${fn:escapeXml(registration_in_past_in_other_facility)}">${fn:escapeXml(registration_in_past_in_other_facility_display)}</option>
