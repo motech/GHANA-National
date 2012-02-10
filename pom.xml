@@ -24,8 +24,8 @@
         <skip>false</skip>
         <exec-maven-plugin.version>1.1.1</exec-maven-plugin.version>
         <environment>qa</environment>
-        <openmrs.skip>false</openmrs.skip>
-        <drop.db.skip>false</drop.db.skip>
+        <openmrs.skip>true</openmrs.skip>
+        <drop.db.skip>true</drop.db.skip>
         <jacoco.agent.path>${project.basedir}/../build/lib/jacocoagent.jar</jacoco.agent.path>
         <jacoco.file.path>${project.build.directory}/jacoco.exec</jacoco.file.path>
     </properties>

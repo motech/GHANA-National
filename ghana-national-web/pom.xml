@@ -322,7 +322,8 @@
                                     <contextPath>/openmrs</contextPath>
                                 </contextHandler>
                                 <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
-                                    <war>ghana-national-common/target/lib/motech-delivery-tools-web-0.3-SNAPSHOT.war</war>
+                                    <war>ghana-national-common/target/lib/motech-delivery-tools-web-0.3-SNAPSHOT.war
+                                    </war>
                                     <contextPath>/deliverytools</contextPath>
                                 </contextHandler>
                             </contextHandlers>
@@ -336,6 +337,7 @@
                                 </goals>
                                 <configuration>
                                     <daemon>true</daemon>
+                                    <skip>false</skip>
                                 </configuration>
                             </execution>
                             <execution>
@@ -343,6 +345,166 @@
                                 <phase>post-integration-test</phase>
                                 <goals>
                                     <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>omrs-on-tomcat</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>1.0-alpha-2</version>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>${parent.relativePath}/../build/maven.properties</file>
+                                    </files>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <version>1.5</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>mysql</groupId>
+                                <artifactId>mysql-connector-java</artifactId>
+                                <version>5.1.13</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <driver>${mysql.driver}</driver>
+                            <username>${mysql.user}</username>
+                            <password>${mysql.password}</password>
+                            <url>${mysql.url}</url>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>drop-db</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <autocommit>true</autocommit>
+                                    <sqlCommand>
+                                        drop database openmrs_test;
+                                    </sqlCommand>
+                                    <onError>continue</onError>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create-db</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <autocommit>true</autocommit>
+                                    <sqlCommand>
+                                        create database openmrs_test default charset utf8;
+                                        grant all on openmrs_test.* to 'openmrs'@'localhost' identified by
+                                        'password';
+                                        grant all on openmrs_test.* to 'openmrs'@'%' identified by 'password';
+                                        flush privileges;
+                                        use openmrs_test;
+                                    </sqlCommand>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <version>2.0.1</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>mysql</groupId>
+                                <artifactId>mysql-connector-java</artifactId>
+                                <version>5.1.13</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <changeLogFile>../build/sql/master.xml</changeLogFile>
+                                    <driver>${mysql.driver}</driver>
+                                    <url>${mysql.url}/${mysql.db}</url>
+                                    <username>${mysql.user}</username>
+                                    <password>${mysql.password}</password>
+                                </configuration>
+                                <goals>
+                                    <goal>update</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <id>create-move-openmrs-modules-and-deploy-openmrs</id>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <target>
+                                        <condition property="openmrs.directory" value="${user.home}/.OpenMRS"
+                                                   else="${user.home}/AppData/Roaming/OpenMRS">
+                                            <os family="unix"/>
+                                        </condition>
+
+                                        <echo message="removing and creating openmrs directory in ${openmrs.directory}"/>
+                                        <delete dir="${openmrs.directory}"/>
+                                        <mkdir dir="${openmrs.directory}"/>
+                                        <mkdir dir="${openmrs.directory}/modules"/>
+                                        <copy file="../ghana-national-common/src/main/resources/openmrs-data/openmrs-runtime.properties"
+                                              tofile="${openmrs.directory}/openmrs-runtime.properties"/>
+                                        <copy file="../idgen-omod/target/idgen-omod.omod"
+                                              tofile="${openmrs.directory}/modules/idgen-omod.omod"/>
+                                        <copy todir="${openmrs.directory}/modules">
+                                            <fileset
+                                                    dir="../ghana-national-common/src/main/resources/openmrs-data/modules"/>
+                                        </copy>
+                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+                                            <classpath>
+                                                <pathelement
+                                                        location="${project.basedir}/../build/lib/ant-tomcat/ant-contrib-1.0b3.jar"/>
+                                            </classpath>
+                                        </taskdef>
+                                        <path id="tomcat.classpath">
+                                            <fileset dir="${project.basedir}/../build/lib/ant-tomcat/">
+                                                <include name="*.jar"/>
+                                            </fileset>
+                                        </path>
+                                        <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask"
+                                                 classpathref="tomcat.classpath"/>
+                                        <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask"
+                                                 classpathref="tomcat.classpath"/>
+                                        <undeploy url="${tomcat.manager.url}" failonerror="false"
+                                                  username="${tomcat.user}" password="${tomcat.password}"
+                                                  path="/openmrs"/>
+                                        <deploy url="${tomcat.manager.url}" username="${tomcat.user}"
+                                                password="${tomcat.password}" path="/openmrs"
+                                                war="file:${project.basedir}/../build/openmrs/openmrs.war"/>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
                                 </goals>
                             </execution>
                         </executions>
