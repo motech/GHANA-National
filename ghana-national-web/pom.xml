@@ -311,6 +311,7 @@
                             <stopPort>9999</stopPort>
                             <stopKey>foo</stopKey>
                             <skip>${openmrs.skip}</skip>
+                            <webApp>ghana-national-web/target/ghana-national-web-1.0-SNAPSHOT</webApp>
                             <contextHandlers>
                                 <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
                                     <war>build/openmrs/openmrs.war</war>
