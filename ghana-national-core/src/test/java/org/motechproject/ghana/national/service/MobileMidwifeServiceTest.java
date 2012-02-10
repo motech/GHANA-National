@@ -35,6 +35,7 @@ public class MobileMidwifeServiceTest {
                 patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday).phoneOwnership(PhoneOwnership.HOUSEHOLD)
                 .build();
         when(allEnrollments.findActiveBy(patientId)).thenReturn(null);
+        when(mockMobileMidwifeCampaign.nearestCycleDate(enrollment)).thenReturn(enrollment.getEnrollmentDateTime());
 
         service.register(enrollment);
         verifyCreateNewEnrollment(enrollment);
@@ -62,7 +63,10 @@ public class MobileMidwifeServiceTest {
                 patientId(patientId).staffId("staff13").consent(false).phoneOwnership(PhoneOwnership.PERSONAL).build();
         when(allEnrollments.findActiveBy(patientId)).thenReturn(existingEnrollmentWithNoConsent);
 
-        service.register(new MobileMidwifeEnrollmentBuilder().patientId(patientId).phoneOwnership(PhoneOwnership.HOUSEHOLD).consent(true).build());
+        MobileMidwifeEnrollment newEnrollment = new MobileMidwifeEnrollmentBuilder().patientId(patientId)
+                .phoneOwnership(PhoneOwnership.HOUSEHOLD).consent(true).build();
+        when(mockMobileMidwifeCampaign.nearestCycleDate(newEnrollment)).thenReturn(newEnrollment.getEnrollmentDateTime());
+        service.register(newEnrollment);
 
         verify(allEnrollments).update(existingEnrollmentWithNoConsent);
         verify(mockMobileMidwifeCampaign, never()).stop(existingEnrollmentWithNoConsent);
@@ -77,6 +81,8 @@ public class MobileMidwifeServiceTest {
         MobileMidwifeEnrollment existingEnrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
                 patientId(patientId).consent(true).phoneOwnership(PhoneOwnership.HOUSEHOLD).build();
         when(allEnrollments.findActiveBy(patientId)).thenReturn(existingEnrollment);
+        when(mockMobileMidwifeCampaign.nearestCycleDate(enrollment)).thenReturn(enrollment.getEnrollmentDateTime());
+
         service = spy(service);
 
         service.register(enrollment);
