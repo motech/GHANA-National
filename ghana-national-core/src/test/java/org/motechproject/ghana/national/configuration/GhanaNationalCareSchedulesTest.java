@@ -15,7 +15,8 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class GhanaNationalCareSchedulesTest extends BaseCareSchedulesTest{
+public class
+        GhanaNationalCareSchedulesTest extends BaseCareSchedulesTest{
     private Time preferredAlertTime;
 
     @Before

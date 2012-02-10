@@ -55,6 +55,12 @@
                 "fileName":"OutPatientVisit.xml",
                 "bean":"org.motechproject.ghana.national.bean.OutPatientVisitForm",
                 "validator":"org.motechproject.ghana.national.validator.OutPatientVisitFormValidator"
+            },
+            {
+                "name":"ancVisit",
+                "fileName":"ANCVisit.xml",
+                "bean":"org.motechproject.ghana.national.bean.ANCVisitForm",
+                "validator":"org.motechproject.ghana.national.validator.ANCVisitFormValidator"
             }
         ]
     }
