@@ -49,10 +49,8 @@ public class EditPatientFormHandler implements FormPublishHandler {
 
         EditClientForm form = (EditClientForm) event.getParameters().get(Constants.FORM_BEAN);
 
-        MRSPatient patientFromDb = null;
         try {
-            patientFromDb = updatePatient(form);
-
+            updatePatient(form);
         } catch (Exception e) {
             log.error("Encountered exception while updating patient", e);
         }
