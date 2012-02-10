@@ -95,6 +95,12 @@ public class TestANCEnrollment implements CareEnrollment {
         return enrollmentDetails;
     }
 
+    public Map<String, String> withoutMobileMidwifeEnrollmentThroughMobile() {
+        Map<String, String> enrollmentDetails = forMobile();
+        enrollmentDetails.put("enroll", "N");
+        return enrollmentDetails;
+    }
+
     @Override
     public Map<String, String> forClientRegistrationThroughMobile(TestPatient patient) {
         Map<String, String> enrollmentDetails = forMobile();

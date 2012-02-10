@@ -68,7 +68,7 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
         assertThat(errorsMap.get("motechId"), hasItem("not found"));
     }
 
-    @Test(enabled = false)
+    @Test
     public void shouldCreateANCForAPatientWithMobileDeviceAndSearchForItInWeb() {
         DataGenerator dataGenerator = new DataGenerator();
 
@@ -95,6 +95,35 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
         MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientEditPage);
         assertThat(mobileMidwifeEnrollmentPage.details(), is(equalTo(mmEnrollmentDetails)));
     }
+
+    @Test
+    public void shouldUnRegisterExistingMobileMidWifeWhileANCRegistration() {
+        DataGenerator dataGenerator = new DataGenerator();
+
+        String staffId = staffGenerator.createStaff(browser, homePage);
+
+        TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
+                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
+                .estimatedDateOfBirth(false);
+
+        String patientId = patientGenerator.createPatientWithStaff(testPatient, browser, homePage);
+
+        PatientEditPage patientEditPage = toPatientEditPage(testPatient);
+        MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientEditPage);
+        mobileMidwifeEnrollmentPage.enroll(TestMobileMidwifeEnrollment.with(staffId));
+
+        TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId);
+
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerANCForm(), ancEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
+        assertEquals(1, response.getSuccessCount());
+
+        PatientEditPage patientPageAfterEdit = toPatientEditPage(testPatient);
+        mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientPageAfterEdit);
+
+
+        assertThat(mobileMidwifeEnrollmentPage.status(),is("INACTIVE"));
+    }
+
 
     private PatientEditPage toPatientEditPage(TestPatient testPatient) {
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
