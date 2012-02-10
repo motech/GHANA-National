@@ -2,7 +2,7 @@
     {
         "name" : "PREGNANCY",
         "type" : "REPEATING",
-        "maxDuration" : "35 Weeks",
+        "maxDuration" : "40 Weeks",
         "messages" : [
             {
                 "name" : "Pregnancy Message",
