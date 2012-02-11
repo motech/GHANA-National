@@ -16,6 +16,7 @@
             <artifactId>motech-delivery-tools-web</artifactId>
             <version>0.3-SNAPSHOT</version>
             <type>war</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
