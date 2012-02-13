@@ -18,6 +18,7 @@ import java.util.HashMap;
 import static org.mockito.Mockito.*;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.EDD;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.MOTECH_ID;
+import static org.motechproject.ghana.national.handler.CareScheduleHandler.*;
 
 public class CareScheduleHandlerTest {
     AllPatients allPatients = mock(AllPatients.class);
@@ -39,7 +40,7 @@ public class CareScheduleHandlerTest {
         final LocalDate edd = DateUtil.today();
         LocalDate concievedDate = edd.minusWeeks(40);
 
-        when(textMessageService.getSMS("PREGNANCY_ALERT_SMS_KEY", new HashMap<String, String>() {{
+        when(textMessageService.getSMS(PREGNANCY_ALERT_SMS_KEY, new HashMap<String, String>() {{
             put(MOTECH_ID, "motechid");
             put(EDD, edd.toString());
         }})).thenReturn(SMS.fromSMSText("motechid, " + edd.toString()));

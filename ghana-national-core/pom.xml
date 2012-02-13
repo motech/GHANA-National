@@ -129,7 +129,7 @@
                             <includeGroupIds>org.motechproject</includeGroupIds>
                             <excludeTransitive>true</excludeTransitive>
                             <includes>
-                                openmrs-data/**, sms-http-template.json, osgi.properties, activemq.properties, quartz.properties,scheduletracking.properties,schedules/**,programs/**, messageCampaign.properties 
+                                openmrs-data/**, sms-http-template.json, osgi.properties, textMessages.properties, activemq.properties, quartz.properties,scheduletracking.properties,schedules/**,programs/**, messageCampaign.properties
                             </includes>
                         </configuration>
                     </execution>

@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.handlers;
 
 import org.joda.time.DateTime;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
-import org.motechproject.ghana.national.configuration.TextMessageTemplates;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
@@ -28,6 +27,7 @@ import java.util.HashSet;
 public class DeliveryNotificationFormHandler implements FormPublishHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+    static final String DELIVERY_NOTIFICATION_SMS_KEY = "DELIVERY_NOTIFICATION_SMS_KEY";
 
     @Autowired
     EncounterService encounterService;
@@ -65,7 +65,7 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
         Patient patient = patientService.getPatientByMotechId(motechId);
         if (patient.getMrsPatient().getFacility() != null) {
             Facility facility = facilityService.getFacility(patient.getMrsPatient().getFacility().getId());
-            String template = textMessageService.getSMSTemplate(TextMessageTemplates.DELIVERY_NOTIFICATION_SMS[0]);
+            String template = textMessageService.getSMSTemplate(DELIVERY_NOTIFICATION_SMS_KEY);
             SMS sms = SMS.fromTemplate(template).fillPatientDetails(patient.getMotechId(), patient.getFirstName(), patient.getLastName()).fillDateTime(deliveryTime.toDate());
             textMessageService.sendSMS(facility, sms);
         }

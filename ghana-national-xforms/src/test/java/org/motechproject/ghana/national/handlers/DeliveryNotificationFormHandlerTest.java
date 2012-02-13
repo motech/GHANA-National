@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
-import org.motechproject.ghana.national.configuration.TextMessageTemplates;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
@@ -32,6 +31,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.handlers.DeliveryNotificationFormHandler.*;
 
 public class DeliveryNotificationFormHandlerTest {
 
@@ -86,7 +86,7 @@ public class DeliveryNotificationFormHandlerTest {
         when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
         when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
 
-        when(mockTextMessageService.getSMSTemplate(TextMessageTemplates.DELIVERY_NOTIFICATION_SMS[0])).thenReturn("${motechId}-${firstName}-${lastName}-${date}");
+        when(mockTextMessageService.getSMSTemplate(DELIVERY_NOTIFICATION_SMS_KEY)).thenReturn("${motechId}-${firstName}-${lastName}-${date}");
 
         deliveryNotificationFormHandler.handleFormEvent(event);
 

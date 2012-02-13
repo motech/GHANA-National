@@ -20,6 +20,7 @@
 
     <util:properties id="couchdbProperties" location="classpath:couchdb.properties"/>
     <util:properties id="ghanaNationalProperties" location="classpath:ghana-national.properties"/>
+    <util:properties id="textMessageProperties" location="classpath:textMessages.properties"/>
 
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>

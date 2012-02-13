@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterClientForm;
-import org.motechproject.ghana.national.configuration.TextMessageTemplates;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.*;
@@ -32,6 +31,7 @@ import java.util.List;
 public class PatientRegistrationFormHandler implements FormPublishHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+    static final String REGISTER_SUCCESS_SMS_KEY = "REGISTER_SUCCESS_SMS_KEY";
 
     @Autowired
     private PatientService patientService;
@@ -77,7 +77,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             registerForANC(registerClientForm, facilityId, savedPatient.getMotechId());
 
             if (registerClientForm.getSender() != null) {
-                String template = textMessageService.getSMSTemplate(TextMessageTemplates.REGISTER_SUCCESS_SMS[0]);
+                String template = textMessageService.getSMSTemplate("REGISTER_SUCCESS_SMS_KEY");
                 SMS sms = SMS.fromTemplate(template).fillPatientDetails(savedPatient.getMotechId(), patient.getFirstName(), patient.getLastName());
                 textMessageService.sendSMS(registerClientForm.getSender(), sms);
             }

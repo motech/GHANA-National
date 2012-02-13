@@ -6,7 +6,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
-import org.motechproject.ghana.national.configuration.TextMessageTemplates;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
@@ -35,6 +34,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.handlers.PatientRegistrationFormHandler.*;
 
 public class PatientRegistrationFormHandlerTest {
 
@@ -102,7 +102,7 @@ public class PatientRegistrationFormHandlerTest {
         when(facility.mrsFacilityId()).thenReturn(facilityId);
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
 
-        when(mockTextMessageService.getSMSTemplate(TextMessageTemplates.REGISTER_SUCCESS_SMS[0])).thenReturn("${motechId}-${firstName}-${lastName}");
+        when(mockTextMessageService.getSMSTemplate(REGISTER_SUCCESS_SMS_KEY)).thenReturn("${motechId}-${firstName}-${lastName}");
 
         patientRegistrationFormHandler.handleFormEvent(event);
 

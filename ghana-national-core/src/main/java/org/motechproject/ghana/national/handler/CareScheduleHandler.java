@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.handler;
 
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.configuration.CareScheduleNames;
-import org.motechproject.ghana.national.configuration.TextMessageTemplates;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMS;
@@ -26,6 +25,7 @@ import static org.motechproject.ghana.national.configuration.TextMessageTemplate
 
 @Component
 public class CareScheduleHandler {
+    public static final String PREGNANCY_ALERT_SMS_KEY = "PREGNANCY_ALERT_SMS_KEY";
     private AllPatients allPatients;
     private TextMessageService textMessageService;
     private AllFacilities allFacilities;
@@ -60,7 +60,7 @@ public class CareScheduleHandler {
         final String motechId = patient.getMrsPatient().getMotechId();
         Facility facility = allFacilities.getFacility(patient.getMrsPatient().getFacility().getId());
 
-        SMS sms = textMessageService.getSMS(TextMessageTemplates.PREGNANCY_ALERT_SMS[0], new HashMap<String, String>() {{
+        SMS sms = textMessageService.getSMS(PREGNANCY_ALERT_SMS_KEY, new HashMap<String, String>() {{
             put(MOTECH_ID, motechId);
             put(EDD, dateOfDelivery.toString());
         }});
