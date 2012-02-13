@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
+import org.joda.time.DateTime;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
 import org.motechproject.ghana.national.configuration.TextMessageTemplates;
 import org.motechproject.ghana.national.domain.Constants;
@@ -50,21 +51,22 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
             deliveryNotificationForm = (DeliveryNotificationForm) event.getParameters().get(Constants.FORM_BEAN);
             Patient patient = patientService.getPatientByMotechId(deliveryNotificationForm.getMotechId());
             Facility facility = facilityService.getFacilityByMotechId(deliveryNotificationForm.getFacilityId());
+            DateTime deliveryTime = deliveryNotificationForm.getDatetime();
             encounterService.persistEncounter(patient.getMrsPatient(), deliveryNotificationForm.getStaffId(),
                     facility.getMrsFacilityId(), Constants.ENCOUNTER_PREGDELNOTIFYVISIT,
-                    deliveryNotificationForm.getDatetime().toDate(), new HashSet<MRSObservation>());
-            sendDeliveryNotificationMessage(deliveryNotificationForm.getMotechId());
+                    deliveryTime.toDate(), new HashSet<MRSObservation>());
+            sendDeliveryNotificationMessage(deliveryNotificationForm.getMotechId(), deliveryTime);
         } catch (Exception e) {
             log.error("Exception occured in saving Delivery Notification details for: " + deliveryNotificationForm.getMotechId(), e);
         }
     }
 
-    private void sendDeliveryNotificationMessage(String motechId) {
+    private void sendDeliveryNotificationMessage(String motechId, DateTime deliveryTime) {
         Patient patient = patientService.getPatientByMotechId(motechId);
         if (patient.getMrsPatient().getFacility() != null) {
             Facility facility = facilityService.getFacility(patient.getMrsPatient().getFacility().getId());
             String template = textMessageService.getSMSTemplate(TextMessageTemplates.DELIVERY_NOTIFICATION_SMS[0]);
-            SMS sms = SMS.fromTemplate(template).fillPatientDetails(patient.getMotechId(), patient.getFirstName(), patient.getLastName());
+            SMS sms = SMS.fromTemplate(template).fillPatientDetails(patient.getMotechId(), patient.getFirstName(), patient.getLastName()).fillDateTime(deliveryTime.toDate());
             textMessageService.sendSMS(facility, sms);
         }
     }

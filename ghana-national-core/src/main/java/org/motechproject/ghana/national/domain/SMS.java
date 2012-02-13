@@ -1,5 +1,7 @@
 package org.motechproject.ghana.national.domain;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
@@ -19,15 +21,22 @@ public class SMS {
         return new SMS().text(text);
     }
 
-    public SMS fill(Map<String, String> runTimeValues){
+    public SMS fill(Map<String, String> runTimeValues) {
         for (Map.Entry<String, String> runTimeValue : runTimeValues.entrySet()) {
             text = template.replace(runTimeValue.getKey(), runTimeValue.getValue());
         }
         return this;
     }
 
-    public SMS fillPatientDetails(String motechId, String firstName, String lastName){
+    public SMS fillPatientDetails(String motechId, String firstName, String lastName) {
         text = template.replace(MOTECH_ID, motechId).replace(FIRST_NAME, firstName).replace(LAST_NAME, lastName);
+        template = text;
+        return this;
+    }
+
+    public SMS fillDateTime(Date date) {
+        text = template.replace(DATE, DateFormat.getDateTimeInstance().format(date));
+        template = text;
         return this;
     }
 

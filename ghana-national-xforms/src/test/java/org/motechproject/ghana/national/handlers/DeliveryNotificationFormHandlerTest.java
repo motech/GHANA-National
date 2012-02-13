@@ -22,14 +22,13 @@ import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.text.DateFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -87,14 +86,14 @@ public class DeliveryNotificationFormHandlerTest {
         when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
         when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
 
-        when(mockTextMessageService.getSMSTemplate(TextMessageTemplates.DELIVERY_NOTIFICATION_SMS[0])).thenReturn("${motechId}-${firstName}-${lastName}");
+        when(mockTextMessageService.getSMSTemplate(TextMessageTemplates.DELIVERY_NOTIFICATION_SMS[0])).thenReturn("${motechId}-${firstName}-${lastName}-${date}");
 
         deliveryNotificationFormHandler.handleFormEvent(event);
 
         final HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         verify(mockEncounterService).persistEncounter(mrsPatient, staffId, facilityId, Constants.ENCOUNTER_PREGDELNOTIFYVISIT,
                 datetime.toDate(), mrsObservations);
-        verify(mockTextMessageService).sendSMS(facility, SMS.fromSMSText("motechid-firstname-lastname"));
+        verify(mockTextMessageService).sendSMS(facility, SMS.fromSMSText("motechid-firstname-lastname-" + DateFormat.getDateTimeInstance().format(datetime.toDate())));
     }
 
     @Test
