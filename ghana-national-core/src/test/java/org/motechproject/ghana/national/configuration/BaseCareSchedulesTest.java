@@ -3,9 +3,13 @@ package org.motechproject.ghana.national.configuration;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.motechproject.model.RepeatingSchedulableJob;
 import org.motechproject.scheduler.MotechSchedulerService;
+import org.motechproject.scheduletracking.api.domain.Enrollment;
 import org.motechproject.scheduletracking.api.repository.AllEnrollments;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
 import org.motechproject.scheduletracking.api.service.impl.EnrollmentAlertService;
@@ -31,11 +35,20 @@ public class BaseCareSchedulesTest extends BaseUnitTest {
 
     protected ScheduleTrackingServiceImpl scheduleTrackingService;
 
+    private String enrollmentId = "enrollmentId";
+
     @Before
     public void setUp() {
         initMocks(this);
-
         AllEnrollments allEnrollments = mock(AllEnrollments.class);
+        when(allEnrollments.addOrReplace(Matchers.<Enrollment>any())).thenAnswer(new Answer<Enrollment>() {
+            @Override
+            public Enrollment answer(InvocationOnMock invocationOnMock) throws Throwable {
+                Enrollment enrollment = (Enrollment) invocationOnMock.getArguments()[0];
+                enrollment.setId(enrollmentId);
+                return enrollment;
+            }
+        });
         EnrollmentAlertService enrollmentAlertService = new EnrollmentAlertService(allTrackedSchedules, motechSchedulerService);
         EnrollmentDefaultmentService enrollmentDefaultmentService = new EnrollmentDefaultmentService(allTrackedSchedules, motechSchedulerService);
         EnrollmentService enrollmentService = new EnrollmentService(allTrackedSchedules, allEnrollments, enrollmentAlertService, enrollmentDefaultmentService);
