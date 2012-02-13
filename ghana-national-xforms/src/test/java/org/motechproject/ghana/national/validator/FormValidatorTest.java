@@ -51,11 +51,11 @@ public class FormValidatorTest {
         String motechId = "1234567";
         setupPatientServiceMockToReturnIfPatientIsAliveOrDead(motechId, true);
 
-        List<FormError> formErrors = formValidator.validatePatient(motechId, PATIENT_ID);
+        List<FormError> formErrors = formValidator.validateIfPatientExistsAndIsAlive(motechId, PATIENT_ID);
         assertThat(formErrors, hasItem(new FormError(PATIENT_ID, FormValidator.IS_NOT_ALIVE)));
 
         setupPatientServiceMockToReturnIfPatientIsAliveOrDead(motechId, false);
-        formErrors = formValidator.validatePatient(motechId, PATIENT_ID);
+        formErrors = formValidator.validateIfPatientExistsAndIsAlive(motechId, PATIENT_ID);
         assertThat(formErrors, not(hasItem(new FormError(PATIENT_ID, FormValidator.IS_NOT_ALIVE))));
     }
 
@@ -90,11 +90,11 @@ public class FormValidatorTest {
     public void shouldValidateIfPatientExists() {
         String patientId = "patientId";
         when(patientService.getPatientByMotechId(patientId)).thenReturn(null);
-        List<FormError> formErrors = formValidator.validatePatient(patientId, PATIENT_ID);
+        List<FormError> formErrors = formValidator.validateIfPatientExistsAndIsAlive(patientId, PATIENT_ID);
         assertThat(formErrors, hasItem(new FormError(PATIENT_ID, NOT_FOUND)));
 
         setupPatientServiceMockToReturnIfPatientIsAliveOrDead(patientId, false);
-        formErrors = formValidator.validatePatient(patientId, PATIENT_ID);
+        formErrors = formValidator.validateIfPatientExistsAndIsAlive(patientId, PATIENT_ID);
         assertThat(formErrors, not(hasItem(new FormError(PATIENT_ID, NOT_FOUND))));
     }
 

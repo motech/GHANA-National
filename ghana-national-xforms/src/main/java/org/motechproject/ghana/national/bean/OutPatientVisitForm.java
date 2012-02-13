@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.bean;
 
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
@@ -12,6 +11,9 @@ import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
 
 import java.util.Date;
 
+import static org.motechproject.ghana.national.FormFieldRegExPatterns.MOTECH_ID_PATTERN;
+import static org.motechproject.ghana.national.FormFieldRegExPatterns.NHIS_NO_PATTERN;
+
 public class OutPatientVisitForm extends FormBean {
 
     @Required
@@ -22,7 +24,7 @@ public class OutPatientVisitForm extends FormBean {
     @MotechId(validator = VerhoeffValidator.class)
     private String facilityId;
 
-    @RegEx(pattern = Constants.MOTECH_ID_PATTERN)
+    @RegEx(pattern = MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
 
@@ -43,7 +45,7 @@ public class OutPatientVisitForm extends FormBean {
     private Boolean insured;
 
     @MaxLength(size = 30)
-    @RegEx(pattern = "[a-zA-Z0-9.,'/\\\\-\\_\\s]+")
+    @RegEx(pattern = NHIS_NO_PATTERN)
     private String nhis;
 
     private Date nhisExpires;

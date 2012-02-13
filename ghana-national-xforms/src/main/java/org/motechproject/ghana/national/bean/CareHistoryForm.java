@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.bean;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.ANCCareHistory;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
@@ -18,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.motechproject.ghana.national.FormFieldRegExPatterns.MOTECH_ID_PATTERN;
+
 public class CareHistoryForm extends FormBean {
 
     @Required
@@ -32,7 +33,7 @@ public class CareHistoryForm extends FormBean {
     private Date date;
 
     @Required
-    @RegEx(pattern = Constants.MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
+    @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
 
     @Required

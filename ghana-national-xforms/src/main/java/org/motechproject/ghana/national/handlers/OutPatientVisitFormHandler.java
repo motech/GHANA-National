@@ -9,14 +9,13 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.OutPatientVisitService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.services.MRSPatientAdapter;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.openmrs.services.OpenMRSConceptAdapter;
 import org.motechproject.server.event.annotations.MotechListener;
-import org.openmrs.Concept;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +38,6 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
     @Autowired
     private MRSPatientAdapter patientAdapter;
     public static Integer OTHER_DIAGNOSIS = 78;
-
-    @Autowired
-    OpenMRSConceptAdapter openMRSConceptAdapter;
 
     @Autowired
     OutPatientVisitService outPatientVisitService;
@@ -121,9 +117,9 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
         if (Boolean.TRUE.equals(formBean.getRdtGiven())) {
             MRSObservation rdtGivenObs;
             if (Boolean.TRUE.equals(formBean.getRdtPositive()))
-                rdtGivenObs = new MRSObservation<Concept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST, openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_POSITIVE));
+                rdtGivenObs = new MRSObservation<MRSConcept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST, new MRSConcept(Constants.CONCEPT_POSITIVE));
             else
-                rdtGivenObs = new MRSObservation<Concept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST, openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_NEGATIVE));
+                rdtGivenObs = new MRSObservation<MRSConcept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST, new MRSConcept(Constants.CONCEPT_NEGATIVE));
             observationList.add(rdtGivenObs);
         }
 

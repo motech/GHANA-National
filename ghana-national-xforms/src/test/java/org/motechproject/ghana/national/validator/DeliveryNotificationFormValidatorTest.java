@@ -36,7 +36,7 @@ public class DeliveryNotificationFormValidatorTest {
         validator.validate(formBean);
         verify(formValidator).validateIfStaffExists(formBean.getStaffId());
         verify(formValidator).validateIfFacilityExists(formBean.getFacilityId());
-        verify(formValidator).validatePatient(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME);
+        verify(formValidator).validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME);
         verify(formValidator).validateIfPatientIsFemale(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME);
         verify(formValidator).validateIfPatientIsNotAChild(formBean.getMotechId());
     }
@@ -64,7 +64,7 @@ public class DeliveryNotificationFormValidatorTest {
         };
         when(formValidator.validateIfStaffExists(deliveryNotificationForm.getStaffId())).thenReturn(staffFormErrors);
         when(formValidator.validateIfFacilityExists(deliveryNotificationForm.getFacilityId())).thenReturn(facilityFormErrors);
-        when(formValidator.validatePatient(deliveryNotificationForm.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(patientFormErrors);
+        when(formValidator.validateIfPatientExistsAndIsAlive(deliveryNotificationForm.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(patientFormErrors);
 
         final List<FormError> actualFormErrors = validator.validate(deliveryNotificationForm);
 

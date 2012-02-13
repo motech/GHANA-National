@@ -49,7 +49,7 @@ public class ANCVisitFormValidatorTest {
 
         verify(formValidator).validateIfStaffExists(staffId);
         verify(formValidator).validateIfFacilityExists(facilityId);
-        verify(formValidator).validatePatient(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
+        verify(formValidator).validateIfPatientExistsAndIsAlive(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
         verify(formValidator).validateIfPatientIsFemale(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
         verify(mockAllEncounters).fetchLatest(motechId, Constants.ENCOUNTER_ANCREGVISIT);
     }

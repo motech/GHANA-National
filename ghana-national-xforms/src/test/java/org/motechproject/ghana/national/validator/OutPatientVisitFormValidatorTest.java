@@ -4,7 +4,6 @@ package org.motechproject.ghana.national.validator;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.OutPatientVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -62,14 +60,14 @@ public class OutPatientVisitFormValidatorTest {
     private void setExpectations(OutPatientVisitForm formBean) {
         when(formValidator.validateIfStaffExists(formBean.getStaffId())).thenReturn(new ArrayList<FormError>());
         when(formValidator.validateIfFacilityExists(formBean.getFacilityId())).thenReturn(new ArrayList<FormError>());
-        when(formValidator.validatePatient(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(new ArrayList<FormError>());
+        when(formValidator.validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(new ArrayList<FormError>());
     }
 
     private void verifyValidations(OutPatientVisitForm formBean) {
 
         verify(formValidator).validateIfStaffExists(formBean.getStaffId());
         verify(formValidator).validateIfFacilityExists(formBean.getFacilityId());
-        verify(formValidator).validatePatient(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME);
+        verify(formValidator).validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME);
     }
 
     @Test
@@ -96,7 +94,7 @@ public class OutPatientVisitFormValidatorTest {
         };
         when(formValidator.validateIfStaffExists(outPatientVisitForm.getStaffId())).thenReturn(staffFormErrors);
         when(formValidator.validateIfFacilityExists(outPatientVisitForm.getFacilityId())).thenReturn(facilityFormErrors);
-        when(formValidator.validatePatient(outPatientVisitForm.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(patientFormErrors);
+        when(formValidator.validateIfPatientExistsAndIsAlive(outPatientVisitForm.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(patientFormErrors);
 
         final List<FormError> actualFormErrors = validator.validate(outPatientVisitForm);
 

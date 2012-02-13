@@ -40,6 +40,10 @@ public class Utility {
         return (StringUtils.isEmpty(string.trim())) ? null : string;
     }
 
+    public static Integer safePareInteger(String string) {
+        return (string == null) ? null : Integer.parseInt(string);
+    }
+
     public static <V> V nullSafe(V value, V defaultValue) {
         return value != null ? value : defaultValue;
     }

@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.bean;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.ANCCareHistory;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.validator.field.MotechId;
@@ -15,8 +14,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.motechproject.ghana.national.FormFieldRegExPatterns.MOTECH_ID_PATTERN;
+import static org.motechproject.ghana.national.FormFieldRegExPatterns.NUMERIC_OR_NOTAPPLICABLE_PATTERN;
+
 public class RegisterANCForm extends MobileMidWifeIncludeForm {
-    public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
 
     @Required
     @MaxLength(size = 50)
@@ -34,7 +35,7 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
     private RegistrationToday regDateToday;
 
     @Required
-    @RegEx(pattern = Constants.MOTECH_ID_PATTERN)
+    @RegEx(pattern = MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
 

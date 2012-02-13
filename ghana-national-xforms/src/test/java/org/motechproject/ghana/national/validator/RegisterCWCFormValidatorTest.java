@@ -57,7 +57,7 @@ public class RegisterCWCFormValidatorTest {
         String facilityId = "1234";
         RegisterCWCForm registerCWCForm = setUpFormBean(facilityId, staffId, new Date(), "23232322", RegistrationToday.TODAY, motechId, Boolean.FALSE);
         List<FormError> formErrors = registerCWCFormValidator.validate(registerCWCForm);
-        verify(mockFormValidator).validatePatient(eq(motechId), eq(Constants.MOTECH_ID_ATTRIBUTE_NAME));
+        verify(mockFormValidator).validateIfPatientExistsAndIsAlive(eq(motechId), eq(Constants.MOTECH_ID_ATTRIBUTE_NAME));
         verify(mockFormValidator).validateIfStaffExists(eq(staffId));
         verify(mockFormValidator).validateIfFacilityExists(eq(facilityId));
 
@@ -74,7 +74,7 @@ public class RegisterCWCFormValidatorTest {
 
         registerCWCFormValidator.validate(registerCWCForm);
 
-        verify(mockFormValidator).validatePatient(eq(motechId), eq(Constants.MOTECH_ID_ATTRIBUTE_NAME));
+        verify(mockFormValidator).validateIfPatientExistsAndIsAlive(eq(motechId), eq(Constants.MOTECH_ID_ATTRIBUTE_NAME));
         verify(mockFormValidator).validateIfStaffExists(eq(staffId));
         verify(mockFormValidator).validateIfFacilityExists(eq(facilityId));
         verify(mockMobileMidwifeValidator, never()).validateForIncludeForm(any(MobileMidwifeEnrollment.class));
@@ -103,7 +103,7 @@ public class RegisterCWCFormValidatorTest {
     @Test
     public void shouldRaiseFormErrorIfChildAgeIsAboveFive() {
         String motechId = "1234567";
-        when(mockFormValidator.validatePatient(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(Collections.<FormError>emptyList());
+        when(mockFormValidator.validateIfPatientExistsAndIsAlive(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(Collections.<FormError>emptyList());
         registerCWCFormValidator.validatePatient(motechId);
         verify(mockFormValidator).validateIfPatientIsAChild(motechId);
     }

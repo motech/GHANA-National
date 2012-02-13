@@ -9,7 +9,7 @@
         <motechId/>
         <ttDose/>
         <formtype>data_entry</formtype>
-        <formname>tt-jf</formname>
+        <formname>TTVisit</formname>
       </tt>
     </xf:instance>
     <xf:bind id="staffId" nodeset="/tt/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>

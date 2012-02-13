@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.bean;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.ANCCareHistory;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
@@ -18,15 +17,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.motechproject.ghana.national.FormFieldRegExPatterns.*;
+
 public class RegisterClientForm extends MobileMidWifeIncludeForm {
-    public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
-    public static final String NAME_PATTERN = "[0-9.\\-\\s]*[a-zA-Z]?[a-zA-Z0-9.\\-\\s]*";
 
     @Required
     private RegistrationType registrationMode;
-    @RegEx(pattern = Constants.MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
+    @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
-    @RegEx(pattern = Constants.MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
+    @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motherMotechId;
     @Required
     private PatientType registrantType;
@@ -40,11 +39,11 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
     private Date dateOfBirth;
     @Required
     private Boolean estimatedBirthDate;
-    @RegEx(pattern = "[MmFf]")
+    @RegEx(pattern = GENDER_PATTERN)
     private String sex;
     @Required
     private Boolean insured;
-    @MaxLength(size = 30) @RegEx(pattern = "[a-zA-Z0-9.,'/\\\\-\\_\\s]+")
+    @MaxLength(size = 30) @RegEx(pattern = NHIS_NO_PATTERN)
     private String nhis;
     private Date nhisExpires;
     private String region;
@@ -59,10 +58,10 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
     private String staffId;
     @Required
     private Date date;
-    @RegEx(pattern = "0[0-9]{9}")
+    @RegEx(pattern = PHONE_NO_PATTERN)
     private String phoneNumber;
 
-    @RegEx(pattern = "0[0-9]{9}")
+    @RegEx(pattern = PHONE_NO_PATTERN)
     private String mmRegPhone;
 
     //CWC REGISTRATION FIELDS

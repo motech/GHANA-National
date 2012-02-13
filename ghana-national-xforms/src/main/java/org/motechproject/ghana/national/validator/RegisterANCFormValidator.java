@@ -45,7 +45,7 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
     }
 
     public List<FormError> validatePatient(String patientId) {
-        final List<FormError> patientFormErrors = formValidator.validatePatient(patientId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
+        final List<FormError> patientFormErrors = formValidator.validateIfPatientExistsAndIsAlive(patientId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
         if (!patientFormErrors.isEmpty()) {
             patientFormErrors.addAll(patientFormErrors);
         } else {

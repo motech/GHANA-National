@@ -12,7 +12,6 @@ import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.*;
-import org.motechproject.openmrs.services.OpenMRSConceptAdapter;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.motechproject.testing.utils.BaseUnitTest;
@@ -43,11 +42,7 @@ public class CareServiceTest extends BaseUnitTest {
     @Mock
     AllEncounters mockAllEncounters;
 
-    @Mock
-    OpenMRSConceptAdapter mockOpenMRSConceptAdapter;
-
-    @Mock
-    ScheduleTrackingService mockScheduleTrackingService;
+    @Mock    ScheduleTrackingService mockScheduleTrackingService;
 
     private DateTime currentDate;
 
@@ -58,7 +53,6 @@ public class CareServiceTest extends BaseUnitTest {
         ReflectionTestUtils.setField(careService, "staffService", mockStaffService);
         ReflectionTestUtils.setField(careService, "patientService", mockPatientService);
         ReflectionTestUtils.setField(careService, "allEncounters", mockAllEncounters);
-        ReflectionTestUtils.setField(careService, "openMRSConceptAdapter", mockOpenMRSConceptAdapter);
         ReflectionTestUtils.setField(careService, "scheduleTrackingService", mockScheduleTrackingService);
 
         currentDate = DateTime.now();
@@ -100,16 +94,16 @@ public class CareServiceTest extends BaseUnitTest {
         assertEncounterDetails(staffId, staffPersonId, patientId, facilityId, registrationDate, encounterThatWasSaved, Constants.ENCOUNTER_CWCREGVISIT);
         assertThat(encounterThatWasSaved.getObservations().size(), is(8));
         final HashSet<MRSObservation> expected = new HashSet<MRSObservation>() {{
-            add(new MRSObservation(lastBCGDate, Constants.CONCEPT_IMMUNIZATIONS_ORDERED, null));
-            add(new MRSObservation(lastVitADate, Constants.CONCEPT_IMMUNIZATIONS_ORDERED, null));
-            add(new MRSObservation(lastMeaslesDate, Constants.CONCEPT_IMMUNIZATIONS_ORDERED, null));
-            add(new MRSObservation(lastYfDate, Constants.CONCEPT_IMMUNIZATIONS_ORDERED, null));
-            add(new MRSObservation(lastPentaDate, Constants.CONCEPT_PENTA, lastPenta));
-            add(new MRSObservation(registrationDate, Constants.CONCEPT_CWC_REG_NUMBER, serialNumber));
-            add(new MRSObservation(lastOPVDate, Constants.CONCEPT_OPV, lastOPV));
-            add(new MRSObservation(lastIPTiDate, Constants.CONCEPT_IPTI, lastIPTi));
+            add(new MRSObservation<MRSConcept>(lastBCGDate, Constants.CONCEPT_IMMUNIZATIONS_ORDERED, new MRSConcept(Constants.CONCEPT_BCG)));
+            add(new MRSObservation<MRSConcept>(lastVitADate, Constants.CONCEPT_IMMUNIZATIONS_ORDERED, new MRSConcept(Constants.CONCEPT_VITA)));
+            add(new MRSObservation<MRSConcept>(lastMeaslesDate, Constants.CONCEPT_IMMUNIZATIONS_ORDERED, new MRSConcept(Constants.CONCEPT_MEASLES)));
+            add(new MRSObservation<MRSConcept>(lastYfDate, Constants.CONCEPT_IMMUNIZATIONS_ORDERED, new MRSConcept(Constants.CONCEPT_YF)));
+            add(new MRSObservation<Integer>(lastPentaDate, Constants.CONCEPT_PENTA, lastPenta));
+            add(new MRSObservation<Integer>(lastOPVDate, Constants.CONCEPT_OPV, lastOPV));
+            add(new MRSObservation<Integer>(lastIPTiDate, Constants.CONCEPT_IPTI, lastIPTi));
+            add(new MRSObservation<String>(registrationDate, Constants.CONCEPT_CWC_REG_NUMBER, serialNumber));
         }};
-        assertReflectionEquals(encounterThatWasSaved.getObservations(), expected, ReflectionComparatorMode.LENIENT_ORDER);
+        assertReflectionEquals(expected, encounterThatWasSaved.getObservations(), ReflectionComparatorMode.LENIENT_ORDER);
     }
 
     @Test
@@ -136,7 +130,7 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldEnrollANC() throws Exception {
+    public void shouldEnrollToANCProgram() throws Exception {
         String facilityId = "facility id";
         String patientId = "patient id";
         String patientMotechId = "patient motech id";
@@ -170,7 +164,7 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<Integer>(ancvo.getAncCareHistoryVO().getLastTTDate(), Constants.CONCEPT_TT, Integer.valueOf(ancvo.getAncCareHistoryVO().getLastTT())));
         }};
 
-        assertReflectionEquals(ancDetailsEncounter.getObservations(), expectedObservations, ReflectionComparatorMode.LENIENT_DATES,
+        assertReflectionEquals(expectedObservations, ancDetailsEncounter.getObservations(), ReflectionComparatorMode.LENIENT_DATES,
                 ReflectionComparatorMode.LENIENT_ORDER);
 
         final MRSEncounter pregnancyDetailsEncounter = mrsEncounters.get(1);

@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.bean;
 
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
@@ -11,13 +10,13 @@ import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
 
 import java.util.Date;
 
-public class EditClientForm extends FormBean {
-    public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
-    public static final String NAME_PATTERN = "[0-9.\\-\\s]*[a-zA-Z]?[a-zA-Z0-9.\\-\\s]*";
+import static org.motechproject.ghana.national.FormFieldRegExPatterns.*;
 
-    @Required @RegEx(pattern = Constants.MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
+public class EditClientForm extends FormBean {
+
+    @Required @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
-    @RegEx(pattern = Constants.MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
+    @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motherMotechId;
     @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
     private String firstName;
@@ -28,9 +27,9 @@ public class EditClientForm extends FormBean {
     @MaxLength(size = 50) @RegEx(pattern = NAME_PATTERN)
     private String prefferedName;
     private Date dateOfBirth;
-    @RegEx(pattern = "[MmFf]")
+    @RegEx(pattern = GENDER_PATTERN)
     private String sex;
-    @MaxLength(size = 30) @RegEx(pattern = "[a-zA-Z0-9.,'/\\\\-\\_\\s]+")
+    @MaxLength(size = 30) @RegEx(pattern = NHIS_NO_PATTERN)
     private String nhis;
     private Date nhisExpires;
     @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
@@ -45,7 +44,7 @@ public class EditClientForm extends FormBean {
 
     @Required
     private Date date;
-    @RegEx(pattern = "0[0-9]{9}") @MaxLength(size = 50)
+    @RegEx(pattern = PHONE_NO_PATTERN) @MaxLength(size = 50)
     private String phoneNumber;
 
     public String getStaffId() {

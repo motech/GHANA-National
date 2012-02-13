@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.bean;
 
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
@@ -9,6 +8,8 @@ import org.motechproject.mobileforms.api.validator.annotations.Required;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 
 import java.util.Date;
+
+import static org.motechproject.ghana.national.FormFieldRegExPatterns.MOTECH_ID_PATTERN;
 
 public class ANCVisitForm extends FormBean {
 
@@ -28,7 +29,7 @@ public class ANCVisitForm extends FormBean {
     private Date date;
 
     @Required
-    @RegEx(pattern = Constants.MOTECH_ID_PATTERN)
+    @RegEx(pattern = MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
 

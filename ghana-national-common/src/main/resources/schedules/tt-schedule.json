@@ -1,0 +1,109 @@
+[
+    {
+        "name" : "TTVaccine",
+        "milestones" : [
+            {
+                "name" : "TT1",
+                "scheduleWindows" : {
+                    "earliest" : "",
+                    "due" : "1 day",
+                    "late" : "",
+                    "max" : ""
+                }
+            },
+            {
+                "name" : "TT2",
+                "scheduleWindows" : {
+                    "earliest" : "",
+                    "due" : "3 Weeks",
+                    "late" : "4 Weeks",
+                    "max" : ""
+                },
+                "alerts" : [
+                    {
+                        "window" : "due",
+                        "interval" : "1 Week",
+                        "count" : "1",
+                        "offset" : "0 Days"
+                    },
+                    {
+                        "window" : "late",
+                        "interval" : "1 Week",
+                        "count" : "1",
+                        "offset" : "0 Days"
+                    }
+                ]
+            },
+            {
+                "name" : "TT3",
+                "scheduleWindows" : {
+                    "earliest" : "",
+                    "due" : "161 Days",
+                    "late" : "171 Days",
+                    "max" : ""
+                },
+                "alerts" : [
+                    {
+                        "window" : "due",
+                        "interval" : "1 Week",
+                        "count" : "1",
+                        "offset" : "0 Days"
+                    },
+                    {
+                        "window" : "late",
+                        "interval" : "1 Week",
+                        "count" : "1",
+                        "offset" : "0 Days"
+                    }
+                ]
+            },
+            {
+                "name" : "TT4",
+                "scheduleWindows" : {
+                    "earliest" : "",
+                    "due" : "188 Days",
+                    "late" : "198 Days",
+                    "max" : ""
+                },
+                "alerts" : [
+                    {
+                        "window" : "due",
+                        "interval" : "1 Week",
+                        "count" : "1",
+                        "offset" : "0 Days"
+                    },
+                    {
+                        "window" : "late",
+                        "interval" : "1 Week",
+                        "count" : "1",
+                        "offset" : "0 Days"
+                    }
+                ]
+            },
+            {
+                "name" : "TT5",
+                "scheduleWindows" : {
+                    "earliest" : "",
+                    "due" : "188 Days",
+                    "late" : "198 Days",
+                    "max" : ""
+                },
+                "alerts" : [
+                    {
+                        "window" : "due",
+                        "interval" : "1 Week",
+                        "count" : "1",
+                        "offset" : "0 Days"
+                    },
+                    {
+                        "window" : "late",
+                        "interval" : "1 Week",
+                        "count" : "1",
+                        "offset" : "0 Days"
+                    }
+                ]
+            }
+
+        ]
+    }
+]

@@ -44,7 +44,7 @@ public class MobileMidwifeValidatorTest {
 
         mobileMidwifeValidator.validate(enrollment);
 
-        verify(formValidator).validatePatient(eq(patientId), eq(MobileMidwifeValidator.PATIENT_ID_ATTRIBUTE_NAME));
+        verify(formValidator).validateIfPatientExistsAndIsAlive(eq(patientId), eq(MobileMidwifeValidator.PATIENT_ID_ATTRIBUTE_NAME));
         verify(formValidator).validateIfStaffExists(eq(staffId));
         verify(formValidator).validateIfFacilityExists(eq(facilityId));
     }
@@ -95,7 +95,7 @@ public class MobileMidwifeValidatorTest {
         mobileMidwifeValidator.validateFieldValues(enrollment);
         
         verify(mobileMidwifeValidator).validateTime(enrollment);
-        verify(formValidator, never()).validatePatient(anyString(), anyString());
+        verify(formValidator, never()).validateIfPatientExistsAndIsAlive(anyString(), anyString());
         verify(formValidator, never()).validateIfStaffExists(anyString());
         verify(formValidator, never()).validateIfFacilityExists(anyString());
     }

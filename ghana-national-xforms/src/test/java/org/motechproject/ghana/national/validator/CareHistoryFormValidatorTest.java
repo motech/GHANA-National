@@ -50,7 +50,7 @@ public class CareHistoryFormValidatorTest {
 
         verify(mockFormValidator).validateIfFacilityExists(facilityId);
         verify(mockFormValidator).validateIfStaffExists(staffId);
-        verify(mockFormValidator).validatePatient(motechId, "motechId");
+        verify(mockFormValidator).validateIfPatientExistsAndIsAlive(motechId, "motechId");
     }
 
     private CareHistoryForm careHistoryFormBean(String staffId, String facilityId, String motechId) {

@@ -30,7 +30,7 @@ public class FormValidator {
     public static final String FACILITY_ID = "facilityId";
     public static final String STAFF_ID = "staffId";
 
-    public List<FormError> validatePatient(String motechId, final String patientIdAttribute) {
+    public List<FormError> validateIfPatientExistsAndIsAlive(String motechId, final String patientIdAttribute) {
         final Patient patient = patientService.getPatientByMotechId(motechId);
         if (patient == null) {
             return new ArrayList<FormError>() {{
@@ -91,6 +91,10 @@ public class FormValidator {
     }
 
     private boolean isNotAChild(String motechId) {
-        return motechId != null && patientService.getAgeOfPatientByMotechId(motechId) >= 5;
+        return isAgeGreaterThan(motechId, 5);
+    }
+
+    protected boolean isAgeGreaterThan(String motechId, int ageInYears) {
+        return motechId != null && patientService.getAgeOfPatientByMotechId(motechId) >= ageInYears;
     }
 }

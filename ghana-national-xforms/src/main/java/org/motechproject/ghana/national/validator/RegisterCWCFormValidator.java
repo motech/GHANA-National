@@ -39,7 +39,7 @@ public class RegisterCWCFormValidator extends FormValidator<RegisterCWCForm> {
     }
 
     public List<FormError> validatePatient(String motechId) {
-        List<FormError> patientErrors = formValidator.validatePatient(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
+        List<FormError> patientErrors = formValidator.validateIfPatientExistsAndIsAlive(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
         return !patientErrors.isEmpty() ? patientErrors : formValidator.validateIfPatientIsAChild(motechId);
     }
 

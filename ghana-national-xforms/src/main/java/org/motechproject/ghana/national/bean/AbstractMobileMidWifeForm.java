@@ -6,20 +6,22 @@ import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 
+import static org.motechproject.ghana.national.FormFieldRegExPatterns.*;
+
 public abstract class AbstractMobileMidWifeForm extends FormBean {
 
     private ServiceType serviceType;
     private PhoneOwnership phoneOwnership;
-    @RegEx(pattern = "0[0-9]{9}")
+    @RegEx(pattern = PHONE_NO_PATTERN)
     private String mmRegPhone;
-    @RegEx(pattern = "([A-Z]+_VOICE|[A-Z]+_TEXT)")
+    @RegEx(pattern = MM_MESSAGE_FORMAT)
     private String format;
     private DayOfWeek dayOfWeek;
     private Time timeOfDay;
     private Language language;
     private LearnedFrom learnedFrom;
     private ReasonToJoin reasonToJoin;
-    @RegEx(pattern = "([5-9]{1}|[1-8]{1}[0-9]{1}|9[0-2]{1})")
+    @RegEx(pattern = MM_MESSAGE_START_WEEK)
     private String messageStartWeek;                                            
 
     public Medium getMediumStripingOwnership() {

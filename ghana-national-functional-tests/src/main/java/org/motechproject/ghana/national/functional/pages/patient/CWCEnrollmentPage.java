@@ -391,13 +391,13 @@ public class CWCEnrollmentPage extends HomePage {
     }
 
     public void displaying(TestCWCEnrollment cwcEnrollmentDetails) {
-        assertEquals(getStaffId(), cwcEnrollmentDetails.getStaffId());
-        assertEquals(getSerialNumber(), cwcEnrollmentDetails.getSerialNumber());
-        assertEquals(getRegion(), cwcEnrollmentDetails.getRegion());
-        assertEquals(getDistrict(), cwcEnrollmentDetails.getDistrict());
-        assertEquals(getSubDistrict(), cwcEnrollmentDetails.getSubDistrict());
-        assertEquals(getRegistrationDate(), cwcEnrollmentDetails.getRegistrationDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy")));
-        assertEquals(getFacility(), cwcEnrollmentDetails.getFacility());
+        assertEquals(cwcEnrollmentDetails.getStaffId(), getStaffId());
+        assertEquals(cwcEnrollmentDetails.getSerialNumber(), getSerialNumber());
+        assertEquals(cwcEnrollmentDetails.getRegion(), getRegion());
+        assertEquals(cwcEnrollmentDetails.getDistrict(), getDistrict());
+        assertEquals(cwcEnrollmentDetails.getSubDistrict(), getSubDistrict());
+        assertEquals(cwcEnrollmentDetails.getRegistrationDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy")), getRegistrationDate());
+        assertEquals(cwcEnrollmentDetails.getFacility(), getFacility());
         assertThat(getBcgDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getBcgDate())));
         assertThat(getLastIPTiDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastIPTiDate())));
         assertThat(getLastOPVDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastOPVDate())));

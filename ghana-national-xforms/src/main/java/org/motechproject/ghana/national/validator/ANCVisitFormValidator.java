@@ -29,7 +29,7 @@ public class ANCVisitFormValidator extends FormValidator<ANCVisitForm> {
         List<FormError> errors = new ArrayList<FormError>();
         errors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         errors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        errors.addAll(formValidator.validatePatient(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
+        errors.addAll(formValidator.validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
         errors.addAll(formValidator.validateIfPatientIsFemale(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
         errors.addAll(validateIfPatientAlreadyEnrolledForANC(formBean.getMotechId(), Constants.ENCOUNTER_ANCREGVISIT));
         return errors;

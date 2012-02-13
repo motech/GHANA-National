@@ -14,12 +14,11 @@ import org.motechproject.ghana.national.service.EncounterService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.OutPatientVisitService;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.services.MRSPatientAdapter;
-import org.motechproject.openmrs.services.OpenMRSConceptAdapter;
 import org.motechproject.util.DateUtil;
-import org.openmrs.Concept;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
@@ -31,9 +30,7 @@ import java.util.Set;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -51,9 +48,6 @@ public class OutPatientVisitFormHandlerTest {
     FacilityService mockFacilityService;
 
     @Mock
-    OpenMRSConceptAdapter mockOpenMRSConceptAdapter;
-
-    @Mock
     OutPatientVisitService mockOutPatientVisitService;
 
     @Before
@@ -63,7 +57,6 @@ public class OutPatientVisitFormHandlerTest {
         ReflectionTestUtils.setField(handler, "encounterService", mockEncounterService);
         ReflectionTestUtils.setField(handler, "patientAdapter", mockMRSPatientAdapter);
         ReflectionTestUtils.setField(handler, "facilityService", mockFacilityService);
-        ReflectionTestUtils.setField(handler, "openMRSConceptAdapter", mockOpenMRSConceptAdapter);
         ReflectionTestUtils.setField(handler, "outPatientVisitService", mockOutPatientVisitService);
     }
 
@@ -112,12 +105,10 @@ public class OutPatientVisitFormHandlerTest {
 
         MRSPatient mockMrsPatient = mock(MRSPatient.class);
         Facility mockFacility = mock(Facility.class);
-        Concept mockConcept = mock(Concept.class);
 
         when(mockMRSPatientAdapter.getPatientByMotechId(motechId)).thenReturn(mockMrsPatient);
         when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(mockFacility);
         when(mockFacility.mrsFacilityId()).thenReturn(facilityId);
-        when(mockOpenMRSConceptAdapter.getConceptByName(Constants.CONCEPT_NEGATIVE)).thenReturn(mockConcept);
 
         handler.handleFormEvent(motechEvent);
 
@@ -136,7 +127,7 @@ public class OutPatientVisitFormHandlerTest {
         expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_REFERRED, isReferred));
         expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_COMMENTS, comments));
         expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_MALARIA_RAPID_TEST,
-                mockOpenMRSConceptAdapter.getConceptByName(Constants.CONCEPT_NEGATIVE)));
+                new MRSConcept(Constants.CONCEPT_NEGATIVE)));
         expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_ACT_TREATMENT, actTreated));
 
         assertReflectionEquals(actualObservations, expectedObservations, ReflectionComparatorMode.LENIENT_DATES,

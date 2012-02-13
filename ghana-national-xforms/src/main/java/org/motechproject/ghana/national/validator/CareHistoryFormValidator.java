@@ -27,7 +27,7 @@ public class CareHistoryFormValidator extends FormValidator<CareHistoryForm> {
         List<FormError> formErrors = super.validate(formBean);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        formErrors.addAll(formValidator.validatePatient(formBean.getMotechId(), "motechId"));
+        formErrors.addAll(formValidator.validateIfPatientExistsAndIsAlive(formBean.getMotechId(), "motechId"));
         return formErrors;
     }
 }

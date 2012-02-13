@@ -47,7 +47,7 @@ public class MobileMidwifeValidator {
 
     public List<FormError> validateFacilityPatientAndStaff(String patientId, String facilityId, String staffId) {
         List<FormError> formErrors = new ArrayList<FormError>();
-        formErrors.addAll(formValidator.validatePatient(patientId, PATIENT_ID_ATTRIBUTE_NAME));
+        formErrors.addAll(formValidator.validateIfPatientExistsAndIsAlive(patientId, PATIENT_ID_ATTRIBUTE_NAME));
         formErrors.addAll(formValidator.validateIfFacilityExists(facilityId));
         formErrors.addAll(formValidator.validateIfStaffExists(staffId));
         return formErrors;
