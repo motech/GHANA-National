@@ -2,7 +2,7 @@
 <xf:xforms xmlns:xf="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="1">
   <xf:model>
     <xf:instance id="ancVisit">
-      <ancVisit id="1" name="ANC-Visit">
+      <ancVisit id="1" name="ANC Visit">
         <staffId/>
         <facilityId/>
         <date/>
@@ -47,7 +47,7 @@
     <xf:bind id="motechId" nodeset="/ancVisit/motechId" required="true()" type="xsd:int" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
     <xf:bind id="serialNumber" nodeset="/ancVisit/serialNumber"  type="xsd:string"/>
     <xf:bind id="visitNumber" nodeset="/ancVisit/visitNumber" required="true()" type="xsd:string"/>
-    <xf:bind id="estDeliveryDate" constraint=". &gt; 'today()'" nodeset="/ancVisit/estDeliveryDate" type="xsd:date"/>
+    <xf:bind id="estDeliveryDate" nodeset="/ancVisit/estDeliveryDate" type="xsd:date"/>
     <xf:bind constraint=". &gt;= 60 and . &lt;= 300" id="bpSystolic" message="Value out of range: must be between 60 and 300" nodeset="/ancVisit/bpSystolic" type="xsd:int"/>
     <xf:bind constraint=". &gt;= 30 and . &lt;= 140" id="bpDiastolic" message="Value out of range: Must be between 30 and 140" nodeset="/ancVisit/bpDiastolic" type="xsd:int"/>
     <xf:bind constraint=". &gt;= 10 and . &lt;= 500" id="weight" message="Value out of range: must be between 10 and 500" nodeset="/ancVisit/weight" type="xsd:decimal"/>

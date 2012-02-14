@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-public class ANCVisitFormValidatorTest {
+public class AncVisitFormValidatorTest {
 
     @Mock
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
@@ -25,12 +25,12 @@ public class ANCVisitFormValidatorTest {
     @Mock
     private AllEncounters mockAllEncounters;
 
-    private ANCVisitFormValidator validator;
+    private AncVisitFormValidator validator;
 
     @Before
     public void setUp() {
         initMocks(this);
-        validator = new ANCVisitFormValidator();
+        validator = new AncVisitFormValidator();
         setField(validator, "formValidator", formValidator);
         setField(validator, "allEncounters", mockAllEncounters);
     }

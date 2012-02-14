@@ -26,6 +26,7 @@
                 <entry key="org.motechproject.ghana.national.validator.DeliveryNotificationFormValidator" value-ref="deliveryNotificationFormValidator"/>
                 <entry key="org.motechproject.ghana.national.validator.OutPatientVisitFormValidator" value-ref="outPatientVisitFormValidator"/>
                 <entry key="org.motechproject.ghana.national.validator.TTVisitFormValidator" value-ref="ttVisitFormValidator"/>
+                <entry key="org.motechproject.ghana.national.validator.AncVisitFormValidator" value-ref="ancVisitFormValidator"/>
             </map>
         </property>
     </bean>

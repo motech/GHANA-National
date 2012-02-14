@@ -60,7 +60,7 @@
                 "name":"ancVisit",
                 "fileName":"ANCVisit.xml",
                 "bean":"org.motechproject.ghana.national.bean.ANCVisitForm",
-                "validator":"org.motechproject.ghana.national.validator.ANCVisitFormValidator"
+                "validator":"org.motechproject.ghana.national.validator.AncVisitFormValidator"
             },
             {
                 "name":"TTVisit",

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ANCVisitFormValidator extends FormValidator<ANCVisitForm> {
+public class AncVisitFormValidator extends FormValidator<ANCVisitForm> {
 
     @Autowired
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
