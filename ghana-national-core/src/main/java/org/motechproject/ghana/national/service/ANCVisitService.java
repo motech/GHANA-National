@@ -1,5 +1,7 @@
 package org.motechproject.ghana.national.service;
 
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.vo.ANCVisit;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.joda.time.PeriodType.weeks;
 
 @Service
 public class ANCVisitService {
@@ -151,5 +155,12 @@ public class ANCVisitService {
 
 
         return mrsObservations;
+    }
+
+    public int currentWeekOfPregnancy(LocalDate expectedDeliveryDate) {
+        LocalDate today = DateUtil.today();
+        LocalDate dateOfConception = expectedDeliveryDate.minusWeeks(40).minusDays(6);
+        if (!dateOfConception.isBefore(today)) return -1;
+        return new Period(dateOfConception.toDate().getTime(), today.toDate().getTime(), weeks()).getWeeks();
     }
 }

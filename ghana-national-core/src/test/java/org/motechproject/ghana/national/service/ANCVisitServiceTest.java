@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.service;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -10,6 +11,7 @@ import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.openmrs.services.OpenMRSConceptAdapter;
+import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 import org.openmrs.Concept;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -19,12 +21,15 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
-public class ANCVisitServiceTest {
+public class ANCVisitServiceTest extends BaseUnitTest {
     private ANCVisitService service;
     @Mock
     EncounterService encounterService;
@@ -134,7 +139,29 @@ public class ANCVisitServiceTest {
         assertReflectionEquals(expectedObservations, mrsObservations, ReflectionComparatorMode.LENIENT_DATES,
                 ReflectionComparatorMode.LENIENT_ORDER);
     }
-    
+
+    @Test
+    public void shouldFindCurrentWeekFromExpectedDeliveryDate() {
+
+        LocalDate expectedDeliveryDate = new LocalDate(2012, 6, 27);
+        LocalDate week12thEndDate = expectedDeliveryDate.minusDays(28 * 7);
+
+        mockCurrentDate(expectedDeliveryDate.minusDays(20 * 7));
+        assertThat(service.currentWeekOfPregnancy(expectedDeliveryDate), is(equalTo(20)));
+
+        mockCurrentDate(week12thEndDate);
+        assertThat(service.currentWeekOfPregnancy(expectedDeliveryDate), is(equalTo(12)));
+
+        mockCurrentDate(new LocalDate(week12thEndDate.plusDays(1)));
+        assertThat(service.currentWeekOfPregnancy(expectedDeliveryDate), is(equalTo(13)));
+
+        mockCurrentDate(new LocalDate(week12thEndDate.plusDays(7)));
+        assertThat(service.currentWeekOfPregnancy(expectedDeliveryDate), is(equalTo(13)));
+
+        mockCurrentDate(week12thEndDate.plusDays(8));
+        assertThat(service.currentWeekOfPregnancy(expectedDeliveryDate), is(equalTo(14)));
+    }
+
 
     private ANCVisit createTestANCVisit() {
         ANCVisit ancVisit = new ANCVisit();
