@@ -97,7 +97,9 @@ public class FacilityService {
             throw new FacilityNotFoundException();
         }
         List<Facility> facilities = facilities();
-        facilities.remove(facility);
+        List<Facility> existingFacility = select(facilities, having(on(Facility.class).getMrsFacilityId(), is(facilityToBeUpdated.mrsFacilityId())));
+        if(!existingFacility.isEmpty())
+            facilities.remove(existingFacility.get(0));
         isDuplicate(facilities, facilityToBeUpdated.mrsFacility(), facilityToBeUpdated.phoneNumber());
         save(facilityToBeUpdated);
     }

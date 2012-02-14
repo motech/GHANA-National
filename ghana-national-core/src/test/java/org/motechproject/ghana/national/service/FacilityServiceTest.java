@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.mrs.model.MRSFacility;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -178,7 +179,9 @@ public class FacilityServiceTest {
 
         Facility mockFacility = mock(Facility.class);
 
-        when(mockAllFacilities.facilities()).thenReturn(Arrays.asList(new Facility(new MRSFacility(facilityName, country, region, district, province))));
+        List<Facility> facilities = new ArrayList<Facility>();
+        facilities.add(new Facility(new MRSFacility(facilityName, country, region, district, province)));
+        when(mockAllFacilities.facilities()).thenReturn(facilities);
         when(mockAllFacilities.getFacility(id)).thenReturn(mockFacility);
         Facility facility = createFacilityVO(id, facilityId, facilityName, country, region, district, province, phoneNumber, additionalPhoneNumber1, additionalPhoneNumber2, additionalPhoneNumber3);
         facilityService.update(facility);
