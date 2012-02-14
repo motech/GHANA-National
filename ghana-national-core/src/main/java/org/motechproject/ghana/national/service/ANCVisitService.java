@@ -5,11 +5,10 @@ import org.joda.time.Period;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.vo.ANCVisit;
+import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.openmrs.services.OpenMRSConceptAdapter;
 import org.motechproject.util.DateUtil;
-import org.openmrs.Concept;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +25,6 @@ public class ANCVisitService {
     EncounterService encounterService;
     @Autowired
     PatientService patientService;
-    @Autowired
-    OpenMRSConceptAdapter openMRSConceptAdapter;
 
     public MRSEncounter registerANCVisit(ANCVisit ancVisit) {
         Patient patientByMotechId = patientService.getPatientByMotechId(ancVisit.getMotechId());
@@ -67,48 +64,48 @@ public class ANCVisitService {
 
         String urineTestProtein = ancVisit.getUrineTestProteinPositive();
         if (urineTestProtein != null) {
-            Concept urineProteinTestValueConcept = null;
+            MRSConcept urineProteinTestValueConcept = null;
             switch (Integer.valueOf(urineTestProtein)) {
                 case 0:
-                    urineProteinTestValueConcept = openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_NEGATIVE);
+                    urineProteinTestValueConcept = new MRSConcept(Constants.CONCEPT_NEGATIVE);
                     break;
                 case 1:
-                    urineProteinTestValueConcept = openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_POSITIVE);
+                    urineProteinTestValueConcept = new MRSConcept(Constants.CONCEPT_POSITIVE);
                     break;
                 case 2:
-                    urineProteinTestValueConcept = openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_TRACE);
+                    urineProteinTestValueConcept = new MRSConcept(Constants.CONCEPT_TRACE);
                     break;
             }
-            mrsObservations.add(new MRSObservation<Concept>(registrationDate, Constants.CONCEPT_URINE_PROTEIN_TEST, urineProteinTestValueConcept));
+            mrsObservations.add(new MRSObservation<MRSConcept>(registrationDate, Constants.CONCEPT_URINE_PROTEIN_TEST, urineProteinTestValueConcept));
         }
 
 
         String urineTestGlucose = ancVisit.getUrineTestGlucosePositive();
         if (urineTestGlucose != null) {
-            Concept urineGlucoseTestValueConcept = null;
+            MRSConcept urineGlucoseTestValueConcept = null;
             switch (Integer.valueOf(urineTestGlucose)) {
                 case 0:
-                    urineGlucoseTestValueConcept = openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_NEGATIVE);
+                    urineGlucoseTestValueConcept = new MRSConcept(Constants.CONCEPT_NEGATIVE);
                     break;
                 case 1:
-                    urineGlucoseTestValueConcept = openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_POSITIVE);
+                    urineGlucoseTestValueConcept = new MRSConcept(Constants.CONCEPT_POSITIVE);
                     break;
                 case 2:
-                    urineGlucoseTestValueConcept = openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_TRACE);
+                    urineGlucoseTestValueConcept = new MRSConcept(Constants.CONCEPT_TRACE);
                     break;
             }
-            mrsObservations.add(new MRSObservation<Concept>(registrationDate, Constants.CONCEPT_URINE_GLUCOSE_TEST, urineGlucoseTestValueConcept));
+            mrsObservations.add(new MRSObservation<MRSConcept>(registrationDate, Constants.CONCEPT_URINE_GLUCOSE_TEST, urineGlucoseTestValueConcept));
         }
 
         String iptReactive = ancVisit.getIptReactive();
         if (iptReactive != null) {
-            Concept iptReactionValueConcept = null;
+            MRSConcept iptReactionValueConcept = null;
             if (iptReactive == "Y") {
-                iptReactionValueConcept = openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_REACTIVE);
+                iptReactionValueConcept = new MRSConcept(Constants.CONCEPT_REACTIVE);
             } else {
-                iptReactionValueConcept = openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_NON_REACTIVE);
+                iptReactionValueConcept = new MRSConcept(Constants.CONCEPT_NON_REACTIVE);
             }
-            mrsObservations.add(new MRSObservation<Concept>(registrationDate, Constants.CONCEPT_IPT_REACTION, iptReactionValueConcept));
+            mrsObservations.add(new MRSObservation<MRSConcept>(registrationDate, Constants.CONCEPT_IPT_REACTION, iptReactionValueConcept));
         }
 
         if (ancVisit.getHemoglobin() != null)
@@ -116,14 +113,14 @@ public class ANCVisitService {
 
         String vdrlReactive = ancVisit.getVdrlReactive();
         if (vdrlReactive != null) {
-            Concept vdrlValueConcept;
+            MRSConcept vdrlValueConcept;
             if (vdrlReactive == "Y") {
-                vdrlValueConcept = openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_REACTIVE);
+                vdrlValueConcept = new MRSConcept(Constants.CONCEPT_REACTIVE);
             } else {
-                vdrlValueConcept = openMRSConceptAdapter.getConceptByName(Constants.CONCEPT_NON_REACTIVE);
+                vdrlValueConcept = new MRSConcept(Constants.CONCEPT_NON_REACTIVE);
             }
 
-            mrsObservations.add(new MRSObservation<Concept>(registrationDate, Constants.CONCEPT_VDRL, vdrlValueConcept));
+            mrsObservations.add(new MRSObservation<MRSConcept>(registrationDate, Constants.CONCEPT_VDRL, vdrlValueConcept));
         }
 
         if (ancVisit.getVdrlTreatment() != null)
