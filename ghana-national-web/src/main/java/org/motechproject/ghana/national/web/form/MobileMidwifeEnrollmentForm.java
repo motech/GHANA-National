@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web.form;
 
+import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
@@ -20,6 +21,7 @@ public class MobileMidwifeEnrollmentForm {
     private ReasonToJoin reasonToJoin;
     private String messageStartWeek;
     private String status;
+    private DateTime enrollmentDateTime;
 
     public MobileMidwifeEnrollmentForm() {
     }
@@ -159,4 +161,12 @@ public class MobileMidwifeEnrollmentForm {
         return this;
     }
 
+    public DateTime getEnrollmentDateTime() {
+        return enrollmentDateTime;
+    }
+
+    public MobileMidwifeEnrollmentForm setEnrollmentDateTime(DateTime enrollmentDateTime) {
+        this.enrollmentDateTime = enrollmentDateTime;
+        return this;
+    }
 }
