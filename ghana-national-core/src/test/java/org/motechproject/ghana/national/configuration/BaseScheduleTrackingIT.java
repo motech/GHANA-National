@@ -83,9 +83,9 @@ public abstract class BaseScheduleTrackingIT extends BaseUnitTest {
         return alertTriggers;
     }
 
-    protected void assertAlerts(List<SimpleTrigger> alerts, Set<Date> alertTimes) {
+    protected void assertAlerts(List<SimpleTrigger> alerts, List<Date> alertTimes) {
 
-        Set<Date> actualAlertTimes = new HashSet<Date>();
+        List<Date> actualAlertTimes = new ArrayList<Date>();
         for (SimpleTrigger alert : alerts) {
             Date nextFireTime = alert.getNextFireTime();
             actualAlertTimes.add(nextFireTime);

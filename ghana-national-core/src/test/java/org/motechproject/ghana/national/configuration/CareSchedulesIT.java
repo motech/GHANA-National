@@ -12,8 +12,8 @@ import org.quartz.SimpleTrigger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,7 +37,7 @@ public class CareSchedulesIT extends BaseScheduleTrackingIT {
         String enrollmentId = scheduleTrackingService.enroll(enrollmentRequest);
 
         List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
-        assertAlerts(alerts, new HashSet<Date>() {{
+        assertAlerts(alerts, new ArrayList<Date>() {{
             add(onDate(conceptionDate, 39, preferredAlertTime));
             add(onDate(conceptionDate, 40, preferredAlertTime));
             add(onDate(conceptionDate, 41, preferredAlertTime));
