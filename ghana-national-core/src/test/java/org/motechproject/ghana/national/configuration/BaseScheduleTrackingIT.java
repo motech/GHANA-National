@@ -28,7 +28,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-public class BaseCareSchedulesTest extends BaseUnitTest {
+public class BaseScheduleTrackingIT extends BaseUnitTest {
 
     @Autowired
     private AllTrackedSchedules allTrackedSchedules;
