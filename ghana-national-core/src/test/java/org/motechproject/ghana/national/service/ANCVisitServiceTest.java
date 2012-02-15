@@ -86,34 +86,34 @@ public class ANCVisitServiceTest extends BaseUnitTest {
     @Test
     public void shouldCreateObservationsWithGivenInfo(){
         ANCVisit ancVisit = createTestANCVisit();
-        MRSConcept concept_positive = new MRSConcept(Constants.CONCEPT_POSITIVE);
-        MRSConcept concept_negative = new MRSConcept(Constants.CONCEPT_NEGATIVE);
-        MRSConcept concept_trace = new MRSConcept(Constants.CONCEPT_TRACE);
-        MRSConcept concept_non_reactive = new MRSConcept(Constants.CONCEPT_NON_REACTIVE);
-        MRSConcept concept_reactive = new MRSConcept(Constants.CONCEPT_REACTIVE);
+        MRSConcept conceptPositive = new MRSConcept(Constants.CONCEPT_POSITIVE);
+        MRSConcept conceptNegative = new MRSConcept(Constants.CONCEPT_NEGATIVE);
+        MRSConcept conceptNonReactive = new MRSConcept(Constants.CONCEPT_NON_REACTIVE);
+        MRSConcept conceptReactive = new MRSConcept(Constants.CONCEPT_REACTIVE);
 
         Set<MRSObservation> mrsObservations = service.createMRSObservations(ancVisit);
         Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>();
 
         expectedObservations.add(new MRSObservation<String>(DateUtil.today().toDate(), Constants.CONCEPT_SERIAL_NUMBER, "4ds65"));
-        expectedObservations.add(new MRSObservation<String>(DateUtil.today().toDate(), Constants.CONCEPT_COMMENTS, "comments"));
         expectedObservations.add(new MRSObservation<String>(DateUtil.today().toDate(), Constants.CONCEPT_VISIT_NUMBER, "4"));
-        expectedObservations.add(new MRSObservation<Integer>(DateUtil.today().toDate(), Constants.CONCEPT_ANC_PNC_LOCATION, 34));
+        expectedObservations.add(new MRSObservation<Boolean>(DateUtil.today().toDate(), Constants.CONCEPT_MALE_INVOLVEMENT, false));
         expectedObservations.add(new MRSObservation<Date>(DateUtil.today().toDate(), Constants.CONCEPT_EDD, new Date(2012, 8, 8)));
+        expectedObservations.add(new MRSObservation<String>(DateUtil.today().toDate(), Constants.CONCEPT_COMMENTS, "comments"));
+        expectedObservations.add(new MRSObservation<Integer>(DateUtil.today().toDate(), Constants.CONCEPT_ANC_PNC_LOCATION, 34));
         expectedObservations.add(new MRSObservation<Date>(DateUtil.today().toDate(), Constants.CONCEPT_NEXT_ANC_DATE, new Date(2012, 2, 20)));
         expectedObservations.add(new MRSObservation<Integer>(DateUtil.today().toDate(), Constants.CONCEPT_SYSTOLIC_BLOOD_PRESSURE, 10));
         expectedObservations.add(new MRSObservation<Integer>(DateUtil.today().toDate(), Constants.CONCEPT_DIASTOLIC_BLOOD_PRESSURE, 67));
         expectedObservations.add(new MRSObservation<Double>(DateUtil.today().toDate(), Constants.CONCEPT_WEIGHT_KG, 65.67d));
         expectedObservations.add(new MRSObservation<String>(DateUtil.today().toDate(), Constants.CONCEPT_TT, "4"));
         expectedObservations.add(new MRSObservation<String>(DateUtil.today().toDate(), Constants.CONCEPT_IPT, "56"));
-        expectedObservations.add(new MRSObservation<MRSConcept>(DateUtil.today().toDate(), Constants.CONCEPT_IPT_REACTION, concept_reactive));
+        expectedObservations.add(new MRSObservation<MRSConcept>(DateUtil.today().toDate(), Constants.CONCEPT_IPT_REACTION, conceptReactive));
         expectedObservations.add(new MRSObservation<String>(DateUtil.today().toDate(), Constants.CONCEPT_INSECTICIDE_TREATED_NET_USAGE, "itn"));
         expectedObservations.add(new MRSObservation<Double>(DateUtil.today().toDate(), Constants.CONCEPT_FHT, 4.3d));
         expectedObservations.add(new MRSObservation<Integer>(DateUtil.today().toDate(), Constants.CONCEPT_FHR, 4));
-        expectedObservations.add(new MRSObservation<MRSConcept>(DateUtil.today().toDate(), Constants.CONCEPT_URINE_GLUCOSE_TEST, concept_negative));
-        expectedObservations.add(new MRSObservation<MRSConcept>(DateUtil.today().toDate(), Constants.CONCEPT_URINE_PROTEIN_TEST, concept_positive));
+        expectedObservations.add(new MRSObservation<MRSConcept>(DateUtil.today().toDate(), Constants.CONCEPT_URINE_GLUCOSE_TEST, conceptNegative));
+        expectedObservations.add(new MRSObservation<MRSConcept>(DateUtil.today().toDate(), Constants.CONCEPT_URINE_PROTEIN_TEST, conceptPositive));
         expectedObservations.add(new MRSObservation<Double>(DateUtil.today().toDate(), Constants.CONCEPT_HEMOGLOBIN, 13.8));
-        expectedObservations.add(new MRSObservation<MRSConcept>(DateUtil.today().toDate(), Constants.CONCEPT_VDRL, concept_non_reactive));
+        expectedObservations.add(new MRSObservation<MRSConcept>(DateUtil.today().toDate(), Constants.CONCEPT_VDRL, conceptNonReactive));
         expectedObservations.add(new MRSObservation<Boolean>(DateUtil.today().toDate(), Constants.CONCEPT_VDRL_TREATMENT, true));
         expectedObservations.add(new MRSObservation<Boolean>(DateUtil.today().toDate(), Constants.CONCEPT_DEWORMER, true));
         expectedObservations.add(new MRSObservation<Boolean>(DateUtil.today().toDate(), Constants.CONCEPT_PMTCT, true));
@@ -124,7 +124,6 @@ public class ANCVisitServiceTest extends BaseUnitTest {
         expectedObservations.add(new MRSObservation<String>(DateUtil.today().toDate(), Constants.CONCEPT_HOUSE, "house"));
         expectedObservations.add(new MRSObservation<String>(DateUtil.today().toDate(), Constants.CONCEPT_COMMUNITY, "community"));
         expectedObservations.add(new MRSObservation<Boolean>(DateUtil.today().toDate(), Constants.CONCEPT_REFERRED, true));
-        expectedObservations.add(new MRSObservation<Boolean>(DateUtil.today().toDate(), Constants.CONCEPT_MALE_INVOLVEMENT, false));
 
         assertReflectionEquals(expectedObservations, mrsObservations, ReflectionComparatorMode.LENIENT_DATES,
                 ReflectionComparatorMode.LENIENT_ORDER);
