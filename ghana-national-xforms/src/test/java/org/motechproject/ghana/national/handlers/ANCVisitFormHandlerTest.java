@@ -5,9 +5,12 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ANCVisitForm;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.ANCVisitService;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
@@ -15,20 +18,24 @@ import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ANCVisitFormHandlerTest {
 
     private ANCVisitFormHandler handler;
     @Mock
-    private ANCVisitService visitService;
+    private ANCVisitService mockAncVisitService;
+    @Mock
+    private FacilityService mockFacilityService;
 
 
     @Before
     public void setUp() {
         initMocks(this);
         handler = new ANCVisitFormHandler();
-        ReflectionTestUtils.setField(handler, "visitService", visitService);
+        ReflectionTestUtils.setField(handler, "visitService", mockAncVisitService);
+        ReflectionTestUtils.setField(handler, "facilityService", mockFacilityService);
 
     }
 
@@ -36,7 +43,8 @@ public class ANCVisitFormHandlerTest {
     public void shouldCreateANCVisitEncounterWithAllInfo() {
         final ANCVisitForm ancVisitForm = new ANCVisitForm();
         ancVisitForm.setStaffId("465");
-        ancVisitForm.setFacilityId("232465");
+        String motechFacilityId = "232465";
+        ancVisitForm.setFacilityId(motechFacilityId);
         ancVisitForm.setMotechId("2321465");
         ancVisitForm.setDate(new Date());
         ancVisitForm.setSerialNumber("4ds65");
@@ -75,14 +83,16 @@ public class ANCVisitFormHandlerTest {
             put("formBean", ancVisitForm);
         }});
 
-
+        String facilityId = "111";
+        when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(new Facility(new MRSFacility(facilityId)));
+        
         handler.handleFormEvent(motechEvent);
 
         ArgumentCaptor<ANCVisit> captor = ArgumentCaptor.forClass(ANCVisit.class);
-        verify(visitService).registerANCVisit(captor.capture());
+        verify(mockAncVisitService).registerANCVisit(captor.capture());
         ANCVisit actualANCVisit = captor.getValue();
         assertEquals(ancVisitForm.getStaffId(), actualANCVisit.getStaffId());
-        assertEquals(ancVisitForm.getFacilityId(), actualANCVisit.getFacilityId());
+        assertEquals(facilityId, actualANCVisit.getFacilityId());
         assertEquals(ancVisitForm.getMotechId(), actualANCVisit.getMotechId());
         assertEquals(ancVisitForm.getDate(), actualANCVisit.getDate());
         assertEquals(ancVisitForm.getSerialNumber(), actualANCVisit.getSerialNumber());

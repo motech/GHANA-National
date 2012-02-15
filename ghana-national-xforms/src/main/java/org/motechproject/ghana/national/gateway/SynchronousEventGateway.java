@@ -11,12 +11,12 @@ import java.util.Set;
 public class SynchronousEventGateway implements OutboundEventGateway {
 
     @Autowired
-	private EventListenerRegistry eventListenerRegistry;
+    private EventListenerRegistry eventListenerRegistry;
 
     @Override
     public void sendEventMessage(MotechEvent motechEvent) {
         Set<EventListener> listeners = eventListenerRegistry.getListeners(motechEvent.getSubject());
-        if(!listeners.isEmpty()){
+        if (!listeners.isEmpty()) {
             for (EventListener listener : listeners) {
                 listener.handle(motechEvent);
             }
