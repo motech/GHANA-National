@@ -31,7 +31,7 @@ public class PatientService {
     EncounterService encounterService;
 
     @Autowired
-    public PatientService(AllPatients allPatients, AllEncounters allEncounters , IdentifierGenerationService identifierGenerationService,EncounterService encounterService) {
+    public PatientService(AllPatients allPatients, AllEncounters allEncounters, IdentifierGenerationService identifierGenerationService, EncounterService encounterService) {
         this.allPatients = allPatients;
         this.allEncounters = allEncounters;
         this.identifierGenerationService = identifierGenerationService;

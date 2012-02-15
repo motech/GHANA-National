@@ -2,7 +2,9 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.ANCVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.ANCVisitService;
+import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
@@ -19,7 +21,10 @@ public class ANCVisitFormHandler implements FormPublishHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private ANCVisitService visitService;
+    ANCVisitService visitService;
+
+    @Autowired
+    FacilityService facilityService;
 
 
     @Override
@@ -32,7 +37,10 @@ public class ANCVisitFormHandler implements FormPublishHandler {
     }
 
     private ANCVisit createANCVisit(ANCVisitForm form) {
-        ANCVisit ancVisit = new ANCVisit().staffId(form.getStaffId()).facilityId(form.getFacilityId()).motechId(form.getMotechId())
+
+        Facility facility = facilityService.getFacilityByMotechId(form.getFacilityId());
+
+        ANCVisit ancVisit = new ANCVisit().staffId(form.getStaffId()).facilityId(facility.mrsFacility().getId()).motechId(form.getMotechId())
                 .date(form.getDate()).serialNumber(form.getSerialNumber()).visitNumber(form.getVisitNumber())
                 .estDeliveryDate(form.getEstDeliveryDate()).bpDiastolic(form.getBpDiastolic()).bpSystolic(form.getBpSystolic()).pmtct(form.getPmtct())
                 .weight(form.getWeight()).ttdose(form.getTtdose()).iptdose(form.getIptdose()).hemoglobin(form.getHemoglobin()).dewormer(form.getDewormer())

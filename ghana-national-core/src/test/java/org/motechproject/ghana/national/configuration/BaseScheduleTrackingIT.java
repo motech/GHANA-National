@@ -28,7 +28,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-public class BaseCareSchedulesTest extends BaseUnitTest {
+public abstract class BaseScheduleTrackingIT extends BaseUnitTest {
 
     @Autowired
     private AllTrackedSchedules allTrackedSchedules;
@@ -83,9 +83,9 @@ public class BaseCareSchedulesTest extends BaseUnitTest {
         return alertTriggers;
     }
 
-    protected void assertAlerts(List<SimpleTrigger> alerts, Set<Date> alertTimes) {
+    protected void assertAlerts(List<SimpleTrigger> alerts, List<Date> alertTimes) {
 
-        Set<Date> actualAlertTimes = new HashSet<Date>();
+        List<Date> actualAlertTimes = new ArrayList<Date>();
         for (SimpleTrigger alert : alerts) {
             Date nextFireTime = alert.getNextFireTime();
             actualAlertTimes.add(nextFireTime);

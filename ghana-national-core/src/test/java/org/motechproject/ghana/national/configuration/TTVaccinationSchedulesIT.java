@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class TTVaccinationSchedulesTest extends BaseCareSchedulesTest{
+public class TTVaccinationSchedulesIT extends BaseScheduleTrackingIT {
     private Time preferredAlertTime;
 
     @Before

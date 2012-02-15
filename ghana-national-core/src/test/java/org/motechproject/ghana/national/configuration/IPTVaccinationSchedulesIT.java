@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.configuration;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.model.Time;
@@ -12,13 +13,14 @@ import org.quartz.SimpleTrigger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class GhanaNationalCareSchedulesTest extends BaseCareSchedulesTest {
+public class IPTVaccinationSchedulesIT extends BaseScheduleTrackingIT {
+
     private Time preferredAlertTime;
 
     @Before
@@ -28,20 +30,24 @@ public class GhanaNationalCareSchedulesTest extends BaseCareSchedulesTest {
     }
 
     @Test
-    public void verifyPregnancySchedule() throws SchedulerException {
-        LocalDate today = DateUtil.newDate(2000, 1, 1);
-        mockCurrentDate(today);
-        final LocalDate conceptionDate = today.minusWeeks(1);
+    @Ignore
+    public void verifyPregnancyIPT1Schedule() throws SchedulerException {
 
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest("123", CareScheduleNames.DELIVERY, preferredAlertTime, conceptionDate);
+        LocalDate expectedDeliveryDate = DateUtil.newDate(2012, 9, 12);
+        final LocalDate conceptionDate = expectedDeliveryDate.minusWeeks(40);
+        LocalDate today = conceptionDate.plusWeeks(9);
+
+        mockCurrentDate(today);
+
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest("patient_id", CareScheduleNames.ANC_IPT_VACCINE, preferredAlertTime, conceptionDate);
         String enrollmentId = scheduleTrackingService.enroll(enrollmentRequest);
 
         List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
-        assertAlerts(alerts, new HashSet<Date>() {{
-            add(onDate(conceptionDate, 39, preferredAlertTime));
-            add(onDate(conceptionDate, 40, preferredAlertTime));
-            add(onDate(conceptionDate, 41, preferredAlertTime));
-            add(onDate(conceptionDate, 42, preferredAlertTime));
+        assertAlerts(alerts, new ArrayList<Date>() {{
+            add(onDate(conceptionDate, 12, preferredAlertTime));
+            add(onDate(conceptionDate, 13, preferredAlertTime));
+            add(onDate(conceptionDate, 14, preferredAlertTime));
+            add(onDate(conceptionDate, 15, preferredAlertTime));
         }});
     }
 

@@ -53,7 +53,6 @@ public class ANCVisitForm extends FormBean {
     @Required
     private String iptdose;
 
-
     private String iptReactive;
 
     @Required

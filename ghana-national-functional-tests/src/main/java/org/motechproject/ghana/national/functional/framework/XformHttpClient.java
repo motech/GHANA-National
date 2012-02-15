@@ -92,9 +92,9 @@ public class XformHttpClient {
             hackDate(formData, "/opvVisit/visitDate");
             hackDate(formData, "/opvVisit/dateOfBirth");
             hackDate(formData, "/opvVisit/nhisExpires");
-//            hackDate(formData, "/ancVisit/date");
-//            hackDate(formData, "/ancVisit/estDeliveryDate");
-//            hackDate(formData, "/ancVisit/nextANCDate");
+            hackDate(formData, "/ancVisit/date");
+            hackDate(formData, "/ancVisit/estDeliveryDate");
+            hackDate(formData, "/ancVisit/nextANCDate");
             formsList.add(formData);
         }
         final StudyData studyData = new StudyData(studyDef);

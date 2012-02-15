@@ -69,7 +69,7 @@
                             <includeArtifactIds>ghana-national-common</includeArtifactIds>
                             <includeGroupIds>org.motechproject</includeGroupIds>
                             <excludeTransitive>true</excludeTransitive>
-                            <includes>couchdb.properties,email.properties,ghana-national.properties,openmrs.properties,openmrs-data/**,osgi.properties,activemq.properties,scheduletracking.properties,schedules/**, programs/**, messageCampaign.properties</includes>
+                            <includes>couchdb.properties,email.properties,ghana-national.properties,openmrs.properties,openmrs-data/**,osgi.properties,activemq.properties,schedule_tracking.properties,schedules/**, programs/**, messageCampaign.properties</includes>
                         </configuration>
                     </execution>
                 </executions>
