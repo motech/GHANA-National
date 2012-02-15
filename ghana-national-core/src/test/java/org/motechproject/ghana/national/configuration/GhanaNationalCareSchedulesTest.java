@@ -4,19 +4,21 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.model.RepeatingSchedulableJob;
 import org.motechproject.model.Time;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class
-        GhanaNationalCareSchedulesTest extends BaseCareSchedulesTest{
+public class GhanaNationalCareSchedulesTest extends BaseCareSchedulesTest {
     private Time preferredAlertTime;
 
     @Before
@@ -26,21 +28,21 @@ public class
     }
 
     @Test
-    public void verifyPregnancySchedule() {
+    public void verifyPregnancySchedule() throws SchedulerException {
         LocalDate today = DateUtil.newDate(2000, 1, 1);
         mockCurrentDate(today);
-        LocalDate conceptionDate = today.minusWeeks(1);
+        final LocalDate conceptionDate = today.minusWeeks(1);
 
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest("123", CareScheduleNames.DELIVERY, preferredAlertTime, conceptionDate);
-        scheduleTrackingService.enroll(enrollmentRequest);
+        String enrollmentId = scheduleTrackingService.enroll(enrollmentRequest);
 
-
-        List<RepeatingSchedulableJob> schedulableJobs = captureSchedules(2);
-        assertIfAScheduleWasCreatedOn(schedulableJobs, onDate(conceptionDate, 39));
-        assertIfAScheduleWasCreatedOn(schedulableJobs, onDate(conceptionDate, 40));
+        List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
+        assertAlerts(alerts, new HashSet<Date>() {{
+            add(onDate(conceptionDate, 39, preferredAlertTime));
+            add(onDate(conceptionDate, 40, preferredAlertTime));
+            add(onDate(conceptionDate, 41, preferredAlertTime));
+            add(onDate(conceptionDate, 42, preferredAlertTime));
+        }});
     }
 
-    private LocalDate onDate(LocalDate conceptionDate, int numberOfWeeks) {
-        return conceptionDate.plusWeeks(numberOfWeeks);
-    }
 }

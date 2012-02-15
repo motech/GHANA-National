@@ -24,7 +24,7 @@ public class TTVaccinationSchedulesTest extends BaseCareSchedulesTest{
 
     @Test
     @Ignore
-    public void shouldCreateScheduleForSecondDosageOfTTVaccinationAfterGivingTheFistDosage() {
+    public void newPatientShouldBeGivenTheFirstTTDosageAndCreateAlertScheduleForSecondDosage() {
         LocalDate today = DateUtil.newDate(2000, 1, 1);
         mockCurrentDate(today);
 
@@ -33,9 +33,5 @@ public class TTVaccinationSchedulesTest extends BaseCareSchedulesTest{
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest("patient_id", CareScheduleNames.TTVaccine, preferredAlertTime, firstDosageDate);
         scheduleTrackingService.enroll(enrollmentRequest);
 
-    }
-
-    private LocalDate onDate(LocalDate conceptionDate, int numberOfWeeks) {
-        return conceptionDate.plusWeeks(numberOfWeeks);
     }
 }
