@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.motechproject.ghana.national.domain.Constants.*;
 import static org.motechproject.ghana.national.tools.Utility.safePareInteger;
 
 @Service
@@ -41,7 +42,7 @@ public class CareService {
 
     public void enroll(CwcVO cwc) {
         Patient patient = patientService.getPatientByMotechId(cwc.getPatientMotechId());
-        persistEncounter(patient, cwc.getStaffId(), cwc.getFacilityId(), Constants.ENCOUNTER_CWCREGVISIT, cwc.getRegistrationDate(),
+        persistEncounter(patient, cwc.getStaffId(), cwc.getFacilityId(), ENCOUNTER_CWCREGVISIT, cwc.getRegistrationDate(),
                 prepareObservations(cwc));
     }
 
@@ -49,9 +50,9 @@ public class CareService {
         Date registrationDate = (RegistrationToday.TODAY.equals(ancVO.getRegistrationToday())) ? DateUtil.now().toDate() : ancVO.getRegistrationDate();
         Patient patient = patientService.getPatientByMotechId(ancVO.getPatientMotechId());
         persistEncounter(patient, ancVO.getStaffId(), ancVO.getFacilityId(),
-                Constants.ENCOUNTER_ANCREGVISIT, registrationDate, prepareObservations(ancVO));
+                ENCOUNTER_ANCREGVISIT, registrationDate, prepareObservations(ancVO));
         persistEncounter(patient, ancVO.getStaffId(), ancVO.getFacilityId(),
-                Constants.ENCOUNTER_PREGREGVISIT, registrationDate, registerPregnancy(ancVO));
+                ENCOUNTER_PREGREGVISIT, registrationDate, registerPregnancy(ancVO));
 
         EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, DateUtil.newDate(ancVO.getEstimatedDateOfDelivery()));
         scheduleTrackingService.enroll(enrollmentRequest);
@@ -77,10 +78,10 @@ public class CareService {
         Date observationDate = DateUtil.today().toDate();
         Date registrationDate = (RegistrationToday.TODAY.equals(ancVO.getRegistrationToday())) ? observationDate : ancVO.getRegistrationDate();
         HashSet<MRSObservation> observations = new HashSet<MRSObservation>();
-        addObservation(observations, observationDate, Constants.CONCEPT_GRAVIDA, ancVO.getGravida());
-        addObservation(observations, observationDate, Constants.CONCEPT_HEIGHT, ancVO.getHeight());
-        addObservation(observations, observationDate, Constants.CONCEPT_PARITY, ancVO.getParity());
-        addObservation(observations, registrationDate, Constants.CONCEPT_ANC_REG_NUM, ancVO.getSerialNumber());
+        addObservation(observations, observationDate, CONCEPT_GRAVIDA, ancVO.getGravida());
+        addObservation(observations, observationDate, CONCEPT_HEIGHT, ancVO.getHeight());
+        addObservation(observations, observationDate, CONCEPT_PARITY, ancVO.getParity());
+        addObservation(observations, registrationDate, CONCEPT_ANC_REG_NUM, ancVO.getSerialNumber());
 
         if (ancVO.getAddHistory()) {
             Set<MRSObservation> historyObservations = addObservationsOnANCHistory(ancVO.getAncCareHistoryVO());
@@ -92,10 +93,10 @@ public class CareService {
     private HashSet<MRSObservation> registerPregnancy(final ANCVO ancVO) {
         return new HashSet<MRSObservation>() {{
             final Date today = DateUtil.today().toDate();
-            final MRSObservation observation = new MRSObservation(today, Constants.CONCEPT_PREGNANCY, null);
-            addDependentObservation(observation, today, Constants.CONCEPT_EDD, ancVO.getEstimatedDateOfDelivery());
-            addDependentObservation(observation, today, Constants.CONCEPT_CONFINEMENT_CONFIRMED, ancVO.getDeliveryDateConfirmed());
-            observation.addDependantObservation(new MRSObservation<Boolean>(today, Constants.CONCEPT_PREGNANCY_STATUS, true));
+            final MRSObservation observation = new MRSObservation(today, CONCEPT_PREGNANCY, null);
+            addDependentObservation(observation, today, CONCEPT_EDD, ancVO.getEstimatedDateOfDelivery());
+            addDependentObservation(observation, today, CONCEPT_CONFINEMENT_CONFIRMED, ancVO.getDeliveryDateConfirmed());
+            observation.addDependantObservation(new MRSObservation<Boolean>(today, CONCEPT_PREGNANCY_STATUS, true));
             add(observation);
         }};
     }
@@ -103,8 +104,8 @@ public class CareService {
     Set<MRSObservation> addObservationsOnANCHistory(ANCCareHistoryVO ancCareHistoryVO) {
         List<ANCCareHistory> capturedHistory = ancCareHistoryVO.getCareHistory();
         Set<MRSObservation> observations = new HashSet<MRSObservation>();
-        addObservation(capturedHistory, ANCCareHistory.IPT, observations, ancCareHistoryVO.getLastIPTDate(), Constants.CONCEPT_IPT, safePareInteger(ancCareHistoryVO.getLastIPT()));
-        addObservation(capturedHistory, ANCCareHistory.TT, observations, ancCareHistoryVO.getLastTTDate(), Constants.CONCEPT_TT, safePareInteger(ancCareHistoryVO.getLastTT()));
+        addObservation(capturedHistory, ANCCareHistory.IPT, observations, ancCareHistoryVO.getLastIPTDate(), CONCEPT_IPT, safePareInteger(ancCareHistoryVO.getLastIPT()));
+        addObservation(capturedHistory, ANCCareHistory.TT, observations, ancCareHistoryVO.getLastTTDate(), CONCEPT_TT, safePareInteger(ancCareHistoryVO.getLastTT()));
         return observations;
     }
 
@@ -112,7 +113,7 @@ public class CareService {
         HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         Set<MRSObservation> historyObservations = addObservationsOnCWCHistory(cwc.getCWCCareHistoryVO());
         mrsObservations.addAll(historyObservations);
-        mrsObservations.add(new MRSObservation<String>(cwc.getRegistrationDate(), Constants.CONCEPT_CWC_REG_NUMBER, cwc.getSerialNumber()));
+        mrsObservations.add(new MRSObservation<String>(cwc.getRegistrationDate(), CONCEPT_CWC_REG_NUMBER, cwc.getSerialNumber()));
         return mrsObservations;
     }
 
@@ -122,16 +123,16 @@ public class CareService {
 
         if (capturedHistory != null && cwcCareHistoryVO.getAddCareHistory()) {
             addObservation(capturedHistory, CwcCareHistory.BCG, observations, cwcCareHistoryVO.getBcgDate(),
-                    Constants.CONCEPT_IMMUNIZATIONS_ORDERED, new MRSConcept(Constants.CONCEPT_BCG));
+                    CONCEPT_IMMUNIZATIONS_ORDERED, new MRSConcept(CONCEPT_BCG));
             addObservation(capturedHistory, CwcCareHistory.VITA_A, observations, cwcCareHistoryVO.getVitADate(),
-                    Constants.CONCEPT_IMMUNIZATIONS_ORDERED, new MRSConcept(Constants.CONCEPT_VITA));
+                    CONCEPT_IMMUNIZATIONS_ORDERED, new MRSConcept(CONCEPT_VITA));
             addObservation(capturedHistory, CwcCareHistory.MEASLES, observations, cwcCareHistoryVO.getMeaslesDate(),
-                    Constants.CONCEPT_IMMUNIZATIONS_ORDERED, new MRSConcept(Constants.CONCEPT_MEASLES));
+                    CONCEPT_IMMUNIZATIONS_ORDERED, new MRSConcept(CONCEPT_MEASLES));
             addObservation(capturedHistory, CwcCareHistory.YF, observations, cwcCareHistoryVO.getYfDate(),
-                    Constants.CONCEPT_IMMUNIZATIONS_ORDERED, new MRSConcept(Constants.CONCEPT_YF));
-            addObservation(capturedHistory, CwcCareHistory.PENTA, observations, cwcCareHistoryVO.getLastPentaDate(), Constants.CONCEPT_PENTA, cwcCareHistoryVO.getLastPenta());
-            addObservation(capturedHistory, CwcCareHistory.OPV, observations, cwcCareHistoryVO.getLastOPVDate(), Constants.CONCEPT_OPV, cwcCareHistoryVO.getLastOPV());
-            addObservation(capturedHistory, CwcCareHistory.IPTI, observations, cwcCareHistoryVO.getLastIPTiDate(), Constants.CONCEPT_IPTI, cwcCareHistoryVO.getLastIPTi());
+                    CONCEPT_IMMUNIZATIONS_ORDERED, new MRSConcept(CONCEPT_YF));
+            addObservation(capturedHistory, CwcCareHistory.PENTA, observations, cwcCareHistoryVO.getLastPentaDate(), CONCEPT_PENTA, cwcCareHistoryVO.getLastPenta());
+            addObservation(capturedHistory, CwcCareHistory.OPV, observations, cwcCareHistoryVO.getLastOPVDate(), CONCEPT_OPV, cwcCareHistoryVO.getLastOPV());
+            addObservation(capturedHistory, CwcCareHistory.IPTI, observations, cwcCareHistoryVO.getLastIPTiDate(), CONCEPT_IPTI, cwcCareHistoryVO.getLastIPTi());
         }
         return observations;
     }
@@ -164,7 +165,7 @@ public class CareService {
 
     public MRSEncounter addCareHistory(CareHistoryVO careHistory) {
         Patient patient = patientService.getPatientByMotechId(careHistory.getPatientMotechId());
-        return persistEncounter(patient, careHistory.getStaffId(), careHistory.getFacilityId(), Constants.ENCOUNTER_PATIENTHISTORY, careHistory.getDate(),
+        return persistEncounter(patient, careHistory.getStaffId(), careHistory.getFacilityId(), ENCOUNTER_PATIENTHISTORY, careHistory.getDate(),
                 addObservationsForCareHistory(careHistory));
     }
 }
