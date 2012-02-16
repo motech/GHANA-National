@@ -114,7 +114,6 @@ public class ANCVisitServiceTest extends BaseUnitTest {
         expectedObservations.add(new MRSObservation<MRSConcept>(DateUtil.today().toDate(), Constants.CONCEPT_URINE_PROTEIN_TEST, conceptPositive));
         expectedObservations.add(new MRSObservation<Double>(DateUtil.today().toDate(), Constants.CONCEPT_HEMOGLOBIN, 13.8));
         expectedObservations.add(new MRSObservation<MRSConcept>(DateUtil.today().toDate(), Constants.CONCEPT_VDRL, conceptNonReactive));
-        expectedObservations.add(new MRSObservation<Boolean>(DateUtil.today().toDate(), Constants.CONCEPT_VDRL_TREATMENT, true));
         expectedObservations.add(new MRSObservation<Boolean>(DateUtil.today().toDate(), Constants.CONCEPT_DEWORMER, true));
         expectedObservations.add(new MRSObservation<Boolean>(DateUtil.today().toDate(), Constants.CONCEPT_PMTCT, true));
         expectedObservations.add(new MRSObservation<Boolean>(DateUtil.today().toDate(), Constants.CONCEPT_HIV_PRE_TEST_COUNSELING, false));
@@ -156,7 +155,7 @@ public class ANCVisitServiceTest extends BaseUnitTest {
         ANCVisit ancVisit = new ANCVisit();
         return  (ancVisit.staffId("465").facilityId("232465").motechId("2321465").date(new Date()).serialNumber("4ds65").visitNumber("4").estDeliveryDate(new Date(2012, 8, 8)).
         bpDiastolic(67).bpSystolic(10).weight(65.67d).comments("comments").ttdose("4").iptdose("56").iptReactive("Y").itnUse("itn").fht(4.3d).fhr(4).urineTestGlucosePositive("0").
-        urineTestProteinPositive("1").hemoglobin(13.8).vdrlReactive("N").vdrlTreatment("Y").dewormer("Y").pmtct("Y").preTestCounseled("N").
+        urineTestProteinPositive("1").hemoglobin(13.8).vdrlReactive("N").vdrlTreatment(null).dewormer("Y").pmtct("Y").preTestCounseled("N").
         hivTestResult("hiv").postTestCounseled("Y").pmtctTreament("Y").location("34").house("house").community("community").referred("Y").maleInvolved(false).nextANCDate(new Date(2012, 2, 20)));
     }
 
