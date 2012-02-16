@@ -23,6 +23,7 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import java.util.*;
 
+import static java.lang.String.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -74,7 +75,7 @@ public abstract class BaseScheduleTrackingIT extends BaseUnitTest {
         String[] jobNames = scheduler.getJobNames(jobGroupName);
         List<SimpleTrigger> alertTriggers = new ArrayList<SimpleTrigger>();
         for (String jobName : jobNames) {
-            if (jobName.contains(String.format("%s.%s", EnrollmentAlertService.JOB_ID_PREFIX, enrollmentId))) {
+            if (jobName.contains(format("%s", enrollmentId))) {
                 Trigger[] triggersOfJob = scheduler.getTriggersOfJob(jobName, jobGroupName);
                 assertEquals(1, triggersOfJob.length);
                 alertTriggers.add((SimpleTrigger)triggersOfJob[0]);
