@@ -10,14 +10,14 @@ import org.motechproject.ghana.national.service.TextMessageService;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
+import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.EDD;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.MOTECH_ID;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 
 @Component
 public class CareScheduleHandler {
@@ -38,11 +38,11 @@ public class CareScheduleHandler {
 
     @LoginAsAdmin
     @ApiSession
-    public void handlePregnancyAlert(MilestoneEvent milestoneEvent) {
+    public void handlePregnancyAlert(final MilestoneEvent milestoneEvent) {
         String externalId = milestoneEvent.getExternalId();
         LocalDate conceptionDate = milestoneEvent.getReferenceDate();
 
-        Patient patient = allPatients.patientByOpenmrsId(externalId);
+        final Patient patient = allPatients.patientByOpenmrsId(externalId);
         Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(conceptionDate);
         final LocalDate dateOfDelivery = pregnancy.dateOfDelivery();
         final String motechId = patient.getMrsPatient().getMotechId();
@@ -51,7 +51,15 @@ public class CareScheduleHandler {
         SMS sms = textMessageService.getSMS(PREGNANCY_ALERT_SMS_KEY, new HashMap<String, String>() {{
             put(MOTECH_ID, motechId);
             put(EDD, dateOfDelivery.toString());
+            put(WINDOW, getWindowName(milestoneEvent.getWindowName()));
+            put(FIRST_NAME, patient.getFirstName());
+            put(LAST_NAME, patient.getLastName());
+            put(CARE_SERVICE, milestoneEvent.getScheduleName());
         }});
         textMessageService.sendSMS(facility, sms);
+    }
+
+    private String getWindowName(String windowName) {
+        return windowName.equals(WindowName.earliest.name()) ? "Upcoming" : (windowName.equals(WindowName.due.name()) ? "Due" : "Overdue");
     }
 }
