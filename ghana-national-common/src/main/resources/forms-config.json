@@ -67,6 +67,12 @@
                 "fileName":"TTVisit.xml",
                 "bean":"org.motechproject.ghana.national.bean.TTVisitForm",
                 "validator":"org.motechproject.ghana.national.validator.TTVisitFormValidator"
+            },
+            {
+                "name":"PregnancyTermination",
+                "fileName":"PregnancyTermination.xml",
+                "bean":"org.motechproject.ghana.national.bean.PregnancyTerminationForm",
+                "validator":"org.motechproject.ghana.national.validator.PregnancyTerminationFormValidator"
             }
         ]
     }

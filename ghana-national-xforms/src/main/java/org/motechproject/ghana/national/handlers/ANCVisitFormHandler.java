@@ -26,14 +26,17 @@ public class ANCVisitFormHandler implements FormPublishHandler {
     @Autowired
     FacilityService facilityService;
 
-
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.ancVisit")
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
-        ANCVisitForm form = (ANCVisitForm) event.getParameters().get(Constants.FORM_BEAN);
-        visitService.registerANCVisit(createANCVisit(form));
+        try {
+            ANCVisitForm form = (ANCVisitForm) event.getParameters().get(Constants.FORM_BEAN);
+            visitService.registerANCVisit(createANCVisit(form));
+        } catch (Exception e) {
+            log.error("Encountered error while saving ANC visit details", e);
+        }
     }
 
     private ANCVisit createANCVisit(ANCVisitForm form) {

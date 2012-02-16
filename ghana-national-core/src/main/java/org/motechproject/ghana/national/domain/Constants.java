@@ -86,6 +86,12 @@ public class Constants {
     public static final String CONCEPT_NEGATIVE = "NEGATIVE";
     public static final String CONCEPT_ACT_TREATMENT = "ACT TREATMENT";
     public static final String CONCEPT_PREGNANCY_STATUS = "PREGNANCY STATUS";
+    public static final String CONCEPT_TERMINATION_TYPE = "TERMINATION TYPE";
+    public static final String CONCEPT_TERMINATION_PROCEDURE = "PREGNANCY, TERMINATION PROCEDURE";
+    public static final String CONCEPT_TERMINATION_COMPLICATION = "TERMINATION COMPLICATION";
+    public static final String CONCEPT_MATERNAL_DEATH = "MATERNAL DEATH";
+    public static final String CONCEPT_POST_ABORTION_FP_COUNSELING="POST-ABORTION FP COUNSELING";
+    public static final String CONCEPT_POST_ABORTION_FP_ACCEPTED="POST-ABORTION FP ACCEPTED";
 
     public static final String ENCOUNTER_ANCREGVISIT = "ANCREGVISIT";
     public static final String ENCOUNTER_ANCVISIT = "ANCVISIT";
@@ -96,13 +102,15 @@ public class Constants {
     public static final String ENCOUNTER_PATIENTEDITVISIT = "PATIENTEDITVISIT";
     public static final String ENCOUNTER_PREGDELNOTIFYVISIT = "PREGDELNOTIFYVISIT";
     public static final String ENCOUNTER_OUTPATIENTVISIT = "OUTPATIENTVISIT";
+    public static final String ENCOUNTER_PREGTERMVISI = "PREGTERMVISIT";
+
 
     //CWC Validators
     public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
     public static final String CHILD_AGE_PARAMETER = "childAge";
     public static final String CHILD_AGE_MORE_ERR_MSG = "child cannot be more than 5 years old";
     public static final String AGE_LESS_ERR_MSG = "patient cannot be less than 5 years old";
-    public static final String GENDER_ERROR_MSG = "should be female for registering into ANC";
+    public static final String GENDER_ERROR_MSG = "should be female";
 
     // Mobile Midwife
     public static final Time MOBILE_MIDWIFE_MIN_TIMEOFDAY_FOR_VOICE = new Time(5, 0);
@@ -113,35 +121,37 @@ public class Constants {
     public static final String FORM_BEAN = "formBean";
 
 
+    public static final String CONCEPT_SERIAL_NUMBER = "SERIAL NUMBER";
+    public static final String CONCEPT_VISIT_NUMBER = "VISIT NUMBER";
+    public static final String CONCEPT_SYSTOLIC_BLOOD_PRESSURE = "SYSTOLIC BLOOD PRESSURE";
+    public static final String CONCEPT_DIASTOLIC_BLOOD_PRESSURE = "DIASTOLIC BLOOD PRESSURE";
+    public static final String CONCEPT_WEIGHT_KG = "WEIGHT (KG)";
+    public static final String CONCEPT_IPT_REACTION = "IPT REACTION";
+    public static final String CONCEPT_NON_REACTIVE = "NON-REACTIVE";
+    public static final String CONCEPT_REACTIVE = "REACTIVE";
+    public static final String CONCEPT_INSECTICIDE_TREATED_NET_USAGE = "INSECTICIDE TREATED NET USAGE";
+    public static final String CONCEPT_FHR = "FETAL HEART RATE";
+    public static final String CONCEPT_FHT = "FUNDAL HEIGHT";
+    public static final String CONCEPT_URINE_PROTEIN_TEST = "URINE PROTEIN TEST";
+    public static final String CONCEPT_TRACE = "TRACE";
+    public static final String CONCEPT_URINE_GLUCOSE_TEST = "URINE GLUCOSE TEST";
+    public static final String CONCEPT_HEMOGLOBIN = "HEMOGLOBIN";
+    public static final String CONCEPT_VDRL_TREATMENT = "VDRL TREATMENT";
+    public static final String CONCEPT_VDRL = "VDRL";
+    public static final String CONCEPT_DEWORMER = "DEWORMER";
+    public static final String CONCEPT_PMTCT = "PMTCT";
+    public static final String CONCEPT_HIV_PRE_TEST_COUNSELING = "HIV PRE-TEST COUNSELING";
+    public static final String CONCEPT_HIV_POST_TEST_COUNSELING = "HIV POST-TEST COUNSELING";
+    public static final String CONCEPT_HIV_TEST_RESULT = "HIV TEST RESULT";
+    public static final String CONCEPT_PMTCT_TREATMENT = "PMTCT TREATMENT";
+    public static final String CONCEPT_HOUSE = "HOUSE";
+    public static final String CONCEPT_COMMUNITY = "COMMUNITY";
+    public static final String CONCEPT_MALE_INVOLVEMENT = "MALE INVOLVEMENT";
+    public static final String CONCEPT_NEXT_ANC_DATE = "NEXT ANC DATE";
+    public static final String CONCEPT_ANC_PNC_LOCATION = "ANC PNC LOCATION";
 
-    public static final String CONCEPT_SERIAL_NUMBER= "SERIAL NUMBER";
-    public static final String CONCEPT_VISIT_NUMBER="VISIT NUMBER";
-    public static final String CONCEPT_SYSTOLIC_BLOOD_PRESSURE="SYSTOLIC BLOOD PRESSURE";
-    public static final String CONCEPT_DIASTOLIC_BLOOD_PRESSURE="DIASTOLIC BLOOD PRESSURE";
-    public static final String CONCEPT_WEIGHT_KG="WEIGHT (KG)";
-    public static final String CONCEPT_IPT_REACTION="IPT REACTION";
-    public static final String CONCEPT_NON_REACTIVE="NON-REACTIVE";
-    public static final String CONCEPT_REACTIVE="REACTIVE";
-    public static final String CONCEPT_INSECTICIDE_TREATED_NET_USAGE="INSECTICIDE TREATED NET USAGE";
-    public static final String CONCEPT_FHR="FETAL HEART RATE";
-    public static final String CONCEPT_FHT="FUNDAL HEIGHT";
-    public static final String CONCEPT_URINE_PROTEIN_TEST="URINE PROTEIN TEST";
-    public static final String CONCEPT_TRACE="TRACE";
-    public static final String CONCEPT_URINE_GLUCOSE_TEST="URINE GLUCOSE TEST";
-    public static final String CONCEPT_HEMOGLOBIN="HEMOGLOBIN";
-    public static final String CONCEPT_VDRL_TREATMENT="VDRL TREATMENT";
-    public static final String CONCEPT_VDRL="VDRL";
-    public static final String CONCEPT_DEWORMER="DEWORMER";
-    public static final String CONCEPT_PMTCT="PMTCT";
-    public static final String CONCEPT_HIV_PRE_TEST_COUNSELING="HIV PRE-TEST COUNSELING";
-    public static final String CONCEPT_HIV_POST_TEST_COUNSELING="HIV POST-TEST COUNSELING";
-    public static final String CONCEPT_HIV_TEST_RESULT="HIV TEST RESULT";
-    public static final String CONCEPT_PMTCT_TREATMENT="PMTCT TREATMENT";
-    public static final String CONCEPT_HOUSE="HOUSE";
-    public static final String CONCEPT_COMMUNITY="COMMUNITY";
-    public static final String CONCEPT_MALE_INVOLVEMENT="MALE INVOLVEMENT";
-    public static final String CONCEPT_NEXT_ANC_DATE="NEXT ANC DATE";
-    public static final String CONCEPT_ANC_PNC_LOCATION="ANC PNC LOCATION";
 
+    public static final String OTHER_CAUSE_OF_DEATH = "OTHER";
+    public static final String PREGNANCY_TERMINATION = "Pregnancy Termination";
 
 }
