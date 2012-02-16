@@ -15,6 +15,7 @@ import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -127,14 +128,14 @@ public class CWCController {
             return ENROLL_CWC_URL;
         }
 
-        Date registrationDate = cwcEnrollmentForm.getRegistrationDate();
+//        Date registrationDate = cwcEnrollmentForm.getRegistrationDate();
         if (cwcEnrollmentForm.getRegistrationToday().equals(RegistrationToday.TODAY)) {
-            registrationDate = new Date();
+            cwcEnrollmentForm.setRegistrationDate(DateUtil.now().toDate());
         }
         careService.enroll(new CwcVO(
                 cwcEnrollmentForm.getStaffId(),
                 cwcEnrollmentForm.getFacilityForm().getFacilityId(),
-                registrationDate,
+                cwcEnrollmentForm.getRegistrationDate(),
                 cwcEnrollmentForm.getPatientMotechId(),
                 cwcEnrollmentForm.getCareHistory(),
                 cwcEnrollmentForm.getBcgDate(),
