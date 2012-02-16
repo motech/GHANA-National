@@ -1,9 +1,12 @@
 package org.motechproject.ghana.national.service;
 
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +27,15 @@ public class PregnancyTerminationService {
     @Autowired
     EncounterService encounterService;
 
+    @Autowired
+    FacilityService facilityService;
+
+    @LoginAsAdmin
+    @ApiSession
     public void terminatePregnancy(PregnancyTerminationRequest request) {
         MRSPatient mrsPatient = patientService.getPatientByMotechId(request.getMotechId()).getMrsPatient();
-        encounterService.persistEncounter(mrsPatient, request.getStaffId(), request.getFacilityId(), Constants.ENCOUNTER_PREGTERMVISI, request.getTerminationDate(), prepareObservations(request));
+        Facility facility = facilityService.getFacilityByMotechId(request.getFacilityId());
+        encounterService.persistEncounter(mrsPatient, request.getStaffId(), facility.getMrsFacilityId(), Constants.ENCOUNTER_PREGTERMVISI, request.getTerminationDate(), prepareObservations(request));
         if (request.isDead())
             patientService.deceasePatient(request.getMotechId(), request.getTerminationDate(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
     }

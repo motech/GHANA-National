@@ -17,7 +17,6 @@ public class PregnancyTerminationFormValidator extends FormValidator<PregnancyTe
     @Autowired
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
 
-
     @Override
     @LoginAsAdmin
     @ApiSession

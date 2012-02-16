@@ -5,7 +5,6 @@ import org.motechproject.ghana.national.bean.PregnancyTerminationForm;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.util.DateUtil;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
@@ -18,7 +17,7 @@ public class MobileRequestMapperTest {
 
         PregnancyTerminationForm form = new PregnancyTerminationForm();
         form.setComments("Comment on death");
-        form.setComplications(Arrays.asList("Bleeding"));
+        form.setComplications("Bleeding");
         form.setDate(terminationDate);
         form.setFacilityId("facilityId");
         form.setMaternalDeath(Boolean.TRUE);
@@ -33,7 +32,7 @@ public class MobileRequestMapperTest {
         PregnancyTerminationRequest request = MobileRequestMapper.map(form);
 
         assertEquals(form.getComments(), request.getComments());
-        assertReflectionEquals(form.getComplications(), request.getComplications());
+        assertReflectionEquals(form.getTerminationComplications(), request.getComplications());
         assertEquals(form.getDate(), request.getTerminationDate());
         assertEquals(form.getFacilityId(), request.getFacilityId());
         assertEquals(form.getMaternalDeath(), request.isDead());
