@@ -30,4 +30,8 @@ public class EncounterService {
                 registrationDate, patientId, mrsObservations, encounterType);
         return allEncounters.save(mrsEncounter);
     }
+
+    public MRSEncounter fetchLatestEncounter(String motechId,String encounterType){
+         return allEncounters.fetchLatest(motechId,encounterType);
+    }
 }

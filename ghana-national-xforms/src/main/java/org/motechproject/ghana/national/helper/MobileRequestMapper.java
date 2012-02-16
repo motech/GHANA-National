@@ -15,7 +15,7 @@ public class MobileRequestMapper {
         request.setTerminationDate(form.getDate());
         request.setTerminationProcedure(form.getProcedure());
         request.setTerminationType(form.getTerminationType());
-        request.setComplications(form.getComplications());
+        request.setComplications(form.getTerminationComplications());
         request.setPostAbortionFPCounselling(form.getPostAbortionFPCounseled());
         request.setPostAbortionFPAccepted(form.getPostAbortionFPAccepted());
         return request;

@@ -55,5 +55,13 @@ public class EncounterServiceTest{
         assertEquals(mrsEncounterSaved.getFacility().getId(),facilityId);
         assertEquals(mrsEncounterSaved.getEncounterType(),Constants.ENCOUNTER_PATIENTREGVISIT);
     }
+
+    @Test
+    public void shouldFetchLatestEncounter(){
+        String encounterType = "encounterType";
+        String motechId = "motechId";
+        encounterService.fetchLatestEncounter(motechId, encounterType);
+        verify(mockAllEncounters).fetchLatest(motechId,encounterType);
+    }
     
 }
