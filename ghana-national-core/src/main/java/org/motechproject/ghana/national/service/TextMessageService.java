@@ -41,7 +41,7 @@ public class TextMessageService {
     }
 
     public void sendSMS(Facility facility, SMS sms) {
-        smsService.sendSMS(facility.getPhoneNumber(), sms.getText());
+        smsService.sendSMS(facility.phoneNumber(), sms.getText());
     }
 
     public void sendSMS(String phoneNumber, SMS sms) {

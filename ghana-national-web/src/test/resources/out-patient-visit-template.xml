@@ -11,6 +11,7 @@
                 <visitor/>
                 <motechId/>
                 <dateOfBirth/>
+                <gender/>
                 <insured/>
                 <nhis/>
                 <nhisExpires/>
@@ -48,6 +49,9 @@
         <xf:bind action="show" constraint=". &lt;= 'today()'" id="dateOfBirth"
                  message="Invalid birthDate: birthDate specified is in the future" nodeset="/opvVisit/dateOfBirth"
                  required="true()" relevant="/opvVisit/visitor = 'Y'" type="xsd:date" visible="false()"/>
+        <xf:bind action="show" id="gender"
+                 message="Gender is Mandatory" nodeset="/opvVisit/gender"
+                 required="true()" relevant="/opvVisit/visitor = 'Y'" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="insured" nodeset="/opvVisit/insured" required="true()" relevant="/opvVisit/visitor = 'Y'" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="nhis" nodeset="/opvVisit/nhis"
                  relevant="/opvVisit/visitor = 'Y' and /opvVisit/insured = 'Y'" type="xsd:string" visible="false()"
@@ -108,7 +112,7 @@
             </xf:item>
         </xf:select1>
         <xf:select1 bind="visitor">
-            <xf:label>visitor</xf:label>
+            <xf:label>Visitor</xf:label>
             <xf:item id="Y">
                 <xf:label>Yes</xf:label>
                 <xf:value>Y</xf:value>
@@ -116,6 +120,17 @@
             <xf:item id="N">
                 <xf:label>No</xf:label>
                 <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="gender">
+            <xf:label>Gender</xf:label>
+            <xf:item id="Male">
+                <xf:label>Male</xf:label>
+                <xf:value>M</xf:value>
+            </xf:item>
+            <xf:item id="Female">
+                <xf:label>Female</xf:label>
+                <xf:value>F</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="motechId">

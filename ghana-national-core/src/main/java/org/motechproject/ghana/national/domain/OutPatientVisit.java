@@ -57,6 +57,9 @@ public class OutPatientVisit extends MotechBaseDataObject {
     private Boolean actTreated;
 
     @JsonProperty
+    private String gender;
+
+    @JsonProperty
     private Boolean referred;
 
     @JsonProperty
@@ -234,6 +237,15 @@ public class OutPatientVisit extends MotechBaseDataObject {
 
     public OutPatientVisit setRegistrantType(PatientType registrantType) {
         this.registrantType = registrantType;
+        return this;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public OutPatientVisit setGender(String gender) {
+        this.gender = gender;
         return this;
     }
 }

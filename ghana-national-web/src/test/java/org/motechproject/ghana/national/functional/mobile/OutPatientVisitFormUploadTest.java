@@ -3,20 +3,14 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
-import org.motechproject.ghana.national.functional.Generator.FacilityGenerator;
-import org.motechproject.ghana.national.functional.Generator.PatientGenerator;
-import org.motechproject.ghana.national.functional.Generator.StaffGenerator;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.util.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
-import java.util.Date;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
@@ -46,6 +40,7 @@ public class OutPatientVisitFormUploadTest extends LoggedInUserFunctionalTest {
             put("serialNumber", serialNumber);
             put("visitDate", visitDate.toString(forPattern("yyyy-MM-dd")));
             put("newCase", "Y");
+            put("gender", "M");
             put("newPatient", "Y");
             put("diagnosis", "78");
             put("otherDiagnosis", "10");
@@ -86,6 +81,7 @@ public class OutPatientVisitFormUploadTest extends LoggedInUserFunctionalTest {
             put("newPatient", "Y");
             put("diagnosis", "78");
             put("otherDiagnosis", "10");
+            put("gender", "M");
             put("rdtGiven", "Y");
             put("rdtPositive", "Y");
 

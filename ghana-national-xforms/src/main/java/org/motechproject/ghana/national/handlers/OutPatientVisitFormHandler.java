@@ -74,7 +74,7 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
         visit.setVisitDate(formBean.getVisitDate()).setRegistrantType(formBean.getRegistrantType()).setSerialNumber(formBean.getSerialNumber()).setFacilityId(formBean.getFacilityId())
                 .setStaffId(formBean.getStaffId()).setDateOfBirth(formBean.getDateOfBirth()).setInsured(formBean.getInsured()).setNhis(formBean.getNhis()).setNhisExpires(formBean.getNhisExpires())
                 .setDiagnosis(diagnosis).setSecondDiagnosis(secondaryDiagnosis).setRdtGiven(formBean.getRdtGiven()).setRdtPositive(formBean.getRdtPositive())
-                .setActTreated(formBean.getActTreated()).setReferred(formBean.getReferred()).setComments(formBean.getComments());
+                .setActTreated(formBean.getActTreated()).setReferred(formBean.getReferred()).setComments(formBean.getComments()).setGender(formBean.getGender());
         outPatientVisitService.registerVisit(visit);
     }
 

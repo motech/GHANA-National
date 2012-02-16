@@ -37,6 +37,9 @@ public class OutPatientVisitForm extends FormBean {
     @Required
     private Date visitDate;
 
+    @Required
+    private String gender;
+
     private Date dateOfBirth;
 
     @Required
@@ -252,4 +255,11 @@ public class OutPatientVisitForm extends FormBean {
         this.comments = comments;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 }
