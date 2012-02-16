@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.service;
 import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class MobileMidwifeService {
     private MobileMidwifeCampaign mobileMidwifeCampaign;
 
     public void register(MobileMidwifeEnrollment enrollment) {
-        MobileMidwifeEnrollment newEnrollment;
+        enrollment.setEnrollmentDateTime(DateUtil.now());
         unregister(enrollment.getPatientId());
         enrollment.setActive(true);
         allEnrollments.add(enrollment);

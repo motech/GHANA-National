@@ -1,5 +1,8 @@
 package org.motechproject.ghana.national.service;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
@@ -7,8 +10,13 @@ import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnroll
 import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.util.DateTimeSourceUtil;
+import org.motechproject.util.DateUtil;
+import org.motechproject.util.datetime.DateTimeSource;
 
 import static junit.framework.Assert.assertFalse;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -31,6 +39,7 @@ public class MobileMidwifeServiceTest {
     @Test
     public void shouldCreateMobileMidwifeEnrollmentAndCreateScheduleIfNotRegisteredAlready() {
         String patientId = "patientId";
+        mockNow(DateUtil.now());
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
                 patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday).phoneOwnership(PhoneOwnership.HOUSEHOLD)
                 .build();
@@ -38,8 +47,29 @@ public class MobileMidwifeServiceTest {
         when(mockMobileMidwifeCampaign.nearestCycleDate(enrollment)).thenReturn(enrollment.getEnrollmentDateTime());
 
         service.register(enrollment);
+        assertThat(enrollment.getEnrollmentDateTime(), is(DateUtil.now()));
+
         verifyCreateNewEnrollment(enrollment);
         verify(mockMobileMidwifeCampaign).start(enrollment);
+    }
+
+    private void mockNow(final DateTime now) {
+        DateTimeSourceUtil.SourceInstance = new DateTimeSource() {
+            @Override
+            public DateTimeZone timeZone() {
+                return DateTimeZone.getDefault();
+            }
+
+            @Override
+            public DateTime now() {
+                return now;
+            }
+
+            @Override
+            public LocalDate today() {
+                return now.toLocalDate();
+            }
+        };
     }
 
     private void verifyCreateNewEnrollment(MobileMidwifeEnrollment enrollment) {
