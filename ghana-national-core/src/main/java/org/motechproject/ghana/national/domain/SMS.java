@@ -24,6 +24,7 @@ public class SMS {
     public SMS fill(Map<String, String> runTimeValues) {
         for (Map.Entry<String, String> runTimeValue : runTimeValues.entrySet()) {
             text = template.replace(runTimeValue.getKey(), runTimeValue.getValue());
+            template = text;
         }
         return this;
     }
