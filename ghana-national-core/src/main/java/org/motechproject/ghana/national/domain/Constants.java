@@ -35,6 +35,7 @@ public class Constants {
     public static final String PATIENT_IDENTIFIER_TYPE_STAFF_ID = "MoTeCH Staff Id";
     public static final String PATIENT_GENDER_MALE = "M";
     public static final String PATIENT_GENDER_FEMALE = "F";
+    public static final String OBSERVATION_YES = "Y";
 
     public static final String PATTERN_YYYY_MM_DD = "yyyy-MM-dd";
 
