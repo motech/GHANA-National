@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
@@ -28,12 +29,16 @@ public class PregnancyTerminationServiceTest {
     @Mock
     private EncounterService mockEncounterService;
 
+    @Mock
+    private FacilityService mockFacilityService;
+
     @Before
     public void setUp() {
         initMocks(this);
         pregnancyTerminationService = new PregnancyTerminationService();
         ReflectionTestUtils.setField(pregnancyTerminationService, "patientService", mockPatientService);
         ReflectionTestUtils.setField(pregnancyTerminationService, "encounterService", mockEncounterService);
+        ReflectionTestUtils.setField(pregnancyTerminationService, "facilityService", mockFacilityService);
     }
 
     @Test
@@ -52,10 +57,11 @@ public class PregnancyTerminationServiceTest {
     }
 
     @Test
-    public void shouldSetPregnancyStatusObservationToFalseOnPregnancyTermination() {
+    public void shouldCreateEncounterOnPregnancyTermination() {
         String staffId = "staffId";
         String facilityId = "facilityId";
         String motechId = "motechId";
+        String mrsFacilityId = "mrsFacilityId";
         final Date date = DateUtil.newDate(2000, 12, 12).toDate();
         final PregnancyTerminationRequest request = pregnancyTermination(motechId, staffId, facilityId);
         request.setTerminationDate(date);
@@ -65,11 +71,14 @@ public class PregnancyTerminationServiceTest {
         when(mockPatientService.getPatientByMotechId(request.getMotechId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
 
+        Facility mockFacility=mock(Facility.class);
+        when(mockFacilityService.getFacilityByMotechId(facilityId)).thenReturn(mockFacility);
+        when(mockFacility.getMrsFacilityId()).thenReturn(mrsFacilityId);
 
         pregnancyTerminationService.terminatePregnancy(request);
         ArgumentCaptor<Set> captor = ArgumentCaptor.forClass(Set.class);
 
-        verify(mockEncounterService).persistEncounter(eq(mockMRSPatient), eq(staffId), eq(facilityId), eq(ENCOUNTER_PREGTERMVISI), eq(date), captor.capture());
+        verify(mockEncounterService).persistEncounter(eq(mockMRSPatient), eq(staffId), eq(mrsFacilityId), eq(ENCOUNTER_PREGTERMVISI), eq(date), captor.capture());
 
         Set observations = captor.getValue();
 

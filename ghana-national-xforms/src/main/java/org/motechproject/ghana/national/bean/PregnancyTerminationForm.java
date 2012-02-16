@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
@@ -8,6 +9,7 @@ import org.motechproject.mobileforms.api.validator.annotations.Required;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,9 +36,11 @@ public class PregnancyTerminationForm extends FormBean {
     private String terminationType;
     @Required
     private String procedure;
-    private List<String> complications;
-    @Required private Boolean maternalDeath;
-    @Required private Boolean referred;
+    private String complications;
+    @Required
+    private Boolean maternalDeath;
+    @Required
+    private Boolean referred;
     private Boolean postAbortionFPCounseled;
     private Boolean postAbortionFPAccepted;
     private String comments;
@@ -89,11 +93,11 @@ public class PregnancyTerminationForm extends FormBean {
         this.procedure = procedure;
     }
 
-    public List<String> getComplications() {
+    public String getComplications() {
         return complications;
     }
 
-    public void setComplications(List<String> complications) {
+    public void setComplications(String complications) {
         this.complications = complications;
     }
 
@@ -135,5 +139,15 @@ public class PregnancyTerminationForm extends FormBean {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public List<String> getTerminationComplications(){
+        List<String> terminationComplications = new ArrayList<String>();
+        if (StringUtils.isNotEmpty(complications)) {
+            for (String value : complications.split(" ")) {
+                terminationComplications.add(value);
+            }
+        }
+        return terminationComplications;
     }
 }
