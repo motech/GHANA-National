@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.motechproject.model.Time;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduler.MotechSchedulerServiceImpl;
+import org.motechproject.scheduletracking.api.events.constants.EventSubject;
 import org.motechproject.scheduletracking.api.repository.AllEnrollments;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
 import org.motechproject.scheduletracking.api.service.impl.EnrollmentAlertService;
@@ -23,6 +24,7 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import java.util.*;
 
+import static java.lang.String.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -74,7 +76,7 @@ public abstract class BaseScheduleTrackingIT extends BaseUnitTest {
         String[] jobNames = scheduler.getJobNames(jobGroupName);
         List<SimpleTrigger> alertTriggers = new ArrayList<SimpleTrigger>();
         for (String jobName : jobNames) {
-            if (jobName.contains(String.format("%s.%s", EnrollmentAlertService.JOB_ID_PREFIX, enrollmentId))) {
+            if (jobName.contains(format("%s-%s", EventSubject.MILESTONE_ALERT, enrollmentId))) {
                 Trigger[] triggersOfJob = scheduler.getTriggersOfJob(jobName, jobGroupName);
                 assertEquals(1, triggersOfJob.length);
                 alertTriggers.add((SimpleTrigger)triggersOfJob[0]);

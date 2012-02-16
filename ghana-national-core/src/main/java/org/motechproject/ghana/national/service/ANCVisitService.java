@@ -28,10 +28,8 @@ public class ANCVisitService {
 
     public MRSEncounter registerANCVisit(ANCVisit ancVisit) {
         Patient patientByMotechId = patientService.getPatientByMotechId(ancVisit.getMotechId());
-        Set<MRSObservation> mrsObservations = createMRSObservations(ancVisit);
-        MRSEncounter mrsEncounter = encounterService.persistEncounter(patientByMotechId.getMrsPatient(), ancVisit.getStaffId(),
-                ancVisit.getFacilityId(), Constants.ENCOUNTER_ANCVISIT, ancVisit.getDate(), mrsObservations);
-        return mrsEncounter;
+        return encounterService.persistEncounter(patientByMotechId.getMrsPatient(), ancVisit.getStaffId(),
+                ancVisit.getFacilityId(), Constants.ENCOUNTER_ANCVISIT, ancVisit.getDate(), createMRSObservations(ancVisit));
     }
 
     Set<MRSObservation> createMRSObservations(ANCVisit ancVisit) {
