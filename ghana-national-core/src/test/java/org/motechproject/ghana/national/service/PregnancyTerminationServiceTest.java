@@ -43,13 +43,21 @@ public class PregnancyTerminationServiceTest {
 
     @Test
     public void shouldDeceasePatientIfDeadDuringPregnancyTermination() {
-        PregnancyTerminationRequest request = pregnancyTermination("motechId", "staffId", "facilityId");
+        String motechId = "motechId";
+        String staffId = "staffId";
+        String facilityId = "facilityId";
+        String mrsFacilityId = "mrsFacilityId";
+        PregnancyTerminationRequest request = pregnancyTermination(motechId, staffId, facilityId);
         request.setDead(Boolean.TRUE);
+
         Patient mockPatient = mock(Patient.class);
         MRSPatient mockMRSPatient = mock(MRSPatient.class);
-
         when(mockPatientService.getPatientByMotechId(request.getMotechId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
+
+        Facility mockFacility=mock(Facility.class);
+        when(mockFacilityService.getFacilityByMotechId(facilityId)).thenReturn(mockFacility);
+        when(mockFacility.getMrsFacilityId()).thenReturn(mrsFacilityId);
 
         pregnancyTerminationService.terminatePregnancy(request);
 
