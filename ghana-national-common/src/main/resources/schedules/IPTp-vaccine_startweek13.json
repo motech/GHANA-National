@@ -52,6 +52,29 @@
                     "offset" : "0 Day"
                 }
             ]
+        },
+        {
+            "name" : "IPT3",
+            "scheduleWindows" : {
+                "earliest" : "4 Weeks",
+                "due" : "",
+                "late" : "5 Weeks",
+                "max" : ""
+            },
+            "alerts" : [
+                {
+                    "window" : "earliest",
+                    "interval" : "1 Weeks",
+                    "count" : "1",
+                    "offset" : "3 Weeks"
+                },
+                {
+                    "window" : "due",
+                    "interval" : "1 Weeks",
+                    "count" : "1",
+                    "offset" : "0 Day"
+                }
+            ]
         }
     ]
 }

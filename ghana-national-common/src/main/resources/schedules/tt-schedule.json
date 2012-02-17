@@ -15,21 +15,21 @@
             "scheduleWindows" : {
                 "earliest" : "",
                 "due" : "3 Weeks",
-                "late" : "4 Weeks",
-                "max" : ""
+                "late" : "6 Weeks",
+                "max" : "7 Weeks"
             },
             "alerts" : [
                 {
                     "window" : "due",
-                    "interval" : "1 Week",
+                    "interval" : "1 Weeks",
                     "count" : "1",
-                    "offset" : "0 Days"
+                    "offset" : "3 Weeks"
                 },
                 {
                     "window" : "late",
-                    "interval" : "1 Week",
-                    "count" : "1",
-                    "offset" : "0 Days"
+                    "interval" : "1 Weeks",
+                    "count" : "3",
+                    "offset" : "1 Weeks"
                 }
             ]
         },
@@ -37,22 +37,22 @@
             "name" : "TT3",
             "scheduleWindows" : {
                 "earliest" : "",
-                "due" : "161 Days",
-                "late" : "171 Days",
-                "max" : ""
+                "due" : "23 Weeks",
+                "late" : "192 Days", # 23 * 7 + 10 + 21
+                "max" : "199 Days"
             },
             "alerts" : [
                 {
                     "window" : "due",
-                    "interval" : "1 Week",
+                    "interval" : "1 Weeks",
                     "count" : "1",
-                    "offset" : "0 Days"
+                    "offset" : "23 Weeks"
                 },
                 {
                     "window" : "late",
-                    "interval" : "1 Week",
-                    "count" : "1",
-                    "offset" : "0 Days"
+                    "interval" : "1 Weeks",
+                    "count" : "3",
+                    "offset" : "10 Days"
                 }
             ]
         },
@@ -60,22 +60,22 @@
             "name" : "TT4",
             "scheduleWindows" : {
                 "earliest" : "",
-                "due" : "188 Days",
-                "late" : "198 Days",
-                "max" : ""
+                "due" : "47 Weeks",
+                "late" : "360 Days",   # 47 * 7 + 10 + 21
+                "max" : "367 Days"
             },
             "alerts" : [
                 {
                     "window" : "due",
-                    "interval" : "1 Week",
+                    "interval" : "1 Weeks",
                     "count" : "1",
-                    "offset" : "0 Days"
+                    "offset" : "47 Weeks"
                 },
                 {
                     "window" : "late",
-                    "interval" : "1 Week",
-                    "count" : "1",
-                    "offset" : "0 Days"
+                    "interval" : "1 Weeks",
+                    "count" : "3",
+                    "offset" : "10 Days"
                 }
             ]
         },
@@ -83,25 +83,24 @@
             "name" : "TT5",
             "scheduleWindows" : {
                 "earliest" : "",
-                "due" : "188 Days",
-                "late" : "198 Days",
-                "max" : ""
-            },
-            "alerts" : [
-                {
-                    "window" : "due",
-                    "interval" : "1 Week",
-                    "count" : "1",
-                    "offset" : "0 Days"
-                },
-                {
-                    "window" : "late",
-                    "interval" : "1 Week",
-                    "count" : "1",
-                    "offset" : "0 Days"
-                }
-            ]
-        }
-
+                "due" : "47 Weeks",
+                "late" : "360 Days",   # 47 * 7 + 10 + 21
+                "max" : "367 Days"
+             },
+             "alerts" : [
+                 {
+                     "window" : "due",
+                     "interval" : "1 Weeks",
+                     "count" : "1",
+                     "offset" : "47 Weeks"
+                 },
+                 {
+                     "window" : "late",
+                     "interval" : "1 Weeks",
+                     "count" : "3",
+                     "offset" : "10 Days"
+                 }
+             ]
+         }
     ]
 }
