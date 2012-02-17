@@ -23,7 +23,7 @@ import static org.motechproject.ghana.national.vo.Pregnancy.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class IPTVaccinationSchedulesIT extends BaseScheduleTrackingIT {
+public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
     private Time preferredAlertTime;
     String externalId;

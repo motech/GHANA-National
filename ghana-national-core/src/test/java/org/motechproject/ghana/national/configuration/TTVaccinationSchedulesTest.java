@@ -21,7 +21,7 @@ import static org.motechproject.util.DateUtil.newDate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class TTVaccinationSchedulesIT extends BaseScheduleTrackingIT {
+public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
     private static final String PATIENT_ID = "Patient id";
 
     @Before
