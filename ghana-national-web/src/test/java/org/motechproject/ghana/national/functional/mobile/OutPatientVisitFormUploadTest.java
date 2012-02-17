@@ -40,7 +40,6 @@ public class OutPatientVisitFormUploadTest extends LoggedInUserFunctionalTest {
             put("serialNumber", serialNumber);
             put("visitDate", visitDate.toString(forPattern("yyyy-MM-dd")));
             put("newCase", "Y");
-            put("gender", "M");
             put("newPatient", "Y");
             put("diagnosis", "78");
             put("otherDiagnosis", "10");

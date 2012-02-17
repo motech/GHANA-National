@@ -37,7 +37,6 @@ public class OutPatientVisitForm extends FormBean {
     @Required
     private Date visitDate;
 
-    @Required
     private String gender;
 
     private Date dateOfBirth;
