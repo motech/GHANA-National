@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
-import static org.motechproject.ghana.national.configuration.CareScheduleNames.ANC_IPT_VACCINE_START_WEEK_12;
-import static org.motechproject.ghana.national.configuration.CareScheduleNames.ANC_IPT_VACCINE_START_WEEK_13;
+import static org.motechproject.ghana.national.configuration.CareScheduleNames.ANC_IPT_VACCINE;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDate;
 
@@ -37,11 +36,11 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
     public void verifyPregnancyIPT1ScheduleForPatientInStartDayOf12thWeekOfPregnancy() throws SchedulerException {
 
         Pregnancy pregnancy = basedOnDeliveryDate(newDate(2012, 9, 22));
-        final LocalDate firstDayOfWeek12ForPregnancy = pregnancy.dateOfConception().plusWeeks(11);
+        LocalDate dateOfConception = pregnancy.dateOfConception();
 
-        mockToday(firstDayOfWeek12ForPregnancy);
+        mockToday(dateOfConception);
 
-        enrollmentId = enrollForIPTVaccineWeek12(firstDayOfWeek12ForPregnancy);
+        enrollmentId = enrollForIPTVaccine(dateOfConception);
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
             add(onDate(new LocalDate(2012, 3, 3)));
             add(onDate(new LocalDate(2012, 3, 10)));
@@ -55,44 +54,37 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
         Pregnancy pregnancy = basedOnDeliveryDate(newDate(2012, 9, 22));
         // 12 week start day is 3 Mar - 2012
-        LocalDate midOf12Week_6Mar12 = pregnancy.dateOfConception().plusWeeks(11).plusDays(3);
-        mockCurrentDate(midOf12Week_6Mar12);
+        LocalDate midOfWeek12_6Mar12 = pregnancy.dateOfConception().plusWeeks(11).plusDays(3);
+        mockCurrentDate(midOfWeek12_6Mar12);
 
-        LocalDate startProgramOn13Week_10Mar12 = pregnancy.dateOfConception().plusWeeks(12);
-
-        enrollmentId = enrollForIPTVaccineWeek13(startProgramOn13Week_10Mar12);
+        enrollmentId = enrollForIPTVaccine(pregnancy.dateOfConception());
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
-            add(onDate(new LocalDate(2012, 3, 10)));
+            add(onDate(new LocalDate(2012, 3, 6))); //TODO: Currently "today" is used to send alert in case jobStartDate is in the past
             add(onDate(new LocalDate(2012, 3, 10)));
             add(onDate(new LocalDate(2012, 3, 17)));
             add(onDate(new LocalDate(2012, 3, 24)));
         }});
 
-        fulfilMilestoneOnVisitDate(new LocalDate(2012, 3, 15), ANC_IPT_VACCINE_START_WEEK_13);
+        fulfilMilestoneOnVisitDate(new LocalDate(2012, 3, 15));
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
             add(onDate(new LocalDate(2012, 4, 5)));
             add(onDate(new LocalDate(2012, 4, 12)));
         }});
 
-        fulfilMilestoneOnVisitDate(new LocalDate(2012, 4, 15), ANC_IPT_VACCINE_START_WEEK_13);
+        fulfilMilestoneOnVisitDate(new LocalDate(2012, 4, 15));
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
             add(onDate(new LocalDate(2012, 5, 6)));
             add(onDate(new LocalDate(2012, 5, 13)));
         }});
     }
 
-    private void fulfilMilestoneOnVisitDate(LocalDate visitDate, String vaccineProgram) {
+    private void fulfilMilestoneOnVisitDate(LocalDate visitDate) {
         mockCurrentDate(visitDate);
-        scheduleTrackingService.fulfillCurrentMilestone(externalId, vaccineProgram);
+        scheduleTrackingService.fulfillCurrentMilestone(externalId, ANC_IPT_VACCINE);
     }
 
-    private String enrollForIPTVaccineWeek12(LocalDate referenceDate12thWeek) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, ANC_IPT_VACCINE_START_WEEK_12, preferredAlertTime, referenceDate12thWeek);
-        return scheduleTrackingService.enroll(enrollmentRequest);
-    }
-
-    private String enrollForIPTVaccineWeek13(LocalDate referenceDateOn13th) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, ANC_IPT_VACCINE_START_WEEK_13, preferredAlertTime, referenceDateOn13th);
+    private String enrollForIPTVaccine(LocalDate referenceDate) {
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, ANC_IPT_VACCINE, preferredAlertTime, referenceDate);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

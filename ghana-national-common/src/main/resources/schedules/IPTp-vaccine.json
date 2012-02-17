@@ -1,24 +1,24 @@
 {
-    "name" : "ANCIPTVaccine_StartWeek13",
+    "name" : "ANCIPTVaccine",
     "milestones" : [
         {
             "name" : "IPT1",
             "scheduleWindows" : {
-                "earliest" : "",
-                "due" : "1 Weeks",
-                "late" : "3 Weeks",
+                "earliest" : "12 Weeks",
+                "due" : "13 Weeks",
+                "late" : "15 Weeks",
                 "max" : ""
             },
             "alerts" : [
                 {
                     "window" : "earliest",
-                    "interval" : "1 day",
+                    "interval" : "1 Week",
                     "count" : "1",
-                    "offset" : "0 Day"
+                    "offset" : "11 Weeks"
                 },
                 {
                     "window" : "due",
-                    "interval" : "2 Weeks",
+                    "interval" : "1 Weeks",
                     "count" : "1",
                     "offset" : "0 Day"
                 },
