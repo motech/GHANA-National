@@ -1276,7 +1276,7 @@
             </xf:item>
         </xf:select1>
          <xf:select1 bind="serviceType">
-            <xf:label>MM Service</xf:label>
+            <xf:label>MM Program</xf:label>
             <xf:item id="PREGNANCY">
                 <xf:label>Pregnancy</xf:label>
                 <xf:value>PREGNANCY</xf:value>
@@ -1354,7 +1354,7 @@
             <xf:label>Time of day to receive messages</xf:label>
         </xf:input>
         <xf:select1 bind="reasonToJoin">
-            <xf:label>reasonToJoin for interest in Mobile Midwife</xf:label>
+            <xf:label>Reason for interest in Mobile Midwife</xf:label>
             <xf:item id="CURRENTLY_PREGNANT">
                 <xf:label>Currently pregnant</xf:label>
                 <xf:value>CURRENTLY_PREGNANT</xf:value>
