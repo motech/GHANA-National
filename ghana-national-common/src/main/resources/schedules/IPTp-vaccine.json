@@ -7,7 +7,7 @@
                 "earliest" : "12 Weeks",
                 "due" : "13 Weeks",
                 "late" : "15 Weeks",
-                "max" : ""
+                "max" : "18 Weeks"
             },
             "alerts" : [
                 {
@@ -33,22 +33,22 @@
         {
             "name" : "IPT2",
             "scheduleWindows" : {
-                "earliest" : "4 Weeks",
-                "due" : "",
-                "late" : "5 Weeks",
+                "earliest" : "3 Weeks",
+                "due" : "4 Weeks",
+                "late" : "7 Weeks",
                 "max" : ""
             },
             "alerts" : [
                 {
-                    "window" : "earliest",
-                    "interval" : "1 Weeks",
-                    "count" : "1",
-                    "offset" : "3 Weeks"
-                },
-                {
                     "window" : "due",
                     "interval" : "1 Weeks",
                     "count" : "1",
+                    "offset" : "0 Day"
+                },
+                {
+                    "window" : "late",
+                    "interval" : "1 Weeks",
+                    "count" : "3",
                     "offset" : "0 Day"
                 }
             ]
@@ -56,22 +56,22 @@
         {
             "name" : "IPT3",
             "scheduleWindows" : {
-                "earliest" : "4 Weeks",
-                "due" : "",
-                "late" : "5 Weeks",
+                "earliest" : "3 Weeks",
+                "due" : "4 Weeks",
+                "late" : "7 Weeks",
                 "max" : ""
             },
             "alerts" : [
                 {
-                    "window" : "earliest",
-                    "interval" : "1 Weeks",
-                    "count" : "1",
-                    "offset" : "3 Weeks"
-                },
-                {
                     "window" : "due",
                     "interval" : "1 Weeks",
                     "count" : "1",
+                    "offset" : "0 Day"
+                },
+                {
+                    "window" : "late",
+                    "interval" : "1 Weeks",
+                    "count" : "3",
                     "offset" : "0 Day"
                 }
             ]

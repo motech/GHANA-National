@@ -59,7 +59,7 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = enrollForIPTVaccine(pregnancy.dateOfConception());
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
-            add(onDate(new LocalDate(2012, 3, 6))); //TODO: Currently "today" is used to send alert in case jobStartDate is in the past
+            add(onDate(new LocalDate(2012, 3, 3))); 
             add(onDate(new LocalDate(2012, 3, 10)));
             add(onDate(new LocalDate(2012, 3, 17)));
             add(onDate(new LocalDate(2012, 3, 24)));
@@ -69,12 +69,16 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
             add(onDate(new LocalDate(2012, 4, 5)));
             add(onDate(new LocalDate(2012, 4, 12)));
+            add(onDate(new LocalDate(2012, 4, 19)));
+            add(onDate(new LocalDate(2012, 4, 26)));
         }});
 
-        fulfilMilestoneOnVisitDate(new LocalDate(2012, 4, 15));
+        fulfilMilestoneOnVisitDate(new LocalDate(2012, 5, 7));
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
-            add(onDate(new LocalDate(2012, 5, 6)));
-            add(onDate(new LocalDate(2012, 5, 13)));
+            add(onDate(new LocalDate(2012, 5, 28)));
+            add(onDate(new LocalDate(2012, 6, 4)));
+            add(onDate(new LocalDate(2012, 6, 11)));
+            add(onDate(new LocalDate(2012, 6, 18)));
         }});
     }
 
