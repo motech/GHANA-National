@@ -23,8 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -47,8 +49,17 @@ public abstract class BaseScheduleTrackingIT extends BaseUnitTest {
 
     protected ScheduleTrackingServiceImpl scheduleTrackingService;
 
-    private String enrollmentId = "enrollmentId";
+    protected String enrollmentId;
+    private Pattern ALERT_ORDER_INDEX_REGEX = Pattern.compile("^.*\\.(.*?)-repeat$");
+    protected Time preferredAlertTime;
 
+    public static void main(String[] args) {
+        Pattern p = Pattern.compile("");
+        Matcher matcher = p.matcher("default.org.motechproject.scheduletracking.api.milestone.alert-acebbffbbd64cc334bd5e55b48003fd4.10-repeat");
+        matcher.find();
+        System.out.println(matcher.group(1));
+
+    }
     @Before
     public void setUp() {
         EnrollmentAlertService enrollmentAlertService = new EnrollmentAlertService(allTrackedSchedules, motechSchedulerService);
@@ -60,6 +71,7 @@ public abstract class BaseScheduleTrackingIT extends BaseUnitTest {
     @After
     public void deleteAllJobs() throws SchedulerException {
         super.tearDown();
+        allEnrollments.remove(allEnrollments.get(enrollmentId));
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
         for (String jobGroup : scheduler.getJobGroupNames()) {
             for (String jobName : scheduler.getJobNames(jobGroup)) {
@@ -68,9 +80,7 @@ public abstract class BaseScheduleTrackingIT extends BaseUnitTest {
         }
     }
 
-
     protected List<SimpleTrigger> captureAlertsForNextMilestone(String enrollmentId) throws SchedulerException {
-
         final Scheduler scheduler = schedulerFactoryBean.getScheduler();
         final String jobGroupName = MotechSchedulerServiceImpl.JOB_GROUP_NAME;
         String[] jobNames = scheduler.getJobNames(jobGroupName);
@@ -87,6 +97,8 @@ public abstract class BaseScheduleTrackingIT extends BaseUnitTest {
 
     protected void assertAlerts(List<SimpleTrigger> alerts, List<Date> alertTimes) {
 
+        sortBasedOnIndexInAlertName(alerts);
+
         List<Date> actualAlertTimes = new ArrayList<Date>();
         for (SimpleTrigger alert : alerts) {
             Date nextFireTime = alert.getNextFireTime();
@@ -101,11 +113,38 @@ public abstract class BaseScheduleTrackingIT extends BaseUnitTest {
         assertThat(actualAlertTimes, is(equalTo(alertTimes)));
     }
 
+    private Integer extractIndexFromAlertName(String name){
+        Matcher matcher = ALERT_ORDER_INDEX_REGEX.matcher(name);
+        return matcher.find() ? Integer.parseInt(matcher.group(1)) : null;
+    }
+
+    private void sortBasedOnIndexInAlertName(List<SimpleTrigger> alerts) {
+        Collections.sort(alerts, new Comparator<SimpleTrigger>() {
+            @Override
+            public int compare(SimpleTrigger simpleTrigger, SimpleTrigger simpleTrigger1) {
+                return extractIndexFromAlertName(simpleTrigger.getName()).compareTo(extractIndexFromAlertName(simpleTrigger1.getName()));
+            }
+        });
+    }
+
     private int toDays(long milliseconds) {
         return (int)(milliseconds/1000/60/60/24);
     }
 
     protected Date onDate(LocalDate referenceDate, int numberOfWeeks, Time alertTime) {
         return DateUtil.newDateTime(referenceDate.plusWeeks(numberOfWeeks), alertTime).toDate();
+    }
+
+    protected Date onDate(LocalDate referenceDate, Time alertTime) {
+        return DateUtil.newDateTime(referenceDate, alertTime).toDate();
+    }
+
+    protected Date onDate(LocalDate referenceDate) {
+        return DateUtil.newDateTime(referenceDate, preferredAlertTime).toDate();
+    }
+
+    protected LocalDate mockToday(LocalDate today) {
+        mockCurrentDate(today);
+        return today;
     }
 }
