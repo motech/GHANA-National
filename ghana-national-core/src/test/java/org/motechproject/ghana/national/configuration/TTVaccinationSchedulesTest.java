@@ -43,7 +43,6 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
             add(onDate(newDate(2000, 2, 29)));
             add(onDate(newDate(2000, 3, 7)));
             add(onDate(newDate(2000, 3, 14)));
-            add(onDate(newDate(2000, 3, 21)));
         }});
 
         fulfillCurrentMilestone(newDate(2000, 3, 22));
@@ -51,10 +50,9 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         List<SimpleTrigger> tt3Alerts = captureAlertsForNextMilestone(enrollmentId);
         assertAlerts(tt3Alerts, new ArrayList<Date>() {{
             add(onDate(newDate(2000, 8, 30)));
-            add(onDate(newDate(2000, 9, 6)));
+            add(onDate(newDate(2000, 9, 9)));
             add(onDate(newDate(2000, 9, 16)));
             add(onDate(newDate(2000, 9, 23)));
-            add(onDate(newDate(2000, 9, 30)));
         }});
 
         fulfillCurrentMilestone(newDate(2000, 10, 18));
@@ -62,10 +60,9 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         List<SimpleTrigger> tt4Alerts = captureAlertsForNextMilestone(enrollmentId);
         assertAlerts(tt4Alerts, new ArrayList<Date>() {{
             add(onDate(newDate(2001, 9, 12)));
-            add(onDate(newDate(2001, 9, 19)));
+            add(onDate(newDate(2001, 9, 22)));
             add(onDate(newDate(2001, 9, 29)));
             add(onDate(newDate(2001, 10, 6)));
-            add(onDate(newDate(2001, 10, 13)));
         }});
 
         fulfillCurrentMilestone(newDate(2001, 10, 15));
@@ -73,10 +70,9 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         List<SimpleTrigger> tt5Alerts = captureAlertsForNextMilestone(enrollmentId);
         assertAlerts(tt5Alerts, new ArrayList<Date>() {{
             add(onDate(newDate(2002, 9, 9)));
-            add(onDate(newDate(2002, 9, 16)));
+            add(onDate(newDate(2002, 9, 19)));
             add(onDate(newDate(2002, 9, 26)));
             add(onDate(newDate(2002, 10, 3)));
-            add(onDate(newDate(2002, 10, 10)));
         }});
     }
 

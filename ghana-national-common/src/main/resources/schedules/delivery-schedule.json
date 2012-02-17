@@ -4,29 +4,23 @@
         {
             "name" : "Default",
             "scheduleWindows" : {
-                "earliest" : "39 Weeks",
-                "due" : "40 Weeks",
-                "late" : "41 Weeks",
-                "max" : "44 Weeks"
+                "earliest" : "",
+                "due" : "39 Weeks",
+                "late" : "42 Weeks",
+                "max" : "43 Weeks"
             },
             "alerts" : [
                 {
                     "window" : "due",
                     "interval" : "1 Week",
                     "count" : "1",
-                    "offset" : "0 Days"
+                    "offset" : "39 Weeks"
                 },
                 {
                     "window" : "late",
-                    "interval" : "1 Week",
-                    "count" : "1",
-                    "offset" : "0 Days"
-                },
-                {
-                    "window" : "max",
-                    "interval" : "1 Week",
+                    "interval" : "1 Weeks",
                     "count" : "3",
-                    "offset" : "0 Days"
+                    "offset" : "1 Weeks"
                 }
             ]
         }

@@ -42,7 +42,6 @@ public class CareSchedulesTest extends BaseScheduleTrackingTest {
             add(onDate(newDate(2012, 11, 10)));
             add(onDate(newDate(2012, 11, 17)));
             add(onDate(newDate(2012, 11, 24)));
-            add(onDate(newDate(2012, 12, 1)));
         }});
     }
 
@@ -58,7 +57,6 @@ public class CareSchedulesTest extends BaseScheduleTrackingTest {
             add(onDate(newDate(2012, 2, 3)));
             add(onDate(newDate(2012, 2, 10)));
             add(onDate(newDate(2012, 2, 17)));
-            add(onDate(newDate(2012, 2, 24)));
         }});
     }
 
@@ -72,7 +70,6 @@ public class CareSchedulesTest extends BaseScheduleTrackingTest {
         List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
         assertAlerts(alerts, new ArrayList<Date>() {{
             add(onDate(newDate(2012, 2, 6)));
-            add(onDate(newDate(2012, 2, 13)));
         }});
     }
 
@@ -88,7 +85,6 @@ public class CareSchedulesTest extends BaseScheduleTrackingTest {
             add(onDate(newDate(2012, 2, 11)));
             add(onDate(newDate(2012, 2, 18)));
             add(onDate(newDate(2012, 2, 25)));
-            add(onDate(newDate(2012, 3, 3)));
         }});
     }
 
@@ -103,7 +99,6 @@ public class CareSchedulesTest extends BaseScheduleTrackingTest {
             add(onDate(newDate(2012, 2, 1)));
             add(onDate(newDate(2012, 2, 8)));
             add(onDate(newDate(2012, 2, 15)));
-            add(onDate(newDate(2012, 2, 22)));
         }});
     }
 
