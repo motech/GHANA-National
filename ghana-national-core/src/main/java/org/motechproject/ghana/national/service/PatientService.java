@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.CoreMatchers.is;
 import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
 
 @Service
@@ -74,7 +76,8 @@ public class PatientService {
     }
 
     public List<Patient> search(String name, String motechId) {
-        return allPatients.search(emptyToNull(name), emptyToNull(motechId));
+        List<Patient> patients = allPatients.search(emptyToNull(name), emptyToNull(motechId));
+        return filter(having(on(Patient.class).isDead(),is(false)),patients);
     }
 
     public String updatePatient(Patient patient, String staffId) throws ParentNotFoundException {

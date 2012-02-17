@@ -47,4 +47,8 @@ public class Patient {
     public String getLastName() {
         return mrsPatient.getPerson().getLastName();
     }
+
+    public boolean isDead() {
+        return mrsPatient.getPerson().isDead();
+    }
 }
