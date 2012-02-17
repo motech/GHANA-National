@@ -2,11 +2,12 @@ package org.motechproject.ghana.national.configuration;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.model.Time;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
-import org.motechproject.util.DateUtil;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
 import org.springframework.test.context.ContextConfiguration;
@@ -16,11 +17,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.motechproject.util.DateUtil.newDate;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
 public class CareSchedulesIT extends BaseScheduleTrackingIT {
-    private Time preferredAlertTime;
-
     @Before
     public void setUp() {
         super.setUp();
@@ -28,21 +29,99 @@ public class CareSchedulesIT extends BaseScheduleTrackingIT {
     }
 
     @Test
-    public void verifyPregnancySchedule() throws SchedulerException {
-        LocalDate today = DateUtil.newDate(2000, 1, 1);
-        mockCurrentDate(today);
-        final LocalDate conceptionDate = today.minusWeeks(1);
+    public void verifyPregnancyScheduleWhenEDDIsVeryFarInFuture() throws SchedulerException {
+        mockToday(newDate(2012, 2, 1));
 
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest("123", CareScheduleNames.DELIVERY, preferredAlertTime, conceptionDate);
-        String enrollmentId = scheduleTrackingService.enroll(enrollmentRequest);
+        LocalDate expectedDeliveryDate = newDate(2012, 11, 10);
+
+        enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
 
         List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
         assertAlerts(alerts, new ArrayList<Date>() {{
-            add(onDate(conceptionDate, 39, preferredAlertTime));
-            add(onDate(conceptionDate, 40, preferredAlertTime));
-            add(onDate(conceptionDate, 41, preferredAlertTime));
-            add(onDate(conceptionDate, 42, preferredAlertTime));
+            add(onDate(newDate(2012, 11, 3)));
+            add(onDate(newDate(2012, 11, 10)));
+            add(onDate(newDate(2012, 11, 17)));
+            add(onDate(newDate(2012, 11, 24)));
+            add(onDate(newDate(2012, 12, 1)));
         }});
+    }
+
+    @Test
+    @Ignore("Waiting for bug fix from platform")
+    public void verifyPregnancyScheduleWhenEDDIsUnderOneWeekFromToday() throws SchedulerException {
+        mockToday(newDate(2012, 2, 1));
+        LocalDate expectedDeliveryDate = newDate(2012, 2, 3);
+        enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
+
+        List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
+        assertAlerts(alerts, new ArrayList<Date>() {{
+            add(onDate(newDate(2012, 2, 3)));
+            add(onDate(newDate(2012, 2, 10)));
+            add(onDate(newDate(2012, 2, 17)));
+            add(onDate(newDate(2012, 2, 24)));
+        }});
+    }
+
+    @Test
+    @Ignore("Waiting for bug fix from platform")
+    public void verifyPregnancyScheduleWhenEDDIsInThePast() throws SchedulerException {
+        mockToday(newDate(2012, 2, 1));
+        LocalDate expectedDeliveryDate = newDate(2012, 1, 23);
+        enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
+
+        List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
+        assertAlerts(alerts, new ArrayList<Date>() {{
+            add(onDate(newDate(2012, 2, 6)));
+            add(onDate(newDate(2012, 2, 13)));
+        }});
+    }
+
+    @Test
+    public void verifyPregnancyScheduleWhenEDDIsInOverOneWeekFromToday() throws SchedulerException {
+        mockToday(newDate(2012, 2, 1));
+        LocalDate expectedDeliveryDate = newDate(2012, 2, 11);
+        enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
+
+        List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
+        assertAlerts(alerts, new ArrayList<Date>() {{
+            add(onDate(newDate(2012, 2, 4)));
+            add(onDate(newDate(2012, 2, 11)));
+            add(onDate(newDate(2012, 2, 18)));
+            add(onDate(newDate(2012, 2, 25)));
+            add(onDate(newDate(2012, 3, 3)));
+        }});
+    }
+
+    @Test
+    public void verifyPregnancyScheduleWhenEDDIsOnToday() throws SchedulerException {
+        mockToday(newDate(2012, 2, 1));
+        LocalDate expectedDeliveryDate = newDate(2012, 2, 1);
+        enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
+
+        List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
+        assertAlerts(alerts, new ArrayList<Date>() {{
+            add(onDate(newDate(2012, 2, 1)));
+            add(onDate(newDate(2012, 2, 8)));
+            add(onDate(newDate(2012, 2, 15)));
+            add(onDate(newDate(2012, 2, 22)));
+        }});
+    }
+
+    @Test
+    @Ignore("Waiting for bug fix from platform")
+    public void verifyPregnancyScheduleWhenEDDIsInTheFarPast() throws SchedulerException {
+        mockToday(newDate(2012, 2, 1));
+        LocalDate expectedDeliveryDate = newDate(2012, 2, 4);
+        enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
+
+        List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
+        assertAlerts(alerts, new ArrayList<Date>());
+    }
+
+    private String scheduleAlertForDeliveryNotfication(LocalDate expectedDeliveryDate) {
+        final LocalDate conceptionDate = Pregnancy.basedOnDeliveryDate(expectedDeliveryDate).dateOfConception();
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest("123", CareScheduleNames.DELIVERY, preferredAlertTime, conceptionDate);
+        return scheduleTrackingService.enroll(enrollmentRequest);
     }
 
 }

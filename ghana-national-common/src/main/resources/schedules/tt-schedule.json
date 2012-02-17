@@ -13,22 +13,28 @@
         {
             "name" : "TT2",
             "scheduleWindows" : {
-                "earliest" : "",
-                "due" : "3 Weeks",
-                "late" : "4 Weeks",
-                "max" : ""
+                "earliest" : "4 Weeks",
+                "due" : "5 Weeks",
+                "late" : "8 Weeks",
+                "max" : "9 Weeks"
             },
             "alerts" : [
                 {
+                    "window" : "earliest",
+                    "interval" : "1 Days",
+                    "count" : "1",
+                    "offset" : "3 Weeks"
+                },
+                {
                     "window" : "due",
-                    "interval" : "1 Week",
+                    "interval" : "1 Days",
                     "count" : "1",
                     "offset" : "0 Days"
                 },
                 {
-                    "window" : "late",
-                    "interval" : "1 Week",
-                    "count" : "1",
+                    "window" : "due",
+                    "interval" : "1 Weeks",
+                    "count" : "3",
                     "offset" : "0 Days"
                 }
             ]
@@ -36,21 +42,21 @@
         {
             "name" : "TT3",
             "scheduleWindows" : {
-                "earliest" : "",
-                "due" : "161 Days",
-                "late" : "171 Days",
+                "earliest" : "161 Days",
+                "due" : "171 Days",
+                "late" : "",
                 "max" : ""
             },
             "alerts" : [
                 {
                     "window" : "due",
-                    "interval" : "1 Week",
+                    "interval" : "",
                     "count" : "1",
                     "offset" : "0 Days"
                 },
                 {
                     "window" : "late",
-                    "interval" : "1 Week",
+                    "interval" : "",
                     "count" : "1",
                     "offset" : "0 Days"
                 }
