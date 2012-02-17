@@ -92,10 +92,10 @@ public class PregnancyTerminationServiceTest {
 
         Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Boolean>(date, CONCEPT_PREGNANCY_STATUS, false));
-            add(new MRSObservation<String>(date, CONCEPT_TERMINATION_TYPE, "2"));
-            add(new MRSObservation<String>(date, CONCEPT_TERMINATION_PROCEDURE, "1"));
-            add(new MRSObservation<String>(date, CONCEPT_TERMINATION_COMPLICATION, "Bleeding"));
-            add(new MRSObservation<String>(date, CONCEPT_TERMINATION_COMPLICATION, "Sepsis/Infection"));
+            add(new MRSObservation<Integer>(date, CONCEPT_TERMINATION_TYPE, 2));
+            add(new MRSObservation<Integer>(date, CONCEPT_TERMINATION_PROCEDURE, 1));
+            add(new MRSObservation<Integer>(date, CONCEPT_TERMINATION_COMPLICATION, 1));
+            add(new MRSObservation<Integer>(date, CONCEPT_TERMINATION_COMPLICATION, 2));
             add(new MRSObservation<Boolean>(date, CONCEPT_MATERNAL_DEATH, false));
             add(new MRSObservation<Boolean>(date, CONCEPT_REFERRED, false));
             add(new MRSObservation<String>(date, CONCEPT_COMMENTS, "Patient lost lot of blood"));
@@ -116,8 +116,8 @@ public class PregnancyTerminationServiceTest {
         request.setTerminationProcedure("1");
         request.setTerminationType("2");
         request.setComments("Patient lost lot of blood");
-        request.addComplication("Bleeding");
-        request.addComplication("Sepsis/Infection");
+        request.addComplication("1");
+        request.addComplication("2");
         request.setPostAbortionFPAccepted(Boolean.TRUE);
         request.setPostAbortionFPCounselling(Boolean.FALSE);
         return request;
