@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.motechproject.model.Time;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduler.MotechSchedulerServiceImpl;
+import org.motechproject.scheduletracking.api.domain.Enrollment;
 import org.motechproject.scheduletracking.api.events.constants.EventSubject;
 import org.motechproject.scheduletracking.api.repository.AllEnrollments;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
@@ -71,7 +72,9 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     @After
     public void deleteAllJobs() throws SchedulerException {
         super.tearDown();
-        allEnrollments.remove(allEnrollments.get(enrollmentId));
+        for (Enrollment enrollment : allEnrollments.getAll()) {
+            allEnrollments.remove(enrollment);
+        }
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
         for (String jobGroup : scheduler.getJobGroupNames()) {
             for (String jobName : scheduler.getJobNames(jobGroup)) {

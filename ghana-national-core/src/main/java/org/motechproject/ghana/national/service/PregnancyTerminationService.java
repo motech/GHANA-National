@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.motechproject.ghana.national.domain.Constants.*;
+import static org.motechproject.ghana.national.tools.Utility.safePareInteger;
 
 @Service
 public class PregnancyTerminationService {
@@ -42,18 +43,18 @@ public class PregnancyTerminationService {
 
     private Set<MRSObservation> prepareObservations(PregnancyTerminationRequest request) {
         Set<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
+
+        for (String complication : request.getComplications()) {
+            addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_TERMINATION_COMPLICATION, safePareInteger(complication));
+        }
         addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_PREGNANCY_STATUS, false);
-        addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_TERMINATION_TYPE, request.getTerminationType());
-        addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_TERMINATION_PROCEDURE, request.getTerminationProcedure());
+        addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_TERMINATION_TYPE, safePareInteger(request.getTerminationType()));
+        addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_TERMINATION_PROCEDURE, safePareInteger(request.getTerminationProcedure()));
         addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_MATERNAL_DEATH, request.isDead());
         addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_REFERRED, request.isReferred());
         addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_COMMENTS, request.getComments());
         addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_POST_ABORTION_FP_ACCEPTED, request.getPostAbortionFPAccepted());
         addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_POST_ABORTION_FP_COUNSELING, request.getPostAbortionFPCounselling());
-
-        for (String complication : request.getComplications()) {
-            addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_TERMINATION_COMPLICATION, complication);
-        }
         return mrsObservations;
     }
 
