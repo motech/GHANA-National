@@ -192,8 +192,8 @@ public class AllPatientsTest {
         Date dateOfDeath = DateUtil.now().toDate();
         String causeOfDeath = "NONE";
         String comment = null;
-        allPatients.saveCauseOfDeath(dateOfDeath, mrsPatientId, causeOfDeath, comment);
-        verify(mockMrsPatientAdapter).savePatientCauseOfDeathObservation(mrsPatientId, causeOfDeath, dateOfDeath, comment);
+        allPatients.deceasePatient(dateOfDeath, mrsPatientId, causeOfDeath, comment);
+        verify(mockMrsPatientAdapter).deceasePatient(mrsPatientId, causeOfDeath, dateOfDeath, comment);
     }
 
 }

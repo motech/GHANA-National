@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -328,10 +327,7 @@ public class PatientServiceTest {
         String comment = null;
         patientService.deceasePatient(patientMotechId, dateOfDeath, causeOfDeath, comment);
 
-        verify(mockAllPatients).update(patient);
-        verify(mockAllPatients).saveCauseOfDeath(dateOfDeath, mrsPatientId, "OTHER NON-CODED", comment);
-        assertTrue("Patient Expected to be dead, but is still alive", patient.getMrsPatient().getPerson().isDead());
-        assertThat(patient.getMrsPatient().getPerson().deathDate(), is(dateOfDeath));
+        verify(mockAllPatients).deceasePatient(dateOfDeath, patientMotechId, "OTHER NON-CODED", comment);
     }
 
 }

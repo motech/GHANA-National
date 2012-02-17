@@ -144,10 +144,6 @@ public class PatientService {
     }
 
     public void deceasePatient(String patientMotechId, Date dateOfDeath, String causeOfDeath, String comment) {
-        Patient patient = getPatientByMotechId(patientMotechId);
-        patient.getMrsPatient().getPerson().dead(true);
-        patient.getMrsPatient().getPerson().deathDate(dateOfDeath);
-        allPatients.update(patient);
-        allPatients.saveCauseOfDeath(dateOfDeath, patient.getMrsPatient().getId(), (causeOfDeath.equals("OTHER") ? "OTHER NON-CODED" : "NONE"), comment);
+        allPatients.deceasePatient(dateOfDeath, patientMotechId, (causeOfDeath.equals("OTHER") ? "OTHER NON-CODED" : "NONE"), comment);
     }
 }
