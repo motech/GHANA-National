@@ -35,7 +35,7 @@ public class PregnancyTerminationService {
     public void terminatePregnancy(PregnancyTerminationRequest request) {
         MRSPatient mrsPatient = patientService.getPatientByMotechId(request.getMotechId()).getMrsPatient();
         Facility facility = facilityService.getFacilityByMotechId(request.getFacilityId());
-        encounterService.persistEncounter(mrsPatient, request.getStaffId(), facility.getMrsFacilityId(), Constants.ENCOUNTER_PREGTERMVISI, request.getTerminationDate(), prepareObservations(request));
+        encounterService.persistEncounter(mrsPatient, request.getStaffId(), facility.getMrsFacilityId(), Constants.ENCOUNTER_PREGTERMVISIT, request.getTerminationDate(), prepareObservations(request));
         if (request.isDead())
             patientService.deceasePatient(request.getMotechId(), request.getTerminationDate(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
     }

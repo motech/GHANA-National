@@ -86,7 +86,7 @@ public class PregnancyTerminationServiceTest {
         pregnancyTerminationService.terminatePregnancy(request);
         ArgumentCaptor<Set> captor = ArgumentCaptor.forClass(Set.class);
 
-        verify(mockEncounterService).persistEncounter(eq(mockMRSPatient), eq(staffId), eq(mrsFacilityId), eq(ENCOUNTER_PREGTERMVISI), eq(date), captor.capture());
+        verify(mockEncounterService).persistEncounter(eq(mockMRSPatient), eq(staffId), eq(mrsFacilityId), eq(ENCOUNTER_PREGTERMVISIT), eq(date), captor.capture());
 
         Set observations = captor.getValue();
 

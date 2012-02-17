@@ -75,7 +75,6 @@ public class Constants {
     public static final String CONCEPT_TT = "TETANUS TOXOID DOSE";
     public static final String CONCEPT_CONFINEMENT_CONFIRMED = "DATE OF CONFINEMENT CONFIRMED";
     public static final String CONCEPT_PREGNANCY = "PREGNANCY";
-    public static final String CONCEPT_INSURED = "INSURED";
     public static final String CONCEPT_NEW_CASE = "NEW CASE";
     public static final String CONCEPT_NEW_PATIENT = "NEW PATIENT";
     public static final String CONCEPT_REFERRED = "REFERRED";
@@ -91,37 +90,7 @@ public class Constants {
     public static final String CONCEPT_TERMINATION_PROCEDURE = "PREGNANCY, TERMINATION PROCEDURE";
     public static final String CONCEPT_TERMINATION_COMPLICATION = "TERMINATION COMPLICATION";
     public static final String CONCEPT_MATERNAL_DEATH = "MATERNAL DEATH";
-    public static final String CONCEPT_POST_ABORTION_FP_COUNSELING="POST-ABORTION FP COUNSELING";
-    public static final String CONCEPT_POST_ABORTION_FP_ACCEPTED="POST-ABORTION FP ACCEPTED";
-
-    public static final String ENCOUNTER_ANCREGVISIT = "ANCREGVISIT";
-    public static final String ENCOUNTER_ANCVISIT = "ANCVISIT";
-    public static final String ENCOUNTER_CWCREGVISIT = "CWCREGVISIT";
-    public static final String ENCOUNTER_PATIENTHISTORY = "PATIENTHISTORY";
-    public static final String ENCOUNTER_PREGREGVISIT = "PREGREGVISIT";
-    public static final String ENCOUNTER_PATIENTREGVISIT = "PATIENTREGVISIT";
-    public static final String ENCOUNTER_PATIENTEDITVISIT = "PATIENTEDITVISIT";
-    public static final String ENCOUNTER_PREGDELNOTIFYVISIT = "PREGDELNOTIFYVISIT";
-    public static final String ENCOUNTER_OUTPATIENTVISIT = "OUTPATIENTVISIT";
-    public static final String ENCOUNTER_PREGTERMVISI = "PREGTERMVISIT";
-
-
-    //CWC Validators
-    public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
-    public static final String CHILD_AGE_PARAMETER = "childAge";
-    public static final String CHILD_AGE_MORE_ERR_MSG = "child cannot be more than 5 years old";
-    public static final String AGE_LESS_ERR_MSG = "patient cannot be less than 5 years old";
-    public static final String GENDER_ERROR_MSG = "should be female";
-
-    // Mobile Midwife
-    public static final Time MOBILE_MIDWIFE_MIN_TIMEOFDAY_FOR_VOICE = new Time(5, 0);
-    public static final Time MOBILE_MIDWIFE_MAX_TIMEOFDAY_FOR_VOICE = new Time(23, 0);
-    public static final String MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE = "Time of day should be between 5:00 and 23:00 hours";
-    public static final String MOBILE_MIDWIFE_VOICE_TIMEOFDAYREQUIRED_MESSAGE = "Time of day should be specified.";
-
-    public static final String FORM_BEAN = "formBean";
-
-
+    public static final String CONCEPT_POST_ABORTION_FP_COUNSELING = "POST-ABORTION FP COUNSELING";
     public static final String CONCEPT_SERIAL_NUMBER = "SERIAL NUMBER";
     public static final String CONCEPT_VISIT_NUMBER = "VISIT NUMBER";
     public static final String CONCEPT_SYSTOLIC_BLOOD_PRESSURE = "SYSTOLIC BLOOD PRESSURE";
@@ -150,7 +119,33 @@ public class Constants {
     public static final String CONCEPT_MALE_INVOLVEMENT = "MALE INVOLVEMENT";
     public static final String CONCEPT_NEXT_ANC_DATE = "NEXT ANC DATE";
     public static final String CONCEPT_ANC_PNC_LOCATION = "ANC PNC LOCATION";
+    public static final String CONCEPT_POST_ABORTION_FP_ACCEPTED = "POST-ABORTION FP ACCEPTED";
 
+    public static final String ENCOUNTER_ANCREGVISIT = "ANCREGVISIT";
+    public static final String ENCOUNTER_ANCVISIT = "ANCVISIT";
+    public static final String ENCOUNTER_CWCREGVISIT = "CWCREGVISIT";
+    public static final String ENCOUNTER_PATIENTHISTORY = "PATIENTHISTORY";
+    public static final String ENCOUNTER_PREGREGVISIT = "PREGREGVISIT";
+    public static final String ENCOUNTER_PATIENTREGVISIT = "PATIENTREGVISIT";
+    public static final String ENCOUNTER_PATIENTEDITVISIT = "PATIENTEDITVISIT";
+    public static final String ENCOUNTER_PREGDELNOTIFYVISIT = "PREGDELNOTIFYVISIT";
+    public static final String ENCOUNTER_OUTPATIENTVISIT = "OUTPATIENTVISIT";
+    public static final String ENCOUNTER_PREGTERMVISIT = "PREGTERMVISIT";
+    //CWC Validators
+    public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
+    public static final String CHILD_AGE_PARAMETER = "childAge";
+    public static final String CHILD_AGE_MORE_ERR_MSG = "child cannot be more than 5 years old";
+    public static final String AGE_LESS_ERR_MSG = "patient cannot be less than 5 years old";
+
+    public static final String GENDER_ERROR_MSG = "should be female";
+    // Mobile Midwife
+    public static final Time MOBILE_MIDWIFE_MIN_TIMEOFDAY_FOR_VOICE = new Time(5, 0);
+    public static final Time MOBILE_MIDWIFE_MAX_TIMEOFDAY_FOR_VOICE = new Time(23, 0);
+    public static final String MOBILE_MIDWIFE_VOICE_TIMEOFDAYRANGE_MESSAGE = "Time of day should be between 5:00 and 23:00 hours";
+
+    public static final String MOBILE_MIDWIFE_VOICE_TIMEOFDAYREQUIRED_MESSAGE = "Time of day should be specified.";
+
+    public static final String FORM_BEAN = "formBean";
 
     public static final String OTHER_CAUSE_OF_DEATH = "OTHER";
     public static final String PREGNANCY_TERMINATION = "Pregnancy Termination";

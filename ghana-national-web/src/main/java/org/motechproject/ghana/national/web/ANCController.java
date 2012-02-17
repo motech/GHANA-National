@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
@@ -11,6 +12,7 @@ import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -90,6 +92,7 @@ public class ANCController {
     }
 
     private ANCVO createANCVO(ANCEnrollmentForm ancForm) {
+        ancForm.setRegistrationDate((RegistrationToday.TODAY.equals(ancForm.getRegistrationToday())) ? DateUtil.now().toDate() : ancForm.getRegistrationDate());
         return new ANCVO(ancForm.getStaffId(), ancForm.getFacilityForm().getFacilityId(),
                 ancForm.getMotechPatientId(), ancForm.getRegistrationDate(), ancForm.getRegistrationToday(),
                 ancForm.getSerialNumber(), ancForm.getEstimatedDateOfDelivery(), ancForm.getHeight(),

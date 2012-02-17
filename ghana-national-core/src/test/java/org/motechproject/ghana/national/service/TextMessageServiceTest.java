@@ -41,7 +41,7 @@ public class TextMessageServiceTest {
         Facility facility = mock(Facility.class);
         String facilityPhoneNumber = "phone number";
         String smsText = "sms message";
-        when(facility.getPhoneNumber()).thenReturn(facilityPhoneNumber);
+        when(facility.phoneNumber()).thenReturn(facilityPhoneNumber);
         textMessageService.sendSMS(facility, SMS.fromSMSText(smsText));
         verify(mockSMSService).sendSMS(facilityPhoneNumber, smsText);
     }

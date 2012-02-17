@@ -37,15 +37,14 @@ public class ANCVisitService {
         Date registrationDate = ancVisit.getDate() == null ? DateUtil.today().toDate() : ancVisit.getDate();
 
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_SERIAL_NUMBER, ancVisit.getSerialNumber());
-        setObservation(mrsObservations, registrationDate, Constants.CONCEPT_VISIT_NUMBER, ancVisit.getVisitNumber());
+        setObservation(mrsObservations, registrationDate, Constants.CONCEPT_VISIT_NUMBER, toInteger(ancVisit.getVisitNumber()));
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_MALE_INVOLVEMENT, ancVisit.getMaleInvolved());
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_EDD, ancVisit.getEstDeliveryDate());
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_SYSTOLIC_BLOOD_PRESSURE, ancVisit.getBpSystolic());
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_DIASTOLIC_BLOOD_PRESSURE, ancVisit.getBpDiastolic());
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_WEIGHT_KG, ancVisit.getWeight());
-        setObservation(mrsObservations, registrationDate, Constants.CONCEPT_TT, ancVisit.getTtdose());
-        setObservation(mrsObservations, registrationDate, Constants.CONCEPT_IPT, ancVisit.getIptdose());
-        setObservation(mrsObservations, registrationDate, Constants.CONCEPT_INSECTICIDE_TREATED_NET_USAGE, ancVisit.getItnUse());
+        setObservation(mrsObservations, registrationDate, Constants.CONCEPT_TT, toInteger(ancVisit.getTtdose()));
+        setObservation(mrsObservations, registrationDate, Constants.CONCEPT_IPT, toInteger(ancVisit.getIptdose()));
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_FHR, ancVisit.getFhr());
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_FHT, ancVisit.getFht());
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_URINE_PROTEIN_TEST, getConceptForTest(ancVisit.getUrineTestProteinPositive()));
@@ -54,7 +53,7 @@ public class ANCVisitService {
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_HEMOGLOBIN, ancVisit.getHemoglobin());
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_VDRL, getConceptReactionResult(ancVisit.getVdrlReactive()));
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_HIV_TEST_RESULT, ancVisit.getHivTestResult());
-        setObservation(mrsObservations, registrationDate, Constants.CONCEPT_ANC_PNC_LOCATION, Integer.parseInt(ancVisit.getLocation()));
+        setObservation(mrsObservations, registrationDate, Constants.CONCEPT_ANC_PNC_LOCATION, toInteger(ancVisit.getLocation()));
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_HOUSE, ancVisit.getHouse());
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_COMMUNITY, ancVisit.getCommunity());
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_COMMENTS, ancVisit.getComments());
@@ -62,6 +61,7 @@ public class ANCVisitService {
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_VDRL_TREATMENT, toBoolean(ancVisit.getVdrlTreatment()));
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_DEWORMER, toBoolean(ancVisit.getDewormer()));
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_PMTCT, toBoolean(ancVisit.getPmtct()));
+        setObservation(mrsObservations, registrationDate, Constants.CONCEPT_INSECTICIDE_TREATED_NET_USAGE, toBoolean(ancVisit.getItnUse()));
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_PMTCT_TREATMENT, toBoolean(ancVisit.getPmtctTreament()));
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_HIV_PRE_TEST_COUNSELING, toBoolean(ancVisit.getPreTestCounseled()));
         setObservation(mrsObservations, registrationDate, Constants.CONCEPT_HIV_POST_TEST_COUNSELING, toBoolean(ancVisit.getPostTestCounseled()));
@@ -71,6 +71,10 @@ public class ANCVisitService {
 
     private Boolean toBoolean(String value) {
         return (value != null) ? value.equals(Constants.OBSERVATION_YES) : null;
+    }
+
+    private Integer toInteger(String value) {
+        return (value != null) ? Integer.parseInt(value) : null;
     }
 
     private MRSConcept getConceptReactionResult(String reading) {

@@ -63,6 +63,11 @@
 </c:if>
 
 <div class="form-field">
+    <label for="status" class="formLabel">${fn:escapeXml(status)}:</label>
+    <form:input path="status" disabled="true" size="20" readonly="true"/>
+</div>
+
+<div class="form-field">
     <label for="patientMotechId" class="formLabel">${fn:escapeXml(patient_motech_id)}: *</label>
     <form:input path="patientMotechId" size="20" cssClass="jsRequire" disabled="true"/>
     <form:hidden path="patientMotechId"/>
@@ -219,12 +224,7 @@
 </div>
 
 <div class="form-field">
-    <label for="status" class="formLabel">${fn:escapeXml(status)}:</label>
-    <form:input path="status" disabled="true" size="20" readonly="true"/>
-</div>
-
-<div class="form-field">
-    <label for="status" class="formLabel">${fn:escapeXml(enrollement_date)}:</label>
+    <label class="formLabel">${fn:escapeXml(enrollement_date)}:</label>
     <c:set var="formattedEnrollmentDateTime"><joda:format value="${mobileMidwifeEnrollmentForm.enrollmentDateTime}" pattern="dd-MMM-yyyy hh:mm:ss"/></c:set>
     <input type="text" disabled="true" value="${formattedEnrollmentDateTime}"/>
 </div>
