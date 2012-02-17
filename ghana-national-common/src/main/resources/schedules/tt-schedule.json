@@ -13,10 +13,10 @@
         {
             "name" : "TT2",
             "scheduleWindows" : {
-                "earliest" : "4 Weeks",
-                "due" : "5 Weeks",
-                "late" : "8 Weeks",
-                "max" : "9 Weeks"
+                "earliest" : "3 Weeks",
+                "due" : "4 Weeks",
+                "late" : "7 Weeks",
+                "max" : "8 Weeks"
             },
             "alerts" : [
                 {
@@ -27,87 +27,104 @@
                 },
                 {
                     "window" : "due",
-                    "interval" : "1 Days",
+                    "interval" : "1 Weeks",
                     "count" : "1",
-                    "offset" : "0 Days"
+                    "offset" : "1 Weeks"
                 },
                 {
-                    "window" : "due",
+                    "window" : "late",
                     "interval" : "1 Weeks",
                     "count" : "3",
-                    "offset" : "0 Days"
+                    "offset" : "1 Weeks"
                 }
             ]
         },
         {
             "name" : "TT3",
             "scheduleWindows" : {
-                "earliest" : "161 Days",
-                "due" : "171 Days",
-                "late" : "",
-                "max" : ""
+                "earliest" : "23 Weeks",
+                "due" : "24 Weeks",
+                "late" : "199 Days", # 24 * 7 + 10 + 21
+                "max" : "209 Days"
             },
             "alerts" : [
                 {
-                    "window" : "due",
-                    "interval" : "",
+                    "window" : "earliest",
+                    "interval" : "1 Weeks",
                     "count" : "1",
-                    "offset" : "0 Days"
+                    "offset" : "23 Weeks"
+                },
+                {
+                    "window" : "due",
+                    "interval" : "1 Weeks",
+                    "count" : "1",
+                    "offset" : "1 Weeks"
                 },
                 {
                     "window" : "late",
-                    "interval" : "",
-                    "count" : "1",
-                    "offset" : "0 Days"
+                    "interval" : "1 Weeks",
+                    "count" : "3",
+                    "offset" : "10 Days"
                 }
             ]
         },
         {
             "name" : "TT4",
             "scheduleWindows" : {
-                "earliest" : "",
-                "due" : "188 Days",
-                "late" : "198 Days",
-                "max" : ""
+                "earliest" : "47 Weeks",
+                "due" : "48 Weeks",
+                "late" : "367 Days",   # 48 * 7 + 10 + 21
+                "max" : "377 Days"
             },
             "alerts" : [
                 {
-                    "window" : "due",
-                    "interval" : "1 Week",
+                    "window" : "earliest",
+                    "interval" : "1 Weeks",
                     "count" : "1",
-                    "offset" : "0 Days"
+                    "offset" : "47 Weeks"
+                },
+                {
+                    "window" : "due",
+                    "interval" : "1 Weeks",
+                    "count" : "1",
+                    "offset" : "1 Weeks"
                 },
                 {
                     "window" : "late",
-                    "interval" : "1 Week",
-                    "count" : "1",
-                    "offset" : "0 Days"
+                    "interval" : "1 Weeks",
+                    "count" : "3",
+                    "offset" : "10 Days"
                 }
             ]
         },
         {
             "name" : "TT5",
             "scheduleWindows" : {
-                "earliest" : "",
-                "due" : "188 Days",
-                "late" : "198 Days",
-                "max" : ""
-            },
-            "alerts" : [
-                {
-                    "window" : "due",
-                    "interval" : "1 Week",
-                    "count" : "1",
-                    "offset" : "0 Days"
-                },
-                {
-                    "window" : "late",
-                    "interval" : "1 Week",
-                    "count" : "1",
-                    "offset" : "0 Days"
-                }
-            ]
-        }
-
+                "earliest" : "47 Weeks",
+                "due" : "48 Weeks",
+                "late" : "367 Days",   # 48 * 7 + 10 + 21
+                "max" : "377 Days"
+             },
+             "alerts" : [
+                 {
+                     "window" : "earliest",
+                     "interval" : "1 Weeks",
+                     "count" : "1",
+                     "offset" : "47 Weeks"
+                 },
+                 {
+                     "window" : "due",
+                     "interval" : "1 Weeks",
+                     "count" : "1",
+                     "offset" : "1 Weeks"
+                 },
+                 {
+                     "window" : "late",
+                     "interval" : "1 Weeks",
+                     "count" : "3",
+                     "offset" : "10 Days"
+                 }
+             ]
+         }
     ]
 }
