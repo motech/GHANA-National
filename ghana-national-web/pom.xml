@@ -352,9 +352,6 @@
         </profile>
         <profile>
             <id>start-jetty-without-omrs</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <build>
                 <plugins>
                     <!--JETTY-->
