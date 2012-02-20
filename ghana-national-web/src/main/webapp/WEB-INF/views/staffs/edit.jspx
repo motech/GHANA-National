@@ -34,19 +34,24 @@
             <form:hidden path="id" />
         </div>
         <div>
-            <label class="formLabel" for="user_first_name">${fn:escapeXml(user_first_name)} *:</label>
-            <form:input id="user_first_name" path="firstName" size="20" label="${fn:escapeXml(user_first_name)}"/>
-            <span id='firstName_error' class='formlyInvalid formlyAlert hide'></span>
+            <label class="formLabel" for="firstName">${fn:escapeXml(user_first_name)} *:</label>
+            <form:input id="firstName" path="firstName" size="20" label="${fn:escapeXml(user_first_name)}"/>
+            <span id='firstNameError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(user_first_name)} ${fn:escapeXml(required_msg)}
+            </span>
         </div>
         <div>
-            <label class="formLabel" for="user_middle_name">${fn:escapeXml(user_middle_name)}:</label>
-            <form:input id="user_middle_name" path="middleName" size="20" label="${fn:escapeXml(user_middle_name)}"/>
-            <span id='middleName_error' class='formlyInvalid formlyAlert hide'></span>
+            <label class="formLabel" for="middleName">${fn:escapeXml(user_middle_name)}:</label>
+            <form:input id="middleName" path="middleName" size="20" label="${fn:escapeXml(user_middle_name)}"/>
+            <span id='middleNameError' class='alertText formlyInvalid formlyAlert hide'></span>
+
         </div>
         <div>
-            <label class="formLabel" for="user_last_name">${fn:escapeXml(user_last_name)} *:</label>
-            <form:input id="user_last_name" path="lastName" size="20" label="${fn:escapeXml(user_last_name)}"/>
-            <span id='lastName_error' class='formlyInvalid formlyAlert hide'></span>
+            <label class="formLabel" for="lastName">${fn:escapeXml(user_last_name)} *:</label>
+            <form:input id="lastName" path="lastName" size="20" label="${fn:escapeXml(user_last_name)}"/>
+            <span id='lastNameError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(user_last_name)} ${fn:escapeXml(required_msg)}
+            </span>
         </div>
         <div>
             <motech:phone path="phoneNumber" label="${fn:escapeXml(user_phone)} *:"
@@ -54,12 +59,14 @@
         </div>
         <div>
             <label class="formLabel" for="user_email">${fn:escapeXml(user_email)}:</label>
-            <form:input id="user_email" path="newEmail" size="20" label="${fn:escapeXml(user_email)}"/>
-            <span id='email_error' class='formlyInvalid formlyAlert hide'></span>
+            <form:input id="newEmail" path="newEmail" size="20" label="${fn:escapeXml(user_email)}" cssClass="jsEmail"/>
+            <span id='newEmailerror' class='formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(user_email)} ${fn:escapeXml(required_msg)}
+            </span>
         </div>
         <div>
             <label class="formLabel" for="user_role">${fn:escapeXml(user_role)} *:</label>
-            <form:select id="user_role" path="newRole">
+            <form:select id="newRole" path="newRole">
                 <option parent="select" value="">${fn:escapeXml(user_role_select)}</option>
                 <c:forEach items="${roles}" var="role">
                     <c:choose>
@@ -72,7 +79,7 @@
                     </c:choose>
                 </c:forEach>
             </form:select>
-            <span id='role_error' class='formlyInvalid formlyAlert hide'></span>
+            <span id='newRoleError' class='formlyInvalid formlyAlert hide'></span>
         </div>
         <input type="button" id="submitNewUser" value="Submit"/>
 

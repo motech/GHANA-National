@@ -6,7 +6,7 @@
        xmlns:beans="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     <context:property-placeholder location="classpath*:*.properties" ignore-unresolvable="true"/>
     <beans:import resource="classpath*:applicationContext-xforms.xml"/>
     <beans:import resource="classpath*:applicationContext-core.xml"/>
@@ -17,7 +17,6 @@
     <context:component-scan base-package="org.motechproject.ghana.national"/>
 
     <util:properties id="couchdbProperties" location="classpath:couchdb.properties"/>
-
 
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>
