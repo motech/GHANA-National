@@ -30,7 +30,7 @@ public class CareSchedulesTest extends BaseScheduleTrackingTest {
 
     @Test
     public void verifyPregnancyScheduleWhenEDDIsVeryFarInFuture() throws SchedulerException {
-        mockToday(newDate(2012, 2, 1));
+        mockToday(newDate(2012, 3, 1));
 
         LocalDate expectedDeliveryDate = newDate(2012, 11, 10);
 

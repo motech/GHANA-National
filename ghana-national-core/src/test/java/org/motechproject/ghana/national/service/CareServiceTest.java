@@ -46,7 +46,8 @@ public class CareServiceTest extends BaseUnitTest {
     @Mock
     AllEncounters mockAllEncounters;
 
-    @Mock    ScheduleTrackingService mockScheduleTrackingService;
+    @Mock
+    ScheduleTrackingService mockScheduleTrackingService;
 
     private DateTime currentDate;
 

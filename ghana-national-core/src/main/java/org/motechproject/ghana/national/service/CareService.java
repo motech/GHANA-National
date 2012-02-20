@@ -55,7 +55,7 @@ public class CareService {
         persistEncounter(patient, ancVO.getStaffId(), ancVO.getFacilityId(),
                 PREG_REG_VISIT.value(), registrationDate, registerPregnancy(ancVO));
 
-        EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, DateUtil.newDate(ancVO.getEstimatedDateOfDelivery()));
+        EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().mapForDelivery(patient, DateUtil.newDate(ancVO.getEstimatedDateOfDelivery()));
         scheduleTrackingService.enroll(enrollmentRequest);
     }
 
