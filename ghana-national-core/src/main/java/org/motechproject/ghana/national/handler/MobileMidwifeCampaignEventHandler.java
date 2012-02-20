@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.eventhandler;
+package org.motechproject.ghana.national.handler;
 
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.ghana.national.domain.Patient;

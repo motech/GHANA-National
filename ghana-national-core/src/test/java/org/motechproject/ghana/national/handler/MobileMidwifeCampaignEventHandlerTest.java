@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.eventhandler;
+package org.motechproject.ghana.national.handler;
 
 import org.junit.Before;
 import org.junit.Test;
