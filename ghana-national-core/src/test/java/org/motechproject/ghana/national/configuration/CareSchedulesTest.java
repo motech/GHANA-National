@@ -117,7 +117,7 @@ public class CareSchedulesTest extends BaseScheduleTrackingTest {
 
     private String scheduleAlertForDeliveryNotfication(LocalDate expectedDeliveryDate) {
         final LocalDate conceptionDate = Pregnancy.basedOnDeliveryDate(expectedDeliveryDate).dateOfConception();
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest("123", CareScheduleNames.DELIVERY, preferredAlertTime, conceptionDate);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest("123", ScheduleNames.DELIVERY, preferredAlertTime, conceptionDate);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 

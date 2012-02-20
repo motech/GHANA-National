@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.configuration.CareScheduleNames;
+import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.*;
@@ -333,7 +333,7 @@ public class CareServiceTest extends BaseUnitTest {
 
         EnrollmentRequest requestPassedToScheduleTracker = enrollmentRequestArgumentCaptor.getValue();
         assertThat(requestPassedToScheduleTracker.getExternalId(), is(equalTo(patientId)));
-        assertThat(requestPassedToScheduleTracker.getScheduleName(), is(equalTo(CareScheduleNames.DELIVERY)));
+        assertThat(requestPassedToScheduleTracker.getScheduleName(), is(equalTo(ScheduleNames.DELIVERY)));
         assertThat(requestPassedToScheduleTracker.getPreferredAlertTime(), is(equalTo(new Time(currentDate.toLocalTime()))));
         assertThat(requestPassedToScheduleTracker.getReferenceDate(), any(LocalDate.class));
     }

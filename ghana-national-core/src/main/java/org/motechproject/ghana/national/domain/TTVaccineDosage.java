@@ -12,4 +12,12 @@ public enum TTVaccineDosage {
     public Integer getDosage() {
         return dosage;
     }
+
+    public Double getDosageAsDouble() {
+        return (double) dosage;
+    }
+
+    public String getScheduleMilestoneName(){
+        return name();
+    }
 }
