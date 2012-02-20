@@ -5,10 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
-import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.SMS;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.service.EncounterService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -31,6 +28,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.domain.EncounterType.PREG_DEL_NOTIFY_VISIT;
 import static org.motechproject.ghana.national.handlers.DeliveryNotificationFormHandler.*;
 
 public class DeliveryNotificationFormHandlerTest {
@@ -91,7 +89,7 @@ public class DeliveryNotificationFormHandlerTest {
         deliveryNotificationFormHandler.handleFormEvent(event);
 
         final HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
-        verify(mockEncounterService).persistEncounter(mrsPatient, staffId, facilityId, Constants.ENCOUNTER_PREGDELNOTIFYVISIT,
+        verify(mockEncounterService).persistEncounter(mrsPatient, staffId, facilityId, PREG_DEL_NOTIFY_VISIT.value(),
                 datetime.toDate(), mrsObservations);
         verify(mockTextMessageService).sendSMS(facility, SMS.fromSMSText("motechid-firstname-lastname-" + DateFormat.getDateTimeInstance().format(datetime.toDate())));
     }

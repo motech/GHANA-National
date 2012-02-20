@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.motechproject.ghana.national.domain.EncounterType.ANC_REG_VISIT;
+
 @Component
 public class AncVisitFormValidator extends FormValidator<ANCVisitForm> {
 
@@ -31,7 +33,7 @@ public class AncVisitFormValidator extends FormValidator<ANCVisitForm> {
         errors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         errors.addAll(formValidator.validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
         errors.addAll(formValidator.validateIfPatientIsFemale(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
-        errors.addAll(validateIfPatientAlreadyEnrolledForANC(formBean.getMotechId(), Constants.ENCOUNTER_ANCREGVISIT));
+        errors.addAll(validateIfPatientAlreadyEnrolledForANC(formBean.getMotechId(), ANC_REG_VISIT.value()));
         return errors;
     }
 

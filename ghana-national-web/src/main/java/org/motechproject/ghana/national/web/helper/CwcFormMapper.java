@@ -6,13 +6,15 @@ import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.web.CWCController;
 import org.motechproject.ghana.national.web.form.CWCEnrollmentForm;
 import org.motechproject.ghana.national.web.form.FacilityForm;
+import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSObservation;
-import org.openmrs.Concept;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+
+import static org.motechproject.ghana.national.domain.Concept.*;
 
 @Component
 public class CwcFormMapper {
@@ -35,44 +37,43 @@ public class CwcFormMapper {
         final ArrayList<CwcCareHistory> careHistories = new ArrayList<CwcCareHistory>();
         for (MRSObservation observation : observations) {
 
-            if (Constants.CONCEPT_IMMUNIZATIONS_ORDERED.equals(observation.getConceptName())) {
-                final Concept concept = (Concept) observation.getValue();
-                final String conceptName = concept.getName().getName();
-                if (Constants.CONCEPT_YF.equals(conceptName)) {
+            if (IMMUNIZATIONS_ORDERED.getName().equals(observation.getConceptName())) {
+                final String conceptName = ((MRSConcept) observation.getValue()).getName();
+                if (YF.getName().equals(conceptName)) {
                     cwcEnrollmentForm.setYfDate(observation.getDate());
                     careHistories.add(CwcCareHistory.YF);
                 }
-                if (Constants.CONCEPT_MEASLES.equals(conceptName)) {
+                if (MEASLES.getName().equals(conceptName)) {
                     cwcEnrollmentForm.setMeaslesDate(observation.getDate());
                     careHistories.add(CwcCareHistory.MEASLES);
                 }
-                if (Constants.CONCEPT_BCG.equals(conceptName)) {
+                if (BCG.getName().equals(conceptName)) {
                     cwcEnrollmentForm.setBcgDate(observation.getDate());
                     careHistories.add(CwcCareHistory.BCG);
                 }
-                if (Constants.CONCEPT_VITA.equals(conceptName)) {
+                if (VITA.getName().equals(conceptName)) {
                     cwcEnrollmentForm.setVitADate(observation.getDate());
                     careHistories.add(CwcCareHistory.VITA_A);
                 }
             }
-            if (Constants.CONCEPT_IPTI.equals(observation.getConceptName())) {
+            if (IPTI.getName().equals(observation.getConceptName())) {
                 cwcEnrollmentForm.setLastIPTiDate(observation.getDate());
                 cwcEnrollmentForm.setLastIPTi(((Double) observation.getValue()).intValue());
                 careHistories.add(CwcCareHistory.IPTI);
             }
 
-            if (Constants.CONCEPT_PENTA.equals(observation.getConceptName())) {
+            if (PENTA.getName().equals(observation.getConceptName())) {
                 cwcEnrollmentForm.setLastPentaDate(observation.getDate());
                 cwcEnrollmentForm.setLastPenta(((Double) observation.getValue()).intValue());
                 careHistories.add(CwcCareHistory.PENTA);
             }
-            if (Constants.CONCEPT_OPV.equals(observation.getConceptName())) {
+            if (OPV.getName().equals(observation.getConceptName())) {
                 cwcEnrollmentForm.setLastOPVDate(observation.getDate());
                 cwcEnrollmentForm.setLastOPV(((Double) observation.getValue()).intValue());
                 careHistories.add(CwcCareHistory.OPV);
             }
             cwcEnrollmentForm.setCareHistory(careHistories);
-            if (Constants.CONCEPT_CWC_REG_NUMBER.equals(observation.getConceptName())) {
+            if (CWC_REG_NUMBER.getName().equals(observation.getConceptName())) {
                 cwcEnrollmentForm.setSerialNumber((String) observation.getValue());
             }
         }
