@@ -8,6 +8,7 @@ import org.motechproject.model.Time;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.motechproject.util.DateUtil;
 
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -58,5 +59,24 @@ public class MobileMidwifeEnrollmentTest {
         assertFalse(enrollmentWithPublicOwnership.campaignApplicable());
 
         assertFalse(newEnrollment().setConsent(false).campaignApplicable());
+    }
+
+    public static void assertEnrollment(MobileMidwifeEnrollment expected, MobileMidwifeEnrollment actual) {
+        assertNotSame(expected, actual);
+        assertEquals(expected.getPatientId(), actual.getPatientId());
+        assertEquals(expected.getFacilityId(), actual.getFacilityId());
+        assertEquals(expected.getStaffId(), actual.getStaffId());
+        assertEquals(expected.getConsent(), actual.getConsent());
+        assertEquals(expected.getDayOfWeek(), actual.getDayOfWeek());
+        assertEquals(expected.getLearnedFrom(), actual.getLearnedFrom());
+        assertEquals(expected.getLanguage(), actual.getLanguage());
+        assertEquals(expected.getServiceType(), actual.getServiceType());
+        assertEquals(expected.getPhoneOwnership(), actual.getPhoneOwnership());
+        assertEquals(expected.getTimeOfDay(), actual.getTimeOfDay());
+        assertEquals(expected.getMessageStartWeek(), actual.getMessageStartWeek());
+        assertEquals(expected.getPhoneNumber(), actual.getPhoneNumber());
+        assertEquals(expected.getReasonToJoin(), actual.getReasonToJoin());
+        assertEquals(expected.getActive(), actual.getActive());
+        assertEquals(expected.getEnrollmentDateTime(), actual.getEnrollmentDateTime());
     }
 }

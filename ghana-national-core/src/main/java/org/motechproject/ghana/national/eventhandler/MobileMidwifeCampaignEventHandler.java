@@ -9,29 +9,29 @@ import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.TextMessageService;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.server.messagecampaign.EventKeys;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 import static org.motechproject.server.messagecampaign.EventKeys.MESSAGE_CAMPAIGN_SEND_EVENT_SUBJECT;
 
-@Service
+@Component
 public class MobileMidwifeCampaignEventHandler {
 
+    @Autowired
     private MobileMidwifeService mobileMidwifeService;
+    @Autowired
     private TextMessageService textMessageService;
+    @Autowired
     private PatientService patientService;
 
-    @Autowired
-    public MobileMidwifeCampaignEventHandler(MobileMidwifeService mobileMidwifeService, TextMessageService textMessageService, PatientService patientService) {
-        this.mobileMidwifeService = mobileMidwifeService;
-        this.textMessageService = textMessageService;
-        this.patientService = patientService;
-    }
-
+    @LoginAsAdmin
+    @ApiSession
     @MotechListener(subjects = {MESSAGE_CAMPAIGN_SEND_EVENT_SUBJECT})
     public void sendProgramMessage(MotechEvent event) throws ContentNotFoundException {
 
@@ -49,7 +49,7 @@ public class MobileMidwifeCampaignEventHandler {
         final Patient patient = patientService.getPatientByMotechId(patientId);
 
         if (Medium.SMS.equals(enrollment.getMedium())) {
-            String template = textMessageService.getSMSTemplate(messageKey);
+            String template = textMessageService.getSMSTemplate(enrollment.getLanguage().name(),messageKey);
             SMS sms = SMS.fromTemplate(template).fillPatientDetails(patient.getMotechId(), patient.getFirstName(), patient.getLastName());
             textMessageService.sendSMS(enrollment.getPhoneNumber(), sms);
         }
