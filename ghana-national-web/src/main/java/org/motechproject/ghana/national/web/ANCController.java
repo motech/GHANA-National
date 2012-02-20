@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.web;
 
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -26,6 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static org.motechproject.ghana.national.domain.EncounterType.ANC_REG_VISIT;
+import static org.motechproject.ghana.national.domain.EncounterType.PREG_REG_VISIT;
 
 @Controller
 @RequestMapping("admin/anc")
@@ -61,9 +63,9 @@ public class ANCController {
         List<FormError> formErrors = registerANCFormValidator.validatePatient(motechPatientId);
         ANCEnrollmentForm enrollmentForm = new ANCEnrollmentForm(motechPatientId);
         if (formErrors.isEmpty()) {
-            MRSEncounter mrsEncounter = careService.getEncounter(motechPatientId, Constants.ENCOUNTER_ANCREGVISIT);
+            MRSEncounter mrsEncounter = careService.getEncounter(motechPatientId, ANC_REG_VISIT.value());
             enrollmentForm = (mrsEncounter == null) ? enrollmentForm : ancFormMapper.convertMRSEncounterToView(mrsEncounter);
-            MRSEncounter pregnancyInfoEncounter = careService.getEncounter(motechPatientId, Constants.ENCOUNTER_PREGREGVISIT);
+            MRSEncounter pregnancyInfoEncounter = careService.getEncounter(motechPatientId, PREG_REG_VISIT.value());
             ancFormMapper.populatePregnancyInfo(pregnancyInfoEncounter, enrollmentForm);
         } else {
             modelMap.addAttribute("validationErrors", formErrors);

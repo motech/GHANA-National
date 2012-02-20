@@ -5,16 +5,16 @@
             "name" : "Default",
             "scheduleWindows" : {
                 "earliest" : "",
-                "due" : "39 Weeks",
-                "late" : "42 Weeks",
-                "max" : "43 Weeks"
+                "due" : "40 Weeks",
+                "late" : "43 Weeks",
+                "max" : "44 Weeks"
             },
             "alerts" : [
                 {
                     "window" : "due",
                     "interval" : "1 Week",
                     "count" : "1",
-                    "offset" : "39 Weeks"
+                    "offset" : "40 Weeks"
                 },
                 {
                     "window" : "late",

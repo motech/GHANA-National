@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
@@ -26,6 +25,7 @@ import static org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.domain.EncounterType.ANC_REG_VISIT;
 
 public class ANCControllerTest {
     private ANCController ancController;
@@ -123,7 +123,7 @@ public class ANCControllerTest {
         MRSEncounter mrsEncounter = new MRSEncounter();
 
         when(mockValidator.validatePatient(motechPatientId)).thenReturn(errors);
-        when(mockCareService.getEncounter(motechPatientId,Constants.ENCOUNTER_ANCREGVISIT)).thenReturn(mrsEncounter);
+        when(mockCareService.getEncounter(motechPatientId, ANC_REG_VISIT.value())).thenReturn(mrsEncounter);
         when(mockANCFormMapper.convertMRSEncounterToView(mrsEncounter)).thenReturn(ancEnrollmentForm);
 
         ancController.newANC(motechPatientId, modelMap);

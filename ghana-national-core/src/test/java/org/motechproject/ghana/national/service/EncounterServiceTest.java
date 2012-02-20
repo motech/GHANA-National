@@ -4,12 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.mrs.model.*;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,6 +16,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.domain.EncounterType.PATIENT_REG_VISIT;
 
 
 public class EncounterServiceTest{
@@ -46,14 +46,14 @@ public class EncounterServiceTest{
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mrsUser);
         MRSPatient mrsPatient = new MRSPatient("45454");
 
-        MRSEncounter mrsEncounter = encounterService.persistEncounter(mrsPatient, staffId, facilityId, Constants.ENCOUNTER_PATIENTREGVISIT, new Date(2011, 9, 1), mrsObservations);
+        encounterService.persistEncounter(mrsPatient, staffId, facilityId, PATIENT_REG_VISIT.value(), DateUtil.newDate(2011, 9, 1).toDate(), mrsObservations);
 
         ArgumentCaptor<MRSEncounter> mrsEncounterArgumentCaptor = ArgumentCaptor.forClass(MRSEncounter.class);
         verify(mockAllEncounters).save(mrsEncounterArgumentCaptor.capture());
         MRSEncounter mrsEncounterSaved = mrsEncounterArgumentCaptor.getValue();
         assertEquals(mrsEncounterSaved.getCreator().getId(),staffId);
         assertEquals(mrsEncounterSaved.getFacility().getId(),facilityId);
-        assertEquals(mrsEncounterSaved.getEncounterType(),Constants.ENCOUNTER_PATIENTREGVISIT);
+        assertEquals(mrsEncounterSaved.getEncounterType(), PATIENT_REG_VISIT.value());
     }
 
     @Test

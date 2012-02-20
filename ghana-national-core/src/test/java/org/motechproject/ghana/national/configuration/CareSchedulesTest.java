@@ -30,7 +30,7 @@ public class CareSchedulesTest extends BaseScheduleTrackingTest {
 
     @Test
     public void verifyPregnancyScheduleWhenEDDIsVeryFarInFuture() throws SchedulerException {
-        mockToday(newDate(2012, 2, 1));
+        mockToday(newDate(2012, 3, 1));
 
         LocalDate expectedDeliveryDate = newDate(2012, 11, 10);
 
@@ -38,15 +38,14 @@ public class CareSchedulesTest extends BaseScheduleTrackingTest {
 
         List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
         assertAlerts(alerts, new ArrayList<Date>() {{
-            add(onDate(newDate(2012, 11, 3)));
             add(onDate(newDate(2012, 11, 10)));
             add(onDate(newDate(2012, 11, 17)));
             add(onDate(newDate(2012, 11, 24)));
+            add(onDate(newDate(2012, 12, 1)));
         }});
     }
 
     @Test
-    @Ignore("Waiting for bug fix from platform")
     public void verifyPregnancyScheduleWhenEDDIsUnderOneWeekFromToday() throws SchedulerException {
         mockToday(newDate(2012, 2, 1));
         LocalDate expectedDeliveryDate = newDate(2012, 2, 3);
@@ -57,6 +56,8 @@ public class CareSchedulesTest extends BaseScheduleTrackingTest {
             add(onDate(newDate(2012, 2, 3)));
             add(onDate(newDate(2012, 2, 10)));
             add(onDate(newDate(2012, 2, 17)));
+            add(onDate(newDate(2012, 2, 24)));
+
         }});
     }
 
@@ -70,43 +71,44 @@ public class CareSchedulesTest extends BaseScheduleTrackingTest {
         List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
         assertAlerts(alerts, new ArrayList<Date>() {{
             add(onDate(newDate(2012, 2, 6)));
+            add(onDate(newDate(2012, 2, 13)));
         }});
     }
 
     @Test
     public void verifyPregnancyScheduleWhenEDDIsInOverOneWeekFromToday() throws SchedulerException {
         mockToday(newDate(2012, 2, 1));
-        LocalDate expectedDeliveryDate = newDate(2012, 2, 11);
+        LocalDate expectedDeliveryDate = newDate(2012, 2, 12);
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
 
         List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
         assertAlerts(alerts, new ArrayList<Date>() {{
-            add(onDate(newDate(2012, 2, 4)));
-            add(onDate(newDate(2012, 2, 11)));
-            add(onDate(newDate(2012, 2, 18)));
-            add(onDate(newDate(2012, 2, 25)));
+            add(onDate(newDate(2012, 2, 12)));
+            add(onDate(newDate(2012, 2, 19)));
+            add(onDate(newDate(2012, 2, 26)));
+            add(onDate(newDate(2012, 3, 4)));
         }});
     }
 
     @Test
     public void verifyPregnancyScheduleWhenEDDIsOnToday() throws SchedulerException {
         mockToday(newDate(2012, 2, 1));
-        LocalDate expectedDeliveryDate = newDate(2012, 2, 1);
+        LocalDate expectedDeliveryDate = newDate(2012, 2, 2);
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
 
         List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
         assertAlerts(alerts, new ArrayList<Date>() {{
-            add(onDate(newDate(2012, 2, 1)));
-            add(onDate(newDate(2012, 2, 8)));
-            add(onDate(newDate(2012, 2, 15)));
+            add(onDate(newDate(2012, 2, 2)));
+            add(onDate(newDate(2012, 2, 9)));
+            add(onDate(newDate(2012, 2, 16)));
+            add(onDate(newDate(2012, 2, 23)));
         }});
     }
 
     @Test
-    @Ignore("Waiting for bug fix from platform")
     public void verifyPregnancyScheduleWhenEDDIsInTheFarPast() throws SchedulerException {
         mockToday(newDate(2012, 2, 1));
-        LocalDate expectedDeliveryDate = newDate(2012, 2, 4);
+        LocalDate expectedDeliveryDate = newDate(2012, 1, 4);
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
 
         List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);

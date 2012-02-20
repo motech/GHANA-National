@@ -24,6 +24,9 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.motechproject.ghana.national.domain.Concept.*;
+import static org.motechproject.ghana.national.domain.EncounterType.OUTPATIENT_VISIT;
+
 @Component
 public class OutPatientVisitFormHandler implements FormPublishHandler {
 
@@ -84,32 +87,32 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
 
 
         if (formBean.getNewCase() != null) {
-            MRSObservation newCaseObs = new MRSObservation<Boolean>(formBean.getVisitDate(), Constants.CONCEPT_NEW_CASE, formBean.getNewCase());
+            MRSObservation newCaseObs = new MRSObservation<Boolean>(formBean.getVisitDate(), NEW_CASE.getName(), formBean.getNewCase());
             observationList.add(newCaseObs);
         }
         if (formBean.getNewPatient() != null) {
-            MRSObservation newPatientObs = new MRSObservation<Boolean>(formBean.getVisitDate(), Constants.CONCEPT_NEW_PATIENT, formBean.getNewPatient());
+            MRSObservation newPatientObs = new MRSObservation<Boolean>(formBean.getVisitDate(), NEW_PATIENT.getName(), formBean.getNewPatient());
             observationList.add(newPatientObs);
         }
         if (formBean.getDiagnosis() != null) {
             int obsVal = formBean.getDiagnosis() == OTHER_DIAGNOSIS ? formBean.getOtherDiagnosis() : formBean.getDiagnosis();
-            MRSObservation diagnosisObs = new MRSObservation<Integer>(formBean.getVisitDate(), Constants.CONCEPT_PRIMARY_DIAGNOSIS, obsVal);
+            MRSObservation diagnosisObs = new MRSObservation<Integer>(formBean.getVisitDate(), PRIMARY_DIAGNOSIS.getName(), obsVal);
             observationList.add(diagnosisObs);
 
         }
         if (formBean.getSecondDiagnosis() != null) {
             int obsVal = formBean.getSecondDiagnosis() == OTHER_DIAGNOSIS ? formBean.getOtherSecondaryDiagnosis() : formBean.getSecondDiagnosis();
-            MRSObservation secondDiagnosisObs = new MRSObservation<Integer>(formBean.getVisitDate(), Constants.CONCEPT_SECONDARY_DIAGNOSIS, obsVal);
+            MRSObservation secondDiagnosisObs = new MRSObservation<Integer>(formBean.getVisitDate(), SECONDARY_DIAGNOSIS.getName(), obsVal);
             observationList.add(secondDiagnosisObs);
 
         }
         if (formBean.getReferred() != null) {
-            MRSObservation referredObs = new MRSObservation<Boolean>(formBean.getVisitDate(), Constants.CONCEPT_REFERRED, formBean.getReferred());
+            MRSObservation referredObs = new MRSObservation<Boolean>(formBean.getVisitDate(), REFERRED.getName(), formBean.getReferred());
             observationList.add(referredObs);
 
         }
         if (formBean.getComments() != null) {
-            MRSObservation commentsObs = new MRSObservation<String>(formBean.getVisitDate(), Constants.CONCEPT_COMMENTS, formBean.getComments());
+            MRSObservation commentsObs = new MRSObservation<String>(formBean.getVisitDate(), COMMENTS.getName(), formBean.getComments());
             observationList.add(commentsObs);
 
         }
@@ -117,19 +120,19 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
         if (Boolean.TRUE.equals(formBean.getRdtGiven())) {
             MRSObservation rdtGivenObs;
             if (Boolean.TRUE.equals(formBean.getRdtPositive()))
-                rdtGivenObs = new MRSObservation<MRSConcept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST, new MRSConcept(Constants.CONCEPT_POSITIVE));
+                rdtGivenObs = new MRSObservation<MRSConcept>(formBean.getVisitDate(), MALARIA_RAPID_TEST.getName(), new MRSConcept(POSITIVE.getName()));
             else
-                rdtGivenObs = new MRSObservation<MRSConcept>(formBean.getVisitDate(), Constants.CONCEPT_MALARIA_RAPID_TEST, new MRSConcept(Constants.CONCEPT_NEGATIVE));
+                rdtGivenObs = new MRSObservation<MRSConcept>(formBean.getVisitDate(), MALARIA_RAPID_TEST.getName(), new MRSConcept(NEGATIVE.getName()));
             observationList.add(rdtGivenObs);
         }
 
         if (formBean.getActTreated() != null) {
-            MRSObservation actTreatedObs = new MRSObservation<Boolean>(formBean.getVisitDate(), Constants.CONCEPT_ACT_TREATMENT, formBean.getActTreated());
+            MRSObservation actTreatedObs = new MRSObservation<Boolean>(formBean.getVisitDate(), ACT_TREATMENT.getName(), formBean.getActTreated());
             observationList.add(actTreatedObs);
         }
 
         Facility facility = facilityService.getFacilityByMotechId(formBean.getFacilityId());
-        encounterService.persistEncounter(mrsPatient, formBean.getStaffId(), facility.mrsFacilityId(), Constants.ENCOUNTER_OUTPATIENTVISIT,
+        encounterService.persistEncounter(mrsPatient, formBean.getStaffId(), facility.mrsFacilityId(), OUTPATIENT_VISIT.value(),
                 formBean.getVisitDate(), observationList);
     }
 }

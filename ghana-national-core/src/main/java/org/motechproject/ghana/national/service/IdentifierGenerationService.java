@@ -28,14 +28,21 @@ public class IdentifierGenerationService {
 
     private HttpClient httpClient;
 
-    @Value("#{ghanaNationalProperties['omod.identifier.service.url']}")
-    private String url;
+    @Value("#{ghanaNationalProperties['omod.identifier.service.path']}")
+    private String path;
+
+    @Value("#{ghanaNationalProperties['omod.identifier.service.port']}")
+    private String port;
+
+    @Value("#{ghanaNationalProperties['omod.identifier.service.host']}")
+    private String host;
 
     @Value("#{ghanaNationalProperties['omod.user.name']}")
     private String user;
 
     @Value("#{ghanaNationalProperties['omod.user.password']}")
     private String password;
+    private static final String OPENMRS_PORT = "OPENMRS_PORT";
 
     public IdentifierGenerationService() {
         httpClient = new HttpClient();
@@ -55,6 +62,7 @@ public class IdentifierGenerationService {
 
     private String callOmodService(String generatorName, String idTypeName) {
         try {
+            String url = String.format("http://%s:%s/%s", host, System.getProperty(OPENMRS_PORT, port), path);
             GetMethod getMethod = new GetMethod(url);
             getMethod.setQueryString(
                     new NameValuePair[]{
