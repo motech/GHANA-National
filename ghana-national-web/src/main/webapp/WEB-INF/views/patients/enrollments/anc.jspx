@@ -30,6 +30,7 @@
         <spring:message code="registration_in_past_display" var="registration_in_past_display" htmlEscape="false"/>
         <spring:message code="registration_in_past_in_other_facility" var="registration_in_past_in_other_facility" htmlEscape="false"/>
         <spring:message code="patient_last_TT" var="patient_last_TT" htmlEscape="false"/>
+        <spring:message code="patient_last_TT_date" var="patient_last_TT_date" htmlEscape="false"/>
         <spring:message code="patient_last_IPT" var="patient_last_IPT" htmlEscape="false"/>
         <spring:message code="patient_history" var="patient_history" htmlEscape="false"/>
         <spring:message code="patient_height" var="patient_height" htmlEscape="false"/>
@@ -166,6 +167,9 @@
                     *:
                 </label>
                 <form:checkboxes path="careHistory" items="${requestScope.careHistories}" cssClass="jsRequire"/>
+                <span id='careHistoryError' class='alertText formlyInvalid formlyAlert hide'>
+                    ${fn:escapeXml(patient_care_history)} ${fn:escapeXml(required_msg)}
+                </span>
             </div>
 
             <div id="jsIPT">
@@ -179,7 +183,10 @@
 
                 <div id="lastIPTDateHolder" class="form-field">
                     <label for="lastIPTDate" class="formLabel"> <spring:message code="patient_IPT_date"/> *: </label>
-                    <form:input path="lastIPTDate" cssClass="jsDate jsRequire"/>
+                    <form:input path="lastIPTDate" readonly="true" cssClass="jsDate jsRequire"/>
+                    <span id='lastIPTDateError' class='alertText formlyInvalid formlyAlert hide'>
+                        ${fn:escapeXml(patient_IPT_date)} ${fn:escapeXml(required_msg)}
+                    </span>
                 </div>
             </div>
             <div id="jsTT">
@@ -193,7 +200,10 @@
 
                 <div id="lastTTDateHolder" class="form-field">
                     <label for="lastTTDate" class="formLabel"> <spring:message code="patient_last_TT_date"/> *: </label>
-                    <form:input path="lastTTDate" cssClass="jsDate jsRequire"/>
+                    <form:input path="lastTTDate" readonly="true" cssClass="jsDate jsRequire"/>
+                    <span id='lastTTDateError' class='alertText formlyInvalid formlyAlert hide'>
+                        ${fn:escapeXml(patient_last_TT_date)} ${fn:escapeXml(required_msg)}
+                    </span>
                 </div>
             </div>
         </div>
