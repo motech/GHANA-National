@@ -61,4 +61,11 @@ public class CareVisitServiceTest {
         assertThat(enrollmentRequest.getReferenceDate(),is(equalTo(vaccinationDate)));
     }
 
+    @Test
+    public void shouldUnScheduleAllAlerts(){
+        String patientId = "patient_id";
+        careVisitServiceSpy.unScheduleAll(new Patient(new MRSPatient(patientId)));
+        verify(scheduleTrackingService).unenroll(patientId, TT_VACCINATION_VISIT);
+    }
+
 }

@@ -5,7 +5,7 @@ import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 
 public abstract class BaseScheduleService {
-    private ScheduleTrackingService scheduleTrackingService;
+    protected ScheduleTrackingService scheduleTrackingService;
 
     protected BaseScheduleService(ScheduleTrackingService scheduleTrackingService) {
         this.scheduleTrackingService = scheduleTrackingService;

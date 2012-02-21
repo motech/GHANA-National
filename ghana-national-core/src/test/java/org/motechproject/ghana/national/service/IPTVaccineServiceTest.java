@@ -28,16 +28,16 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
 
 
-public class VaccinationServiceTest extends BaseUnitTest {
+public class IPTVaccineServiceTest extends BaseUnitTest {
 
-    VaccinationService vaccinationService;
+    IPTVaccineService vaccinationService;
     @Mock
     ScheduleTrackingService mockScheduleTrackingService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        vaccinationService = new VaccinationService();
+        vaccinationService = new IPTVaccineService();
         setField(vaccinationService, "scheduleTrackingService", mockScheduleTrackingService);
     }
 

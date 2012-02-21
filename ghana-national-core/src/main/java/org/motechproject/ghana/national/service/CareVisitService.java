@@ -10,6 +10,8 @@ import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
+
 @Service
 public class CareVisitService extends BaseScheduleService {
 
@@ -27,4 +29,7 @@ public class CareVisitService extends BaseScheduleService {
         scheduleAlerts(patient, enrollmentRequest);
     }
 
+    public void unScheduleAll(Patient patient) {
+        scheduleTrackingService.unenroll(patient.getMRSPatientId(), TT_VACCINATION_VISIT);
+    }
 }

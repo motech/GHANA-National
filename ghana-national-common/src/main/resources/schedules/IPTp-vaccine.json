@@ -5,9 +5,9 @@
             "name" : "IPT1",
             "scheduleWindows" : {
                 "earliest" : "12 Weeks",
-                "due" : "13 Weeks",
-                "late" : "15 Weeks",
-                "max" : "18 Weeks"
+                "due" : "14 Weeks",
+                "late" : "17 Weeks",
+                "max" : ""
             },
             "alerts" : [
                 {
@@ -25,8 +25,8 @@
                 {
                     "window" : "late",
                     "interval" : "1 Week",
-                    "count" : "2",
-                    "offset" : "0 Day"
+                    "count" : "3",
+                    "offset" : "0 Week"
                 }
             ]
         },
@@ -39,6 +39,12 @@
                 "max" : ""
             },
             "alerts" : [
+                {
+                    "window" : "earliest",
+                    "interval" : "1 Weeks",
+                    "count" : "1",
+                    "offset" : "3 Weeks"
+                },
                 {
                     "window" : "due",
                     "interval" : "1 Weeks",
@@ -62,6 +68,12 @@
                 "max" : ""
             },
             "alerts" : [
+                 {
+                    "window" : "earliest",
+                    "interval" : "1 Weeks",
+                    "count" : "1",
+                    "offset" : "3 Weeks"
+                },
                 {
                     "window" : "due",
                     "interval" : "1 Weeks",
