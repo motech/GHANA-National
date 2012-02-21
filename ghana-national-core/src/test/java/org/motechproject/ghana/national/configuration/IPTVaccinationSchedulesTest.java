@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.configuration;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.vo.Pregnancy;
@@ -49,6 +50,7 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         }});
     }
 
+    @Ignore
     @Test
     public void verifyPregnancyIPTScheduleForPatientRegistrationOnMidOf12thOfPregnancy() throws SchedulerException {
 
