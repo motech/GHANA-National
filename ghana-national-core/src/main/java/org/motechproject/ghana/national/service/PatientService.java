@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.service;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
@@ -21,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+import static org.motechproject.ghana.national.domain.EncounterType.PATIENT_EDIT_VISIT;
+import static org.motechproject.ghana.national.domain.EncounterType.PATIENT_REG_VISIT;
 import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
 
 @Service
@@ -52,7 +53,7 @@ public class PatientService {
             if (StringUtils.isNotEmpty(patient.getParentId())) {
                 createRelationship(patient.getParentId(), savedPatient.getMotechId());
             }
-            encounterService.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(), Constants.ENCOUNTER_PATIENTREGVISIT, DateUtil.today().toDate(), null);
+            encounterService.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(), PATIENT_REG_VISIT.value(), DateUtil.today().toDate(), null);
             return savedPatient;
         } catch (IdentifierNotUniqueException e) {
             throw new PatientIdNotUniqueException();
@@ -92,7 +93,7 @@ public class PatientService {
             updateRelationship(patient.getParentId(), savedPatient, relationship);
         }
         encounterService.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(),
-                Constants.ENCOUNTER_PATIENTEDITVISIT, DateUtil.today().toDate(), null);
+                PATIENT_EDIT_VISIT.value(), DateUtil.today().toDate(), null);
         return savedPatientId;
     }
 

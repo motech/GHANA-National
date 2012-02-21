@@ -2,14 +2,8 @@ package org.motechproject.ghana.national.web.helper;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
-import org.motechproject.mrs.model.MRSEncounter;
-import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSPerson;
-import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.mrs.model.*;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -17,6 +11,7 @@ import java.util.HashSet;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.motechproject.ghana.national.domain.Concept.*;
 
 public class ANCFormMapperTest {
 
@@ -47,12 +42,12 @@ public class ANCFormMapperTest {
         String province = "province";
 
         final HashSet<MRSObservation> observations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_GRAVIDA, gravida));
-            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_HEIGHT, height));
-            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_PARITY, parity));
-            add(new MRSObservation<String>(observationDate, Constants.CONCEPT_ANC_REG_NUM, serialNumber));
-            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_IPT, 2.0));
-            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_TT, 3.0));
+            add(new MRSObservation<Double>(observationDate, GRAVIDA.getName(), gravida));
+            add(new MRSObservation<Double>(observationDate, HEIGHT.getName(), height));
+            add(new MRSObservation<Double>(observationDate, PARITY.getName(), parity));
+            add(new MRSObservation<String>(observationDate, ANC_REG_NUM.getName(), serialNumber));
+            add(new MRSObservation<Double>(observationDate, IPT.getName(), 2.0));
+            add(new MRSObservation<Double>(observationDate, TT.getName(), 3.0));
         }};
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
         MRSEncounter mrsEncounter = new MRSEncounter("1", new MRSPerson().id(providerId),
@@ -100,10 +95,10 @@ public class ANCFormMapperTest {
         String province = "province";
 
         final HashSet<MRSObservation> observations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_GRAVIDA, gravida));
-            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_HEIGHT, height));
-            add(new MRSObservation<Double>(observationDate, Constants.CONCEPT_PARITY, parity));
-            add(new MRSObservation<String>(observationDate, Constants.CONCEPT_ANC_REG_NUM, serialNumber));
+            add(new MRSObservation<Double>(observationDate, GRAVIDA.getName(), gravida));
+            add(new MRSObservation<Double>(observationDate, HEIGHT.getName(), height));
+            add(new MRSObservation<Double>(observationDate, PARITY.getName(), parity));
+            add(new MRSObservation<String>(observationDate, ANC_REG_NUM.getName(), serialNumber));
         }};
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
         MRSEncounter mrsEncounter = new MRSEncounter("1", new MRSPerson().id(providerId),
@@ -132,9 +127,9 @@ public class ANCFormMapperTest {
         final Boolean deliveryDateConfirmed = true;
         final Date estimatedDateOfDelivery = new Date();
         final HashSet<MRSObservation> observations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Date>(observationDate, Constants.CONCEPT_EDD, estimatedDateOfDelivery));
-            add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_CONFINEMENT_CONFIRMED, deliveryDateConfirmed));
-            add(new MRSObservation<Boolean>(observationDate, Constants.CONCEPT_PREGNANCY_STATUS, true));
+            add(new MRSObservation<Date>(observationDate, EDD.getName(), estimatedDateOfDelivery));
+            add(new MRSObservation<Boolean>(observationDate, CONFINEMENT_CONFIRMED.getName(), deliveryDateConfirmed));
+            add(new MRSObservation<Boolean>(observationDate, PREGNANCY_STATUS.getName(), true));
         }};
 
         ANCEnrollmentForm ancEnrollmentForm = new ANCEnrollmentForm();

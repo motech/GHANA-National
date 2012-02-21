@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.web.helper;
 
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -10,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.Set;
+
+import static org.motechproject.ghana.national.domain.Concept.*;
 
 @Component
 public class ANCFormMapper {
@@ -38,25 +39,25 @@ public class ANCFormMapper {
             String conceptName = mrsObservation.getConceptName();
             Object value = mrsObservation.getValue();
 
-            if (Constants.CONCEPT_GRAVIDA.equals(conceptName)) {
+            if (GRAVIDA.getName().equals(conceptName)) {
                 ancEnrollmentForm.setGravida(((Double) value).intValue());
             }
-            if (Constants.CONCEPT_ANC_REG_NUM.equals(conceptName)) {
+            if (ANC_REG_NUM.getName().equals(conceptName)) {
                 ancEnrollmentForm.setSerialNumber((String) value);
             }
-            if (Constants.CONCEPT_HEIGHT.equals(conceptName)) {
+            if (HEIGHT.getName().equals(conceptName)) {
                 ancEnrollmentForm.setHeight((Double) value);
             }
-            if (Constants.CONCEPT_PARITY.equals(conceptName)) {
+            if (PARITY.getName().equals(conceptName)) {
                 ancEnrollmentForm.setParity(((Double) value).intValue());
             }
-            if (Constants.CONCEPT_IPT.equals(conceptName)) {
+            if (IPT.getName().equals(conceptName)) {
                 Integer lastIPT = ((Double) value).intValue();
                 ancEnrollmentForm.setLastIPT(lastIPT.toString());
                 ancEnrollmentForm.setLastIPTDate(mrsObservation.getDate());
                 ancEnrollmentForm.setAddHistory(true);
             }
-            if (Constants.CONCEPT_TT.equals(conceptName)) {
+            if (TT.getName().equals(conceptName)) {
                 Integer lastTT = ((Double) value).intValue();
                 ancEnrollmentForm.setLastTT(lastTT.toString());
                 ancEnrollmentForm.setLastTTDate(mrsObservation.getDate());
@@ -75,10 +76,10 @@ public class ANCFormMapper {
             String pregnancyObservationConceptName = mrsObservation.getConceptName();
             Object pregnancyObservationValue = mrsObservation.getValue();
 
-            if (Constants.CONCEPT_CONFINEMENT_CONFIRMED.equals(pregnancyObservationConceptName)) {
+            if (CONFINEMENT_CONFIRMED.getName().equals(pregnancyObservationConceptName)) {
                 ancEnrollmentForm.setDeliveryDateConfirmed((Boolean) pregnancyObservationValue);
             }
-            if (Constants.CONCEPT_EDD.equals(pregnancyObservationConceptName)) {
+            if (EDD.getName().equals(pregnancyObservationConceptName)) {
                 ancEnrollmentForm.setEstimatedDateOfDelivery((Date) pregnancyObservationValue);
             }
         }

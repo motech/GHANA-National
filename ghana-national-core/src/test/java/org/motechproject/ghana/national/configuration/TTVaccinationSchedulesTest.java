@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.motechproject.ghana.national.configuration.CareScheduleNames.TTVaccine;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TTVaccine;
 import static org.motechproject.util.DateUtil.newDate;
 
 @RunWith(SpringJUnit4ClassRunner.class)

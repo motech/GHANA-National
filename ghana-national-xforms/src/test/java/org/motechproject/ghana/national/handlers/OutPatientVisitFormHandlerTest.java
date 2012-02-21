@@ -6,10 +6,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.OutPatientVisitForm;
-import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.OutPatientVisit;
-import org.motechproject.ghana.national.domain.PatientType;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.service.EncounterService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.OutPatientVisitService;
@@ -32,6 +29,9 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.domain.Concept.*;
+import static org.motechproject.ghana.national.domain.Concept.REFERRED;
+import static org.motechproject.ghana.national.domain.EncounterType.OUTPATIENT_VISIT;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 public class OutPatientVisitFormHandlerTest {
@@ -115,20 +115,20 @@ public class OutPatientVisitFormHandlerTest {
         ArgumentCaptor<Set> argumentCaptor = ArgumentCaptor.forClass(Set.class);
 
         verify(mockEncounterService).persistEncounter(eq(mockMrsPatient), eq(staffId), eq(facilityId),
-                eq(Constants.ENCOUNTER_OUTPATIENTVISIT), eq(visitDate), argumentCaptor.capture());
+                eq(OUTPATIENT_VISIT.value()), eq(visitDate), argumentCaptor.capture());
 
         Set<MRSObservation> actualObservations = argumentCaptor.getValue();
 
         Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>();
-        expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_NEW_CASE, isNewCase));
-        expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_NEW_PATIENT, isNewPatient));
-        expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_PRIMARY_DIAGNOSIS, diagnosis));
-        expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_SECONDARY_DIAGNOSIS, secondDiagnosis));
-        expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_REFERRED, isReferred));
-        expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_COMMENTS, comments));
-        expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_MALARIA_RAPID_TEST,
-                new MRSConcept(Constants.CONCEPT_NEGATIVE)));
-        expectedObservations.add(new MRSObservation(visitDate, Constants.CONCEPT_ACT_TREATMENT, actTreated));
+        expectedObservations.add(new MRSObservation<Boolean>(visitDate, NEW_CASE.getName(), isNewCase));
+        expectedObservations.add(new MRSObservation<Boolean>(visitDate, NEW_PATIENT.getName(), isNewPatient));
+        expectedObservations.add(new MRSObservation<Integer>(visitDate, PRIMARY_DIAGNOSIS.getName(), diagnosis));
+        expectedObservations.add(new MRSObservation<Integer>(visitDate, SECONDARY_DIAGNOSIS.getName(), secondDiagnosis));
+        expectedObservations.add(new MRSObservation<Boolean>(visitDate, REFERRED.getName(), isReferred));
+        expectedObservations.add(new MRSObservation<String>(visitDate, COMMENTS.getName(), comments));
+        expectedObservations.add(new MRSObservation<MRSConcept>(visitDate, MALARIA_RAPID_TEST.getName(),
+                new MRSConcept(NEGATIVE.getName())));
+        expectedObservations.add(new MRSObservation<Boolean>(visitDate, ACT_TREATMENT.getName(), actTreated));
 
         assertReflectionEquals(actualObservations, expectedObservations, ReflectionComparatorMode.LENIENT_DATES,
                 ReflectionComparatorMode.LENIENT_ORDER);

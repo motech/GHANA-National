@@ -19,7 +19,9 @@ import java.util.Set;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.Constants.*;
+import static org.motechproject.ghana.national.domain.EncounterType.PREG_TERM_VISIT;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 public class PregnancyTerminationServiceTest {
@@ -86,21 +88,21 @@ public class PregnancyTerminationServiceTest {
         pregnancyTerminationService.terminatePregnancy(request);
         ArgumentCaptor<Set> captor = ArgumentCaptor.forClass(Set.class);
 
-        verify(mockEncounterService).persistEncounter(eq(mockMRSPatient), eq(staffId), eq(mrsFacilityId), eq(ENCOUNTER_PREGTERMVISIT), eq(date), captor.capture());
+        verify(mockEncounterService).persistEncounter(eq(mockMRSPatient), eq(staffId), eq(mrsFacilityId), eq(PREG_TERM_VISIT.value()), eq(date), captor.capture());
 
         Set observations = captor.getValue();
 
         Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Boolean>(date, CONCEPT_PREGNANCY_STATUS, false));
-            add(new MRSObservation<String>(date, CONCEPT_TERMINATION_TYPE, "2"));
-            add(new MRSObservation<String>(date, CONCEPT_TERMINATION_PROCEDURE, "1"));
-            add(new MRSObservation<String>(date, CONCEPT_TERMINATION_COMPLICATION, "Bleeding"));
-            add(new MRSObservation<String>(date, CONCEPT_TERMINATION_COMPLICATION, "Sepsis/Infection"));
-            add(new MRSObservation<Boolean>(date, CONCEPT_MATERNAL_DEATH, false));
-            add(new MRSObservation<Boolean>(date, CONCEPT_REFERRED, false));
-            add(new MRSObservation<String>(date, CONCEPT_COMMENTS, "Patient lost lot of blood"));
-            add(new MRSObservation<Boolean>(date, CONCEPT_POST_ABORTION_FP_COUNSELING, Boolean.FALSE));
-            add(new MRSObservation<Boolean>(date, CONCEPT_POST_ABORTION_FP_ACCEPTED, Boolean.TRUE));
+            add(new MRSObservation<Boolean>(date, PREGNANCY_STATUS.getName(), false));
+            add(new MRSObservation<Integer>(date, TERMINATION_TYPE.getName(), 2));
+            add(new MRSObservation<Integer>(date, TERMINATION_PROCEDURE.getName(), 1));
+            add(new MRSObservation<Integer>(date, TERMINATION_COMPLICATION.getName(), 1));
+            add(new MRSObservation<Integer>(date, TERMINATION_COMPLICATION.getName(), 2));
+            add(new MRSObservation<Boolean>(date, MATERNAL_DEATH.getName(), false));
+            add(new MRSObservation<Boolean>(date, REFERRED.getName(), false));
+            add(new MRSObservation<String>(date, COMMENTS.getName(), "Patient lost lot of blood"));
+            add(new MRSObservation<Boolean>(date, POST_ABORTION_FP_COUNSELING.getName(), Boolean.FALSE));
+            add(new MRSObservation<Boolean>(date, POST_ABORTION_FP_ACCEPTED.getName(), Boolean.TRUE));
         }};
 
         assertReflectionEquals(expectedObservations, observations, ReflectionComparatorMode.LENIENT_ORDER);
@@ -116,8 +118,8 @@ public class PregnancyTerminationServiceTest {
         request.setTerminationProcedure("1");
         request.setTerminationType("2");
         request.setComments("Patient lost lot of blood");
-        request.addComplication("Bleeding");
-        request.addComplication("Sepsis/Infection");
+        request.addComplication("1");
+        request.addComplication("2");
         request.setPostAbortionFPAccepted(Boolean.TRUE);
         request.setPostAbortionFPCounselling(Boolean.FALSE);
         return request;

@@ -534,7 +534,7 @@
             </xf:item>
         </xf:select1>
         <xf:select1 bind="serviceType">
-            <xf:label>Service Type</xf:label>
+            <xf:label>Message Program</xf:label>
             <xf:item id="PREGNANCY">
                 <xf:label>Pregnancy</xf:label>
                 <xf:value>PREGNANCY</xf:value>

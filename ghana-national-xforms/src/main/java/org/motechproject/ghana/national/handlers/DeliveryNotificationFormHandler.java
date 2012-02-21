@@ -2,10 +2,7 @@ package org.motechproject.ghana.national.handlers;
 
 import org.joda.time.DateTime;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
-import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.SMS;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.service.EncounterService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -22,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
+
+import static org.motechproject.ghana.national.domain.EncounterType.PREG_DEL_NOTIFY_VISIT;
 
 @Component
 public class DeliveryNotificationFormHandler implements FormPublishHandler {
@@ -53,7 +52,7 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
             Facility facility = facilityService.getFacilityByMotechId(deliveryNotificationForm.getFacilityId());
             DateTime deliveryTime = deliveryNotificationForm.getDatetime();
             encounterService.persistEncounter(patient.getMrsPatient(), deliveryNotificationForm.getStaffId(),
-                    facility.getMrsFacilityId(), Constants.ENCOUNTER_PREGDELNOTIFYVISIT,
+                    facility.getMrsFacilityId(), PREG_DEL_NOTIFY_VISIT.value(),
                     deliveryTime.toDate(), new HashSet<MRSObservation>());
             sendDeliveryNotificationMessage(deliveryNotificationForm.getMotechId(), deliveryTime);
         } catch (Exception e) {

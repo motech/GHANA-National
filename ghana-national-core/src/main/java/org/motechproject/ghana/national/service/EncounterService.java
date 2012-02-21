@@ -21,13 +21,13 @@ public class EncounterService {
     AllEncounters allEncounters;
 
     public MRSEncounter persistEncounter(MRSPatient mrsPatient, String staffId, String facilityId, String encounterType,
-                                         Date registrationDate, Set<MRSObservation> mrsObservations) {
+                                         Date dateOfEncounter, Set<MRSObservation> mrsObservations) {
         MRSUser user = staffService.getUserByEmailIdOrMotechId(staffId);
         String staffProviderId = user.getPerson().getId();
         String staffUserId = user.getId();
         String patientId = mrsPatient.getId();
         MRSEncounter mrsEncounter = new MRSEncounter(staffProviderId, staffUserId, facilityId,
-                registrationDate, patientId, mrsObservations, encounterType);
+                dateOfEncounter, patientId, mrsObservations, encounterType);
         return allEncounters.save(mrsEncounter);
     }
 

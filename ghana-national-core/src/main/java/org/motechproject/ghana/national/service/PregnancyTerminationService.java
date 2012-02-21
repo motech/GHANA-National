@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.service;
 
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
@@ -14,7 +13,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.motechproject.ghana.national.domain.Constants.*;
+import static org.motechproject.ghana.national.domain.Concept.*;
+import static org.motechproject.ghana.national.domain.EncounterType.PREG_TERM_VISIT;
+import static org.motechproject.ghana.national.tools.Utility.safePareInteger;
 
 @Service
 public class PregnancyTerminationService {
@@ -35,25 +36,25 @@ public class PregnancyTerminationService {
     public void terminatePregnancy(PregnancyTerminationRequest request) {
         MRSPatient mrsPatient = patientService.getPatientByMotechId(request.getMotechId()).getMrsPatient();
         Facility facility = facilityService.getFacilityByMotechId(request.getFacilityId());
-        encounterService.persistEncounter(mrsPatient, request.getStaffId(), facility.getMrsFacilityId(), Constants.ENCOUNTER_PREGTERMVISIT, request.getTerminationDate(), prepareObservations(request));
+        encounterService.persistEncounter(mrsPatient, request.getStaffId(), facility.getMrsFacilityId(), PREG_TERM_VISIT.value(), request.getTerminationDate(), prepareObservations(request));
         if (request.isDead())
             patientService.deceasePatient(request.getMotechId(), request.getTerminationDate(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
     }
 
     private Set<MRSObservation> prepareObservations(PregnancyTerminationRequest request) {
         Set<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
-        addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_PREGNANCY_STATUS, false);
-        addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_TERMINATION_TYPE, request.getTerminationType());
-        addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_TERMINATION_PROCEDURE, request.getTerminationProcedure());
-        addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_MATERNAL_DEATH, request.isDead());
-        addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_REFERRED, request.isReferred());
-        addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_COMMENTS, request.getComments());
-        addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_POST_ABORTION_FP_ACCEPTED, request.getPostAbortionFPAccepted());
-        addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_POST_ABORTION_FP_COUNSELING, request.getPostAbortionFPCounselling());
 
         for (String complication : request.getComplications()) {
-            addObservation(request.getTerminationDate(), mrsObservations, CONCEPT_TERMINATION_COMPLICATION, complication);
+            addObservation(request.getTerminationDate(), mrsObservations, TERMINATION_COMPLICATION.getName(), safePareInteger(complication));
         }
+        addObservation(request.getTerminationDate(), mrsObservations, PREGNANCY_STATUS.getName(), false);
+        addObservation(request.getTerminationDate(), mrsObservations, TERMINATION_TYPE.getName(), safePareInteger(request.getTerminationType()));
+        addObservation(request.getTerminationDate(), mrsObservations, TERMINATION_PROCEDURE.getName(), safePareInteger(request.getTerminationProcedure()));
+        addObservation(request.getTerminationDate(), mrsObservations, MATERNAL_DEATH.getName(), request.isDead());
+        addObservation(request.getTerminationDate(), mrsObservations, REFERRED.getName(), request.isReferred());
+        addObservation(request.getTerminationDate(), mrsObservations, COMMENTS.getName(), request.getComments());
+        addObservation(request.getTerminationDate(), mrsObservations, POST_ABORTION_FP_ACCEPTED.getName(), request.getPostAbortionFPAccepted());
+        addObservation(request.getTerminationDate(), mrsObservations, POST_ABORTION_FP_COUNSELING.getName(), request.getPostAbortionFPCounselling());
         return mrsObservations;
     }
 

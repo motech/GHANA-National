@@ -129,7 +129,7 @@
                             <includeGroupIds>org.motechproject</includeGroupIds>
                             <excludeTransitive>true</excludeTransitive>
                             <includes>
-                                openmrs-data/**, sms-http-template.json, osgi.properties, textMessages.properties, activemq.properties, quartz.properties,schedule_tracking.properties,schedules/**,programs/**, messageCampaign.properties
+                                openmrs-data/**, sms-http-template.json, osgi.properties, textMessages.properties, activemq.properties, quartz.properties,schedule_tracking.properties,schedules/**,programs/**,messageCampaign.properties
                             </includes>
                         </configuration>
                     </execution>
@@ -180,6 +180,7 @@
                             <goal>execute</goal>
                         </goals>
                         <configuration>
+                            <skip>${openmrs.skip}</skip>
                             <autocommit>true</autocommit>
                             <sqlCommand>
                                 drop database openmrs_test;
@@ -194,6 +195,7 @@
                             <goal>execute</goal>
                         </goals>
                         <configuration>
+                            <skip>${openmrs.skip}</skip>
                             <autocommit>true</autocommit>
                             <sqlCommand>
                                 create database openmrs_test default charset utf8;
@@ -300,6 +302,7 @@
                     <execution>
                         <phase>process-resources</phase>
                         <configuration>
+                            <skip>${openmrs.skip}</skip>
                             <changeLogFile>../build/sql/master.xml</changeLogFile>
                             <driver>${mysql.driver}</driver>
                             <url>${mysql.url}/${mysql.db}</url>

@@ -26,7 +26,9 @@ public class IdentifierGenerationServiceTest {
     public void setUp() {
         initMocks(this);
         identifierService = new IdentifierGenerationService();
-        ReflectionTestUtils.setField(identifierService, "url", "url");
+        ReflectionTestUtils.setField(identifierService, "port", "7000");
+        ReflectionTestUtils.setField(identifierService, "host", "host");
+        ReflectionTestUtils.setField(identifierService, "path", "path");
         ReflectionTestUtils.setField(identifierService, "httpClient", httpClient);
         ReflectionTestUtils.setField(identifierService, "user", "user");
         ReflectionTestUtils.setField(identifierService, "password", "password");
