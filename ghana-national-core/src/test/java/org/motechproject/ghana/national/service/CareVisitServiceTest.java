@@ -25,7 +25,7 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VA
 import static org.motechproject.ghana.national.domain.EncounterType.TT_VISIT;
 import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT2;
 
-public class TTVaccineServiceTest {
+public class CareVisitServiceTest {
     private CareVisitService careVisitServiceSpy;
 
     @Mock
