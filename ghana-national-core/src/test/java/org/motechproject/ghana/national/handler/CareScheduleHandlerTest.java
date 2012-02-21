@@ -12,6 +12,7 @@ import org.motechproject.ghana.national.service.TextMessageService;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.scheduletracking.api.domain.MilestoneAlert;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.motechproject.util.DateUtil;
@@ -46,7 +47,8 @@ public class CareScheduleHandlerTest {
 
         when(textMessageService.getSMS(eq(PREGNANCY_ALERT_SMS_KEY), Matchers.<Map<String,String>>any())).thenReturn(SMS.fromSMSText("Upcoming Pregnancy motechid, firstName lastName " + edd.toString()));
 
-        careScheduleHandler.handlePregnancyAlert(new MilestoneEvent(patientId, "Pregnancy", "Default", WindowName.due.name(), conceivedDate));
+        MilestoneAlert milestoneAlert = mock(MilestoneAlert.class);
+        careScheduleHandler.handlePregnancyAlert(new MilestoneEvent(patientId, "Pregnancy", milestoneAlert, WindowName.due.name(), conceivedDate));
 
         verify(textMessageService).sendSMS(facility, SMS.fromSMSText("Upcoming Pregnancy motechid, firstName lastName " + edd.toString()));
     }
