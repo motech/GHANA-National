@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
-import static org.motechproject.ghana.national.configuration.CareScheduleNames.ANC_IPT_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDate;
 

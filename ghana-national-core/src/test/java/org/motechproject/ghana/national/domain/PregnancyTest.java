@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.domain;
 
 import org.joda.time.LocalDate;
-import org.junit.Assert;
 import org.junit.Test;
 import org.motechproject.testing.utils.BaseUnitTest;
 
@@ -11,18 +10,6 @@ import static org.hamcrest.Matchers.is;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 
 public class PregnancyTest extends BaseUnitTest {
-
-    @Test
-    public void shouldCreateIfExpectedDateOfDeliveryIsWithin40Weeks() {
-        LocalDate todayAs1Jan2012 = new LocalDate(2012, 1, 1);
-        mockCurrentDate(todayAs1Jan2012);
-        basedOnDeliveryDate(todayAs1Jan2012.plusWeeks(40));
-        try {
-            basedOnDeliveryDate(todayAs1Jan2012.plusWeeks(40).plusDays(1));
-            Assert.fail("should throw exception");
-        } catch(IllegalArgumentException iae ) {
-        }
-    }
 
     @Test
     public void shouldFindCurrentWeekFromExpectedDeliveryDate() {

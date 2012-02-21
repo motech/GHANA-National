@@ -13,8 +13,6 @@ public class Pregnancy {
     private static final int NUMBER_OF_WEEKS_IN_PREGNANCY = 40;
 
     private Pregnancy(LocalDate dateOfDelivery) {
-        if (!isOnOrBefore(dateOfConception(dateOfDelivery), today()))
-            throw new IllegalArgumentException("expected dateOfDelivery is too much forward in future (within " + NUMBER_OF_WEEKS_IN_PREGNANCY + ")");
         this.dateOfDelivery = dateOfDelivery;
     }
 

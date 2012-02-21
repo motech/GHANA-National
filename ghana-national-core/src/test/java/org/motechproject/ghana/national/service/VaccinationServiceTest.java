@@ -24,8 +24,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.CareScheduleNames.ANC_IPT_VACCINE;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
 
 
 public class VaccinationServiceTest extends BaseUnitTest {
