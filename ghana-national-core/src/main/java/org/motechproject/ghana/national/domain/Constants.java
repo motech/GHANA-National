@@ -76,4 +76,5 @@ public class Constants {
     public static final String OTHER_CAUSE_OF_DEATH = "OTHER";
     public static final String PREGNANCY_TERMINATION = "Pregnancy Termination";
 
+    public static final String NOT_APPLICABLE = "NA";
 }

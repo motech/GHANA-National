@@ -73,7 +73,7 @@ public class ANCVisitService {
     }
 
     private Integer toInteger(String value) {
-        return (value != null) ? Integer.parseInt(value) : null;
+        return (value != null && !value.equals(Constants.NOT_APPLICABLE)) ? Integer.parseInt(value) : null;
     }
 
     private MRSConcept getConceptReactionResult(String reading) {
