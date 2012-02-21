@@ -2,7 +2,7 @@
 <xf:xforms xmlns:xf="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="13">
     <xf:model>
         <xf:instance id="mobileMidwifeRegistration">
-            <mobileMidwifeRegistration id="13" name="Mobile Midwife Registration">
+            <mobileMidwifeRegistration id="13" name="Reg-MM">
                 <staffId/>
                 <facilityId/>
                 <patientId/>

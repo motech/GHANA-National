@@ -9,12 +9,6 @@
                 "validator":"org.motechproject.ghana.national.validator.RegisterClientFormValidator"
             },
             {
-                "name":"mobileMidwife",
-                "fileName":"MobileMidwife.xml",
-                "bean":"org.motechproject.ghana.national.bean.MobileMidwifeForm",
-                "validator":"org.motechproject.ghana.national.validator.MobileMidwifeFormValidator"
-            },
-            {
                 "name":"registerANC",
                 "fileName":"RegisterANC.xml",
                 "bean":"org.motechproject.ghana.national.bean.RegisterANCForm",
@@ -25,6 +19,12 @@
                 "fileName":"RegisterCWC.xml",
                 "bean":"org.motechproject.ghana.national.bean.RegisterCWCForm",
                 "validator":"org.motechproject.ghana.national.validator.RegisterCWCFormValidator"
+            },
+            {
+                "name":"mobileMidwife",
+                "fileName":"MobileMidwife.xml",
+                "bean":"org.motechproject.ghana.national.bean.MobileMidwifeForm",
+                "validator":"org.motechproject.ghana.national.validator.MobileMidwifeFormValidator"
             },
             {
                 "name":"editPatient",
