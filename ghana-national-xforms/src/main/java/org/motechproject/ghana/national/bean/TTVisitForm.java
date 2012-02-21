@@ -37,39 +37,41 @@ public class TTVisitForm extends FormBean {
         return staffId;
     }
 
-    public void setStaffId(String staffId) {
-        this.staffId = staffId;
-    }
-
     public String getFacilityId() {
         return facilityId;
-    }
-
-    public void setFacilityId(String facilityId) {
-        this.facilityId = facilityId;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public String getMotechId() {
         return motechId;
-    }
-
-    public void setMotechId(String motechId) {
-        this.motechId = motechId;
     }
 
     public String getTtDose() {
         return ttDose;
     }
 
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
+    }
+
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setMotechId(String motechId) {
+        this.motechId = motechId;
+    }
+
     public void setTtDose(String ttDose) {
         this.ttDose = ttDose;
     }
+
+
 }

@@ -27,7 +27,7 @@ public class BaseScheduleServiceTest {
     @Mock
     private ScheduleTrackingService scheduleTrackingService;
 
-    private TTVaccineService ttVaccineService;
+    private CareVisitService careVisitService;
 
     private final String staffId = "staff id";
     private final String facilityId = "facility id";
@@ -38,14 +38,14 @@ public class BaseScheduleServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        ttVaccineService = new TTVaccineService(encounterService, scheduleTrackingService);
+        careVisitService = new CareVisitService(encounterService, scheduleTrackingService);
     }
 
     @Test
     public void shouldEnrollNewPatientsAndFulfillCurrentMilestone() {
 
         when(scheduleTrackingService.getEnrollment(patient.getMRSPatientId(), TT_VACCINATION_VISIT)).thenReturn(null);
-        ttVaccineService.received(TT1, patient, staffId, facilityId, vaccinationDate);
+        careVisitService.receivedTT(TT1, patient, staffId, facilityId, vaccinationDate);
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestArgCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(scheduleTrackingService).enroll(enrollmentRequestArgCaptor.capture());
@@ -63,7 +63,7 @@ public class BaseScheduleServiceTest {
         EnrollmentResponse enrollmentResponse = mock(EnrollmentResponse.class);
         when(scheduleTrackingService.getEnrollment(patient.getMRSPatientId(), TT_VACCINATION_VISIT)).thenReturn(enrollmentResponse);
 
-        ttVaccineService.received(TT1, patient, staffId, facilityId, vaccinationDate);
+        careVisitService.receivedTT(TT1, patient, staffId, facilityId, vaccinationDate);
 
         verify(scheduleTrackingService, never()).enroll(Matchers.<EnrollmentRequest>any());
         verify(scheduleTrackingService).fulfillCurrentMilestone(patient.getMRSPatientId(), TT_VACCINATION_VISIT);
