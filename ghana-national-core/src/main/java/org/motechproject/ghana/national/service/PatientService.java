@@ -26,17 +26,21 @@ import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
 
 @Service
 public class PatientService {
-    AllPatients allPatients;
-    AllEncounters allEncounters;
-    IdentifierGenerationService identifierGenerationService;
-    EncounterService encounterService;
+    private AllPatients allPatients;
+    private AllEncounters allEncounters;
+    private IdentifierGenerationService identifierGenerationService;
+    private EncounterService encounterService;
+    private CareVisitService careVisitService;
 
     @Autowired
-    public PatientService(AllPatients allPatients, AllEncounters allEncounters, IdentifierGenerationService identifierGenerationService, EncounterService encounterService) {
+    public PatientService(AllPatients allPatients, AllEncounters allEncounters, IdentifierGenerationService identifierGenerationService,
+                          EncounterService encounterService, CareVisitService careVisitService) {
+
         this.allPatients = allPatients;
         this.allEncounters = allEncounters;
         this.identifierGenerationService = identifierGenerationService;
         this.encounterService = encounterService;
+        this.careVisitService = careVisitService;
     }
 
     public Patient registerPatient(Patient patient, String staffId)
@@ -146,5 +150,6 @@ public class PatientService {
 
     public void deceasePatient(String patientMotechId, Date dateOfDeath, String causeOfDeath, String comment) {
         allPatients.deceasePatient(dateOfDeath, patientMotechId, (causeOfDeath.equals("OTHER") ? "OTHER NON-CODED" : "NONE"), comment);
+        careVisitService.unScheduleAll(getPatientByMotechId(patientMotechId));
     }
 }
