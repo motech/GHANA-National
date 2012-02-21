@@ -6,6 +6,7 @@ import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
+import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.PREG_TERM_VISIT;
 import static org.motechproject.ghana.national.tools.Utility.safePareInteger;
@@ -31,6 +33,9 @@ public class PregnancyTerminationService {
     @Autowired
     FacilityService facilityService;
 
+    @Autowired
+    private ScheduleTrackingService scheduleTrackingService;
+
     @LoginAsAdmin
     @ApiSession
     public void terminatePregnancy(PregnancyTerminationRequest request) {
@@ -39,6 +44,8 @@ public class PregnancyTerminationService {
         encounterService.persistEncounter(mrsPatient, request.getStaffId(), facility.getMrsFacilityId(), PREG_TERM_VISIT.value(), request.getTerminationDate(), prepareObservations(request));
         if (request.isDead())
             patientService.deceasePatient(request.getMotechId(), request.getTerminationDate(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
+
+        scheduleTrackingService.unenroll(request.getMotechId(), DELIVERY);
     }
 
     private Set<MRSObservation> prepareObservations(PregnancyTerminationRequest request) {

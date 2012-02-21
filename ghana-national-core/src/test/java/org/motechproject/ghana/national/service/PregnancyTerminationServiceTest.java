@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
@@ -19,8 +20,10 @@ import java.util.Set;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
 import static org.motechproject.ghana.national.domain.Concept.*;
-import static org.motechproject.ghana.national.domain.Constants.*;
+import static org.motechproject.ghana.national.domain.Constants.OTHER_CAUSE_OF_DEATH;
+import static org.motechproject.ghana.national.domain.Constants.PREGNANCY_TERMINATION;
 import static org.motechproject.ghana.national.domain.EncounterType.PREG_TERM_VISIT;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -33,6 +36,8 @@ public class PregnancyTerminationServiceTest {
 
     @Mock
     private FacilityService mockFacilityService;
+    @Mock
+    private ScheduleTrackingService mockScheduleTrackingService;
 
     @Before
     public void setUp() {
@@ -41,6 +46,7 @@ public class PregnancyTerminationServiceTest {
         ReflectionTestUtils.setField(pregnancyTerminationService, "patientService", mockPatientService);
         ReflectionTestUtils.setField(pregnancyTerminationService, "encounterService", mockEncounterService);
         ReflectionTestUtils.setField(pregnancyTerminationService, "facilityService", mockFacilityService);
+        ReflectionTestUtils.setField(pregnancyTerminationService, "scheduleTrackingService", mockScheduleTrackingService);
     }
 
     @Test
@@ -64,6 +70,7 @@ public class PregnancyTerminationServiceTest {
         pregnancyTerminationService.terminatePregnancy(request);
 
         verify(mockPatientService).deceasePatient(request.getMotechId(), request.getTerminationDate(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
+        verify(mockScheduleTrackingService).unenroll(motechId, DELIVERY);
     }
 
     @Test

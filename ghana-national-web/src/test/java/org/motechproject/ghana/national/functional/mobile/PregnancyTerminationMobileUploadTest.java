@@ -21,7 +21,7 @@ public class PregnancyTerminationMobileUploadTest extends LoggedInUserFunctional
 
 
     @Test
-    public void shouldUploadPatientTerminationFormSuccessfully() throws Exception {
+    public void shouldUploadPregnancyTerminationFormSuccessfully() throws Exception {
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String facilityId = facilityGenerator.createFacility(browser, homePage);
         final String motechId=patientGenerator.createPatientWithStaff(browser,homePage,staffId);
@@ -44,7 +44,6 @@ public class PregnancyTerminationMobileUploadTest extends LoggedInUserFunctional
             put("comments", "blah blah");
 
         }}));
-
 
         assertEquals(1,response.getSuccessCount());
     }
