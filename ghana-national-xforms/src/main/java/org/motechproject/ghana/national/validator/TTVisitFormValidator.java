@@ -4,6 +4,8 @@ import org.motechproject.ghana.national.bean.TTVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
+import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,8 @@ public class TTVisitFormValidator extends FormValidator<TTVisitForm> {
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
 
     @Override
+    @LoginAsAdmin
+    @ApiSession
     public List<FormError> validate(TTVisitForm formBean) {
         List<FormError> formErrors = super.validate(formBean);
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
