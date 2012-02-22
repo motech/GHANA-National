@@ -3,7 +3,7 @@ package org.motechproject.ghana.national.handler;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
-import org.motechproject.scheduletracking.api.events.constants.EventSubject;
+import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ public class ScheduleHandler {
     @Autowired
     private CareScheduleHandler careScheduleHandler;
 
-    @MotechListener(subjects = {EventSubject.MILESTONE_ALERT})
+    @MotechListener(subjects = {EventSubjects.MILESTONE_ALERT})
     public void handleAlert(MotechEvent motechEvent) {
         try {
             MilestoneEvent milestoneEvent = new MilestoneEvent(motechEvent);
