@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.vo.Pregnancy;
-import org.motechproject.model.Time;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
@@ -24,52 +23,33 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
     @Before
     public void setUp() {
         super.setUp();
-        preferredAlertTime = new Time(10, 10);
     }
 
     @Test
     public void verifyPregnancyScheduleWhenEDDIsVeryFarInFuture() throws SchedulerException {
         mockToday(newDate(2012, 3, 1));
-
         LocalDate expectedDeliveryDate = newDate(2012, 11, 10);
 
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
-
-        List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
-        assertAlerts(alerts, new ArrayList<Date>() {{
-            add(onDate(newDate(2012, 11, 10)));
-            add(onDate(newDate(2012, 11, 17)));
-            add(onDate(newDate(2012, 11, 24)));
-            add(onDate(newDate(2012, 12, 1)));
-        }});
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2012, 11, 10), newDate(2012, 11, 17), newDate(2012, 11, 24), newDate(2012, 12, 1)));
     }
 
     @Test
     public void verifyPregnancyScheduleWhenEDDIsUnderOneWeekFromToday() throws SchedulerException {
         mockToday(newDate(2012, 2, 1));
         LocalDate expectedDeliveryDate = newDate(2012, 2, 3);
-        enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
 
-        List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
-        assertAlerts(alerts, new ArrayList<Date>() {{
-            add(onDate(newDate(2012, 2, 3)));
-            add(onDate(newDate(2012, 2, 10)));
-            add(onDate(newDate(2012, 2, 17)));
-            add(onDate(newDate(2012, 2, 24)));
-        }});
+        enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2012, 2, 3), newDate(2012, 2, 10), newDate(2012, 2, 17), newDate(2012, 2, 24)));
     }
 
     @Test
     public void verifyPregnancyScheduleWhenEDDIsInThePast() throws SchedulerException {
         mockToday(newDate(2012, 2, 1));
         LocalDate expectedDeliveryDate = newDate(2012, 1, 23);
-        enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
 
-        List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
-        assertAlerts(alerts, new ArrayList<Date>() {{
-            add(onDate(newDate(2012, 2, 6)));
-            add(onDate(newDate(2012, 2, 13)));
-        }});
+        enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2012, 2, 6), newDate(2012, 2, 13)));
     }
 
     @Test
@@ -77,29 +57,16 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
         mockToday(newDate(2012, 2, 1));
         LocalDate expectedDeliveryDate = newDate(2012, 2, 12);
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
-
-        List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
-        assertAlerts(alerts, new ArrayList<Date>() {{
-            add(onDate(newDate(2012, 2, 12)));
-            add(onDate(newDate(2012, 2, 19)));
-            add(onDate(newDate(2012, 2, 26)));
-            add(onDate(newDate(2012, 3, 4)));
-        }});
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2012, 2, 12), newDate(2012, 2, 19), newDate(2012, 2, 26), newDate(2012, 3, 4)));
     }
 
     @Test
     public void verifyPregnancyScheduleWhenEDDIsOnToday() throws SchedulerException {
         mockToday(newDate(2012, 2, 1));
         LocalDate expectedDeliveryDate = newDate(2012, 2, 2);
-        enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
 
-        List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
-        assertAlerts(alerts, new ArrayList<Date>() {{
-            add(onDate(newDate(2012, 2, 2)));
-            add(onDate(newDate(2012, 2, 9)));
-            add(onDate(newDate(2012, 2, 16)));
-            add(onDate(newDate(2012, 2, 23)));
-        }});
+        enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2012, 2, 2), newDate(2012, 2, 9), newDate(2012, 2, 16), newDate(2012, 2, 23)));
     }
 
     @Test
