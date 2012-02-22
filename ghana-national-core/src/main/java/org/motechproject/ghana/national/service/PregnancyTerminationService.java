@@ -46,7 +46,7 @@ public class PregnancyTerminationService {
         if (request.isDead())
             patientService.deceasePatient(request.getMotechId(), request.getTerminationDate(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
 
-        scheduleTrackingService.unenroll(request.getMotechId(), DELIVERY);
+        scheduleTrackingService.unenroll(mrsPatient.getId(), DELIVERY);
     }
 
     private Set<MRSObservation> prepareObservations(PregnancyTerminationRequest request) {

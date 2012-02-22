@@ -60,6 +60,7 @@ public class PregnancyTerminationServiceTest {
 
         Patient mockPatient = mock(Patient.class);
         MRSPatient mockMRSPatient = mock(MRSPatient.class);
+        when(mockMRSPatient.getId()).thenReturn("mrsPatientId");
         when(mockPatientService.getPatientByMotechId(request.getMotechId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
 
@@ -70,7 +71,7 @@ public class PregnancyTerminationServiceTest {
         pregnancyTerminationService.terminatePregnancy(request);
 
         verify(mockPatientService).deceasePatient(request.getMotechId(), request.getTerminationDate(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
-        verify(mockScheduleTrackingService).unenroll(motechId, DELIVERY);
+        verify(mockScheduleTrackingService).unenroll(mockMRSPatient.getId(), DELIVERY);
     }
 
     @Test
