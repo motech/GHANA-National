@@ -106,7 +106,7 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         for (SimpleTrigger alert : alerts) {
             Date nextFireTime = alert.getNextFireTime();
             actualAlertTimes.add(nextFireTime);
-            for (int i = 1; i < alert.getRepeatCount(); i++) {
+            for (int i = 1; i <= alert.getRepeatCount(); i++) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime((Date)nextFireTime.clone());
                 calendar.add(Calendar.DAY_OF_MONTH, toDays(i * alert.getRepeatInterval()));

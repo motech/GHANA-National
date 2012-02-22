@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.configuration;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.vo.Pregnancy;
@@ -21,7 +20,7 @@ import static org.motechproject.util.DateUtil.newDate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class CareSchedulesTest extends BaseScheduleTrackingTest {
+public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
     @Before
     public void setUp() {
         super.setUp();
@@ -57,12 +56,10 @@ public class CareSchedulesTest extends BaseScheduleTrackingTest {
             add(onDate(newDate(2012, 2, 10)));
             add(onDate(newDate(2012, 2, 17)));
             add(onDate(newDate(2012, 2, 24)));
-
         }});
     }
 
     @Test
-    @Ignore("Waiting for bug fix from platform")
     public void verifyPregnancyScheduleWhenEDDIsInThePast() throws SchedulerException {
         mockToday(newDate(2012, 2, 1));
         LocalDate expectedDeliveryDate = newDate(2012, 1, 23);
@@ -120,5 +117,4 @@ public class CareSchedulesTest extends BaseScheduleTrackingTest {
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest("123", ScheduleNames.DELIVERY, preferredAlertTime, conceptionDate);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
-
 }

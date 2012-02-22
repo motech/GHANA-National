@@ -20,4 +20,8 @@ public enum TTVaccineDosage {
     public String getScheduleMilestoneName(){
         return name();
     }
+
+    public static TTVaccineDosage byValue(int value){
+        return valueOf("TT" + String.valueOf(value));
+    }
 }

@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
@@ -41,11 +42,13 @@ public class PatientServiceTest {
     private IdentifierGenerationService mockIdentifierGenerationService;
     @Mock
     private EncounterService mockEncounterService;
+    @Mock
+    private CareVisitService mockCareVisitService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(mockAllPatients, mockAllEncounters, mockIdentifierGenerationService, mockEncounterService);
+        patientService = new PatientService(mockAllPatients, mockAllEncounters, mockIdentifierGenerationService, mockEncounterService, mockCareVisitService);
     }
 
     @Test
@@ -318,17 +321,17 @@ public class PatientServiceTest {
     public void shouldDeceasePatient() {
         Date dateOfDeath = DateUtil.now().minusDays(2).toDate();
         String patientMotechId = "patientMotechId";
-        MRSPerson person = new MRSPerson();
-        person.dead(false);
-        String mrsPatientId = "mrsPatientId";
-        Patient patient = new Patient(new MRSPatient(mrsPatientId, patientMotechId, person, new MRSFacility("id")));
-
-        when(mockAllPatients.patientByMotechId(patientMotechId)).thenReturn(patient);
         String causeOfDeath = "OTHER";
         String comment = null;
+        final Patient patient = new Patient(new MRSPatient(""));
+        when(mockAllPatients.patientByMotechId(patientMotechId)).thenReturn(patient);
+        when(mockAllPatients.getMotherRelationship(Matchers.<MRSPerson>any())).thenReturn(null);
+
         patientService.deceasePatient(patientMotechId, dateOfDeath, causeOfDeath, comment);
 
         verify(mockAllPatients).deceasePatient(dateOfDeath, patientMotechId, "OTHER NON-CODED", comment);
+        verify(mockCareVisitService).unScheduleAll(patient);
+
     }
 
 }
