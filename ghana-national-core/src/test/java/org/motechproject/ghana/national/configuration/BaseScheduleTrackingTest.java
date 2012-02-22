@@ -32,9 +32,11 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TTVaccine;
 
 public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
 
+    protected static final String PATIENT_ID = "Patient id";
     @Autowired
     private AllTrackedSchedules allTrackedSchedules;
 
@@ -54,15 +56,9 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     private Pattern ALERT_ORDER_INDEX_REGEX = Pattern.compile("^.*\\.(.*?)-repeat$");
     protected Time preferredAlertTime;
 
-    public static void main(String[] args) {
-        Pattern p = Pattern.compile("");
-        Matcher matcher = p.matcher("default.org.motechproject.scheduletracking.api.milestone.alert-acebbffbbd64cc334bd5e55b48003fd4.10-repeat");
-        matcher.find();
-        System.out.println(matcher.group(1));
-
-    }
     @Before
     public void setUp() {
+        preferredAlertTime = new Time(10, 10);
         EnrollmentAlertService enrollmentAlertService = new EnrollmentAlertService(allTrackedSchedules, motechSchedulerService);
         EnrollmentDefaultmentService enrollmentDefaultmentService = new EnrollmentDefaultmentService(allTrackedSchedules, motechSchedulerService);
         EnrollmentService enrollmentService = new EnrollmentService(allTrackedSchedules, allEnrollments, enrollmentAlertService, enrollmentDefaultmentService);
@@ -149,5 +145,18 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     protected LocalDate mockToday(LocalDate today) {
         mockCurrentDate(today);
         return today;
+    }
+
+    protected ArrayList<Date> dates(LocalDate... dates) {
+        ArrayList<Date> dateList = new ArrayList<Date>();
+        for (LocalDate localDate : dates) {
+            dateList.add(onDate(localDate));
+        }
+        return dateList;
+    }
+
+    protected void fulfillCurrentMilestone(LocalDate date) {
+        mockToday(date);
+        scheduleTrackingService.fulfillCurrentMilestone(PATIENT_ID, TTVaccine);
     }
 }
