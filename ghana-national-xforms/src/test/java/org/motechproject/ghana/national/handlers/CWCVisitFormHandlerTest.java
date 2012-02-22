@@ -6,7 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.CWCVisitForm;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.service.CWCVisitService;
+import org.motechproject.ghana.national.service.ChildVisitService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.model.MotechEvent;
@@ -25,7 +25,7 @@ public class CWCVisitFormHandlerTest {
 
     private CWCVisitFormHandler handler;
     @Mock
-    private CWCVisitService cwcVisitService;
+    private ChildVisitService childVisitService;
     @Mock
     private FacilityService mockFacilityService;
 
@@ -33,7 +33,7 @@ public class CWCVisitFormHandlerTest {
     public void setUp() {
         initMocks(this);
         handler = new CWCVisitFormHandler();
-        ReflectionTestUtils.setField(handler, "visitService", cwcVisitService);
+        ReflectionTestUtils.setField(handler, "visitService", childVisitService);
         ReflectionTestUtils.setField(handler, "facilityService", mockFacilityService);
 
     }
@@ -68,7 +68,7 @@ public class CWCVisitFormHandlerTest {
         handler.handleFormEvent(motechEvent);
 
         ArgumentCaptor<CWCVisit> captor = ArgumentCaptor.forClass(CWCVisit.class);
-        verify(cwcVisitService).registerCWCVisit(captor.capture());
+        verify(childVisitService).registerCWCVisit(captor.capture());
         CWCVisit actualCWCVisit = captor.getValue();
         assertEquals(cwcVisitForm.getStaffId(), actualCWCVisit.getStaffId());
         assertEquals(facilityId, actualCWCVisit.getFacilityId());

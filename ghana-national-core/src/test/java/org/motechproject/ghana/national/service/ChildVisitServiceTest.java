@@ -24,8 +24,8 @@ import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.CWC_VISIT;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
-public class CWCVisitServiceTest extends BaseUnitTest {
-    private CWCVisitService service;
+public class ChildVisitServiceTest extends BaseUnitTest {
+    private ChildVisitService service;
     @Mock
     EncounterService encounterService;
     @Mock
@@ -33,7 +33,7 @@ public class CWCVisitServiceTest extends BaseUnitTest {
 
     @Before
     public void setUp() {
-        service = new CWCVisitService();
+        service = new ChildVisitService();
         initMocks(this);
         ReflectionTestUtils.setField(service, "encounterService", encounterService);
         ReflectionTestUtils.setField(service, "patientService", patientService);
@@ -42,7 +42,7 @@ public class CWCVisitServiceTest extends BaseUnitTest {
     @Test
     public void shouldCreateEncounterForCWCVisitWithAllInfo() {
         CWCVisit CWCVisit = createTestCWCVisit(new Date());
-        CWCVisitService CWCVisitServiceSpy = spy(service);
+        ChildVisitService ChildVisitServiceSpy = spy(service);
 
         Patient mockPatient = mock(Patient.class);
         MRSPatient mockMRSPatient = mock(MRSPatient.class);
@@ -55,9 +55,9 @@ public class CWCVisitServiceTest extends BaseUnitTest {
         Set<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         mrsObservations.add(new MRSObservation<String>("1", new Date(), "MRSConcept-name", "MRSConcept-value"));
 
-        doReturn(mrsObservations).when(CWCVisitServiceSpy).createMRSObservations(CWCVisit);
+        doReturn(mrsObservations).when(ChildVisitServiceSpy).createMRSObservations(CWCVisit);
 
-        CWCVisitServiceSpy.registerCWCVisit(CWCVisit);
+        ChildVisitServiceSpy.registerCWCVisit(CWCVisit);
 
         ArgumentCaptor<MRSPatient> mrsPatientArgumentCaptor = ArgumentCaptor.forClass(MRSPatient.class);
         ArgumentCaptor<String> facilityIdArgumentCaptor = ArgumentCaptor.forClass(String.class);

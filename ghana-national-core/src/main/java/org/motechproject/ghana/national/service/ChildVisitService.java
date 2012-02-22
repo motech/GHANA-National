@@ -18,7 +18,7 @@ import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.CWC_VISIT;
 
 @Service
-public class CWCVisitService {
+public class ChildVisitService {
 
     @Autowired
     EncounterService encounterService;

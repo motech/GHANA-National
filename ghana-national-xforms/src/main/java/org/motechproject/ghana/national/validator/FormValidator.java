@@ -44,6 +44,24 @@ public class FormValidator {
         return new ArrayList<FormError>();
     }
 
+    public List<FormError> validateIfPatientIsAliveAndIsAChild(String motechId, final String patientIdAttribute) {
+        final Patient patient = patientService.getPatientByMotechId(motechId);
+        if (patient == null) {
+            return new ArrayList<FormError>() {{
+                add(new FormError(patientIdAttribute, NOT_FOUND));
+            }};
+        } else if (patient.getMrsPatient().getPerson().isDead()) {
+            return new ArrayList<FormError>() {{
+                add(new FormError(patientIdAttribute, IS_NOT_ALIVE));
+            }};
+        } else if (!isChild(patient)) {
+            return new ArrayList<FormError>() {{
+                add(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_MORE_ERR_MSG));
+            }};
+        }
+        return new ArrayList<FormError>();
+    }
+
     public List<FormError> validateIfFacilityExists(String facilityId) {
         if (facilityService.getFacilityByMotechId(facilityId) == null) {
             return new ArrayList<FormError>() {{
@@ -73,7 +91,8 @@ public class FormValidator {
     }
 
     public List<FormError> validateIfPatientIsAChild(String motechId) {
-        if (isNotAChild(motechId)) {
+        Patient patient = patientService.getPatientByMotechId(motechId);
+        if (!isChild(patient)) {
             return new ArrayList<FormError>() {{
                 add(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_MORE_ERR_MSG));
             }};
@@ -82,7 +101,8 @@ public class FormValidator {
     }
 
     public List<FormError> validateIfPatientIsNotAChild(String motechId) {
-        if (!isNotAChild(motechId)) {
+        Patient patient = patientService.getPatientByMotechId(motechId);
+        if (isChild(patient)) {
             return new ArrayList<FormError>() {{
                 add(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.AGE_LESS_ERR_MSG));
             }};
@@ -90,11 +110,11 @@ public class FormValidator {
         return new ArrayList<FormError>();
     }
 
-    private boolean isNotAChild(String motechId) {
-        return isAgeGreaterThan(motechId, 5);
-    }
-
     protected boolean isAgeGreaterThan(String motechId, int ageInYears) {
         return motechId != null && patientService.getAgeOfPatientByMotechId(motechId) >= ageInYears;
+    }
+
+    private boolean isChild(Patient patient) {
+        return patient.getMrsPatient().getPerson().getAge() <= 5;
     }
 }

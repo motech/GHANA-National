@@ -31,8 +31,7 @@ public class CwcVisitFormValidator extends FormValidator<CWCVisitForm> {
         List<FormError> errors = new ArrayList<FormError>();
         errors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         errors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        errors.addAll(formValidator.validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
-        errors.addAll(formValidator.validateIfPatientIsFemale(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
+        errors.addAll(formValidator.validateIfPatientIsAliveAndIsAChild(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
         errors.addAll(validateIfPatientAlreadyEnrolledForCWC(formBean.getMotechId(), CWC_REG_VISIT.value()));
         return errors;
     }

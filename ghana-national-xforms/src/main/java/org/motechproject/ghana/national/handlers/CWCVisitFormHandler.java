@@ -3,7 +3,7 @@ package org.motechproject.ghana.national.handlers;
 import org.motechproject.ghana.national.bean.CWCVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.service.CWCVisitService;
+import org.motechproject.ghana.national.service.ChildVisitService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
@@ -21,7 +21,7 @@ public class CWCVisitFormHandler implements FormPublishHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    CWCVisitService visitService;
+    ChildVisitService visitService;
 
     @Autowired
     FacilityService facilityService;

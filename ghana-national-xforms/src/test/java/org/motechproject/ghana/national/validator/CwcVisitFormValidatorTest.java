@@ -50,8 +50,7 @@ public class CwcVisitFormValidatorTest {
 
         verify(formValidator).validateIfStaffExists(staffId);
         verify(formValidator).validateIfFacilityExists(facilityId);
-        verify(formValidator).validateIfPatientExistsAndIsAlive(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
-        verify(formValidator).validateIfPatientIsFemale(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
+        verify(formValidator).validateIfPatientIsAliveAndIsAChild(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
         verify(mockAllEncounters).fetchLatest(motechId, CWC_REG_VISIT.value());
     }
 
