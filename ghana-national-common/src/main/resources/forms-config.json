@@ -63,6 +63,12 @@
                 "validator":"org.motechproject.ghana.national.validator.AncVisitFormValidator"
             },
             {
+                "name":"cwcVisit",
+                "fileName":"CWCVisit.xml",
+                "bean":"org.motechproject.ghana.national.bean.CWCVisitForm",
+                "validator":"org.motechproject.ghana.national.validator.CwcVisitFormValidator"
+            },
+            {
                 "name":"TTVisit",
                 "fileName":"TTVisit.xml",
                 "bean":"org.motechproject.ghana.national.bean.TTVisitForm",
