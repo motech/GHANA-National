@@ -12,18 +12,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.motechproject.ghana.national.domain.Concept.*;
-import static org.motechproject.ghana.national.domain.Concept.HIV_POST_TEST_COUNSELING;
-import static org.motechproject.ghana.national.domain.Concept.REFERRED;
 import static org.motechproject.ghana.national.domain.EncounterType.ANC_VISIT;
 
 public class MotherVisitEncounterFactory extends BaseObservationFactory {
 
-    public Encounter createEncounter(ANCVisit ancVisit) {
+
+    public Encounter createEncounter(ANCVisit ancVisit, Set<MRSObservation> mrsObservations) {
         return new Encounter(ancVisit.getPatient().getMrsPatient(), ancVisit.getStaff(),
-                ancVisit.getFacility(), ANC_VISIT, ancVisit.getDate(), createMRSObservations(ancVisit));
+                ancVisit.getFacility(), ANC_VISIT, ancVisit.getDate(), mrsObservations);
     }
 
-    Set<MRSObservation> createMRSObservations(ANCVisit ancVisit) {
+    public Set<MRSObservation> createMRSObservations(ANCVisit ancVisit) {
         HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         Date registrationDate = ancVisit.getDate() == null ? DateUtil.today().toDate() : ancVisit.getDate();
 
@@ -32,7 +31,6 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, registrationDate, COMMENTS.getName(), ancVisit.getComments());
         setObservation(mrsObservations, registrationDate, DEWORMER.getName(), toBoolean(ancVisit.getDewormer()));
         setObservation(mrsObservations, registrationDate, DIASTOLIC_BLOOD_PRESSURE.getName(), ancVisit.getBpDiastolic());
-        setObservation(mrsObservations, registrationDate, EDD.getName(), ancVisit.getEstDeliveryDate());
         setObservation(mrsObservations, registrationDate, FHR.getName(), ancVisit.getFhr());
         setObservation(mrsObservations, registrationDate, FHT.getName(), ancVisit.getFht());
         setObservation(mrsObservations, registrationDate, HEMOGLOBIN.getName(), ancVisit.getHemoglobin());

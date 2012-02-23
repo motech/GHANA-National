@@ -13,13 +13,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.mockito.Mockito.mock;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 public class MotherVisitEncounterFactoryTest {
     private MotherVisitEncounterFactory factory;
-
     @Before
     public void setUp() {
         factory = new MotherVisitEncounterFactory();
@@ -27,12 +25,7 @@ public class MotherVisitEncounterFactoryTest {
 
     @Test
     public void shouldCreateEncounterForAncVisit() {
-        Patient patient = mock(Patient.class);
-        String mrsFacilityId = "mrsFacilityId";
-        Facility facility = new Facility(new MRSFacility(mrsFacilityId));
-        facility.mrsFacilityId(mrsFacilityId);
-        MRSUser staff = new MRSUser();
-        ANCVisit ancVisit = createTestANCVisit(staff, facility, patient);
+        ANCVisit ancVisit = createTestANCVisit();
         MRSConcept conceptPositive = new MRSConcept(POSITIVE.getName());
         MRSConcept conceptNegative = new MRSConcept(NEGATIVE.getName());
         MRSConcept conceptNonReactive = new MRSConcept(NON_REACTIVE.getName());
@@ -45,7 +38,6 @@ public class MotherVisitEncounterFactoryTest {
         expectedObservations.add(new MRSObservation<String>(today, SERIAL_NUMBER.getName(), "4ds65"));
         expectedObservations.add(new MRSObservation<Integer>(today, VISIT_NUMBER.getName(), 4));
         expectedObservations.add(new MRSObservation<Boolean>(today, MALE_INVOLVEMENT.getName(), false));
-        expectedObservations.add(new MRSObservation<Date>(today, EDD.getName(), DateUtil.newDate(2012, 8, 8).toDate()));
         expectedObservations.add(new MRSObservation<String>(today, COMMENTS.getName(), "comments"));
         expectedObservations.add(new MRSObservation<Integer>(today, ANC_PNC_LOCATION.getName(), 34));
         expectedObservations.add(new MRSObservation<Date>(today, NEXT_ANC_DATE.getName(), DateUtil.newDate(2012, 2, 20).toDate()));
@@ -76,7 +68,15 @@ public class MotherVisitEncounterFactoryTest {
                 ReflectionComparatorMode.LENIENT_ORDER);
     }
 
-    private ANCVisit createTestANCVisit(MRSUser staff, Facility facility, Patient patient) {
+    private ANCVisit createTestANCVisit() {
+        String mrsFacilityId = "mrsFacilityId";
+        MRSFacility mrsFacility = new MRSFacility(mrsFacilityId);
+        Facility facility = new Facility(mrsFacility);
+        Patient patient = new Patient(new MRSPatient("motechId", new MRSPerson(), mrsFacility));
+        facility.mrsFacilityId(mrsFacilityId);
+        MRSUser staff = new MRSUser();
+        staff.id("staffId");
+
         return new ANCVisit().staff(staff).facility(facility).patient(patient).date(new Date()).serialNumber("4ds65")
                 .visitNumber("4").estDeliveryDate(DateUtil.newDate(2012, 8, 8).toDate())
                 .bpDiastolic(67).bpSystolic(10).weight(65.67d).comments("comments").ttdose("4").iptdose("5")

@@ -7,6 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.EnrollmentResponse;
@@ -24,11 +25,14 @@ import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT1;
 public class BaseScheduleServiceTest {
     @Mock
     private EncounterService encounterService;
+
+    @Mock
+    private AllObservations mockAllObservations;
+
     @Mock
     private ScheduleTrackingService scheduleTrackingService;
 
     private MotherVisitService motherVisitService;
-
     private final String staffId = "staff id";
     private final String facilityId = "facility id";
     private final Patient patient = new Patient(new MRSPatient("patient id", null, null));
@@ -38,7 +42,7 @@ public class BaseScheduleServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        motherVisitService = new MotherVisitService(encounterService, scheduleTrackingService);
+        motherVisitService = new MotherVisitService(encounterService, scheduleTrackingService, mockAllObservations);
     }
 
     @Test
