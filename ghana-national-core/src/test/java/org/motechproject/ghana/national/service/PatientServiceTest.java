@@ -43,12 +43,12 @@ public class PatientServiceTest {
     @Mock
     private EncounterService mockEncounterService;
     @Mock
-    private CareVisitService mockCareVisitService;
+    private MotherVisitService mockMotherVisitService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(mockAllPatients, mockAllEncounters, mockIdentifierGenerationService, mockEncounterService, mockCareVisitService);
+        patientService = new PatientService(mockAllPatients, mockAllEncounters, mockIdentifierGenerationService, mockEncounterService, mockMotherVisitService);
     }
 
     @Test
@@ -330,7 +330,7 @@ public class PatientServiceTest {
         patientService.deceasePatient(patientMotechId, dateOfDeath, causeOfDeath, comment);
 
         verify(mockAllPatients).deceasePatient(dateOfDeath, patientMotechId, "OTHER NON-CODED", comment);
-        verify(mockCareVisitService).unScheduleAll(patient);
+        verify(mockMotherVisitService).unScheduleAll(patient);
 
     }
 
