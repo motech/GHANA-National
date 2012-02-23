@@ -6,7 +6,6 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Encounter;
 import org.motechproject.ghana.national.domain.Facility;
@@ -37,7 +36,6 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VA
 import static org.motechproject.ghana.national.domain.Concept.EDD;
 import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
 import static org.motechproject.ghana.national.domain.EncounterType.ANC_VISIT;
-import static org.motechproject.ghana.national.domain.EncounterType.TT_VISIT;
 import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT2;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -61,17 +59,15 @@ public class MotherVisitServiceTest {
     }
 
     @Test
-    public void shouldCreateEncounter_EnrollPatientForCurrentScheduleAndCreateSchedulesForTheNext(){
-        String staffId = "staff id";
-        String facilityId = "facility id";
+    public void shouldCreateEncounter_EnrollPatientForCurrentScheduleAndCreateSchedulesForTheNext() {
+        MRSUser staff = new MRSUser();
+        Facility facility = new Facility();
         final String patientId = "patient id";
         final Patient patient = new Patient(new MRSPatient(patientId, null, null));
         final LocalDate vaccinationDate = DateUtil.newDate(2000, 2, 1);
 
         when(scheduleTrackingService.getEnrollment(patientId, TT_VACCINATION_VISIT)).thenReturn(null);
-        motherVisitServiceSpy.receivedTT(TT2, patient, staffId, facilityId, vaccinationDate);
-
-        verify(encounterService).persistEncounter(eq(patient.getMrsPatient()), eq(staffId), eq(facilityId), eq(TT_VISIT.value()), eq(vaccinationDate.toDate()), Matchers.<Set<MRSObservation>>any());
+        motherVisitServiceSpy.receivedTT(TT2, patient, staff, facility, vaccinationDate);
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(motherVisitServiceSpy).scheduleAlerts(eq(patient), enrollmentRequestCaptor.capture());
@@ -79,7 +75,7 @@ public class MotherVisitServiceTest {
         EnrollmentRequest enrollmentRequest = enrollmentRequestCaptor.getValue();
         assertThat(enrollmentRequest.getScheduleName(), is(equalTo(TT_VACCINATION_VISIT)));
         assertThat(enrollmentRequest.getStartingMilestoneName(), is(equalTo(TT2.name())));
-        assertThat(enrollmentRequest.getReferenceDate(),is(equalTo(vaccinationDate)));
+        assertThat(enrollmentRequest.getReferenceDate(), is(equalTo(vaccinationDate)));
     }
 
     @Test
@@ -115,7 +111,7 @@ public class MotherVisitServiceTest {
         ANCVisit ancVisit = createTestANCVisit();
         MRSObservation edd = mock(MRSObservation.class);
         MRSObservation activePregnancy = mock(MRSObservation.class);
-        when(edd.getValue()).thenReturn(DateUtil.newDate(2010, 12,11).toDate());
+        when(edd.getValue()).thenReturn(DateUtil.newDate(2010, 12, 11).toDate());
         String motechId = ancVisit.getPatient().getMotechId();
 
         when(mockAllObservations.findObservation(motechId, PREGNANCY.getName())).thenReturn(activePregnancy);
@@ -134,7 +130,7 @@ public class MotherVisitServiceTest {
         ancVisit.estDeliveryDate(null);
         MRSObservation edd = mock(MRSObservation.class);
         MRSObservation activePregnancy = mock(MRSObservation.class);
-        when(edd.getValue()).thenReturn(DateUtil.newDate(2010, 12,11).toDate());
+        when(edd.getValue()).thenReturn(DateUtil.newDate(2010, 12, 11).toDate());
         String motechId = ancVisit.getPatient().getMotechId();
         when(mockAllObservations.findObservation(motechId, PREGNANCY.getName())).thenReturn(activePregnancy);
         when(mockAllObservations.findObservation(motechId, EDD.getName())).thenReturn(edd);
@@ -163,7 +159,7 @@ public class MotherVisitServiceTest {
     }
 
     @Test
-    public void shouldUnScheduleAllAlerts(){
+    public void shouldUnScheduleAllAlerts() {
         String patientId = "patient_id";
         motherVisitServiceSpy.unScheduleAll(new Patient(new MRSPatient(patientId)));
         verify(scheduleTrackingService).unenroll(patientId, TT_VACCINATION_VISIT);
@@ -194,7 +190,7 @@ public class MotherVisitServiceTest {
         staff.id("staffId");
         return createTestANCVisit(staff, facility, mockPatient);
     }
-    
+
     private ANCVisit createTestANCVisit(MRSUser staff, Facility facility, Patient patient) {
         return new ANCVisit().staff(staff).facility(facility).patient(patient).date(new Date()).serialNumber("4ds65")
                 .visitNumber("4").estDeliveryDate(DateUtil.newDate(2012, 8, 8).toDate())

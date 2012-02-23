@@ -3,9 +3,7 @@ package org.motechproject.ghana.national.service;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientCare;
-import org.motechproject.ghana.national.domain.TTVaccineDosage;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.factory.MotherVisitEncounterFactory;
 import org.motechproject.ghana.national.factory.TTVaccinationVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
@@ -14,6 +12,7 @@ import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.motechproject.util.DateUtil;
@@ -95,8 +94,10 @@ public class MotherVisitService extends BaseScheduleService {
         scheduleAlerts(patient, enrollmentRequest);
     }
 
-    public void receivedTT(final TTVaccineDosage dosage, Patient patient, String staffId, String facilityId, final LocalDate vaccinationDate) {
-        new TTVaccinationVisitEncounterFactory().createEncounterForVisit(encounterService, dosage, patient, staffId, facilityId, vaccinationDate);
+    public void receivedTT(final TTVaccineDosage dosage, Patient patient, MRSUser staff, Facility facility, final LocalDate vaccinationDate) {
+        TTVisit ttVisit = new TTVisit().dosage(dosage).facility(facility).patient(patient).staff(staff).date(vaccinationDate.toDate());
+        Encounter encounter = new TTVaccinationVisitEncounterFactory().createEncounterForVisit(ttVisit);
+        encounterService.persistEncounter(encounter);
         final EnrollmentRequest enrollmentRequest = new TTVaccinationEnrollmentMapper().map(patient, vaccinationDate, dosage.getScheduleMilestoneName());
         scheduleAlerts(patient, enrollmentRequest);
     }

@@ -10,8 +10,10 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.service.MotherVisitService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
@@ -27,13 +29,15 @@ public class TTVisitFormHandlerTest {
     @Mock
     private PatientService patientService;
     @Mock
+    private StaffService staffService;
+    @Mock
     private FacilityService facilityService;
     private TTVisitFormHandler ttVisitFormHandler;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        ttVisitFormHandler = new TTVisitFormHandler(ttVaccinationService, patientService, facilityService);
+        ttVisitFormHandler = new TTVisitFormHandler(ttVaccinationService, patientService, facilityService, staffService);
     }
 
     @Test
@@ -45,13 +49,15 @@ public class TTVisitFormHandlerTest {
         }});
 
         Patient patient = mock(Patient.class);
+        MRSUser staff = new MRSUser();
         when(patientService.getPatientByMotechId(ttVisitForm.getMotechId())).thenReturn(patient);
+        when(staffService.getUserByEmailIdOrMotechId(ttVisitForm.getStaffId())).thenReturn(staff);
 
         Facility facility = new Facility(new MRSFacility("mrs facility id"));
         when(facilityService.getFacilityByMotechId(ttVisitForm.getFacilityId())).thenReturn(facility);
         ttVisitFormHandler.handleFormEvent(eventMock);
 
-        verify(ttVaccinationService).receivedTT(TT1, patient, ttVisitForm.getStaffId(), facility.getMrsFacilityId(), DateUtil.newDate(ttVisitForm.getDate()));
+        verify(ttVaccinationService).receivedTT(TT1, patient, staff, facility, DateUtil.newDate(ttVisitForm.getDate()));
     }
 
     private TTVisitForm setupTTVisitForm() {

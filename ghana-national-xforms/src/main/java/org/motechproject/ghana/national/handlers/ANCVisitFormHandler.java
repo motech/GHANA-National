@@ -1,10 +1,15 @@
 package org.motechproject.ghana.national.handlers;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.bean.ANCVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.service.*;
+import org.motechproject.ghana.national.domain.TTVaccineDosage;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MotherVisitService;
+import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
@@ -12,6 +17,7 @@ import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
+import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +44,12 @@ public class ANCVisitFormHandler implements FormPublishHandler {
     public void handleFormEvent(MotechEvent event) {
         try {
             ANCVisitForm form = (ANCVisitForm) event.getParameters().get(Constants.FORM_BEAN);
-            visitService.registerANCVisit(createANCVisit(form));
+            ANCVisit ancVisit = createANCVisit(form);
+            visitService.registerANCVisit(ancVisit);
+            if (StringUtils.isEmpty(ancVisit.getTtdose())) {
+                visitService.receivedTT(TTVaccineDosage.byValue(Integer.parseInt(ancVisit.getTtdose())), 
+                        ancVisit.getPatient(), ancVisit.getStaff(), ancVisit.getFacility(), DateUtil.today());
+            }
         } catch (Exception e) {
             log.error("Encountered error while saving ANC visit details", e);
         }

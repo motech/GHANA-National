@@ -1,9 +1,7 @@
 package org.motechproject.ghana.national.factory;
 
-import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.TTVaccineDosage;
-import org.motechproject.ghana.national.service.EncounterService;
+import org.motechproject.ghana.national.domain.Encounter;
+import org.motechproject.ghana.national.domain.TTVisit;
 import org.motechproject.mrs.model.MRSObservation;
 
 import java.util.Date;
@@ -15,12 +13,11 @@ import static org.motechproject.ghana.national.domain.EncounterType.TT_VISIT;
 
 public class TTVaccinationVisitEncounterFactory {
 
-    // TODO: do not pass encounter service to this method, just return an Encounter object from this method and call encounter service on the encounter object in caller of this method
-    public void createEncounterForVisit(EncounterService encounterService, final TTVaccineDosage dosage, Patient patient, String staffId, String facilityId, LocalDate dateOfObservation) {
-        final Date observationDate = dateOfObservation.toDate();
-        Set<MRSObservation> observation = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Double>(observationDate, TETANUS_TOXOID_DOSE.getName(), dosage.getDosageAsDouble()));
+    public Encounter createEncounterForVisit(final TTVisit ttVisit) {
+        final Date observationDate = ttVisit.getDate();
+        Set<MRSObservation> observations = new HashSet<MRSObservation>() {{
+            add(new MRSObservation<Double>(observationDate, TETANUS_TOXOID_DOSE.getName(), ttVisit.getDosage().getDosageAsDouble()));
         }};
-        encounterService.persistEncounter(patient.getMrsPatient(), staffId, facilityId, TT_VISIT.value(), observationDate, observation);
+        return new Encounter(ttVisit.getPatient().getMrsPatient(), ttVisit.getStaff(), ttVisit.getFacility(), TT_VISIT, observationDate, observations);
     }
 }
