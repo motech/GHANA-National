@@ -27,7 +27,6 @@ import java.util.List;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
 import static org.mockito.Mockito.never;
@@ -35,7 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class CWCRegistrationFormHandlerTest {
+public class RegisterCWCFormHandlerTest {
 
     @Mock
     private CareService careService;
@@ -45,15 +44,15 @@ public class CWCRegistrationFormHandlerTest {
     @Mock
     private FacilityService mockFacilityService;
 
-    CWCRegistrationFormHandler formHandler;
+    RegisterCWCFormHandler formHandlerRegister;
 
     @Before
     public void setUp() {
         initMocks(this);
-        formHandler = new CWCRegistrationFormHandler();
-        ReflectionTestUtils.setField(formHandler, "careService", careService);
-        ReflectionTestUtils.setField(formHandler, "facilityService", mockFacilityService);
-        ReflectionTestUtils.setField(formHandler, "mobileMidwifeService", mobileMidwifeService);
+        formHandlerRegister = new RegisterCWCFormHandler();
+        ReflectionTestUtils.setField(formHandlerRegister, "careService", careService);
+        ReflectionTestUtils.setField(formHandlerRegister, "facilityService", mockFacilityService);
+        ReflectionTestUtils.setField(formHandlerRegister, "mobileMidwifeService", mobileMidwifeService);
     }
 
 
@@ -96,7 +95,7 @@ public class CWCRegistrationFormHandlerTest {
         final String facilityId = "11";
         when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(new Facility(new MRSFacility(facilityId)));
 
-        formHandler.handleFormEvent(new MotechEvent("", new HashMap<String, Object>() {{
+        formHandlerRegister.handleFormEvent(new MotechEvent("", new HashMap<String, Object>() {{
             put("formBean", registerCWCForm);
         }}));
 
@@ -133,7 +132,7 @@ public class CWCRegistrationFormHandlerTest {
         final String facilityId = "11";
         when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(new Facility(new MRSFacility(facilityId)));
 
-        formHandler.handleFormEvent(new MotechEvent("", new HashMap<String, Object>() {{
+        formHandlerRegister.handleFormEvent(new MotechEvent("", new HashMap<String, Object>() {{
             put("formBean", registerCWCForm);
         }}));
 

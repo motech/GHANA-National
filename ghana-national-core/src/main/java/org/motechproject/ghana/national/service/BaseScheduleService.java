@@ -11,9 +11,9 @@ public abstract class BaseScheduleService {
         this.scheduleTrackingService = scheduleTrackingService;
     }
 
-    protected void scheduleAlerts(Patient patient, EnrollmentRequest enrollmentRequest){
+    protected void scheduleAlerts(Patient patient, EnrollmentRequest enrollmentRequest) {
         final String mrsPatientId = patient.getMRSPatientId();
-        if(scheduleTrackingService.getEnrollment(mrsPatientId, enrollmentRequest.getScheduleName()) == null){
+        if (scheduleTrackingService.getEnrollment(mrsPatientId, enrollmentRequest.getScheduleName()) == null) {
             scheduleTrackingService.enroll(enrollmentRequest);
         }
         scheduleTrackingService.fulfillCurrentMilestone(mrsPatientId, enrollmentRequest.getScheduleName());

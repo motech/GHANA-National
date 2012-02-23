@@ -24,8 +24,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.handlers.ANCRegistrationFormHandlerTest.assertANCCareHistoryDetails;
-import static org.motechproject.ghana.national.handlers.CWCRegistrationFormHandlerTest.assertCwcCareHistoryDetails;
+import static org.motechproject.ghana.national.handlers.RegisterANCFormHandlerTest.assertANCCareHistoryDetails;
+import static org.motechproject.ghana.national.handlers.RegisterCWCFormHandlerTest.assertCwcCareHistoryDetails;
 
 public class CareHistoryFormHandlerTest {
     private CareHistoryFormHandler careHistoryFormHandler;

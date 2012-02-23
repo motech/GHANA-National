@@ -15,7 +15,6 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
 import org.motechproject.ghana.national.vo.ANCVO;
-import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -31,9 +30,9 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 
-public class ANCRegistrationFormHandlerTest {
+public class RegisterANCFormHandlerTest {
 
-    private ANCRegistrationFormHandler ancRegistrationFormHandler;
+    private RegisterANCFormHandler registerAncFormHandler;
     @Mock
     private CareService careService;
     @Mock
@@ -45,10 +44,10 @@ public class ANCRegistrationFormHandlerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        ancRegistrationFormHandler = new ANCRegistrationFormHandler();
-        ReflectionTestUtils.setField(ancRegistrationFormHandler, "careService", careService);
-        ReflectionTestUtils.setField(ancRegistrationFormHandler, "facilityService", mockFacilityService);
-        ReflectionTestUtils.setField(ancRegistrationFormHandler, "mobileMidwifeService", mockMobileMidwifeService);
+        registerAncFormHandler = new RegisterANCFormHandler();
+        ReflectionTestUtils.setField(registerAncFormHandler, "careService", careService);
+        ReflectionTestUtils.setField(registerAncFormHandler, "facilityService", mockFacilityService);
+        ReflectionTestUtils.setField(registerAncFormHandler, "mobileMidwifeService", mockMobileMidwifeService);
     }
 
     @Test
@@ -78,7 +77,7 @@ public class ANCRegistrationFormHandlerTest {
 
         when(mockFacilityService.getFacilityByMotechId(registerANCForm.getFacilityId())).thenReturn(facility);
         when(facility.getMrsFacilityId()).thenReturn(mrsFacilityId);
-        ancRegistrationFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseDataEntry.registerANC", new HashMap<String, Object>() {{
+        registerAncFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseDataEntry.registerANC", new HashMap<String, Object>() {{
             put("formBean", registerANCForm);
         }}));
 
@@ -119,7 +118,7 @@ public class ANCRegistrationFormHandlerTest {
         final String facilityId = "11";
         when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(new Facility(new MRSFacility(facilityId)));
 
-        ancRegistrationFormHandler.handleFormEvent(new MotechEvent("", new HashMap<String, Object>() {{
+        registerAncFormHandler.handleFormEvent(new MotechEvent("", new HashMap<String, Object>() {{
             put("formBean", registerANCForm);
         }}));
 
