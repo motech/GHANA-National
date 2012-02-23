@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.service;
 
+import org.motechproject.ghana.national.domain.Encounter;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
@@ -20,6 +21,7 @@ public class EncounterService {
     @Autowired
     AllEncounters allEncounters;
 
+    @Deprecated
     public MRSEncounter persistEncounter(MRSPatient mrsPatient, String staffId, String facilityId, String encounterType,
                                          Date dateOfEncounter, Set<MRSObservation> mrsObservations) {
         MRSUser user = staffService.getUserByEmailIdOrMotechId(staffId);
@@ -28,6 +30,13 @@ public class EncounterService {
         String patientId = mrsPatient.getId();
         MRSEncounter mrsEncounter = new MRSEncounter(staffProviderId, staffUserId, facilityId,
                 dateOfEncounter, patientId, mrsObservations, encounterType);
+        return allEncounters.save(mrsEncounter);
+    }
+
+    public MRSEncounter persistEncounter(Encounter encounter) {
+        MRSUser staff = encounter.getStaff();
+        MRSEncounter mrsEncounter = new MRSEncounter(null, staff.getPerson(), staff, encounter.getFacility(),
+                encounter.getDate(), encounter.getMrsPatient(), encounter.getObservations(), encounter.getType());
         return allEncounters.save(mrsEncounter);
     }
 

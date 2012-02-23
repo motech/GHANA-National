@@ -102,7 +102,7 @@ public class CWCVisitForm extends FormBean {
     }
 
     public List<String> immunizations() {
-        return StringUtils.isEmpty(this.immunizations) ? Arrays.asList(this.immunizations.split(" ")) : null;
+        return StringUtils.isNotEmpty(this.immunizations) ? Arrays.asList(this.immunizations.split(" ")) : null;
     }
 
     public void setImmunizations(String immunizations) {

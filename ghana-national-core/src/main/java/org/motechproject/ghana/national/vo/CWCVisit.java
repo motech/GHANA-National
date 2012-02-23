@@ -1,6 +1,9 @@
 package org.motechproject.ghana.national.vo;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.mrs.model.MRSUser;
 
 import java.util.Collections;
 import java.util.Date;
@@ -8,10 +11,10 @@ import java.util.List;
 
 public class CWCVisit {
 
-    private String staffId;
-    private String facilityId;
+    private MRSUser staff;
+    private Facility facility;
     private Date date;
-    private String motechId;
+    private Patient patient;
     private String serialNumber;
     private List<String> immunizations;
     private String opvdose;
@@ -26,20 +29,20 @@ public class CWCVisit {
     private String community;
     private String comments;
 
-    public String getStaffId() {
-        return staffId;
+    public MRSUser getStaff() {
+        return staff;
     }
 
-    public String getFacilityId() {
-        return facilityId;
+    public Facility getFacility() {
+        return facility;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public String getMotechId() {
-        return motechId;
+    public Patient getPatient() {
+        return patient;
     }
 
     public String getSerialNumber() {
@@ -94,13 +97,13 @@ public class CWCVisit {
         return comments;
     }
 
-    public CWCVisit staffId(String staffId) {
-        this.staffId = staffId;
+    public CWCVisit staff(MRSUser staff) {
+        this.staff = staff;
         return this;
     }
 
-    public CWCVisit facilityId(String facilityId) {
-        this.facilityId = facilityId;
+    public CWCVisit facility(Facility facility) {
+        this.facility = facility;
         return this;
     }
 
@@ -109,8 +112,8 @@ public class CWCVisit {
         return this;
     }
 
-    public CWCVisit motechId(String motechId) {
-        this.motechId = motechId;
+    public CWCVisit patient(Patient mrsPatient) {
+        this.patient = mrsPatient;
         return this;
     }
 

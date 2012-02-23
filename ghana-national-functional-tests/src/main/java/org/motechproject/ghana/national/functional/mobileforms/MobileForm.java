@@ -44,4 +44,8 @@ public class MobileForm {
     public String getXmlTemplateName() {
         return xmlTemplateName;
     }
+
+    public static MobileForm registerCWCVisitForm() {
+        return new MobileForm("NurseDataEntry", "cwc-visit-template.xml");
+    }
 }

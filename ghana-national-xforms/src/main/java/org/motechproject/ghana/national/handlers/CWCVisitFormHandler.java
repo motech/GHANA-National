@@ -3,11 +3,15 @@ package org.motechproject.ghana.national.handlers;
 import org.motechproject.ghana.national.bean.CWCVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.service.ChildVisitService;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
@@ -25,6 +29,10 @@ public class CWCVisitFormHandler implements FormPublishHandler {
 
     @Autowired
     FacilityService facilityService;
+    @Autowired
+    private PatientService patientService;
+    @Autowired
+    private StaffService staffService;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.cwcVisit")
@@ -41,8 +49,10 @@ public class CWCVisitFormHandler implements FormPublishHandler {
 
     private CWCVisit createCWCVisit(CWCVisitForm form) {
         Facility facility = facilityService.getFacilityByMotechId(form.getFacilityId());
+        Patient patient = patientService.getPatientByMotechId(form.getMotechId());
+        MRSUser staff = staffService.getUserByEmailIdOrMotechId(form.getStaffId());
 
-        return new CWCVisit().staffId(form.getStaffId()).facilityId(facility.mrsFacility().getId()).motechId(form.getMotechId())
+        return new CWCVisit().staff(staff).facility(facility).patient(patient)
                 .date(form.getDate()).serialNumber(form.getSerialNumber()).weight(form.getWeight())
                 .height(form.getHeight()).muac(form.getMuac()).maleInvolved(form.getMaleInvolved()).iptidose(form.getIptidose()).pentadose(form.getPentadose()).opvdose(form.getOpvdose())
                 .cwcLocation(form.getCwcLocation()).comments(form.getComments()).house(form.getHouse()).community(form.getCommunity()).immunizations(form.immunizations());
