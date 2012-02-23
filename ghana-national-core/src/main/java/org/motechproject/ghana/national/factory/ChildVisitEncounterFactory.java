@@ -15,7 +15,7 @@ import java.util.Set;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.CWC_VISIT;
 
-public class ChildVisitEncounterFactory {
+public class ChildVisitEncounterFactory extends BaseObservationFactory {
 
     public Encounter createEncounter(CWCVisit cwcVisit) {
         return new Encounter(cwcVisit.getPatient().getMrsPatient(), cwcVisit.getStaff(),
@@ -44,14 +44,5 @@ public class ChildVisitEncounterFactory {
             setObservation(mrsObservations, registrationDate, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(Concept.valueOf(immunization).getName()));
         }
         return mrsObservations;
-    }
-
-    private Integer toInteger(String value) {
-        return (value != null && !value.equals(Constants.NOT_APPLICABLE)) ? Integer.parseInt(value) : null;
-    }
-
-    public <T> void setObservation(HashSet<MRSObservation> mrsObservations, Date registrationDate, String conceptType, T value) {
-        if (value != null)
-            mrsObservations.add(new MRSObservation<T>(registrationDate, conceptType, value));
     }
 }

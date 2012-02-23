@@ -3,11 +3,12 @@ package org.motechproject.ghana.national.handlers;
 import org.motechproject.ghana.national.bean.ANCVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.service.ANCVisitService;
-import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
@@ -21,10 +22,14 @@ public class ANCVisitFormHandler implements FormPublishHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    ANCVisitService visitService;
+    MotherVisitService visitService;
 
     @Autowired
     FacilityService facilityService;
+    @Autowired
+    private StaffService staffService;
+    @Autowired
+    private PatientService patientService;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.ancVisit")
@@ -40,10 +45,11 @@ public class ANCVisitFormHandler implements FormPublishHandler {
     }
 
     private ANCVisit createANCVisit(ANCVisitForm form) {
-
         Facility facility = facilityService.getFacilityByMotechId(form.getFacilityId());
+        MRSUser staff = staffService.getUserByEmailIdOrMotechId(form.getStaffId());
+        Patient patient = patientService.getPatientByMotechId(form.getMotechId());
 
-        ANCVisit ancVisit = new ANCVisit().staffId(form.getStaffId()).facilityId(facility.mrsFacility().getId()).motechId(form.getMotechId())
+        return new ANCVisit().staff(staff).facility(facility).patient(patient)
                 .date(form.getDate()).serialNumber(form.getSerialNumber()).visitNumber(form.getVisitNumber())
                 .estDeliveryDate(form.getEstDeliveryDate()).bpDiastolic(form.getBpDiastolic()).bpSystolic(form.getBpSystolic()).pmtct(form.getPmtct())
                 .weight(form.getWeight()).ttdose(form.getTtdose()).iptdose(form.getIptdose()).hemoglobin(form.getHemoglobin()).dewormer(form.getDewormer())
@@ -52,6 +58,5 @@ public class ANCVisitFormHandler implements FormPublishHandler {
                 .preTestCounseled(form.getPreTestCounseled()).hivTestResult(form.getHivTestResult()).postTestCounseled(form.getPostTestCounseled())
                 .pmtctTreament(form.getPmtctTreament()).location(form.getLocation()).house(form.getHouse()).community(form.getCommunity())
                 .referred(form.getReferred()).maleInvolved(form.getMaleInvolved()).nextANCDate(form.getNextANCDate()).comments(form.getComments());
-        return ancVisit;
     }
 }

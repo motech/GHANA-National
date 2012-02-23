@@ -6,11 +6,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ANCVisitForm;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.service.ANCVisitService;
-import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.mrs.model.MRSUser;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
@@ -25,27 +28,35 @@ public class ANCVisitFormHandlerTest {
 
     private ANCVisitFormHandler handler;
     @Mock
-    private ANCVisitService mockAncVisitService;
+    private MotherVisitService mockMotherVisitService;
     @Mock
     private FacilityService mockFacilityService;
+    @Mock
+    private PatientService mockPatientService;
+    @Mock
+    private StaffService mockStaffService;
 
 
     @Before
     public void setUp() {
         initMocks(this);
         handler = new ANCVisitFormHandler();
-        ReflectionTestUtils.setField(handler, "visitService", mockAncVisitService);
+        ReflectionTestUtils.setField(handler, "visitService", mockMotherVisitService);
         ReflectionTestUtils.setField(handler, "facilityService", mockFacilityService);
-
+        ReflectionTestUtils.setField(handler, "patientService", mockPatientService);
+        ReflectionTestUtils.setField(handler, "staffService", mockStaffService);
     }
 
     @Test
     public void shouldCreateANCVisitEncounterWithAllInfo() {
-        final ANCVisitForm ancVisitForm = new ANCVisitForm();
-        ancVisitForm.setStaffId("465");
         String motechFacilityId = "232465";
+        String staffId = "465";
+        String motechId = "2321465";
+
+        final ANCVisitForm ancVisitForm = new ANCVisitForm();
+        ancVisitForm.setStaffId(staffId);
         ancVisitForm.setFacilityId(motechFacilityId);
-        ancVisitForm.setMotechId("2321465");
+        ancVisitForm.setMotechId(motechId);
         ancVisitForm.setDate(new Date());
         ancVisitForm.setSerialNumber("4ds65");
         ancVisitForm.setVisitNumber("4");
@@ -84,16 +95,25 @@ public class ANCVisitFormHandlerTest {
         }});
 
         String facilityId = "111";
-        when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(new Facility(new MRSFacility(facilityId)));
+        MRSFacility mrsFacility = new MRSFacility(facilityId);
+        Patient patient = new Patient(new MRSPatient(motechId, new MRSPerson(), mrsFacility));
+        MRSUser staff = new MRSUser();
+        staff.id(staffId);
+        Facility facility = new Facility(mrsFacility);
+        facility.motechId(motechFacilityId);
+
+        when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
+        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
+        when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
         
         handler.handleFormEvent(motechEvent);
 
         ArgumentCaptor<ANCVisit> captor = ArgumentCaptor.forClass(ANCVisit.class);
-        verify(mockAncVisitService).registerANCVisit(captor.capture());
+        verify(mockMotherVisitService).registerANCVisit(captor.capture());
         ANCVisit actualANCVisit = captor.getValue();
-        assertEquals(ancVisitForm.getStaffId(), actualANCVisit.getStaffId());
-        assertEquals(facilityId, actualANCVisit.getFacilityId());
-        assertEquals(ancVisitForm.getMotechId(), actualANCVisit.getMotechId());
+        assertEquals(ancVisitForm.getStaffId(), actualANCVisit.getStaff().getId());
+        assertEquals(motechFacilityId, actualANCVisit.getFacility().getMotechId());
+        assertEquals(ancVisitForm.getMotechId(), actualANCVisit.getPatient().getMotechId());
         assertEquals(ancVisitForm.getDate(), actualANCVisit.getDate());
         assertEquals(ancVisitForm.getSerialNumber(), actualANCVisit.getSerialNumber());
         assertEquals(ancVisitForm.getVisitNumber(), actualANCVisit.getVisitNumber());

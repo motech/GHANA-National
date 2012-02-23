@@ -1,18 +1,27 @@
 package org.motechproject.ghana.national.service;
 
+import org.hamcrest.core.Is;
 import org.joda.time.LocalDate;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.Encounter;
+import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.vo.ANCVisit;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.motechproject.util.DateUtil;
+import org.unitils.reflectionassert.ReflectionComparatorMode;
 
+import java.util.Date;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -22,16 +31,20 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
+import static org.motechproject.ghana.national.domain.EncounterType.ANC_VISIT;
 import static org.motechproject.ghana.national.domain.EncounterType.TT_VISIT;
 import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT2;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 public class MotherVisitServiceTest {
     private MotherVisitService motherVisitServiceSpy;
 
     @Mock
+    private ScheduleTrackingService scheduleTrackingService;
+    @Mock
     private EncounterService encounterService;
     @Mock
-    private ScheduleTrackingService scheduleTrackingService;
+    private PatientService patientService;
 
     @Before
     public void setUp() throws Exception {
@@ -66,6 +79,45 @@ public class MotherVisitServiceTest {
         String patientId = "patient_id";
         motherVisitServiceSpy.unScheduleAll(new Patient(new MRSPatient(patientId)));
         verify(scheduleTrackingService).unenroll(patientId, TT_VACCINATION_VISIT);
+    }
+
+
+    @Test
+    public void shouldCreateEncounterForANCVisitWithAllInfo() {
+        Patient mockPatient = mock(Patient.class);
+        MRSPatient mockMRSPatient = mock(MRSPatient.class);
+        String mrsFacilityId = "mrsFacilityId";
+        Facility facility = new Facility(new MRSFacility(mrsFacilityId));
+        facility.mrsFacilityId(mrsFacilityId);
+        MRSUser staff = new MRSUser();
+        ANCVisit ancVisit = createTestANCVisit(staff, facility, mockPatient);
+        String mrsPatientId = "34";
+
+        when(patientService.getPatientByMotechId(ancVisit.getPatient().getMotechId())).thenReturn(mockPatient);
+        when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
+        when(mockMRSPatient.getId()).thenReturn(mrsPatientId);
+
+        motherVisitServiceSpy.registerANCVisit(ancVisit);
+
+        ArgumentCaptor<Encounter> encounterCapture = ArgumentCaptor.forClass(Encounter.class);
+        verify(encounterService).persistEncounter(encounterCapture.capture());
+
+        Encounter encounter = encounterCapture.getValue();
+        Assert.assertThat(encounter.getStaff().getId(), Is.is(ancVisit.getStaff().getId()));
+        Assert.assertThat(encounter.getMrsPatient().getId(), Is.is(mrsPatientId));
+        Assert.assertThat(encounter.getFacility().getId(), Is.is(ancVisit.getFacility().getMrsFacilityId()));
+        Assert.assertThat(encounter.getType(), Is.is(ANC_VISIT.value()));
+        assertReflectionEquals(encounter.getDate(), DateUtil.today().toDate(), ReflectionComparatorMode.LENIENT_DATES);
+    }
+
+    private ANCVisit createTestANCVisit(MRSUser staff, Facility facility, Patient patient) {
+        return new ANCVisit().staff(staff).facility(facility).patient(patient).date(new Date()).serialNumber("4ds65")
+                .visitNumber("4").estDeliveryDate(DateUtil.newDate(2012, 8, 8).toDate())
+                .bpDiastolic(67).bpSystolic(10).weight(65.67d).comments("comments").ttdose("4").iptdose("5")
+                .iptReactive("Y").itnUse("Y").fht(4.3d).fhr(4).urineTestGlucosePositive("0").urineTestProteinPositive("1")
+                .hemoglobin(13.8).vdrlReactive("N").vdrlTreatment(null).dewormer("Y").pmtct("Y").preTestCounseled("N")
+                .hivTestResult("hiv").postTestCounseled("Y").pmtctTreament("Y").location("34").house("house").community("community")
+                .referred("Y").maleInvolved(false).nextANCDate(DateUtil.newDate(2012, 2, 20).toDate());
     }
 
 }

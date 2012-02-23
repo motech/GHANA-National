@@ -1,15 +1,14 @@
 package org.motechproject.ghana.national.vo;
 
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.mrs.model.MRSUser;
+
 import java.util.Date;
 
 public class ANCVisit {
-    private String staffId;
-
-    private String facilityId;
 
     private Date date;
-
-    private String motechId;
 
     private String serialNumber;
 
@@ -70,22 +69,12 @@ public class ANCVisit {
     private Date nextANCDate;
 
     private String comments;
+    private Patient patient;
+    private MRSUser staff;
+    private Facility facility;
 
-    public String getStaffId() {
-        return staffId;
-    }
-
-    public ANCVisit staffId(String staffId) {
-        this.staffId = staffId;
-        return this;
-    }
-
-    public String getFacilityId() {
-        return facilityId;
-    }
-
-    public ANCVisit facilityId(String facilityId) {
-        this.facilityId = facilityId;
+    public ANCVisit facility(Facility facility) {
+        this.facility = facility;
         return this;
     }
 
@@ -95,15 +84,6 @@ public class ANCVisit {
 
     public ANCVisit date(Date date) {
         this.date = date;
-        return this;
-    }
-
-    public String getMotechId() {
-        return motechId;
-    }
-
-    public ANCVisit motechId(String motechId) {
-        this.motechId = motechId;
         return this;
     }
 
@@ -375,5 +355,27 @@ public class ANCVisit {
     public ANCVisit comments(String comments) {
         this.comments = comments;
         return this;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public ANCVisit patient(Patient patient) {
+        this.patient = patient;
+        return this;
+    }
+
+    public MRSUser getStaff() {
+        return staff;
+    }
+
+    public ANCVisit staff(MRSUser staff) {
+        this.staff = staff;
+        return this;
+    }
+
+    public Facility getFacility() {
+        return facility;
     }
 }
