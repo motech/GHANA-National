@@ -5,6 +5,7 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CareService;
+import org.motechproject.ghana.national.service.EncounterService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.RegisterCWCFormValidator;
@@ -56,6 +57,9 @@ public class CWCController {
     @Autowired
     FormValidator formValidator;
 
+    @Autowired
+    EncounterService encounterService;
+
     private String errors = "errors";
     public static final String ENROLLMENT_CWC_FORM = "cwcEnrollmentForm";
     public static final String ENROLL_CWC_URL = "cwc/new";
@@ -76,7 +80,7 @@ public class CWCController {
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     public String create(@RequestParam String motechPatientId, ModelMap modelMap) {
         Patient patient = patientService.getPatientByMotechId(motechPatientId);
-        MRSEncounter encounter = careService.getEncounter(motechPatientId,CWCREGVISIT);
+        MRSEncounter encounter = encounterService.fetchLatestEncounter(motechPatientId,CWCREGVISIT);
         CWCEnrollmentForm cwcEnrollmentForm;
         if(encounter != null) {
             cwcEnrollmentForm = cwcFormMapper.mapEncounterToView(encounter);

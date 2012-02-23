@@ -7,7 +7,7 @@ import org.motechproject.ghana.national.bean.TTVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.service.CareVisitService;
+import org.motechproject.ghana.national.service.MotherVisitService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
@@ -23,7 +23,7 @@ import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT1;
 public class TTVisitFormHandlerTest {
 
     @Mock
-    private CareVisitService ttVaccinationService;
+    private MotherVisitService ttVaccinationService;
     @Mock
     private PatientService patientService;
     @Mock

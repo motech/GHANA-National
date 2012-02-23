@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CareService;
+import org.motechproject.ghana.national.service.EncounterService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.RegisterCWCFormValidator;
@@ -49,6 +50,9 @@ public class CWCControllerTest {
     @Mock
     CwcFormMapper mockCwcFormMapper;
 
+    @Mock
+    EncounterService mockEncounterService;
+
     @Before
     public void setUp() {
         initMocks(this);
@@ -59,6 +63,7 @@ public class CWCControllerTest {
         ReflectionTestUtils.setField(cwcController, "cwcFormMapper", mockCwcFormMapper);
         ReflectionTestUtils.setField(cwcController, "registerCWCFormValidator", mockregisterCWCFormValidator);
         ReflectionTestUtils.setField(cwcController, "formValidator", mockFormValidator);
+        ReflectionTestUtils.setField(cwcController, "encounterService", mockEncounterService);
     }
 
     @Test

@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
-import org.motechproject.scheduletracking.api.events.constants.EventSubject;
+import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public class ScheduleHandlerTest {
     }
 
     private void fireScheduleHandler(final String scheduleName) {
-        scheduleHandler.handleAlert(new MotechEvent(EventSubject.MILESTONE_ALERT, new HashMap<String, Object>(){{
+        scheduleHandler.handleAlert(new MotechEvent(EventSubjects.MILESTONE_ALERT, new HashMap<String, Object>(){{
             put("schedule_name", scheduleName);
         }}));
     }

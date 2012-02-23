@@ -25,8 +25,8 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VA
 import static org.motechproject.ghana.national.domain.EncounterType.TT_VISIT;
 import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT2;
 
-public class CareVisitServiceTest {
-    private CareVisitService careVisitServiceSpy;
+public class MotherVisitServiceTest {
+    private MotherVisitService motherVisitServiceSpy;
 
     @Mock
     private EncounterService encounterService;
@@ -36,7 +36,7 @@ public class CareVisitServiceTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        careVisitServiceSpy = spy(new CareVisitService(encounterService, scheduleTrackingService));
+        motherVisitServiceSpy = spy(new MotherVisitService(encounterService, scheduleTrackingService));
     }
 
     @Test
@@ -48,12 +48,12 @@ public class CareVisitServiceTest {
         final LocalDate vaccinationDate = DateUtil.newDate(2000, 2, 1);
 
         when(scheduleTrackingService.getEnrollment(patientId, TT_VACCINATION_VISIT)).thenReturn(null);
-        careVisitServiceSpy.receivedTT(TT2, patient, staffId, facilityId, vaccinationDate);
+        motherVisitServiceSpy.receivedTT(TT2, patient, staffId, facilityId, vaccinationDate);
 
         verify(encounterService).persistEncounter(eq(patient.getMrsPatient()), eq(staffId), eq(facilityId), eq(TT_VISIT.value()), eq(vaccinationDate.toDate()), Matchers.<Set<MRSObservation>>any());
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(careVisitServiceSpy).scheduleAlerts(eq(patient), enrollmentRequestCaptor.capture());
+        verify(motherVisitServiceSpy).scheduleAlerts(eq(patient), enrollmentRequestCaptor.capture());
 
         EnrollmentRequest enrollmentRequest = enrollmentRequestCaptor.getValue();
         assertThat(enrollmentRequest.getScheduleName(), is(equalTo(TT_VACCINATION_VISIT)));
@@ -64,7 +64,7 @@ public class CareVisitServiceTest {
     @Test
     public void shouldUnScheduleAllAlerts(){
         String patientId = "patient_id";
-        careVisitServiceSpy.unScheduleAll(new Patient(new MRSPatient(patientId)));
+        motherVisitServiceSpy.unScheduleAll(new Patient(new MRSPatient(patientId)));
         verify(scheduleTrackingService).unenroll(patientId, TT_VACCINATION_VISIT);
     }
 

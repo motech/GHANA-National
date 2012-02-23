@@ -30,17 +30,17 @@ public class PatientService {
     private AllEncounters allEncounters;
     private IdentifierGenerationService identifierGenerationService;
     private EncounterService encounterService;
-    private CareVisitService careVisitService;
+    private MotherVisitService motherVisitService;
 
     @Autowired
     public PatientService(AllPatients allPatients, AllEncounters allEncounters, IdentifierGenerationService identifierGenerationService,
-                          EncounterService encounterService, CareVisitService careVisitService) {
+                          EncounterService encounterService, MotherVisitService motherVisitService) {
 
         this.allPatients = allPatients;
         this.allEncounters = allEncounters;
         this.identifierGenerationService = identifierGenerationService;
         this.encounterService = encounterService;
-        this.careVisitService = careVisitService;
+        this.motherVisitService = motherVisitService;
     }
 
     public Patient registerPatient(Patient patient, String staffId)
@@ -150,6 +150,6 @@ public class PatientService {
 
     public void deceasePatient(String patientMotechId, Date dateOfDeath, String causeOfDeath, String comment) {
         allPatients.deceasePatient(dateOfDeath, patientMotechId, (causeOfDeath.equals("OTHER") ? "OTHER NON-CODED" : "NONE"), comment);
-        careVisitService.unScheduleAll(getPatientByMotechId(patientMotechId));
+        motherVisitService.unScheduleAll(getPatientByMotechId(patientMotechId));
     }
 }

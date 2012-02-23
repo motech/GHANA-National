@@ -21,38 +21,26 @@
                 <community/>
                 <comments/>
                 <formtype>data_entry</formtype>
-                <formname>childcwc-jf</formname>
+                <formname>cwcVisit</formname>
             </child>
         </xf:instance>
-        <xf:bind id="staffId" nodeset="/child/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647"
-                 message="Number too large. Keep under 2147483647"/>
-        <xf:bind id="facilityId" nodeset="/child/facilityId" required="true()" type="xsd:int"
-                 constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
-        <xf:bind constraint=". &lt;= 'today()'" id="date" message="Invalid date: date specified is in the future"
-                 nodeset="/child/date" required="true()" type="xsd:date"/>
-        <xf:bind id="motechId" nodeset="/child/motechId" required="true()" type="xsd:int"
-                 constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
-        <xf:bind id="serialNumber" nodeset="/child/serialNumber" type="xsd:string" required="true()"/>
+        <xf:bind id="staffId" nodeset="/child/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+        <xf:bind id="facilityId" nodeset="/child/facilityId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+        <xf:bind constraint=". &lt;= 'today()'" id="date" message="Invalid date: date specified is in the future" nodeset="/child/date" required="true()" type="xsd:date"/>
+        <xf:bind id="motechId" nodeset="/child/motechId" required="true()" type="xsd:int" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
+        <xf:bind id="serialNumber" nodeset="/child/serialNumber" type="xsd:string" />
         <xf:bind id="immunizations" nodeset="/child/immunizations" required="true()" type="xsd:string"/>
-        <xf:bind action="show" id="opvdose" nodeset="/child/opvdose" relevant="/child/immunizations = 'opv'"
-                 required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="pentadose" nodeset="/child/pentadose" relevant="/child/immunizations = 'penta'"
-                 required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="iptidose" nodeset="/child/iptidose" relevant="/child/immunizations = 'ipti'"
-                 required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind constraint=". &gt;= 1 and . &lt;= 80" id="weight"
-                 message="Value out of range: must be between 1 and 80" nodeset="/child/weight" type="xsd:decimal"/>
-        <xf:bind constraint=". &gt;= 5 and . &lt;= 25" id="muac" message="Value out of range: must be between 5 and 25"
-                 nodeset="/child/muac" type="xsd:decimal"/>
-        <xf:bind constraint=". &gt;= 26 and . &lt;= 160" id="height"
-                 message="Value out of range: must be between 26 and 160" nodeset="/child/height" type="xsd:decimal"/>
+        <xf:bind action="show" id="opvdose" nodeset="/child/opvdose" relevant="/child/immunizations = 'opv'" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="pentadose" nodeset="/child/pentadose" relevant="/child/immunizations = 'penta'" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="iptidose" nodeset="/child/iptidose" relevant="/child/immunizations = 'ipti'" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind constraint=". &gt;= 1 and . &lt;= 80" id="weight" required="true()" message="Value out of range: must be between 1 and 80" nodeset="/child/weight" type="xsd:decimal"/>
+        <xf:bind constraint=". &gt;= 5 and . &lt;= 25" id="muac" message="Value out of range: must be between 5 and 25"  required="true()" nodeset="/child/muac" type="xsd:decimal"/>
+        <xf:bind constraint=". &gt;= 26 and . &lt;= 160" id="height"  required="true()" message="Value out of range: must be between 26 and 160" nodeset="/child/height" type="xsd:decimal"/>
         <xf:bind id="maleInvolved" nodeset="/child/maleInvolved" required="true()" type="xsd:string"/>
         <xf:bind id="cwcLocation" nodeset="/child/cwcLocation" required="true()" type="xsd:string"/>
-        <xf:bind action="show" id="house" nodeset="/child/house" relevant="/child/cwcLocation = '2'" required="true()"
-                 type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="community" nodeset="/child/community" relevant="/child/cwcLocation = '2'"
-                 required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind id="comments" nodeset="/child/comments" type="xsd:string"/>
+        <xf:bind action="show" id="house" nodeset="/child/house" relevant="/child/cwcLocation = '2'" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="community" nodeset="/child/community" relevant="/child/cwcLocation = '2'" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind id="comments" nodeset="/child/comments" type="xsd:string" />
         <xf:bind id="formtype" nodeset="/child/formtype" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind id="formname" nodeset="/child/formname" required="true()" type="xsd:string" visible="false()"/>
     </xf:model>
@@ -75,10 +63,6 @@
         </xf:input>
         <xf:select bind="immunizations">
             <xf:label>Immunizations</xf:label>
-            <xf:item id="0">
-                <xf:label>None given</xf:label>
-                <xf:value>nonegiven</xf:value>
-            </xf:item>
             <xf:item id="1">
                 <xf:label>BCG</xf:label>
                 <xf:value>bcg</xf:value>
@@ -120,7 +104,7 @@
             <xf:label>OPV</xf:label>
             <xf:item id="0">
                 <xf:label>OPV 0</xf:label>
-                <xf:value>1</xf:value>
+                <xf:value>0</xf:value>
             </xf:item>
             <xf:item id="1">
                 <xf:label>OPV 1</xf:label>
@@ -187,6 +171,10 @@
         </xf:select1>
         <xf:select1 bind="cwcLocation">
             <xf:label>Location</xf:label>
+            <xf:item id="0">
+                <xf:label>No selection</xf:label>
+                <xf:value>NA</xf:value>
+            </xf:item>
             <xf:item id="1">
                 <xf:label>Facility or clinic</xf:label>
                 <xf:value>1</xf:value>

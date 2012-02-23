@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.validator;
 
-import org.motechproject.ghana.national.bean.ANCVisitForm;
+import org.motechproject.ghana.national.bean.CWCVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.mobileforms.api.domain.FormError;
@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.motechproject.ghana.national.domain.EncounterType.ANC_REG_VISIT;
+import static org.motechproject.ghana.national.domain.EncounterType.CWC_REG_VISIT;
 
 @Component
-public class AncVisitFormValidator extends FormValidator<ANCVisitForm> {
+public class CwcVisitFormValidator extends FormValidator<CWCVisitForm> {
 
     @Autowired
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
@@ -27,20 +27,19 @@ public class AncVisitFormValidator extends FormValidator<ANCVisitForm> {
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(ANCVisitForm formBean) {
+    public List<FormError> validate(CWCVisitForm formBean) {
         List<FormError> errors = new ArrayList<FormError>();
         errors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         errors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        errors.addAll(formValidator.validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
-        errors.addAll(formValidator.validateIfPatientIsFemale(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
-        errors.addAll(validateIfPatientAlreadyEnrolledForANC(formBean.getMotechId(), ANC_REG_VISIT.value()));
+        errors.addAll(formValidator.validateIfPatientIsAliveAndIsAChild(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
+        errors.addAll(validateIfPatientAlreadyEnrolledForCWC(formBean.getMotechId(), CWC_REG_VISIT.value()));
         return errors;
     }
 
-    private ArrayList<FormError> validateIfPatientAlreadyEnrolledForANC(final String motechId, String encounterAncregvisit) {
-        if (allEncounters.fetchLatest(motechId, encounterAncregvisit) == null) {
+    private ArrayList<FormError> validateIfPatientAlreadyEnrolledForCWC(final String motechId, String encounterCwcregvisit) {
+        if (allEncounters.fetchLatest(motechId, encounterCwcregvisit) == null) {
             return new ArrayList<FormError>() {{
-                add(new FormError(motechId, "NOT REGISTERED FOR ANC"));
+                add(new FormError(motechId, "NOT REGISTERED FOR CWC"));
             }};
         }
         return new ArrayList<FormError>();

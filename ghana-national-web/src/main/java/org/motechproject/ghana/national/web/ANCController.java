@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.service.CareService;
+import org.motechproject.ghana.national.service.EncounterService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
@@ -24,7 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import static org.motechproject.ghana.national.domain.EncounterType.ANC_REG_VISIT;
 import static org.motechproject.ghana.national.domain.EncounterType.PREG_REG_VISIT;
@@ -38,6 +43,8 @@ public class ANCController {
     private FacilityHelper facilityHelper;
     @Autowired
     private CareService careService;
+    @Autowired
+    EncounterService encounterService;
     @Autowired
     RegisterANCFormValidator registerANCFormValidator;
     @Autowired
@@ -63,9 +70,9 @@ public class ANCController {
         List<FormError> formErrors = registerANCFormValidator.validatePatient(motechPatientId);
         ANCEnrollmentForm enrollmentForm = new ANCEnrollmentForm(motechPatientId);
         if (formErrors.isEmpty()) {
-            MRSEncounter mrsEncounter = careService.getEncounter(motechPatientId, ANC_REG_VISIT.value());
+            MRSEncounter mrsEncounter = encounterService.fetchLatestEncounter(motechPatientId, ANC_REG_VISIT.value());
             enrollmentForm = (mrsEncounter == null) ? enrollmentForm : ancFormMapper.convertMRSEncounterToView(mrsEncounter);
-            MRSEncounter pregnancyInfoEncounter = careService.getEncounter(motechPatientId, PREG_REG_VISIT.value());
+            MRSEncounter pregnancyInfoEncounter = encounterService.fetchLatestEncounter(motechPatientId, PREG_REG_VISIT.value());
             ancFormMapper.populatePregnancyInfo(pregnancyInfoEncounter, enrollmentForm);
         } else {
             modelMap.addAttribute("validationErrors", formErrors);

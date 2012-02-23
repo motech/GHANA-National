@@ -133,7 +133,13 @@ public class FormValidatorTest {
     @Test
     public void shouldRaiseFormErrorIfChildAgeIsAboveFive() {
         String motechId = "1234567";
-        when(patientService.getAgeOfPatientByMotechId(motechId)).thenReturn(6);
+        Patient patientMock = mock(Patient.class);
+        MRSPatient mrsPatient = mock(MRSPatient.class);
+        MRSPerson mrsPerson = mock(MRSPerson.class);
+        when(mrsPerson.getAge()).thenReturn(6);
+        when(mrsPatient.getPerson()).thenReturn(mrsPerson);
+        when(patientMock.getMrsPatient()).thenReturn(mrsPatient);
+        when(patientService.getPatientByMotechId(motechId)).thenReturn(patientMock);
         List<FormError> formErrors = formValidator.validateIfPatientIsAChild(motechId);
         assertEquals(formErrors.size(), 1);
     }

@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
 
 @Service
-public class CareVisitService extends BaseScheduleService {
+public class MotherVisitService extends BaseScheduleService {
 
     private EncounterService encounterService;
 
     @Autowired
-    public CareVisitService(EncounterService encounterService, ScheduleTrackingService scheduleTrackingService) {
+    public MotherVisitService(EncounterService encounterService, ScheduleTrackingService scheduleTrackingService) {
         super(scheduleTrackingService);
         this.encounterService = encounterService;
     }
