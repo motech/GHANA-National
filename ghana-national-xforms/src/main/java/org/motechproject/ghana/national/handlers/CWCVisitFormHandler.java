@@ -25,7 +25,7 @@ public class CWCVisitFormHandler implements FormPublishHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    ChildVisitService visitService;
+    ChildVisitService childVisitService;
 
     @Autowired
     FacilityService facilityService;
@@ -41,20 +41,22 @@ public class CWCVisitFormHandler implements FormPublishHandler {
     public void handleFormEvent(MotechEvent event) {
         try {
             CWCVisitForm form = (CWCVisitForm) event.getParameters().get(Constants.FORM_BEAN);
-            visitService.registerCWCVisit(createCWCVisit(form));
+            childVisitService.save(cwcVisitFor(form));
         } catch (Exception e) {
             log.error("Encountered error while saving CWC visit details", e);
         }
     }
 
-    private CWCVisit createCWCVisit(CWCVisitForm form) {
+    private CWCVisit cwcVisitFor(CWCVisitForm form) {
         Facility facility = facilityService.getFacilityByMotechId(form.getFacilityId());
         Patient patient = patientService.getPatientByMotechId(form.getMotechId());
         MRSUser staff = staffService.getUserByEmailIdOrMotechId(form.getStaffId());
 
         return new CWCVisit().staff(staff).facility(facility).patient(patient)
                 .date(form.getDate()).serialNumber(form.getSerialNumber()).weight(form.getWeight())
-                .height(form.getHeight()).muac(form.getMuac()).maleInvolved(form.getMaleInvolved()).iptidose(form.getIptidose()).pentadose(form.getPentadose()).opvdose(form.getOpvdose())
-                .cwcLocation(form.getCwcLocation()).comments(form.getComments()).house(form.getHouse()).community(form.getCommunity()).immunizations(form.immunizations());
+                .height(form.getHeight()).muac(form.getMuac()).maleInvolved(form.getMaleInvolved())
+                .iptidose(form.getIptidose()).pentadose(form.getPentadose()).opvdose(form.getOpvdose())
+                .cwcLocation(form.getCwcLocation()).comments(form.getComments()).house(form.getHouse())
+                .community(form.getCommunity()).immunizations(form.immunizations());
     }
 }

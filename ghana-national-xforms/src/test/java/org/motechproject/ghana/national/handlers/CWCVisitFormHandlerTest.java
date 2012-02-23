@@ -43,7 +43,7 @@ public class CWCVisitFormHandlerTest {
     public void setUp() {
         initMocks(this);
         handler = new CWCVisitFormHandler();
-        ReflectionTestUtils.setField(handler, "visitService", childVisitService);
+        ReflectionTestUtils.setField(handler, "childVisitService", childVisitService);
         ReflectionTestUtils.setField(handler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(handler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(handler, "staffService", mockStaffService);
@@ -88,7 +88,7 @@ public class CWCVisitFormHandlerTest {
         handler.handleFormEvent(motechEvent);
 
         ArgumentCaptor<CWCVisit> captor = ArgumentCaptor.forClass(CWCVisit.class);
-        verify(childVisitService).registerCWCVisit(captor.capture());
+        verify(childVisitService).save(captor.capture());
         CWCVisit actualCWCVisit = captor.getValue();
         assertEquals(cwcVisitForm.getStaffId(), actualCWCVisit.getStaff().getId());
         assertEquals(cwcVisitForm.getFacilityId(), actualCWCVisit.getFacility().motechId());

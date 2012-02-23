@@ -12,7 +12,7 @@ public class ChildVisitService {
     @Autowired
     EncounterService encounterService;
 
-    public MRSEncounter registerCWCVisit(CWCVisit cwcVisit) {
+    public MRSEncounter save(CWCVisit cwcVisit) {
         return encounterService.persistEncounter(new ChildVisitEncounterFactory().createEncounter(cwcVisit));
     }
 }

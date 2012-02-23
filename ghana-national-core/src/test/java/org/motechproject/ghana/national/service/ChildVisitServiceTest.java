@@ -37,7 +37,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         Patient patient = mock(Patient.class);
         CWCVisit cwcVisit = createTestCWCVisit(new Date(), staff, facility, patient);
 
-        service.registerCWCVisit(cwcVisit);
+        service.save(cwcVisit);
 
         ArgumentCaptor<Encounter> encounterCaptor = ArgumentCaptor.forClass(Encounter.class);
         verify(encounterService).persistEncounter(encounterCaptor.capture());
