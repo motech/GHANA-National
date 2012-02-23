@@ -1,7 +1,10 @@
 package org.motechproject.ghana.national.service;
 
+import org.apache.log4j.Logger;
+import org.motechproject.ghana.national.domain.Concept;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -22,23 +25,61 @@ public class ANCVisitService {
 
     @Autowired
     EncounterService encounterService;
+
     @Autowired
     PatientService patientService;
 
+    @Autowired
+    AllObservations allObservations;
+
+    @Autowired
+    MotherVisitService motherVisitService;
+
+    private Logger logger = Logger.getLogger(ANCVisitService.class);
+
     public MRSEncounter registerANCVisit(ANCVisit ancVisit) {
-        Patient patientByMotechId = patientService.getPatientByMotechId(ancVisit.getMotechId());
-        return encounterService.persistEncounter(patientByMotechId.getMrsPatient(), ancVisit.getStaffId(),
-                ancVisit.getFacilityId(), ANC_VISIT.value(), ancVisit.getDate(), createMRSObservations(ancVisit));
+        Patient patient = patientService.getPatientByMotechId(ancVisit.getMotechId());
+        Set<MRSObservation> mrsObservations = createMRSObservations(ancVisit);
+        createEDDScheduleForANCVisit(ancVisit, patient, mrsObservations);
+        return encounterService.persistEncounter(patient.getMrsPatient(), ancVisit.getStaffId(),
+                ancVisit.getFacilityId(), ANC_VISIT.value(), ancVisit.getDate(), mrsObservations);
+    }
+
+    private void createEDDScheduleForANCVisit(final ANCVisit ancVisit, Patient patient, Set<MRSObservation> mrsObservations) {
+        Date newEdd = ancVisit.getEstDeliveryDate();
+        if (newEdd == null) {
+            return;
+        }
+
+        MRSObservation activePregnancyObservation = allObservations.findObservation(ancVisit.getMotechId(), Concept.PREGNANCY.getName());
+        if (activePregnancyObservation == null) {
+            logger.warn("No active pregnancy found while checking for EDD. Patient ID :" + patient.getMrsPatient().getMotechId());
+            return; //no active pregnancy
+        }
+
+        MRSObservation eddObservation = allObservations.findObservation(ancVisit.getMotechId(), Concept.EDD.getName());
+        Date oldEdd = (eddObservation == null) ? null : (Date) eddObservation.getValue();
+
+        if (oldEdd == null || !oldEdd.equals(newEdd)) {
+            mrsObservations.add(createNewEddObservation(ancVisit, activePregnancyObservation, eddObservation));
+            motherVisitService.createEDDScheduleForANCVisit(patient, ancVisit.getEstDeliveryDate());
+        }
+    }
+
+    private MRSObservation createNewEddObservation(final ANCVisit ancVisit, MRSObservation activePregnancyObservation, MRSObservation eddObservation) {
+        allObservations.voidObservation(eddObservation, "Replaced by new EDD value", ancVisit.getStaffId());
+        activePregnancyObservation.setDependantObservations(new HashSet<MRSObservation>() {{
+            add(new MRSObservation<Date>(new Date(), EDD.getName(), ancVisit.getEstDeliveryDate()));
+        }});
+        return activePregnancyObservation;
     }
 
     Set<MRSObservation> createMRSObservations(ANCVisit ancVisit) {
         HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         Date registrationDate = ancVisit.getDate() == null ? DateUtil.today().toDate() : ancVisit.getDate();
-
         setObservation(mrsObservations, registrationDate, SERIAL_NUMBER.getName(), ancVisit.getSerialNumber());
         setObservation(mrsObservations, registrationDate, VISIT_NUMBER.getName(), toInteger(ancVisit.getVisitNumber()));
         setObservation(mrsObservations, registrationDate, MALE_INVOLVEMENT.getName(), ancVisit.getMaleInvolved());
-        setObservation(mrsObservations, registrationDate, EDD.getName(), ancVisit.getEstDeliveryDate());
         setObservation(mrsObservations, registrationDate, SYSTOLIC_BLOOD_PRESSURE.getName(), ancVisit.getBpSystolic());
         setObservation(mrsObservations, registrationDate, DIASTOLIC_BLOOD_PRESSURE.getName(), ancVisit.getBpDiastolic());
         setObservation(mrsObservations, registrationDate, WEIGHT_KG.getName(), ancVisit.getWeight());

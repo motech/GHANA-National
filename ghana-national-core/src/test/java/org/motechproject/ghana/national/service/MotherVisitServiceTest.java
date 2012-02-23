@@ -13,6 +13,7 @@ import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.motechproject.util.DateUtil;
 
+import java.util.Date;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -22,6 +23,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
 import static org.motechproject.ghana.national.domain.EncounterType.TT_VISIT;
 import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT2;
 
@@ -66,6 +68,22 @@ public class MotherVisitServiceTest {
         String patientId = "patient_id";
         motherVisitServiceSpy.unScheduleAll(new Patient(new MRSPatient(patientId)));
         verify(scheduleTrackingService).unenroll(patientId, TT_VACCINATION_VISIT);
+    }
+
+    @Test
+    public void shouldCreateEDDScheduleForANCVisit() {
+        String patientId = "1234567";
+        Patient patient = new Patient(new MRSPatient(patientId));
+        Date estimatedDateOfDelivery = new Date(2012, 12, 12);
+
+        when(scheduleTrackingService.getEnrollment(patientId, DELIVERY)).thenReturn(null);
+        motherVisitServiceSpy.createEDDScheduleForANCVisit(patient, estimatedDateOfDelivery);
+
+        ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(motherVisitServiceSpy).scheduleAlerts(eq(patient), enrollmentRequestCaptor.capture());
+
+        EnrollmentRequest enrollmentRequest = enrollmentRequestCaptor.getValue();
+        assertThat(enrollmentRequest.getScheduleName(), is(equalTo(DELIVERY)));
     }
 
 }

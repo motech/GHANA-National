@@ -4,7 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.Concept;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
@@ -31,6 +33,10 @@ public class ANCVisitServiceTest extends BaseUnitTest {
     EncounterService encounterService;
     @Mock
     PatientService patientService;
+    @Mock
+    AllObservations mockAllObservations;
+    @Mock
+    MotherVisitService mockMotherVisitService;
 
     @Before
     public void setUp(){
@@ -38,6 +44,8 @@ public class ANCVisitServiceTest extends BaseUnitTest {
         initMocks(this);
         ReflectionTestUtils.setField(service, "encounterService", encounterService);
         ReflectionTestUtils.setField(service, "patientService", patientService);
+        ReflectionTestUtils.setField(service, "allObservations", mockAllObservations);
+        ReflectionTestUtils.setField(service, "motherVisitService", mockMotherVisitService);
     }
     
     @Test
@@ -78,6 +86,61 @@ public class ANCVisitServiceTest extends BaseUnitTest {
         assertReflectionEquals(dateArgumentCaptor.getValue(), DateUtil.today().toDate(), ReflectionComparatorMode.LENIENT_DATES);
         assertEquals(setArgumentCaptor.getValue(),mrsObservations);
     }
+    
+    @Test
+    public void shouldRescheduleEDDIfItIsModified() {
+        ANCVisit ancVisit = createTestANCVisit();
+        MRSObservation edd = mock(MRSObservation.class);
+        MRSObservation activePregnancy = mock(MRSObservation.class);
+        when(edd.getValue()).thenReturn(DateUtil.newDate(2010, 12,11).toDate());
+        Patient mockPatient = mock(Patient.class);
+        when(patientService.getPatientByMotechId(ancVisit.getMotechId())).thenReturn(mockPatient);
+        when(mockAllObservations.findObservation(ancVisit.getMotechId(), Concept.PREGNANCY.getName())).thenReturn(activePregnancy);
+        when(mockAllObservations.findObservation(ancVisit.getMotechId(), Concept.EDD.getName())).thenReturn(edd);
+
+        service.registerANCVisit(ancVisit);
+
+        verify(mockAllObservations).findObservation(ancVisit.getMotechId(), Concept.PREGNANCY.getName());
+        verify(mockAllObservations).voidObservation(eq(edd), anyString(), eq(ancVisit.getStaffId()));
+        verify(mockMotherVisitService).createEDDScheduleForANCVisit(mockPatient,ancVisit.getEstDeliveryDate());
+    }
+
+    @Test
+    public void shouldNotRescheduleEDDIfEddIsLeftEmpty() {
+        ANCVisit ancVisit = createTestANCVisit();
+        ancVisit.estDeliveryDate(null);
+        MRSObservation edd = mock(MRSObservation.class);
+        MRSObservation activePregnancy = mock(MRSObservation.class);
+        when(edd.getValue()).thenReturn(DateUtil.newDate(2010, 12,11).toDate());
+        Patient mockPatient = mock(Patient.class);
+        when(patientService.getPatientByMotechId(ancVisit.getMotechId())).thenReturn(mockPatient);
+        when(mockAllObservations.findObservation(ancVisit.getMotechId(), Concept.PREGNANCY.getName())).thenReturn(activePregnancy);
+        when(mockAllObservations.findObservation(ancVisit.getMotechId(), Concept.EDD.getName())).thenReturn(edd);
+
+        service.registerANCVisit(ancVisit);
+
+        verify(mockAllObservations, never()).findObservation(ancVisit.getMotechId(), Concept.PREGNANCY.getName());
+        verify(mockAllObservations, never()).voidObservation(eq(edd), anyString(), eq(ancVisit.getStaffId()));
+        verify(mockMotherVisitService, never()).createEDDScheduleForANCVisit(mockPatient,ancVisit.getEstDeliveryDate());
+    }
+
+    @Test
+    public void shouldNotRescheduleEDDIfEddIsNotModified() {
+        ANCVisit ancVisit = createTestANCVisit();
+        MRSObservation edd = mock(MRSObservation.class);
+        MRSObservation activePregnancy = mock(MRSObservation.class);
+        when(edd.getValue()).thenReturn(ancVisit.getEstDeliveryDate());
+        Patient mockPatient = mock(Patient.class);
+        when(patientService.getPatientByMotechId(ancVisit.getMotechId())).thenReturn(mockPatient);
+        when(mockAllObservations.findObservation(ancVisit.getMotechId(), Concept.PREGNANCY.getName())).thenReturn(activePregnancy);
+        when(mockAllObservations.findObservation(ancVisit.getMotechId(), Concept.EDD.getName())).thenReturn(edd);
+
+        service.registerANCVisit(ancVisit);
+
+        verify(mockAllObservations).findObservation(ancVisit.getMotechId(), Concept.PREGNANCY.getName());
+        verify(mockAllObservations, never()).voidObservation(eq(edd), anyString(), eq(ancVisit.getStaffId()));
+        verify(mockMotherVisitService, never()).createEDDScheduleForANCVisit(mockPatient,ancVisit.getEstDeliveryDate());
+    }
 
     @Test
     public void shouldCreateObservationsWithGivenInfo(){
@@ -94,7 +157,6 @@ public class ANCVisitServiceTest extends BaseUnitTest {
         expectedObservations.add(new MRSObservation<String>(today, SERIAL_NUMBER.getName(), "4ds65"));
         expectedObservations.add(new MRSObservation<Integer>(today, VISIT_NUMBER.getName(), 4));
         expectedObservations.add(new MRSObservation<Boolean>(today, MALE_INVOLVEMENT.getName(), false));
-        expectedObservations.add(new MRSObservation<Date>(today, EDD.getName(), DateUtil.newDate(2012, 8, 8).toDate()));
         expectedObservations.add(new MRSObservation<String>(today, COMMENTS.getName(), "comments"));
         expectedObservations.add(new MRSObservation<Integer>(today, ANC_PNC_LOCATION.getName(), 34));
         expectedObservations.add(new MRSObservation<Date>(today, NEXT_ANC_DATE.getName(), DateUtil.newDate(2012, 2, 20).toDate()));
