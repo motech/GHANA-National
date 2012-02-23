@@ -6,68 +6,29 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.configuration.ScheduleNames;
-import org.motechproject.ghana.national.domain.ANCCareHistory;
-import org.motechproject.ghana.national.domain.CwcCareHistory;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.RegistrationToday;
-import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
-import org.motechproject.ghana.national.vo.ANCVO;
-import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
-import org.motechproject.ghana.national.vo.CareHistoryVO;
-import org.motechproject.ghana.national.vo.CwcVO;
+import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.vo.*;
 import org.motechproject.model.Time;
-import org.motechproject.mrs.model.MRSConcept;
-import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSPerson;
-import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.mrs.model.*;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import static org.hamcrest.CoreMatchers.is;
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.any;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentCaptor.forClass;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.domain.Concept.ANC_REG_NUM;
-import static org.motechproject.ghana.national.domain.Concept.BCG;
-import static org.motechproject.ghana.national.domain.Concept.CONFINEMENT_CONFIRMED;
-import static org.motechproject.ghana.national.domain.Concept.CWC_REG_NUMBER;
-import static org.motechproject.ghana.national.domain.Concept.EDD;
-import static org.motechproject.ghana.national.domain.Concept.GRAVIDA;
-import static org.motechproject.ghana.national.domain.Concept.HEIGHT;
-import static org.motechproject.ghana.national.domain.Concept.IMMUNIZATIONS_ORDERED;
-import static org.motechproject.ghana.national.domain.Concept.IPT;
-import static org.motechproject.ghana.national.domain.Concept.IPTI;
-import static org.motechproject.ghana.national.domain.Concept.MEASLES;
-import static org.motechproject.ghana.national.domain.Concept.OPV;
-import static org.motechproject.ghana.national.domain.Concept.PARITY;
-import static org.motechproject.ghana.national.domain.Concept.PENTA;
-import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
-import static org.motechproject.ghana.national.domain.Concept.PREGNANCY_STATUS;
-import static org.motechproject.ghana.national.domain.Concept.TT;
-import static org.motechproject.ghana.national.domain.Concept.VITA;
-import static org.motechproject.ghana.national.domain.Concept.YF;
-import static org.motechproject.ghana.national.domain.EncounterType.ANC_REG_VISIT;
-import static org.motechproject.ghana.national.domain.EncounterType.CWC_REG_VISIT;
-import static org.motechproject.ghana.national.domain.EncounterType.PATIENT_HISTORY;
-import static org.motechproject.ghana.national.domain.EncounterType.PREG_REG_VISIT;
+import static org.motechproject.ghana.national.domain.Concept.*;
+import static org.motechproject.ghana.national.domain.EncounterType.*;
+import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
+import static org.motechproject.util.DateUtil.newDate;
 
 public class CareServiceTest extends BaseUnitTest {
     CareService careService;
@@ -82,7 +43,6 @@ public class CareServiceTest extends BaseUnitTest {
     ScheduleTrackingService mockScheduleTrackingService;
 
     private DateTime currentDate;
-    MRSUser mockMRSUser;
     Patient mockPatient;
     MRSPatient mockMRSPatient;
     MRSPerson mockMRSPerson;
@@ -102,7 +62,6 @@ public class CareServiceTest extends BaseUnitTest {
     @Test
     public void shouldEnrollToCWCProgram() {
         final String staffId = "456";
-        final String staffPersonId = "32";
         final String patientId = "24324";
         final String patientMotechId = "1234567";
         final String facilityId = "3232";
@@ -122,7 +81,7 @@ public class CareServiceTest extends BaseUnitTest {
         CwcVO cwcVO = new CwcVO(staffId, facilityId, registrationDate, patientMotechId, Arrays.asList(CwcCareHistory.values()), lastBCGDate, lastVitADate,
                 lastMeaslesDate, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi, serialNumber, true);
 
-        setupStaffAndPatient(patientId, patientMotechId, staffId, staffPersonId);
+        setupPatient(patientId, patientMotechId);
 
         final HashSet<MRSObservation> expected = new HashSet<MRSObservation>() {{
             add(new MRSObservation<MRSConcept>(lastBCGDate, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(BCG.getName())));
@@ -145,14 +104,13 @@ public class CareServiceTest extends BaseUnitTest {
         final String patientId = "24324";
         final String patientMotechId = "1234567";
         final String staffId = "456";
-        final String staffPersonId = "32";
         final String facilityId = "3232";
         final String serialNumber = "serial number";
 
         CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId, new ArrayList<CwcCareHistory>(), null, null,
                 null, null, null, null, null, null, null, null, serialNumber, false);
 
-        setupStaffAndPatient(patientId, patientMotechId, staffId, staffPersonId);
+        setupPatient(patientId, patientMotechId);
 
         careService.enroll(cwcVO);
 
@@ -168,7 +126,6 @@ public class CareServiceTest extends BaseUnitTest {
         String patientId = "patient id";
         String patientMotechId = "patient motech id";
         String staffUserId = "staff user id";
-        String staffPersonId = "staff person id";
         final Date today = DateUtil.today().toDate();
         final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.IN_PAST, today, facilityId, staffUserId, patientMotechId,
                 new ArrayList<ANCCareHistory>(), DateUtil.newDate(2012, 9, 1).toDate());
@@ -180,7 +137,7 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
         }};
 
-        setupStaffAndPatient(patientId, patientMotechId, staffUserId, staffPersonId);
+        setupPatient(patientId, patientMotechId);
         careService.enroll(ancvo);
 
         verify(mockEncounterService).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), today, expectedObservations);
@@ -192,14 +149,13 @@ public class CareServiceTest extends BaseUnitTest {
         String patientId = "patient id";
         String patientMotechId = "patient motech id";
         String staffUserId = "staff user id";
-        String staffPersonId = "staff person id";
         final Date registrationDate = new Date(2012, 3, 1);
         final Date today = DateUtil.today().toDate();
 
         final ANCVO ancvo = createTestANCVO("3", new Date(2011, 12, 9), "4", new Date(2011, 7, 5), RegistrationToday.IN_PAST, registrationDate, facilityId,
                 staffUserId, patientMotechId, Arrays.asList(ANCCareHistory.values()), new Date());
 
-        setupStaffAndPatient(patientId, patientMotechId, staffUserId, staffPersonId);
+        setupPatient(patientId, patientMotechId);
 
         careService.enroll(ancvo);
 
@@ -233,12 +189,11 @@ public class CareServiceTest extends BaseUnitTest {
         String patientId = "patient id";
         String patientMotechId = "patient motech id";
         String staffUserId = "staff user id";
-        String staffPersonId = "staff person id";
         final Date registrationDate = new Date(2012, 1, 1);
         final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.IN_PAST_IN_OTHER_FACILITY, registrationDate, facilityId, staffUserId,
                 patientMotechId, new ArrayList<ANCCareHistory>(), new Date());
 
-        setupStaffAndPatient(patientId, patientMotechId, staffUserId, staffPersonId);
+        setupPatient(patientId, patientMotechId);
 
         careService.enroll(ancvo);
         final Date today = DateUtil.today().toDate();
@@ -289,13 +244,12 @@ public class CareServiceTest extends BaseUnitTest {
         doReturn(cwcObservations).when(careServiceSpy).addObservationsOnCWCHistory(cwcCareHistory);
 
         String staffId = "staff id";
-        String staffPersonId = "staff person id";
         String facilityId = "facility id";
         String patientMotechId = "patient motech id";
         String patientId = "patient id";
         Date date = DateUtil.newDate(2011, 11, 11).toDate();
 
-        setupStaffAndPatient(patientId, patientMotechId, staffId, staffPersonId);
+        setupPatient(patientId, patientMotechId);
         CareHistoryVO careHistory = new CareHistoryVO(staffId, facilityId, patientMotechId, date, ancCareHistory, cwcCareHistory);
 
         careServiceSpy.addCareHistory(careHistory);
@@ -308,28 +262,34 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldCreateAExpectedPregnancyScheduleWhileRegisteringAPatientToANCProgram() {
-        String facilityId = "facility id";
-        String patientId = "patient id";
-        String patientMotechId = "patient motech id";
-        String staffUserId = "staff user id";
-        String staffPersonId = "staff person id";
-        Date estimatedDateOfDelivery = DateUtil.newDate(2000, 1, 1).toDate();
-        final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.IN_PAST_IN_OTHER_FACILITY, DateUtil.newDate(2000, 1, 1).toDate(), facilityId, staffUserId,
-                patientMotechId, new ArrayList<ANCCareHistory>(), estimatedDateOfDelivery);
+    public void shouldCreateSchedulesForANCProgramRegistration() {
 
-        setupStaffAndPatient(patientId, patientMotechId, staffUserId, staffPersonId);
+        String patientId = "Id";
+        String patientMotechId = "motechId";
+        Pregnancy pregnancy = basedOnDeliveryDate(new LocalDate(2000, 1, 1));
+
+        setupPatient(patientId, patientMotechId);
+        PatientCare patientCare = new PatientCare("test", new LocalDate());
+        when(mockPatient.ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery())).thenReturn(asList(patientCare));
+        final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.IN_PAST, newDate(2000, 1, 1).toDate(), "facilityId", null,
+                patientMotechId, new ArrayList<ANCCareHistory>(), pregnancy.dateOfDelivery().toDate());
 
         careService.enroll(ancvo);
+        verify(mockPatient).ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery());
+        verifyIfScheduleEnrolled(0, patientId, patientCare.startingOn(), patientCare.name());
+    }
 
-        ArgumentCaptor<EnrollmentRequest> enrollmentRequestArgumentCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(mockScheduleTrackingService).enroll(enrollmentRequestArgumentCaptor.capture());
+    private void verifyIfScheduleEnrolled(int indexForSchedule, String patientId, LocalDate startingOn, String enrollmentName) {
+        ArgumentCaptor<EnrollmentRequest> deliveryEnrollmentRequestCaptor = forClass(EnrollmentRequest.class);
+        verify(mockScheduleTrackingService).enroll(deliveryEnrollmentRequestCaptor.capture());
+        assertScheduleEnrollmentRequest(deliveryEnrollmentRequestCaptor.getAllValues().get(indexForSchedule), patientId, startingOn, enrollmentName);
+    }
 
-        EnrollmentRequest requestPassedToScheduleTracker = enrollmentRequestArgumentCaptor.getValue();
-        assertThat(requestPassedToScheduleTracker.getExternalId(), is(equalTo(patientId)));
-        assertThat(requestPassedToScheduleTracker.getScheduleName(), is(equalTo(ScheduleNames.DELIVERY)));
-        assertThat(requestPassedToScheduleTracker.getPreferredAlertTime(), is(equalTo(new Time(currentDate.toLocalTime()))));
-        assertThat(requestPassedToScheduleTracker.getReferenceDate(), any(LocalDate.class));
+    private void assertScheduleEnrollmentRequest(EnrollmentRequest actualRequest, String patientId, LocalDate referenceDate, String scheduleName) {
+        assertThat(actualRequest.getExternalId(), is(equalTo(patientId)));
+        assertThat(actualRequest.getScheduleName(), is(equalTo(scheduleName)));
+        assertThat(actualRequest.getPreferredAlertTime(), is(equalTo(new Time(currentDate.toLocalTime()))));
+        assertThat(actualRequest.getReferenceDate(), is(referenceDate));
     }
 
     private ANCVO createTestANCVO(String ipt, Date iptDate, String tt, Date ttDate, RegistrationToday registrationToday, Date registrationDate,
@@ -338,19 +298,19 @@ public class CareServiceTest extends BaseUnitTest {
                 12.34, 12, 34, true, true, careHistories, ipt, tt, iptDate, ttDate, true);
     }
 
-    private void setupStaffAndPatient(String patientId, String patientMotechId, String staffId, String staffPersonId) {
-        mockMRSUser = mock(MRSUser.class);
+    private void setupPatient(String patientId, String patientMotechId) {
         mockPatient = mock(Patient.class);
         mockMRSPatient = mock(MRSPatient.class);
-        mockMRSPerson = mock(MRSPerson.class);
 
-        when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
         when(mockPatient.getMRSPatientId()).thenReturn(patientId);
+        when(mockPatient.getMotechId()).thenReturn(patientMotechId);
         when(mockMRSPatient.getId()).thenReturn(patientId);
-        when(mockMRSUser.getPerson()).thenReturn(mockMRSPerson);
-        when(mockMRSUser.getId()).thenReturn(staffId);
-        when(mockMRSPerson.getId()).thenReturn(staffPersonId);
+        mockPatientService(mockPatient);
+    }
+
+    private void mockPatientService(Patient patient) {
+        when(mockPatientService.getPatientByMotechId(patient.getMotechId())).thenReturn(patient);
     }
 
 }

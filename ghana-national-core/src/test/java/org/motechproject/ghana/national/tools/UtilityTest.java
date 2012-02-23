@@ -19,6 +19,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.motechproject.ghana.national.tools.Utility.nextApplicableWeekDay;
+import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 
 public class UtilityTest {
 
@@ -108,5 +109,13 @@ public class UtilityTest {
         DateTime actualMar3Sat2012 = feb25Sat2012.dayOfYear().addToCopy(7);
         assertNotSame(feb25Sat2012, actualMar3Sat2012);
         assertThat(nextApplicableWeekDay(feb25Sat2012, applicableDays), is(actualMar3Sat2012));
+    }
+
+    @Test
+    public void shouldCreateNullSafeList( ) {
+
+        List<String> actual = nullSafeList(asList("A", null, "B", "C", "D", null));
+        List<String> expected = asList("A", "B", "C", "D");
+        assertThat(actual, is(equalTo(expected)));
     }
 }

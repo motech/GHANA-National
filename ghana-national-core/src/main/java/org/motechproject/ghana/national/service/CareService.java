@@ -1,15 +1,12 @@
 package org.motechproject.ghana.national.service;
 
+import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.ANCCareHistory;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.domain.PatientCare;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
-import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
-import org.motechproject.ghana.national.vo.ANCVO;
-import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
-import org.motechproject.ghana.national.vo.CareHistoryVO;
-import org.motechproject.ghana.national.vo.CwcVO;
+import org.motechproject.ghana.national.vo.*;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
@@ -24,30 +21,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.motechproject.ghana.national.domain.Concept.ANC_REG_NUM;
-import static org.motechproject.ghana.national.domain.Concept.BCG;
-import static org.motechproject.ghana.national.domain.Concept.CONFINEMENT_CONFIRMED;
-import static org.motechproject.ghana.national.domain.Concept.CWC_REG_NUMBER;
-import static org.motechproject.ghana.national.domain.Concept.EDD;
-import static org.motechproject.ghana.national.domain.Concept.GRAVIDA;
-import static org.motechproject.ghana.national.domain.Concept.HEIGHT;
-import static org.motechproject.ghana.national.domain.Concept.IMMUNIZATIONS_ORDERED;
-import static org.motechproject.ghana.national.domain.Concept.IPT;
-import static org.motechproject.ghana.national.domain.Concept.IPTI;
-import static org.motechproject.ghana.national.domain.Concept.MEASLES;
-import static org.motechproject.ghana.national.domain.Concept.OPV;
-import static org.motechproject.ghana.national.domain.Concept.PARITY;
-import static org.motechproject.ghana.national.domain.Concept.PENTA;
-import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
-import static org.motechproject.ghana.national.domain.Concept.PREGNANCY_STATUS;
-import static org.motechproject.ghana.national.domain.Concept.TT;
-import static org.motechproject.ghana.national.domain.Concept.VITA;
-import static org.motechproject.ghana.national.domain.Concept.YF;
-import static org.motechproject.ghana.national.domain.EncounterType.ANC_REG_VISIT;
-import static org.motechproject.ghana.national.domain.EncounterType.CWC_REG_VISIT;
-import static org.motechproject.ghana.national.domain.EncounterType.PATIENT_HISTORY;
-import static org.motechproject.ghana.national.domain.EncounterType.PREG_REG_VISIT;
+import static org.motechproject.ghana.national.domain.Concept.*;
+import static org.motechproject.ghana.national.domain.EncounterType.*;
+import static org.motechproject.ghana.national.domain.RegistrationToday.TODAY;
 import static org.motechproject.ghana.national.tools.Utility.safePareInteger;
+import static org.motechproject.util.DateUtil.newDate;
+import static org.motechproject.util.DateUtil.now;
 
 @Service
 public class CareService {
@@ -67,18 +46,21 @@ public class CareService {
     }
 
     public void enroll(ANCVO ancVO) {
-        Date registrationDate = (RegistrationToday.TODAY.equals(ancVO.getRegistrationToday())) ? DateUtil.now().toDate() : ancVO.getRegistrationDate();
+        Date registrationDate = (TODAY.equals(ancVO.getRegistrationToday())) ? now().toDate() : ancVO.getRegistrationDate();
         Patient patient = patientService.getPatientByMotechId(ancVO.getPatientMotechId());
+        LocalDate expectedDeliveryDate = newDate(ancVO.getEstimatedDateOfDelivery());
 
         encounterService.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), ANC_REG_VISIT.value(), registrationDate, prepareObservations(ancVO));
         encounterService.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, registerPregnancy(ancVO));
-        EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().mapForDelivery(patient, DateUtil.newDate(ancVO.getEstimatedDateOfDelivery()));
-        scheduleTrackingService.enroll(enrollmentRequest);
+        List<PatientCare> patientCares = patient.ancCareProgramsToEnrollOnRegistration(expectedDeliveryDate);
+        for (PatientCare patientCare : patientCares) {
+            registerSchedule(new ScheduleEnrollmentMapper().map(patient, patientCare));
+        }
     }
 
     private Set<MRSObservation> prepareObservations(ANCVO ancVO) {
         Date observationDate = DateUtil.today().toDate();
-        Date registrationDate = (RegistrationToday.TODAY.equals(ancVO.getRegistrationToday())) ? observationDate : ancVO.getRegistrationDate();
+        Date registrationDate = (TODAY.equals(ancVO.getRegistrationToday())) ? observationDate : ancVO.getRegistrationDate();
         HashSet<MRSObservation> observations = new HashSet<MRSObservation>();
         addObservation(observations, observationDate, GRAVIDA.getName(), ancVO.getGravida());
         addObservation(observations, observationDate, HEIGHT.getName(), ancVO.getHeight());
@@ -163,6 +145,10 @@ public class CareService {
             addAll(addObservationsOnANCHistory(careHistoryVO.getAncCareHistoryVO()));
             addAll(addObservationsOnCWCHistory(careHistoryVO.getCwcCareHistoryVO()));
         }};
+    }
+
+    private void registerSchedule(EnrollmentRequest enrollmentRequest) {
+        scheduleTrackingService.enroll(enrollmentRequest);
     }
 
     public MRSEncounter addCareHistory(CareHistoryVO careHistory) {

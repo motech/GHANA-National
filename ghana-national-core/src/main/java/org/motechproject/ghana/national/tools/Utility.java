@@ -7,11 +7,9 @@ import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.model.DayOfWeek;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import static java.util.Arrays.*;
 import static org.motechproject.model.DayOfWeek.getDayOfWeek;
 
 public class Utility {
@@ -46,6 +44,18 @@ public class Utility {
 
     public static <V> V nullSafe(V value, V defaultValue) {
         return value != null ? value : defaultValue;
+    }
+
+    public static <T> List<T> nullSafeList(T... items) {
+        return nullSafeList(asList(items));
+    }
+
+    public static <T> List<T> nullSafeList(List<T> items) {
+        List<T> result = new ArrayList<T>();
+        for(T item : items) {
+            if(item != null) result.add(item);
+        }
+        return result;
     }
 
     //TODO :Already in platform, but problem in finding method

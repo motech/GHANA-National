@@ -4,7 +4,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 
 import static org.joda.time.PeriodType.weeks;
-import static org.motechproject.util.DateUtil.isOnOrBefore;
 import static org.motechproject.util.DateUtil.today;
 
 public class Pregnancy {
@@ -40,5 +39,10 @@ public class Pregnancy {
         LocalDate today = today();
         LocalDate conceptionDate = dateOfConception(dateOfDelivery);
         return new Period(conceptionDate.toDate().getTime(), today.toDate().getTime(), weeks()).getWeeks();
+    }
+
+    public boolean applicableForIPT() {
+        int currentWeek = currentWeek();
+        return currentWeek > 0 && currentWeek <= 13;
     }
 }
