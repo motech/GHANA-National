@@ -46,7 +46,7 @@ public class ANCVisitFormHandler implements FormPublishHandler {
             ANCVisitForm form = (ANCVisitForm) event.getParameters().get(Constants.FORM_BEAN);
             ANCVisit ancVisit = createANCVisit(form);
             visitService.registerANCVisit(ancVisit);
-            if (StringUtils.isEmpty(ancVisit.getTtdose())) {
+            if (!StringUtils.isEmpty(ancVisit.getTtdose())) {
                 visitService.receivedTT(TTVaccineDosage.byValue(Integer.parseInt(ancVisit.getTtdose())), 
                         ancVisit.getPatient(), ancVisit.getStaff(), ancVisit.getFacility(), DateUtil.today());
             }

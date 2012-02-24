@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -7,19 +8,26 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ANCVisitForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.service.*;
+import org.motechproject.ghana.national.domain.TTVaccineDosage;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MotherVisitService;
+import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -107,6 +115,19 @@ public class ANCVisitFormHandlerTest {
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
         
         handler.handleFormEvent(motechEvent);
+
+        ArgumentCaptor<TTVaccineDosage> ttDosageCaptor = ArgumentCaptor.forClass(TTVaccineDosage.class);
+        ArgumentCaptor<Patient> patientCaptor = ArgumentCaptor.forClass(Patient.class);
+        ArgumentCaptor<MRSUser> mrsUserCaptor = ArgumentCaptor.forClass(MRSUser.class);
+        ArgumentCaptor<Facility> facilityCaptor = ArgumentCaptor.forClass(Facility.class);
+        ArgumentCaptor<LocalDate> dateCaptor = ArgumentCaptor.forClass(LocalDate.class);
+        verify(mockMotherVisitService).receivedTT(ttDosageCaptor.capture(), patientCaptor.capture(), mrsUserCaptor.capture(),
+                facilityCaptor.capture(), dateCaptor.capture());
+        assertThat(ttDosageCaptor.getValue().getDosage(), is(4));
+        assertThat(patientCaptor.getValue().getMotechId(), is(motechId));
+        assertThat(facilityCaptor.getValue().getMotechId(), is(motechFacilityId));
+        assertThat(mrsUserCaptor.getValue().getId(), is(staffId));
+        assertThat(dateCaptor.getValue(), is(DateUtil.today()));
 
         ArgumentCaptor<ANCVisit> captor = ArgumentCaptor.forClass(ANCVisit.class);
         verify(mockMotherVisitService).registerANCVisit(captor.capture());
