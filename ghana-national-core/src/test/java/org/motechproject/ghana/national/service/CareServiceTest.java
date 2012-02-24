@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.*;
@@ -37,7 +38,7 @@ public class CareServiceTest extends BaseUnitTest {
     PatientService mockPatientService;
 
     @Mock
-    EncounterService mockEncounterService;
+    AllEncounters mockAllEncounters;
 
     @Mock
     ScheduleTrackingService mockScheduleTrackingService;
@@ -52,7 +53,7 @@ public class CareServiceTest extends BaseUnitTest {
         careService = new CareService();
         initMocks(this);
         ReflectionTestUtils.setField(careService, "patientService", mockPatientService);
-        ReflectionTestUtils.setField(careService, "encounterService", mockEncounterService);
+        ReflectionTestUtils.setField(careService, "allEncounters", mockAllEncounters);
         ReflectionTestUtils.setField(careService, "scheduleTrackingService", mockScheduleTrackingService);
 
         currentDate = DateTime.now();
@@ -95,7 +96,7 @@ public class CareServiceTest extends BaseUnitTest {
         }};
         careService.enroll(cwcVO);
 
-        verify(mockEncounterService).persistEncounter(mockMRSPatient, staffId, facilityId, CWC_REG_VISIT.value(), registrationDate, expected);
+        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffId, facilityId, CWC_REG_VISIT.value(), registrationDate, expected);
     }
 
     @Test
@@ -117,7 +118,7 @@ public class CareServiceTest extends BaseUnitTest {
         HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<String>(registartionDate, CWC_REG_NUMBER.getName(), serialNumber));
         }};
-        verify(mockEncounterService).persistEncounter(mockMRSPatient, staffId, facilityId, CWC_REG_VISIT.value(), registartionDate, mrsObservations);
+        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffId, facilityId, CWC_REG_VISIT.value(), registartionDate, mrsObservations);
     }
 
     @Test
@@ -140,7 +141,7 @@ public class CareServiceTest extends BaseUnitTest {
         setupPatient(patientId, patientMotechId);
         careService.enroll(ancvo);
 
-        verify(mockEncounterService).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), today, expectedObservations);
+        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), today, expectedObservations);
     }
 
     @Test
@@ -177,8 +178,8 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<Integer>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), Integer.valueOf(ancvo.getAncCareHistoryVO().getLastTT())));
         }};
 
-        verify(mockEncounterService).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), registrationDate, expectedANCObservations);
-        verify(mockEncounterService).persistEncounter(mockMRSPatient, staffUserId, facilityId, PREG_REG_VISIT.value(), registrationDate, expectedPregnancyObservations);
+        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), registrationDate, expectedANCObservations);
+        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, PREG_REG_VISIT.value(), registrationDate, expectedPregnancyObservations);
 
     }
 
@@ -213,8 +214,8 @@ public class CareServiceTest extends BaseUnitTest {
             add(pregnancyObs);
         }};
 
-        verify(mockEncounterService).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), registrationDate, expectedANCObservations);
-        verify(mockEncounterService).persistEncounter(mockMRSPatient, staffUserId, facilityId, PREG_REG_VISIT.value(), registrationDate, expectedPregnancyObservations);
+        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), registrationDate, expectedANCObservations);
+        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, PREG_REG_VISIT.value(), registrationDate, expectedPregnancyObservations);
     }
 
     @Test
@@ -258,7 +259,7 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<String>(ancRegDate, conceptOneName, conceptOneValue));
             add(new MRSObservation<String>(cwcRegDate, conceptTwoName, conceptTwoValue));
         }};
-        verify(mockEncounterService).persistEncounter(mockMRSPatient, staffId, facilityId, PATIENT_HISTORY.value(), date, expectedObservations);
+        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffId, facilityId, PATIENT_HISTORY.value(), date, expectedObservations);
     }
 
     @Test

@@ -37,7 +37,7 @@ public class CwcVisitFormValidator extends FormValidator<CWCVisitForm> {
     }
 
     private ArrayList<FormError> validateIfPatientAlreadyEnrolledForCWC(final String motechId, String encounterCwcregvisit) {
-        if (allEncounters.fetchLatest(motechId, encounterCwcregvisit) == null) {
+        if (allEncounters.fetchLatestEncounter(motechId, encounterCwcregvisit) == null) {
             return new ArrayList<FormError>() {{
                 add(new FormError(motechId, "NOT REGISTERED FOR CWC"));
             }};

@@ -38,7 +38,7 @@ public class AncVisitFormValidator extends FormValidator<ANCVisitForm> {
     }
 
     private ArrayList<FormError> validateIfPatientAlreadyEnrolledForANC(final String motechId, String encounterAncregvisit) {
-        if (allEncounters.fetchLatest(motechId, encounterAncregvisit) == null) {
+        if (allEncounters.fetchLatestEncounter(motechId, encounterAncregvisit) == null) {
             return new ArrayList<FormError>() {{
                 add(new FormError(motechId, "NOT REGISTERED FOR ANC"));
             }};

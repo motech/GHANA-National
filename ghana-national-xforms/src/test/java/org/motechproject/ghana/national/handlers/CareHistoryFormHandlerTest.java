@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.motechproject.MotechException;
 import org.motechproject.ghana.national.bean.CareHistoryForm;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.CareHistoryVO;
@@ -29,8 +28,6 @@ import static org.motechproject.ghana.national.handlers.RegisterCWCFormHandlerTe
 
 public class CareHistoryFormHandlerTest {
     private CareHistoryFormHandler careHistoryFormHandler;
-    @Mock
-    private AllEncounters mockAllEncounters;
     @Mock
     private CareService mockCareService;
     @Mock

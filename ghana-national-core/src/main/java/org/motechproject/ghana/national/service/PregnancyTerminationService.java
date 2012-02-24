@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.service;
 
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
@@ -29,7 +30,7 @@ public class PregnancyTerminationService {
     PatientService patientService;
 
     @Autowired
-    EncounterService encounterService;
+    AllEncounters allEncounters;
 
     @Autowired
     FacilityService facilityService;
@@ -42,7 +43,7 @@ public class PregnancyTerminationService {
     public void terminatePregnancy(PregnancyTerminationRequest request) {
         MRSPatient mrsPatient = patientService.getPatientByMotechId(request.getMotechId()).getMrsPatient();
         Facility facility = facilityService.getFacilityByMotechId(request.getFacilityId());
-        encounterService.persistEncounter(mrsPatient, request.getStaffId(), facility.getMrsFacilityId(), PREG_TERM_VISIT.value(), request.getTerminationDate(), prepareObservations(request));
+        allEncounters.persistEncounter(mrsPatient, request.getStaffId(), facility.getMrsFacilityId(), PREG_TERM_VISIT.value(), request.getTerminationDate(), prepareObservations(request));
         if (request.isDead())
             patientService.deceasePatient(request.getMotechId(), request.getTerminationDate(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
 

@@ -7,7 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.OutPatientVisitForm;
 import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.service.EncounterService;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.OutPatientVisitService;
 import org.motechproject.model.MotechEvent;
@@ -39,7 +39,7 @@ public class OutPatientVisitFormHandlerTest {
     OutPatientVisitFormHandler handler;
 
     @Mock
-    EncounterService mockEncounterService;
+    AllEncounters mockAllEncounters;
 
     @Mock
     MRSPatientAdapter mockMRSPatientAdapter;
@@ -54,7 +54,7 @@ public class OutPatientVisitFormHandlerTest {
     public void setUp() {
         initMocks(this);
         handler = new OutPatientVisitFormHandler();
-        ReflectionTestUtils.setField(handler, "encounterService", mockEncounterService);
+        ReflectionTestUtils.setField(handler, "allEncounters", mockAllEncounters);
         ReflectionTestUtils.setField(handler, "patientAdapter", mockMRSPatientAdapter);
         ReflectionTestUtils.setField(handler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(handler, "outPatientVisitService", mockOutPatientVisitService);
@@ -114,7 +114,7 @@ public class OutPatientVisitFormHandlerTest {
 
         ArgumentCaptor<Set> argumentCaptor = ArgumentCaptor.forClass(Set.class);
 
-        verify(mockEncounterService).persistEncounter(eq(mockMrsPatient), eq(staffId), eq(facilityId),
+        verify(mockAllEncounters).persistEncounter(eq(mockMrsPatient), eq(staffId), eq(facilityId),
                 eq(OUTPATIENT_VISIT.value()), eq(visitDate), argumentCaptor.capture());
 
         Set<MRSObservation> actualObservations = argumentCaptor.getValue();

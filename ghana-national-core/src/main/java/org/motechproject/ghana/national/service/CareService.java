@@ -6,6 +6,7 @@ import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientCare;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -34,14 +35,14 @@ public class CareService {
     PatientService patientService;
 
     @Autowired
-    EncounterService encounterService;
+    AllEncounters allEncounters;
 
     @Autowired
     ScheduleTrackingService scheduleTrackingService;
 
     public void enroll(CwcVO cwc) {
         Patient patient = patientService.getPatientByMotechId(cwc.getPatientMotechId());
-        encounterService.persistEncounter(patient.getMrsPatient(), cwc.getStaffId(), cwc.getFacilityId(), CWC_REG_VISIT.value(), cwc.getRegistrationDate(),
+        allEncounters.persistEncounter(patient.getMrsPatient(), cwc.getStaffId(), cwc.getFacilityId(), CWC_REG_VISIT.value(), cwc.getRegistrationDate(),
                 prepareObservations(cwc));
     }
 
@@ -50,8 +51,8 @@ public class CareService {
         Patient patient = patientService.getPatientByMotechId(ancVO.getPatientMotechId());
         LocalDate expectedDeliveryDate = newDate(ancVO.getEstimatedDateOfDelivery());
 
-        encounterService.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), ANC_REG_VISIT.value(), registrationDate, prepareObservations(ancVO));
-        encounterService.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, registerPregnancy(ancVO));
+        allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), ANC_REG_VISIT.value(), registrationDate, prepareObservations(ancVO));
+        allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, registerPregnancy(ancVO));
         List<PatientCare> patientCares = patient.ancCareProgramsToEnrollOnRegistration(expectedDeliveryDate);
         for (PatientCare patientCare : patientCares) {
             registerSchedule(new ScheduleEnrollmentMapper().map(patient, patientCare));
@@ -153,7 +154,7 @@ public class CareService {
 
     public MRSEncounter addCareHistory(CareHistoryVO careHistory) {
         Patient patient = patientService.getPatientByMotechId(careHistory.getPatientMotechId());
-        return encounterService.persistEncounter(patient.getMrsPatient(), careHistory.getStaffId(), careHistory.getFacilityId(), PATIENT_HISTORY.value(), careHistory.getDate(),
+        return allEncounters.persistEncounter(patient.getMrsPatient(), careHistory.getStaffId(), careHistory.getFacilityId(), PATIENT_HISTORY.value(), careHistory.getDate(),
                 addObservationsForCareHistory(careHistory));
     }
 }

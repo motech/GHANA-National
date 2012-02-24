@@ -6,8 +6,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.CareService;
-import org.motechproject.ghana.national.service.EncounterService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
@@ -48,7 +48,7 @@ public class ANCControllerTest {
     @Mock
     private ANCFormMapper mockANCFormMapper;
     @Mock
-    private EncounterService mockEncounterService;
+    private AllEncounters mockAllEncounters;
 
     @Before
     public void setUp() {
@@ -58,7 +58,7 @@ public class ANCControllerTest {
         ReflectionTestUtils.setField(ancController, "facilityHelper", mockFacilityHelper);
         ReflectionTestUtils.setField(ancController, "registerANCFormValidator", mockValidator);
         ReflectionTestUtils.setField(ancController, "ancFormMapper", mockANCFormMapper);
-        ReflectionTestUtils.setField(ancController, "encounterService", mockEncounterService);
+        ReflectionTestUtils.setField(ancController, "allEncounters", mockAllEncounters);
     }
 
     @Test
@@ -136,13 +136,13 @@ public class ANCControllerTest {
         MRSEncounter mrsEncounter = new MRSEncounter();
 
         when(mockValidator.validatePatient(motechPatientId)).thenReturn(errors);
-        when(mockEncounterService.fetchLatestEncounter(motechPatientId, ANC_REG_VISIT.value())).thenReturn(mrsEncounter);
+        when(mockAllEncounters.fetchLatestEncounter(motechPatientId, ANC_REG_VISIT.value())).thenReturn(mrsEncounter);
         when(mockANCFormMapper.convertMRSEncounterToView(mrsEncounter)).thenReturn(ancEnrollmentForm);
 
         ancController.newANC(motechPatientId, modelMap);
         assertTrue(modelMap.containsKey("ancEnrollmentForm"));
         assertTrue(reflectionEquals(modelMap.get("ancEnrollmentForm"), ancEnrollmentForm));
-        verify(mockEncounterService, times(2)).fetchLatestEncounter(eq(motechPatientId), anyString());
+        verify(mockAllEncounters, times(2)).fetchLatestEncounter(eq(motechPatientId), anyString());
         verify(mockANCFormMapper).populatePregnancyInfo(Matchers.<MRSEncounter>any(), eq(ancEnrollmentForm));
         checkIfCareHistoryAttributesArePlacedInModelMap(modelMap, ancEnrollmentForm);
     }

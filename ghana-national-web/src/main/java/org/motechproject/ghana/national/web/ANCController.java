@@ -1,8 +1,8 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.CareService;
-import org.motechproject.ghana.national.service.EncounterService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
@@ -44,7 +44,7 @@ public class ANCController {
     @Autowired
     private CareService careService;
     @Autowired
-    EncounterService encounterService;
+    AllEncounters allEncounters;
     @Autowired
     RegisterANCFormValidator registerANCFormValidator;
     @Autowired
@@ -70,9 +70,9 @@ public class ANCController {
         List<FormError> formErrors = registerANCFormValidator.validatePatient(motechPatientId);
         ANCEnrollmentForm enrollmentForm = new ANCEnrollmentForm(motechPatientId);
         if (formErrors.isEmpty()) {
-            MRSEncounter mrsEncounter = encounterService.fetchLatestEncounter(motechPatientId, ANC_REG_VISIT.value());
+            MRSEncounter mrsEncounter = allEncounters.fetchLatestEncounter(motechPatientId, ANC_REG_VISIT.value());
             enrollmentForm = (mrsEncounter == null) ? enrollmentForm : ancFormMapper.convertMRSEncounterToView(mrsEncounter);
-            MRSEncounter pregnancyInfoEncounter = encounterService.fetchLatestEncounter(motechPatientId, PREG_REG_VISIT.value());
+            MRSEncounter pregnancyInfoEncounter = allEncounters.fetchLatestEncounter(motechPatientId, PREG_REG_VISIT.value());
             ancFormMapper.populatePregnancyInfo(pregnancyInfoEncounter, enrollmentForm);
         } else {
             modelMap.addAttribute("validationErrors", formErrors);

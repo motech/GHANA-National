@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Encounter;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.mrs.model.MRSFacility;
@@ -45,7 +46,7 @@ public class MotherVisitServiceTest {
     @Mock
     private ScheduleTrackingService scheduleTrackingService;
     @Mock
-    private EncounterService encounterService;
+    private AllEncounters allEncounters;
     @Mock
     private PatientService patientService;
     @Mock
@@ -55,7 +56,7 @@ public class MotherVisitServiceTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        motherVisitServiceSpy = spy(new MotherVisitService(encounterService, scheduleTrackingService, mockAllObservations));
+        motherVisitServiceSpy = spy(new MotherVisitService(allEncounters, scheduleTrackingService, mockAllObservations));
     }
 
     @Test
@@ -96,7 +97,7 @@ public class MotherVisitServiceTest {
         motherVisitServiceSpy.registerANCVisit(ancVisit);
 
         ArgumentCaptor<Encounter> encounterCapture = ArgumentCaptor.forClass(Encounter.class);
-        verify(encounterService).persistEncounter(encounterCapture.capture());
+        verify(allEncounters).persistEncounter(encounterCapture.capture());
 
         Encounter encounter = encounterCapture.getValue();
         assertThat(encounter.getStaff().getId(), Is.is(ancVisit.getStaff().getId()));

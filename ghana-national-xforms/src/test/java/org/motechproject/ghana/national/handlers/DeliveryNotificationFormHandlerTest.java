@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
 import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.service.EncounterService;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.TextMessageService;
@@ -36,7 +36,7 @@ public class DeliveryNotificationFormHandlerTest {
     DeliveryNotificationFormHandler deliveryNotificationFormHandler;
 
     @Mock
-    EncounterService mockEncounterService;
+    AllEncounters mockAllEncounters;
 
     @Mock
     TextMessageService mockTextMessageService;
@@ -51,7 +51,7 @@ public class DeliveryNotificationFormHandlerTest {
     public void setUp() {
         initMocks(this);
         deliveryNotificationFormHandler = new DeliveryNotificationFormHandler();
-        ReflectionTestUtils.setField(deliveryNotificationFormHandler, "encounterService", mockEncounterService);
+        ReflectionTestUtils.setField(deliveryNotificationFormHandler, "allEncounters", mockAllEncounters);
         ReflectionTestUtils.setField(deliveryNotificationFormHandler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(deliveryNotificationFormHandler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(deliveryNotificationFormHandler, "textMessageService", mockTextMessageService);
@@ -89,7 +89,7 @@ public class DeliveryNotificationFormHandlerTest {
         deliveryNotificationFormHandler.handleFormEvent(event);
 
         final HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
-        verify(mockEncounterService).persistEncounter(mrsPatient, staffId, facilityId, PREG_DEL_NOTIFY_VISIT.value(),
+        verify(mockAllEncounters).persistEncounter(mrsPatient, staffId, facilityId, PREG_DEL_NOTIFY_VISIT.value(),
                 datetime.toDate(), mrsObservations);
         verify(mockTextMessageService).sendSMS(facility, SMS.fromSMSText("motechid-firstname-lastname-" + DateFormat.getDateTimeInstance().format(datetime.toDate())));
     }

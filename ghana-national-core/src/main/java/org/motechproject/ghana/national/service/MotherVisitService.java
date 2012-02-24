@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.factory.MotherVisitEncounterFactory;
 import org.motechproject.ghana.national.factory.TTVaccinationVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.mapper.TTVaccinationEnrollmentMapper;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -32,16 +33,16 @@ import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 @Service
 public class MotherVisitService extends BaseScheduleService {
 
-    private EncounterService encounterService;
+    private AllEncounters allEncounters;
     AllObservations allObservations;
 
     private Logger logger = Logger.getLogger(MotherVisitEncounterFactory.class);
 
     @Autowired
-    public MotherVisitService(EncounterService encounterService, ScheduleTrackingService scheduleTrackingService,
+    public MotherVisitService(AllEncounters allEncounters, ScheduleTrackingService scheduleTrackingService,
                               AllObservations allObservations) {
         super(scheduleTrackingService);
-        this.encounterService = encounterService;
+        this.allEncounters = allEncounters;
         this.allObservations = allObservations;
     }
 
@@ -54,7 +55,7 @@ public class MotherVisitService extends BaseScheduleService {
             mrsObservations.addAll(eddObservations);
             createEDDScheduleForANCVisit(ancVisit.getPatient(), ancVisit.getEstDeliveryDate());
         }
-        return encounterService.persistEncounter(factory.createEncounter(ancVisit, mrsObservations));
+        return allEncounters.persistEncounter(factory.createEncounter(ancVisit, mrsObservations));
     }
 
     public Set<MRSObservation> createEDDObservationsForANCVisit(final ANCVisit ancVisit) {
@@ -98,7 +99,7 @@ public class MotherVisitService extends BaseScheduleService {
     public void receivedTT(final TTVaccineDosage dosage, Patient patient, MRSUser staff, Facility facility, final LocalDate vaccinationDate) {
         TTVisit ttVisit = new TTVisit().dosage(dosage).facility(facility).patient(patient).staff(staff).date(vaccinationDate.toDate());
         Encounter encounter = new TTVaccinationVisitEncounterFactory().createEncounterForVisit(ttVisit);
-        encounterService.persistEncounter(encounter);
+        allEncounters.persistEncounter(encounter);
         final EnrollmentRequest enrollmentRequest = new TTVaccinationEnrollmentMapper().map(patient, vaccinationDate, dosage.getScheduleMilestoneName());
         enrollOrFulfill(patient, enrollmentRequest);
     }

@@ -7,7 +7,6 @@ import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatExcept
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllPatients;
-import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
 import org.openmrs.Person;
@@ -27,19 +26,17 @@ import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
 @Service
 public class PatientService {
     private AllPatients allPatients;
-    private AllEncounters allEncounters;
     private IdentifierGenerationService identifierGenerationService;
-    private EncounterService encounterService;
+    private AllEncounters allEncounters;
     private MotherVisitService motherVisitService;
 
     @Autowired
-    public PatientService(AllPatients allPatients, AllEncounters allEncounters, IdentifierGenerationService identifierGenerationService,
-                          EncounterService encounterService, MotherVisitService motherVisitService) {
+    public PatientService(AllPatients allPatients, IdentifierGenerationService identifierGenerationService,
+                          AllEncounters allEncounters, MotherVisitService motherVisitService) {
 
         this.allPatients = allPatients;
-        this.allEncounters = allEncounters;
         this.identifierGenerationService = identifierGenerationService;
-        this.encounterService = encounterService;
+        this.allEncounters = allEncounters;
         this.motherVisitService = motherVisitService;
     }
 
@@ -57,7 +54,7 @@ public class PatientService {
             if (StringUtils.isNotEmpty(patient.getParentId())) {
                 createRelationship(patient.getParentId(), savedPatient.getMotechId());
             }
-            encounterService.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(), PATIENT_REG_VISIT.value(), DateUtil.today().toDate(), null);
+            allEncounters.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(), PATIENT_REG_VISIT.value(), DateUtil.today().toDate(), null);
             return savedPatient;
         } catch (IdentifierNotUniqueException e) {
             throw new PatientIdNotUniqueException();
@@ -96,7 +93,7 @@ public class PatientService {
         if (relationship != null && StringUtils.isNotEmpty(patient.getParentId())) {
             updateRelationship(patient.getParentId(), savedPatient, relationship);
         }
-        encounterService.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(),
+        allEncounters.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(),
                 PATIENT_EDIT_VISIT.value(), DateUtil.today().toDate(), null);
         return savedPatientId;
     }
@@ -142,10 +139,6 @@ public class PatientService {
         if (personA != null && !personA.getId().toString().equals(updatedMother.getMrsPatient().getPerson().getId())) {
             allPatients.updateMotherChildRelationship(updatedMother.getMrsPatient().getPerson(), savedPatient.getMrsPatient().getPerson());
         }
-    }
-
-    public void saveEncounter(MRSEncounter mrsEncounter) {
-        allEncounters.save(mrsEncounter);
     }
 
     public void deceasePatient(String patientMotechId, Date dateOfDeath, String causeOfDeath, String comment) {

@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Encounter;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.testing.utils.BaseUnitTest;
@@ -21,13 +22,13 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class ChildVisitServiceTest extends BaseUnitTest {
     private ChildVisitService service;
     @Mock
-    EncounterService encounterService;
+    AllEncounters allEncounters;
 
     @Before
     public void setUp() {
         service = new ChildVisitService();
         initMocks(this);
-        ReflectionTestUtils.setField(service, "encounterService", encounterService);
+        ReflectionTestUtils.setField(service, "allEncounters", allEncounters);
     }
 
     @Test
@@ -40,7 +41,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         service.save(cwcVisit);
 
         ArgumentCaptor<Encounter> encounterCaptor = ArgumentCaptor.forClass(Encounter.class);
-        verify(encounterService).persistEncounter(encounterCaptor.capture());
+        verify(allEncounters).persistEncounter(encounterCaptor.capture());
     }
 
     private CWCVisit createTestCWCVisit(Date registrationDate, MRSUser staff, Facility facility, Patient patient) {

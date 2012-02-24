@@ -3,7 +3,7 @@ package org.motechproject.ghana.national.handlers;
 import org.joda.time.DateTime;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
 import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.service.EncounterService;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.TextMessageService;
@@ -29,7 +29,7 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
     static final String DELIVERY_NOTIFICATION_SMS_KEY = "DELIVERY_NOTIFICATION_SMS_KEY";
 
     @Autowired
-    EncounterService encounterService;
+    AllEncounters allEncounters;
 
     @Autowired
     PatientService patientService;
@@ -51,7 +51,7 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
             Patient patient = patientService.getPatientByMotechId(deliveryNotificationForm.getMotechId());
             Facility facility = facilityService.getFacilityByMotechId(deliveryNotificationForm.getFacilityId());
             DateTime deliveryTime = deliveryNotificationForm.getDatetime();
-            encounterService.persistEncounter(patient.getMrsPatient(), deliveryNotificationForm.getStaffId(),
+            allEncounters.persistEncounter(patient.getMrsPatient(), deliveryNotificationForm.getStaffId(),
                     facility.getMrsFacilityId(), PREG_DEL_NOTIFY_VISIT.value(),
                     deliveryTime.toDate(), new HashSet<MRSObservation>());
             sendDeliveryNotificationMessage(deliveryNotificationForm.getMotechId(), deliveryTime);

@@ -4,7 +4,7 @@ import org.motechproject.ghana.national.bean.OutPatientVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.OutPatientVisit;
-import org.motechproject.ghana.national.service.EncounterService;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.OutPatientVisitService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
@@ -33,7 +33,7 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    EncounterService encounterService;
+    AllEncounters allEncounters;
 
     @Autowired
     FacilityService facilityService;
@@ -132,7 +132,7 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
         }
 
         Facility facility = facilityService.getFacilityByMotechId(formBean.getFacilityId());
-        encounterService.persistEncounter(mrsPatient, formBean.getStaffId(), facility.mrsFacilityId(), OUTPATIENT_VISIT.value(),
+        allEncounters.persistEncounter(mrsPatient, formBean.getStaffId(), facility.mrsFacilityId(), OUTPATIENT_VISIT.value(),
                 formBean.getVisitDate(), observationList);
     }
 }

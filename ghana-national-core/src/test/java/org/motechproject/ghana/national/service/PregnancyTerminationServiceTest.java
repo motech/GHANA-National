@@ -6,6 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
@@ -32,7 +33,7 @@ public class PregnancyTerminationServiceTest {
     @Mock
     private PatientService mockPatientService;
     @Mock
-    private EncounterService mockEncounterService;
+    private AllEncounters mockAllEncounters;
 
     @Mock
     private FacilityService mockFacilityService;
@@ -44,7 +45,7 @@ public class PregnancyTerminationServiceTest {
         initMocks(this);
         pregnancyTerminationService = new PregnancyTerminationService();
         ReflectionTestUtils.setField(pregnancyTerminationService, "patientService", mockPatientService);
-        ReflectionTestUtils.setField(pregnancyTerminationService, "encounterService", mockEncounterService);
+        ReflectionTestUtils.setField(pregnancyTerminationService, "allEncounters", mockAllEncounters);
         ReflectionTestUtils.setField(pregnancyTerminationService, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(pregnancyTerminationService, "scheduleTrackingService", mockScheduleTrackingService);
     }
@@ -96,7 +97,7 @@ public class PregnancyTerminationServiceTest {
         pregnancyTerminationService.terminatePregnancy(request);
         ArgumentCaptor<Set> captor = ArgumentCaptor.forClass(Set.class);
 
-        verify(mockEncounterService).persistEncounter(eq(mockMRSPatient), eq(staffId), eq(mrsFacilityId), eq(PREG_TERM_VISIT.value()), eq(date), captor.capture());
+        verify(mockAllEncounters).persistEncounter(eq(mockMRSPatient), eq(staffId), eq(mrsFacilityId), eq(PREG_TERM_VISIT.value()), eq(date), captor.capture());
 
         Set observations = captor.getValue();
 
