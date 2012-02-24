@@ -27,6 +27,7 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIV
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
 import static org.motechproject.ghana.national.domain.Concept.EDD;
 import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
+import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 
 @Service
 public class MotherVisitService extends BaseScheduleService {
@@ -90,8 +91,8 @@ public class MotherVisitService extends BaseScheduleService {
     }
 
     void createEDDScheduleForANCVisit(Patient patient, Date estimatedDateOfDelivery) {
-        EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, new PatientCare(DELIVERY, DateUtil.newDate(estimatedDateOfDelivery)));
-        scheduleAlerts(patient, enrollmentRequest);
+        EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, new PatientCare(DELIVERY, basedOnDeliveryDate(DateUtil.newDate(estimatedDateOfDelivery)).dateOfConception()));
+        enroll(enrollmentRequest);
     }
 
     public void receivedTT(final TTVaccineDosage dosage, Patient patient, MRSUser staff, Facility facility, final LocalDate vaccinationDate) {
@@ -99,7 +100,7 @@ public class MotherVisitService extends BaseScheduleService {
         Encounter encounter = new TTVaccinationVisitEncounterFactory().createEncounterForVisit(ttVisit);
         encounterService.persistEncounter(encounter);
         final EnrollmentRequest enrollmentRequest = new TTVaccinationEnrollmentMapper().map(patient, vaccinationDate, dosage.getScheduleMilestoneName());
-        scheduleAlerts(patient, enrollmentRequest);
+        enrollOrFulfill(patient, enrollmentRequest);
     }
 
     public void unScheduleAll(Patient patient) {

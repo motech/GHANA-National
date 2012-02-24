@@ -70,7 +70,7 @@ public class MotherVisitServiceTest {
         motherVisitServiceSpy.receivedTT(TT2, patient, staff, facility, vaccinationDate);
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(motherVisitServiceSpy).scheduleAlerts(eq(patient), enrollmentRequestCaptor.capture());
+        verify(motherVisitServiceSpy).enrollOrFulfill(eq(patient), enrollmentRequestCaptor.capture());
 
         EnrollmentRequest enrollmentRequest = enrollmentRequestCaptor.getValue();
         assertThat(enrollmentRequest.getScheduleName(), is(equalTo(TT_VACCINATION_VISIT)));
@@ -169,16 +169,17 @@ public class MotherVisitServiceTest {
     public void shouldCreateEDDScheduleForANCVisit() {
         String patientId = "1234567";
         Patient patient = new Patient(new MRSPatient(patientId));
-        Date estimatedDateOfDelivery = new Date(2012, 12, 12);
+        Date estimatedDateOfDelivery = new LocalDate(2012, 5, 1).toDate();
 
         when(scheduleTrackingService.getEnrollment(patientId, DELIVERY)).thenReturn(null);
         motherVisitServiceSpy.createEDDScheduleForANCVisit(patient, estimatedDateOfDelivery);
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(motherVisitServiceSpy).scheduleAlerts(eq(patient), enrollmentRequestCaptor.capture());
+        verify(motherVisitServiceSpy).enroll(enrollmentRequestCaptor.capture());
 
         EnrollmentRequest enrollmentRequest = enrollmentRequestCaptor.getValue();
         assertThat(enrollmentRequest.getScheduleName(), is(equalTo(DELIVERY)));
+        assertThat(enrollmentRequest.getReferenceDate(), is(equalTo(new LocalDate(2011, 7, 26))));
     }
 
     private ANCVisit createTestANCVisit() {
