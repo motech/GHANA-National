@@ -43,10 +43,12 @@ public class CareServiceTest extends BaseUnitTest {
     @Mock
     ScheduleTrackingService mockScheduleTrackingService;
 
+    @Mock
+    MotherVisitService mockMotherVisitService;
+
     private DateTime currentDate;
     Patient mockPatient;
     MRSPatient mockMRSPatient;
-    MRSPerson mockMRSPerson;
 
     @Before
     public void setUp() {
@@ -55,6 +57,7 @@ public class CareServiceTest extends BaseUnitTest {
         ReflectionTestUtils.setField(careService, "patientService", mockPatientService);
         ReflectionTestUtils.setField(careService, "allEncounters", mockAllEncounters);
         ReflectionTestUtils.setField(careService, "scheduleTrackingService", mockScheduleTrackingService);
+        ReflectionTestUtils.setField(careService, "motherVisitService", mockMotherVisitService);
 
         currentDate = DateTime.now();
         mockCurrentDate(currentDate);
@@ -181,6 +184,44 @@ public class CareServiceTest extends BaseUnitTest {
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), registrationDate, expectedANCObservations);
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, PREG_REG_VISIT.value(), registrationDate, expectedPregnancyObservations);
 
+    }
+    
+    @Test
+    public void shoulUpdateEddObservationIfFound() throws Exception {
+        String facilityId = "facility id";
+        String patientId = "patient id";
+        String patientMotechId = "patient motech id";
+        String staffUserId = "staff user id";
+        final Date registrationDate = new Date(2012, 3, 1);
+        final Date today = DateUtil.today().toDate();
+
+        final ANCVO ancvo = createTestANCVO("3", new Date(2011, 12, 9), "4", new Date(2011, 7, 5), RegistrationToday.IN_PAST, registrationDate, facilityId,
+                staffUserId, patientMotechId, Arrays.asList(ANCCareHistory.values()), new Date());
+
+        setupPatient(patientId, patientMotechId);
+
+        final MRSObservation activePregnancy = new MRSObservation<Object>(today, PREGNANCY.getName(), null);
+        activePregnancy.addDependantObservation(new MRSObservation<Boolean>(today, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
+        activePregnancy.addDependantObservation(new MRSObservation<Boolean>(today, PREGNANCY_STATUS.getName(), true));
+        Set<MRSObservation> updatedEddObservations = new HashSet<MRSObservation>() {{
+            add(activePregnancy);
+        }};
+        when(mockMotherVisitService.updatedEddObervations(ancvo.getEstimatedDateOfDelivery(), mockPatient,
+                ancvo.getStaffId())).thenReturn(updatedEddObservations);
+
+        careService.enroll(ancvo);
+
+        final HashSet<MRSObservation> expectedANCObservations = new HashSet<MRSObservation>() {{
+            add(new MRSObservation<Integer>(today, GRAVIDA.getName(), ancvo.getGravida()));
+            add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
+            add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
+            add(new MRSObservation<String>(registrationDate, ANC_REG_NUM.getName(), ancvo.getSerialNumber()));
+            add(new MRSObservation<Integer>(ancvo.getAncCareHistoryVO().getLastIPTDate(), IPT.getName(), Integer.valueOf(ancvo.getAncCareHistoryVO().getLastIPT())));
+            add(new MRSObservation<Integer>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), Integer.valueOf(ancvo.getAncCareHistoryVO().getLastTT())));
+        }};
+
+        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), registrationDate, expectedANCObservations);
+        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, PREG_REG_VISIT.value(), registrationDate, updatedEddObservations);
     }
 
 

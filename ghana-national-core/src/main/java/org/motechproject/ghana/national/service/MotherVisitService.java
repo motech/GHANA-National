@@ -50,7 +50,7 @@ public class MotherVisitService extends BaseScheduleService {
         MotherVisitEncounterFactory factory = new MotherVisitEncounterFactory();
 
         Set<MRSObservation> mrsObservations = factory.createMRSObservations(ancVisit);
-        Set<MRSObservation> eddObservations = createEDDObservationsForANCVisit(ancVisit);
+        Set<MRSObservation> eddObservations = updatedEddObervations(ancVisit.getEstDeliveryDate(), ancVisit.getPatient(), ancVisit.getStaff().getId());
         if (CollectionUtils.isNotEmpty(eddObservations)) {
             mrsObservations.addAll(eddObservations);
             createEDDScheduleForANCVisit(ancVisit.getPatient(), ancVisit.getEstDeliveryDate());
@@ -58,13 +58,11 @@ public class MotherVisitService extends BaseScheduleService {
         return allEncounters.persistEncounter(factory.createEncounter(ancVisit, mrsObservations));
     }
 
-    public Set<MRSObservation> createEDDObservationsForANCVisit(final ANCVisit ancVisit) {
+    public Set<MRSObservation> updatedEddObervations(Date estDeliveryDate, Patient patient, String staffId) {
         HashSet<MRSObservation> observations = new HashSet<MRSObservation>();
-        Date newEdd = ancVisit.getEstDeliveryDate();
-        Patient patient = ancVisit.getPatient();
         String motechId = patient.getMotechId();
 
-        if (newEdd == null) {
+        if (estDeliveryDate == null) {
             return observations;
         }
 
@@ -77,17 +75,15 @@ public class MotherVisitService extends BaseScheduleService {
         MRSObservation eddObservation = allObservations.findObservation(motechId, EDD.getName());
         Date oldEdd = (eddObservation == null) ? null : (Date) eddObservation.getValue();
 
-        if (oldEdd == null || !oldEdd.equals(newEdd)) {
-            observations.add(createNewEddObservation(ancVisit, activePregnancyObservation, eddObservation));
+        if (oldEdd == null || !oldEdd.equals(estDeliveryDate)) {
+            observations.add(createNewEddObservation(activePregnancyObservation, eddObservation, staffId, estDeliveryDate));
         }
         return observations;
     }
 
-    private MRSObservation createNewEddObservation(final ANCVisit ancVisit, MRSObservation activePregnancyObservation, MRSObservation eddObservation) {
-        allObservations.voidObservation(eddObservation, "Replaced by new EDD value", ancVisit.getStaff().getId());
-        activePregnancyObservation.setDependantObservations(new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Date>(new Date(), EDD.getName(), ancVisit.getEstDeliveryDate()));
-        }});
+    private MRSObservation createNewEddObservation(MRSObservation activePregnancyObservation, MRSObservation eddObservation, String staffId, final Date estDeliveryDate) {
+        allObservations.voidObservation(eddObservation, "Replaced by new EDD value", staffId);
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(new Date(), EDD.getName(), estDeliveryDate));
         return activePregnancyObservation;
     }
 
