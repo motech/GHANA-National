@@ -1,0 +1,22 @@
+{
+    "name" : "BCG",
+    "milestones" : [
+        {
+            "name" : "Default",
+            "scheduleWindows" : {
+                "earliest" : "",
+                "due" : "",
+                "late" : "16 Days",
+                "max" : "365 Days"
+            },
+            "alerts" : [
+                {
+                    "window" : "late",
+                    "interval" : "1 Week",
+                    "count" : "2",
+                    "offset" : "2 Days"
+                }
+            ]
+        }
+    ]
+}

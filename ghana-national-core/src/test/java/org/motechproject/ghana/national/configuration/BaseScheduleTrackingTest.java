@@ -32,7 +32,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.TTVaccine;
 
 public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
 
@@ -155,8 +154,8 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         return dateList;
     }
 
-    protected void fulfillCurrentMilestone(LocalDate date) {
+    protected void fulfillCurrentMilestone(LocalDate date, String scheduleName) {
         mockToday(date);
-        scheduleTrackingService.fulfillCurrentMilestone(PATIENT_ID, TTVaccine);
+        scheduleTrackingService.fulfillCurrentMilestone(PATIENT_ID, scheduleName);
     }
 }

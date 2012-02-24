@@ -2,11 +2,11 @@ package org.motechproject.ghana.national.domain;
 
 import org.joda.time.LocalDate;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.util.DateUtil;
 
 import java.util.List;
 
-import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 
@@ -67,5 +67,9 @@ public class Patient {
             return new PatientCare(ANC_IPT_VACCINE, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception());
         }
         return null;
+    }
+
+    public List<PatientCare> cwcCareProgramToEnrollOnRegistration() {
+        return nullSafeList(new PatientCare(BCG, DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth())));
     }
 }

@@ -22,7 +22,7 @@
         <fht/>
         <comments/>
         <formtype>data_entry</formtype>
-        <formname>motherpnc-jf</formname>
+        <formname>MotherPNC</formname>
       </pncmother>
     </xf:instance>
     <xf:bind id="staffId" nodeset="/pncmother/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>

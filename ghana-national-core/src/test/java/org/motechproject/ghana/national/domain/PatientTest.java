@@ -5,14 +5,19 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ghana.national.vo.Pregnancy;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.testing.utils.BaseUnitTest;
+import org.motechproject.util.DateUtil;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.BCG;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 
@@ -51,6 +56,14 @@ public class PatientTest extends BaseUnitTest {
 
         assertEquals(1, patientCares.size());
         assertPatientCare(patientCares.get(0), DELIVERY, pregnancy.dateOfConception());
+    }
+    
+    @Test
+    public void shouldReturnAllCWCCareProgramsApplicableDuringRegistration() {
+        LocalDate dateOfBirth = DateUtil.newDate(2000, 1, 1);
+        Patient patient = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(dateOfBirth.toDate()), null));
+        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration();
+        assertThat(patientCares, hasItem(new PatientCare(BCG, dateOfBirth)));
     }
 
     private void assertPatientCare(PatientCare patientCare, String name, LocalDate startingOn) {
