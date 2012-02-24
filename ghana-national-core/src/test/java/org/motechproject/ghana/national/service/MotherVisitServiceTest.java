@@ -118,7 +118,7 @@ public class MotherVisitServiceTest {
         when(mockAllObservations.findObservation(motechId, PREGNANCY.getName())).thenReturn(activePregnancy);
         when(mockAllObservations.findObservation(motechId, EDD.getName())).thenReturn(edd);
 
-        Set<MRSObservation> eddObservations = motherVisitServiceSpy.createEDDObservationsForANCVisit(ancVisit);
+        Set<MRSObservation> eddObservations = motherVisitServiceSpy.updatedEddObervations(ancVisit.getEstDeliveryDate(), ancVisit.getPatient(), ancVisit.getStaff().getId());
 
         assertTrue(CollectionUtils.isNotEmpty(eddObservations));
         verify(mockAllObservations).findObservation(motechId, PREGNANCY.getName());
@@ -136,7 +136,7 @@ public class MotherVisitServiceTest {
         when(mockAllObservations.findObservation(motechId, PREGNANCY.getName())).thenReturn(activePregnancy);
         when(mockAllObservations.findObservation(motechId, EDD.getName())).thenReturn(edd);
 
-        Set<MRSObservation> eddObservations = motherVisitServiceSpy.createEDDObservationsForANCVisit(ancVisit);
+        Set<MRSObservation> eddObservations = motherVisitServiceSpy.updatedEddObervations(ancVisit.getEstDeliveryDate(), ancVisit.getPatient(), ancVisit.getStaff().getId());
 
         assertTrue(CollectionUtils.isEmpty(eddObservations));
         verify(mockAllObservations, never()).findObservation(motechId, PREGNANCY.getName());
@@ -153,7 +153,7 @@ public class MotherVisitServiceTest {
         when(mockAllObservations.findObservation(motechId, PREGNANCY.getName())).thenReturn(activePregnancy);
         when(mockAllObservations.findObservation(motechId, EDD.getName())).thenReturn(edd);
 
-        motherVisitServiceSpy.createEDDObservationsForANCVisit(ancVisit);
+        motherVisitServiceSpy.updatedEddObervations(ancVisit.getEstDeliveryDate(), ancVisit.getPatient(), ancVisit.getStaff().getId());
 
         verify(mockAllObservations).findObservation(motechId, PREGNANCY.getName());
         verify(mockAllObservations, never()).voidObservation(eq(edd), anyString(), eq("staffId"));

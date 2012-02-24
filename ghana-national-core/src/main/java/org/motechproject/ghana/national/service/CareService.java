@@ -38,6 +38,9 @@ public class CareService {
     AllEncounters allEncounters;
 
     @Autowired
+    MotherVisitService motherVisitService;
+
+    @Autowired
     ScheduleTrackingService scheduleTrackingService;
 
     public void enroll(CwcVO cwc) {
@@ -52,7 +55,7 @@ public class CareService {
         LocalDate expectedDeliveryDate = newDate(ancVO.getEstimatedDateOfDelivery());
 
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), ANC_REG_VISIT.value(), registrationDate, prepareObservations(ancVO));
-        allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, registerPregnancy(ancVO));
+        allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, registerPregnancy(ancVO, patient));
         List<PatientCare> patientCares = patient.ancCareProgramsToEnrollOnRegistration(expectedDeliveryDate);
         for (PatientCare patientCare : patientCares) {
             registerSchedule(new ScheduleEnrollmentMapper().map(patient, patientCare));
@@ -75,15 +78,22 @@ public class CareService {
         return observations;
     }
 
-    private HashSet<MRSObservation> registerPregnancy(ANCVO ancVO) {
+    private Set<MRSObservation> registerPregnancy(ANCVO ancVO, Patient patient) {
         Date today = DateUtil.today().toDate();
-        final MRSObservation observation = new MRSObservation(today, PREGNANCY.getName(), null);
-        addDependentObservation(observation, today, EDD.getName(), ancVO.getEstimatedDateOfDelivery());
-        addDependentObservation(observation, today, CONFINEMENT_CONFIRMED.getName(), ancVO.getDeliveryDateConfirmed());
-        addDependentObservation(observation, today, PREGNANCY_STATUS.getName(), true);
-        return new HashSet<MRSObservation>() {{
-            add(observation);
-        }};
+        Set<MRSObservation> pregnancyObservations = motherVisitService.updatedEddObervations(ancVO.getEstimatedDateOfDelivery(), patient, ancVO.getStaffId());
+
+        MRSObservation activePregnancy;
+        if (!pregnancyObservations.isEmpty()) {
+            activePregnancy = pregnancyObservations.iterator().next();
+        } else {
+            activePregnancy = new MRSObservation<Object>(today, PREGNANCY.getName(), null);
+            addDependentObservation(activePregnancy, today, EDD.getName(), ancVO.getEstimatedDateOfDelivery());
+        }
+        addDependentObservation(activePregnancy, today, CONFINEMENT_CONFIRMED.getName(), ancVO.getDeliveryDateConfirmed());
+        addDependentObservation(activePregnancy, today, PREGNANCY_STATUS.getName(), true);
+        HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
+        mrsObservations.add(activePregnancy);
+        return mrsObservations;
     }
 
     Set<MRSObservation> addObservationsOnANCHistory(ANCCareHistoryVO ancCareHistoryVO) {
