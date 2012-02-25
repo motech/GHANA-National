@@ -1,10 +1,7 @@
 package org.motechproject.ghana.national.service;
 
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.ANCCareHistory;
-import org.motechproject.ghana.national.domain.CwcCareHistory;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientCare;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.vo.*;
@@ -47,6 +44,14 @@ public class CareService {
         Patient patient = patientService.getPatientByMotechId(cwc.getPatientMotechId());
         allEncounters.persistEncounter(patient.getMrsPatient(), cwc.getStaffId(), cwc.getFacilityId(), CWC_REG_VISIT.value(), cwc.getRegistrationDate(),
                 prepareObservations(cwc));
+        enrollToCWCCarePrograms(patient);
+    }
+
+    void enrollToCWCCarePrograms(Patient patient) {
+        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration();
+        for (PatientCare patientCare : patientCares) {
+            registerSchedule(new ScheduleEnrollmentMapper().map(patient, patientCare));
+        }
     }
 
     public void enroll(ANCVO ancVO) {

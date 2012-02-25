@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.handlers;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.bean.ANCVisitForm;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.TTVaccineDosage;
@@ -22,6 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.motechproject.ghana.national.domain.Constants.FORM_BEAN;
+import static org.motechproject.ghana.national.domain.Constants.NOT_APPLICABLE;
 
 @Component
 public class ANCVisitFormHandler implements FormPublishHandler {
@@ -43,10 +45,10 @@ public class ANCVisitFormHandler implements FormPublishHandler {
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
         try {
-            ANCVisitForm form = (ANCVisitForm) event.getParameters().get(Constants.FORM_BEAN);
+            ANCVisitForm form = (ANCVisitForm) event.getParameters().get(FORM_BEAN);
             ANCVisit ancVisit = createANCVisit(form);
             visitService.registerANCVisit(ancVisit);
-            if (!StringUtils.isEmpty(ancVisit.getTtdose())) {
+            if (!StringUtils.isEmpty(ancVisit.getTtdose()) && !ancVisit.getTtdose().equals(NOT_APPLICABLE)) {
                 visitService.receivedTT(TTVaccineDosage.byValue(Integer.parseInt(ancVisit.getTtdose())), 
                         ancVisit.getPatient(), ancVisit.getStaff(), ancVisit.getFacility(), DateUtil.today());
             }
