@@ -1,15 +1,17 @@
 package org.motechproject.ghana.national.service;
 
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.ANCCareHistory;
+import org.motechproject.ghana.national.domain.CwcCareHistory;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientCare;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllEncounters;
+import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
-import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ public class CareService {
     MotherVisitService motherVisitService;
 
     @Autowired
-    ScheduleTrackingService scheduleTrackingService;
+    AllSchedules allSchedules;
 
     public void enroll(CwcVO cwc) {
         Patient patient = patientService.getPatientByMotechId(cwc.getPatientMotechId());
@@ -50,7 +52,7 @@ public class CareService {
     void enrollToCWCCarePrograms(Patient patient) {
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration();
         for (PatientCare patientCare : patientCares) {
-            registerSchedule(new ScheduleEnrollmentMapper().map(patient, patientCare));
+            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare));
         }
     }
 
@@ -63,7 +65,7 @@ public class CareService {
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, registerPregnancy(ancVO, patient));
         List<PatientCare> patientCares = patient.ancCareProgramsToEnrollOnRegistration(expectedDeliveryDate);
         for (PatientCare patientCare : patientCares) {
-            registerSchedule(new ScheduleEnrollmentMapper().map(patient, patientCare));
+            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare));
         }
     }
 
@@ -85,7 +87,7 @@ public class CareService {
 
     private Set<MRSObservation> registerPregnancy(ANCVO ancVO, Patient patient) {
         Date today = DateUtil.today().toDate();
-        Set<MRSObservation> pregnancyObservations = motherVisitService.updatedEddObervations(ancVO.getEstimatedDateOfDelivery(), patient, ancVO.getStaffId());
+        Set<MRSObservation> pregnancyObservations = motherVisitService.updatedEddObservations(ancVO.getEstimatedDateOfDelivery(), patient, ancVO.getStaffId());
 
         MRSObservation activePregnancy;
         if (!pregnancyObservations.isEmpty()) {
@@ -161,10 +163,6 @@ public class CareService {
             addAll(addObservationsOnANCHistory(careHistoryVO.getAncCareHistoryVO()));
             addAll(addObservationsOnCWCHistory(careHistoryVO.getCwcCareHistoryVO()));
         }};
-    }
-
-    private void registerSchedule(EnrollmentRequest enrollmentRequest) {
-        scheduleTrackingService.enroll(enrollmentRequest);
     }
 
     public MRSEncounter addCareHistory(CareHistoryVO careHistory) {

@@ -7,10 +7,10 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllEncounters;
+import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
@@ -38,7 +38,7 @@ public class PregnancyTerminationServiceTest {
     @Mock
     private FacilityService mockFacilityService;
     @Mock
-    private ScheduleTrackingService mockScheduleTrackingService;
+    private AllSchedules mockAllSchedules;
 
     @Before
     public void setUp() {
@@ -47,7 +47,7 @@ public class PregnancyTerminationServiceTest {
         ReflectionTestUtils.setField(pregnancyTerminationService, "patientService", mockPatientService);
         ReflectionTestUtils.setField(pregnancyTerminationService, "allEncounters", mockAllEncounters);
         ReflectionTestUtils.setField(pregnancyTerminationService, "facilityService", mockFacilityService);
-        ReflectionTestUtils.setField(pregnancyTerminationService, "scheduleTrackingService", mockScheduleTrackingService);
+        ReflectionTestUtils.setField(pregnancyTerminationService, "allSchedules", mockAllSchedules);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class PregnancyTerminationServiceTest {
         pregnancyTerminationService.terminatePregnancy(request);
 
         verify(mockPatientService).deceasePatient(request.getMotechId(), request.getTerminationDate(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
-        verify(mockScheduleTrackingService).unenroll(mockMRSPatient.getId(), DELIVERY);
+        verify(mockAllSchedules).unEnroll(mockPatient, DELIVERY);
     }
 
     @Test

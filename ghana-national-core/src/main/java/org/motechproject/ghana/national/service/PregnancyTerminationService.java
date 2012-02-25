@@ -2,13 +2,14 @@ package org.motechproject.ghana.national.service;
 
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllEncounters;
+import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,18 +37,19 @@ public class PregnancyTerminationService {
     FacilityService facilityService;
 
     @Autowired
-    private ScheduleTrackingService scheduleTrackingService;
+    AllSchedules allSchedules;
 
     @LoginAsAdmin
     @ApiSession
     public void terminatePregnancy(PregnancyTerminationRequest request) {
-        MRSPatient mrsPatient = patientService.getPatientByMotechId(request.getMotechId()).getMrsPatient();
+        Patient patient = patientService.getPatientByMotechId(request.getMotechId());
+        MRSPatient mrsPatient = patient.getMrsPatient();
         Facility facility = facilityService.getFacilityByMotechId(request.getFacilityId());
         allEncounters.persistEncounter(mrsPatient, request.getStaffId(), facility.getMrsFacilityId(), PREG_TERM_VISIT.value(), request.getTerminationDate(), prepareObservations(request));
         if (request.isDead())
             patientService.deceasePatient(request.getMotechId(), request.getTerminationDate(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
 
-        scheduleTrackingService.unenroll(mrsPatient.getId(), DELIVERY);
+        allSchedules.unEnroll(patient, DELIVERY);
     }
 
     private Set<MRSObservation> prepareObservations(PregnancyTerminationRequest request) {

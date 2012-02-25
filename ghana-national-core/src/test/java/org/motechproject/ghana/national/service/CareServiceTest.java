@@ -8,11 +8,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllEncounters;
+import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.model.Time;
-import org.motechproject.mrs.model.*;
+import org.motechproject.mrs.model.MRSConcept;
+import org.motechproject.mrs.model.MRSObservation;
+import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
-import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -41,7 +43,7 @@ public class CareServiceTest extends BaseUnitTest {
     AllEncounters mockAllEncounters;
 
     @Mock
-    ScheduleTrackingService mockScheduleTrackingService;
+    AllSchedules mockAllSchedules;
 
     @Mock
     MotherVisitService mockMotherVisitService;
@@ -56,7 +58,7 @@ public class CareServiceTest extends BaseUnitTest {
         initMocks(this);
         ReflectionTestUtils.setField(careService, "patientService", mockPatientService);
         ReflectionTestUtils.setField(careService, "allEncounters", mockAllEncounters);
-        ReflectionTestUtils.setField(careService, "scheduleTrackingService", mockScheduleTrackingService);
+        ReflectionTestUtils.setField(careService, "allSchedules", mockAllSchedules);
         ReflectionTestUtils.setField(careService, "motherVisitService", mockMotherVisitService);
 
         currentDate = DateTime.now();
@@ -209,7 +211,7 @@ public class CareServiceTest extends BaseUnitTest {
         Set<MRSObservation> updatedEddObservations = new HashSet<MRSObservation>() {{
             add(activePregnancy);
         }};
-        when(mockMotherVisitService.updatedEddObervations(ancvo.getEstimatedDateOfDelivery(), mockPatient,
+        when(mockMotherVisitService.updatedEddObservations(ancvo.getEstimatedDateOfDelivery(), mockPatient,
                 ancvo.getStaffId())).thenReturn(updatedEddObservations);
 
         careService.enroll(ancvo);
@@ -340,7 +342,7 @@ public class CareServiceTest extends BaseUnitTest {
 
     private void verifyIfScheduleEnrolled(int indexForSchedule, String patientId, LocalDate startingOn, String enrollmentName) {
         ArgumentCaptor<EnrollmentRequest> deliveryEnrollmentRequestCaptor = forClass(EnrollmentRequest.class);
-        verify(mockScheduleTrackingService).enroll(deliveryEnrollmentRequestCaptor.capture());
+        verify(mockAllSchedules).enroll(deliveryEnrollmentRequestCaptor.capture());
         assertScheduleEnrollmentRequest(deliveryEnrollmentRequestCaptor.getAllValues().get(indexForSchedule), patientId, startingOn, enrollmentName);
     }
 
