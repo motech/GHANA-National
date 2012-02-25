@@ -39,7 +39,7 @@ public class ClientDeathFormHandlerTest {
         MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.clientDeath", parameters);
 
         clientDeathFormHandler.handleFormEvent(event);
-        verify(mockPatientService).deceasePatient("motechId", deathDate, causeOfDeath, comment);
+        verify(mockPatientService).deceasePatient(deathDate, "motechId", causeOfDeath, comment);
     }
 
     private ClientDeathForm clientForm(Date deathDate, String causeOfDeath, String comment) {

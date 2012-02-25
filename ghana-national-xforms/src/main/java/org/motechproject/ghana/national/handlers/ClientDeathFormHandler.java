@@ -23,6 +23,6 @@ public class ClientDeathFormHandler implements FormPublishHandler {
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
         ClientDeathForm clientDeathForm = (ClientDeathForm) event.getParameters().get(Constants.FORM_BEAN);
-        patientService.deceasePatient(clientDeathForm.getMotechId(), clientDeathForm.getDate(), clientDeathForm.getCauseOfDeath(), clientDeathForm.getComment());
+        patientService.deceasePatient(clientDeathForm.getDate(), clientDeathForm.getMotechId(), clientDeathForm.getCauseOfDeath(), clientDeathForm.getComment());
     }
 }

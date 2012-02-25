@@ -4,6 +4,8 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllEncounters;
+import org.motechproject.ghana.national.repository.AllFacilities;
+import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
@@ -18,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.PREG_TERM_VISIT;
 import static org.motechproject.ghana.national.tools.Utility.safePareInteger;
@@ -27,27 +30,34 @@ public class PregnancyTerminationService {
 
     public static final String PREGNANCY_TERMINATION = "Pregnancy Termination";
     public static final String OTHER_CAUSE_OF_DEATH = "OTHER";
-    @Autowired
-    PatientService patientService;
 
-    @Autowired
+    AllPatients allPatients;
     AllEncounters allEncounters;
-
-    @Autowired
-    FacilityService facilityService;
-
-    @Autowired
+    AllFacilities allFacilities;
     AllSchedules allSchedules;
+
+    public PregnancyTerminationService() {
+    }
+
+    @Autowired
+    public PregnancyTerminationService(AllPatients allPatients, AllEncounters allEncounters, AllFacilities allFacilities, AllSchedules allSchedules) {
+        this.allPatients = allPatients;
+        this.allEncounters = allEncounters;
+        this.allFacilities = allFacilities;
+        this.allSchedules = allSchedules;
+    }
 
     @LoginAsAdmin
     @ApiSession
     public void terminatePregnancy(PregnancyTerminationRequest request) {
-        Patient patient = patientService.getPatientByMotechId(request.getMotechId());
+        Patient patient = allPatients.patientByMotechId(request.getMotechId());
         MRSPatient mrsPatient = patient.getMrsPatient();
-        Facility facility = facilityService.getFacilityByMotechId(request.getFacilityId());
+        Facility facility = allFacilities.getFacilityByMotechId(request.getFacilityId());
         allEncounters.persistEncounter(mrsPatient, request.getStaffId(), facility.getMrsFacilityId(), PREG_TERM_VISIT.value(), request.getTerminationDate(), prepareObservations(request));
-        if (request.isDead())
-            patientService.deceasePatient(request.getMotechId(), request.getTerminationDate(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
+        if (request.isDead()) {
+            allPatients.deceasePatient(request.getTerminationDate(), request.getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
+            allSchedules.unEnroll(patient, TT_VACCINATION_VISIT);
+        }
 
         allSchedules.unEnroll(patient, DELIVERY);
     }

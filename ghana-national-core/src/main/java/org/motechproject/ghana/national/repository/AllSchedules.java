@@ -6,6 +6,8 @@ import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class AllSchedules {
     private ScheduleTrackingService scheduleTrackingService;
@@ -29,5 +31,11 @@ public class AllSchedules {
 
     public void unEnroll(Patient patient, String scheduleName) {
         scheduleTrackingService.unenroll(patient.getMRSPatientId(), scheduleName);
+    }
+
+    public void unEnroll(Patient patient, List<String> scheduleNames) {
+        for (String scheduleName : scheduleNames) {
+            scheduleTrackingService.unenroll(patient.getMRSPatientId(), scheduleName);
+        }
     }
 }

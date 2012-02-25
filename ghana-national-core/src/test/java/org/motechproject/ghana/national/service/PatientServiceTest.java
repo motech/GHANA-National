@@ -11,7 +11,6 @@ import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatExcept
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllPatients;
-import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSFacility;
@@ -31,7 +30,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
 import static org.motechproject.ghana.national.domain.EncounterType.PATIENT_REG_VISIT;
 
 public class PatientServiceTest {
@@ -43,13 +41,11 @@ public class PatientServiceTest {
     private IdentifierGenerator mockIdentifierGenerator;
     @Mock
     private AllEncounters mockAllEncounters;
-    @Mock
-    private AllSchedules mockAllSchedules;
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(mockAllPatients, mockIdentifierGenerator, mockAllEncounters, mockAllSchedules);
+        patientService = new PatientService(mockAllPatients, mockIdentifierGenerator, mockAllEncounters);
     }
 
     @Test
@@ -321,10 +317,9 @@ public class PatientServiceTest {
         when(mockAllPatients.patientByMotechId(patientMotechId)).thenReturn(patient);
         when(mockAllPatients.getMotherRelationship(Matchers.<MRSPerson>any())).thenReturn(null);
 
-        patientService.deceasePatient(patientMotechId, dateOfDeath, causeOfDeath, comment);
+        patientService.deceasePatient(dateOfDeath, patientMotechId, causeOfDeath, comment);
 
         verify(mockAllPatients).deceasePatient(dateOfDeath, patientMotechId, "OTHER NON-CODED", comment);
-        verify(mockAllSchedules).unEnroll(patient, TT_VACCINATION_VISIT);
 
     }
 

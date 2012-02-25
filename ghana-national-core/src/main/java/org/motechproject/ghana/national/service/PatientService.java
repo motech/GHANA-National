@@ -7,7 +7,6 @@ import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatExcept
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllPatients;
-import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
-import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
 import static org.motechproject.ghana.national.domain.EncounterType.PATIENT_EDIT_VISIT;
 import static org.motechproject.ghana.national.domain.EncounterType.PATIENT_REG_VISIT;
 import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
@@ -31,16 +29,13 @@ public class PatientService {
     private AllPatients allPatients;
     private IdentifierGenerator identifierGenerator;
     private AllEncounters allEncounters;
-    private AllSchedules allSchedules;
 
     @Autowired
-    public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator,
-                          AllEncounters allEncounters, AllSchedules allSchedules) {
+    public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator, AllEncounters allEncounters) {
 
         this.allPatients = allPatients;
         this.identifierGenerator = identifierGenerator;
         this.allEncounters = allEncounters;
-        this.allSchedules = allSchedules;
     }
 
     public Patient registerPatient(Patient patient, String staffId)
@@ -67,15 +62,7 @@ public class PatientService {
     }
 
     public Patient getPatientByMotechId(String patientId) {
-        Patient patient = allPatients.patientByMotechId(patientId);
-        if (patient == null) {
-            return null;
-        }
-        Relationship motherRelationship = allPatients.getMotherRelationship(patient.getMrsPatient().getPerson());
-        if (motherRelationship != null) {
-            setParentId(patient, motherRelationship);
-        }
-        return patient;
+        return allPatients.patientByMotechId(patientId);
     }
 
     public List<Patient> search(String name, String motechId) {
@@ -105,25 +92,6 @@ public class PatientService {
         return allPatients.getAgeOfPersonByMotechId(motechId);
     }
 
-    private void setParentId(Patient patient, Relationship motherRelationship) {
-        Person mother = motherRelationship.getPersonA();
-        if (mother != null && !mother.getNames().isEmpty()) {
-            List<Patient> patients = allPatients.search(mother.getNames().iterator().next().getFullName(), null);
-            if (patients != null && !patients.isEmpty()) {
-                patient.parentId(getParentId(mother, patients));
-            }
-        }
-    }
-
-    private String getParentId(Person mother, List<Patient> patients) {
-        for (Patient patient : patients) {
-            if (patient.getMrsPatient().getPerson().getId().equals(mother.getId().toString())) {
-                return patient.getMrsPatient().getMotechId();
-            }
-        }
-        return null;
-    }
-
     void createRelationship(String parentId, String savedPatientId) throws ParentNotFoundException {
         Patient mother = getPatientByMotechId(parentId);
         if (mother == null) {
@@ -144,8 +112,7 @@ public class PatientService {
         }
     }
 
-    public void deceasePatient(String patientMotechId, Date dateOfDeath, String causeOfDeath, String comment) {
+    public void deceasePatient(Date dateOfDeath, String patientMotechId, String causeOfDeath, String comment) {
         allPatients.deceasePatient(dateOfDeath, patientMotechId, (causeOfDeath.equals("OTHER") ? "OTHER NON-CODED" : "NONE"), comment);
-        allSchedules.unEnroll(getPatientByMotechId(patientMotechId), TT_VACCINATION_VISIT);
     }
 }

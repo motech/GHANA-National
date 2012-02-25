@@ -6,6 +6,7 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.services.MRSPatientAdapter;
 import org.motechproject.openmrs.services.OpenMRSRelationshipAdapter;
+import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -35,7 +36,34 @@ public class AllPatients {
 
     public Patient patientByMotechId(String id) {
         MRSPatient mrsPatient = getPatientByMotechId(id);
-        return (mrsPatient != null) ? new Patient(mrsPatient) : null;
+        if (mrsPatient != null) {
+            Patient patient = new Patient(mrsPatient);
+            Relationship motherRelationship = getMotherRelationship(patient.getMrsPatient().getPerson());
+            if (motherRelationship != null) {
+                setParentId(patient, motherRelationship);
+            }
+            return patient;
+        }
+        return null;
+    }
+
+    private void setParentId(Patient patient, Relationship motherRelationship) {
+        Person mother = motherRelationship.getPersonA();
+        if (mother != null && !mother.getNames().isEmpty()) {
+            List<Patient> patients = search(mother.getNames().iterator().next().getFullName(), null);
+            if (patients != null && !patients.isEmpty()) {
+                patient.parentId(getParentId(mother, patients));
+            }
+        }
+    }
+
+    private String getParentId(Person mother, List<Patient> patients) {
+        for (Patient patient : patients) {
+            if (patient.getMrsPatient().getPerson().getId().equals(mother.getId().toString())) {
+                return patient.getMrsPatient().getMotechId();
+            }
+        }
+        return null;
     }
 
     private MRSPatient getPatientByMotechId(String id) {
@@ -50,8 +78,8 @@ public class AllPatients {
             }
         });
     }
-    
-    public Integer getAgeOfPersonByMotechId(String motechId){
+
+    public Integer getAgeOfPersonByMotechId(String motechId) {
         return patientAdapter.getAgeOfPatientByMotechId(motechId);
     }
 
@@ -76,6 +104,6 @@ public class AllPatients {
     }
 
     public void deceasePatient(Date dateOfDeath, String patientMotechId, String causeOfDeath, String comment) {
-       patientAdapter.deceasePatient(patientMotechId, causeOfDeath, dateOfDeath, comment);
+        patientAdapter.deceasePatient(patientMotechId, causeOfDeath, dateOfDeath, comment);
     }
 }

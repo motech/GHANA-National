@@ -7,12 +7,13 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllEncounters;
+import org.motechproject.ghana.national.repository.AllFacilities;
+import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import java.util.Date;
@@ -22,6 +23,7 @@ import java.util.Set;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.Constants.OTHER_CAUSE_OF_DEATH;
 import static org.motechproject.ghana.national.domain.Constants.PREGNANCY_TERMINATION;
@@ -31,23 +33,18 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 public class PregnancyTerminationServiceTest {
     private PregnancyTerminationService pregnancyTerminationService;
     @Mock
-    private PatientService mockPatientService;
+    private AllPatients mockAllPatients;
     @Mock
     private AllEncounters mockAllEncounters;
-
     @Mock
-    private FacilityService mockFacilityService;
+    private AllFacilities mockAllFacilities;
     @Mock
     private AllSchedules mockAllSchedules;
 
     @Before
     public void setUp() {
         initMocks(this);
-        pregnancyTerminationService = new PregnancyTerminationService();
-        ReflectionTestUtils.setField(pregnancyTerminationService, "patientService", mockPatientService);
-        ReflectionTestUtils.setField(pregnancyTerminationService, "allEncounters", mockAllEncounters);
-        ReflectionTestUtils.setField(pregnancyTerminationService, "facilityService", mockFacilityService);
-        ReflectionTestUtils.setField(pregnancyTerminationService, "allSchedules", mockAllSchedules);
+        pregnancyTerminationService = new PregnancyTerminationService(mockAllPatients, mockAllEncounters, mockAllFacilities, mockAllSchedules);
     }
 
     @Test
@@ -62,16 +59,17 @@ public class PregnancyTerminationServiceTest {
         Patient mockPatient = mock(Patient.class);
         MRSPatient mockMRSPatient = mock(MRSPatient.class);
         when(mockMRSPatient.getId()).thenReturn("mrsPatientId");
-        when(mockPatientService.getPatientByMotechId(request.getMotechId())).thenReturn(mockPatient);
+        when(mockAllPatients.patientByMotechId(request.getMotechId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
 
         Facility mockFacility=mock(Facility.class);
-        when(mockFacilityService.getFacilityByMotechId(facilityId)).thenReturn(mockFacility);
+        when(mockAllFacilities.getFacilityByMotechId(facilityId)).thenReturn(mockFacility);
         when(mockFacility.getMrsFacilityId()).thenReturn(mrsFacilityId);
 
         pregnancyTerminationService.terminatePregnancy(request);
 
-        verify(mockPatientService).deceasePatient(request.getMotechId(), request.getTerminationDate(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
+        verify(mockAllPatients).deceasePatient(request.getTerminationDate(), request.getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
+        verify(mockAllSchedules).unEnroll(mockPatient, TT_VACCINATION_VISIT);
         verify(mockAllSchedules).unEnroll(mockPatient, DELIVERY);
     }
 
@@ -87,11 +85,11 @@ public class PregnancyTerminationServiceTest {
 
         Patient mockPatient = mock(Patient.class);
         MRSPatient mockMRSPatient = mock(MRSPatient.class);
-        when(mockPatientService.getPatientByMotechId(request.getMotechId())).thenReturn(mockPatient);
+        when(mockAllPatients.patientByMotechId(request.getMotechId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
 
         Facility mockFacility=mock(Facility.class);
-        when(mockFacilityService.getFacilityByMotechId(facilityId)).thenReturn(mockFacility);
+        when(mockAllFacilities.getFacilityByMotechId(facilityId)).thenReturn(mockFacility);
         when(mockFacility.getMrsFacilityId()).thenReturn(mrsFacilityId);
 
         pregnancyTerminationService.terminatePregnancy(request);
