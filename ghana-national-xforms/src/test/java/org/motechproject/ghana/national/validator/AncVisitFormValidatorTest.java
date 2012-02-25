@@ -52,7 +52,7 @@ public class AncVisitFormValidatorTest {
         verify(formValidator).validateIfFacilityExists(facilityId);
         verify(formValidator).validateIfPatientExistsAndIsAlive(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
         verify(formValidator).validateIfPatientIsFemale(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
-        verify(mockAllEncounters).fetchLatestEncounter(motechId, ANC_REG_VISIT.value());
+        verify(mockAllEncounters).getLatest(motechId, ANC_REG_VISIT.value());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class AncVisitFormValidatorTest {
         when(formBean.getStaffId()).thenReturn(staffId);
         when(formBean.getFacilityId()).thenReturn(facilityId);
 
-        when(mockAllEncounters.fetchLatestEncounter(motechId, ANC_REG_VISIT.value())).thenReturn(null);
+        when(mockAllEncounters.getLatest(motechId, ANC_REG_VISIT.value())).thenReturn(null);
 
         List<FormError> formErrors = validator.validate(formBean);
 

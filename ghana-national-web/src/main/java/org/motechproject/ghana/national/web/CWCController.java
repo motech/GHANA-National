@@ -80,7 +80,7 @@ public class CWCController {
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     public String create(@RequestParam String motechPatientId, ModelMap modelMap) {
         Patient patient = patientService.getPatientByMotechId(motechPatientId);
-        MRSEncounter encounter = allEncounters.fetchLatestEncounter(motechPatientId,CWCREGVISIT);
+        MRSEncounter encounter = allEncounters.getLatest(motechPatientId, CWCREGVISIT);
         CWCEnrollmentForm cwcEnrollmentForm;
         if(encounter != null) {
             cwcEnrollmentForm = cwcFormMapper.mapEncounterToView(encounter);

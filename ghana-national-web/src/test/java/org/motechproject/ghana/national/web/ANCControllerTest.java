@@ -136,13 +136,13 @@ public class ANCControllerTest {
         MRSEncounter mrsEncounter = new MRSEncounter();
 
         when(mockValidator.validatePatient(motechPatientId)).thenReturn(errors);
-        when(mockAllEncounters.fetchLatestEncounter(motechPatientId, ANC_REG_VISIT.value())).thenReturn(mrsEncounter);
+        when(mockAllEncounters.getLatest(motechPatientId, ANC_REG_VISIT.value())).thenReturn(mrsEncounter);
         when(mockANCFormMapper.convertMRSEncounterToView(mrsEncounter)).thenReturn(ancEnrollmentForm);
 
         ancController.newANC(motechPatientId, modelMap);
         assertTrue(modelMap.containsKey("ancEnrollmentForm"));
         assertTrue(reflectionEquals(modelMap.get("ancEnrollmentForm"), ancEnrollmentForm));
-        verify(mockAllEncounters, times(2)).fetchLatestEncounter(eq(motechPatientId), anyString());
+        verify(mockAllEncounters, times(2)).getLatest(eq(motechPatientId), anyString());
         verify(mockANCFormMapper).populatePregnancyInfo(Matchers.<MRSEncounter>any(), eq(ancEnrollmentForm));
         checkIfCareHistoryAttributesArePlacedInModelMap(modelMap, ancEnrollmentForm);
     }

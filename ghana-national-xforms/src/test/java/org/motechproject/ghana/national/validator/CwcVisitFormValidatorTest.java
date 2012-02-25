@@ -51,7 +51,7 @@ public class CwcVisitFormValidatorTest {
         verify(formValidator).validateIfStaffExists(staffId);
         verify(formValidator).validateIfFacilityExists(facilityId);
         verify(formValidator).validateIfPatientIsAliveAndIsAChild(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
-        verify(mockAllEncounters).fetchLatestEncounter(motechId, CWC_REG_VISIT.value());
+        verify(mockAllEncounters).getLatest(motechId, CWC_REG_VISIT.value());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class CwcVisitFormValidatorTest {
         when(formBean.getStaffId()).thenReturn(staffId);
         when(formBean.getFacilityId()).thenReturn(facilityId);
 
-        when(mockAllEncounters.fetchLatestEncounter(motechId, CWC_REG_VISIT.value())).thenReturn(null);
+        when(mockAllEncounters.getLatest(motechId, CWC_REG_VISIT.value())).thenReturn(null);
 
         List<FormError> formErrors = validator.validate(formBean);
 

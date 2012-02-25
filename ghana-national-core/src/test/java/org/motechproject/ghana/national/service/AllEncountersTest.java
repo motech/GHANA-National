@@ -83,7 +83,7 @@ public class AllEncountersTest {
     public void shouldFetchLatestEncounter() {
         String encounterType = "encounterType";
         String motechId = "motechId";
-        allEncounters.fetchLatestEncounter(motechId, encounterType);
+        allEncounters.getLatest(motechId, encounterType);
         verify(mrsEncounterAdapter).getLatestEncounterByPatientMotechId(motechId, encounterType);
     }
 

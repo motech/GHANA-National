@@ -40,7 +40,7 @@ public class AllEncounters {
         return mrsEncounterAdapter.createEncounter(mrsEncounter);
     }
 
-    public MRSEncounter fetchLatestEncounter(String motechId,String encounterType){
+    public MRSEncounter getLatest(String motechId, String encounterType){
          return mrsEncounterAdapter.getLatestEncounterByPatientMotechId(motechId, encounterType);
     }
 }

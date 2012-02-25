@@ -70,9 +70,9 @@ public class ANCController {
         List<FormError> formErrors = registerANCFormValidator.validatePatient(motechPatientId);
         ANCEnrollmentForm enrollmentForm = new ANCEnrollmentForm(motechPatientId);
         if (formErrors.isEmpty()) {
-            MRSEncounter mrsEncounter = allEncounters.fetchLatestEncounter(motechPatientId, ANC_REG_VISIT.value());
+            MRSEncounter mrsEncounter = allEncounters.getLatest(motechPatientId, ANC_REG_VISIT.value());
             enrollmentForm = (mrsEncounter == null) ? enrollmentForm : ancFormMapper.convertMRSEncounterToView(mrsEncounter);
-            MRSEncounter pregnancyInfoEncounter = allEncounters.fetchLatestEncounter(motechPatientId, PREG_REG_VISIT.value());
+            MRSEncounter pregnancyInfoEncounter = allEncounters.getLatest(motechPatientId, PREG_REG_VISIT.value());
             ancFormMapper.populatePregnancyInfo(pregnancyInfoEncounter, enrollmentForm);
         } else {
             modelMap.addAttribute("validationErrors", formErrors);
