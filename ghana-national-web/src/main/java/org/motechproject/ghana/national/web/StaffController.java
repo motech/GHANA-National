@@ -1,8 +1,6 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.StaffType;
-import org.motechproject.ghana.national.repository.EmailGateway;
-import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.web.form.StaffForm;
 import org.motechproject.ghana.national.web.helper.StaffHelper;
@@ -33,8 +31,6 @@ public class StaffController {
     public static final String REQUESTED_STAFFS = "requestedStaffs";
     private StaffService staffService;
     private MessageSource messageSource;
-    private IdentifierGenerator identifierGenerator;
-    private EmailGateway emailGateway;
 
     private StaffHelper staffHelper;
     public static final String STAFF_ID = "userId";
@@ -51,12 +47,9 @@ public class StaffController {
     }
 
     @Autowired
-    public StaffController(StaffService staffService, MessageSource messageSource, EmailGateway emailGateway,
-                           IdentifierGenerator identifierGenerator, StaffHelper staffHelper) {
+    public StaffController(StaffService staffService, MessageSource messageSource, StaffHelper staffHelper) {
         this.staffService = staffService;
         this.messageSource = messageSource;
-        this.emailGateway = emailGateway;
-        this.identifierGenerator = identifierGenerator;
         this.staffHelper = staffHelper;
     }
 
@@ -71,20 +64,10 @@ public class StaffController {
     @ApiSession
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String create(@Valid StaffForm staffForm, BindingResult bindingResult, ModelMap modelMap) {
-        Map userData;
-        MRSUser mrsUser = staffForm.createUser();
-        String roleOfStaff = staffForm.getNewRole();
-
-        mrsUser.systemId(identifierGenerator.newStaffId());
-
         try {
-            userData = staffService.saveUser(mrsUser);
-            final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdapter.USER_KEY);
+            MRSUser openMRSUser = staffService.saveUser(staffForm.createUser());
             modelMap.put(STAFF_ID, openMRSUser.getSystemId());
             modelMap.put(STAFF_NAME, openMRSUser.getPerson().getFullName());
-            if (StaffType.Role.isAdmin(roleOfStaff)) {
-                emailGateway.sendEmailUsingTemplates(openMRSUser.getUserName(), (String) userData.get(OpenMRSUserAdapter.PASSWORD_USER_KEY));
-            }
             modelMap.put("successMessage", "Staff created successfully.Email with login credentials sent (to admin users only).");
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
             return staffHelper.getStaffForId(modelMap, openMRSUser);
@@ -106,7 +89,8 @@ public class StaffController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid StaffForm staffForm, BindingResult bindingResult, ModelMap modelMap) {
         MRSUser mrsUser = staffForm.createUser();
-        if (!staffForm.getCurrentEmail().equals(staffForm.getNewEmail()) && staffService.getUserByEmailIdOrMotechId(staffForm.getNewEmail()) != null) {
+        if (!staffForm.getCurrentEmail().equals(staffForm.getNewEmail())
+                && staffService.getUserByEmailIdOrMotechId(staffForm.getNewEmail()) != null) {
             handleUserAlreadyExistsError(modelMap, bindingResult);
             return NEW_STAFF_URL;
         }

@@ -1,10 +1,13 @@
 package org.motechproject.ghana.national.service;
 
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.StaffType;
 import org.motechproject.ghana.national.repository.AllStaffs;
 import org.motechproject.ghana.national.repository.EmailGateway;
+import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.openmrs.services.OpenMRSUserAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,22 +16,28 @@ import java.util.Map;
 
 @Service
 public class StaffService {
-    @Autowired
     private AllStaffs allStaffs;
-
-    @Autowired
     private EmailGateway emailGateway;
+    private IdentifierGenerator identifierGenerator;
 
     public StaffService() {
     }
 
-    public StaffService(AllStaffs allStaffs, EmailGateway emailGateway) {
+    @Autowired
+    public StaffService(AllStaffs allStaffs, EmailGateway emailGateway, IdentifierGenerator identifierGenerator) {
         this.allStaffs = allStaffs;
         this.emailGateway = emailGateway;
+        this.identifierGenerator = identifierGenerator;
     }
 
-    public Map saveUser(MRSUser mrsUser) throws UserAlreadyExistsException {
-        return allStaffs.saveUser(mrsUser);
+    public MRSUser saveUser(MRSUser mrsUser) throws UserAlreadyExistsException {
+        mrsUser.systemId(identifierGenerator.newStaffId());
+        Map userData = allStaffs.saveUser(mrsUser);
+        final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdapter.USER_KEY);
+        if (StaffType.Role.isAdmin(openMRSUser.getPerson().attrValue(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE))) {
+            emailGateway.sendEmailUsingTemplates(openMRSUser.getUserName(), (String) userData.get(OpenMRSUserAdapter.PASSWORD_USER_KEY));
+        }
+        return openMRSUser;
     }
 
     public Map updateUser(MRSUser mrsUser) {

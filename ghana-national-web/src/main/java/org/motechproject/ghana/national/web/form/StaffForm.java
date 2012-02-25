@@ -23,7 +23,8 @@ public class StaffForm {
     public StaffForm() {
     }
 
-    public StaffForm(String id, String staffId, String firstName, String middleName, String lastName, String newEmail, String phoneNumber, String newRole, String currentRole, String currentEmail) {
+    public StaffForm(String id, String staffId, String firstName, String middleName, String lastName, String newEmail,
+                     String phoneNumber, String newRole, String currentRole, String currentEmail) {
         this.id = id;
         this.staffId = staffId;
         this.firstName = firstName;

@@ -7,8 +7,6 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.StaffType;
-import org.motechproject.ghana.national.repository.EmailGateway;
-import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.web.form.StaffForm;
 import org.motechproject.ghana.national.web.helper.StaffHelper;
@@ -28,9 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.select;
+import static ch.lambdaj.Lambda.*;
 import static java.util.Arrays.asList;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,16 +34,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.domain.Constants.PERSON_ATTRIBUTE_TYPE_EMAIL;
-import static org.motechproject.ghana.national.domain.Constants.PERSON_ATTRIBUTE_TYPE_PHONE_NUMBER;
-import static org.motechproject.ghana.national.domain.Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE;
+import static org.motechproject.ghana.national.domain.Constants.*;
 
 public class StaffControllerTest {
 
@@ -57,11 +46,7 @@ public class StaffControllerTest {
     @Mock
     MessageSource mockMessageSource;
     @Mock
-    EmailGateway mockEmailGateway;
-    @Mock
     BindingResult mockBindingResult;
-    @Mock
-    IdentifierGenerator mockIdentifierGenerator;
 
     StaffHelper staffHelper;
 
@@ -69,7 +54,7 @@ public class StaffControllerTest {
     public void setUp() {
         initMocks(this);
         staffHelper = new StaffHelper();
-        controller = new StaffController(mockStaffService, mockMessageSource, mockEmailGateway, mockIdentifierGenerator, staffHelper);
+        controller = new StaffController(mockStaffService, mockMessageSource, staffHelper);
         mockBindingResult = mock(BindingResult.class);
     }
 
@@ -98,11 +83,7 @@ public class StaffControllerTest {
         final MRSUser openMRSUser = form.createUser().systemId("1234");
         BindingResult bindingResult = mock(BindingResult.class);
         ModelMap model = mock(ModelMap.class);
-        Map test = new HashMap() {{
-            put(OpenMRSUserAdapter.USER_KEY, openMRSUser);
-            put("password", "P@ssw0rd");
-        }};
-        when(mockStaffService.saveUser(any(MRSUser.class))).thenReturn(test);
+        when(mockStaffService.saveUser(any(MRSUser.class))).thenReturn(openMRSUser);
         when(mockStaffService.getUserByEmailIdOrMotechId(openMRSUser.getSystemId())).thenReturn(openMRSUser);
 
         String view = controller.create(form, bindingResult, model);
@@ -122,18 +103,12 @@ public class StaffControllerTest {
 
     @Test
     public void shouldAddNewNonAdminUser() throws UserAlreadyExistsException {
-
         String userId = "1234";
         StaffForm form = new StaffForm().setNewEmail("jack@daniels.com").setFirstName("Jack").setMiddleName("H").setLastName("Daniels")
                 .setPhoneNumber("1234").setStaffId(userId).setNewRole(StaffType.Role.COMMUNITY_HEALTH_OPERATOR.key());
         ModelMap model = mock(ModelMap.class);
         final MRSUser openMRSuser = form.createUser();
-        Map test = new HashMap() {{
-            put(OpenMRSUserAdapter.USER_KEY, openMRSuser);
-            put(OpenMRSUserAdapter.PASSWORD_USER_KEY, "P@ssw0rd");
-        }};
-        when(mockStaffService.saveUser(any(MRSUser.class))).thenReturn(test);
-        when(mockIdentifierGenerator.newStaffId()).thenReturn(userId);
+        when(mockStaffService.saveUser(any(MRSUser.class))).thenReturn(openMRSuser);
 
         String view = controller.create(form, mockBindingResult, model);
 
