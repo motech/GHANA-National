@@ -27,14 +27,13 @@ public class FacilityController {
     public static final String FACILITY_FORM = "facilityForm";
     public static final String NEW_FACILITY_VIEW = "facilities/new";
     public static final String SEARCH_FACILITY_VIEW = "facilities/search";
+    private static final String NEW_FACILITY_REDIRECT_URL = "/admin/facilities/new";
     public static final String EDIT_FACILITY_VIEW = "facilities/edit";
-
     public static final String FACILITY_ID = "Id";
 
     private FacilityService facilityService;
     private MessageSource messageSource;
     private FacilityHelper facilityHelper;
-    private static final String NEW_FACILITY_REDIRECT_URL = "/admin/facilities/new";
 
     public FacilityController() {
     }

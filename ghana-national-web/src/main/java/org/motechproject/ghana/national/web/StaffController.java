@@ -110,11 +110,12 @@ public class StaffController {
             handleUserAlreadyExistsError(modelMap, bindingResult);
             return NEW_STAFF_URL;
         }
+
         Map userData = staffService.updateUser(mrsUser);
+
         final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdapter.USER_KEY);
         if (StaffType.Role.isAdmin(staffForm.getNewRole()) && !staffForm.getNewRole().equals(staffForm.getCurrentRole())) {
-            String newPassword = staffService.changePasswordByEmailId(staffForm.getNewEmail());
-            emailGateway.sendEmailUsingTemplates(openMRSUser.getUserName(), newPassword);
+            staffService.changePasswordByEmailId(staffForm.getNewEmail());
         }
         staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
         staffHelper.getStaffForId(modelMap, openMRSUser);

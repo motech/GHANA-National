@@ -1,6 +1,8 @@
 package org.motechproject.ghana.national.service;
 
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.repository.AllStaffs;
+import org.motechproject.ghana.national.repository.EmailGateway;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.MRSUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +16,15 @@ public class StaffService {
     @Autowired
     private AllStaffs allStaffs;
 
+    @Autowired
+    private EmailGateway emailGateway;
+
     public StaffService() {
     }
 
-    public StaffService(AllStaffs allStaffs) {
+    public StaffService(AllStaffs allStaffs, EmailGateway emailGateway) {
         this.allStaffs = allStaffs;
+        this.emailGateway = emailGateway;
     }
 
     public Map saveUser(MRSUser mrsUser) throws UserAlreadyExistsException {
@@ -29,8 +35,12 @@ public class StaffService {
         return allStaffs.updateUser(mrsUser);
     }
 
-    public String changePasswordByEmailId(String emailId) {
-        return allStaffs.changePasswordByEmailId(emailId);
+    public int changePasswordByEmailId(String emailId) {
+        String newPassword = allStaffs.changePasswordByEmailId(emailId);
+        if (!newPassword.equals("")) {
+            return emailGateway.sendEmailUsingTemplates(emailId, newPassword);
+        }
+        return Constants.EMAIL_USER_NOT_FOUND;
     }
 
     public Map<String, String> fetchAllRoles() {

@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Repository;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Repository
 public class EmailGateway {
 
     private JavaMailSender mailSender;
@@ -32,8 +34,8 @@ public class EmailGateway {
         this.velocityEngine = velocityEngine;
     }
 
-    String send(Email email) {
-        String mailSentStatus;
+    int send(Email email) {
+        int mailSentStatus;
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(email.to());
         mailMessage.setFrom(email.from());
@@ -49,7 +51,7 @@ public class EmailGateway {
         return mailSentStatus;
     }
 
-    public String sendEmailUsingTemplates(final String userName, final String password) {
+    public int sendEmailUsingTemplates(final String userName, final String password) {
         Map<String, String> emailData = new HashMap<String, String>() {{
             put("userName", userName);
             put("password", password);

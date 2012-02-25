@@ -3,7 +3,6 @@ package org.motechproject.ghana.national.web;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.CareService;
-import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
@@ -25,11 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.motechproject.ghana.national.domain.EncounterType.ANC_REG_VISIT;
 import static org.motechproject.ghana.national.domain.EncounterType.PREG_REG_VISIT;
@@ -40,19 +35,15 @@ public class ANCController {
 
     public static final String ENROLL_ANC_URL = "anc/new";
     @Autowired
-    private FacilityHelper facilityHelper;
+    FacilityHelper facilityHelper;
     @Autowired
-    private CareService careService;
+    CareService careService;
     @Autowired
     AllEncounters allEncounters;
     @Autowired
     RegisterANCFormValidator registerANCFormValidator;
     @Autowired
-    PatientService patientService;
-    @Autowired
     ANCFormMapper ancFormMapper;
-
-    public static final String PATIENT_NOT_FOUND = "Patient Not Found";
 
     public ANCController() {
     }

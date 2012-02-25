@@ -53,7 +53,7 @@ public class EmailGatewayTest {
         when(mockEmail.subject()).thenReturn(subject);
         when(mockEmail.text()).thenReturn(emailText);
 
-        String emailSentStatus = emailGateway.send(mockEmail);
+        int emailSentStatus = emailGateway.send(mockEmail);
 
         final ArgumentCaptor<SimpleMailMessage> captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
         verify(mockMailSender).send(captor.capture());
@@ -75,7 +75,7 @@ public class EmailGatewayTest {
         final String toEmailId = "karthis@thoughtworks.com";
         final String password = "abcd1234";
 
-        String emailSentStatus = emailGateway.sendEmailUsingTemplates(toEmailId, password);
+        int emailSentStatus = emailGateway.sendEmailUsingTemplates(toEmailId, password);
         assertThat(emailSentStatus, is(equalTo(Constants.EMAIL_SUCCESS)));
     }
 
@@ -90,7 +90,7 @@ public class EmailGatewayTest {
         when(mockEmail.subject()).thenReturn(null);
         when(mockEmail.text()).thenReturn(null);
 
-        String emailSentStatus = emailGateway.send(mockEmail);
+        int emailSentStatus = emailGateway.send(mockEmail);
 
         assertThat(emailSentStatus, is(equalTo(Constants.EMAIL_FAILURE)));
     }

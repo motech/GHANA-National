@@ -38,7 +38,6 @@ import java.util.List;
 @RequestMapping("admin/cwc")
 public class CWCController {
 
-
     @Autowired
     PatientService patientService;
 
@@ -132,7 +131,6 @@ public class CWCController {
             return ENROLL_CWC_URL;
         }
 
-//        Date registrationDate = cwcEnrollmentForm.getRegistrationDate();
         if (cwcEnrollmentForm.getRegistrationToday().equals(RegistrationToday.TODAY)) {
             cwcEnrollmentForm.setRegistrationDate(DateUtil.now().toDate());
         }

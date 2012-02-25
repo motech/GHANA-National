@@ -16,8 +16,9 @@ public class Constants {
     public static final String DISTRICTS = "districts";
     public static final String PROVINCES = "provinces";
     public static final String FACILITIES = "facilities";
-    public static final String EMAIL_SUCCESS = "email_success";
-    public static final String EMAIL_FAILURE = "email_failure";
+    public static final int EMAIL_SUCCESS = 1;
+    public static final int EMAIL_FAILURE = 0;
+    public static final int EMAIL_USER_NOT_FOUND = -1;
 
     public static final String FORGOT_PASSWORD_SUCCESS = "Your Password is sent via email successfully";
     public static final String FORGOT_PASSWORD_FAILURE = "Your Password is not sent to you via email successfully.Please try again.";

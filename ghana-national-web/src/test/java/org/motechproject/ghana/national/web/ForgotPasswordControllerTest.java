@@ -28,19 +28,17 @@ public class ForgotPasswordControllerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        forgotPasswordController = new ForgotPasswordController(staffService, mockEmailGateway);
+        forgotPasswordController = new ForgotPasswordController(staffService);
     }
 
     @Test
     public void testChangePasswordAndSendEmailSuccessfully() throws Exception {
         ModelAndView expectedModelAndView = new ModelAndView("redirect:forgotPasswordStatus.jsp");
-        final String newPassword = "newPassword";
         final String testEmailId = "a@a.com";
 
         HttpServletRequest mockHttpRequest = mock(HttpServletRequest.class);
         when(mockHttpRequest.getParameter("emailId")).thenReturn(testEmailId);
-        when(staffService.changePasswordByEmailId(testEmailId)).thenReturn(newPassword);
-        when(mockEmailGateway.sendEmailUsingTemplates(testEmailId, newPassword)).thenReturn(Constants.EMAIL_SUCCESS);
+        when(staffService.changePasswordByEmailId(testEmailId)).thenReturn(Constants.EMAIL_SUCCESS);
         ModelAndView actualModelAndView = forgotPasswordController.changePasswordAndSendEmail(mockHttpRequest);
 
         assertThat(actualModelAndView.getView(), is(equalTo(expectedModelAndView.getView())));
@@ -55,7 +53,7 @@ public class ForgotPasswordControllerTest {
 
         HttpServletRequest mockHttpRequest = mock(HttpServletRequest.class);
         when(mockHttpRequest.getParameter("emailId")).thenReturn(testEmailId);
-        when(staffService.changePasswordByEmailId(testEmailId)).thenReturn("");
+        when(staffService.changePasswordByEmailId(testEmailId)).thenReturn(Constants.EMAIL_USER_NOT_FOUND);
         ModelAndView actualModelAndView = forgotPasswordController.changePasswordAndSendEmail(mockHttpRequest);
 
         assertThat(actualModelAndView.getView(), is(equalTo(expectedModelAndView.getView())));
