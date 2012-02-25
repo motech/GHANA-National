@@ -313,9 +313,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <parallel>methods</parallel>
-                    <threadCount>4</threadCount>
-
                     <printSummary>true</printSummary>
                     <argLine>-javaagent:${jacoco.agent.path}=destfile=${jacoco.file.path}</argLine>
                     <includes>
