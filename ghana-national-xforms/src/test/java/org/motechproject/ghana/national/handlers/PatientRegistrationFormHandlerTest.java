@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
+import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.vo.CwcVO;
@@ -47,7 +48,7 @@ public class PatientRegistrationFormHandlerTest {
     @Mock
     MobileMidwifeService mockMobileMidwifeService;
     @Mock
-    TextMessageService mockTextMessageService;
+    SMSGateway mockSMSGateway;
 
     PatientRegistrationFormHandler patientRegistrationFormHandler;
 
@@ -59,7 +60,7 @@ public class PatientRegistrationFormHandlerTest {
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "careService", mockCareService);
         ReflectionTestUtils.setField(patientRegistrationFormHandler, "mobileMidwifeService", mockMobileMidwifeService);
-        ReflectionTestUtils.setField(patientRegistrationFormHandler, "textMessageService", mockTextMessageService);
+        ReflectionTestUtils.setField(patientRegistrationFormHandler, "smsGateway", mockSMSGateway);
     }
 
     @Test
@@ -102,7 +103,7 @@ public class PatientRegistrationFormHandlerTest {
         when(facility.mrsFacilityId()).thenReturn(facilityId);
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
 
-        when(mockTextMessageService.getSMSTemplate(REGISTER_SUCCESS_SMS_KEY)).thenReturn("${motechId}-${firstName}-${lastName}");
+        when(mockSMSGateway.getSMSTemplate(REGISTER_SUCCESS_SMS_KEY)).thenReturn("${motechId}-${firstName}-${lastName}");
 
         patientRegistrationFormHandler.handleFormEvent(event);
 
@@ -110,7 +111,7 @@ public class PatientRegistrationFormHandlerTest {
         MRSPerson mrsPerson = patientPassedToRegisterService.getMrsPatient().getPerson();
 
         assertRegisterPatient(address, dateofBirth, isBirthDateEstimated, facilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, sex, phoneNumber, patientPassedToRegisterService, mrsPerson, parentId);
-        verify(mockTextMessageService).sendSMS(registerClientForm.getSender(), SMS.fromSMSText("motechId-FirstName-LastName"));
+        verify(mockSMSGateway).sendSMS(registerClientForm.getSender(), SMS.fromSMSText("motechId-FirstName-LastName"));
     }
 
     @Test

@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.service;
+package org.motechproject.ghana.national.repository;
 
 import org.motechproject.MotechException;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
@@ -7,13 +7,13 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.SMS;
 import org.motechproject.sms.api.service.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.util.Locale;
 import java.util.Map;
 
-@Service
-public class TextMessageService {
+@Repository
+public class SMSGateway {
     @Autowired
     SmsService smsService;
 

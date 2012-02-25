@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
 import static org.motechproject.ghana.national.domain.Concept.EDD;
 import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
@@ -99,9 +98,5 @@ public class MotherVisitService {
         allEncounters.persistEncounter(encounter);
         final EnrollmentRequest enrollmentRequest = new TTVaccinationEnrollmentMapper().map(patient, vaccinationDate, dosage.getScheduleMilestoneName());
         allSchedules.enrollOrFulfill(patient, enrollmentRequest);
-    }
-
-    public void unScheduleAll(Patient patient) {
-        allSchedules.unEnroll(patient, TT_VACCINATION_VISIT);
     }
 }

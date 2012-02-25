@@ -11,6 +11,8 @@ import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatExcept
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllPatients;
+import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
@@ -29,6 +31,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
 import static org.motechproject.ghana.national.domain.EncounterType.PATIENT_REG_VISIT;
 
 public class PatientServiceTest {
@@ -37,16 +40,16 @@ public class PatientServiceTest {
     @Mock
     private AllPatients mockAllPatients;
     @Mock
-    private IdentifierGenerationService mockIdentifierGenerationService;
+    private IdentifierGenerator mockIdentifierGenerator;
     @Mock
     private AllEncounters mockAllEncounters;
     @Mock
-    private MotherVisitService mockMotherVisitService;
+    private AllSchedules mockAllSchedules;
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(mockAllPatients, mockIdentifierGenerationService, mockAllEncounters, mockMotherVisitService);
+        patientService = new PatientService(mockAllPatients, mockIdentifierGenerator, mockAllEncounters, mockAllSchedules);
     }
 
     @Test
@@ -87,7 +90,7 @@ public class PatientServiceTest {
         String patientId = "patient id";
         String patientMotechId = "patient Motech id";
 
-        when(mockIdentifierGenerationService.newPatientId()).thenReturn(patientMotechId);
+        when(mockIdentifierGenerator.newPatientId()).thenReturn(patientMotechId);
 
         MRSPerson person = mock(MRSPerson.class);
         MRSFacility facility = mock(MRSFacility.class);
@@ -321,7 +324,7 @@ public class PatientServiceTest {
         patientService.deceasePatient(patientMotechId, dateOfDeath, causeOfDeath, comment);
 
         verify(mockAllPatients).deceasePatient(dateOfDeath, patientMotechId, "OTHER NON-CODED", comment);
-        verify(mockMotherVisitService).unScheduleAll(patient);
+        verify(mockAllSchedules).unEnroll(patient, TT_VACCINATION_VISIT);
 
     }
 

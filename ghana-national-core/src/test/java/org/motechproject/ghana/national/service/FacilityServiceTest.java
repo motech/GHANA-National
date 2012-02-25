@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.repository.AllFacilities;
+import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.mrs.model.MRSFacility;
 
 import java.util.ArrayList;
@@ -29,12 +30,12 @@ public class FacilityServiceTest {
     @Mock
     private AllFacilities mockAllFacilities;
     @Mock
-    private IdentifierGenerationService mockidentifierGenerationService;
+    private IdentifierGenerator mockidentifierGenerator;
 
     @Before
     public void init() {
         initMocks(this);
-        facilityService = new FacilityService(mockAllFacilities, mockidentifierGenerationService);
+        facilityService = new FacilityService(mockAllFacilities, mockidentifierGenerator);
     }
 
     @Test
@@ -51,7 +52,7 @@ public class FacilityServiceTest {
         String additionalPhoneNumber2 = "3";
         String additionalPhoneNumber3 = "4";
         when(mockAllFacilities.facilitiesByName(facilityName)).thenReturn(Collections.<Facility>emptyList());
-        when(mockidentifierGenerationService.newFacilityId()).thenReturn(motechId);
+        when(mockidentifierGenerator.newFacilityId()).thenReturn(motechId);
         facilityService.create(facilityName, country, region, district, province, phoneNumber, additionalPhoneNumber1, additionalPhoneNumber2, additionalPhoneNumber3);
         final ArgumentCaptor<Facility> captor = ArgumentCaptor.forClass(Facility.class);
         verify(mockAllFacilities).add(captor.capture());

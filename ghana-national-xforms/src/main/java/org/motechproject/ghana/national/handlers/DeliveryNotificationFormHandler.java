@@ -4,9 +4,9 @@ import org.joda.time.DateTime;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllEncounters;
+import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.service.TextMessageService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSObservation;
@@ -38,7 +38,7 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
     FacilityService facilityService;
 
     @Autowired
-    TextMessageService textMessageService;
+    SMSGateway smsGateway;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.deliveryNotify")
@@ -64,9 +64,9 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
         Patient patient = patientService.getPatientByMotechId(motechId);
         if (patient.getMrsPatient().getFacility() != null) {
             Facility facility = facilityService.getFacility(patient.getMrsPatient().getFacility().getId());
-            String template = textMessageService.getSMSTemplate(DELIVERY_NOTIFICATION_SMS_KEY);
+            String template = smsGateway.getSMSTemplate(DELIVERY_NOTIFICATION_SMS_KEY);
             SMS sms = SMS.fromTemplate(template).fillPatientDetails(patient.getMotechId(), patient.getFirstName(), patient.getLastName()).fillDateTime(deliveryTime.toDate());
-            textMessageService.sendSMS(facility, sms);
+            smsGateway.sendSMS(facility, sms);
         }
     }
 }

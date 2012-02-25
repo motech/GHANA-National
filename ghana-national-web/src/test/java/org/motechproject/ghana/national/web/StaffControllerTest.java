@@ -7,8 +7,8 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.StaffType;
-import org.motechproject.ghana.national.service.EmailTemplateService;
-import org.motechproject.ghana.national.service.IdentifierGenerationService;
+import org.motechproject.ghana.national.repository.EmailGateway;
+import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.web.form.StaffForm;
 import org.motechproject.ghana.national.web.helper.StaffHelper;
@@ -57,11 +57,11 @@ public class StaffControllerTest {
     @Mock
     MessageSource mockMessageSource;
     @Mock
-    EmailTemplateService mockEmailTemplateService;
+    EmailGateway mockEmailGateway;
     @Mock
     BindingResult mockBindingResult;
     @Mock
-    IdentifierGenerationService mockIdentifierGenerationService;
+    IdentifierGenerator mockIdentifierGenerator;
 
     StaffHelper staffHelper;
 
@@ -69,7 +69,7 @@ public class StaffControllerTest {
     public void setUp() {
         initMocks(this);
         staffHelper = new StaffHelper();
-        controller = new StaffController(mockStaffService, mockMessageSource, mockEmailTemplateService, mockIdentifierGenerationService, staffHelper);
+        controller = new StaffController(mockStaffService, mockMessageSource, mockEmailGateway, mockIdentifierGenerator, staffHelper);
         mockBindingResult = mock(BindingResult.class);
     }
 
@@ -135,7 +135,7 @@ public class StaffControllerTest {
             put(OpenMRSUserAdapter.PASSWORD_USER_KEY, "P@ssw0rd");
         }};
         when(mockStaffService.saveUser(any(MRSUser.class))).thenReturn(test);
-        when(mockIdentifierGenerationService.newStaffId()).thenReturn(userId);
+        when(mockIdentifierGenerator.newStaffId()).thenReturn(userId);
         //final MRSUser mrsUser = new MRSUser().systemId(userId);
         
         String view = controller.create(form, mockBindingResult, model);
@@ -309,7 +309,7 @@ public class StaffControllerTest {
         verify(mockStaffService).updateUser(captor.capture());
         assertThat(result, is(StaffController.EDIT_STAFF_URL));
         verify(mockStaffService).changePasswordByEmailId(email);
-        verify(mockEmailTemplateService).sendEmailUsingTemplates(email, password);
+        verify(mockEmailGateway).sendEmailUsingTemplates(email, password);
 
         MRSUser actualUser = captor.getValue();
         assertThat(actualUser.getId(), is(id));
@@ -352,7 +352,7 @@ public class StaffControllerTest {
         verify(mockStaffService).updateUser(captor.capture());
         assertThat(result, is(StaffController.EDIT_STAFF_URL));
         verify(mockStaffService, never()).changePasswordByEmailId(email);
-        verify(mockEmailTemplateService, never()).sendEmailUsingTemplates(email, password);
+        verify(mockEmailGateway, never()).sendEmailUsingTemplates(email, password);
     }
 
     @Test
@@ -386,7 +386,7 @@ public class StaffControllerTest {
         verify(mockStaffService).updateUser(captor.capture());
         assertThat(result, is(StaffController.EDIT_STAFF_URL));
         verify(mockStaffService, never()).changePasswordByEmailId(email);
-        verify(mockEmailTemplateService, never()).sendEmailUsingTemplates(email, password);
+        verify(mockEmailGateway, never()).sendEmailUsingTemplates(email, password);
 
         MRSUser actualUser = captor.getValue();
         MRSPerson mrsPerson = actualUser.getPerson();

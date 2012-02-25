@@ -154,13 +154,6 @@ public class MotherVisitServiceTest {
     }
 
     @Test
-    public void shouldUnScheduleAllAlerts() {
-        Patient patient = new Patient(new MRSPatient("patient_id"));
-        motherVisitServiceSpy.unScheduleAll(patient);
-        verify(mockAllSchedules).unEnroll(patient, TT_VACCINATION_VISIT);
-    }
-
-    @Test
     public void shouldCreateEDDScheduleForANCVisit() {
         String patientId = "1234567";
         Patient patient = new Patient(new MRSPatient(patientId));

@@ -3,7 +3,7 @@ package org.motechproject.ghana.national.handler;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllPatients;
-import org.motechproject.ghana.national.service.TextMessageService;
+import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
@@ -20,8 +20,8 @@ public class CareScheduleHandler extends BaseScheduleHandler {
     }
 
     @Autowired
-    public CareScheduleHandler(AllPatients allPatients, AllFacilities allFacilities, TextMessageService textMessageService) {
-        super(allPatients, allFacilities, textMessageService);
+    public CareScheduleHandler(AllPatients allPatients, AllFacilities allFacilities, SMSGateway smsGateway) {
+        super(allPatients, allFacilities, smsGateway);
     }
 
     @LoginAsAdmin

@@ -9,7 +9,7 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMS;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllPatients;
-import org.motechproject.ghana.national.service.TextMessageService;
+import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -31,14 +31,14 @@ public class BaseScheduleHandlerTest {
     @Mock
     private AllFacilities allFacilities;
     @Mock
-    private TextMessageService textMessageService;
+    private SMSGateway SMSGateway;
 
     private CareScheduleHandler careScheduleHandler;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        careScheduleHandler = new CareScheduleHandler(allPatients, allFacilities, textMessageService);
+        careScheduleHandler = new CareScheduleHandler(allPatients, allFacilities, SMSGateway);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class BaseScheduleHandlerTest {
         final LocalDate expectedDeliveryDate = DateUtil.newDate(2000, 1, 1);
 
         final SMS sms = SMS.fromSMSText("sms message");
-        when(textMessageService.getSMS(PREGNANCY_ALERT_SMS_KEY, new HashMap<String, String>(){{
+        when(SMSGateway.getSMS(PREGNANCY_ALERT_SMS_KEY, new HashMap<String, String>(){{
             put(MOTECH_ID, patientMotechId);
             put(DUE_DATE, expectedDeliveryDate.toString());
             put(WINDOW, "Due");
@@ -74,7 +74,7 @@ public class BaseScheduleHandlerTest {
 
         careScheduleHandler.sendSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent, expectedDeliveryDate);
 
-        verify(textMessageService).sendSMS(facilityMock, sms);
+        verify(SMSGateway).sendSMS(facilityMock, sms);
 
     }
 }

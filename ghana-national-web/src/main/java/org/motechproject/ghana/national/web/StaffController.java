@@ -1,11 +1,11 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.StaffType;
-import org.motechproject.ghana.national.web.helper.StaffHelper;
-import org.motechproject.ghana.national.service.EmailTemplateService;
-import org.motechproject.ghana.national.service.IdentifierGenerationService;
+import org.motechproject.ghana.national.repository.EmailGateway;
+import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.web.form.StaffForm;
+import org.motechproject.ghana.national.web.helper.StaffHelper;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
@@ -33,9 +33,10 @@ public class StaffController {
     public static final String REQUESTED_STAFFS = "requestedStaffs";
     private StaffService staffService;
     private MessageSource messageSource;
-    private IdentifierGenerationService identifierGenerationService;
-    private StaffHelper staffHelper;
+    private IdentifierGenerator identifierGenerator;
+    private EmailGateway emailGateway;
 
+    private StaffHelper staffHelper;
     public static final String STAFF_ID = "userId";
     public static final String STAFF_SEQUENTIAL_ID = "Id";
     public static final String STAFF_NAME = "userName";
@@ -43,7 +44,6 @@ public class StaffController {
     public static final String STAFF_FORM = "staffForm";
     public static final String STAFF_ALREADY_EXISTS = "user_email_already_exists";
     public static final String NEW_STAFF_URL = "staffs/new";
-    private EmailTemplateService emailTemplateService;
     public static final String SEARCH_STAFF = "staffs/search";
     public static final String EDIT_STAFF_URL = "staffs/edit";
 
@@ -51,12 +51,12 @@ public class StaffController {
     }
 
     @Autowired
-    public StaffController(StaffService staffService, MessageSource messageSource, EmailTemplateService emailTemplateService,
-                           IdentifierGenerationService identifierGenerationService, StaffHelper staffHelper) {
+    public StaffController(StaffService staffService, MessageSource messageSource, EmailGateway emailGateway,
+                           IdentifierGenerator identifierGenerator, StaffHelper staffHelper) {
         this.staffService = staffService;
         this.messageSource = messageSource;
-        this.emailTemplateService = emailTemplateService;
-        this.identifierGenerationService = identifierGenerationService;
+        this.emailGateway = emailGateway;
+        this.identifierGenerator = identifierGenerator;
         this.staffHelper = staffHelper;
     }
 
@@ -75,7 +75,7 @@ public class StaffController {
         MRSUser mrsUser = staffForm.createUser();
         String roleOfStaff = staffForm.getNewRole();
 
-        mrsUser.systemId(identifierGenerationService.newStaffId());
+        mrsUser.systemId(identifierGenerator.newStaffId());
 
         try {
             userData = staffService.saveUser(mrsUser);
@@ -83,7 +83,7 @@ public class StaffController {
             modelMap.put(STAFF_ID, openMRSUser.getSystemId());
             modelMap.put(STAFF_NAME, openMRSUser.getPerson().getFullName());
             if (StaffType.Role.isAdmin(roleOfStaff)) {
-                emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUserName(), (String) userData.get(OpenMRSUserAdapter.PASSWORD_USER_KEY));
+                emailGateway.sendEmailUsingTemplates(openMRSUser.getUserName(), (String) userData.get(OpenMRSUserAdapter.PASSWORD_USER_KEY));
             }
             modelMap.put("successMessage", "Staff created successfully.Email with login credentials sent (to admin users only).");
             staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
@@ -114,7 +114,7 @@ public class StaffController {
         final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdapter.USER_KEY);
         if (StaffType.Role.isAdmin(staffForm.getNewRole()) && !staffForm.getNewRole().equals(staffForm.getCurrentRole())) {
             String newPassword = staffService.changePasswordByEmailId(staffForm.getNewEmail());
-            emailTemplateService.sendEmailUsingTemplates(openMRSUser.getUserName(), newPassword);
+            emailGateway.sendEmailUsingTemplates(openMRSUser.getUserName(), newPassword);
         }
         staffHelper.populateRoles(modelMap, staffService.fetchAllRoles());
         staffHelper.getStaffForId(modelMap, openMRSUser);

@@ -6,6 +6,7 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.exception.FacilityNotFoundException;
 import org.motechproject.ghana.national.repository.AllFacilities;
+import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.ghana.national.tools.StartsWithMatcher;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.mrs.model.MRSFacility;
@@ -21,12 +22,12 @@ import static org.hamcrest.core.Is.is;
 public class FacilityService {
 
     private AllFacilities allFacilities;
-    private IdentifierGenerationService identifierGenerationService;
+    private IdentifierGenerator identifierGenerator;
 
     @Autowired
-    public FacilityService(AllFacilities allFacilities, IdentifierGenerationService identifierGenerationService) {
+    public FacilityService(AllFacilities allFacilities, IdentifierGenerator identifierGenerator) {
         this.allFacilities = allFacilities;
-        this.identifierGenerationService = identifierGenerationService;
+        this.identifierGenerator = identifierGenerator;
     }
 
     public String create(String name, String country, String region, String district, String province, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) throws FacilityAlreadyFoundException {
@@ -34,7 +35,7 @@ public class FacilityService {
         final MRSFacility mrsFacility = new MRSFacility(name, country, Utility.emptyToNull(region), Utility.emptyToNull(district), Utility.emptyToNull(province));
         isDuplicate(facilities, mrsFacility, phoneNumber);
         final Facility facility = new Facility(mrsFacility).phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber1).
-                additionalPhoneNumber2(additionalPhoneNumber2).additionalPhoneNumber3(additionalPhoneNumber3).motechId(identifierGenerationService.newFacilityId());
+                additionalPhoneNumber2(additionalPhoneNumber2).additionalPhoneNumber3(additionalPhoneNumber3).motechId(identifierGenerator.newFacilityId());
         return save(facility);
 
     }

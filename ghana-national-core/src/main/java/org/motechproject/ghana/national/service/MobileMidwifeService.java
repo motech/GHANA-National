@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.service;
 import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
+import org.motechproject.ghana.national.repository.AllCampaigns;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ public class MobileMidwifeService {
     @Autowired
     private AllMobileMidwifeEnrollments allEnrollments;
     @Autowired
-    private MobileMidwifeCampaign mobileMidwifeCampaign;
+    private AllCampaigns allCampaigns;
 
     public void register(MobileMidwifeEnrollment enrollment) {
         enrollment.setEnrollmentDateTime(DateUtil.now());
@@ -24,8 +25,8 @@ public class MobileMidwifeService {
         if (enrollment.campaignApplicable()) {
             //TODO: Hack for 24 hour interval
             //Cycle Date One Day Back For 24 Hour Interval With 2 hour Buffer ForFuture Schedule, if it falls on the same day
-            DateTime scheduleStartDateFor24HourWindowWith2HourBuffer = mobileMidwifeCampaign.nearestCycleDate(enrollment).plusDays(-1).plusHours(2);
-            mobileMidwifeCampaign.start(enrollment.setScheduleStartDate(scheduleStartDateFor24HourWindowWith2HourBuffer));
+            DateTime scheduleStartDateFor24HourWindowWith2HourBuffer = allCampaigns.nearestCycleDate(enrollment).plusDays(-1).plusHours(2);
+            allCampaigns.start(enrollment.setScheduleStartDate(scheduleStartDateFor24HourWindowWith2HourBuffer));
         }
     }
 
@@ -34,7 +35,7 @@ public class MobileMidwifeService {
         if (enrollment != null) {
             enrollment.setActive(false);
             allEnrollments.update(enrollment);
-            if (enrollment.campaignApplicable()) mobileMidwifeCampaign.stop(enrollment);
+            if (enrollment.campaignApplicable()) allCampaigns.stop(enrollment);
         }
     }
 

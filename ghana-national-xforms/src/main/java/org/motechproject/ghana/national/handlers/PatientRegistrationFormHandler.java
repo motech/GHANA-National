@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.handlers;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.ghana.national.vo.ANCVO;
@@ -46,7 +47,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
     private FacilityService facilityService;
 
     @Autowired
-    private TextMessageService textMessageService;
+    private SMSGateway smsGateway;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.registerPatient")
@@ -77,9 +78,9 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             registerForANC(registerClientForm, facilityId, savedPatient.getMotechId());
 
             if (registerClientForm.getSender() != null) {
-                String template = textMessageService.getSMSTemplate("REGISTER_SUCCESS_SMS_KEY");
+                String template = smsGateway.getSMSTemplate("REGISTER_SUCCESS_SMS_KEY");
                 SMS sms = SMS.fromTemplate(template).fillPatientDetails(savedPatient.getMotechId(), patient.getFirstName(), patient.getLastName());
-                textMessageService.sendSMS(registerClientForm.getSender(), sms);
+                smsGateway.sendSMS(registerClientForm.getSender(), sms);
             }
         } catch (Exception e) {
             log.error("Exception while saving patient", e);

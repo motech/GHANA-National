@@ -11,9 +11,9 @@ import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
+import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.service.TextMessageService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.messagecampaign.EventKeys;
 
@@ -32,14 +32,14 @@ public class MobileMidwifeCampaignEventHandlerTest {
     @Mock
     PatientService mockPatientService;
     @Mock
-    TextMessageService mockTextMessageService;
+    SMSGateway mockSMSGateway;
 
     @Before
     public void init() {
         initMocks(this);
         handler = new MobileMidwifeCampaignEventHandler();
         setField(handler, "mobileMidwifeService", mockMobileMidwifeService);
-        setField(handler, "textMessageService", mockTextMessageService);
+        setField(handler, "smsGateway", mockSMSGateway);
         setField(handler, "patientService", mockPatientService);
     }
 
@@ -55,10 +55,10 @@ public class MobileMidwifeCampaignEventHandlerTest {
                 .setServiceType(serviceType).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber(mobileNumber);
 
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
-        when(mockTextMessageService.getSMSTemplate(language.name(), messageKey)).thenReturn(messageTemplate);
+        when(mockSMSGateway.getSMSTemplate(language.name(), messageKey)).thenReturn(messageTemplate);
 
         handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), messageKey));
-        verify(mockTextMessageService).sendSMS(mobileNumber, SMS.fromSMSText(messageTemplate));
+        verify(mockSMSGateway).sendSMS(mobileNumber, SMS.fromSMSText(messageTemplate));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 
         handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), messageKey));
-        verify(mockTextMessageService, never()).sendSMS(Matchers.<Facility>any(), Matchers.<SMS>any());
+        verify(mockSMSGateway, never()).sendSMS(Matchers.<Facility>any(), Matchers.<SMS>any());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
                 .setServiceType(serviceType).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber("9845312345");
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 
-        when(mockTextMessageService.getSMSTemplate(language.name(), messageKey)).thenReturn("text-message");
+        when(mockSMSGateway.getSMSTemplate(language.name(), messageKey)).thenReturn("text-message");
 
         MotechEvent lastEvent = motechEvent(patientId, serviceType.name(), messageKey).setLastEvent(true);
         handler.sendProgramMessage(lastEvent);

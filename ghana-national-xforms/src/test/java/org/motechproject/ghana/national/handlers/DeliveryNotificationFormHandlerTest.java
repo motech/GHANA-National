@@ -7,9 +7,9 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllEncounters;
+import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.service.TextMessageService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSObservation;
@@ -39,7 +39,7 @@ public class DeliveryNotificationFormHandlerTest {
     AllEncounters mockAllEncounters;
 
     @Mock
-    TextMessageService mockTextMessageService;
+    SMSGateway mockSMSGateway;
 
     @Mock
     FacilityService mockFacilityService;
@@ -54,7 +54,7 @@ public class DeliveryNotificationFormHandlerTest {
         ReflectionTestUtils.setField(deliveryNotificationFormHandler, "allEncounters", mockAllEncounters);
         ReflectionTestUtils.setField(deliveryNotificationFormHandler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(deliveryNotificationFormHandler, "facilityService", mockFacilityService);
-        ReflectionTestUtils.setField(deliveryNotificationFormHandler, "textMessageService", mockTextMessageService);
+        ReflectionTestUtils.setField(deliveryNotificationFormHandler, "smsGateway", mockSMSGateway);
     }
 
     @Test
@@ -84,14 +84,14 @@ public class DeliveryNotificationFormHandlerTest {
         when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
         when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
 
-        when(mockTextMessageService.getSMSTemplate(DELIVERY_NOTIFICATION_SMS_KEY)).thenReturn("${motechId}-${firstName}-${lastName}-${date}");
+        when(mockSMSGateway.getSMSTemplate(DELIVERY_NOTIFICATION_SMS_KEY)).thenReturn("${motechId}-${firstName}-${lastName}-${date}");
 
         deliveryNotificationFormHandler.handleFormEvent(event);
 
         final HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         verify(mockAllEncounters).persistEncounter(mrsPatient, staffId, facilityId, PREG_DEL_NOTIFY_VISIT.value(),
                 datetime.toDate(), mrsObservations);
-        verify(mockTextMessageService).sendSMS(facility, SMS.fromSMSText("motechid-firstname-lastname-" + DateFormat.getDateTimeInstance().format(datetime.toDate())));
+        verify(mockSMSGateway).sendSMS(facility, SMS.fromSMSText("motechid-firstname-lastname-" + DateFormat.getDateTimeInstance().format(datetime.toDate())));
     }
 
     @Test

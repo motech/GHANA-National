@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.service;
+package org.motechproject.ghana.national.repository;
 
 import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -8,23 +8,18 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.messagecampaign.dao.AllMessageCampaigns;
 import org.motechproject.server.messagecampaign.service.MessageCampaignService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-@Component
-public class MobileMidwifeCampaign {
-
-    public static final String CHILDCARE_MESSAGE_NAME = "ChildCare Message";
-    public static final String PREGNANCY_MESSAGE_NAME = "Pregnancy Message";
+@Repository
+public class AllCampaigns {
 
     private MessageCampaignService campaignService;
     private AllMessageCampaigns allMessageCampaigns;
 
     @Autowired
-    public MobileMidwifeCampaign(MessageCampaignService campaignService, AllMessageCampaigns allMessageCampaigns) {
+    public AllCampaigns(MessageCampaignService campaignService, AllMessageCampaigns allMessageCampaigns) {
         this.campaignService = campaignService;
         this.allMessageCampaigns = allMessageCampaigns;
     }
@@ -42,15 +37,7 @@ public class MobileMidwifeCampaign {
     public DateTime nearestCycleDate(MobileMidwifeEnrollment enrollment) {
         DateTime fromDate = enrollment.getEnrollmentDateTime();
         ServiceType serviceType = enrollment.getServiceType();
-        List<DayOfWeek> applicableDays = allMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), programMessageKey(serviceType));
+        List<DayOfWeek> applicableDays = allMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), serviceType.getServiceName());
         return Utility.nextApplicableWeekDay(fromDate, applicableDays);
-    }
-
-    String programMessageKey(ServiceType serviceType) {
-        Map<ServiceType, String> messageMap = new HashMap<ServiceType, String>() {{
-            put(ServiceType.PREGNANCY, PREGNANCY_MESSAGE_NAME);
-            put(ServiceType.CHILD_CARE, CHILDCARE_MESSAGE_NAME);
-        }};
-        return messageMap.get(serviceType);
     }
 }

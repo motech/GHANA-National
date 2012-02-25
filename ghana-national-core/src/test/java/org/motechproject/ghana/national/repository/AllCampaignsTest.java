@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.service;
+package org.motechproject.ghana.national.repository;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -18,12 +18,10 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.domain.mobilemidwife.ServiceType.PREGNANCY;
-import static org.motechproject.ghana.national.service.MobileMidwifeCampaign.*;
 
-public class MobileMidwifeCampaignTest {
+public class AllCampaignsTest {
 
-    MobileMidwifeCampaign campaign;
+    AllCampaigns campaign;
 
     @Mock
     MessageCampaignService mockMessageCampaignService;
@@ -33,12 +31,12 @@ public class MobileMidwifeCampaignTest {
     @Before
     public void setUp() {
         initMocks(this);
-        campaign = new MobileMidwifeCampaign(mockMessageCampaignService, mockAllMessageCampaigns);
+        campaign = new AllCampaigns(mockMessageCampaignService, mockAllMessageCampaigns);
     }
 
     @Test
     public void shouldStartCampaignservice() {
-        MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment().setServiceType(PREGNANCY).setMessageStartWeek("33").setScheduleStartDate(new DateTime());
+        MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment().setServiceType(ServiceType.PREGNANCY).setMessageStartWeek("33").setScheduleStartDate(new DateTime());
         campaign.start(enrollment);
         verify(mockMessageCampaignService).startFor(any(CampaignRequest.class));
     }
@@ -57,7 +55,7 @@ public class MobileMidwifeCampaignTest {
         ServiceType serviceType = ServiceType.CHILD_CARE;
         DateTime registrationThuFeb2_2012 = new DateTime(2012, 2, 2, 4, 15, 0);
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment().setEnrollmentDateTime(registrationThuFeb2_2012).setServiceType(serviceType);
-        when(mockAllMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), CHILDCARE_MESSAGE_NAME)).thenReturn(asList(DayOfWeek.Monday));
+        when(mockAllMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), ServiceType.CHILD_CARE.getServiceName())).thenReturn(asList(DayOfWeek.Monday));
 
         DateTime actualDateTime = campaign.nearestCycleDate(enrollment);
         assertThat(actualDateTime, is(registrationThuFeb2_2012.dayOfMonth().addToCopy(4)));

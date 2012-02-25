@@ -5,6 +5,8 @@ import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
+import org.motechproject.ghana.national.repository.AllCampaigns;
+import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.messagecampaign.EventKeys;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
@@ -33,7 +35,7 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
     @Autowired
     private MobileMidwifeService service;
     @Autowired
-    private MobileMidwifeCampaign mobileMidwifeCampaign;
+    private AllCampaigns allCampaigns;
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
     @Autowired
@@ -41,14 +43,12 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
     @Autowired
     private CampaignEnrollmentService campaignEnrollmentService;
     @Autowired
-    private IdentifierGenerationService identifierGenerationService;
-
-    String patientId = "1234567";
+    private IdentifierGenerator identifierGenerator;
 
     @Test
     public void shouldCreateMobileMidwifeEnrollmentAndCreateScheduleIfNotRegisteredAlready() {
 
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().patientId(identifierGenerationService.newPatientId()).
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().patientId(identifierGenerator.newPatientId()).
                 facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).serviceType(ServiceType.PREGNANCY).
                 learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).reasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH).
                 messageStartWeek("20").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
@@ -84,7 +84,7 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
     }
 
     private String getMessageKey(String campaignName) {
-        CampaignMessage message = allMessageCampaigns.getCampaignMessageByMessageName(campaignName, mobileMidwifeCampaign.programMessageKey(ServiceType.valueOf(campaignName)));
+        CampaignMessage message = allMessageCampaigns.getCampaignMessageByMessageName(campaignName, ServiceType.valueOf(campaignName).getServiceName());
         return message.messageKey();
     }
 }

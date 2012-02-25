@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.service.EmailTemplateService;
+import org.motechproject.ghana.national.repository.EmailGateway;
 import org.motechproject.ghana.national.service.StaffService;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -21,14 +21,14 @@ public class ForgotPasswordControllerTest {
 
     private ForgotPasswordController forgotPasswordController;
     @Mock
-    private EmailTemplateService emailTemplateService;
+    private EmailGateway mockEmailGateway;
     @Mock
     private StaffService staffService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        forgotPasswordController = new ForgotPasswordController(staffService, emailTemplateService);
+        forgotPasswordController = new ForgotPasswordController(staffService, mockEmailGateway);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class ForgotPasswordControllerTest {
         HttpServletRequest mockHttpRequest = mock(HttpServletRequest.class);
         when(mockHttpRequest.getParameter("emailId")).thenReturn(testEmailId);
         when(staffService.changePasswordByEmailId(testEmailId)).thenReturn(newPassword);
-        when(emailTemplateService.sendEmailUsingTemplates(testEmailId, newPassword)).thenReturn(Constants.EMAIL_SUCCESS);
+        when(mockEmailGateway.sendEmailUsingTemplates(testEmailId, newPassword)).thenReturn(Constants.EMAIL_SUCCESS);
         ModelAndView actualModelAndView = forgotPasswordController.changePasswordAndSendEmail(mockHttpRequest);
 
         assertThat(actualModelAndView.getView(), is(equalTo(expectedModelAndView.getView())));

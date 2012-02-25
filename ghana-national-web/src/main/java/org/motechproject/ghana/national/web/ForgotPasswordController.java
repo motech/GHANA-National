@@ -1,7 +1,7 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.service.EmailTemplateService;
+import org.motechproject.ghana.national.repository.EmailGateway;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +16,15 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/forgotPassword")
 public class ForgotPasswordController {
     private StaffService staffService;
-    private EmailTemplateService emailTemplateService;
+    private EmailGateway emailGateway;
 
     public ForgotPasswordController() {
     }
 
     @Autowired
-    public ForgotPasswordController(StaffService staffService, EmailTemplateService emailTemplateService) {
+    public ForgotPasswordController(StaffService staffService, EmailGateway emailGateway) {
         this.staffService = staffService;
-        this.emailTemplateService = emailTemplateService;
+        this.emailGateway = emailGateway;
     }
 
     @LoginAsAdmin
@@ -35,7 +35,7 @@ public class ForgotPasswordController {
 
         String newPassword = staffService.changePasswordByEmailId(emailId);
         if (!newPassword.equals("")) {
-            String emailSentStatus = emailTemplateService.sendEmailUsingTemplates(emailId, newPassword);
+            String emailSentStatus = emailGateway.sendEmailUsingTemplates(emailId, newPassword);
             if (emailSentStatus.equals(Constants.EMAIL_SUCCESS))
                 modelAndView.addObject(Constants.FORGOT_PASSWORD_MESSAGE, Constants.FORGOT_PASSWORD_SUCCESS);
             else

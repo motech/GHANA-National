@@ -13,8 +13,8 @@
     <context:component-scan base-package=" org.motechproject.deliverytools.outboundendpoint"/>
     <util:properties id="functionalTestProperties" location="classpath:functional-test.properties"/>
 
-    <bean id="identifierGenerationService"
-          class="org.motechproject.ghana.national.service.IdentifierGenerationService"/>
+    <bean id="identifierGenerator"
+          class="org.motechproject.ghana.national.repository.IdentifierGenerator"/>
     <util:properties id="ghanaNationalProperties" location="classpath:ghana-national.properties"/>
 
 </beans>

@@ -7,7 +7,7 @@ import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
-import org.motechproject.ghana.national.service.IdentifierGenerationService;
+import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -19,7 +19,7 @@ import org.testng.annotations.Test;
 public class PatientTest extends LoggedInUserFunctionalTest {
 
     @Autowired
-    private IdentifierGenerationService identifierGenerationService;
+    private IdentifierGenerator identifierGenerator;
 
     private DataGenerator dataGenerator;
 
@@ -56,7 +56,7 @@ public class PatientTest extends LoggedInUserFunctionalTest {
         TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.USE_PREPRINTED_ID).
                 patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).
-                motechId(identifierGenerationService.newPatientId());
+                motechId(identifierGenerator.newPatientId());
         patientPage.create(patient);
         SearchPatientPage searchPatientPage = browser.toSearchPatient(patientPage);
         searchPatientPage.searchWithMotechId(patient.motechId());

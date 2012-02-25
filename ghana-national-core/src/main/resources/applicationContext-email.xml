@@ -19,16 +19,6 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.spri
         </property>
     </bean>
 
-    <bean id="emailTemplateService" class="org.motechproject.ghana.national.service.EmailTemplateService">
-        <constructor-arg value="#{emailProperties.motechAdminFromAddress}"/>
-        <constructor-arg value="#{emailProperties.mailSubjectTemplate}"/>
-        <constructor-arg value="#{emailProperties.mailTextTemplate}"/>
-
-        <property name="velocityEngine" ref="velocityEngine"/>
-        <property name="emailService" ref="emailService"/>
-    </bean>
-
-
     <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
         <property name="resourceLoaderPath" value="classpath:emailtemplates"/>
 

@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.service;
+package org.motechproject.ghana.national.repository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,20 +20,20 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-public class TextMessageServiceTest {
+public class SMSGatewayTest {
 
-    TextMessageService textMessageService;
+    SMSGateway SMSGateway;
     @Mock
     CMSLiteService mockCMSLiteService;
     @Mock
-    private SmsService mockSMSService;
+    SmsService mockSMSService;
 
     @Before
     public void init() {
         initMocks(this);
-        textMessageService = new TextMessageService();
-        setField(textMessageService, "smsService", mockSMSService);
-        setField(textMessageService, "cmsLiteService", mockCMSLiteService);
+        SMSGateway = new SMSGateway();
+        setField(SMSGateway, "smsService", mockSMSService);
+        setField(SMSGateway, "cmsLiteService", mockCMSLiteService);
     }
                                       
     @Test
@@ -42,7 +42,7 @@ public class TextMessageServiceTest {
         String facilityPhoneNumber = "phone number";
         String smsText = "sms message";
         when(facility.phoneNumber()).thenReturn(facilityPhoneNumber);
-        textMessageService.sendSMS(facility, SMS.fromSMSText(smsText));
+        SMSGateway.sendSMS(facility, SMS.fromSMSText(smsText));
         verify(mockSMSService).sendSMS(facilityPhoneNumber, smsText);
     }
 
@@ -50,7 +50,7 @@ public class TextMessageServiceTest {
     public void shouldSendSMSToAPhoneNumber() throws ContentNotFoundException {
         String phoneNumber = "phone number";
         String smsText = "sms message";
-        textMessageService.sendSMS(phoneNumber, SMS.fromSMSText(smsText));
+        SMSGateway.sendSMS(phoneNumber, SMS.fromSMSText(smsText));
         verify(mockSMSService).sendSMS(phoneNumber, smsText);
     }
 
@@ -60,7 +60,7 @@ public class TextMessageServiceTest {
         StringContent stringConent = mock(StringContent.class);
         when(stringConent.getValue()).thenReturn("placeholder");
         when(mockCMSLiteService.getStringContent(Locale.getDefault().getLanguage(), templateKey)).thenReturn(stringConent);
-        SMS sms = textMessageService.getSMS(templateKey, new HashMap<String, String>() {{
+        SMS sms = SMSGateway.getSMS(templateKey, new HashMap<String, String>() {{
             put("placeholder", "value");
         }});
         assertThat(sms, is(equalTo(SMS.fromSMSText("value"))));
@@ -73,7 +73,7 @@ public class TextMessageServiceTest {
         when(stringConent.getValue()).thenReturn("placeholder");
         String language = "EN";
         when(mockCMSLiteService.getStringContent(language, templateKey)).thenReturn(stringConent);
-        SMS sms = textMessageService.getSMS(language, templateKey, new HashMap<String, String>() {{
+        SMS sms = SMSGateway.getSMS(language, templateKey, new HashMap<String, String>() {{
             put("placeholder", "value");
         }});
         assertThat(sms, is(equalTo(SMS.fromSMSText("value"))));

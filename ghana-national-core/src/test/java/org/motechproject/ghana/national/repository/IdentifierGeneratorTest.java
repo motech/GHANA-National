@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.service;
+package org.motechproject.ghana.national.repository;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -15,9 +15,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class IdentifierGenerationServiceTest {
+public class IdentifierGeneratorTest {
 
-    private IdentifierGenerationService identifierService;
+    private IdentifierGenerator identifierService;
 
     @Mock
     private HttpClient httpClient;
@@ -25,7 +25,7 @@ public class IdentifierGenerationServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        identifierService = new IdentifierGenerationService();
+        identifierService = new IdentifierGenerator();
         ReflectionTestUtils.setField(identifierService, "port", "7000");
         ReflectionTestUtils.setField(identifierService, "host", "host");
         ReflectionTestUtils.setField(identifierService, "path", "path");

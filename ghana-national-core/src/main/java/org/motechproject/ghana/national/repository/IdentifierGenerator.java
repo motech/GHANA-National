@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.service;
+package org.motechproject.ghana.national.repository;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
@@ -7,20 +7,15 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 
-import static org.motechproject.ghana.national.domain.Constants.IDGEN_SEQ_ID_GEN_FACILITY_ID;
-import static org.motechproject.ghana.national.domain.Constants.IDGEN_SEQ_ID_GEN_PATIENT_ID;
-import static org.motechproject.ghana.national.domain.Constants.IDGEN_SEQ_ID_GEN_STAFF_ID;
-import static org.motechproject.ghana.national.domain.Constants.PATIENT_IDENTIFIER_TYPE_FACILITY_ID;
-import static org.motechproject.ghana.national.domain.Constants.PATIENT_IDENTIFIER_TYPE_PATIENT_ID;
-import static org.motechproject.ghana.national.domain.Constants.PATIENT_IDENTIFIER_TYPE_STAFF_ID;
+import static org.motechproject.ghana.national.domain.Constants.*;
 
-@Service
-public class IdentifierGenerationService {
-    private Logger log = LoggerFactory.getLogger(IdentifierGenerationService.class);
+@Repository
+public class IdentifierGenerator {
+    private Logger log = LoggerFactory.getLogger(IdentifierGenerator.class);
     private static final String ID_GENERATOR = "generator";
     private static final String ID_TYPE = "type";
     private static final String USER = "user";
@@ -44,7 +39,7 @@ public class IdentifierGenerationService {
     private String password;
     private static final String OPENMRS_PORT = "OPENMRS_PORT";
 
-    public IdentifierGenerationService() {
+    public IdentifierGenerator() {
         httpClient = new HttpClient();
     }
 

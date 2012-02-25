@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnroll
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
+import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.form.SearchPatientForm;
@@ -51,7 +52,7 @@ public class PatientControllerTest {
     @Mock
     PatientService mockPatientService;
     @Mock
-    IdentifierGenerationService mockIdentifierGenerationService;
+    IdentifierGenerator mockIdentifierGenerator;
     @Mock
     MessageSource mockMessageSource;
     @Mock
@@ -65,9 +66,9 @@ public class PatientControllerTest {
     @Mock
     MotechIdVerhoeffValidator mockMotechIdVerhoeffValidator;
     @Mock
-    private StaffService mockStaffService;
+    StaffService mockStaffService;
     @Mock
-    private MobileMidwifeService mobileMidwifeService;
+    MobileMidwifeService mobileMidwifeService;
 
     @Before
     public void setUp() throws Exception {
@@ -80,7 +81,7 @@ public class PatientControllerTest {
         ReflectionTestUtils.setField(patientController, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(patientController, "messageSource", mockMessageSource);
         ReflectionTestUtils.setField(patientController, "motechIdVerhoeffValidator", mockMotechIdVerhoeffValidator);
-        ReflectionTestUtils.setField(patientController, "identifierGenerationService", mockIdentifierGenerationService);
+        ReflectionTestUtils.setField(patientController, "identifierGenerator", mockIdentifierGenerator);
         ReflectionTestUtils.setField(patientController, "mobileMidwifeService", mobileMidwifeService);
         mockBindingResult = mock(BindingResult.class);
         when(mockPatientService.registerPatient(any(Patient.class), any(String.class))).thenReturn(new Patient(new MRSPatient(null, null, null)));

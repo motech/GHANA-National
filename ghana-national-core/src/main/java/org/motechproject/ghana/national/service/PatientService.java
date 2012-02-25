@@ -7,6 +7,8 @@ import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatExcept
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllPatients;
+import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
 import org.openmrs.Person;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
 import static org.motechproject.ghana.national.domain.EncounterType.PATIENT_EDIT_VISIT;
 import static org.motechproject.ghana.national.domain.EncounterType.PATIENT_REG_VISIT;
 import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
@@ -26,18 +29,18 @@ import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
 @Service
 public class PatientService {
     private AllPatients allPatients;
-    private IdentifierGenerationService identifierGenerationService;
+    private IdentifierGenerator identifierGenerator;
     private AllEncounters allEncounters;
-    private MotherVisitService motherVisitService;
+    private AllSchedules allSchedules;
 
     @Autowired
-    public PatientService(AllPatients allPatients, IdentifierGenerationService identifierGenerationService,
-                          AllEncounters allEncounters, MotherVisitService motherVisitService) {
+    public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator,
+                          AllEncounters allEncounters, AllSchedules allSchedules) {
 
         this.allPatients = allPatients;
-        this.identifierGenerationService = identifierGenerationService;
+        this.identifierGenerator = identifierGenerator;
         this.allEncounters = allEncounters;
-        this.motherVisitService = motherVisitService;
+        this.allSchedules = allSchedules;
     }
 
     public Patient registerPatient(Patient patient, String staffId)
@@ -46,7 +49,7 @@ public class PatientService {
 
             if (StringUtils.isEmpty(patient.getMrsPatient().getMotechId())) {
                 MRSPatient mrsPatient = patient.getMrsPatient();
-                String motechId = identifierGenerationService.newPatientId();
+                String motechId = identifierGenerator.newPatientId();
                 patient = new Patient(new MRSPatient(mrsPatient.getId(), motechId, mrsPatient.getPerson(), mrsPatient.getFacility()), patient.getParentId());
             }
             Patient savedPatient = allPatients.save(patient);
@@ -143,6 +146,6 @@ public class PatientService {
 
     public void deceasePatient(String patientMotechId, Date dateOfDeath, String causeOfDeath, String comment) {
         allPatients.deceasePatient(dateOfDeath, patientMotechId, (causeOfDeath.equals("OTHER") ? "OTHER NON-CODED" : "NONE"), comment);
-        motherVisitService.unScheduleAll(getPatientByMotechId(patientMotechId));
+        allSchedules.unEnroll(getPatientByMotechId(patientMotechId), TT_VACCINATION_VISIT);
     }
 }

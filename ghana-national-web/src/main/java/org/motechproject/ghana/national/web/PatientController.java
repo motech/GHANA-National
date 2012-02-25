@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.exception.StaffNotFoundException;
+import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.form.SearchPatientForm;
@@ -48,7 +49,7 @@ public class PatientController {
     public static final String SEARCH_PATIENT_URL = "patients/search";
     public static final String EDIT_PATIENT_URL = "patients/edit";
     public static final String SUCCESS = "patients/success";
-
+    public static final String SEARCH_PATIENT_FORM = "searchPatientForm";
     @Autowired
     private FacilityHelper facilityHelper;
     @Autowired
@@ -60,11 +61,9 @@ public class PatientController {
     @Autowired
     private MessageSource messageSource;
     @Autowired
-    private IdentifierGenerationService identifierGenerationService;
+    private IdentifierGenerator identifierGenerator;
     @Autowired
     private MotechIdVerhoeffValidator motechIdVerhoeffValidator;
-
-    public static final String SEARCH_PATIENT_FORM = "searchPatientForm";
     @Autowired
     private StaffService staffService;
     @Autowired

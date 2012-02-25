@@ -18,8 +18,6 @@ import java.util.Properties;
 
 import static org.motechproject.ghana.national.domain.mobilemidwife.ServiceType.CHILD_CARE;
 import static org.motechproject.ghana.national.domain.mobilemidwife.ServiceType.PREGNANCY;
-import static org.motechproject.ghana.national.service.MobileMidwifeCampaign.CHILDCARE_MESSAGE_NAME;
-import static org.motechproject.ghana.national.service.MobileMidwifeCampaign.PREGNANCY_MESSAGE_NAME;
 import static org.springframework.core.io.support.PropertiesLoaderUtils.loadAllProperties;
 
 @Component
@@ -46,8 +44,8 @@ public class MobileMidwifeMessageSeed extends Seed {
 
     private void savePropertiesToCMS(Properties properties, Language language) throws CMSLiteException {
 
-        RepeatingCampaignMessage pregnancyCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(PREGNANCY.name(), PREGNANCY_MESSAGE_NAME);
-        RepeatingCampaignMessage childCareCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(CHILD_CARE.name(), CHILDCARE_MESSAGE_NAME);
+        RepeatingCampaignMessage pregnancyCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(PREGNANCY.name(), PREGNANCY.getServiceName());
+        RepeatingCampaignMessage childCareCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(CHILD_CARE.name(), CHILD_CARE.getServiceName());
         Map<String, String> pregnancyDayMap = createDayMap(pregnancyCampaignMessage);
         Map<String, String> childCareDayMap = createDayMap(childCareCampaignMessage);
 

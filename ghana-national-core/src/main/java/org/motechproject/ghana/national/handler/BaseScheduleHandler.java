@@ -6,7 +6,7 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMS;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllPatients;
-import org.motechproject.ghana.national.service.TextMessageService;
+import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 
@@ -17,15 +17,15 @@ import static org.motechproject.ghana.national.configuration.TextMessageTemplate
 public abstract class BaseScheduleHandler {
 
     protected AllPatients allPatients;
-    protected TextMessageService textMessageService;
+    protected SMSGateway smsGateway;
     protected AllFacilities allFacilities;
 
     protected BaseScheduleHandler() {
     }
 
-    protected BaseScheduleHandler(AllPatients allPatients, AllFacilities allFacilities, TextMessageService textMessageService) {
+    protected BaseScheduleHandler(AllPatients allPatients, AllFacilities allFacilities, SMSGateway smsGateway) {
         this.allPatients = allPatients;
-        this.textMessageService = textMessageService;
+        this.smsGateway = smsGateway;
         this.allFacilities = allFacilities;
     }
 
@@ -34,7 +34,7 @@ public abstract class BaseScheduleHandler {
         final Patient patient = allPatients.patientByOpenmrsId(externalId);
         final String motechId = patient.getMrsPatient().getMotechId();
 
-        SMS sms = textMessageService.getSMS(smsTemplateKey, new HashMap<String, String>() {{
+        SMS sms = smsGateway.getSMS(smsTemplateKey, new HashMap<String, String>() {{
             put(MOTECH_ID, motechId);
             put(DUE_DATE, dueDate.toString());
             put(WINDOW, getWindowName(milestoneEvent.getWindowName()));
@@ -44,7 +44,7 @@ public abstract class BaseScheduleHandler {
         }});
 
         Facility facility = allFacilities.getFacility(patient.getMrsPatient().getFacility().getId());
-        textMessageService.sendSMS(facility, sms);
+        smsGateway.sendSMS(facility, sms);
     }
 
     private String getWindowName(String windowName) {
