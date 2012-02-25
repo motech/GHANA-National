@@ -69,7 +69,7 @@ public class AllPatientsTest {
     public void shouldReturnNullIfFetchPatientByIdIsNull() {
         final String patientId = "1";
         when(mockMrsPatientAdapter.getPatientByMotechId(patientId)).thenReturn(null);
-        final Patient actualPatient = allPatients.patientByMotechId(patientId);
+        final Patient actualPatient = allPatients.getPatientByMotechId(patientId);
         assertNull(actualPatient);
     }
     
@@ -95,7 +95,7 @@ public class AllPatientsTest {
         final String patientId = "1";
         MRSPatient patient = new MRSPatient(patientId);
         when(mockMrsPatientAdapter.getPatientByMotechId(patientId)).thenReturn(patient);
-        final Patient actualPatient = allPatients.patientByMotechId(patientId);
+        final Patient actualPatient = allPatients.getPatientByMotechId(patientId);
         assertThat(actualPatient.getMrsPatient(), is(patient));
     }
 

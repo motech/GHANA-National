@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ChildVisitService {
+    private AllEncounters allEncounters;
 
     @Autowired
-    AllEncounters allEncounters;
+    public ChildVisitService(AllEncounters allEncounters) {
+        this.allEncounters = allEncounters;
+    }
 
     public MRSEncounter save(CWCVisit cwcVisit) {
         return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(cwcVisit));

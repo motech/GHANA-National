@@ -8,6 +8,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllEncounters;
+import org.motechproject.ghana.national.repository.AllObservations;
+import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.model.Time;
@@ -17,7 +19,6 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.*;
 
@@ -37,7 +38,7 @@ public class CareServiceTest extends BaseUnitTest {
     CareService careService;
 
     @Mock
-    PatientService mockPatientService;
+    AllPatients mockAllPatients;
 
     @Mock
     AllEncounters mockAllEncounters;
@@ -46,7 +47,7 @@ public class CareServiceTest extends BaseUnitTest {
     AllSchedules mockAllSchedules;
 
     @Mock
-    MotherVisitService mockMotherVisitService;
+    AllObservations mockAllObservations;
 
     private DateTime currentDate;
     Patient mockPatient;
@@ -54,12 +55,8 @@ public class CareServiceTest extends BaseUnitTest {
 
     @Before
     public void setUp() {
-        careService = new CareService();
+        careService = new CareService(mockAllPatients, mockAllEncounters, mockAllObservations, mockAllSchedules);
         initMocks(this);
-        ReflectionTestUtils.setField(careService, "patientService", mockPatientService);
-        ReflectionTestUtils.setField(careService, "allEncounters", mockAllEncounters);
-        ReflectionTestUtils.setField(careService, "allSchedules", mockAllSchedules);
-        ReflectionTestUtils.setField(careService, "motherVisitService", mockMotherVisitService);
 
         currentDate = DateTime.now();
         mockCurrentDate(currentDate);
@@ -211,7 +208,7 @@ public class CareServiceTest extends BaseUnitTest {
         Set<MRSObservation> updatedEddObservations = new HashSet<MRSObservation>() {{
             add(activePregnancy);
         }};
-        when(mockMotherVisitService.updatedEddObservations(ancvo.getEstimatedDateOfDelivery(), mockPatient,
+        when(mockAllObservations.updateEDD(ancvo.getEstimatedDateOfDelivery(), mockPatient,
                 ancvo.getStaffId())).thenReturn(updatedEddObservations);
 
         careService.enroll(ancvo);
@@ -371,7 +368,6 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     private void mockPatientService(Patient patient) {
-        when(mockPatientService.getPatientByMotechId(patient.getMotechId())).thenReturn(patient);
+        when(mockAllPatients.getPatientByMotechId(patient.getMotechId())).thenReturn(patient);
     }
-
 }

@@ -32,7 +32,6 @@ public class PatientService {
 
     @Autowired
     public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator, AllEncounters allEncounters) {
-
         this.allPatients = allPatients;
         this.identifierGenerator = identifierGenerator;
         this.allEncounters = allEncounters;
@@ -62,7 +61,7 @@ public class PatientService {
     }
 
     public Patient getPatientByMotechId(String patientId) {
-        return allPatients.patientByMotechId(patientId);
+        return allPatients.getPatientByMotechId(patientId);
     }
 
     public List<Patient> search(String name, String motechId) {

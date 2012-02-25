@@ -2,8 +2,8 @@ package org.motechproject.ghana.national.service;
 
 import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
-import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllCampaigns;
+import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,10 +11,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class MobileMidwifeService {
 
-    @Autowired
     private AllMobileMidwifeEnrollments allEnrollments;
-    @Autowired
     private AllCampaigns allCampaigns;
+
+    @Autowired
+    public MobileMidwifeService(AllMobileMidwifeEnrollments allEnrollments, AllCampaigns allCampaigns) {
+        this.allEnrollments = allEnrollments;
+        this.allCampaigns = allCampaigns;
+    }
 
     public void register(MobileMidwifeEnrollment enrollment) {
         enrollment.setEnrollmentDateTime(DateUtil.now());

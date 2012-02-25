@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OutPatientVisitService {
+    private AllOutPatientVisits allOutPatientVisits;
 
     @Autowired
-    AllOutPatientVisits allOutPatientVisits;
-
+    public OutPatientVisitService(AllOutPatientVisits allOutPatientVisits) {
+        this.allOutPatientVisits = allOutPatientVisits;
+    }
 
     public void registerVisit(OutPatientVisit visit){
         allOutPatientVisits.add(visit);

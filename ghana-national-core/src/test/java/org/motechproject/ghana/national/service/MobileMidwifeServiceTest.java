@@ -8,8 +8,8 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
-import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllCampaigns;
+import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.util.DateTimeSourceUtil;
 import org.motechproject.util.DateUtil;
@@ -21,20 +21,17 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class MobileMidwifeServiceTest {
-    @Mock
-    private AllMobileMidwifeEnrollments allEnrollments;
     private MobileMidwifeService service;
+    @Mock
+    private AllMobileMidwifeEnrollments mockAllMobileMidwifeEnrollments;
     @Mock
     private AllCampaigns mockAllCampaigns;
 
     public MobileMidwifeServiceTest() {
         initMocks(this);
-        service = new MobileMidwifeService();
-        setField(service, "allEnrollments", allEnrollments);
-        setField(service, "allCampaigns", mockAllCampaigns);
+        service = new MobileMidwifeService(mockAllMobileMidwifeEnrollments, mockAllCampaigns);
     }
 
     @Test
@@ -44,7 +41,7 @@ public class MobileMidwifeServiceTest {
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
                 patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday).phoneOwnership(PhoneOwnership.HOUSEHOLD)
                 .build();
-        when(allEnrollments.findActiveBy(patientId)).thenReturn(null);
+        when(mockAllMobileMidwifeEnrollments.findActiveBy(patientId)).thenReturn(null);
         when(mockAllCampaigns.nearestCycleDate(enrollment)).thenReturn(enrollment.getEnrollmentDateTime());
 
         service.register(enrollment);
@@ -75,7 +72,7 @@ public class MobileMidwifeServiceTest {
 
     private void verifyCreateNewEnrollment(MobileMidwifeEnrollment enrollment) {
         verify(mockAllCampaigns).nearestCycleDate(enrollment);
-        verify(allEnrollments).add(enrollment);
+        verify(mockAllMobileMidwifeEnrollments).add(enrollment);
     }
 
     @Test
@@ -83,7 +80,7 @@ public class MobileMidwifeServiceTest {
         MobileMidwifeEnrollment enrollmentWithNoConsent = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
                 patientId("patienId").staffId("staff13").consent(false).phoneOwnership(PhoneOwnership.PERSONAL).build();
         service.register(enrollmentWithNoConsent);
-        verify(allEnrollments).add(enrollmentWithNoConsent);
+        verify(mockAllMobileMidwifeEnrollments).add(enrollmentWithNoConsent);
         verify(mockAllCampaigns, never()).start(enrollmentWithNoConsent);
     }
 
@@ -92,14 +89,14 @@ public class MobileMidwifeServiceTest {
         String patientId = "patienId";
         MobileMidwifeEnrollment existingEnrollmentWithNoConsent = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
                 patientId(patientId).staffId("staff13").consent(false).phoneOwnership(PhoneOwnership.PERSONAL).build();
-        when(allEnrollments.findActiveBy(patientId)).thenReturn(existingEnrollmentWithNoConsent);
+        when(mockAllMobileMidwifeEnrollments.findActiveBy(patientId)).thenReturn(existingEnrollmentWithNoConsent);
 
         MobileMidwifeEnrollment newEnrollment = new MobileMidwifeEnrollmentBuilder().patientId(patientId)
                 .phoneOwnership(PhoneOwnership.HOUSEHOLD).consent(true).build();
         when(mockAllCampaigns.nearestCycleDate(newEnrollment)).thenReturn(newEnrollment.getEnrollmentDateTime());
         service.register(newEnrollment);
 
-        verify(allEnrollments).update(existingEnrollmentWithNoConsent);
+        verify(mockAllMobileMidwifeEnrollments).update(existingEnrollmentWithNoConsent);
         verify(mockAllCampaigns, never()).stop(existingEnrollmentWithNoConsent);
     }
 
@@ -111,7 +108,7 @@ public class MobileMidwifeServiceTest {
                 .build();
         MobileMidwifeEnrollment existingEnrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
                 patientId(patientId).consent(true).phoneOwnership(PhoneOwnership.HOUSEHOLD).build();
-        when(allEnrollments.findActiveBy(patientId)).thenReturn(existingEnrollment);
+        when(mockAllMobileMidwifeEnrollments.findActiveBy(patientId)).thenReturn(existingEnrollment);
         when(mockAllCampaigns.nearestCycleDate(enrollment)).thenReturn(enrollment.getEnrollmentDateTime());
 
         service = spy(service);
@@ -129,11 +126,11 @@ public class MobileMidwifeServiceTest {
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
                 patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday).phoneOwnership(PhoneOwnership.PERSONAL)
                 .build();
-        when(allEnrollments.findActiveBy(patientId)).thenReturn(enrollment);
+        when(mockAllMobileMidwifeEnrollments.findActiveBy(patientId)).thenReturn(enrollment);
 
         service.unregister(patientId);
         assertFalse(enrollment.getActive());
-        verify(allEnrollments).update(enrollment);
+        verify(mockAllMobileMidwifeEnrollments).update(enrollment);
         verify(mockAllCampaigns).stop(enrollment);
     }
 
@@ -141,14 +138,14 @@ public class MobileMidwifeServiceTest {
     public void shouldFindMobileMidwifeEnrollmentByPatientId() {
         String patientId = "patientId";
         service.findActiveBy(patientId);
-        verify(allEnrollments).findActiveBy(patientId);
+        verify(mockAllMobileMidwifeEnrollments).findActiveBy(patientId);
     }
 
     @Test
     public void shouldFindLatestMobileMidwifeEnrollmentByPatientId() {
         String patientId = "patientId";
         service.findLatestEnrollment(patientId);
-        verify(allEnrollments).findLatestEnrollment(patientId);
+        verify(mockAllMobileMidwifeEnrollments).findLatestEnrollment(patientId);
     }
 
     @Test
@@ -156,7 +153,7 @@ public class MobileMidwifeServiceTest {
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().consent(true).phoneOwnership(PhoneOwnership.PUBLIC).build();
 
         service.register(enrollment);
-        verify(allEnrollments).add(enrollment);
+        verify(mockAllMobileMidwifeEnrollments).add(enrollment);
         verify(mockAllCampaigns, never()).nearestCycleDate(enrollment);
         verify(mockAllCampaigns, never()).start(enrollment);
     }

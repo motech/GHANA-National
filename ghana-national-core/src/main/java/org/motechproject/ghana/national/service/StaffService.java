@@ -20,9 +20,6 @@ public class StaffService {
     private EmailGateway emailGateway;
     private IdentifierGenerator identifierGenerator;
 
-    public StaffService() {
-    }
-
     @Autowired
     public StaffService(AllStaffs allStaffs, EmailGateway emailGateway, IdentifierGenerator identifierGenerator) {
         this.allStaffs = allStaffs;

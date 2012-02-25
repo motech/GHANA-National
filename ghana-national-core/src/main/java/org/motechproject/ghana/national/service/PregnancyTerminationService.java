@@ -31,13 +31,10 @@ public class PregnancyTerminationService {
     public static final String PREGNANCY_TERMINATION = "Pregnancy Termination";
     public static final String OTHER_CAUSE_OF_DEATH = "OTHER";
 
-    AllPatients allPatients;
-    AllEncounters allEncounters;
-    AllFacilities allFacilities;
-    AllSchedules allSchedules;
-
-    public PregnancyTerminationService() {
-    }
+    private AllPatients allPatients;
+    private AllEncounters allEncounters;
+    private AllFacilities allFacilities;
+    private AllSchedules allSchedules;
 
     @Autowired
     public PregnancyTerminationService(AllPatients allPatients, AllEncounters allEncounters, AllFacilities allFacilities, AllSchedules allSchedules) {
@@ -50,7 +47,7 @@ public class PregnancyTerminationService {
     @LoginAsAdmin
     @ApiSession
     public void terminatePregnancy(PregnancyTerminationRequest request) {
-        Patient patient = allPatients.patientByMotechId(request.getMotechId());
+        Patient patient = allPatients.getPatientByMotechId(request.getMotechId());
         MRSPatient mrsPatient = patient.getMrsPatient();
         Facility facility = allFacilities.getFacilityByMotechId(request.getFacilityId());
         allEncounters.persistEncounter(mrsPatient, request.getStaffId(), facility.getMrsFacilityId(), PREG_TERM_VISIT.value(), request.getTerminationDate(), prepareObservations(request));

@@ -59,7 +59,7 @@ public class PregnancyTerminationServiceTest {
         Patient mockPatient = mock(Patient.class);
         MRSPatient mockMRSPatient = mock(MRSPatient.class);
         when(mockMRSPatient.getId()).thenReturn("mrsPatientId");
-        when(mockAllPatients.patientByMotechId(request.getMotechId())).thenReturn(mockPatient);
+        when(mockAllPatients.getPatientByMotechId(request.getMotechId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
 
         Facility mockFacility=mock(Facility.class);
@@ -85,7 +85,7 @@ public class PregnancyTerminationServiceTest {
 
         Patient mockPatient = mock(Patient.class);
         MRSPatient mockMRSPatient = mock(MRSPatient.class);
-        when(mockAllPatients.patientByMotechId(request.getMotechId())).thenReturn(mockPatient);
+        when(mockAllPatients.getPatientByMotechId(request.getMotechId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
 
         Facility mockFacility=mock(Facility.class);

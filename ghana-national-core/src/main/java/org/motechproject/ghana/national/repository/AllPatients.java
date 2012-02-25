@@ -34,8 +34,8 @@ public class AllPatients {
         return (mrsPatient != null) ? new Patient(mrsPatient) : null;
     }
 
-    public Patient patientByMotechId(String id) {
-        MRSPatient mrsPatient = getPatientByMotechId(id);
+    public Patient getPatientByMotechId(String id) {
+        MRSPatient mrsPatient = patientAdapter.getPatientByMotechId(id);
         if (mrsPatient != null) {
             Patient patient = new Patient(mrsPatient);
             Relationship motherRelationship = getMotherRelationship(patient.getMrsPatient().getPerson());
@@ -64,10 +64,6 @@ public class AllPatients {
             }
         }
         return null;
-    }
-
-    private MRSPatient getPatientByMotechId(String id) {
-        return patientAdapter.getPatientByMotechId(id);
     }
 
     public List<Patient> search(String name, String motechId) {

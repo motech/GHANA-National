@@ -61,7 +61,7 @@ public class PatientServiceTest {
         when(mrsPatient.getMotechId()).thenReturn("100");
         when(mockAllEncounters.persistEncounter(mrsPatient, staffId, "34", PATIENT_REG_VISIT.value(), new Date(), null)).thenReturn(mrsEncounter);
         patientService.registerPatient(patient, "1234");
-        verify(mockAllPatients, times(0)).patientByMotechId(parentId);
+        verify(mockAllPatients, times(0)).getPatientByMotechId(parentId);
     }
 
     @Test(expected = ParentNotFoundException.class)
@@ -73,7 +73,7 @@ public class PatientServiceTest {
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
         when(mockAllPatients.save(patient)).thenReturn(mockPatient);
         when(mockMRSPatient.getMotechId()).thenReturn("32");
-        when(mockAllPatients.patientByMotechId(parentId)).thenReturn(null);
+        when(mockAllPatients.getPatientByMotechId(parentId)).thenReturn(null);
         MRSPerson mockPerson = mock(MRSPerson.class);
         when(patient.getMrsPatient()).thenReturn(mockMRSPatient);
         when(patient.getParentId()).thenReturn(parentId);
@@ -124,7 +124,7 @@ public class PatientServiceTest {
         final MRSPerson mrsMotherPerson = mock(MRSPerson.class);
         when(mother.getMrsPatient()).thenReturn(mrsMother);
         when(mrsMother.getPerson()).thenReturn(mrsMotherPerson);
-        when(mockAllPatients.patientByMotechId(parentId)).thenReturn(mother);
+        when(mockAllPatients.getPatientByMotechId(parentId)).thenReturn(mother);
 
         Patient child = mock(Patient.class);
         final MRSPatient mrsChild = mock(MRSPatient.class);
@@ -139,7 +139,7 @@ public class PatientServiceTest {
         when(patientSaved.getMotechId()).thenReturn(childId);
         when(mockAllPatients.save(childBeforeRegistering)).thenReturn(patientSaved);
         when(mrsPatientSaved.getMotechId()).thenReturn(childId);
-        when(mockAllPatients.patientByMotechId(childId)).thenReturn(child);
+        when(mockAllPatients.getPatientByMotechId(childId)).thenReturn(child);
         MRSEncounter mrsEncounter = mock(MRSEncounter.class);
 
         String facilityId = "34";
@@ -165,7 +165,7 @@ public class PatientServiceTest {
         MRSPatient mrsPatient = mock(MRSPatient.class);
         when(mrsPatient.getMotechId()).thenReturn("motechId");
         when(patient.getMrsPatient()).thenReturn(mrsPatient);
-        when(mockAllPatients.patientByMotechId(parentId)).thenReturn(mother);
+        when(mockAllPatients.getPatientByMotechId(parentId)).thenReturn(mother);
         doThrow(new IdentifierNotUniqueException()).when(mockAllPatients).save(patient);
         patientService.registerPatient(patient, "1234");
     }
@@ -178,10 +178,10 @@ public class PatientServiceTest {
         MRSPatient mockMRSPatient = mock(MRSPatient.class);
         when(patient.getMrsPatient()).thenReturn(mockMRSPatient);
         when(mockAllPatients.getMotherRelationship(mockPerson)).thenReturn(null);
-        when(mockAllPatients.patientByMotechId(patientId)).thenReturn(patient);
+        when(mockAllPatients.getPatientByMotechId(patientId)).thenReturn(patient);
         assertThat(patientService.getPatientByMotechId(patientId), is(equalTo(patient)));
 
-        when(mockAllPatients.patientByMotechId(patientId)).thenReturn(null);
+        when(mockAllPatients.getPatientByMotechId(patientId)).thenReturn(null);
         assertThat(patientService.getPatientByMotechId(patientId), is(equalTo(null)));
     }
 
@@ -314,7 +314,7 @@ public class PatientServiceTest {
         String causeOfDeath = "OTHER";
         String comment = null;
         final Patient patient = new Patient(new MRSPatient(""));
-        when(mockAllPatients.patientByMotechId(patientMotechId)).thenReturn(patient);
+        when(mockAllPatients.getPatientByMotechId(patientMotechId)).thenReturn(patient);
         when(mockAllPatients.getMotherRelationship(Matchers.<MRSPerson>any())).thenReturn(null);
 
         patientService.deceasePatient(dateOfDeath, patientMotechId, causeOfDeath, comment);

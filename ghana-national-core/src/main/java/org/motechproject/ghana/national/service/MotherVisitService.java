@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.service;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.factory.MotherVisitEncounterFactory;
@@ -21,12 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
-import static org.motechproject.ghana.national.domain.Concept.EDD;
-import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 
 @Service
@@ -35,8 +31,6 @@ public class MotherVisitService {
     private AllEncounters allEncounters;
     private AllObservations allObservations;
     private AllSchedules allSchedules;
-
-    private Logger logger = Logger.getLogger(MotherVisitEncounterFactory.class);
 
     @Autowired
     public MotherVisitService(AllEncounters allEncounters, AllObservations allObservations, AllSchedules allSchedules) {
@@ -49,41 +43,12 @@ public class MotherVisitService {
         MotherVisitEncounterFactory factory = new MotherVisitEncounterFactory();
 
         Set<MRSObservation> mrsObservations = factory.createMRSObservations(ancVisit);
-        Set<MRSObservation> eddObservations = updatedEddObservations(ancVisit.getEstDeliveryDate(), ancVisit.getPatient(), ancVisit.getStaff().getId());
+        Set<MRSObservation> eddObservations = allObservations.updateEDD(ancVisit.getEstDeliveryDate(), ancVisit.getPatient(), ancVisit.getStaff().getId());
         if (CollectionUtils.isNotEmpty(eddObservations)) {
             mrsObservations.addAll(eddObservations);
             createEDDScheduleForANCVisit(ancVisit.getPatient(), ancVisit.getEstDeliveryDate());
         }
         return allEncounters.persistEncounter(factory.createEncounter(ancVisit, mrsObservations));
-    }
-
-    public Set<MRSObservation> updatedEddObservations(Date estDeliveryDate, Patient patient, String staffId) {
-        HashSet<MRSObservation> observations = new HashSet<MRSObservation>();
-        String motechId = patient.getMotechId();
-
-        if (estDeliveryDate == null) {
-            return observations;
-        }
-
-        MRSObservation activePregnancyObservation = allObservations.findObservation(motechId, PREGNANCY.getName());
-        if (activePregnancyObservation == null) {
-            logger.warn("No active pregnancy found while checking for EDD. Patient ID :" + patient.getMrsPatient().getMotechId());
-            return observations; //no active pregnancy
-        }
-
-        MRSObservation eddObservation = allObservations.findObservation(motechId, EDD.getName());
-        Date oldEdd = (eddObservation == null) ? null : (Date) eddObservation.getValue();
-
-        if (oldEdd == null || !oldEdd.equals(estDeliveryDate)) {
-            observations.add(createNewEddObservation(activePregnancyObservation, eddObservation, staffId, estDeliveryDate));
-        }
-        return observations;
-    }
-
-    private MRSObservation createNewEddObservation(MRSObservation activePregnancyObservation, MRSObservation eddObservation, String staffId, Date estDeliveryDate) {
-        allObservations.voidObservation(eddObservation, "Replaced by new EDD value", staffId);
-        activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(new Date(), EDD.getName(), estDeliveryDate));
-        return activePregnancyObservation;
     }
 
     void createEDDScheduleForANCVisit(Patient patient, Date estimatedDateOfDelivery) {
