@@ -36,8 +36,12 @@ public class PregnancyTerminationService {
     private AllFacilities allFacilities;
     private AllSchedules allSchedules;
 
+    public PregnancyTerminationService() {
+    }
+
     @Autowired
-    public PregnancyTerminationService(AllPatients allPatients, AllEncounters allEncounters, AllFacilities allFacilities, AllSchedules allSchedules) {
+    public PregnancyTerminationService(AllPatients allPatients, AllEncounters allEncounters, AllFacilities allFacilities,
+                                       AllSchedules allSchedules) {
         this.allPatients = allPatients;
         this.allEncounters = allEncounters;
         this.allFacilities = allFacilities;

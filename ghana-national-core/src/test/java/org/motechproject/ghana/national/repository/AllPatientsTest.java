@@ -10,8 +10,12 @@ import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.services.MRSPatientAdapter;
 import org.motechproject.openmrs.services.OpenMRSRelationshipAdapter;
 import org.motechproject.util.DateUtil;
+import org.openmrs.Person;
+import org.openmrs.PersonName;
+import org.openmrs.Relationship;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -93,10 +97,36 @@ public class AllPatientsTest {
     @Test
     public void shouldFetchPatientById() {
         final String patientId = "1";
-        MRSPatient patient = new MRSPatient(patientId);
+        String personId = "2";
+        MRSPatient patient = new MRSPatient(patientId, new MRSPerson().id(personId), null);
         when(mockMrsPatientAdapter.getPatientByMotechId(patientId)).thenReturn(patient);
+        when(mockOpenMRSRelationshipAdapter.getMotherRelationship(personId)).thenReturn(null);
         final Patient actualPatient = allPatients.getPatientByMotechId(patientId);
         assertThat(actualPatient.getMrsPatient(), is(patient));
+    }
+    @Test
+    public void shouldFetchPatientByIdAndPopulateRelationshipIfFound() {
+        final String patientId = "1";
+        String personId = "2";
+        MRSPerson child = new MRSPerson().id(personId);
+        MRSPatient childPatient = new MRSPatient(patientId, child, null);
+        when(mockMrsPatientAdapter.getPatientByMotechId(patientId)).thenReturn(childPatient);
+        Relationship motherRelationship = new Relationship(122);
+        final int motherPersonId = 123;
+        Person mother = new Person(motherPersonId);
+        PersonName motherName = new PersonName("given", null, "family");
+        mother.addName(motherName);
+        motherRelationship.setPersonA(mother);
+        final String motherMotechId = "111";
+
+        when(mockMrsPatientAdapter.search(motherName.getFullName(), null)).thenReturn(new ArrayList<MRSPatient>() {{
+            add(new MRSPatient(motherMotechId, new MRSPerson().id(String.valueOf(motherPersonId)), null));}});
+        when(mockOpenMRSRelationshipAdapter.getMotherRelationship(personId)).thenReturn(motherRelationship);
+        
+        final Patient actualPatient = allPatients.getPatientByMotechId(patientId);
+        
+        assertThat(actualPatient.getMrsPatient(), is(childPatient));
+        assertThat(actualPatient.getParentId(), is(motherMotechId));
     }
 
     @Test
@@ -118,7 +148,6 @@ public class AllPatientsTest {
         String first = "first";
         String middle = "middle";
         String last = "last";
-        String preferred = "preferred";
         Date dateOfBirth = new Date();
         String gender = "male";
         String address = "address";

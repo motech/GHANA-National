@@ -55,8 +55,8 @@ public class CareServiceTest extends BaseUnitTest {
 
     @Before
     public void setUp() {
-        careService = new CareService(mockAllPatients, mockAllEncounters, mockAllObservations, mockAllSchedules);
         initMocks(this);
+        careService = new CareService(mockAllPatients, mockAllEncounters, mockAllObservations, mockAllSchedules);
 
         currentDate = DateTime.now();
         mockCurrentDate(currentDate);

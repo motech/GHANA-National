@@ -22,10 +22,6 @@ public class AllObservations {
 
     Logger logger = Logger.getLogger(AllObservations.class);
 
-    public void voidObservation(MRSObservation mrsObservation, String reason, String userMotechId) {
-        mrsObservationAdapter.voidObservation(mrsObservation, reason, userMotechId);
-    }
-
     public MRSObservation findObservation(String patientMotechId, String conceptName) {
         return mrsObservationAdapter.findObservation(patientMotechId, conceptName);
     }
@@ -51,11 +47,12 @@ public class AllObservations {
         }
         return activePregnancyObservation;
     }
-    
+
     private MRSObservation createNewEddObservation(MRSObservation activePregnancyObservation, MRSObservation eddObservation, String staffId, Date estDeliveryDate) {
-        voidObservation(eddObservation, "Replaced by new EDD value", staffId);
+        if (eddObservation != null) {
+            mrsObservationAdapter.voidObservation(eddObservation, "Replaced by new EDD value", staffId);
+        }
         activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(new Date(), EDD.getName(), estDeliveryDate));
         return activePregnancyObservation;
     }
-
 }

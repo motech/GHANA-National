@@ -23,7 +23,7 @@ public class BCGSchedulesTest extends BaseScheduleTrackingTest {
 
     @Test
     public void verifyBCGAlertsIfRegisteredAsSoonAsTheChildIsBorn() throws SchedulerException {
-        LocalDate registrationDate = mockToday(newDate(2000, 2, 24));
+        mockToday(newDate(2000, 2, 24));
         LocalDate dateOfBirth = newDate(2000, 2, 24);
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
@@ -32,7 +32,7 @@ public class BCGSchedulesTest extends BaseScheduleTrackingTest {
 
     @Test
     public void verifyBCGAlertsIfRegisteredForCWCAfterTheChildTurnsADayOld() throws SchedulerException {
-        LocalDate registrationDate = mockToday(newDate(2000, 2, 25));
+        mockToday(newDate(2000, 2, 25));
         LocalDate dateOfBirth = newDate(2000, 2, 24);
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
@@ -41,7 +41,7 @@ public class BCGSchedulesTest extends BaseScheduleTrackingTest {
 
     @Test
     public void verifyBCGAlertsIfRegisteredForCWCWhenTheChildIs2DaysOld() throws SchedulerException {
-        LocalDate registrationDate = mockToday(newDate(2000, 2, 26));
+        mockToday(newDate(2000, 2, 26));
         LocalDate dateOfBirth = newDate(2000, 2, 24);
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
@@ -50,7 +50,7 @@ public class BCGSchedulesTest extends BaseScheduleTrackingTest {
 
     @Test
     public void verifyBCGAlertsIfRegisteredForCWCWhenTheChildIsOverAWeekOld() throws SchedulerException {
-        LocalDate registrationDate = mockToday(newDate(2000, 3, 3));
+        mockToday(newDate(2000, 3, 3));
         LocalDate dateOfBirth = newDate(2000, 2, 24);
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
@@ -59,7 +59,7 @@ public class BCGSchedulesTest extends BaseScheduleTrackingTest {
 
     @Test
     public void verifyBCGAlertsIfRegisteredForCWCOverAMonthOld() throws SchedulerException {
-        LocalDate registrationDate = mockToday(newDate(2000, 4, 2));
+        mockToday(newDate(2000, 4, 2));
         LocalDate dateOfBirth = newDate(2000, 2, 24);
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
