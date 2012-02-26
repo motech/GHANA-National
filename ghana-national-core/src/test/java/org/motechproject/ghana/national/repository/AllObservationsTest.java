@@ -1,15 +1,26 @@
 package org.motechproject.ghana.national.repository;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.mrs.model.MRSObservation;
+import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.services.MRSObservationAdapter;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import java.util.Date;
+import java.util.Set;
+
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.domain.Concept.EDD;
+import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
 
 public class AllObservationsTest {
 
@@ -36,5 +47,49 @@ public class AllObservationsTest {
         MRSObservation mrsObservation = mock(MRSObservation.class);
         allObservations.voidObservation(mrsObservation, "reason", "123");
         verify(mockMrsObservationAdapter).voidObservation(mrsObservation, "reason", "123");
+    }
+    @Test
+    public void shouldCreateEDDObservationsIfModified() {
+        MRSObservation edd = mock(MRSObservation.class);
+        MRSObservation activePregnancy = mock(MRSObservation.class);
+        String motechId = "12";
+        String staffId = "staffId";
+        Patient patient = new Patient(new MRSPatient(motechId, null, null));
+        when(edd.getValue()).thenReturn(DateUtil.newDate(2010, 12, 11).toDate());
+        when(mockMrsObservationAdapter.findObservation(motechId, PREGNANCY.getName())).thenReturn(activePregnancy);
+        when(mockMrsObservationAdapter.findObservation(motechId, EDD.getName())).thenReturn(edd);
+
+        Set<MRSObservation> eddObservations = allObservations.updateEDD(new Date(), patient, staffId);
+
+        assertTrue(CollectionUtils.isNotEmpty(eddObservations));
+        verify(mockMrsObservationAdapter).findObservation(motechId, PREGNANCY.getName());
+        verify(mockMrsObservationAdapter).voidObservation(eq(edd), anyString(), eq(staffId));
+    }
+
+    @Test
+    public void shouldNotCreateEDDObservationsDeliveryDateIsTheSame() {
+        MRSObservation edd = mock(MRSObservation.class);
+        MRSObservation activePregnancy = mock(MRSObservation.class);
+        String motechId = "12";
+        String staffId = "staffId";
+        Patient patient = new Patient(new MRSPatient(motechId, null, null));
+        Date estimatedDeliveryDate = DateUtil.newDate(2010, 12, 11).toDate();
+        when(edd.getValue()).thenReturn(estimatedDeliveryDate);
+        when(mockMrsObservationAdapter.findObservation(motechId, PREGNANCY.getName())).thenReturn(activePregnancy);
+        when(mockMrsObservationAdapter.findObservation(motechId, EDD.getName())).thenReturn(edd);
+
+        Set<MRSObservation> eddObservations = allObservations.updateEDD(estimatedDeliveryDate, patient, staffId);
+
+        assertTrue(CollectionUtils.isEmpty(eddObservations));
+        verify(mockMrsObservationAdapter, never()).findObservation(motechId, PREGNANCY.getName());
+        verify(mockMrsObservationAdapter, never()).voidObservation(eq(edd), anyString(), eq(staffId));
+    }
+
+    @Test
+    public void shouldNotRescheduleEDDIfEddIsNotModified() {
+        Set<MRSObservation> mrsObservations = allObservations.updateEDD(null, null, null);
+        verifyZeroInteractions(mockMrsObservationAdapter);
+        assertTrue(mrsObservations.isEmpty());
+
     }
 }

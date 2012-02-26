@@ -51,17 +51,17 @@ public class MotherVisitService {
         return allEncounters.persistEncounter(factory.createEncounter(ancVisit, mrsObservations));
     }
 
-    void createEDDScheduleForANCVisit(Patient patient, Date estimatedDateOfDelivery) {
-        EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient,
-                new PatientCare(DELIVERY, basedOnDeliveryDate(DateUtil.newDate(estimatedDateOfDelivery)).dateOfConception()));
-        allSchedules.enroll(enrollmentRequest);
-    }
-
     public void receivedTT(final TTVaccineDosage dosage, Patient patient, MRSUser staff, Facility facility, final LocalDate vaccinationDate) {
         TTVisit ttVisit = new TTVisit().dosage(dosage).facility(facility).patient(patient).staff(staff).date(vaccinationDate.toDate());
         Encounter encounter = new TTVaccinationVisitEncounterFactory().createEncounterForVisit(ttVisit);
         allEncounters.persistEncounter(encounter);
         final EnrollmentRequest enrollmentRequest = new TTVaccinationEnrollmentMapper().map(patient, vaccinationDate, dosage.getScheduleMilestoneName());
         allSchedules.enrollOrFulfill(patient, enrollmentRequest);
+    }
+
+    private void createEDDScheduleForANCVisit(Patient patient, Date estimatedDateOfDelivery) {
+        EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient,
+                new PatientCare(DELIVERY, basedOnDeliveryDate(DateUtil.newDate(estimatedDateOfDelivery)).dateOfConception()));
+        allSchedules.enroll(enrollmentRequest);
     }
 }
