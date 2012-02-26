@@ -10,8 +10,6 @@ import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.openmrs.advice.ApiSession;
-import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +34,6 @@ public class PregnancyTerminationService {
     private AllFacilities allFacilities;
     private AllSchedules allSchedules;
 
-    public PregnancyTerminationService() {
-    }
-
     @Autowired
     public PregnancyTerminationService(AllPatients allPatients, AllEncounters allEncounters, AllFacilities allFacilities,
                                        AllSchedules allSchedules) {
@@ -48,8 +43,6 @@ public class PregnancyTerminationService {
         this.allSchedules = allSchedules;
     }
 
-    @LoginAsAdmin
-    @ApiSession
     public void terminatePregnancy(PregnancyTerminationRequest request) {
         Patient patient = allPatients.getPatientByMotechId(request.getMotechId());
         MRSPatient mrsPatient = patient.getMrsPatient();

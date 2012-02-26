@@ -7,12 +7,14 @@ import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PregnancyTerminationService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PregnancyTerminationFormHandler implements FormPublishHandler{
+public class PregnancyTerminationFormHandler implements FormPublishHandler {
 
     @Autowired
     PregnancyTerminationService pregnancyTerminationService;
@@ -22,10 +24,11 @@ public class PregnancyTerminationFormHandler implements FormPublishHandler{
 
     @Override
     @MotechListener(subjects = {"form.validation.successful.NurseDataEntry.PregnancyTermination"})
+    @LoginAsAdmin
+    @ApiSession
     public void handleFormEvent(MotechEvent motechEvent) {
         PregnancyTerminationForm formBean = (PregnancyTerminationForm) motechEvent.getParameters().get(Constants.FORM_BEAN);
         pregnancyTerminationService.terminatePregnancy(MobileRequestMapper.map(formBean));
         mobileMidwifeService.unregister(formBean.getMotechId());
-
     }
 }
