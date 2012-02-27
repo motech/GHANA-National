@@ -73,8 +73,7 @@ public class MotherVisitService {
     }
 
     private void updateANCVisit(ANCVisitRequest ancVisitRequest) {
-        allAppointments.fulfilVisit(ancVisitRequest.getPatient());
-        allAppointments.createANCVisitSchedule(ancVisitRequest.getPatient(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
+        allAppointments.updateANCVisitSchedule(ancVisitRequest.getPatient(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
     }
 
     public void receivedTT(final TTVaccineDosage dosage, Patient patient, MRSUser staff, Facility facility, final LocalDate vaccinationDate) {
