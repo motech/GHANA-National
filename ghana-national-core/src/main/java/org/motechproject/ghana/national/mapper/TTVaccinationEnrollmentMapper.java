@@ -8,7 +8,7 @@ import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
 
 public class TTVaccinationEnrollmentMapper {
-    public EnrollmentRequest map(Patient patient, LocalDate vaccinationDate, String dosageMilestoneName) {
-        return new EnrollmentRequest(patient.getMRSPatientId(), ScheduleNames.TT_VACCINATION_VISIT, new Time(DateUtil.now().toLocalTime()), vaccinationDate, dosageMilestoneName);
+    public EnrollmentRequest map(Patient patient, LocalDate vaccinationDate, String dosageMilestoneName, LocalDate enrollmentDate) {
+        return new EnrollmentRequest(patient.getMRSPatientId(), ScheduleNames.TT_VACCINATION_VISIT, new Time(DateUtil.now().toLocalTime()), vaccinationDate, enrollmentDate, dosageMilestoneName);
     }
 }

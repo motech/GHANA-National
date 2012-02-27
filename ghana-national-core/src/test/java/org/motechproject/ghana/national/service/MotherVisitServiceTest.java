@@ -77,7 +77,9 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         motherVisitService.receivedTT(TT2, patient, staff, facility, vaccinationDate);
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(mockAllSchedules).enrollOrFulfill(enrollmentRequestCaptor.capture());
+        ArgumentCaptor<LocalDate> fulfillmentDateCaptor = ArgumentCaptor.forClass(LocalDate.class);
+        verify(mockAllSchedules).enrollOrFulfill(enrollmentRequestCaptor.capture(), fulfillmentDateCaptor.capture());
+        assertThat(fulfillmentDateCaptor.getValue(), is(vaccinationDate));
 
         EnrollmentRequest enrollmentRequest = enrollmentRequestCaptor.getValue();
         assertThat(enrollmentRequest.getScheduleName(), is(equalTo(TT_VACCINATION_VISIT)));
@@ -116,11 +118,10 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, times(2)).enroll(enrollmentRequestCaptor.capture());
 
-//        assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, DELIVERY, null, new LocalDate(2011, 7, 26)),
-//                enrollmentRequestCaptor.getAllValues().get(0));
-//        assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, null, pregnancy.dateOfConception()),
-//                enrollmentRequestCaptor.getAllValues().get(1));
-        verify(mockAllAppointments).remove(patient);
+        assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, DELIVERY, null, new LocalDate(2011, 7, 26), null, null),
+                enrollmentRequestCaptor.getAllValues().get(0));
+        assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, null, pregnancy.dateOfConception(), null, null),
+                enrollmentRequestCaptor.getAllValues().get(1));
         verify(mockAllAppointments).updateANCVisitSchedule(patient, DateUtil.newDateTime(ancVisit.getNextANCDate()));
 
     }
@@ -145,10 +146,12 @@ public class MotherVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enroll(captor.capture());
-        verify(mockAllSchedules).fulfilCurrentMilestone(captor.capture());
+        ArgumentCaptor<LocalDate> fulfillmentDateCaptor = ArgumentCaptor.forClass(LocalDate.class);
+        verify(mockAllSchedules).fulfilCurrentMilestone(captor.capture(), fulfillmentDateCaptor.capture());
+        assertThat(fulfillmentDateCaptor.getValue(), is(DateUtil.today()));
 
-//        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, deliveryTime, pregnancy.dateOfConception()), captor.getAllValues().get(0));
-//        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, null, null), captor.getAllValues().get(1));
+        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, deliveryTime, pregnancy.dateOfConception(), null, null), captor.getAllValues().get(0));
+        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, null, null, null, null), captor.getAllValues().get(1));
     }
 
     @Test
@@ -167,9 +170,11 @@ public class MotherVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, never()).enroll(captor.capture());
-        verify(mockAllSchedules).fulfilCurrentMilestone(captor.capture());
+        ArgumentCaptor<LocalDate> fulfillmentDateCaptor = ArgumentCaptor.forClass(LocalDate.class);
+        verify(mockAllSchedules).fulfilCurrentMilestone(captor.capture(), fulfillmentDateCaptor.capture());
+        assertThat(fulfillmentDateCaptor.getValue(), is(DateUtil.today()));
         verify(mockAllObservations, never()).findObservation(ancVisit.getPatient().getMRSPatientId(), EDD.getName());
-//        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, null, null), captor.getAllValues().get(0));
+        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, null, null, null, null), captor.getAllValues().get(0));
     }
 
     @Test

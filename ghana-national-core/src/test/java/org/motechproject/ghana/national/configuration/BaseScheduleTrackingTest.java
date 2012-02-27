@@ -154,8 +154,8 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         return dateList;
     }
 
-    protected void fulfillCurrentMilestone(LocalDate date, String scheduleName) {
+    protected void fulfillCurrentMilestone(LocalDate date, String scheduleName, LocalDate fulfillmentDate) {
         mockToday(date);
-        scheduleTrackingService.fulfillCurrentMilestone(PATIENT_ID, scheduleName);
+        scheduleTrackingService.fulfillCurrentMilestone(PATIENT_ID, scheduleName, fulfillmentDate);
     }
 }

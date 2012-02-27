@@ -54,7 +54,7 @@ public class ANCVisitFormHandler implements FormPublishHandler {
             visitService.registerANCVisit(ancVisit);
             if (!StringUtils.isEmpty(ancVisit.getTtdose()) && !ancVisit.getTtdose().equals(NOT_APPLICABLE)) {
                 allSchedules.enroll(new TTVaccinationEnrollmentMapper().map(ancVisit.getPatient(), DateUtil.newDate(ancVisit.getDate()),
-                        TTVaccineDosage.byValue(Integer.parseInt(ancVisit.getTtdose())).getScheduleMilestoneName()));
+                        TTVaccineDosage.byValue(Integer.parseInt(ancVisit.getTtdose())).getScheduleMilestoneName(), null));
             }
         } catch (Exception e) {
             log.error("Encountered error while saving ANC visit details", e);

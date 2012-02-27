@@ -55,7 +55,7 @@ public class CareService {
     void enrollToCWCCarePrograms(Patient patient) {
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration();
         for (PatientCare patientCare : patientCares) {
-            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare));
+            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare, null));
         }
     }
 
@@ -68,7 +68,7 @@ public class CareService {
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, registerPregnancy(ancVO, patient));
         List<PatientCare> patientCares = patient.ancCareProgramsToEnrollOnRegistration(expectedDeliveryDate);
         for (PatientCare patientCare : patientCares) {
-            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare));
+            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare, null));
         }
     }
 

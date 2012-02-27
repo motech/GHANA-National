@@ -67,7 +67,7 @@ public class MotherVisitService {
         if (CollectionUtils.isNotEmpty(eddObservations)) {
             mrsObservations.addAll(eddObservations);
             EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(ancVisit.getPatient(),
-                    new PatientCare(DELIVERY, basedOnDeliveryDate(DateUtil.newDate(ancVisit.getEstDeliveryDate())).dateOfConception()));
+                    new PatientCare(DELIVERY, basedOnDeliveryDate(DateUtil.newDate(ancVisit.getEstDeliveryDate())).dateOfConception()), null);
             allSchedules.enroll(enrollmentRequest);
         }
     }
@@ -80,8 +80,8 @@ public class MotherVisitService {
         TTVisit ttVisit = new TTVisit().dosage(dosage).facility(facility).patient(patient).staff(staff).date(vaccinationDate.toDate());
         Encounter encounter = new TTVaccinationVisitEncounterFactory().createEncounterForVisit(ttVisit);
         allEncounters.persistEncounter(encounter);
-        final EnrollmentRequest enrollmentRequest = new TTVaccinationEnrollmentMapper().map(patient, vaccinationDate, dosage.getScheduleMilestoneName());
-        allSchedules.enrollOrFulfill(enrollmentRequest);
+        final EnrollmentRequest enrollmentRequest = new TTVaccinationEnrollmentMapper().map(patient, vaccinationDate, dosage.getScheduleMilestoneName(), null);
+        allSchedules.enrollOrFulfill(enrollmentRequest, DateUtil.newDate(ttVisit.getDate()));
     }
 
     private void createIPTpSchedule(IPTVaccine iptVaccine) {
@@ -91,7 +91,7 @@ public class MotherVisitService {
             LocalDate expectedDeliveryDate = fetchLatestEDD(patient);
             allSchedules.enroll(enrollmentRequest(patient, patient.iptPatientCareEnrollOnRegistration(expectedDeliveryDate)));
         }
-        allSchedules.fulfilCurrentMilestone(enrollmentRequest(patient.getMRSPatientId(), patient.iptPatientCareVisit().name()));
+        allSchedules.fulfilCurrentMilestone(enrollmentRequest(patient.getMRSPatientId(), patient.iptPatientCareVisit().name()), DateUtil.today());
     }
 
     private LocalDate fetchLatestEDD(Patient patient) {
@@ -100,7 +100,7 @@ public class MotherVisitService {
     }
 
     private EnrollmentRequest enrollmentRequest(Patient patient, PatientCare patientCare) {
-        return new ScheduleEnrollmentMapper().map(patient, patientCare);
+        return new ScheduleEnrollmentMapper().map(patient, patientCare, null);
     }
 
     private EnrollmentRequest enrollmentRequest(String mrsPatientId, String programName) {

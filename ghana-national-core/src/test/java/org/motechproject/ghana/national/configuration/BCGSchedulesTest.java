@@ -67,7 +67,7 @@ public class BCGSchedulesTest extends BaseScheduleTrackingTest {
     }
 
     private String scheduleAlertForBCG(LocalDate birthDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, BCG, preferredAlertTime, birthDate);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, BCG, preferredAlertTime, birthDate, null, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

@@ -81,7 +81,7 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
 
     private String scheduleAlertForDeliveryNotfication(LocalDate expectedDeliveryDate) {
         final LocalDate conceptionDate = Pregnancy.basedOnDeliveryDate(expectedDeliveryDate).dateOfConception();
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest("123", ScheduleNames.DELIVERY, preferredAlertTime, conceptionDate);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest("123", ScheduleNames.DELIVERY, preferredAlertTime, conceptionDate, null, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }
