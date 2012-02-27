@@ -63,7 +63,7 @@ public class MotherVisitService {
         Encounter encounter = new TTVaccinationVisitEncounterFactory().createEncounterForVisit(ttVisit);
         allEncounters.persistEncounter(encounter);
         final EnrollmentRequest enrollmentRequest = new TTVaccinationEnrollmentMapper().map(patient, vaccinationDate, dosage.getScheduleMilestoneName());
-        allSchedules.enrollOrFulfill(patient, enrollmentRequest);
+        allSchedules.enrollOrFulfill(enrollmentRequest);
     }
 
     private void createEDDScheduleForANCVisit(Patient patient, Date estimatedDateOfDelivery) {
@@ -80,7 +80,7 @@ public class MotherVisitService {
         if(enrollmentResponse == null) {
             allSchedules.enroll(enrollmentRequest(patient, patient.iptPatientCareEnrollOnRegistration(expectedDeliveryDate)));
         }
-        allSchedules.fulfilMilestone(enrollmentRequest(patient, patient.iptPatientCareVisit()));
+        allSchedules.fulfilCurrentMilestone(enrollmentRequest(patient, patient.iptPatientCareVisit()));
     }
 
     private LocalDate fetchLatestEDD(Patient patient) {

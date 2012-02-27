@@ -18,19 +18,18 @@ public class AllSchedules {
         this.scheduleTrackingService = scheduleTrackingService;
     }
 
-    public void enrollOrFulfill(Patient patient, EnrollmentRequest enrollmentRequest) {
-        String mrsPatientId = patient.getMRSPatientId();
-        if (scheduleTrackingService.getEnrollment(mrsPatientId, enrollmentRequest.getScheduleName()) == null) {
-            scheduleTrackingService.enroll(enrollmentRequest);
+    public void enrollOrFulfill(EnrollmentRequest enrollmentRequest) {
+        if (enrollment(enrollmentRequest) == null) {
+            enroll(enrollmentRequest);
         }
-        scheduleTrackingService.fulfillCurrentMilestone(mrsPatientId, enrollmentRequest.getScheduleName());
+        fulfilCurrentMilestone(enrollmentRequest);
     }
 
     public void enroll(EnrollmentRequest enrollmentRequest) {
         scheduleTrackingService.enroll(enrollmentRequest);
     }
 
-    public void fulfilMilestone(EnrollmentRequest enrollmentRequest) {
+    public void fulfilCurrentMilestone(EnrollmentRequest enrollmentRequest) {
         scheduleTrackingService.fulfillCurrentMilestone(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName());
     }
 

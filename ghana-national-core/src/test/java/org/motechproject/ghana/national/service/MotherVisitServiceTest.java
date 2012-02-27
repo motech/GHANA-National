@@ -40,14 +40,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentCaptor.forClass;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
 import static org.motechproject.ghana.national.domain.EncounterType.ANC_VISIT;
 import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT2;
-import static org.motechproject.ghana.national.vo.Pregnancy.*;
+import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -77,7 +76,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         motherVisitService.receivedTT(TT2, patient, staff, facility, vaccinationDate);
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(mockAllSchedules).enrollOrFulfill(eq(patient), enrollmentRequestCaptor.capture());
+        verify(mockAllSchedules).enrollOrFulfill(enrollmentRequestCaptor.capture());
 
         EnrollmentRequest enrollmentRequest = enrollmentRequestCaptor.getValue();
         assertThat(enrollmentRequest.getScheduleName(), is(equalTo(TT_VACCINATION_VISIT)));
@@ -141,7 +140,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         EnrollmentRequest expected = new EnrollmentRequest(ancVisit.getPatient().getMRSPatientId(), ScheduleNames.ANC_IPT_VACCINE, deliveryTime, DateUtil.today());
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, never()).enroll(captor.capture());
-        verify(mockAllSchedules).fulfilMilestone(captor.capture());
+        verify(mockAllSchedules).fulfilCurrentMilestone(captor.capture());
 
         assertEnrollment(expected, captor.getAllValues().get(0));
         assertEnrollment(new EnrollmentRequest(expected.getExternalId(), expected.getScheduleName(), deliveryTime, today.toLocalDate()),
@@ -166,7 +165,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         EnrollmentRequest expected = new EnrollmentRequest(ancVisit.getPatient().getMRSPatientId(), ScheduleNames.ANC_IPT_VACCINE, deliveryTime, DateUtil.today());
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, never()).enroll(captor.capture());
-        verify(mockAllSchedules).fulfilMilestone(captor.capture());
+        verify(mockAllSchedules).fulfilCurrentMilestone(captor.capture());
 
         assertEnrollment(expected, captor.getAllValues().get(0));
     }
