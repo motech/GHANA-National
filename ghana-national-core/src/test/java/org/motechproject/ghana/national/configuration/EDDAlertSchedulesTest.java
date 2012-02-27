@@ -23,6 +23,7 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
     @Before
     public void setUp() {
         super.setUp();
+        scheduleName = ScheduleNames.DELIVERY;
     }
 
     @Test
@@ -81,7 +82,7 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
 
     private String scheduleAlertForDeliveryNotfication(LocalDate expectedDeliveryDate) {
         final LocalDate conceptionDate = Pregnancy.basedOnDeliveryDate(expectedDeliveryDate).dateOfConception();
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest("123", ScheduleNames.DELIVERY, preferredAlertTime, conceptionDate, null, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest("123", scheduleName, preferredAlertTime, conceptionDate, null, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }
