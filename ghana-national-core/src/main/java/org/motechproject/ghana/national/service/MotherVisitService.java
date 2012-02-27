@@ -46,35 +46,35 @@ public class MotherVisitService {
         factory = new MotherVisitEncounterFactory();
     }
 
-    public MRSEncounter registerANCVisit(ANCVisitRequest ancVisitRequest) {
-        Set<MRSObservation> mrsObservations = factory.createMRSObservations(ancVisitRequest);
-        updateEDD(ancVisitRequest, mrsObservations);
-        updateIPT(ancVisitRequest, mrsObservations);
-        updateANCVisit(ancVisitRequest);
-        return allEncounters.persistEncounter(factory.createEncounter(ancVisitRequest, mrsObservations));
+    public MRSEncounter registerANCVisit(ANCVisitRequest ancVisit) {
+        Set<MRSObservation> mrsObservations = factory.createMRSObservations(ancVisit);
+        updateEDD(ancVisit, mrsObservations);
+        updateIPT(ancVisit, mrsObservations);
+        updateANCVisit(ancVisit);
+        return allEncounters.persistEncounter(factory.createEncounter(ancVisit, mrsObservations));
     }
 
-    private void updateANCVisit(ANCVisitRequest ancVisitRequest) {
-        allAppointments.fulfilVisit(ancVisitRequest.getPatient());
-        allAppointments.createANCVisitSchedule(ancVisitRequest.getPatient(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
-    }
-
-    private void updateIPT(ANCVisitRequest ancVisitRequest, Set<MRSObservation> mrsObservations) {
-        IPTVaccine iptVaccine = createFromANCVisit(ancVisitRequest);
+    private void updateIPT(ANCVisitRequest ancVisit, Set<MRSObservation> mrsObservations) {
+        IPTVaccine iptVaccine = createFromANCVisit(ancVisit);
         if (iptVaccine != null) {
             mrsObservations.addAll(factory.createObservationsForIPT(iptVaccine));
             createIPTpSchedule(iptVaccine);
         }
     }
 
-    private void updateEDD(ANCVisitRequest ancVisitRequest, Set<MRSObservation> mrsObservations) {
-        Set<MRSObservation> eddObservations = allObservations.updateEDD(ancVisitRequest.getEstDeliveryDate(), ancVisitRequest.getPatient(), ancVisitRequest.getStaff().getId());
+    private void updateEDD(ANCVisitRequest ancVisit, Set<MRSObservation> mrsObservations) {
+        Set<MRSObservation> eddObservations = allObservations.updateEDD(ancVisit.getEstDeliveryDate(), ancVisit.getPatient(), ancVisit.getStaff().getId());
         if (CollectionUtils.isNotEmpty(eddObservations)) {
             mrsObservations.addAll(eddObservations);
-            EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(ancVisitRequest.getPatient(),
-                    new PatientCare(DELIVERY, basedOnDeliveryDate(DateUtil.newDate(ancVisitRequest.getEstDeliveryDate())).dateOfConception()));
+            EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(ancVisit.getPatient(),
+                    new PatientCare(DELIVERY, basedOnDeliveryDate(DateUtil.newDate(ancVisit.getEstDeliveryDate())).dateOfConception()));
             allSchedules.enroll(enrollmentRequest);
         }
+    }
+
+    private void updateANCVisit(ANCVisitRequest ancVisitRequest) {
+        allAppointments.fulfilVisit(ancVisitRequest.getPatient());
+        allAppointments.createANCVisitSchedule(ancVisitRequest.getPatient(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
     }
 
     public void receivedTT(final TTVaccineDosage dosage, Patient patient, MRSUser staff, Facility facility, final LocalDate vaccinationDate) {
@@ -87,12 +87,12 @@ public class MotherVisitService {
 
     private void createIPTpSchedule(IPTVaccine iptVaccine) {
         Patient patient = iptVaccine.getGivenTo();
-        LocalDate expectedDeliveryDate = fetchLatestEDD(patient);
-        EnrollmentResponse enrollmentResponse = allSchedules.enrollment(queryEnrollmentRequest(patient, ANC_IPT_VACCINE));
+        EnrollmentResponse enrollmentResponse = allSchedules.enrollment(enrollmentRequest(ANC_IPT_VACCINE, patient.getMRSPatientId()));
         if(enrollmentResponse == null) {
+            LocalDate expectedDeliveryDate = fetchLatestEDD(patient);
             allSchedules.enroll(enrollmentRequest(patient, patient.iptPatientCareEnrollOnRegistration(expectedDeliveryDate)));
         }
-        allSchedules.fulfilCurrentMilestone(enrollmentRequest(patient, patient.iptPatientCareVisit()));
+        allSchedules.fulfilCurrentMilestone(enrollmentRequest(patient.getMRSPatientId(), patient.iptPatientCareVisit().name()));
     }
 
     private LocalDate fetchLatestEDD(Patient patient) {
@@ -104,7 +104,7 @@ public class MotherVisitService {
         return new ScheduleEnrollmentMapper().map(patient, patientCare);
     }
 
-    private EnrollmentRequest queryEnrollmentRequest(Patient patient, String programName) {
-        return new ScheduleEnrollmentMapper().map(patient.getMRSPatientId(), programName);
+    private EnrollmentRequest enrollmentRequest(String mrsPatientId, String programName) {
+        return new ScheduleEnrollmentMapper().map(mrsPatientId, programName);
     }
 }

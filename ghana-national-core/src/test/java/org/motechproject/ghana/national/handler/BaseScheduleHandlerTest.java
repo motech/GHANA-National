@@ -22,7 +22,7 @@ import java.util.HashMap;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
-import static org.motechproject.ghana.national.handler.CareScheduleHandler.PREGNANCY_ALERT_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsKeys.PREGNANCY_ALERT_SMS_KEY;
 
 public class BaseScheduleHandlerTest {
 

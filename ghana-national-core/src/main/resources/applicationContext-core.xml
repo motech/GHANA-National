@@ -35,5 +35,6 @@
     <beans:import resource="classpath:applicationContext-email.xml"/>
     <beans:import resource="classpath:applicationSmsAPI.xml"/>
     <beans:import resource="classpath:applicationSchedulerTrackingAPI.xml"/>
+    <beans:import resource="classpath:applicationAppointmentsAPI.xml"/>
     <bean id="commonsHttpClient" class="org.apache.commons.httpclient.HttpClient" />
 </beans>
