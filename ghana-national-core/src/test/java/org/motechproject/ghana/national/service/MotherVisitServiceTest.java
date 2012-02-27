@@ -66,7 +66,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        motherVisitService = spy(new MotherVisitService(mockAllEncounters, mockAllObservations, mockAllSchedules/*, mockAllAppointments*/));
+        motherVisitService = spy(new MotherVisitService(mockAllEncounters, mockAllObservations, mockAllSchedules, mockAllAppointments));
     }
 
     @Test
@@ -122,6 +122,8 @@ public class MotherVisitServiceTest extends BaseUnitTest {
                 enrollmentRequestCaptor.getAllValues().get(0));
         assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, ScheduleNames.ANC_IPT_VACCINE, null, pregnancy.dateOfConception()),
                 enrollmentRequestCaptor.getAllValues().get(1));
+        verify(mockAllAppointments).fulfilVisit(patient);
+        verify(mockAllAppointments).createANCVisitSchedule(patient, DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
     }
 
     @Test

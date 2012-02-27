@@ -7,6 +7,7 @@ import org.motechproject.ghana.national.factory.MotherVisitEncounterFactory;
 import org.motechproject.ghana.national.factory.TTVaccinationVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.mapper.TTVaccinationEnrollmentMapper;
+import org.motechproject.ghana.national.repository.AllAppointments;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllSchedules;
@@ -33,15 +34,15 @@ public class MotherVisitService {
     private AllEncounters allEncounters;
     private AllObservations allObservations;
     private AllSchedules allSchedules;
-//    private AllAppointments allAppointments;
+    private AllAppointments allAppointments;
     MotherVisitEncounterFactory factory;
 
     @Autowired
-    public MotherVisitService(AllEncounters allEncounters, AllObservations allObservations, AllSchedules allSchedules/*, AllAppointments allAppointments*/) {
+    public MotherVisitService(AllEncounters allEncounters, AllObservations allObservations, AllSchedules allSchedules, AllAppointments allAppointments) {
         this.allEncounters = allEncounters;
         this.allObservations = allObservations;
         this.allSchedules = allSchedules;
-//        this.allAppointments = allAppointments;
+        this.allAppointments = allAppointments;
         factory = new MotherVisitEncounterFactory();
     }
 
@@ -49,14 +50,14 @@ public class MotherVisitService {
         Set<MRSObservation> mrsObservations = factory.createMRSObservations(ancVisitRequest);
         updateEDD(ancVisitRequest, mrsObservations);
         updateIPT(ancVisitRequest, mrsObservations);
-//        updateANCVisit(ancVisitRequest);
+        updateANCVisit(ancVisitRequest);
         return allEncounters.persistEncounter(factory.createEncounter(ancVisitRequest, mrsObservations));
     }
 
-//    private void updateANCVisit(ANCVisitRequest ancVisitRequest) {
-//        allAppointments.fulfilVisit(ancVisitRequest.getPatient());
-//        allAppointments.createVisit(ancVisitRequest.getPatient());
-//    }
+    private void updateANCVisit(ANCVisitRequest ancVisitRequest) {
+        allAppointments.fulfilVisit(ancVisitRequest.getPatient());
+        allAppointments.createANCVisitSchedule(ancVisitRequest.getPatient(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
+    }
 
     private void updateIPT(ANCVisitRequest ancVisitRequest, Set<MRSObservation> mrsObservations) {
         IPTVaccine iptVaccine = createFromANCVisit(ancVisitRequest);
