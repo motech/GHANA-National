@@ -12,10 +12,7 @@ import org.motechproject.util.DateUtil;
 
 import static org.joda.time.Period.weeks;
 import static org.mockito.Mockito.*;
-import static org.motechproject.ghana.national.handler.CareScheduleHandler.BCG_SMS_KEY;
-import static org.motechproject.ghana.national.handler.CareScheduleHandler.PREGNANCY_ALERT_SMS_KEY;
-import static org.motechproject.ghana.national.handler.CareScheduleHandler.TT_VACCINATION_SMS_KEY;
-import static org.motechproject.ghana.national.handler.CareScheduleHandler.ANC_VISIT_SMS_KEY;
+import static org.motechproject.ghana.national.handler.CareScheduleHandler.*;
 
 public class CareScheduleHandlerTest {
 
