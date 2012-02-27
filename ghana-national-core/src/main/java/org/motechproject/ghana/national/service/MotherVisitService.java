@@ -74,13 +74,12 @@ public class MotherVisitService {
 
     private void createIPTpSchedule(IPTVaccine iptVaccine) {
         Patient patient = iptVaccine.getGivenTo();
-        LocalDate expectedDeliveryDate = fetchLatestEDD(patient);
-
-        EnrollmentResponse enrollmentResponse = allSchedules.enrollment(queryEnrollmentRequest(patient, ANC_IPT_VACCINE));
+        EnrollmentResponse enrollmentResponse = allSchedules.enrollment(enrollmentRequest(ANC_IPT_VACCINE, patient.getMRSPatientId()));
         if(enrollmentResponse == null) {
+            LocalDate expectedDeliveryDate = fetchLatestEDD(patient);
             allSchedules.enroll(enrollmentRequest(patient, patient.iptPatientCareEnrollOnRegistration(expectedDeliveryDate)));
         }
-        allSchedules.fulfilCurrentMilestone(enrollmentRequest(patient, patient.iptPatientCareVisit()));
+        allSchedules.fulfilCurrentMilestone(enrollmentRequest(patient.getMRSPatientId(), patient.iptPatientCareVisit().name()));
     }
 
     private LocalDate fetchLatestEDD(Patient patient) {
@@ -92,7 +91,7 @@ public class MotherVisitService {
         return new ScheduleEnrollmentMapper().map(patient, patientCare);
     }
 
-    private EnrollmentRequest queryEnrollmentRequest(Patient patient, String programName) {
-        return new ScheduleEnrollmentMapper().map(patient.getMRSPatientId(), programName);
+    private EnrollmentRequest enrollmentRequest(String mrsPatientId, String programName) {
+        return new ScheduleEnrollmentMapper().map(mrsPatientId, programName);
     }
 }

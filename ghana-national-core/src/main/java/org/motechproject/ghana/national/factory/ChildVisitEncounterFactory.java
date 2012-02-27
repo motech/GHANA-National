@@ -36,9 +36,9 @@ public class ChildVisitEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, registrationDate, HOUSE.getName(), cwcVisit.getHouse());
         setObservation(mrsObservations, registrationDate, COMMUNITY.getName(), cwcVisit.getCommunity());
         setObservation(mrsObservations, registrationDate, COMMENTS.getName(), cwcVisit.getComments());
-        setObservation(mrsObservations, registrationDate, PENTA.getName(), cwcVisit.getPentadose());
-        setObservation(mrsObservations, registrationDate, OPV.getName(), cwcVisit.getOpvdose());
-        setObservation(mrsObservations, registrationDate, IPTI.getName(), cwcVisit.getIptidose());
+        setObservation(mrsObservations, registrationDate, PENTA.getName(), toInteger(cwcVisit.getPentadose()));
+        setObservation(mrsObservations, registrationDate, OPV.getName(), toInteger(cwcVisit.getOpvdose()));
+        setObservation(mrsObservations, registrationDate, IPTI.getName(), toInteger(cwcVisit.getIptidose()));
 
         for (String immunization : cwcVisit.getImmunizations()) {
             setObservation(mrsObservations, registrationDate, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(Concept.valueOf(immunization).getName()));
