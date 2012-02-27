@@ -50,46 +50,46 @@ public class AllSchedulesTest {
     public void shouldEnrollAndFulfilIfNoEnrollmentsWereFoundForTheSchedule() {
         String scheduleName = "scheduleName";
         String externalId = "12";
-        EnrollmentRequest anyEnrollmentRequest = new EnrollmentRequest(externalId, scheduleName, new Time(12, 0), new LocalDate());
+        EnrollmentRequest anyEnrollmentRequest = new EnrollmentRequest(externalId, scheduleName, new Time(12, 0), new LocalDate(), null, null);
         when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(null);
 
-        allSchedules.enrollOrFulfill(anyEnrollmentRequest);
+        allSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
 
         verify(mockScheduleTrackingService).enroll(anyEnrollmentRequest);
-        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName);
+        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, null);
     }
 
     @Test
     public void shouldNotEnrollWhileFulfillingIfEnrollmentsWereFoundForTheSchedule() {
         String scheduleName = "scheduleName";
         String externalId = "12";
-        EnrollmentRequest anyEnrollmentRequest = new EnrollmentRequest(externalId, scheduleName, new Time(12, 0), new LocalDate());
+        EnrollmentRequest anyEnrollmentRequest = new EnrollmentRequest(externalId, scheduleName, new Time(12, 0), new LocalDate(), null, null);
         EnrollmentResponse notNullEnrollment =mock(EnrollmentResponse.class);
         when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(notNullEnrollment);
 
-        allSchedules.enrollOrFulfill(anyEnrollmentRequest);
+        allSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
 
         verify(mockScheduleTrackingService, never()).enroll(anyEnrollmentRequest);
-        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName);
+        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, null);
     }
 
     @Test
     public void shouldEnrollForSchedule() {
-        EnrollmentRequest request = new EnrollmentRequest("123", "sche", new Time(12, 0), new LocalDate());
+        EnrollmentRequest request = new EnrollmentRequest("123", "sche", new Time(12, 0), new LocalDate(), null, null);
         allSchedules.enroll(request);
         verify(mockScheduleTrackingService).enroll(request);
     }
 
     @Test
     public void shouldFulfilMilestoneForSchedule() {
-        EnrollmentRequest request = new EnrollmentRequest("123", "scheduleName", new Time(12, 0), new LocalDate());
-        allSchedules.fulfilCurrentMilestone(request);
-        verify(mockScheduleTrackingService).fulfillCurrentMilestone(request.getExternalId(), request.getScheduleName());
+        EnrollmentRequest request = new EnrollmentRequest("123", "scheduleName", new Time(12, 0), new LocalDate(), null, null);
+        allSchedules.fulfilCurrentMilestone(request, null);
+        verify(mockScheduleTrackingService).fulfillCurrentMilestone(request.getExternalId(), request.getScheduleName(), null);
     }
 
     @Test
     public void shouldFetchEnrollmentForSchedule() {
-        EnrollmentRequest request = new EnrollmentRequest("123", "scheduleName", new Time(12, 0), new LocalDate());
+        EnrollmentRequest request = new EnrollmentRequest("123", "scheduleName", new Time(12, 0), new LocalDate(), null, null);
         allSchedules.enrollment(request);
         verify(mockScheduleTrackingService).getEnrollment(request.getExternalId(), request.getScheduleName());
     }

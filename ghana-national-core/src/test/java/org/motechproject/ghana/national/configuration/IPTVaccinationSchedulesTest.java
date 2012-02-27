@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.model.Time;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
+import org.motechproject.util.DateUtil;
 import org.quartz.SchedulerException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -172,11 +173,11 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
     private void fulfilMilestoneOnVisitDate(LocalDate visitDate) {
         mockCurrentDate(visitDate);
-        scheduleTrackingService.fulfillCurrentMilestone(externalId, ANC_IPT_VACCINE);
+        scheduleTrackingService.fulfillCurrentMilestone(externalId, ANC_IPT_VACCINE, null);
     }
 
     private String enrollForIPTVaccine(LocalDate referenceDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, ANC_IPT_VACCINE, preferredAlertTime, referenceDate);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, ANC_IPT_VACCINE, preferredAlertTime, referenceDate, DateUtil.today(), null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }
