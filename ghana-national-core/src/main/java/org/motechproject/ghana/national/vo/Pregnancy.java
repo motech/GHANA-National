@@ -38,7 +38,7 @@ public class Pregnancy {
     public int currentWeek() {
         LocalDate today = today();
         LocalDate conceptionDate = dateOfConception(dateOfDelivery);
-        return new Period(conceptionDate.toDate().getTime(), today.toDate().getTime(), weeks()).getWeeks();
+        return new Period(conceptionDate.toDate().getTime(), today.toDate().getTime(), weeks()).getWeeks() + 1;
     }
 
     public boolean applicableForIPT() {

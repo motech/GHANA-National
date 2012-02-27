@@ -24,21 +24,23 @@ public class PregnancyTest extends BaseUnitTest {
     @Test
     public void shouldFindCurrentWeekFromExpectedDeliveryDate() {
 
-        LocalDate todayAs26Jun2012 = new LocalDate(2012, 6, 27);
+        LocalDate todayAs26Jun2012 = new LocalDate(2012, 12, 27);
         mockCurrentDate(todayAs26Jun2012);
 
-        assertThat(basedOnDeliveryDate(todayAs26Jun2012.plusDays(0)).currentWeek(), is(equalTo(40)));
-        assertThat(basedOnDeliveryDate(todayAs26Jun2012.plusDays(7)).currentWeek(), is(equalTo(39)));
-        assertThat(basedOnDeliveryDate(todayAs26Jun2012.plusWeeks(40)).currentWeek(), is(equalTo(0)));
-        assertThat(basedOnDeliveryDate(todayAs26Jun2012.plusWeeks(22)).currentWeek(), is(equalTo(18)));
+        assertThat(basedOnDeliveryDate(todayAs26Jun2012.plusWeeks(39).plusDays(2)).currentWeek(), is(equalTo(1)));
+        // edd = conception_Date + 40 weeks will fall in 41 week
+        assertThat(basedOnDeliveryDate(todayAs26Jun2012.plusDays(0)).currentWeek(), is(equalTo(40 + 1)));
+        assertThat(basedOnDeliveryDate(todayAs26Jun2012.plusDays(7)).currentWeek(), is(equalTo(39 + 1)));
+        assertThat(basedOnDeliveryDate(todayAs26Jun2012.plusWeeks(40)).currentWeek(), is(equalTo(0 + 1)));
+        assertThat(basedOnDeliveryDate(todayAs26Jun2012.plusWeeks(22)).currentWeek(), is(equalTo(18 + 1)));
 
-        assertThat(basedOnDeliveryDate(todayAs26Jun2012.plusWeeks(28)).currentWeek(), is(equalTo(12)));
-        assertThat(basedOnDeliveryDate(todayAs26Jun2012.plusWeeks(26).plusDays(7)).currentWeek(), is(equalTo(13)));
+        assertThat(basedOnDeliveryDate(todayAs26Jun2012.plusWeeks(28)).currentWeek(), is(equalTo(12 + 1)));
+        assertThat(basedOnDeliveryDate(todayAs26Jun2012.plusWeeks(26).plusDays(7)).currentWeek(), is(equalTo(13 +1)));
     }
 
     @Test
     public void shouldVerifyIsApplicableForIPT() {
-        assertTrue(basedOnDeliveryDate(todayAs26Jun2012.plusWeeks(27)).applicableForIPT());
+        assertTrue(basedOnDeliveryDate(todayAs26Jun2012.plusWeeks(28)).applicableForIPT());
         assertFalse(basedOnDeliveryDate(todayAs26Jun2012.plusWeeks(22)).applicableForIPT());
     }
 }

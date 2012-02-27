@@ -2,12 +2,10 @@ package org.motechproject.ghana.national.factory;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.mrs.model.*;
 import org.motechproject.util.DateUtil;
-import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -15,6 +13,8 @@ import java.util.Set;
 
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
+import static org.unitils.reflectionassert.ReflectionComparatorMode.LENIENT_DATES;
+import static org.unitils.reflectionassert.ReflectionComparatorMode.LENIENT_ORDER;
 
 public class MotherVisitEncounterFactoryTest {
     private MotherVisitEncounterFactory factory;
@@ -29,7 +29,6 @@ public class MotherVisitEncounterFactoryTest {
         MRSConcept conceptPositive = new MRSConcept(POSITIVE.getName());
         MRSConcept conceptNegative = new MRSConcept(NEGATIVE.getName());
         MRSConcept conceptNonReactive = new MRSConcept(NON_REACTIVE.getName());
-        MRSConcept conceptReactive = new MRSConcept(REACTIVE.getName());
 
         Set<MRSObservation> mrsObservations = factory.createMRSObservations(ancVisit);
         Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>();
@@ -45,8 +44,6 @@ public class MotherVisitEncounterFactoryTest {
         expectedObservations.add(new MRSObservation<Integer>(today, DIASTOLIC_BLOOD_PRESSURE.getName(), 67));
         expectedObservations.add(new MRSObservation<Double>(today, WEIGHT_KG.getName(), 65.67d));
         expectedObservations.add(new MRSObservation<Integer>(today, TT.getName(), 4));
-        expectedObservations.add(new MRSObservation<Integer>(today, IPT.getName(), 5));
-        expectedObservations.add(new MRSObservation<MRSConcept>(today, IPT_REACTION.getName(), conceptReactive));
         expectedObservations.add(new MRSObservation<Boolean>(today, INSECTICIDE_TREATED_NET_USAGE.getName(), true));
         expectedObservations.add(new MRSObservation<Double>(today, FHT.getName(), 4.3d));
         expectedObservations.add(new MRSObservation<Integer>(today, FHR.getName(), 4));
@@ -64,8 +61,20 @@ public class MotherVisitEncounterFactoryTest {
         expectedObservations.add(new MRSObservation<String>(today, COMMUNITY.getName(), "community"));
         expectedObservations.add(new MRSObservation<Boolean>(today, REFERRED.getName(), true));
 
-        assertReflectionEquals(expectedObservations, mrsObservations, ReflectionComparatorMode.LENIENT_DATES,
-                ReflectionComparatorMode.LENIENT_ORDER);
+        assertReflectionEquals(expectedObservations, mrsObservations, LENIENT_DATES,
+                LENIENT_ORDER);
+    }
+
+    @Test
+    public void shouldCreateObservationsForIPT() {
+        IPTVaccine iptVaccine = new IPTVaccine(DateUtil.newDate(2012, 1, 2), null, IPTDose.SP1, IPTReaction.REACTIVE);
+        Set<MRSObservation> actualObservations = factory.createObservationsForIPT(iptVaccine);
+
+        Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>();
+        expectedObservations.add(new MRSObservation<Integer>(iptVaccine.getVaccinationDate().toDate(), Concept.IPT.getName(), iptVaccine.getIptDose()));
+        expectedObservations.add(new MRSObservation<MRSConcept>(iptVaccine.getVaccinationDate().toDate(), IPT_REACTION.getName(),
+                new MRSConcept(iptVaccine.getIptReactionConceptName())));
+        assertReflectionEquals(expectedObservations, actualObservations, LENIENT_ORDER);
     }
 
     private ANCVisit createTestANCVisit() {
@@ -80,7 +89,7 @@ public class MotherVisitEncounterFactoryTest {
         return new ANCVisit().staff(staff).facility(facility).patient(patient).date(new Date()).serialNumber("4ds65")
                 .visitNumber("4").estDeliveryDate(DateUtil.newDate(2012, 8, 8).toDate())
                 .bpDiastolic(67).bpSystolic(10).weight(65.67d).comments("comments").ttdose("4").iptdose("5")
-                .iptReactive("Y").itnUse("Y").fht(4.3d).fhr(4).urineTestGlucosePositive("0").urineTestProteinPositive("1")
+                .iptReactive(true).itnUse("Y").fht(4.3d).fhr(4).urineTestGlucosePositive("0").urineTestProteinPositive("1")
                 .hemoglobin(13.8).vdrlReactive("N").vdrlTreatment(null).dewormer("Y").pmtct("Y").preTestCounseled("N")
                 .hivTestResult("hiv").postTestCounseled("Y").pmtctTreament("Y").location("34").house("house").community("community")
                 .referred("Y").maleInvolved(false).nextANCDate(DateUtil.newDate(2012, 2, 20).toDate());

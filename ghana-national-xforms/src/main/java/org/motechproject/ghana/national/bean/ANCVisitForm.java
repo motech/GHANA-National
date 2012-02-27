@@ -53,7 +53,7 @@ public class ANCVisitForm extends FormBean {
     @Required
     private String iptdose;
 
-    private String iptReactive;
+    private Boolean iptReactive;
 
     @Required
     private String itnUse;
@@ -202,11 +202,11 @@ public class ANCVisitForm extends FormBean {
         this.iptdose = iptdose;
     }
 
-    public String getIptReactive() {
+    public Boolean getIptReactive() {
         return iptReactive;
     }
 
-    public void setIptReactive(String iptReactive) {
+    public void setIptReactive(Boolean iptReactive) {
         this.iptReactive = iptReactive;
     }
 

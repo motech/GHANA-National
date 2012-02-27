@@ -26,7 +26,7 @@ public class ANCVisit {
 
     private String iptdose;
 
-    private String iptReactive;
+    private Boolean iptReactive;
 
     private String itnUse;
 
@@ -159,11 +159,11 @@ public class ANCVisit {
         return this;
     }
 
-    public String getIptReactive() {
+    public Boolean getIptReactive() {
         return iptReactive;
     }
 
-    public ANCVisit iptReactive(String iptReactive) {
+    public ANCVisit iptReactive(Boolean iptReactive) {
         this.iptReactive = iptReactive;
         return this;
     }

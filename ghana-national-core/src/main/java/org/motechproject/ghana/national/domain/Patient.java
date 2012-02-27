@@ -59,17 +59,25 @@ public class Patient {
     public List<PatientCare> ancCareProgramsToEnrollOnRegistration(LocalDate expectedDeliveryDate) {
         return nullSafeList(
                 new PatientCare(DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception()),
-                iptPatientCare(expectedDeliveryDate));
+                iptPatientCareEnrollOnRegistration(expectedDeliveryDate));
     }
 
-    private PatientCare iptPatientCare(LocalDate expectedDeliveryDate) {
+    public PatientCare iptPatientCareEnrollOnRegistration(LocalDate expectedDeliveryDate) {
         if (expectedDeliveryDate != null && basedOnDeliveryDate(expectedDeliveryDate).applicableForIPT()) {
-            return new PatientCare(ANC_IPT_VACCINE, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception());
+            return iptPatientCareEnroll(expectedDeliveryDate);
         }
         return null;
     }
-
-    public List<PatientCare> cwcCareProgramToEnrollOnRegistration() {
+    
+     public List<PatientCare> cwcCareProgramToEnrollOnRegistration() {
         return nullSafeList(new PatientCare(BCG, DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth())));
+    }
+
+    public PatientCare iptPatientCareEnroll(LocalDate expectedDeliveryDate) {
+        return new PatientCare(ANC_IPT_VACCINE, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception());
+    }
+
+    public PatientCare iptPatientCareVisit() {
+        return new PatientCare(ANC_IPT_VACCINE, DateUtil.today());
     }
 }
