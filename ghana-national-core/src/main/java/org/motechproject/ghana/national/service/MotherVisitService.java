@@ -42,7 +42,7 @@ public class MotherVisitService {
         this.allSchedules = allSchedules;
     }
 
-     public MRSEncounter registerANCVisit(ANCVisit ancVisit) {
+    public MRSEncounter registerANCVisit(ANCVisit ancVisit) {
         MotherVisitEncounterFactory factory = new MotherVisitEncounterFactory();
         IPTVaccine iptVaccine = createFromANCVisit(ancVisit);
         Set<MRSObservation> mrsObservations = factory.createMRSObservations(ancVisit);
@@ -71,7 +71,7 @@ public class MotherVisitService {
                 new PatientCare(DELIVERY, basedOnDeliveryDate(DateUtil.newDate(estimatedDateOfDelivery)).dateOfConception()));
         allSchedules.enroll(enrollmentRequest);
     }
-    
+
     private void createIPTpSchedule(IPTVaccine iptVaccine) {
         Patient patient = iptVaccine.getGivenTo();
         LocalDate expectedDeliveryDate = fetchLatestEDD(patient);

@@ -1,14 +1,14 @@
 package org.motechproject.ghana.national.handlers;
 
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ANCVisitForm;
+import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.TTVaccineDosage;
+import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MotherVisitService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -19,6 +19,7 @@ import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -26,8 +27,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -43,6 +44,8 @@ public class ANCVisitFormHandlerTest {
     private PatientService mockPatientService;
     @Mock
     private StaffService mockStaffService;
+    @Mock
+    private AllSchedules mockAllSchedules;
 
 
     @Before
@@ -53,6 +56,7 @@ public class ANCVisitFormHandlerTest {
         ReflectionTestUtils.setField(handler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(handler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(handler, "staffService", mockStaffService);
+        ReflectionTestUtils.setField(handler, "allSchedules", mockAllSchedules);
     }
 
     @Test
@@ -104,7 +108,7 @@ public class ANCVisitFormHandlerTest {
 
         String facilityId = "111";
         MRSFacility mrsFacility = new MRSFacility(facilityId);
-        Patient patient = new Patient(new MRSPatient(motechId, new MRSPerson(), mrsFacility));
+        Patient patient = new Patient(new MRSPatient("patientId", motechId, new MRSPerson(), mrsFacility));
         MRSUser staff = new MRSUser();
         staff.id(staffId);
         Facility facility = new Facility(mrsFacility);
@@ -116,18 +120,11 @@ public class ANCVisitFormHandlerTest {
         
         handler.handleFormEvent(motechEvent);
 
-        ArgumentCaptor<TTVaccineDosage> ttDosageCaptor = ArgumentCaptor.forClass(TTVaccineDosage.class);
-        ArgumentCaptor<Patient> patientCaptor = ArgumentCaptor.forClass(Patient.class);
-        ArgumentCaptor<MRSUser> mrsUserCaptor = ArgumentCaptor.forClass(MRSUser.class);
-        ArgumentCaptor<Facility> facilityCaptor = ArgumentCaptor.forClass(Facility.class);
-        ArgumentCaptor<LocalDate> dateCaptor = ArgumentCaptor.forClass(LocalDate.class);
-        verify(mockMotherVisitService).receivedTT(ttDosageCaptor.capture(), patientCaptor.capture(), mrsUserCaptor.capture(),
-                facilityCaptor.capture(), dateCaptor.capture());
-        assertThat(ttDosageCaptor.getValue().getDosage(), is(4));
-        assertThat(patientCaptor.getValue().getMotechId(), is(motechId));
-        assertThat(facilityCaptor.getValue().getMotechId(), is(motechFacilityId));
-        assertThat(mrsUserCaptor.getValue().getId(), is(staffId));
-        assertThat(dateCaptor.getValue(), is(DateUtil.today()));
+        ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedules).enroll(enrollmentRequestCaptor.capture());
+        EnrollmentRequest request = enrollmentRequestCaptor.getValue();
+        assertThat(request.getScheduleName(), is(ScheduleNames.TT_VACCINATION_VISIT));
+        assertThat(request.getReferenceDate(), is(DateUtil.newDate(ancVisitForm.getDate())));
 
         ArgumentCaptor<ANCVisit> captor = ArgumentCaptor.forClass(ANCVisit.class);
         verify(mockMotherVisitService).registerANCVisit(captor.capture());

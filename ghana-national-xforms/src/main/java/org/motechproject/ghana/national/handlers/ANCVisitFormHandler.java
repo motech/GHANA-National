@@ -5,6 +5,8 @@ import org.motechproject.ghana.national.bean.ANCVisitForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.TTVaccineDosage;
+import org.motechproject.ghana.national.mapper.TTVaccinationEnrollmentMapper;
+import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MotherVisitService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -38,6 +40,8 @@ public class ANCVisitFormHandler implements FormPublishHandler {
     private StaffService staffService;
     @Autowired
     private PatientService patientService;
+    @Autowired
+    private AllSchedules allSchedules;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.ancVisit")
@@ -49,8 +53,8 @@ public class ANCVisitFormHandler implements FormPublishHandler {
             ANCVisit ancVisit = createANCVisit(form);
             visitService.registerANCVisit(ancVisit);
             if (!StringUtils.isEmpty(ancVisit.getTtdose()) && !ancVisit.getTtdose().equals(NOT_APPLICABLE)) {
-                visitService.receivedTT(TTVaccineDosage.byValue(Integer.parseInt(ancVisit.getTtdose())), 
-                        ancVisit.getPatient(), ancVisit.getStaff(), ancVisit.getFacility(), DateUtil.today());
+                allSchedules.enroll(new TTVaccinationEnrollmentMapper().map(ancVisit.getPatient(), DateUtil.newDate(ancVisit.getDate()),
+                        TTVaccineDosage.byValue(Integer.parseInt(ancVisit.getTtdose())).getScheduleMilestoneName()));
             }
         } catch (Exception e) {
             log.error("Encountered error while saving ANC visit details", e);

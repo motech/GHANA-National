@@ -43,6 +43,11 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
+            <artifactId>motech-appointments-api</artifactId>
+            <version>${motech-platform.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
             <artifactId>motech-testing-utils</artifactId>
             <version>${motech-platform.version}</version>
             <scope>test</scope>

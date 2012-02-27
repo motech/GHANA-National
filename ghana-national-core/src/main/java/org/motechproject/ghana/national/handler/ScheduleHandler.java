@@ -25,6 +25,8 @@ public class ScheduleHandler {
                 careScheduleHandler.handlePregnancyAlert(milestoneEvent);
             else if(milestoneEvent.getScheduleName().equals(ScheduleNames.TT_VACCINATION_VISIT))
                 careScheduleHandler.handleTTVaccinationAlert(milestoneEvent);
+            else if(milestoneEvent.getScheduleName().equals(ScheduleNames.BCG))
+                careScheduleHandler.handleBCGAlert(milestoneEvent);
         } catch (Exception e) {
             logger.error("Encountered error while sending pregnancy alert, ", e);
         }

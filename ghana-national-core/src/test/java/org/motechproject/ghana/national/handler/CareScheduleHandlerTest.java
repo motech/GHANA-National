@@ -12,8 +12,10 @@ import org.motechproject.util.DateUtil;
 
 import static org.joda.time.Period.weeks;
 import static org.mockito.Mockito.*;
+import static org.motechproject.ghana.national.handler.CareScheduleHandler.BCG_SMS_KEY;
 import static org.motechproject.ghana.national.handler.CareScheduleHandler.PREGNANCY_ALERT_SMS_KEY;
 import static org.motechproject.ghana.national.handler.CareScheduleHandler.TT_VACCINATION_SMS_KEY;
+import static org.motechproject.ghana.national.handler.CareScheduleHandler.ANC_VISIT_SMS_KEY;
 
 public class CareScheduleHandlerTest {
 
@@ -25,7 +27,7 @@ public class CareScheduleHandlerTest {
     }
 
     @Test
-    public void handlePregnancyAlert() {
+    public void shouldHandlePregnancyAlert() {
         doNothing().when(careScheduleHandlerSpy).sendSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any(), Matchers.<LocalDate>any());
 
         LocalDate conceptionDate = DateUtil.newDate(2000, 11, 11);
@@ -37,7 +39,7 @@ public class CareScheduleHandlerTest {
     }
 
     @Test
-    public void handleTTVaccinationAlert() {
+    public void shouldHandleTTVaccinationAlert() {
         doNothing().when(careScheduleHandlerSpy).sendSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any(), Matchers.<LocalDate>any());
 
         LocalDate referenceDate = DateUtil.newDate(2012, 2, 1);
@@ -47,5 +49,31 @@ public class CareScheduleHandlerTest {
         careScheduleHandlerSpy.handleTTVaccinationAlert(milestoneEvent);
 
         verify(careScheduleHandlerSpy).sendSMSToFacility(TT_VACCINATION_SMS_KEY, milestoneEvent, DateUtil.newDate(2012, 2, 29));
+    }
+
+    @Test
+    public void shouldHandleBCGAlert() {
+        doNothing().when(careScheduleHandlerSpy).sendSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any(), Matchers.<LocalDate>any());
+
+        LocalDate referenceDate = DateUtil.newDate(2012, 2, 1);
+        Milestone milestone = new Milestone("M1", weeks(0), weeks(3), weeks(6), weeks(7));
+        final MilestoneEvent milestoneEvent = new MilestoneEvent(null, null, MilestoneAlert.fromMilestone(milestone, referenceDate), null, referenceDate);
+
+        careScheduleHandlerSpy.handleBCGAlert(milestoneEvent);
+
+        verify(careScheduleHandlerSpy).sendSMSToFacility(BCG_SMS_KEY, milestoneEvent, DateUtil.newDate(2012, 2, 29));
+    }
+
+    @Test
+    public void shouldHandleAncVisitAlert() {
+        doNothing().when(careScheduleHandlerSpy).sendSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any(), Matchers.<LocalDate>any());
+
+        LocalDate referenceDate = DateUtil.newDate(2012, 2, 1);
+        Milestone milestone = new Milestone("M1", weeks(0), weeks(0), weeks(1), weeks(3));
+        final MilestoneEvent milestoneEvent = new MilestoneEvent(null, null, MilestoneAlert.fromMilestone(milestone, referenceDate), null, referenceDate);
+
+        careScheduleHandlerSpy.handleAncVisitAlert(milestoneEvent);
+
+        verify(careScheduleHandlerSpy).sendSMSToFacility(ANC_VISIT_SMS_KEY, milestoneEvent, DateUtil.newDate(2012, 2, 8));
     }
 }

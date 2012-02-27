@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
@@ -14,6 +13,7 @@ import java.util.HashMap;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 
 public class ScheduleHandlerTest {
 
@@ -31,14 +31,20 @@ public class ScheduleHandlerTest {
 
     @Test
     public void shouldHandleDeliveryNotificationSchedules(){
-        fireScheduleHandler(ScheduleNames.DELIVERY);
+        fireScheduleHandler(DELIVERY);
         verify(careScheduleHandler).handlePregnancyAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandleTTVaccinationSchedules(){
-        fireScheduleHandler(ScheduleNames.TT_VACCINATION_VISIT);
+        fireScheduleHandler(TT_VACCINATION_VISIT);
         verify(careScheduleHandler).handleTTVaccinationAlert(Matchers.<MilestoneEvent>any());
+    }
+
+    @Test
+    public void shouldHandleBCGSchedules(){
+        fireScheduleHandler(BCG);
+        verify(careScheduleHandler).handleBCGAlert(Matchers.<MilestoneEvent>any());
     }
 
     private void fireScheduleHandler(final String scheduleName) {
