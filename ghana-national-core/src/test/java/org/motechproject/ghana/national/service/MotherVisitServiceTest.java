@@ -13,10 +13,11 @@ import org.motechproject.ghana.national.domain.Concept;
 import org.motechproject.ghana.national.domain.Encounter;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllAppointments;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllSchedules;
-import org.motechproject.ghana.national.vo.ANCVisit;
+import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSFacility;
@@ -59,11 +60,13 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     private AllObservations mockAllObservations;
     @Mock
     private AllSchedules mockAllSchedules;
+    @Mock
+    private AllAppointments mockAllAppointments;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        motherVisitService = spy(new MotherVisitService(mockAllEncounters, mockAllObservations, mockAllSchedules));
+        motherVisitService = spy(new MotherVisitService(mockAllEncounters, mockAllObservations, mockAllSchedules/*, mockAllAppointments*/));
     }
 
     @Test
@@ -92,23 +95,23 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         MRSPatient mrsPatient = new MRSPatient(mrsPatientId,"motechPatient", null, facility.mrsFacility());
         Patient patient = new Patient(mrsPatient);
         MRSUser staff = new MRSUser();
-        ANCVisit ancVisit = createTestANCVisit(staff, facility, patient);
+        ANCVisitRequest ancVisitRequest = createTestANCVisit(staff, facility, patient);
         Pregnancy pregnancy = basedOnDeliveryDate(new LocalDate(2012, 12, 23));
 
         mockCurrentDate(new LocalDate(2012, 5, 1));
-        when(mockAllObservations.updateEDD(ancVisit.getEstDeliveryDate(), patient, ancVisit.getStaff().getId()))
+        when(mockAllObservations.updateEDD(ancVisitRequest.getEstDeliveryDate(), patient, ancVisitRequest.getStaff().getId()))
                 .thenReturn(new HashSet<MRSObservation>() {{add(new MRSObservation<Object>(new Date(), null, null));}});
-        mockFetchLatestEDD(pregnancy.dateOfDelivery(), ancVisit.getPatient().getMRSPatientId());
+        mockFetchLatestEDD(pregnancy.dateOfDelivery(), ancVisitRequest.getPatient().getMRSPatientId());
 
-        motherVisitService.registerANCVisit(ancVisit);
+        motherVisitService.registerANCVisit(ancVisitRequest);
 
         ArgumentCaptor<Encounter> encounterCapture = ArgumentCaptor.forClass(Encounter.class);
         verify(mockAllEncounters).persistEncounter(encounterCapture.capture());
 
         Encounter encounter = encounterCapture.getValue();
-        assertThat(encounter.getStaff().getId(), Is.is(ancVisit.getStaff().getId()));
+        assertThat(encounter.getStaff().getId(), Is.is(ancVisitRequest.getStaff().getId()));
         assertThat(encounter.getMrsPatient().getId(), Is.is(mrsPatientId));
-        assertThat(encounter.getFacility().getId(), Is.is(ancVisit.getFacility().getMrsFacilityId()));
+        assertThat(encounter.getFacility().getId(), Is.is(ancVisitRequest.getFacility().getMrsFacilityId()));
         assertThat(encounter.getType(), Is.is(ANC_VISIT.value()));
         assertReflectionEquals(encounter.getDate(), DateUtil.today().toDate(), ReflectionComparatorMode.LENIENT_DATES);
 
@@ -128,16 +131,16 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         LocalDate edd = new LocalDate(2012, 9, 1);
 
         mockCurrentDate(today);
-        ANCVisit ancVisit = createTestANCVisit().iptdose("1").iptReactive(true);
+        ANCVisitRequest ancVisitRequest = createTestANCVisit().iptdose("1").iptReactive(true);
         when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(new EnrollmentResponse(null, null, null, null, null));
-        mockFetchLatestEDD(edd, ancVisit.getPatient().getMRSPatientId());
-        motherVisitService.registerANCVisit(ancVisit);
+        mockFetchLatestEDD(edd, ancVisitRequest.getPatient().getMRSPatientId());
+        motherVisitService.registerANCVisit(ancVisitRequest);
 
         ArgumentCaptor<Encounter> encounterCaptor = forClass(Encounter.class);
         verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
         assertIfObservationsAvailableForConcepts(true, encounterCaptor.getValue().getObservations(), Concept.IPT.getName(), Concept.IPT_REACTION.getName());
 
-        EnrollmentRequest expected = new EnrollmentRequest(ancVisit.getPatient().getMRSPatientId(), ScheduleNames.ANC_IPT_VACCINE, deliveryTime, DateUtil.today());
+        EnrollmentRequest expected = new EnrollmentRequest(ancVisitRequest.getPatient().getMRSPatientId(), ScheduleNames.ANC_IPT_VACCINE, deliveryTime, DateUtil.today());
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, never()).enroll(captor.capture());
         verify(mockAllSchedules).fulfilCurrentMilestone(captor.capture());
@@ -152,17 +155,17 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         Time deliveryTime = new Time(20, 2);
         mockCurrentDate(new DateTime(2012, 2, 1, deliveryTime.getHour(), deliveryTime.getMinute()));
         LocalDate edd = new LocalDate(2012, 9, 1);
-        ANCVisit ancVisit = createTestANCVisit().iptdose("1").iptReactive(true);
+        ANCVisitRequest ancVisitRequest = createTestANCVisit().iptdose("1").iptReactive(true);
 
         when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(new EnrollmentResponse(null, null, null, null, null));
-        mockFetchLatestEDD(edd, ancVisit.getPatient().getMRSPatientId());
-        motherVisitService.registerANCVisit(ancVisit);
+        mockFetchLatestEDD(edd, ancVisitRequest.getPatient().getMRSPatientId());
+        motherVisitService.registerANCVisit(ancVisitRequest);
 
         ArgumentCaptor<Encounter> encounterCaptor = forClass(Encounter.class);
         verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
         assertIfObservationsAvailableForConcepts(true, encounterCaptor.getValue().getObservations(), Concept.IPT.getName(), Concept.IPT_REACTION.getName());
 
-        EnrollmentRequest expected = new EnrollmentRequest(ancVisit.getPatient().getMRSPatientId(), ScheduleNames.ANC_IPT_VACCINE, deliveryTime, DateUtil.today());
+        EnrollmentRequest expected = new EnrollmentRequest(ancVisitRequest.getPatient().getMRSPatientId(), ScheduleNames.ANC_IPT_VACCINE, deliveryTime, DateUtil.today());
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, never()).enroll(captor.capture());
         verify(mockAllSchedules).fulfilCurrentMilestone(captor.capture());
@@ -174,8 +177,8 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     public void shouldNotCreateIPTSchedule_IfIPTReadingsAreNotCaptured() {
         Time deliveryTime = new Time(20, 2);
         mockCurrentDate(new DateTime(2012, 2, 1, deliveryTime.getHour(), deliveryTime.getMinute()));
-        ANCVisit ancVisit = createTestANCVisit().iptdose(null).iptReactive(false);
-        motherVisitService.registerANCVisit(ancVisit);
+        ANCVisitRequest ancVisitRequest = createTestANCVisit().iptdose(null).iptReactive(false);
+        motherVisitService.registerANCVisit(ancVisitRequest);
         ArgumentCaptor<Encounter> encounterCaptor = forClass(Encounter.class);
         verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
         assertIfObservationsAvailableForConcepts(false, encounterCaptor.getValue().getObservations(), Concept.IPT.getName(), Concept.IPT_REACTION.getName());
@@ -206,12 +209,12 @@ public class MotherVisitServiceTest extends BaseUnitTest {
                 thenReturn(new MRSObservation<Date>(DateUtil.today().toDate(), Concept.EDD.getName(), edd.toDate()));
     }
 
-    private ANCVisit createTestANCVisit() {
+    private ANCVisitRequest createTestANCVisit() {
         return createTestANCVisit(new MRSUser(), new Facility(), new Patient(new MRSPatient("patientId")));
     }
 
-    private ANCVisit createTestANCVisit(MRSUser staff, Facility facility, Patient patient) {
-        return new ANCVisit().staff(staff).facility(facility).patient(patient).date(new Date()).serialNumber("4ds65")
+    private ANCVisitRequest createTestANCVisit(MRSUser staff, Facility facility, Patient patient) {
+        return new ANCVisitRequest().staff(staff).facility(facility).patient(patient).date(new Date()).serialNumber("4ds65")
                 .visitNumber("4").estDeliveryDate(DateUtil.newDate(2012, 5, 1).toDate())
                 .bpDiastolic(67).bpSystolic(10).weight(65.67d).comments("comments").ttdose("4").iptdose("3")
                 .iptReactive(true).itnUse("Y").fht(4.3d).fhr(4).urineTestGlucosePositive("0").urineTestProteinPositive("1")

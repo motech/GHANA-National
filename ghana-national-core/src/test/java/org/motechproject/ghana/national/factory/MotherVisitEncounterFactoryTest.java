@@ -3,7 +3,7 @@ package org.motechproject.ghana.national.factory;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.vo.ANCVisit;
+import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.mrs.model.*;
 import org.motechproject.util.DateUtil;
 
@@ -25,12 +25,12 @@ public class MotherVisitEncounterFactoryTest {
 
     @Test
     public void shouldCreateEncounterForAncVisit() {
-        ANCVisit ancVisit = createTestANCVisit();
+        ANCVisitRequest ancVisitRequest = createTestANCVisit();
         MRSConcept conceptPositive = new MRSConcept(POSITIVE.getName());
         MRSConcept conceptNegative = new MRSConcept(NEGATIVE.getName());
         MRSConcept conceptNonReactive = new MRSConcept(NON_REACTIVE.getName());
 
-        Set<MRSObservation> mrsObservations = factory.createMRSObservations(ancVisit);
+        Set<MRSObservation> mrsObservations = factory.createMRSObservations(ancVisitRequest);
         Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>();
 
         Date today = DateUtil.today().toDate();
@@ -77,7 +77,7 @@ public class MotherVisitEncounterFactoryTest {
         assertReflectionEquals(expectedObservations, actualObservations, LENIENT_ORDER);
     }
 
-    private ANCVisit createTestANCVisit() {
+    private ANCVisitRequest createTestANCVisit() {
         String mrsFacilityId = "mrsFacilityId";
         MRSFacility mrsFacility = new MRSFacility(mrsFacilityId);
         Facility facility = new Facility(mrsFacility);
@@ -86,7 +86,7 @@ public class MotherVisitEncounterFactoryTest {
         MRSUser staff = new MRSUser();
         staff.id("staffId");
 
-        return new ANCVisit().staff(staff).facility(facility).patient(patient).date(new Date()).serialNumber("4ds65")
+        return new ANCVisitRequest().staff(staff).facility(facility).patient(patient).date(new Date()).serialNumber("4ds65")
                 .visitNumber("4").estDeliveryDate(DateUtil.newDate(2012, 8, 8).toDate())
                 .bpDiastolic(67).bpSystolic(10).weight(65.67d).comments("comments").ttdose("4").iptdose("5")
                 .iptReactive(true).itnUse("Y").fht(4.3d).fhr(4).urineTestGlucosePositive("0").urineTestProteinPositive("1")

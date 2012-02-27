@@ -9,7 +9,7 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MotherVisitService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
-import org.motechproject.ghana.national.vo.ANCVisit;
+import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSUser;
@@ -46,23 +46,23 @@ public class ANCVisitFormHandler implements FormPublishHandler {
     public void handleFormEvent(MotechEvent event) {
         try {
             ANCVisitForm form = (ANCVisitForm) event.getParameters().get(FORM_BEAN);
-            ANCVisit ancVisit = createANCVisit(form);
-            visitService.registerANCVisit(ancVisit);
-            if (!StringUtils.isEmpty(ancVisit.getTtdose()) && !ancVisit.getTtdose().equals(NOT_APPLICABLE)) {
-                visitService.receivedTT(TTVaccineDosage.byValue(Integer.parseInt(ancVisit.getTtdose())), 
-                        ancVisit.getPatient(), ancVisit.getStaff(), ancVisit.getFacility(), DateUtil.today());
+            ANCVisitRequest ancVisitRequest = createANCVisit(form);
+            visitService.registerANCVisit(ancVisitRequest);
+            if (!StringUtils.isEmpty(ancVisitRequest.getTtdose()) && !ancVisitRequest.getTtdose().equals(NOT_APPLICABLE)) {
+                visitService.receivedTT(TTVaccineDosage.byValue(Integer.parseInt(ancVisitRequest.getTtdose())),
+                        ancVisitRequest.getPatient(), ancVisitRequest.getStaff(), ancVisitRequest.getFacility(), DateUtil.today());
             }
         } catch (Exception e) {
             log.error("Encountered error while saving ANC visit details", e);
         }
     }
 
-    private ANCVisit createANCVisit(ANCVisitForm form) {
+    private ANCVisitRequest createANCVisit(ANCVisitForm form) {
         Facility facility = facilityService.getFacilityByMotechId(form.getFacilityId());
         MRSUser staff = staffService.getUserByEmailIdOrMotechId(form.getStaffId());
         Patient patient = patientService.getPatientByMotechId(form.getMotechId());
 
-        return new ANCVisit().staff(staff).facility(facility).patient(patient)
+        return new ANCVisitRequest().staff(staff).facility(facility).patient(patient)
                 .date(form.getDate()).serialNumber(form.getSerialNumber()).visitNumber(form.getVisitNumber())
                 .estDeliveryDate(form.getEstDeliveryDate()).bpDiastolic(form.getBpDiastolic()).bpSystolic(form.getBpSystolic()).pmtct(form.getPmtct())
                 .weight(form.getWeight()).ttdose(form.getTtdose()).iptdose(form.getIptdose()).hemoglobin(form.getHemoglobin()).dewormer(form.getDewormer())

@@ -1,7 +1,7 @@
 package org.motechproject.ghana.national.domain;
 
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.vo.ANCVisit;
+import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 
 import static org.motechproject.util.DateUtil.newDate;
 
@@ -12,12 +12,12 @@ public class IPTVaccine {
     Patient givenTo;
     LocalDate vaccinationDate;
 
-    public static IPTVaccine createFromANCVisit(ANCVisit ancVisit) {
-        return ancVisit.getIptdose() != null
-                ? new IPTVaccine(newDate(ancVisit.getDate()),
-                ancVisit.getPatient(),
-                IPTDose.byValue(ancVisit.getIptdose()),
-                IPTReaction.byValue(ancVisit.getIptReactive())) : null;
+    public static IPTVaccine createFromANCVisit(ANCVisitRequest ancVisitRequest) {
+        return ancVisitRequest.getIptdose() != null
+                ? new IPTVaccine(newDate(ancVisitRequest.getDate()),
+                ancVisitRequest.getPatient(),
+                IPTDose.byValue(ancVisitRequest.getIptdose()),
+                IPTReaction.byValue(ancVisitRequest.getIptReactive())) : null;
     }
 
     public IPTVaccine(LocalDate vaccinationDate, Patient givenTo, IPTDose iptDose, IPTReaction iptReaction) {
