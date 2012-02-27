@@ -31,6 +31,7 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         super.setUp();
         preferredAlertTime = new Time(10, 10);
         externalId = "patient_id" + randomAlphabetic(6);
+        scheduleName = ANC_IPT_VACCINE;
     }
 
     @Test
@@ -177,7 +178,7 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
     }
 
     private String enrollForIPTVaccine(LocalDate referenceDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, ANC_IPT_VACCINE, preferredAlertTime, referenceDate, DateUtil.today(), null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, scheduleName, preferredAlertTime, referenceDate, DateUtil.today(), null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

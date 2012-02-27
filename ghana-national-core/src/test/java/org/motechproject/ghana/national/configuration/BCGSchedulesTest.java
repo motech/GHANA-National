@@ -9,7 +9,6 @@ import org.quartz.SchedulerException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.motechproject.ghana.national.configuration.ScheduleNames.BCG;
 import static org.motechproject.util.DateUtil.newDate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -19,6 +18,7 @@ public class BCGSchedulesTest extends BaseScheduleTrackingTest {
     @Before
     public void setUp() {
         super.setUp();
+        scheduleName = ScheduleNames.BCG;
     }
 
     @Test
@@ -67,7 +67,7 @@ public class BCGSchedulesTest extends BaseScheduleTrackingTest {
     }
 
     private String scheduleAlertForBCG(LocalDate birthDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, BCG, preferredAlertTime, birthDate, null, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, birthDate, null, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

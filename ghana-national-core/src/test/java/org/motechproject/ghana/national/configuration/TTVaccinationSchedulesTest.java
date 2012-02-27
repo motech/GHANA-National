@@ -21,6 +21,7 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
     @Before
     public void setUp() {
         super.setUp();
+        scheduleName = TT_VACCINATION_VISIT;
     }
 
     @Test
@@ -28,17 +29,17 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         LocalDate firstDosageDate = mockToday(DateUtil.newDate(2000, 2, 1));
 
         enrollmentId = scheduleAlertForTTVaccination(firstDosageDate);
-        fulfillCurrentMilestone(firstDosageDate, TT_VACCINATION_VISIT, null);
+        fulfillCurrentMilestone(firstDosageDate);
 
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2000, 2, 22), newDate(2000, 2, 29), newDate(2000, 3, 7), newDate(2000, 3, 14)));
 
-        fulfillCurrentMilestone(newDate(2000, 3, 22), TT_VACCINATION_VISIT, null);
+        fulfillCurrentMilestone(newDate(2000, 3, 22));
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2000, 8, 30), newDate(2000, 9, 9), newDate(2000, 9, 16), newDate(2000, 9, 23)));
 
-        fulfillCurrentMilestone(newDate(2000, 10, 18), TT_VACCINATION_VISIT, null);
+        fulfillCurrentMilestone(newDate(2000, 10, 18));
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2001, 9, 12), newDate(2001, 9, 22), newDate(2001, 9, 29), newDate(2001, 10, 6)));
 
-        fulfillCurrentMilestone(newDate(2001, 10, 15), TT_VACCINATION_VISIT, null);
+        fulfillCurrentMilestone(newDate(2001, 10, 15));
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2002, 9, 9), newDate(2002, 9, 19), newDate(2002, 9, 26), newDate(2002, 10, 3)));
     }
 
@@ -49,13 +50,13 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         final LocalDate firstDosageDate = newDate(2000, 2, 1);
 
         enrollmentId = scheduleAlertForTTVaccination(firstDosageDate);
-        fulfillCurrentMilestone(firstDosageDate, TT_VACCINATION_VISIT, null);
+        fulfillCurrentMilestone(firstDosageDate);
 
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2000, 2, 29), newDate(2000, 3, 7), newDate(2000, 3, 14)));
     }
 
     private String scheduleAlertForTTVaccination(LocalDate firstDosageDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, TT_VACCINATION_VISIT, preferredAlertTime, firstDosageDate, null, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, firstDosageDate, null, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }
