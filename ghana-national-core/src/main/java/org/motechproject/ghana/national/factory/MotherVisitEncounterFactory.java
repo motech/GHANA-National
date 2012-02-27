@@ -1,7 +1,10 @@
 package org.motechproject.ghana.national.factory;
 
+import org.joda.time.LocalDate;
+import org.motechproject.ghana.national.domain.Concept;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Encounter;
+import org.motechproject.ghana.national.domain.IPTVaccine;
 import org.motechproject.ghana.national.vo.ANCVisit;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
@@ -23,7 +26,7 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
     }
 
     public Set<MRSObservation> createMRSObservations(ANCVisit ancVisit) {
-        HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
+        Set<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         Date registrationDate = ancVisit.getDate() == null ? DateUtil.today().toDate() : ancVisit.getDate();
 
         setObservation(mrsObservations, registrationDate, ANC_PNC_LOCATION.getName(), toInteger(ancVisit.getLocation()));
@@ -39,8 +42,6 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, registrationDate, HIV_POST_TEST_COUNSELING.getName(), toBoolean(ancVisit.getPostTestCounseled()));
         setObservation(mrsObservations, registrationDate, HOUSE.getName(), ancVisit.getHouse());
         setObservation(mrsObservations, registrationDate, INSECTICIDE_TREATED_NET_USAGE.getName(), toBoolean(ancVisit.getItnUse()));
-        setObservation(mrsObservations, registrationDate, IPT.getName(), toInteger(ancVisit.getIptdose()));
-        setObservation(mrsObservations, registrationDate, IPT_REACTION.getName(), getConceptReactionResult(ancVisit.getIptReactive()));
         setObservation(mrsObservations, registrationDate, MALE_INVOLVEMENT.getName(), ancVisit.getMaleInvolved());
         setObservation(mrsObservations, registrationDate, NEXT_ANC_DATE.getName(), ancVisit.getNextANCDate());
         setObservation(mrsObservations, registrationDate, PMTCT.getName(), toBoolean(ancVisit.getPmtct()));
@@ -56,6 +57,14 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, registrationDate, VISIT_NUMBER.getName(), toInteger(ancVisit.getVisitNumber()));
         setObservation(mrsObservations, registrationDate, WEIGHT_KG.getName(), ancVisit.getWeight());
         return mrsObservations;
+    }
+
+    public Set<MRSObservation> createObservationsForIPT(final IPTVaccine iptVaccine) {
+        final LocalDate observationDate = iptVaccine.getVaccinationDate();
+        Set<MRSObservation> observations = new HashSet<MRSObservation>();
+        setObservation(observations, observationDate.toDate(), Concept.IPT.getName(), iptVaccine.getIptDose());
+        setObservation(observations, observationDate.toDate(), Concept.IPT_REACTION.getName(), new MRSConcept(iptVaccine.getIptReactionConceptName()));
+        return observations;
     }
 
     private MRSConcept getConceptReactionResult(String reading) {

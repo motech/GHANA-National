@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.repository;
 
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
+import org.motechproject.scheduletracking.api.service.EnrollmentResponse;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -29,6 +30,10 @@ public class AllSchedules {
         scheduleTrackingService.enroll(enrollmentRequest);
     }
 
+    public void fulfilMilestone(EnrollmentRequest enrollmentRequest) {
+        scheduleTrackingService.fulfillCurrentMilestone(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName());
+    }
+
     public void unEnroll(Patient patient, String scheduleName) {
         scheduleTrackingService.unenroll(patient.getMRSPatientId(), scheduleName);
     }
@@ -37,5 +42,9 @@ public class AllSchedules {
         for (String scheduleName : scheduleNames) {
             scheduleTrackingService.unenroll(patient.getMRSPatientId(), scheduleName);
         }
+    }
+
+    public EnrollmentResponse enrollment(EnrollmentRequest enrollmentRequest) {
+        return scheduleTrackingService.getEnrollment(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName());
     }
 }

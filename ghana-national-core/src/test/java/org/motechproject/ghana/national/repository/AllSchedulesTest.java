@@ -74,4 +74,25 @@ public class AllSchedulesTest {
         verify(mockScheduleTrackingService, never()).enroll(anyEnrollmentRequest);
         verify(mockScheduleTrackingService).fulfillCurrentMilestone(patientId, scheduleName);
     }
+
+    @Test
+    public void shouldEnrollForSchedule() {
+        EnrollmentRequest request = new EnrollmentRequest("123", "sche", new Time(12, 0), new LocalDate());
+        allSchedules.enroll(request);
+        verify(mockScheduleTrackingService).enroll(request);
+    }
+
+    @Test
+    public void shouldFulfilMilestoneForSchedule() {
+        EnrollmentRequest request = new EnrollmentRequest("123", "scheduleName", new Time(12, 0), new LocalDate());
+        allSchedules.fulfilMilestone(request);
+        verify(mockScheduleTrackingService).fulfillCurrentMilestone(request.getExternalId(), request.getScheduleName());
+    }
+
+    @Test
+    public void shouldFetchEnrollmentForSchedule() {
+        EnrollmentRequest request = new EnrollmentRequest("123", "scheduleName", new Time(12, 0), new LocalDate());
+        allSchedules.enrollment(request);
+        verify(mockScheduleTrackingService).getEnrollment(request.getExternalId(), request.getScheduleName());
+    }
 }

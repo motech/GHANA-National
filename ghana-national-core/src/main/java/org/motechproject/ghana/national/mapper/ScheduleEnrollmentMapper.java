@@ -11,4 +11,8 @@ public class ScheduleEnrollmentMapper {
         return new EnrollmentRequest(patient.getMRSPatientId(), patientCare.name(),
                 new Time(DateUtil.now().toLocalTime()), patientCare.startingOn());
     }
+
+    public EnrollmentRequest map(String mrsPatientId, String programName) {
+        return new EnrollmentRequest(mrsPatientId, programName, null, null);
+    }
 }

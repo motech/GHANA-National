@@ -75,7 +75,7 @@ public class ANCVisitFormHandlerTest {
         ancVisitForm.setComments("comments");
         ancVisitForm.setTtdose("4");
         ancVisitForm.setIptdose("56");
-        ancVisitForm.setIptReactive("reactive");
+        ancVisitForm.setIptReactive(true);
         ancVisitForm.setItnUse("itn");
         ancVisitForm.setFht(4.3d);
         ancVisitForm.setFhr(4);
