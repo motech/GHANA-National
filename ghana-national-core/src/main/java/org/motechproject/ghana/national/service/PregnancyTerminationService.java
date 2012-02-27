@@ -17,8 +17,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.PREG_TERM_VISIT;
 import static org.motechproject.ghana.national.tools.Utility.safePareInteger;
@@ -50,10 +48,10 @@ public class PregnancyTerminationService {
         allEncounters.persistEncounter(mrsPatient, request.getStaffId(), facility.getMrsFacilityId(), PREG_TERM_VISIT.value(), request.getTerminationDate(), prepareObservations(request));
         if (request.isDead()) {
             allPatients.deceasePatient(request.getTerminationDate(), request.getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
-            allSchedules.unEnroll(patient, TT_VACCINATION_VISIT);
         }
 
-        allSchedules.unEnroll(patient, DELIVERY);
+        allSchedules.unEnroll(request.getMotechId(),patient.careProgramsToUnEnroll());
+
     }
 
     private Set<MRSObservation> prepareObservations(PregnancyTerminationRequest request) {

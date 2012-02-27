@@ -34,14 +34,12 @@ public class AllSchedules {
         scheduleTrackingService.fulfillCurrentMilestone(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName(), fulfillmentDate);
     }
 
-    public void unEnroll(Patient patient, String scheduleName) {
-        scheduleTrackingService.unenroll(patient.getMRSPatientId(), scheduleName);
+    public void unEnroll(String externalId, String scheduleName) {
+        scheduleTrackingService.unenroll(externalId, scheduleName);
     }
 
-    public void unEnroll(Patient patient, List<String> scheduleNames) {
-        for (String scheduleName : scheduleNames) {
-            scheduleTrackingService.unenroll(patient.getMRSPatientId(), scheduleName);
-        }
+    public void unEnroll(String externalId, List<String> scheduleNames) {
+        scheduleTrackingService.safeUnEnroll(externalId, scheduleNames);
     }
 
     public EnrollmentResponse enrollment(EnrollmentRequest enrollmentRequest) {

@@ -5,12 +5,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.model.Time;
-import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.EnrollmentResponse;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -38,12 +39,21 @@ public class AllSchedulesTest {
     @Test
     public void shouldUnEnroll() {
         String patientId = "12";
-        Patient mockPatient = new Patient(new MRSPatient(patientId));
         String scheduleName = "scheduleName";
 
-        allSchedules.unEnroll(mockPatient, scheduleName);
+        allSchedules.unEnroll(patientId, scheduleName);
 
         verify(mockScheduleTrackingService).unenroll(patientId, scheduleName);
+    }
+
+    @Test
+    public void shouldUnEnrollListOfSchedules(){
+       String patientId = "12";
+        List<String> scheduleNames = Arrays.asList("scheduleName1","scheduleName2","scheduleName3");
+
+        allSchedules.unEnroll(patientId, scheduleNames);
+
+        verify(mockScheduleTrackingService).safeUnEnroll(patientId, scheduleNames);
     }
 
     @Test

@@ -63,7 +63,6 @@ public class BaseScheduleHandlerTest {
         final SMS sms = SMS.fromSMSText("sms message");
         when(SMSGateway.getSMS(PREGNANCY_ALERT_SMS_KEY, new HashMap<String, String>(){{
             put(MOTECH_ID, patientMotechId);
-            put(DUE_DATE, expectedDeliveryDate.toString());
             put(WINDOW, "Due");
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastname);
@@ -72,7 +71,7 @@ public class BaseScheduleHandlerTest {
 
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, null, windowName, null);
 
-        careScheduleHandler.sendSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent, expectedDeliveryDate);
+        careScheduleHandler.sendSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
 
         verify(SMSGateway).sendSMS(facilityMock, sms);
 

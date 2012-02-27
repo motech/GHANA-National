@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
@@ -39,7 +40,7 @@ public class Patient {
         this.parentId = parentId;
         return this;
     }
-    
+
     public String getMRSPatientId() {
         return mrsPatient.getId();
     }
@@ -48,7 +49,7 @@ public class Patient {
         return mrsPatient.getMotechId();
     }
 
-    public String getFirstName(){
+    public String getFirstName() {
         return mrsPatient.getPerson().getFirstName();
     }
 
@@ -62,14 +63,21 @@ public class Patient {
                 iptPatientCareEnrollOnRegistration(expectedDeliveryDate));
     }
 
+    public List<String> careProgramsToUnEnroll() {
+        return Arrays.asList(
+                DELIVERY,
+                ANC_IPT_VACCINE,
+                TT_VACCINATION_VISIT);
+    }
+
     public PatientCare iptPatientCareEnrollOnRegistration(LocalDate expectedDeliveryDate) {
         if (expectedDeliveryDate != null && basedOnDeliveryDate(expectedDeliveryDate).applicableForIPT()) {
             return iptPatientCareEnroll(expectedDeliveryDate);
         }
         return null;
     }
-    
-     public List<PatientCare> cwcCareProgramToEnrollOnRegistration() {
+
+    public List<PatientCare> cwcCareProgramToEnrollOnRegistration() {
         return nullSafeList(new PatientCare(BCG, DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth())));
     }
 
