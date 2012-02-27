@@ -11,12 +11,10 @@ import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.motechproject.ghana.national.domain.SmsKeys.*;
+
 @Component
 public class CareScheduleHandler extends BaseScheduleHandler {
-    public static final String PREGNANCY_ALERT_SMS_KEY = "PREGNANCY_ALERT_SMS_KEY";
-    public static final String TT_VACCINATION_SMS_KEY = "TT_VACCINATION_SMS_KEY";
-    public static final String BCG_SMS_KEY = "BCG_SMS_KEY";
-    public static final String ANC_VISIT_SMS_KEY = "ANC_VISIT_SMS_KEY";
 
     public CareScheduleHandler() {
     }
@@ -51,4 +49,9 @@ public class CareScheduleHandler extends BaseScheduleHandler {
     public void handleAncVisitAlert(MilestoneEvent milestoneEvent) {
         sendSMSToFacility(ANC_VISIT_SMS_KEY, milestoneEvent, addAggregationPeriodTo(milestoneEvent.getMilestoneAlert().getDueDate()));
     }
+
+    public void handleIPTpVaccinationAlert(MilestoneEvent milestoneEvent) {
+        sendSMSToFacility(IPTp_VACCINATION_SMS_KEY, milestoneEvent, addAggregationPeriodTo(milestoneEvent.getMilestoneAlert().getDueDate()));
+    }
+
 }

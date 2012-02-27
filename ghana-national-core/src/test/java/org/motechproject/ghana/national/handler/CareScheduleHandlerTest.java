@@ -12,7 +12,7 @@ import org.motechproject.util.DateUtil;
 
 import static org.joda.time.Period.weeks;
 import static org.mockito.Mockito.*;
-import static org.motechproject.ghana.national.handler.CareScheduleHandler.*;
+import static org.motechproject.ghana.national.domain.SmsKeys.*;
 
 public class CareScheduleHandlerTest {
 
@@ -72,5 +72,18 @@ public class CareScheduleHandlerTest {
         careScheduleHandlerSpy.handleAncVisitAlert(milestoneEvent);
 
         verify(careScheduleHandlerSpy).sendSMSToFacility(ANC_VISIT_SMS_KEY, milestoneEvent, DateUtil.newDate(2012, 2, 8));
+    }
+
+    @Test
+    public void handleIPTpVaccinationAlert() {
+        doNothing().when(careScheduleHandlerSpy).sendSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any(), Matchers.<LocalDate>any());
+
+        LocalDate conceptionDate = DateUtil.newDate(2011, 12, 17);
+        Milestone milestone = new Milestone("M1", weeks(12), weeks(2), weeks(3), weeks(0));
+        final MilestoneEvent milestoneEvent = new MilestoneEvent(null, null, MilestoneAlert.fromMilestone(milestone, conceptionDate), null, conceptionDate);
+
+        careScheduleHandlerSpy.handleIPTpVaccinationAlert(milestoneEvent);
+
+        verify(careScheduleHandlerSpy).sendSMSToFacility(IPTp_VACCINATION_SMS_KEY, milestoneEvent, DateUtil.newDate(2012, 3, 31));
     }
 }
