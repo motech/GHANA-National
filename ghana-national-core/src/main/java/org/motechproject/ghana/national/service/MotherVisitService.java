@@ -48,6 +48,7 @@ public class MotherVisitService {
             mrsObservations.addAll(eddObservations);
             createEDDScheduleForANCVisit(ancVisit.getPatient(), ancVisit.getEstDeliveryDate());
         }
+        //anc schedules happen here.
         return allEncounters.persistEncounter(factory.createEncounter(ancVisit, mrsObservations));
     }
 
