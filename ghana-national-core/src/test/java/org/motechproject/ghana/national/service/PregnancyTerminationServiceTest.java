@@ -6,10 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.repository.AllEncounters;
-import org.motechproject.ghana.national.repository.AllFacilities;
-import org.motechproject.ghana.national.repository.AllPatients;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
@@ -36,11 +33,13 @@ public class PregnancyTerminationServiceTest {
     private AllFacilities mockAllFacilities;
     @Mock
     private AllSchedules mockAllSchedules;
+    @Mock
+    private AllAppointments mockAllAppointments;
 
     @Before
     public void setUp() {
         initMocks(this);
-        pregnancyTerminationService = new PregnancyTerminationService(mockAllPatients, mockAllEncounters, mockAllFacilities, mockAllSchedules);
+        pregnancyTerminationService = new PregnancyTerminationService(mockAllPatients, mockAllEncounters, mockAllFacilities, mockAllSchedules, mockAllAppointments);
     }
 
     @Test
@@ -68,6 +67,7 @@ public class PregnancyTerminationServiceTest {
 
         verify(mockAllPatients).deceasePatient(request.getTerminationDate(), request.getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
         verify(mockAllSchedules).unEnroll(request.getMotechId(), schedules);
+        verify(mockAllAppointments).remove(mockPatient);
     }
 
     @Test

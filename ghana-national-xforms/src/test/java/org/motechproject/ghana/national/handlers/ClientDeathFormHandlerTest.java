@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ClientDeathForm;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllAppointments;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
@@ -23,6 +24,8 @@ public class ClientDeathFormHandlerTest {
     private PatientService mockPatientService;
     @Mock
     private AllSchedules mockAllSchedules;
+    @Mock
+    private AllAppointments mockAllAppointments;
 
     @Before
     public void setUp() {
@@ -30,6 +33,7 @@ public class ClientDeathFormHandlerTest {
         clientDeathFormHandler = new ClientDeathFormHandler();
         ReflectionTestUtils.setField(clientDeathFormHandler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(clientDeathFormHandler, "allSchedules", mockAllSchedules);
+        ReflectionTestUtils.setField(clientDeathFormHandler, "allAppointments", mockAllAppointments);
     }
 
     @Test
@@ -52,6 +56,7 @@ public class ClientDeathFormHandlerTest {
 
         verify(mockAllSchedules).unEnroll(patientMotechId,schedules);
         verify(mockPatientService).deceasePatient(deathDate, patientMotechId, causeOfDeath, comment);
+        verify(mockAllAppointments).remove(mockPatient);
     }
 
     private ClientDeathForm clientForm(Date deathDate, String causeOfDeath, String comment) {

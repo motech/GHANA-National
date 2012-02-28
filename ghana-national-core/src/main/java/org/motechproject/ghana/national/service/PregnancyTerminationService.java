@@ -3,10 +3,7 @@ package org.motechproject.ghana.national.service;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.repository.AllEncounters;
-import org.motechproject.ghana.national.repository.AllFacilities;
-import org.motechproject.ghana.national.repository.AllPatients;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
@@ -31,14 +28,16 @@ public class PregnancyTerminationService {
     private AllEncounters allEncounters;
     private AllFacilities allFacilities;
     private AllSchedules allSchedules;
+    private AllAppointments allAppointments;
 
     @Autowired
     public PregnancyTerminationService(AllPatients allPatients, AllEncounters allEncounters, AllFacilities allFacilities,
-                                       AllSchedules allSchedules) {
+                                       AllSchedules allSchedules, AllAppointments allAppointments) {
         this.allPatients = allPatients;
         this.allEncounters = allEncounters;
         this.allFacilities = allFacilities;
         this.allSchedules = allSchedules;
+        this.allAppointments = allAppointments;
     }
 
     public void terminatePregnancy(PregnancyTerminationRequest request) {
@@ -49,9 +48,8 @@ public class PregnancyTerminationService {
         if (request.isDead()) {
             allPatients.deceasePatient(request.getTerminationDate(), request.getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
         }
-
-        allSchedules.unEnroll(request.getMotechId(),patient.careProgramsToUnEnroll());
-
+        allSchedules.unEnroll(request.getMotechId(), patient.careProgramsToUnEnroll());
+        allAppointments.remove(patient);
     }
 
     private Set<MRSObservation> prepareObservations(PregnancyTerminationRequest request) {
