@@ -50,6 +50,8 @@ public class CareScheduleHandler extends BaseScheduleHandler {
         sendSMSToFacility(ANC_VISIT_SMS_KEY, milestoneEvent);
     }
 
+    @LoginAsAdmin
+    @ApiSession
     public void handleIPTpVaccinationAlert(MilestoneEvent milestoneEvent) {
         sendSMSToFacility(IPTp_VACCINATION_SMS_KEY, milestoneEvent);
     }
