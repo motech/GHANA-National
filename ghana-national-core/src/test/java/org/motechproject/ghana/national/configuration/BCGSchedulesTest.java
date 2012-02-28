@@ -9,7 +9,7 @@ import org.quartz.SchedulerException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.motechproject.util.DateUtil.newDate;
+import java.text.ParseException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
@@ -22,45 +22,45 @@ public class BCGSchedulesTest extends BaseScheduleTrackingTest {
     }
 
     @Test
-    public void verifyBCGAlertsIfRegisteredAsSoonAsTheChildIsBorn() throws SchedulerException {
-        mockToday(newDate(2000, 2, 24));
-        LocalDate dateOfBirth = newDate(2000, 2, 24);
+    public void verifyBCGAlertsIfRegisteredAsSoonAsTheChildIsBorn() throws SchedulerException, ParseException {
+        mockToday(newDate("24-FEB-2000"));
+        LocalDate dateOfBirth = newDate("24-FEB-2000");
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2000, 2, 26), newDate(2000, 3, 4)));
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("26-FEB-2000"), newDate("4-MAR-2000")));
     }
 
     @Test
-    public void verifyBCGAlertsIfRegisteredForCWCAfterTheChildTurnsADayOld() throws SchedulerException {
-        mockToday(newDate(2000, 2, 25));
-        LocalDate dateOfBirth = newDate(2000, 2, 24);
+    public void verifyBCGAlertsIfRegisteredForCWCAfterTheChildTurnsADayOld() throws SchedulerException, ParseException {
+        mockToday(newDate("25-FEB-2000"));
+        LocalDate dateOfBirth = newDate("24-FEB-2000");
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2000, 2, 26), newDate(2000, 3, 4)));
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("26-FEB-2000"), newDate("04-MAR-2000")));
     }
 
     @Test
-    public void verifyBCGAlertsIfRegisteredForCWCWhenTheChildIs2DaysOld() throws SchedulerException {
-        mockToday(newDate(2000, 2, 26));
-        LocalDate dateOfBirth = newDate(2000, 2, 24);
+    public void verifyBCGAlertsIfRegisteredForCWCWhenTheChildIs2DaysOld() throws SchedulerException, ParseException {
+        mockToday(newDate("26-FEB-2000"));
+        LocalDate dateOfBirth = newDate("24-FEB-2000");
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2000, 2, 26), newDate(2000, 3, 4)));
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("26-FEB-2000"), newDate("04-MAR-2000")));
     }
 
     @Test
-    public void verifyBCGAlertsIfRegisteredForCWCWhenTheChildIsOverAWeekOld() throws SchedulerException {
-        mockToday(newDate(2000, 3, 3));
-        LocalDate dateOfBirth = newDate(2000, 2, 24);
+    public void verifyBCGAlertsIfRegisteredForCWCWhenTheChildIsOverAWeekOld() throws SchedulerException, ParseException {
+        mockToday(newDate("03-MAR-2000"));
+        LocalDate dateOfBirth = newDate("24-FEB-2000");
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2000, 3, 4)));
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("04-MAR-2000")));
     }
 
     @Test
-    public void verifyBCGAlertsIfRegisteredForCWCOverAMonthOld() throws SchedulerException {
-        mockToday(newDate(2000, 4, 2));
-        LocalDate dateOfBirth = newDate(2000, 2, 24);
+    public void verifyBCGAlertsIfRegisteredForCWCOverAMonthOld() throws SchedulerException, ParseException {
+        mockToday(newDate("02-APR-2000"));
+        LocalDate dateOfBirth = newDate("24-FEB-2000");
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates());

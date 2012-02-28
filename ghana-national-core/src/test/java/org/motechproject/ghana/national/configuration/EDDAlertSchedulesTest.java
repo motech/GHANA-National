@@ -10,10 +10,9 @@ import org.quartz.SchedulerException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-
-import static org.motechproject.util.DateUtil.newDate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
@@ -25,53 +24,53 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
     }
 
     @Test
-    public void verifyPregnancyScheduleWhenEDDIsVeryFarInFuture() throws SchedulerException {
-        mockToday(newDate(2012, 3, 1));
-        LocalDate expectedDeliveryDate = newDate(2012, 11, 10);
+    public void verifyPregnancyScheduleWhenEDDIsVeryFarInFuture() throws SchedulerException, ParseException {
+        mockToday(newDate("01-MAR-2012"));
+        LocalDate expectedDeliveryDate = newDate("10-NOV-2012");
 
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2012, 11, 10), newDate(2012, 11, 17), newDate(2012, 11, 24), newDate(2012, 12, 1)));
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("10-NOV-2012"), newDate("17-NOV-2012"), newDate("24-NOV-2012"), newDate("01-DEC-2012")));
     }
 
     @Test
-    public void verifyPregnancyScheduleWhenEDDIsUnderOneWeekFromToday() throws SchedulerException {
-        mockToday(newDate(2012, 2, 1));
-        LocalDate expectedDeliveryDate = newDate(2012, 2, 3);
+    public void verifyPregnancyScheduleWhenEDDIsUnderOneWeekFromToday() throws SchedulerException, ParseException {
+        mockToday(newDate("01-FEB-2012"));
+        LocalDate expectedDeliveryDate = newDate("03-FEB-2012");
 
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2012, 2, 3), newDate(2012, 2, 10), newDate(2012, 2, 17), newDate(2012, 2, 24)));
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("03-FEB-2012"), newDate("10-FEB-2012"), newDate("17-FEB-2012"), newDate("24-FEB-2012")));
     }
 
     @Test
-    public void verifyPregnancyScheduleWhenEDDIsInThePast() throws SchedulerException {
-        mockToday(newDate(2012, 2, 1));
-        LocalDate expectedDeliveryDate = newDate(2012, 1, 23);
+    public void verifyPregnancyScheduleWhenEDDIsInThePast() throws SchedulerException, ParseException {
+        mockToday(newDate("01-FEB-2012"));
+        LocalDate expectedDeliveryDate = newDate("23-JAN-2012");
 
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2012, 2, 6), newDate(2012, 2, 13)));
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("06-FEB-2012"), newDate("13-FEB-2012")));
     }
 
     @Test
-    public void verifyPregnancyScheduleWhenEDDIsInOverOneWeekFromToday() throws SchedulerException {
-        mockToday(newDate(2012, 2, 1));
-        LocalDate expectedDeliveryDate = newDate(2012, 2, 12);
+    public void verifyPregnancyScheduleWhenEDDIsInOverOneWeekFromToday() throws SchedulerException, ParseException {
+        mockToday(newDate("01-FEB-2012"));
+        LocalDate expectedDeliveryDate = newDate("12-FEB-2012");
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2012, 2, 12), newDate(2012, 2, 19), newDate(2012, 2, 26), newDate(2012, 3, 4)));
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("12-FEB-2012"), newDate("19-FEB-2012"), newDate("26-FEB-2012"), newDate("04-MAR-2012")));
     }
 
     @Test
-    public void verifyPregnancyScheduleWhenEDDIsOnToday() throws SchedulerException {
-        mockToday(newDate(2012, 2, 1));
-        LocalDate expectedDeliveryDate = newDate(2012, 2, 2);
+    public void verifyPregnancyScheduleWhenEDDIsOnToday() throws SchedulerException, ParseException {
+        mockToday(newDate("01-FEB-2012"));
+        LocalDate expectedDeliveryDate = newDate("02-FEB-2012");
 
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate(2012, 2, 2), newDate(2012, 2, 9), newDate(2012, 2, 16), newDate(2012, 2, 23)));
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("02-FEB-2012"), newDate("09-FEB-2012"), newDate("16-FEB-2012"), newDate("23-FEB-2012")));
     }
 
     @Test
-    public void verifyPregnancyScheduleWhenEDDIsInTheFarPast() throws SchedulerException {
-        mockToday(newDate(2012, 2, 1));
-        LocalDate expectedDeliveryDate = newDate(2012, 1, 4);
+    public void verifyPregnancyScheduleWhenEDDIsInTheFarPast() throws SchedulerException, ParseException {
+        mockToday(newDate("01-FEB-2012"));
+        LocalDate expectedDeliveryDate = newDate("04-JAN-2012");
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
 
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>());

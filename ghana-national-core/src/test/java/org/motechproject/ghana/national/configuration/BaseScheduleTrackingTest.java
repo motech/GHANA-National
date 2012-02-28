@@ -22,6 +22,8 @@ import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Calendar;
 import java.util.regex.Matcher;
@@ -174,6 +176,10 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     protected LocalDate mockToday(LocalDate today) {
         mockCurrentDate(today);
         return today;
+    }
+    
+    protected LocalDate newDate(String date) throws ParseException {
+        return DateUtil.newDate(new SimpleDateFormat("dd-MMM-yyyy").parse(date));
     }
     
     protected TestAlert alert(WindowName windowName, Date alertDate) {
