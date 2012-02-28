@@ -41,6 +41,7 @@ public class ClientDeathFormHandlerTest {
         Map<String, Object> parameters = new HashMap<String, Object>();
         Date deathDate = DateUtil.now().toDate();
         String patientMotechId = "motechId";
+        String patientMRSId = "patientMRSId";
         String comment = null;
         String causeOfDeath = "NONE";
         List<String> schedules= Arrays.asList("schedule1","schedule2");
@@ -49,12 +50,12 @@ public class ClientDeathFormHandlerTest {
         parameters.put("formBean", clientForm(deathDate, causeOfDeath, comment));
         MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.clientDeath", parameters);
         when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(mockPatient);
-        when(mockPatient.getMotechId()).thenReturn(patientMotechId);
+        when(mockPatient.getMRSPatientId()).thenReturn(patientMRSId);
         when(mockPatient.careProgramsToUnEnroll()).thenReturn(schedules);
 
         clientDeathFormHandler.handleFormEvent(event);
 
-        verify(mockAllSchedules).unEnroll(patientMotechId,schedules);
+        verify(mockAllSchedules).unEnroll(patientMRSId,schedules);
         verify(mockPatientService).deceasePatient(deathDate, patientMotechId, causeOfDeath, comment);
         verify(mockAllAppointments).remove(mockPatient);
     }

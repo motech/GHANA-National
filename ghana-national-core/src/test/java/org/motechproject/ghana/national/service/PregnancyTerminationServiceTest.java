@@ -48,6 +48,7 @@ public class PregnancyTerminationServiceTest {
         String staffId = "staffId";
         String facilityId = "facilityId";
         String mrsFacilityId = "mrsFacilityId";
+        String patientMRSId = "patientMRSId";
         List<String> schedules = Arrays.asList("schedule1", "schedule2");
         PregnancyTerminationRequest request = pregnancyTermination(motechId, staffId, facilityId);
         request.setDead(Boolean.TRUE);
@@ -57,6 +58,7 @@ public class PregnancyTerminationServiceTest {
         when(mockMRSPatient.getId()).thenReturn("mrsPatientId");
         when(mockAllPatients.getPatientByMotechId(request.getMotechId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
+        when(mockPatient.getMRSPatientId()).thenReturn(patientMRSId);
         when(mockPatient.careProgramsToUnEnroll()).thenReturn(schedules);
 
         Facility mockFacility=mock(Facility.class);
@@ -66,7 +68,7 @@ public class PregnancyTerminationServiceTest {
         pregnancyTerminationService.terminatePregnancy(request);
 
         verify(mockAllPatients).deceasePatient(request.getTerminationDate(), request.getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
-        verify(mockAllSchedules).unEnroll(request.getMotechId(), schedules);
+        verify(mockAllSchedules).unEnroll(patientMRSId, schedules);
         verify(mockAllAppointments).remove(mockPatient);
     }
 
