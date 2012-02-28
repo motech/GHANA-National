@@ -6,5 +6,8 @@
             "message": "$message"
         },
         "recipientsSeparator": "+"
+    },
+    "response": {
+        "success": "Received"
     }
 }
