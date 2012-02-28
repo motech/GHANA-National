@@ -13,10 +13,11 @@ public class IPTVaccine {
     LocalDate vaccinationDate;
 
     public static IPTVaccine createFromANCVisit(ANCVisitRequest ancVisitRequest) {
-        return ancVisitRequest.getIptdose() != null
+        IPTDose dose = IPTDose.byValue(ancVisitRequest.getIptdose());
+        return dose != null
                 ? new IPTVaccine(newDate(ancVisitRequest.getDate()),
                 ancVisitRequest.getPatient(),
-                IPTDose.byValue(ancVisitRequest.getIptdose()),
+                dose,
                 IPTReaction.byValue(ancVisitRequest.getIptReactive())) : null;
     }
 
