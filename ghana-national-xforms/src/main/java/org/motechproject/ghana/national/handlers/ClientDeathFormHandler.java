@@ -34,7 +34,7 @@ public class ClientDeathFormHandler implements FormPublishHandler {
         ClientDeathForm clientDeathForm = (ClientDeathForm) event.getParameters().get(Constants.FORM_BEAN);
         Patient patient = patientService.getPatientByMotechId(clientDeathForm.getMotechId());
         patientService.deceasePatient(clientDeathForm.getDate(), clientDeathForm.getMotechId(), clientDeathForm.getCauseOfDeath(), clientDeathForm.getComment());
-        allSchedules.unEnroll(patient.getMotechId(), patient.careProgramsToUnEnroll());
+        allSchedules.unEnroll(patient.getMRSPatientId(), patient.careProgramsToUnEnroll());
         allAppointments.remove(patient);
     }
 }

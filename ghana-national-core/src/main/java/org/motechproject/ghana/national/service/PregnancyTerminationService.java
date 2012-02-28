@@ -48,7 +48,7 @@ public class PregnancyTerminationService {
         if (request.isDead()) {
             allPatients.deceasePatient(request.getTerminationDate(), request.getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
         }
-        allSchedules.unEnroll(request.getMotechId(), patient.careProgramsToUnEnroll());
+        allSchedules.unEnroll(patient.getMRSPatientId(), patient.careProgramsToUnEnroll());
         allAppointments.remove(patient);
     }
 
