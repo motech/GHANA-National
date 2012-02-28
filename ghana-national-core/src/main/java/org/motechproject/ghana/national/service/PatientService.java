@@ -51,7 +51,8 @@ public class PatientService {
             if (StringUtils.isNotEmpty(patient.getParentId())) {
                 createRelationship(patient.getParentId(), savedPatient.getMotechId());
             }
-            allEncounters.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(), PATIENT_REG_VISIT.value(), DateUtil.today().toDate(), null);
+            allEncounters.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(),
+                    PATIENT_REG_VISIT.value(), DateUtil.today().toDate(), null);
             return savedPatient;
         } catch (IdentifierNotUniqueException e) {
             throw new PatientIdNotUniqueException();

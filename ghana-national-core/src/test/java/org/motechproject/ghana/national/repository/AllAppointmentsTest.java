@@ -37,7 +37,7 @@ public class AllAppointmentsTest {
     @Test
     public void shouldFulfilCurrentVisitSchedule() {
         String motechId = "motech id";
-        allAppointments.fulfilVisit(new Patient(new MRSPatient(motechId, null, null)));
+        allAppointments.remove(new Patient(new MRSPatient(motechId, null, null)));
         verify(mockAppointmentService).removeCalendar(motechId);
     }
 
@@ -45,11 +45,12 @@ public class AllAppointmentsTest {
     public void shouldCreateANCVisitSchedule() {
         String motechId = "1234556";
         DateTime today = DateTime.now();
-        allAppointments.createANCVisitSchedule(new Patient(new MRSPatient(motechId, null, null)), today);
+        allAppointments.updateANCVisitSchedule(new Patient(new MRSPatient(motechId, null, null)), today);
 
         ArgumentCaptor<AppointmentCalendarRequest> calendarCaptor = ArgumentCaptor.forClass(AppointmentCalendarRequest.class);
         ArgumentCaptor<VisitRequest> visitCaptor = ArgumentCaptor.forClass(VisitRequest.class);
         ArgumentCaptor<String> visitNameCaptor = ArgumentCaptor.forClass(String.class);
+        verify(mockAppointmentService).removeCalendar(motechId);
         verify(mockAppointmentService).addCalendar(calendarCaptor.capture());
         verify(mockAppointmentService, times(3)).addVisit(eq(motechId), visitNameCaptor.capture(), visitCaptor.capture());
 

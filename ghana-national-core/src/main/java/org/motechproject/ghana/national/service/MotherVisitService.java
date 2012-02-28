@@ -17,6 +17,7 @@ import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.EnrollmentResponse;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,8 +74,7 @@ public class MotherVisitService {
     }
 
     private void updateANCVisit(ANCVisitRequest ancVisitRequest) {
-        allAppointments.fulfilVisit(ancVisitRequest.getPatient());
-        allAppointments.createANCVisitSchedule(ancVisitRequest.getPatient(), newDateTime(ancVisitRequest.getNextANCDate()));
+        allAppointments.updateANCVisitSchedule(ancVisitRequest.getPatient(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
     }
 
     public void receivedTT(final TTVaccineDosage dosage, Patient patient, MRSUser staff, Facility facility, final LocalDate vaccinationDate) {

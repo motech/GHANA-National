@@ -15,11 +15,12 @@ public class AllAppointments {
     @Autowired
     AppointmentService appointmentService;
 
-    public void fulfilVisit(Patient patient) {
+    public void remove(Patient patient) {
         appointmentService.removeCalendar(patient.getMotechId());
     }
 
-    public void createANCVisitSchedule(Patient patient, DateTime dueDate) {
+    public void updateANCVisitSchedule(Patient patient, DateTime dueDate) {
+        remove(patient);
         final ANCVisitAppointment ancVisitAppointment = ANCVisitAppointment.createFor(dueDate);
         AppointmentCalendarRequest calendarRequest = new AppointmentCalendarRequest();
         calendarRequest.setExternalId(patient.getMotechId());
