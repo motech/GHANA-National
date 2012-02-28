@@ -9,7 +9,6 @@ public class TestAlert {
     private Date alertDate;
 
     public TestAlert(WindowName window, Date alertDate) {
-
         this.window = window;
         this.alertDate = alertDate;
     }
@@ -32,5 +31,10 @@ public class TestAlert {
         int result = window != null ? window.hashCode() : 0;
         result = 31 * result + (alertDate != null ? alertDate.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return window.name() + ": " + alertDate;
     }
 }

@@ -173,6 +173,10 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         return DateUtil.newDateTime(referenceDate, preferredAlertTime).toDate();
     }
 
+    protected Date onDate(String date) throws ParseException {
+        return DateUtil.newDateTime(DateUtil.newDate(new SimpleDateFormat("dd-MMM-yyyy").parse(date)), preferredAlertTime).toDate();
+    }
+
     protected LocalDate mockToday(LocalDate today) {
         mockCurrentDate(today);
         return today;

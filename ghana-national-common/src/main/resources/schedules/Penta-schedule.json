@@ -1,0 +1,75 @@
+{
+    "name" : "Penta",
+    "milestones" : [
+        {
+            "name" : "Penta1",
+            "scheduleWindows" : {
+                "earliest" : [],
+                "due" : ["5 Weeks"],
+                "late" : ["9 Weeks"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : "1 Weeks",
+                    "count" : "1",
+                    "offset" : "5 Weeks"
+                },
+                {
+                    "window" : "late",
+                    "interval" : "1 Week",
+                    "count" : "3",
+                    "offset" : "1 Week"
+                }
+            ]
+        },
+        {
+            "name" : "Penta2",
+            "scheduleWindows" : {
+                "earliest" : [],
+                "due" : ["3 Weeks"],
+                "late" : ["6 Weeks"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : "1 Weeks",
+                    "count" : "1",
+                    "offset" : "3 Weeks"
+                },
+                {
+                    "window" : "late",
+                    "interval" : "1 Week",
+                    "count" : "3",
+                    "offset" : "1 Week"
+                }
+            ]
+        },
+        {
+            "name" : "Penta3",
+            "scheduleWindows" : {
+                "earliest" : [],
+                "due" : ["3 Weeks"],
+                "late" : ["6 Weeks"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : "1 Weeks",
+                    "count" : "1",
+                    "offset" : "3 Weeks"
+                },
+                {
+                    "window" : "late",
+                    "interval" : "1 Week",
+                    "count" : "3",
+                    "offset" : "1 Week"
+                }
+            ]
+        }
+
+    ]
+}
