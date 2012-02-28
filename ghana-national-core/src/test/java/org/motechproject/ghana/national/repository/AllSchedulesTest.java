@@ -13,6 +13,7 @@ import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -43,7 +44,7 @@ public class AllSchedulesTest {
 
         allSchedules.unEnroll(patientId, scheduleName);
 
-        verify(mockScheduleTrackingService).unenroll(patientId, scheduleName);
+        verify(mockScheduleTrackingService).unenroll(patientId, asList(scheduleName));
     }
 
     @Test
@@ -53,7 +54,7 @@ public class AllSchedulesTest {
 
         allSchedules.unEnroll(patientId, scheduleNames);
 
-        verify(mockScheduleTrackingService).safeUnEnroll(patientId, scheduleNames);
+        verify(mockScheduleTrackingService).unenroll(patientId, scheduleNames);
     }
 
     @Test

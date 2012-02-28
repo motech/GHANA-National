@@ -4,19 +4,19 @@
         {
             "name" : "TT1",
             "scheduleWindows" : {
-                "earliest" : "",
-                "due" : "1 day",
-                "late" : "",
-                "max" : ""
+                "earliest":[],
+                "due":["1 day"],
+                "late":[],
+                "max":[]
             }
         },
         {
             "name" : "TT2",
             "scheduleWindows" : {
-                "earliest" : "",
-                "due" : "3 Weeks",
-                "late" : "6 Weeks",
-                "max" : "7 Weeks"
+                "earliest" : [],
+                "due" : ["3 Weeks"],
+                "late" : ["6 Weeks"],
+                "max" : ["7 Weeks"]
             },
             "alerts" : [
                 {
@@ -36,10 +36,10 @@
         {
             "name" : "TT3",
             "scheduleWindows" : {
-                "earliest" : "",
-                "due" : "23 Weeks",
-                "late" : "192 Days", # 23 * 7 + 10 + 21
-                "max" : "199 Days"
+                "earliest" : [],
+                "due" : ["23 Weeks"],
+                "late" : ["192 Days"], # 23 * 7 + 10 + 21
+                "max" : ["199 Days"]
             },
             "alerts" : [
                 {
@@ -59,10 +59,10 @@
         {
             "name" : "TT4",
             "scheduleWindows" : {
-                "earliest" : "",
-                "due" : "47 Weeks",
-                "late" : "360 Days",   # 47 * 7 + 10 + 21
-                "max" : "367 Days"
+                "earliest" : [],
+                "due" : ["47 Weeks"],
+                "late" : ["360 Days"],   # 47 * 7 + 10 + 21
+                "max" : ["367 Days"]
             },
             "alerts" : [
                 {
@@ -82,10 +82,10 @@
         {
             "name" : "TT5",
             "scheduleWindows" : {
-                "earliest" : "",
-                "due" : "47 Weeks",
-                "late" : "360 Days",   # 47 * 7 + 10 + 21
-                "max" : "367 Days"
+                "earliest" : [],
+                "due" : ["47 Weeks"],
+                "late" : ["360 Days"],   # 47 * 7 + 10 + 21
+                "max" : ["367 Days"]
              },
              "alerts" : [
                  {

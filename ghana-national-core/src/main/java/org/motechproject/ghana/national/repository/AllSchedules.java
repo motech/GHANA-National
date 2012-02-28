@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 @Repository
 public class AllSchedules {
     private ScheduleTrackingService scheduleTrackingService;
@@ -34,11 +36,11 @@ public class AllSchedules {
     }
 
     public void unEnroll(String externalId, String scheduleName) {
-        scheduleTrackingService.unenroll(externalId, scheduleName);
+        scheduleTrackingService.unenroll(externalId, asList(scheduleName));
     }
 
     public void unEnroll(String externalId, List<String> scheduleNames) {
-        scheduleTrackingService.safeUnEnroll(externalId, scheduleNames);
+        scheduleTrackingService.unenroll(externalId, scheduleNames);
     }
 
     public EnrollmentResponse enrollment(EnrollmentRequest enrollmentRequest) {
