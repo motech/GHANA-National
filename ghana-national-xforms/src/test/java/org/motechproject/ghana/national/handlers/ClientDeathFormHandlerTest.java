@@ -4,16 +4,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ClientDeathForm;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ClientDeathFormHandlerTest {
@@ -21,25 +21,37 @@ public class ClientDeathFormHandlerTest {
     private ClientDeathFormHandler clientDeathFormHandler;
     @Mock
     private PatientService mockPatientService;
+    @Mock
+    private AllSchedules mockAllSchedules;
 
     @Before
     public void setUp() {
         initMocks(this);
         clientDeathFormHandler = new ClientDeathFormHandler();
         ReflectionTestUtils.setField(clientDeathFormHandler, "patientService", mockPatientService);
+        ReflectionTestUtils.setField(clientDeathFormHandler, "allSchedules", mockAllSchedules);
     }
 
     @Test
     public void shouldDeceaseThePatient() {
         Map<String, Object> parameters = new HashMap<String, Object>();
         Date deathDate = DateUtil.now().toDate();
+        String patientMotechId = "motechId";
         String comment = null;
         String causeOfDeath = "NONE";
+        List<String> schedules= Arrays.asList("schedule1","schedule2");
+        Patient mockPatient=mock(Patient.class);
+
         parameters.put("formBean", clientForm(deathDate, causeOfDeath, comment));
         MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.clientDeath", parameters);
+        when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(mockPatient);
+        when(mockPatient.getMotechId()).thenReturn(patientMotechId);
+        when(mockPatient.careProgramsToUnEnroll()).thenReturn(schedules);
 
         clientDeathFormHandler.handleFormEvent(event);
-        verify(mockPatientService).deceasePatient(deathDate, "motechId", causeOfDeath, comment);
+
+        verify(mockAllSchedules).unEnroll(patientMotechId,schedules);
+        verify(mockPatientService).deceasePatient(deathDate, patientMotechId, causeOfDeath, comment);
     }
 
     private ClientDeathForm clientForm(Date deathDate, String causeOfDeath, String comment) {

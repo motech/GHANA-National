@@ -31,6 +31,10 @@ public class IPTVaccine {
         return iptDose.value();
     }
 
+    public String getIptMilestone() {
+        return iptDose.milestone();
+    }
+
     public IPTReaction getIptReaction() {
         return iptReaction;
     }

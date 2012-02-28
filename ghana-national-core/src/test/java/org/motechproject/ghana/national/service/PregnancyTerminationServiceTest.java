@@ -16,14 +16,10 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.Constants.OTHER_CAUSE_OF_DEATH;
 import static org.motechproject.ghana.national.domain.Constants.PREGNANCY_TERMINATION;
@@ -53,6 +49,7 @@ public class PregnancyTerminationServiceTest {
         String staffId = "staffId";
         String facilityId = "facilityId";
         String mrsFacilityId = "mrsFacilityId";
+        List<String> schedules = Arrays.asList("schedule1", "schedule2");
         PregnancyTerminationRequest request = pregnancyTermination(motechId, staffId, facilityId);
         request.setDead(Boolean.TRUE);
 
@@ -61,6 +58,7 @@ public class PregnancyTerminationServiceTest {
         when(mockMRSPatient.getId()).thenReturn("mrsPatientId");
         when(mockAllPatients.getPatientByMotechId(request.getMotechId())).thenReturn(mockPatient);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
+        when(mockPatient.careProgramsToUnEnroll()).thenReturn(schedules);
 
         Facility mockFacility=mock(Facility.class);
         when(mockAllFacilities.getFacilityByMotechId(facilityId)).thenReturn(mockFacility);
@@ -69,8 +67,7 @@ public class PregnancyTerminationServiceTest {
         pregnancyTerminationService.terminatePregnancy(request);
 
         verify(mockAllPatients).deceasePatient(request.getTerminationDate(), request.getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
-        verify(mockAllSchedules).unEnroll(mockPatient, TT_VACCINATION_VISIT);
-        verify(mockAllSchedules).unEnroll(mockPatient, DELIVERY);
+        verify(mockAllSchedules).unEnroll(request.getMotechId(), schedules);
     }
 
     @Test

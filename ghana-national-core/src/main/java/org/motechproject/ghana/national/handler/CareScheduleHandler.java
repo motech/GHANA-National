@@ -29,29 +29,29 @@ public class CareScheduleHandler extends BaseScheduleHandler {
     public void handlePregnancyAlert(final MilestoneEvent milestoneEvent) {
         LocalDate conceptionDate = milestoneEvent.getReferenceDate();
         Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(conceptionDate);
-        sendSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent, pregnancy.dateOfDelivery());
+        sendSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
     }
 
     @LoginAsAdmin
     @ApiSession
     public void handleTTVaccinationAlert(MilestoneEvent milestoneEvent) {
-        sendSMSToFacility(TT_VACCINATION_SMS_KEY, milestoneEvent, addAggregationPeriodTo(milestoneEvent.getMilestoneAlert().getDueDate()));
+        sendSMSToFacility(TT_VACCINATION_SMS_KEY, milestoneEvent);
     }
 
     @LoginAsAdmin
     @ApiSession
     public void handleBCGAlert(MilestoneEvent milestoneEvent) {
-        sendSMSToFacility(BCG_SMS_KEY, milestoneEvent, addAggregationPeriodTo(milestoneEvent.getMilestoneAlert().getDueDate()));
+        sendSMSToFacility(BCG_SMS_KEY, milestoneEvent);
     }
 
     @LoginAsAdmin
     @ApiSession
     public void handleAncVisitAlert(MilestoneEvent milestoneEvent) {
-        sendSMSToFacility(ANC_VISIT_SMS_KEY, milestoneEvent, addAggregationPeriodTo(milestoneEvent.getMilestoneAlert().getDueDate()));
+        sendSMSToFacility(ANC_VISIT_SMS_KEY, milestoneEvent);
     }
 
     public void handleIPTpVaccinationAlert(MilestoneEvent milestoneEvent) {
-        sendSMSToFacility(IPTp_VACCINATION_SMS_KEY, milestoneEvent, addAggregationPeriodTo(milestoneEvent.getMilestoneAlert().getDueDate()));
+        sendSMSToFacility(IPTp_VACCINATION_SMS_KEY, milestoneEvent);
     }
 
 }

@@ -29,14 +29,13 @@ public abstract class BaseScheduleHandler {
         this.allFacilities = allFacilities;
     }
 
-    protected void sendSMSToFacility(String smsTemplateKey, final MilestoneEvent milestoneEvent, final LocalDate dueDate) {
+    protected void sendSMSToFacility(String smsTemplateKey, final MilestoneEvent milestoneEvent) {
         String externalId = milestoneEvent.getExternalId();
         final Patient patient = allPatients.patientByOpenmrsId(externalId);
         final String motechId = patient.getMrsPatient().getMotechId();
 
         SMS sms = smsGateway.getSMS(smsTemplateKey, new HashMap<String, String>() {{
             put(MOTECH_ID, motechId);
-            put(DUE_DATE, dueDate.toString());
             put(WINDOW, getWindowName(milestoneEvent.getWindowName()));
             put(FIRST_NAME, patient.getFirstName());
             put(LAST_NAME, patient.getLastName());

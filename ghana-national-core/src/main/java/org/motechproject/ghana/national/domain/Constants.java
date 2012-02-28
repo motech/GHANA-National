@@ -78,4 +78,7 @@ public class Constants {
     public static final String PREGNANCY_TERMINATION = "Pregnancy Termination";
 
     public static final String NOT_APPLICABLE = "NA";
+
+    public static final Integer IPT_MAX_PREGNANCY_WEEK_FOR_REGISTRATION = 19;  
+
 }

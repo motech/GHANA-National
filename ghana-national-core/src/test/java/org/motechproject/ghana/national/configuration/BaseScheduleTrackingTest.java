@@ -54,6 +54,7 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     protected String enrollmentId;
     private Pattern ALERT_ORDER_INDEX_REGEX = Pattern.compile("^.*\\.(.*?)-repeat$");
     protected Time preferredAlertTime;
+    String scheduleName;
 
     @Before
     public void setUp() {
@@ -154,8 +155,7 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         return dateList;
     }
 
-    protected void fulfillCurrentMilestone(LocalDate date, String scheduleName, LocalDate fulfillmentDate) {
-        mockToday(date);
+    protected void fulfillCurrentMilestone(LocalDate fulfillmentDate) {
         scheduleTrackingService.fulfillCurrentMilestone(PATIENT_ID, scheduleName, fulfillmentDate);
     }
 }
