@@ -38,6 +38,8 @@ import static org.junit.Assert.assertThat;
 public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
 
     protected static final String PATIENT_ID = "Patient id";
+    protected String externalId = PATIENT_ID;
+
     @Autowired
     private AllTrackedSchedules allTrackedSchedules;
 
@@ -169,8 +171,12 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         return DateUtil.newDateTime(referenceDate, alertTime).toDate();
     }
 
-    protected Date onDate(LocalDate referenceDate) {
-        return DateUtil.newDateTime(referenceDate, preferredAlertTime).toDate();
+    protected Date onDate(LocalDate localDate) {
+        return DateUtil.newDateTime(localDate, preferredAlertTime).toDate();
+    }
+
+    protected Date onDate(String date) {
+        return DateUtil.newDateTime(newDate(date), preferredAlertTime).toDate();
     }
 
     protected Date onDate(String date) throws ParseException {
@@ -182,8 +188,12 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         return today;
     }
     
-    protected LocalDate newDate(String date) throws ParseException {
-        return DateUtil.newDate(new SimpleDateFormat("dd-MMM-yyyy").parse(date));
+    protected LocalDate newDate(String date) {
+        try {
+            return DateUtil.newDate(new SimpleDateFormat("dd-MMM-yyyy").parse(date));
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
     
     protected TestAlert alert(WindowName windowName, Date alertDate) {
@@ -199,6 +209,6 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     }
 
     protected void fulfillCurrentMilestone(LocalDate fulfillmentDate) {
-        scheduleTrackingService.fulfillCurrentMilestone(PATIENT_ID, scheduleName, fulfillmentDate);
+        scheduleTrackingService.fulfillCurrentMilestone(externalId, scheduleName, fulfillmentDate);
     }
 }

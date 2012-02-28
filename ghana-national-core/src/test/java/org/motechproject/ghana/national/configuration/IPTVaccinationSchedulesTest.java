@@ -24,8 +24,6 @@ import static org.motechproject.scheduletracking.api.domain.WindowName.*;
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
 public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
-    String  externalId;
-
     @Before
     public void setUp() {
         super.setUp();
@@ -44,11 +42,11 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = enrollForIPTVaccine(dateOfConception);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-            alert(earliest , onDate(newDate("03-MAR-2012"))),
-            alert(due, onDate(newDate("10-MAR-2012"))),
-            alert(late, onDate(newDate("24-MAR-2012"))),
-            alert(late, onDate(newDate("31-MAR-2012"))),
-            alert(late, onDate(newDate("07-APR-2012"))))
+                alert(earliest, onDate("03-MAR-2012")),
+                alert(due, onDate("10-MAR-2012")),
+                alert(late, onDate("24-MAR-2012")),
+                alert(late, onDate("31-MAR-2012")),
+                alert(late, onDate("07-APR-2012")))
         );
     }
 
@@ -61,28 +59,28 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = enrollForIPTVaccine(pregnancy.dateOfConception());
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-           alert(due, onDate(newDate("10-MAR-2012"))),
-           alert(late,onDate(newDate("24-MAR-2012"))),
-           alert(late,onDate(newDate("31-MAR-2012"))),
-           alert(late,onDate(newDate("07-APR-2012")))
+                alert(due, onDate("10-MAR-2012")),
+                alert(late, onDate("24-MAR-2012")),
+                alert(late, onDate("31-MAR-2012")),
+                alert(late, onDate("07-APR-2012"))
         ));
 
         fulfilMilestoneOnVisitDate(newDate("15-MAR-2012"));
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-            alert(earliest, onDate(newDate("5-APR-2012"))),
-            alert(due, onDate(newDate("5-APR-2012"))),
-            alert(late, onDate(newDate("12-APR-2012"))),
-            alert(late, onDate(newDate("19-APR-2012"))),
-            alert(late, onDate(newDate("26-APR-2012")))
+                alert(earliest, onDate("5-APR-2012")),
+                alert(due, onDate("5-APR-2012")),
+                alert(late, onDate("12-APR-2012")),
+                alert(late, onDate("19-APR-2012")),
+                alert(late, onDate("26-APR-2012"))
         ));
 
         fulfilMilestoneOnVisitDate(newDate("07-MAY-2012"));
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-                alert(earliest, onDate(newDate("28-MAY-2012"))),
-                alert(due, onDate(newDate("28-MAY-2012"))),
-                alert(late, onDate(newDate("04-JUN-2012"))),
-                alert(late, onDate(newDate("11-JUN-2012"))),
-                alert(late, onDate(newDate("18-JUN-2012")))
+                alert(earliest, onDate("28-MAY-2012")),
+                alert(due, onDate("28-MAY-2012")),
+                alert(late, onDate("04-JUN-2012")),
+                alert(late, onDate("11-JUN-2012")),
+                alert(late, onDate("18-JUN-2012"))
         ));
     }
 
@@ -95,27 +93,27 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = enrollForIPTVaccine(pregnancy.dateOfConception());
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-            alert(late,onDate(newDate("24-MAR-2012"))),
-            alert(late,onDate(newDate("31-MAR-2012"))),
-            alert(late,onDate(newDate("07-APR-2012")))
+                alert(late, onDate("24-MAR-2012")),
+                alert(late, onDate("31-MAR-2012")),
+                alert(late, onDate("07-APR-2012"))
         ));
 
         fulfilMilestoneOnVisitDate(newDate("01-APR-2012"));
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(earliest, onDate(newDate("22-APR-2012"))),
-                alert(due, onDate(newDate("22-APR-2012"))),
-                alert(late, onDate(newDate("29-APR-2012"))),
-                alert(late, onDate(newDate("06-MAY-2012"))),
-                alert(late, onDate(newDate("13-MAY-2012")))
+                alert(due, onDate("22-APR-2012")),
+                alert(late, onDate("29-APR-2012")),
+                alert(late, onDate("06-MAY-2012")),
+                alert(late, onDate("13-MAY-2012"))
         ));
 
         fulfilMilestoneOnVisitDate(newDate("07-MAY-2012"));
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(earliest, onDate(newDate("28-MAY-2012"))),
-                alert(due, onDate(newDate("28-MAY-2012"))),
-                alert(late, onDate(newDate("04-JUN-2012"))),
-                alert(late, onDate(newDate("11-JUN-2012"))),
-                alert(late, onDate(newDate("18-JUN-2012")))
+                alert(due, onDate("28-MAY-2012")),
+                alert(late, onDate("04-JUN-2012")),
+                alert(late, onDate("11-JUN-2012")),
+                alert(late, onDate("18-JUN-2012"))
         ));
     }
 
@@ -128,9 +126,9 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = enrollForIPTVaccine(pregnancy.dateOfConception());
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-            alert(late,onDate(newDate("24-MAR-2012"))),
-            alert(late,onDate(newDate("31-MAR-2012"))),
-            alert(late,onDate(newDate("7-APR-2012")))
+                alert(late, onDate("24-MAR-2012")),
+                alert(late, onDate("31-MAR-2012")),
+                alert(late, onDate("7-APR-2012"))
         ));
     }
 
@@ -144,11 +142,11 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
         fulfilMilestoneOnVisitDate(newDate("15-MAR-2012"));
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-            alert(earliest,onDate(newDate("5-APR-2012"))),
-            alert(due, onDate(newDate("5-APR-2012"))),
-            alert(late,onDate(newDate("12-APR-2012"))),
-            alert(late,onDate(newDate("19-APR-2012"))),
-            alert(late,onDate(newDate("26-APR-2012")))
+                alert(earliest, onDate("5-APR-2012")),
+                alert(due, onDate("5-APR-2012")),
+                alert(late, onDate("12-APR-2012")),
+                alert(late, onDate("19-APR-2012")),
+                alert(late, onDate("26-APR-2012"))
         ));
     }
 
@@ -163,18 +161,17 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         fulfilMilestoneOnVisitDate(newDate("01-APR-2012"));
         fulfilMilestoneOnVisitDate(newDate("07-MAY-2012"));
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-            alert(earliest,onDate(newDate("28-MAY-2012"))),
-            alert(due, onDate(newDate("28-MAY-2012"))),
-            alert(late,onDate(newDate("04-JUN-2012"))),
-            alert(late,onDate(newDate("11-JUN-2012"))),
-            alert(late,onDate(newDate("18-JUN-2012")))
+                alert(earliest, onDate("28-MAY-2012")),
+                alert(due, onDate("28-MAY-2012")),
+                alert(late, onDate("04-JUN-2012")),
+                alert(late, onDate("11-JUN-2012")),
+                alert(late, onDate("18-JUN-2012"))
         ));
     }
 
-
     private void fulfilMilestoneOnVisitDate(LocalDate visitDate) {
         mockCurrentDate(visitDate);
-        scheduleTrackingService.fulfillCurrentMilestone(externalId, ANC_IPT_VACCINE, null);
+        fulfillCurrentMilestone(visitDate);
     }
 
     private String enrollForIPTVaccine(LocalDate referenceDate) {
