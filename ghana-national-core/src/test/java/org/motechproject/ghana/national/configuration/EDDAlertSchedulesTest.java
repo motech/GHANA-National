@@ -7,13 +7,11 @@ import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.quartz.SchedulerException;
-import org.quartz.SimpleTrigger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static org.motechproject.util.DateUtil.newDate;
 
@@ -76,8 +74,7 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
         LocalDate expectedDeliveryDate = newDate(2012, 1, 4);
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
 
-        List<SimpleTrigger> alerts = captureAlertsForNextMilestone(enrollmentId);
-        assertAlerts(alerts, new ArrayList<Date>());
+        assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>());
     }
 
     private String scheduleAlertForDeliveryNotfication(LocalDate expectedDeliveryDate) {

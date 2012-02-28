@@ -12,19 +12,18 @@ import org.quartz.SchedulerException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.Date;
-
+import static java.util.Arrays.asList;
 import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
+import static org.motechproject.scheduletracking.api.domain.WindowName.*;
 import static org.motechproject.util.DateUtil.newDate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
 public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
-    String externalId;
+    String  externalId;
 
     @Before
     public void setUp() {
@@ -43,13 +42,13 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         mockToday(dateOfConception.plusWeeks(11));
 
         enrollmentId = enrollForIPTVaccine(dateOfConception);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
-            add(onDate(new LocalDate(2012, 3, 3)));
-            add(onDate(new LocalDate(2012, 3, 10)));
-            add(onDate(new LocalDate(2012, 3, 24)));
-            add(onDate(new LocalDate(2012, 3, 31)));
-            add(onDate(new LocalDate(2012, 4, 7)));
-        }});
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+            alert(earliest ,onDate(new LocalDate(2012, 3, 3))),
+            alert(due, onDate(new LocalDate(2012, 3, 10))),
+            alert(late, onDate(new LocalDate(2012, 3, 24))),
+            alert(late, onDate(new LocalDate(2012, 3, 31))),
+            alert(late, onDate(new LocalDate(2012, 4, 7))))
+        );
     }
 
     @Test
@@ -60,30 +59,30 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         mockCurrentDate(pregnancy.dateOfConception().plusWeeks(11).plusDays(3));
 
         enrollmentId = enrollForIPTVaccine(pregnancy.dateOfConception());
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
-            add(onDate(new LocalDate(2012, 3, 10)));
-            add(onDate(new LocalDate(2012, 3, 24)));
-            add(onDate(new LocalDate(2012, 3, 31)));
-            add(onDate(new LocalDate(2012, 4, 7)));
-        }});
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+           alert(due, onDate(new LocalDate(2012, 3, 10))),
+           alert(late,onDate(new LocalDate(2012, 3, 24))),
+           alert(late,onDate(new LocalDate(2012, 3, 31))),
+           alert(late,onDate(new LocalDate(2012, 4, 7)))
+        ));
 
         fulfilMilestoneOnVisitDate(new LocalDate(2012, 3, 15));
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
-            add(onDate(new LocalDate(2012, 4, 5)));
-            add(onDate(new LocalDate(2012, 4, 5)));
-            add(onDate(new LocalDate(2012, 4, 12)));
-            add(onDate(new LocalDate(2012, 4, 19)));
-            add(onDate(new LocalDate(2012, 4, 26)));
-        }});
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+            alert(earliest, onDate(new LocalDate(2012, 4, 5))),
+            alert(due, onDate(new LocalDate(2012, 4, 5))),
+            alert(late, onDate(new LocalDate(2012, 4, 12))),
+            alert(late, onDate(new LocalDate(2012, 4, 19))),
+            alert(late, onDate(new LocalDate(2012, 4, 26)))
+        ));
 
         fulfilMilestoneOnVisitDate(new LocalDate(2012, 5, 7));
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
-            add(onDate(new LocalDate(2012, 5, 28)));
-            add(onDate(new LocalDate(2012, 5, 28)));
-            add(onDate(new LocalDate(2012, 6, 4)));
-            add(onDate(new LocalDate(2012, 6, 11)));
-            add(onDate(new LocalDate(2012, 6, 18)));
-        }});
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+            alert(earliest,onDate(new LocalDate(2012, 5, 28))),
+            alert(due, onDate(new LocalDate(2012, 5, 28))),
+            alert(late,onDate(new LocalDate(2012, 6, 4))),
+            alert(late,onDate(new LocalDate(2012, 6, 11))),
+            alert(late,onDate(new LocalDate(2012, 6, 18)))
+        ));
     }
 
     @Test
@@ -94,29 +93,29 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         mockCurrentDate(mar16th2012);
 
         enrollmentId = enrollForIPTVaccine(pregnancy.dateOfConception());
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
-            add(onDate(new LocalDate(2012, 3, 24)));
-            add(onDate(new LocalDate(2012, 3, 31)));
-            add(onDate(new LocalDate(2012, 4, 7)));
-        }});
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+            alert(late,onDate(new LocalDate(2012, 3, 24))),
+            alert(late,onDate(new LocalDate(2012, 3, 31))),
+            alert(late,onDate(new LocalDate(2012, 4, 7)))
+        ));
 
         fulfilMilestoneOnVisitDate(new LocalDate(2012, 4, 1));
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
-            add(onDate(new LocalDate(2012, 4, 22)));
-            add(onDate(new LocalDate(2012, 4, 22)));
-            add(onDate(new LocalDate(2012, 4, 29)));
-            add(onDate(new LocalDate(2012, 5, 6)));
-            add(onDate(new LocalDate(2012, 5, 13)));
-        }});
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+            alert(earliest,onDate(new LocalDate(2012, 4, 22))),
+            alert(due, onDate(new LocalDate(2012, 4, 22))),
+            alert(late,onDate(new LocalDate(2012, 4, 29))),
+            alert(late,onDate(new LocalDate(2012, 5, 6))),
+            alert(late,onDate(new LocalDate(2012, 5, 13)))
+        ));
 
         fulfilMilestoneOnVisitDate(new LocalDate(2012, 5, 7));
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
-            add(onDate(new LocalDate(2012, 5, 28)));
-            add(onDate(new LocalDate(2012, 5, 28)));
-            add(onDate(new LocalDate(2012, 6, 4)));
-            add(onDate(new LocalDate(2012, 6, 11)));
-            add(onDate(new LocalDate(2012, 6, 18)));
-        }});
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+            alert(earliest,onDate(new LocalDate(2012, 5, 28))),
+            alert(due, onDate(new LocalDate(2012, 5, 28))),
+            alert(late,onDate(new LocalDate(2012, 6, 4))),
+            alert(late,onDate(new LocalDate(2012, 6, 11))),
+            alert(late,onDate(new LocalDate(2012, 6, 18)))
+        ));
     }
 
     @Test
@@ -127,11 +126,11 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         mockCurrentDate(mar22nd2012_w14);
 
         enrollmentId = enrollForIPTVaccine(pregnancy.dateOfConception());
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
-            add(onDate(new LocalDate(2012, 3, 24)));
-            add(onDate(new LocalDate(2012, 3, 31)));
-            add(onDate(new LocalDate(2012, 4, 7)));
-        }});
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+            alert(late,onDate(new LocalDate(2012, 3, 24))),
+            alert(late,onDate(new LocalDate(2012, 3, 31))),
+            alert(late,onDate(new LocalDate(2012, 4, 7)))
+        ));
     }
 
     @Test
@@ -143,13 +142,13 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         enrollmentId = enrollForIPTVaccine(pregnancy.dateOfConception());
 
         fulfilMilestoneOnVisitDate(new LocalDate(2012, 3, 15));
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
-            add(onDate(new LocalDate(2012, 4, 5)));
-            add(onDate(new LocalDate(2012, 4, 5)));
-            add(onDate(new LocalDate(2012, 4, 12)));
-            add(onDate(new LocalDate(2012, 4, 19)));
-            add(onDate(new LocalDate(2012, 4, 26)));
-        }});
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+            alert(earliest,onDate(new LocalDate(2012, 4, 5))),
+            alert(due, onDate(new LocalDate(2012, 4, 5))),
+            alert(late,onDate(new LocalDate(2012, 4, 12))),
+            alert(late,onDate(new LocalDate(2012, 4, 19))),
+            alert(late,onDate(new LocalDate(2012, 4, 26)))
+        ));
     }
 
     @Test
@@ -162,13 +161,13 @@ public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
         fulfilMilestoneOnVisitDate(new LocalDate(2012, 4, 1));
         fulfilMilestoneOnVisitDate(new LocalDate(2012, 5, 7));
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>() {{
-            add(onDate(new LocalDate(2012, 5, 28)));
-            add(onDate(new LocalDate(2012, 5, 28)));
-            add(onDate(new LocalDate(2012, 6, 4)));
-            add(onDate(new LocalDate(2012, 6, 11)));
-            add(onDate(new LocalDate(2012, 6, 18)));
-        }});
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+            alert(earliest,onDate(new LocalDate(2012, 5, 28))),
+            alert(due, onDate(new LocalDate(2012, 5, 28))),
+            alert(late,onDate(new LocalDate(2012, 6, 4))),
+            alert(late,onDate(new LocalDate(2012, 6, 11))),
+            alert(late,onDate(new LocalDate(2012, 6, 18)))
+        ));
     }
 
 
