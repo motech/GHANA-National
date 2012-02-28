@@ -36,6 +36,8 @@ import static org.junit.Assert.assertThat;
 public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
 
     protected static final String PATIENT_ID = "Patient id";
+    protected String externalId = PATIENT_ID;
+
     @Autowired
     private AllTrackedSchedules allTrackedSchedules;
 
@@ -167,8 +169,12 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         return DateUtil.newDateTime(referenceDate, alertTime).toDate();
     }
 
-    protected Date onDate(LocalDate referenceDate) {
-        return DateUtil.newDateTime(referenceDate, preferredAlertTime).toDate();
+    protected Date onDate(int year, int month, int day) {
+        return DateUtil.newDateTime(year, month, day, preferredAlertTime).toDate();
+    }
+
+    protected Date onDate(LocalDate localDate) {
+        return DateUtil.newDateTime(localDate, preferredAlertTime).toDate();
     }
 
     protected LocalDate mockToday(LocalDate today) {
@@ -189,6 +195,6 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     }
 
     protected void fulfillCurrentMilestone(LocalDate fulfillmentDate) {
-        scheduleTrackingService.fulfillCurrentMilestone(PATIENT_ID, scheduleName, fulfillmentDate);
+        scheduleTrackingService.fulfillCurrentMilestone(externalId, scheduleName, fulfillmentDate);
     }
 }
