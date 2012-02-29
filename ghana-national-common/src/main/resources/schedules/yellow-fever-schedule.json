@@ -1,0 +1,29 @@
+{
+    "name" : "YellowFeverVaccine",
+    "milestones" : [
+        {
+            "name" : "Default",
+            "scheduleWindows" : {
+                "earliest" : ["9 Months", "-7 Days"],
+                "due" : ["9 Months", "-7 Days", "4 Weeks"],
+                "late" : ["5 Years"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : "1 Week",
+                    "count" : "1",
+                    "offset" : "0 Weeks"
+                },
+                {
+                    "window" : "late",
+                    "interval" : "1 Weeks",
+                    "count" : "3",
+                    "offset" : "0 Weeks"
+                }
+            ]
+        }
+
+    ]
+}
