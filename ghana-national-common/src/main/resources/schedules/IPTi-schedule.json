@@ -1,0 +1,74 @@
+{
+    "name" : "CWCIPTVaccine",
+    "milestones" : [
+        {
+            "name" : "IPT1",
+            "scheduleWindows" : {
+                "earliest" : [],
+                "due" : ["10 Weeks"],
+                "late" : ["14 Weeks"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : "1 Weeks",
+                    "count" : "1",
+                    "offset" : "9 Weeks"
+                },
+                {
+                    "window" : "late",
+                    "interval" : "1 Week",
+                    "count" : "3",
+                    "offset" : "0 Week"
+                }
+            ]
+        },
+        {
+            "name" : "IPT2",
+            "scheduleWindows" : {
+                "earliest" : ["3 Weeks"],
+                "due" : ["4 Weeks"],
+                "late" : ["7 Weeks"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : "1 Weeks",
+                    "count" : "1",
+                    "offset" : "0 Day"
+                },
+                {
+                    "window" : "late",
+                    "interval" : "1 Weeks",
+                    "count" : "3",
+                    "offset" : "0 Day"
+                }
+            ]
+        },
+        {
+            "name" : "IPT3",
+            "scheduleWindows" : {
+                "earliest" : ["3 Weeks"],
+                "due" : ["4 Weeks"],
+                "late" : ["7 Weeks"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : "1 Weeks",
+                    "count" : "1",
+                    "offset" : "0 Day"
+                },
+                {
+                    "window" : "late",
+                    "interval" : "1 Weeks",
+                    "count" : "3",
+                    "offset" : "0 Day"
+                }
+            ]
+        }
+    ]
+}
