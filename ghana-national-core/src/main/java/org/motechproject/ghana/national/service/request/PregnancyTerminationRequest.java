@@ -1,13 +1,17 @@
 package org.motechproject.ghana.national.service.request;
 
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.mrs.model.MRSUser;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class PregnancyTerminationRequest {
-    private String motechId;
-    private String staffId;
-    private String facilityId;
+    private Patient patient;
+    private MRSUser staff;
+    private Facility facility;
     private Date terminationDate;
     private Boolean dead;
     private String terminationType;
@@ -22,18 +26,6 @@ public class PregnancyTerminationRequest {
         complications = new ArrayList<String>();
     }
 
-    public String getMotechId() {
-        return motechId;
-    }
-
-    public String getStaffId() {
-        return staffId;
-    }
-
-    public String getFacilityId() {
-        return facilityId;
-    }
-
     public Date getTerminationDate() {
         return terminationDate;
     }
@@ -42,16 +34,28 @@ public class PregnancyTerminationRequest {
         return dead;
     }
 
-    public void setFacilityId(String facilityId) {
-        this.facilityId = facilityId;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setMotechId(String motechId) {
-        this.motechId = motechId;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
-    public void setStaffId(String staffId) {
-        this.staffId = staffId;
+    public MRSUser getStaff() {
+        return staff;
+    }
+
+    public void setStaff(MRSUser staff) {
+        this.staff = staff;
+    }
+
+    public Facility getFacility() {
+        return facility;
+    }
+
+    public void setFacility(Facility facility) {
+        this.facility = facility;
     }
 
     public void setDead(Boolean dead) {
