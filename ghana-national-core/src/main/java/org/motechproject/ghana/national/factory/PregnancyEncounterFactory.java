@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.factory;
 
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Encounter;
+import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
 
@@ -12,9 +13,9 @@ import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.PREG_TERM_VISIT;
 import static org.motechproject.ghana.national.tools.Utility.safeParseInteger;
 
-public class PregnancyTerminationEncounterFactory extends BaseObservationFactory {
+public class PregnancyEncounterFactory extends BaseObservationFactory {
 
-    public Encounter createEncounter(PregnancyTerminationRequest pregnancyTerminationRequest) {
+    public Encounter createTerminationEncounter(PregnancyTerminationRequest pregnancyTerminationRequest) {
         return new Encounter(pregnancyTerminationRequest.getPatient().getMrsPatient(), pregnancyTerminationRequest.getStaff(),
                 pregnancyTerminationRequest.getFacility(), PREG_TERM_VISIT, pregnancyTerminationRequest.getTerminationDate(), preparePregnancyTerminationObservations(pregnancyTerminationRequest));
     }
@@ -37,5 +38,15 @@ public class PregnancyTerminationEncounterFactory extends BaseObservationFactory
         setObservation(mrsObservations, request.getTerminationDate(), POST_ABORTION_FP_ACCEPTED.getName(), request.getPostAbortionFPAccepted());
         setObservation(mrsObservations, request.getTerminationDate(), POST_ABORTION_FP_COUNSELING.getName(), request.getPostAbortionFPCounselling());
         return mrsObservations;
+    }
+
+    public Encounter createDeliveryEncounter(PregnancyDeliveryRequest pregnancyDeliveryRequest) {
+        return new Encounter(pregnancyDeliveryRequest.getPatient().getMrsPatient(), pregnancyDeliveryRequest.getStaff(),
+                pregnancyDeliveryRequest.getFacility(), PREG_TERM_VISIT, pregnancyDeliveryRequest.getDeliveryDateTime().toDate(),
+                preparePregnancyDeliveryObservations(pregnancyDeliveryRequest));
+    }
+
+    private Set<MRSObservation> preparePregnancyDeliveryObservations(PregnancyDeliveryRequest pregnancyDeliveryRequest) {
+        return null;
     }
 }

@@ -1,7 +1,9 @@
 package org.motechproject.ghana.national.repository;
 
 import ch.lambdaj.function.convert.Converter;
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.services.MRSPatientAdapter;
@@ -24,8 +26,13 @@ public class AllPatients {
     @Autowired
     private OpenMRSRelationshipAdapter openMRSRelationshipAdapter;
 
-    public Patient save(Patient patient) {
+    public Patient save(Patient patient) throws ParentNotFoundException {
         MRSPatient mrsPatient = patientAdapter.savePatient(patient.getMrsPatient());
+        if (StringUtils.isNotEmpty(patient.getParentId())) {
+            Patient mother = getPatientByMotechId(patient.getParentId());
+            if(mother == null) throw new ParentNotFoundException();
+            createMotherChildRelationship(mother.getMrsPatient().getPerson(), mrsPatient.getPerson());
+        }
         return new Patient(mrsPatient, patient.getParentId());
     }
 

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -45,28 +46,61 @@ public class AllPatientsTest {
     }
 
     @Test
-    public void shouldSaveAPatient() {
+    public void shouldSaveAPatientWithRelationship() {
         MRSFacility facility = new MRSFacility("1", "facility", "country", "region", "district", "state");
         String first = "first";
         String middle = "middle";
         String last = "last";
-        String preferred = "preferred";
         Date dateOfBirth = new Date();
         String gender = "male";
         String address = "address";
         String patientId = "1000";
+        String parentId = "parentId";
         Boolean birthDateEstimated = true;
+        String motherId = "motherMotechId";
+        String motherPersonId = "1";
+        MRSPatient mrsParent = new MRSPatient(motherId, new MRSPerson().id(motherPersonId), null);
 
         MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last)
                 .dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
         final MRSPatient mrsPatient = new MRSPatient("", mrsPerson, facility);
-        final Patient patient = new Patient(mrsPatient);
-        MRSPatient savedPatient = mock(MRSPatient.class);
-        when(savedPatient.getMotechId()).thenReturn(patientId);
+        final Patient patient = new Patient(mrsPatient, parentId);
+        String childPersonId = "2";
+        MRSPatient savedPatient = new MRSPatient(patientId, new MRSPerson().id(childPersonId), null);
+
+        when(mockMrsPatientAdapter.getPatientByMotechId(parentId)).thenReturn(mrsParent);
         when(mockMrsPatientAdapter.savePatient(mrsPatient)).thenReturn(savedPatient);
+
         final String savedMotechId = allPatients.save(patient).getMotechId();
+
+        verify(mockOpenMRSRelationshipAdapter).createMotherChildRelationship(motherPersonId, childPersonId);
         verify(mockMrsPatientAdapter).savePatient(mrsPatient);
         assertThat(patientId, is(savedMotechId));
+    }
+
+    @Test(expected = ParentNotFoundException.class)
+    public void shouldThrowExceptionIfParentIsNotFound() {
+        MRSFacility facility = new MRSFacility("1", "facility", "country", "region", "district", "state");
+        String first = "first";
+        String middle = "middle";
+        String last = "last";
+        Date dateOfBirth = new Date();
+        String gender = "male";
+        String address = "address";
+        String patientId = "1000";
+        String parentId = "parentId";
+        Boolean birthDateEstimated = true;
+        MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last)
+                .dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
+        final MRSPatient mrsPatient = new MRSPatient("", mrsPerson, facility);
+        final Patient patient = new Patient(mrsPatient, parentId);
+        String childPersonId = "2";
+        MRSPatient savedPatient = new MRSPatient(patientId, new MRSPerson().id(childPersonId), null);
+
+        when(mockMrsPatientAdapter.getPatientByMotechId(parentId)).thenReturn(null);
+        when(mockMrsPatientAdapter.savePatient(mrsPatient)).thenReturn(savedPatient);
+
+        allPatients.save(patient).getMotechId();
     }
 
     @Test

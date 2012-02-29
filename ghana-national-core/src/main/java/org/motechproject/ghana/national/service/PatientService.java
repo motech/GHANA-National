@@ -47,10 +47,6 @@ public class PatientService {
                 patient = new Patient(new MRSPatient(mrsPatient.getId(), motechId, mrsPatient.getPerson(), mrsPatient.getFacility()), patient.getParentId());
             }
             Patient savedPatient = allPatients.save(patient);
-
-            if (StringUtils.isNotEmpty(patient.getParentId())) {
-                createRelationship(patient.getParentId(), savedPatient.getMotechId());
-            }
             allEncounters.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(),
                     PATIENT_REG_VISIT.value(), DateUtil.today().toDate(), null);
             return savedPatient;

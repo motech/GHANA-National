@@ -1,13 +1,15 @@
 package org.motechproject.ghana.national.service;
 
+import org.motechproject.ghana.national.domain.BirthOutcome;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.factory.PregnancyTerminationEncounterFactory;
-import org.motechproject.ghana.national.repository.AllAppointments;
-import org.motechproject.ghana.national.repository.AllEncounters;
-import org.motechproject.ghana.national.repository.AllPatients;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.domain.RegistrationType;
+import org.motechproject.ghana.national.factory.PregnancyEncounterFactory;
+import org.motechproject.ghana.national.repository.*;
+import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
 import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,20 +23,22 @@ public class PregnancyService {
     private AllEncounters allEncounters;
     private AllSchedules allSchedules;
     private AllAppointments allAppointments;
-    PregnancyTerminationEncounterFactory encounterFactory;
+    private IdentifierGenerator identifierGenerator;
+    PregnancyEncounterFactory encounterFactory;
 
     @Autowired
     public PregnancyService(AllPatients allPatients, AllEncounters allEncounters,
-                            AllSchedules allSchedules, AllAppointments allAppointments) {
+                            AllSchedules allSchedules, AllAppointments allAppointments, IdentifierGenerator identifierGenerator) {
         this.allPatients = allPatients;
         this.allEncounters = allEncounters;
         this.allSchedules = allSchedules;
         this.allAppointments = allAppointments;
-        encounterFactory = new PregnancyTerminationEncounterFactory();
+        this.identifierGenerator = identifierGenerator;
+        encounterFactory = new PregnancyEncounterFactory();
     }
 
     public void terminatePregnancy(PregnancyTerminationRequest request) {
-        allEncounters.persistEncounter(encounterFactory.createEncounter(request));
+        allEncounters.persistEncounter(encounterFactory.createTerminationEncounter(request));
         if (request.isDead()) {
             allPatients.deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
         }
@@ -43,10 +47,23 @@ public class PregnancyService {
     }
 
     public void handleDelivery(PregnancyDeliveryRequest request) {
-        Patient patient = allPatients.getPatientByMotechId(request.getMotechId());
+        for (DeliveredChildRequest childRequest : request.getDeliveredChildRequests()) {
+            if (childRequest.getchildBirthOutcome().equals(BirthOutcome.ALIVE)) {
+                String childMotechId = childRequest.getchildMotechId();
+                if (childRequest.getchildRegistrationType().equals(RegistrationType.AUTO_GENERATE_ID)) {
+                    childMotechId = identifierGenerator.newPatientId();
+                }
+                MRSPerson childPerson = new MRSPerson();
+                childPerson.firstName((childRequest.getchildFirstName() != null) ? childRequest.getchildFirstName() : "Baby")
+                        .lastName("Baby").dateOfBirth(request.getDeliveryDateTime().toDate())
+                        .gender((childRequest.getchildSex() != null) ? childRequest.getchildSex() : "?");
+                Patient patient = new Patient(new MRSPatient(childMotechId, childPerson, request.getFacility().mrsFacility()), request.getPatient().getMotechId());
+                allPatients.save(patient);
+            }
+        }
 
-//        allEncounters.persistEncounter()
-        allSchedules.unEnroll(patient.getMRSPatientId(), patient.careProgramsToUnEnroll());
-        allAppointments.remove(patient);
+        allEncounters.persistEncounter(encounterFactory.createDeliveryEncounter(request));
+        allSchedules.unEnroll(request.getPatient().getMRSPatientId(), request.getPatient().careProgramsToUnEnroll());
+        allAppointments.remove(request.getPatient());
     }
 }

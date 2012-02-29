@@ -20,10 +20,10 @@ import static junit.framework.Assert.assertEquals;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
-public class PregnancyTerminationEncounterFactoryTest {
+public class PregnancyEncounterFactoryTest {
     @Test
     public void shouldCreateEncounterForPregnancyTermination() {
-        PregnancyTerminationEncounterFactory factory = new PregnancyTerminationEncounterFactory();
+        PregnancyEncounterFactory factory = new PregnancyEncounterFactory();
 
         PregnancyTerminationRequest request = new PregnancyTerminationRequest();
         MRSFacility mrsFacility = new MRSFacility("122");
@@ -46,7 +46,7 @@ public class PregnancyTerminationEncounterFactoryTest {
         final Date terminationDate = new Date();
         request.setTerminationDate(terminationDate);
 
-        Encounter encounter = factory.createEncounter(request);
+        Encounter encounter = factory.createTerminationEncounter(request);
 
         Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Boolean>(terminationDate, PREGNANCY_STATUS.getName(), false));

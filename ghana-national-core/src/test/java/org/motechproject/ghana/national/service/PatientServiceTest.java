@@ -71,13 +71,10 @@ public class PatientServiceTest {
         Patient mockPatient = mock(Patient.class);
         MRSPatient mockMRSPatient = mock(MRSPatient.class);
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
-        when(mockAllPatients.save(patient)).thenReturn(mockPatient);
         when(mockMRSPatient.getMotechId()).thenReturn("32");
-        when(mockAllPatients.getPatientByMotechId(parentId)).thenReturn(null);
-        MRSPerson mockPerson = mock(MRSPerson.class);
         when(patient.getMrsPatient()).thenReturn(mockMRSPatient);
         when(patient.getParentId()).thenReturn(parentId);
-        when(mockAllPatients.getMotherRelationship(mockPerson)).thenReturn(null);
+        doThrow(new ParentNotFoundException()).when(mockAllPatients).save(patient);
         patientService.registerPatient(patient, "1234");
     }
 
@@ -106,54 +103,6 @@ public class PatientServiceTest {
         assertThat(patientPassedToAllPatientsService.getMrsPatient().getFacility(), is(equalTo(facility)));
         assertThat(patientPassedToAllPatientsService.getMrsPatient().getId(), is(equalTo(patientId)));
 
-    }
-
-    @Test
-    public void shouldRegisterAPatientWithParentIfFound() throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
-        final String parentId = "11";
-        Patient childBeforeRegistering = mock(Patient.class);
-        MRSPatient mrsChildPatientBeforeRegistering = mock(MRSPatient.class);
-        String motechId = "100";
-        String staffId = "1234";
-        when(mrsChildPatientBeforeRegistering.getMotechId()).thenReturn(motechId);
-        when(childBeforeRegistering.getMrsPatient()).thenReturn(mrsChildPatientBeforeRegistering);
-        when(childBeforeRegistering.getParentId()).thenReturn(parentId);
-
-        Patient mother = mock(Patient.class);
-        final MRSPatient mrsMother = mock(MRSPatient.class);
-        final MRSPerson mrsMotherPerson = mock(MRSPerson.class);
-        when(mother.getMrsPatient()).thenReturn(mrsMother);
-        when(mrsMother.getPerson()).thenReturn(mrsMotherPerson);
-        when(mockAllPatients.getPatientByMotechId(parentId)).thenReturn(mother);
-
-        Patient child = mock(Patient.class);
-        final MRSPatient mrsChild = mock(MRSPatient.class);
-        final MRSPerson mrsChildPerson = mock(MRSPerson.class);
-        when(child.getMrsPatient()).thenReturn(mrsChild);
-        when(mrsChild.getPerson()).thenReturn(mrsChildPerson);
-
-        String childId = "121";
-        MRSPatient mrsPatientSaved = mock(MRSPatient.class);
-        Patient patientSaved = mock(Patient.class);
-        when(patientSaved.getMrsPatient()).thenReturn(mrsPatientSaved);
-        when(patientSaved.getMotechId()).thenReturn(childId);
-        when(mockAllPatients.save(childBeforeRegistering)).thenReturn(patientSaved);
-        when(mrsPatientSaved.getMotechId()).thenReturn(childId);
-        when(mockAllPatients.getPatientByMotechId(childId)).thenReturn(child);
-        MRSEncounter mrsEncounter = mock(MRSEncounter.class);
-
-        String facilityId = "34";
-        MRSFacility mrsFacility = mock(MRSFacility.class);
-        when(childBeforeRegistering.getMrsPatient()).thenReturn(mrsChildPatientBeforeRegistering);
-        when(mrsChildPatientBeforeRegistering.getFacility()).thenReturn(mrsFacility);
-        when(mrsFacility.getId()).thenReturn(facilityId);
-
-
-        when(mockAllEncounters.persistEncounter(childBeforeRegistering.getMrsPatient(), staffId, facilityId, PATIENT_REG_VISIT.value(), new Date(), null)).thenReturn(mrsEncounter);
-        patientService.registerPatient(childBeforeRegistering, staffId);
-
-        verify(mockAllPatients).save(childBeforeRegistering);
-        verify(mockAllPatients).createMotherChildRelationship(mrsMotherPerson, mrsChildPerson);
     }
 
     @Test(expected = PatientIdNotUniqueException.class)

@@ -48,9 +48,9 @@ public class AllSchedulesTest {
     }
 
     @Test
-    public void shouldUnEnrollListOfSchedules(){
-       String patientId = "12";
-        List<String> scheduleNames = Arrays.asList("scheduleName1","scheduleName2","scheduleName3");
+    public void shouldUnEnrollListOfSchedules() {
+        String patientId = "12";
+        List<String> scheduleNames = Arrays.asList("scheduleName1", "scheduleName2", "scheduleName3");
 
         allSchedules.unEnroll(patientId, scheduleNames);
 
@@ -75,7 +75,7 @@ public class AllSchedulesTest {
         String scheduleName = "scheduleName";
         String externalId = "12";
         EnrollmentRequest anyEnrollmentRequest = new EnrollmentRequest(externalId, scheduleName, new Time(12, 0), new LocalDate(), null, null);
-        EnrollmentResponse notNullEnrollment =mock(EnrollmentResponse.class);
+        EnrollmentResponse notNullEnrollment = mock(EnrollmentResponse.class);
         when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(notNullEnrollment);
 
         allSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
