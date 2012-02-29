@@ -1,8 +1,9 @@
 package org.motechproject.ghana.national.domain;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class SMSTextComparator<T> implements Comparator<String>{
+public class SMSTextComparator<T> implements Comparator<String>, Serializable{
 
     @Override
     public int compare(String smsText1, String smsText2) {
