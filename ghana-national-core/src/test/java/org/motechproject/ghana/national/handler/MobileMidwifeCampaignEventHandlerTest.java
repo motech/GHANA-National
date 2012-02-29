@@ -2,11 +2,8 @@ package org.motechproject.ghana.national.handler;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.SMS;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -55,10 +52,9 @@ public class MobileMidwifeCampaignEventHandlerTest {
                 .setServiceType(serviceType).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber(mobileNumber);
 
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
-        when(mockSMSGateway.getSMSTemplate(language.name(), messageKey)).thenReturn(messageTemplate);
 
         handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), messageKey));
-        verify(mockSMSGateway).sendSMS(mobileNumber, SMS.fromSMSText(messageTemplate));
+        verify(mockSMSGateway).dispatchSMS(messageKey, language.name(), mobileNumber);
     }
 
     @Test
@@ -71,11 +67,11 @@ public class MobileMidwifeCampaignEventHandlerTest {
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 
         handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), messageKey));
-        verify(mockSMSGateway, never()).sendSMS(Matchers.<Facility>any(), Matchers.<SMS>any());
+        verify(mockSMSGateway, never()).dispatchSMS(anyString(), anyString(), anyString());
     }
 
     @Test
-    public void shouldSendUnregisterUserIfItIsTheLastEventForTheProgram() throws ContentNotFoundException {
+    public void shouldSendUnRegisteredUserIfItIsTheLastEventForTheProgram() throws ContentNotFoundException {
         ServiceType serviceType = ServiceType.CHILD_CARE;
         String patientId = "1234568";
         String messageKey = "childcare-calendar-week-33-Monday";
@@ -84,11 +80,9 @@ public class MobileMidwifeCampaignEventHandlerTest {
                 .setServiceType(serviceType).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber("9845312345");
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 
-        when(mockSMSGateway.getSMSTemplate(language.name(), messageKey)).thenReturn("text-message");
-
         MotechEvent lastEvent = motechEvent(patientId, serviceType.name(), messageKey).setLastEvent(true);
         handler.sendProgramMessage(lastEvent);
-        verify(mockMobileMidwifeService).unregister(patientId);
+        verify(mockMobileMidwifeService).unRegister(patientId);
     }
 
      private MotechEvent motechEvent(String externalId, String campaignName, String messageKey) {

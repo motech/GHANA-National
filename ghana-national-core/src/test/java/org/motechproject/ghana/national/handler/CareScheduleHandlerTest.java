@@ -11,7 +11,7 @@ import org.motechproject.util.DateUtil;
 
 import static org.joda.time.Period.weeks;
 import static org.mockito.Mockito.*;
-import static org.motechproject.ghana.national.domain.SmsKeys.*;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.*;
 
 public class CareScheduleHandlerTest {
 

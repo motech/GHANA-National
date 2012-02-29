@@ -138,7 +138,7 @@ public class RegisterCWCFormHandlerTest {
 
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
         verify(careService).enroll(captor.capture());
-        verify(mobileMidwifeService).unregister(patientMotechId);
+        verify(mobileMidwifeService).unRegister(patientMotechId);
         verify(mobileMidwifeService, never()).register(Matchers.<MobileMidwifeEnrollment>any());
         final CwcVO cwcVO = captor.getValue();
 

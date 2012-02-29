@@ -1,13 +1,11 @@
 package org.motechproject.ghana.national.handler;
 
-import org.joda.time.LocalDate;
+import org.motechproject.ghana.national.domain.AlertWindow;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.SMS;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
-import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 
 import java.util.HashMap;
@@ -34,23 +32,15 @@ public abstract class BaseScheduleHandler {
         final Patient patient = allPatients.patientByOpenmrsId(externalId);
         final String motechId = patient.getMrsPatient().getMotechId();
 
-        SMS sms = smsGateway.getSMS(smsTemplateKey, new HashMap<String, String>() {{
+        Facility facility = allFacilities.getFacility(patient.getMrsPatient().getFacility().getId());
+
+        smsGateway.dispatchSMSToAggregator(smsTemplateKey, new HashMap<String, String>() {{
             put(MOTECH_ID, motechId);
-            put(WINDOW, getWindowName(milestoneEvent.getWindowName()));
+            put(WINDOW, AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName());
             put(FIRST_NAME, patient.getFirstName());
             put(LAST_NAME, patient.getLastName());
             put(SCHEDULE_NAME, milestoneEvent.getScheduleName());
-        }});
-
-        Facility facility = allFacilities.getFacility(patient.getMrsPatient().getFacility().getId());
-        smsGateway.sendSMS(facility, sms);
+        }}, facility.getPhoneNumber());
     }
 
-    private String getWindowName(String windowName) {
-        return windowName.equals(WindowName.earliest.name()) ? "Upcoming" : (windowName.equals(WindowName.due.name()) ? "Due" : "Overdue");
-    }
-
-    protected LocalDate addAggregationPeriodTo(LocalDate dueDate) {
-        return dueDate.plusWeeks(1);
-    }
 }

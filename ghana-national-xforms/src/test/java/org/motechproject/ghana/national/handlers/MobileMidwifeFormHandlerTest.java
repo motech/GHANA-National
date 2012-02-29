@@ -65,7 +65,7 @@ public class MobileMidwifeFormHandlerTest {
             put("formBean", form);
         }}));
 
-        verify(mockMobileMidwifeService).unregister(patientId);
+        verify(mockMobileMidwifeService).unRegister(patientId);
         verify(mockMobileMidwifeService, never()).register(Matchers.<MobileMidwifeEnrollment>any());
     }
 

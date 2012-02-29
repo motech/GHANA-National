@@ -1,21 +1,13 @@
 package org.motechproject.ghana.national.tools.seed.data.source;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.ghana.national.domain.mobilemidwife.Language;
-import org.motechproject.ghana.national.domain.mobilemidwife.LearnedFrom;
-import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
-import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
-import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
-import org.motechproject.ghana.national.domain.mobilemidwife.ReasonToJoin;
+import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,13 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class MobileMidwifeSource {
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public void init(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+public class MobileMidwifeSource extends BaseSeedSource{
 
     public List<HashMap<String, String>> getEnrollmentData() {
         return jdbcTemplate.query("select program_name, person_id, start_date, obs_id " +

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/integration"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xmlns:stream="http://www.springframework.org/schema/integration/stream"
+             xmlns:task="http://www.springframework.org/schema/task"
+             xmlns:util="http://www.springframework.org/schema/util"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/task
+			http://www.springframework.org/schema/task/spring-task-3.0.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context.xsd
+			http://www.springframework.org/schema/integration
+			http://www.springframework.org/schema/integration/spring-integration.xsd
+			http://www.springframework.org/schema/util
+			http://www.springframework.org/schema/util/spring-util.xsd
+			http://www.springframework.org/schema/integration/stream
+			http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd">
+
+    <annotation-config/>
+    <context:component-scan base-package="org.motechproject.ghana.national.messagegateway"/>
+
+    <beans:bean id="reaper" class="org.springframework.integration.store.MessageGroupStoreReaper">
+        <beans:property name="messageGroupStore" ref="messageStore"/>
+        <beans:property name="timeout" value="60000"/>
+    </beans:bean>
+
+    <beans:bean name="reaperJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <beans:property name="jobClass"
+                        value="org.motechproject.ghana.national.messagegateway.domain.MessageGroupStoreRepearJob"/>
+        <beans:property name="jobDataAsMap">
+            <beans:map>
+                <beans:entry key="timeout" value="5"/>
+            </beans:map>
+        </beans:property>
+    </beans:bean>
+
+    <beans:bean id="reaperTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <beans:property name="jobDetail" ref="reaperJob"/>
+        <!-- run every monday morning 9.30-->
+        <beans:property name="cronExpression" value="${aggregator.cron.expression}"/>
+    </beans:bean>
+
+    <gateway id="messageGateway"
+             service-interface="org.motechproject.ghana.national.messagegateway.service.MessageGateway"/>
+
+    <channel id="smsMessages"/>
+    <channel id="dispatchSms"/>
+
+    <outbound-channel-adapter channel="dispatchSms" ref="smsDispatcher" method="dispatch"/>
+    <!--<stream:stdout-channel-adapter id="dispatchSms"/>-->
+
+    <aggregator
+            input-channel="smsMessages"
+            method="aggregateSMS"
+            output-channel="dispatchSms"
+            message-store="messageStore">
+        <beans:bean class="org.motechproject.ghana.national.messagegateway.domain.MessageDispatcher"/>
+    </aggregator>
+
+    <!--<beans:bean id="persistentMessageStore" class="org.springframework.integration.jdbc.JdbcMessageStore">-->
+    <!--<beans:constructor-arg ref="dataSource"/>-->
+    <!--</beans:bean>-->
+
+    <beans:bean id="aggregatorDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <beans:property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <beans:property name="url" value="${aggregator.db.connection.string}"/>
+        <beans:property name="username" value="${aggregator.db.username}"/>
+        <beans:property name="password" value="${aggregator.db.password}"/>
+    </beans:bean>
+
+    <!--<beans:bean id="messageStore"-->
+    <!--class="org.springframework.integration.store.SimpleMessageStore"/>-->
+
+    <beans:import resource="classpath:applicationSmsAPI.xml"/>
+
+</beans:beans>

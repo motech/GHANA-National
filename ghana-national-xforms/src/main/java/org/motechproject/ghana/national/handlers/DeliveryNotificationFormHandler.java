@@ -18,8 +18,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FIRST_NAME;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.LAST_NAME;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.MOTECH_ID;
 import static org.motechproject.ghana.national.domain.EncounterType.PREG_DEL_NOTIFY_VISIT;
 
 @Component
@@ -61,12 +65,15 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
     }
 
     private void sendDeliveryNotificationMessage(String motechId, DateTime deliveryTime) {
-        Patient patient = patientService.getPatientByMotechId(motechId);
+        final Patient patient = patientService.getPatientByMotechId(motechId);
         if (patient.getMrsPatient().getFacility() != null) {
             Facility facility = facilityService.getFacility(patient.getMrsPatient().getFacility().getId());
-            String template = smsGateway.getSMSTemplate(DELIVERY_NOTIFICATION_SMS_KEY);
-            SMS sms = SMS.fromTemplate(template).fillPatientDetails(patient.getMotechId(), patient.getFirstName(), patient.getLastName()).fillDateTime(deliveryTime.toDate());
-            smsGateway.sendSMS(facility, sms);
+
+            smsGateway.dispatchSMS(DELIVERY_NOTIFICATION_SMS_KEY, new HashMap<String, String>() {{
+                put(MOTECH_ID, patient.getMotechId());
+                put(FIRST_NAME, patient.getFirstName());
+                put(LAST_NAME, patient.getLastName());
+            }}, facility.getPhoneNumber());
         }
     }
 }

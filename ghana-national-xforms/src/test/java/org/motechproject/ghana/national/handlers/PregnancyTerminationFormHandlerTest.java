@@ -50,7 +50,7 @@ public class PregnancyTerminationFormHandlerTest {
         pregnancyTerminationFormHandler.handleFormEvent(event);
 
         verify(mockPregnancyTerminationService).terminatePregnancy(any(PregnancyTerminationRequest.class));
-        verify(mockMobileMidwifeService).unregister(motechId);
+        verify(mockMobileMidwifeService).unRegister(motechId);
 
     }
 

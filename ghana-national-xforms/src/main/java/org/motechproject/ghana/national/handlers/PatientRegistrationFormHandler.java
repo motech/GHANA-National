@@ -25,14 +25,19 @@ import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FIRST_NAME;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.LAST_NAME;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.MOTECH_ID;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.REGISTER_SUCCESS_SMS_KEY;
 
 
 @Component
 public class PatientRegistrationFormHandler implements FormPublishHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    static final String REGISTER_SUCCESS_SMS_KEY = "REGISTER_SUCCESS_SMS_KEY";
 
     @Autowired
     private PatientService patientService;
@@ -71,16 +76,18 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             MRSPatient mrsPatient = new MRSPatient(registerClientForm.getMotechId(), mrsPerson, new MRSFacility(facilityId));
 
             Patient patient = new Patient(mrsPatient, registerClientForm.getMotherMotechId());
-            Patient savedPatient = patientService.registerPatient(patient, registerClientForm.getStaffId());
+            final Patient savedPatient = patientService.registerPatient(patient, registerClientForm.getStaffId());
 
             registerForMobileMidwifeProgram(registerClientForm, savedPatient.getMotechId());
             registerForCWC(registerClientForm, facilityId, savedPatient.getMotechId());
             registerForANC(registerClientForm, facilityId, savedPatient.getMotechId());
 
             if (registerClientForm.getSender() != null) {
-                String template = smsGateway.getSMSTemplate("REGISTER_SUCCESS_SMS_KEY");
-                SMS sms = SMS.fromTemplate(template).fillPatientDetails(savedPatient.getMotechId(), patient.getFirstName(), patient.getLastName());
-                smsGateway.sendSMS(registerClientForm.getSender(), sms);
+                smsGateway.dispatchSMS(REGISTER_SUCCESS_SMS_KEY, new HashMap<String, String>() {{
+                    put(MOTECH_ID, savedPatient.getMotechId());
+                    put(FIRST_NAME, savedPatient.getFirstName());
+                    put(LAST_NAME, savedPatient.getLastName());
+                }}, registerClientForm.getSender());
             }
         } catch (Exception e) {
             log.error("Exception while saving patient", e);

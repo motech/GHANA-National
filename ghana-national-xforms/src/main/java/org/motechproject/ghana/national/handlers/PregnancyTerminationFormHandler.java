@@ -29,6 +29,6 @@ public class PregnancyTerminationFormHandler implements FormPublishHandler {
     public void handleFormEvent(MotechEvent motechEvent) {
         PregnancyTerminationForm formBean = (PregnancyTerminationForm) motechEvent.getParameters().get(Constants.FORM_BEAN);
         pregnancyTerminationService.terminatePregnancy(MobileRequestMapper.map(formBean));
-        mobileMidwifeService.unregister(formBean.getMotechId());
+        mobileMidwifeService.unRegister(formBean.getMotechId());
     }
 }

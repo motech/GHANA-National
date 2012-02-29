@@ -2,80 +2,102 @@ package org.motechproject.ghana.national.repository;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.model.StringContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.SMS;
+import org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher;
+import org.motechproject.ghana.national.messagegateway.domain.SMS;
+import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
+import org.motechproject.model.Time;
 import org.motechproject.sms.api.service.SmsService;
+import org.motechproject.testing.utils.BaseUnitTest;
+import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
 import java.util.Locale;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.typeCompatibleWith;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-public class SMSGatewayTest {
+public class SMSGatewayTest extends BaseUnitTest{
 
-    SMSGateway SMSGateway;
+    SMSGateway smsGateway;
     @Mock
     CMSLiteService mockCMSLiteService;
     @Mock
     SmsService mockSMSService;
+    @Mock
+    MessageGateway mockMessageGateway;
 
     @Before
     public void init() {
         initMocks(this);
-        SMSGateway = new SMSGateway();
-        setField(SMSGateway, "smsService", mockSMSService);
-        setField(SMSGateway, "cmsLiteService", mockCMSLiteService);
+        smsGateway = new SMSGateway();
+        setField(smsGateway, "smsService", mockSMSService);
+        setField(smsGateway, "cmsLiteService", mockCMSLiteService);
+        setField(smsGateway, "messageGateway", mockMessageGateway);
+        mockCurrentDate(DateUtil.newDateTime(DateUtil.today(), new Time(10, 10)));
     }
                                       
     @Test
-    public void shouldSendSMSToAFacility() {
-        Facility facility = mock(Facility.class);
-        String facilityPhoneNumber = "phone number";
-        String smsText = "sms message";
-        when(facility.phoneNumber()).thenReturn(facilityPhoneNumber);
-        SMSGateway.sendSMS(facility, SMS.fromSMSText(smsText));
-        verify(mockSMSService).sendSMS(facilityPhoneNumber, smsText);
+    public void shouldFetchMessageTextWithTemplateKeyAndDispatchSMS() throws ContentNotFoundException {
+        String phoneNumber = "phoneNumber";
+        String language = "language";
+        String templateKey = "templateKey";
+        String smsText = "smsMessage";
+        final StringContent stringContent = createStringContent(smsText);
+        when(mockCMSLiteService.getStringContent(language, templateKey)).thenReturn(stringContent);
+        smsGateway.dispatchSMS(templateKey, language, phoneNumber);
+        verify(mockSMSService).sendSMS(smsText, phoneNumber);
     }
 
     @Test
-    public void shouldSendSMSToAPhoneNumber() throws ContentNotFoundException {
-        String phoneNumber = "phone number";
-        String smsText = "sms message";
-        SMSGateway.sendSMS(phoneNumber, SMS.fromSMSText(smsText));
-        verify(mockSMSService).sendSMS(phoneNumber, smsText);
+    public void shouldFillInTemplateWithRuntimeValuesAndDispatchSMS() throws ContentNotFoundException {
+        String templateKey = "templateKey";
+        String smsText = "smsMessage-${RTKey}";
+        final String phoneNumber = "phoneNumber";
+        final StringContent stringContent = createStringContent(smsText);
+        when(mockCMSLiteService.getStringContent(anyString(), eq(templateKey))).thenReturn(stringContent);
+        smsGateway.dispatchSMS(templateKey, new HashMap<String, String>(){{put("${RTKey}", "RTValue");}}, phoneNumber);
+        verify(mockSMSService).sendSMS("smsMessage-RTValue",phoneNumber);
+
     }
 
     @Test
-    public void shouldCreateSMSMessageTextFromMessageTemplateKeyDefaultLocaleAndRuntimeParameters() throws ContentNotFoundException {
-        String templateKey = "template key";
-        StringContent stringConent = mock(StringContent.class);
-        when(stringConent.getValue()).thenReturn("placeholder");
-        when(mockCMSLiteService.getStringContent(Locale.getDefault().getLanguage(), templateKey)).thenReturn(stringConent);
-        SMS sms = SMSGateway.getSMS(templateKey, new HashMap<String, String>() {{
-            put("placeholder", "value");
-        }});
-        assertThat(sms, is(equalTo(SMS.fromSMSText("value"))));
+    public void shouldCreateSMSMessageAndDispatchItToTheAggregator() throws ContentNotFoundException {
+        String templateKey = "templateKey";
+        final String template = "template";
+        final String phoneNumber = "phoneNumber";
+        final String smsText = "value";
+
+        final StringContent stringContent = createStringContent(template);
+        when(mockCMSLiteService.getStringContent(Locale.getDefault().getLanguage(), templateKey)).thenReturn(stringContent);
+
+        smsGateway.dispatchSMSToAggregator(templateKey, new HashMap<String, String>() {{
+            put(template, smsText);
+        }}, phoneNumber);
+
+
+        ArgumentCaptor<SMS> smsArgumentCaptor = ArgumentCaptor.forClass(SMS.class);
+        verify(mockMessageGateway).dispatch(smsArgumentCaptor.capture());
+        final SMS smsSentToGateway = smsArgumentCaptor.getValue();
+        assertThat(smsSentToGateway.getText(), is(equalTo(smsText)));
+        assertThat(smsSentToGateway.getPhoneNumber(), is(equalTo(phoneNumber)));
+        assertThat(smsSentToGateway.getGenerationTime(), is(equalTo(DateUtil.now().toLocalDateTime())));
+        assertThat(smsSentToGateway.getDeliveryStrategy().getClass(), is(typeCompatibleWith(NextMondayDispatcher.class)));
     }
-    
-    @Test
-    public void shouldCreateSMSMessageTextFromMessageTemplateKey_GivenLanguageAndRuntimeParameters() throws ContentNotFoundException {
-        String templateKey = "template key";
-        StringContent stringConent = mock(StringContent.class);
-        when(stringConent.getValue()).thenReturn("placeholder");
-        String language = "EN";
-        when(mockCMSLiteService.getStringContent(language, templateKey)).thenReturn(stringConent);
-        SMS sms = SMSGateway.getSMS(language, templateKey, new HashMap<String, String>() {{
-            put("placeholder", "value");
-        }});
-        assertThat(sms, is(equalTo(SMS.fromSMSText("value"))));
-    }    
+
+    private StringContent createStringContent(String value) {
+        StringContent stringContent = mock(StringContent.class);
+        when(stringContent.getValue()).thenReturn(value);
+        return stringContent;
+    }
+
 }
