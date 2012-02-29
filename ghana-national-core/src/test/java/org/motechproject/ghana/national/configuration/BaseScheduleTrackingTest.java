@@ -52,7 +52,6 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
 
-
     protected ScheduleTrackingServiceImpl scheduleTrackingService;
 
     protected String enrollmentId;
@@ -177,10 +176,6 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
 
     protected Date onDate(String date) {
         return DateUtil.newDateTime(newDate(date), preferredAlertTime).toDate();
-    }
-
-    protected Date onDate(String date) throws ParseException {
-        return DateUtil.newDateTime(DateUtil.newDate(new SimpleDateFormat("dd-MMM-yyyy").parse(date)), preferredAlertTime).toDate();
     }
 
     protected LocalDate mockToday(LocalDate today) {
