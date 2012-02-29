@@ -119,7 +119,7 @@ public class MobileMidwifeController {
         List<FormError> formErrors = mobileMidwifeValidator.validateFacilityPatientAndStaff(patientMotechId,
                 facilityService.getFacility(form.getFacilityForm().getFacilityId()).getMotechId(), form.getStaffMotechId());
         if (formErrors.isEmpty()) {
-            mobileMidwifeService.unregister(patientMotechId);
+            mobileMidwifeService.unRegister(patientMotechId);
             modelMap.put("successMessage", "Successfully unregistered");
         }
         modelMap.put("formErrors", formErrors);

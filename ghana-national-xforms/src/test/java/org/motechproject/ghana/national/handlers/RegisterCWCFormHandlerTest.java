@@ -28,10 +28,7 @@ import java.util.List;
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isIn;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class RegisterCWCFormHandlerTest {
@@ -138,7 +135,7 @@ public class RegisterCWCFormHandlerTest {
 
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
         verify(careService).enroll(captor.capture());
-        verify(mobileMidwifeService).unregister(patientMotechId);
+        verify(mobileMidwifeService).unRegister(patientMotechId);
         verify(mobileMidwifeService, never()).register(Matchers.<MobileMidwifeEnrollment>any());
         final CwcVO cwcVO = captor.getValue();
 

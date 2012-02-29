@@ -179,7 +179,7 @@ public class MobileMidwifeControllerTest {
         controller.unregister(mobileMidwifeUnenrollForm, modelMap);
 
         assertTrue(CollectionUtils.isEmpty((Collection) modelMap.get("formErrors")));
-        verify(mobileMidwifeService).unregister(patientId);
+        verify(mobileMidwifeService).unRegister(patientId);
     }
 
     @Test
@@ -208,7 +208,7 @@ public class MobileMidwifeControllerTest {
 
         List<FormError> formErrors = (List<FormError>) modelMap.get("formErrors");
         assertThat(formErrors.get(0).getParameter(), is("staffId"));
-        verify(mobileMidwifeService, never()).unregister(patientId);
+        verify(mobileMidwifeService, never()).unRegister(patientId);
     }
 
     @Test

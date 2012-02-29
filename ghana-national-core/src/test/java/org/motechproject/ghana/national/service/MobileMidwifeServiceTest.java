@@ -115,7 +115,7 @@ public class MobileMidwifeServiceTest {
 
         service.register(enrollment);
         assertTrue(enrollment.getActive());
-        verify(service).unregister(patientId);
+        verify(service).unRegister(patientId);
         verifyCreateNewEnrollment(enrollment);
         verify(mockAllCampaigns).start(enrollment);
     }
@@ -128,7 +128,7 @@ public class MobileMidwifeServiceTest {
                 .build();
         when(mockAllMobileMidwifeEnrollments.findActiveBy(patientId)).thenReturn(enrollment);
 
-        service.unregister(patientId);
+        service.unRegister(patientId);
         assertFalse(enrollment.getActive());
         verify(mockAllMobileMidwifeEnrollments).update(enrollment);
         verify(mockAllCampaigns).stop(enrollment);

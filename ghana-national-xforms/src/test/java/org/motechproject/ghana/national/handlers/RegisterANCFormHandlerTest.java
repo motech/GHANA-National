@@ -124,7 +124,7 @@ public class RegisterANCFormHandlerTest {
 
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
         verify(careService).enroll(captor.capture());
-        verify(mockMobileMidwifeService).unregister(patientMotechId);
+        verify(mockMobileMidwifeService).unRegister(patientMotechId);
         verify(mockMobileMidwifeService, never()).register(Matchers.<MobileMidwifeEnrollment>any());
         final ANCVO ancVO = captor.getValue();
 
