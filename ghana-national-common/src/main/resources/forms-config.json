@@ -79,6 +79,12 @@
                 "fileName":"PregnancyTermination.xml",
                 "bean":"org.motechproject.ghana.national.bean.PregnancyTerminationForm",
                 "validator":"org.motechproject.ghana.national.validator.PregnancyTerminationFormValidator"
+            },
+            {
+                "name":"delivery",
+                "fileName":"Delivery.xml",
+                "bean":"org.motechproject.ghana.national.bean.DeliveryForm",
+                "validator":"org.motechproject.ghana.national.validator.DeliveryFormValidator"
             }
         ]
     }

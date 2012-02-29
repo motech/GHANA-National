@@ -3,10 +3,14 @@ package org.motechproject.ghana.national.repository;
 import org.motechproject.MotechException;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.service.CMSLiteService;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.SMS;
+import org.motechproject.ghana.national.domain.SMSTextComparator;
+import org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher;
+import org.motechproject.ghana.national.messagegateway.domain.SMS;
+import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
 import org.motechproject.sms.api.service.SmsService;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.Locale;
@@ -15,12 +19,16 @@ import java.util.Map;
 @Repository
 public class SMSGateway {
     @Autowired
+    @Qualifier("messageGateway")
+    MessageGateway messageGateway;
+
+    @Autowired
     SmsService smsService;
 
     @Autowired
     private CMSLiteService cmsLiteService;
 
-    public String getSMSTemplate(String language, String key) {
+    private String getSMSTemplate(String language, String key) {
         try {
             return cmsLiteService.getStringContent(language, key).getValue();
         } catch (ContentNotFoundException e) {
@@ -28,24 +36,20 @@ public class SMSGateway {
         }
     }
 
-    public String getSMSTemplate(String key) {
+    private String getSMSTemplate(String key) {
         return getSMSTemplate(defaultLanguage(), key);
     }
 
-    public SMS getSMS(String templateKey, Map<String, String> placeholderValues) {
-        return SMS.fromTemplate(getSMSTemplate(defaultLanguage(), templateKey)).fill(placeholderValues);
+    public void dispatchSMSToAggregator(String templateKey, Map<String, String> templateValues, String phoneNumber) {
+        messageGateway.dispatch(SMS.fromTemplate(getSMSTemplate(templateKey), templateValues, phoneNumber, DateUtil.now().toLocalDateTime(), new NextMondayDispatcher(), new SMSTextComparator<String>()));
     }
 
-    public SMS getSMS(String language, String templateKey, Map<String, String> placeholderValues) {
-        return SMS.fromTemplate(getSMSTemplate(language, templateKey)).fill(placeholderValues);
+    public void dispatchSMS(String templateKey, Map<String, String> templateValues, String phoneNumber) {
+        smsService.sendSMS(SMS.fill(getSMSTemplate(templateKey), templateValues), phoneNumber);
     }
 
-    public void sendSMS(Facility facility, SMS sms) {
-        smsService.sendSMS(facility.phoneNumber(), sms.getText());
-    }
-
-    public void sendSMS(String phoneNumber, SMS sms) {
-        smsService.sendSMS(phoneNumber, sms.getText());
+    public void dispatchSMS(String templateKey, String language, String phoneNumber){
+        smsService.sendSMS(getSMSTemplate(language, templateKey), phoneNumber);
     }
 
     private String defaultLanguage() {

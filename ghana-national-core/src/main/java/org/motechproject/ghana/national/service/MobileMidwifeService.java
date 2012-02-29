@@ -22,7 +22,7 @@ public class MobileMidwifeService {
 
     public void register(MobileMidwifeEnrollment enrollment) {
         enrollment.setEnrollmentDateTime(DateUtil.now());
-        unregister(enrollment.getPatientId());
+        unRegister(enrollment.getPatientId());
         enrollment.setActive(true);
         allEnrollments.add(enrollment);
 
@@ -34,7 +34,7 @@ public class MobileMidwifeService {
         }
     }
 
-    public void unregister(String patientId) {
+    public void unRegister(String patientId) {
         MobileMidwifeEnrollment enrollment = findActiveBy(patientId);
         if (enrollment != null) {
             enrollment.setActive(false);

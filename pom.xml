@@ -15,6 +15,7 @@
         <module>ghana-national-tools</module>
         <module>ghana-national-web</module>
         <module>ghana-national-common</module>
+        <module>ghana-national-messaging-gateway</module>
     </modules>
     <properties>
         <spring.version>3.0.5.RELEASE</spring.version>

@@ -11,7 +11,7 @@ import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.motechproject.ghana.national.domain.SmsKeys.*;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.*;
 
 @Component
 public class CareScheduleHandler extends BaseScheduleHandler {

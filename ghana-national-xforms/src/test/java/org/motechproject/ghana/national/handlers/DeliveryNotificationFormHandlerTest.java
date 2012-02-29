@@ -5,7 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -18,7 +19,6 @@ import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.text.DateFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -28,8 +28,9 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.EncounterType.PREG_DEL_NOTIFY_VISIT;
-import static org.motechproject.ghana.national.handlers.DeliveryNotificationFormHandler.*;
+import static org.motechproject.ghana.national.handlers.DeliveryNotificationFormHandler.DELIVERY_NOTIFICATION_SMS_KEY;
 
 public class DeliveryNotificationFormHandlerTest {
 
@@ -75,23 +76,28 @@ public class DeliveryNotificationFormHandlerTest {
         }};
         MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.deliveryNotify", parameter);
 
-        MRSPerson person = new MRSPerson().firstName("firstname").lastName("lastname");
-        MRSPatient mrsPatient = new MRSPatient("motechid", person, new MRSFacility(facilityId));
-        Patient patient = new Patient(mrsPatient);
+        final String firstName = "firstName";
+        final String lastName = "lastName";
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastName);
+        Patient patient = new Patient(new MRSPatient(motechId, person, new MRSFacility(facilityId)));
 
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
-        Facility facility = new Facility().mrsFacilityId(facilityId);
+        String facilityPhone = "facilityPhoneNumber";
+        Facility facility = new Facility().phoneNumber(facilityPhone).mrsFacilityId(facilityId);
         when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
         when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
-
-        when(mockSMSGateway.getSMSTemplate(DELIVERY_NOTIFICATION_SMS_KEY)).thenReturn("${motechId}-${firstName}-${lastName}-${date}");
 
         deliveryNotificationFormHandler.handleFormEvent(event);
 
         final HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
-        verify(mockAllEncounters).persistEncounter(mrsPatient, staffId, facilityId, PREG_DEL_NOTIFY_VISIT.value(),
+        verify(mockAllEncounters).persistEncounter(new MRSPatient(motechId, person, new MRSFacility(facilityId)), staffId, facilityId, PREG_DEL_NOTIFY_VISIT.value(),
                 datetime.toDate(), mrsObservations);
-        verify(mockSMSGateway).sendSMS(facility, SMS.fromSMSText("motechid-firstname-lastname-" + DateFormat.getDateTimeInstance().format(datetime.toDate())));
+
+        verify(mockSMSGateway).dispatchSMS(DELIVERY_NOTIFICATION_SMS_KEY, new HashMap<String, String>(){{
+            put(MOTECH_ID, motechId);
+            put(FIRST_NAME, firstName);
+            put(LAST_NAME, lastName);
+        }}, facilityPhone);
     }
 
     @Test

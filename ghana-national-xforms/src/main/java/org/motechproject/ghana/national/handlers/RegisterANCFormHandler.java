@@ -52,7 +52,7 @@ public class RegisterANCFormHandler implements FormPublishHandler {
             if (mobileMidwifeEnrollment != null) {
                 mobileMidwifeService.register(mobileMidwifeEnrollment);
             } else {
-                mobileMidwifeService.unregister(registerANCForm.getMotechId());
+                mobileMidwifeService.unRegister(registerANCForm.getMotechId());
             }
         } catch (Exception e) {
             log.error("Exception while creating an ANC encounter", e);

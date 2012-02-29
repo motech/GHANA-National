@@ -47,7 +47,6 @@ public class Encounter {
         return observations;
     }
 
-
     public Date getDate() {
         return date;
     }

@@ -31,12 +31,14 @@ public class FormValidator {
     public static final String STAFF_ID = "staffId";
 
     public List<FormError> validateIfPatientExistsAndIsAlive(String motechId, final String patientIdAttribute) {
+        //TODO: patientService is called twice!
+        List<FormError> formErrors = validatePatient(motechId, patientIdAttribute);
+        if(!formErrors.isEmpty()) {
+            return formErrors;
+        }
+
         final Patient patient = patientService.getPatientByMotechId(motechId);
-        if (patient == null) {
-            return new ArrayList<FormError>() {{
-                add(new FormError(patientIdAttribute, NOT_FOUND));
-            }};
-        } else if (patient.getMrsPatient().getPerson().isDead()) {
+        if (patient.getMrsPatient().getPerson().isDead()) {
             return new ArrayList<FormError>() {{
                 add(new FormError(patientIdAttribute, IS_NOT_ALIVE));
             }};
@@ -44,6 +46,17 @@ public class FormValidator {
         return new ArrayList<FormError>();
     }
 
+    public List<FormError> validatePatient(String motechId, final String patientIdAttribute) {
+        final Patient patient = patientService.getPatientByMotechId(motechId);
+        if (patient == null) {
+            return new ArrayList<FormError>() {{
+                add(new FormError(patientIdAttribute, NOT_FOUND));
+            }};
+        }
+        return new ArrayList<FormError>();
+    }
+
+    
     public List<FormError> validateIfPatientIsAliveAndIsAChild(String motechId, final String patientIdAttribute) {
         final Patient patient = patientService.getPatientByMotechId(motechId);
         if (patient == null) {
@@ -80,8 +93,8 @@ public class FormValidator {
         return new ArrayList<FormError>();
     }
 
-    public List<FormError> validateIfPatientIsFemale(String patientId, final String attributeName) {
-        final Patient patient = patientService.getPatientByMotechId(patientId);
+    public List<FormError> validateIfPatientIsFemale(String motechId, final String attributeName) {
+        final Patient patient = patientService.getPatientByMotechId(motechId);
         if (patient.getMrsPatient().getPerson().getGender().equals(Constants.PATIENT_GENDER_MALE)) {
             return new ArrayList<FormError>() {{
                 add(new FormError(attributeName, Constants.GENDER_ERROR_MSG));

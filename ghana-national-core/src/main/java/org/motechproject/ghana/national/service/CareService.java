@@ -26,7 +26,7 @@ import java.util.Set;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
 import static org.motechproject.ghana.national.domain.RegistrationToday.TODAY;
-import static org.motechproject.ghana.national.tools.Utility.safePareInteger;
+import static org.motechproject.ghana.national.tools.Utility.safeParseInteger;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.now;
 
@@ -109,8 +109,8 @@ public class CareService {
     Set<MRSObservation> addObservationsOnANCHistory(ANCCareHistoryVO ancCareHistoryVO) {
         List<ANCCareHistory> capturedHistory = ancCareHistoryVO.getCareHistory();
         Set<MRSObservation> observations = new HashSet<MRSObservation>();
-        addObservation(capturedHistory, ANCCareHistory.IPT, observations, ancCareHistoryVO.getLastIPTDate(), IPT.getName(), safePareInteger(ancCareHistoryVO.getLastIPT()));
-        addObservation(capturedHistory, ANCCareHistory.TT, observations, ancCareHistoryVO.getLastTTDate(), TT.getName(), safePareInteger(ancCareHistoryVO.getLastTT()));
+        addObservation(capturedHistory, ANCCareHistory.IPT, observations, ancCareHistoryVO.getLastIPTDate(), IPT.getName(), safeParseInteger(ancCareHistoryVO.getLastIPT()));
+        addObservation(capturedHistory, ANCCareHistory.TT, observations, ancCareHistoryVO.getLastTTDate(), TT.getName(), safeParseInteger(ancCareHistoryVO.getLastTT()));
         return observations;
     }
 

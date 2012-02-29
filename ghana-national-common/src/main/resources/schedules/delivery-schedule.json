@@ -14,13 +14,13 @@
                     "window" : "due",
                     "interval" : "1 Week",
                     "count" : "1",
-                    "offset" : "40 Weeks"
+                    "offset" : "39 Weeks"
                 },
                 {
                     "window" : "late",
                     "interval" : "1 Weeks",
                     "count" : "3",
-                    "offset" : "1 Weeks"
+                    "offset" : "0 Days"
                 }
             ]
         }

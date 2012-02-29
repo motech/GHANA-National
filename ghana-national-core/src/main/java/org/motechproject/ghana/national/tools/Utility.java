@@ -38,7 +38,7 @@ public class Utility {
         return (StringUtils.isEmpty(string.trim())) ? null : string;
     }
 
-    public static Integer safePareInteger(String string) {
+    public static Integer safeParseInteger(String string) {
         return (string == null) ? null : Integer.parseInt(string);
     }
 

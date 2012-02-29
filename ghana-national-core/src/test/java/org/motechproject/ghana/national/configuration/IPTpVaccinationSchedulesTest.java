@@ -22,7 +22,7 @@ import static org.motechproject.scheduletracking.api.domain.WindowName.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class IPTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
+public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
     @Before
     public void setUp() {

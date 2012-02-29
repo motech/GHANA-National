@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.SMS;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
@@ -19,10 +18,11 @@ import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
-import static org.motechproject.ghana.national.domain.SmsKeys.PREGNANCY_ALERT_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PREGNANCY_ALERT_SMS_KEY;
 
 public class BaseScheduleHandlerTest {
 
@@ -55,25 +55,20 @@ public class BaseScheduleHandlerTest {
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname);
         when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
-        Facility facilityMock = mock(Facility.class);
-        when(allFacilities.getFacility(facilityId)).thenReturn(facilityMock);
+        final String phoneNumber = "phoneNumber";
+        when(allFacilities.getFacility(facilityId)).thenReturn(new Facility().phoneNumber(phoneNumber));
 
-        final LocalDate expectedDeliveryDate = DateUtil.newDate(2000, 1, 1);
-
-        final SMS sms = SMS.fromSMSText("sms message");
-        when(SMSGateway.getSMS(PREGNANCY_ALERT_SMS_KEY, new HashMap<String, String>(){{
-            put(MOTECH_ID, patientMotechId);
-            put(WINDOW, "Due");
-            put(FIRST_NAME, firstName);
-            put(LAST_NAME, lastname);
-            put(SCHEDULE_NAME, scheduleName);
-        }})).thenReturn(sms);
 
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, null, windowName, null);
 
         careScheduleHandler.sendSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
 
-        verify(SMSGateway).sendSMS(facilityMock, sms);
-
+        verify(SMSGateway).dispatchSMSToAggregator(PREGNANCY_ALERT_SMS_KEY, new HashMap<String, String>() {{
+            put(MOTECH_ID, patientMotechId);
+            put(WINDOW, "Due");
+            put(FIRST_NAME, firstName);
+            put(LAST_NAME, lastname);
+            put(SCHEDULE_NAME, scheduleName);
+        }}, phoneNumber);
     }
 }
