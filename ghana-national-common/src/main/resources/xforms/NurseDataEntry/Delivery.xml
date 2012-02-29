@@ -36,7 +36,7 @@
         <child3Weight/>
         <sender/>
         <formtype>data_entry</formtype>
-        <formname>delivery-jf</formname>
+        <formname>delivery</formname>
       </delivery>
     </xf:instance>
     <xf:bind id="staffId" nodeset="/delivery/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
@@ -57,19 +57,19 @@
     <xf:bind action="show" id="child1MotechId" nodeset="/delivery/child1MotechId" relevant="/delivery/child1Outcome = 'A' and /delivery/child1RegistrationType = 'USE_PREPRINTED_ID'" required="true()" type="xsd:int" visible="false()" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
     <xf:bind action="show" id="child1Sex" nodeset="/delivery/child1Sex" relevant="/delivery/child1Outcome = 'A'" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind action="show" id="child1FirstName" nodeset="/delivery/child1FirstName" relevant="/delivery/child1Outcome = 'A'" type="xsd:string" visible="false()" required="false()"/>
-    <xf:bind action="show" id="child1Weight" nodeset="/delivery/child1Weight" relevant="/delivery/child1Outcome = 'A'" required="true()" type="xsd:decimal" visible="false()" constraint=". >= 0.2 and . <= 11" message="Value out of range: must be between 0.2 and 11"/>
+    <xf:bind action="show" id="child1Weight" nodeset="/delivery/child1Weight" relevant="/delivery/child1Outcome = 'A'" required="true()" type="xsd:decimal" visible="false()" constraint=". &gt;= 0.2 and . &lt;= 11" message="Value out of range: must be between 0.2 and 11"/>
     <xf:bind action="show" id="child2Outcome" nodeset="/delivery/child2Outcome" relevant="/delivery/outcome = '2' or /delivery/outcome = '3'" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind action="show" id="child2RegistrationType" nodeset="/delivery/child2RegistrationType" relevant="/delivery/child2Outcome = 'A'" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind action="show" id="child2MotechId" nodeset="/delivery/child2MotechId" relevant="/delivery/child2Outcome = 'A' and /delivery/child2RegistrationType = 'USE_PREPRINTED_ID'" required="true()" type="xsd:int" visible="false()" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
     <xf:bind action="show" id="child2Sex" nodeset="/delivery/child2Sex" relevant="/delivery/child2Outcome = 'A'" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind action="show" id="child2FirstName" nodeset="/delivery/child2FirstName" relevant="/delivery/child2Outcome = 'A'" type="xsd:string" visible="false()" required="false()"/>
-    <xf:bind action="show" id="child2Weight" nodeset="/delivery/child2Weight" relevant="/delivery/child2Outcome = 'A'" required="true()" type="xsd:decimal" visible="false()" constraint=". >= 0.2 and . <= 11" message="Value out of range: must be between 0.2 and 11"/>
+    <xf:bind action="show" id="child2Weight" nodeset="/delivery/child2Weight" relevant="/delivery/child2Outcome = 'A'" required="true()" type="xsd:decimal" visible="false()" constraint=". &gt;= 0.2 and . &lt;= 11" message="Value out of range: must be between 0.2 and 11"/>
     <xf:bind action="show" id="child3Outcome" nodeset="/delivery/child3Outcome" relevant="/delivery/outcome = '3'" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind action="show" id="child3RegistrationType" nodeset="/delivery/child3RegistrationType" relevant="/delivery/child3Outcome = 'A'" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind action="show" id="child3MotechId" nodeset="/delivery/child3MotechId" relevant="/delivery/child3Outcome = 'A' and /delivery/child3RegistrationType = 'USE_PREPRINTED_ID'" required="true()" type="xsd:int" visible="false()" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
     <xf:bind action="show" id="child3Sex" nodeset="/delivery/child3Sex" relevant="/delivery/child3Outcome = 'A'" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind action="show" id="child3FirstName" nodeset="/delivery/child3FirstName" relevant="/delivery/child3Outcome = 'A'" type="xsd:string" visible="false()" required="false()"/>
-    <xf:bind action="show" id="child3Weight" nodeset="/delivery/child3Weight" relevant="/delivery/child3Outcome = 'A'" required="true()" type="xsd:decimal" visible="false()" constraint=". >= 0.2 and . <= 11" message="Value out of range: must be between 0.2 and 11"/>
+    <xf:bind action="show" id="child3Weight" nodeset="/delivery/child3Weight" relevant="/delivery/child3Outcome = 'A'" required="true()" type="xsd:decimal" visible="false()" constraint=". &gt;= 0.2 and . &lt;= 11" message="Value out of range: must be between 0.2 and 11"/>
     <xf:bind action="show" constraint=". &lt; 2147483647" id="sender" message="Invalid phone number:  number too large" nodeset="/delivery/sender" relevant="/delivery/child1RegistrationType = 'AUTO_GENERATE_ID' or /delivery/child2RegistrationType = 'AUTO_GENERATE_ID' or /delivery/child3RegistrationType = 'AUTO_GENERATE_ID'" required="true()" type="xsd:int" visible="false()"/>
     <xf:bind id="formtype" nodeset="/delivery/formtype" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind id="formname" nodeset="/delivery/formname" required="true()" type="xsd:string" visible="false()"/>
@@ -88,40 +88,40 @@
     <xf:input bind="date">
       <xf:label>Delivery date</xf:label>
     </xf:input>
-    <xf:select1 bind="mode">
-      <xf:label>Delivery mode</xf:label>
-      <xf:item id="1">
-        <xf:label>Normal</xf:label>
-        <xf:value>1</xf:value>
-      </xf:item>
-      <xf:item id="2">
-        <xf:label>C-Section</xf:label>
-        <xf:value>2</xf:value>
-      </xf:item>
-      <xf:item id="3">
-        <xf:label>Vacuum</xf:label>
-        <xf:value>3</xf:value>
-      </xf:item>
-      <xf:item id="4">
-        <xf:label>Forceps</xf:label>
-        <xf:value>4</xf:value>
-      </xf:item>
-    </xf:select1>
-    <xf:select1 bind="outcome">
-      <xf:label>Delivery outcome</xf:label>
-      <xf:item id="1">
-        <xf:label>Singleton</xf:label>
-        <xf:value>1</xf:value>
-      </xf:item>
-      <xf:item id="2">
-        <xf:label>Twins</xf:label>
-        <xf:value>2</xf:value>
-      </xf:item>
-      <xf:item id="3">
-        <xf:label>Triplets</xf:label>
-        <xf:value>3</xf:value>
-      </xf:item>
-    </xf:select1>
+      <xf:select1 bind="mode">
+          <xf:label>Delivery mode</xf:label>
+          <xf:item id="1">
+              <xf:label>Normal</xf:label>
+              <xf:value>NORMAL</xf:value>
+          </xf:item>
+          <xf:item id="2">
+              <xf:label>C-Section</xf:label>
+              <xf:value>C_SECTION</xf:value>
+          </xf:item>
+          <xf:item id="3">
+              <xf:label>Vacuum</xf:label>
+              <xf:value>VACUUM</xf:value>
+          </xf:item>
+          <xf:item id="4">
+              <xf:label>Forceps</xf:label>
+              <xf:value>FORCEPS</xf:value>
+          </xf:item>
+      </xf:select1>
+      <xf:select1 bind="outcome">
+          <xf:label>Delivery outcome</xf:label>
+          <xf:item id="1">
+              <xf:label>Singleton</xf:label>
+              <xf:value>SINGLETON</xf:value>
+          </xf:item>
+          <xf:item id="2">
+              <xf:label>Twins</xf:label>
+              <xf:value>TWINS</xf:value>
+          </xf:item>
+          <xf:item id="3">
+              <xf:label>Triplets</xf:label>
+              <xf:value>TRIPLETS</xf:value>
+          </xf:item>
+      </xf:select1>
     <xf:select1 bind="maleInvolved">
       <xf:label>Male involvement</xf:label>
       <xf:item id="Y">
@@ -137,120 +137,120 @@
       <xf:label>Location</xf:label>
       <xf:item id="1">
         <xf:label>Gov't HC/HP</xf:label>
-        <xf:value>1</xf:value>
+        <xf:value>GOVERNMENT_HC_HP</xf:value>
       </xf:item>
       <xf:item id="2">
         <xf:label>Teaching hospital</xf:label>
-        <xf:value>2</xf:value>
+        <xf:value>TEACHING_HOSPITAL</xf:value>
       </xf:item>
       <xf:item id="3">
         <xf:label>Gov't hospital</xf:label>
-        <xf:value>3</xf:value>
+        <xf:value>GOVERNMENT_HOSPITAL</xf:value>
       </xf:item>
       <xf:item id="4">
         <xf:label>Private hospital</xf:label>
-        <xf:value>4</xf:value>
+        <xf:value>PRIVATE_HOSPITAL</xf:value>
       </xf:item>
       <xf:item id="5">
         <xf:label>CHAG</xf:label>
-        <xf:value>5</xf:value>
+        <xf:value>CHAG</xf:value>
       </xf:item>
       <xf:item id="6">
         <xf:label>Quasi-gov't institute</xf:label>
-        <xf:value>6</xf:value>
+        <xf:value>QUASI_GOVT_INSTITUTE</xf:value>
       </xf:item>
       <xf:item id="7">
         <xf:label>Mines</xf:label>
-        <xf:value>7</xf:value>
+        <xf:value>MINES</xf:value>
       </xf:item>
       <xf:item id="8">
         <xf:label>Home</xf:label>
-        <xf:value>8</xf:value>
+        <xf:value>HOMES</xf:value>
       </xf:item>
     </xf:select1>
     <xf:select1 bind="deliveredBy">
       <xf:label>Delivered by</xf:label>
       <xf:item id="1">
         <xf:label>Doctor</xf:label>
-        <xf:value>1</xf:value>
+        <xf:value>DOCTOR</xf:value>
       </xf:item>
       <xf:item id="2">
         <xf:label>Medical assistant</xf:label>
-        <xf:value>2</xf:value>
+        <xf:value>MEDICAL_ASSISTANT</xf:value>
       </xf:item>
       <xf:item id="3">
         <xf:label>Midwife - private</xf:label>
-        <xf:value>3</xf:value>
+        <xf:value>MIDWIFE_PRIVATE</xf:value>
       </xf:item>
       <xf:item id="4">
         <xf:label>Midwife - gov't</xf:label>
-        <xf:value>4</xf:value>
+        <xf:value>MIDWIFE_GOVT</xf:value>
       </xf:item>
       <xf:item id="5">
         <xf:label>CHO or CHN</xf:label>
-        <xf:value>5</xf:value>
+        <xf:value>CHO_OR_CHN</xf:value>
       </xf:item>
       <xf:item id="6">
         <xf:label>Trained TBA</xf:label>
-        <xf:value>6</xf:value>
+        <xf:value>TRAINED_TBA</xf:value>
       </xf:item>
       <xf:item id="7">
         <xf:label>Untrained TBA</xf:label>
-        <xf:value>7</xf:value>
+        <xf:value>UNTRAINED_TBA</xf:value>
       </xf:item>
       <xf:item id="8">
         <xf:label>Friend or relative</xf:label>
-        <xf:value>8</xf:value>
+        <xf:value>FRIEND_OR_RELATIVE</xf:value>
       </xf:item>
     </xf:select1>
     <xf:select bind="complications">
       <xf:label>Complications</xf:label>
       <xf:item id="1">
         <xf:label>Eclampsia</xf:label>
-        <xf:value>1</xf:value>
+        <xf:value>ECLAMPSIA</xf:value>
       </xf:item>
       <xf:item id="2">
         <xf:label>Puerperal inf/sepsis</xf:label>
-        <xf:value>2</xf:value>
+        <xf:value>PUERPERAL_INF_SEPSIS</xf:value>
       </xf:item>
       <xf:item id="3">
         <xf:label>PPH</xf:label>
-        <xf:value>3</xf:value>
+        <xf:value>PPH</xf:value>
       </xf:item>
       <xf:item id="4">
         <xf:label>Ruptured uterus</xf:label>
-        <xf:value>4</xf:value>
+        <xf:value>RUPTURED_UTERUS</xf:value>
       </xf:item>
       <xf:item id="5">
         <xf:label>Cardiac arrest</xf:label>
-        <xf:value>5</xf:value>
+        <xf:value>CARDIAC_ARREST</xf:value>
       </xf:item>
       <xf:item id="6">
         <xf:label>VVF</xf:label>
-        <xf:value>6</xf:value>
+        <xf:value>VVF</xf:value>
       </xf:item>
       <xf:item id="7">
         <xf:label>Drop foot</xf:label>
-        <xf:value>7</xf:value>
+        <xf:value>DROP_FOOT</xf:value>
       </xf:item>
       <xf:item id="8">
         <xf:label>Puerperal psychosis</xf:label>
-        <xf:value>8</xf:value>
+        <xf:value>PUERPERAL_PSYCHOSIS</xf:value>
       </xf:item>
       <xf:item id="9">
         <xf:label>Other</xf:label>
-        <xf:value>9</xf:value>
+        <xf:value>OTHER</xf:value>
       </xf:item>
     </xf:select>
     <xf:select1 bind="vvf">
       <xf:label>VVF</xf:label>
       <xf:item id="1">
         <xf:label>Repaired</xf:label>
-        <xf:value>1</xf:value>
+        <xf:value>REPAIRED</xf:value>
       </xf:item>
       <xf:item id="2">
         <xf:label>Referred</xf:label>
-        <xf:value>2</xf:value>
+        <xf:value>REFERRED</xf:value>
       </xf:item>
     </xf:select1>
     <xf:select1 bind="maternalDeath">
