@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.handler;
 
-import org.joda.time.LocalDate;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -12,6 +12,7 @@ import org.motechproject.scheduletracking.api.domain.MilestoneAlert;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.motechproject.scheduletracking.api.events.constants.EventDataKeys;
 import org.motechproject.server.event.annotations.MotechListener;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.lang.annotation.Annotation;
@@ -40,10 +41,10 @@ public class AncVisitScheduleHandlerTest {
     public void shouldSendTextMessageToFacilityRegardingTheForthcomingANCVisit() {
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         parameters.put(EventDataKeys.SCHEDULE_NAME, "scheduleName");
-        parameters.put(EventDataKeys.MILESTONE_NAME, MilestoneAlert.fromMilestone(new Milestone("milestone", null, null, null, null), new LocalDate()));
+        parameters.put(EventDataKeys.MILESTONE_NAME, MilestoneAlert.fromMilestone(new Milestone("milestone", null, null, null, null), DateTime.now()));
         parameters.put(EventDataKeys.WINDOW_NAME, "windowName");
         parameters.put(EventDataKeys.EXTERNAL_ID, "externalId");
-        parameters.put(EventDataKeys.REFERENCE_DATE, new LocalDate());
+        parameters.put(EventDataKeys.REFERENCE_DATE, DateUtil.now());
 
         MotechEvent motechEvent = new MotechEvent("", parameters);
         ancVisitScheduleHandler.handleAlert(motechEvent);
@@ -55,7 +56,7 @@ public class AncVisitScheduleHandlerTest {
         assertThat(actualMilestoneEvent.getMilestoneAlert(), is(equalTo(parameters.get(EventDataKeys.MILESTONE_NAME))));
         assertThat(actualMilestoneEvent.getWindowName(), is(equalTo(parameters.get(EventDataKeys.WINDOW_NAME))));
         assertThat(actualMilestoneEvent.getExternalId(), is(equalTo(parameters.get(EventDataKeys.EXTERNAL_ID))));
-        assertThat(actualMilestoneEvent.getReferenceDate(), is(equalTo(parameters.get(EventDataKeys.REFERENCE_DATE))));
+        assertThat(actualMilestoneEvent.getReferenceDateTime(), is(equalTo(parameters.get(EventDataKeys.REFERENCE_DATE))));
     }
 
     @Test

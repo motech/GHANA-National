@@ -56,7 +56,7 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
     }
 
     private String scheduleAlertForTTVaccination(LocalDate firstDosageDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, firstDosageDate, null, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, firstDosageDate, null, null, null, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

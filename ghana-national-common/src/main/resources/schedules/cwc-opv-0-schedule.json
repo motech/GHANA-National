@@ -1,0 +1,22 @@
+{
+    "name" : "OPV-0",
+    "milestones" : [
+        {
+            "name" : "OPV0",
+            "scheduleWindows" : {
+                "earliest" : [],
+                "due" : [],
+                "late" : ["3 Weeks"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "late",
+                    "interval" : "1 Week",
+                    "count" : "2",
+                    "offset" : "2 Days"
+                }
+            ]
+        }
+    ]
+}

@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.handler;
 
-import org.joda.time.LocalDate;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -26,7 +26,7 @@ public class CareScheduleHandlerTest {
     public void shouldHandlePregnancyAlert() {
         doNothing().when(careScheduleHandlerSpy).sendSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
 
-        LocalDate conceptionDate = DateUtil.newDate(2000, 11, 11);
+        DateTime conceptionDate = DateUtil.newDateTime(2000, 11, 11, 0, 0, 0);
         final MilestoneEvent milestoneEvent = new MilestoneEvent(null, null, null, null, conceptionDate);
 
         careScheduleHandlerSpy.handlePregnancyAlert(milestoneEvent);
@@ -38,7 +38,7 @@ public class CareScheduleHandlerTest {
     public void shouldHandleTTVaccinationAlert() {
         doNothing().when(careScheduleHandlerSpy).sendSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
 
-        LocalDate referenceDate = DateUtil.newDate(2012, 2, 1);
+        DateTime referenceDate = DateUtil.newDateTime(2012, 2, 1, 0, 0, 0);
         Milestone milestone = new Milestone("M1", weeks(0), weeks(3), weeks(6), weeks(7));
         final MilestoneEvent milestoneEvent = new MilestoneEvent(null, null, MilestoneAlert.fromMilestone(milestone, referenceDate), null, referenceDate);
 
@@ -51,7 +51,7 @@ public class CareScheduleHandlerTest {
     public void shouldHandleBCGAlert() {
         doNothing().when(careScheduleHandlerSpy).sendSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
 
-        LocalDate referenceDate = DateUtil.newDate(2012, 2, 1);
+        DateTime referenceDate = DateUtil.newDateTime(2012, 2, 1, 0, 0, 0);
         Milestone milestone = new Milestone("M1", weeks(0), weeks(3), weeks(6), weeks(7));
         final MilestoneEvent milestoneEvent = new MilestoneEvent(null, null, MilestoneAlert.fromMilestone(milestone, referenceDate), null, referenceDate);
 
@@ -64,7 +64,7 @@ public class CareScheduleHandlerTest {
     public void shouldHandleAncVisitAlert() {
         doNothing().when(careScheduleHandlerSpy).sendSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
 
-        LocalDate referenceDate = DateUtil.newDate(2012, 2, 1);
+        DateTime referenceDate = DateUtil.newDateTime(2012, 2, 1, 0, 0, 0);
         Milestone milestone = new Milestone("M1", weeks(0), weeks(0), weeks(1), weeks(3));
         final MilestoneEvent milestoneEvent = new MilestoneEvent(null, null, MilestoneAlert.fromMilestone(milestone, referenceDate), null, referenceDate);
 
@@ -77,7 +77,7 @@ public class CareScheduleHandlerTest {
     public void handleIPTpVaccinationAlert() {
         doNothing().when(careScheduleHandlerSpy).sendSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
 
-        LocalDate conceptionDate = DateUtil.newDate(2011, 12, 17);
+        DateTime conceptionDate = DateUtil.newDateTime(2011, 12, 17, 0, 0, 0);
         Milestone milestone = new Milestone("M1", weeks(12), weeks(2), weeks(3), weeks(0));
         final MilestoneEvent milestoneEvent = new MilestoneEvent(null, null, MilestoneAlert.fromMilestone(milestone, conceptionDate), null, conceptionDate);
 

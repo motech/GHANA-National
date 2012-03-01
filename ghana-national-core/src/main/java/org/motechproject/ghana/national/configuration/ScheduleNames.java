@@ -10,4 +10,5 @@ public class ScheduleNames {
     public static final String BCG = "BCG";
     public static final String YELLOW_FEVER = "YellowFeverVaccine";
     public static final String PENTA = "Penta";
+    public static final String OPV_0 = "OPV-0";
 }
