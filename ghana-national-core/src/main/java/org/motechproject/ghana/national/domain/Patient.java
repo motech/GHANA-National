@@ -17,6 +17,7 @@ public class Patient {
 
     private String parentId;
 
+
     public Patient() {
     }
 
@@ -79,18 +80,15 @@ public class Patient {
     }
 
     public List<PatientCare> cwcCareProgramToEnrollOnRegistration() {
+        LocalDate referenceDate = DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth());
         return nullSafeList(
-                new PatientCare(BCG, DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth())),
+                new PatientCare(BCG, referenceDate),
+                new PatientCare(YELLOW_FEVER, referenceDate),
                 pentaPatientCare());
     }
 
-    public PatientCare iptPatientCareEnroll(LocalDate expectedDeliveryDate) {
-        PatientCare patientCareTill19Week = iptPatientCareEnrollOnRegistration(expectedDeliveryDate);
-        return patientCareTill19Week == null ? new PatientCare(ANC_IPT_VACCINE, DateUtil.today()) : patientCareTill19Week;
-    }
-
-    public PatientCare iptPatientCareVisit() {
-        return new PatientCare(ANC_IPT_VACCINE, DateUtil.today());
+    public PatientCare iptPatientCareEnrollOnVisitAfter19Weeks(LocalDate visitDate) {
+        return new PatientCare(ANC_IPT_VACCINE, visitDate);
     }
 
     public PatientCare pentaPatientCare() {

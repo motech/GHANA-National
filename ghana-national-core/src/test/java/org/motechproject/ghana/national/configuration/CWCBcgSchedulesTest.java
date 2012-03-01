@@ -13,7 +13,7 @@ import java.text.ParseException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class BCGSchedulesTest extends BaseScheduleTrackingTest {
+public class CWCBcgSchedulesTest extends BaseScheduleTrackingTest {
 
     @Before
     public void setUp() {
@@ -67,7 +67,7 @@ public class BCGSchedulesTest extends BaseScheduleTrackingTest {
     }
 
     private String scheduleAlertForBCG(LocalDate birthDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, birthDate, null, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, birthDate, null, null, null, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

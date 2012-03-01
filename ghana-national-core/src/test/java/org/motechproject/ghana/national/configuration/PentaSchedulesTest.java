@@ -129,7 +129,7 @@ public class PentaSchedulesTest extends BaseScheduleTrackingTest {
     }
 
     private String scheduleAlertForPenta(LocalDate birthDate, String milestoneName) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, birthDate, null, milestoneName);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, birthDate, null, null, null, milestoneName);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

@@ -123,7 +123,7 @@ public class IPTiVaccinationSchedulesTest extends BaseScheduleTrackingTest {
     }
 
     private String enrollForIPTVaccine(LocalDate referenceDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, scheduleName, preferredAlertTime, referenceDate, DateUtil.today(), null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, scheduleName, preferredAlertTime, referenceDate, null, DateUtil.today(), null, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

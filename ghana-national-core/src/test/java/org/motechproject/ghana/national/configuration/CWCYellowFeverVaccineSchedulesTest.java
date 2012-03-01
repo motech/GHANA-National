@@ -45,7 +45,7 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
         );
     }
 
-        @Test
+    @Test
     public void verifyScheduleIfEnrolledJustBefore9thMonthToGetAlerts() throws SchedulerException {
 
         LocalDate childBirthDate = newDate("3-Jan-2012");
@@ -58,7 +58,7 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
                 alert(late, onDate("7-Nov-2012")))
         );
     }
-    
+
     @Test
     public void verifyScheduleIfEnrolledAtExactly9thMonthToGetAlerts() throws SchedulerException {
 
@@ -100,7 +100,7 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
 
         deleteAllJobs();
 
-        mockToday(newDateTime(childBirthDate.plusMonths(9).plusWeeks(4), new Time(10, 10))); // 8-Aug-2013 10:10 exact delivery time
+        mockToday(newDateTime(childBirthDate.plusMonths(9).plusWeeks(4), new Time(10, 11))); // 8-Aug-2013 10:11 after delivery time
         enrollmentId = enroll(childBirthDate);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(late, onDate("15-Aug-2013")))
@@ -114,7 +114,7 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
         mockToday(newDateTime(childBirthDate.plusMonths(9).plusWeeks(5), new Time(10, 9))); // 15-Aug-2013 10:09 before delivery time
         enrollmentId = enroll(childBirthDate);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-            alert(late, onDate("15-Aug-2013")))
+                alert(late, onDate("15-Aug-2013")))
         );
 
         deleteAllJobs();

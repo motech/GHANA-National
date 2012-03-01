@@ -12,9 +12,9 @@
             "alerts" : [
                 {
                     "window" : "late",
-                    "interval" : "1 Week",
+                    "interval" : ["1 Week"],
                     "count" : "2",
-                    "offset" : "2 Days"
+                    "offset" : ["2 Days"]
                 }
             ]
         }

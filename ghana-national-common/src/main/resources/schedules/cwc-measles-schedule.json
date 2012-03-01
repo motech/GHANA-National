@@ -1,5 +1,5 @@
 {
-    "name" : "YellowFeverVaccine",
+    "name" : "CWCMeaslesVaccine",
     "milestones" : [
         {
             "name" : "Default",
@@ -12,15 +12,15 @@
             "alerts" : [
                 {
                     "window" : "due",
-                    "interval" : "1 Week",
+                    "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : "0 Weeks"
+                    "offset" : ["0 Weeks"]
                 },
                 {
                     "window" : "late",
-                    "interval" : "1 Weeks",
+                    "interval" : ["1 Weeks"],
                     "count" : "3",
-                    "offset" : "0 Weeks"
+                    "offset" : ["0 Weeks"]
                 }
             ]
         }

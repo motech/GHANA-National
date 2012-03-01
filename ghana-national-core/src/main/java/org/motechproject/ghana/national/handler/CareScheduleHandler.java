@@ -27,7 +27,7 @@ public class CareScheduleHandler extends BaseScheduleHandler {
     @LoginAsAdmin
     @ApiSession
     public void handlePregnancyAlert(final MilestoneEvent milestoneEvent) {
-        LocalDate conceptionDate = milestoneEvent.getReferenceDate();
+        LocalDate conceptionDate = milestoneEvent.getReferenceDateTime().toLocalDate();
         Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(conceptionDate);
         sendSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
     }

@@ -112,7 +112,7 @@ public class PregnancyServiceTest {
 
         assertReflectionEquals(expectedEncounter, encounterArgumentCaptor.getValue());
         Patient actualChild = patientArgumentCaptor.getValue();
-        assertThat(actualChild.getMotechId(), is(deliveryRequest.getDeliveredChildRequests().get(0).getchildMotechId()));
+        assertThat(actualChild.getMotechId(), is(deliveryRequest.getDeliveredChildRequests().get(0).getChildMotechId()));
         assertThat(actualChild.getParentId(), is(parentMotechId));
         assertThat(actualChild.getFirstName(), is("Jo"));
         assertThat(actualChild.getLastName(), is("Baby"));

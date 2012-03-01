@@ -21,15 +21,15 @@
             "alerts" : [
                 {
                     "window" : "due",
-                    "interval" : "1 Weeks",
+                    "interval" : ["1 Weeks"],
                     "count" : "1",
-                    "offset" : "3 Weeks"
+                    "offset" : ["3 Weeks"]
                 },
                 {
                     "window" : "late",
-                    "interval" : "1 Weeks",
+                    "interval" : ["1 Weeks"],
                     "count" : "3",
-                    "offset" : "1 Weeks"
+                    "offset" : ["1 Weeks"]
                 }
             ]
         },
@@ -38,21 +38,21 @@
             "scheduleWindows" : {
                 "earliest" : [],
                 "due" : ["23 Weeks"],
-                "late" : ["192 Days"], # 23 * 7 + 10 + 21
+                "late" : ["192 Days"],
                 "max" : ["199 Days"]
             },
             "alerts" : [
                 {
                     "window" : "due",
-                    "interval" : "1 Weeks",
+                    "interval" : ["1 Weeks"],
                     "count" : "1",
-                    "offset" : "23 Weeks"
+                    "offset" : ["23 Weeks"]
                 },
                 {
                     "window" : "late",
-                    "interval" : "1 Weeks",
+                    "interval" : ["1 Weeks"],
                     "count" : "3",
-                    "offset" : "10 Days"
+                    "offset" : ["10 Days"]
                 }
             ]
         },
@@ -67,15 +67,15 @@
             "alerts" : [
                 {
                     "window" : "due",
-                    "interval" : "1 Weeks",
+                    "interval" : ["1 Weeks"],
                     "count" : "1",
-                    "offset" : "47 Weeks"
+                    "offset" : ["47 Weeks"]
                 },
                 {
                     "window" : "late",
-                    "interval" : "1 Weeks",
+                    "interval" : ["1 Weeks"],
                     "count" : "3",
-                    "offset" : "10 Days"
+                    "offset" : ["10 Days"]
                 }
             ]
         },
@@ -90,15 +90,15 @@
              "alerts" : [
                  {
                      "window" : "due",
-                     "interval" : "1 Weeks",
+                     "interval" : ["1 Weeks"],
                      "count" : "1",
-                     "offset" : "47 Weeks"
+                     "offset" : ["47 Weeks"]
                  },
                  {
                      "window" : "late",
-                     "interval" : "1 Weeks",
+                     "interval" : ["1 Weeks"],
                      "count" : "3",
-                     "offset" : "10 Days"
+                     "offset" : ["10 Days"]
                  }
              ]
          }

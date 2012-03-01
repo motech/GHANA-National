@@ -41,27 +41,27 @@ public class DeliveredChildRequest {
         return this;
     }
 
-    public BirthOutcome getchildBirthOutcome() {
+    public BirthOutcome getChildBirthOutcome() {
         return childBirthOutcome;
     }
 
-    public RegistrationType getchildRegistrationType() {
+    public RegistrationType getChildRegistrationType() {
         return childRegistrationType;
     }
 
-    public String getchildMotechId() {
+    public String getChildMotechId() {
         return childMotechId;
     }
 
-    public String getchildSex() {
+    public String getChildSex() {
         return childSex;
     }
 
-    public String getchildFirstName() {
+    public String getChildFirstName() {
         return childFirstName;
     }
 
-    public String getchildWeight() {
+    public String getChildWeight() {
         return childWeight;
     }
 }

@@ -16,18 +16,17 @@ import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
-import org.motechproject.scheduletracking.api.service.EnrollmentResponse;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
 import static org.motechproject.ghana.national.domain.IPTVaccine.createFromANCVisit;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
-import static org.motechproject.util.DateUtil.*;
+import static org.motechproject.util.DateUtil.newDate;
+import static org.motechproject.util.DateUtil.today;
 
 @Service
 public class MotherVisitService extends VisitService {
@@ -58,7 +57,7 @@ public class MotherVisitService extends VisitService {
         IPTVaccine iptVaccine = createFromANCVisit(ancVisit);
         if (iptVaccine != null) {
             mrsObservations.addAll(factory.createObservationsForIPT(iptVaccine));
-            createIPTpSchedule(iptVaccine);
+            enrollOrFulfillScheduleIPTp(ancVisit, iptVaccine);
         }
     }
 
@@ -84,18 +83,10 @@ public class MotherVisitService extends VisitService {
         allSchedules.enrollOrFulfill(enrollmentRequest, newDate(ttVisit.getDate()));
     }
 
-    private void createIPTpSchedule(IPTVaccine iptVaccine) {
+    private void enrollOrFulfillScheduleIPTp(ANCVisitRequest ancVisit, IPTVaccine iptVaccine) {
         Patient patient = iptVaccine.getGivenTo();
-        EnrollmentResponse enrollmentResponse = enrollment(patient.getMRSPatientId(), ANC_IPT_VACCINE);
-        if(enrollmentResponse == null) {
-            LocalDate expectedDeliveryDate = fetchLatestEDD(patient);
-            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patient.iptPatientCareEnroll(expectedDeliveryDate), today(), iptVaccine.getIptMilestone()));
-        }
-        allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), patient.iptPatientCareVisit().name(), today());
-    }
-
-    private LocalDate fetchLatestEDD(Patient patient) {
-        MRSObservation eddObservation = allObservations.findObservation(patient.getMRSPatientId(), Concept.EDD.getName());
-        return new LocalDate(eddObservation.getValue());
+        LocalDate visitDate = newDate(ancVisit.getDate());
+        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.iptPatientCareEnrollOnVisitAfter19Weeks(visitDate), visitDate, iptVaccine.getIptMilestone());
+        allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
     }
 }
