@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web.helper;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -74,8 +75,10 @@ public class ANCFormMapper {
         if (mrsEncounter == null) {
             return;
         }
-        Boolean deliveryDateConfirmed = (Boolean) selectLatestObservation(mrsEncounter.getObservations(), CONFINEMENT_CONFIRMED.getName()).getValue();
-        Date estimatedDateOfDelivery = (Date) selectLatestObservation(mrsEncounter.getObservations(), EDD.getName()).getValue();
+        MRSObservation confinement = selectLatestObservation(mrsEncounter.getObservations(), CONFINEMENT_CONFIRMED.getName());
+        Boolean deliveryDateConfirmed = (null != confinement) ? (Boolean) confinement.getValue() : Boolean.FALSE;
+        MRSObservation eddObservation = selectLatestObservation(mrsEncounter.getObservations(), EDD.getName());
+        Date estimatedDateOfDelivery = (null != eddObservation.getValue()) ? (Date) eddObservation.getValue() : null;
 
         ancEnrollmentForm.setDeliveryDateConfirmed(deliveryDateConfirmed);
         ancEnrollmentForm.setEstimatedDateOfDelivery(estimatedDateOfDelivery);
@@ -84,6 +87,6 @@ public class ANCFormMapper {
     private MRSObservation selectLatestObservation(Set<MRSObservation> observations, String observationName) {
         List<MRSObservation> confinementObservations = select(observations, having(on(MRSObservation.class).getConceptName(), is(observationName)));
         List<MRSObservation<MRSObservation>> sortedConfinements = sort(confinementObservations, on(MRSObservation.class).getDate());
-        return sortedConfinements.get(sortedConfinements.size() - 1);
+        return (CollectionUtils.isEmpty(sortedConfinements)) ? null : sortedConfinements.get(sortedConfinements.size() - 1);
     }
 }
