@@ -12,27 +12,27 @@
             "alerts" : [
                 {
                     "window" : "earliest",
-                    "interval" : "1 Week",
+                    "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : "2 Weeks"
+                    "offset" : ["2 Weeks"]
                 },
                 {
                     "window" : "due",
-                    "interval" : "1 Week",
+                    "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : "0 Week"
+                    "offset" : ["0 Week"]
                 },
                 {
                     "window" : "late",
-                    "interval" : "1 Week",
+                    "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : "0 Week"
+                    "offset" : ["0 Week"]
                 },
                 {
                     "window" : "max",
-                    "interval" : "1 Week",
+                    "interval" : ["1 Week"],
                     "count" : "3",
-                    "offset" : "0 Week"
+                    "offset" : ["0 Week"]
                 }
             ]
         },
@@ -47,15 +47,15 @@
             "alerts" : [
                 {
                     "window" : "earliest",
-                    "interval" : "1 Week",
+                    "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : "3 Weeks"
+                    "offset" : ["3 Weeks"]
                 },
                 {
                     "window" : "due",
-                    "interval" : "1 Week",
+                    "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : "0 Week"
+                    "offset" : ["0 Week"]
                 }
             ]
         }
