@@ -48,15 +48,15 @@ public class PregnancyService {
 
     public void handleDelivery(PregnancyDeliveryRequest request) {
         for (DeliveredChildRequest childRequest : request.getDeliveredChildRequests()) {
-            if (childRequest.getchildBirthOutcome().equals(BirthOutcome.ALIVE)) {
-                String childMotechId = childRequest.getchildMotechId();
-                if (childRequest.getchildRegistrationType().equals(RegistrationType.AUTO_GENERATE_ID)) {
+            if (childRequest.getChildBirthOutcome().equals(BirthOutcome.ALIVE)) {
+                String childMotechId = childRequest.getChildMotechId();
+                if (childRequest.getChildRegistrationType().equals(RegistrationType.AUTO_GENERATE_ID)) {
                     childMotechId = identifierGenerator.newPatientId();
                 }
                 MRSPerson childPerson = new MRSPerson();
-                childPerson.firstName((childRequest.getchildFirstName() != null) ? childRequest.getchildFirstName() : "Baby")
+                childPerson.firstName((childRequest.getChildFirstName() != null) ? childRequest.getChildFirstName() : "Baby")
                         .lastName("Baby").dateOfBirth(request.getDeliveryDateTime().toDate())
-                        .gender((childRequest.getchildSex() != null) ? childRequest.getchildSex() : "?");
+                        .gender((childRequest.getChildSex() != null) ? childRequest.getChildSex() : "?");
                 Patient patient = new Patient(new MRSPatient(childMotechId, childPerson, request.getFacility().mrsFacility()), request.getPatient().getMotechId());
                 allPatients.save(patient);
             }
