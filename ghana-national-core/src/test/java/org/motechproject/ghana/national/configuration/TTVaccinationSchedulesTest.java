@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.configuration;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
@@ -12,7 +11,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.text.ParseException;
 
+import static java.util.Arrays.asList;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
+import static org.motechproject.scheduletracking.api.domain.WindowName.due;
+import static org.motechproject.scheduletracking.api.domain.WindowName.late;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
@@ -25,26 +27,40 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
     }
 
     @Test
-    public void verifyTTVaccinationScheduleFulfillmentHappensAfterTheLastAlert() throws SchedulerException, ParseException {
-        LocalDate firstDosageDate = mockToday(newDate("01-FEB-2000"));
-
+    public void verifyScheduleCreatedForTT2() throws SchedulerException {
+        LocalDate firstDosageDate = mockToday(newDate("01-FEB-2012"));
         enrollmentId = scheduleAlertForTTVaccination(firstDosageDate);
         fulfillCurrentMilestone(firstDosageDate);
 
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("22-FEB-2000"), newDate("29-FEB-2000"), newDate("07-MAR-2000"), newDate("14-MAR-2000")));
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(due, onDate("22-Feb-2012")),
+                alert(late, onDate("29-Feb-2012")),
+                alert(late, onDate("7-Mar-2012")),
+                alert(late, onDate("14-Mar-2012"))));
+        fulfillCurrentMilestone(newDate("22-Mar-2012"));
 
-        fulfillCurrentMilestone(newDate("22-MAR-2000"));
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("30-AUG-2000"), newDate("09-SEP-2000"), newDate("16-SEP-2000"), newDate("23-SEP-2000")));
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(due, onDate("15-Sep-2012")),
+                alert(late, onDate("25-Sep-2012")),
+                alert(late, onDate("2-Oct-2012")),
+                alert(late, onDate("9-Oct-2012"))));
+        fulfillCurrentMilestone(newDate("17-Oct-2012"));
 
-        fulfillCurrentMilestone(newDate("18-OCT-2000"));
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("12-SEP-2001"), newDate("22-SEP-2001"), newDate("29-SEP-2001"), newDate("06-OCT-2001")));
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(due, onDate("10-Oct-2013")),
+                alert(late, onDate("20-Oct-2013")),
+                alert(late, onDate("27-Oct-2013")),
+                alert(late, onDate("03-Nov-2013"))));
+        fulfillCurrentMilestone(newDate("11-Nov-2013"));
 
-        fulfillCurrentMilestone(newDate("15-OCT-2001"));
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("09-SEP-2002"), newDate("19-SEP-2002"), newDate("26-SEP-2002"), newDate("03-OCT-2002")));
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(due, onDate("04-Nov-2014")),
+                alert(late, onDate("14-Nov-2014")),
+                alert(late, onDate("21-Nov-2014")),
+                alert(late, onDate("28-Nov-2014"))));
     }
 
     @Test
-    @Ignore
     public void verifyTTVaccinationScheduleGivenFirstDosageInThePast() throws SchedulerException, ParseException {
         mockToday(newDate("24-FEB-2000"));
         final LocalDate firstDosageDate = newDate("01-FEB-2000");

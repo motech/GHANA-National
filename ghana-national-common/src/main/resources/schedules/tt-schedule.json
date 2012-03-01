@@ -14,14 +14,14 @@
             "name" : "TT2",
             "scheduleWindows" : {
                 "earliest" : [],
-                "due" : ["3 Weeks"],
-                "late" : ["6 Weeks"],
-                "max" : ["7 Weeks"]
+                "due" : ["4 Weeks"],
+                "late" : ["7 Weeks"],
+                "max" : ["8 Weeks"]
             },
             "alerts" : [
                 {
                     "window" : "due",
-                    "interval" : ["1 Weeks"],
+                    "interval" :["1 Weeks"],
                     "count" : "1",
                     "offset" : ["3 Weeks"]
                 },
@@ -29,7 +29,7 @@
                     "window" : "late",
                     "interval" : ["1 Weeks"],
                     "count" : "3",
-                    "offset" : ["1 Weeks"]
+                    "offset" : ["0 Days"]
                 }
             ]
         },
@@ -37,22 +37,22 @@
             "name" : "TT3",
             "scheduleWindows" : {
                 "earliest" : [],
-                "due" : ["23 Weeks"],
-                "late" : ["192 Days"],
-                "max" : ["199 Days"]
+                "due" : ["6 Months"],
+                "late" : ["6 Months", "10 Days", "3 Weeks"],
+                "max" : ["6 Months", "10 Days", "4 Weeks"]
             },
             "alerts" : [
                 {
                     "window" : "due",
                     "interval" : ["1 Weeks"],
                     "count" : "1",
-                    "offset" : ["23 Weeks"]
+                    "offset" : ["6 Month" ,"-1 Weeks"]
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Weeks"],
                     "count" : "3",
-                    "offset" : ["10 Days"]
+                    "offset" : ["3 Days"]
                 }
             ]
         },
@@ -60,45 +60,45 @@
             "name" : "TT4",
             "scheduleWindows" : {
                 "earliest" : [],
-                "due" : ["47 Weeks"],
-                "late" : ["360 Days"],   # 47 * 7 + 10 + 21
-                "max" : ["367 Days"]
+                "due" : ["12 Months"],
+                "late" : ["12 Months", "10 Days", "3 Weeks"],
+                "max" : ["12 Months", "10 Days", "4 Weeks"]
             },
             "alerts" : [
                 {
                     "window" : "due",
                     "interval" : ["1 Weeks"],
                     "count" : "1",
-                    "offset" : ["47 Weeks"]
+                    "offset" : ["12 Months", "-1 Weeks"]
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Weeks"],
                     "count" : "3",
-                    "offset" : ["10 Days"]
+                    "offset" : ["3 Days"]
                 }
             ]
         },
-        {
-            "name" : "TT5",
-            "scheduleWindows" : {
-                "earliest" : [],
-                "due" : ["47 Weeks"],
-                "late" : ["360 Days"],   # 47 * 7 + 10 + 21
-                "max" : ["367 Days"]
+         {
+             "name" : "TT5",
+             "scheduleWindows" : {
+                 "earliest" : [],
+                 "due" : ["12 Months"],
+                 "late" : ["12 Months", "10 Days", "3 Weeks"],
+                 "max" : ["12 Months", "10 Days", "4 Weeks"]
              },
              "alerts" : [
                  {
                      "window" : "due",
                      "interval" : ["1 Weeks"],
                      "count" : "1",
-                     "offset" : ["47 Weeks"]
+                     "offset" : ["12 Months", "-1 Weeks"]
                  },
                  {
                      "window" : "late",
                      "interval" : ["1 Weeks"],
                      "count" : "3",
-                     "offset" : ["10 Days"]
+                     "offset" : ["3 Days"]
                  }
              ]
          }
