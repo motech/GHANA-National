@@ -80,6 +80,7 @@ public class Constants {
     public static final String NOT_APPLICABLE = "NA";
 
     public static final Integer IPT_MAX_PREGNANCY_WEEK_FOR_REGISTRATION = 19;  
-    public static final Integer PENTA_MAX_PREGNANCY_WEEK_FOR_REGISTRATION = 10;
+    public static final Integer PENTA_MAX_CHILDCARE_WEEK_FOR_REGISTRATION = 10;
+    public static final Integer CWC_MEASLES_MAX_AGE_WEEK_FOR_REGISTRATION = 5;
 
 }

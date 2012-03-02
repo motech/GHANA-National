@@ -2,9 +2,12 @@ package org.motechproject.ghana.national.vo;
 
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
+import org.joda.time.PeriodType;
+import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.util.DateUtil;
 
 import static org.joda.time.PeriodType.weeks;
-import static org.motechproject.ghana.national.domain.Constants.PENTA_MAX_PREGNANCY_WEEK_FOR_REGISTRATION;
+import static org.motechproject.ghana.national.domain.Constants.PENTA_MAX_CHILDCARE_WEEK_FOR_REGISTRATION;
 import static org.motechproject.util.DateUtil.today;
 
 public class ChildCare {
@@ -25,6 +28,11 @@ public class ChildCare {
 
     public boolean applicableForPenta() {
         int currentWeek = currentWeek();
-        return currentWeek > 0 && currentWeek <= PENTA_MAX_PREGNANCY_WEEK_FOR_REGISTRATION;
+        return currentWeek > 0 && currentWeek <= PENTA_MAX_CHILDCARE_WEEK_FOR_REGISTRATION;
+    }
+                                                 
+    public boolean applicableForMeasles() {
+        int runningYear = new Period(DateUtil.newDate(birthDay.toDate()), today(), PeriodType.years()).getYears() + 1;
+        return runningYear > 0 && runningYear <= Constants.CWC_MEASLES_MAX_AGE_WEEK_FOR_REGISTRATION;
     }
 }

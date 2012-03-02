@@ -12,6 +12,7 @@ import org.motechproject.testing.utils.BaseUnitTest;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -63,6 +64,14 @@ public class PatientTest extends BaseUnitTest {
         assertThat(patientCares, hasItem(new PatientCare(BCG, dateOfBirth)));
         assertThat(patientCares, hasItem(new PatientCare(YELLOW_FEVER, dateOfBirth)));
         assertThat(patientCares, hasItem(new PatientCare(PENTA, dateOfBirth)));
+        assertThat(patientCares, hasItem(new PatientCare(CWC_MEASLES_VACCINE, dateOfBirth)));
+    }
+    
+    @Test
+    public void shouldNotReturnMeaslesPatientCareForCWCRegistration_IfAgeIsMoreThanAYear() {
+        LocalDate dateOfBirthOneYearBack = todayAs6June2012.minusYears(5).toLocalDate();
+        Patient patient = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(dateOfBirthOneYearBack.toDate()), null));
+        assertThat(patient.cwcCareProgramToEnrollOnRegistration(), not(hasItem(new PatientCare(CWC_MEASLES_VACCINE, dateOfBirthOneYearBack))));
     }
 
     private void assertPatientCare(PatientCare patientCare, String name, LocalDate startingOn) {

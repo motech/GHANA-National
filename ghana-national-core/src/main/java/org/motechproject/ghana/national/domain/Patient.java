@@ -1,16 +1,22 @@
 package org.motechproject.ghana.national.domain;
 
 import org.joda.time.LocalDate;
+import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.vo.ChildCare;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
+import static org.apache.commons.collections.CollectionUtils.union;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
+import static org.motechproject.util.DateUtil.newDate;
+import static org.motechproject.util.DateUtil.today;
 
 public class Patient {
     private MRSPatient mrsPatient;
@@ -65,11 +71,25 @@ public class Patient {
                 iptPatientCareEnrollOnRegistration(expectedDeliveryDate));
     }
 
-    public List<String> careProgramsToUnEnroll() {
+    public List<String> ancCareProgramsToUnEnroll() {
         return Arrays.asList(
                 DELIVERY,
                 ANC_IPT_VACCINE,
                 TT_VACCINATION_VISIT);
+    }
+
+    public List<String> cwcCareProgramsToUnEnroll() {
+        return Arrays.asList(
+                BCG,
+                CWC_MEASLES_VACCINE,
+                PENTA,
+                ScheduleNames.CWC_IPT_VACCINE,
+                ScheduleNames.CWC_YELLOW_FEVER_VACCINE,
+                ScheduleNames.TT_VACCINATION_VISIT);
+    }
+
+    public List<String> allCareProgramsToUnEnroll() {
+        return new ArrayList<String>(new HashSet<String>(union(ancCareProgramsToUnEnroll(), cwcCareProgramsToUnEnroll())));
     }
 
     public PatientCare iptPatientCareEnrollOnRegistration(LocalDate expectedDeliveryDate) {
@@ -84,7 +104,8 @@ public class Patient {
         return nullSafeList(
                 new PatientCare(BCG, referenceDate),
                 new PatientCare(YELLOW_FEVER, referenceDate),
-                pentaPatientCare());
+                pentaPatientCare(),
+                measlesChildCare());
     }
 
     public PatientCare iptPatientCareEnrollOnVisitAfter19Weeks(LocalDate visitDate) {
@@ -92,9 +113,19 @@ public class Patient {
     }
 
     public PatientCare pentaPatientCare() {
-        LocalDate referenceDate = DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth());
+        LocalDate referenceDate = birthDate();
         if (ChildCare.basedOnBirthDay(referenceDate).applicableForPenta())
             return new PatientCare(PENTA, referenceDate);
-        return new PatientCare(PENTA, DateUtil.today());
+        return new PatientCare(PENTA, today());
+    }
+
+    private LocalDate birthDate() {
+        return newDate(this.getMrsPatient().getPerson().getDateOfBirth());
+    }
+
+    private PatientCare measlesChildCare() {
+        LocalDate birthDate = birthDate();
+        return ChildCare.basedOnBirthDay(birthDate).applicableForMeasles()
+                ? new PatientCare(CWC_MEASLES_VACCINE, birthDate) : null;
     }
 }
