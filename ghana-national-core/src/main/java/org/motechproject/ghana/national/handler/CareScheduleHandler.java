@@ -57,4 +57,16 @@ public class CareScheduleHandler extends BaseScheduleHandler {
     public void handleMeaslesVaccinationAlert(MilestoneEvent milestoneEvent) {
         sendSMSToFacility(CWC_MEASLES_SMS_KEY, milestoneEvent);
     }
+
+    @LoginAsAdmin
+    @ApiSession
+    public void handlePentaVaccinationAlert(MilestoneEvent milestoneEvent) {
+        sendSMSToFacility(CWC_PENTA_SMS_KEY, milestoneEvent);
+    }
+
+    @LoginAsAdmin
+    @ApiSession
+    public void handleYellowFeverVaccinationAlert(MilestoneEvent milestoneEvent) {
+        sendSMSToFacility(CWC_YF_SMS_KEY, milestoneEvent);
+    }
 }

@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.domain;
 
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.vo.ChildCare;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
@@ -83,9 +82,9 @@ public class Patient {
                 CWC_BCG,
                 CWC_MEASLES_VACCINE,
                 CWC_PENTA,
-                ScheduleNames.CWC_IPT_VACCINE,
-                ScheduleNames.CWC_YELLOW_FEVER_VACCINE,
-                ScheduleNames.TT_VACCINATION_VISIT);
+                CWC_IPT_VACCINE,
+                CWC_YELLOW_FEVER,
+                TT_VACCINATION_VISIT);
     }
 
     public List<String> allCareProgramsToUnEnroll() {

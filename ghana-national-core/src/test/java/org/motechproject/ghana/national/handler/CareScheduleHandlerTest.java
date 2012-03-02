@@ -95,4 +95,24 @@ public class CareScheduleHandlerTest {
 
         verify(careScheduleHandlerSpy).sendSMSToFacility(CWC_MEASLES_SMS_KEY, milestoneEvent);
     }
+
+    @Test
+    public void handleYellowFeverVaccinationAlert() {
+        doNothing().when(careScheduleHandlerSpy).sendSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
+
+        final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
+        careScheduleHandlerSpy.handleYellowFeverVaccinationAlert(milestoneEvent);
+
+        verify(careScheduleHandlerSpy).sendSMSToFacility(CWC_YF_SMS_KEY, milestoneEvent);
+    }
+
+    @Test
+    public void handlePentaVaccinationAlert() {
+        doNothing().when(careScheduleHandlerSpy).sendSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
+
+        final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
+        careScheduleHandlerSpy.handlePentaVaccinationAlert(milestoneEvent);
+
+        verify(careScheduleHandlerSpy).sendSMSToFacility(CWC_PENTA_SMS_KEY, milestoneEvent);
+    }
 }

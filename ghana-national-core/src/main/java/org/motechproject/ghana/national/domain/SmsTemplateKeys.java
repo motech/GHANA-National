@@ -8,4 +8,6 @@ public class SmsTemplateKeys {
     public static final String ANC_VISIT_SMS_KEY = "ANC_VISIT_SMS_KEY";
     public static final String REGISTER_SUCCESS_SMS_KEY = "REGISTER_SUCCESS_SMS_KEY";
     public static final String CWC_MEASLES_SMS_KEY = "CWC_MEASLES_SMS_KEY";
+    public static final String CWC_PENTA_SMS_KEY = "CWC_PENTA_SMS_KEY";
+    public static final String CWC_YF_SMS_KEY = "CWC_YF_SMS_KEY";
 }

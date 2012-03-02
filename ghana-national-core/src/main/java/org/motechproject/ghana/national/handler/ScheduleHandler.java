@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.handler;
 
-import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
@@ -9,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 
 @Component
 public class ScheduleHandler {
@@ -21,18 +22,22 @@ public class ScheduleHandler {
     public void handleAlert(MotechEvent motechEvent) {
         try {
             MilestoneEvent milestoneEvent = new MilestoneEvent(motechEvent);
-            if (milestoneEvent.getScheduleName().equals(ScheduleNames.ANC_DELIVERY))
+            if (milestoneEvent.getScheduleName().equals(ANC_DELIVERY))
                 careScheduleHandler.handlePregnancyAlert(milestoneEvent);
-            else if(milestoneEvent.getScheduleName().equals(ScheduleNames.TT_VACCINATION_VISIT))
+            else if (milestoneEvent.getScheduleName().equals(TT_VACCINATION_VISIT))
                 careScheduleHandler.handleTTVaccinationAlert(milestoneEvent);
-            else if(milestoneEvent.getScheduleName().equals(ScheduleNames.CWC_BCG))
-                careScheduleHandler.handleBCGAlert(milestoneEvent);
-            else if(milestoneEvent.getScheduleName().equals(ScheduleNames.ANC_IPT_VACCINE))
+            else if (milestoneEvent.getScheduleName().equals(ANC_IPT_VACCINE))
                 careScheduleHandler.handleIPTpVaccinationAlert(milestoneEvent);
-            else if(milestoneEvent.getScheduleName().equals(ScheduleNames.CWC_MEASLES_VACCINE))
+            else if (milestoneEvent.getScheduleName().equals(CWC_BCG))
+                careScheduleHandler.handleBCGAlert(milestoneEvent);
+            else if (milestoneEvent.getScheduleName().equals(CWC_MEASLES_VACCINE))
                 careScheduleHandler.handleMeaslesVaccinationAlert(milestoneEvent);
+            else if (milestoneEvent.getScheduleName().equals(CWC_PENTA))
+                careScheduleHandler.handlePentaVaccinationAlert(milestoneEvent);
+            else if (milestoneEvent.getScheduleName().equals(CWC_YELLOW_FEVER))
+                careScheduleHandler.handleYellowFeverVaccinationAlert(milestoneEvent);
         } catch (Exception e) {
-            logger.error("Encountered error while sending pregnancy alert, ", e);
+            logger.error("Encountered error while sending pregnancy alert: ", e);
         }
     }
 }

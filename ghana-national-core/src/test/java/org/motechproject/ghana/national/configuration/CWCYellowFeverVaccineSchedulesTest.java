@@ -13,7 +13,7 @@ import java.util.Collections;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_YELLOW_FEVER_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.scheduletracking.api.domain.WindowName.due;
 import static org.motechproject.scheduletracking.api.domain.WindowName.late;
 import static org.motechproject.util.DateUtil.newDateTime;
@@ -27,7 +27,7 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
         super.setUp();
         preferredAlertTime = new Time(10, 10);
         externalId = "patient_id" + randomAlphabetic(6);
-        scheduleName = CWC_YELLOW_FEVER_VACCINE;
+        scheduleName = CWC_YELLOW_FEVER;
     }
 
     @Test
