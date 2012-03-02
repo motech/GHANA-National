@@ -5,9 +5,9 @@
             "name" : "Penta1",
             "scheduleWindows" : {
                 "earliest" : [],
-                "due" : ["5 Weeks"],
+                "due" : ["6 Weeks"],
                 "late" : ["9 Weeks"],
-                "max" : []
+                "max" : ["10 Weeks"]
             },
             "alerts" : [
                 {
@@ -20,7 +20,7 @@
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "3",
-                    "offset" : ["1 Week"]
+                    "offset" : ["0 Days"]
                 }
             ]
         },
@@ -28,9 +28,9 @@
             "name" : "Penta2",
             "scheduleWindows" : {
                 "earliest" : [],
-                "due" : ["3 Weeks"],
-                "late" : ["6 Weeks"],
-                "max" : []
+                "due" : ["4 Weeks"],
+                "late" : ["7 Weeks"],
+                "max" : ["8 Weeks"]
             },
             "alerts" : [
                 {
@@ -43,7 +43,7 @@
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "3",
-                    "offset" : ["1 Week"]
+                    "offset" : ["0 Days"]
                 }
             ]
         },
@@ -51,9 +51,9 @@
             "name" : "Penta3",
             "scheduleWindows" : {
                 "earliest" : [],
-                "due" : ["3 Weeks"],
-                "late" : ["6 Weeks"],
-                "max" : []
+                "due" : ["4 Weeks"],
+                "late" : ["7 Weeks"],
+                "max" : ["8 Weeks"]
             },
             "alerts" : [
                 {
@@ -66,7 +66,7 @@
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "3",
-                    "offset" : ["1 Week"]
+                    "offset" : ["0 Days"]
                 }
             ]
         }
