@@ -31,7 +31,7 @@ public class ScheduleHandlerTest {
 
     @Test
     public void shouldHandleDeliveryNotificationSchedules(){
-        fireScheduleHandler(DELIVERY);
+        fireScheduleHandler(ANC_DELIVERY);
         verify(careScheduleHandler).handlePregnancyAlert(Matchers.<MilestoneEvent>any());
     }
 
@@ -43,7 +43,7 @@ public class ScheduleHandlerTest {
 
     @Test
     public void shouldHandleBCGSchedules(){
-        fireScheduleHandler(BCG);
+        fireScheduleHandler(CWC_BCG);
         verify(careScheduleHandler).handleBCGAlert(Matchers.<MilestoneEvent>any());
     }
 

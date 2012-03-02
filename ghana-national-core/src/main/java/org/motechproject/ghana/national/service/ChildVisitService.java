@@ -51,7 +51,7 @@ public class ChildVisitService extends VisitService {
         if (cwcVisit.getImmunizations().contains(YF.name())) {
             Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
-            allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), YELLOW_FEVER, visitDate);
+            allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_YELLOW_FEVER, visitDate);
         }
     }
 
@@ -60,10 +60,10 @@ public class ChildVisitService extends VisitService {
             Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
 
-            if (null == enrollment(patient.getMRSPatientId(), PENTA)) {
+            if (null == enrollment(patient.getMRSPatientId(), CWC_PENTA)) {
                 allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patient.pentaPatientCare(), visitDate, milestoneName(cwcVisit)));
             }
-            allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), PENTA, visitDate);
+            allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_PENTA, visitDate);
         }
     }
 

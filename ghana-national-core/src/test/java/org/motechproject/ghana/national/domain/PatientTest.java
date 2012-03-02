@@ -34,7 +34,7 @@ public class PatientTest extends BaseUnitTest {
         Pregnancy pregnancy = basedOnDeliveryDate(todayAs6June2012.plusWeeks(28).plusDays(6).toLocalDate());
 
         List<PatientCare> patientCares = new Patient().ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery());
-        assertPatientCare(patientCares.get(0), DELIVERY, pregnancy.dateOfConception());
+        assertPatientCare(patientCares.get(0), ANC_DELIVERY, pregnancy.dateOfConception());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class PatientTest extends BaseUnitTest {
         List<PatientCare> patientCares = new Patient().ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery());
 
         assertEquals(1, patientCares.size());
-        assertPatientCare(patientCares.get(0), DELIVERY, pregnancy.dateOfConception());
+        assertPatientCare(patientCares.get(0), ANC_DELIVERY, pregnancy.dateOfConception());
     }
     
     @Test
@@ -61,9 +61,9 @@ public class PatientTest extends BaseUnitTest {
         LocalDate dateOfBirth = todayAs6June2012.minusMonths(1).toLocalDate();
         Patient patient = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(dateOfBirth.toDate()), null));
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration();
-        assertThat(patientCares, hasItem(new PatientCare(BCG, dateOfBirth)));
-        assertThat(patientCares, hasItem(new PatientCare(YELLOW_FEVER, dateOfBirth)));
-        assertThat(patientCares, hasItem(new PatientCare(PENTA, dateOfBirth)));
+        assertThat(patientCares, hasItem(new PatientCare(CWC_BCG, dateOfBirth)));
+        assertThat(patientCares, hasItem(new PatientCare(CWC_YELLOW_FEVER, dateOfBirth)));
+        assertThat(patientCares, hasItem(new PatientCare(CWC_PENTA, dateOfBirth)));
         assertThat(patientCares, hasItem(new PatientCare(CWC_MEASLES_VACCINE, dateOfBirth)));
     }
     

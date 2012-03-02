@@ -67,22 +67,22 @@ public class Patient {
 
     public List<PatientCare> ancCareProgramsToEnrollOnRegistration(LocalDate expectedDeliveryDate) {
         return nullSafeList(
-                new PatientCare(DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception()),
+                new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception()),
                 iptPatientCareEnrollOnRegistration(expectedDeliveryDate));
     }
 
     public List<String> ancCareProgramsToUnEnroll() {
         return Arrays.asList(
-                DELIVERY,
+                ANC_DELIVERY,
                 ANC_IPT_VACCINE,
                 TT_VACCINATION_VISIT);
     }
 
     public List<String> cwcCareProgramsToUnEnroll() {
         return Arrays.asList(
-                BCG,
+                CWC_BCG,
                 CWC_MEASLES_VACCINE,
-                PENTA,
+                CWC_PENTA,
                 ScheduleNames.CWC_IPT_VACCINE,
                 ScheduleNames.CWC_YELLOW_FEVER_VACCINE,
                 ScheduleNames.TT_VACCINATION_VISIT);
@@ -102,8 +102,8 @@ public class Patient {
     public List<PatientCare> cwcCareProgramToEnrollOnRegistration() {
         LocalDate referenceDate = DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth());
         return nullSafeList(
-                new PatientCare(BCG, referenceDate),
-                new PatientCare(YELLOW_FEVER, referenceDate),
+                new PatientCare(CWC_BCG, referenceDate),
+                new PatientCare(CWC_YELLOW_FEVER, referenceDate),
                 pentaPatientCare(),
                 measlesChildCare());
     }
@@ -115,8 +115,8 @@ public class Patient {
     public PatientCare pentaPatientCare() {
         LocalDate referenceDate = birthDate();
         if (ChildCare.basedOnBirthDay(referenceDate).applicableForPenta())
-            return new PatientCare(PENTA, referenceDate);
-        return new PatientCare(PENTA, today());
+            return new PatientCare(CWC_PENTA, referenceDate);
+        return new PatientCare(CWC_PENTA, today());
     }
 
     private LocalDate birthDate() {

@@ -48,7 +48,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         MRSUser staff = mock(MRSUser.class);
         Facility facility = mock(Facility.class);
         Patient patient = mock(Patient.class);
-        when(patient.pentaPatientCare()).thenReturn(new PatientCare(PENTA, DateUtil.today()));
+        when(patient.pentaPatientCare()).thenReturn(new PatientCare(CWC_PENTA, DateUtil.today()));
         CWCVisit cwcVisit = createTestCWCVisit(new Date(), staff, facility, patient);
 
         ChildVisitService spyService = spy(service);
@@ -72,7 +72,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, never()).enroll(enrollmentRequestCaptor.capture());
-        verify(mockAllSchedules).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.PENTA), any(LocalDate.class));
+        verify(mockAllSchedules).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.CWC_PENTA), any(LocalDate.class));
     }
 
     @Test
@@ -89,14 +89,14 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, never()).enroll(enrollmentRequestCaptor.capture());
-        verify(mockAllSchedules, never()).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.PENTA), any(LocalDate.class));
+        verify(mockAllSchedules, never()).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.CWC_PENTA), any(LocalDate.class));
     }
 
     @Test
     public void shouldEnrollAndFulfillPentaScheduleIfNotEnrolledEarlier() {
         String mrsPatientId = "mrsPatientId";
         Patient patient = mock(Patient.class);
-        when(patient.pentaPatientCare()).thenReturn(new PatientCare(PENTA, DateUtil.today()));
+        when(patient.pentaPatientCare()).thenReturn(new PatientCare(CWC_PENTA, DateUtil.today()));
         when(patient.getMRSPatientId()).thenReturn(mrsPatientId);
         when(mockAllSchedules.enrollment(any(EnrollmentRequest.class))).thenReturn(null);
 
@@ -104,7 +104,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enroll(enrollmentRequestCaptor.capture());
-        verify(mockAllSchedules).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.PENTA), any(LocalDate.class));
+        verify(mockAllSchedules).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.CWC_PENTA), any(LocalDate.class));
     }
 
     @Test
@@ -115,7 +115,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         service.updateYellowFeverSchedule(testCWCVisit);
 
-        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, YELLOW_FEVER, DateUtil.newDate(testCWCVisit.getDate()));
+        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_YELLOW_FEVER, DateUtil.newDate(testCWCVisit.getDate()));
     }
     
     @Test

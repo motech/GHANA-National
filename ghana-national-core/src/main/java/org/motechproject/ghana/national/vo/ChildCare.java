@@ -7,7 +7,7 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.util.DateUtil;
 
 import static org.joda.time.PeriodType.weeks;
-import static org.motechproject.ghana.national.domain.Constants.PENTA_MAX_CHILDCARE_WEEK_FOR_REGISTRATION;
+import static org.motechproject.ghana.national.domain.Constants.CWC_PENTA_MAX_WEEK_FOR_REGISTRATION;
 import static org.motechproject.util.DateUtil.today;
 
 public class ChildCare {
@@ -28,7 +28,7 @@ public class ChildCare {
 
     public boolean applicableForPenta() {
         int currentWeek = currentWeek();
-        return currentWeek > 0 && currentWeek <= PENTA_MAX_CHILDCARE_WEEK_FOR_REGISTRATION;
+        return currentWeek > 0 && currentWeek <= CWC_PENTA_MAX_WEEK_FOR_REGISTRATION;
     }
                                                  
     public boolean applicableForMeasles() {

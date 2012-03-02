@@ -21,11 +21,11 @@ public class ScheduleHandler {
     public void handleAlert(MotechEvent motechEvent) {
         try {
             MilestoneEvent milestoneEvent = new MilestoneEvent(motechEvent);
-            if (milestoneEvent.getScheduleName().equals(ScheduleNames.DELIVERY))
+            if (milestoneEvent.getScheduleName().equals(ScheduleNames.ANC_DELIVERY))
                 careScheduleHandler.handlePregnancyAlert(milestoneEvent);
             else if(milestoneEvent.getScheduleName().equals(ScheduleNames.TT_VACCINATION_VISIT))
                 careScheduleHandler.handleTTVaccinationAlert(milestoneEvent);
-            else if(milestoneEvent.getScheduleName().equals(ScheduleNames.BCG))
+            else if(milestoneEvent.getScheduleName().equals(ScheduleNames.CWC_BCG))
                 careScheduleHandler.handleBCGAlert(milestoneEvent);
             else if(milestoneEvent.getScheduleName().equals(ScheduleNames.ANC_IPT_VACCINE))
                 careScheduleHandler.handleIPTpVaccinationAlert(milestoneEvent);

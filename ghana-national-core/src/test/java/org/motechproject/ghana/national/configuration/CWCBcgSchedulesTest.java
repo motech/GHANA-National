@@ -18,7 +18,7 @@ public class CWCBcgSchedulesTest extends BaseScheduleTrackingTest {
     @Before
     public void setUp() {
         super.setUp();
-        scheduleName = ScheduleNames.BCG;
+        scheduleName = ScheduleNames.CWC_BCG;
     }
 
     @Test

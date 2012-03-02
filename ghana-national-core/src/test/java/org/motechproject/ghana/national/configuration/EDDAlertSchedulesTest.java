@@ -20,7 +20,7 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
     @Before
     public void setUp() {
         super.setUp();
-        scheduleName = ScheduleNames.DELIVERY;
+        scheduleName = ScheduleNames.ANC_DELIVERY;
     }
 
     @Test

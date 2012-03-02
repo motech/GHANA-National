@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-import static org.motechproject.ghana.national.configuration.ScheduleNames.DELIVERY;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_DELIVERY;
 import static org.motechproject.ghana.national.domain.IPTVaccine.createFromANCVisit;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDate;
@@ -66,7 +66,7 @@ public class MotherVisitService extends VisitService {
         if (CollectionUtils.isNotEmpty(eddObservations)) {
             mrsObservations.addAll(eddObservations);
             EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(ancVisit.getPatient(),
-                    new PatientCare(DELIVERY, basedOnDeliveryDate(newDate(ancVisit.getEstDeliveryDate())).dateOfConception()), null);
+                    new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(newDate(ancVisit.getEstDeliveryDate())).dateOfConception()), null);
             allSchedules.enroll(enrollmentRequest);
         }
     }
