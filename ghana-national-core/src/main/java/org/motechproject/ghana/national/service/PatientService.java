@@ -5,9 +5,7 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
-import org.motechproject.ghana.national.repository.AllEncounters;
-import org.motechproject.ghana.national.repository.AllPatients;
-import org.motechproject.ghana.national.repository.IdentifierGenerator;
+import org.motechproject.ghana.national.repository.*;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
 import org.openmrs.Person;
@@ -29,12 +27,16 @@ public class PatientService {
     private AllPatients allPatients;
     private IdentifierGenerator identifierGenerator;
     private AllEncounters allEncounters;
+    private AllSchedules allSchedules;
+    private AllAppointments allAppointments;
 
     @Autowired
-    public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator, AllEncounters allEncounters) {
+    public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator, AllEncounters allEncounters, AllSchedules allSchedules, AllAppointments allAppointments) {
         this.allPatients = allPatients;
         this.identifierGenerator = identifierGenerator;
         this.allEncounters = allEncounters;
+        this.allSchedules = allSchedules;
+        this.allAppointments = allAppointments;
     }
 
     public Patient registerPatient(Patient patient, String staffId)
@@ -109,8 +111,9 @@ public class PatientService {
     }
 
     public void deceasePatient(Date dateOfDeath, String patientMotechId, String causeOfDeath, String comment) {
-        //Patient patient = getPatientByMotechId(patientMotechId);
+        Patient patient = getPatientByMotechId(patientMotechId);
         allPatients.deceasePatient(dateOfDeath, patientMotechId, (causeOfDeath.equals("OTHER") ? "OTHER NON-CODED" : "NONE"), comment);
-        //allSchedules.unEnroll(patientMotechId, patient.allCareProgramsToUnEnroll());
+        allSchedules.unEnroll(patient.getMRSPatientId(), patient.allCareProgramsToUnEnroll());
+        allAppointments.remove(patient);
     }
 }

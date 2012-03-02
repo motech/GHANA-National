@@ -11,17 +11,16 @@ import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
 import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
-import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.mrs.model.*;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.domain.Constants.OTHER_CAUSE_OF_DEATH;
@@ -41,10 +40,13 @@ public class PregnancyServiceTest {
     @Mock
     private IdentifierGenerator mockIdentifierGenerator;
 
+    @Mock
+    private  AllObservations mockAllObservations;
+
     @Before
     public void setUp() {
         initMocks(this);
-        pregnancyService = new PregnancyService(mockAllPatients, mockAllEncounters, mockAllSchedules, mockAllAppointments, mockIdentifierGenerator);
+        pregnancyService = new PregnancyService(mockAllPatients, mockAllEncounters, mockAllSchedules, mockAllAppointments, mockIdentifierGenerator, mockAllObservations);
     }
 
     @Test
@@ -94,28 +96,55 @@ public class PregnancyServiceTest {
     }
 
     @Test
-    public void shouldCreateEncounterForPregnancyDelivery() {
+    public void shouldCreateEncounterForPregnancyDelivery_AndForBirth() {
         MRSFacility mrsFacility = new MRSFacility("12");
         Facility mockFacility = new Facility(mrsFacility);
         MRSUser mockStaff = mock(MRSUser.class);
         String parentMotechId = "121";
         MRSPatient mrsPatient = new MRSPatient(parentMotechId, null, null);
         Patient mockPatient = new Patient(mrsPatient, parentMotechId);
-        PregnancyDeliveryRequest deliveryRequest = pregnancyDelivery(mockPatient, mockStaff, mockFacility);
+
+        final String childMotechId = "child-motech-id";
+        final String childWeight = "1.1";
+        final String childSex = "?";
+        final String childFirstName = "Jo";
+
+        DeliveredChildRequest deliveredChildRequest = new DeliveredChildRequest()
+                .childBirthOutcome(BirthOutcome.ALIVE)
+                .childRegistrationType(RegistrationType.USE_PREPRINTED_ID).childFirstName(childFirstName)
+                .childWeight(childWeight).childMotechId(childMotechId).childSex(childSex);
+
+        PregnancyDeliveryRequest deliveryRequest = pregnancyDelivery(mockPatient, mockStaff, mockFacility, deliveredChildRequest);
+
+        final Date birthDate = deliveryRequest.getDeliveryDateTime().toDate();
+
+        final String childDefaultLastName = "Baby";
+        MRSPatient childMRSPatient = new MRSPatient(childMotechId, new MRSPerson().firstName(childFirstName).lastName(childDefaultLastName).dateOfBirth(birthDate).gender("?").dead(false), mrsFacility);
+
+        final MRSObservation activePregnancyObservation = new MRSObservation(new Date(), "PREG", "Value");
+
+        when(mockAllObservations.activePregnancyObservation(parentMotechId)).thenReturn(activePregnancyObservation);
         pregnancyService.handleDelivery(deliveryRequest);
 
-        Encounter expectedEncounter = new PregnancyEncounterFactory().createDeliveryEncounter(deliveryRequest);
+        final PregnancyEncounterFactory factory = new PregnancyEncounterFactory();
+        Encounter expectedDeliveryEncounter = factory.createDeliveryEncounter(deliveryRequest, activePregnancyObservation);
+        Encounter expectedBirthEncounter = factory.createBirthEncounter(deliveredChildRequest, childMRSPatient,mockStaff,mockFacility, birthDate);
+
         ArgumentCaptor<Encounter> encounterArgumentCaptor = ArgumentCaptor.forClass(Encounter.class);
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
-        verify(mockAllEncounters).persistEncounter(encounterArgumentCaptor.capture());
+        verify(mockAllEncounters,times(2)).persistEncounter(encounterArgumentCaptor.capture());
         verify(mockAllPatients).save(patientArgumentCaptor.capture());
 
-        assertReflectionEquals(expectedEncounter, encounterArgumentCaptor.getValue());
+        List<Encounter> encounters = encounterArgumentCaptor.getAllValues();
+        assertThat(encounters.size(), is(equalTo(2)));
+        assertReflectionEquals(expectedBirthEncounter, encounters.get(0));
+        assertReflectionEquals(expectedDeliveryEncounter, encounters.get(1));
+
         Patient actualChild = patientArgumentCaptor.getValue();
         assertThat(actualChild.getMotechId(), is(deliveryRequest.getDeliveredChildRequests().get(0).getChildMotechId()));
         assertThat(actualChild.getParentId(), is(parentMotechId));
-        assertThat(actualChild.getFirstName(), is("Jo"));
-        assertThat(actualChild.getLastName(), is("Baby"));
+        assertThat(actualChild.getFirstName(), is(childFirstName));
+        assertThat(actualChild.getLastName(), is(childDefaultLastName));
         assertThat(actualChild.getMrsPatient().getFacility(), is(mrsFacility));
         verify(mockAllSchedules).unEnroll(mrsPatient.getId(), mockPatient.ancCareProgramsToUnEnroll());
         verify(mockAllAppointments).remove(mockPatient);
@@ -138,16 +167,15 @@ public class PregnancyServiceTest {
         return request;
     }
 
-    private PregnancyDeliveryRequest pregnancyDelivery(Patient mockPatient, MRSUser mockUser, Facility mockFacility) {
+    private PregnancyDeliveryRequest pregnancyDelivery(Patient mockPatient, MRSUser mockUser, Facility mockFacility, DeliveredChildRequest deliveredChildRequest) {
         PregnancyDeliveryRequest request = new PregnancyDeliveryRequest();
         request.facility(mockFacility);
         request.patient(mockPatient);
         request.staff(mockUser);
         request.deliveryDateTime(DateTime.now());
         request.childDeliveryOutcome(ChildDeliveryOutcome.SINGLETON);
-        request.addDeliveredChildRequest(new DeliveredChildRequest()
-                .childBirthOutcome(BirthOutcome.ALIVE)
-                .childRegistrationType(RegistrationType.USE_PREPRINTED_ID).childFirstName("Jo"));
+        request.addDeliveredChildRequest(deliveredChildRequest);
+
         return request;
     }
 }
