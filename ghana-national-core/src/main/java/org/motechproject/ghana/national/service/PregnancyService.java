@@ -1,14 +1,12 @@
 package org.motechproject.ghana.national.service;
 
-import org.motechproject.ghana.national.domain.BirthOutcome;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.RegistrationType;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.factory.PregnancyEncounterFactory;
 import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
 import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
+import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -16,6 +14,7 @@ import org.motechproject.mrs.model.MRSUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 
 @Service
@@ -31,16 +30,18 @@ public class PregnancyService {
     private IdentifierGenerator identifierGenerator;
     PregnancyEncounterFactory encounterFactory;
     private AllObservations allObservations;
+    private CareService careService;
 
     @Autowired
     public PregnancyService(AllPatients allPatients, AllEncounters allEncounters,
-                            AllSchedules allSchedules, AllAppointments allAppointments, IdentifierGenerator identifierGenerator, AllObservations allObservations) {
+                            AllSchedules allSchedules, AllAppointments allAppointments, IdentifierGenerator identifierGenerator, AllObservations allObservations, CareService careService) {
         this.allPatients = allPatients;
         this.allEncounters = allEncounters;
         this.allSchedules = allSchedules;
         this.allAppointments = allAppointments;
         this.identifierGenerator = identifierGenerator;
         this.allObservations = allObservations;
+        this.careService = careService;
         encounterFactory = new PregnancyEncounterFactory();
     }
 
@@ -68,8 +69,9 @@ public class PregnancyService {
                         .lastName("Baby").dateOfBirth(birthDate)
                         .gender((childRequest.getChildSex() != null) ? childRequest.getChildSex() : "?");
                 Patient patient = new Patient(new MRSPatient(childMotechId, childPerson, facility.mrsFacility()), request.getPatient().getMotechId());
-                allPatients.save(patient);
-                allEncounters.persistEncounter(encounterFactory.createBirthEncounter(childRequest, patient.getMrsPatient(), staff, facility, birthDate));
+                final Patient savedChild = allPatients.save(patient);
+                allEncounters.persistEncounter(encounterFactory.createBirthEncounter(childRequest, savedChild.getMrsPatient(), staff, facility, birthDate));
+                careService.enroll(new CwcVO(staff.getSystemId(), facility.motechId(), birthDate, savedChild.getMotechId(), Collections.<CwcCareHistory>emptyList(), null, null, null, null, null, null, null, null, null, null, savedChild.getMotechId(), false));
             }
         }
         MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(request.getPatient().getMotechId());

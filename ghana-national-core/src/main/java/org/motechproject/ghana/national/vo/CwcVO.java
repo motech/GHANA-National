@@ -22,8 +22,8 @@ public class CwcVO {
         this.registrationDate = registrationDate;
         this.patientMotechId = patientMotechId;
         this.serialNumber = serialNumber;
-        this.cwcCareHistoryVO=new CWCCareHistoryVO(addCareHistory, careHistories, bcgDate, vitADate, measlesDate, yfDate,lastPentaDate,lastPenta,lastOPVDate,
-                                                   lastOPV,lastIPTi,lastIPTiDate);
+        this.cwcCareHistoryVO = new CWCCareHistoryVO(addCareHistory, careHistories, bcgDate, vitADate, measlesDate, yfDate, lastPentaDate, lastPenta, lastOPVDate,
+                lastOPV, lastIPTi, lastIPTiDate);
     }
 
     public String getStaffId() {

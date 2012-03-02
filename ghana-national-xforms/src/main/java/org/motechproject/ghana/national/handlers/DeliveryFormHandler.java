@@ -49,18 +49,10 @@ public class DeliveryFormHandler implements FormPublishHandler {
 
             if (!deliveryForm.getMaternalDeath()) {
                 mobileMidwifeService.unRegister(deliveryForm.getMotechId());
-                pregnancyService.handleDelivery(createDeliveryRequest(deliveryForm));
+            } else {
+                patientService.deceasePatient(deliveryForm.getDate().toDate(), deliveryForm.getMotechId(), "OTHER", "Delivery");
             }
-
-            //stop all pregnancy related schedules & mobile midwife.
-
-            //create encounter and observations.
-
-            //register child & include it in cwc program. for ALIVE children
-
-            //mark pregnancy & pregnancy_status observations as false.
-
-            //handle death scenario
+            pregnancyService.handleDelivery(createDeliveryRequest(deliveryForm));
 
         } catch (Exception e) {
             log.error("Encountered error while saving delivery form details", e);

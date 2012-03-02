@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.factory.PregnancyEncounterFactory;
@@ -11,6 +12,7 @@ import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
 import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
+import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mrs.model.*;
 import org.motechproject.util.DateUtil;
 
@@ -42,11 +44,13 @@ public class PregnancyServiceTest {
 
     @Mock
     private  AllObservations mockAllObservations;
+    @Mock
+    private CareService mockCareService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        pregnancyService = new PregnancyService(mockAllPatients, mockAllEncounters, mockAllSchedules, mockAllAppointments, mockIdentifierGenerator, mockAllObservations);
+        pregnancyService = new PregnancyService(mockAllPatients, mockAllEncounters, mockAllSchedules, mockAllAppointments, mockIdentifierGenerator, mockAllObservations, mockCareService);
     }
 
     @Test
@@ -99,7 +103,7 @@ public class PregnancyServiceTest {
     public void shouldCreateEncounterForPregnancyDelivery_AndForBirth() {
         MRSFacility mrsFacility = new MRSFacility("12");
         Facility mockFacility = new Facility(mrsFacility);
-        MRSUser mockStaff = mock(MRSUser.class);
+        MRSUser mockStaff = new MRSUser().id("staff-id");
         String parentMotechId = "121";
         MRSPatient mrsPatient = new MRSPatient(parentMotechId, null, null);
         Patient mockPatient = new Patient(mrsPatient, parentMotechId);
@@ -124,6 +128,7 @@ public class PregnancyServiceTest {
         final MRSObservation activePregnancyObservation = new MRSObservation(new Date(), "PREG", "Value");
 
         when(mockAllObservations.activePregnancyObservation(parentMotechId)).thenReturn(activePregnancyObservation);
+        when(mockAllPatients.save(Matchers.<Patient>any())).thenReturn(new Patient(childMRSPatient));
         pregnancyService.handleDelivery(deliveryRequest);
 
         final PregnancyEncounterFactory factory = new PregnancyEncounterFactory();
@@ -132,8 +137,10 @@ public class PregnancyServiceTest {
 
         ArgumentCaptor<Encounter> encounterArgumentCaptor = ArgumentCaptor.forClass(Encounter.class);
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
+        ArgumentCaptor<CwcVO> cwcVOArgumentCaptor = ArgumentCaptor.forClass(CwcVO.class);
         verify(mockAllEncounters,times(2)).persistEncounter(encounterArgumentCaptor.capture());
         verify(mockAllPatients).save(patientArgumentCaptor.capture());
+        verify(mockCareService).enroll(cwcVOArgumentCaptor.capture());
 
         List<Encounter> encounters = encounterArgumentCaptor.getAllValues();
         assertThat(encounters.size(), is(equalTo(2)));
@@ -146,6 +153,12 @@ public class PregnancyServiceTest {
         assertThat(actualChild.getFirstName(), is(childFirstName));
         assertThat(actualChild.getLastName(), is(childDefaultLastName));
         assertThat(actualChild.getMrsPatient().getFacility(), is(mrsFacility));
+
+        CwcVO actualCWCVO = cwcVOArgumentCaptor.getValue();
+        assertThat(actualCWCVO.getSerialNumber(), is(childMotechId));
+        assertThat(actualCWCVO.getRegistrationDate(), is(birthDate));
+        assertThat(actualCWCVO.getPatientMotechId(), is(childMotechId));
+
         verify(mockAllSchedules).unEnroll(mrsPatient.getId(), mockPatient.ancCareProgramsToUnEnroll());
         verify(mockAllAppointments).remove(mockPatient);
     }
