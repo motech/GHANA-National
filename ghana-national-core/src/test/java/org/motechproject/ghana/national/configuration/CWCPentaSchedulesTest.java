@@ -19,7 +19,7 @@ import static org.motechproject.scheduletracking.api.domain.WindowName.late;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class PentaSchedulesTest extends BaseScheduleTrackingTest {
+public class CWCPentaSchedulesTest extends BaseScheduleTrackingTest {
 
     @Before
     public void setUp() {
