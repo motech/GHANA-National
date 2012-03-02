@@ -2,15 +2,22 @@ package org.motechproject.ghana.national.factory;
 
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Encounter;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.MobileFormEnum;
+import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
 import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mrs.model.MRSObservation;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSUser;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.motechproject.ghana.national.domain.Concept.*;
-import static org.motechproject.ghana.national.domain.EncounterType.PREG_TERM_VISIT;
+import static org.motechproject.ghana.national.domain.EncounterType.*;
+import static org.motechproject.ghana.national.tools.Utility.safeParseDouble;
 import static org.motechproject.ghana.national.tools.Utility.safeParseInteger;
 
 public class PregnancyEncounterFactory extends BaseObservationFactory {
@@ -40,13 +47,45 @@ public class PregnancyEncounterFactory extends BaseObservationFactory {
         return mrsObservations;
     }
 
-    public Encounter createDeliveryEncounter(PregnancyDeliveryRequest pregnancyDeliveryRequest) {
+    public Encounter createDeliveryEncounter(PregnancyDeliveryRequest pregnancyDeliveryRequest, MRSObservation activePregnancyObservation) {
         return new Encounter(pregnancyDeliveryRequest.getPatient().getMrsPatient(), pregnancyDeliveryRequest.getStaff(),
-                pregnancyDeliveryRequest.getFacility(), PREG_TERM_VISIT, pregnancyDeliveryRequest.getDeliveryDateTime().toDate(),
-                preparePregnancyDeliveryObservations(pregnancyDeliveryRequest));
+                pregnancyDeliveryRequest.getFacility(), PREG_DEL_VISIT, pregnancyDeliveryRequest.getDeliveryDateTime().toDate(),
+                preparePregnancyDeliveryObservations(pregnancyDeliveryRequest, activePregnancyObservation));
     }
 
-    private Set<MRSObservation> preparePregnancyDeliveryObservations(PregnancyDeliveryRequest pregnancyDeliveryRequest) {
-        return null;
+    private Set<MRSObservation> preparePregnancyDeliveryObservations(PregnancyDeliveryRequest pregnancyDeliveryRequest, MRSObservation activePregnancyObservation) {
+        Set<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
+
+        Date deliveryDate = pregnancyDeliveryRequest.getDeliveryDateTime().toDate();
+        setObservation(mrsObservations, deliveryDate, DELIVERY_MODE.getName(), safeEnumValue(pregnancyDeliveryRequest.getChildDeliveryMode()));
+        setObservation(mrsObservations, deliveryDate, DELIVERY_OUTCOME.getName(), safeEnumValue(pregnancyDeliveryRequest.getChildDeliveryOutcome()));
+        setObservation(mrsObservations, deliveryDate, MALE_INVOLVEMENT.getName(), pregnancyDeliveryRequest.getMaleInvolved());
+        setObservation(mrsObservations, deliveryDate, DELIVERY_LOCATION.getName(), safeEnumValue(pregnancyDeliveryRequest.getChildDeliveryLocation()));
+        setObservation(mrsObservations, deliveryDate, DELIVERED_BY.getName(), safeEnumValue(pregnancyDeliveryRequest.getChildDeliveredBy()));
+        setObservation(mrsObservations, deliveryDate, DELIVERY_COMPLICATION.getName(), safeEnumValue(pregnancyDeliveryRequest.getDeliveryComplications()));
+        setObservation(mrsObservations, deliveryDate, VVF_REPAIR.getName(), safeEnumValue(pregnancyDeliveryRequest.getVvf()));
+        setObservation(mrsObservations, deliveryDate, MATERNAL_DEATH.getName(), pregnancyDeliveryRequest.getMaternalDeath());
+        setObservation(mrsObservations, deliveryDate, COMMENTS.getName(), pregnancyDeliveryRequest.getComments());
+        activePregnancyObservation.addDependantObservation(new MRSObservation(deliveryDate,PREGNANCY_STATUS.getName(),Boolean.FALSE));
+        mrsObservations.add(activePregnancyObservation);
+
+        for (DeliveredChildRequest deliveredChildRequest : pregnancyDeliveryRequest.getDeliveredChildRequests()) {
+             setObservation(mrsObservations, deliveryDate, BIRTH_OUTCOME.getName(), safeEnumValue(deliveredChildRequest.getChildBirthOutcome()));
+        }
+        return mrsObservations;
+    }
+    
+    private Integer safeEnumValue(MobileFormEnum enumItem) {
+        return (enumItem != null) ? Integer.valueOf(enumItem.getNumericValue()) : null;
+    }
+
+    public Encounter createBirthEncounter(DeliveredChildRequest childRequest, MRSPatient mrsPatient, MRSUser staff, Facility facility, Date birthDate) {
+        HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
+        setObservation(mrsObservations,birthDate, WEIGHT_KG.getName(), safeParseDouble(childRequest.getChildWeight()));
+
+        Encounter encounter =  new Encounter(mrsPatient, staff,
+                facility, BIRTH_VISIT, birthDate,
+                mrsObservations);
+        return encounter;
     }
 }

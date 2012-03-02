@@ -39,7 +39,7 @@ public class AllObservations {
         return observations;
     }
 
-    private MRSObservation activePregnancyObservation(String motechId) {
+    public MRSObservation activePregnancyObservation(String motechId) {
         MRSObservation activePregnancyObservation = findObservation(motechId, PREGNANCY.getName());
         if (activePregnancyObservation == null) {
             logger.warn("No active pregnancy found while checking for EDD. Patient ID :" + motechId);

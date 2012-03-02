@@ -42,6 +42,10 @@ public class Utility {
         return (string == null) ? null : Integer.parseInt(string);
     }
 
+    public static Double safeParseDouble(String string) {
+        return (string == null) ? null : Double.parseDouble(string);
+    }
+
     public static <V> V nullSafe(V value, V defaultValue) {
         return value != null ? value : defaultValue;
     }
