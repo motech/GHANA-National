@@ -121,7 +121,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         verify(mockAllSchedules, times(1)).enroll(enrollmentRequestCaptor.capture());
         verify(mockAllSchedules, times(1)).enrollOrFulfill(enrollmentRequestCaptor.capture(), eq(visitDate));
 
-        assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, DELIVERY, null, pregnancy.dateOfConception(), null, null, null, null),
+        assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, ANC_DELIVERY, null, pregnancy.dateOfConception(), null, null, null, null),
                 enrollmentRequestCaptor.getAllValues().get(0));
         assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, null, visitDate, null,
                 visitDate, null, IPTDose.byValue(ancVisit.getIptdose()).milestone()),
