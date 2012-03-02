@@ -85,4 +85,14 @@ public class CareScheduleHandlerTest {
 
         verify(careScheduleHandlerSpy).sendSMSToFacility(IPTp_VACCINATION_SMS_KEY, milestoneEvent);
     }
+
+    @Test
+    public void handleMeaslesVaccinationAlert() {
+        doNothing().when(careScheduleHandlerSpy).sendSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
+
+        final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
+        careScheduleHandlerSpy.handleMeaslesVaccinationAlert(milestoneEvent);
+
+        verify(careScheduleHandlerSpy).sendSMSToFacility(CWC_MEASLES_SMS_KEY, milestoneEvent);
+    }
 }

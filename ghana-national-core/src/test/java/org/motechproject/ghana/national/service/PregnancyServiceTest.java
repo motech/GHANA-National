@@ -62,7 +62,7 @@ public class PregnancyServiceTest {
 
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
         when(mockPatient.getMRSPatientId()).thenReturn(patientMRSId);
-        when(mockPatient.careProgramsToUnEnroll()).thenReturn(schedules);
+        when(mockPatient.ancCareProgramsToUnEnroll()).thenReturn(schedules);
         when(mockFacility.getMrsFacilityId()).thenReturn(mrsFacilityId);
 
         pregnancyService.terminatePregnancy(request);
@@ -117,7 +117,7 @@ public class PregnancyServiceTest {
         assertThat(actualChild.getFirstName(), is("Jo"));
         assertThat(actualChild.getLastName(), is("Baby"));
         assertThat(actualChild.getMrsPatient().getFacility(), is(mrsFacility));
-        verify(mockAllSchedules).unEnroll(mrsPatient.getId(), mockPatient.careProgramsToUnEnroll());
+        verify(mockAllSchedules).unEnroll(mrsPatient.getId(), mockPatient.ancCareProgramsToUnEnroll());
         verify(mockAllAppointments).remove(mockPatient);
     }
 

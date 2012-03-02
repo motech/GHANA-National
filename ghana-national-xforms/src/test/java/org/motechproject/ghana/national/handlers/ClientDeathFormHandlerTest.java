@@ -51,7 +51,7 @@ public class ClientDeathFormHandlerTest {
         MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.clientDeath", parameters);
         when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(mockPatient);
         when(mockPatient.getMRSPatientId()).thenReturn(patientMRSId);
-        when(mockPatient.careProgramsToUnEnroll()).thenReturn(schedules);
+        when(mockPatient.allCareProgramsToUnEnroll()).thenReturn(schedules);
 
         clientDeathFormHandler.handleFormEvent(event);
 

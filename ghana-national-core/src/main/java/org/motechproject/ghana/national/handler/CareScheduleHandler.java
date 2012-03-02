@@ -1,10 +1,8 @@
 package org.motechproject.ghana.national.handler;
 
-import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
-import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
@@ -27,8 +25,6 @@ public class CareScheduleHandler extends BaseScheduleHandler {
     @LoginAsAdmin
     @ApiSession
     public void handlePregnancyAlert(final MilestoneEvent milestoneEvent) {
-        LocalDate conceptionDate = milestoneEvent.getReferenceDateTime().toLocalDate();
-        Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(conceptionDate);
         sendSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
     }
 
@@ -56,4 +52,9 @@ public class CareScheduleHandler extends BaseScheduleHandler {
         sendSMSToFacility(IPTp_VACCINATION_SMS_KEY, milestoneEvent);
     }
 
+    @LoginAsAdmin
+    @ApiSession
+    public void handleMeaslesVaccinationAlert(MilestoneEvent milestoneEvent) {
+        sendSMSToFacility(CWC_MEASLES_SMS_KEY, milestoneEvent);
+    }
 }

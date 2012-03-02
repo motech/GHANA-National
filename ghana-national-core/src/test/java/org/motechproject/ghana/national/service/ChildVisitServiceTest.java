@@ -4,13 +4,16 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.vo.CWCVisit;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.EnrollmentResponse;
@@ -22,8 +25,10 @@ import java.util.Date;
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.PENTA;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.YELLOW_FEVER;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
+import static org.motechproject.ghana.national.domain.Concept.MEASLES;
+import static org.motechproject.util.DateUtil.newDate;
+import static org.motechproject.util.DateUtil.today;
 
 public class ChildVisitServiceTest extends BaseUnitTest {
     private ChildVisitService service;
@@ -111,6 +116,40 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         service.updateYellowFeverSchedule(testCWCVisit);
 
         verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, YELLOW_FEVER, DateUtil.newDate(testCWCVisit.getDate()));
+    }
+    
+    @Test
+    public void shouldFulfilMilestoneIfEnrolledAndTakenMeaslesVaccineOnVisit() {
+
+        String mrsPatientId = "mrsPatientId";
+        Patient patient = new Patient(new MRSPatient(mrsPatientId, "motechId", new MRSPerson().dateOfBirth(newDate(2011, 3, 30).toDate()), new MRSFacility(null)));
+        LocalDate visitDate = newDate(2012, 2, 3);
+        CWCVisit cwcVisit = createTestCWCVisit(visitDate.toDate(), mock(MRSUser.class), mock(Facility.class), patient)
+                .immunizations(asList(MEASLES.name()));
+        when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(new EnrollmentResponse("","", null, null, null));
+        service.save(cwcVisit);
+
+        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_MEASLES_VACCINE, visitDate);
+    }
+
+    @Test
+    public void shouldNonFulfilMilestoneIfHaveNotTakenMeaslesVaccineOnVisit() {
+
+        Patient patient = new Patient(new MRSPatient("mrsPatientId", "motechId", new MRSPerson().dateOfBirth(newDate(2011, 3, 30).toDate()), new MRSFacility(null)));
+        CWCVisit cwcVisit = createTestCWCVisit(today().toDate(), mock(MRSUser.class), mock(Facility.class), patient).immunizations(asList(Concept.PENTA.name()));
+        when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(new EnrollmentResponse("", "", null, null, null));
+        service.save(cwcVisit);
+        verify(mockAllSchedules, never()).fulfilCurrentMilestone(eq("mrsPatientId"), eq(CWC_MEASLES_VACCINE), Matchers.<LocalDate>any());
+    }
+
+    @Test
+    public void shouldNonFulfilMilestoneIfNotEnrolledAndHaveEnteredTakenMeaslesVaccineMistakenlyOnVisit() {
+
+        Patient patient = new Patient(new MRSPatient("mrsPatientId", "motechId", new MRSPerson().dateOfBirth(newDate(2011, 3, 30).toDate()), new MRSFacility(null)));
+        CWCVisit cwcVisit = createTestCWCVisit(today().toDate(), mock(MRSUser.class), mock(Facility.class), patient).immunizations(asList(MEASLES.name()));
+        when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(null);
+        service.save(cwcVisit);
+        verify(mockAllSchedules, never()).fulfilCurrentMilestone(eq("mrsPatientId"), eq(CWC_MEASLES_VACCINE), Matchers.<LocalDate>any());
     }
 
     private CWCVisit createTestCWCVisit(Date registrationDate, MRSUser staff, Facility facility, Patient patient) {

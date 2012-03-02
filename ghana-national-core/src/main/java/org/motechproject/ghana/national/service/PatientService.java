@@ -109,6 +109,8 @@ public class PatientService {
     }
 
     public void deceasePatient(Date dateOfDeath, String patientMotechId, String causeOfDeath, String comment) {
+        //Patient patient = getPatientByMotechId(patientMotechId);
         allPatients.deceasePatient(dateOfDeath, patientMotechId, (causeOfDeath.equals("OTHER") ? "OTHER NON-CODED" : "NONE"), comment);
+        //allSchedules.unEnroll(patientMotechId, patient.allCareProgramsToUnEnroll());
     }
 }

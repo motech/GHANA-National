@@ -42,7 +42,7 @@ public class PregnancyService {
         if (request.isDead()) {
             allPatients.deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
         }
-        allSchedules.unEnroll(request.getPatient().getMRSPatientId(), request.getPatient().careProgramsToUnEnroll());
+        allSchedules.unEnroll(request.getPatient().getMRSPatientId(), request.getPatient().ancCareProgramsToUnEnroll());
         allAppointments.remove(request.getPatient());
     }
 
@@ -63,7 +63,7 @@ public class PregnancyService {
         }
 
         allEncounters.persistEncounter(encounterFactory.createDeliveryEncounter(request));
-        allSchedules.unEnroll(request.getPatient().getMRSPatientId(), request.getPatient().careProgramsToUnEnroll());
+        allSchedules.unEnroll(request.getPatient().getMRSPatientId(), request.getPatient().ancCareProgramsToUnEnroll());
         allAppointments.remove(request.getPatient());
     }
 }
