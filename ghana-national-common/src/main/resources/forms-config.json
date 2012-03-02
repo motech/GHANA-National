@@ -87,5 +87,16 @@
                 "validator":"org.motechproject.ghana.national.validator.DeliveryFormValidator"
             }
         ]
+    },
+    {
+            "name":"NurseQuery",
+            "forms":[
+                {
+                    "name":"clientQuery",
+                    "fileName":"ClientQuery.xml",
+                    "bean":"org.motechproject.ghana.national.bean.ClientQueryForm",
+                    "validator":"org.motechproject.ghana.national.validator.ClientQueryFormValidator"
+                }
+            ]
     }
 ]
