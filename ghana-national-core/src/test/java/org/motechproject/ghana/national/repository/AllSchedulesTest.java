@@ -92,9 +92,11 @@ public class AllSchedulesTest {
 
     @Test
     public void shouldFulfilMilestoneForSchedule() {
-        EnrollmentRequest request = new EnrollmentRequest("123", "scheduleName", new Time(12, 0), new LocalDate(), null, null);
-        allSchedules.fulfilCurrentMilestone(request, null);
-        verify(mockScheduleTrackingService).fulfillCurrentMilestone(request.getExternalId(), request.getScheduleName(), null);
+        String externalId = "123";
+        String scheduleName = "scheduleName";
+        LocalDate fulfillmentDate = new LocalDate();
+        allSchedules.fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
+        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, fulfillmentDate);
     }
 
     @Test

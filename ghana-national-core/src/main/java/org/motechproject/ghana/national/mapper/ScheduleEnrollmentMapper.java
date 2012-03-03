@@ -13,6 +13,11 @@ public class ScheduleEnrollmentMapper {
                 new Time(DateUtil.now().toLocalTime()), patientCare.startingOn(), enrollmentDate, null);
     }
 
+    public EnrollmentRequest map(Patient patient, PatientCare patientCare, LocalDate enrollmentDate, String startingMilestone) {
+        return new EnrollmentRequest(patient.getMRSPatientId(), patientCare.name(),
+                new Time(DateUtil.now().toLocalTime()), patientCare.startingOn(), enrollmentDate, startingMilestone);
+    }
+
     public EnrollmentRequest map(String mrsPatientId, String programName) {
         return new EnrollmentRequest(mrsPatientId, programName, null, null, null, null);
     }

@@ -72,7 +72,7 @@ public class Patient {
 
     public PatientCare iptPatientCareEnrollOnRegistration(LocalDate expectedDeliveryDate) {
         if (expectedDeliveryDate != null && basedOnDeliveryDate(expectedDeliveryDate).applicableForIPT()) {
-            return iptPatientCareEnroll(expectedDeliveryDate);
+            return new PatientCare(ANC_IPT_VACCINE, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception());
         }
         return null;
     }
@@ -82,7 +82,8 @@ public class Patient {
     }
 
     public PatientCare iptPatientCareEnroll(LocalDate expectedDeliveryDate) {
-        return new PatientCare(ANC_IPT_VACCINE, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception());
+        PatientCare patientCareTill19Week = iptPatientCareEnrollOnRegistration(expectedDeliveryDate);
+        return patientCareTill19Week == null ? new PatientCare(ANC_IPT_VACCINE, DateUtil.today()) : patientCareTill19Week;
     }
 
     public PatientCare iptPatientCareVisit() {

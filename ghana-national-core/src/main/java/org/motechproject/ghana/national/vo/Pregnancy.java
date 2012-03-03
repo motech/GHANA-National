@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 
 import static org.joda.time.PeriodType.weeks;
+import static org.motechproject.ghana.national.domain.Constants.IPT_MAX_PREGNANCY_WEEK_FOR_REGISTRATION;
 import static org.motechproject.util.DateUtil.today;
 
 public class Pregnancy {
@@ -43,6 +44,6 @@ public class Pregnancy {
 
     public boolean applicableForIPT() {
         int currentWeek = currentWeek();
-        return currentWeek > 0 && currentWeek <= 13;
+        return currentWeek > 0 && currentWeek <= IPT_MAX_PREGNANCY_WEEK_FOR_REGISTRATION;
     }
 }

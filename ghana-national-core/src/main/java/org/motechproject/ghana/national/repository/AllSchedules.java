@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.repository;
 
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.EnrollmentResponse;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
@@ -23,15 +22,15 @@ public class AllSchedules {
         if (enrollment(enrollmentRequest) == null) {
             enroll(enrollmentRequest);
         }
-        fulfilCurrentMilestone(enrollmentRequest, fulfillmentDate);
+        fulfilCurrentMilestone(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName(), fulfillmentDate);
     }
 
     public void enroll(EnrollmentRequest enrollmentRequest) {
         scheduleTrackingService.enroll(enrollmentRequest);
     }
 
-    public void fulfilCurrentMilestone(EnrollmentRequest enrollmentRequest, LocalDate fulfillmentDate) {
-        scheduleTrackingService.fulfillCurrentMilestone(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName(), fulfillmentDate);
+    public void fulfilCurrentMilestone(String externalId, String scheduleName, LocalDate fulfillmentDate) {
+        scheduleTrackingService.fulfillCurrentMilestone(externalId, scheduleName, fulfillmentDate);
     }
 
     public void unEnroll(String externalId, String scheduleName) {
