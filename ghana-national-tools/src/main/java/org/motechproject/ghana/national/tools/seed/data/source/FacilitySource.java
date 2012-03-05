@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.tools.seed.data.source;
 
+import org.motechproject.ghana.national.tools.seed.data.domain.OldGhanaFacility;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 

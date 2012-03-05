@@ -43,7 +43,6 @@ public class MotherVisitEncounterFactoryTest {
         expectedObservations.add(new MRSObservation<Integer>(today, SYSTOLIC_BLOOD_PRESSURE.getName(), 10));
         expectedObservations.add(new MRSObservation<Integer>(today, DIASTOLIC_BLOOD_PRESSURE.getName(), 67));
         expectedObservations.add(new MRSObservation<Double>(today, WEIGHT_KG.getName(), 65.67d));
-        expectedObservations.add(new MRSObservation<Integer>(today, TT.getName(), 4));
         expectedObservations.add(new MRSObservation<Boolean>(today, INSECTICIDE_TREATED_NET_USAGE.getName(), true));
         expectedObservations.add(new MRSObservation<Double>(today, FHT.getName(), 4.3d));
         expectedObservations.add(new MRSObservation<Integer>(today, FHR.getName(), 4));
@@ -74,6 +73,16 @@ public class MotherVisitEncounterFactoryTest {
         expectedObservations.add(new MRSObservation<Integer>(iptVaccine.getVaccinationDate().toDate(), Concept.IPT.getName(), iptVaccine.getIptDose()));
         expectedObservations.add(new MRSObservation<MRSConcept>(iptVaccine.getVaccinationDate().toDate(), IPT_REACTION.getName(),
                 new MRSConcept(iptVaccine.getIptReactionConceptName())));
+        assertReflectionEquals(expectedObservations, actualObservations, LENIENT_ORDER);
+    }
+
+    @Test
+    public void shouldCreateObservationsForTT() {
+        TTVaccine ttVaccine = new TTVaccine(DateUtil.newDate(2012, 1, 2), TTVaccineDosage.TT1, null);
+        Set<MRSObservation> actualObservations = factory.createObservationForTT(ttVaccine);
+
+        Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>();
+        expectedObservations.add(new MRSObservation<Integer>(ttVaccine.getVaccinationDate().toDate(), Concept.TT.getName(), 1));
         assertReflectionEquals(expectedObservations, actualObservations, LENIENT_ORDER);
     }
 

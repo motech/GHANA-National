@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.tools.seed.data.source;
+package org.motechproject.ghana.national.tools.seed.data.domain;
 
 import java.util.List;
 
