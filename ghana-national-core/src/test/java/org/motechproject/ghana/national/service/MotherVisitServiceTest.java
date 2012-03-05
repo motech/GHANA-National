@@ -37,6 +37,7 @@ import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.joda.time.DateTime.now;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -131,13 +132,17 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldEnrollIPTScheduleBasedOnVisitDateFromVisitAndFulfilFirstMilestone_AndRecordObservations_IfNotEnrolledAlready() {
+    // 2 scenarios - in both case IPT1 is created and fulfilled and send alerts for remaining weeks
+    // i) User enrolled after 19th week
+    // ii) User enrolled for SP2, taking IPT2 directly based on some pre-history
+    public void shouldEnrollOrFulfilIPTpScheduleBasedOnVisitDate_AndRecordObservations() {
+
         Time deliveryTime = new Time(20, 2);
         DateTime today = new DateTime(2012, 2, 1, deliveryTime.getHour(), deliveryTime.getMinute());
         LocalDate visitDate = today.minusDays(10).toLocalDate();
         Pregnancy pregnancy = basedOnDeliveryDate(new LocalDate(2012, 9, 1));
-        IPTDose dose1 = IPTDose.SP1;
-        ANCVisitRequest ancVisit = createTestANCVisit().date(visitDate.toDate()).iptdose(dose1.value().toString()).iptReactive(true)
+        IPTDose dose2 = IPTDose.SP2;
+        ANCVisitRequest ancVisit = createTestANCVisit().date(visitDate.toDate()).iptdose(dose2.value().toString()).iptReactive(true)
                 .estDeliveryDate(pregnancy.dateOfDelivery().toDate());
         String mrsPatientId = ancVisit.getPatient().getMRSPatientId();
 
@@ -150,62 +155,22 @@ public class MotherVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enrollOrFulfill(captor.capture(), eq(visitDate));
-        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, deliveryTime, visitDate, null, visitDate, null, dose1.milestone()), captor.getAllValues().get(0));
-    }
-
-    @Test
-    public void shouldOnlyFulfilCurrentIPTMilestoneAndRecordObservations_IfEnrolledAlready() {
-        Time deliveryTime = new Time(20, 2);
-        mockCurrentDate(new DateTime(2012, 2, 1, deliveryTime.getHour(), deliveryTime.getMinute()));
-        IPTDose dose1 = IPTDose.SP1;
-        LocalDate visitDate = today().minusDays(12);
-        ANCVisitRequest ancVisit = createTestANCVisit().iptdose(dose1.value().toString()).iptReactive(true).date(visitDate.toDate());
-        String mrsPatientId = ancVisit.getPatient().getMRSPatientId();
-
-        motherVisitService.registerANCVisit(ancVisit);
-
-        ArgumentCaptor<Encounter> encounterCaptor = forClass(Encounter.class);
-        verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
-        assertIfObservationsAvailableForConcepts(true, encounterCaptor.getValue().getObservations(), IPT.getName(), IPT_REACTION.getName());
-
-        ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
-        verify(mockAllObservations, never()).findObservation(ancVisit.getPatient().getMRSPatientId(), EDD.getName());
-        verify(mockAllSchedules).enrollOrFulfill(captor.capture(), eq(visitDate));
-        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, deliveryTime, visitDate, null, visitDate, null, dose1.milestone()), captor.getAllValues().get(0));
+        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, deliveryTime, visitDate, null, visitDate, null, dose2.milestone()), captor.getAllValues().get(0));
     }
 
     @Test
     public void shouldNotCreateIPTSchedule_IfIPTReadingsAreNotCaptured() {
         Time deliveryTime = new Time(20, 2);
         mockCurrentDate(new DateTime(2012, 2, 1, deliveryTime.getHour(), deliveryTime.getMinute()));
-        ANCVisitRequest ancVisit = createTestANCVisit().iptdose(null).iptReactive(false);
+        LocalDate visitDate = now().minusDays(10).toLocalDate();
+
+        ANCVisitRequest ancVisit = createTestANCVisit().date(visitDate.toDate()).iptdose(null).iptReactive(false).patient(new Patient(new MRSPatient("patientId")));
         motherVisitService.registerANCVisit(ancVisit);
+
         ArgumentCaptor<Encounter> encounterCaptor = forClass(Encounter.class);
         verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
         assertIfObservationsAvailableForConcepts(false, encounterCaptor.getValue().getObservations(), IPT.getName(), IPT_REACTION.getName());
-        verifyZeroInteractions(mockAllSchedules);
-    }
-
-    @Test
-    public void shouldEnrollIPTScheduleWithTodayAsReferenceDateIfUserIsAfter19thWeekOfPregnancy_AndFulfilFirstMilestone() {
-        // 2 scenarios - in both case IPT1 is created and fulfilled and send alerts for remaining weeks
-        // i) User enrolled after 19th week
-        // ii) User enrolled for SP2, taking IPT2
-        Time deliveryTime = new Time(20, 2);
-        Pregnancy pregnancy = basedOnDeliveryDate(new LocalDate(2012, 6, 6));
-        DateTime today = DateUtil.newDateTime(pregnancy.dateOfConception().plusWeeks(20), deliveryTime);
-        IPTDose dose3 = IPTDose.SP3;
-        LocalDate visitDate = today.minusDays(10).toLocalDate();
-        ANCVisitRequest ancVisit = createTestANCVisit().iptdose(dose3.value().toString()).iptReactive(false)
-                .estDeliveryDate(pregnancy.dateOfDelivery().toDate()).date(visitDate.toDate());
-        String mrsPatientId = ancVisit.getPatient().getMRSPatientId();
-
-        mockCurrentDate(today);
-        motherVisitService.registerANCVisit(ancVisit);
-
-        ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
-        verify(mockAllSchedules).enrollOrFulfill(captor.capture(), eq(visitDate));
-        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, deliveryTime, visitDate, null, visitDate, null, dose3.milestone()), captor.getAllValues().get(0));
+        verify(mockAllSchedules, never()).fulfilCurrentMilestone(ancVisit.getPatient().getMRSPatientId(), ANC_IPT_VACCINE, visitDate);
     }
 
     private void assertIfObservationsAvailableForConcepts(Boolean present, Set<MRSObservation> observations, String... conceptNames) {

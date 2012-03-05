@@ -55,7 +55,7 @@ public class SMSGatewayTest extends BaseUnitTest{
         final StringContent stringContent = createStringContent(smsText);
         when(mockCMSLiteService.getStringContent(language, templateKey)).thenReturn(stringContent);
         smsGateway.dispatchSMS(templateKey, language, phoneNumber);
-        verify(mockSMSService).sendSMS(smsText, phoneNumber);
+        verify(mockSMSService).sendSMS(phoneNumber, smsText);
     }
 
     @Test

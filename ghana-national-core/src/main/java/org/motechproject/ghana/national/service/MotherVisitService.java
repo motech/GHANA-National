@@ -86,7 +86,7 @@ public class MotherVisitService extends VisitService {
     private void enrollOrFulfillScheduleIPTp(ANCVisitRequest ancVisit, IPTVaccine iptVaccine) {
         Patient patient = iptVaccine.getGivenTo();
         LocalDate visitDate = newDate(ancVisit.getDate());
-        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.iptPatientCareEnrollOnVisitAfter19Weeks(visitDate), visitDate, iptVaccine.getIptMilestone());
+        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.ancIPTPatientCareEnrollOnVisitAfter19Weeks(visitDate), visitDate, iptVaccine.getIptMilestone());
         allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
     }
 }

@@ -35,4 +35,9 @@ public class ChildCare {
         int runningYear = new Period(DateUtil.newDate(birthDay.toDate()), today(), PeriodType.years()).getYears() + 1;
         return runningYear > 0 && runningYear <= Constants.CWC_MEASLES_MAX_AGE_WEEK_FOR_REGISTRATION;
     }
+
+    public boolean applicableForIPT() {
+        int currentWeek = currentWeek();
+        return currentWeek > 0 && currentWeek <= Constants.CWC_IPT_MAX_BIRTH_WEEK_FOR_REGISTRATION;
+    }
 }
