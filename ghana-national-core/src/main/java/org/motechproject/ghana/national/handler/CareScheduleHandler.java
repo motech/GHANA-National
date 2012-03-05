@@ -49,7 +49,13 @@ public class CareScheduleHandler extends BaseScheduleHandler {
     @LoginAsAdmin
     @ApiSession
     public void handleIPTpVaccinationAlert(MilestoneEvent milestoneEvent) {
-        sendSMSToFacility(IPTp_VACCINATION_SMS_KEY, milestoneEvent);
+        sendSMSToFacility(ANC_IPTp_VACCINATION_SMS_KEY, milestoneEvent);
+    }
+
+    @LoginAsAdmin
+    @ApiSession
+    public void handleIPTiVaccinationAlert(MilestoneEvent milestoneEvent) {
+        sendSMSToFacility(CWC_IPTi_VACCINATION_SMS_KEY, milestoneEvent);
     }
 
     @LoginAsAdmin

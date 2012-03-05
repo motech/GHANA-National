@@ -28,6 +28,8 @@ public class ScheduleHandler {
                 careScheduleHandler.handleTTVaccinationAlert(milestoneEvent);
             else if (milestoneEvent.getScheduleName().equals(ANC_IPT_VACCINE))
                 careScheduleHandler.handleIPTpVaccinationAlert(milestoneEvent);
+            else if (milestoneEvent.getScheduleName().equals(CWC_IPT_VACCINE))
+                careScheduleHandler.handleIPTiVaccinationAlert(milestoneEvent);
             else if (milestoneEvent.getScheduleName().equals(CWC_BCG))
                 careScheduleHandler.handleBCGAlert(milestoneEvent);
             else if (milestoneEvent.getScheduleName().equals(CWC_MEASLES_VACCINE))

@@ -72,7 +72,7 @@ public class ChildVisitService {
         if (!StringUtils.isEmpty(cwcVisit.getPentadose())) {
             Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
-
+            // TODO: use enrollOrFulfil
             if (null == enrollment(patient.getMRSPatientId(), CWC_PENTA)) {
                 allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patient.pentaPatientCare(), visitDate, milestoneName(cwcVisit)));
             }
