@@ -1,14 +1,10 @@
 package org.motechproject.ghana.national.factory;
 
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.Concept;
-import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Encounter;
-import org.motechproject.ghana.national.domain.IPTVaccine;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.util.DateUtil;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -27,7 +23,7 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
 
     public Set<MRSObservation> createMRSObservations(ANCVisitRequest ancVisitRequest) {
         Set<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
-        Date registrationDate = ancVisitRequest.getDate() == null ? DateUtil.today().toDate() : ancVisitRequest.getDate();
+        Date registrationDate = ancVisitRequest.getDate();
 
         setObservation(mrsObservations, registrationDate, ANC_PNC_LOCATION.getName(), toInteger(ancVisitRequest.getLocation()));
         setObservation(mrsObservations, registrationDate, COMMUNITY.getName(), ancVisitRequest.getCommunity());
@@ -49,7 +45,6 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, registrationDate, REFERRED.getName(), toBoolean(ancVisitRequest.getReferred()));
         setObservation(mrsObservations, registrationDate, SERIAL_NUMBER.getName(), ancVisitRequest.getSerialNumber());
         setObservation(mrsObservations, registrationDate, SYSTOLIC_BLOOD_PRESSURE.getName(), ancVisitRequest.getBpSystolic());
-        setObservation(mrsObservations, registrationDate, TT.getName(), toInteger(ancVisitRequest.getTtdose()));
         setObservation(mrsObservations, registrationDate, URINE_GLUCOSE_TEST.getName(), getConceptForTest(ancVisitRequest.getUrineTestGlucosePositive()));
         setObservation(mrsObservations, registrationDate, URINE_PROTEIN_TEST.getName(), getConceptForTest(ancVisitRequest.getUrineTestProteinPositive()));
         setObservation(mrsObservations, registrationDate, VDRL.getName(), getConceptReactionResult(ancVisitRequest.getVdrlReactive()));
@@ -64,6 +59,13 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
         Set<MRSObservation> observations = new HashSet<MRSObservation>();
         setObservation(observations, observationDate.toDate(), Concept.IPT.getName(), iptVaccine.getIptDose());
         setObservation(observations, observationDate.toDate(), Concept.IPT_REACTION.getName(), new MRSConcept(iptVaccine.getIptReactionConceptName()));
+        return observations;
+    }
+
+    public Set<MRSObservation> createObservationForTT(final TTVaccine ttVaccine){
+        final LocalDate observationDate = ttVaccine.getVaccinationDate();
+        Set<MRSObservation> observations = new HashSet<MRSObservation>();
+        setObservation(observations, observationDate.toDate(), Concept.TT.getName(), ttVaccine.getDosage().getDosage());
         return observations;
     }
 

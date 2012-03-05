@@ -38,12 +38,26 @@ public class PatientTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldReturnPatientCareForIPTpForIfCurrentPregnancyWeekIsOnOrBeforeWeek13() {
+    public void shouldReturnPatientCareForIPTpForIfCurrentPregnancyWeekIsOnOrBeforeWeek19() {
 
         Pregnancy pregnancy = basedOnDeliveryDate(todayAs6June2012.plusWeeks(28).plusDays(6).toLocalDate());
         List<PatientCare> patientCares = new Patient().ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery());
 
-        assertPatientCare(patientCares.get(1), ANC_IPT_VACCINE, pregnancy.dateOfConception());
+        assertThat(patientCares, hasItem(new PatientCare(ANC_IPT_VACCINE, pregnancy.dateOfConception())));
+    }
+
+    @Test
+    public void shouldReturnPatientCareForIPTiForIfCurrentDOBIsOnOrBeforeWeek14() {
+
+        LocalDate birthDay = todayAs6June2012.minusWeeks(14).plusDays(1).toLocalDate();
+        List<PatientCare> patientCares = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(birthDay.toDate()), null))
+                .cwcCareProgramToEnrollOnRegistration();
+        assertThat(patientCares, hasItem(new PatientCare(CWC_IPT_VACCINE, birthDay)));
+
+        birthDay = todayAs6June2012.minusWeeks(14).toLocalDate();
+        patientCares = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(birthDay.toDate()), null))
+                .cwcCareProgramToEnrollOnRegistration();
+        assertThat(patientCares, not(hasItem(new PatientCare(CWC_IPT_VACCINE, birthDay))));
     }
 
     @Test
@@ -53,7 +67,7 @@ public class PatientTest extends BaseUnitTest {
         List<PatientCare> patientCares = new Patient().ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery());
 
         assertEquals(1, patientCares.size());
-        assertPatientCare(patientCares.get(0), ANC_DELIVERY, pregnancy.dateOfConception());
+        assertThat(patientCares, hasItem(new PatientCare(ANC_DELIVERY, pregnancy.dateOfConception())));
     }
     
     @Test
@@ -65,6 +79,7 @@ public class PatientTest extends BaseUnitTest {
         assertThat(patientCares, hasItem(new PatientCare(CWC_YELLOW_FEVER, dateOfBirth)));
         assertThat(patientCares, hasItem(new PatientCare(CWC_PENTA, dateOfBirth)));
         assertThat(patientCares, hasItem(new PatientCare(CWC_MEASLES_VACCINE, dateOfBirth)));
+        assertThat(patientCares, hasItem(new PatientCare(CWC_IPT_VACCINE, dateOfBirth)));
     }
     
     @Test

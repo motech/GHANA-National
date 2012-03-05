@@ -197,6 +197,15 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         }
     }
     
+    protected DateTime newDateWithTime(String date, String time) {
+        try {
+            String dateToParse = date + " " + time;
+            return DateUtil.newDateTime(new SimpleDateFormat("dd-MMM-yyyy hh:mm").parse(dateToParse));
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+    
     protected TestAlert alert(WindowName windowName, Date alertDate) {
         return new TestAlert(windowName, alertDate);
     }
@@ -205,6 +214,14 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         ArrayList<Date> dateList = new ArrayList<Date>();
         for (LocalDate localDate : dates) {
             dateList.add(onDate(localDate));
+        }
+        return dateList;
+    }
+
+    protected ArrayList<Date> dateTimes(DateTime... dates) {
+        ArrayList<Date> dateList = new ArrayList<Date>();
+        for (DateTime date : dates) {
+            dateList.add(date.toDate());
         }
         return dateList;
     }

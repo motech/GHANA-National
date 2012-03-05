@@ -1,0 +1,34 @@
+{
+    "name" : "PNC-MOTHER-3",
+    "milestones" : [
+        {
+            "name" : "PNC-MOTHER-3",
+            "scheduleWindows" : {
+                "earliest" : ["12 Days"],
+                "due" : ["14 Days"],
+                "late" : ["14 Days"],
+                "max" : ["21 Days"]
+            },
+            "alerts" : [
+                {
+                    "window" : "earliest",
+                    "interval" : ["1 Week"],
+                    "count" : "1",
+                    "offset" : ["12 Days"]
+                },
+                {
+                    "window" : "due",
+                    "interval" : ["1 Week"],
+                    "count" : "1",
+                    "offset" : ["2 Days"]
+                },
+                {
+                    "window" : "max",
+                    "interval" : ["1 Week"],
+                    "count" : "1",
+                    "offset" : ["7 Days"]
+                }
+            ]
+        }
+    ]
+}

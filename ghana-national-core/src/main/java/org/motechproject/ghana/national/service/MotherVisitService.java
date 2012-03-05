@@ -2,11 +2,12 @@ package org.motechproject.ghana.national.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.IPTVaccine;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientCare;
+import org.motechproject.ghana.national.domain.TTVaccine;
 import org.motechproject.ghana.national.factory.MotherVisitEncounterFactory;
-import org.motechproject.ghana.national.factory.TTVaccinationVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
-import org.motechproject.ghana.national.mapper.TTVaccinationEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllAppointments;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
@@ -14,7 +15,6 @@ import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,22 +26,24 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_D
 import static org.motechproject.ghana.national.domain.IPTVaccine.createFromANCVisit;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDate;
-import static org.motechproject.util.DateUtil.today;
 
 @Service
-public class MotherVisitService extends VisitService {
+public class MotherVisitService {
 
+    private AllSchedules allSchedules;
     private AllEncounters allEncounters;
     private AllObservations allObservations;
     private AllAppointments allAppointments;
-    MotherVisitEncounterFactory factory;
+    private MotherVisitEncounterFactory factory;
+    private VisitService visitService;
 
     @Autowired
-    public MotherVisitService(AllEncounters allEncounters, AllObservations allObservations, AllSchedules allSchedules, AllAppointments allAppointments) {
-        super(allSchedules);
+    public MotherVisitService(AllEncounters allEncounters, AllObservations allObservations, AllSchedules allSchedules, AllAppointments allAppointments, VisitService visitService) {
         this.allEncounters = allEncounters;
         this.allObservations = allObservations;
         this.allAppointments = allAppointments;
+        this.allSchedules = allSchedules;
+        this.visitService = visitService;
         factory = new MotherVisitEncounterFactory();
     }
 
@@ -49,8 +51,17 @@ public class MotherVisitService extends VisitService {
         Set<MRSObservation> mrsObservations = factory.createMRSObservations(ancVisit);
         updateEDD(ancVisit, mrsObservations);
         updateIPT(ancVisit, mrsObservations);
+        updateTT(ancVisit, mrsObservations);
         updateANCVisit(ancVisit);
         return allEncounters.persistEncounter(factory.createEncounter(ancVisit, mrsObservations));
+    }
+
+    protected void updateTT(ANCVisitRequest ancVisit, Set<MRSObservation> mrsObservations) {
+        TTVaccine ttVaccine = TTVaccine.createFromANCVisit(ancVisit);
+        if (ttVaccine != null) {
+            mrsObservations.addAll(factory.createObservationForTT(ttVaccine));
+            visitService.createTTSchedule(ttVaccine);
+        }
     }
 
     private void updateIPT(ANCVisitRequest ancVisit, Set<MRSObservation> mrsObservations) {
@@ -75,18 +86,10 @@ public class MotherVisitService extends VisitService {
         allAppointments.updateANCVisitSchedule(ancVisitRequest.getPatient(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
     }
 
-    public void receivedTT(final TTVaccineDosage dosage, Patient patient, MRSUser staff, Facility facility, final LocalDate vaccinationDate) {
-        TTVisit ttVisit = new TTVisit().dosage(dosage).facility(facility).patient(patient).staff(staff).date(vaccinationDate.toDate());
-        Encounter encounter = new TTVaccinationVisitEncounterFactory().createEncounterForVisit(ttVisit);
-        allEncounters.persistEncounter(encounter);
-        final EnrollmentRequest enrollmentRequest = new TTVaccinationEnrollmentMapper().map(patient, vaccinationDate, dosage.getScheduleMilestoneName(), today());
-        allSchedules.enrollOrFulfill(enrollmentRequest, newDate(ttVisit.getDate()));
-    }
-
     private void enrollOrFulfillScheduleIPTp(ANCVisitRequest ancVisit, IPTVaccine iptVaccine) {
         Patient patient = iptVaccine.getGivenTo();
         LocalDate visitDate = newDate(ancVisit.getDate());
-        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.iptPatientCareEnrollOnVisitAfter19Weeks(visitDate), visitDate, iptVaccine.getIptMilestone());
+        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.ancIPTPatientCareEnrollOnVisitAfter19Weeks(visitDate), visitDate, iptVaccine.getIptMilestone());
         allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
     }
 }

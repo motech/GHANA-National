@@ -1,3 +1,4 @@
+
 package org.motechproject.ghana.national.domain;
 
 import org.joda.time.LocalDate;
@@ -67,7 +68,7 @@ public class Patient {
     public List<PatientCare> ancCareProgramsToEnrollOnRegistration(LocalDate expectedDeliveryDate) {
         return nullSafeList(
                 new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception()),
-                iptPatientCareEnrollOnRegistration(expectedDeliveryDate));
+                ancIPTPatientCareEnrollOnRegistration(expectedDeliveryDate));
     }
 
     public List<String> ancCareProgramsToUnEnroll() {
@@ -91,24 +92,36 @@ public class Patient {
         return new ArrayList<String>(new HashSet<String>(union(ancCareProgramsToUnEnroll(), cwcCareProgramsToUnEnroll())));
     }
 
-    public PatientCare iptPatientCareEnrollOnRegistration(LocalDate expectedDeliveryDate) {
-        if (expectedDeliveryDate != null && basedOnDeliveryDate(expectedDeliveryDate).applicableForIPT()) {
-            return new PatientCare(ANC_IPT_VACCINE, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception());
-        }
-        return null;
-    }
-
     public List<PatientCare> cwcCareProgramToEnrollOnRegistration() {
         LocalDate referenceDate = DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth());
         return nullSafeList(
+                cwcIPTPatientCareEnrollOnRegistration(referenceDate),
                 new PatientCare(CWC_BCG, referenceDate),
                 new PatientCare(CWC_YELLOW_FEVER, referenceDate),
                 pentaPatientCare(),
                 measlesChildCare());
     }
 
-    public PatientCare iptPatientCareEnrollOnVisitAfter19Weeks(LocalDate visitDate) {
+    public PatientCare ancIPTPatientCareEnrollOnRegistration(LocalDate expectedDeliveryDate) {
+        if (expectedDeliveryDate != null && basedOnDeliveryDate(expectedDeliveryDate).applicableForIPT()) {
+            return new PatientCare(ANC_IPT_VACCINE, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception());
+        }
+        return null;
+    }
+
+    private PatientCare cwcIPTPatientCareEnrollOnRegistration(LocalDate birthDate) {
+        if (birthDate != null && ChildCare.basedOnBirthDay(birthDate).applicableForIPT()) {
+            return new PatientCare(CWC_IPT_VACCINE, birthDate);
+        }
+        return null;
+    }
+
+    public PatientCare ancIPTPatientCareEnrollOnVisitAfter19Weeks(LocalDate visitDate) {
         return new PatientCare(ANC_IPT_VACCINE, visitDate);
+    }
+
+    public PatientCare cwcIPTPatientCareEnrollOnVisitAfter14Weeks(LocalDate visitDate) {
+        return new PatientCare(CWC_IPT_VACCINE, visitDate);
     }
 
     public PatientCare pentaPatientCare() {

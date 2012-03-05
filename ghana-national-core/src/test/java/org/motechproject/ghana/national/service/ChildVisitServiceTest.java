@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,22 +12,28 @@ import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.vo.CWCVisit;
-import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSPerson;
-import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.model.Time;
+import org.motechproject.mrs.model.*;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.EnrollmentResponse;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
 import java.util.Date;
+import java.util.Set;
 
+import static ch.lambdaj.Lambda.*;
 import static java.util.Arrays.asList;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
-import static org.motechproject.ghana.national.domain.Concept.MEASLES;
+import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.today;
 
@@ -58,6 +65,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
         verify(spyService).updatePentaSchedule(cwcVisit);
         verify(spyService).updateYellowFeverSchedule(cwcVisit);
+        verify(spyService).updateIPTSchedule(cwcVisit);
     }
 
     @Test
@@ -108,6 +116,51 @@ public class ChildVisitServiceTest extends BaseUnitTest {
     }
 
     @Test
+    // 2 scenarios - in both case IPT1 is created and fulfilled and send alerts for remaining weeks
+    // i) User enrolled after 14th week
+    // ii) User enrolled for SP2, taking IPT2 directly based on some pre-history
+    public void shouldEnrollOrFulfilIPTiScheduleBasedOnVisitDate_AndRecordObservations() {
+
+        Time deliveryTime = new Time(20, 2);
+        DateTime today = new DateTime(2012, 2, 1, deliveryTime.getHour(), deliveryTime.getMinute());
+        LocalDate visitDate = today.minusDays(10).toLocalDate();
+        IPTDose dose = IPTDose.SP2;
+        String mrsPatientId = "1234";
+        CWCVisit cwcVisit = createTestCWCVisit(visitDate.toDate(), new MRSUser(), mock(Facility.class),
+                new Patient(new MRSPatient(mrsPatientId, "", new MRSPerson().dateOfBirth(newDate(2011, 1, 1).toDate()), null)))
+                .iptidose(dose.value().toString());
+
+        mockCurrentDate(today);
+        service.save(cwcVisit);
+
+        ArgumentCaptor<Encounter> encounterCaptor = forClass(Encounter.class);
+        verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
+        assertIfObservationsAvailableForConcepts(true, encounterCaptor.getValue().getObservations(), IPTI.getName());
+
+        ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
+        verify(mockAllSchedules).enrollOrFulfill(captor.capture(), eq(visitDate));
+        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, CWC_IPT_VACCINE, deliveryTime, visitDate, null, visitDate, null, dose.milestone()), captor.getAllValues().get(0));
+    }
+
+    @Test
+    public void shouldNotCreateIPTSchedule_IfIPTReadingsAreNotCaptured() {
+        Time deliveryTime = new Time(20, 2);
+        DateTime today = new DateTime(2012, 2, 1, deliveryTime.getHour(), deliveryTime.getMinute());
+        mockCurrentDate(today);
+        LocalDate visitDate = today.minusDays(10).toLocalDate();
+        String mrsPatientId = "99999";
+        CWCVisit cwcVisit = createTestCWCVisit(visitDate.toDate(), new MRSUser(), mock(Facility.class),
+                new Patient(new MRSPatient(mrsPatientId, "", new MRSPerson().dateOfBirth(newDate(2011, 1, 1).toDate()), null)))
+                .iptidose(null);
+
+        service.save(cwcVisit);
+        ArgumentCaptor<Encounter> encounterCaptor = forClass(Encounter.class);
+        verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
+        assertIfObservationsAvailableForConcepts(false, encounterCaptor.getValue().getObservations(), IPTI.getName());
+        verify(mockAllSchedules, never()).fulfilCurrentMilestone(mrsPatientId, CWC_IPT_VACCINE, visitDate);
+    }
+
+    @Test
     public void shouldFulfillYellowFeverScheduleIfYellowFeverIsChosen() {
         String mrsPatientId = "1234";
         CWCVisit testCWCVisit = createTestCWCVisit(new Date(), new MRSUser(), mock(Facility.class), new Patient(new MRSPatient(mrsPatientId)));
@@ -117,7 +170,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_YELLOW_FEVER, DateUtil.newDate(testCWCVisit.getDate()));
     }
-    
+
     @Test
     public void shouldFulfilMilestoneIfEnrolledAndTakenMeaslesVaccineOnVisit() {
 
@@ -126,7 +179,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         LocalDate visitDate = newDate(2012, 2, 3);
         CWCVisit cwcVisit = createTestCWCVisit(visitDate.toDate(), mock(MRSUser.class), mock(Facility.class), patient)
                 .immunizations(asList(MEASLES.name()));
-        when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(new EnrollmentResponse("","", null, null, null));
+        when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(new EnrollmentResponse("", "", null, null, null));
         service.save(cwcVisit);
 
         verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_MEASLES_VACCINE, visitDate);
@@ -158,4 +211,23 @@ public class ChildVisitServiceTest extends BaseUnitTest {
                 .weight(65.67d).comments("comments").cwcLocation("34").house("house").community("community").maleInvolved(false);
     }
 
+    private void assertEnrollmentReqWithoutDeliveryTime(EnrollmentRequest expected, EnrollmentRequest actual) {
+        assertThat(actual.getScheduleName(), is(equalTo(expected.getScheduleName())));
+        assertThat(actual.getReferenceDate(), is(equalTo(expected.getReferenceDate())));
+        assertThat(actual.getExternalId(), is(equalTo(expected.getExternalId())));
+        assertThat(actual.getStartingMilestoneName(), is(equalTo(expected.getStartingMilestoneName())));
+    }
+
+    private void assertEnrollmentRequest(EnrollmentRequest expected, EnrollmentRequest actual) {
+        assertEnrollmentReqWithoutDeliveryTime(expected, actual);
+        assertThat(actual.getPreferredAlertTime(), is(equalTo(expected.getPreferredAlertTime())));
+    }
+
+    private void assertIfObservationsAvailableForConcepts(Boolean present, Set<MRSObservation> observations, String... conceptNames) {
+        for (String conceptName : conceptNames)
+            if (present)
+                assertNotNull("concept not present:" + conceptName, selectFirst(observations, having(on(MRSObservation.class).getConceptName(), equalTo(conceptName))));
+            else
+                assertNull("concept present:" + conceptName, selectFirst(observations, having(on(MRSObservation.class).getConceptName(), equalTo(conceptName))));
+    }
 }
