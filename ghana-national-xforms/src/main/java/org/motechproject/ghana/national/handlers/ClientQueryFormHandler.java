@@ -47,12 +47,17 @@ public class ClientQueryFormHandler implements FormPublishHandler {
         ClientQueryForm clientQueryForm = (ClientQueryForm) event.getParameters().get(Constants.FORM_BEAN);
         Patient patient = patientService.getPatientByMotechId(clientQueryForm.getMotechId());
         Date pregnancyEDD = getActivePregnancyEDD(patient.getMotechId());
-        String messageKey = (null == pregnancyEDD) ? NON_PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY : PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY;
+        String messageKey = NON_PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY;
 
-        smsGateway.dispatchSMS(messageKey, getMessageParameters(patient, pregnancyEDD), clientQueryForm.getSender());
+        Map<String, String> messageParameters = getMessageParameters(patient);
+        if (null != pregnancyEDD) {
+            messageKey = PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY;
+            messageParameters.put(DATE, toDateString(pregnancyEDD));
+        }
+        smsGateway.dispatchSMS(messageKey, messageParameters, clientQueryForm.getSender());
     }
 
-    private Map<String, String> getMessageParameters(final Patient patient, final Date pregnancyEDD) {
+    private Map<String, String> getMessageParameters(final Patient patient) {
         final MRSPerson person = patient.getMrsPatient().getPerson();
         return new HashMap<String, String>() {{
             put(MOTECH_ID, patient.getMotechId());
@@ -62,9 +67,12 @@ public class ClientQueryFormHandler implements FormPublishHandler {
             put(DOB, toDateString(person.getDateOfBirth()));
             put(AGE, person.getAge().toString());
             put(FACILITY, patient.getMrsPatient().getFacility().getName());
-            put(PHONE_NUMBER, person.attrValue(PatientAttributes.PHONE_NUMBER.getAttribute()));
-            put(DATE, toDateString(pregnancyEDD));
+            put(PHONE_NUMBER, nullSafeValue(person.attrValue(PatientAttributes.PHONE_NUMBER.getAttribute())));
         }};
+    }
+
+    private String nullSafeValue(String value) {
+        return (null == value) ? "" : value;
     }
 
     private String toDateString(Date date) {

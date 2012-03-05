@@ -45,11 +45,11 @@ public class SMSGateway {
     }
 
     public void dispatchSMS(String templateKey, Map<String, String> templateValues, String phoneNumber) {
-        smsService.sendSMS(SMS.fill(getSMSTemplate(templateKey), templateValues), phoneNumber);
+        smsService.sendSMS(phoneNumber, SMS.fill(getSMSTemplate(templateKey), templateValues));
     }
 
     public void dispatchSMS(String templateKey, String language, String phoneNumber){
-        smsService.sendSMS(getSMSTemplate(language, templateKey), phoneNumber);
+        smsService.sendSMS(phoneNumber, getSMSTemplate(language, templateKey));
     }
 
     private String defaultLanguage() {
