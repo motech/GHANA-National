@@ -7,6 +7,7 @@ import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSObservation;
@@ -67,12 +68,8 @@ public class ClientQueryFormHandler implements FormPublishHandler {
             put(DOB, toDateString(person.getDateOfBirth()));
             put(AGE, person.getAge().toString());
             put(FACILITY, patient.getMrsPatient().getFacility().getName());
-            put(PHONE_NUMBER, nullSafeValue(person.attrValue(PatientAttributes.PHONE_NUMBER.getAttribute())));
+            put(PHONE_NUMBER, Utility.nullSafe(person.attrValue(PatientAttributes.PHONE_NUMBER.getAttribute()),""));
         }};
-    }
-
-    private String nullSafeValue(String value) {
-        return (null == value) ? "" : value;
     }
 
     private String toDateString(Date date) {

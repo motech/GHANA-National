@@ -7,10 +7,11 @@ import org.motechproject.ghana.national.bean.TTVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.service.MotherVisitService;
+import org.motechproject.ghana.national.domain.TTVaccine;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
+import org.motechproject.ghana.national.service.VisitService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSUser;
@@ -25,7 +26,7 @@ import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT1;
 public class TTVisitFormHandlerTest {
 
     @Mock
-    private MotherVisitService ttVaccinationService;
+    private VisitService ttVaccinationService;
     @Mock
     private PatientService patientService;
     @Mock
@@ -57,7 +58,7 @@ public class TTVisitFormHandlerTest {
         when(facilityService.getFacilityByMotechId(ttVisitForm.getFacilityId())).thenReturn(facility);
         ttVisitFormHandler.handleFormEvent(eventMock);
 
-        verify(ttVaccinationService).receivedTT(TT1, patient, staff, facility, DateUtil.newDate(ttVisitForm.getDate()));
+        verify(ttVaccinationService).receivedTT(new TTVaccine(DateUtil.newDate(ttVisitForm.getDate()), TT1, patient), staff, facility);
     }
 
     private TTVisitForm setupTTVisitForm() {

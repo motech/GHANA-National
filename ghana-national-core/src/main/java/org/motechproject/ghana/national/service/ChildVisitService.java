@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
+import org.motechproject.scheduletracking.api.service.EnrollmentResponse;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,13 +24,12 @@ import static org.motechproject.ghana.national.domain.Concept.YF;
 import static org.motechproject.util.DateUtil.newDate;
 
 @Service
-public class ChildVisitService extends VisitService {
+public class ChildVisitService {
     private AllEncounters allEncounters;
     private AllSchedules allSchedules;
 
     @Autowired
     public ChildVisitService(AllEncounters allEncounters, AllSchedules allSchedules) {
-        super(allSchedules);
         this.allEncounters = allEncounters;
         this.allSchedules = allSchedules;
     }
@@ -82,5 +82,9 @@ public class ChildVisitService extends VisitService {
 
     private String milestoneName(CWCVisit cwcVisit) {
         return PentaDose.byValue(Integer.parseInt(cwcVisit.getPentadose())).milestoneName();
+    }
+
+    private EnrollmentResponse enrollment(String mrsPatientId, String programName) {
+        return allSchedules.enrollment(new ScheduleEnrollmentMapper().map(mrsPatientId, programName));
     }
 }
