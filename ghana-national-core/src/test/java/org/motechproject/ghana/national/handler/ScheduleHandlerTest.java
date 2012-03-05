@@ -54,6 +54,12 @@ public class ScheduleHandlerTest {
     }
     
     @Test
+    public void shouldHandleIPTiVaccinationSchedules(){
+        fireScheduleHandler(CWC_IPT_VACCINE);
+        verify(careScheduleHandler).handleIPTiVaccinationAlert(Matchers.<MilestoneEvent>any());
+    }
+    
+    @Test
     public void shouldHandleMeaslesVaccinationSchedules(){
         fireScheduleHandler(CWC_MEASLES_VACCINE);
         verify(careScheduleHandler).handleMeaslesVaccinationAlert(Matchers.<MilestoneEvent>any());
