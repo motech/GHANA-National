@@ -38,21 +38,21 @@ public class MobileMidwifeMigrationSeed extends Seed {
         List<MobileMidwifeEnrollment> mobileMidwifeEnrollments = mobileMidwifeSource.getPatients();
         List<HashMap<String, String>> enrollmentData = mobileMidwifeSource.getEnrollmentData();
         List<Map<String, Object>> newListOfHashMaps = mobileMidwifeEnrollmentData(enrollmentData);
+        final List<Map<String, Object>> enrollments = new ArrayList<Map<String, Object>>();
+
+        for (Map<String, Object> map : newListOfHashMaps) {
+            final String enrollmentPatientMotechId = (String) map.get("patient_motech_id");
+            if (enrollmentPatientMotechId != null) {
+                enrollments.add(map);
+            }
+        }
 
         for (MobileMidwifeEnrollment mobileMidwifeEnrollment : mobileMidwifeEnrollments) {
-            final List<Map<String, Object>> enrollments = new ArrayList<Map<String, Object>>();
-            String patientMotechId = mobileMidwifeEnrollment.getPatientId();
-            for (Map<String, Object> map : newListOfHashMaps) {
-                final String enrollmentPatientMotechId = (String) map.get("patient_motech_id");
-                if (enrollmentPatientMotechId != null && enrollmentPatientMotechId.equals(patientMotechId)) {
-                    enrollments.add(map);
-                }
-            }
             sortEnrollmentsByDate(enrollments);
             try {
                 addMobileMidwifeEnrollmentDataToDB(mobileMidwifeEnrollment, enrollments);
             } catch (ParseException e) {
-                e.printStackTrace();
+                LOG.info("Exception occured while adding data to DB");
             }
         }
     }
@@ -81,7 +81,7 @@ public class MobileMidwifeMigrationSeed extends Seed {
                 }
             }
             else {
-                LOG.info("No schedule to migrate for "+mobileMidwifeEnrollment.getPatientId());
+                LOG.info("No schedule to migrate for "+patientMotechId);
             }
         }
     }
