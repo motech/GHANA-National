@@ -10,6 +10,8 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.mrs.model.MRSPatient;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Date;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -37,7 +39,7 @@ public class AllAppointmentsTest {
     public void shouldCreateANCVisitSchedule() {
         String motechId = "1234556";
         DateTime today = DateTime.now();
-        allAppointments.updateANCVisitSchedule(new Patient(new MRSPatient(motechId, null, null)), today);
+        allAppointments.updateANCVisitSchedule(new Patient(new MRSPatient(motechId, null, null)), new Date(), today);
 
 //        ArgumentCaptor<AppointmentCalendarRequest> calendarCaptor = ArgumentCaptor.forClass(AppointmentCalendarRequest.class);
 //        ArgumentCaptor<VisitRequest> visitCaptor = ArgumentCaptor.forClass(VisitRequest.class);

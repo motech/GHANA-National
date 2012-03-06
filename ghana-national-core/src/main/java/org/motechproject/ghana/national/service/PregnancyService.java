@@ -28,7 +28,7 @@ public class PregnancyService {
     private AllSchedules allSchedules;
     private AllAppointments allAppointments;
     private IdentifierGenerator identifierGenerator;
-    PregnancyEncounterFactory encounterFactory;
+    private PregnancyEncounterFactory encounterFactory;
     private AllObservations allObservations;
     private CareService careService;
 
@@ -71,7 +71,8 @@ public class PregnancyService {
                 Patient patient = new Patient(new MRSPatient(childMotechId, childPerson, facility.mrsFacility()), request.getPatient().getMotechId());
                 final Patient savedChild = allPatients.save(patient);
                 allEncounters.persistEncounter(encounterFactory.createBirthEncounter(childRequest, savedChild.getMrsPatient(), staff, facility, birthDate));
-                careService.enroll(new CwcVO(staff.getSystemId(), facility.motechId(), birthDate, savedChild.getMotechId(), Collections.<CwcCareHistory>emptyList(), null, null, null, null, null, null, null, null, null, null, savedChild.getMotechId(), false));
+                careService.enroll(new CwcVO(staff.getSystemId(), facility.motechId(), birthDate, savedChild.getMotechId(),
+                        Collections.<CwcCareHistory>emptyList(), null, null, null, null, null, null, null, null, null, null, savedChild.getMotechId(), false));
             }
         }
         MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(request.getPatient().getMotechId());

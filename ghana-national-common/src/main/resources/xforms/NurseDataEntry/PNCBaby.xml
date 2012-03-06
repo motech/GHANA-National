@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xf:xforms xmlns:xf="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="8">
   <xf:model>
-    <xf:instance id="pncbaby">
-      <pncbaby id="8" name="PNC (baby)">
+    <xf:instance id="pncBabyRequest">
+      <pncBabyRequest id="8" name="PNC (baby)">
         <staffId/>
         <facilityId/>
         <date/>
@@ -22,29 +22,29 @@
         <opv0/>
         <comments/>
         <formtype>data_entry</formtype>
-        <formname>childpnc-jf</formname>
-      </pncbaby>
+        <formname>pncBabyRequest</formname>
+      </pncBabyRequest>
     </xf:instance>
-    <xf:bind id="staffId" nodeset="/pncbaby/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
-    <xf:bind id="facilityId" nodeset="/pncbaby/facilityId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
-    <xf:bind constraint=". &lt;= 'today()'" id="date" message="Invalid date: date specified is in the future" nodeset="/pncbaby/date" required="true()" type="xsd:dateTime"/>
-    <xf:bind id="motechId" nodeset="/pncbaby/motechId" required="true()" type="xsd:int" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
-    <xf:bind id="visitNumber" nodeset="/pncbaby/visitNumber" required="true()" type="xsd:string"/>
-    <xf:bind constraint=". &gt;= 0.2 and . &lt;= 11" id="weight" message="Value out of range: must be between 0.2 and 11" nodeset="/pncbaby/weight" type="xsd:decimal"/>
-    <xf:bind constraint=". &gt;= 30 and . &lt;= 48" id="temperature" message="Value out of range: must be between 30 and 48" nodeset="/pncbaby/temperature" type="xsd:decimal"/>
-    <xf:bind id="location" nodeset="/pncbaby/location" required="true()" type="xsd:string"/>
-    <xf:bind action="show" id="house" nodeset="/pncbaby/house" relevant="/pncbaby/location = '2'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="community" nodeset="/pncbaby/community" relevant="/pncbaby/location = '2'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind id="referred" nodeset="/pncbaby/referred" required="true()" type="xsd:string"/>
-    <xf:bind id="maleInvolved" nodeset="/pncbaby/maleInvolved" required="true()" type="xsd:string"/>
-    <xf:bind constraint=". &gt;= 10 and . &lt;= 100" id="respiration" message="Value out of range: must be between 10 and 100" nodeset="/pncbaby/respiration" required="true()" type="xsd:int"/>
-    <xf:bind id="cordConditionNormal" nodeset="/pncbaby/cordConditionNormal" required="true()" type="xsd:string"/>
-    <xf:bind id="babyConditionGood" nodeset="/pncbaby/babyConditionGood" required="true()" type="xsd:string"/>
-    <xf:bind id="bcg" nodeset="/pncbaby/bcg" required="true()" type="xsd:string"/>
-    <xf:bind id="opv0" nodeset="/pncbaby/opv0" required="true()" type="xsd:string"/>
-    <xf:bind id="comments" nodeset="/pncbaby/comments" type="xsd:string"/>
-    <xf:bind id="formtype" nodeset="/pncbaby/formtype" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind id="formname" nodeset="/pncbaby/formname" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind id="staffId" nodeset="/pncBabyRequest/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+    <xf:bind id="facilityId" nodeset="/pncBabyRequest/facilityId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+    <xf:bind id="date" constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future" nodeset="/pncBabyRequest/date" required="true()" type="xsd:dateTime"/>
+    <xf:bind id="motechId" nodeset="/pncBabyRequest/motechId" required="true()" type="xsd:int" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
+    <xf:bind id="visitNumber" nodeset="/pncBabyRequest/visitNumber" required="true()" type="xsd:string"/>
+    <xf:bind id="weight" constraint=". &gt;= 0.2 and . &lt;= 11" message="Value out of range: must be between 0.2 and 11" nodeset="/pncBabyRequest/weight" type="xsd:decimal"/>
+    <xf:bind id="temperature" constraint=". &gt;= 30 and . &lt;= 48" message="Value out of range: must be between 30 and 48" nodeset="/pncBabyRequest/temperature" type="xsd:decimal"/>
+    <xf:bind id="location" nodeset="/pncBabyRequest/location" required="true()" type="xsd:string"/>
+    <xf:bind id="house" action="show" nodeset="/pncBabyRequest/house" relevant="/pncBabyRequest/location = '2'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind id="community" action="show" nodeset="/pncBabyRequest/community" relevant="/pncBabyRequest/location = '2'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind id="referred" nodeset="/pncBabyRequest/referred" required="true()" type="xsd:string"/>
+    <xf:bind id="maleInvolved" nodeset="/pncBabyRequest/maleInvolved" required="true()" type="xsd:string"/>
+    <xf:bind id="respiration" constraint=". &gt;= 10 and . &lt;= 100" message="Value out of range: must be between 10 and 100" nodeset="/pncBabyRequest/respiration" required="true()" type="xsd:int"/>
+    <xf:bind id="cordConditionNormal" nodeset="/pncBabyRequest/cordConditionNormal" required="true()" type="xsd:string"/>
+    <xf:bind id="babyConditionGood" nodeset="/pncBabyRequest/babyConditionGood" required="true()" type="xsd:string"/>
+    <xf:bind id="bcg" nodeset="/pncBabyRequest/bcg" required="true()" type="xsd:string"/>
+    <xf:bind id="opv0" nodeset="/pncBabyRequest/opv0" required="true()" type="xsd:string"/>
+    <xf:bind id="comments" nodeset="/pncBabyRequest/comments" type="xsd:string"/>
+    <xf:bind id="formtype" nodeset="/pncBabyRequest/formtype" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind id="formname" nodeset="/pncBabyRequest/formname" required="true()" type="xsd:string" visible="false()"/>
   </xf:model>
   <xf:group id="1">
     <xf:label>Page2</xf:label>

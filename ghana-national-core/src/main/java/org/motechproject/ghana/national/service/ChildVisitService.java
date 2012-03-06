@@ -42,6 +42,10 @@ public class ChildVisitService extends VisitService {
         return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(cwcVisit));
     }
 
+    public MRSEncounter save(PNCBabyRequest pncBabyRequest) {
+        return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(pncBabyRequest));
+    }
+    
     void updateIPTSchedule(CWCVisit cwcVisit) {
         IPTVaccine iptVaccine = IPTVaccine.createFromCWCVisit(cwcVisit);
         if(iptVaccine != null) {
@@ -72,7 +76,7 @@ public class ChildVisitService extends VisitService {
         if (!StringUtils.isEmpty(cwcVisit.getPentadose())) {
             Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
-            // TODO: use enrollOrFulfil
+
             if (null == enrollment(patient.getMRSPatientId(), CWC_PENTA)) {
                 allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patient.pentaPatientCare(), visitDate, milestoneName(cwcVisit)));
             }

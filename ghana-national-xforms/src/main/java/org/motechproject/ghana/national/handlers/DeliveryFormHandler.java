@@ -46,13 +46,12 @@ public class DeliveryFormHandler implements FormPublishHandler {
     public void handleFormEvent(MotechEvent event) {
         try {
             DeliveryForm deliveryForm = (DeliveryForm) event.getParameters().get(Constants.FORM_BEAN);
-
+            pregnancyService.handleDelivery(createDeliveryRequest(deliveryForm));
             if (!deliveryForm.getMaternalDeath()) {
                 mobileMidwifeService.unRegister(deliveryForm.getMotechId());
             } else {
                 patientService.deceasePatient(deliveryForm.getDate().toDate(), deliveryForm.getMotechId(), "OTHER", "Delivery");
             }
-            pregnancyService.handleDelivery(createDeliveryRequest(deliveryForm));
 
         } catch (Exception e) {
             log.error("Encountered error while saving delivery form details", e);

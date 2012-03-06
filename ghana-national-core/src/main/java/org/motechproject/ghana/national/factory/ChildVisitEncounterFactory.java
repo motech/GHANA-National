@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.factory;
 import org.motechproject.ghana.national.domain.Concept;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Encounter;
+import org.motechproject.ghana.national.service.request.PNCBabyRequest;
 import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
@@ -13,8 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.motechproject.ghana.national.domain.Concept.*;
-import static org.motechproject.ghana.national.domain.EncounterType.CWC_VISIT;
-
+import static org.motechproject.ghana.national.domain.EncounterType.*;
 public class ChildVisitEncounterFactory extends BaseObservationFactory {
 
     public Encounter createEncounter(CWCVisit cwcVisit) {
@@ -43,6 +43,33 @@ public class ChildVisitEncounterFactory extends BaseObservationFactory {
         for (String immunization : cwcVisit.getImmunizations()) {
             setObservation(mrsObservations, registrationDate, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(Concept.valueOf(immunization).getName()));
         }
+        return mrsObservations;
+    }
+
+    public Encounter createEncounter(PNCBabyRequest pncBabyRequest) {
+        return new Encounter(pncBabyRequest.getPatient().getMrsPatient(), pncBabyRequest.getStaff(),
+                pncBabyRequest.getFacility(), PNC_CHILD_VISIT, pncBabyRequest.getDate().toDate(), createMRSObservations(pncBabyRequest));
+    }
+
+    private Set<MRSObservation> createMRSObservations(PNCBabyRequest pncBabyRequest) {
+        HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
+        Date registrationDate = pncBabyRequest.getDate().toDate();
+
+        setObservation(mrsObservations, registrationDate, VISIT_NUMBER.getName(), pncBabyRequest.getVisitNumber());
+        setObservation(mrsObservations, registrationDate, TEMPERATURE.getName(), pncBabyRequest.getTemperature());
+        setObservation(mrsObservations, registrationDate, MALE_INVOLVEMENT.getName(), pncBabyRequest.getMaleInvolved());
+        setObservation(mrsObservations, registrationDate, RESPIRATION.getName(), pncBabyRequest.getRespiration());
+        setObservation(mrsObservations, registrationDate, CORD_CONDITION.getName(), pncBabyRequest.getCordConditionNormal());
+        setObservation(mrsObservations, registrationDate, BABY_CONDITION.getName(), pncBabyRequest.getBabyConditionGood());
+        setObservation(mrsObservations, registrationDate, WEIGHT_KG.getName(), pncBabyRequest.getWeight());
+        setObservation(mrsObservations, registrationDate, BCG.getName(), pncBabyRequest.getBcg());
+        setObservation(mrsObservations, registrationDate, OPV.getName(), pncBabyRequest.getOpv0());
+        if (!pncBabyRequest.getLocation().equals(Constants.NOT_APPLICABLE))
+            setObservation(mrsObservations, registrationDate, ANC_PNC_LOCATION.getName(), toInteger(pncBabyRequest.getLocation()));
+        setObservation(mrsObservations, registrationDate, HOUSE.getName(), pncBabyRequest.getHouse());
+        setObservation(mrsObservations, registrationDate, COMMUNITY.getName(), pncBabyRequest.getCommunity());
+        setObservation(mrsObservations, registrationDate, REFERRED.getName(), pncBabyRequest.getReferred());
+        setObservation(mrsObservations, registrationDate, COMMENTS.getName(), pncBabyRequest.getComments());
         return mrsObservations;
     }
 }

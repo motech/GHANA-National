@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.service.request.PNCBabyRequest;
 import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.*;
@@ -66,6 +67,41 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         verify(spyService).updatePentaSchedule(cwcVisit);
         verify(spyService).updateYellowFeverSchedule(cwcVisit);
         verify(spyService).updateIPTSchedule(cwcVisit);
+    }
+
+    @Test
+    public void shouldCreateEncounterForPNCBabyWithAllInfo() {
+        MRSUser staff = mock(MRSUser.class);
+        Facility facility = mock(Facility.class);
+        Patient patient = mock(Patient.class);
+        PNCBabyRequest pncBabyRequest = createTestPNCBabyForm(DateTime.now(), staff, facility, patient);
+
+        ChildVisitService spyService = spy(service);
+        spyService.save(pncBabyRequest);
+
+        ArgumentCaptor<Encounter> encounterCaptor = ArgumentCaptor.forClass(Encounter.class);
+        verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
+    }
+
+    private PNCBabyRequest createTestPNCBabyForm(DateTime date, MRSUser staff, Facility facility, Patient patient) {
+        PNCBabyRequest pncBabyRequest = new PNCBabyRequest();
+        return pncBabyRequest.staff(staff).
+                facility(facility).
+                patient(patient).
+                date(date).
+                weight(65.67d).
+                comments("comments").
+                location("34").
+                house("house").
+                community("community").
+                maleInvolved(false).
+                babyConditionGood("Good").
+                cordConditionNormal("Normal").
+                referred(false).
+                bcg(false).opv0(false).
+                respiration(12).
+                temperature(32.2d).
+                visitNumber("1");
     }
 
     @Test

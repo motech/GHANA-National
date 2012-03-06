@@ -34,7 +34,7 @@ public class MotherVisitService extends VisitService {
     private AllEncounters allEncounters;
     private AllObservations allObservations;
     private AllAppointments allAppointments;
-    MotherVisitEncounterFactory factory;
+    private MotherVisitEncounterFactory factory;
 
     @Autowired
     public MotherVisitService(AllEncounters allEncounters, AllObservations allObservations, AllSchedules allSchedules, AllAppointments allAppointments) {
@@ -72,7 +72,7 @@ public class MotherVisitService extends VisitService {
     }
 
     private void updateANCVisit(ANCVisitRequest ancVisitRequest) {
-        allAppointments.updateANCVisitSchedule(ancVisitRequest.getPatient(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
+        allAppointments.updateANCVisitSchedule(ancVisitRequest.getPatient(), ancVisitRequest.getDate(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
     }
 
     public void receivedTT(final TTVaccineDosage dosage, Patient patient, MRSUser staff, Facility facility, final LocalDate vaccinationDate) {
