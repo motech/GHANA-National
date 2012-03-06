@@ -10,12 +10,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static java.lang.Boolean.FALSE;
+
 @Component("iptpVaccineSeed")
 public class IPTPVaccineSeed extends ScheduleMigrationSeed {
 
     @Autowired
     public IPTPVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules);
+        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules, FALSE);
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {
@@ -28,7 +30,7 @@ public class IPTPVaccineSeed extends ScheduleMigrationSeed {
     }
 
     @Override
-    public String getScheduleName() {
+    public String getScheduleName(String milestoneName) {
         return ScheduleNames.ANC_IPT_VACCINE;
     }
 }

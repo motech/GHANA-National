@@ -10,12 +10,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static java.lang.Boolean.FALSE;
+
 @Component("eddSeed")
 public class EDDSeed extends ScheduleMigrationSeed {
 
     @Autowired
     public EDDSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules);
+        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules, FALSE);
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {
@@ -28,7 +30,7 @@ public class EDDSeed extends ScheduleMigrationSeed {
     }
 
     @Override
-    public String getScheduleName() {
+    public String getScheduleName(String milestoneName) {
         return ScheduleNames.ANC_DELIVERY;
     }
 }

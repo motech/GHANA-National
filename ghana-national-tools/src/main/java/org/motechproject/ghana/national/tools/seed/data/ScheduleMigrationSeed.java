@@ -30,40 +30,58 @@ public abstract class ScheduleMigrationSeed extends Seed {
 
     private AllTrackedSchedules allTrackedSchedules;
     protected OldGhanaScheduleSource oldGhanaScheduleSource;
-    List<Filter> filters = Arrays.asList(new DuplicateScheduleFilter(), new VoidedScheduleFilter(), new ExpiredScheduleFilter());
+    List<Filter> filters = Arrays.asList(new DuplicateScheduleFilter(), new VoidedScheduleFilter(), new ScheduleExpiredBasedOnLateAlertFilter());
 
-    private static Logger LOG = Logger.getLogger(ScheduleMigrationSeed.class);
+    static Logger LOG = Logger.getLogger(ScheduleMigrationSeed.class);
     protected AllSchedules allSchedules;
+    private Boolean hasIndependentMilestones;
 
-    protected ScheduleMigrationSeed(AllTrackedSchedules allTrackedSchedules, OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allSchedules) {
+    protected ScheduleMigrationSeed(AllTrackedSchedules allTrackedSchedules, OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allSchedules, Boolean hasIndependentMilestones) {
         this.allTrackedSchedules = allTrackedSchedules;
         this.oldGhanaScheduleSource = oldGhanaScheduleSource;
         this.allSchedules = allSchedules;
+        this.hasIndependentMilestones = hasIndependentMilestones;
     }
 
     void migrate(List<UpcomingSchedule> upcomingSchedulesFromDb) {
         final Group<UpcomingSchedule> schedulesForPatients = group(upcomingSchedulesFromDb, by(on(UpcomingSchedule.class).getPatientId()));
         for (Group<UpcomingSchedule> schedulesForPatient : schedulesForPatients.subgroups()) {
-            List<UpcomingSchedule> filteredSchedules = schedulesForPatient.findAll();
-            for (Filter filter : filters) {
-                filteredSchedules = filter.filter(filteredSchedules);
-            }
+            List<UpcomingSchedule> filteredSchedules = applyFilters(schedulesForPatient.findAll());
+            migrateFilteredSchedules(filteredSchedules);
+        }
+    }
 
+    private void migrateFilteredSchedules(List<UpcomingSchedule> filteredSchedules) {
+        if (hasIndependentMilestones) {
+            createSchedules(filteredSchedules);
+        } else {
             if (filteredSchedules.size() > 1) {
                 LOG.error("Patient, " + filteredSchedules.get(0).getPatientId() + " has more than one active schedule");
             } else if (filteredSchedules.size() == 1) {
-                try {
-                    final UpcomingSchedule scheduleToBeMigrated = filteredSchedules.get(0);
-                    enroll(getReferenceDate(scheduleToBeMigrated), mapMilestoneName(scheduleToBeMigrated.getMilestoneName()), new Patient(new MRSPatient(scheduleToBeMigrated.getPatientId())));
-                } catch (Exception e) {
-                    LOG.error("Encountered exception while migrating shedules for patients, " + filteredSchedules.get(0).getPatientId());
-                }
+                createSchedules(filteredSchedules);
             }
         }
     }
 
+    private void createSchedules(List<UpcomingSchedule> filteredSchedules) {
+        for (UpcomingSchedule schedule : filteredSchedules) {
+            try {
+                enroll(getReferenceDate(schedule), mapMilestoneName(schedule.getMilestoneName()), new Patient(new MRSPatient(schedule.getPatientId())));
+            } catch (Exception e) {
+                LOG.error("Encountered exception while migrating schedules for patients, " + schedule.getPatientId());
+            }
+        }
+    }
+
+    private List<UpcomingSchedule> applyFilters(List<UpcomingSchedule> filteredSchedules) {
+        for (Filter filter : filters) {
+            filteredSchedules = filter.filter(filteredSchedules);
+        }
+        return filteredSchedules;
+    }
+
     DateTime getReferenceDate(UpcomingSchedule upcomingSchedule) {
-        final Schedule schedule = allTrackedSchedules.getByName(getScheduleName());
+        final Schedule schedule = allTrackedSchedules.getByName(getScheduleName(upcomingSchedule.getMilestoneName()));
         final Milestone milestone = schedule.getMilestone(mapMilestoneName(upcomingSchedule.getMilestoneName()));
         final Period windowPeriod = milestone.getMilestoneWindow(WindowName.earliest).getPeriod();
         return upcomingSchedule.getDueDatetime().minus(windowPeriod);
@@ -71,7 +89,7 @@ public abstract class ScheduleMigrationSeed extends Seed {
 
     protected abstract String mapMilestoneName(String milestoneName);
 
-    public abstract String getScheduleName();
+    public abstract String getScheduleName(String milestoneName);
 
     @Override
     protected void load() {
@@ -84,13 +102,12 @@ public abstract class ScheduleMigrationSeed extends Seed {
 
     protected void enroll(DateTime milestoneReferenceDate, String milestoneName, Patient patient) {
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest(patient.getMRSPatientId(),
-                getScheduleName(), new Time(DateUtil.now().toLocalTime()),
+                getScheduleName(milestoneName), new Time(DateUtil.now().toLocalTime()),
                 milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
                 milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
                 mapMilestoneName(milestoneName));
         allSchedules.enroll(enrollmentRequest);
     }
-
 
     protected abstract List<UpcomingSchedule> getAllUpcomingSchedules();
 

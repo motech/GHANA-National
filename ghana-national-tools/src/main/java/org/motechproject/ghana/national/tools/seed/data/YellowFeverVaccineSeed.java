@@ -10,12 +10,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static java.lang.Boolean.FALSE;
+
 @Component
 public class YellowFeverVaccineSeed extends ScheduleMigrationSeed {
 
     @Autowired
     public YellowFeverVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules);
+        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules, FALSE);
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {
@@ -23,7 +25,7 @@ public class YellowFeverVaccineSeed extends ScheduleMigrationSeed {
     }
 
     @Override
-    public String getScheduleName() {
+    public String getScheduleName(String milestoneName) {
         return ScheduleNames.CWC_YELLOW_FEVER;
     }
 

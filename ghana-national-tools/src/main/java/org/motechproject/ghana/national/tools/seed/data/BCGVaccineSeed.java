@@ -10,12 +10,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static java.lang.Boolean.FALSE;
+
 @Component("bcgVaccineSeed")
 public class BCGVaccineSeed extends ScheduleMigrationSeed {
 
     @Autowired
     public BCGVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules);
+        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules, FALSE);
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {
@@ -23,7 +25,7 @@ public class BCGVaccineSeed extends ScheduleMigrationSeed {
     }
 
     @Override
-    public String getScheduleName() {
+    public String getScheduleName(String milestoneName) {
         return ScheduleNames.CWC_BCG;
     }
 

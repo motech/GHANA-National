@@ -17,12 +17,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static java.lang.Boolean.FALSE;
+
 @Component("ttVaccineSeed")
 public class TTVaccineSeed extends ScheduleMigrationSeed {
 
     @Autowired
     public TTVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules);
+        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules, FALSE);
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {
@@ -36,7 +38,7 @@ public class TTVaccineSeed extends ScheduleMigrationSeed {
     }
 
     @Override
-    public String getScheduleName() {
+    public String getScheduleName(String milestoneName) {
         return ScheduleNames.TT_VACCINATION_VISIT;
 
     }
@@ -47,7 +49,7 @@ public class TTVaccineSeed extends ScheduleMigrationSeed {
             throw new MotechException("Cannot migrate schedules for first milestone of TT vaccine " + patient.getMRSPatientId() + " " + milestoneReferenceDate);
         } else {
             EnrollmentRequest enrollmentRequest = new EnrollmentRequest(patient.getMRSPatientId(),
-                    getScheduleName(), new Time(DateUtil.now().toLocalTime()),
+                    getScheduleName(milestoneName), new Time(DateUtil.now().toLocalTime()),
                     milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
                     milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()), milestoneName);
             allSchedules.enroll(enrollmentRequest);

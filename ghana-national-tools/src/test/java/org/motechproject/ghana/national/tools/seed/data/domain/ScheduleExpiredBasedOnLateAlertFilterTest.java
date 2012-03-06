@@ -12,7 +12,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.motechproject.ghana.national.tools.seed.data.factory.TestUpcomingSchedule.newUpcomingSchedule;
 
-public class ExpiredScheduleFilterTest extends BaseUnitTest {
+public class ScheduleExpiredBasedOnLateAlertFilterTest extends BaseUnitTest {
 
     @Test
     public void shouldFilterOutSchedulesWhichHaveAlreadyElapsed(){
@@ -20,11 +20,11 @@ public class ExpiredScheduleFilterTest extends BaseUnitTest {
 
         mockCurrentDate(DateUtil.newDateTime(2012, 2, 21, new Time(10, 10)));
         List<UpcomingSchedule> upcomingSchedules = Arrays.asList(schedule);
-        assertThat(new ExpiredScheduleFilter().filteringLogic(upcomingSchedules), is(equalTo(upcomingSchedules)));
+        assertThat(new ScheduleExpiredBasedOnLateAlertFilter().filteringLogic(upcomingSchedules), is(equalTo(upcomingSchedules)));
 
         mockCurrentDate(DateUtil.newDateTime(2012, 2, 22, new Time(10, 10)));
         upcomingSchedules = Arrays.asList(schedule);
-        assertThat(new ExpiredScheduleFilter().filteringLogic(upcomingSchedules), is(equalTo(Collections.<UpcomingSchedule>emptyList())));
+        assertThat(new ScheduleExpiredBasedOnLateAlertFilter().filteringLogic(upcomingSchedules), is(equalTo(Collections.<UpcomingSchedule>emptyList())));
 
     }
 }

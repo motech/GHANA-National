@@ -47,6 +47,10 @@ public class UpcomingSchedule {
         return lateDatetime;
     }
 
+    public DateTime getMaxDatetime() {
+        return maxDatetime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

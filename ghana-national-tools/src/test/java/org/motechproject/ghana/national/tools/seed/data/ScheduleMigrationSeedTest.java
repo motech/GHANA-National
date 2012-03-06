@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,6 +74,7 @@ public class ScheduleMigrationSeedTest {
         String patientId2 = "102";
         List<UpcomingSchedule> upcomingSchedulesFromDb = Arrays.asList(newUpcomingSchedule(patientId1, "2012-9-22 10:30:00.0", "TT3").build(),
                 newUpcomingSchedule(patientId2, "2012-2-29 10:30:00.0", "TT2").build());
+
         List<TTVaccine> expectedTTVaccines = Arrays.asList(
                 new TTVaccine(newDateTime(2012, 3, 22, new Time(10, 30)), TTVaccineDosage.TT3, new Patient(new MRSPatient(patientId1))),
                 new TTVaccine(newDateTime(2012, 2, 1, new Time(10, 30)), TTVaccineDosage.TT2, new Patient(new MRSPatient(patientId2))));
@@ -83,6 +86,32 @@ public class ScheduleMigrationSeedTest {
         final List<EnrollmentRequest> enrollmentRequests = captor.getAllValues();
         assertTTEnrollmentRequest(enrollmentRequests.get(0), expectedTTVaccines.get(0).getVaccinationDate(), "TT3", patientId1, expectedTTVaccines.get(0).getVaccinationDate());
         assertTTEnrollmentRequest(enrollmentRequests.get(1), expectedTTVaccines.get(1).getVaccinationDate(), "TT2", patientId2, expectedTTVaccines.get(1).getVaccinationDate());
+    }
+
+    @Test
+    public void shouldLogErrorIfThereAreMoreThanOneActiveSchedulesInCaseOfInterdependentMilestones(){
+        String patientId = "10000";
+        List<UpcomingSchedule> upcomingSchedulesFromDb = Arrays.asList(newUpcomingSchedule(patientId, "2012-9-22 10:30:00.0", "TT3").build(),
+                newUpcomingSchedule(patientId, "2012-2-29 10:30:00.0", "TT2").build());
+        TTVaccineSeed.LOG = mock(Logger.class);
+
+        ttVaccineSeed.migrate(upcomingSchedulesFromDb);
+        verify(TTVaccineSeed.LOG).error("Patient, " + patientId + " has more than one active schedule");
+    }
+
+    @Test
+    public void shouldMigrateMoreThanOneActiveSchedulesInCaseOfIndependentMilestones(){
+        String patientId = "10000";
+        List<UpcomingSchedule> upcomingSchedulesFromDb = Arrays.asList(newUpcomingSchedule(patientId, "2012-9-22 10:30:00.0", "PNC1").build(),
+                newUpcomingSchedule(patientId, "2012-2-29 10:30:00.0", "PNC2").build());
+        PNCMotherVaccineSeed.LOG = mock(Logger.class);
+
+        final PNCMotherVaccineSeed pncMotherVaccineSeed = new PNCMotherVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allSchedules);
+        pncMotherVaccineSeed.filters = new ArrayList<Filter>();
+        pncMotherVaccineSeed.migrate(upcomingSchedulesFromDb);
+
+        verify(allSchedules, times(2)).enroll(Matchers.<EnrollmentRequest>any());
+        verify(PNCMotherVaccineSeed.LOG, never()).error(anyString());
     }
 
     @Test

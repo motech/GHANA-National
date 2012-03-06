@@ -43,6 +43,8 @@
                 <ref bean="measlesVaccineSeed"/>
                 <ref bean="pentaVaccineSeed"/>
                 <ref bean="yellowFeverVaccineSeed"/>
+                <ref bean="pncMotherVaccineSeed"/>
+                <ref bean="pncBabyVaccineSeed"/>
             </list>
         </constructor-arg>
     </bean>

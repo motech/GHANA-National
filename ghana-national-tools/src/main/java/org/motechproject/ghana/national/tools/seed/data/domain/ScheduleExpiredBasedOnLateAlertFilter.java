@@ -5,7 +5,7 @@ import org.motechproject.util.DateUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExpiredScheduleFilter extends Filter{
+public class ScheduleExpiredBasedOnLateAlertFilter extends Filter{
     @Override
     public List<UpcomingSchedule> filteringLogic(List<UpcomingSchedule> schedules) {
         List<UpcomingSchedule> activeSchedules = new ArrayList<UpcomingSchedule>();

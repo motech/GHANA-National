@@ -41,4 +41,9 @@ public class TestUpcomingSchedule {
         this.lateDatetime = lateDateTime;
         return this;
     }
+
+    public TestUpcomingSchedule maxDateTime(String maxDateTime) {
+        this.maxDatetime = maxDateTime;
+        return this;
+    }
 }
