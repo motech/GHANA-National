@@ -104,7 +104,7 @@ public abstract class ScheduleMigrationSeed extends Seed {
 
     protected void enroll(DateTime milestoneReferenceDate, String milestoneName, Patient patient) {
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest(patient.getMRSPatientId(),
-                getScheduleName(milestoneName), new Time(milestoneReferenceDate.toLocalTime()),
+                getScheduleName(milestoneName), null,
                 milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
                 milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
                 mapMilestoneName(milestoneName), null);

@@ -10,7 +10,6 @@ import org.motechproject.ghana.national.tools.seed.data.source.OldGhanaScheduleS
 import org.motechproject.model.Time;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,7 +46,7 @@ public class TTVaccineSeed extends ScheduleMigrationSeed {
             milestoneReferenceDate = milestoneReferenceDate.minusWeeks(1);
         }
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest(patient.getMRSPatientId(),
-                getScheduleName(milestoneName), new Time(DateUtil.now().toLocalTime()),
+                getScheduleName(milestoneName), null,
                 milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
                 milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()), milestoneName, null);
         allSchedules.enroll(enrollmentRequest);

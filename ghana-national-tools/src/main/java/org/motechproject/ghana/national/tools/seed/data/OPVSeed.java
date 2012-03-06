@@ -24,7 +24,6 @@ public class OPVSeed extends ScheduleMigrationSeed {
         return oldGhanaScheduleSource.getUpcomingOPVSchedules();
     }
 
-
     @Override
     protected String mapMilestoneName(String milestoneName) {
         return milestoneName;
