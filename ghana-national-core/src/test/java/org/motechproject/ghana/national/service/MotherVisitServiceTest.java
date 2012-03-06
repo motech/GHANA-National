@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.service;
 
+import org.hamcrest.Matchers;
 import org.hamcrest.core.Is;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -7,10 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.domain.Encounter;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.IPTDose;
-import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllAppointments;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
@@ -41,10 +39,11 @@ import static org.joda.time.DateTime.now;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
-import static org.motechproject.ghana.national.domain.Concept.*;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_DELIVERY;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
+import static org.motechproject.ghana.national.domain.Concept.IPT;
+import static org.motechproject.ghana.national.domain.Concept.IPT_REACTION;
 import static org.motechproject.ghana.national.domain.EncounterType.ANC_VISIT;
-import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT2;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.today;
@@ -60,36 +59,21 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     @Mock
     private AllSchedules mockAllSchedules;
     @Mock
+    private VisitService mockVisitService;
+    @Mock
     private AllAppointments mockAllAppointments;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        motherVisitService = spy(new MotherVisitService(mockAllEncounters, mockAllObservations, mockAllSchedules, mockAllAppointments));
-    }
-
-    @Test
-    public void shouldCreateEncounter_EnrollPatientForCurrentScheduleAndCreateSchedulesForTheNext() {
-        MRSUser staff = new MRSUser();
-        Facility facility = new Facility();
-        final String patientId = "patient id";
-        final Patient patient = new Patient(new MRSPatient(patientId, null, null));
-        final LocalDate vaccinationDate = DateUtil.newDate(2000, 2, 1);
-        motherVisitService.receivedTT(TT2, patient, staff, facility, vaccinationDate);
-
-        ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        ArgumentCaptor<LocalDate> fulfillmentDateCaptor = ArgumentCaptor.forClass(LocalDate.class);
-        verify(mockAllSchedules).enrollOrFulfill(enrollmentRequestCaptor.capture(), fulfillmentDateCaptor.capture());
-        assertThat(fulfillmentDateCaptor.getValue(), is(vaccinationDate));
-
-        EnrollmentRequest enrollmentRequest = enrollmentRequestCaptor.getValue();
-        assertThat(enrollmentRequest.getScheduleName(), is(equalTo(TT_VACCINATION_VISIT)));
-        assertThat(enrollmentRequest.getStartingMilestoneName(), is(equalTo(TT2.name())));
-        assertThat(enrollmentRequest.getReferenceDate(), is(equalTo(vaccinationDate)));
+        motherVisitService = new MotherVisitService(mockAllEncounters, mockAllObservations, mockAllSchedules, mockAllAppointments, mockVisitService);
     }
 
     @Test
     public void shouldCreateEncounterForANCVisitWithAllInfo() {
+
+        final MotherVisitService spyMotherVisitService = spy(motherVisitService);
+
         String mrsFacilityId = "mrsFacilityId";
         String mrsPatientId = "34";
         Facility facility = new Facility(new MRSFacility(mrsFacilityId)).mrsFacilityId(mrsFacilityId);
@@ -106,7 +90,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
                     add(new MRSObservation<Object>(new Date(), null, null));
                 }});
 
-        motherVisitService.registerANCVisit(ancVisit);
+        spyMotherVisitService.registerANCVisit(ancVisit);
 
         ArgumentCaptor<Encounter> encounterCapture = ArgumentCaptor.forClass(Encounter.class);
         verify(mockAllEncounters).persistEncounter(encounterCapture.capture());
@@ -117,6 +101,8 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         assertThat(encounter.getFacility().getId(), Is.is(ancVisit.getFacility().getMrsFacilityId()));
         assertThat(encounter.getType(), Is.is(ANC_VISIT.value()));
         assertReflectionEquals(encounter.getDate(), DateUtil.today().toDate(), ReflectionComparatorMode.LENIENT_DATES);
+
+        verify(spyMotherVisitService).updateTT(eq(ancVisit), org.mockito.Matchers.<Set<MRSObservation>>any());
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, times(1)).enroll(enrollmentRequestCaptor.capture());
@@ -129,6 +115,18 @@ public class MotherVisitServiceTest extends BaseUnitTest {
                 enrollmentRequestCaptor.getAllValues().get(1));
         verify(mockAllAppointments).updateANCVisitSchedule(patient, ancVisit.getDate(), DateUtil.newDateTime(ancVisit.getNextANCDate()));
 
+    }
+
+    @Test
+    public void shouldAddObservationAndCreateScheduleForTTVaccine(){
+        Patient patient = new Patient();
+        final Date vaccinationDate = DateUtil.newDate(2000, 1, 1).toDate();
+        ANCVisitRequest ancVisit = new ANCVisitRequest().date(vaccinationDate).ttdose("1").patient(patient);
+        final HashSet<MRSObservation> observations = new HashSet<MRSObservation>();
+        motherVisitService.updateTT(ancVisit, observations);
+        assertThat(observations.size(), is(equalTo(1)));
+        assertThat(observations.iterator().next(), is(Matchers.equalTo(new MRSObservation(vaccinationDate, Concept.TT.getName(), 1))));
+        verify(mockVisitService).createTTSchedule(new TTVaccine(DateUtil.newDate(vaccinationDate), TTVaccineDosage.TT1, patient));
     }
 
     @Test

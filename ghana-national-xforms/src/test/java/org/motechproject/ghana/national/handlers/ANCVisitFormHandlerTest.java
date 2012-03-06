@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ANCVisitForm;
-import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllSchedules;
@@ -19,16 +18,12 @@ import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
-import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
-import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -119,12 +114,6 @@ public class ANCVisitFormHandlerTest {
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
         
         handler.handleFormEvent(motechEvent);
-
-        ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(mockAllSchedules).enroll(enrollmentRequestCaptor.capture());
-        EnrollmentRequest request = enrollmentRequestCaptor.getValue();
-        assertThat(request.getScheduleName(), is(ScheduleNames.TT_VACCINATION_VISIT));
-        assertThat(request.getReferenceDate(), is(DateUtil.newDate(ancVisitForm.getDate())));
 
         ArgumentCaptor<ANCVisitRequest> captor = ArgumentCaptor.forClass(ANCVisitRequest.class);
         verify(mockMotherVisitService).registerANCVisit(captor.capture());

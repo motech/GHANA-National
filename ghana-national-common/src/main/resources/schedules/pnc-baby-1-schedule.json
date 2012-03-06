@@ -1,0 +1,34 @@
+{
+    "name" : "PNC-BABY-1",
+    "milestones" : [
+        {
+            "name" : "PNC-BABY-1",
+            "scheduleWindows" : {
+                "earliest" : [],
+                "due" : ["6 Hours"],
+                "late" : ["12 Hours"],
+                "max" : ["48 Hours"]
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : ["1 Week"],
+                    "count" : "1",
+                    "offset" : ["6 Hours"]
+                },
+                {
+                    "window" : "late",
+                    "interval" : ["1 Week"],
+                    "count" : "1",
+                    "offset" : ["6 Hours"]
+                },
+                {
+                    "window" : "max",
+                    "interval" : ["1 Week"],
+                    "count" : "1",
+                    "offset" : ["36 Hours"]
+                }
+            ]
+        }
+    ]
+}

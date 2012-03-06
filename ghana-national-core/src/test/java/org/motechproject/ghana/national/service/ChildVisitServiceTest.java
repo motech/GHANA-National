@@ -95,8 +95,8 @@ public class ChildVisitServiceTest extends BaseUnitTest {
                 house("house").
                 community("community").
                 maleInvolved(false).
-                babyConditionGood("Good").
-                cordConditionNormal("Normal").
+                babyConditionGood(Boolean.TRUE).
+                cordConditionNormal(Boolean.TRUE).
                 referred(false).
                 bcg(false).opv0(false).
                 respiration(12).

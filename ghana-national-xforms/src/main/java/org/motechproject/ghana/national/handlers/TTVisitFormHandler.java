@@ -1,14 +1,11 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.TTVisitForm;
-import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.TTVaccineDosage;
-import org.motechproject.ghana.national.service.MotherVisitService;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
+import org.motechproject.ghana.national.service.VisitService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSUser;
@@ -26,7 +23,7 @@ public class TTVisitFormHandler implements FormPublishHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private MotherVisitService motherVisitService;
+    private VisitService visitService;
     private PatientService patientService;
     private FacilityService facilityService;
     private StaffService staffService;
@@ -35,8 +32,8 @@ public class TTVisitFormHandler implements FormPublishHandler {
     }
 
     @Autowired
-    public TTVisitFormHandler(MotherVisitService motherVisitService, PatientService patientService, FacilityService facilityService, StaffService staffService) {
-        this.motherVisitService = motherVisitService;
+    public TTVisitFormHandler(VisitService visitService, PatientService patientService, FacilityService facilityService, StaffService staffService) {
+        this.visitService = visitService;
         this.patientService = patientService;
         this.facilityService = facilityService;
         this.staffService = staffService;
@@ -52,8 +49,8 @@ public class TTVisitFormHandler implements FormPublishHandler {
             final Facility facility = facilityService.getFacilityByMotechId(ttVisitForm.getFacilityId());
             final Patient patient = patientService.getPatientByMotechId(ttVisitForm.getMotechId());
             final MRSUser staff = staffService.getUserByEmailIdOrMotechId(ttVisitForm.getStaffId());
-            motherVisitService.receivedTT(TTVaccineDosage.byValue(Integer.parseInt(ttVisitForm.getTtDose())),
-                    patient, staff, facility, DateUtil.newDate(ttVisitForm.getDate()));
+            visitService.receivedTT(new TTVaccine(DateUtil.newDate(ttVisitForm.getDate()), TTVaccineDosage.byValue(Integer.parseInt(ttVisitForm.getTtDose())), patient),
+                    staff, facility);
         }catch (Exception e){
             log.error("Encountered error while recording TT vaccination visit", e);
         }

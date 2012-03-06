@@ -12,8 +12,6 @@ import java.util.Date;
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.MOTECH_ID_PATTERN;
 
 public class ANCVisitForm extends FormBean {
-
-
     public static final String NUMERIC_OR_NOTAPPLICABLE_PATTERN = "([0-9]+(.[0-9]+)?|[nN][aA])";
 
     @Required
