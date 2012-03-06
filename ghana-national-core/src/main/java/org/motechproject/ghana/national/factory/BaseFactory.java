@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.factory;
 
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.MobileFormEnum;
 
 public abstract class BaseFactory {
 
@@ -10,5 +11,13 @@ public abstract class BaseFactory {
 
     protected Boolean toBoolean(String value) {
         return (value != null) ? value.equals(Constants.OBSERVATION_YES) : null;
+    }
+
+    protected String toString(Boolean value) {
+        return (Boolean.TRUE.equals(value)) ? "Y" : "N";
+    }
+
+    protected Integer safeEnumValue(MobileFormEnum enumItem) {
+        return (enumItem != null) ? Integer.valueOf(enumItem.getNumericValue()) : null;
     }
 }

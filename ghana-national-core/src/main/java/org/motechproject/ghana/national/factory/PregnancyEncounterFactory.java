@@ -3,7 +3,6 @@ package org.motechproject.ghana.national.factory;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Encounter;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.MobileFormEnum;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
 import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
@@ -73,10 +72,6 @@ public class PregnancyEncounterFactory extends BaseObservationFactory {
              setObservation(mrsObservations, deliveryDate, BIRTH_OUTCOME.getName(), safeEnumValue(deliveredChildRequest.getChildBirthOutcome()));
         }
         return mrsObservations;
-    }
-    
-    private Integer safeEnumValue(MobileFormEnum enumItem) {
-        return (enumItem != null) ? Integer.valueOf(enumItem.getNumericValue()) : null;
     }
 
     public Encounter createBirthEncounter(DeliveredChildRequest childRequest, MRSPatient mrsPatient, MRSUser staff, Facility facility, Date birthDate) {

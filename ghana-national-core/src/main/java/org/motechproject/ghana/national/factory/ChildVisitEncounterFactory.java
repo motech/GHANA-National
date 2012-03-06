@@ -57,13 +57,13 @@ public class ChildVisitEncounterFactory extends BaseObservationFactory {
 
         setObservation(mrsObservations, registrationDate, VISIT_NUMBER.getName(), pncBabyRequest.getVisitNumber());
         setObservation(mrsObservations, registrationDate, TEMPERATURE.getName(), pncBabyRequest.getTemperature());
-        setObservation(mrsObservations, registrationDate, MALE_INVOLVEMENT.getName(), pncBabyRequest.getMaleInvolved());
+        setObservation(mrsObservations, registrationDate, MALE_INVOLVEMENT.getName(), toString(pncBabyRequest.getMaleInvolved()));
         setObservation(mrsObservations, registrationDate, RESPIRATION.getName(), pncBabyRequest.getRespiration());
-        setObservation(mrsObservations, registrationDate, CORD_CONDITION.getName(), pncBabyRequest.getCordConditionNormal());
-        setObservation(mrsObservations, registrationDate, BABY_CONDITION.getName(), pncBabyRequest.getBabyConditionGood());
+        setObservation(mrsObservations, registrationDate, CORD_CONDITION.getName(), toString(pncBabyRequest.getCordConditionNormal()));
+        setObservation(mrsObservations, registrationDate, BABY_CONDITION.getName(), toString(pncBabyRequest.getBabyConditionGood()));
         setObservation(mrsObservations, registrationDate, WEIGHT_KG.getName(), pncBabyRequest.getWeight());
-        setObservation(mrsObservations, registrationDate, BCG.getName(), pncBabyRequest.getBcg());
-        setObservation(mrsObservations, registrationDate, OPV.getName(), pncBabyRequest.getOpv0());
+        setObservation(mrsObservations, registrationDate, BCG.getName(), toString(pncBabyRequest.getBcg()));
+        setObservation(mrsObservations, registrationDate, OPV.getName(), toString(pncBabyRequest.getOpv0()));
         if (!pncBabyRequest.getLocation().equals(Constants.NOT_APPLICABLE))
             setObservation(mrsObservations, registrationDate, ANC_PNC_LOCATION.getName(), toInteger(pncBabyRequest.getLocation()));
         setObservation(mrsObservations, registrationDate, HOUSE.getName(), pncBabyRequest.getHouse());
