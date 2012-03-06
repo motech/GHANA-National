@@ -12,6 +12,6 @@ public class UpcomingScheduleRowMapper implements RowMapper<UpcomingSchedule>{
         return new UpcomingSchedule(resultSet.getString("patient_id"), resultSet.getString("due_datetime"),
                 resultSet.getString("care_name"), resultSet.getString("type"),
                 resultSet.getString("min_datetime"), resultSet.getString("late_datetime"),
-                resultSet.getString("max_datetime"), resultSet.getInt("voided"));
+                resultSet.getString("max_datetime"), resultSet.getInt("voided"), resultSet.getString("motech_id"));
     }
 }

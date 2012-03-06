@@ -66,7 +66,7 @@ public abstract class ScheduleMigrationSeed extends Seed {
     private void createSchedules(List<UpcomingSchedule> filteredSchedules) {
         for (UpcomingSchedule schedule : filteredSchedules) {
             try {
-                enroll(getReferenceDate(schedule), mapMilestoneName(schedule.getMilestoneName()), new Patient(new MRSPatient(schedule.getPatientId())));
+                enroll(getReferenceDate(schedule), mapMilestoneName(schedule.getMilestoneName()), new Patient(new MRSPatient(schedule.getPatientId(), schedule.getMotechId(), null, null)));
             } catch (Exception e) {
                 LOG.error("Encountered exception while migrating schedules for patients, " + schedule.getPatientId());
             }
@@ -87,9 +87,9 @@ public abstract class ScheduleMigrationSeed extends Seed {
         return upcomingSchedule.getDueDatetime().minus(windowPeriod);
     }
 
-    protected abstract String mapMilestoneName(String milestoneName);
-
     public abstract String getScheduleName(String milestoneName);
+
+    protected abstract String mapMilestoneName(String milestoneName);
 
     @Override
     protected void load() {

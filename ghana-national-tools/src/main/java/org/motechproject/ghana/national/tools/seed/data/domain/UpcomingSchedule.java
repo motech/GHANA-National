@@ -8,21 +8,24 @@ public class UpcomingSchedule {
     private String patientId;
     private String milestoneName;
     private String type;
+    private String motechId;
     private DateTime dueDatetime;
     private DateTime minDatetime;
     private DateTime lateDatetime;
     private DateTime maxDatetime;
     private Boolean voided;
 
-    public UpcomingSchedule(String patientId, String dueDatetime, String milestoneName, String type, String minDatetime, String lateDatetime, String maxDatetime, Integer voided) {
+    public UpcomingSchedule(String patientId, String dueDatetime, String milestoneName, String type, String minDatetime,
+                            String lateDatetime, String maxDatetime, Integer voided, String motechId) {
         this.patientId = patientId;
         this.type = type;
+        this.motechId = motechId;
         this.minDatetime = parse(minDatetime);
         this.lateDatetime = parse(lateDatetime);
         this.maxDatetime = parse(maxDatetime);
         this.dueDatetime = parse(dueDatetime);
         this.milestoneName = milestoneName;
-        this.voided = voided == 1;
+        this.voided = (voided == 1);
     }
 
     private DateTime parse(String minDatetime) {
@@ -68,6 +71,7 @@ public class UpcomingSchedule {
             return false;
         if (minDatetime != null ? !minDatetime.equals(schedule.minDatetime) : schedule.minDatetime != null)
             return false;
+        if (motechId != null ? !motechId.equals(schedule.motechId) : schedule.motechId != null) return false;
         if (patientId != null ? !patientId.equals(schedule.patientId) : schedule.patientId != null) return false;
         if (type != null ? !type.equals(schedule.type) : schedule.type != null) return false;
         if (voided != null ? !voided.equals(schedule.voided) : schedule.voided != null) return false;
@@ -80,6 +84,7 @@ public class UpcomingSchedule {
         int result = patientId != null ? patientId.hashCode() : 0;
         result = 31 * result + (milestoneName != null ? milestoneName.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (motechId != null ? motechId.hashCode() : 0);
         result = 31 * result + (dueDatetime != null ? dueDatetime.hashCode() : 0);
         result = 31 * result + (minDatetime != null ? minDatetime.hashCode() : 0);
         result = 31 * result + (lateDatetime != null ? lateDatetime.hashCode() : 0);
@@ -99,5 +104,9 @@ public class UpcomingSchedule {
 
     public Boolean getVoided() {
         return voided;
+    }
+
+    public String getMotechId() {
+        return motechId;
     }
 }
