@@ -9,7 +9,7 @@ public abstract class Filter {
     private Logger LOG = Logger.getLogger(this.getClass());
 
     public List<UpcomingSchedule> filter(List<UpcomingSchedule> schedules){
-        LOG.info("Applying filter, " + this.getClass().getName() + " on patient, " + schedules.get(0).getPatientId());
+        LOG.info("Applying filter, on patient, " + schedules.get(0).getPatientId());
         final List<UpcomingSchedule> schedulesAfterFiltering = filteringLogic(schedules);
         if(schedulesAfterFiltering.size() < schedules.size()){
             List<UpcomingSchedule> filteredSchedules = new ArrayList<UpcomingSchedule>();

@@ -20,12 +20,9 @@ import java.util.List;
 @Component("ttVaccineSeed")
 public class TTVaccineSeed extends ScheduleMigrationSeed {
 
-    private AllSchedules allSchedules;
-
     @Autowired
     public TTVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules) {
-        super(allTrackedSchedules, oldGhanaScheduleSource);
-        this.allSchedules = allSchedules;
+        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules);
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {
@@ -44,6 +41,7 @@ public class TTVaccineSeed extends ScheduleMigrationSeed {
 
     }
 
+    @Override
     protected void enroll(DateTime milestoneReferenceDate, String milestoneName, Patient patient) {
         if (TTVaccineDosage.TT1.getScheduleMilestoneName().equals(milestoneName)) {
             throw new MotechException("Cannot migrate schedules for first milestone of TT vaccine " + patient.getMRSPatientId() + " " + milestoneReferenceDate);
