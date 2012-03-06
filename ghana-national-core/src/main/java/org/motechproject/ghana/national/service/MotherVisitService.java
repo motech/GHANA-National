@@ -86,7 +86,8 @@ public class MotherVisitService {
     }
 
     private void updateANCVisit(ANCVisitRequest ancVisitRequest) {
-        allAppointments.updateANCVisitSchedule(ancVisitRequest.getPatient(), ancVisitRequest.getDate(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
+        allAppointments.fulfillCurrentANCVisit(ancVisitRequest.getPatient(), ancVisitRequest.getDate());
+        allAppointments.updateANCVisitSchedule(ancVisitRequest.getPatient(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
     }
 
     public void enrollOrFulfillScheduleIPTp(IPTVaccine iptVaccine) {

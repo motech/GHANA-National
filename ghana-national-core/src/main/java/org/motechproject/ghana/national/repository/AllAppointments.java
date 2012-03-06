@@ -25,13 +25,16 @@ public class AllAppointments {
         appointmentService.removeCalendar(patient.getMotechId());
     }
 
-    public void updateANCVisitSchedule(Patient patient, Date visitedDate, DateTime nextVisitDate) {
-        appointmentService.visited(patient.getMotechId(), EncounterType.ANC_VISIT.value(), DateUtil.newDateTime(visitedDate));
+    public void updateANCVisitSchedule(Patient patient, DateTime nextVisitDate) {
         CreateVisitRequest createVisitRequest = new CreateVisitRequest().setAppointmentDueDate(nextVisitDate).setVisitName(EncounterType.ANC_VISIT.value());
         createVisitRequest.addAppointmentReminderConfiguration(new ReminderConfiguration());
         createVisitRequest.addAppointmentReminderConfiguration(new ReminderConfiguration().setRemindFrom(ONE_WEEK_LATER));
         createVisitRequest.addAppointmentReminderConfiguration(new ReminderConfiguration().setRemindFrom(TWO_WEEK_LATER));
         createVisitRequest.addAppointmentReminderConfiguration(new ReminderConfiguration().setRemindFrom(THREE_WEEKS_LATER));
         appointmentService.addVisit(patient.getMotechId(), createVisitRequest);
+    }
+
+    public void fulfillCurrentANCVisit(Patient patient, Date visitedDate) {
+        appointmentService.visited(patient.getMotechId(), EncounterType.ANC_VISIT.value(), DateUtil.newDateTime(visitedDate));
     }
 }

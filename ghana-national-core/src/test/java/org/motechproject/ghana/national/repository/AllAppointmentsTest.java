@@ -46,14 +46,23 @@ public class AllAppointmentsTest {
     }
 
     @Test
+    public void shouldFulfillCurrentANCVisitSchedule(){
+        String motechId = "1212121";
+        Date visitedDate = new Date();
+        allAppointments.fulfillCurrentANCVisit(new Patient(new MRSPatient(motechId, null, null)), visitedDate);
+        verify(mockAppointmentService).visited(motechId, EncounterType.ANC_VISIT.value(), DateUtil.newDateTime(visitedDate));
+
+    }
+
+    @Test
     public void shouldCreateANCVisitSchedule() {
         String motechId = "1234556";
         DateTime nextANCVisit = DateTime.now();
         Date visitedDate = new Date();
-        allAppointments.updateANCVisitSchedule(new Patient(new MRSPatient(motechId, null, null)), visitedDate, nextANCVisit);
+
+        allAppointments.updateANCVisitSchedule(new Patient(new MRSPatient(motechId, null, null)), nextANCVisit);
 
         ArgumentCaptor<CreateVisitRequest> argumentCaptor = ArgumentCaptor.forClass(CreateVisitRequest.class);
-        verify(mockAppointmentService).visited(motechId, EncounterType.ANC_VISIT.value(), DateUtil.newDateTime(visitedDate));
         verify(mockAppointmentService).addVisit(eq(motechId), argumentCaptor.capture());
 
         CreateVisitRequest actualVisitRequest = argumentCaptor.getValue();
