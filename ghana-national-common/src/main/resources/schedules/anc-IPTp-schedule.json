@@ -4,87 +4,75 @@
         {
             "name" : "IPT1",
             "scheduleWindows" : {
-                "earliest" : ["12 Weeks"],
-                "due" : ["14 Weeks"],
-                "late" : ["17 Weeks"],
-                "max" : ["19 Weeks"]
+                "earliest" : ["14 Weeks"],
+                "due" : ["16 Weeks"],
+                "late" : ["19 Weeks"],
+                "max" : []
             },
             "alerts" : [
                 {
                     "window" : "earliest",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["11 Weeks"]
+                    "offset" : ["12 Week"]
                 },
                 {
                     "window" : "due",
                     "interval" : ["1 Weeks"],
                     "count" : "1",
-                    "offset" : ["0 Day"]
+                    "offset" : ["-1 Week"]
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "3",
-                    "offset" : ["0 Week"]
+                    "offset" : ["-1 Week"]
                 }
             ]
         },
         {
             "name" : "IPT2",
             "scheduleWindows" : {
-                "earliest" : ["3 Weeks"],
-                "due" : ["4 Weeks"],
-                "late" : ["7 Weeks"],
+                "earliest" : ["4 Weeks"],
+                "due" : ["5 Weeks"],
+                "late" : ["8 Weeks"],
                 "max" : []
             },
             "alerts" : [
                 {
-                    "window" : "earliest",
-                    "interval" : ["1 Weeks"],
-                    "count" : "1",
-                    "offset" : ["3 Weeks"]
-                },
-                {
                     "window" : "due",
                     "interval" : ["1 Weeks"],
                     "count" : "1",
-                    "offset" : ["0 Day"]
+                    "offset" : ["-1 Week"]
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Weeks"],
                     "count" : "3",
-                    "offset" : ["0 Day"]
+                    "offset" : ["-1 Week"]
                 }
             ]
         },
         {
             "name" : "IPT3",
             "scheduleWindows" : {
-                "earliest" : ["3 Weeks"],
-                "due" : ["4 Weeks"],
-                "late" : ["7 Weeks"],
+                "earliest" : ["4 Weeks"],
+                "due" : ["5 Weeks"],
+                "late" : ["8 Weeks"],
                 "max" : []
             },
             "alerts" : [
-                 {
-                    "window" : "earliest",
-                    "interval" : ["1 Weeks"],
-                    "count" : "1",
-                    "offset" : ["3 Weeks"]
-                },
                 {
                     "window" : "due",
                     "interval" : ["1 Weeks"],
                     "count" : "1",
-                    "offset" : ["0 Day"]
+                    "offset" : ["-1 Week"]
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Weeks"],
                     "count" : "3",
-                    "offset" : ["0 Day"]
+                    "offset" : ["-1 Week"]
                 }
             ]
         }

@@ -16,7 +16,7 @@
                 "earliest" : ["4 Weeks"],
                 "due" : ["5 Weeks"],
                 "late" : ["8 Weeks"],
-                "max" : ["9 Weeks"]
+                "max" : []
             },
             "alerts" : [
                 {
@@ -39,7 +39,7 @@
                 "earliest" : ["6 Months"],
                 "due" : ["6 Months", "1 Weeks"],
                 "late" : ["6 Months", "10 Days", "4 Weeks"],
-                "max" : ["6 Months", "10 Days", "5 Weeks"]
+                "max" : []
             },
             "alerts" : [
                 {
@@ -62,7 +62,7 @@
                 "earliest" : ["12 Months"],
                 "due" : ["12 Months", "1 Weeks"],
                 "late" : ["12 Months", "10 Days", "4 Weeks"],
-                "max" : ["12 Months", "10 Days", "5 Weeks"]
+                "max" : []
             },
             "alerts" : [
                 {
@@ -85,7 +85,7 @@
                 "earliest" : ["12 Months"],
                 "due" : ["12 Months", "1 Weeks"],
                 "late" : ["12 Months", "10 Days", "4 Weeks"],
-                "max" : ["12 Months", "10 Days", "5 Weeks"]
+                "max" : []
             },
             "alerts" : [
                 {

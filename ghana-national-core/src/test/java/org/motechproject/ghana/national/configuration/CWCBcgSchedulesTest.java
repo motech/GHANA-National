@@ -10,6 +10,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.text.ParseException;
+import java.util.Collections;
+
+import static java.util.Arrays.asList;
+import static org.motechproject.scheduletracking.api.domain.WindowName.late;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
@@ -23,47 +27,62 @@ public class CWCBcgSchedulesTest extends BaseScheduleTrackingTest {
 
     @Test
     public void verifyBCGAlertsIfRegisteredAsSoonAsTheChildIsBorn() throws SchedulerException, ParseException {
-        mockToday(newDate("24-FEB-2000"));
-        LocalDate dateOfBirth = newDate("24-FEB-2000");
+        mockToday(newDate("28-FEB-2012"));
+        LocalDate dateOfBirth = newDate("28-FEB-2012");
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("26-FEB-2000"), newDate("4-MAR-2000")));
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId),
+                asList(alert(late, onDate("1-MAR-2012")),
+                       alert(late, onDate("8-MAR-2012"))));
     }
 
     @Test
     public void verifyBCGAlertsIfRegisteredForCWCAfterTheChildTurnsADayOld() throws SchedulerException, ParseException {
-        mockToday(newDate("25-FEB-2000"));
-        LocalDate dateOfBirth = newDate("24-FEB-2000");
+        mockToday(newDate("21-FEB-2012"));
+        LocalDate dateOfBirth = newDate("20-FEB-2012");
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("26-FEB-2000"), newDate("04-MAR-2000")));
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId),
+                asList(alert(late, onDate("22-FEB-2012")),
+                       alert(late, onDate("29-FEB-2012"))));
     }
 
     @Test
     public void verifyBCGAlertsIfRegisteredForCWCWhenTheChildIs2DaysOld() throws SchedulerException, ParseException {
-        mockToday(newDate("26-FEB-2000"));
-        LocalDate dateOfBirth = newDate("24-FEB-2000");
+        mockToday(newDateWithTime("22-FEB-2012", "10:11"));
+        LocalDate dateOfBirth = newDate("20-FEB-2012");
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("26-FEB-2000"), newDate("04-MAR-2000")));
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId),
+                asList(alert(late, onDate("29-FEB-2012"))));
+
+        mockToday(newDateWithTime("22-FEB-2012", "10:09"));
+        dateOfBirth = newDate("20-FEB-2012");
+
+        enrollmentId = scheduleAlertForBCG(dateOfBirth);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId),
+                asList(alert(late, onDate("22-FEB-2012")), 
+                        alert(late, onDate("29-FEB-2012"))));
+
     }
 
     @Test
     public void verifyBCGAlertsIfRegisteredForCWCWhenTheChildIsOverAWeekOld() throws SchedulerException, ParseException {
-        mockToday(newDate("03-MAR-2000"));
-        LocalDate dateOfBirth = newDate("24-FEB-2000");
+        mockToday(newDate("12-FEB-2012"));
+        LocalDate dateOfBirth = newDate("1-FEB-2012");
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("04-MAR-2000")));
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
+        
     }
 
     @Test
     public void verifyBCGAlertsIfRegisteredForCWCOverAMonthOld() throws SchedulerException, ParseException {
-        mockToday(newDate("02-APR-2000"));
-        LocalDate dateOfBirth = newDate("24-FEB-2000");
+        mockToday(newDate("02-APR-2012"));
+        LocalDate dateOfBirth = newDate("24-FEB-2012");
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
-        assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates());
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
     }
 
     private String scheduleAlertForBCG(LocalDate birthDate) {

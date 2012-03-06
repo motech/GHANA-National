@@ -4,72 +4,71 @@
         {
             "name" : "Penta1",
             "scheduleWindows" : {
-                "earliest" : [],
-                "due" : ["6 Weeks"],
-                "late" : ["9 Weeks"],
-                "max" : ["10 Weeks"]
+                "earliest" : ["6 Weeks"],
+                "due" : ["7 Weeks"],
+                "late" : ["10 Weeks"],
+                "max" : []
             },
             "alerts" : [
                 {
                     "window" : "due",
                     "interval" : ["1 Weeks"],
                     "count" : "1",
-                    "offset" : ["5 Weeks"]
+                    "offset" : ["-1 Week"]
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "3",
-                    "offset" : ["0 Days"]
+                    "offset" : ["-1 Week"]
                 }
             ]
         },
         {
             "name" : "Penta2",
             "scheduleWindows" : {
-                "earliest" : [],
-                "due" : ["4 Weeks"],
-                "late" : ["7 Weeks"],
-                "max" : ["8 Weeks"]
+                "earliest" : ["4 Weeks"],
+                "due" : ["5 Weeks"],
+                "late" : ["8 Weeks"],
+                "max" : []
             },
             "alerts" : [
                 {
                     "window" : "due",
                     "interval" : ["1 Weeks"],
                     "count" : "1",
-                    "offset" : ["3 Weeks"]
+                    "offset" : ["-1 Week"]
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "3",
-                    "offset" : ["0 Days"]
+                    "offset" : ["-1 Week"]
                 }
             ]
         },
         {
             "name" : "Penta3",
             "scheduleWindows" : {
-                "earliest" : [],
-                "due" : ["4 Weeks"],
-                "late" : ["7 Weeks"],
-                "max" : ["8 Weeks"]
+                "earliest" : ["4 Weeks"],
+                "due" : ["5 Weeks"],
+                "late" : ["8 Weeks"],
+                "max" : []
             },
             "alerts" : [
                 {
                     "window" : "due",
                     "interval" : ["1 Weeks"],
                     "count" : "1",
-                    "offset" : ["3 Weeks"]
+                    "offset" : ["-1 Week"]
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "3",
-                    "offset" : ["0 Days"]
+                    "offset" : ["-1 Week"]
                 }
             ]
         }
-
     ]
 }

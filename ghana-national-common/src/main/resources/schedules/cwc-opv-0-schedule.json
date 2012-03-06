@@ -4,8 +4,8 @@
         {
             "name" : "OPV0",
             "scheduleWindows" : {
-                "earliest" : [],
-                "due" : [],
+                "earliest" : ["0 Days"],
+                "due" : ["2 Days"],
                 "late" : ["3 Weeks"],
                 "max" : []
             },
@@ -14,7 +14,7 @@
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "2",
-                    "offset" : ["2 Days"]
+                    "offset" : ["0 Weeks"]
                 }
             ]
         }
