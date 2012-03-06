@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static junit.framework.Assert.assertFalse;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -101,8 +102,9 @@ public class PregnancyServiceTest {
 
     @Test
     public void shouldCreateEncounterForPregnancyDelivery_AndForBirth() {
-        MRSFacility mrsFacility = new MRSFacility("12");
-        Facility mockFacility = new Facility(mrsFacility);
+        String facilityId = "12";
+        MRSFacility mrsFacility = new MRSFacility(facilityId);
+        Facility mockFacility = new Facility(mrsFacility).mrsFacilityId(facilityId);
         MRSUser mockStaff = new MRSUser().id("staff-id");
         String parentMotechId = "121";
         MRSPatient mrsPatient = new MRSPatient(parentMotechId, null, null);
@@ -152,12 +154,14 @@ public class PregnancyServiceTest {
         assertThat(actualChild.getParentId(), is(parentMotechId));
         assertThat(actualChild.getFirstName(), is(childFirstName));
         assertThat(actualChild.getLastName(), is(childDefaultLastName));
+        assertFalse(actualChild.getMrsPatient().getPerson().getBirthDateEstimated());
         assertThat(actualChild.getMrsPatient().getFacility(), is(mrsFacility));
 
         CwcVO actualCWCVO = cwcVOArgumentCaptor.getValue();
         assertThat(actualCWCVO.getSerialNumber(), is(childMotechId));
         assertThat(actualCWCVO.getRegistrationDate(), is(birthDate));
         assertThat(actualCWCVO.getPatientMotechId(), is(childMotechId));
+        assertThat(actualCWCVO.getFacilityId(), is(facilityId));
 
         verify(mockAllSchedules).unEnroll(mrsPatient.getId(), mockPatient.ancCareProgramsToUnEnroll());
         verify(mockAllAppointments).remove(mockPatient);

@@ -14,6 +14,7 @@ import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
+import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSFacility;
@@ -172,6 +173,19 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
         assertIfObservationsAvailableForConcepts(false, encounterCaptor.getValue().getObservations(), IPT.getName(), IPT_REACTION.getName());
         verify(mockAllSchedules, never()).fulfilCurrentMilestone(ancVisit.getPatient().getMRSPatientId(), ANC_IPT_VACCINE, visitDate);
+    }
+
+    @Test
+    public void shouldSavePncMotherEncountersAndVaccinations() {
+        PNCMotherRequest pncMotherRequest = createTestPncRequest();
+        motherVisitService.save(pncMotherRequest);
+        verify(mockVisitService).createTTSchedule(TTVaccine.createFromPncMotherRequest(pncMotherRequest));
+    }
+
+    private PNCMotherRequest createTestPncRequest() {
+        return new PNCMotherRequest().maleInvolved(Boolean.TRUE).patient(new Patient()).ttDose("1").visitNumber("1").vitaminA("Y").comments("Comments")
+                .community("House").date(DateUtil.now()).facility(new Facility()).staff(new MRSUser()).location("Outreach").lochiaAmountExcess(Boolean.TRUE)
+                .lochiaColour("1").lochiaOdourFoul(Boolean.TRUE).temperature(10D);
     }
 
     private void assertIfObservationsAvailableForConcepts(Boolean present, Set<MRSObservation> observations, String... conceptNames) {

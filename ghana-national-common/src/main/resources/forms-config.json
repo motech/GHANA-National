@@ -96,7 +96,7 @@
                 "name":"pncMotherRequest",
                 "fileName":"PNCMother.xml",
                 "bean":"org.motechproject.ghana.national.bean.PNCMotherForm",
-                "validator":"org.motechproject.ghana.national.validator.PNCMotherFormValidator"
+                "validator":"org.motechproject.ghana.national.validator.PncMotherFormValidator"
             }
         ]
     },

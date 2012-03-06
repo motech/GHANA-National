@@ -40,7 +40,7 @@ public class ClientQueryFormValidator extends FormValidator<ClientQueryForm> {
 
     private List<FormError> validateIfMinimumCriteriaIsPopulated(final ClientQueryForm formBean) {
         List<FormError> insufficientDataError = new ArrayList<FormError>(){{
-            add(new FormError(Constants.CLIENT_QUERY_TYPE, INSUFFICIENT_SEARCH_CRITERIA));
+            add(new FormError(Constants.CLIENT_QUERY_TYPE, Constants.INSUFFICIENT_SEARCH_CRITERIA));
         }};
         List<String> parameterList = nullSafeList(new ArrayList<String>() {{
             add(formBean.getFirstName());

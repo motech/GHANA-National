@@ -96,5 +96,8 @@ public class MotherVisitService {
 
     public void save(PNCMotherRequest pncMotherRequest) {
         allEncounters.persistEncounter(factory.createEncounter(pncMotherRequest));
+        TTVaccine ttVaccine = TTVaccine.createFromPncMotherRequest(pncMotherRequest);
+        if (ttVaccine != null)
+            visitService.createTTSchedule(ttVaccine);
     }
 }

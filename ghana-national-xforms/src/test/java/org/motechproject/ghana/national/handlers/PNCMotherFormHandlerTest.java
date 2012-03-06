@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -19,7 +20,6 @@ import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +51,7 @@ public class PNCMotherFormHandlerTest {
     public void shouldSavePNCMotherRequest() {
         String comment = "comment";
         String community = "community";
-        Date date = DateUtil.now().toDate();
+        DateTime date = DateUtil.now();
         String facilityId = "facilityId";
         String fht = "120";
         String house = "house";
@@ -89,7 +89,7 @@ public class PNCMotherFormHandlerTest {
         verify(motherVisitService).save(requestCaptor.capture());
     }
 
-    private PNCMotherForm createPNCMotherForm(String comment, String community, Date date, String facilityId, String staffId, String fht, String house, String location, Boolean lochiaAmountExcess, String lochiaColour,
+    private PNCMotherForm createPNCMotherForm(String comment, String community, DateTime date, String facilityId, String staffId, String fht, String house, String location, Boolean lochiaAmountExcess, String lochiaColour,
                                               Boolean lochiaOdourFoul, Boolean maleInvolved, String motechId, double temperature, String visitNumber, String vitaminA) {
         final PNCMotherForm pncMotherForm = new PNCMotherForm();
         pncMotherForm.setComments(comment);

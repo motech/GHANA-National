@@ -61,7 +61,7 @@ public class ClientQueryFormHandler implements FormPublishHandler {
             smsGateway.dispatchSMS(getTemplateKey(pregnancyEDD), messageParameters, clientQueryForm.getSender());
         } else {
             List<MRSPatient> patients = patientService.getPatients(clientQueryForm.getFirstName(), clientQueryForm.getLastName(), clientQueryForm.getPhoneNumber(), clientQueryForm.getDateOfBirth(), clientQueryForm.getNhis());
-            String message = createMessage(patients);
+            String message = (patients.size() == 0) ? Constants.NO_MATCHING_RECORDS_FOUND : createMessage(patients);
             smsGateway.dispatchSMS(clientQueryForm.getSender(), message);
         }
     }
@@ -86,7 +86,7 @@ public class ClientQueryFormHandler implements FormPublishHandler {
         StringBuilder message = new StringBuilder();
         for (MRSPatient patient : patients) {
             message.append(SMS.fill(smsGateway.getSMSTemplate(messageKey), getMessageParameters(patient)))
-                   .append(MessageDispatcher.SMS_SEPARATOR);
+                    .append(MessageDispatcher.SMS_SEPARATOR);
         }
         return message.toString();
     }

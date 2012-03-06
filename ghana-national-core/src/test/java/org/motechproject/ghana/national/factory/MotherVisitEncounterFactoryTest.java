@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.factory;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ghana.national.domain.*;
@@ -93,7 +94,7 @@ public class MotherVisitEncounterFactoryTest {
     public void shouldCreatePNCMotherEncounterForPNCMotherVisit() {
         String comment = "comment";
         String community = "community";
-        Date date = DateUtil.now().toDate();
+        DateTime date = DateUtil.now();
         String fht = "120";
         String house = "house";
         String location = "location";
@@ -107,6 +108,7 @@ public class MotherVisitEncounterFactoryTest {
         String vitaminA = "Y";
         MRSUser staff = new MRSUser();
         Facility facility = new Facility();
+        Date registrationDate = date.toDate();
 
         PNCMotherRequest pncMotherRequest = createPNCMotherRequest(comment, community, date, facility, staff, fht, house, location, lochiaAmountExcess, lochiaColour, lochiaOdourFoul, maleInvolved, patient, temperature, visitNumber, vitaminA);
 
@@ -115,18 +117,18 @@ public class MotherVisitEncounterFactoryTest {
 
         Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>();
 
-        expectedObservations.add(new MRSObservation<Integer>(date, TT.getName(), 1));
-        expectedObservations.add(new MRSObservation<Integer>(date, VISIT_NUMBER.getName(), 1));
-        expectedObservations.add(new MRSObservation<Boolean>(date, VITA.getName(), Boolean.TRUE));
-        expectedObservations.add(new MRSObservation<String>(date, COMMENTS.getName(), comment));
-        expectedObservations.add(new MRSObservation<String>(date, COMMUNITY.getName(), community));
-        expectedObservations.add(new MRSObservation<String>(date, FHT.getName(), fht));
-        expectedObservations.add(new MRSObservation<String>(date, HOUSE.getName(), house));
-        expectedObservations.add(new MRSObservation<Boolean>(date, MALE_INVOLVEMENT.getName(), maleInvolved));
-        expectedObservations.add(new MRSObservation<Boolean>(date, REFERRED.getName(), Boolean.TRUE));
-        expectedObservations.add(new MRSObservation<Boolean>(date, LOCHIA_EXCESS_AMOUNT.getName(), lochiaAmountExcess));
-        expectedObservations.add(new MRSObservation<Integer>(date, LOCHIA_COLOUR.getName(), 1));
-        expectedObservations.add(new MRSObservation<Boolean>(date, LOCHIA_FOUL_ODOUR.getName(), lochiaOdourFoul));
+        expectedObservations.add(new MRSObservation<Integer>(registrationDate, TT.getName(), 1));
+        expectedObservations.add(new MRSObservation<Integer>(registrationDate, VISIT_NUMBER.getName(), 1));
+        expectedObservations.add(new MRSObservation<Boolean>(registrationDate, VITA.getName(), Boolean.TRUE));
+        expectedObservations.add(new MRSObservation<String>(registrationDate, COMMUNITY.getName(), community));
+        expectedObservations.add(new MRSObservation<Integer>(registrationDate, FHT.getName(), 120));
+        expectedObservations.add(new MRSObservation<String>(registrationDate, COMMENTS.getName(), comment));
+        expectedObservations.add(new MRSObservation<String>(registrationDate, HOUSE.getName(), house));
+        expectedObservations.add(new MRSObservation<Boolean>(registrationDate, MALE_INVOLVEMENT.getName(), maleInvolved));
+        expectedObservations.add(new MRSObservation<Boolean>(registrationDate, REFERRED.getName(), Boolean.TRUE));
+        expectedObservations.add(new MRSObservation<Boolean>(registrationDate, LOCHIA_EXCESS_AMOUNT.getName(), lochiaAmountExcess));
+        expectedObservations.add(new MRSObservation<Integer>(registrationDate, LOCHIA_COLOUR.getName(), 1));
+        expectedObservations.add(new MRSObservation<Boolean>(registrationDate, LOCHIA_FOUL_ODOUR.getName(), lochiaOdourFoul));
 
         assertReflectionEquals(expectedObservations, mrsObservations, LENIENT_DATES, LENIENT_ORDER);
     }
@@ -149,7 +151,7 @@ public class MotherVisitEncounterFactoryTest {
                 .referred("Y").maleInvolved(false).nextANCDate(DateUtil.newDate(2012, 2, 20).toDate());
     }
 
-    private PNCMotherRequest createPNCMotherRequest(String comment, String community, Date date, Facility facility, MRSUser staff, String fht, String house, String location, Boolean lochiaAmountExcess, String lochiaColour,
+    private PNCMotherRequest createPNCMotherRequest(String comment, String community, DateTime date, Facility facility, MRSUser staff, String fht, String house, String location, Boolean lochiaAmountExcess, String lochiaColour,
                                                     Boolean lochiaOdourFoul, Boolean maleInvolved, Patient patient, double temperature, String visitNumber, String vitaminA) {
         final PNCMotherRequest pncMotherRequest = new PNCMotherRequest();
         pncMotherRequest.comments(comment).community(community).date(date).facility(facility).fht(fht).house(house).location(location).lochiaAmountExcess(lochiaAmountExcess).lochiaColour(lochiaColour)

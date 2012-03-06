@@ -75,4 +75,17 @@ public class CareScheduleHandler extends BaseScheduleHandler {
     public void handleYellowFeverVaccinationAlert(MilestoneEvent milestoneEvent) {
         sendSMSToFacility(CWC_YF_SMS_KEY, milestoneEvent);
     }
+
+    @LoginAsAdmin
+    @ApiSession
+    public void handlePNCMotherAlert(MilestoneEvent milestoneEvent) {
+        // TODO: PNC Message
+//        smsGateway.dispatchSMS(smsTemplateKey, new HashMap<String, String>() {{
+//            put(MOTECH_ID, motechId);
+//            put(WINDOW, AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName());
+//            put(FIRST_NAME, patient.getFirstName());
+//            put(LAST_NAME, patient.getLastName());
+//            put(SCHEDULE_NAME, milestoneEvent.getScheduleName());
+//        }}, facility.getPhoneNumber());
+    }
 }

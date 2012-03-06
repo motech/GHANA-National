@@ -1,10 +1,9 @@
 package org.motechproject.ghana.national.bean;
 
+import org.joda.time.DateTime;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
-
-import java.util.Date;
 
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.MOTECH_ID_PATTERN;
 
@@ -21,7 +20,7 @@ public class PNCMotherForm extends FormBean {
     @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String facilityId;
     @Required
-    private Date date;
+    private DateTime date;
     @Required
     private String visitNumber;
     @Required
@@ -70,11 +69,11 @@ public class PNCMotherForm extends FormBean {
         this.motechId = motechId;
     }
 
-    public Date getDate() {
+    public DateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(DateTime date) {
         this.date = date;
     }
 

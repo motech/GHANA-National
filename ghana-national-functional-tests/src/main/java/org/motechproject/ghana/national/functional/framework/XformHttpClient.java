@@ -81,6 +81,7 @@ public class XformHttpClient {
             hackDate(formData, "/patientRegistration/lastIPTiDate");
             hackDate(formData, "/patientRegistration/lastVitaminADate");
             hackDate(formData, "/patientRegistration/expDeliveryDate");
+            hackDate(formData, "/patientRegistration/nhisExpires");
             hackDate(formData, "/CWCRegistration/registrationDate");
             hackDate(formData, "/CWCRegistration/bcgDate");
             hackDate(formData, "/CWCRegistration/lastOPVDate");
@@ -96,7 +97,7 @@ public class XformHttpClient {
             hackDate(formData, "/ancVisit/estDeliveryDate");
             hackDate(formData, "/ancVisit/nextANCDate");
             hackDate(formData, "/abortion/date");
-            hackDate(formData, "/delivery/date");
+            hackDate(formData, "/clientQuery/dateOfBirth");
             formsList.add(formData);
         }
         final StudyData studyData = new StudyData(studyDef);

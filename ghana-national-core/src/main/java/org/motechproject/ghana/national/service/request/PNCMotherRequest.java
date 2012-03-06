@@ -1,16 +1,15 @@
 package org.motechproject.ghana.national.service.request;
 
+import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.mrs.model.MRSUser;
-
-import java.util.Date;
 
 public class PNCMotherRequest {
     private Patient patient;
     private MRSUser staff;
     private Facility facility;
-    private Date date;
+    private DateTime date;
     private String visitNumber;
     private String vitaminA;
     private String ttDose;
@@ -38,7 +37,7 @@ public class PNCMotherRequest {
         return facility;
     }
 
-    public Date getDate() {
+    public DateTime getDate() {
         return date;
     }
 
@@ -89,7 +88,7 @@ public class PNCMotherRequest {
         return this;
     }
 
-    public PNCMotherRequest date(Date date) {
+    public PNCMotherRequest date(DateTime date) {
         this.date = date;
         return this;
     }

@@ -31,6 +31,7 @@
                 <entry key="org.motechproject.ghana.national.validator.PregnancyTerminationFormValidator" value-ref="pregnancyTerminationFormValidator"/>
                 <entry key="org.motechproject.ghana.national.validator.DeliveryFormValidator" value-ref="deliveryFormValidator"/>
                 <entry key="org.motechproject.ghana.national.validator.PncBabyFormValidator" value-ref="pncBabyFormValidator"/>
+                <entry key="org.motechproject.ghana.national.validator.PncMotherFormValidator" value-ref="pncMotherFormValidator"/>
                 <entry key="org.motechproject.ghana.national.validator.ClientQueryFormValidator" value-ref="clientQueryFormValidator"/>
             </map>
         </property>
