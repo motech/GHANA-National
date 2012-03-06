@@ -383,7 +383,7 @@ public class CareServiceTest extends BaseUnitTest {
         when(mockPatient.pncBabyProgramsToEnrollOnRegistration()).thenReturn(asList(pnc1, pnc2));
         when(mockPatient.dateOfBirth()).thenReturn(newDateTime(birthDate, birthTime));
 
-        careService.enrollChildForPNC(mockPatient);
+        careService.enrollChildForPNCOnDelivery(mockPatient);
         ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, times(2)).enroll(requestCaptor.capture());
         List<EnrollmentRequest> requests = requestCaptor.getAllValues();

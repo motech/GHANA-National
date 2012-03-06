@@ -81,9 +81,9 @@ public class CareService {
         }
     }
 
-    public void enrollChildForPNC(Patient child) {
-        DateTime dob = child.dateOfBirth();
-        enrollPatientCares(child.pncBabyProgramsToEnrollOnRegistration(), child, dob.toLocalDate(), time(dob));
+    public void enrollChildForPNCOnDelivery(Patient child) {
+        DateTime registrationDate = child.dateOfBirth();
+        enrollPatientCares(child.pncBabyProgramsToEnrollOnRegistration(), child, registrationDate.toLocalDate(), time(registrationDate));
     }
 
     private Set<MRSObservation> prepareObservations(ANCVO ancVO) {
