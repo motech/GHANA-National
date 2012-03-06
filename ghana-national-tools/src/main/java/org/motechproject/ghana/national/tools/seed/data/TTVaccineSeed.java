@@ -1,46 +1,44 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
-import ch.lambdaj.group.Group;
-import org.motechproject.MotechException;
-import org.motechproject.ghana.national.tools.seed.Seed;
+import org.joda.time.DateTime;
+import org.motechproject.ghana.national.configuration.ScheduleNames;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.TTVaccine;
+import org.motechproject.ghana.national.domain.TTVaccineDosage;
+import org.motechproject.ghana.national.service.VisitService;
 import org.motechproject.ghana.national.tools.seed.data.domain.UpcomingSchedule;
 import org.motechproject.ghana.national.tools.seed.data.source.TTVaccineSource;
+import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.group.Groups.by;
-import static ch.lambdaj.group.Groups.group;
-
-public class TTVaccineSeed extends Seed {
-    TTVaccineSource ttVaccineSource;
+@Component("ttVaccineSeed")
+public class TTVaccineSeed extends ScheduleMigrationSeed {
+    private TTVaccineSource ttVaccineSource;
+    private VisitService visitService;
 
     @Autowired
-    public TTVaccineSeed(TTVaccineSource ttVaccineSource) {
+    public TTVaccineSeed(TTVaccineSource ttVaccineSource, AllTrackedSchedules allTrackedSchedules, VisitService visitService) {
+        super(allTrackedSchedules);
         this.ttVaccineSource = ttVaccineSource;
+        this.visitService = visitService;
     }
+
+    protected List<UpcomingSchedule> getAllUpcomingSchedules() {
+        return ttVaccineSource.getAllUpcomingSchedules();
+    }
+
 
     @Override
-    protected void load() {
-        try {
-            final List<UpcomingSchedule> allUpcomingSchedules = ttVaccineSource.getAllUpcomingSchedules();
+    public String getScheduleName() {
+        return ScheduleNames.TT_VACCINATION_VISIT;
 
-        } catch (Exception e) {
-            throw new MotechException("Encountered exception while migrating upcoming TT vaccine schedules", e);
-        }
     }
 
-
-    public void migrate(List<UpcomingSchedule> upcomingSchedulesFromDb) {
-        final Group<UpcomingSchedule> schedulesForPatients = group(upcomingSchedulesFromDb, by(on(UpcomingSchedule.class).getPatientId()));
-        for (Group<UpcomingSchedule> schedulesForPatient : schedulesForPatients.subgroups()) {
-            if(schedulesForPatients.findAll().size() > 1){
-                throw new MotechException("Encountered more than one active upcoming TT schedule for patient, " + schedulesForPatient.findAll().get(0).getPatientId());
-            }
-            else {
-
-            }
-        }
+    protected void enroll(DateTime referenceDate, String milestoneName, Patient patient) {
+        visitService.createTTSchedule(new TTVaccine(referenceDate, TTVaccineDosage.valueOf(milestoneName), patient));
     }
+
 }

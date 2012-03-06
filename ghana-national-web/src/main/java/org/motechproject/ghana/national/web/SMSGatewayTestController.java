@@ -47,7 +47,7 @@ public class SMSGatewayTestController {
                 put(param4[0], param4[1]);
             }};
             final DateTime dateTime = DateUtil.newDateTime(DateUtil.newDate(new SimpleDateFormat("yyyy-MM-dd").parse(map.get("date"))), new Time(Integer.parseInt(map.get("time").split(":")[0]), Integer.parseInt(map.get("time").split(":")[1])));
-            messageGateway.dispatch(SMS.fromText(map.get("text"), map.get("ph"), dateTime.toLocalDateTime(), new NextMondayDispatcher(), new SMSTextComparator<String>()));
+            messageGateway.dispatch(SMS.fromText(map.get("text"), map.get("ph"), dateTime, new NextMondayDispatcher(), new SMSTextComparator<String>()));
         }
         return "done";
     }

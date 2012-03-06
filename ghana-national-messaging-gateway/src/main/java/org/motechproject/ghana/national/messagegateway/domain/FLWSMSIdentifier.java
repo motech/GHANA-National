@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.messagegateway.domain;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
 import java.io.Serializable;
@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class FLWSMSIdentifier implements Serializable{
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     private String phoneNumber;
-    private LocalDateTime deliveryDate;
+    private DateTime deliveryDate;
 
     public FLWSMSIdentifier(SMS sms) {
         phoneNumber = sms.getPhoneNumber();

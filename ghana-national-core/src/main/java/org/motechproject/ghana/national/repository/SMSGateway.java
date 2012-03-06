@@ -41,7 +41,7 @@ public class SMSGateway {
     }
 
     public void dispatchSMSToAggregator(String templateKey, Map<String, String> templateValues, String phoneNumber) {
-        messageGateway.dispatch(SMS.fromTemplate(getSMSTemplate(templateKey), templateValues, phoneNumber, DateUtil.now().toLocalDateTime(), new NextMondayDispatcher(), new SMSTextComparator<String>()));
+        messageGateway.dispatch(SMS.fromTemplate(getSMSTemplate(templateKey), templateValues, phoneNumber, DateUtil.now(), new NextMondayDispatcher(), new SMSTextComparator<String>()));
     }
 
     public void dispatchSMS(String templateKey, Map<String, String> templateValues, String phoneNumber) {

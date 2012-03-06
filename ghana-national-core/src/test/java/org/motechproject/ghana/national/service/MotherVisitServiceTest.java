@@ -119,14 +119,17 @@ public class MotherVisitServiceTest extends BaseUnitTest {
 
     @Test
     public void shouldAddObservationAndCreateScheduleForTTVaccine(){
-        Patient patient = new Patient();
-        final Date vaccinationDate = DateUtil.newDate(2000, 1, 1).toDate();
-        ANCVisitRequest ancVisit = new ANCVisitRequest().date(vaccinationDate).ttdose("1").patient(patient);
+        Patient patient = new Patient(new MRSPatient("100"));
+        final DateTime vaccinationDate = DateUtil.newDateTime(2000, 1, 1, new Time(10, 10));
+        ANCVisitRequest ancVisit = new ANCVisitRequest().date(vaccinationDate.toDate()).ttdose("1").patient(patient);
         final HashSet<MRSObservation> observations = new HashSet<MRSObservation>();
         motherVisitService.updateTT(ancVisit, observations);
         assertThat(observations.size(), is(equalTo(1)));
-        assertThat(observations.iterator().next(), is(Matchers.equalTo(new MRSObservation(vaccinationDate, Concept.TT.getName(), 1))));
-        verify(mockVisitService).createTTSchedule(new TTVaccine(DateUtil.newDate(vaccinationDate), TTVaccineDosage.TT1, patient));
+        assertThat(observations.iterator().next(), is(Matchers.equalTo(new MRSObservation(vaccinationDate.toDate(), Concept.TT.getName(), 1))));
+
+        ArgumentCaptor<TTVaccine> ttVaccineArgumentCaptor = ArgumentCaptor.forClass(TTVaccine.class);
+        verify(mockVisitService).createTTSchedule(ttVaccineArgumentCaptor.capture());
+        TTVaccineTest.assertIfTTVaccineAreEqual(new TTVaccine(vaccinationDate, TTVaccineDosage.TT1, patient), ttVaccineArgumentCaptor.getValue());
     }
 
     @Test

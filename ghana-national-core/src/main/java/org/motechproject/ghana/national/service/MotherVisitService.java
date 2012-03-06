@@ -68,7 +68,7 @@ public class MotherVisitService {
         IPTVaccine iptVaccine = createFromANCVisit(ancVisit);
         if (iptVaccine != null) {
             mrsObservations.addAll(factory.createObservationsForIPT(iptVaccine));
-            enrollOrFulfillScheduleIPTp(ancVisit, iptVaccine);
+            enrollOrFulfillScheduleIPTp(iptVaccine);
         }
     }
 
@@ -86,9 +86,9 @@ public class MotherVisitService {
         allAppointments.updateANCVisitSchedule(ancVisitRequest.getPatient(), ancVisitRequest.getDate(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
     }
 
-    private void enrollOrFulfillScheduleIPTp(ANCVisitRequest ancVisit, IPTVaccine iptVaccine) {
+    public void enrollOrFulfillScheduleIPTp(IPTVaccine iptVaccine) {
         Patient patient = iptVaccine.getGivenTo();
-        LocalDate visitDate = newDate(ancVisit.getDate());
+        LocalDate visitDate = iptVaccine.getVaccinationDate();
         EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.ancIPTPatientCareEnrollOnVisitAfter19Weeks(visitDate), visitDate, iptVaccine.getIptMilestone());
         allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
     }

@@ -89,7 +89,7 @@ public class SMSGatewayTest extends BaseUnitTest{
         final SMS smsSentToGateway = smsArgumentCaptor.getValue();
         assertThat(smsSentToGateway.getText(), is(equalTo(smsText)));
         assertThat(smsSentToGateway.getPhoneNumber(), is(equalTo(phoneNumber)));
-        assertThat(smsSentToGateway.getGenerationTime(), is(equalTo(DateUtil.now().toLocalDateTime())));
+        assertThat(smsSentToGateway.getGenerationTime(), is(equalTo(DateUtil.now())));
         assertThat(smsSentToGateway.getDeliveryStrategy().getClass(), is(typeCompatibleWith(NextMondayDispatcher.class)));
     }
 

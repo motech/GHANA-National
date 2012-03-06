@@ -1,20 +1,21 @@
 package org.motechproject.ghana.national.tools.seed.data.domain;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.motechproject.util.DateUtil;
 
 public class UpcomingSchedule {
-    private LocalDateTime dueDatetime;
+    private DateTime dueDatetime;
     private String patientId;
-    private String careName;
+    private String milestoneName;
 
-    public UpcomingSchedule(String patientId, String dueDatetime, String careName) {
+    public UpcomingSchedule(String patientId, String dueDatetime, String milestoneName) {
         this.patientId = patientId;
-        this.careName = careName;
-        this.dueDatetime = LocalDateTime.parse(dueDatetime, DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss"));
+        this.dueDatetime = DateUtil.newDateTime(DateTime.parse(dueDatetime, DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss")).toDate());
+        this.milestoneName = milestoneName;
     }
 
-    public LocalDateTime getDueDatetime() {
+    public DateTime getDueDatetime() {
         return dueDatetime;
     }
 
@@ -22,8 +23,8 @@ public class UpcomingSchedule {
         return patientId;
     }
 
-    public String getCareName() {
-        return careName;
+    public String getMilestoneName() {
+        return milestoneName;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class UpcomingSchedule {
         return "UpcomingSchedule{" +
                 "dueDatetime=" + dueDatetime +
                 ", patientId='" + patientId + '\'' +
-                ", careName='" + careName + '\'' +
+                ", mileStoneName='" + milestoneName + '\'' +
                 '}';
     }
 }

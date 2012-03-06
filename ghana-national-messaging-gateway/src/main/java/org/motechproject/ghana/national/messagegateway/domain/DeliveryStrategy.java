@@ -1,9 +1,9 @@
 package org.motechproject.ghana.national.messagegateway.domain;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
 
 import java.io.Serializable;
 
 public interface DeliveryStrategy extends Serializable{
-    LocalDateTime deliveryDate(SMS sms);
+    DateTime deliveryDate(SMS sms);
 }

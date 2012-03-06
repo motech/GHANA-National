@@ -63,9 +63,8 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
     }
 
     public Set<MRSObservation> createObservationForTT(final TTVaccine ttVaccine){
-        final LocalDate observationDate = ttVaccine.getVaccinationDate();
         Set<MRSObservation> observations = new HashSet<MRSObservation>();
-        setObservation(observations, observationDate.toDate(), Concept.TT.getName(), ttVaccine.getDosage().getDosage());
+        setObservation(observations, ttVaccine.getVaccinationDate().toDate(), Concept.TT.getName(), ttVaccine.getDosage().getDosage());
         return observations;
     }
 

@@ -37,8 +37,8 @@
             "name" : "TT3",
             "scheduleWindows" : {
                 "earliest" : ["6 Months"],
-                "due" : ["6 Months", "1 Weeks"],
-                "late" : ["6 Months", "10 Days", "4 Weeks"],
+                "due" : ["6 Months", "10 Days"],
+                "late" : ["6 Months", "10 Days", "3 Weeks"],
                 "max" : []
             },
             "alerts" : [
@@ -52,7 +52,7 @@
                     "window" : "late",
                     "interval" : ["1 Weeks"],
                     "count" : "3",
-                    "offset" : ["-1 Weeks", "3 Days"]
+                    "offset" : ["-1 Weeks"]
                 }
             ]
         },
@@ -60,8 +60,8 @@
             "name" : "TT4",
             "scheduleWindows" : {
                 "earliest" : ["12 Months"],
-                "due" : ["12 Months", "1 Weeks"],
-                "late" : ["12 Months", "10 Days", "4 Weeks"],
+                "due" : ["12 Months", "10 Days"],
+                "late" : ["12 Months", "10 Days", "3 Weeks"],
                 "max" : []
             },
             "alerts" : [
@@ -75,7 +75,7 @@
                     "window" : "late",
                     "interval" : ["1 Weeks"],
                     "count" : "3",
-                    "offset" : ["-1 Weeks", "3 Days"]
+                    "offset" : ["-1 Weeks"]
                 }
             ]
         },
@@ -83,8 +83,8 @@
             "name" : "TT5",
             "scheduleWindows" : {
                 "earliest" : ["12 Months"],
-                "due" : ["12 Months", "1 Weeks"],
-                "late" : ["12 Months", "10 Days", "4 Weeks"],
+                "due" : ["12 Months", "10 Days"],
+                "late" : ["12 Months", "10 Days", "3 Weeks"],
                 "max" : []
             },
             "alerts" : [
@@ -98,7 +98,7 @@
                     "window" : "late",
                     "interval" : ["1 Weeks"],
                     "count" : "3",
-                    "offset" : ["-1 Weeks", "3 Days"]
+                    "offset" : ["-1 Weeks"]
                 }
             ]
         }

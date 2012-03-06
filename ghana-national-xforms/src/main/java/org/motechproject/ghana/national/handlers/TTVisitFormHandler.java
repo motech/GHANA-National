@@ -49,7 +49,7 @@ public class TTVisitFormHandler implements FormPublishHandler {
             final Facility facility = facilityService.getFacilityByMotechId(ttVisitForm.getFacilityId());
             final Patient patient = patientService.getPatientByMotechId(ttVisitForm.getMotechId());
             final MRSUser staff = staffService.getUserByEmailIdOrMotechId(ttVisitForm.getStaffId());
-            visitService.receivedTT(new TTVaccine(DateUtil.newDate(ttVisitForm.getDate()), TTVaccineDosage.byValue(Integer.parseInt(ttVisitForm.getTtDose())), patient),
+            visitService.receivedTT(new TTVaccine(DateUtil.newDateTime(ttVisitForm.getDate()), TTVaccineDosage.byValue(Integer.parseInt(ttVisitForm.getTtDose())), patient),
                     staff, facility);
         }catch (Exception e){
             log.error("Encountered error while recording TT vaccination visit", e);

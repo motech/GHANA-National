@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
+import org.motechproject.model.Time;
 import org.motechproject.mrs.model.*;
 import org.motechproject.util.DateUtil;
 
@@ -78,7 +79,7 @@ public class MotherVisitEncounterFactoryTest {
 
     @Test
     public void shouldCreateObservationsForTT() {
-        TTVaccine ttVaccine = new TTVaccine(DateUtil.newDate(2012, 1, 2), TTVaccineDosage.TT1, null);
+        TTVaccine ttVaccine = new TTVaccine(DateUtil.newDateTime(2012, 1, 2, new Time(10,10)), TTVaccineDosage.TT1, null);
         Set<MRSObservation> actualObservations = factory.createObservationForTT(ttVaccine);
 
         Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>();

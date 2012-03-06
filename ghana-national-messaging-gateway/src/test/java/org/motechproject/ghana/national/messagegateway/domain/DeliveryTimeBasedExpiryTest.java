@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.messagegateway.domain;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.motechproject.model.Time;
 import org.motechproject.testing.utils.BaseUnitTest;
@@ -26,7 +26,7 @@ public class DeliveryTimeBasedExpiryTest extends BaseUnitTest{
         final DeliveryTimeBasedExpiry deliveryTimeBasedExpiry = new DeliveryTimeBasedExpiry();
 
         MessageStore messageStore = mock(MessageStore.class);
-        LocalDateTime generationTime = DateUtil.newDateTime(DateUtil.newDate(2000, 1, 1), new Time(10, 10)).toLocalDateTime();
+        DateTime generationTime = DateUtil.newDateTime(DateUtil.newDate(2000, 1, 1), new Time(10, 10));
         SimpleMessageGroup messageGroup = mockToReturnOnGroupWithOneSMS(messageStore, generationTime);
 
         mockCurrentDate(DateUtil.newDateTime(DateUtil.newDate(2000, 1, 8), new Time(10, 11)));
@@ -40,7 +40,7 @@ public class DeliveryTimeBasedExpiryTest extends BaseUnitTest{
 
     }
 
-    private SimpleMessageGroup mockToReturnOnGroupWithOneSMS(MessageStore messageStore, LocalDateTime generationTime) {
+    private SimpleMessageGroup mockToReturnOnGroupWithOneSMS(MessageStore messageStore, DateTime generationTime) {
         List<TestMessage<SMS>> messages = Arrays.asList(new TestMessage<SMS>(SMS.fromText("text", "ph", generationTime, new NextMondayDispatcher(), null)));
         final SimpleMessageGroup messageGroup = new SimpleMessageGroup(messages, "groupId");
         final List<SimpleMessageGroup> messageGroups = Arrays.asList(messageGroup);

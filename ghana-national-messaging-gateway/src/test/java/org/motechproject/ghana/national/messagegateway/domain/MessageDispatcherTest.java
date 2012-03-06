@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.messagegateway.domain;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.model.Time;
@@ -43,10 +43,10 @@ public class MessageDispatcherTest extends BaseUnitTest {
 
     @Test
     public void shouldCorrelateBasedOnPhoneNumberAndDeliveryDate() {
-        final LocalDateTime generationTime = DateUtil.newDateTime(DateUtil.newDate(2000, 1, 1), new Time(10, 10)).toLocalDateTime();
+        final DateTime generationTime = DateUtil.newDateTime(DateUtil.newDate(2000, 1, 1), new Time(10, 10));
         SMS sms = SMS.fromText("text", "ph", generationTime, new DeliveryStrategy() {
             @Override
-            public LocalDateTime deliveryDate(SMS sms) {
+            public DateTime deliveryDate(SMS sms) {
                 return generationTime;
             }
         }, null);
@@ -55,7 +55,7 @@ public class MessageDispatcherTest extends BaseUnitTest {
 
     @Test
     public void shouldReturnIfTheMessageCanBeDispatched() {
-        final LocalDateTime generationTime = DateUtil.newDateTime(DateUtil.newDate(2000, 1, 1), new Time(10, 10)).toLocalDateTime();
+        final DateTime generationTime = DateUtil.newDateTime(DateUtil.newDate(2000, 1, 1), new Time(10, 10));
         final SMS sms = SMS.fromText("text", "ph", generationTime, new NextMondayDispatcher(), null);
         List<SMS> messagesList = new ArrayList<SMS>() {{
             add(sms);

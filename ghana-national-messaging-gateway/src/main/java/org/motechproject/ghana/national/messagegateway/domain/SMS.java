@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.messagegateway.domain;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
 import org.motechproject.util.DateUtil;
 
 import java.io.Serializable;
@@ -10,18 +10,18 @@ import java.util.Map;
 public class SMS implements DeliveryTimeAware, Serializable{
     private String phoneNumber;
     private String text;
-    private LocalDateTime generationTime;
+    private DateTime generationTime;
     private DeliveryStrategy deliveryStrategy;
     private Comparator<String> comparator;
 
     protected SMS() {
     }
 
-    public static SMS fromTemplate(String template, Map<String, String> runtimeValues, String phoneNumber, LocalDateTime generationTime, DeliveryStrategy deliveryStrategy, Comparator<String> comparator){
+    public static SMS fromTemplate(String template, Map<String, String> runtimeValues, String phoneNumber, DateTime generationTime, DeliveryStrategy deliveryStrategy, Comparator<String> comparator){
         return SMS.fromText(SMS.fill(template, runtimeValues), phoneNumber, generationTime, deliveryStrategy, comparator);
     }
 
-    public static SMS fromText(String text, String phoneNumber, LocalDateTime generationTime, DeliveryStrategy deliveryStrategy, Comparator<String> comparator){
+    public static SMS fromText(String text, String phoneNumber, DateTime generationTime, DeliveryStrategy deliveryStrategy, Comparator<String> comparator){
         SMS sms = new SMS();
         sms.phoneNumber = phoneNumber;
         sms.generationTime = generationTime;
@@ -48,7 +48,7 @@ public class SMS implements DeliveryTimeAware, Serializable{
         return deliveryStrategy;
     }
 
-    public LocalDateTime getGenerationTime() {
+    public DateTime getGenerationTime() {
         return generationTime;
     }
 
@@ -56,7 +56,7 @@ public class SMS implements DeliveryTimeAware, Serializable{
         return phoneNumber;
     }
 
-    public LocalDateTime getDeliveryTime() {
+    public DateTime getDeliveryTime() {
         return deliveryStrategy.deliveryDate(this);
     }
 

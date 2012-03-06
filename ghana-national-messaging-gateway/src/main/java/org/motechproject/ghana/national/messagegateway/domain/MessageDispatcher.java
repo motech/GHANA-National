@@ -21,7 +21,7 @@ public class MessageDispatcher {
     public SMS aggregateSMS(List<SMS> smsMessages) {
         final SMS firstSMSInTheGroup = smsMessages.get(0);
         return SMS.fromText(join(collect(sort(smsMessages, on(SMS.class).getText(), firstSMSInTheGroup.getComparator()), on(SMS.class).getText()), SMS_SEPARATOR),
-                firstSMSInTheGroup.getPhoneNumber(), DateUtil.now().toLocalDateTime(), firstSMSInTheGroup.getDeliveryStrategy(), firstSMSInTheGroup.getComparator());
+                firstSMSInTheGroup.getPhoneNumber(), DateUtil.now(), firstSMSInTheGroup.getDeliveryStrategy(), firstSMSInTheGroup.getComparator());
     }
 
     @CorrelationStrategy
