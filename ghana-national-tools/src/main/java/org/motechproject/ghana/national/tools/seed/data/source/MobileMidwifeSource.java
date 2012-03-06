@@ -243,7 +243,7 @@ public class MobileMidwifeSource extends BaseSeedSource {
                     public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                         PreparedStatement preparedStatement = connection.prepareStatement("select en.program_name as program_name, sm.recipient_id as person_id, md.message_key as message_key, sm.scheduled_for as scheduled_date " +
                                 "from motechmodule_scheduledmessage sm, motechmodule_messagedefinition md, motechmodule_enrollment en where sm.definition_id = md.motechmodule_messagedefinition_id and sm.care_name is null " +
-                                "and en.end_date is null and en.obs_id is not null and sm.enrollment_id= ? and DATEDIFF(sm.scheduled_for,SYSDATE())>=0");
+                                "and sm.enrollment_id= ? and DATEDIFF(sm.scheduled_for,SYSDATE())>=0");
                         preparedStatement.setString(1, enrollmentId);
                         return preparedStatement;
                     }
