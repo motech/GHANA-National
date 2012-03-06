@@ -4,11 +4,9 @@ import org.motechproject.ghana.national.bean.PNCMotherForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.TTVaccine;
 import org.motechproject.ghana.national.mapper.PNCMotherRequestMapper;
-import org.motechproject.ghana.national.service.FacilityService;
-import org.motechproject.ghana.national.service.MotherVisitService;
-import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.service.StaffService;
+import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
@@ -25,18 +23,16 @@ import org.springframework.stereotype.Component;
 public class PNCMotherFormHandler implements FormPublishHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    private MotherVisitService motherVisitService;
-
     @Autowired
     private FacilityService facilityService;
-
     @Autowired
     private StaffService staffService;
-
     @Autowired
     private PatientService patientService;
+    @Autowired
+    private CareService careService;
+    @Autowired
+    private VisitService visitService;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.pncMotherRequest")
@@ -45,7 +41,12 @@ public class PNCMotherFormHandler implements FormPublishHandler {
     public void handleFormEvent(MotechEvent motechEvent) {
         PNCMotherForm pncMotherForm = (PNCMotherForm) motechEvent.getParameters().get(Constants.FORM_BEAN);
         try {
-            motherVisitService.save(createRequest(pncMotherForm));
+            PNCMotherRequest pncMotherRequest = createRequest(pncMotherForm);
+            TTVaccine ttVaccine = TTVaccine.createFromPncMotherRequest(pncMotherRequest);
+            if (ttVaccine != null) {
+                visitService.createTTSchedule(ttVaccine);
+            }
+            careService.enrollMotherForPNC(pncMotherRequest);
         } catch (Exception e) {
             log.error("Exception occured in saving PNC Mother details for: " + pncMotherForm.getMotechId(), e);
         }

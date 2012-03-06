@@ -11,11 +11,13 @@ import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
@@ -29,6 +31,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_MOTHER_1;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
@@ -187,7 +190,43 @@ public class CareServiceTest extends BaseUnitTest {
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, PREG_REG_VISIT.value(), registrationDate, expectedPregnancyObservations);
 
     }
-    
+
+    @Test
+    public void shouldEnrollToPNCMotherCareSchedules() {
+        CareService careServiceSpy = spy(careService);
+        Patient patient = mock(Patient.class);
+        List<PatientCare> patientCares = asList(new PatientCare(PNC_MOTHER_1, DateUtil.today()));
+        when(patient.pncMotherProgramsToEnrollOnRegistration()).thenReturn(patientCares);
+
+        careServiceSpy.enrollMotherForPNC(createTestPncRequest(patient));
+
+        ArgumentCaptor<Encounter> encounterCaptor = ArgumentCaptor.forClass(Encounter.class);
+        verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
+        verify(careServiceSpy).enrollPatientCares(patientCares, patient, DateUtil.today().toDate());
+    }
+
+    private PNCMotherRequest createTestPncRequest(Patient patient) {
+        return new PNCMotherRequest().maleInvolved(Boolean.TRUE).patient(patient).ttDose("1").visitNumber("1").vitaminA("Y").comments("Comments")
+                .community("House").date(DateUtil.newDateTime(DateUtil.today())).facility(new Facility()).staff(new MRSUser()).location("Outreach").lochiaAmountExcess(Boolean.TRUE)
+                .lochiaColour("1").lochiaOdourFoul(Boolean.TRUE).temperature(10D);
+    }
+
+    @Test
+    public void shouldEnrollPatientCares() {
+        List<PatientCare> patientCares = asList(new PatientCare(PNC_MOTHER_1, DateUtil.today()));
+        Patient patient = mock(Patient.class);
+        when(patient.getMRSPatientId()).thenReturn("mrsPatientId");
+        Date registrationDate = DateUtil.now().toDate();
+
+        careService.enrollPatientCares(patientCares, patient, registrationDate);
+
+        ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedules).enroll(enrollmentRequestCaptor.capture());
+        EnrollmentRequest request = enrollmentRequestCaptor.getValue();
+        assertThat(request.getScheduleName(), is(PNC_MOTHER_1));
+        assertThat(request.getExternalId(), is(patient.getMRSPatientId()));
+    }
+
     @Test
     public void shoulUpdateEddObservationIfFound() throws Exception {
         String facilityId = "facility id";
@@ -252,7 +291,7 @@ public class CareServiceTest extends BaseUnitTest {
         pregnancyObs.addDependantObservation(new MRSObservation<Date>(today, EDD.getName(), ancvo.getEstimatedDateOfDelivery()));
         pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
         pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, PREGNANCY_STATUS.getName(), true));
-        
+
         final HashSet<MRSObservation> expectedPregnancyObservations = new HashSet<MRSObservation>() {{
             add(pregnancyObs);
         }};
@@ -320,37 +359,65 @@ public class CareServiceTest extends BaseUnitTest {
 
         careService.enroll(ancvo);
         verify(mockPatient).ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery());
-        verifyIfScheduleEnrolled(0, patientId, patientCare.startingOn(), patientCare.name());
+        verifyIfScheduleEnrolled(0, patientId, patientCare.startingOn(), newDate(ancvo.getRegistrationDate()), patientCare.name());
     }
 
     @Test
     public void shouldCreateSchedulesForCWCProgramRegistration() {
         String patientId = "Id";
         String patientMotechId = "motechId";
-        Date registrationDate = newDate(2012, 12, 2).toDate();
+        LocalDate registrationDate = newDate(2012, 12, 2);
 
         setupPatient(patientId, patientMotechId);
         when(mockPatient.getMotechId()).thenReturn(patientMotechId);
 
         PatientCare patientCare = new PatientCare("test", new LocalDate());
         when(mockPatient.cwcCareProgramToEnrollOnRegistration()).thenReturn(asList(patientCare));
-        careService.enrollToCWCCarePrograms(registrationDate, mockPatient);
+        careService.enrollToCWCCarePrograms(registrationDate.toDate(), mockPatient);
 
         verify(mockPatient).cwcCareProgramToEnrollOnRegistration();
-        verifyIfScheduleEnrolled(0, patientId, patientCare.startingOn(), patientCare.name());
+        verifyIfScheduleEnrolled(0, patientId, patientCare.startingOn(), registrationDate, patientCare.name());
     }
 
-    private void verifyIfScheduleEnrolled(int indexForSchedule, String patientId, LocalDate startingOn, String enrollmentName) {
+    @Test
+    public void shouldCreatePNCSchedulesForChild() {
+        String patientId = "Id";
+        LocalDate registrationDate = newDate(2012, 12, 2);
+        LocalDate birthDate = newDate(2012, 12, 21);
+        Time birthTime = new Time(2, 3);
+        PatientCare pnc1 = new PatientCare("PNC1", birthDate, birthTime);
+        PatientCare pnc2 = new PatientCare("PNC2", birthDate, birthTime);
+        setupPatient(patientId, null);
+        when(mockPatient.pncBabyProgramsToEnrollOnRegistration()).thenReturn(asList(pnc1, pnc2));
+
+        careService.enrollChildForPNC(mockPatient, registrationDate);
+        ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedules, times(2)).enroll(requestCaptor.capture());
+        List<EnrollmentRequest> requests = requestCaptor.getAllValues();
+        assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, pnc1, registrationDate, null));
+        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, pnc2, registrationDate, null));
+    }
+
+    private void verifyIfScheduleEnrolled(int indexForSchedule, String patientId, LocalDate startingOn, LocalDate enrollmentDate, String enrollmentName) {
         ArgumentCaptor<EnrollmentRequest> deliveryEnrollmentRequestCaptor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enroll(deliveryEnrollmentRequestCaptor.capture());
-        assertScheduleEnrollmentRequest(deliveryEnrollmentRequestCaptor.getAllValues().get(indexForSchedule), patientId, startingOn, enrollmentName);
+        assertScheduleEnrollmentRequest(deliveryEnrollmentRequestCaptor.getAllValues().get(indexForSchedule),
+                expectedRequest(patientId, new PatientCare(enrollmentName, startingOn), enrollmentDate, null));
     }
 
-    private void assertScheduleEnrollmentRequest(EnrollmentRequest actualRequest, String patientId, LocalDate referenceDate, String scheduleName) {
-        assertThat(actualRequest.getExternalId(), is(equalTo(patientId)));
-        assertThat(actualRequest.getScheduleName(), is(equalTo(scheduleName)));
-        assertThat(actualRequest.getPreferredAlertTime(), is(equalTo(new Time(currentDate.toLocalTime()))));
-        assertThat(actualRequest.getReferenceDate(), is(referenceDate));
+    private EnrollmentRequest expectedRequest(String externalId, PatientCare patientCare, LocalDate enrollmentDate, String startingMilestoneName) {
+        return new EnrollmentRequest(externalId, patientCare.name(),
+                new Time(currentDate.toLocalTime()), patientCare.startingOn(),
+                patientCare.referenceTime(), enrollmentDate, null, startingMilestoneName);
+    }
+
+    private void assertScheduleEnrollmentRequest(EnrollmentRequest actualRequest, EnrollmentRequest expectedRequest) {
+        assertThat(actualRequest.getExternalId(), is(equalTo(expectedRequest.getExternalId())));
+        assertThat(actualRequest.getScheduleName(), is(equalTo(expectedRequest.getScheduleName())));
+        assertThat(actualRequest.getPreferredAlertTime(), is(equalTo(expectedRequest.getPreferredAlertTime())));
+        assertThat(actualRequest.getReferenceDateTime(), is(expectedRequest.getReferenceDateTime()));
+        assertThat(actualRequest.getStartingMilestoneName(), is(expectedRequest.getStartingMilestoneName()));
+        assertThat(actualRequest.getEnrollmentDateTime(), is(expectedRequest.getEnrollmentDateTime()));
     }
 
     private ANCVO createTestANCVO(String ipt, Date iptDate, String tt, Date ttDate, RegistrationToday registrationToday, Date registrationDate,

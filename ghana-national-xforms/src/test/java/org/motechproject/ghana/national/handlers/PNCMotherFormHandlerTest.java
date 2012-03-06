@@ -6,13 +6,8 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.PNCMotherForm;
-import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.service.FacilityService;
-import org.motechproject.ghana.national.service.MotherVisitService;
-import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.ghana.national.service.StaffService;
+import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
@@ -23,25 +18,30 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PNCMotherFormHandlerTest {
     private PNCMotherFormHandler pncMotherFormHandler;
     @Mock
-    private MotherVisitService motherVisitService;
+    private CareService careService;
     @Mock
     private FacilityService facilityService;
     @Mock
     private PatientService patientService;
     @Mock
     private StaffService staffService;
+    @Mock
+    private VisitService visitService;
 
     @Before
     public void setUp() {
         initMocks(this);
         pncMotherFormHandler = new PNCMotherFormHandler();
-        ReflectionTestUtils.setField(pncMotherFormHandler, "motherVisitService", motherVisitService);
+        ReflectionTestUtils.setField(pncMotherFormHandler, "visitService", visitService);
+        ReflectionTestUtils.setField(pncMotherFormHandler, "careService", careService);
         ReflectionTestUtils.setField(pncMotherFormHandler, "facilityService", facilityService);
         ReflectionTestUtils.setField(pncMotherFormHandler, "staffService", staffService);
         ReflectionTestUtils.setField(pncMotherFormHandler, "patientService", patientService);
@@ -86,7 +86,14 @@ public class PNCMotherFormHandlerTest {
         pncMotherFormHandler.handleFormEvent(new MotechEvent("subject", params));
 
         ArgumentCaptor<PNCMotherRequest> requestCaptor = ArgumentCaptor.forClass(PNCMotherRequest.class);
-        verify(motherVisitService).save(requestCaptor.capture());
+        ArgumentCaptor<TTVaccine> ttVaccineCaptor = ArgumentCaptor.forClass(TTVaccine.class);
+
+        verify(visitService).createTTSchedule(ttVaccineCaptor.capture());
+        verify(careService).enrollMotherForPNC(requestCaptor.capture());
+
+        TTVaccine vaccine = ttVaccineCaptor.getValue();
+        assertThat(vaccine.getDosage(), is(TTVaccineDosage.TT1));
+        assertThat(vaccine.getPatient(), is(patient));
     }
 
     private PNCMotherForm createPNCMotherForm(String comment, String community, DateTime date, String facilityId, String staffId, String fht, String house, String location, Boolean lochiaAmountExcess, String lochiaColour,

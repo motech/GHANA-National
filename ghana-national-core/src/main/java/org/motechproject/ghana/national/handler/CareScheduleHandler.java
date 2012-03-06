@@ -1,14 +1,22 @@
 package org.motechproject.ghana.national.handler;
 
+import org.motechproject.ghana.national.domain.AlertWindow;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.*;
 
 @Component
@@ -42,8 +50,8 @@ public class CareScheduleHandler extends BaseScheduleHandler {
 
     @LoginAsAdmin
     @ApiSession
-    public void handleAncVisitAlert(MilestoneEvent milestoneEvent) {
-        sendSMSToFacility(ANC_VISIT_SMS_KEY, milestoneEvent);
+    public void handleAncVisitAlert(MotechEvent motechEvent) {
+        sendSMSToFacilityForAnAppointment(ANC_VISIT_SMS_KEY, motechEvent);
     }
 
     @LoginAsAdmin
@@ -78,14 +86,17 @@ public class CareScheduleHandler extends BaseScheduleHandler {
 
     @LoginAsAdmin
     @ApiSession
-    public void handlePNCMotherAlert(MilestoneEvent milestoneEvent) {
-        // TODO: PNC Message
-//        smsGateway.dispatchSMS(smsTemplateKey, new HashMap<String, String>() {{
-//            put(MOTECH_ID, motechId);
-//            put(WINDOW, AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName());
-//            put(FIRST_NAME, patient.getFirstName());
-//            put(LAST_NAME, patient.getLastName());
-//            put(SCHEDULE_NAME, milestoneEvent.getScheduleName());
-//        }}, facility.getPhoneNumber());
+    public void handlePNCMotherAlert(final MilestoneEvent milestoneEvent) {
+        final Patient patient = allPatients.patientByOpenmrsId(milestoneEvent.getExternalId());
+        final MRSPatient mrsPatient = patient.getMrsPatient();
+        final Facility facility = allFacilities.getFacility(mrsPatient.getFacility().getId());
+
+        smsGateway.dispatchSMS(PNC_MOTHER_SMS_KEY, new HashMap<String, String>() {{
+            put(MOTECH_ID, mrsPatient.getMotechId());
+            put(WINDOW, AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName());
+            put(FIRST_NAME, patient.getFirstName());
+            put(LAST_NAME, patient.getLastName());
+            put(SCHEDULE_NAME, milestoneEvent.getScheduleName());
+        }}, facility.phoneNumber());
     }
 }

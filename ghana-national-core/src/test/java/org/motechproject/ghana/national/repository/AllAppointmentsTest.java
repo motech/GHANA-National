@@ -2,18 +2,29 @@ package org.motechproject.ghana.national.repository;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.contract.AppointmentService;
+import org.motechproject.appointments.api.contract.CreateVisitRequest;
+import org.motechproject.appointments.api.contract.ReminderConfiguration;
+import org.motechproject.ghana.national.domain.EncounterType;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.unitils.reflectionassert.ReflectionComparatorMode;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 public class AllAppointmentsTest {
     @Mock
@@ -34,32 +45,28 @@ public class AllAppointmentsTest {
         verify(mockAppointmentService).removeCalendar(motechId);
     }
 
-    @Ignore
     @Test
     public void shouldCreateANCVisitSchedule() {
         String motechId = "1234556";
-        DateTime today = DateTime.now();
-        allAppointments.updateANCVisitSchedule(new Patient(new MRSPatient(motechId, null, null)), new Date(), today);
+        DateTime nextANCVisit = DateTime.now();
+        Date visitedDate = new Date();
+        allAppointments.updateANCVisitSchedule(new Patient(new MRSPatient(motechId, null, null)), visitedDate, nextANCVisit);
 
-//        ArgumentCaptor<AppointmentCalendarRequest> calendarCaptor = ArgumentCaptor.forClass(AppointmentCalendarRequest.class);
-//        ArgumentCaptor<VisitRequest> visitCaptor = ArgumentCaptor.forClass(VisitRequest.class);
-//        ArgumentCaptor<String> visitNameCaptor = ArgumentCaptor.forClass(String.class);
-//        verify(mockAppointmentService).removeCalendar(motechId);
-//        verify(mockAppointmentService).addCalendar(calendarCaptor.capture());
-//        verify(mockAppointmentService, times(3)).addVisit(eq(motechId), visitNameCaptor.capture(), visitCaptor.capture());
-//
-//        AppointmentCalendarRequest actualAppointmentRequest = calendarCaptor.getValue();
-//        List<String> allVisitNames = visitNameCaptor.getAllValues();
-//        List<VisitRequest> allVisits = visitCaptor.getAllValues();
-//
-//        assertThat(actualAppointmentRequest.getExternalId(), is(motechId));
-//        assertThat(today, is(allVisits.get(0).getDueDate()));
-//        assertThat(today.plusWeeks(1), is(allVisits.get(1).getDueDate()));
-//        assertThat(today.plusWeeks(3), is(allVisits.get(2).getDueDate()));
-//        assertThat(allVisitNames.get(0), is("DueVisit - " + motechId));
-//        assertThat(allVisitNames.get(1), is("LateVisit - " + motechId));
-//        assertThat(allVisitNames.get(2), is("MaxVisit - " + motechId));
-//        assertThat(allVisits.get(0).getReminderConfiguration().getIntervalUnit(), is(ReminderConfiguration.IntervalUnit.WEEKS));
-//        assertThat(allVisits.get(0).getReminderConfiguration().getIntervalCount(), is(1));
+        ArgumentCaptor<CreateVisitRequest> argumentCaptor = ArgumentCaptor.forClass(CreateVisitRequest.class);
+        verify(mockAppointmentService).visited(motechId, EncounterType.ANC_VISIT.value(), DateUtil.newDateTime(visitedDate));
+        verify(mockAppointmentService).addVisit(eq(motechId), argumentCaptor.capture());
+
+        CreateVisitRequest actualVisitRequest = argumentCaptor.getValue();
+        List<ReminderConfiguration> actualReminderConfigurations = actualVisitRequest.getAppointmentReminderConfigurations();
+
+        List<ReminderConfiguration> expectedReminderConfigurations = new ArrayList<ReminderConfiguration>();
+        expectedReminderConfigurations.add(new ReminderConfiguration());
+        expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.ONE_WEEK_LATER));
+        expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.TWO_WEEK_LATER));
+        expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.THREE_WEEKS_LATER));
+
+        assertThat(actualReminderConfigurations.size(), is(4));
+        assertThat(actualVisitRequest.getVisitName(), is(EncounterType.ANC_VISIT.value()));
+        assertReflectionEquals(expectedReminderConfigurations, actualReminderConfigurations, ReflectionComparatorMode.LENIENT_ORDER);
     }
 }

@@ -46,7 +46,7 @@ public class ChildVisitService {
     public MRSEncounter save(PNCBabyRequest pncBabyRequest) {
         return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(pncBabyRequest));
     }
-    
+
     void updateIPTSchedule(CWCVisit cwcVisit) {
         IPTVaccine iptVaccine = IPTVaccine.createFromCWCVisit(cwcVisit);
         if(iptVaccine != null) {
