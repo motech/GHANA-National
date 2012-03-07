@@ -6,6 +6,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ClientQueryForm;
 import org.motechproject.ghana.national.domain.ClientQueryType;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -32,13 +33,13 @@ public class ClientQueryFormValidatorTest {
 
     @Test
     public void shouldValidateTheClientQueryFormBean() {
-        String facilityId = "facilityId";
-        String motechId = "motechId";
-        String staffId = "staffId";
-        ClientQueryForm clientQueryForm = createClientQueryForm(facilityId, motechId, staffId, ClientQueryType.CLIENT_DETAILS);
+        String facilityId = "13161";
+        String motechId = "123458";
+        String staffId = "23";
+        ClientQueryForm clientQueryForm = createClientQueryForm(facilityId, motechId, staffId, ClientQueryType.CLIENT_DETAILS.toString());
 
         when(formValidator.validateIfFacilityExists(facilityId)).thenReturn(asList(new FormError(facilityId, NOT_FOUND)));
-        when(formValidator.validatePatient(motechId, motechId)).thenReturn(asList(new FormError(motechId, NOT_FOUND)));
+        when(formValidator.validatePatient(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(asList(new FormError(motechId, NOT_FOUND)));
         when(formValidator.validateIfStaffExists(staffId)).thenReturn(asList(new FormError(staffId, NOT_FOUND)));
 
         List<FormError> formErrors = clientQueryFormValidator.validate(clientQueryForm);
@@ -50,9 +51,9 @@ public class ClientQueryFormValidatorTest {
 
     @Test
     public void shouldNotValidateForPatientIfQueryTypeIsFindClientId(){
-       String facilityId = "facilityId";
-        String staffId = "staffId";
-        ClientQueryForm clientQueryForm = createClientQueryForm(facilityId, "13245", staffId, ClientQueryType.FIND_CLIENT_ID);
+       String facilityId = "13161";
+        String staffId = "23";
+        ClientQueryForm clientQueryForm = createClientQueryForm(facilityId, "13245", staffId, ClientQueryType.FIND_CLIENT_ID.toString());
 
         when(formValidator.validateIfFacilityExists(facilityId)).thenReturn(asList(new FormError(facilityId, NOT_FOUND)));
         when(formValidator.validateIfStaffExists(staffId)).thenReturn(asList(new FormError(staffId, NOT_FOUND)));
@@ -66,12 +67,12 @@ public class ClientQueryFormValidatorTest {
         assertThat(formErrors, hasItem(new FormError("queryType", INSUFFICIENT_SEARCH_CRITERIA)));
     }
 
-    private ClientQueryForm createClientQueryForm(String facilityId, String motechId, String staffId, ClientQueryType clientDetails) {
+    private ClientQueryForm createClientQueryForm(String facilityId, String motechId, String staffId, String clientDetails) {
         ClientQueryForm clientQueryForm = new ClientQueryForm();
         clientQueryForm.setFacilityId(facilityId);
         clientQueryForm.setMotechId(motechId);
         clientQueryForm.setStaffId(staffId);
-        clientQueryForm.setClientQueryType(clientDetails);
+        clientQueryForm.setQueryType(clientDetails);
         return clientQueryForm;
     }
 }

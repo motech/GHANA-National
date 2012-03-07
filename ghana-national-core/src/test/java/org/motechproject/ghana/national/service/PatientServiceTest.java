@@ -43,11 +43,14 @@ public class PatientServiceTest {
     private AllSchedules mockAllSchedules;
     @Mock
     private AllAppointments mockAllAppointments;
+    @Mock
+    private SearchMRSPatient mockSearchMRSPatient;
+
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(mockAllPatients, mockIdentifierGenerator, mockAllEncounters, mockAllSchedules, mockAllAppointments);
+        patientService = new PatientService(mockAllPatients, mockIdentifierGenerator, mockAllEncounters, mockAllSchedules, mockAllAppointments, mockSearchMRSPatient);
     }
 
     @Test
@@ -275,5 +278,14 @@ public class PatientServiceTest {
         verify(mockAllPatients).deceasePatient(dateOfDeath, patientMotechId, "OTHER NON-CODED", comment);
         verify(mockAllSchedules).unEnroll(patientMRSId, schedules);
         verify(mockAllAppointments).remove(patient);
+    }
+
+    @Test
+    public void shouldSearchPatientGivenInfoOtherThanMotechId(){
+        String firstName = "firstNm";
+        String phoneNumber = "phnm";
+        Date dateOfBirth = new Date(2009, 9, 9);
+        patientService.getPatients(firstName,null, phoneNumber, dateOfBirth,null);
+        verify(mockSearchMRSPatient).getPatients(firstName,null,phoneNumber,dateOfBirth,null);
     }
 }

@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.bean;
 
-import org.motechproject.ghana.national.domain.ClientQueryType;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
@@ -24,7 +23,7 @@ public class ClientQueryForm extends FormBean {
     private String facilityId;
 
     @Required
-    private ClientQueryType clientQueryType;
+    private String queryType;
 
     @RegEx(pattern = MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
@@ -119,11 +118,11 @@ public class ClientQueryForm extends FormBean {
         this.phoneNumber = phoneNumber;
     }
 
-    public ClientQueryType getClientQueryType() {
-        return clientQueryType;
+    public String getQueryType() {
+        return queryType;
     }
 
-    public void setClientQueryType(ClientQueryType clientQueryType) {
-        this.clientQueryType = clientQueryType;
+    public void setQueryType(String queryType) {
+        this.queryType = queryType;
     }
 }

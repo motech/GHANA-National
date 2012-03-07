@@ -29,14 +29,16 @@ public class PatientService {
     private AllEncounters allEncounters;
     private AllSchedules allSchedules;
     private AllAppointments allAppointments;
+    private SearchMRSPatient searchMRSPatient;
 
     @Autowired
-    public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator, AllEncounters allEncounters, AllSchedules allSchedules, AllAppointments allAppointments) {
+    public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator, AllEncounters allEncounters, AllSchedules allSchedules, AllAppointments allAppointments, SearchMRSPatient searchMRSPatient) {
         this.allPatients = allPatients;
         this.identifierGenerator = identifierGenerator;
         this.allEncounters = allEncounters;
         this.allSchedules = allSchedules;
         this.allAppointments = allAppointments;
+        this.searchMRSPatient = searchMRSPatient;
     }
 
     public Patient registerPatient(Patient patient, String staffId)
@@ -115,5 +117,9 @@ public class PatientService {
         allPatients.deceasePatient(dateOfDeath, patientMotechId, (causeOfDeath.equals("OTHER") ? "OTHER NON-CODED" : "NONE"), comment);
         allSchedules.unEnroll(patient.getMRSPatientId(), patient.allCareProgramsToUnEnroll());
         allAppointments.remove(patient);
+    }
+
+    public List<MRSPatient> getPatients(String firstName, String lastName, String phoneNumber, Date dateOfBirth, String insuranceNumber) {
+        return searchMRSPatient.getPatients(firstName, lastName, phoneNumber, dateOfBirth, insuranceNumber);
     }
 }

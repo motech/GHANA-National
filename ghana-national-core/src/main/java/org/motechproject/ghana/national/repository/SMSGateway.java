@@ -36,7 +36,7 @@ public class SMSGateway {
         }
     }
 
-    private String getSMSTemplate(String key) {
+    public String getSMSTemplate(String key) {
         return getSMSTemplate(defaultLanguage(), key);
     }
 
@@ -49,7 +49,11 @@ public class SMSGateway {
     }
 
     public void dispatchSMS(String templateKey, String language, String phoneNumber){
-        smsService.sendSMS(phoneNumber, getSMSTemplate(language, templateKey));
+        dispatchSMS(phoneNumber, getSMSTemplate(language, templateKey));
+    }
+
+    public void dispatchSMS(String phoneNumber,String message){
+        smsService.sendSMS(phoneNumber,message);
     }
 
     private String defaultLanguage() {
