@@ -5,7 +5,8 @@ import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.TTVaccine;
 import org.motechproject.ghana.national.domain.TTVaccineDosage;
-import org.motechproject.ghana.national.service.VisitService;
+import org.motechproject.ghana.national.mapper.TTVaccinationEnrollmentMapper;
+import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.tools.seed.data.domain.UpcomingSchedule;
 import org.motechproject.ghana.national.tools.seed.data.source.TTVaccineSource;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
@@ -17,13 +18,13 @@ import java.util.List;
 @Component("ttVaccineSeed")
 public class TTVaccineSeed extends ScheduleMigrationSeed {
     private TTVaccineSource ttVaccineSource;
-    private VisitService visitService;
+    private AllSchedules allSchedules;
 
     @Autowired
-    public TTVaccineSeed(TTVaccineSource ttVaccineSource, AllTrackedSchedules allTrackedSchedules, VisitService visitService) {
+    public TTVaccineSeed(TTVaccineSource ttVaccineSource, AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules) {
         super(allTrackedSchedules);
         this.ttVaccineSource = ttVaccineSource;
-        this.visitService = visitService;
+        this.allSchedules = allSchedules;
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {
@@ -38,7 +39,7 @@ public class TTVaccineSeed extends ScheduleMigrationSeed {
     }
 
     protected void enroll(DateTime referenceDate, String milestoneName, Patient patient) {
-        visitService.createTTSchedule(new TTVaccine(referenceDate, TTVaccineDosage.valueOf(milestoneName), patient));
+        allSchedules.enroll(new TTVaccinationEnrollmentMapper().map(new TTVaccine(referenceDate, TTVaccineDosage.valueOf(milestoneName), patient)));
     }
 
 }

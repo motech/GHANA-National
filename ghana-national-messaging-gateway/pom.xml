@@ -117,7 +117,7 @@
                             <includeGroupIds>org.motechproject</includeGroupIds>
                             <excludeTransitive>true</excludeTransitive>
                             <includes>
-                                sms-http-template.json,aggregator.properties
+                                log4j.xml,sms-http-template.json,aggregator.properties
                             </includes>
                         </configuration>
                     </execution>

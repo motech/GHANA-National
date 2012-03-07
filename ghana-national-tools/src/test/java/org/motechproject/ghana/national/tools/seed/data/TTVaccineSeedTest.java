@@ -6,15 +6,12 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.TTVaccine;
-import org.motechproject.ghana.national.domain.TTVaccineDosage;
-import org.motechproject.ghana.national.service.VisitService;
+import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.tools.seed.data.source.TTVaccineSource;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
-
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -26,15 +23,15 @@ public class TTVaccineSeedTest {
 
     @Mock
     private TTVaccineSource ttVaccineSource;
-    @Mock
-    private VisitService visitService;
 
     private TTVaccineSeed ttVaccineSeed;
+    @Mock
+    private AllSchedules allSchedules;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        ttVaccineSeed = new TTVaccineSeed(ttVaccineSource, null, visitService);
+        ttVaccineSeed = new TTVaccineSeed(ttVaccineSource, null, allSchedules);
     }
 
     @Test
@@ -42,21 +39,14 @@ public class TTVaccineSeedTest {
         final DateTime referenceDate = DateUtil.newDateTime(2012, 2, 1, new Time(10, 10));
         final Patient patient = new Patient(new MRSPatient("1000"));
         ttVaccineSeed.enroll(referenceDate, "TT2", patient);
-        ArgumentCaptor<TTVaccine> ttVaccineArgCaptor = ArgumentCaptor.forClass(TTVaccine.class);
-        verify(visitService).createTTSchedule(ttVaccineArgCaptor.capture());
-        assertIfTTVaccineAreEqual(ttVaccineArgCaptor.getValue(), new TTVaccine(referenceDate, TTVaccineDosage.TT2, patient));
+        ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(allSchedules).enroll(enrollmentRequestCaptor.capture());
+        assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT2", "1000");
     }
 
-    public static void assertTTVaccines(List<TTVaccine> ttVaccines1, List<TTVaccine> ttVaccines2){
-        for (int i = 0; i < ttVaccines1.size(); i++) {
-            assertIfTTVaccineAreEqual(ttVaccines1.get(i), ttVaccines2.get(i));
-        }
+    public static void assertTTEnrollmentRequest(EnrollmentRequest enrollmentRequest, DateTime referenceDate, String milestoneName, String externalId) {
+        assertThat(enrollmentRequest.getReferenceDate(), is(equalTo(referenceDate.toLocalDate())));
+        assertThat(enrollmentRequest.getStartingMilestoneName(), is(equalTo(milestoneName)));
+        assertThat(enrollmentRequest.getExternalId(), is(equalTo(externalId)));
     }
-
-    public static void assertIfTTVaccineAreEqual(TTVaccine ttVaccine, TTVaccine ttVaccine1) {
-        assertThat(ttVaccine.getDosage(), is(equalTo(ttVaccine1.getDosage())));
-        assertThat(ttVaccine.getVaccinationDate(), is(equalTo(ttVaccine1.getVaccinationDate())));
-        assertThat(ttVaccine.getPatient().getMRSPatientId(), is(equalTo(ttVaccine1.getPatient().getMRSPatientId())));
-    }
-
 }

@@ -11,7 +11,7 @@ public class UpcomingSchedule {
 
     public UpcomingSchedule(String patientId, String dueDatetime, String milestoneName) {
         this.patientId = patientId;
-        this.dueDatetime = DateUtil.newDateTime(DateTime.parse(dueDatetime, DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss")).toDate());
+        this.dueDatetime = DateUtil.newDateTime(DateTime.parse(dueDatetime, DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss.S")).toDate());
         this.milestoneName = milestoneName;
     }
 
