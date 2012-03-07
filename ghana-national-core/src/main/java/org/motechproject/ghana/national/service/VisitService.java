@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static org.motechproject.util.DateUtil.newDate;
-import static org.motechproject.util.DateUtil.today;
 
 @Service
 public class VisitService {
@@ -35,7 +34,7 @@ public class VisitService {
     }
 
     public void createTTSchedule(TTVaccine ttVaccine) {
-        final EnrollmentRequest enrollmentRequest = new TTVaccinationEnrollmentMapper().map(ttVaccine.getPatient(), ttVaccine.getVaccinationDate().toLocalDate(), ttVaccine.getDosage().getScheduleMilestoneName(), today());
+        final EnrollmentRequest enrollmentRequest = new TTVaccinationEnrollmentMapper().map(ttVaccine);
         allSchedules.enrollOrFulfill(enrollmentRequest, newDate(ttVaccine.getVaccinationDate().toDate()));
     }
 }

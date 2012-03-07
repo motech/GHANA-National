@@ -11,12 +11,13 @@ import org.motechproject.MotechException;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.TTVaccine;
 import org.motechproject.ghana.national.domain.TTVaccineDosage;
-import org.motechproject.ghana.national.service.VisitService;
+import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.tools.seed.data.domain.UpcomingSchedule;
 import org.motechproject.ghana.national.tools.seed.data.source.TTVaccineSource;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
+import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -35,11 +36,10 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class ScheduleMigrationSeedTest {
     @Autowired
     AllTrackedSchedules allTrackedSchedules;
+    @Mock
+    private AllSchedules allSchedules;
 
     private TTVaccineSeed ttVaccineSeed;
-
-    @Mock
-    private VisitService visitService;
 
     @Mock
     private TTVaccineSource ttVaccineSource;
@@ -47,12 +47,12 @@ public class ScheduleMigrationSeedTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        ttVaccineSeed = new TTVaccineSeed(ttVaccineSource, allTrackedSchedules, visitService);
+        ttVaccineSeed = new TTVaccineSeed(ttVaccineSource, allTrackedSchedules, allSchedules);
     }
 
     @Test(expected = MotechException.class)
     public void shouldThrowExceptionIfAPatientHaveMoreThanOneActiveUpcomingScheduleEntry() {
-        List<UpcomingSchedule> upcomingSchedulesFromDb = Arrays.asList(new UpcomingSchedule("100", "2012-12-17 00:00:00", "TT2"), new UpcomingSchedule("100", "2012-12-21 00:00:00", "TT2"), new UpcomingSchedule("101", "2012-12-21 00:00:00", "TT3"));
+        List<UpcomingSchedule> upcomingSchedulesFromDb = Arrays.asList(new UpcomingSchedule("100", "2012-12-17 00:00:00.0", "TT2"), new UpcomingSchedule("100", "2012-12-21 00:00:00.0", "TT2"), new UpcomingSchedule("101", "2012-12-21 00:00:00.0", "TT3"));
         ttVaccineSeed.migrate(upcomingSchedulesFromDb);
     }
 
@@ -60,17 +60,19 @@ public class ScheduleMigrationSeedTest {
     public void shouldEnrollForScheduleGivenDueDateOfVaccination() {
         String patientId1 = "101";
         String patientId2 = "102";
-        List<UpcomingSchedule> upcomingSchedulesFromDb = Arrays.asList(new UpcomingSchedule(patientId1, "2012-9-22 10:30:00", "TT3"), new UpcomingSchedule(patientId2, "2012-2-29 10:30:00", "TT2"));
+        List<UpcomingSchedule> upcomingSchedulesFromDb = Arrays.asList(new UpcomingSchedule(patientId1, "2012-9-22 10:30:00.0", "TT3"), new UpcomingSchedule(patientId2, "2012-2-29 10:30:00.0", "TT2"));
         List<TTVaccine> expectedTTVaccines = Arrays.asList(
                 new TTVaccine(DateUtil.newDateTime(2012, 3, 22, new Time(10, 30)), TTVaccineDosage.TT3, new Patient(new MRSPatient(patientId1))),
                 new TTVaccine(DateUtil.newDateTime(2012, 2, 1, new Time(10, 30)), TTVaccineDosage.TT2, new Patient(new MRSPatient(patientId2))));
 
         ttVaccineSeed.migrate(upcomingSchedulesFromDb);
 
-        ArgumentCaptor<TTVaccine> captor = ArgumentCaptor.forClass(TTVaccine.class);
-        verify(visitService, times(2)).createTTSchedule(captor.capture());
-        final List<TTVaccine> ttVaccines = captor.getAllValues();
-        TTVaccineSeedTest.assertTTVaccines(expectedTTVaccines, ttVaccines);
+        ArgumentCaptor<EnrollmentRequest> captor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(allSchedules, times(2)).enroll(captor.capture());
+        final List<EnrollmentRequest> enrollmentRequests = captor.getAllValues();
+        TTVaccineSeedTest.assertTTEnrollmentRequest(enrollmentRequests.get(0), expectedTTVaccines.get(0).getVaccinationDate(), "TT3", patientId1);
+        TTVaccineSeedTest.assertTTEnrollmentRequest(enrollmentRequests.get(1), expectedTTVaccines.get(1).getVaccinationDate(), "TT2", patientId2);
+
     }
 
     @Test
@@ -86,7 +88,7 @@ public class ScheduleMigrationSeedTest {
     @Test
     public void shouldCalculateReferenceDateForTheMileStoneFromTheDueDate() {
         DateTime expectedReferenceDate = DateUtil.newDateTime(DateUtil.newDate(2012, 2, 1), new Time(10, 10));
-        UpcomingSchedule upcomingSchedule = new UpcomingSchedule("100", "2012-2-29 10:10:00", "TT2");
+        UpcomingSchedule upcomingSchedule = new UpcomingSchedule("100", "2012-2-29 10:10:00.0", "TT2");
         assertThat(ttVaccineSeed.getReferenceDate(upcomingSchedule), is(expectedReferenceDate));
     }
 }
