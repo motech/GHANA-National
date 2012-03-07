@@ -62,7 +62,7 @@ public class ChildVisitEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, pncVisitDate, CORD_CONDITION.getName(), pncBabyRequest.getCordConditionNormal());
         setObservation(mrsObservations, pncVisitDate, BABY_CONDITION.getName(), pncBabyRequest.getBabyConditionGood());
         setObservation(mrsObservations, pncVisitDate, WEIGHT_KG.getName(), pncBabyRequest.getWeight());
-        setObservation(mrsObservations, pncVisitDate, BCG.getName(), pncBabyRequest.getBcg());
+        setObservation(mrsObservations, pncVisitDate, BCG.getName(), toString(pncBabyRequest.getBcg()));
         setObservation(mrsObservations, pncVisitDate, OPV.getName(), pncBabyRequest.getOpv0());
         if (!pncBabyRequest.getLocation().equals(Constants.NOT_APPLICABLE))
             setObservation(mrsObservations, pncVisitDate, ANC_PNC_LOCATION.getName(), toInteger(pncBabyRequest.getLocation()));

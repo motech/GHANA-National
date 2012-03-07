@@ -94,7 +94,7 @@ public class ChildVisitEncounterFactoryTest {
         expectedObservations.add(new MRSObservation<Boolean>(pncDate.toDate(), CORD_CONDITION.getName(), cordConditionNormal));
         expectedObservations.add(new MRSObservation<Boolean>(pncDate.toDate(), BABY_CONDITION.getName(), babyConditionGood));
         expectedObservations.add(new MRSObservation<Double>(pncDate.toDate(), WEIGHT_KG.getName(), weight));
-        expectedObservations.add(new MRSObservation<Boolean>(pncDate.toDate(), BCG.getName(), bcg));
+        expectedObservations.add(new MRSObservation<String>(pncDate.toDate(), BCG.getName(), "N"));
         expectedObservations.add(new MRSObservation<Boolean>(pncDate.toDate(), OPV.getName(), opv0));
         expectedObservations.add(new MRSObservation<Integer>(pncDate.toDate(), ANC_PNC_LOCATION.getName(), Integer.valueOf(location)));
         expectedObservations.add(new MRSObservation<String>(pncDate.toDate(), HOUSE.getName(), house));
