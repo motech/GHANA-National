@@ -5,7 +5,8 @@ import org.motechproject.scheduletracking.api.domain.WindowName;
 public enum AlertWindow {
     UPCOMING("Upcoming", WindowName.earliest.name(), 1),
     DUE("Due", WindowName.due.name(), 2),
-    OVERDUE("Overdue", WindowName.late.name(), 3);
+    OVERDUE("Overdue", WindowName.late.name(), 3),
+    MAX("Final Overdue", WindowName.max.name(), 4);
 
     private String name;
     private String platformWindowName;

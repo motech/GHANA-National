@@ -176,7 +176,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enrollOrFulfill(captor.capture(), eq(visitDate));
-        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, deliveryTime, visitDate, null, visitDate, null, dose2.milestone()), captor.getAllValues().get(0));
+        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, deliveryTime, visitDate, deliveryTime, visitDate, null, dose2.milestone()), captor.getAllValues().get(0));
     }
 
     @Test

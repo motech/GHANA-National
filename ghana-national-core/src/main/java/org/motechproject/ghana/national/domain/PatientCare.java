@@ -2,6 +2,9 @@ package org.motechproject.ghana.national.domain;
 
 import org.joda.time.LocalDate;
 import org.motechproject.model.Time;
+import org.motechproject.util.DateUtil;
+
+import static org.motechproject.util.DateUtil.time;
 
 public class PatientCare {
     private String name;
@@ -18,8 +21,6 @@ public class PatientCare {
         this.name = name;
         this.referenceTime = referenceTime;
     }
-
-
 
     public String name() {
         return name;
@@ -54,5 +55,13 @@ public class PatientCare {
         result = 31 * result + (referenceTime != null ? referenceTime.hashCode() : 0);
         result = 31 * result + referenceDate.hashCode();
         return result;
+    }
+
+    public Time preferredTime() {
+        return  defaultPreferredTime();
+    }
+
+    private Time defaultPreferredTime() {
+        return referenceTime == null ? time(DateUtil.now()) : referenceTime;
     }
 }
