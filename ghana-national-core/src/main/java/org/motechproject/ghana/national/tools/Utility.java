@@ -4,12 +4,14 @@ import ch.lambdaj.function.convert.Converter;
 import ch.lambdaj.group.Group;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.model.DayOfWeek;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 import static org.motechproject.model.DayOfWeek.getDayOfWeek;
 
 public class Utility {
@@ -60,6 +62,14 @@ public class Utility {
             if(item != null) result.add(item);
         }
         return result;
+    }
+
+    public static String nullSafeToString(DateTime date, String pattern){
+        return (date != null) ? new SimpleDateFormat(pattern).format(date.toDate()) : "";
+    }
+
+    public static String nullSafeToString(LocalDate date, String pattern){
+        return (date != null) ? new SimpleDateFormat(pattern).format(date.toDate()) : "";
     }
 
     //TODO :Already in platform, but problem in finding method

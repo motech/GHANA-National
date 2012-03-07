@@ -12,7 +12,11 @@ import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.SMSGateway;
-import org.motechproject.ghana.national.service.*;
+import org.motechproject.ghana.national.service.CareService;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
+import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.util.AssertionUtility;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.model.DayOfWeek;
@@ -23,11 +27,13 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -99,7 +105,7 @@ public class PatientRegistrationFormHandlerTest {
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<String> staffIdCaptor = ArgumentCaptor.forClass(String.class);
-        Patient savedPatient = new Patient(new MRSPatient(motechId, new MRSPerson().firstName(firstName).lastName(lastName), null));
+        Patient savedPatient = new Patient(new MRSPatient(motechId, new MRSPerson().firstName(firstName).lastName(lastName).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate()), null));
         doReturn(savedPatient).when(mockPatientService).registerPatient(patientArgumentCaptor.capture(), staffIdCaptor.capture());
 
         Facility facility = mock(Facility.class);
@@ -110,13 +116,15 @@ public class PatientRegistrationFormHandlerTest {
 
         Patient patientPassedToRegisterService = patientArgumentCaptor.getValue();
         MRSPerson mrsPerson = patientPassedToRegisterService.getMrsPatient().getPerson();
-
         assertRegisterPatient(address, dateofBirth, isBirthDateEstimated, facilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, sex, phoneNumber, patientPassedToRegisterService, mrsPerson, parentId);
-        verify(mockSMSGateway).dispatchSMS(REGISTER_SUCCESS_SMS_KEY, new HashMap<String, String>() {{
+
+        ArgumentCaptor<Map> smsTemplateArgCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(mockSMSGateway).dispatchSMS(eq(REGISTER_SUCCESS_SMS_KEY), smsTemplateArgCaptor.capture(), eq(registerClientForm.getSender()));
+        AssertionUtility.assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, motechId);
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastName);
-        }}, registerClientForm.getSender());
+        }}, smsTemplateArgCaptor.getValue());
     }
 
     @Test

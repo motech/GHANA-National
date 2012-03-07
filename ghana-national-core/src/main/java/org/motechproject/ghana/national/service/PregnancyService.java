@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.REGISTER_SUCCESS_SMS_KEY;
 
 @Service
@@ -86,11 +84,7 @@ public class PregnancyService {
                 careService.enroll(new CwcVO(staff.getSystemId(), facility.mrsFacilityId(), birthDate, savedChild.getMotechId(),
                         Collections.<CwcCareHistory>emptyList(), null, null, null, null, null, null, null, null, null, null, savedChild.getMotechId(), false));
                 careService.enrollChildForPNC(savedChild);
-                smsGateway.dispatchSMS(REGISTER_SUCCESS_SMS_KEY, new HashMap<String, String>() {{
-                    put(MOTECH_ID, savedChild.getMotechId());
-                    put(FIRST_NAME, savedChild.getFirstName());
-                    put(LAST_NAME, savedChild.getLastName());
-                }}, request.getSender());
+                smsGateway.dispatchSMS(REGISTER_SUCCESS_SMS_KEY, new SMSTemplate().fillPatientDetails(savedChild).getRuntimeVariables(), request.getSender());
             }
         }
 

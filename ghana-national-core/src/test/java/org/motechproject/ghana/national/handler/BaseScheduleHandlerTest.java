@@ -2,11 +2,11 @@ package org.motechproject.ghana.national.handler;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.SmsTemplateKeys;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
@@ -17,13 +17,18 @@ import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
+import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
+import java.util.Map;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
+import static org.motechproject.ghana.national.domain.SMSTemplateTest.assertContainsTemplateValues;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PNC_CHILD_SMS_KEY;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PREGNANCY_ALERT_SMS_KEY;
 
 public class BaseScheduleHandlerTest {
@@ -58,7 +63,7 @@ public class BaseScheduleHandlerTest {
         parameters.put(EventKeys.VISIT_NAME, visitName);
         parameters.put(MotechSchedulerService.JOB_ID_KEY,visitName+"3");
 
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname);
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
         when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
@@ -66,13 +71,16 @@ public class BaseScheduleHandlerTest {
 
         careScheduleHandler.sendAggregativeSMSToFacilityForAnAppointment(ancVisitKey, new MotechEvent("subject", parameters));
 
-        verify(SMSGateway).dispatchSMSToAggregator(ancVisitKey, new HashMap<String, String>() {{
-            put(MOTECH_ID,patientMotechId );
+        ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(SMSGateway).dispatchSMSToAggregator(eq(ancVisitKey), templateValuesArgCaptor.capture(), eq(phoneNumber));
+
+        assertContainsTemplateValues(new HashMap<String, String>() {{
+            put(MOTECH_ID, patientMotechId);
             put(WINDOW, "late");
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastname);
             put(SCHEDULE_NAME, visitName);
-        }}, phoneNumber);
+        }}, templateValuesArgCaptor.getValue());
     }
 
     @Test
@@ -86,24 +94,24 @@ public class BaseScheduleHandlerTest {
         final String windowName = WindowName.due.name();
         final String scheduleName = "edd";
 
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname);
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
         when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
         when(allFacilities.getFacility(facilityId)).thenReturn(new Facility().phoneNumber(phoneNumber));
 
-
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, null, windowName, null);
-
         careScheduleHandler.sendAggregativeSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
 
-        verify(SMSGateway).dispatchSMSToAggregator(PREGNANCY_ALERT_SMS_KEY, new HashMap<String, String>() {{
+        ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(SMSGateway).dispatchSMSToAggregator(eq(PREGNANCY_ALERT_SMS_KEY), templateValuesArgCaptor.capture(), eq(phoneNumber));
+        assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, patientMotechId);
             put(WINDOW, "Due");
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastname);
             put(SCHEDULE_NAME, scheduleName);
-        }}, phoneNumber);
+        }}, templateValuesArgCaptor.getValue());
     }
     
     @Test
@@ -117,7 +125,7 @@ public class BaseScheduleHandlerTest {
         final String windowName = WindowName.late.name();
         final String scheduleName = "some schedule";
 
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname);
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
         when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
@@ -125,14 +133,16 @@ public class BaseScheduleHandlerTest {
 
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, null, windowName, null);
 
-        careScheduleHandler.sendInstantSMSToFacility(SmsTemplateKeys.PNC_CHILD_SMS_KEY, milestoneEvent);
+        careScheduleHandler.sendInstantSMSToFacility(PNC_CHILD_SMS_KEY, milestoneEvent);
 
-        verify(SMSGateway).dispatchSMS(SmsTemplateKeys.PNC_CHILD_SMS_KEY, new HashMap<String, String>() {{
+        ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(SMSGateway).dispatchSMS(eq(PNC_CHILD_SMS_KEY), templateValuesArgCaptor.capture(), eq(phoneNumber));
+        assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, patientMotechId);
             put(WINDOW, "Overdue");
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastname);
             put(SCHEDULE_NAME, scheduleName);
-        }}, phoneNumber);
+        }}, templateValuesArgCaptor.getValue());
     }
 }

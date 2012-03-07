@@ -21,14 +21,14 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.Constants.*;
+import static org.motechproject.ghana.national.util.AssertionUtility.assertContainsTemplateValues;
 
 public class ClientQueryFormHandlerTest {
     private ClientQueryFormHandler clientQueryFormHandler;
@@ -50,14 +50,14 @@ public class ClientQueryFormHandlerTest {
 
     @Test
     public void shouldSendMessageWithEDDForPregnantClientForClientDetailsQuery() {
-        String firstName = "firstName";
-        String lastName = "lastName";
-        Date dateOfBirth = DateUtil.now().minusYears(20).toDate();
-        Integer age = 30;
-        String gender = "Male";
-        String phoneNumber = "phoneNumber";
+        final String firstName = "firstName";
+        final String lastName = "lastName";
+        final Date dateOfBirth = DateUtil.now().minusYears(20).toDate();
+        final Integer age = 30;
+        final String gender = "Male";
+        final String phoneNumber = "phoneNumber";
         String responsePhoneNumber = "responsePhoneNumber";
-        Date edd = DateUtil.now().toDate();
+        final Date edd = DateUtil.now().toDate();
 
         String facilityId = "facilityId";
         String motechId = "motechId";
@@ -76,14 +76,16 @@ public class ClientQueryFormHandlerTest {
         ArgumentCaptor<Map> templateValuesCaptor = ArgumentCaptor.forClass(Map.class);
         verify(mockSmsGateway).dispatchSMS(eq("PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY"), templateValuesCaptor.capture(), eq(responsePhoneNumber));
 
-        Map<String, String> messageParams = templateValuesCaptor.getValue();
-        assertThat(messageParams.get(PHONE_NUMBER), is(phoneNumber));
-        assertThat(messageParams.get(AGE), is(age.toString()));
-        assertThat(messageParams.get(GENDER), is(gender));
-        assertThat(messageParams.get(FIRST_NAME), is(firstName));
-        assertThat(messageParams.get(LAST_NAME), is(lastName));
-        assertThat(messageParams.get(DATE), is(new SimpleDateFormat(PATTERN_DD_MMM_YYYY).format(edd)));
-        assertThat(messageParams.get(DOB), is(new SimpleDateFormat(PATTERN_DD_MMM_YYYY).format(dateOfBirth)));
+        assertContainsTemplateValues(new HashMap<String, String>() {{
+            put(PHONE_NUMBER, phoneNumber);
+            put(AGE, age.toString());
+            put(GENDER, gender);
+            put(FIRST_NAME, firstName);
+            put(LAST_NAME, lastName);
+            put(DATE, new SimpleDateFormat(PATTERN_DD_MMM_YYYY).format(edd));
+            put(DOB, new SimpleDateFormat(PATTERN_DD_MMM_YYYY).format(dateOfBirth));
+
+        }}, templateValuesCaptor.getValue());
 
 
     }
@@ -187,4 +189,6 @@ public class ClientQueryFormHandlerTest {
         clientQueryForm.setQueryType(clientQueryType);
         return clientQueryForm;
     }
+
+
 }

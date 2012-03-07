@@ -15,9 +15,7 @@ import static org.apache.commons.collections.CollectionUtils.union;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
-import static org.motechproject.util.DateUtil.newDateTime;
-import static org.motechproject.util.DateUtil.time;
-import static org.motechproject.util.DateUtil.today;
+import static org.motechproject.util.DateUtil.*;
 
 public class Patient {
     private MRSPatient mrsPatient;
@@ -138,7 +136,7 @@ public class Patient {
     }
 
     public DateTime dateOfBirth() {
-        return newDateTime(this.getMrsPatient().getPerson().getDateOfBirth());
+        return newDateTime(getMrsPatient().getPerson().getDateOfBirth());
     }
 
     private PatientCare measlesChildCare() {
@@ -156,6 +154,7 @@ public class Patient {
         return cares;
     }
 
+
     public List<PatientCare> pncMotherProgramsToEnrollOnRegistration() {
         List<PatientCare> cares = new ArrayList<PatientCare>();
         DateTime birthTime = childCare().birthTime();
@@ -167,5 +166,18 @@ public class Patient {
 
     public PatientCare pncProgramToFulfilOnVisit(PNCChildVisit visit, DateTime visitDateTime) {
         return new PatientCare(visit.scheduleName(), visitDateTime.toLocalDate(), time(visitDateTime));
+    }
+
+    public String getGender() {
+        return getMrsPatient().getPerson().getGender();
+    }
+
+
+    public Integer getAge() {
+        return getMrsPatient().getPerson().getAge();
+    }
+
+    public String getPhoneNumber() {
+        return getMrsPatient().getPerson().attrValue(PatientAttributes.PHONE_NUMBER.getAttribute());
     }
 }
