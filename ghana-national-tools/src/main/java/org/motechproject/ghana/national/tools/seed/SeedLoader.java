@@ -23,7 +23,11 @@ public class SeedLoader {
     public void load() {
         LOG.info("Started loading seeds :" + seeds.toString());
         for (Seed seed : seeds) {
-            seed.run();
+            try {
+                seed.run();
+            } catch (Exception e) {
+                LOG.error("Encountered error while loading seed, " + seed.getClass().getName(), e);
+            }
         }
     }
 }

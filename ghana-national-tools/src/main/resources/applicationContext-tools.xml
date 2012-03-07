@@ -9,14 +9,16 @@
     <context:spring-configured/>
     <context:component-scan base-package="org.motechproject.ghana.national"/>
 
+    <beans:import resource="classpath:applicationContext-core.xml"/>
+
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="${connection.string}"/>
-        <property name="username" value="${openmrs.db.username}"/>
-        <property name="password" value="${openmrs.db.password}"/>
+        <property name="url" value="${migration.db.connection.string}"/>
+        <property name="username" value="${migration.db.username}"/>
+        <property name="password" value="${migration.db.password}"/>
     </bean>
 
-    <beans:import resource="classpath:applicationContext-core.xml"/>
 
     <bean id="seedLoader" class="org.motechproject.ghana.national.tools.seed.SeedLoader">
         <constructor-arg>
@@ -37,4 +39,5 @@
             </list>
         </constructor-arg>
     </bean>
+
 </beans>

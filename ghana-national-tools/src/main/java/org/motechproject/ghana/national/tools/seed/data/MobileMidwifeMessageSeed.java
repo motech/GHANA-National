@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
+import org.motechproject.MotechException;
 import org.motechproject.cmslite.api.model.CMSLiteException;
 import org.motechproject.cmslite.api.model.StringContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
@@ -38,7 +39,7 @@ public class MobileMidwifeMessageSeed extends Seed {
                 savePropertiesToCMS(properties, language);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MotechException("Encountered exception while loading seed", e);
         }
     }
 

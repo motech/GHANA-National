@@ -94,7 +94,7 @@
                             <includeArtifactIds>ghana-national-common</includeArtifactIds>
                             <includeGroupIds>org.motechproject</includeGroupIds>
                             <excludeTransitive>true</excludeTransitive>
-                            <includes>aggregator.properties, couchdb.properties,email.properties,ghana-national.properties,openmrs.properties,openmrs-data/**,osgi.properties,activemq.properties,schedule_tracking.properties,schedules/**, programs/**, messageCampaign.properties</includes>
+                            <includes>log4j.xml,migrationdb.properties, aggregator.properties, couchdb.properties,email.properties,ghana-national.properties,openmrs.properties,openmrs-data/**,osgi.properties,activemq.properties,schedule_tracking.properties,schedules/**, programs/**, messageCampaign.properties</includes>
                         </configuration>
                     </execution>
                 </executions>
