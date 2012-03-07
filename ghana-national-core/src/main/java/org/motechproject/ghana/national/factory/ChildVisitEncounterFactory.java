@@ -53,23 +53,23 @@ public class ChildVisitEncounterFactory extends BaseObservationFactory {
 
     private Set<MRSObservation> createMRSObservations(PNCBabyRequest pncBabyRequest) {
         HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
-        Date registrationDate = pncBabyRequest.getDate().toDate();
+        Date pncVisitDate = pncBabyRequest.getDate().toDate();
 
-        setObservation(mrsObservations, registrationDate, VISIT_NUMBER.getName(), pncBabyRequest.getVisitNumber());
-        setObservation(mrsObservations, registrationDate, TEMPERATURE.getName(), pncBabyRequest.getTemperature());
-        setObservation(mrsObservations, registrationDate, MALE_INVOLVEMENT.getName(), toString(pncBabyRequest.getMaleInvolved()));
-        setObservation(mrsObservations, registrationDate, RESPIRATION.getName(), pncBabyRequest.getRespiration());
-        setObservation(mrsObservations, registrationDate, CORD_CONDITION.getName(), toString(pncBabyRequest.getCordConditionNormal()));
-        setObservation(mrsObservations, registrationDate, BABY_CONDITION.getName(), toString(pncBabyRequest.getBabyConditionGood()));
-        setObservation(mrsObservations, registrationDate, WEIGHT_KG.getName(), pncBabyRequest.getWeight());
-        setObservation(mrsObservations, registrationDate, BCG.getName(), toString(pncBabyRequest.getBcg()));
-        setObservation(mrsObservations, registrationDate, OPV.getName(), toString(pncBabyRequest.getOpv0()));
+        setObservation(mrsObservations, pncVisitDate, VISIT_NUMBER.getName(), toInteger(pncBabyRequest.getVisitNumber()));
+        setObservation(mrsObservations, pncVisitDate, TEMPERATURE.getName(), pncBabyRequest.getTemperature());
+        setObservation(mrsObservations, pncVisitDate, MALE_INVOLVEMENT.getName(), pncBabyRequest.getMaleInvolved());
+        setObservation(mrsObservations, pncVisitDate, RESPIRATION.getName(), pncBabyRequest.getRespiration());
+        setObservation(mrsObservations, pncVisitDate, CORD_CONDITION.getName(), pncBabyRequest.getCordConditionNormal());
+        setObservation(mrsObservations, pncVisitDate, BABY_CONDITION.getName(), pncBabyRequest.getBabyConditionGood());
+        setObservation(mrsObservations, pncVisitDate, WEIGHT_KG.getName(), pncBabyRequest.getWeight());
+        setObservation(mrsObservations, pncVisitDate, BCG.getName(), pncBabyRequest.getBcg());
+        setObservation(mrsObservations, pncVisitDate, OPV.getName(), pncBabyRequest.getOpv0());
         if (!pncBabyRequest.getLocation().equals(Constants.NOT_APPLICABLE))
-            setObservation(mrsObservations, registrationDate, ANC_PNC_LOCATION.getName(), toInteger(pncBabyRequest.getLocation()));
-        setObservation(mrsObservations, registrationDate, HOUSE.getName(), pncBabyRequest.getHouse());
-        setObservation(mrsObservations, registrationDate, COMMUNITY.getName(), pncBabyRequest.getCommunity());
-        setObservation(mrsObservations, registrationDate, REFERRED.getName(), pncBabyRequest.getReferred());
-        setObservation(mrsObservations, registrationDate, COMMENTS.getName(), pncBabyRequest.getComments());
+            setObservation(mrsObservations, pncVisitDate, ANC_PNC_LOCATION.getName(), toInteger(pncBabyRequest.getLocation()));
+        setObservation(mrsObservations, pncVisitDate, HOUSE.getName(), pncBabyRequest.getHouse());
+        setObservation(mrsObservations, pncVisitDate, COMMUNITY.getName(), pncBabyRequest.getCommunity());
+        setObservation(mrsObservations, pncVisitDate, REFERRED.getName(), pncBabyRequest.getReferred());
+        setObservation(mrsObservations, pncVisitDate, COMMENTS.getName(), pncBabyRequest.getComments());
         return mrsObservations;
     }
 }

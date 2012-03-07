@@ -41,7 +41,7 @@ public class PNCBabyRequest {
         return date;
     }
 
-    public Object getVisitNumber() {
+    public String getVisitNumber() {
         return visitNumber;
     }
 

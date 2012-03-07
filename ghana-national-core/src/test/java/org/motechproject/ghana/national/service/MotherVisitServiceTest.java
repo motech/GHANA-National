@@ -132,10 +132,10 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         TTVaccineTest.assertIfTTVaccineAreEqual(new TTVaccine(vaccinationDate, TTVaccineDosage.TT1, patient), ttVaccineArgumentCaptor.getValue());
     }
 
-    @Test
     // 2 scenarios - in both case IPT1 is created and fulfilled and send alerts for remaining weeks
     // i) User enrolled after 19th week
     // ii) User enrolled for SP2, taking IPT2 directly based on some pre-history
+    @Test
     public void shouldEnrollOrFulfilIPTpScheduleBasedOnVisitDate_AndRecordObservations() {
 
         Time deliveryTime = new Time(20, 2);
