@@ -17,10 +17,10 @@
                     "offset" : ["12 Days"]
                 },
                 {
-                    "window" : "due",
+                    "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["2 Days"]
+                    "offset" : ["0 Days"]
                 },
                 {
                     "window" : "max",

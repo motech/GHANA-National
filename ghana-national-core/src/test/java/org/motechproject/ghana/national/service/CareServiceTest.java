@@ -98,10 +98,10 @@ public class CareServiceTest extends BaseUnitTest {
         }};
         CareService careServiceSpy = spy(careService);
         careServiceSpy.enroll(cwcVO);
-        doNothing().when(careServiceSpy).enrollToCWCCarePrograms(mockPatient);
+        doNothing().when(careServiceSpy).enrollToCWCCarePrograms(registrationDate, mockPatient);
 
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffId, facilityId, CWC_REG_VISIT.value(), registrationDate, expected);
-        verify(careServiceSpy).enrollToCWCCarePrograms(mockPatient);
+        verify(careServiceSpy).enrollToCWCCarePrograms(registrationDate, mockPatient);
     }
 
     @Test
@@ -327,11 +327,14 @@ public class CareServiceTest extends BaseUnitTest {
     public void shouldCreateSchedulesForCWCProgramRegistration() {
         String patientId = "Id";
         String patientMotechId = "motechId";
+        Date registrationDate = newDate(2012, 12, 2).toDate();
 
         setupPatient(patientId, patientMotechId);
+        when(mockPatient.getMotechId()).thenReturn(patientMotechId);
+
         PatientCare patientCare = new PatientCare("test", new LocalDate());
         when(mockPatient.cwcCareProgramToEnrollOnRegistration()).thenReturn(asList(patientCare));
-        careService.enrollToCWCCarePrograms(mockPatient);
+        careService.enrollToCWCCarePrograms(registrationDate, mockPatient);
 
         verify(mockPatient).cwcCareProgramToEnrollOnRegistration();
         verifyIfScheduleEnrolled(0, patientId, patientCare.startingOn(), patientCare.name());
