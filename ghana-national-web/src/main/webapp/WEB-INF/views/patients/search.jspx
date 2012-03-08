@@ -37,7 +37,7 @@
             <form:input path="name" size="20" label="${fn:escapeXml(patient_name)}"/>
         </div>
 
-        <input type="button" id="allPatientSearch" value="Search"/>
+        <input type="button" id="searchPatient" value="Search"/>
         <br/>
         <br/>
         <div id="search-results">

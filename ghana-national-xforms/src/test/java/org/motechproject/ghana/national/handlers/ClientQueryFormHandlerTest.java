@@ -89,6 +89,7 @@ public class ClientQueryFormHandlerTest {
         final String firstName = "firstName";
         final String lastName = "lastName";
         final Date dateOfBirth = DateUtil.now().minusYears(20).toDate();
+        String dateString=DateFormat.getDateInstance().format(dateOfBirth);
         String phoneNumber = "phoneNumber";
         String responsePhoneNumber = "responsePhoneNumber";
         final String facilityId = "facilityId";
@@ -109,7 +110,7 @@ public class ClientQueryFormHandlerTest {
         ArgumentCaptor<String> templateValuesCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), templateValuesCaptor.capture());
 
-        String expectedMessage="MoTeCH ID=motechId, FirstName=firstName, LastName=lastName, Sex=F, DoB=7 Mar, 1992, Facility=name #MoTeCH ID=45423, FirstName=first, LastName=lastName, Sex=M, DoB=6 Jun, 3889, Facility=name #";
+        String expectedMessage="MoTeCH ID=motechId, FirstName=firstName, LastName=lastName, Sex=F, DoB="+dateString+", Facility=name #MoTeCH ID=45423, FirstName=first, LastName=lastName, Sex=M, DoB=6 Jun, 3889, Facility=name #";
         assertEquals(expectedMessage, templateValuesCaptor.getValue());
     }
 
