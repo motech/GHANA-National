@@ -103,14 +103,14 @@ public class ClientQueryFormHandlerTest {
             add(new MRSPatient("45423", new MRSPerson().lastName(lastName).firstName("first").gender("M").dateOfBirth(new Date(1989, 5, 6)), mrsFacility));
         }};
         when(mockPatientService.getPatients(firstName, lastName, phoneNumber, dateOfBirth, null)).thenReturn(patients);
-        when(mockSmsGateway.getSMSTemplate(ClientQueryFormHandler.FIND_CLIENT_RESPONSE_SMS_KEY)).thenReturn("MoTeCH ID=${motechId}, FirstName=${firstName}, LastName=${lastName}, Sex=${gender}, DoB=${dob}, Facility=${facility}");
+        when(mockSmsGateway.getSMSTemplate(ClientQueryFormHandler.FIND_CLIENT_RESPONSE_SMS_KEY)).thenReturn("MoTeCH ID=${motechId},${firstName},${lastName}, Sex=${gender}, DoB=${dob}, ${facility}");
 
         clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
 
         ArgumentCaptor<String> templateValuesCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), templateValuesCaptor.capture());
 
-        String expectedMessage="MoTeCH ID=motechId, FirstName=firstName, LastName=lastName, Sex=F, DoB="+dateString+", Facility=name #MoTeCH ID=45423, FirstName=first, LastName=lastName, Sex=M, DoB=6 Jun, 3889, Facility=name #";
+        String expectedMessage="MoTeCH ID=motechId,firstName,lastName, Sex=F, DoB="+dateString+", name #MoTeCH ID=45423,first,lastName, Sex=M, DoB=6 Jun, 3889, name #";
         assertEquals(expectedMessage, templateValuesCaptor.getValue());
     }
 
