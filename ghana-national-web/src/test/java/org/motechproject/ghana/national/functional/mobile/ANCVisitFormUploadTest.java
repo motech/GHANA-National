@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.functional.mobile;
 
+import org.joda.time.DateTime;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
@@ -16,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -56,7 +58,7 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
             put("date", "2012-01-03");
             put("serialNumber", "4ds65");
             put("visitNumber", "4");
-            put("estDeliveryDate", "2012-01-03");
+//            put("estDeliveryDate", "2012-01-03");
             put("bpDiastolic", "67");
             put("bpSystolic", "10");
             put("weight", "65.67");
@@ -83,7 +85,7 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
             put("community", "community");
             put("referred", "Y");
             put("maleInvolved", "N");
-            put("nextANCDate", "2012-02-20");
+            put("nextANCDate", new SimpleDateFormat("yyyy-MM-dd").format(DateTime.now().plusDays(3).toDate()));
         }});
 
         assertEquals(1, xformResponse.getSuccessCount());
