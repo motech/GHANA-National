@@ -114,6 +114,28 @@ public class ClientQueryFormHandlerTest {
         assertEquals(expectedMessage, templateValuesCaptor.getValue());
     }
 
+    @Test
+    public void shouldSendNoMatchingRecordsFoundIfNoRecordsFound() {
+        final String firstName = "firstName";
+        final String lastName = "lastName";
+        final Date dateOfBirth = DateUtil.now().minusYears(20).toDate();
+        String phoneNumber = "phoneNumber";
+        String responsePhoneNumber = "responsePhoneNumber";
+        final String facilityId = "facilityId";
+
+        HashMap<String, Object> params = createClientQueryFormForFindClientId(firstName, lastName, dateOfBirth, phoneNumber, responsePhoneNumber, facilityId, null);
+
+        when(mockPatientService.getPatients(firstName, lastName, phoneNumber, dateOfBirth, null)).thenReturn(new ArrayList<MRSPatient>());
+        when(mockSmsGateway.getSMSTemplate(ClientQueryFormHandler.FIND_CLIENT_RESPONSE_SMS_KEY)).thenReturn("MoTeCH ID=${motechId}, FirstName=${firstName}, LastName=${lastName}, Sex=${gender}, DoB=${dob}, Facility=${facility}");
+
+        clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
+
+        ArgumentCaptor<String> templateValuesCaptor = ArgumentCaptor.forClass(String.class);
+        verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), templateValuesCaptor.capture());
+
+        assertEquals(Constants.NO_MATCHING_RECORDS_FOUND, templateValuesCaptor.getValue());
+    }
+
     private HashMap<String, Object> createClientQueryFormForFindClientId(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String responsePhoneNumber, String facilityId, String motechId) {
         final ClientQueryForm clientQueryForm = clientQueryForm(facilityId, motechId, "323", responsePhoneNumber, ClientQueryType.FIND_CLIENT_ID.toString());
         clientQueryForm.setFirstName(firstName);
