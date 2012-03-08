@@ -23,6 +23,7 @@ import static org.testng.AssertJUnit.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
+
     @Test
     public void shouldUploadANCVisitFormSuccessfully() {
         // create

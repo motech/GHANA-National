@@ -66,12 +66,12 @@ public class PregnancyService {
                 MRSPerson childPerson = new MRSPerson();
                 Date birthDate = request.getDeliveryDateTime().toDate();
                 childPerson.firstName((childRequest.getChildFirstName() != null) ? childRequest.getChildFirstName() : "Baby")
-                        .lastName("Baby").dateOfBirth(birthDate)
+                        .lastName("Baby").dateOfBirth(birthDate).birthDateEstimated(false)
                         .gender((childRequest.getChildSex() != null) ? childRequest.getChildSex() : "?");
-                Patient patient = new Patient(new MRSPatient(childMotechId, childPerson, facility.mrsFacility()), request.getPatient().getMotechId());
-                final Patient savedChild = allPatients.save(patient);
+                Patient child = new Patient(new MRSPatient(childMotechId, childPerson, facility.mrsFacility()), request.getPatient().getMotechId());
+                final Patient savedChild = allPatients.save(child);
                 allEncounters.persistEncounter(encounterFactory.createBirthEncounter(childRequest, savedChild.getMrsPatient(), staff, facility, birthDate));
-                careService.enroll(new CwcVO(staff.getSystemId(), facility.motechId(), birthDate, savedChild.getMotechId(),
+                careService.enroll(new CwcVO(staff.getSystemId(), facility.mrsFacilityId(), birthDate, savedChild.getMotechId(),
                         Collections.<CwcCareHistory>emptyList(), null, null, null, null, null, null, null, null, null, null, savedChild.getMotechId(), false));
             }
         }

@@ -69,7 +69,7 @@ public class PregnancyEncounterFactory extends BaseObservationFactory {
         mrsObservations.add(activePregnancyObservation);
 
         for (DeliveredChildRequest deliveredChildRequest : pregnancyDeliveryRequest.getDeliveredChildRequests()) {
-             setObservation(mrsObservations, deliveryDate, BIRTH_OUTCOME.getName(), safeEnumValue(deliveredChildRequest.getChildBirthOutcome()));
+             setObservation(mrsObservations, deliveryDate, BIRTH_OUTCOME.getName(), deliveredChildRequest.getChildBirthOutcome().getValue());
         }
         return mrsObservations;
     }
