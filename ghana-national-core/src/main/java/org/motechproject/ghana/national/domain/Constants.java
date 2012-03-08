@@ -43,7 +43,7 @@ public class Constants {
     public static final String PATTERN_YYYY_MM_DD = "yyyy-MM-dd";
 
     public static final String NOT_FOUND = "not found";
-    public static final String INSUFFICIENT_SEARCH_CRITERIA = "Please provide values to any one of criteria: First name,Last name, Phone number,Date of Birth,Insurance number";
+    public static final String INSUFFICIENT_SEARCH_CRITERIA = "Insufficient search criteria provided";
 
     public static final String CARE_HISTORIES = "careHistories";
     public static final String LAST_IPTI = "lastIPTi";
