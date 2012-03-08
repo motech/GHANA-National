@@ -52,7 +52,7 @@ public class MotherVisitService {
         updateEDD(ancVisit, mrsObservations);
         updateIPT(ancVisit, mrsObservations);
         updateTT(ancVisit, mrsObservations);
-//        updateANCVisit(ancVisit);
+        updateANCVisit(ancVisit);
         return allEncounters.persistEncounter(factory.createEncounter(ancVisit, mrsObservations));
     }
 
