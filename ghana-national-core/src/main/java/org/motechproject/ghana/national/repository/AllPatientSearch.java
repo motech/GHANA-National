@@ -18,27 +18,29 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Repository
-public class SearchMRSPatient {
+public class AllPatientSearch {
 
     protected JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public void SearchMRSPatient(@Qualifier("dataSource") DataSource dataSource) {
+    public void AllPatientSearch(@Qualifier("dataSource") DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @LoginAsAdmin
     @ApiSession
-    public List<MRSPatient> getPatients(final String firstName, String lastName, String phoneNumber, final Date dateOfBirth, String nhis) {
+    public List<MRSPatient> getPatients(final String firstName, String lastName, String phoneNumber, Date dateOfBirth, String nhis)  {
         String query = createQuery(firstName, lastName, phoneNumber, dateOfBirth, nhis);
         return jdbcTemplate.query(query, new RowMapper<MRSPatient>() {
             @Override
             public MRSPatient mapRow(ResultSet rs, int rowNum) throws SQLException {
                 MRSFacility facility = new MRSFacility(rs.getString("facility"), null, null, null, null);
-                MRSPerson person = new MRSPerson().firstName(rs.getString("firstName")).lastName(rs.getString("lastName")).gender(rs.getString("gender")).dateOfBirth(dateOfBirth);
+                MRSPerson person = new MRSPerson().firstName(rs.getString("firstName")).lastName(rs.getString("lastName")).gender(rs.getString("gender")).dateOfBirth(rs.getDate("dateOfBirth"));
                 return new MRSPatient(rs.getString("motechId"), person, facility);
             }
         });

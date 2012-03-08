@@ -53,7 +53,7 @@ public class ClientQueryFormHandler implements FormPublishHandler {
     public void handleFormEvent(MotechEvent event) {
         ClientQueryForm clientQueryForm = (ClientQueryForm) event.getParameters().get(Constants.FORM_BEAN);
 
-        if (clientQueryForm.getQueryType().equals(ClientQueryType.CLIENT_DETAILS)) {
+        if (clientQueryForm.getQueryType().equals(ClientQueryType.CLIENT_DETAILS.toString())) {
             Patient patient = patientService.getPatientByMotechId(clientQueryForm.getMotechId());
             Date pregnancyEDD = getActivePregnancyEDD(patient.getMotechId());
             Map<String, String> messageParameters = getMessageParameters(patient, pregnancyEDD);
@@ -104,7 +104,7 @@ public class ClientQueryFormHandler implements FormPublishHandler {
     }
 
     private String toDateString(Date date) {
-        return DateFormat.getDateInstance().format(date);
+        return (date != null) ? DateFormat.getDateInstance().format(date) : "";
     }
 
     private Date getActivePregnancyEDD(String motechId) {

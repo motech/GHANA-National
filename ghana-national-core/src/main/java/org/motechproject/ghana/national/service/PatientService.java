@@ -29,16 +29,16 @@ public class PatientService {
     private AllEncounters allEncounters;
     private AllSchedules allSchedules;
     private AllAppointments allAppointments;
-    private SearchMRSPatient searchMRSPatient;
+    private AllPatientSearch allPatientSearch;
 
     @Autowired
-    public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator, AllEncounters allEncounters, AllSchedules allSchedules, AllAppointments allAppointments, SearchMRSPatient searchMRSPatient) {
+    public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator, AllEncounters allEncounters, AllSchedules allSchedules, AllAppointments allAppointments, AllPatientSearch allPatientSearch) {
         this.allPatients = allPatients;
         this.identifierGenerator = identifierGenerator;
         this.allEncounters = allEncounters;
         this.allSchedules = allSchedules;
         this.allAppointments = allAppointments;
-        this.searchMRSPatient = searchMRSPatient;
+        this.allPatientSearch = allPatientSearch;
     }
 
     public Patient registerPatient(Patient patient, String staffId)
@@ -120,6 +120,6 @@ public class PatientService {
     }
 
     public List<MRSPatient> getPatients(String firstName, String lastName, String phoneNumber, Date dateOfBirth, String insuranceNumber) {
-        return searchMRSPatient.getPatients(firstName, lastName, phoneNumber, dateOfBirth, insuranceNumber);
+        return allPatientSearch.getPatients(firstName, lastName, phoneNumber, dateOfBirth, insuranceNumber);
     }
 }

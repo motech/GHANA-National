@@ -1,21 +1,28 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.domain.ClientQueryType;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
+import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
+import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
 import static org.testng.Assert.assertEquals;
 
@@ -24,7 +31,7 @@ import static org.testng.Assert.assertEquals;
 public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
 
     @Test
-     public void shouldCheckIfAtleastOneInfoIsEnteredForFindClientIDQuery() throws Exception {
+    public void shouldCheckIfAtleastOneInfoIsEnteredForFindClientIDQuery() throws Exception {
         final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.queryClientForm(), MapUtils.EMPTY_MAP);
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
 
@@ -49,6 +56,71 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
         assertThat(errorsMap.get("staffId"), hasItem("not found"));
         assertThat(errorsMap.get("facilityId"), hasItem("not found"));
         assertThat(errorsMap.get("motechId"), hasItem("not found"));
+    }
+
+    @Test
+    @Ignore("WIP")
+    public void shouldUploadFormWithClientQueryTypeAsClientDetails() throws IOException {
+        DataGenerator dataGenerator = new DataGenerator();
+
+        final String staffId = staffGenerator.createStaff(browser, homePage);
+        TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
+                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
+                .estimatedDateOfBirth(false);
+
+        final String patientId = patientGenerator.createPatientWithStaff(testPatient, browser, homePage);
+        HashMap<String, String> inputParams = new HashMap<String, String>() {{
+            put("motechId", patientId);
+            put("facilityId", "13212");
+            put("staffId", staffId);
+            put("queryType", ClientQueryType.CLIENT_DETAILS.toString());
+        }};
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.queryClientForm(), inputParams);
+        assertEquals(1, response.getSuccessCount());
+
+        String responseBodyAsString = getMessageGatewayResponse();
+
+        System.out.println("---------------------" + responseBodyAsString);
+    }
+
+    @Test
+    @Ignore("WIP")
+    public void shouldUploadFormWithClientQueryTypeAsFindClientID() throws IOException {
+        DataGenerator dataGenerator = new DataGenerator();
+
+        final String staffId= staffGenerator.createStaff(browser, homePage);
+        String firstName = "First Name" + dataGenerator.randomString(5);
+        final TestPatient firstTestPatient = TestPatient.with(firstName, staffId)
+                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
+                .estimatedDateOfBirth(false);
+        final String firstPatientId = patientGenerator.createPatientWithStaff(firstTestPatient, browser, homePage);
+
+        TestPatient secondTestPatient = TestPatient.with("First " + dataGenerator.randomString(5), staffId)
+                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
+                .estimatedDateOfBirth(false);
+        final String secondPatientId = patientGenerator.createPatientWithStaff(secondTestPatient, browser, homePage);
+
+        HashMap<String, String> inputParams = new HashMap<String, String>() {{
+            put("queryType", ClientQueryType.FIND_CLIENT_ID.toString());
+            put("facilityId", firstTestPatient.facilityId());
+            put("staffId", staffId);
+            put("firstName", "Fir");
+            put("lastname", "Last");
+        }};
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.queryClientForm(), inputParams);
+        assertEquals(1, response.getSuccessCount());
+
+        String responseBodyAsString = getMessageGatewayResponse();
+
+        assertThat(responseBodyAsString,containsString(firstPatientId));
+        assertThat(responseBodyAsString,containsString(secondPatientId));
+    }
+
+    private String getMessageGatewayResponse() throws IOException {
+        GetMethod getMethod = new GetMethod("http://localhost:8080/deliverytools/motech-delivery-tools/outbound/all");
+        HttpClient httpClient = new HttpClient();
+        httpClient.executeMethod(getMethod);
+        return getMethod.getResponseBodyAsString();
     }
 
 }

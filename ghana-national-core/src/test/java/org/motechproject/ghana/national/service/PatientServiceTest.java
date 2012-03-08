@@ -44,13 +44,13 @@ public class PatientServiceTest {
     @Mock
     private AllAppointments mockAllAppointments;
     @Mock
-    private SearchMRSPatient mockSearchMRSPatient;
+    private AllPatientSearch mockAllPatientSearch;
 
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(mockAllPatients, mockIdentifierGenerator, mockAllEncounters, mockAllSchedules, mockAllAppointments, mockSearchMRSPatient);
+        patientService = new PatientService(mockAllPatients, mockIdentifierGenerator, mockAllEncounters, mockAllSchedules, mockAllAppointments, mockAllPatientSearch);
     }
 
     @Test
@@ -286,6 +286,6 @@ public class PatientServiceTest {
         String phoneNumber = "phnm";
         Date dateOfBirth = new Date(2009, 9, 9);
         patientService.getPatients(firstName,null, phoneNumber, dateOfBirth,null);
-        verify(mockSearchMRSPatient).getPatients(firstName,null,phoneNumber,dateOfBirth,null);
+        verify(mockAllPatientSearch).getPatients(firstName,null,phoneNumber,dateOfBirth,null);
     }
 }
