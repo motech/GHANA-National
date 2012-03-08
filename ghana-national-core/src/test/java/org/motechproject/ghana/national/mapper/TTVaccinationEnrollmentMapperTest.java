@@ -41,5 +41,6 @@ public class TTVaccinationEnrollmentMapperTest extends BaseUnitTest {
         assertThat(request.getReferenceDate(), is(equalTo(vaccinationDate.toLocalDate())));
         assertThat(request.getStartingMilestoneName(), is(equalTo(TT1.getScheduleMilestoneName())));
         assertThat(request.enrollIntoMilestone(), is(true));
+        assertThat(request.getEnrollmentDateTime(), is(equalTo(DateUtil.newDateTime(vaccinationDate.toLocalDate(), new Time(0, 0)))));
     }
 }
