@@ -16,7 +16,7 @@ import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.*;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
-import org.motechproject.scheduletracking.api.service.EnrollmentResponse;
+import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
@@ -109,8 +109,8 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         String mrsPatientId = "mrsPatientId";
         Patient patient = mock(Patient.class);
         when(patient.getMRSPatientId()).thenReturn(mrsPatientId);
-        EnrollmentResponse enrollmentResponse = mock(EnrollmentResponse.class);
-        when(mockAllSchedules.enrollment(any(EnrollmentRequest.class))).thenReturn(enrollmentResponse);
+        EnrollmentRecord enrollmentRecord = mock(EnrollmentRecord.class);
+        when(mockAllSchedules.enrollment(any(EnrollmentRequest.class))).thenReturn(enrollmentRecord);
 
         service.updatePentaSchedule(createTestCWCVisit(new Date(), mock(MRSUser.class), mock(Facility.class), patient));
 
@@ -124,8 +124,8 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         String mrsPatientId = "mrsPatientId";
         Patient patient = mock(Patient.class);
         when(patient.getMRSPatientId()).thenReturn(mrsPatientId);
-        EnrollmentResponse enrollmentResponse = mock(EnrollmentResponse.class);
-        when(mockAllSchedules.enrollment(any(EnrollmentRequest.class))).thenReturn(enrollmentResponse);
+        EnrollmentRecord enrollmentRecord = mock(EnrollmentRecord.class);
+        when(mockAllSchedules.enrollment(any(EnrollmentRequest.class))).thenReturn(enrollmentRecord);
 
         CWCVisit cwcVisit = createTestCWCVisit(new Date(), mock(MRSUser.class), mock(Facility.class), patient);
         cwcVisit.pentadose("");
@@ -215,7 +215,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         LocalDate visitDate = newDate(2012, 2, 3);
         CWCVisit cwcVisit = createTestCWCVisit(visitDate.toDate(), mock(MRSUser.class), mock(Facility.class), patient)
                 .immunizations(asList(MEASLES.name()));
-        when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(new EnrollmentResponse("", "", null, null, null));
+        when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(new EnrollmentRecord("", "", null, null, null,null,null,null,null));
         service.save(cwcVisit);
 
         verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_MEASLES_VACCINE, visitDate);
@@ -226,7 +226,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         Patient patient = new Patient(new MRSPatient("mrsPatientId", "motechId", new MRSPerson().dateOfBirth(newDate(2011, 3, 30).toDate()), new MRSFacility(null)));
         CWCVisit cwcVisit = createTestCWCVisit(today().toDate(), mock(MRSUser.class), mock(Facility.class), patient).immunizations(asList(Concept.PENTA.name()));
-        when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(new EnrollmentResponse("", "", null, null, null));
+        when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(new EnrollmentRecord("", "", null, null, null,null,null,null,null));
         service.save(cwcVisit);
         verify(mockAllSchedules, never()).fulfilCurrentMilestone(eq("mrsPatientId"), eq(CWC_MEASLES_VACCINE), Matchers.<LocalDate>any());
     }

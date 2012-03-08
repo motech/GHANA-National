@@ -2,7 +2,7 @@ package org.motechproject.ghana.national.repository;
 
 import org.joda.time.LocalDate;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
-import org.motechproject.scheduletracking.api.service.EnrollmentResponse;
+import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -43,7 +43,7 @@ public class AllSchedules {
         scheduleTrackingService.unenroll(externalId, scheduleNames);
     }
 
-    public EnrollmentResponse enrollment(EnrollmentRequest enrollmentRequest) {
+    public EnrollmentRecord enrollment(EnrollmentRequest enrollmentRequest) {
         return scheduleTrackingService.getEnrollment(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName());
     }
 }

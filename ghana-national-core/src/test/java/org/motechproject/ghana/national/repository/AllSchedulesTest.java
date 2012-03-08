@@ -7,7 +7,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.Time;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
-import org.motechproject.scheduletracking.api.service.EnrollmentResponse;
+import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 
 import java.util.Arrays;
@@ -75,7 +75,7 @@ public class AllSchedulesTest {
         String scheduleName = "scheduleName";
         String externalId = "12";
         EnrollmentRequest anyEnrollmentRequest = new EnrollmentRequest(externalId, scheduleName, new Time(12, 0), new LocalDate(), null, null, null, null);
-        EnrollmentResponse notNullEnrollment = mock(EnrollmentResponse.class);
+        EnrollmentRecord notNullEnrollment = mock(EnrollmentRecord.class);
         when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(notNullEnrollment);
 
         allSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
