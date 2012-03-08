@@ -14,10 +14,7 @@ import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
 import org.motechproject.scheduletracking.api.repository.AllEnrollments;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
-import org.motechproject.scheduletracking.api.service.impl.EnrollmentAlertService;
-import org.motechproject.scheduletracking.api.service.impl.EnrollmentDefaultmentService;
-import org.motechproject.scheduletracking.api.service.impl.EnrollmentService;
-import org.motechproject.scheduletracking.api.service.impl.ScheduleTrackingServiceImpl;
+import org.motechproject.scheduletracking.api.service.impl.*;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 import org.quartz.*;
@@ -57,6 +54,9 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
 
+    @Autowired
+    private EnrollmentRecordMapper enrollmentRecordMapper;
+
     protected ScheduleTrackingServiceImpl scheduleTrackingService;
 
     protected String enrollmentId;
@@ -70,7 +70,7 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         EnrollmentAlertService enrollmentAlertService = new EnrollmentAlertService(allTrackedSchedules, motechSchedulerService);
         EnrollmentDefaultmentService enrollmentDefaultmentService = new EnrollmentDefaultmentService(allTrackedSchedules, motechSchedulerService);
         EnrollmentService enrollmentService = new EnrollmentService(allTrackedSchedules, allEnrollments, enrollmentAlertService, enrollmentDefaultmentService);
-        scheduleTrackingService = new ScheduleTrackingServiceImpl(allTrackedSchedules, allEnrollments, enrollmentService, null);
+        scheduleTrackingService = new ScheduleTrackingServiceImpl(allTrackedSchedules, allEnrollments, enrollmentService, null,enrollmentRecordMapper);
     }
 
     @After

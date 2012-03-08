@@ -13,6 +13,7 @@ import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
+import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
@@ -91,5 +92,9 @@ public class MotherVisitService {
         LocalDate visitDate = iptVaccine.getVaccinationDate();
         EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.ancIPTPatientCareEnrollOnVisitAfter19Weeks(visitDate), visitDate, iptVaccine.getIptMilestone());
         allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
+    }
+
+    public void save(PNCMotherRequest pncMotherRequest) {
+        allEncounters.persistEncounter(factory.createEncounter(pncMotherRequest));
     }
 }

@@ -12,7 +12,7 @@ import org.motechproject.ghana.national.service.request.PNCBabyRequest;
 import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
-import org.motechproject.scheduletracking.api.service.EnrollmentResponse;
+import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,7 +89,7 @@ public class ChildVisitService {
         return PentaDose.byValue(Integer.parseInt(cwcVisit.getPentadose())).milestoneName();
     }
 
-    private EnrollmentResponse enrollment(String mrsPatientId, String programName) {
+    private EnrollmentRecord enrollment(String mrsPatientId, String programName) {
         return allSchedules.enrollment(new ScheduleEnrollmentMapper().map(mrsPatientId, programName));
     }
 }
