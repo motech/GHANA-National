@@ -4,29 +4,29 @@
         {
             "name" : "PNC-MOTHER-1",
             "scheduleWindows" : {
-                "earliest" : [],
-                "due" : ["6 Hours"],
-                "late" : ["12 Hours"],
-                "max" : ["48 Hours"]
+                "earliest" : ["6 Hours"],
+                "due" : ["12 Hours"],
+                "late" : ["48 Hours"],
+                "max" : []
             },
             "alerts" : [
                 {
                     "window" : "due",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["6 Hours"]
+                    "offset" : ["0 Hours"]
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["6 Hours"]
+                    "offset" : ["0 Hours"]
                 },
                 {
                     "window" : "max",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["36 Hours"]
+                    "offset" : ["0 Hours"]
                 }
             ]
         }

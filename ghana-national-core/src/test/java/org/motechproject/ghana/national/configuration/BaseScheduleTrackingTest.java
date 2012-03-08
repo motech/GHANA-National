@@ -32,10 +32,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
+import static org.apache.commons.lang.time.DateUtils.parseDate;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.motechproject.util.DateUtil.newDateTime;
+import static org.motechproject.util.DateUtil.today;
 
 public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
 
@@ -165,19 +168,19 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     }
 
     protected Date onDate(LocalDate referenceDate, int numberOfWeeks, Time alertTime) {
-        return DateUtil.newDateTime(referenceDate.plusWeeks(numberOfWeeks), alertTime).toDate();
+        return newDateTime(referenceDate.plusWeeks(numberOfWeeks), alertTime).toDate();
     }
 
     protected Date onDate(LocalDate referenceDate, Time alertTime) {
-        return DateUtil.newDateTime(referenceDate, alertTime).toDate();
+        return newDateTime(referenceDate, alertTime).toDate();
     }
 
     protected Date onDate(LocalDate localDate) {
-        return DateUtil.newDateTime(localDate, preferredAlertTime).toDate();
+        return newDateTime(localDate, preferredAlertTime).toDate();
     }
 
     protected Date onDate(String date) {
-        return DateUtil.newDateTime(newDate(date), preferredAlertTime).toDate();
+        return newDateTime(newDate(date), preferredAlertTime).toDate();
     }
 
     protected LocalDate mockToday(LocalDate today) {
@@ -196,11 +199,11 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
             throw new IllegalArgumentException(e);
         }
     }
-    
+
     protected DateTime newDateWithTime(String date, String time) {
         try {
             String dateToParse = date + " " + time;
-            return DateUtil.newDateTime(new SimpleDateFormat("dd-MMM-yyyy hh:mm").parse(dateToParse));
+            return newDateTime(parseDate(dateToParse, new String[] {"dd-MMM-yyyy HH:mm", "dd-MMM-yyyy HH:mm:ss"}));
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }
@@ -227,7 +230,7 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     }
 
     protected String enroll(LocalDate referenceDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, scheduleName, preferredAlertTime, referenceDate, null, DateUtil.today(), null, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, scheduleName, preferredAlertTime, referenceDate, null, today(), null, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 

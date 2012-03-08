@@ -10,7 +10,7 @@ import org.quartz.SchedulerException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.text.ParseException;
+import java.util.Collections;
 
 import static java.util.Arrays.asList;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
@@ -25,48 +25,267 @@ public class PNCBabySchedulesTest extends BaseScheduleTrackingTest {
         super.setUp();
     }
 
+    //////////////////////////////////////////// Case: Child is Born ////////////////////////////////////////////////////////
     @Test
-    public void verifyPNC1BabyAlertsIfRegisteredAsSoonAsTheChildIsBorn() throws SchedulerException, ParseException {
-        mockToday(newDateWithTime("24-FEB-2000", "10:05"));
-        DateTime dateOfBirth = newDateWithTime("24-FEB-2000", "10:00");
+    public void verifyPNC1BabyAlertsIfRegisteredAsSoonAsTheChildIsBorn() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("01-Mar-2012", "12:30");
+        mockToday(newDateWithTime("01-Mar-2012", "12:30"));
 
-        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, 10, 0, PNC_BABY_1);
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_1);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-                alert(due, newDateWithTime("24-FEB-2000", "16:00").toDate()),
-                alert(late, newDateWithTime("24-FEB-2000", "22:00").toDate()),
-                alert(max, newDateWithTime("26-FEB-2000", "10:00").toDate())
+                alert(due, newDateWithTime("01-Mar-2012", "18:30").toDate()),
+                alert(late, newDateWithTime("02-Mar-2012", "00:30").toDate()),
+                alert(max, newDateWithTime("03-Mar-2012", "12:30").toDate())
         ));
     }
 
     @Test
-    public void verifyPNC2BabyAlertsIfRegisteredAsSoonAsTheChildIsBorn() throws SchedulerException, ParseException {
-        mockToday(newDateWithTime("01-MAR-2000", "10:05"));
-        DateTime dateOfBirth = newDateWithTime("01-MAR-2000", "10:00");
+    public void verifyPNC2BabyAlertsIfRegisteredAsSoonAsTheChildIsBorn() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("01-Mar-2012", "12:30");
+        mockToday(newDateWithTime("01-Mar-2012", "12:30"));
 
-        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, 10, 0, PNC_BABY_2);
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_2);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-                alert(earliest, newDateWithTime("06-MAR-2000", "10:00").toDate()),
-                alert(due, newDateWithTime("08-MAR-2000", "10:00").toDate()),
-                alert(max, newDateWithTime("13-MAR-2000", "10:00").toDate())
+                alert(earliest, newDateWithTime("06-Mar-2012", "12:30").toDate()),
+                alert(late, newDateWithTime("08-Mar-2012", "12:30").toDate()),
+                alert(max, newDateWithTime("13-Mar-2012", "12:30").toDate())
         ));
     }
 
     @Test
-    public void verifyPNC3BabyAlertsIfRegisteredAsSoonAsTheChildIsBorn() throws SchedulerException, ParseException {
-        mockToday(newDateWithTime("01-MAR-2000", "10:05"));
-        DateTime dateOfBirth = newDateWithTime("01-MAR-2000", "10:00");
+    public void verifyPNC3BabyAlertsIfRegisteredAsSoonAsTheChildIsBorn() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("01-Mar-2012", "12:30");
+        mockToday(newDateWithTime("01-Mar-2012", "12:30"));
 
-        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, 10, 0, PNC_BABY_3);
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_3);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-                alert(earliest, newDateWithTime("13-MAR-2000", "10:00").toDate()),
-                alert(due, newDateWithTime("15-MAR-2000", "10:00").toDate()),
-                alert(max, newDateWithTime("22-MAR-2000", "10:00").toDate())
+                alert(earliest, newDateWithTime("13-Mar-2012", "12:30").toDate()),
+                alert(late, newDateWithTime("15-Mar-2012", "12:30").toDate()),
+                alert(max, newDateWithTime("22-Mar-2012", "12:30").toDate())
+        ));
+    }
+    //////////////////////////////////////////// Case: Child is registered >= 6 hours from birth ////////////////////////////////////////////////////////
+    @Test
+    public void verifyPNC1BabyAlertsIfRegisteredOnOrAfter6HoursFromChildBirth() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("03-Jan-2012", "12:30");
+        mockToday(newDateWithTime("03-Jan-2012", "19:38:12"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_1);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(late, newDateWithTime("04-Jan-2012", "00:30").toDate()),
+                alert(max, newDateWithTime("05-Jan-2012", "12:30").toDate())
         ));
     }
 
-    private String scheduleAlertForPNCBaby(DateTime birthDate, Integer hour, Integer minute, String pncScheduleName) {
+    @Test
+    public void verifyPNC2BabyAlertsIfRegisteredOnOrAfter6HoursFromChildBirth() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("03-Jan-2012", "12:30");
+        mockToday(newDateWithTime("03-Jan-2012", "19:38:12"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_2);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(earliest, newDateWithTime("08-Jan-2012", "12:30").toDate()),
+                alert(late, newDateWithTime("10-Jan-2012", "12:30").toDate()),
+                alert(max, newDateWithTime("15-Jan-2012", "12:30").toDate())
+        ));
+    }
+
+    @Test
+    public void verifyPNC3BabyAlertsIfRegisteredOnOrAfter6HoursFromChildBirth() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("03-Jan-2012", "12:30");
+        mockToday(newDateWithTime("03-Jan-2012", "19:38:12"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_3);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(earliest, newDateWithTime("15-Jan-2012", "12:30").toDate()),
+                alert(late, newDateWithTime("17-Jan-2012", "12:30").toDate()),
+                alert(max, newDateWithTime("24-Jan-2012", "12:30").toDate())
+        ));
+    }
+    //////////////////////////////////////////// Case: Child is registered >= 12 hours from birth ////////////////////////////////////////////////////////
+    @Test
+    public void verifyPNC1BabyAlertsIfRegisteredOnOrAfter12HoursFromChildBirth() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("13-Apr-2012", "4:30");
+        mockToday(newDateWithTime("13-Apr-2012", "19:00:34"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_1);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(max, newDateWithTime("15-Apr-2012", "04:30").toDate())
+        ));
+    }
+
+    @Test
+    public void verifyPNC2BabyAlertsIfRegisteredOnOrAfter12HoursFromChildBirth() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("13-Apr-2012", "4:30");
+        mockToday(newDateWithTime("13-Apr-2012", "19:00:34"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_2);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(earliest, newDateWithTime("18-Apr-2012", "4:30").toDate()),
+                alert(late, newDateWithTime("20-Apr-2012", "4:30").toDate()),
+                alert(max, newDateWithTime("25-Apr-2012", "4:30").toDate())
+        ));
+    }
+
+    @Test
+    public void verifyPNC3BabyAlertsIfRegisteredOnOrAfter12HoursFromChildBirth() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("13-Apr-2012", "4:30");
+        mockToday(newDateWithTime("13-Apr-2012", "19:00:34"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_3);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(earliest, newDateWithTime("25-Apr-2012", "4:30").toDate()),
+                alert(late, newDateWithTime("27-Apr-2012", "4:30").toDate()),
+                alert(max, newDateWithTime("04-May-2012", "4:30").toDate())
+        ));
+    }
+    //////////////////////////////////////////// Case: Child is registered >= 48 hours from birth ////////////////////////////////////////////////////////
+    @Test
+    public void verifyPNC1BabyAlertsIfRegisteredOnOrAfter48HoursFromChildBirth() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("27-May-2012", "17:04");
+        mockToday(newDateWithTime("29-May-2012", "17:49:55"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_1);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
+    }
+
+    @Test
+    public void verifyPNC2BabyAlertsIfRegisteredOnOrAfter48HoursFromChildBirth() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("27-May-2012", "17:04");
+        mockToday(newDateWithTime("29-May-2012", "17:49:55"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_2);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(earliest, newDateWithTime("01-Jun-2012", "17:04").toDate()),
+                alert(late, newDateWithTime("03-Jun-2012", "17:04").toDate()),
+                alert(max, newDateWithTime("08-Jun-2012", "17:04").toDate())
+        ));
+    }
+
+    @Test
+    public void verifyPNC3BabyAlertsIfRegisteredOnOrAfter48HoursFromChildBirth() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("27-May-2012", "17:04");
+        mockToday(newDateWithTime("29-May-2012", "17:49:55"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_3);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(earliest, newDateWithTime("08-Jun-2012", "17:04").toDate()),
+                alert(late, newDateWithTime("10-Jun-2012", "17:04").toDate()),
+                alert(max, newDateWithTime("17-Jun-2012", "17:04").toDate())
+        ));
+    }
+
+    //////////////////////////////////////////// Case: Child is registered >= 5 days from birth ////////////////////////////////////////////////////////
+    @Test
+    public void verifyPNC1BabyAlertsIfRegisteredOnOrAfter5DaysFromChildBirth() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("15-Mar-2012", "09:45");
+        mockToday(newDateWithTime("20-Mar-2012", "10:45:00"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_1);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
+    }
+
+    @Test
+    public void verifyPNC2BabyAlertsIfRegisteredOnOrAfter5DaysFromChildBirth() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("15-Mar-2012", "09:45");
+        mockToday(newDateWithTime("20-Mar-2012", "10:45:00"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_2);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(late, newDateWithTime("22-Mar-2012", "09:45").toDate()),
+                alert(max, newDateWithTime("27-Mar-2012", "09:45").toDate())
+        ));
+    }
+
+    @Test
+    public void verifyPNC3BabyAlertsIfRegisteredOnOrAfter5DaysFromChildBirth() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("15-Mar-2012", "09:45");
+        mockToday(newDateWithTime("20-Mar-2012", "10:45:00"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_3);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(earliest, newDateWithTime("27-Mar-2012", "09:45").toDate()),
+                alert(late, newDateWithTime("29-Mar-2012", "09:45").toDate()),
+                alert(max, newDateWithTime("05-Apr-2012", "09:45").toDate())
+        ));
+    }
+
+    //////////////////////////////////////////// Case: Child is registered exactly 7 days of age ////////////////////////////////////////////////////////
+    @Test
+    public void verifyPNC1BabyAlertsIfRegisteredExactlyAt7DaysOfAge() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("30-Jan-2012", "14:25:12");
+        mockToday(newDateWithTime("06-Feb-2012", "14:25:12"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_1);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
+    }
+
+    /*
+    @Test
+    public void verifyPNC2BabyAlertsIfRegisteredExactlyAt7DaysOfAge() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("30-Jan-2012", "14:25:12");
+        mockToday(newDateWithTime("06-Feb-2012", "14:25:12"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_2);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                // Todo : when seconds are left cause alerts to be missed
+                alert(late, newDateWithTime("06-Feb-2012", "14:25:12").toDate()),
+                alert(max, newDateWithTime("11-Feb-2012", "14:25").toDate())
+        ));
+    }
+
+    @Test
+    public void verifyPNC3BabyAlertsIfRegisteredExactlyAt7DaysOfAge() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("30-Jan-2012", "14:25:12");
+        mockToday(newDateWithTime("06-Feb-2012", "14:25:12"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_3);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                // Todo : seconds are not considered
+                alert(earliest, newDateWithTime("11-Feb-2012", "14:25:12").toDate()),
+                alert(late, newDateWithTime("13-Feb-2012", "14:25:12").toDate()),
+                alert(max, newDateWithTime("20-Feb-2012", "14:25:12").toDate())
+        ));
+    }
+    */
+
+    //////////////////////////////////////////// Case: Child is registered over 14 days of age - PN1 is NA ////////////////////////////////////////////////////////
+
+    @Test
+    public void verifyPNC2BabyAlertsIfRegisteredOver14DaysOfAge() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("29-Feb-2012", "04:30:00");
+        mockToday(newDateWithTime("14-Mar-2012", "15:50:23"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_2);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
+    }
+
+    @Test
+    public void verifyPNC3BabyAlertsIfRegisteredOver14DaysOfAge() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("29-Feb-2012", "04:30:00");
+                mockToday(newDateWithTime("14-Mar-2012", "15:50:23"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_3);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(max, newDateWithTime("21-Mar-2012", "04:30:00").toDate())
+        ));
+    }
+
+    //////////////////////////////////////////// Case: Child is registered over 21 days of age - PN1, PN2 is NA ////////////////////////////////////////////////////////
+
+    @Test
+    public void verifyPNC3BabyAlertsIfRegisteredOver21DaysOfAge() throws SchedulerException {
+        DateTime dateOfBirth = newDateWithTime("29-Feb-2012", "10:00:00");
+                mockToday(newDateWithTime("21-Mar-2012", "21:20:23"));
+
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_BABY_3);
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
+    }
+
+    private String scheduleAlertForPNCBaby(DateTime birthDate, String pncScheduleName) {
         scheduleName = pncScheduleName;
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, null, birthDate.toLocalDate(), new Time(hour, minute), null, null, null);
+        Time referenceTime = new Time(birthDate.getHourOfDay(), birthDate.getMinuteOfHour());
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, null, birthDate.toLocalDate(), referenceTime, null, null, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }
