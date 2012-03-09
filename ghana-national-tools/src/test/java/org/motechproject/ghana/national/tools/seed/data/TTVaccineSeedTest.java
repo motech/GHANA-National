@@ -13,11 +13,9 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.tools.seed.data.ScheduleMigrationSeedTest.assertTTEnrollmentRequest;
 
 public class TTVaccineSeedTest {
 
@@ -44,10 +42,4 @@ public class TTVaccineSeedTest {
         assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT2", "1000", referenceDate);
     }
 
-    public static void assertTTEnrollmentRequest(EnrollmentRequest enrollmentRequest, DateTime referenceDateTime, String milestoneName, String externalId, DateTime enrollmentDateTime) {
-        assertThat(enrollmentRequest.getReferenceDateTime(), is(equalTo(referenceDateTime)));
-        assertThat(enrollmentRequest.getStartingMilestoneName(), is(equalTo(milestoneName)));
-        assertThat(enrollmentRequest.getExternalId(), is(equalTo(externalId)));
-        assertThat(enrollmentRequest.getEnrollmentDateTime(), is(equalTo(enrollmentDateTime)));
-    }
 }

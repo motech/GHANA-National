@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xf:xforms xmlns:xf="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="9">
+    <xf:model>
+        <xf:instance id="pncmother">
+            <pncmother id="9" name="PNC (mother)">
+                <staffId/>
+                <facilityId/>
+                <date/>
+                <visitNumber/>
+                <motechId/>
+                <vitaminA/>
+                <ttDose/>
+                <location/>
+                <house/>
+                <community/>
+                <referred/>
+                <maleInvolved/>
+                <lochiaColour/>
+                <lochiaOdourFoul/>
+                <lochiaAmountExcess/>
+                <temperature/>
+                <fht/>
+                <comments/>
+                <formtype>data_entry</formtype>
+                <formname>pncMotherRequest</formname>
+            </pncmother>
+        </xf:instance>
+        <xf:bind id="staffId" nodeset="/pncmother/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+        <xf:bind id="facilityId" nodeset="/pncmother/facilityId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+        <xf:bind constraint=". &lt;= 'today()'" id="date" message="Invalid date: date specified is in the future" nodeset="/pncmother/date" required="true()" type="xsd:dateTime"/>
+        <xf:bind id="motechId" nodeset="/pncmother/motechId" required="true()" type="xsd:int" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
+        <xf:bind id="visitNumber" nodeset="/pncmother/visitNumber" required="true()" type="xsd:string"/>
+        <xf:bind id="vitaminA" nodeset="/pncmother/vitaminA" required="true()" type="xsd:string"/>
+        <xf:bind id="ttDose" nodeset="/pncmother/ttDose" required="true()" type="xsd:string"/>
+        <xf:bind id="location" nodeset="/pncmother/location" required="true()" type="xsd:string"/>
+        <xf:bind action="show" id="house" nodeset="/pncmother/house" relevant="/pncmother/location = '2'" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="community" nodeset="/pncmother/community" relevant="/pncmother/location = '2'" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind id="referred" nodeset="/pncmother/referred" required="true()" type="xsd:string"/>
+        <xf:bind id="maleInvolved" nodeset="/pncmother/maleInvolved" required="true()" type="xsd:string"/>
+        <xf:bind id="lochiaColour" nodeset="/pncmother/lochiaColour" required="true()" type="xsd:string"/>
+        <xf:bind id="lochiaOdourFoul" nodeset="/pncmother/lochiaOdourFoul" type="xsd:string" required="true()"/>
+        <xf:bind id="lochiaAmountExcess" nodeset="/pncmother/lochiaAmountExcess" required="true()" type="xsd:string"/>
+        <xf:bind constraint=". &gt;= 30 and . &lt;= 48" id="temperature" message="Value out of range: must be between 30 and 48" nodeset="/pncmother/temperature" type="xsd:decimal"/>
+        <xf:bind constraint=". &gt;= 12 and . &lt;= 40" id="fht" message="Value out of range: must be between 12 and 40" nodeset="/pncmother/fht" type="xsd:decimal"/>
+        <xf:bind id="comments" nodeset="/pncmother/comments" type="xsd:string"/>
+        <xf:bind id="formtype" nodeset="/pncmother/formtype" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind id="formname" nodeset="/pncmother/formname" required="true()" type="xsd:string" visible="false()"/>
+    </xf:model>
+    <xf:group id="1">
+        <xf:label>Page3</xf:label>
+        <xf:input bind="staffId">
+            <xf:label>Staff ID</xf:label>
+        </xf:input>
+        <xf:input bind="facilityId">
+            <xf:label>Facility ID</xf:label>
+        </xf:input>
+        <xf:input bind="date">
+            <xf:label>Visit date</xf:label>
+        </xf:input>
+        <xf:input bind="motechId">
+            <xf:label>MoTeCH ID</xf:label>
+        </xf:input>
+        <xf:select1 bind="visitNumber">
+            <xf:label>Visit Number</xf:label>
+            <xf:item id="1">
+                <xf:label>PNC 1</xf:label>
+                <xf:value>1</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>PNC 2</xf:label>
+                <xf:value>2</xf:value>
+            </xf:item>
+            <xf:item id="3">
+                <xf:label>PNC 3</xf:label>
+                <xf:value>3</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="vitaminA">
+            <xf:label>Vitamin A</xf:label>
+            <xf:item id="Y">
+                <xf:label>Yes</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+            <xf:item id="N">
+                <xf:label>No</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="ttDose">
+            <xf:label>TT</xf:label>
+            <xf:item id="NA">
+                <xf:label>No TT on this visit</xf:label>
+                <xf:value>NA</xf:value>
+            </xf:item>
+            <xf:item id="1">
+                <xf:label>TT 1</xf:label>
+                <xf:value>1</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>TT 2</xf:label>
+                <xf:value>2</xf:value>
+            </xf:item>
+            <xf:item id="3">
+                <xf:label>TT 3</xf:label>
+                <xf:value>3</xf:value>
+            </xf:item>
+            <xf:item id="4">
+                <xf:label>TT 4</xf:label>
+                <xf:value>4</xf:value>
+            </xf:item>
+            <xf:item id="5">
+                <xf:label>TT 5</xf:label>
+                <xf:value>5</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="location">
+            <xf:label>Location</xf:label>
+            <xf:item id="1">
+                <xf:label>Facility or clinic</xf:label>
+                <xf:value>1</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>Home</xf:label>
+                <xf:value>2</xf:value>
+            </xf:item>
+            <xf:item id="3">
+                <xf:label>Outreach</xf:label>
+                <xf:value>3</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:input bind="house">
+            <xf:label>House</xf:label>
+        </xf:input>
+        <xf:input bind="community">
+            <xf:label>Community</xf:label>
+        </xf:input>
+        <xf:select1 bind="referred">
+            <xf:label>Referred</xf:label>
+            <xf:item id="Y">
+                <xf:label>Yes</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+            <xf:item id="N">
+                <xf:label>No</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="maleInvolved">
+            <xf:label>Male involvement</xf:label>
+            <xf:item id="Y">
+                <xf:label>Yes</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+            <xf:item id="N">
+                <xf:label>No</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="lochiaColour">
+            <xf:label>Lochia colour</xf:label>
+            <xf:item id="1">
+                <xf:label>Red (Lochia rubra)</xf:label>
+                <xf:value>1</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>Pink/brownish (Lochia serosa)</xf:label>
+                <xf:value>2</xf:value>
+            </xf:item>
+            <xf:item id="3">
+                <xf:label>White (Lochia alba).</xf:label>
+                <xf:value>3</xf:value>
+            </xf:item>
+            <xf:item id="4">
+                <xf:label>Red-green tinge</xf:label>
+                <xf:value>4</xf:value>
+            </xf:item>
+            <xf:item id="5">
+                <xf:label>Pink/brown-green tinge</xf:label>
+                <xf:value>5</xf:value>
+            </xf:item>
+            <xf:item id="6">
+                <xf:label>White/yellow-green tinge</xf:label>
+                <xf:value>6</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="lochiaOdourFoul">
+            <xf:label>Lochia odour</xf:label>
+            <xf:item id="N">
+                <xf:label>Normal</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+            <xf:item id="Y">
+                <xf:label>Foul-smelling</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="lochiaAmountExcess">
+            <xf:label>Lochia amount</xf:label>
+            <xf:item id="Y">
+                <xf:label>Excess</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+            <xf:item id="N">
+                <xf:label>Normal</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:input bind="temperature">
+            <xf:label>Temperature (C)</xf:label>
+        </xf:input>
+        <xf:input bind="fht">
+            <xf:label>FHt (cm)</xf:label>
+        </xf:input>
+        <xf:input bind="comments">
+            <xf:label>Comments</xf:label>
+        </xf:input>
+        <xf:input bind="formtype">
+            <xf:label>formType</xf:label>
+        </xf:input>
+        <xf:input bind="formname">
+            <xf:label>formName</xf:label>
+        </xf:input>
+    </xf:group>
+</xf:xforms>

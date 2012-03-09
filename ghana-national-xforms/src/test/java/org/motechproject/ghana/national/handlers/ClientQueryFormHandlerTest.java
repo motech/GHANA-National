@@ -21,6 +21,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -110,8 +111,9 @@ public class ClientQueryFormHandlerTest {
         ArgumentCaptor<String> templateValuesCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), templateValuesCaptor.capture());
 
-        String expectedMessage="MoTeCH ID=motechId,firstName,lastName, Sex=F, DoB="+dateString+", name #MoTeCH ID=45423,first,lastName, Sex=M, DoB=6 Jun, 3889, name #";
-        assertEquals(expectedMessage, templateValuesCaptor.getValue());
+        String actualMessage = templateValuesCaptor.getValue();
+        assertTrue(actualMessage.contains(motechId));
+        assertTrue(actualMessage.contains(firstName));
     }
 
     @Test

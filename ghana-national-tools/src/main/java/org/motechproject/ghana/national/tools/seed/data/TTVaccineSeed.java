@@ -34,6 +34,11 @@ public class TTVaccineSeed extends ScheduleMigrationSeed {
 
 
     @Override
+    protected String mapMilestoneName(String milestoneName) {
+        return milestoneName;
+    }
+
+    @Override
     public String getScheduleName() {
         return ScheduleNames.TT_VACCINATION_VISIT;
 
@@ -44,7 +49,7 @@ public class TTVaccineSeed extends ScheduleMigrationSeed {
             throw new MotechException("Cannot migrate schedules for first milestone of TT vaccine " + patient.getMRSPatientId() + " " + milestoneReferenceDate);
         } else {
             EnrollmentRequest enrollmentRequest = new EnrollmentRequest(patient.getMRSPatientId(),
-                    ScheduleNames.TT_VACCINATION_VISIT, new Time(DateUtil.now().toLocalTime()),
+                    getScheduleName(), new Time(DateUtil.now().toLocalTime()),
                     milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
                     milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()), milestoneName);
             allSchedules.enroll(enrollmentRequest);

@@ -19,7 +19,6 @@ public class PNCMotherForm extends FormBean {
     @Required
     @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String facilityId;
-    @Required
     private DateTime date;
     @Required
     private String visitNumber;

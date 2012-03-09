@@ -10,7 +10,6 @@ import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -35,6 +34,40 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
 
     @Value("#{functionalTestProperties['host']}")
     private String host;
+
+    @Test
+    public void shouldUploadFormWithClientQueryTypeAsFindClientID() throws IOException {
+        DataGenerator dataGenerator = new DataGenerator();
+
+        final String staffId = staffGenerator.createStaff(browser, homePage);
+        final String firstPatientNameGenerated = dataGenerator.randomString(5);
+        String firstPatientName = firstPatientNameGenerated + "XXX Client First Name";
+        final TestPatient firstTestPatient = TestPatient.with(firstPatientName, staffId)
+                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
+                .estimatedDateOfBirth(false);
+        final String firstPatientId = patientGenerator.createPatientWithStaff(firstTestPatient, browser, homePage);
+
+        String secondPatientName = dataGenerator.randomString(5)+"XXXXXXClient First ";
+        TestPatient secondTestPatient = TestPatient.with(secondPatientName, staffId)
+                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
+                .estimatedDateOfBirth(false);
+        final String secondPatientId = patientGenerator.createPatientWithStaff(secondTestPatient, browser, homePage);
+
+        HashMap<String, String> inputParams = new HashMap<String, String>() {{
+            put("facilityId", firstTestPatient.facilityId());
+            put("staffId", staffId);
+            put("queryType", ClientQueryType.FIND_CLIENT_ID.toString());
+            put("firstName", firstPatientNameGenerated);
+            put("sender", "0987654321");
+        }};
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.queryClientForm(), inputParams);
+        assertEquals(1, response.getSuccessCount());
+
+        String responseBodyAsString = getMessageGatewayResponse();
+
+        assertThat(responseBodyAsString, containsString(firstPatientId));
+        assertThat(responseBodyAsString, containsString(firstPatientName));
+    }
 
     @Value("#{functionalTestProperties['deliveryPath']}")
     private String deliveryPath;

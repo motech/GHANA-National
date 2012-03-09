@@ -1,7 +1,9 @@
 package org.motechproject.ghana.national.functional.mobile;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
+import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
@@ -13,21 +15,37 @@ import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
+import org.motechproject.scheduler.MotechSchedulerServiceImpl;
+import org.motechproject.util.DateUtil;
+import org.quartz.CronTrigger;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import static java.lang.String.format;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.testng.AssertJUnit.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
 
+    @Autowired
+    private SchedulerFactoryBean schedulerFactoryBean;
+
     @Test
-    public void shouldUploadANCVisitFormSuccessfully() {
+    public void shouldUploadANCVisitFormSuccessfully() throws SchedulerException {
         // create
         final String staffId = staffGenerator.createStaff(browser, homePage);
 
@@ -50,15 +68,15 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
         PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, testPatient);
         final ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
         ancEnrollmentPage.save(ancEnrollment);
+        final LocalDate nextANCVisitDate = DateUtil.today().plusDays(3);
 
-        XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.ancVisitForm(), new HashMap<String, String>() {{
+        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.ancVisitForm(), new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", testPatient.facilityId());
             put("motechId", ancEnrollmentPage.getMotechPatientId());
             put("date", "2012-01-03");
             put("serialNumber", "4ds65");
             put("visitNumber", "4");
-//            put("estDeliveryDate", "2012-01-03");
             put("bpDiastolic", "67");
             put("bpSystolic", "10");
             put("weight", "65.67");
@@ -85,9 +103,38 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
             put("community", "community");
             put("referred", "Y");
             put("maleInvolved", "N");
-            put("nextANCDate", new SimpleDateFormat("yyyy-MM-dd").format(DateTime.now().plusDays(3).toDate()));
+            put("nextANCDate", new SimpleDateFormat("yyyy-MM-dd").format(nextANCVisitDate.toDate()));
         }});
 
         assertEquals(1, xformResponse.getSuccessCount());
+        List<CronTrigger> cronTriggers = captureAlertsForNextMilestone(ancEnrollmentPage.getMotechPatientId());
+        assertEquals(3, cronTriggers.size());
+
+        CronTrigger dueTrigger = cronTriggers.get(0);
+        CronTrigger lateTrigger = cronTriggers.get(1);
+        CronTrigger maxTrigger = cronTriggers.get(2);
+
+        assertThat(dueTrigger.getNextFireTime(), is(nextANCVisitDate.toDate()));
+        assertThat(lateTrigger.getNextFireTime(), is(nextANCVisitDate.plusWeeks(1).toDate()));
+        assertThat(maxTrigger.getNextFireTime(), is(nextANCVisitDate.plusWeeks(3).toDate()));
+        assertThat(maxTrigger.getCronExpression(), is("0 0 0 ? * *"));
+        assertThat(dueTrigger.getCronExpression(), is("0 0 0 ? * *"));
+        assertThat(lateTrigger.getCronExpression(), is("0 0 0 ? * *"));
+    }
+
+    protected List<CronTrigger> captureAlertsForNextMilestone(String enrollmentId) throws SchedulerException {
+        final Scheduler scheduler = schedulerFactoryBean.getScheduler();
+        final String jobGroupName = MotechSchedulerServiceImpl.JOB_GROUP_NAME;
+        String[] jobNames = scheduler.getJobNames(jobGroupName);
+        List<CronTrigger> alertTriggers = new ArrayList<CronTrigger>();
+
+        for (String jobName : jobNames) {
+            if (jobName.contains(format("%s-%s", EventKeys.APPOINTMENT_REMINDER_EVENT_SUBJECT, enrollmentId))) {
+                Trigger[] triggersOfJob = scheduler.getTriggersOfJob(jobName, jobGroupName);
+                Assert.assertEquals(1, triggersOfJob.length);
+                alertTriggers.add((CronTrigger) triggersOfJob[0]);
+            }
+        }
+        return alertTriggers;
     }
 }
