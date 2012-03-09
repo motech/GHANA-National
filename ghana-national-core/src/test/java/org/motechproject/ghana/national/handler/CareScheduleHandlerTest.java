@@ -3,7 +3,10 @@ package org.motechproject.ghana.national.handler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
+import org.motechproject.model.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
+
+import java.util.HashMap;
 
 import static org.mockito.Mockito.*;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.*;
@@ -29,7 +32,7 @@ public class CareScheduleHandlerTest {
     @Test
     public void shouldHandleTTVaccinationAlert() {
 
-         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
+        final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handleTTVaccinationAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendSMSToFacility(TT_VACCINATION_SMS_KEY, milestoneEvent);
     }
@@ -44,10 +47,12 @@ public class CareScheduleHandlerTest {
 
     @Test
     public void shouldHandleAncVisitAlert() {
+        MotechEvent motechEvent = new MotechEvent("subject", new HashMap<String, Object>());
+        doNothing().when(careScheduleHandlerSpy).sendSMSToFacilityForAnAppointment(ANC_VISIT_SMS_KEY, motechEvent);
 
-        final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
-        careScheduleHandlerSpy.handleAncVisitAlert(milestoneEvent);
-        verify(careScheduleHandlerSpy).sendSMSToFacility(ANC_VISIT_SMS_KEY, milestoneEvent);
+        careScheduleHandlerSpy.handleAncVisitAlert(motechEvent);
+
+        verify(careScheduleHandlerSpy).sendSMSToFacilityForAnAppointment(ANC_VISIT_SMS_KEY, motechEvent);
     }
 
     @Test

@@ -1,20 +1,21 @@
 package org.motechproject.ghana.national.handler;
 
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
-import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
 
@@ -42,7 +43,39 @@ public class BaseScheduleHandlerTest {
     }
 
     @Test
-    public void shouldSendSMSToFacility(){
+    public void shouldSendSMSToFacilityForAnAppointment() {
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
+        String ancVisitKey = "ancVisitKey";
+        final String patientId = "patientid";
+        final String facilityId = "facilityid";
+        final String patientMotechId = "patientmotechid";
+        final String firstName = "firstName";
+        final String lastname = "lastname";
+        final String visitName = "ancVisit";
+
+        parameters.put(EventKeys.EXTERNAL_ID_KEY,patientId);
+        parameters.put(EventKeys.VISIT_NAME, visitName);
+        parameters.put(MotechSchedulerService.JOB_ID_KEY,visitName+"0");
+
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname);
+        when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
+
+        final String phoneNumber = "phoneNumber";
+        when(allFacilities.getFacility(facilityId)).thenReturn(new Facility().phoneNumber(phoneNumber));
+
+        careScheduleHandler.sendSMSToFacilityForAnAppointment(ancVisitKey, new MotechEvent("subject", parameters));
+
+        verify(SMSGateway).dispatchSMSToAggregator(ancVisitKey, new HashMap<String, String>() {{
+            put(MOTECH_ID,patientMotechId );
+            put(WINDOW, "due");
+            put(FIRST_NAME, firstName);
+            put(LAST_NAME, lastname);
+            put(SCHEDULE_NAME, visitName);
+        }}, phoneNumber);
+    }
+
+    @Test
+    public void shouldSendSMSToFacility() {
 
         final String patientId = "patientid";
         final String facilityId = "facilityid";

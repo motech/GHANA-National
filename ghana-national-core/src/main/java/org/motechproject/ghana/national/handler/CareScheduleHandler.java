@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.handler;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.model.MotechEvent;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
@@ -42,8 +43,8 @@ public class CareScheduleHandler extends BaseScheduleHandler {
 
     @LoginAsAdmin
     @ApiSession
-    public void handleAncVisitAlert(MilestoneEvent milestoneEvent) {
-        sendSMSToFacility(ANC_VISIT_SMS_KEY, milestoneEvent);
+    public void handleAncVisitAlert(MotechEvent motechEvent) {
+        sendSMSToFacilityForAnAppointment(ANC_VISIT_SMS_KEY, motechEvent);
     }
 
     @LoginAsAdmin
