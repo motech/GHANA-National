@@ -220,7 +220,6 @@ public class PNCMotherSchedulesTest extends BaseScheduleTrackingTest {
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
     }
 
-    /*
     @Test
     public void verifyPNC2BabyAlertsIfRegisteredExactlyAt7DaysOfAge() throws SchedulerException {
         DateTime dateOfBirth = newDateWithTime("30-Jan-2012", "14:25:12");
@@ -228,8 +227,7 @@ public class PNCMotherSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = scheduleAlertForPNCMother(dateOfBirth, PNC_BABY_2);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-                // Todo : when seconds are left cause alerts to be missed
-                alert(late, newDateWithTime("06-Feb-2012", "14:25:12").toDate()),
+                // when seconds are left cause alerts to be missed
                 alert(max, newDateWithTime("11-Feb-2012", "14:25").toDate())
         ));
     }
@@ -241,14 +239,12 @@ public class PNCMotherSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = scheduleAlertForPNCMother(dateOfBirth, PNC_BABY_3);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-                // Todo : seconds are not considered
-                alert(earliest, newDateWithTime("11-Feb-2012", "14:25:12").toDate()),
-                alert(late, newDateWithTime("13-Feb-2012", "14:25:12").toDate()),
-                alert(max, newDateWithTime("20-Feb-2012", "14:25:12").toDate())
+                // seconds are not considered
+                alert(earliest, newDateWithTime("11-Feb-2012", "14:25").toDate()),
+                alert(late, newDateWithTime("13-Feb-2012", "14:25").toDate()),
+                alert(max, newDateWithTime("20-Feb-2012", "14:25").toDate())
         ));
     }
-    */
-
     //////////////////////////////////////////// Case: Mother's Delivery is registered over 14 days of age of child- PNC1 is NA ////////////////////////////////////////////////////////
 
     @Test

@@ -6,10 +6,7 @@ import org.motechproject.ghana.national.vo.ChildCare;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSPatient;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static org.apache.commons.collections.CollectionUtils.union;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
@@ -133,7 +130,11 @@ public class Patient {
     }
 
     private ChildCare childCare() {
-        return ChildCare.basedOnBirthDay(newDateTime(this.getMrsPatient().getPerson().getDateOfBirth()));
+        return ChildCare.basedOnBirthDay(dateOfBirth());
+    }
+
+    public DateTime dateOfBirth() {
+        return newDateTime(this.getMrsPatient().getPerson().getDateOfBirth());
     }
 
     private PatientCare measlesChildCare() {
