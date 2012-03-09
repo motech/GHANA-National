@@ -22,7 +22,7 @@ import org.motechproject.server.event.annotations.MotechListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +31,7 @@ import java.util.Map;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.Concept.EDD;
 import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
+import static org.motechproject.ghana.national.domain.Constants.PATTERN_DD_MMM_YYYY;
 
 @Component
 public class ClientQueryFormHandler implements FormPublishHandler {
@@ -104,7 +105,7 @@ public class ClientQueryFormHandler implements FormPublishHandler {
     }
 
     private String toDateString(Date date) {
-        return (date != null) ? DateFormat.getDateInstance().format(date) : "";
+        return (date != null) ? new SimpleDateFormat(PATTERN_DD_MMM_YYYY).format(date) : "";
     }
 
     private Date getActivePregnancyEDD(String motechId) {

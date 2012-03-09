@@ -5,7 +5,10 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ClientQueryForm;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.ClientQueryType;
+import org.motechproject.ghana.national.domain.Concept;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.PatientService;
@@ -14,19 +17,18 @@ import org.motechproject.mrs.model.*;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
+import static org.motechproject.ghana.national.domain.Constants.*;
 
 public class ClientQueryFormHandlerTest {
     private ClientQueryFormHandler clientQueryFormHandler;
@@ -80,8 +82,8 @@ public class ClientQueryFormHandlerTest {
         assertThat(messageParams.get(GENDER), is(gender));
         assertThat(messageParams.get(FIRST_NAME), is(firstName));
         assertThat(messageParams.get(LAST_NAME), is(lastName));
-        assertThat(messageParams.get(DATE), is(DateFormat.getDateInstance().format(edd)));
-        assertThat(messageParams.get(DOB), is(DateFormat.getDateInstance().format(dateOfBirth)));
+        assertThat(messageParams.get(DATE), is(new SimpleDateFormat(PATTERN_DD_MMM_YYYY).format(edd)));
+        assertThat(messageParams.get(DOB), is(new SimpleDateFormat(PATTERN_DD_MMM_YYYY).format(dateOfBirth)));
 
 
     }
@@ -91,7 +93,7 @@ public class ClientQueryFormHandlerTest {
         final String firstName = "firstName";
         final String lastName = "lastName";
         final Date dateOfBirth = DateUtil.now().minusYears(20).toDate();
-        String dateString=DateFormat.getDateInstance().format(dateOfBirth);
+        String dateString=new SimpleDateFormat(PATTERN_DD_MMM_YYYY).format(dateOfBirth);
         String phoneNumber = "phoneNumber";
         String responsePhoneNumber = "responsePhoneNumber";
         final String facilityId = "facilityId";
@@ -102,7 +104,7 @@ public class ClientQueryFormHandlerTest {
 
         ArrayList<MRSPatient> patients = new ArrayList<MRSPatient>() {{
             add(new MRSPatient(motechId, new MRSPerson().lastName(lastName).firstName(firstName).dateOfBirth(dateOfBirth).gender("F"), mrsFacility));
-            add(new MRSPatient("45423", new MRSPerson().lastName(lastName).firstName("first").gender("M").dateOfBirth(new Date(1989, 5, 6)), mrsFacility));
+            add(new MRSPatient("45423", new MRSPerson().lastName(lastName).firstName("first").gender("M").dateOfBirth(new Date(189, 5, 6)), mrsFacility));
         }};
         when(mockPatientService.getPatients(firstName, lastName, phoneNumber, dateOfBirth, null)).thenReturn(patients);
         when(mockSmsGateway.getSMSTemplate(ClientQueryFormHandler.FIND_CLIENT_RESPONSE_SMS_KEY)).thenReturn("MoTeCH ID=${motechId},${firstName},${lastName}, Sex=${gender}, DoB=${dob}, ${facility}");
@@ -112,9 +114,8 @@ public class ClientQueryFormHandlerTest {
         ArgumentCaptor<String> templateValuesCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), templateValuesCaptor.capture());
 
-        String actualMessage = templateValuesCaptor.getValue();
-        assertTrue(actualMessage.contains(motechId));
-        assertTrue(actualMessage.contains(firstName));
+        String expectedMessage="MoTeCH ID=motechId,firstName,lastName, Sex=F, DoB="+dateString+", name%0aMoTeCH ID=45423,first,lastName, Sex=M, DoB=06 Jun 2089, name%0a";
+        assertEquals(expectedMessage, templateValuesCaptor.getValue());
     }
 
     @Test
@@ -136,7 +137,7 @@ public class ClientQueryFormHandlerTest {
         ArgumentCaptor<String> templateValuesCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), templateValuesCaptor.capture());
 
-        assertEquals(Constants.NO_MATCHING_RECORDS_FOUND, templateValuesCaptor.getValue());
+        assertEquals(NO_MATCHING_RECORDS_FOUND, templateValuesCaptor.getValue());
     }
 
     private HashMap<String, Object> createClientQueryFormForFindClientId(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String responsePhoneNumber, String facilityId, String motechId) {
@@ -148,7 +149,7 @@ public class ClientQueryFormHandlerTest {
         clientQueryForm.setNhis(null);
 
         return new HashMap<String, Object>() {{
-            put(Constants.FORM_BEAN, clientQueryForm);
+            put(FORM_BEAN, clientQueryForm);
         }};
     }
 
@@ -173,7 +174,7 @@ public class ClientQueryFormHandlerTest {
     private Map<String, Object> createMotechEventWithForm(String facilityId, String motechId, String staffId, String responsePhoneNumber, String clientQueryType) {
         final ClientQueryForm clientQueryForm = clientQueryForm(facilityId, motechId, staffId, responsePhoneNumber, clientQueryType);
         return new HashMap<String, Object>() {{
-            put(Constants.FORM_BEAN, clientQueryForm);
+            put(FORM_BEAN, clientQueryForm);
         }};
     }
 
