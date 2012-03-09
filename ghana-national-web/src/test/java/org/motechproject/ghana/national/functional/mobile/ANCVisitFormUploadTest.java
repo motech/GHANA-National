@@ -29,6 +29,7 @@ import org.testng.annotations.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,9 +69,39 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
         PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, testPatient);
         final ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
         ancEnrollmentPage.save(ancEnrollment);
-        final LocalDate nextANCVisitDate = DateUtil.today().plusDays(3);
 
-        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.ancVisitForm(), new HashMap<String, String>() {{
+        final LocalDate nextANCVisitDate = DateUtil.today().plusDays(5);
+        XformHttpClient.XformResponse xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, nextANCVisitDate);
+        verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, nextANCVisitDate, nextANCVisitDate.plusWeeks(1).toDate(), nextANCVisitDate.plusWeeks(2).toDate(), nextANCVisitDate.plusWeeks(3).toDate());
+
+        LocalDate newANCVisitDate = DateUtil.today().plusDays(35);
+        xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, newANCVisitDate);
+        verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, newANCVisitDate, newANCVisitDate.plusWeeks(1).toDate(), newANCVisitDate.plusWeeks(2).toDate(), newANCVisitDate.plusWeeks(3).toDate());
+    }
+
+    private void verifyAncVisitSchedules(ANCEnrollmentPage ancEnrollmentPage, XformHttpClient.XformResponse xformResponse, LocalDate nextANCVisitDate, Date lateDate1, Date lateDate2, Date lateDate3) throws SchedulerException {
+        assertEquals(1, xformResponse.getSuccessCount());
+        List<CronTrigger> cronTriggers = captureAlertsForNextMilestone(ancEnrollmentPage.getMotechPatientId());
+        assertEquals(4, cronTriggers.size());
+
+        CronTrigger dueTrigger = cronTriggers.get(0);
+        CronTrigger lateTrigger1 = cronTriggers.get(1);
+        CronTrigger lateTrigger2 = cronTriggers.get(2);
+        CronTrigger lateTrigger3 = cronTriggers.get(3);
+
+        assertThat(dueTrigger.getNextFireTime(), is(nextANCVisitDate.toDate()));
+        assertThat(lateTrigger1.getNextFireTime(), is(lateDate1));
+        assertThat(lateTrigger2.getNextFireTime(), is(lateDate2));
+        assertThat(lateTrigger3.getNextFireTime(), is(lateDate3));
+
+        assertThat(dueTrigger.getCronExpression(), is("0 0 0 ? * *"));
+        assertThat(lateTrigger1.getCronExpression(), is("0 0 0 ? * *"));
+        assertThat(lateTrigger2.getCronExpression(), is("0 0 0 ? * *"));
+        assertThat(lateTrigger3.getCronExpression(), is("0 0 0 ? * *"));
+    }
+
+    private XformHttpClient.XformResponse createAncVisit(final String staffId, final TestPatient testPatient, final ANCEnrollmentPage ancEnrollmentPage, final LocalDate nextANCVisitDate) {
+        return mobile.upload(MobileForm.ancVisitForm(), new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", testPatient.facilityId());
             put("motechId", ancEnrollmentPage.getMotechPatientId());
@@ -105,21 +136,6 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
             put("maleInvolved", "N");
             put("nextANCDate", new SimpleDateFormat("yyyy-MM-dd").format(nextANCVisitDate.toDate()));
         }});
-
-        assertEquals(1, xformResponse.getSuccessCount());
-        List<CronTrigger> cronTriggers = captureAlertsForNextMilestone(ancEnrollmentPage.getMotechPatientId());
-        assertEquals(3, cronTriggers.size());
-
-        CronTrigger dueTrigger = cronTriggers.get(0);
-        CronTrigger lateTrigger = cronTriggers.get(1);
-        CronTrigger maxTrigger = cronTriggers.get(2);
-
-        assertThat(dueTrigger.getNextFireTime(), is(nextANCVisitDate.toDate()));
-        assertThat(lateTrigger.getNextFireTime(), is(nextANCVisitDate.plusWeeks(1).toDate()));
-        assertThat(maxTrigger.getNextFireTime(), is(nextANCVisitDate.plusWeeks(3).toDate()));
-        assertThat(maxTrigger.getCronExpression(), is("0 0 0 ? * *"));
-        assertThat(dueTrigger.getCronExpression(), is("0 0 0 ? * *"));
-        assertThat(lateTrigger.getCronExpression(), is("0 0 0 ? * *"));
     }
 
     protected List<CronTrigger> captureAlertsForNextMilestone(String enrollmentId) throws SchedulerException {

@@ -55,7 +55,7 @@ public class BaseScheduleHandlerTest {
 
         parameters.put(EventKeys.EXTERNAL_ID_KEY,patientId);
         parameters.put(EventKeys.VISIT_NAME, visitName);
-        parameters.put(MotechSchedulerService.JOB_ID_KEY,visitName+"0");
+        parameters.put(MotechSchedulerService.JOB_ID_KEY,visitName+"3");
 
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname);
         when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
@@ -67,7 +67,7 @@ public class BaseScheduleHandlerTest {
 
         verify(SMSGateway).dispatchSMSToAggregator(ancVisitKey, new HashMap<String, String>() {{
             put(MOTECH_ID,patientMotechId );
-            put(WINDOW, "due");
+            put(WINDOW, "late");
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastname);
             put(SCHEDULE_NAME, visitName);

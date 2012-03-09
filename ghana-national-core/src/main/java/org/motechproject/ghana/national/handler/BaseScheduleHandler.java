@@ -55,9 +55,9 @@ public abstract class BaseScheduleHandler {
             case '0':
                 return WindowName.due.name();
             case '1':
-                return WindowName.late.name();
             case '2':
-                return WindowName.max.name();
+            case '3':
+                return WindowName.late.name();
         }
         return null;
     }

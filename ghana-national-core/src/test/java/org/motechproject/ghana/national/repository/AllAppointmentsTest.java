@@ -62,9 +62,10 @@ public class AllAppointmentsTest {
         List<ReminderConfiguration> expectedReminderConfigurations = new ArrayList<ReminderConfiguration>();
         expectedReminderConfigurations.add(new ReminderConfiguration());
         expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.ONE_WEEK_LATER));
+        expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.TWO_WEEK_LATER));
         expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.THREE_WEEKS_LATER));
 
-        assertThat(actualReminderConfigurations.size(), is(3));
+        assertThat(actualReminderConfigurations.size(), is(4));
         assertThat(actualVisitRequest.getVisitName(), is(EncounterType.ANC_VISIT.value()));
         assertReflectionEquals(expectedReminderConfigurations, actualReminderConfigurations, ReflectionComparatorMode.LENIENT_ORDER);
     }
