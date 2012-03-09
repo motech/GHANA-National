@@ -2,7 +2,7 @@
 <xf:xforms xmlns:xf="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="21">
     <xf:model>
         <xf:instance id="clientQuery">
-            <clientQuery id="1" name="Client Query">
+            <clientQuery id="21" name="Client Query">
                 <staffId/>
                 <facilityId/>
                 <queryType/>
@@ -29,7 +29,7 @@
                  relevant="/clientQuery/queryType = 'FIND_CLIENT_ID'"/>
         <xf:bind id="dateOfBirth" action="show" constraint=". &lt;= 'today()'" message="Invalid date: date entered is in the future"
                  nodeset="/clientQuery/dateOfBirth"
-                  type="xsd:date" relevant="/clientQuery/queryType = 'FIND_CLIENT_ID'" visible="false()"/>
+                 type="xsd:date" relevant="/clientQuery/queryType = 'FIND_CLIENT_ID'" visible="false()"/>
         <xf:bind id="nhis" action="show" nodeset="/clientQuery/nhis" type="xsd:string"
                  visible="false()" relevant="/clientQuery/queryType = 'FIND_CLIENT_ID'"/>
         <xf:bind id="motechId" action="show" nodeset="/clientQuery/motechId"
