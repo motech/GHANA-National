@@ -28,7 +28,7 @@ public class PNCBabyForm extends FormBean {
     @RegEx(pattern = MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
-    private String visitNumber;
+    private int visitNumber;
     private Double weight;
     private Double temperature;
     private String location;
@@ -75,11 +75,11 @@ public class PNCBabyForm extends FormBean {
         this.motechId = motechId;
     }
 
-    public String getVisitNumber() {
+    public Integer getVisitNumber() {
         return visitNumber;
     }
 
-    public void setVisitNumber(String visitNumber) {
+    public void setVisitNumber(Integer visitNumber) {
         this.visitNumber = visitNumber;
     }
 

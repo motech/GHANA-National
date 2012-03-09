@@ -67,7 +67,7 @@ public class ChildVisitEncounterFactoryTest {
         boolean bcg = false;
         int respiration = 12;
         double temperature = 32.2d;
-        String visitNumber = "1";
+        int visitNumber = 1;
         PNCBabyRequest pncBabyRequest = new PNCBabyRequest().staff(staff).
                 facility(facility).
                 patient(patient).
@@ -84,7 +84,7 @@ public class ChildVisitEncounterFactoryTest {
                 bcg(bcg).opv0(opv0).
                 respiration(respiration).
                 temperature(temperature).
-                visitNumber(visitNumber);
+                visit(visitNumber);
 
         HashSet<MRSObservation> expectedObservations = new HashSet<MRSObservation>();
         expectedObservations.add(new MRSObservation<Integer>(pncDate.toDate(), VISIT_NUMBER.getName(), Integer.valueOf(visitNumber)));

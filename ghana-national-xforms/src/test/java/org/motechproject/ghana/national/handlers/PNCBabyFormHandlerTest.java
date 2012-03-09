@@ -14,12 +14,12 @@ import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.service.request.PNCBabyRequest;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSUser;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class PNCBabyFormHandlerTest {
 
@@ -31,10 +31,10 @@ public class PNCBabyFormHandlerTest {
         PatientService mockPatientService = mock(PatientService.class);
         ChildVisitService mockChildVisitService = mock(ChildVisitService.class);
 
-        ReflectionTestUtils.setField(pncBabyFormHandler, "facilityService", mockFacilityService);
-        ReflectionTestUtils.setField(pncBabyFormHandler, "staffService", mockStaffService);
-        ReflectionTestUtils.setField(pncBabyFormHandler, "patientService", mockPatientService);
-        ReflectionTestUtils.setField(pncBabyFormHandler, "childVisitService", mockChildVisitService);
+        setField(pncBabyFormHandler, "facilityService", mockFacilityService);
+        setField(pncBabyFormHandler, "staffService", mockStaffService);
+        setField(pncBabyFormHandler, "patientService", mockPatientService);
+        setField(pncBabyFormHandler, "childVisitService", mockChildVisitService);
 
         String facilityId = "motechFacilityId";
         String staffId = "staffId";
@@ -48,6 +48,7 @@ public class PNCBabyFormHandlerTest {
         Boolean opv = Boolean.TRUE;
         Boolean cordCondition = Boolean.FALSE;
         DateTime pncDate = DateTime.now();
+        int visitNumber = 2;
         Facility mockFacility = mock(Facility.class);
         Patient mockPatient = mock(Patient.class);
         MRSUser mockStaff = mock(MRSUser.class);
@@ -66,6 +67,7 @@ public class PNCBabyFormHandlerTest {
         babyForm.setOpv0(opv);
         babyForm.setLocation(location);
         babyForm.setDate(pncDate);
+        babyForm.setVisitNumber(visitNumber);
         parameters.put(Constants.FORM_BEAN, babyForm);
 
         when(mockFacilityService.getFacilityByMotechId(facilityId)).thenReturn(mockFacility);
@@ -92,6 +94,7 @@ public class PNCBabyFormHandlerTest {
         assertEquals(opv, pncBabyRequest.getOpv0());
         assertEquals(cordCondition, pncBabyRequest.getCordConditionNormal());
         assertEquals(pncDate, pncBabyRequest.getDate());
+        assertEquals(visitNumber, pncBabyRequest.getVisit().visitNumber());
         assertEquals(mockFacility, pncBabyRequest.getFacility());
         assertEquals(mockPatient, pncBabyRequest.getPatient());
         assertEquals(mockStaff, pncBabyRequest.getStaff());

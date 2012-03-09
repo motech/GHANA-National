@@ -101,7 +101,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
                 bcg(false).opv0(false).
                 respiration(12).
                 temperature(32.2d).
-                visitNumber("1");
+                visit(1);
     }
 
     @Test
@@ -215,7 +215,8 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         LocalDate visitDate = newDate(2012, 2, 3);
         CWCVisit cwcVisit = createTestCWCVisit(visitDate.toDate(), mock(MRSUser.class), mock(Facility.class), patient)
                 .immunizations(asList(MEASLES.name()));
-        when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(new EnrollmentRecord("", "", null, null, null,null,null,null,null));
+        EnrollmentRecord mockEnrollmentRecord = mock(EnrollmentRecord.class);
+        when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(mockEnrollmentRecord);
         service.save(cwcVisit);
 
         verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_MEASLES_VACCINE, visitDate);
@@ -226,7 +227,8 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         Patient patient = new Patient(new MRSPatient("mrsPatientId", "motechId", new MRSPerson().dateOfBirth(newDate(2011, 3, 30).toDate()), new MRSFacility(null)));
         CWCVisit cwcVisit = createTestCWCVisit(today().toDate(), mock(MRSUser.class), mock(Facility.class), patient).immunizations(asList(Concept.PENTA.name()));
-        when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(new EnrollmentRecord("", "", null, null, null,null,null,null,null));
+        EnrollmentRecord mockEnrollmentRecord = mock(EnrollmentRecord.class);
+        when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(mockEnrollmentRecord);
         service.save(cwcVisit);
         verify(mockAllSchedules, never()).fulfilCurrentMilestone(eq("mrsPatientId"), eq(CWC_MEASLES_VACCINE), Matchers.<LocalDate>any());
     }
