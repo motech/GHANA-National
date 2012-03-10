@@ -164,7 +164,7 @@
                         </goals>
                         <configuration>
                             <files>
-                                <file>${parent.relativePath}/../build/maven.properties</file>
+                                <file>${project.parent.relativePath}/../build/maven.properties</file>
                             </files>
                         </configuration>
                     </execution>

@@ -92,8 +92,8 @@
                         </goals>
                         <configuration>
                             <files>
-                                <file>${parent.relativePath}/../build/maven.properties</file>
-                                <file>${parent.relativePath}/../ghana-national-common/src/main/resources/aggregator.properties</file>
+                                <file>${project.parent.relativePath}/../build/maven.properties</file>
+                                <file>${project.parent.relativePath}/../ghana-national-common/src/main/resources/aggregator.properties</file>
                             </files>
                         </configuration>
                     </execution>
