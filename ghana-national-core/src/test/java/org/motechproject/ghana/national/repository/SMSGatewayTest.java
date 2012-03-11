@@ -66,8 +66,7 @@ public class SMSGatewayTest extends BaseUnitTest{
         final StringContent stringContent = createStringContent(smsText);
         when(mockCMSLiteService.getStringContent(anyString(), eq(templateKey))).thenReturn(stringContent);
         smsGateway.dispatchSMS(templateKey, new HashMap<String, String>(){{put("${RTKey}", "RTValue");}}, phoneNumber);
-        verify(mockSMSService).sendSMS("smsMessage-RTValue",phoneNumber);
-
+        verify(mockSMSService).sendSMS(phoneNumber, "smsMessage-RTValue");
     }
 
     @Test
