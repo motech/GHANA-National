@@ -18,7 +18,7 @@ import static org.motechproject.scheduletracking.api.domain.WindowName.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class PNCBabySchedulesTest extends BaseScheduleTrackingTest {
+public class PNCMotherSchedulesTest extends BaseScheduleTrackingTest {
 
     @Before
     public void setUp() {
@@ -30,7 +30,7 @@ public class PNCBabySchedulesTest extends BaseScheduleTrackingTest {
         mockToday(newDateWithTime("24-FEB-2000", "10:05"));
         DateTime dateOfBirth = newDateWithTime("24-FEB-2000", "10:00");
 
-        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, 10, 0, PNC_BABY_1);
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, 10, 0, PNC_MOTHER_1);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(due, newDateWithTime("24-FEB-2000", "16:00").toDate()),
                 alert(late, newDateWithTime("24-FEB-2000", "22:00").toDate()),
@@ -43,7 +43,7 @@ public class PNCBabySchedulesTest extends BaseScheduleTrackingTest {
         mockToday(newDateWithTime("01-MAR-2000", "10:05"));
         DateTime dateOfBirth = newDateWithTime("01-MAR-2000", "10:00");
 
-        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, 10, 0, PNC_BABY_2);
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, 10, 0, PNC_MOTHER_2);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(earliest, newDateWithTime("06-MAR-2000", "10:00").toDate()),
                 alert(due, newDateWithTime("08-MAR-2000", "10:00").toDate()),
@@ -56,7 +56,7 @@ public class PNCBabySchedulesTest extends BaseScheduleTrackingTest {
         mockToday(newDateWithTime("01-MAR-2000", "10:05"));
         DateTime dateOfBirth = newDateWithTime("01-MAR-2000", "10:00");
 
-        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, 10, 0, PNC_BABY_3);
+        enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, 10, 0, PNC_MOTHER_3);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(earliest, newDateWithTime("13-MAR-2000", "10:00").toDate()),
                 alert(due, newDateWithTime("15-MAR-2000", "10:00").toDate()),
