@@ -14,12 +14,10 @@ import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
+import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.model.Time;
-import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.mrs.model.*;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
@@ -115,6 +113,28 @@ public class MotherVisitServiceTest extends BaseUnitTest {
                 enrollmentRequestCaptor.getAllValues().get(1));
 //        verify(mockAllAppointments).updateANCVisitSchedule(patient, ancVisit.getDate(), DateUtil.newDateTime(ancVisit.getNextANCDate()));
 
+    }
+
+    @Test
+    public void shouldEnrollOrFulfillPNCSchedulesForMother() {
+        String mrsFacilityId = "mrsFacilityId";
+        String mrsPatientId = "34";
+        Facility facility = new Facility(new MRSFacility(mrsFacilityId)).mrsFacilityId(mrsFacilityId);
+        MRSPerson mrsPerson = new MRSPerson();
+        mrsPerson.dateOfBirth(DateUtil.now().toDate());
+        MRSPatient mrsPatient = new MRSPatient(mrsPatientId, "motechPatient", mrsPerson, facility.mrsFacility());
+        Patient patient = new Patient(mrsPatient);
+        
+        motherVisitService.enrollOrFulfillPNCSchedulesForMother(createTestPncRequest(patient));
+        
+        verify(mockAllEncounters).persistEncounter(org.mockito.Matchers.<Encounter>any());
+        verify(mockAllSchedules, times(3)).enrollOrFulfill(org.mockito.Matchers.<EnrollmentRequest>any(), org.mockito.Matchers.<LocalDate>any());
+    }
+
+    private PNCMotherRequest createTestPncRequest(Patient patient) {
+        return new PNCMotherRequest().maleInvolved(Boolean.TRUE).patient(patient).ttDose("1").visitNumber("1").vitaminA("Y").comments("Comments")
+                .community("House").date(DateUtil.newDateTime(DateUtil.today())).facility(new Facility()).staff(new MRSUser()).location("Outreach").lochiaAmountExcess(Boolean.TRUE)
+                .lochiaColour("1").lochiaOdourFoul(Boolean.TRUE).temperature(10D);
     }
 
     @Test

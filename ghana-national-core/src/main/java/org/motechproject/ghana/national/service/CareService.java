@@ -1,17 +1,16 @@
 package org.motechproject.ghana.national.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.ANCCareHistory;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientCare;
-import org.motechproject.ghana.national.factory.MotherVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllSchedules;
-import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -71,10 +70,8 @@ public class CareService {
         enrollPatientCares(patient.ancCareProgramsToEnrollOnRegistration(expectedDeliveryDate), patient, ancVO.getRegistrationDate());
     }
 
-    public void enrollMotherForPNC(PNCMotherRequest pncMotherRequest) {
-        allEncounters.persistEncounter(new MotherVisitEncounterFactory().createEncounter(pncMotherRequest));
-        Patient patient = pncMotherRequest.getPatient();
-        enrollPatientCares(patient.pncMotherProgramsToEnrollOnRegistration(), patient, pncMotherRequest.getDate().toDate());
+    public void enrollMotherForPNC(Patient patient, DateTime deliveryDateTime) {
+        enrollPatientCares(patient.pncMotherProgramsToEnrollOnRegistration(), patient, deliveryDateTime.toDate());
     }
 
     void enrollPatientCares(List<PatientCare> patientCares, Patient patient, Date registrationDate) {

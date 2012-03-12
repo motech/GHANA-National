@@ -38,6 +38,8 @@ public class DeliveryFormHandler implements FormPublishHandler {
 
     @Autowired
     StaffService staffService;
+    @Autowired
+    private CareService careService;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.delivery")
@@ -46,9 +48,11 @@ public class DeliveryFormHandler implements FormPublishHandler {
     public void handleFormEvent(MotechEvent event) {
         try {
             DeliveryForm deliveryForm = (DeliveryForm) event.getParameters().get(Constants.FORM_BEAN);
-            pregnancyService.handleDelivery(createDeliveryRequest(deliveryForm));
+            PregnancyDeliveryRequest deliveryRequest = createDeliveryRequest(deliveryForm);
+            pregnancyService.handleDelivery(deliveryRequest);
             if (!deliveryForm.getMaternalDeath()) {
                 mobileMidwifeService.unRegister(deliveryForm.getMotechId());
+                careService.enrollMotherForPNC(deliveryRequest.getPatient(), deliveryRequest.getDeliveryDateTime());
             } else {
                 patientService.deceasePatient(deliveryForm.getDate().toDate(), deliveryForm.getMotechId(), "OTHER", "Delivery");
             }

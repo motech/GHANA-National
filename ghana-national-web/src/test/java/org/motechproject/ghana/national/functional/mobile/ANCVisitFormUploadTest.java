@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.joda.time.LocalDate;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.domain.RegistrationToday;
@@ -46,6 +47,7 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
     private SchedulerFactoryBean schedulerFactoryBean;
 
     @Test
+    @Ignore
     public void shouldUploadANCVisitFormSuccessfully() throws SchedulerException {
         // create
         final String staffId = staffGenerator.createStaff(browser, homePage);

@@ -13,6 +13,7 @@ import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
+import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
@@ -20,6 +21,7 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_DELIVERY;
@@ -91,5 +93,15 @@ public class MotherVisitService {
         LocalDate visitDate = iptVaccine.getVaccinationDate();
         EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.ancIPTPatientCareEnrollOnVisitAfter19Weeks(visitDate), visitDate, iptVaccine.getIptMilestone());
         allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
+    }
+
+    public void enrollOrFulfillPNCSchedulesForMother(PNCMotherRequest pncMotherRequest) {
+        Patient patient = pncMotherRequest.getPatient();
+        allEncounters.persistEncounter(new MotherVisitEncounterFactory().createEncounter(pncMotherRequest));
+        List<PatientCare> patientCares = patient.pncMotherProgramsToEnrollOnRegistration();
+        LocalDate visitDate = pncMotherRequest.getDate().toLocalDate();
+        for (PatientCare patientCare : patientCares) {
+            allSchedules.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient, patientCare, visitDate), visitDate);
+        }
     }
 }

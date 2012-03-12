@@ -30,7 +30,7 @@ public class PNCMotherFormHandler implements FormPublishHandler {
     @Autowired
     private PatientService patientService;
     @Autowired
-    private CareService careService;
+    private MotherVisitService motherVisitService;
     @Autowired
     private VisitService visitService;
 
@@ -46,7 +46,7 @@ public class PNCMotherFormHandler implements FormPublishHandler {
             if (ttVaccine != null) {
                 visitService.createTTSchedule(ttVaccine);
             }
-            careService.enrollMotherForPNC(pncMotherRequest);
+            motherVisitService.enrollOrFulfillPNCSchedulesForMother(createRequest(pncMotherForm));
         } catch (Exception e) {
             log.error("Exception occured in saving PNC Mother details for: " + pncMotherForm.getMotechId(), e);
         }

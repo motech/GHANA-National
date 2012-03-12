@@ -10,24 +10,25 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component("iptiVaccineSeed")
-public class IPTIVaccineSeed extends ScheduleMigrationSeed {
+@Component("eddSeed")
+public class EDDSeed extends ScheduleMigrationSeed {
 
     @Autowired
-    public IPTIVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules) {
+    public EDDSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules) {
         super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules);
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {
-        return oldGhanaScheduleSource.getUpcomingIPTSchedules();
+        return oldGhanaScheduleSource.getEDDSchedules();
+    }
+
+    @Override
+    protected String mapMilestoneName(String milestoneName) {
+        return milestoneName.replace("EDD", "Default");
     }
 
     @Override
     public String getScheduleName() {
-        return ScheduleNames.CWC_IPT_VACCINE;
-    }
-
-    protected String mapMilestoneName(String milestoneName) {
-        return "IPT" + milestoneName.charAt(milestoneName.length() - 1);
+        return ScheduleNames.ANC_DELIVERY;
     }
 }

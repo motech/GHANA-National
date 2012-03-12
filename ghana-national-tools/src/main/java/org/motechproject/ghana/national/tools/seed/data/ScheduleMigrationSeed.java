@@ -6,14 +6,18 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.motechproject.MotechException;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.motechproject.ghana.national.tools.seed.data.domain.*;
 import org.motechproject.ghana.national.tools.seed.data.source.OldGhanaScheduleSource;
+import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.domain.Milestone;
 import org.motechproject.scheduletracking.api.domain.Schedule;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
+import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
+import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,10 +33,12 @@ public abstract class ScheduleMigrationSeed extends Seed {
     List<Filter> filters = Arrays.asList(new DuplicateScheduleFilter(), new VoidedScheduleFilter(), new ExpiredScheduleFilter());
 
     private static Logger LOG = Logger.getLogger(ScheduleMigrationSeed.class);
+    protected AllSchedules allSchedules;
 
-    protected ScheduleMigrationSeed(AllTrackedSchedules allTrackedSchedules, OldGhanaScheduleSource oldGhanaScheduleSource) {
+    protected ScheduleMigrationSeed(AllTrackedSchedules allTrackedSchedules, OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allSchedules) {
         this.allTrackedSchedules = allTrackedSchedules;
         this.oldGhanaScheduleSource = oldGhanaScheduleSource;
+        this.allSchedules = allSchedules;
     }
 
     void migrate(List<UpcomingSchedule> upcomingSchedulesFromDb) {
@@ -46,8 +52,12 @@ public abstract class ScheduleMigrationSeed extends Seed {
             if (filteredSchedules.size() > 1) {
                 LOG.error("Patient, " + filteredSchedules.get(0).getPatientId() + " has more than one active schedule");
             } else if (filteredSchedules.size() == 1) {
-                final UpcomingSchedule scheduleToBeMigrated = filteredSchedules.get(0);
-                enroll(getReferenceDate(scheduleToBeMigrated), mapMilestoneName(scheduleToBeMigrated.getMilestoneName()), new Patient(new MRSPatient(scheduleToBeMigrated.getPatientId())));
+                try {
+                    final UpcomingSchedule scheduleToBeMigrated = filteredSchedules.get(0);
+                    enroll(getReferenceDate(scheduleToBeMigrated), mapMilestoneName(scheduleToBeMigrated.getMilestoneName()), new Patient(new MRSPatient(scheduleToBeMigrated.getPatientId())));
+                } catch (Exception e) {
+                    LOG.error("Encountered exception while migrating shedules for patients, " + filteredSchedules.get(0).getPatientId());
+                }
             }
         }
     }
@@ -72,7 +82,15 @@ public abstract class ScheduleMigrationSeed extends Seed {
         }
     }
 
-    protected abstract void enroll(DateTime referenceDate, String milestoneName, Patient patient);
+    protected void enroll(DateTime milestoneReferenceDate, String milestoneName, Patient patient) {
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(patient.getMRSPatientId(),
+                getScheduleName(), new Time(DateUtil.now().toLocalTime()),
+                milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
+                milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
+                mapMilestoneName(milestoneName));
+        allSchedules.enroll(enrollmentRequest);
+    }
+
 
     protected abstract List<UpcomingSchedule> getAllUpcomingSchedules();
 
