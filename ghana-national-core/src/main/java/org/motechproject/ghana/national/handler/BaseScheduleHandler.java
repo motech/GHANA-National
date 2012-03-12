@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
@@ -32,7 +33,7 @@ public abstract class BaseScheduleHandler {
         this.allFacilities = allFacilities;
     }
 
-    protected void sendSMSToFacilityForAnAppointment(String ancVisitSmsKey, MotechEvent motechEvent) {
+    protected void sendAggregativeSMSToFacilityForAnAppointment(String ancVisitSmsKey, MotechEvent motechEvent) {
         final Map<String, Object> parameters = motechEvent.getParameters();
         String externalId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
         final Patient patient = allPatients.patientByOpenmrsId(externalId);
@@ -62,7 +63,7 @@ public abstract class BaseScheduleHandler {
         return null;
     }
 
-    protected void sendSMSToFacility(String smsTemplateKey, final MilestoneEvent milestoneEvent) {
+    protected void sendAggregativeSMSToFacility(String smsTemplateKey, final MilestoneEvent milestoneEvent) {
         String externalId = milestoneEvent.getExternalId();
         final Patient patient = allPatients.patientByOpenmrsId(externalId);
         final String motechId = patient.getMrsPatient().getMotechId();
@@ -76,6 +77,20 @@ public abstract class BaseScheduleHandler {
             put(LAST_NAME, patient.getLastName());
             put(SCHEDULE_NAME, milestoneEvent.getScheduleName());
         }}, facility.getPhoneNumber());
+    }
+
+    protected void sendInstantSMSToFacility(String smsTemplateKey, final MilestoneEvent milestoneEvent) {
+        final Patient patient = allPatients.patientByOpenmrsId(milestoneEvent.getExternalId());
+        final MRSPatient mrsPatient = patient.getMrsPatient();
+        final Facility facility = allFacilities.getFacility(mrsPatient.getFacility().getId());
+
+        smsGateway.dispatchSMS(smsTemplateKey, new HashMap<String, String>() {{
+            put(MOTECH_ID, mrsPatient.getMotechId());
+            put(WINDOW, AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName());
+            put(FIRST_NAME, patient.getFirstName());
+            put(LAST_NAME, patient.getLastName());
+            put(SCHEDULE_NAME, milestoneEvent.getScheduleName());
+        }}, facility.phoneNumber());
     }
 
 }
