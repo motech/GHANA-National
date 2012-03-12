@@ -67,6 +67,7 @@ public class ClientQueryFormHandlerTest {
 
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
         when(mockAllObservations.findObservation(motechId, Concept.PREGNANCY.getName())).thenReturn(mockPregnancyObservationWithEDD(edd));
+        when(mockAllObservations.hasActivePregnancyStatusObservation(motechId)).thenReturn(Boolean.TRUE);
 
         clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
 

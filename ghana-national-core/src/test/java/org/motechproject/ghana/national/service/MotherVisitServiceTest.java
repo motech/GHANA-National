@@ -17,10 +17,7 @@ import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.model.Time;
-import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.mrs.model.*;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
@@ -119,6 +116,28 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldEnrollOrFulfillPNCSchedulesForMother() {
+        String mrsFacilityId = "mrsFacilityId";
+        String mrsPatientId = "34";
+        Facility facility = new Facility(new MRSFacility(mrsFacilityId)).mrsFacilityId(mrsFacilityId);
+        MRSPerson mrsPerson = new MRSPerson();
+        mrsPerson.dateOfBirth(DateUtil.now().toDate());
+        MRSPatient mrsPatient = new MRSPatient(mrsPatientId, "motechPatient", mrsPerson, facility.mrsFacility());
+        Patient patient = new Patient(mrsPatient);
+        
+        motherVisitService.enrollOrFulfillPNCSchedulesForMother(createTestPncRequest(patient));
+        
+        verify(mockAllEncounters).persistEncounter(org.mockito.Matchers.<Encounter>any());
+        verify(mockAllSchedules, times(3)).enrollOrFulfill(org.mockito.Matchers.<EnrollmentRequest>any(), org.mockito.Matchers.<LocalDate>any());
+    }
+
+    private PNCMotherRequest createTestPncRequest(Patient patient) {
+        return new PNCMotherRequest().maleInvolved(Boolean.TRUE).patient(patient).ttDose("1").visitNumber("1").vitaminA("Y").comments("Comments")
+                .community("House").date(DateUtil.newDateTime(DateUtil.today())).facility(new Facility()).staff(new MRSUser()).location("Outreach").lochiaAmountExcess(Boolean.TRUE)
+                .lochiaColour("1").lochiaOdourFoul(Boolean.TRUE).temperature(10D);
+    }
+
+    @Test
     public void shouldAddObservationAndCreateScheduleForTTVaccine(){
         Patient patient = new Patient(new MRSPatient("100"));
         final DateTime vaccinationDate = DateUtil.newDateTime(2000, 1, 1, new Time(10, 10));
@@ -173,19 +192,6 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
         assertIfObservationsAvailableForConcepts(false, encounterCaptor.getValue().getObservations(), IPT.getName(), IPT_REACTION.getName());
         verify(mockAllSchedules, never()).fulfilCurrentMilestone(ancVisit.getPatient().getMRSPatientId(), ANC_IPT_VACCINE, visitDate);
-    }
-
-    @Test
-    public void shouldSavePncMotherEncountersAndVaccinations() {
-        PNCMotherRequest pncMotherRequest = createTestPncRequest();
-        motherVisitService.save(pncMotherRequest);
-        verify(mockVisitService).createTTSchedule(TTVaccine.createFromPncMotherRequest(pncMotherRequest));
-    }
-
-    private PNCMotherRequest createTestPncRequest() {
-        return new PNCMotherRequest().maleInvolved(Boolean.TRUE).patient(new Patient()).ttDose("1").visitNumber("1").vitaminA("Y").comments("Comments")
-                .community("House").date(DateUtil.now()).facility(new Facility()).staff(new MRSUser()).location("Outreach").lochiaAmountExcess(Boolean.TRUE)
-                .lochiaColour("1").lochiaOdourFoul(Boolean.TRUE).temperature(10D);
     }
 
     private void assertIfObservationsAvailableForConcepts(Boolean present, Set<MRSObservation> observations, String... conceptNames) {

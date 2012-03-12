@@ -42,6 +42,8 @@ public class DeliveryFormHandlerTest {
 
     @Mock
     StaffService mockStaffService;
+    @Mock
+    private CareService mockCareService;
 
     @Before
     public void setUp() {
@@ -52,6 +54,7 @@ public class DeliveryFormHandlerTest {
         ReflectionTestUtils.setField(handler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(handler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(handler, "staffService", mockStaffService);
+        ReflectionTestUtils.setField(handler, "careService", mockCareService);
     }
 
     @Test

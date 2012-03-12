@@ -1,4 +1,3 @@
-
 package org.motechproject.ghana.national.domain;
 
 import org.joda.time.DateTime;
@@ -146,7 +145,16 @@ public class Patient {
         List<PatientCare> cares = new ArrayList<PatientCare>();
         ChildCare care = childCare();
         DateTime birthTime = care.birthTime();
-        for(PNCVisit visit : PNCVisit.values() ) {
+        for (PNCChildVisit visit : PNCChildVisit.values()) {
+            cares.add(new PatientCare(visit.scheduleName(), birthTime.toLocalDate(), new Time(birthTime.getHourOfDay(), birthTime.getMinuteOfHour())));
+        }
+        return cares;
+    }
+
+    public List<PatientCare> pncMotherProgramsToEnrollOnRegistration() {
+        List<PatientCare> cares = new ArrayList<PatientCare>();
+        DateTime birthTime = childCare().birthTime();
+        for (PNCMotherVisit visit : PNCMotherVisit.values()) {
             cares.add(new PatientCare(visit.scheduleName(), birthTime.toLocalDate(), new Time(birthTime.getHourOfDay(), birthTime.getMinuteOfHour())));
         }
         return cares;

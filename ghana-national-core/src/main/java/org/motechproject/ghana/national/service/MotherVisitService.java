@@ -21,6 +21,7 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_DELIVERY;
@@ -94,10 +95,13 @@ public class MotherVisitService {
         allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
     }
 
-    public void save(PNCMotherRequest pncMotherRequest) {
-        allEncounters.persistEncounter(factory.createEncounter(pncMotherRequest));
-        TTVaccine ttVaccine = TTVaccine.createFromPncMotherRequest(pncMotherRequest);
-        if (ttVaccine != null)
-            visitService.createTTSchedule(ttVaccine);
+    public void enrollOrFulfillPNCSchedulesForMother(PNCMotherRequest pncMotherRequest) {
+        Patient patient = pncMotherRequest.getPatient();
+        allEncounters.persistEncounter(new MotherVisitEncounterFactory().createEncounter(pncMotherRequest));
+        List<PatientCare> patientCares = patient.pncMotherProgramsToEnrollOnRegistration();
+        LocalDate visitDate = pncMotherRequest.getDate().toLocalDate();
+        for (PatientCare patientCare : patientCares) {
+            allSchedules.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient, patientCare, visitDate), visitDate);
+        }
     }
 }

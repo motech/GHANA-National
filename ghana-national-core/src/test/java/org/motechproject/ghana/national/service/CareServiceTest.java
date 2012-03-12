@@ -29,6 +29,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_MOTHER_1;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
@@ -187,7 +188,36 @@ public class CareServiceTest extends BaseUnitTest {
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, PREG_REG_VISIT.value(), registrationDate, expectedPregnancyObservations);
 
     }
-    
+
+    @Test
+    public void shouldEnrollToPNCMotherCareSchedules() {
+        CareService careServiceSpy = spy(careService);
+        Patient patient = mock(Patient.class);
+        List<PatientCare> patientCares = asList(new PatientCare(PNC_MOTHER_1, DateUtil.today()));
+        when(patient.pncMotherProgramsToEnrollOnRegistration()).thenReturn(patientCares);
+        Date registrationDate = DateUtil.today().toDate();
+
+        careServiceSpy.enrollMotherForPNC(patient, DateUtil.newDateTime(registrationDate));
+
+        verify(careServiceSpy).enrollPatientCares(patientCares, patient, registrationDate);
+    }
+
+    @Test
+    public void shouldEnrollPatientCares() {
+        List<PatientCare> patientCares = asList(new PatientCare(PNC_MOTHER_1, DateUtil.today()));
+        Patient patient = mock(Patient.class);
+        when(patient.getMRSPatientId()).thenReturn("mrsPatientId");
+        Date registrationDate = DateUtil.now().toDate();
+
+        careService.enrollPatientCares(patientCares, patient, registrationDate);
+
+        ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedules).enroll(enrollmentRequestCaptor.capture());
+        EnrollmentRequest request = enrollmentRequestCaptor.getValue();
+        assertThat(request.getScheduleName(), is(PNC_MOTHER_1));
+        assertThat(request.getExternalId(), is(patient.getMRSPatientId()));
+    }
+
     @Test
     public void shoulUpdateEddObservationIfFound() throws Exception {
         String facilityId = "facility id";
@@ -252,7 +282,7 @@ public class CareServiceTest extends BaseUnitTest {
         pregnancyObs.addDependantObservation(new MRSObservation<Date>(today, EDD.getName(), ancvo.getEstimatedDateOfDelivery()));
         pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
         pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, PREGNANCY_STATUS.getName(), true));
-        
+
         final HashSet<MRSObservation> expectedPregnancyObservations = new HashSet<MRSObservation>() {{
             add(pregnancyObs);
         }};
@@ -368,7 +398,7 @@ public class CareServiceTest extends BaseUnitTest {
 
     private EnrollmentRequest expectedRequest(String externalId, PatientCare patientCare, LocalDate enrollmentDate, String startingMilestoneName) {
         return new EnrollmentRequest(externalId, patientCare.name(),
-            new Time(currentDate.toLocalTime()), patientCare.startingOn(),
+                new Time(currentDate.toLocalTime()), patientCare.startingOn(),
                 patientCare.referenceTime(), enrollmentDate, null, startingMilestoneName);
     }
 

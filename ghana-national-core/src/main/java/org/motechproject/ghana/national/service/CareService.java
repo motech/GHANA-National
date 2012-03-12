@@ -1,7 +1,11 @@
 package org.motechproject.ghana.national.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.ANCCareHistory;
+import org.motechproject.ghana.national.domain.CwcCareHistory;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientCare;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
@@ -66,14 +70,18 @@ public class CareService {
         enrollPatientCares(patient.ancCareProgramsToEnrollOnRegistration(expectedDeliveryDate), patient, ancVO.getRegistrationDate());
     }
 
-    private void enrollPatientCares(List<PatientCare> patientCares, Patient patient, Date registrationDate) {
+    public void enrollMotherForPNC(Patient patient, DateTime deliveryDateTime) {
+        enrollPatientCares(patient.pncMotherProgramsToEnrollOnRegistration(), patient, deliveryDateTime.toDate());
+    }
+
+    void enrollPatientCares(List<PatientCare> patientCares, Patient patient, Date registrationDate) {
         for (PatientCare patientCare : patientCares) {
             allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare, newDate(registrationDate)));
         }
     }
 
     public void enrollChildForPNC(Patient patient, LocalDate registrationDate) {
-        enrollPatientCares(patient.pncBabyProgramsToEnrollOnRegistration(), patient, registrationDate.toDate());        
+        enrollPatientCares(patient.pncBabyProgramsToEnrollOnRegistration(), patient, registrationDate.toDate());
     }
 
     private Set<MRSObservation> prepareObservations(ANCVO ancVO) {
