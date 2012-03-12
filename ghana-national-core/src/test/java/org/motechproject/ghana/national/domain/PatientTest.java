@@ -98,9 +98,9 @@ public class PatientTest extends BaseUnitTest {
         Patient patient = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(dateOfBirth.toDate()), null));
         List<PatientCare> cares = patient.pncBabyProgramsToEnrollOnRegistration();
         assertPatientCares(cares, asList(
-                new PatientCare(PNC_BABY_1, dateOfBirth.toLocalDate(), timeOfBirth),
-                new PatientCare(PNC_BABY_2, dateOfBirth.toLocalDate(), timeOfBirth),
-                new PatientCare(PNC_BABY_3, dateOfBirth.toLocalDate(), timeOfBirth)));
+                new PatientCare(PNC_CHILD_1, dateOfBirth.toLocalDate(), timeOfBirth),
+                new PatientCare(PNC_CHILD_2, dateOfBirth.toLocalDate(), timeOfBirth),
+                new PatientCare(PNC_CHILD_3, dateOfBirth.toLocalDate(), timeOfBirth)));
     }
 
     private void assertPatientCare(PatientCare patientCare, String name, LocalDate startingOn) {

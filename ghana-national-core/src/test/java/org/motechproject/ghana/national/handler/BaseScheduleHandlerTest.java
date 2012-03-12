@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.SmsTemplateKeys;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
@@ -43,7 +44,7 @@ public class BaseScheduleHandlerTest {
     }
 
     @Test
-    public void shouldSendSMSToFacilityForAnAppointment() {
+    public void shouldSendAggregativeSMSToFacilityForAnAppointment() {
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         String ancVisitKey = "ancVisitKey";
         final String patientId = "patientid";
@@ -63,7 +64,7 @@ public class BaseScheduleHandlerTest {
         final String phoneNumber = "phoneNumber";
         when(allFacilities.getFacility(facilityId)).thenReturn(new Facility().phoneNumber(phoneNumber));
 
-        careScheduleHandler.sendSMSToFacilityForAnAppointment(ancVisitKey, new MotechEvent("subject", parameters));
+        careScheduleHandler.sendAggregativeSMSToFacilityForAnAppointment(ancVisitKey, new MotechEvent("subject", parameters));
 
         verify(SMSGateway).dispatchSMSToAggregator(ancVisitKey, new HashMap<String, String>() {{
             put(MOTECH_ID,patientMotechId );
@@ -75,7 +76,7 @@ public class BaseScheduleHandlerTest {
     }
 
     @Test
-    public void shouldSendSMSToFacility() {
+    public void shouldSendAggregativeSMSToFacility() {
 
         final String patientId = "patientid";
         final String facilityId = "facilityid";
@@ -94,11 +95,41 @@ public class BaseScheduleHandlerTest {
 
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, null, windowName, null);
 
-        careScheduleHandler.sendSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
+        careScheduleHandler.sendAggregativeSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
 
         verify(SMSGateway).dispatchSMSToAggregator(PREGNANCY_ALERT_SMS_KEY, new HashMap<String, String>() {{
             put(MOTECH_ID, patientMotechId);
             put(WINDOW, "Due");
+            put(FIRST_NAME, firstName);
+            put(LAST_NAME, lastname);
+            put(SCHEDULE_NAME, scheduleName);
+        }}, phoneNumber);
+    }
+    
+    @Test
+    public void shouldSendInstantSMSToFacility() {
+
+        final String patientId = "patientid11";
+        final String facilityId = "facilityid22";
+        final String patientMotechId = "patientmotechid33";
+        final String firstName = "firstName44";
+        final String lastname = "lastname55";
+        final String windowName = WindowName.late.name();
+        final String scheduleName = "some schedule";
+
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname);
+        when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
+
+        final String phoneNumber = "phoneNumber";
+        when(allFacilities.getFacility(facilityId)).thenReturn(new Facility().phoneNumber(phoneNumber));
+
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, null, windowName, null);
+
+        careScheduleHandler.sendInstantSMSToFacility(SmsTemplateKeys.PNC_CHILD_SMS_KEY, milestoneEvent);
+
+        verify(SMSGateway).dispatchSMS(SmsTemplateKeys.PNC_CHILD_SMS_KEY, new HashMap<String, String>() {{
+            put(MOTECH_ID, patientMotechId);
+            put(WINDOW, "Overdue");
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastname);
             put(SCHEDULE_NAME, scheduleName);

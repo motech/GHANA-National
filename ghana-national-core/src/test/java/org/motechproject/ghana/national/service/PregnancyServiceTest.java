@@ -141,7 +141,8 @@ public class PregnancyServiceTest {
         final MRSObservation activePregnancyObservation = new MRSObservation(new Date(), "PREG", "Value");
 
         when(mockAllObservations.activePregnancyObservation(parentMotechId)).thenReturn(activePregnancyObservation);
-        when(mockAllPatients.save(Matchers.<Patient>any())).thenReturn(new Patient(childMRSPatient));
+        Patient child = new Patient(childMRSPatient);
+        when(mockAllPatients.save(Matchers.<Patient>any())).thenReturn(child);
         pregnancyService.handleDelivery(deliveryRequest);
 
         final PregnancyEncounterFactory factory = new PregnancyEncounterFactory();
@@ -154,7 +155,7 @@ public class PregnancyServiceTest {
         verify(mockAllEncounters,times(2)).persistEncounter(encounterArgumentCaptor.capture());
         verify(mockAllPatients).save(patientArgumentCaptor.capture());
         verify(mockCareService).enroll(cwcVOArgumentCaptor.capture());
-        verify(mockCareService).enrollChildForPNC(mockPatient);
+        verify(mockCareService).enrollChildForPNC(child);
 
         List<Encounter> encounters = encounterArgumentCaptor.getAllValues();
         assertThat(encounters.size(), is(equalTo(2)));
