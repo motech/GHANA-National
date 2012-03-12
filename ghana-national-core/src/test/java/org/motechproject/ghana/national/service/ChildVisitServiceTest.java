@@ -68,6 +68,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         verify(spyService).updatePentaSchedule(cwcVisit);
         verify(spyService).updateYellowFeverSchedule(cwcVisit);
         verify(spyService).updateIPTSchedule(cwcVisit);
+        verify(spyService).updateBCGSchedule(cwcVisit);
     }
 
     @Test
@@ -216,6 +217,17 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         service.updateYellowFeverSchedule(testCWCVisit);
 
         verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_YELLOW_FEVER, DateUtil.newDate(testCWCVisit.getDate()));
+    }
+
+    @Test
+    public void shouldFulfillBCGScheduleIfChosen() {
+        String mrsPatientId = "1234";
+        CWCVisit testCWCVisit = createTestCWCVisit(new Date(), new MRSUser(), mock(Facility.class), new Patient(new MRSPatient(mrsPatientId)));
+        testCWCVisit.immunizations(asList(Concept.BCG.name()));
+
+        service.updateBCGSchedule(testCWCVisit);
+
+        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_BCG, DateUtil.newDate(testCWCVisit.getDate()));
     }
 
     @Test

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
+import static org.motechproject.ghana.national.domain.Concept.BCG;
 import static org.motechproject.ghana.national.domain.Concept.MEASLES;
 import static org.motechproject.ghana.national.domain.Concept.YF;
 import static org.motechproject.util.DateUtil.newDate;
@@ -42,6 +43,7 @@ public class ChildVisitService {
         updatePentaSchedule(cwcVisit);
         updateYellowFeverSchedule(cwcVisit);
         updateMeaslesSchedule(cwcVisit);
+        updateBCGSchedule(cwcVisit);
         return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(cwcVisit));
     }
 
@@ -52,6 +54,14 @@ public class ChildVisitService {
                 , visitDate);
         allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate.toLocalDate(), time(visitDate));
         return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(pncBabyRequest));
+    }
+
+    void updateBCGSchedule(CWCVisit cwcVisit) {
+       if (cwcVisit.getImmunizations().contains(BCG.name())) {
+            Patient patient = cwcVisit.getPatient();
+            LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
+            allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_BCG, visitDate);
+        }
     }
 
     void updateIPTSchedule(CWCVisit cwcVisit) {
