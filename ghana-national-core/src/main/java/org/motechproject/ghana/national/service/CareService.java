@@ -76,12 +76,13 @@ public class CareService {
 
     void enrollPatientCares(List<PatientCare> patientCares, Patient patient, Date registrationDate) {
         for (PatientCare patientCare : patientCares) {
+            //TODO: add time to registrationDateTime
             allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare, newDate(registrationDate)));
         }
     }
 
-    public void enrollChildForPNC(Patient patient, LocalDate registrationDate) {
-        enrollPatientCares(patient.pncBabyProgramsToEnrollOnRegistration(), patient, registrationDate.toDate());
+    public void enrollChildForPNC(Patient patient) {
+        enrollPatientCares(patient.pncBabyProgramsToEnrollOnRegistration(), patient, patient.dateOfBirth().toDate());
     }
 
     private Set<MRSObservation> prepareObservations(ANCVO ancVO) {

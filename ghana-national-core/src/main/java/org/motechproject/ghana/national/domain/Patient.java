@@ -16,6 +16,7 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDateTime;
+import static org.motechproject.util.DateUtil.time;
 import static org.motechproject.util.DateUtil.today;
 
 public class Patient {
@@ -133,7 +134,11 @@ public class Patient {
     }
 
     private ChildCare childCare() {
-        return ChildCare.basedOnBirthDay(newDateTime(this.getMrsPatient().getPerson().getDateOfBirth()));
+        return ChildCare.basedOnBirthDay(dateOfBirth());
+    }
+
+    public DateTime dateOfBirth() {
+        return newDateTime(this.getMrsPatient().getPerson().getDateOfBirth());
     }
 
     private PatientCare measlesChildCare() {
@@ -158,5 +163,9 @@ public class Patient {
             cares.add(new PatientCare(visit.scheduleName(), birthTime.toLocalDate(), new Time(birthTime.getHourOfDay(), birthTime.getMinuteOfHour())));
         }
         return cares;
+    }
+
+    public PatientCare pncProgramToFulfilOnVisit(PNCChildVisit visit, DateTime visitDateTime) {
+        return new PatientCare(visit.scheduleName(), visitDateTime.toLocalDate(), time(visitDateTime));
     }
 }

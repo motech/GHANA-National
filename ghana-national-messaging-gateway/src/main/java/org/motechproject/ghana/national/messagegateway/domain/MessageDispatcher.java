@@ -14,7 +14,7 @@ import static ch.lambdaj.Lambda.*;
 @MessageEndpoint
 public class MessageDispatcher {
 
-    public static final String SMS_SEPARATOR = " #";
+    public static final String SMS_SEPARATOR = "%0a";
     @Autowired
     private MessageGateway messageGateway;
 

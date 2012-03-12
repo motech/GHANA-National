@@ -78,8 +78,9 @@ public class MotherVisitService {
         Set<MRSObservation> eddObservations = allObservations.updateEDD(ancVisit.getEstDeliveryDate(), ancVisit.getPatient(), ancVisit.getStaff().getId());
         if (CollectionUtils.isNotEmpty(eddObservations)) {
             mrsObservations.addAll(eddObservations);
+            PatientCare ancDeliveryCare = new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(newDate(ancVisit.getEstDeliveryDate())).dateOfConception());
             EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(ancVisit.getPatient(),
-                    new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(newDate(ancVisit.getEstDeliveryDate())).dateOfConception()), newDate(ancVisit.getDate()));
+                    ancDeliveryCare, newDate(ancVisit.getDate()), null);
             allSchedules.enroll(enrollmentRequest);
         }
     }

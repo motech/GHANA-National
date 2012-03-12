@@ -34,6 +34,7 @@ import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDate;
+import static org.motechproject.util.DateUtil.newDateTime;
 
 public class CareServiceTest extends BaseUnitTest {
     CareService careService;
@@ -373,20 +374,20 @@ public class CareServiceTest extends BaseUnitTest {
     @Test
     public void shouldCreatePNCSchedulesForChild() {
         String patientId = "Id";
-        LocalDate registrationDate = newDate(2012, 12, 2);
         LocalDate birthDate = newDate(2012, 12, 21);
         Time birthTime = new Time(2, 3);
         PatientCare pnc1 = new PatientCare("PNC1", birthDate, birthTime);
         PatientCare pnc2 = new PatientCare("PNC2", birthDate, birthTime);
         setupPatient(patientId, null);
         when(mockPatient.pncBabyProgramsToEnrollOnRegistration()).thenReturn(asList(pnc1, pnc2));
+        when(mockPatient.dateOfBirth()).thenReturn(newDateTime(birthDate, birthTime));
 
-        careService.enrollChildForPNC(mockPatient, registrationDate);
+        careService.enrollChildForPNC(mockPatient);
         ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, times(2)).enroll(requestCaptor.capture());
         List<EnrollmentRequest> requests = requestCaptor.getAllValues();
-        assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, pnc1, registrationDate, null));
-        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, pnc2, registrationDate, null));
+        assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, pnc1, birthDate, null));
+        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, pnc2, birthDate, null));
     }
 
     private void verifyIfScheduleEnrolled(int indexForSchedule, String patientId, LocalDate startingOn, LocalDate enrollmentDate, String enrollmentName) {

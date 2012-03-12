@@ -41,6 +41,7 @@ public class Constants {
     public static final String OBSERVATION_YES = "Y";
 
     public static final String PATTERN_YYYY_MM_DD = "yyyy-MM-dd";
+    public static final String PATTERN_DD_MMM_YYYY = "dd MMM yyyy";
 
     public static final String NOT_FOUND = "not found";
     public static final String INSUFFICIENT_SEARCH_CRITERIA = "Insufficient search criteria provided";

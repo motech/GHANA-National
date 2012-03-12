@@ -73,6 +73,7 @@ public class PregnancyService {
                 allEncounters.persistEncounter(encounterFactory.createBirthEncounter(childRequest, savedChild.getMrsPatient(), staff, facility, birthDate));
                 careService.enroll(new CwcVO(staff.getSystemId(), facility.mrsFacilityId(), birthDate, savedChild.getMotechId(),
                         Collections.<CwcCareHistory>emptyList(), null, null, null, null, null, null, null, null, null, null, savedChild.getMotechId(), false));
+                careService.enrollChildForPNC(request.getPatient());
             }
         }
         MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(request.getPatient().getMotechId());

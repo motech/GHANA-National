@@ -38,7 +38,7 @@ public class MessageDispatcherTest extends BaseUnitTest {
             add(SMS.fromText("C", "ph", null, null, alphabeticalOrder));
             add(SMS.fromText("A", "ph", null, null, alphabeticalOrder));
         }};
-        assertThat(dispatcher.aggregateSMS(messagesList).getText(), is(equalTo("A #B #C")));
+        assertThat(dispatcher.aggregateSMS(messagesList).getText(), is(equalTo("A%0aB%0aC")));
     }
 
     @Test
