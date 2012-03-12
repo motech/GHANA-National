@@ -67,7 +67,7 @@ public class AllSchedulesTest {
         allSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
 
         verify(mockScheduleTrackingService).enroll(anyEnrollmentRequest);
-        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, null, null);
+        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, null);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class AllSchedulesTest {
         allSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
 
         verify(mockScheduleTrackingService, never()).enroll(anyEnrollmentRequest);
-        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, null, null);
+        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, null);
     }
 
     @Test

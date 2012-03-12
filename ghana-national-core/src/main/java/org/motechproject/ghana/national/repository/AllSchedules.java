@@ -29,7 +29,10 @@ public class AllSchedules {
     }
 
     public void enrollOrFulfill(EnrollmentRequest enrollmentRequest, LocalDate fulfillmentDate) {
-        enrollOrFulfill(enrollmentRequest, fulfillmentDate, null);
+        if (enrollment(enrollmentRequest) == null) {
+            enroll(enrollmentRequest);
+        }
+        fulfilCurrentMilestone(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName(), fulfillmentDate);
     }
 
     public void enroll(EnrollmentRequest enrollmentRequest) {
