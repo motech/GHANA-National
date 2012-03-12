@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.joda.time.LocalDate;
-import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.domain.RegistrationToday;
@@ -45,7 +44,7 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
 
-    @Test
+    @Test(enabled = false)
     public void shouldUploadANCVisitFormSuccessfully() throws SchedulerException {
         // create
         final String staffId = staffGenerator.createStaff(browser, homePage);
@@ -147,7 +146,7 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
         for (String jobName : jobNames) {
             if (jobName.contains(format("%s-%s", EventKeys.APPOINTMENT_REMINDER_EVENT_SUBJECT, enrollmentId))) {
                 Trigger[] triggersOfJob = scheduler.getTriggersOfJob(jobName, jobGroupName);
-                Assert.assertEquals(1, triggersOfJob.length);
+                assertEquals(1, triggersOfJob.length);
                 alertTriggers.add((CronTrigger) triggersOfJob[0]);
             }
         }
