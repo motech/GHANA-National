@@ -76,7 +76,7 @@ public class DeliveryFormHandlerTest {
         deliveryForm.setOutcome(ChildDeliveryOutcome.TRIPLETS);
         deliveryForm.setDeliveryLocation(ChildDeliveryLocation.GOVERNMENT_HOSPITAL);
         deliveryForm.setDeliveredBy(ChildDeliveredBy.DOCTOR);
-        deliveryForm.setComplications(DeliveryComplications.OTHER);
+        deliveryForm.setComplications(DeliveryComplications.OTHER.name());
         deliveryForm.setVvf(VVF.REFERRED);
         deliveryForm.setMaternalDeath(false);
 
@@ -137,7 +137,7 @@ public class DeliveryFormHandlerTest {
         assertEquals(deliveryForm.getOutcome(), deliveryRequest.getChildDeliveryOutcome());
         assertEquals(deliveryForm.getDeliveryLocation(), deliveryRequest.getChildDeliveryLocation());
         assertEquals(deliveryForm.getDeliveredBy(), deliveryRequest.getChildDeliveredBy());
-        assertEquals(deliveryForm.getComplications(), deliveryRequest.getDeliveryComplications());
+        assertEquals(deliveryForm.getDeliveryComplications(), deliveryRequest.getDeliveryComplications());
         assertEquals(deliveryForm.getVvf(), deliveryRequest.getVvf());
         assertEquals(deliveryForm.getMaternalDeath(), deliveryRequest.getMaternalDeath());
 
@@ -184,12 +184,11 @@ public class DeliveryFormHandlerTest {
         deliveryForm.setMaleInvolved(false);
         deliveryForm.setMaternalDeath(true);
 
-
         deliveryForm.setMode(ChildDeliveryMode.C_SECTION);
         deliveryForm.setOutcome(ChildDeliveryOutcome.TRIPLETS);
         deliveryForm.setDeliveryLocation(ChildDeliveryLocation.GOVERNMENT_HOSPITAL);
         deliveryForm.setDeliveredBy(ChildDeliveredBy.DOCTOR);
-        deliveryForm.setComplications(DeliveryComplications.OTHER);
+        deliveryForm.setComplications(DeliveryComplications.OTHER.name());
         deliveryForm.setVvf(VVF.REFERRED);
 
         deliveryForm.setChild1Outcome(BirthOutcome.ALIVE);
@@ -249,7 +248,7 @@ public class DeliveryFormHandlerTest {
         assertEquals(deliveryForm.getOutcome(), deliveryRequest.getChildDeliveryOutcome());
         assertEquals(deliveryForm.getDeliveryLocation(), deliveryRequest.getChildDeliveryLocation());
         assertEquals(deliveryForm.getDeliveredBy(), deliveryRequest.getChildDeliveredBy());
-        assertEquals(deliveryForm.getComplications(), deliveryRequest.getDeliveryComplications());
+        assertEquals(deliveryForm.getDeliveryComplications(), deliveryRequest.getDeliveryComplications());
         assertEquals(deliveryForm.getVvf(), deliveryRequest.getVvf());
         assertEquals(deliveryForm.getMaternalDeath(), deliveryRequest.getMaternalDeath());
 

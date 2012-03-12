@@ -10,6 +10,7 @@ import org.motechproject.ghana.national.service.request.PregnancyTerminationRequ
 import org.motechproject.mrs.model.*;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,10 +52,9 @@ public class PregnancyEncounterFactoryTest {
         final Date terminationDate = new Date();
         request.setTerminationDate(terminationDate);
 
-        Encounter encounter = factory.createTerminationEncounter(request);
+        Encounter encounter = factory.createTerminationEncounter(request, null);
 
         Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Boolean>(terminationDate, PREGNANCY_STATUS.getName(), false));
             add(new MRSObservation<Integer>(terminationDate, TERMINATION_TYPE.getName(), 2));
             add(new MRSObservation<Integer>(terminationDate, TERMINATION_PROCEDURE.getName(), 1));
             add(new MRSObservation<Integer>(terminationDate, TERMINATION_COMPLICATION.getName(), 1));
@@ -94,7 +94,7 @@ public class PregnancyEncounterFactoryTest {
                 .maleInvolved(Boolean.FALSE)
                 .childDeliveryLocation(ChildDeliveryLocation.GOVERNMENT_HOSPITAL)
                 .childDeliveredBy(ChildDeliveredBy.CHO_OR_CHN)
-                .deliveryComplications(DeliveryComplications.OTHER)
+                .deliveryComplications(Arrays.asList(DeliveryComplications.OTHER))
                 .vvf(VVF.REFERRED)
                 .maternalDeath(Boolean.FALSE)
                 .comments("comments");
@@ -122,7 +122,7 @@ public class PregnancyEncounterFactoryTest {
             add(new MRSObservation<Boolean>(deliveryDate, MALE_INVOLVEMENT.getName(), pregnancyDeliveryRequest.getMaleInvolved()));
             add(new MRSObservation<Integer>(deliveryDate, DELIVERY_LOCATION.getName(), Integer.parseInt(pregnancyDeliveryRequest.getChildDeliveryLocation().getValue())));
             add(new MRSObservation<Integer>(deliveryDate, DELIVERED_BY.getName(), Integer.parseInt(pregnancyDeliveryRequest.getChildDeliveredBy().getValue())));
-            add(new MRSObservation<Integer>(deliveryDate, DELIVERY_COMPLICATION.getName(), Integer.parseInt(pregnancyDeliveryRequest.getDeliveryComplications().getValue())));
+            add(new MRSObservation<Integer>(deliveryDate, DELIVERY_COMPLICATION.getName(), Integer.parseInt(pregnancyDeliveryRequest.getDeliveryComplications().get(0).getValue())));
             add(new MRSObservation<Integer>(deliveryDate, VVF_REPAIR.getName(), Integer.parseInt(pregnancyDeliveryRequest.getVvf().getValue())));
             add(new MRSObservation<Boolean>(deliveryDate, MATERNAL_DEATH.getName(), pregnancyDeliveryRequest.getMaternalDeath()));
             add(new MRSObservation<String>(deliveryDate, COMMENTS.getName(), pregnancyDeliveryRequest.getComments()));
@@ -144,7 +144,6 @@ public class PregnancyEncounterFactoryTest {
         MRSFacility mrsFacility = new MRSFacility("122");
         Facility facility = new Facility(mrsFacility);
         MRSPatient mrsPatient = new MRSPatient("12");
-        Patient patient = new Patient(mrsPatient);
         MRSUser staff = new MRSUser();
         final Date birthDate = new Date();
         final String childWeight = "1.2";

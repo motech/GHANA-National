@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.factory;
 
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.DeliveryComplications;
 import org.motechproject.ghana.national.domain.Encounter;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
@@ -21,18 +22,17 @@ import static org.motechproject.ghana.national.tools.Utility.safeParseInteger;
 
 public class PregnancyEncounterFactory extends BaseObservationFactory {
 
-    public Encounter createTerminationEncounter(PregnancyTerminationRequest pregnancyTerminationRequest) {
+    public Encounter createTerminationEncounter(PregnancyTerminationRequest pregnancyTerminationRequest, MRSObservation activePregnancyObservation) {
         return new Encounter(pregnancyTerminationRequest.getPatient().getMrsPatient(), pregnancyTerminationRequest.getStaff(),
-                pregnancyTerminationRequest.getFacility(), PREG_TERM_VISIT, pregnancyTerminationRequest.getTerminationDate(), preparePregnancyTerminationObservations(pregnancyTerminationRequest));
+                pregnancyTerminationRequest.getFacility(), PREG_TERM_VISIT, pregnancyTerminationRequest.getTerminationDate(), preparePregnancyTerminationObservations(pregnancyTerminationRequest, activePregnancyObservation));
     }
 
-    private Set<MRSObservation> preparePregnancyTerminationObservations(PregnancyTerminationRequest request) {
+    private Set<MRSObservation> preparePregnancyTerminationObservations(PregnancyTerminationRequest request, MRSObservation activePregnancyObservation) {
         Set<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
 
         for (String complication : request.getComplications()) {
             setObservation(mrsObservations, request.getTerminationDate(), TERMINATION_COMPLICATION.getName(), safeParseInteger(complication));
         }
-        setObservation(mrsObservations, request.getTerminationDate(), PREGNANCY_STATUS.getName(), false);
         setObservation(mrsObservations, request.getTerminationDate(), TERMINATION_TYPE.getName(), safeParseInteger(request.getTerminationType()));
         String terminationProcedure = request.getTerminationProcedure();
         if (!terminationProcedure.equals(Constants.NOT_APPLICABLE)) {
@@ -43,6 +43,10 @@ public class PregnancyEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, request.getTerminationDate(), COMMENTS.getName(), request.getComments());
         setObservation(mrsObservations, request.getTerminationDate(), POST_ABORTION_FP_ACCEPTED.getName(), request.getPostAbortionFPAccepted());
         setObservation(mrsObservations, request.getTerminationDate(), POST_ABORTION_FP_COUNSELING.getName(), request.getPostAbortionFPCounselling());
+        if (activePregnancyObservation != null) {
+            activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(request.getTerminationDate(), PREGNANCY_STATUS.getName(), false));
+            mrsObservations.add(activePregnancyObservation);
+        }
         return mrsObservations;
     }
 
@@ -61,24 +65,26 @@ public class PregnancyEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, deliveryDate, MALE_INVOLVEMENT.getName(), pregnancyDeliveryRequest.getMaleInvolved());
         setObservation(mrsObservations, deliveryDate, DELIVERY_LOCATION.getName(), safeEnumValue(pregnancyDeliveryRequest.getChildDeliveryLocation()));
         setObservation(mrsObservations, deliveryDate, DELIVERED_BY.getName(), safeEnumValue(pregnancyDeliveryRequest.getChildDeliveredBy()));
-        setObservation(mrsObservations, deliveryDate, DELIVERY_COMPLICATION.getName(), safeEnumValue(pregnancyDeliveryRequest.getDeliveryComplications()));
+        for (DeliveryComplications complication : pregnancyDeliveryRequest.getDeliveryComplications()) {
+            setObservation(mrsObservations, deliveryDate, DELIVERY_COMPLICATION.getName(), safeEnumValue(complication));
+        }
         setObservation(mrsObservations, deliveryDate, VVF_REPAIR.getName(), safeEnumValue(pregnancyDeliveryRequest.getVvf()));
         setObservation(mrsObservations, deliveryDate, MATERNAL_DEATH.getName(), pregnancyDeliveryRequest.getMaternalDeath());
         setObservation(mrsObservations, deliveryDate, COMMENTS.getName(), pregnancyDeliveryRequest.getComments());
-        activePregnancyObservation.addDependantObservation(new MRSObservation(deliveryDate,PREGNANCY_STATUS.getName(),Boolean.FALSE));
+        activePregnancyObservation.addDependantObservation(new MRSObservation(deliveryDate, PREGNANCY_STATUS.getName(), Boolean.FALSE));
         mrsObservations.add(activePregnancyObservation);
 
         for (DeliveredChildRequest deliveredChildRequest : pregnancyDeliveryRequest.getDeliveredChildRequests()) {
-             setObservation(mrsObservations, deliveryDate, BIRTH_OUTCOME.getName(), deliveredChildRequest.getChildBirthOutcome().getValue());
+            setObservation(mrsObservations, deliveryDate, BIRTH_OUTCOME.getName(), deliveredChildRequest.getChildBirthOutcome().getValue());
         }
         return mrsObservations;
     }
 
     public Encounter createBirthEncounter(DeliveredChildRequest childRequest, MRSPatient mrsPatient, MRSUser staff, Facility facility, Date birthDate) {
         HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
-        setObservation(mrsObservations,birthDate, WEIGHT_KG.getName(), safeParseDouble(childRequest.getChildWeight()));
+        setObservation(mrsObservations, birthDate, WEIGHT_KG.getName(), safeParseDouble(childRequest.getChildWeight()));
 
-        Encounter encounter =  new Encounter(mrsPatient, staff,
+        Encounter encounter = new Encounter(mrsPatient, staff,
                 facility, BIRTH_VISIT, birthDate,
                 mrsObservations);
         return encounter;

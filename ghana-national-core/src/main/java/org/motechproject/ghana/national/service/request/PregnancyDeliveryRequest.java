@@ -18,7 +18,7 @@ public class PregnancyDeliveryRequest {
     private Boolean maleInvolved;
     private ChildDeliveryLocation childDeliveryLocation;
     private ChildDeliveredBy childDeliveredBy;
-    private DeliveryComplications deliveryComplications;
+    private List<DeliveryComplications> deliveryComplications;
     private VVF vvf;
     private Boolean maternalDeath;
     private String comments;
@@ -80,7 +80,7 @@ public class PregnancyDeliveryRequest {
         return childDeliveredBy;
     }
 
-    public DeliveryComplications getDeliveryComplications() {
+    public List<DeliveryComplications> getDeliveryComplications() {
         return deliveryComplications;
     }
 
@@ -146,7 +146,7 @@ public class PregnancyDeliveryRequest {
         return this;
     }
 
-    public PregnancyDeliveryRequest deliveryComplications(DeliveryComplications deliveryComplications) {
+    public PregnancyDeliveryRequest deliveryComplications(List<DeliveryComplications> deliveryComplications) {
         this.deliveryComplications = deliveryComplications;
         return this;
     }
