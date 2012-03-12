@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ClientDeathForm;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.util.DateUtil;
@@ -22,12 +23,15 @@ public class ClientDeathFormHandlerTest {
     private ClientDeathFormHandler clientDeathFormHandler;
     @Mock
     private PatientService mockPatientService;
+    @Mock
+    private MobileMidwifeService mockMobileMidwifeService;
 
     @Before
     public void setUp() {
         initMocks(this);
         clientDeathFormHandler = new ClientDeathFormHandler();
         setField(clientDeathFormHandler, "patientService", mockPatientService);
+        setField(clientDeathFormHandler, "mobileMidwifeService", mockMobileMidwifeService);
     }
 
     @Test
@@ -47,6 +51,7 @@ public class ClientDeathFormHandlerTest {
         clientDeathFormHandler.handleFormEvent(event);
 
         verify(mockPatientService).deceasePatient(deathDate, patientMotechId, causeOfDeath, comment);
+        verify(mockMobileMidwifeService).unRegister(patientMotechId);
     }
 
     private ClientDeathForm clientForm(Date deathDate, String causeOfDeath, String comment) {

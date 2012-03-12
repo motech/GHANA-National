@@ -5,6 +5,10 @@ import org.motechproject.ghana.national.domain.*;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.*;
 
 public class DeliveryForm extends FormBean {
@@ -25,7 +29,7 @@ public class DeliveryForm extends FormBean {
     private Boolean maleInvolved;
     private ChildDeliveryLocation deliveryLocation;
     private ChildDeliveredBy deliveredBy;
-    private DeliveryComplications complications;
+    private String complications;
     private VVF vvf;
     private Boolean maternalDeath;
     private String comments;
@@ -135,12 +139,21 @@ public class DeliveryForm extends FormBean {
         this.deliveredBy = deliveredBy;
     }
 
-    public DeliveryComplications getComplications() {
+    public String getComplications() {
         return complications;
     }
 
-    public void setComplications(DeliveryComplications complications) {
+    public void setComplications(String complications) {
         this.complications = complications;
+    }
+
+    public List<DeliveryComplications> getDeliveryComplications() {
+        if (complications == null) return Collections.emptyList();
+        ArrayList<DeliveryComplications> complicationList = new ArrayList<DeliveryComplications>();
+        for (String complication : complications.split(" ")) {
+            complicationList.add(DeliveryComplications.valueOf(complication));
+        }
+        return complicationList;
     }
 
     public VVF getVvf() {

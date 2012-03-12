@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.service;
 
+import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.factory.PregnancyEncounterFactory;
 import org.motechproject.ghana.national.repository.*;
@@ -16,6 +17,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.REGISTER_SUCCESS_SMS_KEY;
 
 @Service
 public class PregnancyService {
@@ -31,10 +36,12 @@ public class PregnancyService {
     private PregnancyEncounterFactory encounterFactory;
     private AllObservations allObservations;
     private CareService careService;
+    private SMSGateway smsGateway;
 
     @Autowired
     public PregnancyService(AllPatients allPatients, AllEncounters allEncounters,
-                            AllSchedules allSchedules, AllAppointments allAppointments, IdentifierGenerator identifierGenerator, AllObservations allObservations, CareService careService) {
+                            AllSchedules allSchedules, AllAppointments allAppointments, IdentifierGenerator identifierGenerator,
+                            AllObservations allObservations, CareService careService, SMSGateway smsGateway) {
         this.allPatients = allPatients;
         this.allEncounters = allEncounters;
         this.allSchedules = allSchedules;
@@ -42,16 +49,30 @@ public class PregnancyService {
         this.identifierGenerator = identifierGenerator;
         this.allObservations = allObservations;
         this.careService = careService;
+        this.smsGateway = smsGateway;
         encounterFactory = new PregnancyEncounterFactory();
     }
 
     public void terminatePregnancy(PregnancyTerminationRequest request) {
-        allEncounters.persistEncounter(encounterFactory.createTerminationEncounter(request));
+        allEncounters.persistEncounter(encounterFactory.createTerminationEncounter(request, allObservations.activePregnancyObservation(request.getPatient().getMotechId())));
         if (request.isDead()) {
             allPatients.deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
         }
-        allSchedules.unEnroll(request.getPatient().getMRSPatientId(), request.getPatient().ancCareProgramsToUnEnroll());
+        allSchedules.unEnroll(request.getPatient().getMRSPatientId(), ScheduleNames.ANC_DELIVERY);
         allAppointments.remove(request.getPatient());
+    }
+
+    private Patient registerChild(DeliveredChildRequest childRequest, Date birthDate, String parentMotechId, Facility facility) {
+        String childMotechId = childRequest.getChildMotechId();
+        if (childRequest.getChildRegistrationType().equals(RegistrationType.AUTO_GENERATE_ID)) {
+            childMotechId = identifierGenerator.newPatientId();
+        }
+        MRSPerson childPerson = new MRSPerson();
+        childPerson.firstName((childRequest.getChildFirstName() != null) ? childRequest.getChildFirstName() : "Baby")
+                .lastName("Baby").dateOfBirth(birthDate).birthDateEstimated(false)
+                .gender((childRequest.getChildSex() != null) ? childRequest.getChildSex() : "?");
+        Patient child = new Patient(new MRSPatient(childMotechId, childPerson, facility.mrsFacility()), parentMotechId);
+        return allPatients.save(child);
     }
 
     public void handleDelivery(PregnancyDeliveryRequest request) {
@@ -59,26 +80,23 @@ public class PregnancyService {
         MRSUser staff = request.getStaff();
         for (DeliveredChildRequest childRequest : request.getDeliveredChildRequests()) {
             if (childRequest.getChildBirthOutcome().equals(BirthOutcome.ALIVE)) {
-                String childMotechId = childRequest.getChildMotechId();
-                if (childRequest.getChildRegistrationType().equals(RegistrationType.AUTO_GENERATE_ID)) {
-                    childMotechId = identifierGenerator.newPatientId();
-                }
-                MRSPerson childPerson = new MRSPerson();
                 Date birthDate = request.getDeliveryDateTime().toDate();
-                childPerson.firstName((childRequest.getChildFirstName() != null) ? childRequest.getChildFirstName() : "Baby")
-                        .lastName("Baby").dateOfBirth(birthDate).birthDateEstimated(false)
-                        .gender((childRequest.getChildSex() != null) ? childRequest.getChildSex() : "?");
-                Patient child = new Patient(new MRSPatient(childMotechId, childPerson, facility.mrsFacility()), request.getPatient().getMotechId());
-                final Patient savedChild = allPatients.save(child);
+                final Patient savedChild = registerChild(childRequest, birthDate, request.getPatient().getMotechId(), facility);
                 allEncounters.persistEncounter(encounterFactory.createBirthEncounter(childRequest, savedChild.getMrsPatient(), staff, facility, birthDate));
                 careService.enroll(new CwcVO(staff.getSystemId(), facility.mrsFacilityId(), birthDate, savedChild.getMotechId(),
                         Collections.<CwcCareHistory>emptyList(), null, null, null, null, null, null, null, null, null, null, savedChild.getMotechId(), false));
                 careService.enrollChildForPNC(request.getPatient());
+                smsGateway.dispatchSMS(REGISTER_SUCCESS_SMS_KEY, new HashMap<String, String>() {{
+                    put(MOTECH_ID, savedChild.getMotechId());
+                    put(FIRST_NAME, savedChild.getFirstName());
+                    put(LAST_NAME, savedChild.getLastName());
+                }}, request.getSender());
             }
         }
+
         MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(request.getPatient().getMotechId());
         allEncounters.persistEncounter(encounterFactory.createDeliveryEncounter(request, activePregnancyObservation));
-        allSchedules.unEnroll(request.getPatient().getMRSPatientId(), request.getPatient().ancCareProgramsToUnEnroll());
+        allSchedules.fulfilCurrentMilestone(request.getPatient().getMRSPatientId(), ScheduleNames.ANC_DELIVERY, request.getDeliveryDateTime().toLocalDate());
         allAppointments.remove(request.getPatient());
     }
 }

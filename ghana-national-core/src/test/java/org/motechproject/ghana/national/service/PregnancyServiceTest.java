@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.factory.PregnancyEncounterFactory;
 import org.motechproject.ghana.national.repository.*;
@@ -18,6 +19,7 @@ import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.Assert.assertFalse;
@@ -26,8 +28,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FIRST_NAME;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.LAST_NAME;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.MOTECH_ID;
 import static org.motechproject.ghana.national.domain.Constants.OTHER_CAUSE_OF_DEATH;
 import static org.motechproject.ghana.national.domain.Constants.PREGNANCY_TERMINATION;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.REGISTER_SUCCESS_SMS_KEY;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 public class PregnancyServiceTest {
@@ -42,6 +48,8 @@ public class PregnancyServiceTest {
     private AllAppointments mockAllAppointments;
     @Mock
     private IdentifierGenerator mockIdentifierGenerator;
+    @Mock
+    private SMSGateway mockSmsGateway;
 
     @Mock
     private  AllObservations mockAllObservations;
@@ -51,7 +59,8 @@ public class PregnancyServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        pregnancyService = new PregnancyService(mockAllPatients, mockAllEncounters, mockAllSchedules, mockAllAppointments, mockIdentifierGenerator, mockAllObservations, mockCareService);
+        pregnancyService = new PregnancyService(mockAllPatients, mockAllEncounters, mockAllSchedules, mockAllAppointments,
+                mockIdentifierGenerator, mockAllObservations, mockCareService, mockSmsGateway);
     }
 
     @Test
@@ -75,7 +84,7 @@ public class PregnancyServiceTest {
         pregnancyService.terminatePregnancy(request);
 
         verify(mockAllPatients).deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
-        verify(mockAllSchedules).unEnroll(patientMRSId, schedules);
+        verify(mockAllSchedules).unEnroll(patientMRSId, ScheduleNames.ANC_DELIVERY);
         verify(mockAllAppointments).remove(mockPatient);
     }
 
@@ -93,7 +102,7 @@ public class PregnancyServiceTest {
 
         pregnancyService.terminatePregnancy(request);
 
-        Encounter expectedEncounter = new PregnancyEncounterFactory().createTerminationEncounter(request);
+        Encounter expectedEncounter = new PregnancyEncounterFactory().createTerminationEncounter(request, null);
         ArgumentCaptor<Encounter> argumentCaptor = ArgumentCaptor.forClass(Encounter.class);
         verify(mockAllEncounters).persistEncounter(argumentCaptor.capture());
 
@@ -120,7 +129,9 @@ public class PregnancyServiceTest {
                 .childRegistrationType(RegistrationType.USE_PREPRINTED_ID).childFirstName(childFirstName)
                 .childWeight(childWeight).childMotechId(childMotechId).childSex(childSex);
 
-        PregnancyDeliveryRequest deliveryRequest = pregnancyDelivery(mockPatient, mockStaff, mockFacility, deliveredChildRequest);
+        DateTime deliveryDate = DateTime.now();
+        String sender = "0987654321";
+        PregnancyDeliveryRequest deliveryRequest = pregnancyDelivery(mockPatient, mockStaff, mockFacility, deliveredChildRequest, deliveryDate, sender);
 
         final Date birthDate = deliveryRequest.getDeliveryDateTime().toDate();
 
@@ -164,7 +175,13 @@ public class PregnancyServiceTest {
         assertThat(actualCWCVO.getPatientMotechId(), is(childMotechId));
         assertThat(actualCWCVO.getFacilityId(), is(facilityId));
 
-        verify(mockAllSchedules).unEnroll(mrsPatient.getId(), mockPatient.ancCareProgramsToUnEnroll());
+        verify(mockSmsGateway).dispatchSMS(REGISTER_SUCCESS_SMS_KEY, new HashMap<String, String>() {{
+            put(MOTECH_ID, childMotechId);
+            put(FIRST_NAME, childFirstName);
+            put(LAST_NAME, childDefaultLastName);
+        }}, sender);
+
+        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatient.getId(), ScheduleNames.ANC_DELIVERY, deliveryDate.toLocalDate());
         verify(mockAllAppointments).remove(mockPatient);
     }
 
@@ -185,14 +202,16 @@ public class PregnancyServiceTest {
         return request;
     }
 
-    private PregnancyDeliveryRequest pregnancyDelivery(Patient mockPatient, MRSUser mockUser, Facility mockFacility, DeliveredChildRequest deliveredChildRequest) {
+    private PregnancyDeliveryRequest pregnancyDelivery(Patient mockPatient, MRSUser mockUser, Facility mockFacility, DeliveredChildRequest deliveredChildRequest, DateTime deliveryDate, String sender) {
         PregnancyDeliveryRequest request = new PregnancyDeliveryRequest();
         request.facility(mockFacility);
         request.patient(mockPatient);
         request.staff(mockUser);
-        request.deliveryDateTime(DateTime.now());
+        request.deliveryDateTime(deliveryDate);
         request.childDeliveryOutcome(ChildDeliveryOutcome.SINGLETON);
         request.addDeliveredChildRequest(deliveredChildRequest);
+        request.deliveryComplications(Arrays.asList(DeliveryComplications.OTHER));
+        request.sender(sender);
 
         return request;
     }

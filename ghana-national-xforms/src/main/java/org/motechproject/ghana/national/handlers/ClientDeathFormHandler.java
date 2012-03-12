@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.ClientDeathForm;
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
@@ -17,6 +18,9 @@ public class ClientDeathFormHandler implements FormPublishHandler {
     @Autowired
     private PatientService patientService;
 
+    @Autowired
+    private MobileMidwifeService mobileMidwifeService;
+
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.clientDeath")
     @LoginAsAdmin
@@ -24,5 +28,6 @@ public class ClientDeathFormHandler implements FormPublishHandler {
     public void handleFormEvent(MotechEvent event) {
         ClientDeathForm clientDeathForm = (ClientDeathForm) event.getParameters().get(Constants.FORM_BEAN);
         patientService.deceasePatient(clientDeathForm.getDate(), clientDeathForm.getMotechId(), clientDeathForm.getCauseOfDeath(), clientDeathForm.getComment());
+        mobileMidwifeService.unRegister(clientDeathForm.getMotechId());
     }
 }

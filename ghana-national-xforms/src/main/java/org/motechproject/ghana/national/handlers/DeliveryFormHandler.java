@@ -50,8 +50,9 @@ public class DeliveryFormHandler implements FormPublishHandler {
             DeliveryForm deliveryForm = (DeliveryForm) event.getParameters().get(Constants.FORM_BEAN);
             PregnancyDeliveryRequest deliveryRequest = createDeliveryRequest(deliveryForm);
             pregnancyService.handleDelivery(deliveryRequest);
+            mobileMidwifeService.unRegister(deliveryForm.getMotechId());
+
             if (!deliveryForm.getMaternalDeath()) {
-                mobileMidwifeService.unRegister(deliveryForm.getMotechId());
                 careService.enrollMotherForPNC(deliveryRequest.getPatient(), deliveryRequest.getDeliveryDateTime());
             } else {
                 patientService.deceasePatient(deliveryForm.getDate().toDate(), deliveryForm.getMotechId(), "OTHER", "Delivery");
@@ -77,7 +78,7 @@ public class DeliveryFormHandler implements FormPublishHandler {
                 .maleInvolved(deliveryForm.getMaleInvolved())
                 .childDeliveryLocation(deliveryForm.getDeliveryLocation())
                 .childDeliveredBy(deliveryForm.getDeliveredBy())
-                .deliveryComplications(deliveryForm.getComplications())
+                .deliveryComplications(deliveryForm.getDeliveryComplications())
                 .vvf(deliveryForm.getVvf())
                 .maternalDeath(deliveryForm.getMaternalDeath())
                 .comments(deliveryForm.getComments())

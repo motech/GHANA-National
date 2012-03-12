@@ -10,6 +10,7 @@ import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -144,9 +145,7 @@ public class PregnancyTerminationForm extends FormBean {
     public List<String> getTerminationComplications(){
         List<String> terminationComplications = new ArrayList<String>();
         if (StringUtils.isNotEmpty(complications)) {
-            for (String value : complications.split(" ")) {
-                terminationComplications.add(value);
-            }
+            Collections.addAll(terminationComplications, complications.split(" "));
         }
         return terminationComplications;
     }
