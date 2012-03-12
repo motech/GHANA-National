@@ -85,7 +85,7 @@ public class PregnancyService {
                 allEncounters.persistEncounter(encounterFactory.createBirthEncounter(childRequest, savedChild.getMrsPatient(), staff, facility, birthDate));
                 careService.enroll(new CwcVO(staff.getSystemId(), facility.mrsFacilityId(), birthDate, savedChild.getMotechId(),
                         Collections.<CwcCareHistory>emptyList(), null, null, null, null, null, null, null, null, null, null, savedChild.getMotechId(), false));
-                careService.enrollChildForPNC(request.getPatient());
+                careService.enrollChildForPNC(savedChild);
                 smsGateway.dispatchSMS(REGISTER_SUCCESS_SMS_KEY, new HashMap<String, String>() {{
                     put(MOTECH_ID, savedChild.getMotechId());
                     put(FIRST_NAME, savedChild.getFirstName());
