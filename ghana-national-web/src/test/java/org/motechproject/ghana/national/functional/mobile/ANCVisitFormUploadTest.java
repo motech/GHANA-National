@@ -44,7 +44,7 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
 
-    @Test(enabled = false)
+    @Test
     public void shouldUploadANCVisitFormSuccessfully() throws SchedulerException {
         // create
         final String staffId = staffGenerator.createStaff(browser, homePage);
