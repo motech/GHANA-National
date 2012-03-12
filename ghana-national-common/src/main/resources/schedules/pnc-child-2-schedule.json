@@ -1,20 +1,20 @@
 {
-    "name" : "PNC-BABY-3",
+    "name" : "PNC-CHILD-2",
     "milestones" : [
         {
-            "name" : "PNC-BABY-3",
+            "name" : "PNC-C2",
             "scheduleWindows" : {
-                "earliest" : ["12 Days"],
-                "due" : ["14 Days"],
-                "late" : ["14 Days"],
-                "max" : ["21 Days"]
+                "earliest" : ["5 Days"],
+                "due" : ["7 Days"],
+                "late" : ["7 Days"],
+                "max" : ["12 Days"]
             },
             "alerts" : [
                 {
                     "window" : "earliest",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["12 Days"]
+                    "offset" : ["5 Days"]
                 },
                 {
                     "window" : "late",
@@ -26,7 +26,7 @@
                     "window" : "max",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["7 Days"]
+                    "offset" : ["5 Days"]
                 }
             ]
         }

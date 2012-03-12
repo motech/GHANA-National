@@ -2,7 +2,7 @@ package org.motechproject.ghana.national.domain;
 
 public enum PNCChildVisit {
 
-    PNC1(1, "PNC-BABY-1"), PNC2(2, "PNC-BABY-2"), PNC3(3, "PNC-BABY-3");
+    PNC1(1, "PNC-CHILD-1"), PNC2(2, "PNC-CHILD-2"), PNC3(3, "PNC-CHILD-3");
 
     private int visitNo;
     private String scheduleName;

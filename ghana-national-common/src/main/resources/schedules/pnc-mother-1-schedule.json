@@ -2,7 +2,7 @@
     "name" : "PNC-MOTHER-1",
     "milestones" : [
         {
-            "name" : "PNC-MOTHER-1",
+            "name" : "PNC-M1",
             "scheduleWindows" : {
                 "earliest" : ["6 Hours"],
                 "due" : ["12 Hours"],

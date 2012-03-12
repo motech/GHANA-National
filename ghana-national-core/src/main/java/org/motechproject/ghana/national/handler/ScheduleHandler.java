@@ -48,7 +48,7 @@ public class ScheduleHandler {
     }
 
     private boolean isPNCChildSchedule(String scheduleName) {
-        return scheduleName.equals(PNC_BABY_1) || scheduleName.equals(PNC_BABY_2) || scheduleName.equals(PNC_BABY_3);
+        return scheduleName.equals(PNC_CHILD_1) || scheduleName.equals(PNC_CHILD_2) || scheduleName.equals(PNC_CHILD_3);
     }
 
     private boolean isPNCMotherSchedule(String scheduleName) {

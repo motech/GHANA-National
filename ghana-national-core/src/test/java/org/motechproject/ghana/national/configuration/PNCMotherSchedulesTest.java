@@ -225,7 +225,7 @@ public class PNCMotherSchedulesTest extends BaseScheduleTrackingTest {
         DateTime dateOfBirth = newDateWithTime("30-Jan-2012", "14:25:12");
         mockToday(newDateWithTime("06-Feb-2012", "14:25:12"));
 
-        enrollmentId = scheduleAlertForPNCMother(dateOfBirth, PNC_BABY_2);
+        enrollmentId = scheduleAlertForPNCMother(dateOfBirth, PNC_CHILD_2);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 // when seconds are left cause alerts to be missed
                 alert(max, newDateWithTime("11-Feb-2012", "14:25").toDate())
@@ -237,7 +237,7 @@ public class PNCMotherSchedulesTest extends BaseScheduleTrackingTest {
         DateTime dateOfBirth = newDateWithTime("30-Jan-2012", "14:25:12");
         mockToday(newDateWithTime("06-Feb-2012", "14:25:12"));
 
-        enrollmentId = scheduleAlertForPNCMother(dateOfBirth, PNC_BABY_3);
+        enrollmentId = scheduleAlertForPNCMother(dateOfBirth, PNC_CHILD_3);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 // seconds are not considered
                 alert(earliest, newDateWithTime("11-Feb-2012", "14:25").toDate()),
