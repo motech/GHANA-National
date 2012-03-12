@@ -31,12 +31,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentCaptor.forClass;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.domain.Concept.*;
-import static org.motechproject.util.DateUtil.newDate;
-import static org.motechproject.util.DateUtil.today;
+import static org.motechproject.ghana.national.domain.PNCChildVisit.*;
+import static org.motechproject.util.DateUtil.*;
 
 public class ChildVisitServiceTest extends BaseUnitTest {
     private ChildVisitService service;
@@ -71,18 +72,28 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
     @Test
     public void shouldCreateEncounterForPNCBabyWithAllInfo() {
+        String patientId = "mrsPatientId";
         MRSUser staff = mock(MRSUser.class);
         Facility facility = mock(Facility.class);
-        Patient patient = mock(Patient.class);
-        PNCBabyRequest pncBabyRequest = createTestPNCBabyForm(DateTime.now(), staff, facility, patient);
+        Patient patient = new Patient(new MRSPatient(patientId, "motechId", new MRSPerson().dateOfBirth(newDate(2011, 3, 30).toDate()), new MRSFacility(null)));
+        DateTime visitDate = newDateTime(2012, 2, 2, 9, 8, 8);
+        Time visitTime = time(visitDate);
+        PNCBabyRequest pncBabyRequest = createTestPNCBabyForm(visitDate, staff, facility, patient).visit(PNC2.visitNumber());
 
+        DateTime today = visitDate.plusDays(1);
+        mockCurrentDate(today);
         ChildVisitService spyService = spy(service);
         spyService.save(pncBabyRequest);
 
         ArgumentCaptor<Encounter> encounterCaptor = ArgumentCaptor.forClass(Encounter.class);
         verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
-    }
 
+        ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedules).enrollOrFulfill(requestCaptor.capture(), eq(visitDate.toLocalDate()), eq(visitTime));
+        assertEnrollmentRequest(new EnrollmentRequest(patientId, PNC2.scheduleName(), time(today), visitDate.toLocalDate(), visitTime, visitDate.toLocalDate(), visitTime, null)
+                , requestCaptor.getValue());
+    }
+  
     private PNCBabyRequest createTestPNCBabyForm(DateTime date, MRSUser staff, Facility facility, Patient patient) {
         PNCBabyRequest pncBabyRequest = new PNCBabyRequest();
         return pncBabyRequest.staff(staff).

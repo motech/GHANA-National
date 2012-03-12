@@ -67,7 +67,7 @@ public class AllSchedulesTest {
         allSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
 
         verify(mockScheduleTrackingService).enroll(anyEnrollmentRequest);
-        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, null);
+        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, null, null);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class AllSchedulesTest {
         allSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
 
         verify(mockScheduleTrackingService, never()).enroll(anyEnrollmentRequest);
-        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, null);
+        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, null, null);
     }
 
     @Test
@@ -96,8 +96,15 @@ public class AllSchedulesTest {
         String externalId = "123";
         String scheduleName = "scheduleName";
         LocalDate fulfillmentDate = new LocalDate();
+
         allSchedules.fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
         verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, fulfillmentDate);
+
+        reset(mockScheduleTrackingService);
+
+        Time fulfillmentTime = new Time(2, 3);
+        allSchedules.fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate, fulfillmentTime);
+        verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, fulfillmentDate, fulfillmentTime);
     }
 
     @Test

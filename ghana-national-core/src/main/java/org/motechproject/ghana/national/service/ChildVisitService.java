@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.service;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.IPTVaccine;
 import org.motechproject.ghana.national.domain.Patient;
@@ -11,8 +12,8 @@ import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.request.PNCBabyRequest;
 import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.mrs.model.MRSEncounter;
-import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
+import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.domain.Concept.MEASLES;
 import static org.motechproject.ghana.national.domain.Concept.YF;
 import static org.motechproject.util.DateUtil.newDate;
+import static org.motechproject.util.DateUtil.time;
 
 @Service
 public class ChildVisitService {
@@ -44,6 +46,11 @@ public class ChildVisitService {
     }
 
     public MRSEncounter save(PNCBabyRequest pncBabyRequest) {
+        DateTime visitDate = pncBabyRequest.getDate();
+        Patient patient = pncBabyRequest.getPatient();
+        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.pncProgramToFulfilOnVisit(pncBabyRequest.getVisit(), visitDate)
+                , visitDate);
+        allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate.toLocalDate(), time(visitDate));
         return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(pncBabyRequest));
     }
 
