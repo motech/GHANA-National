@@ -57,7 +57,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         MRSUser staff = mock(MRSUser.class);
         Facility facility = mock(Facility.class);
         Patient patient = mock(Patient.class);
-        when(patient.pentaPatientCare()).thenReturn(new PatientCare(CWC_PENTA, DateUtil.today()));
+        when(patient.pentaPatientCare(Matchers.<LocalDate>any())).thenReturn(new PatientCare(CWC_PENTA, DateUtil.today(), today()));
         CWCVisit cwcVisit = createTestCWCVisit(new Date(), staff, facility, patient);
 
         ChildVisitService spyService = spy(service);
@@ -152,7 +152,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
     public void shouldEnrollAndFulfillPentaScheduleIfNotEnrolledEarlier() {
         String mrsPatientId = "mrsPatientId";
         Patient patient = mock(Patient.class);
-        when(patient.pentaPatientCare()).thenReturn(new PatientCare(CWC_PENTA, DateUtil.today()));
+        when(patient.pentaPatientCare(Matchers.<LocalDate>any())).thenReturn(new PatientCare(CWC_PENTA, DateUtil.today(), today()));
         when(patient.getMRSPatientId()).thenReturn(mrsPatientId);
         when(mockAllSchedules.enrollment(any(EnrollmentRequest.class))).thenReturn(null);
 

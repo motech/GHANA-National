@@ -128,7 +128,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         motherVisitService.enrollOrFulfillPNCSchedulesForMother(createTestPncRequest(patient));
         
         verify(mockAllEncounters).persistEncounter(org.mockito.Matchers.<Encounter>any());
-        verify(mockAllSchedules, times(3)).enrollOrFulfill(org.mockito.Matchers.<EnrollmentRequest>any(), org.mockito.Matchers.<LocalDate>any());
+        verify(mockAllSchedules, times(1)).enrollOrFulfill(org.mockito.Matchers.<EnrollmentRequest>any(), org.mockito.Matchers.<LocalDate>any());
     }
 
     private PNCMotherRequest createTestPncRequest(Patient patient) {

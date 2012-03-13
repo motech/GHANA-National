@@ -12,7 +12,6 @@ import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.vo.*;
-import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
@@ -29,7 +28,8 @@ import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
 import static org.motechproject.ghana.national.domain.RegistrationToday.TODAY;
 import static org.motechproject.ghana.national.tools.Utility.safeParseInteger;
-import static org.motechproject.util.DateUtil.*;
+import static org.motechproject.util.DateUtil.newDate;
+import static org.motechproject.util.DateUtil.now;
 
 @Service
 public class CareService {
@@ -54,9 +54,9 @@ public class CareService {
     }
 
     void enrollToCWCCarePrograms(Date registrationDate, Patient patient) {
-        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration();
+        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(newDate(registrationDate));
         for (PatientCare patientCare : patientCares) {
-            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare, newDate(registrationDate)));
+            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare));
         }
     }
 
@@ -67,23 +67,21 @@ public class CareService {
 
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), ANC_REG_VISIT.value(), registrationDate, prepareObservations(ancVO));
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, registerPregnancy(ancVO, patient));
-        enrollPatientCares(patient.ancCareProgramsToEnrollOnRegistration(expectedDeliveryDate), patient, newDate(registrationDate), null);
+        enrollPatientCares(patient.ancCareProgramsToEnrollOnRegistration(expectedDeliveryDate, newDate(registrationDate)), patient);
     }
 
     public void enrollMotherForPNC(Patient patient, DateTime deliveryDateTime) {
-        enrollPatientCares(patient.pncMotherProgramsToEnrollOnRegistration(), patient, deliveryDateTime.toLocalDate(), time(deliveryDateTime));
+        enrollPatientCares(patient.pncMotherProgramsToEnrollOnRegistration(deliveryDateTime), patient);
     }
 
-    void enrollPatientCares(List<PatientCare> patientCares, Patient patient, LocalDate registrationDate, Time time) {
+    void enrollPatientCares(List<PatientCare> patientCares, Patient patient) {
         for (PatientCare patientCare : patientCares) {
-            if(time != null) allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare, newDateTime(registrationDate, time)));
-            else allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare, registrationDate));
+            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare));
         }
     }
 
     public void enrollChildForPNCOnDelivery(Patient child) {
-        DateTime registrationDate = child.dateOfBirth();
-        enrollPatientCares(child.pncBabyProgramsToEnrollOnRegistration(), child, registrationDate.toLocalDate(), time(registrationDate));
+        enrollPatientCares(child.pncBabyProgramsToEnrollOnRegistration(), child);
     }
 
     private Set<MRSObservation> prepareObservations(ANCVO ancVO) {

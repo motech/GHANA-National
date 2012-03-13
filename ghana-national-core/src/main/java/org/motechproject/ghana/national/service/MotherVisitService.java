@@ -2,10 +2,7 @@ package org.motechproject.ghana.national.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.IPTVaccine;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientCare;
-import org.motechproject.ghana.national.domain.TTVaccine;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.factory.MotherVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllAppointments;
@@ -21,9 +18,9 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 
+import static java.lang.Integer.parseInt;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_DELIVERY;
 import static org.motechproject.ghana.national.domain.IPTVaccine.createFromANCVisit;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
@@ -78,9 +75,10 @@ public class MotherVisitService {
         Set<MRSObservation> eddObservations = allObservations.updateEDD(ancVisit.getEstDeliveryDate(), ancVisit.getPatient(), ancVisit.getStaff().getId());
         if (CollectionUtils.isNotEmpty(eddObservations)) {
             mrsObservations.addAll(eddObservations);
-            PatientCare ancDeliveryCare = new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(newDate(ancVisit.getEstDeliveryDate())).dateOfConception());
+            LocalDate conceptionDate = basedOnDeliveryDate(newDate(ancVisit.getEstDeliveryDate())).dateOfConception();
+            PatientCare ancDeliveryCare = new PatientCare(ANC_DELIVERY, conceptionDate, newDate(ancVisit.getDate()));
             EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(ancVisit.getPatient(),
-                    ancDeliveryCare, newDate(ancVisit.getDate()), null);
+                    ancDeliveryCare);
             allSchedules.enroll(enrollmentRequest);
         }
     }
@@ -93,17 +91,16 @@ public class MotherVisitService {
     public void enrollOrFulfillScheduleIPTp(IPTVaccine iptVaccine) {
         Patient patient = iptVaccine.getGivenTo();
         LocalDate visitDate = iptVaccine.getVaccinationDate();
-        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.ancIPTPatientCareEnrollOnVisitAfter19Weeks(visitDate), visitDate, iptVaccine.getIptMilestone());
+        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.ancIPTPatientCareEnrollOnVisitAfter19Weeks(visitDate), iptVaccine.getIptMilestone());
         allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
     }
 
     public void enrollOrFulfillPNCSchedulesForMother(PNCMotherRequest pncMotherRequest) {
         Patient patient = pncMotherRequest.getPatient();
         allEncounters.persistEncounter(new MotherVisitEncounterFactory().createEncounter(pncMotherRequest));
-        List<PatientCare> patientCares = patient.pncMotherProgramsToEnrollOnRegistration();
+        PNCMotherVisit pncMotherVisit = PNCMotherVisit.byVisitNumber(parseInt(pncMotherRequest.getVisitNumber()));
+        PatientCare patientCare = patient.pncMotherProgramToFulfilOnVisit(pncMotherVisit, pncMotherRequest.getDate());
         LocalDate visitDate = pncMotherRequest.getDate().toLocalDate();
-        for (PatientCare patientCare : patientCares) {
-            allSchedules.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient, patientCare, visitDate), visitDate);
-        }
+        allSchedules.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient, patientCare), visitDate);
     }
 }
