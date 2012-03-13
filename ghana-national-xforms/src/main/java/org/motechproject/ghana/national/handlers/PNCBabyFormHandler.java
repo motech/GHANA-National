@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.handlers;
 import org.motechproject.ghana.national.bean.PNCBabyForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.PNCChildVisit;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.service.ChildVisitService;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -60,7 +61,7 @@ public class PNCBabyFormHandler implements FormPublishHandler {
                 .patient(patient)
                 .facility(facility)
                 .staff(staff)
-                .visit(pncBabyForm.getVisitNumber())
+                .visit(PNCChildVisit.byVisitNumber(pncBabyForm.getVisitNumber()))
                 .weight(pncBabyForm.getWeight())
                 .temperature(pncBabyForm.getTemperature())
                 .location(pncBabyForm.getLocation())

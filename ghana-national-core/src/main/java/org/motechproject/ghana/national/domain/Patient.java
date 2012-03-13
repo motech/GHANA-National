@@ -156,19 +156,14 @@ public class Patient {
 
     public List<PatientCare> pncMotherProgramsToEnrollOnRegistration(DateTime deliveryDateTime) {
         List<PatientCare> cares = new ArrayList<PatientCare>();
-        DateTime birthDateTime = childCare().birthTime();
         for (PNCMotherVisit visit : PNCMotherVisit.values()) {
-            cares.add(new PatientCare(visit.scheduleName(), birthDateTime, deliveryDateTime));
+            cares.add(new PatientCare(visit.scheduleName(), deliveryDateTime, deliveryDateTime));
         }
         return cares;
     }
 
-    public PatientCare pncProgramToFulfilOnVisit(PNCChildVisit visit, DateTime visitDateTime) {
-        return new PatientCare(visit.scheduleName(), visitDateTime, visitDateTime);
-    }
-
-    public PatientCare pncMotherProgramToFulfilOnVisit(PNCMotherVisit visit, DateTime visitDateTime) {
-        return new PatientCare(visit.scheduleName(), visitDateTime, visitDateTime);
+    public PatientCare pncProgramToFulfilOnVisit(DateTime visitDateTime, String scheduleName) {
+        return new PatientCare(scheduleName, visitDateTime, visitDateTime);
     }
 
     public String getGender() {

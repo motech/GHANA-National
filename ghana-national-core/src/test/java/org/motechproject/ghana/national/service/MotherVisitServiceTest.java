@@ -42,6 +42,7 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_I
 import static org.motechproject.ghana.national.domain.Concept.IPT;
 import static org.motechproject.ghana.national.domain.Concept.IPT_REACTION;
 import static org.motechproject.ghana.national.domain.EncounterType.ANC_VISIT;
+import static org.motechproject.ghana.national.domain.PNCMotherVisit.*;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.today;
@@ -132,7 +133,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     }
 
     private PNCMotherRequest createTestPncRequest(Patient patient) {
-        return new PNCMotherRequest().maleInvolved(Boolean.TRUE).patient(patient).ttDose("1").visitNumber("1").vitaminA("Y").comments("Comments")
+        return new PNCMotherRequest().maleInvolved(Boolean.TRUE).patient(patient).ttDose("1").visit(PNC1).vitaminA("Y").comments("Comments")
                 .community("House").date(DateUtil.newDateTime(DateUtil.today())).facility(new Facility()).staff(new MRSUser()).location("Outreach").lochiaAmountExcess(Boolean.TRUE)
                 .lochiaColour("1").lochiaOdourFoul(Boolean.TRUE).temperature(10D);
     }

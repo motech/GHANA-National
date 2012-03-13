@@ -119,8 +119,8 @@ public class PNCBabyRequest {
         return this;
     }
 
-    public PNCBabyRequest visit(Integer pncVisitNo) {
-        this.visit = PNCChildVisit.byVisitNumber(pncVisitNo);
+    public PNCBabyRequest visit(PNCChildVisit pncChildVisit) {
+        this.visit = pncChildVisit;
         return this;
     }
 

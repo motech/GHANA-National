@@ -84,7 +84,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             if (registerClientForm.getSender() != null) {
 
                 smsGateway.dispatchSMS(REGISTER_SUCCESS_SMS_KEY,
-                        new SMSTemplate().fillPatientDetails(patient).getRuntimeVariables(), registerClientForm.getSender());
+                        new SMSTemplate().fillPatientDetails(savedPatient).getRuntimeVariables(), registerClientForm.getSender());
             }
         } catch (Exception e) {
             log.error("Exception while saving patient", e);

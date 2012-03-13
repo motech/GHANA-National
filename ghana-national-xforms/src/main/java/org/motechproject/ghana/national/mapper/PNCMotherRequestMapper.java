@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.mapper;
 
 import org.motechproject.ghana.national.bean.PNCMotherForm;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.PNCMotherVisit;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.mrs.model.MRSUser;
@@ -13,7 +14,7 @@ public class PNCMotherRequestMapper {
                 .facility(facility)
                 .staff(staff)
                 .date(pncMotherForm.getDate())
-                .visitNumber(pncMotherForm.getVisitNumber())
+                .visit(PNCMotherVisit.byVisitNumber(pncMotherForm.getVisitNumber()))
                 .vitaminA(pncMotherForm.getVitaminA())
                 .ttDose(pncMotherForm.getTtDose())
                 .lochiaColour(pncMotherForm.getLochiaColour())

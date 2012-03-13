@@ -79,7 +79,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         Patient patient = new Patient(new MRSPatient(patientId, "motechId", new MRSPerson().dateOfBirth(newDate(2011, 3, 30).toDate()), new MRSFacility(null)));
         DateTime visitDate = newDateTime(2012, 2, 2, 9, 8, 8);
         Time visitTime = time(visitDate);
-        PNCBabyRequest pncBabyRequest = createTestPNCBabyForm(visitDate, staff, facility, patient).visit(PNC2.visitNumber());
+        PNCBabyRequest pncBabyRequest = createTestPNCBabyForm(visitDate, staff, facility, patient).visit(PNC2);
 
         DateTime today = visitDate.plusDays(1);
         mockCurrentDate(today);
@@ -113,7 +113,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
                 bcg(false).opv0(false).
                 respiration(12).
                 temperature(32.2d).
-                visit(1);
+                visit(PNC1);
     }
 
     @Test

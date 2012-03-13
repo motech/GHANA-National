@@ -35,7 +35,7 @@ public class PatientTest extends BaseUnitTest {
         Pregnancy pregnancy = basedOnDeliveryDate(todayAs6June2012.plusWeeks(28).plusDays(6).toLocalDate());
 
         List<PatientCare> patientCares = new Patient().ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery(), todayAs6June2012.toLocalDate());
-        assertPatientCare(patientCares.get(0), ANC_DELIVERY, pregnancy.dateOfConception());
+        assertPatientCare(patientCares.get(0), patientCare(ANC_DELIVERY, pregnancy.dateOfConception(), todayAs6June2012.toLocalDate()));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class PatientTest extends BaseUnitTest {
         assertEquals(1, patientCares.size());
         assertThat(patientCares, hasItem(new PatientCare(ANC_DELIVERY, pregnancy.dateOfConception(), todayAs6June2012.toLocalDate())));
     }
-    
+
     @Test
     public void shouldReturnAllCWCCareProgramsApplicableDuringRegistration() {
         LocalDate dateOfBirth = todayAs6June2012.minusMonths(1).toLocalDate();
@@ -101,14 +101,37 @@ public class PatientTest extends BaseUnitTest {
                 new PatientCare(PNC_CHILD_3, dateOfBirth, dateOfBirth)));
     }
 
-    private void assertPatientCare(PatientCare patientCare, String name, LocalDate startingOn) {
-        assertThat(patientCare.name(), is(name));
-        assertThat(patientCare.startingOn(), is(startingOn));
+    @Test
+    public void shouldReturnPatientCaresForPNCMotherProgram() {
+        DateTime deliveryDate = todayAs6June2012.minusDays(10);
+        Patient patient = new Patient(new MRSPatient(null, new MRSPerson(), null));
+        List<PatientCare> cares = patient.pncMotherProgramsToEnrollOnRegistration(deliveryDate);
+        assertPatientCares(cares, asList(
+                new PatientCare(PNC_MOTHER_1, deliveryDate, deliveryDate),
+                new PatientCare(PNC_MOTHER_2, deliveryDate, deliveryDate),
+                new PatientCare(PNC_MOTHER_3, deliveryDate, deliveryDate)));
+    }
+
+    private void assertPatientCare(PatientCare patientCare, PatientCare expected) {
+        assertThat(patientCare.name(), is(expected.name()));
+        assertThat(patientCare.startingOn(), is(expected.startingOn()));
+        assertThat(patientCare.referenceTime(), is(expected.referenceTime()));
+        assertThat(patientCare.enrollmentDate(), is(expected.enrollmentDate()));
+        assertThat(patientCare.enrollmentTime(), is(expected.enrollmentTime()));
+        assertThat(patientCare.preferredTime(), is(expected.preferredTime()));
     }
 
     private void assertPatientCares(List<PatientCare> actualList, List<PatientCare> expectedList) {
         assertThat(actualList.size(), is(expectedList.size()));
         for(PatientCare expectedCare : expectedList)
             assertThat("Missing " +expectedCare.name(), actualList, hasItem(expectedCare));
+    }
+
+    private PatientCare patientCare(String name, LocalDate reference, LocalDate enrollmentDate) {
+        return new PatientCare(name, reference, enrollmentDate);
+    }
+
+    private PatientCare patientCare(String name, DateTime reference, DateTime enrollmentDate) {
+        return new PatientCare(name, reference, enrollmentDate);
     }
 }

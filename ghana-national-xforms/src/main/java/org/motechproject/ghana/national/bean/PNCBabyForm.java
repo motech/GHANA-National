@@ -28,6 +28,7 @@ public class PNCBabyForm extends FormBean {
     @RegEx(pattern = MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
+    @Required
     private int visitNumber;
     private Double weight;
     private Double temperature;

@@ -193,11 +193,12 @@ public class CareServiceTest extends BaseUnitTest {
     public void shouldEnrollToPNCMotherCareSchedules() {
         CareService careServiceSpy = spy(careService);
         Patient patient = mock(Patient.class);
-        DateTime registrationTime = DateUtil.now();
-        List<PatientCare> patientCares = asList(new PatientCare(PNC_MOTHER_1, registrationTime, registrationTime));
-        when(patient.pncMotherProgramsToEnrollOnRegistration(registrationTime)).thenReturn(patientCares);
+        DateTime deliveryTime = DateUtil.now();
+        List<PatientCare> patientCares = asList(new PatientCare(PNC_MOTHER_1, deliveryTime, deliveryTime));
 
-        careServiceSpy.enrollMotherForPNC(patient, registrationTime);
+        when(patient.pncMotherProgramsToEnrollOnRegistration(deliveryTime)).thenReturn(patientCares);
+
+        careServiceSpy.enrollMotherForPNC(patient, deliveryTime);
 
         verify(careServiceSpy).enrollPatientCares(patientCares, patient);
     }

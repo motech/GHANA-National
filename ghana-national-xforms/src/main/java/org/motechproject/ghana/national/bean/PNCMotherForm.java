@@ -21,7 +21,7 @@ public class PNCMotherForm extends FormBean {
     private String facilityId;
     private DateTime date;
     @Required
-    private String visitNumber;
+    private int visitNumber;
     @Required
     private String vitaminA;
     @Required
@@ -180,11 +180,11 @@ public class PNCMotherForm extends FormBean {
         this.fht = fht;
     }
 
-    public String getVisitNumber() {
+    public int getVisitNumber() {
         return visitNumber;
     }
 
-    public void setVisitNumber(String visitNumber) {
+    public void setVisitNumber(int visitNumber) {
         this.visitNumber = visitNumber;
     }
 }
