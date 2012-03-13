@@ -42,7 +42,7 @@ public class PNCMotherRequest {
         return date;
     }
 
-    public PNCMotherVisit visit() {
+    public PNCMotherVisit getVisit() {
         return visit;
     }
 

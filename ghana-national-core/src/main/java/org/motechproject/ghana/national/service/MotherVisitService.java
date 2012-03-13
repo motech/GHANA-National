@@ -100,7 +100,7 @@ public class MotherVisitService {
     public void enrollOrFulfillPNCSchedulesForMother(PNCMotherRequest pncMotherRequest) {
         Patient patient = pncMotherRequest.getPatient();
         allEncounters.persistEncounter(new MotherVisitEncounterFactory().createEncounter(pncMotherRequest));
-        PatientCare patientCare = patient.pncProgramToFulfilOnVisit(pncMotherRequest.getDate(), pncMotherRequest.visit().scheduleName());
+        PatientCare patientCare = patient.pncProgramToFulfilOnVisit(pncMotherRequest.getDate(), pncMotherRequest.getVisit().scheduleName());
         LocalDate visitDate = pncMotherRequest.getDate().toLocalDate();
         allSchedules.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient, patientCare), visitDate);
     }

@@ -156,9 +156,8 @@ public class Patient {
 
     public List<PatientCare> pncMotherProgramsToEnrollOnRegistration(DateTime deliveryDateTime) {
         List<PatientCare> cares = new ArrayList<PatientCare>();
-        DateTime birthDateTime = childCare().birthTime();
         for (PNCMotherVisit visit : PNCMotherVisit.values()) {
-            cares.add(new PatientCare(visit.scheduleName(), birthDateTime, deliveryDateTime));
+            cares.add(new PatientCare(visit.scheduleName(), deliveryDateTime, deliveryDateTime));
         }
         return cares;
     }
