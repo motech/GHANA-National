@@ -104,7 +104,7 @@ public class MotherVisitEncounterFactoryTest {
         Boolean maleInvolved = Boolean.TRUE;
         Patient patient = new Patient(new MRSPatient("motechId"));
         double temperature = 20D;
-        String visitNumber = "1";
+        int visitNumber = 1;
         String vitaminA = "Y";
         MRSUser staff = new MRSUser();
         Facility facility = new Facility();
@@ -152,11 +152,11 @@ public class MotherVisitEncounterFactoryTest {
     }
 
     private PNCMotherRequest createPNCMotherRequest(String comment, String community, DateTime date, Facility facility, MRSUser staff, String fht, String house, String location, Boolean lochiaAmountExcess, String lochiaColour,
-                                                    Boolean lochiaOdourFoul, Boolean maleInvolved, Patient patient, double temperature, String visitNumber, String vitaminA) {
+                                                    Boolean lochiaOdourFoul, Boolean maleInvolved, Patient patient, double temperature, int visitNumber, String vitaminA) {
         final PNCMotherRequest pncMotherRequest = new PNCMotherRequest();
         pncMotherRequest.comments(comment).community(community).date(date).facility(facility).fht(fht).house(house).location(location).lochiaAmountExcess(lochiaAmountExcess).lochiaColour(lochiaColour)
                 .lochiaOdourFoul(lochiaOdourFoul).staff(staff).maleInvolved(maleInvolved).referred(Boolean.TRUE).patient(patient)
-                .temperature(temperature).visitNumber(visitNumber).vitaminA(vitaminA).ttDose("1");
+                .temperature(temperature).visit(PNCMotherVisit.byVisitNumber(visitNumber)).vitaminA(vitaminA).ttDose("1");
         return pncMotherRequest;
     }
 

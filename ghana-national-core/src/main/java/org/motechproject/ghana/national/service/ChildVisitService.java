@@ -50,7 +50,7 @@ public class ChildVisitService {
     public MRSEncounter save(PNCBabyRequest pncBabyRequest) {
         DateTime visitDate = pncBabyRequest.getDate();
         Patient patient = pncBabyRequest.getPatient();
-        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.pncProgramToFulfilOnVisit(pncBabyRequest.getVisit(), visitDate));
+        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.pncProgramToFulfilOnVisit(visitDate, pncBabyRequest.getVisit().scheduleName()));
         allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate.toLocalDate(), time(visitDate));
         return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(pncBabyRequest));
     }

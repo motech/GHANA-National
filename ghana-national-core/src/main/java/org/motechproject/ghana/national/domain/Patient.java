@@ -163,12 +163,8 @@ public class Patient {
         return cares;
     }
 
-    public PatientCare pncProgramToFulfilOnVisit(PNCChildVisit visit, DateTime visitDateTime) {
-        return new PatientCare(visit.scheduleName(), visitDateTime, visitDateTime);
-    }
-
-    public PatientCare pncMotherProgramToFulfilOnVisit(PNCMotherVisit visit, DateTime visitDateTime) {
-        return new PatientCare(visit.scheduleName(), visitDateTime, visitDateTime);
+    public PatientCare pncProgramToFulfilOnVisit(DateTime visitDateTime, String scheduleName) {
+        return new PatientCare(scheduleName, visitDateTime, visitDateTime);
     }
 
     public String getGender() {

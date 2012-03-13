@@ -2,7 +2,10 @@ package org.motechproject.ghana.national.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.IPTVaccine;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientCare;
+import org.motechproject.ghana.national.domain.TTVaccine;
 import org.motechproject.ghana.national.factory.MotherVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllAppointments;
@@ -20,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-import static java.lang.Integer.parseInt;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_DELIVERY;
 import static org.motechproject.ghana.national.domain.IPTVaccine.createFromANCVisit;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
@@ -98,8 +100,7 @@ public class MotherVisitService {
     public void enrollOrFulfillPNCSchedulesForMother(PNCMotherRequest pncMotherRequest) {
         Patient patient = pncMotherRequest.getPatient();
         allEncounters.persistEncounter(new MotherVisitEncounterFactory().createEncounter(pncMotherRequest));
-        PNCMotherVisit pncMotherVisit = PNCMotherVisit.byVisitNumber(parseInt(pncMotherRequest.getVisitNumber()));
-        PatientCare patientCare = patient.pncMotherProgramToFulfilOnVisit(pncMotherVisit, pncMotherRequest.getDate());
+        PatientCare patientCare = patient.pncProgramToFulfilOnVisit(pncMotherRequest.getDate(), pncMotherRequest.visit().scheduleName());
         LocalDate visitDate = pncMotherRequest.getDate().toLocalDate();
         allSchedules.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient, patientCare), visitDate);
     }
