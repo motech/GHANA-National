@@ -46,7 +46,7 @@ public class PNCBabyFormHandler implements FormPublishHandler {
         try {
             childVisitService.save(createRequest(pncBabyForm));
         } catch (Exception e) {
-            log.error("Exception occured in saving Delivery Notification details for: " + pncBabyForm.getMotechId(), e);
+            log.error("Exception occurred in saving Delivery Notification details for: " + pncBabyForm.getMotechId(), e);
 
         }
     }

@@ -33,9 +33,7 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_M
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
-import static org.motechproject.util.DateUtil.newDate;
-import static org.motechproject.util.DateUtil.newDateTime;
-import static org.motechproject.util.DateUtil.time;
+import static org.motechproject.util.DateUtil.*;
 
 public class CareServiceTest extends BaseUnitTest {
     CareService careService;
@@ -340,28 +338,28 @@ public class CareServiceTest extends BaseUnitTest {
     @Test
     public void shouldCreateSchedulesForANCProgramRegistration() {
 
-        String patientId = "Id";
-        String patientMotechId = "motechId";
+        String patientId = "Id", patientMotechId = "motechId";
         Pregnancy pregnancy = basedOnDeliveryDate(new LocalDate(2000, 1, 1));
 
+        currentDate = newDateTime(2000, 1, 1, 12, 2, 0);
+        mockCurrentDate(currentDate);
         setupPatient(patientId, patientMotechId);
-        PatientCare patientCare = new PatientCare("test", new LocalDate());
+        PatientCare patientCare = new PatientCare("test", new LocalDate(), null);
         when(mockPatient.ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery())).thenReturn(asList(patientCare));
-        DateTime registrationDateTime = newDateTime(2000, 1, 1, 0, 0, 0);
-        final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.IN_PAST, registrationDateTime.toDate(), "facilityId", null,
+        LocalDate registrationDate = newDate(2000, 1, 1);
+        final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.IN_PAST, registrationDate.toDate(), "facilityId", null,
                 patientMotechId, new ArrayList<ANCCareHistory>(), pregnancy.dateOfDelivery().toDate());
 
         careService.enroll(ancvo);
         verify(mockPatient).ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery());
-        verifyIfScheduleEnrolled(0, patientId, patientCare.startingOn(), registrationDateTime.toLocalDate(), null, patientCare.name());
+        verifyIfScheduleEnrolled(0, patientId, patientCare.startingOn(), registrationDate, null, patientCare.name());
     }
-
+    
     @Test
     public void shouldCreateSchedulesForCWCProgramRegistration() {
         String patientId = "Id";
         String patientMotechId = "motechId";
         DateTime registrationDateTime = newDateTime(2012, 12, 2, 0, 0, 0);
-
 
         setupPatient(patientId, patientMotechId);
         when(mockPatient.getMotechId()).thenReturn(patientMotechId);
@@ -389,30 +387,30 @@ public class CareServiceTest extends BaseUnitTest {
         ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, times(2)).enroll(requestCaptor.capture());
         List<EnrollmentRequest> requests = requestCaptor.getAllValues();
-        assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, pnc1, birthDate, birthTime, null));
-        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, pnc2, birthDate, birthTime, null));
+        assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, pnc1, birthDate, birthTime, null, birthTime));
+        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, pnc2, birthDate, birthTime, null, birthTime));
     }
 
     private void verifyIfScheduleEnrolled(int indexForSchedule, String patientId, LocalDate startingOn, LocalDate enrollmentDate, Time enrollmentTime, String enrollmentName) {
         ArgumentCaptor<EnrollmentRequest> deliveryEnrollmentRequestCaptor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enroll(deliveryEnrollmentRequestCaptor.capture());
         assertScheduleEnrollmentRequest(deliveryEnrollmentRequestCaptor.getAllValues().get(indexForSchedule),
-                expectedRequest(patientId, new PatientCare(enrollmentName, startingOn), enrollmentDate, enrollmentTime, null));
+                expectedRequest(patientId, new PatientCare(enrollmentName, startingOn), enrollmentDate, enrollmentTime, null, time(currentDate)));
     }
 
-    private EnrollmentRequest expectedRequest(String externalId, PatientCare patientCare, LocalDate enrollmentDate, Time enrollmentTime, String startingMilestoneName) {
+    private EnrollmentRequest expectedRequest(String externalId, PatientCare patientCare, LocalDate enrollmentDate, Time enrollmentTime, String startingMilestoneName, Time preferredAlertTime) {
         return new EnrollmentRequest(externalId, patientCare.name(),
-                new Time(currentDate.toLocalTime()), patientCare.startingOn(),
+                preferredAlertTime, patientCare.startingOn(),
                 patientCare.referenceTime(), enrollmentDate, enrollmentTime, startingMilestoneName);
     }
 
     private void assertScheduleEnrollmentRequest(EnrollmentRequest actualRequest, EnrollmentRequest expectedRequest) {
         assertThat(actualRequest.getExternalId(), is(equalTo(expectedRequest.getExternalId())));
         assertThat(actualRequest.getScheduleName(), is(equalTo(expectedRequest.getScheduleName())));
-        assertThat(actualRequest.getPreferredAlertTime(), is(equalTo(expectedRequest.getPreferredAlertTime())));
-        assertThat(actualRequest.getReferenceDateTime(), is(expectedRequest.getReferenceDateTime()));
+        assertThat("preferredAlertTime", actualRequest.getPreferredAlertTime(), is(equalTo(expectedRequest.getPreferredAlertTime())));
+        assertThat("referenceTime",actualRequest.getReferenceDateTime(), is(expectedRequest.getReferenceDateTime()));
         assertThat(actualRequest.getStartingMilestoneName(), is(expectedRequest.getStartingMilestoneName()));
-        assertThat(actualRequest.getEnrollmentDateTime(), is(expectedRequest.getEnrollmentDateTime()));
+        assertThat("enrollmentTime",actualRequest.getEnrollmentDateTime(), is(expectedRequest.getEnrollmentDateTime()));
     }
 
     private ANCVO createTestANCVO(String ipt, Date iptDate, String tt, Date ttDate, RegistrationToday registrationToday, Date registrationDate,
