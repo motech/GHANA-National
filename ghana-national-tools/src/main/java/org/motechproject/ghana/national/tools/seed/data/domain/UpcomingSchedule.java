@@ -58,7 +58,6 @@ public class UpcomingSchedule {
 
         UpcomingSchedule schedule = (UpcomingSchedule) o;
 
-        if (type != null ? !type.equals(schedule.type) : schedule.type != null) return false;
         if (dueDatetime != null ? !dueDatetime.equals(schedule.dueDatetime) : schedule.dueDatetime != null)
             return false;
         if (lateDatetime != null ? !lateDatetime.equals(schedule.lateDatetime) : schedule.lateDatetime != null)
@@ -70,6 +69,7 @@ public class UpcomingSchedule {
         if (minDatetime != null ? !minDatetime.equals(schedule.minDatetime) : schedule.minDatetime != null)
             return false;
         if (patientId != null ? !patientId.equals(schedule.patientId) : schedule.patientId != null) return false;
+        if (type != null ? !type.equals(schedule.type) : schedule.type != null) return false;
         if (voided != null ? !voided.equals(schedule.voided) : schedule.voided != null) return false;
 
         return true;

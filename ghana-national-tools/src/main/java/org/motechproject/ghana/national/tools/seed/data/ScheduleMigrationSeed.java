@@ -30,7 +30,7 @@ public abstract class ScheduleMigrationSeed extends Seed {
 
     private AllTrackedSchedules allTrackedSchedules;
     protected OldGhanaScheduleSource oldGhanaScheduleSource;
-    List<Filter> filters = Arrays.asList(new DuplicateScheduleFilter(), new VoidedScheduleFilter(), new ScheduleExpiredBasedOnLateAlertFilter());
+    List<Filter> filters = Arrays.asList(new DuplicateScheduleFilter(), new ScheduleExpiryBasedOnThirdLateAlertFilter());
 
     static Logger LOG = Logger.getLogger(ScheduleMigrationSeed.class);
     protected AllSchedules allSchedules;

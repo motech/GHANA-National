@@ -45,6 +45,7 @@
                 <ref bean="yellowFeverVaccineSeed"/>
                 <ref bean="pncMotherVaccineSeed"/>
                 <ref bean="pncBabyVaccineSeed"/>
+                <!--<ref bean="ancVisitSeed"/>-->
             </list>
         </constructor-arg>
     </bean>

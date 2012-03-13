@@ -51,7 +51,6 @@ public class AllAppointmentsTest {
         Date visitedDate = new Date();
         allAppointments.fulfillCurrentANCVisit(new Patient(new MRSPatient(motechId, null, null)), visitedDate);
         verify(mockAppointmentService).visited(motechId, EncounterType.ANC_VISIT.value(), DateUtil.newDateTime(visitedDate));
-
     }
 
     @Test
