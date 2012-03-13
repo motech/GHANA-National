@@ -21,12 +21,6 @@
                     "interval" : ["1 Week"],
                     "count" : "1",
                     "offset" : ["0 Hours"]
-                },
-                {
-                    "window" : "max",
-                    "interval" : ["1 Week"],
-                    "count" : "1",
-                    "offset" : ["0 Hours"]
                 }
             ]
         }
