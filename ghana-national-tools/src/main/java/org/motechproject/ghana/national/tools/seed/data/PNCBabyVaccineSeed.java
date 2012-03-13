@@ -3,9 +3,8 @@ package org.motechproject.ghana.national.tools.seed.data;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.tools.seed.data.domain.DuplicateScheduleFilter;
-import org.motechproject.ghana.national.tools.seed.data.domain.ScheduleExpiredBasedOnMaxAlertFilter;
+import org.motechproject.ghana.national.tools.seed.data.domain.ScheduleExpiryBasedOnFirstLateAlertFilter;
 import org.motechproject.ghana.national.tools.seed.data.domain.UpcomingSchedule;
-import org.motechproject.ghana.national.tools.seed.data.domain.VoidedScheduleFilter;
 import org.motechproject.ghana.national.tools.seed.data.source.OldGhanaScheduleSource;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class PNCBabyVaccineSeed extends ScheduleMigrationSeed {
     @Autowired
     public PNCBabyVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules) {
         super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules, TRUE);
-        filters = Arrays.asList(new DuplicateScheduleFilter(), new VoidedScheduleFilter(), new ScheduleExpiredBasedOnMaxAlertFilter());
+        filters = Arrays.asList(new DuplicateScheduleFilter(), new ScheduleExpiryBasedOnFirstLateAlertFilter());
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {

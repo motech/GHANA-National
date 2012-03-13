@@ -48,6 +48,10 @@ public class OldGhanaScheduleSource extends BaseSeedSource {
         return querySchedulesFromDb("select patient_id, encounter_type as type, care_name, min_datetime, due_datetime, late_datetime, max_datetime, voided from motechmodule_expected_encounter where voided = 0 and group_name = 'PNC(baby)' order by patient_id");
     }
 
+    public List<UpcomingSchedule> getUpcomingANCVisitSchedules() {
+        return querySchedulesFromDb("SELECT mi.patient_id, mi.encounter_type as type, mi.care_name, mi.min_datetime, mi.due_datetime, mi.late_datetime, mi.max_datetime, mi.voided FROM (SELECT MAX(motechmodule_expected_encounter_id) AS mid FROM motechmodule_expected_encounter WHERE group_name = 'ANC' and voided = 0 GROUP BY patient_id) mo JOIN motechmodule_expected_encounter mi ON mi.motechmodule_expected_encounter_id = mo.mid");
+    }
+
     private List<UpcomingSchedule> querySchedulesFromDb(String query) {
         return jdbcTemplate.query(query,
                 new UpcomingScheduleRowMapper());

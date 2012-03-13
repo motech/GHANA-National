@@ -5,12 +5,12 @@ import org.motechproject.util.DateUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScheduleExpiredBasedOnLateAlertFilter extends Filter{
+public class ScheduleExpiryBasedOnFirstLateAlertFilter extends Filter{
     @Override
     public List<UpcomingSchedule> filteringLogic(List<UpcomingSchedule> schedules) {
         List<UpcomingSchedule> activeSchedules = new ArrayList<UpcomingSchedule>();
         for (UpcomingSchedule schedule : schedules) {
-            if(DateUtil.today().toDate().before(schedule.getLateDatetime().plusWeeks(3).toDate()))
+            if(DateUtil.today().toDate().before(schedule.getLateDatetime().plusDays(2).toDate()))
                 activeSchedules.add(schedule);
         }
         return activeSchedules;

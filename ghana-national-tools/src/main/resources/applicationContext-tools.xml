@@ -45,6 +45,7 @@
                 <ref bean="pncMotherVaccineSeed"/>
                 <ref bean="pncBabyVaccineSeed"/>
                 <ref bean="mobileMidwifeMigrationSeed"/>
+                <!--<ref bean="ancVisitSeed"/>-->
             </list>
         </constructor-arg>
     </bean>
