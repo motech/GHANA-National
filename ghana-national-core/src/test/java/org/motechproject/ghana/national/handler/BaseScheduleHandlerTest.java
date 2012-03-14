@@ -62,7 +62,7 @@ public class BaseScheduleHandlerTest {
         parameters.put(EventKeys.VISIT_NAME, visitName);
         parameters.put(MotechSchedulerService.JOB_ID_KEY, visitName + "3");
 
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname);
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(1999, 3, 3).toDate());
         when(allPatients.getPatientByMotechId(patientMotechId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";

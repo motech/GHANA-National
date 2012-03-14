@@ -28,19 +28,14 @@ import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
-import org.quartz.CronTrigger;
-import org.quartz.TriggerUtils;
 
-import java.text.ParseException;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.Lambda.selectFirst;
 import static java.util.Arrays.asList;
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -62,6 +57,7 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_P
 import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_YELLOW_FEVER;
 import static org.motechproject.ghana.national.domain.Concept.IPTI;
 import static org.motechproject.ghana.national.domain.Concept.MEASLES;
+import static org.motechproject.ghana.national.domain.PNCChildVisit.PNC1;
 import static org.motechproject.ghana.national.domain.PNCChildVisit.PNC2;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.newDateTime;
@@ -319,22 +315,5 @@ public class ChildVisitServiceTest extends BaseUnitTest {
                 assertNotNull("concept not present:" + conceptName, selectFirst(observations, having(on(MRSObservation.class).getConceptName(), equalTo(conceptName))));
             else
                 assertNull("concept present:" + conceptName, selectFirst(observations, having(on(MRSObservation.class).getConceptName(), equalTo(conceptName))));
-    }
-
-    @Test
-    public void should() throws ParseException {
-
-        CronTrigger ct = new CronTrigger("foo", "goo", "0 0 0 ? * *"); // fire every ten minutes, all day every day
-
-       // use the date as the startTime
-        ct.setStartTime(DateUtil.newDateTime(2012, 5, 3, 0, 0, 0).toDate());
-        ct.setEndTime(DateUtil.newDateTime(2012, 5, 3, 0, 0, 0).toDate());
-
-        // check what time the trigger will first fire
-        List fireTimes = TriggerUtils.computeFireTimes(ct, null, 1);
-        Date firstFireTime = (Date) fireTimes.iterator().next();
-
-        assertEquals(fireTimes.size(), 2);
-        System.out.println("First fire time: " + firstFireTime);
     }
 }

@@ -49,13 +49,11 @@ public abstract class BaseScheduleHandler {
         char reminderCount = jobId.charAt(jobId.length() - 1);
         switch (reminderCount) {
             case '0':
-                return WindowName.due.name() + " 0";
+                return WindowName.due.name();
             case '1':
-                return WindowName.due.name() + " 1";
             case '2':
-                return WindowName.due.name() + " 2";
             case '3':
-                return WindowName.due.name() + " 3";
+                return WindowName.late.name();
         }
         return null;
     }
