@@ -46,7 +46,6 @@ import static org.motechproject.ghana.national.domain.EncounterType.ANC_VISIT;
 import static org.motechproject.ghana.national.domain.PNCMotherVisit.PNC1;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDate;
-import static org.motechproject.util.DateUtil.time;
 import static org.motechproject.util.DateUtil.today;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -154,7 +153,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         assertThat(actualEnrollmentRequest.getReferenceDateTime(), is(equalTo(expectedDateTime)));
         assertThat(actualEnrollmentRequest.getScheduleName(), is(equalTo(ScheduleNames.PNC_MOTHER_1)));
         assertThat(actualEnrollmentRequest.getEnrollmentDateTime(), is(equalTo(expectedDateTime)));
-        assertThat(actualEnrollmentRequest.getPreferredAlertTime(), is(equalTo(time(date))));
+        assertThat(actualEnrollmentRequest.getPreferredAlertTime(), is(equalTo(null)));
         assertThat(actualEnrollmentRequest.getStartingMilestoneName(), is(equalTo(null)));
     }
 
