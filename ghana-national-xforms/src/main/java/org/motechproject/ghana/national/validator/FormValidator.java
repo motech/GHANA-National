@@ -26,7 +26,7 @@ public class FormValidator {
     @Autowired
     private StaffService staffService;
 
-    public static final String IS_NOT_ALIVE = "is not alive";
+
     public static final String FACILITY_ID = "facilityId";
     public static final String STAFF_ID = "staffId";
 
@@ -40,7 +40,7 @@ public class FormValidator {
         final Patient patient = patientService.getPatientByMotechId(motechId);
         if (patient.getMrsPatient().getPerson().isDead()) {
             return new ArrayList<FormError>() {{
-                add(new FormError(patientIdAttribute, IS_NOT_ALIVE));
+                add(new FormError(patientIdAttribute, Constants.IS_NOT_ALIVE));
             }};
         }
         return new ArrayList<FormError>();
@@ -65,7 +65,7 @@ public class FormValidator {
             }};
         } else if (patient.getMrsPatient().getPerson().isDead()) {
             return new ArrayList<FormError>() {{
-                add(new FormError(patientIdAttribute, IS_NOT_ALIVE));
+                add(new FormError(patientIdAttribute, Constants.IS_NOT_ALIVE));
             }};
         } else if (!isChild(patient)) {
             return new ArrayList<FormError>() {{

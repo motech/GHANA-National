@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.motechproject.ghana.national.domain.Constants.INSUFFICIENT_SEARCH_CRITERIA;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 
 @Component("clientQueryFormValidator")
@@ -30,7 +29,7 @@ public class ClientQueryFormValidator extends FormValidator<ClientQueryForm> {
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         if (ClientQueryType.CLIENT_DETAILS.toString().equals(formBean.getQueryType())) {
-            formErrors.addAll(formValidator.validatePatient(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
+            formErrors.addAll(formValidator.validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
         }
         else {
             formErrors.addAll(validateIfMinimumCriteriaIsPopulated(formBean));

@@ -45,6 +45,7 @@ public class Constants {
 
     public static final String NOT_FOUND = "not found";
     public static final String INSUFFICIENT_SEARCH_CRITERIA = "Insufficient search criteria provided";
+    public static final String IS_NOT_ALIVE = "is not alive";
 
     public static final String CARE_HISTORIES = "careHistories";
     public static final String LAST_IPTI = "lastIPTi";
