@@ -91,6 +91,12 @@
                 "fileName":"PNCBaby.xml",
                 "bean":"org.motechproject.ghana.national.bean.PNCBabyForm",
                 "validator":"org.motechproject.ghana.national.validator.PncBabyFormValidator"
+            },
+            {
+                "name":"pncMotherRequest",
+                "fileName":"PNCMother.xml",
+                "bean":"org.motechproject.ghana.national.bean.PNCMotherForm",
+                "validator":"org.motechproject.ghana.national.validator.PNCMotherFormValidator"
             }
         ]
     },

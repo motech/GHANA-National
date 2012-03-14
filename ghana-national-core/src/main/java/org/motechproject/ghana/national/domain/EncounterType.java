@@ -15,12 +15,12 @@ public enum EncounterType {
     PREG_TERM_VISIT("PREGTERMVISIT"),
     PREG_DEL_VISIT("PREGDELVISIT"),
     BIRTH_VISIT("BIRTHVISIT"),
-    PNC_CHILD_VISIT("PNCCHILDVISIT");
+    PNC_CHILD_VISIT("PNCCHILDVISIT"),
+    PNC_MOTHER_VISIT("PNCMOTHERVISIT");
 
     private String value;
 
     EncounterType(String value) {
-
         this.value = value;
     }
 

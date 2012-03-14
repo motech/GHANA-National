@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.factory;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
+import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.ANC_VISIT;
+import static org.motechproject.ghana.national.domain.EncounterType.PNC_MOTHER_VISIT;
 
 public class MotherVisitEncounterFactory extends BaseObservationFactory {
 
@@ -19,6 +21,11 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
     public Encounter createEncounter(ANCVisitRequest ancVisitRequest, Set<MRSObservation> mrsObservations) {
         return new Encounter(ancVisitRequest.getPatient().getMrsPatient(), ancVisitRequest.getStaff(),
                 ancVisitRequest.getFacility(), ANC_VISIT, ancVisitRequest.getDate(), mrsObservations);
+    }
+
+    public Encounter createEncounter(PNCMotherRequest pncMotherRequest) {
+        return new Encounter(pncMotherRequest.getPatient().getMrsPatient(), pncMotherRequest.getStaff(), pncMotherRequest.getFacility(),
+                PNC_MOTHER_VISIT, pncMotherRequest.getDate(), createMRSObservations(pncMotherRequest));
     }
 
     public Set<MRSObservation> createMRSObservations(ANCVisitRequest ancVisitRequest) {
@@ -54,6 +61,25 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
         return mrsObservations;
     }
 
+    public Set<MRSObservation> createMRSObservations(PNCMotherRequest pncMotherRequest) {
+        Set<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
+        Date registrationDate = pncMotherRequest.getDate();
+
+        setObservation(mrsObservations, registrationDate, TT.getName(), toInteger(pncMotherRequest.getTtDose()));
+        setObservation(mrsObservations, registrationDate, VISIT_NUMBER.getName(), toInteger(pncMotherRequest.getVisitNumber()));
+        setObservation(mrsObservations, registrationDate, VITA.getName(), toBoolean(pncMotherRequest.getVitaminA()));
+        setObservation(mrsObservations, registrationDate, COMMENTS.getName(), pncMotherRequest.getComments());
+        setObservation(mrsObservations, registrationDate, COMMUNITY.getName(), pncMotherRequest.getCommunity());
+        setObservation(mrsObservations, registrationDate, FHT.getName(), pncMotherRequest.getFht());
+        setObservation(mrsObservations, registrationDate, HOUSE.getName(), pncMotherRequest.getHouse());
+        setObservation(mrsObservations, registrationDate, MALE_INVOLVEMENT.getName(), pncMotherRequest.getMaleInvolved());
+        setObservation(mrsObservations, registrationDate, REFERRED.getName(), pncMotherRequest.getReferred());
+        setObservation(mrsObservations, registrationDate,  LOCHIA_EXCESS_AMOUNT.getName(), pncMotherRequest.getLochiaAmountExcess());
+        setObservation(mrsObservations, registrationDate,  LOCHIA_COLOUR.getName(), toInteger(pncMotherRequest.getLochiaColour()));
+        setObservation(mrsObservations, registrationDate,  LOCHIA_FOUL_ODOUR.getName(), pncMotherRequest.getLochiaOdourFoul());
+        return mrsObservations;
+    }
+
     public Set<MRSObservation> createObservationsForIPT(final IPTVaccine iptVaccine) {
         final LocalDate observationDate = iptVaccine.getVaccinationDate();
         Set<MRSObservation> observations = new HashSet<MRSObservation>();
@@ -62,7 +88,7 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
         return observations;
     }
 
-    public Set<MRSObservation> createObservationForTT(final TTVaccine ttVaccine){
+    public Set<MRSObservation> createObservationForTT(final TTVaccine ttVaccine) {
         Set<MRSObservation> observations = new HashSet<MRSObservation>();
         setObservation(observations, ttVaccine.getVaccinationDate().toDate(), Concept.TT.getName(), ttVaccine.getDosage().getDosage());
         return observations;
