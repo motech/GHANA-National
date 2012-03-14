@@ -116,7 +116,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enrollOrFulfill(requestCaptor.capture(), eq(visitDate.toLocalDate()), eq(visitTime));
-        assertEnrollmentRequest(new EnrollmentRequest(patientId, PNC2.scheduleName(), visitTime, visitDate.toLocalDate(), visitTime, visitDate.toLocalDate(), visitTime, null)
+        assertEnrollmentRequest(new EnrollmentRequest(patientId, PNC2.scheduleName(), null, visitDate.toLocalDate(), visitTime, visitDate.toLocalDate(), visitTime, null)
                 , requestCaptor.getValue());
     }
   
