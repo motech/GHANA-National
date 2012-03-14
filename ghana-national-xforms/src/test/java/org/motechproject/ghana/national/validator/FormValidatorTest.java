@@ -52,11 +52,11 @@ public class FormValidatorTest {
         setupPatientServiceMockToReturnIfPatientIsAliveOrDead(motechId, true);
 
         List<FormError> formErrors = formValidator.validateIfPatientExistsAndIsAlive(motechId, PATIENT_ID);
-        assertThat(formErrors, hasItem(new FormError(PATIENT_ID, FormValidator.IS_NOT_ALIVE)));
+        assertThat(formErrors, hasItem(new FormError(PATIENT_ID, Constants.IS_NOT_ALIVE)));
 
         setupPatientServiceMockToReturnIfPatientIsAliveOrDead(motechId, false);
         formErrors = formValidator.validateIfPatientExistsAndIsAlive(motechId, PATIENT_ID);
-        assertThat(formErrors, not(hasItem(new FormError(PATIENT_ID, FormValidator.IS_NOT_ALIVE))));
+        assertThat(formErrors, not(hasItem(new FormError(PATIENT_ID, Constants.IS_NOT_ALIVE))));
     }
 
     private MRSPerson setupPatientServiceMockToReturnIfPatientIsAliveOrDead(String motechId, boolean isDead) {
