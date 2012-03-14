@@ -68,10 +68,10 @@ public class AllAppointmentsTest {
         List<ReminderConfiguration> actualReminderConfigurations = actualVisitRequest.getAppointmentReminderConfigurations();
 
         List<ReminderConfiguration> expectedReminderConfigurations = new ArrayList<ReminderConfiguration>();
+        expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.TWO_WEEK_BEFORE));
         expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.ONE_WEEK_BEFORE));
         expectedReminderConfigurations.add(new ReminderConfiguration());
         expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.ONE_WEEK_LATER));
-        expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.TWO_WEEK_LATER));
 
         assertThat(actualReminderConfigurations.size(), is(4));
         assertThat(actualVisitRequest.getVisitName(), is(EncounterType.ANC_VISIT.value()));
