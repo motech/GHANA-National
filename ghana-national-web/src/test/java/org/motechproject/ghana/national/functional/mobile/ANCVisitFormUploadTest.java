@@ -49,7 +49,7 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
         // create
         final String staffId = staffGenerator.createStaff(browser, homePage);
 
-        DataGenera\tor dataGenerator = new DataGenerator();
+        DataGenerator dataGenerator = new DataGenerator();
         String patientFirstName = "patient first name" + dataGenerator.randomString(5);
         final TestPatient testPatient = TestPatient.with(patientFirstName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
