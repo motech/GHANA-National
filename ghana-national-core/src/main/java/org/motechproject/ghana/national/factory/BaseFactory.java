@@ -18,6 +18,6 @@ public abstract class BaseFactory {
     }
 
     protected Integer safeEnumValue(MobileFormEnum enumItem) {
-        return (enumItem != null) ? Integer.valueOf(enumItem.getNumericValue()) : null;
+        return (enumItem != null) ? Integer.valueOf(enumItem.getValue()) : null;
     }
 }

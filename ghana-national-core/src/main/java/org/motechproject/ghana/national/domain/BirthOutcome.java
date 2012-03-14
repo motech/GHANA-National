@@ -1,15 +1,15 @@
 package org.motechproject.ghana.national.domain;
 
-public enum BirthOutcome implements MobileFormEnum{
-    ALIVE("1"), FRESH_STILL_BIRTH("2"), MACERATED_STILL_BIRTH("3");
-    private String numericValue;
+public enum BirthOutcome implements MobileFormEnum {
+    ALIVE("A"), FRESH_STILL_BIRTH("FSB"), MACERATED_STILL_BIRTH("MSB");
+    private String value;
 
-    BirthOutcome(String numericValue) {
-        this.numericValue = numericValue;
+    BirthOutcome(String value) {
+        this.value = value;
     }
 
     @Override
-    public String getNumericValue() {
-        return numericValue;
+    public String getValue() {
+        return value;
     }
 }

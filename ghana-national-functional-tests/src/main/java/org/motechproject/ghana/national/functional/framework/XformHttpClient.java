@@ -81,6 +81,7 @@ public class XformHttpClient {
             hackDate(formData, "/patientRegistration/lastIPTiDate");
             hackDate(formData, "/patientRegistration/lastVitaminADate");
             hackDate(formData, "/patientRegistration/expDeliveryDate");
+            hackDate(formData, "/patientRegistration/nhisExpires");
             hackDate(formData, "/CWCRegistration/registrationDate");
             hackDate(formData, "/CWCRegistration/bcgDate");
             hackDate(formData, "/CWCRegistration/lastOPVDate");

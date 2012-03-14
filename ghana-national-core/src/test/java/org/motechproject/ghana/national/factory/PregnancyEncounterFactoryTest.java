@@ -78,7 +78,7 @@ public class PregnancyEncounterFactoryTest {
         MRSFacility mrsFacility = new MRSFacility("122");
         Facility facility = new Facility(mrsFacility);
         String motechId = "motech-id";
-        MRSPatient mrsPatient = new MRSPatient("12", motechId,new MRSPerson(),mrsFacility);
+        MRSPatient mrsPatient = new MRSPatient("12", motechId, new MRSPerson(), mrsFacility);
         Patient patient = new Patient(mrsPatient);
         MRSUser staff = new MRSUser();
         final DateTime deliveryTime = DateTime.now();
@@ -104,11 +104,11 @@ public class PregnancyEncounterFactoryTest {
 
         final DeliveredChildRequest deliveredChildRequest2 = new DeliveredChildRequest();
         deliveredChildRequest2.childBirthOutcome(BirthOutcome.FRESH_STILL_BIRTH);
-                pregnancyDeliveryRequest.addDeliveredChildRequest(deliveredChildRequest2);
+        pregnancyDeliveryRequest.addDeliveredChildRequest(deliveredChildRequest2);
 
         final DeliveredChildRequest deliveredChildRequest3 = new DeliveredChildRequest();
         deliveredChildRequest3.childBirthOutcome(BirthOutcome.MACERATED_STILL_BIRTH);
-                pregnancyDeliveryRequest.addDeliveredChildRequest(deliveredChildRequest3);
+        pregnancyDeliveryRequest.addDeliveredChildRequest(deliveredChildRequest3);
 
         final MRSObservation activePregnancyObservation = new MRSObservation(new Date(), "PREG", "Value");
         Encounter encounter = factory.createDeliveryEncounter(pregnancyDeliveryRequest, activePregnancyObservation);
@@ -117,19 +117,19 @@ public class PregnancyEncounterFactoryTest {
         activePregnancyObservation.addDependantObservation(pregnancyStatusObservation);
 
         Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Integer>(deliveryDate, DELIVERY_MODE.getName(), Integer.parseInt(pregnancyDeliveryRequest.getChildDeliveryMode().getNumericValue())));
-            add(new MRSObservation<Integer>(deliveryDate, DELIVERY_OUTCOME.getName(), Integer.parseInt(pregnancyDeliveryRequest.getChildDeliveryOutcome().getNumericValue())));
+            add(new MRSObservation<Integer>(deliveryDate, DELIVERY_MODE.getName(), Integer.parseInt(pregnancyDeliveryRequest.getChildDeliveryMode().getValue())));
+            add(new MRSObservation<Integer>(deliveryDate, DELIVERY_OUTCOME.getName(), Integer.parseInt(pregnancyDeliveryRequest.getChildDeliveryOutcome().getValue())));
             add(new MRSObservation<Boolean>(deliveryDate, MALE_INVOLVEMENT.getName(), pregnancyDeliveryRequest.getMaleInvolved()));
-            add(new MRSObservation<Integer>(deliveryDate, DELIVERY_LOCATION.getName(), Integer.parseInt(pregnancyDeliveryRequest.getChildDeliveryLocation().getNumericValue())));
-            add(new MRSObservation<Integer>(deliveryDate, DELIVERED_BY.getName(), Integer.parseInt(pregnancyDeliveryRequest.getChildDeliveredBy().getNumericValue())));
-            add(new MRSObservation<Integer>(deliveryDate, DELIVERY_COMPLICATION.getName(), Integer.parseInt(pregnancyDeliveryRequest.getDeliveryComplications().getNumericValue())));
-            add(new MRSObservation<Integer>(deliveryDate, VVF_REPAIR.getName(), Integer.parseInt(pregnancyDeliveryRequest.getVvf().getNumericValue())));
+            add(new MRSObservation<Integer>(deliveryDate, DELIVERY_LOCATION.getName(), Integer.parseInt(pregnancyDeliveryRequest.getChildDeliveryLocation().getValue())));
+            add(new MRSObservation<Integer>(deliveryDate, DELIVERED_BY.getName(), Integer.parseInt(pregnancyDeliveryRequest.getChildDeliveredBy().getValue())));
+            add(new MRSObservation<Integer>(deliveryDate, DELIVERY_COMPLICATION.getName(), Integer.parseInt(pregnancyDeliveryRequest.getDeliveryComplications().getValue())));
+            add(new MRSObservation<Integer>(deliveryDate, VVF_REPAIR.getName(), Integer.parseInt(pregnancyDeliveryRequest.getVvf().getValue())));
             add(new MRSObservation<Boolean>(deliveryDate, MATERNAL_DEATH.getName(), pregnancyDeliveryRequest.getMaternalDeath()));
             add(new MRSObservation<String>(deliveryDate, COMMENTS.getName(), pregnancyDeliveryRequest.getComments()));
             add(activePregnancyObservation);
-            add(new MRSObservation<Integer>(deliveryDate, BIRTH_OUTCOME.getName(), Integer.parseInt(deliveredChildRequest1.getChildBirthOutcome().getNumericValue())));
-            add(new MRSObservation<Integer>(deliveryDate, BIRTH_OUTCOME.getName(), Integer.parseInt(deliveredChildRequest2.getChildBirthOutcome().getNumericValue())));
-            add(new MRSObservation<Integer>(deliveryDate, BIRTH_OUTCOME.getName(), Integer.parseInt(deliveredChildRequest3.getChildBirthOutcome().getNumericValue())));
+            add(new MRSObservation<String>(deliveryDate, BIRTH_OUTCOME.getName(), deliveredChildRequest1.getChildBirthOutcome().getValue()));
+            add(new MRSObservation<String>(deliveryDate, BIRTH_OUTCOME.getName(), deliveredChildRequest2.getChildBirthOutcome().getValue()));
+            add(new MRSObservation<String>(deliveryDate, BIRTH_OUTCOME.getName(), deliveredChildRequest3.getChildBirthOutcome().getValue()));
         }};
 
         assertEquals(EncounterType.PREG_DEL_VISIT.value(), encounter.getType());

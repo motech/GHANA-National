@@ -53,23 +53,23 @@
     <xf:bind id="maternalDeath" nodeset="/delivery/maternalDeath" required="true()" type="xsd:string"/>
     <xf:bind id="comments" nodeset="/delivery/comments" type="xsd:string"/>
     <xf:bind action="show" id="child1Outcome" nodeset="/delivery/child1Outcome" relevant="/delivery/outcome = 'SINGLETON' or /delivery/outcome = 'TWINS' or /delivery/outcome = 'TRIPLETS'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="child1RegistrationType" nodeset="/delivery/child1RegistrationType" relevant="/delivery/child1Outcome = 'A'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="child1MotechId" nodeset="/delivery/child1MotechId" relevant="/delivery/child1Outcome = 'A' and /delivery/child1RegistrationType = 'USE_PREPRINTED_ID'" required="true()" type="xsd:int" visible="false()" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
-    <xf:bind action="show" id="child1Sex" nodeset="/delivery/child1Sex" relevant="/delivery/child1Outcome = 'A'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="child1FirstName" nodeset="/delivery/child1FirstName" relevant="/delivery/child1Outcome = 'A'" type="xsd:string" visible="false()" required="false()"/>
-    <xf:bind action="show" id="child1Weight" nodeset="/delivery/child1Weight" relevant="/delivery/child1Outcome = 'A'" required="true()" type="xsd:decimal" visible="false()" constraint=". &gt;= 0.2 and . &lt;= 11" message="Value out of range: must be between 0.2 and 11"/>
+    <xf:bind action="show" id="child1RegistrationType" nodeset="/delivery/child1RegistrationType" relevant="/delivery/child1Outcome = 'ALIVE'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" id="child1MotechId" nodeset="/delivery/child1MotechId" relevant="/delivery/child1Outcome = 'ALIVE' and /delivery/child1RegistrationType = 'USE_PREPRINTED_ID'" required="true()" type="xsd:int" visible="false()" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
+    <xf:bind action="show" id="child1Sex" nodeset="/delivery/child1Sex" relevant="/delivery/child1Outcome = 'ALIVE'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" id="child1FirstName" nodeset="/delivery/child1FirstName" relevant="/delivery/child1Outcome = 'ALIVE'" type="xsd:string" visible="false()" required="false()"/>
+    <xf:bind action="show" id="child1Weight" nodeset="/delivery/child1Weight" relevant="/delivery/child1Outcome = 'ALIVE'" required="true()" type="xsd:decimal" visible="false()" constraint=". &gt;= 0.2 and . &lt;= 11" message="Value out of range: must be between 0.2 and 11"/>
     <xf:bind action="show" id="child2Outcome" nodeset="/delivery/child2Outcome" relevant="/delivery/outcome = 'TWINS' or /delivery/outcome = 'TRIPLETS'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="child2RegistrationType" nodeset="/delivery/child2RegistrationType" relevant="/delivery/child2Outcome = 'A'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="child2MotechId" nodeset="/delivery/child2MotechId" relevant="/delivery/child2Outcome = 'A' and /delivery/child2RegistrationType = 'USE_PREPRINTED_ID'" required="true()" type="xsd:int" visible="false()" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
-    <xf:bind action="show" id="child2Sex" nodeset="/delivery/child2Sex" relevant="/delivery/child2Outcome = 'A'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="child2FirstName" nodeset="/delivery/child2FirstName" relevant="/delivery/child2Outcome = 'A'" type="xsd:string" visible="false()" required="false()"/>
-    <xf:bind action="show" id="child2Weight" nodeset="/delivery/child2Weight" relevant="/delivery/child2Outcome = 'A'" required="true()" type="xsd:decimal" visible="false()" constraint=". &gt;= 0.2 and . &lt;= 11" message="Value out of range: must be between 0.2 and 11"/>
+    <xf:bind action="show" id="child2RegistrationType" nodeset="/delivery/child2RegistrationType" relevant="/delivery/child2Outcome = 'ALIVE'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" id="child2MotechId" nodeset="/delivery/child2MotechId" relevant="/delivery/child2Outcome = 'ALIVE' and /delivery/child2RegistrationType = 'USE_PREPRINTED_ID'" required="true()" type="xsd:int" visible="false()" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
+    <xf:bind action="show" id="child2Sex" nodeset="/delivery/child2Sex" relevant="/delivery/child2Outcome = 'ALIVE'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" id="child2FirstName" nodeset="/delivery/child2FirstName" relevant="/delivery/child2Outcome = 'ALIVE'" type="xsd:string" visible="false()" required="false()"/>
+    <xf:bind action="show" id="child2Weight" nodeset="/delivery/child2Weight" relevant="/delivery/child2Outcome = 'ALIVE'" required="true()" type="xsd:decimal" visible="false()" constraint=". &gt;= 0.2 and . &lt;= 11" message="Value out of range: must be between 0.2 and 11"/>
     <xf:bind action="show" id="child3Outcome" nodeset="/delivery/child3Outcome" relevant="/delivery/outcome = 'TRIPLETS'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="child3RegistrationType" nodeset="/delivery/child3RegistrationType" relevant="/delivery/child3Outcome = 'A'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="child3MotechId" nodeset="/delivery/child3MotechId" relevant="/delivery/child3Outcome = 'A' and /delivery/child3RegistrationType = 'USE_PREPRINTED_ID'" required="true()" type="xsd:int" visible="false()" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
-    <xf:bind action="show" id="child3Sex" nodeset="/delivery/child3Sex" relevant="/delivery/child3Outcome = 'A'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="child3FirstName" nodeset="/delivery/child3FirstName" relevant="/delivery/child3Outcome = 'A'" type="xsd:string" visible="false()" required="false()"/>
-    <xf:bind action="show" id="child3Weight" nodeset="/delivery/child3Weight" relevant="/delivery/child3Outcome = 'A'" required="true()" type="xsd:decimal" visible="false()" constraint=". &gt;= 0.2 and . &lt;= 11" message="Value out of range: must be between 0.2 and 11"/>
+    <xf:bind action="show" id="child3RegistrationType" nodeset="/delivery/child3RegistrationType" relevant="/delivery/child3Outcome = 'ALIVE'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" id="child3MotechId" nodeset="/delivery/child3MotechId" relevant="/delivery/child3Outcome = 'ALIVE' and /delivery/child3RegistrationType = 'USE_PREPRINTED_ID'" required="true()" type="xsd:int" visible="false()" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
+    <xf:bind action="show" id="child3Sex" nodeset="/delivery/child3Sex" relevant="/delivery/child3Outcome = 'ALIVE'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind action="show" id="child3FirstName" nodeset="/delivery/child3FirstName" relevant="/delivery/child3Outcome = 'ALIVE'" type="xsd:string" visible="false()" required="false()"/>
+    <xf:bind action="show" id="child3Weight" nodeset="/delivery/child3Weight" relevant="/delivery/child3Outcome = 'ALIVE'" required="true()" type="xsd:decimal" visible="false()" constraint=". &gt;= 0.2 and . &lt;= 11" message="Value out of range: must be between 0.2 and 11"/>
     <xf:bind action="show" constraint=". &lt; 2147483647" id="sender" message="Invalid phone number:  number too large" nodeset="/delivery/sender" relevant="/delivery/child1RegistrationType = 'AUTO_GENERATE_ID' or /delivery/child2RegistrationType = 'AUTO_GENERATE_ID' or /delivery/child3RegistrationType = 'AUTO_GENERATE_ID'" required="true()" type="xsd:int" visible="false()"/>
     <xf:bind id="formtype" nodeset="/delivery/formtype" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind id="formname" nodeset="/delivery/formname" required="true()" type="xsd:string" visible="false()"/>
@@ -271,15 +271,15 @@
       <xf:label>Child 1 outcome</xf:label>
       <xf:item id="A">
         <xf:label>Alive</xf:label>
-        <xf:value>A</xf:value>
+        <xf:value>ALIVE</xf:value>
       </xf:item>
       <xf:item id="FSB">
         <xf:label>Fresh Still Birth</xf:label>
-        <xf:value>FSB</xf:value>
+        <xf:value>FRESH_STILL_BIRTH</xf:value>
       </xf:item>
       <xf:item id="MSB">
         <xf:label>Macerated Still Birth</xf:label>
-        <xf:value>MSB</xf:value>
+        <xf:value>MACERATED_STILL_BIRTH</xf:value>
       </xf:item>
     </xf:select1>
     <xf:select1 bind="child1RegistrationType">
@@ -317,15 +317,15 @@
       <xf:label>Child 2 outcome</xf:label>
       <xf:item id="A">
         <xf:label>Alive</xf:label>
-        <xf:value>A</xf:value>
+        <xf:value>ALIVE</xf:value>
       </xf:item>
       <xf:item id="FSB">
         <xf:label>Fresh Still Birth</xf:label>
-        <xf:value>FSB</xf:value>
+        <xf:value>FRESH_STILL_BIRTH</xf:value>
       </xf:item>
       <xf:item id="MSB">
         <xf:label>Macerated Still Birth</xf:label>
-        <xf:value>MSB</xf:value>
+        <xf:value>MACERATED_STILL_BIRTH</xf:value>
       </xf:item>
     </xf:select1>
     <xf:select1 bind="child2RegistrationType">
@@ -363,15 +363,15 @@
       <xf:label>Child 3 outcome</xf:label>
       <xf:item id="A">
         <xf:label>Alive</xf:label>
-        <xf:value>A</xf:value>
+        <xf:value>ALIVE</xf:value>
       </xf:item>
       <xf:item id="FSB">
         <xf:label>Fresh Still Birth</xf:label>
-        <xf:value>FSB</xf:value>
+        <xf:value>FRESH_STILL_BIRTH</xf:value>
       </xf:item>
       <xf:item id="MSB">
         <xf:label>Macerated Still Birth</xf:label>
-        <xf:value>MSB</xf:value>
+        <xf:value>MACERATED_STILL_BIRTH</xf:value>
       </xf:item>
     </xf:select1>
     <xf:select1 bind="child3RegistrationType">

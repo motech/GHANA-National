@@ -9,7 +9,7 @@ public enum ChildDeliveryMode implements MobileFormEnum {
     }
 
     @Override
-    public String getNumericValue() {
+    public String getValue() {
         return numericValue;
     }
 }

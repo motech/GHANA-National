@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.util.DateUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
@@ -28,6 +29,15 @@ import static org.testng.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
+
+    @Value("#{functionalTestProperties['port']}")
+    private String port;
+
+    @Value("#{functionalTestProperties['host']}")
+    private String host;
+
+    @Value("#{functionalTestProperties['deliveryPath']}")
+    private String deliveryPath;
 
     @Test
     public void shouldCheckIfAtleastOneInfoIsEnteredForFindClientIDQuery() throws Exception {
@@ -164,7 +174,8 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
 
 
     private String getMessageGatewayResponse() throws IOException {
-        GetMethod getMethod = new GetMethod("http://localhost:8080/deliverytools/motech-delivery-tools/outbound/all");
+        String url = String.format("http://%s:%s/%s", host, port, deliveryPath);
+        GetMethod getMethod = new GetMethod(url);
         HttpClient httpClient = new HttpClient();
         httpClient.executeMethod(getMethod);
         return getMethod.getResponseBodyAsString();
