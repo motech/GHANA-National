@@ -53,11 +53,17 @@ public class PregnancyServiceTest {
     @Mock
     private CareService mockCareService;
 
+    @Mock
+    private PatientService mockPatientService;
+
+    @Mock
+    private MobileMidwifeService mockMobileMidwifeService;
+
     @Before
     public void setUp() {
         initMocks(this);
         pregnancyService = new PregnancyService(mockAllPatients, mockAllEncounters, mockAllSchedules, mockAllAppointments,
-                mockIdentifierGenerator, mockAllObservations, mockCareService, mockSmsGateway);
+                mockIdentifierGenerator, mockAllObservations, mockCareService, mockSmsGateway,mockPatientService, mockMobileMidwifeService);
     }
 
     @Test
@@ -80,27 +86,32 @@ public class PregnancyServiceTest {
 
         pregnancyService.terminatePregnancy(request);
 
-        verify(mockAllPatients).deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
-        verify(mockAllSchedules).unEnroll(patientMRSId, ScheduleNames.ANC_DELIVERY);
-        verify(mockAllAppointments).remove(mockPatient);
+        verify(mockPatientService).deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
+        verify(mockMobileMidwifeService).unRegister(request.getPatient().getMotechId());
     }
 
     @Test
     public void shouldCreateEncounterOnPregnancyTermination() {
+        String patientMRSId = "patientMRSId";
         Patient mockPatient = mock(Patient.class);
-        MRSPatient mockMRSPatient = mock(MRSPatient.class);
         Facility mockFacility = mock(Facility.class);
         MRSUser mockStaff = mock(MRSUser.class);
+        List<String> schedules = Arrays.asList("schedule1", "schedule2");
 
-        when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
+        when(mockPatient.getMRSPatientId()).thenReturn(patientMRSId);
+        when(mockPatient.ancCareProgramsToUnEnroll()).thenReturn(schedules);
         final Date date = DateUtil.newDate(2000, 12, 12).toDate();
         PregnancyTerminationRequest request = pregnancyTermination(mockPatient, mockStaff, mockFacility);
         request.setTerminationDate(date);
+        request.setDead(Boolean.FALSE);
 
         pregnancyService.terminatePregnancy(request);
 
         Encounter expectedEncounter = new PregnancyEncounterFactory().createTerminationEncounter(request, null);
         ArgumentCaptor<Encounter> argumentCaptor = ArgumentCaptor.forClass(Encounter.class);
+
+        verify(mockAllSchedules).unEnroll(patientMRSId, mockPatient.ancCareProgramsToUnEnroll());
+        verify(mockAllAppointments).remove(mockPatient);
         verify(mockAllEncounters).persistEncounter(argumentCaptor.capture());
 
         assertReflectionEquals(expectedEncounter, argumentCaptor.getValue());
@@ -113,8 +124,9 @@ public class PregnancyServiceTest {
         Facility mockFacility = new Facility(mrsFacility).mrsFacilityId(facilityId);
         MRSUser mockStaff = new MRSUser().id("staff-id");
         String parentMotechId = "121";
-        MRSPatient mrsPatient = new MRSPatient(parentMotechId, null, null);
-        Patient mockPatient = new Patient(mrsPatient, parentMotechId);
+        String mrsPatientId = "mrsPatientId";
+        Patient mockPatient = mock(Patient.class);
+        List<String> schedules = Arrays.asList("schedule1", "schedule2");
 
         final String childMotechId = "child-motech-id";
         final String childWeight = "1.1";
@@ -138,7 +150,10 @@ public class PregnancyServiceTest {
 
         final MRSObservation activePregnancyObservation = new MRSObservation(new Date(), "PREG", "Value");
 
+        when(mockPatient.getMRSPatientId()).thenReturn(mrsPatientId);
+        when(mockPatient.getMotechId()).thenReturn(parentMotechId);
         when(mockAllObservations.activePregnancyObservation(parentMotechId)).thenReturn(activePregnancyObservation);
+        when(mockPatient.ancCareProgramsToUnEnroll()).thenReturn(schedules);
         Patient child = new Patient(childMRSPatient);
         when(mockAllPatients.save(Matchers.<Patient>any())).thenReturn(child);
         pregnancyService.handleDelivery(deliveryRequest);
@@ -154,6 +169,7 @@ public class PregnancyServiceTest {
         verify(mockAllPatients).save(patientArgumentCaptor.capture());
         verify(mockCareService).enroll(cwcVOArgumentCaptor.capture());
         verify(mockCareService).enrollChildForPNCOnDelivery(child);
+        verify(mockAllSchedules).unEnroll(mrsPatientId,schedules);
 
         List<Encounter> encounters = encounterArgumentCaptor.getAllValues();
         assertThat(encounters.size(), is(equalTo(2)));
@@ -183,7 +199,7 @@ public class PregnancyServiceTest {
             put(LAST_NAME, childDefaultLastName);
         }}, smsTemplateValuesArgCaptor.getValue());
 
-        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatient.getId(), ScheduleNames.ANC_DELIVERY, deliveryDate.toLocalDate());
+        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, ScheduleNames.ANC_DELIVERY, deliveryDate.toLocalDate());
         verify(mockAllAppointments).remove(mockPatient);
     }
 
