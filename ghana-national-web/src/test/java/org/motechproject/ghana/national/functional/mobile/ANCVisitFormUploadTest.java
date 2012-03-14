@@ -44,12 +44,12 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
 
-    @Test(enabled = false)
+    @Test
     public void shouldUploadANCVisitFormSuccessfully() throws SchedulerException {
         // create
         final String staffId = staffGenerator.createStaff(browser, homePage);
 
-        DataGenerator dataGenerator = new DataGenerator();
+        DataGenera\tor dataGenerator = new DataGenerator();
         String patientFirstName = "patient first name" + dataGenerator.randomString(5);
         final TestPatient testPatient = TestPatient.with(patientFirstName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
@@ -71,14 +71,16 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
 
         final LocalDate nextANCVisitDate = DateUtil.today().plusDays(5);
         XformHttpClient.XformResponse xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, nextANCVisitDate);
-        verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, nextANCVisitDate, nextANCVisitDate.plusWeeks(1).toDate(), nextANCVisitDate.plusWeeks(2).toDate(), nextANCVisitDate.plusWeeks(3).toDate());
+        verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, nextANCVisitDate.minusWeeks(2).toDate(),
+                nextANCVisitDate.minusWeeks(1).toDate(), nextANCVisitDate.toDate(), nextANCVisitDate.plusWeeks(1).toDate());
 
         LocalDate newANCVisitDate = DateUtil.today().plusDays(35);
         xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, newANCVisitDate);
-        verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, newANCVisitDate, newANCVisitDate.plusWeeks(1).toDate(), newANCVisitDate.plusWeeks(2).toDate(), newANCVisitDate.plusWeeks(3).toDate());
+        verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, newANCVisitDate.minusWeeks(2).toDate(),
+                newANCVisitDate.minusWeeks(1).toDate(), newANCVisitDate.toDate(), newANCVisitDate.plusWeeks(1).toDate());
     }
 
-    private void verifyAncVisitSchedules(ANCEnrollmentPage ancEnrollmentPage, XformHttpClient.XformResponse xformResponse, LocalDate nextANCVisitDate, Date lateDate1, Date lateDate2, Date lateDate3) throws SchedulerException {
+    private void verifyAncVisitSchedules(ANCEnrollmentPage ancEnrollmentPage, XformHttpClient.XformResponse xformResponse, Date minDate, Date dueDate, Date lateDate1, Date lateDate2) throws SchedulerException {
         assertEquals(1, xformResponse.getSuccessCount());
         List<CronTrigger> cronTriggers = captureAlertsForNextMilestone(ancEnrollmentPage.getMotechPatientId());
         assertEquals(4, cronTriggers.size());
@@ -88,10 +90,10 @@ public class ANCVisitFormUploadTest extends LoggedInUserFunctionalTest {
         CronTrigger lateTrigger2 = cronTriggers.get(2);
         CronTrigger lateTrigger3 = cronTriggers.get(3);
 
-        assertThat(dueTrigger.getNextFireTime(), is(nextANCVisitDate.toDate()));
-        assertThat(lateTrigger1.getNextFireTime(), is(lateDate1));
-        assertThat(lateTrigger2.getNextFireTime(), is(lateDate2));
-        assertThat(lateTrigger3.getNextFireTime(), is(lateDate3));
+        assertThat(dueTrigger.getNextFireTime(), is(minDate));
+        assertThat(lateTrigger1.getNextFireTime(), is(dueDate));
+        assertThat(lateTrigger2.getNextFireTime(), is(lateDate1));
+        assertThat(lateTrigger3.getNextFireTime(), is(lateDate2));
 
         assertThat(dueTrigger.getCronExpression(), is("0 0 0 ? * *"));
         assertThat(lateTrigger1.getCronExpression(), is("0 0 0 ? * *"));
