@@ -35,5 +35,6 @@
     </logger>
     <root>
         <priority value="warn"/>
+        <appender-ref ref="logfile"/>
     </root>
 </log4j:configuration>

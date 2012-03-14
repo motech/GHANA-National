@@ -86,7 +86,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         MRSUser staff = mock(MRSUser.class);
         Facility facility = mock(Facility.class);
         Patient patient = mock(Patient.class);
-        when(patient.pentaPatientCare()).thenReturn(new PatientCare(CWC_PENTA, DateUtil.today()));
+        when(patient.pentaPatientCare(Matchers.<LocalDate>any())).thenReturn(new PatientCare(CWC_PENTA, DateUtil.today(), today()));
         CWCVisit cwcVisit = createTestCWCVisit(new Date(), staff, facility, patient);
 
         ChildVisitService spyService = spy(service);
@@ -108,7 +108,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         Patient patient = new Patient(new MRSPatient(patientId, "motechId", new MRSPerson().dateOfBirth(newDate(2011, 3, 30).toDate()), new MRSFacility(null)));
         DateTime visitDate = newDateTime(2012, 2, 2, 9, 8, 8);
         Time visitTime = time(visitDate);
-        PNCBabyRequest pncBabyRequest = createTestPNCBabyForm(visitDate, staff, facility, patient).visit(PNC2.visitNumber());
+        PNCBabyRequest pncBabyRequest = createTestPNCBabyForm(visitDate, staff, facility, patient).visit(PNC2);
 
         DateTime today = visitDate.plusDays(1);
         mockCurrentDate(today);
@@ -120,7 +120,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enrollOrFulfill(requestCaptor.capture(), eq(visitDate.toLocalDate()), eq(visitTime));
-        assertEnrollmentRequest(new EnrollmentRequest(patientId, PNC2.scheduleName(), time(today), visitDate.toLocalDate(), visitTime, visitDate.toLocalDate(), visitTime, null)
+        assertEnrollmentRequest(new EnrollmentRequest(patientId, PNC2.scheduleName(), visitTime, visitDate.toLocalDate(), visitTime, visitDate.toLocalDate(), visitTime, null)
                 , requestCaptor.getValue());
     }
   
@@ -142,7 +142,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
                 bcg(false).opv0(false).
                 respiration(12).
                 temperature(32.2d).
-                visit(1);
+                visit(PNC1);
     }
 
     @Test
@@ -181,7 +181,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
     public void shouldEnrollAndFulfillPentaScheduleIfNotEnrolledEarlier() {
         String mrsPatientId = "mrsPatientId";
         Patient patient = mock(Patient.class);
-        when(patient.pentaPatientCare()).thenReturn(new PatientCare(CWC_PENTA, DateUtil.today()));
+        when(patient.pentaPatientCare(Matchers.<LocalDate>any())).thenReturn(new PatientCare(CWC_PENTA, DateUtil.today(), today()));
         when(patient.getMRSPatientId()).thenReturn(mrsPatientId);
         when(mockAllSchedules.enrollment(any(EnrollmentRequest.class))).thenReturn(null);
 
@@ -216,7 +216,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enrollOrFulfill(captor.capture(), eq(visitDate));
-        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, CWC_IPT_VACCINE, deliveryTime, visitDate, null, visitDate, null, dose.milestone()), captor.getAllValues().get(0));
+        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, CWC_IPT_VACCINE, deliveryTime, visitDate, deliveryTime, visitDate, null, dose.milestone()), captor.getAllValues().get(0));
     }
 
     @Test

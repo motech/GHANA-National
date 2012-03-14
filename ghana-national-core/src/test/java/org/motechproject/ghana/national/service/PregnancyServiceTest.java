@@ -17,10 +17,7 @@ import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mrs.model.*;
 import org.motechproject.util.DateUtil;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static junit.framework.Assert.assertFalse;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -136,7 +133,8 @@ public class PregnancyServiceTest {
         final Date birthDate = deliveryRequest.getDeliveryDateTime().toDate();
 
         final String childDefaultLastName = "Baby";
-        MRSPatient childMRSPatient = new MRSPatient(childMotechId, new MRSPerson().firstName(childFirstName).lastName(childDefaultLastName).dateOfBirth(birthDate).gender("?").dead(false), mrsFacility);
+        final MRSPerson mrsPerson = new MRSPerson().firstName(childFirstName).lastName(childDefaultLastName).dateOfBirth(birthDate).gender("?").dead(false);
+        MRSPatient childMRSPatient = new MRSPatient(childMotechId, mrsPerson, mrsFacility);
 
         final MRSObservation activePregnancyObservation = new MRSObservation(new Date(), "PREG", "Value");
 
@@ -147,7 +145,7 @@ public class PregnancyServiceTest {
 
         final PregnancyEncounterFactory factory = new PregnancyEncounterFactory();
         Encounter expectedDeliveryEncounter = factory.createDeliveryEncounter(deliveryRequest, activePregnancyObservation);
-        Encounter expectedBirthEncounter = factory.createBirthEncounter(deliveredChildRequest, childMRSPatient,mockStaff,mockFacility, birthDate);
+        Encounter expectedBirthEncounter = factory.createBirthEncounter(deliveredChildRequest, childMRSPatient, mockStaff, mockFacility, birthDate);
 
         ArgumentCaptor<Encounter> encounterArgumentCaptor = ArgumentCaptor.forClass(Encounter.class);
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
@@ -155,7 +153,7 @@ public class PregnancyServiceTest {
         verify(mockAllEncounters,times(2)).persistEncounter(encounterArgumentCaptor.capture());
         verify(mockAllPatients).save(patientArgumentCaptor.capture());
         verify(mockCareService).enroll(cwcVOArgumentCaptor.capture());
-        verify(mockCareService).enrollChildForPNC(child);
+        verify(mockCareService).enrollChildForPNCOnDelivery(child);
 
         List<Encounter> encounters = encounterArgumentCaptor.getAllValues();
         assertThat(encounters.size(), is(equalTo(2)));
@@ -176,11 +174,14 @@ public class PregnancyServiceTest {
         assertThat(actualCWCVO.getPatientMotechId(), is(childMotechId));
         assertThat(actualCWCVO.getFacilityId(), is(facilityId));
 
-        verify(mockSmsGateway).dispatchSMS(REGISTER_SUCCESS_SMS_KEY, new HashMap<String, String>() {{
+        ArgumentCaptor<Map> smsTemplateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(mockSmsGateway).dispatchSMS(eq(REGISTER_SUCCESS_SMS_KEY), smsTemplateValuesArgCaptor.capture(), eq(sender));
+
+        SMSTemplateTest.assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, childMotechId);
             put(FIRST_NAME, childFirstName);
             put(LAST_NAME, childDefaultLastName);
-        }}, sender);
+        }}, smsTemplateValuesArgCaptor.getValue());
 
         verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatient.getId(), ScheduleNames.ANC_DELIVERY, deliveryDate.toLocalDate());
         verify(mockAllAppointments).remove(mockPatient);

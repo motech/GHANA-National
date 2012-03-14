@@ -50,8 +50,7 @@ public class ChildVisitService {
     public MRSEncounter save(PNCBabyRequest pncBabyRequest) {
         DateTime visitDate = pncBabyRequest.getDate();
         Patient patient = pncBabyRequest.getPatient();
-        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.pncProgramToFulfilOnVisit(pncBabyRequest.getVisit(), visitDate)
-                , visitDate);
+        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.pncProgramToFulfilOnVisit(visitDate, pncBabyRequest.getVisit().scheduleName()));
         allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate.toLocalDate(), time(visitDate));
         return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(pncBabyRequest));
     }
@@ -69,7 +68,7 @@ public class ChildVisitService {
         if(iptVaccine != null) {
             Patient patient = iptVaccine.getGivenTo();
             LocalDate visitDate = newDate(cwcVisit.getDate());
-            EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.cwcIPTPatientCareEnrollOnVisitAfter14Weeks(visitDate), visitDate, iptVaccine.getIptMilestone());
+            EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.cwcIPTPatientCareEnrollOnVisitAfter14Weeks(visitDate), iptVaccine.getIptMilestone());
             allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
         }
     }
@@ -96,7 +95,7 @@ public class ChildVisitService {
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
 
             if (null == enrollment(patient.getMRSPatientId(), CWC_PENTA)) {
-                allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patient.pentaPatientCare(), visitDate, milestoneName(cwcVisit)));
+                allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patient.pentaPatientCare(visitDate), milestoneName(cwcVisit)));
             }
             allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_PENTA, visitDate);
         }

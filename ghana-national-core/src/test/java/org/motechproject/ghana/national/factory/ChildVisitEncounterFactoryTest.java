@@ -84,7 +84,7 @@ public class ChildVisitEncounterFactoryTest {
                 bcg(bcg).opv0(opv0).
                 respiration(respiration).
                 temperature(temperature).
-                visit(visitNumber);
+                visit(PNCChildVisit.byVisitNumber(visitNumber));
 
         HashSet<MRSObservation> expectedObservations = new HashSet<MRSObservation>();
         expectedObservations.add(new MRSObservation<Integer>(pncDate.toDate(), VISIT_NUMBER.getName(), Integer.valueOf(visitNumber)));

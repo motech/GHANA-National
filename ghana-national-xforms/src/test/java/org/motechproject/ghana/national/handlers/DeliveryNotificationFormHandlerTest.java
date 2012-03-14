@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.handlers;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
 import org.motechproject.ghana.national.domain.Facility;
@@ -17,6 +18,7 @@ import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;
@@ -25,12 +27,14 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.EncounterType.PREG_DEL_NOTIFY_VISIT;
 import static org.motechproject.ghana.national.handlers.DeliveryNotificationFormHandler.DELIVERY_NOTIFICATION_SMS_KEY;
+import static org.motechproject.ghana.national.util.AssertionUtility.assertContainsTemplateValues;
 
 public class DeliveryNotificationFormHandlerTest {
 
@@ -78,7 +82,7 @@ public class DeliveryNotificationFormHandlerTest {
 
         final String firstName = "firstName";
         final String lastName = "lastName";
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastName);
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastName).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
         Patient patient = new Patient(new MRSPatient(motechId, person, new MRSFacility(facilityId)));
 
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
@@ -93,11 +97,13 @@ public class DeliveryNotificationFormHandlerTest {
         verify(mockAllEncounters).persistEncounter(new MRSPatient(motechId, person, new MRSFacility(facilityId)), staffId, facilityId, PREG_DEL_NOTIFY_VISIT.value(),
                 datetime.toDate(), mrsObservations);
 
-        verify(mockSMSGateway).dispatchSMS(DELIVERY_NOTIFICATION_SMS_KEY, new HashMap<String, String>(){{
+        ArgumentCaptor<Map> smsTemplateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(mockSMSGateway).dispatchSMS(eq(DELIVERY_NOTIFICATION_SMS_KEY), smsTemplateValuesArgCaptor.capture(), eq(facilityPhone));
+        assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, motechId);
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastName);
-        }}, facilityPhone);
+        }}, smsTemplateValuesArgCaptor.getValue());
     }
 
     @Test

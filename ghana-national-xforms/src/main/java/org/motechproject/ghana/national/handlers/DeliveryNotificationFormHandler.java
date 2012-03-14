@@ -2,7 +2,10 @@ package org.motechproject.ghana.national.handlers;
 
 import org.joda.time.DateTime;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.SMSTemplate;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -18,12 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FIRST_NAME;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.LAST_NAME;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.MOTECH_ID;
 import static org.motechproject.ghana.national.domain.EncounterType.PREG_DEL_NOTIFY_VISIT;
 
 @Component
@@ -69,11 +68,8 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
         if (patient.getMrsPatient().getFacility() != null) {
             Facility facility = facilityService.getFacility(patient.getMrsPatient().getFacility().getId());
 
-            smsGateway.dispatchSMS(DELIVERY_NOTIFICATION_SMS_KEY, new HashMap<String, String>() {{
-                put(MOTECH_ID, patient.getMotechId());
-                put(FIRST_NAME, patient.getFirstName());
-                put(LAST_NAME, patient.getLastName());
-            }}, facility.getPhoneNumber());
+            smsGateway.dispatchSMS(DELIVERY_NOTIFICATION_SMS_KEY, new SMSTemplate().fillPatientDetails(patient)
+                    .fillDeliveryTime(deliveryTime).getRuntimeVariables(), facility.getPhoneNumber());
         }
     }
 }

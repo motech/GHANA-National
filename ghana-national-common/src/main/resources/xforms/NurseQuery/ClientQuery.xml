@@ -33,7 +33,7 @@
         <xf:bind id="nhis" action="show" nodeset="/clientQuery/nhis" type="xsd:string"
                  visible="false()" relevant="/clientQuery/queryType = 'FIND_CLIENT_ID'"/>
         <xf:bind id="motechId" action="show" nodeset="/clientQuery/motechId"
-                 relevant="/clientQuery/queryType = 'CLIENT_DETAILS'"
+                 relevant="/clientQuery/queryType = 'CLIENT_DETAILS' or /clientQuery/queryType = 'UPCOMING_CARE'"
                  required="true()" type="xsd:int" constraint=". &gt; 999999 and . &lt; 10000000"
                  message="MoTeCH ID must be 7 digits long" visible="false()"/>
         <xf:bind id="phoneNumber" action="show" nodeset="/clientQuery/phoneNumber" type="xsd:int" constraint=". &lt;= 999999999"
@@ -61,6 +61,10 @@
             <xf:item id="FIND_CLIENT_ID">
                 <xf:label>Find client ID</xf:label>
                 <xf:value>FIND_CLIENT_ID</xf:value>
+            </xf:item>
+            <xf:item id="UPCOMING_CARE">
+                <xf:label>Upcoming Care</xf:label>
+                <xf:value>UPCOMING_CARE</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="motechId">

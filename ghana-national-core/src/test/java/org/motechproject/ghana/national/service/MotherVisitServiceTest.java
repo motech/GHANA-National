@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllAppointments;
 import org.motechproject.ghana.national.repository.AllEncounters;
@@ -42,8 +43,10 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_I
 import static org.motechproject.ghana.national.domain.Concept.IPT;
 import static org.motechproject.ghana.national.domain.Concept.IPT_REACTION;
 import static org.motechproject.ghana.national.domain.EncounterType.ANC_VISIT;
+import static org.motechproject.ghana.national.domain.PNCMotherVisit.PNC1;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDate;
+import static org.motechproject.util.DateUtil.time;
 import static org.motechproject.util.DateUtil.today;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -121,19 +124,43 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         String mrsPatientId = "34";
         Facility facility = new Facility(new MRSFacility(mrsFacilityId)).mrsFacilityId(mrsFacilityId);
         MRSPerson mrsPerson = new MRSPerson();
-        mrsPerson.dateOfBirth(DateUtil.now().toDate());
+        DateTime date = DateUtil.now();
+        mrsPerson.dateOfBirth(date.toDate());
         MRSPatient mrsPatient = new MRSPatient(mrsPatientId, "motechPatient", mrsPerson, facility.mrsFacility());
         Patient patient = new Patient(mrsPatient);
-        
-        motherVisitService.enrollOrFulfillPNCSchedulesForMother(createTestPncRequest(patient));
-        
-        verify(mockAllEncounters).persistEncounter(org.mockito.Matchers.<Encounter>any());
-        verify(mockAllSchedules, times(3)).enrollOrFulfill(org.mockito.Matchers.<EnrollmentRequest>any(), org.mockito.Matchers.<LocalDate>any());
+
+        MRSUser staff = new MRSUser();
+        Facility encounterFacility = new Facility(new MRSFacility("1"));
+
+        motherVisitService.enrollOrFulfillPNCSchedulesForMother(createTestPncRequest(patient, encounterFacility, staff, date));
+
+        ArgumentCaptor<Encounter> encounterArgumentCaptor = ArgumentCaptor.forClass(Encounter.class);
+        verify(mockAllEncounters).persistEncounter(encounterArgumentCaptor.capture());
+        Encounter actualEncounter = encounterArgumentCaptor.getValue();
+        assertThat(actualEncounter.getMrsPatient(),is(equalTo(mrsPatient)));
+        assertThat(actualEncounter.getFacility(),is(equalTo(encounterFacility.mrsFacility())));
+        assertThat(actualEncounter.getStaff(),is(equalTo(staff)));
+        assertThat(actualEncounter.getType(),is(equalTo(EncounterType.PNC_MOTHER_VISIT.value())));
+        assertThat(actualEncounter.getObservations().size(),is(equalTo(9)));
+
+        ArgumentCaptor<EnrollmentRequest> enrollmentRequestArgumentCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        ArgumentCaptor<LocalDate> localDateArgumentCaptor = ArgumentCaptor.forClass(LocalDate.class);
+        verify(mockAllSchedules, times(1)).enrollOrFulfill(enrollmentRequestArgumentCaptor.capture(), localDateArgumentCaptor.capture());
+
+        final DateTime expectedDateTime = date.withSecondOfMinute(0).withMillisOfSecond(0);
+        assertThat(localDateArgumentCaptor.getValue(), is(equalTo(today())));
+        EnrollmentRequest actualEnrollmentRequest = enrollmentRequestArgumentCaptor.getValue();
+        assertThat(actualEnrollmentRequest.getExternalId(), is(equalTo(mrsPatientId)));
+        assertThat(actualEnrollmentRequest.getReferenceDateTime(), is(equalTo(expectedDateTime)));
+        assertThat(actualEnrollmentRequest.getScheduleName(), is(equalTo(ScheduleNames.PNC_MOTHER_1)));
+        assertThat(actualEnrollmentRequest.getEnrollmentDateTime(), is(equalTo(expectedDateTime)));
+        assertThat(actualEnrollmentRequest.getPreferredAlertTime(), is(equalTo(time(date))));
+        assertThat(actualEnrollmentRequest.getStartingMilestoneName(), is(equalTo(null)));
     }
 
-    private PNCMotherRequest createTestPncRequest(Patient patient) {
-        return new PNCMotherRequest().maleInvolved(Boolean.TRUE).patient(patient).ttDose("1").visitNumber("1").vitaminA("Y").comments("Comments")
-                .community("House").date(DateUtil.newDateTime(DateUtil.today())).facility(new Facility()).staff(new MRSUser()).location("Outreach").lochiaAmountExcess(Boolean.TRUE)
+    private PNCMotherRequest createTestPncRequest(Patient patient, Facility facility, MRSUser staff, DateTime date) {
+        return new PNCMotherRequest().maleInvolved(Boolean.TRUE).patient(patient).ttDose("1").visit(PNC1).vitaminA("Y").comments("Comments")
+                .community("House").date(date).facility(facility).staff(staff).location("Outreach").lochiaAmountExcess(Boolean.TRUE)
                 .lochiaColour("1").lochiaOdourFoul(Boolean.TRUE).temperature(10D);
     }
 
@@ -176,7 +203,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enrollOrFulfill(captor.capture(), eq(visitDate));
-        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, deliveryTime, visitDate, null, visitDate, null, dose2.milestone()), captor.getAllValues().get(0));
+        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, deliveryTime, visitDate, deliveryTime, visitDate, null, dose2.milestone()), captor.getAllValues().get(0));
     }
 
     @Test

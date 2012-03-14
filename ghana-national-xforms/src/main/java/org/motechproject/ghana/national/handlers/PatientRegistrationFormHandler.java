@@ -4,7 +4,10 @@ import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.SMSGateway;
-import org.motechproject.ghana.national.service.*;
+import org.motechproject.ghana.national.service.CareService;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
+import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.vo.CwcVO;
@@ -25,12 +28,8 @@ import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FIRST_NAME;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.LAST_NAME;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.MOTECH_ID;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.REGISTER_SUCCESS_SMS_KEY;
 
 
@@ -83,11 +82,9 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             registerForANC(registerClientForm, facilityId, savedPatient.getMotechId());
 
             if (registerClientForm.getSender() != null) {
-                smsGateway.dispatchSMS(REGISTER_SUCCESS_SMS_KEY, new HashMap<String, String>() {{
-                    put(MOTECH_ID, savedPatient.getMotechId());
-                    put(FIRST_NAME, savedPatient.getFirstName());
-                    put(LAST_NAME, savedPatient.getLastName());
-                }}, registerClientForm.getSender());
+
+                smsGateway.dispatchSMS(REGISTER_SUCCESS_SMS_KEY,
+                        new SMSTemplate().fillPatientDetails(savedPatient).getRuntimeVariables(), registerClientForm.getSender());
             }
         } catch (Exception e) {
             log.error("Exception while saving patient", e);

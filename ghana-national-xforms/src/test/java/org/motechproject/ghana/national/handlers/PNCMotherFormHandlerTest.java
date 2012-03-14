@@ -62,7 +62,7 @@ public class PNCMotherFormHandlerTest {
         Boolean maleInvolved = Boolean.TRUE;
         String motechId = "motechId";
         double temperature = 20D;
-        String visitNumber = "1";
+        int visitNumber = 1;
         String vitaminA = "vitaminA";
         String staffId = "staffId";
         Boolean referred = Boolean.TRUE;
@@ -97,7 +97,7 @@ public class PNCMotherFormHandlerTest {
     }
 
     private PNCMotherForm createPNCMotherForm(String comment, String community, DateTime date, String facilityId, String staffId, String fht, String house, String location, Boolean lochiaAmountExcess, String lochiaColour,
-                                              Boolean lochiaOdourFoul, Boolean maleInvolved, String motechId, double temperature, String visitNumber, String vitaminA) {
+                                              Boolean lochiaOdourFoul, Boolean maleInvolved, String motechId, double temperature, int visitNumber, String vitaminA) {
         final PNCMotherForm pncMotherForm = new PNCMotherForm();
         pncMotherForm.setComments(comment);
         pncMotherForm.setCommunity(community);
