@@ -12,17 +12,19 @@ import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PregnancyTerminationFormHandler implements FormPublishHandler {
 
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     @Autowired
     PregnancyService pregnancyService;
 
-    @Autowired
-    MobileMidwifeService mobileMidwifeService;
+
 
     @Autowired
     FacilityService facilityService;
@@ -38,9 +40,14 @@ public class PregnancyTerminationFormHandler implements FormPublishHandler {
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent motechEvent) {
+        try {
         PregnancyTerminationForm formBean = (PregnancyTerminationForm) motechEvent.getParameters().get(Constants.FORM_BEAN);
         pregnancyService.terminatePregnancy(createPregnancyTerminationVisit(formBean));
-        mobileMidwifeService.unRegister(formBean.getMotechId());
+        }
+        catch (Exception e) {
+            log.error("Exception while terminating pregnancy");
+        }
+
     }
 
     PregnancyTerminationRequest createPregnancyTerminationVisit(PregnancyTerminationForm form) {

@@ -31,9 +31,6 @@ public class PregnancyTerminationFormHandlerTest {
     PregnancyService mockPregnancyService;
 
     @Mock
-    MobileMidwifeService mockMobileMidwifeService;
-
-    @Mock
     PatientService mockPatientService;
 
     @Mock
@@ -47,7 +44,6 @@ public class PregnancyTerminationFormHandlerTest {
         initMocks(this);
         pregnancyTerminationFormHandler = new PregnancyTerminationFormHandler();
         ReflectionTestUtils.setField(pregnancyTerminationFormHandler, "pregnancyService", mockPregnancyService);
-        ReflectionTestUtils.setField(pregnancyTerminationFormHandler, "mobileMidwifeService", mockMobileMidwifeService);
         ReflectionTestUtils.setField(pregnancyTerminationFormHandler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(pregnancyTerminationFormHandler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(pregnancyTerminationFormHandler, "staffService", mockStaffService);
@@ -67,7 +63,6 @@ public class PregnancyTerminationFormHandlerTest {
         pregnancyTerminationFormHandler.handleFormEvent(event);
 
         verify(mockPregnancyService).terminatePregnancy(any(PregnancyTerminationRequest.class));
-        verify(mockMobileMidwifeService).unRegister(motechId);
 
     }
 

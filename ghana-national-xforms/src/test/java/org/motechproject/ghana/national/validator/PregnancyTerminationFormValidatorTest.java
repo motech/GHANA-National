@@ -35,7 +35,7 @@ public class PregnancyTerminationFormValidatorTest {
         PregnancyTerminationForm formBean = setUpForm(facilityId, motechId, staffId);
         when(formValidator.validateIfFacilityExists(facilityId)).thenReturn(Arrays.asList(new FormError("facility", "not found")));
         when(formValidator.validateIfStaffExists(staffId)).thenReturn(Arrays.asList(new FormError("staff", "not found")));
-        when(formValidator.validateIfPatientExistsAndIsAlive(motechId, "motechId")).thenReturn(Arrays.asList(new FormError("motechId", "not found")));
+        when(formValidator.validatePatient(motechId, "motechId")).thenReturn(Arrays.asList(new FormError("motechId", "not found")));
         when(formValidator.validateIfPatientIsFemale(motechId, "motechId")).thenReturn(Arrays.asList(new FormError("motechId", "not female")));
 
         List<FormError> formErrors = pregnancyTerminationFormValidator.validate(formBean);
