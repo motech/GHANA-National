@@ -35,14 +35,12 @@ public abstract class BaseScheduleHandler {
 
     protected void sendAggregativeSMSToFacilityForAnAppointment(String ancVisitSmsKey, MotechEvent motechEvent) {
         final Map<String, Object> parameters = motechEvent.getParameters();
-        String externalId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
-        final Patient patient = allPatients.patientByOpenmrsId(externalId);
-        final String motechId = patient.getMrsPatient().getMotechId();
-
+        final String externalId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
+        final Patient patient = allPatients.getPatientByMotechId(externalId);
         Facility facility = allFacilities.getFacility(patient.getMrsPatient().getFacility().getId());
 
         smsGateway.dispatchSMSToAggregator(ancVisitSmsKey, new HashMap<String, String>() {{
-            put(MOTECH_ID, motechId);
+            put(MOTECH_ID, externalId);
             put(WINDOW, getVisitWindow((String) parameters.get(MotechSchedulerService.JOB_ID_KEY)));
             put(FIRST_NAME, patient.getFirstName());
             put(LAST_NAME, patient.getLastName());
@@ -54,11 +52,13 @@ public abstract class BaseScheduleHandler {
         char reminderCount = jobId.charAt(jobId.length() - 1);
         switch (reminderCount) {
             case '0':
-                return WindowName.due.name();
+                return WindowName.due.name() + " 0";
             case '1':
+                return WindowName.due.name() + " 1";
             case '2':
+                return WindowName.due.name() + " 2";
             case '3':
-                return WindowName.late.name();
+                return WindowName.due.name() + " 3";
         }
         return null;
     }

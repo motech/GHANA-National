@@ -8,23 +8,39 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.Concept;
+import org.motechproject.ghana.national.domain.Encounter;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.IPTDose;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientCare;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.request.PNCBabyRequest;
 import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.model.Time;
-import org.motechproject.mrs.model.*;
-import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
+import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSObservation;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
+import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
+import org.quartz.CronTrigger;
+import org.quartz.TriggerUtils;
 
+import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.selectFirst;
 import static java.util.Arrays.asList;
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -32,12 +48,25 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
-import static org.motechproject.ghana.national.domain.Concept.*;
-import static org.motechproject.ghana.national.domain.PNCChildVisit.*;
-import static org.motechproject.util.DateUtil.*;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_BCG;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_IPT_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_MEASLES_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PENTA;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_YELLOW_FEVER;
+import static org.motechproject.ghana.national.domain.Concept.IPTI;
+import static org.motechproject.ghana.national.domain.Concept.MEASLES;
+import static org.motechproject.ghana.national.domain.PNCChildVisit.PNC2;
+import static org.motechproject.util.DateUtil.newDate;
+import static org.motechproject.util.DateUtil.newDateTime;
+import static org.motechproject.util.DateUtil.time;
+import static org.motechproject.util.DateUtil.today;
 
 public class ChildVisitServiceTest extends BaseUnitTest {
     private ChildVisitService service;
@@ -290,5 +319,22 @@ public class ChildVisitServiceTest extends BaseUnitTest {
                 assertNotNull("concept not present:" + conceptName, selectFirst(observations, having(on(MRSObservation.class).getConceptName(), equalTo(conceptName))));
             else
                 assertNull("concept present:" + conceptName, selectFirst(observations, having(on(MRSObservation.class).getConceptName(), equalTo(conceptName))));
+    }
+
+    @Test
+    public void should() throws ParseException {
+
+        CronTrigger ct = new CronTrigger("foo", "goo", "0 0 0 ? * *"); // fire every ten minutes, all day every day
+
+       // use the date as the startTime
+        ct.setStartTime(DateUtil.newDateTime(2012, 5, 3, 0, 0, 0).toDate());
+        ct.setEndTime(DateUtil.newDateTime(2012, 5, 3, 0, 0, 0).toDate());
+
+        // check what time the trigger will first fire
+        List fireTimes = TriggerUtils.computeFireTimes(ct, null, 1);
+        Date firstFireTime = (Date) fireTimes.iterator().next();
+
+        assertEquals(fireTimes.size(), 2);
+        System.out.println("First fire time: " + firstFireTime);
     }
 }
