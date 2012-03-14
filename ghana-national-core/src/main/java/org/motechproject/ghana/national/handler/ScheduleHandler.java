@@ -38,8 +38,14 @@ public class ScheduleHandler {
                 careScheduleHandler.handlePentaVaccinationAlert(milestoneEvent);
             else if (milestoneEvent.getScheduleName().equals(CWC_YELLOW_FEVER))
                 careScheduleHandler.handleYellowFeverVaccinationAlert(milestoneEvent);
+            else if (isPNCMotherSchedule(milestoneEvent.getScheduleName()))
+                careScheduleHandler.handlePNCMotherAlert(milestoneEvent);
         } catch (Exception e) {
             logger.error("Encountered error while sending pregnancy alert: ", e);
         }
+    }
+
+    private boolean isPNCMotherSchedule(String scheduleName) {
+        return scheduleName.equals(PNC_MOTHER_1) || scheduleName.equals(PNC_MOTHER_2) || scheduleName.equals(PNC_MOTHER_3);
     }
 }

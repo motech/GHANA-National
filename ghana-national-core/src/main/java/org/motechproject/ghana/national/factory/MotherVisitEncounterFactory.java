@@ -25,7 +25,7 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
 
     public Encounter createEncounter(PNCMotherRequest pncMotherRequest) {
         return new Encounter(pncMotherRequest.getPatient().getMrsPatient(), pncMotherRequest.getStaff(), pncMotherRequest.getFacility(),
-                PNC_MOTHER_VISIT, pncMotherRequest.getDate(), createMRSObservations(pncMotherRequest));
+                PNC_MOTHER_VISIT, pncMotherRequest.getDate().toDate(), createMRSObservations(pncMotherRequest));
     }
 
     public Set<MRSObservation> createMRSObservations(ANCVisitRequest ancVisitRequest) {
@@ -63,14 +63,14 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
 
     public Set<MRSObservation> createMRSObservations(PNCMotherRequest pncMotherRequest) {
         Set<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
-        Date registrationDate = pncMotherRequest.getDate();
+        Date registrationDate = pncMotherRequest.getDate().toDate();
 
         setObservation(mrsObservations, registrationDate, TT.getName(), toInteger(pncMotherRequest.getTtDose()));
         setObservation(mrsObservations, registrationDate, VISIT_NUMBER.getName(), toInteger(pncMotherRequest.getVisitNumber()));
         setObservation(mrsObservations, registrationDate, VITA.getName(), toBoolean(pncMotherRequest.getVitaminA()));
         setObservation(mrsObservations, registrationDate, COMMENTS.getName(), pncMotherRequest.getComments());
         setObservation(mrsObservations, registrationDate, COMMUNITY.getName(), pncMotherRequest.getCommunity());
-        setObservation(mrsObservations, registrationDate, FHT.getName(), pncMotherRequest.getFht());
+        setObservation(mrsObservations, registrationDate, FHT.getName(), toInteger(pncMotherRequest.getFht()));
         setObservation(mrsObservations, registrationDate, HOUSE.getName(), pncMotherRequest.getHouse());
         setObservation(mrsObservations, registrationDate, MALE_INVOLVEMENT.getName(), pncMotherRequest.getMaleInvolved());
         setObservation(mrsObservations, registrationDate, REFERRED.getName(), pncMotherRequest.getReferred());
