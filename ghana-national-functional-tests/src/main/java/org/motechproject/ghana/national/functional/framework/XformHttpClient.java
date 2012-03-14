@@ -96,7 +96,6 @@ public class XformHttpClient {
             hackDate(formData, "/ancVisit/estDeliveryDate");
             hackDate(formData, "/ancVisit/nextANCDate");
             hackDate(formData, "/abortion/date");
-            hackDate(formData, "/delivery/date");
             hackDate(formData, "/clientQuery/dateOfBirth");
             formsList.add(formData);
         }
