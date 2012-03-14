@@ -10,6 +10,5 @@ public class MigrateScheduleData {
         ApplicationContext context = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML);
         SeedLoader seedLoader = (SeedLoader) context.getBean("scheduleMigrator");
         seedLoader.load();
-//        ((ClassPathXmlApplicationContext) context).close();
     }
 }
