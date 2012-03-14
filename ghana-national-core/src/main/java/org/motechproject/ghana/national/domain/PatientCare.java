@@ -39,11 +39,11 @@ public class PatientCare {
     }
 
     public Time preferredTime() {
-        return  defaultPreferredTime();
+        return  defaultPreferredTimeIfNoReferenceTimeIsSet();
     }
 
-    private Time defaultPreferredTime() {
-        return referenceTime == null ? time(DateUtil.now()) : referenceTime;
+    private Time defaultPreferredTimeIfNoReferenceTimeIsSet() {
+        return referenceTime == null ? time(DateUtil.now()) : null;
     }
 
     public LocalDate enrollmentDate() {

@@ -52,19 +52,18 @@ public class BaseScheduleHandlerTest {
     public void shouldSendAggregativeSMSToFacilityForAnAppointment() {
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         String ancVisitKey = "ancVisitKey";
-        final String patientId = "patientid";
         final String facilityId = "facilityid";
         final String patientMotechId = "patientmotechid";
         final String firstName = "firstName";
         final String lastname = "lastname";
         final String visitName = "ancVisit";
 
-        parameters.put(EventKeys.EXTERNAL_ID_KEY,patientId);
+        parameters.put(EventKeys.EXTERNAL_ID_KEY, patientMotechId);
         parameters.put(EventKeys.VISIT_NAME, visitName);
-        parameters.put(MotechSchedulerService.JOB_ID_KEY,visitName+"3");
+        parameters.put(MotechSchedulerService.JOB_ID_KEY, visitName + "3");
 
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
-        when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(1999, 3, 3).toDate());
+        when(allPatients.getPatientByMotechId(patientMotechId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
         when(allFacilities.getFacility(facilityId)).thenReturn(new Facility().phoneNumber(phoneNumber));
@@ -113,7 +112,7 @@ public class BaseScheduleHandlerTest {
             put(SCHEDULE_NAME, scheduleName);
         }}, templateValuesArgCaptor.getValue());
     }
-    
+
     @Test
     public void shouldSendInstantSMSToFacility() {
 

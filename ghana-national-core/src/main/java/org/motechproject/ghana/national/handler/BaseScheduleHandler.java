@@ -35,7 +35,7 @@ public abstract class BaseScheduleHandler {
     protected void sendAggregativeSMSToFacilityForAnAppointment(String ancVisitSmsKey, MotechEvent motechEvent) {
         final Map<String, Object> parameters = motechEvent.getParameters();
         String externalId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
-        final Patient patient = allPatients.patientByOpenmrsId(externalId);
+        final Patient patient = allPatients.getPatientByMotechId(externalId);
 
         Facility facility = allFacilities.getFacility(patient.getMrsPatient().getFacility().getId());
 

@@ -388,8 +388,8 @@ public class CareServiceTest extends BaseUnitTest {
         ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, times(2)).enroll(requestCaptor.capture());
         List<EnrollmentRequest> requests = requestCaptor.getAllValues();
-        assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, pnc1, null, birthTime));
-        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, pnc2, null, birthTime));
+        assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, pnc1, null, null));
+        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, pnc2, null, null));
     }
 
     private void verifyIfScheduleEnrolled(int indexForSchedule, String patientId, LocalDate startingOn, LocalDate enrollmentDate, String enrollmentName) {

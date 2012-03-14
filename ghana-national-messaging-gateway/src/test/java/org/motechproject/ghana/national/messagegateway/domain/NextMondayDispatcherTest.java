@@ -22,5 +22,10 @@ public class NextMondayDispatcherTest {
         returnedNextMondayDate = new NextMondayDispatcher().deliveryDate(SMS.fromText("", "", generationTime, null, null));
         expectedNextMondayDate = DateUtil.newDateTime(DateUtil.newDate(2012, 3, 5), new Time(0, 0));
         assertThat(returnedNextMondayDate, is(equalTo(expectedNextMondayDate)));
+
+        generationTime = DateUtil.newDateTime(DateUtil.newDate(2012, 3, 4), new Time(10, 10));
+        returnedNextMondayDate = new NextMondayDispatcher().deliveryDate(SMS.fromText("", "", generationTime, null, null));
+        expectedNextMondayDate = DateUtil.newDateTime(DateUtil.newDate(2012, 3, 5), new Time(0, 0));
+        assertThat(returnedNextMondayDate, is(equalTo(expectedNextMondayDate)));
     }
 }
