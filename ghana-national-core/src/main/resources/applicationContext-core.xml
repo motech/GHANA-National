@@ -39,4 +39,12 @@
     <beans:import resource="classpath:applicationContext-messaging-gateway.xml"/>
 
     <bean id="commonsHttpClient" class="org.apache.commons.httpclient.HttpClient" />
+
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="${connection.string}"/>
+        <property name="username" value="${openmrs.db.username}"/>
+        <property name="password" value="${openmrs.db.password}"/>
+    </bean>
 </beans>

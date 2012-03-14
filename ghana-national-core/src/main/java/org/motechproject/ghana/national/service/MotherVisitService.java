@@ -53,7 +53,7 @@ public class MotherVisitService {
         updateEDD(ancVisit, mrsObservations);
         updateIPT(ancVisit, mrsObservations);
         updateTT(ancVisit, mrsObservations);
-//        updateANCVisit(ancVisit);
+        updateANCVisit(ancVisit);
         return allEncounters.persistEncounter(factory.createEncounter(ancVisit, mrsObservations));
     }
 
@@ -78,7 +78,7 @@ public class MotherVisitService {
         if (CollectionUtils.isNotEmpty(eddObservations)) {
             mrsObservations.addAll(eddObservations);
             EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(ancVisit.getPatient(),
-                    new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(newDate(ancVisit.getEstDeliveryDate())).dateOfConception()), null);
+                    new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(newDate(ancVisit.getEstDeliveryDate())).dateOfConception()), newDate(ancVisit.getDate()));
             allSchedules.enroll(enrollmentRequest);
         }
     }

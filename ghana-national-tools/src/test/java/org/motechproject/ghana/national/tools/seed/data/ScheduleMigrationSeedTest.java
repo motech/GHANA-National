@@ -13,7 +13,7 @@ import org.motechproject.ghana.national.domain.TTVaccine;
 import org.motechproject.ghana.national.domain.TTVaccineDosage;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.tools.seed.data.domain.UpcomingSchedule;
-import org.motechproject.ghana.national.tools.seed.data.source.TTVaccineSource;
+import org.motechproject.ghana.national.tools.seed.data.source.OldGhanaScheduleSource;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
@@ -42,12 +42,12 @@ public class ScheduleMigrationSeedTest {
     private TTVaccineSeed ttVaccineSeed;
 
     @Mock
-    private TTVaccineSource ttVaccineSource;
+    private OldGhanaScheduleSource oldGhanaScheduleSource;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        ttVaccineSeed = new TTVaccineSeed(ttVaccineSource, allTrackedSchedules, allSchedules);
+        ttVaccineSeed = new TTVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allSchedules);
     }
 
     @Test(expected = MotechException.class)
@@ -70,9 +70,8 @@ public class ScheduleMigrationSeedTest {
         ArgumentCaptor<EnrollmentRequest> captor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(allSchedules, times(2)).enroll(captor.capture());
         final List<EnrollmentRequest> enrollmentRequests = captor.getAllValues();
-        TTVaccineSeedTest.assertTTEnrollmentRequest(enrollmentRequests.get(0), expectedTTVaccines.get(0).getVaccinationDate(), "TT3", patientId1);
-        TTVaccineSeedTest.assertTTEnrollmentRequest(enrollmentRequests.get(1), expectedTTVaccines.get(1).getVaccinationDate(), "TT2", patientId2);
-
+        TTVaccineSeedTest.assertTTEnrollmentRequest(enrollmentRequests.get(0), expectedTTVaccines.get(0).getVaccinationDate(), "TT3", patientId1, expectedTTVaccines.get(0).getVaccinationDate());
+        TTVaccineSeedTest.assertTTEnrollmentRequest(enrollmentRequests.get(1), expectedTTVaccines.get(1).getVaccinationDate(), "TT2", patientId2, expectedTTVaccines.get(1).getVaccinationDate());
     }
 
     @Test

@@ -36,6 +36,10 @@ public class MobileForm {
         return new MobileForm("NurseDataEntry", "delivery-template.xml");
     }
 
+    public static MobileForm queryClientForm() {
+        return new MobileForm("NurseQuery", "client-query-template.xml");
+    }
+
     public MobileForm(String studyName, String xmlTemplateName) {
         this.studyName = studyName;
         this.xmlTemplateName = xmlTemplateName;

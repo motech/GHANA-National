@@ -7,7 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllSchedules;
-import org.motechproject.ghana.national.tools.seed.data.source.TTVaccineSource;
+import org.motechproject.ghana.national.tools.seed.data.source.OldGhanaScheduleSource;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
@@ -22,7 +22,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class TTVaccineSeedTest {
 
     @Mock
-    private TTVaccineSource ttVaccineSource;
+    private OldGhanaScheduleSource oldGhanaScheduleSource;
 
     private TTVaccineSeed ttVaccineSeed;
     @Mock
@@ -31,7 +31,7 @@ public class TTVaccineSeedTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        ttVaccineSeed = new TTVaccineSeed(ttVaccineSource, null, allSchedules);
+        ttVaccineSeed = new TTVaccineSeed(oldGhanaScheduleSource, null, allSchedules);
     }
 
     @Test
@@ -41,12 +41,13 @@ public class TTVaccineSeedTest {
         ttVaccineSeed.enroll(referenceDate, "TT2", patient);
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(allSchedules).enroll(enrollmentRequestCaptor.capture());
-        assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT2", "1000");
+        assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT2", "1000", referenceDate);
     }
 
-    public static void assertTTEnrollmentRequest(EnrollmentRequest enrollmentRequest, DateTime referenceDate, String milestoneName, String externalId) {
-        assertThat(enrollmentRequest.getReferenceDate(), is(equalTo(referenceDate.toLocalDate())));
+    public static void assertTTEnrollmentRequest(EnrollmentRequest enrollmentRequest, DateTime referenceDateTime, String milestoneName, String externalId, DateTime enrollmentDateTime) {
+        assertThat(enrollmentRequest.getReferenceDateTime(), is(equalTo(referenceDateTime)));
         assertThat(enrollmentRequest.getStartingMilestoneName(), is(equalTo(milestoneName)));
         assertThat(enrollmentRequest.getExternalId(), is(equalTo(externalId)));
+        assertThat(enrollmentRequest.getEnrollmentDateTime(), is(equalTo(enrollmentDateTime)));
     }
 }
