@@ -44,6 +44,8 @@ public class ScheduleMigrationSeedTest {
 
     private TTVaccineSeed ttVaccineSeed;
 
+    private IPTIVaccineSeed iptiVaccineSeed;
+
     @Mock
     private OldGhanaScheduleSource oldGhanaScheduleSource;
 
@@ -51,6 +53,7 @@ public class ScheduleMigrationSeedTest {
     public void setUp() throws Exception {
         initMocks(this);
         ttVaccineSeed = new TTVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allSchedules);
+        iptiVaccineSeed = new IPTIVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allSchedules);
     }
 
     @Test
@@ -98,6 +101,20 @@ public class ScheduleMigrationSeedTest {
         UpcomingSchedule upcomingSchedule = newUpcomingSchedule("100", "2012-2-29 10:10:00.0", "TT2").build();
         assertThat(ttVaccineSeed.getReferenceDate(upcomingSchedule), is(expectedReferenceDate));
     }
+
+    @Test
+    public void shouldEnrollIntoIPTIVaccineSchedule(){
+        DateTime referenceDate = DateUtil.newDateTime(2012, 1, 1, new Time(10, 10));
+        Patient patient = new Patient(new MRSPatient("10000"));
+
+        iptiVaccineSeed.enroll(referenceDate, "IPTI1", patient);
+
+        ArgumentCaptor<EnrollmentRequest> enrollmentCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(allSchedules).enroll(enrollmentCaptor.capture());
+
+        assertTTEnrollmentRequest(enrollmentCaptor.getValue(), referenceDate.toDateTime(), "IPT1", "10000", referenceDate.toDateTime());
+    }
+
 
     public static void assertTTEnrollmentRequest(EnrollmentRequest enrollmentRequest, DateTime referenceDateTime, String milestoneName, String externalId, DateTime enrollmentDateTime) {
         assertThat(enrollmentRequest.getReferenceDateTime(), is(equalTo(referenceDateTime)));

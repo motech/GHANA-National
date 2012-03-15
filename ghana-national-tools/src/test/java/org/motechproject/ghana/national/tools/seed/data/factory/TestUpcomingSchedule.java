@@ -6,8 +6,7 @@ public class TestUpcomingSchedule {
     private String dueDatetime;
     private String patientId;
     private String milestoneName;
-    private String conceptId;
-    private String careName;
+    private String type;
     private String minDatetime;
     private String lateDatetime;
     private String maxDatetime;
@@ -21,8 +20,7 @@ public class TestUpcomingSchedule {
         testUpcomingSchedule.patientId = patientId;
         testUpcomingSchedule.dueDatetime = dueDate;
         testUpcomingSchedule.milestoneName = milestoneName;
-        testUpcomingSchedule.careName = "care";
-        testUpcomingSchedule.conceptId = "concept";
+        testUpcomingSchedule.type = "type";
         testUpcomingSchedule.minDatetime = "2012-9-22 10:30:00.0";
         testUpcomingSchedule.lateDatetime = "2012-9-23 10:30:00.0";
         testUpcomingSchedule.maxDatetime = "2012-9-24 10:30:00.0";
@@ -31,7 +29,7 @@ public class TestUpcomingSchedule {
     }
 
     public UpcomingSchedule build(){
-        return new UpcomingSchedule(patientId, dueDatetime, milestoneName, conceptId, careName, minDatetime, lateDatetime, maxDatetime, voided);
+        return new UpcomingSchedule(patientId, dueDatetime, milestoneName, type, minDatetime, lateDatetime, maxDatetime, voided);
     }
 
     public TestUpcomingSchedule markVoided(){
