@@ -2,7 +2,7 @@ package org.motechproject.ghana.national.service.request;
 
 import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.PNCVisit;
+import org.motechproject.ghana.national.domain.PNCChildVisit;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.mrs.model.MRSUser;
 
@@ -11,7 +11,7 @@ public class PNCBabyRequest {
     private MRSUser staff;
     private Facility facility;
     private DateTime date;
-    private PNCVisit visit;
+    private PNCChildVisit visit;
     private Double weight;
     private Double temperature;
     private String location;
@@ -42,7 +42,7 @@ public class PNCBabyRequest {
         return date;
     }
 
-    public PNCVisit getVisit() {
+    public PNCChildVisit getVisit() {
         return visit;
     }
 
@@ -120,7 +120,7 @@ public class PNCBabyRequest {
     }
 
     public PNCBabyRequest visit(Integer pncVisitNo) {
-        this.visit = PNCVisit.byVisitNumber(pncVisitNo);
+        this.visit = PNCChildVisit.byVisitNumber(pncVisitNo);
         return this;
     }
 

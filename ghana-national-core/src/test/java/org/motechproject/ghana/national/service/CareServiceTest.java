@@ -11,11 +11,13 @@ import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
@@ -29,6 +31,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_MOTHER_1;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
@@ -187,7 +190,43 @@ public class CareServiceTest extends BaseUnitTest {
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, PREG_REG_VISIT.value(), registrationDate, expectedPregnancyObservations);
 
     }
-    
+
+    @Test
+    public void shouldEnrollToPNCMotherCareSchedules() {
+        CareService careServiceSpy = spy(careService);
+        Patient patient = mock(Patient.class);
+        List<PatientCare> patientCares = asList(new PatientCare(PNC_MOTHER_1, DateUtil.today()));
+        when(patient.pncMotherProgramsToEnrollOnRegistration()).thenReturn(patientCares);
+
+        careServiceSpy.enrollMotherForPNC(createTestPncRequest(patient));
+
+        ArgumentCaptor<Encounter> encounterCaptor = ArgumentCaptor.forClass(Encounter.class);
+        verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
+        verify(careServiceSpy).enrollPatientCares(patientCares, patient, DateUtil.today().toDate());
+    }
+
+    private PNCMotherRequest createTestPncRequest(Patient patient) {
+        return new PNCMotherRequest().maleInvolved(Boolean.TRUE).patient(patient).ttDose("1").visitNumber("1").vitaminA("Y").comments("Comments")
+                .community("House").date(DateUtil.newDateTime(DateUtil.today())).facility(new Facility()).staff(new MRSUser()).location("Outreach").lochiaAmountExcess(Boolean.TRUE)
+                .lochiaColour("1").lochiaOdourFoul(Boolean.TRUE).temperature(10D);
+    }
+
+    @Test
+    public void shouldEnrollPatientCares() {
+        List<PatientCare> patientCares = asList(new PatientCare(PNC_MOTHER_1, DateUtil.today()));
+        Patient patient = mock(Patient.class);
+        when(patient.getMRSPatientId()).thenReturn("mrsPatientId");
+        Date registrationDate = DateUtil.now().toDate();
+
+        careService.enrollPatientCares(patientCares, patient, registrationDate);
+
+        ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedules).enroll(enrollmentRequestCaptor.capture());
+        EnrollmentRequest request = enrollmentRequestCaptor.getValue();
+        assertThat(request.getScheduleName(), is(PNC_MOTHER_1));
+        assertThat(request.getExternalId(), is(patient.getMRSPatientId()));
+    }
+
     @Test
     public void shoulUpdateEddObservationIfFound() throws Exception {
         String facilityId = "facility id";
@@ -252,7 +291,7 @@ public class CareServiceTest extends BaseUnitTest {
         pregnancyObs.addDependantObservation(new MRSObservation<Date>(today, EDD.getName(), ancvo.getEstimatedDateOfDelivery()));
         pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
         pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, PREGNANCY_STATUS.getName(), true));
-        
+
         final HashSet<MRSObservation> expectedPregnancyObservations = new HashSet<MRSObservation>() {{
             add(pregnancyObs);
         }};
@@ -368,7 +407,7 @@ public class CareServiceTest extends BaseUnitTest {
 
     private EnrollmentRequest expectedRequest(String externalId, PatientCare patientCare, LocalDate enrollmentDate, String startingMilestoneName) {
         return new EnrollmentRequest(externalId, patientCare.name(),
-            new Time(currentDate.toLocalTime()), patientCare.startingOn(),
+                new Time(currentDate.toLocalTime()), patientCare.startingOn(),
                 patientCare.referenceTime(), enrollmentDate, null, startingMilestoneName);
     }
 
