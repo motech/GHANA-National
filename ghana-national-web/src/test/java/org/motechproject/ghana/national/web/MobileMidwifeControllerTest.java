@@ -77,8 +77,8 @@ public class MobileMidwifeControllerTest {
 
         MobileMidwifeEnrollmentForm enrollmentForm = (MobileMidwifeEnrollmentForm) modelMap.get("mobileMidwifeEnrollmentForm");
         assertFormWithEnrollment(enrollmentForm, enrollment);
+        assertThat(enrollmentForm.getEnrollmentDateTime(), isEq(enrollment.getEnrollmentDateTime()));
         assertThat(enrollmentForm.getStatus(), is("ACTIVE"));
-
     }
 
     @Test
@@ -99,14 +99,16 @@ public class MobileMidwifeControllerTest {
     @Test
     public void shouldValidateAndCreateANewMobileMidwifeEnrollmentIfActionIsRegister() {
         String patientId = "patientId";
-        String locationId = "54";
-        MobileMidwifeEnrollmentForm form = createEnrollmentForm("12344", locationId, "345", Medium.SMS, new Time(23, 45));
+        String facilityId = "54";
+        String facilityMotechId = "13161";
+        MobileMidwifeEnrollmentForm form = createEnrollmentForm("12344", facilityId, "345", Medium.SMS, new Time(23, 45));
 
         when(mobileMidwifeService.findActiveBy(patientId)).thenReturn(null);
         when(mobileMidwifeValidator.validate(Matchers.<MobileMidwifeEnrollment>any())).thenReturn(Collections.<FormError>emptyList());
         Facility mockFacility = mock(Facility.class);
-        when(mockFacilityService.getFacility(locationId)).thenReturn(mockFacility);
-        when(mockFacility.getMotechId()).thenReturn("13161");
+        when(mockFacilityService.getFacility(facilityId)).thenReturn(mockFacility);
+        when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(mockFacility);
+        when(mockFacility.getMotechId()).thenReturn(facilityMotechId);
 
         ModelMap modelMap = new ModelMap();
         String editUrl = controller.save(form, null, modelMap);
@@ -122,10 +124,11 @@ public class MobileMidwifeControllerTest {
     @Test
     public void shouldValidateAndUpdateExistingMobileMidwifeEnrollment() {
         String patientId = "patientId";
-        String locationId = "54";
+        String facilityId = "54";
+        String facilityMotechId = "13161";
         String successMsg = "Changes successful";
 
-        MobileMidwifeEnrollmentForm form = createEnrollmentForm(patientId, locationId, "staffId", Medium.SMS, new Time(23, 45));
+        MobileMidwifeEnrollmentForm form = createEnrollmentForm(patientId, facilityId, "staffId", Medium.SMS, new Time(23, 45));
         MobileMidwifeEnrollment existingEnrollment = MobileMidwifeEnrollment.newEnrollment();
         existingEnrollment.setPatientId(patientId);
         existingEnrollment.setFacilityId("oldFacilityId");
@@ -136,8 +139,9 @@ public class MobileMidwifeControllerTest {
         when(mobileMidwifeService.findActiveBy(patientId)).thenReturn(existingEnrollment);
         when(mobileMidwifeValidator.validate(Matchers.<MobileMidwifeEnrollment>any())).thenReturn(Collections.<FormError>emptyList());
         Facility mockFacility = mock(Facility.class);
-        when(mockFacilityService.getFacility(locationId)).thenReturn(mockFacility);
-        when(mockFacility.getMotechId()).thenReturn("13161");
+        when(mockFacilityService.getFacility(facilityId)).thenReturn(mockFacility);
+        when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(mockFacility);
+        when(mockFacility.getMotechId()).thenReturn(facilityMotechId);
         when(messages.getMessage(SUCCESS_MESSAGE, null, Locale.getDefault())).thenReturn(successMsg);
 
         ModelMap modelMap = new ModelMap();
@@ -249,7 +253,6 @@ public class MobileMidwifeControllerTest {
         return form;
     }
 
-
     private void assertFormWithEnrollment(MobileMidwifeEnrollmentForm form, MobileMidwifeEnrollment enrollment) {
         assertThat(form.getPatientMotechId(), isEq(enrollment.getPatientId()));
         assertThat(form.getStaffMotechId(), isEq(enrollment.getStaffId()));
@@ -260,8 +263,5 @@ public class MobileMidwifeControllerTest {
         assertThat(form.getPhoneNumber(), isEq(enrollment.getPhoneNumber()));
         assertThat(form.getPhoneOwnership(), isEq(enrollment.getPhoneOwnership()));
         assertThat(form.getTimeOfDay(), isEq(enrollment.getTimeOfDay()));
-        assertThat(form.getStatus(), isEq(enrollment.getActive() ? "ACTIVE" : "INACTIVE"));
     }
-
-
 }

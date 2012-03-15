@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.service;
 
-import org.junit.After;
 import org.junit.Test;
 import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
@@ -41,13 +40,15 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
     private AllMessageCampaigns allMessageCampaigns;
     @Autowired
     private CampaignEnrollmentService campaignEnrollmentService;
+    @Autowired
+    private IdentifierGenerationService identifierGenerationService;
 
     String patientId = "1234567";
 
     @Test
     public void shouldCreateMobileMidwifeEnrollmentAndCreateScheduleIfNotRegisteredAlready() {
 
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().patientId(patientId).
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().patientId(identifierGenerationService.newPatientId()).
                 facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).serviceType(ServiceType.PREGNANCY).
                 learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).reasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH).
                 messageStartWeek("20").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
@@ -85,10 +86,5 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
     private String getMessageKey(String campaignName) {
         CampaignMessage message = allMessageCampaigns.getCampaignMessageByMessageName(campaignName, mobileMidwifeCampaign.programMessageKey(ServiceType.valueOf(campaignName)));
         return message.messageKey();
-    }
-
-    @After
-    public void clearAllDocuments() {
-        allEnrollments.removeAll();
     }
 }

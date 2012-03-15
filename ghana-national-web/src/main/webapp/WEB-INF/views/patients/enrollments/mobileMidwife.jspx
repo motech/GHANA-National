@@ -1,6 +1,7 @@
 <div id="body" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
      xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-     xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
+     xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" xmlns:joda="http://www.joda.org/joda/time/tags">
 <jsp:directive.page contentType="text/html;charset=UTF-8"/>
 <jsp:output omit-xml-declaration="yes"/>
 
@@ -48,6 +49,7 @@
 <spring:message code="hour_required_msg" var="hour_required_msg" htmlEscape="false"/>
 <spring:message code="minutes_required_msg" var="minutes_required_msg" htmlEscape="false"/>
 <spring:message code="status" var="status" htmlEscape="false"/>
+<spring:message code="enrollement_date" var="enrollement_date" htmlEscape="false"/>
 
 <c:if test="${formErrors ne null}">
     <div class="formlyAlerts formlyInvalid formlyAlert" style="display: block;">
@@ -218,7 +220,13 @@
 
 <div class="form-field">
     <label for="status" class="formLabel">${fn:escapeXml(status)}:</label>
-    <form:input path="status" size="20" readonly="true"/>
+    <form:input path="status" disabled="true" size="20" readonly="true"/>
+</div>
+
+<div class="form-field">
+    <label for="status" class="formLabel">${fn:escapeXml(enrollement_date)}:</label>
+    <c:set var="formattedEnrollmentDateTime"><joda:format value="${mobileMidwifeEnrollmentForm.enrollmentDateTime}" pattern="dd-MMM-yyyy hh:mm:ss"/></c:set>
+    <input type="text" disabled="true" value="${formattedEnrollmentDateTime}"/>
 </div>
 
 <input type="button" id="submitMobileMidwife" value="Submit"/>

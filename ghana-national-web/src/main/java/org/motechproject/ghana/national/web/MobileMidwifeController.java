@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static java.lang.Boolean.*;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 @Controller
@@ -71,7 +72,8 @@ public class MobileMidwifeController {
                     setConsent(enrollment.getConsent()).setServiceType(enrollment.getServiceType()).setPhoneOwnership(enrollment.getPhoneOwnership())
                     .setPhoneNumber(enrollment.getPhoneNumber()).setMedium(enrollment.getMedium()).setDayOfWeek(enrollment.getDayOfWeek())
                     .setTimeOfDay(enrollment.getTimeOfDay()).setLanguage(enrollment.getLanguage()).setLearnedFrom(enrollment.getLearnedFrom())
-                    .setReasonToJoin(enrollment.getReasonToJoin()).setMessageStartWeek(enrollment.getMessageStartWeek()).setStatus(enrollment.getActive() ? "ACTIVE" : "INACTIVE");
+                    .setReasonToJoin(enrollment.getReasonToJoin()).setMessageStartWeek(enrollment.getMessageStartWeek())
+                    .setStatus(TRUE.equals(enrollment.getActive()) ? "ACTIVE" : "INACTIVE").setEnrollmentDateTime(enrollment.getEnrollmentDateTime());
 
             Facility facility = facilityService.getFacilityByMotechId(enrollment.getFacilityId());
             FacilityForm facilityForm = new FacilityForm();
@@ -93,7 +95,8 @@ public class MobileMidwifeController {
         if (isNotEmpty(formErrors)) {
             addFormInfo(modelMap, form).addAttribute("formErrors", formErrors);
         } else {
-            mobileMidwifeRegistration(form, midwifeEnrollment);
+            mobileMidwifeService.register(midwifeEnrollment);
+            form = createMobileMidwifeEnrollmentForm(midwifeEnrollment);
             addFormInfo(modelMap, form).addAttribute("successMessage", messages.getMessage(SUCCESS_MESSAGE, null, Locale.getDefault()));
         }
         return MOBILE_MIDWIFE_URL;
@@ -123,11 +126,6 @@ public class MobileMidwifeController {
         modelMap.put("mobileMidwifeUnEnrollForm", form);
         modelMap.mergeAttributes(facilityHelper.locationMap());
         return MOBILE_MIDWIFE_UNREGISTER_URL;
-    }
-
-    private void mobileMidwifeRegistration(MobileMidwifeEnrollmentForm form, MobileMidwifeEnrollment midwifeEnrollment) {
-        form.setStatus("ACTIVE");
-        mobileMidwifeService.register(midwifeEnrollment);
     }
 
     private ModelMap addFormInfo(ModelMap modelMap, MobileMidwifeEnrollmentForm enrollmentForm) {
@@ -162,7 +160,7 @@ public class MobileMidwifeController {
                 .setConsent(form.getConsent()).setDayOfWeek(form.getDayOfWeek()).setLearnedFrom(form.getLearnedFrom())
                 .setLanguage(form.getLanguage()).setMedium(form.getMedium()).setMessageStartWeek(form.getMessageStartWeek()).setPhoneNumber(form.getPhoneNumber())
                 .setPhoneOwnership(form.getPhoneOwnership()).setReasonToJoin(form.getReasonToJoin()).setServiceType(form.getServiceType())
-                .setTimeOfDay(form.getTimeOfDay()).setActive(form.getStatus().equals("ACTIVE"));
+                .setTimeOfDay(form.getTimeOfDay());
         return enrollment;
     }
 }
