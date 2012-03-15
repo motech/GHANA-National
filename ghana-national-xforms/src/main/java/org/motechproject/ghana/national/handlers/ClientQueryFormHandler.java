@@ -108,12 +108,14 @@ public class ClientQueryFormHandler implements FormPublishHandler {
     }
 
     private Date getActivePregnancyEDD(String motechId) {
-        MRSObservation pregObservation = allObservations.findObservation(motechId, PREGNANCY.getName());
-        if (pregObservation != null) {
-            for (Object object : pregObservation.getDependantObservations()) {
-                MRSObservation observation = (MRSObservation) object;
-                if (observation.getConceptName().equals(EDD.getName())) {
-                    return (Date) observation.getValue();
+        if (allObservations.hasActivePregnancyStatusObservation(motechId)) {
+            MRSObservation pregObservation = allObservations.findObservation(motechId, PREGNANCY.getName());
+            if (pregObservation != null) {
+                for (Object object : pregObservation.getDependantObservations()) {
+                    MRSObservation observation = (MRSObservation) object;
+                    if (observation.getConceptName().equals(EDD.getName())) {
+                        return (Date) observation.getValue();
+                    }
                 }
             }
         }
