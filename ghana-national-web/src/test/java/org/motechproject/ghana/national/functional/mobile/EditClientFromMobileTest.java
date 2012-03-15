@@ -5,7 +5,7 @@ import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
-import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
+import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,7 +18,7 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasItem;
 import static org.testng.AssertJUnit.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -91,15 +91,12 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
 
         mobile.upload(MobileForm.editClientForm(), patient.editFromMobile());
 
+
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
         searchPatientPage.searchWithMotechId(patientId);
         searchPatientPage.displaying(patient);
 
-        searchPatientPage.clickEditLink(patient);
-        PatientPage patientPage = browser.getPatientPage();
-        assertThat(patientPage.motechId(), is(equalTo(patient.motechId())));
-        assertThat(patientPage.firstName(), is(equalTo(patient.firstName())));
-        assertThat(patientPage.middleName(), is(equalTo(patient.middleName())));
-        assertThat(patientPage.lastName(), is(equalTo(patient.lastName())));
+        PatientEditPage patientPage = browser.toPatientEditPage(searchPatientPage, patient);
+        patientPage.displaying(patient);
     }
 }

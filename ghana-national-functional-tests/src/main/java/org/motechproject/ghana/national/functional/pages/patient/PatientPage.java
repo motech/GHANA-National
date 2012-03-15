@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.functional.pages.patient;
 
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.pages.home.HomePage;
 import org.openqa.selenium.WebDriver;
@@ -9,6 +10,10 @@ import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class PatientPage extends HomePage {
     @FindBy(id = "motechId")
@@ -125,7 +130,7 @@ public class PatientPage extends HomePage {
         return this;
     }
 
-    public PatientPage withStaffId(String staffId){
+    public PatientPage withStaffId(String staffId) {
         this.staffId.clear();
         this.staffId.sendKeys(staffId);
         return this;
@@ -252,24 +257,62 @@ public class PatientPage extends HomePage {
         patientPage.submit();
     }
 
+    public void displaying(TestPatient patient) {
+        assertThat(valueOf(firstName), is(equalTo(patient.firstName())));
+        assertThat(valueOf(middleName), is(equalTo(patient.middleName())));
+        assertThat(valueOf(lastName), is(equalTo(patient.lastName())));
+        assertThat(valueOf(dateOfBirth), is(equalTo(patient.dateOfBirth().toString(DateTimeFormat.forPattern("dd/MM/yyyy")))));
+        assertThat(getEstimatedDateOfBirth(), is(equalTo(patient.estimatedDateOfBirth())));
+        assertThat(getGenderCode(), is(equalTo(patient.genderCode())));
+        assertThat(isInsured(), is(equalTo(patient.insured())));
+        assertThat(valueOf(region), is(equalTo(patient.region())));
+        assertThat(selectedOption(facility), is(equalTo(patient.facility())));
+        assertThat(valueOf(address), is(equalTo(patient.address())));
+        assertThat(valueOf(district), is(equalTo(patient.district())));
+        assertThat(valueOf(subDistrict), is(equalTo(patient.subDistrict())));
+    }
+
+    private Boolean isInsured() {
+        if (insured.isSelected()) {
+            return true;
+        } else if (notinsured.isSelected()) {
+            return false;
+        }
+        return null;
+    }
+
+    private String getGenderCode() {
+        if (male.isSelected()) {
+            return "M";
+        } else if (female.isSelected()) {
+            return "F";
+        }
+        return null;
+    }
+
+    private String valueOf(WebElement webElement) {
+        return webElement.getAttribute("value");
+    }
+
+    private String selectedOption(WebElement webElement) {
+        return new Select(webElement).getFirstSelectedOption().getText();
+    }
+
     public String motechId() {
         return motechId.getAttribute("value");
-    }
-
-    public String firstName() {
-        return firstName.getAttribute("value");
-    }
-
-    public String middleName() {
-        return middleName.getAttribute("value");
-    }
-
-    public String lastName() {
-        return lastName.getAttribute("value");
     }
 
     @Override
     public void waitForSuccessfulCompletion() {
         elementPoller.waitForElementClassName("success", driver);
+    }
+
+    public Boolean getEstimatedDateOfBirth() {
+        if (estimatedDateOfBirth.isSelected()) {
+            return true;
+        } else if (notEstimatedDateOfBirth.isSelected()) {
+            return false;
+        }
+        return null;
     }
 }
