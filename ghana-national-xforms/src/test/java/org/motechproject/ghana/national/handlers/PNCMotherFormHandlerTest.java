@@ -26,7 +26,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class PNCMotherFormHandlerTest {
     private PNCMotherFormHandler pncMotherFormHandler;
     @Mock
-    private CareService careService;
+    private MotherVisitService motherVisitService;
     @Mock
     private FacilityService facilityService;
     @Mock
@@ -41,7 +41,7 @@ public class PNCMotherFormHandlerTest {
         initMocks(this);
         pncMotherFormHandler = new PNCMotherFormHandler();
         ReflectionTestUtils.setField(pncMotherFormHandler, "visitService", visitService);
-        ReflectionTestUtils.setField(pncMotherFormHandler, "careService", careService);
+        ReflectionTestUtils.setField(pncMotherFormHandler, "motherVisitService", motherVisitService);
         ReflectionTestUtils.setField(pncMotherFormHandler, "facilityService", facilityService);
         ReflectionTestUtils.setField(pncMotherFormHandler, "staffService", staffService);
         ReflectionTestUtils.setField(pncMotherFormHandler, "patientService", patientService);
@@ -89,7 +89,7 @@ public class PNCMotherFormHandlerTest {
         ArgumentCaptor<TTVaccine> ttVaccineCaptor = ArgumentCaptor.forClass(TTVaccine.class);
 
         verify(visitService).createTTSchedule(ttVaccineCaptor.capture());
-        verify(careService).enrollMotherForPNC(requestCaptor.capture());
+        verify(motherVisitService).enrollOrFulfillPNCSchedulesForMother(any(PNCMotherRequest.class));
 
         TTVaccine vaccine = ttVaccineCaptor.getValue();
         assertThat(vaccine.getDosage(), is(TTVaccineDosage.TT1));

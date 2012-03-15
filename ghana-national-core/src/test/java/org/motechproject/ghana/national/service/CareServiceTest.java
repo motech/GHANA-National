@@ -11,13 +11,11 @@ import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllSchedules;
-import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
@@ -197,18 +195,11 @@ public class CareServiceTest extends BaseUnitTest {
         Patient patient = mock(Patient.class);
         List<PatientCare> patientCares = asList(new PatientCare(PNC_MOTHER_1, DateUtil.today()));
         when(patient.pncMotherProgramsToEnrollOnRegistration()).thenReturn(patientCares);
+        Date registrationDate = DateUtil.today().toDate();
 
-        careServiceSpy.enrollMotherForPNC(createTestPncRequest(patient));
+        careServiceSpy.enrollMotherForPNC(patient, DateUtil.newDateTime(registrationDate));
 
-        ArgumentCaptor<Encounter> encounterCaptor = ArgumentCaptor.forClass(Encounter.class);
-        verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
-        verify(careServiceSpy).enrollPatientCares(patientCares, patient, DateUtil.today().toDate());
-    }
-
-    private PNCMotherRequest createTestPncRequest(Patient patient) {
-        return new PNCMotherRequest().maleInvolved(Boolean.TRUE).patient(patient).ttDose("1").visitNumber("1").vitaminA("Y").comments("Comments")
-                .community("House").date(DateUtil.newDateTime(DateUtil.today())).facility(new Facility()).staff(new MRSUser()).location("Outreach").lochiaAmountExcess(Boolean.TRUE)
-                .lochiaColour("1").lochiaOdourFoul(Boolean.TRUE).temperature(10D);
+        verify(careServiceSpy).enrollPatientCares(patientCares, patient, registrationDate);
     }
 
     @Test
