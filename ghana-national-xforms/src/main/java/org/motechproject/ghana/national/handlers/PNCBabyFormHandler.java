@@ -60,7 +60,7 @@ public class PNCBabyFormHandler implements FormPublishHandler {
                 .patient(patient)
                 .facility(facility)
                 .staff(staff)
-                .visit(Integer.parseInt(pncBabyForm.getVisitNumber()))
+                .visit(pncBabyForm.getVisitNumber())
                 .weight(pncBabyForm.getWeight())
                 .temperature(pncBabyForm.getTemperature())
                 .location(pncBabyForm.getLocation())
