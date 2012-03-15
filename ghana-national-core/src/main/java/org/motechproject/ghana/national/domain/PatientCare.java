@@ -1,14 +1,22 @@
 package org.motechproject.ghana.national.domain;
 
 import org.joda.time.LocalDate;
+import org.motechproject.model.Time;
 
 public class PatientCare {
     private String name;
+    private Time referenceTime;
     private LocalDate referenceDate;
 
     public PatientCare(String name, LocalDate referenceDate) {
         this.referenceDate = referenceDate;
         this.name = name;
+    }
+
+    public PatientCare(String name, LocalDate referenceDate, Time referenceTime) {
+        this.referenceDate = referenceDate;
+        this.name = name;
+        this.referenceTime = referenceTime;
     }
 
     public String name() {
@@ -19,6 +27,10 @@ public class PatientCare {
         return referenceDate;
     }
 
+    public Time referenceTime() {
+        return referenceTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -26,8 +38,9 @@ public class PatientCare {
 
         PatientCare that = (PatientCare) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (referenceDate != null ? !referenceDate.equals(that.referenceDate) : that.referenceDate != null)
+        if (!name.equals(that.name)) return false;
+        if (!referenceDate.equals(that.referenceDate)) return false;
+        if (referenceTime != null ? !referenceTime.equals(that.referenceTime) : that.referenceTime != null)
             return false;
 
         return true;
@@ -35,13 +48,9 @@ public class PatientCare {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (referenceDate != null ? referenceDate.hashCode() : 0);
+        int result = name.hashCode();
+        result = 31 * result + (referenceTime != null ? referenceTime.hashCode() : 0);
+        result = 31 * result + referenceDate.hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return name + ": " + referenceDate;
     }
 }

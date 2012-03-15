@@ -1,10 +1,11 @@
 
 package org.motechproject.ghana.national.domain;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.vo.ChildCare;
+import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +16,7 @@ import static org.apache.commons.collections.CollectionUtils.union;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
-import static org.motechproject.util.DateUtil.newDate;
+import static org.motechproject.util.DateUtil.newDateTime;
 import static org.motechproject.util.DateUtil.today;
 
 public class Patient {
@@ -93,9 +94,10 @@ public class Patient {
     }
 
     public List<PatientCare> cwcCareProgramToEnrollOnRegistration() {
-        LocalDate referenceDate = DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth());
+        ChildCare childCare = childCare();
+        LocalDate referenceDate = childCare.birthDate();
         return nullSafeList(
-                cwcIPTPatientCareEnrollOnRegistration(referenceDate),
+                cwcIPTPatientCareEnrollOnRegistration(childCare),
                 new PatientCare(CWC_BCG, referenceDate),
                 new PatientCare(CWC_YELLOW_FEVER, referenceDate),
                 pentaPatientCare(),
@@ -109,9 +111,9 @@ public class Patient {
         return null;
     }
 
-    private PatientCare cwcIPTPatientCareEnrollOnRegistration(LocalDate birthDate) {
-        if (birthDate != null && ChildCare.basedOnBirthDay(birthDate).applicableForIPT()) {
-            return new PatientCare(CWC_IPT_VACCINE, birthDate);
+    private PatientCare cwcIPTPatientCareEnrollOnRegistration(ChildCare childCare) {
+        if (childCare != null && childCare.applicableForIPT()) {
+            return new PatientCare(CWC_IPT_VACCINE, childCare.birthDate());
         }
         return null;
     }
@@ -125,19 +127,28 @@ public class Patient {
     }
 
     public PatientCare pentaPatientCare() {
-        LocalDate referenceDate = birthDate();
-        if (ChildCare.basedOnBirthDay(referenceDate).applicableForPenta())
-            return new PatientCare(CWC_PENTA, referenceDate);
+        ChildCare childCare = childCare();
+        if (childCare.applicableForPenta())
+            return new PatientCare(CWC_PENTA, childCare.birthDate());
         return new PatientCare(CWC_PENTA, today());
     }
 
-    private LocalDate birthDate() {
-        return newDate(this.getMrsPatient().getPerson().getDateOfBirth());
+    private ChildCare childCare() {
+        return ChildCare.basedOnBirthDay(newDateTime(this.getMrsPatient().getPerson().getDateOfBirth()));
     }
 
     private PatientCare measlesChildCare() {
-        LocalDate birthDate = birthDate();
-        return ChildCare.basedOnBirthDay(birthDate).applicableForMeasles()
-                ? new PatientCare(CWC_MEASLES_VACCINE, birthDate) : null;
+        ChildCare childCare = childCare();
+        return childCare.applicableForMeasles() ? new PatientCare(CWC_MEASLES_VACCINE, childCare.birthDate()) : null;
+    }
+
+    public List<PatientCare> pncBabyProgramsToEnrollOnRegistration() {
+        List<PatientCare> cares = new ArrayList<PatientCare>();
+        ChildCare care = childCare();
+        DateTime birthTime = care.birthTime();
+        for(PNCVisit visit : PNCVisit.values() ) {
+            cares.add(new PatientCare(visit.scheduleName(), birthTime.toLocalDate(), new Time(birthTime.getHourOfDay(), birthTime.getMinuteOfHour())));
+        }
+        return cares;
     }
 }

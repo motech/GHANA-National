@@ -5,12 +5,14 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ghana.national.vo.Pregnancy;
+import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.testing.utils.BaseUnitTest;
 
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
@@ -24,7 +26,7 @@ public class PatientTest extends BaseUnitTest {
     DateTime todayAs6June2012;
     @Before
     public void setUp() {
-     todayAs6June2012  = new DateTime(2012, 6, 5, 0, 0);
+     todayAs6June2012  = new DateTime(2012, 6, 5, 20, 10);
      mockCurrentDate(todayAs6June2012);
     }
 
@@ -75,22 +77,40 @@ public class PatientTest extends BaseUnitTest {
         LocalDate dateOfBirth = todayAs6June2012.minusMonths(1).toLocalDate();
         Patient patient = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(dateOfBirth.toDate()), null));
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration();
-        assertThat(patientCares, hasItem(new PatientCare(CWC_BCG, dateOfBirth)));
-        assertThat(patientCares, hasItem(new PatientCare(CWC_YELLOW_FEVER, dateOfBirth)));
-        assertThat(patientCares, hasItem(new PatientCare(CWC_PENTA, dateOfBirth)));
-        assertThat(patientCares, hasItem(new PatientCare(CWC_MEASLES_VACCINE, dateOfBirth)));
-        assertThat(patientCares, hasItem(new PatientCare(CWC_IPT_VACCINE, dateOfBirth)));
+        assertPatientCares(patientCares, asList(new PatientCare(CWC_BCG, dateOfBirth),
+                new PatientCare(CWC_YELLOW_FEVER, dateOfBirth),
+                new PatientCare(CWC_PENTA, dateOfBirth),
+                new PatientCare(CWC_MEASLES_VACCINE, dateOfBirth),
+                new PatientCare(CWC_IPT_VACCINE, dateOfBirth)));
     }
-    
+
     @Test
     public void shouldNotReturnMeaslesPatientCareForCWCRegistration_IfAgeIsMoreThanAYear() {
-        LocalDate dateOfBirthOneYearBack = todayAs6June2012.minusYears(5).toLocalDate();
-        Patient patient = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(dateOfBirthOneYearBack.toDate()), null));
-        assertThat(patient.cwcCareProgramToEnrollOnRegistration(), not(hasItem(new PatientCare(CWC_MEASLES_VACCINE, dateOfBirthOneYearBack))));
+        LocalDate dateOfBirth5YearBack = todayAs6June2012.minusYears(5).toLocalDate();
+        Patient patient = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(dateOfBirth5YearBack.toDate()), null));
+        assertThat(patient.cwcCareProgramToEnrollOnRegistration(), not(hasItem(new PatientCare(CWC_MEASLES_VACCINE, dateOfBirth5YearBack))));
+    }
+
+    @Test
+    public void shouldReturnPatientCaresForPNCChildProgram() {
+        DateTime dateOfBirth = todayAs6June2012.minusDays(5);
+        Time timeOfBirth = new Time(dateOfBirth.getHourOfDay(), dateOfBirth.getMinuteOfHour());
+        Patient patient = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(dateOfBirth.toDate()), null));
+        List<PatientCare> cares = patient.pncBabyProgramsToEnrollOnRegistration();
+        assertPatientCares(cares, asList(
+                new PatientCare(PNC_BABY_1, dateOfBirth.toLocalDate(), timeOfBirth),
+                new PatientCare(PNC_BABY_2, dateOfBirth.toLocalDate(), timeOfBirth),
+                new PatientCare(PNC_BABY_3, dateOfBirth.toLocalDate(), timeOfBirth)));
     }
 
     private void assertPatientCare(PatientCare patientCare, String name, LocalDate startingOn) {
         assertThat(patientCare.name(), is(name));
         assertThat(patientCare.startingOn(), is(startingOn));
+    }
+
+    private void assertPatientCares(List<PatientCare> actualList, List<PatientCare> expectedList) {
+        assertThat(actualList.size(), is(expectedList.size()));
+        for(PatientCare expectedCare : expectedList)
+            assertThat("Missing " +expectedCare.name(), actualList, hasItem(expectedCare));
     }
 }

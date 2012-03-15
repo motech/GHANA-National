@@ -55,7 +55,7 @@ public class ChildVisitEncounterFactory extends BaseObservationFactory {
         HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         Date pncVisitDate = pncBabyRequest.getDate().toDate();
 
-        setObservation(mrsObservations, pncVisitDate, VISIT_NUMBER.getName(), toInteger(pncBabyRequest.getVisitNumber()));
+        setObservation(mrsObservations, pncVisitDate, VISIT_NUMBER.getName(), pncBabyRequest.getVisit().visitNumber());
         setObservation(mrsObservations, pncVisitDate, TEMPERATURE.getName(), pncBabyRequest.getTemperature());
         setObservation(mrsObservations, pncVisitDate, MALE_INVOLVEMENT.getName(), pncBabyRequest.getMaleInvolved());
         setObservation(mrsObservations, pncVisitDate, RESPIRATION.getName(), pncBabyRequest.getRespiration());
