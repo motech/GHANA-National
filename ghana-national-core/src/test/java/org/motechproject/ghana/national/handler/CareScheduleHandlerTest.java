@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.domain.MilestoneAlert;
@@ -16,6 +17,7 @@ import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.motechproject.util.DateUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.Mockito.*;
@@ -65,10 +67,12 @@ public class CareScheduleHandlerTest {
 
     @Test
     public void shouldHandleAncVisitAlert() {
+        MotechEvent motechEvent = new MotechEvent("subject", new HashMap<String, Object>());
+        doNothing().when(careScheduleHandlerSpy).sendSMSToFacilityForAnAppointment(ANC_VISIT_SMS_KEY, motechEvent);
 
-        final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
-        careScheduleHandlerSpy.handleAncVisitAlert(milestoneEvent);
-        verify(careScheduleHandlerSpy).sendSMSToFacility(ANC_VISIT_SMS_KEY, milestoneEvent);
+        careScheduleHandlerSpy.handleAncVisitAlert(motechEvent);
+
+        verify(careScheduleHandlerSpy).sendSMSToFacilityForAnAppointment(ANC_VISIT_SMS_KEY, motechEvent);
     }
 
     @Test

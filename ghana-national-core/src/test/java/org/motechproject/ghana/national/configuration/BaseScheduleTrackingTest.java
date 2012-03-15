@@ -70,7 +70,7 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         EnrollmentAlertService enrollmentAlertService = new EnrollmentAlertService(allTrackedSchedules, motechSchedulerService);
         EnrollmentDefaultmentService enrollmentDefaultmentService = new EnrollmentDefaultmentService(allTrackedSchedules, motechSchedulerService);
         EnrollmentService enrollmentService = new EnrollmentService(allTrackedSchedules, allEnrollments, enrollmentAlertService, enrollmentDefaultmentService);
-        scheduleTrackingService = new ScheduleTrackingServiceImpl(allTrackedSchedules, allEnrollments, enrollmentService, null,enrollmentRecordMapper);
+        scheduleTrackingService = new ScheduleTrackingServiceImpl(allTrackedSchedules, allEnrollments, enrollmentService, null, enrollmentRecordMapper);
     }
 
     @After
@@ -114,7 +114,7 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
             actualAlertTimes.add(nextFireTime);
             for (int i = 1; i <= alert.getRepeatCount(); i++) {
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime((Date)nextFireTime.clone());
+                calendar.setTime((Date) nextFireTime.clone());
                 calendar.add(Calendar.DAY_OF_MONTH, toDays(i * alert.getRepeatInterval()));
                 actualAlertTimes.add(calendar.getTime());
             }
@@ -134,12 +134,12 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
             SimpleTrigger alert = testJobDetail.trigger();
             Date nextFireTime = alert.getNextFireTime();
             JobDataMap dataMap = testJobDetail.getJobDetail().getJobDataMap();
-            actualAlertTimes.add(new TestAlert(window(dataMap),nextFireTime));
+            actualAlertTimes.add(new TestAlert(window(dataMap), nextFireTime));
             for (int i = 1; i <= alert.getRepeatCount(); i++) {
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime((Date)nextFireTime.clone());
+                calendar.setTime((Date) nextFireTime.clone());
                 calendar.add(Calendar.DAY_OF_MONTH, toDays(i * alert.getRepeatInterval()));
-                actualAlertTimes.add(new TestAlert(window(dataMap),calendar.getTime()));
+                actualAlertTimes.add(new TestAlert(window(dataMap), calendar.getTime()));
             }
         }
         return actualAlertTimes;
@@ -149,7 +149,7 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         return WindowName.valueOf((String) dataMap.get(EventDataKeys.WINDOW_NAME));
     }
 
-    private Integer extractIndexFromAlertName(String name){
+    private Integer extractIndexFromAlertName(String name) {
         Matcher matcher = ALERT_ORDER_INDEX_REGEX.matcher(name);
         return matcher.find() ? Integer.parseInt(matcher.group(1)) : null;
     }
@@ -164,7 +164,7 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     }
 
     private int toDays(long milliseconds) {
-        return (int)(milliseconds/1000/60/60/24);
+        return (int) (milliseconds / 1000 / 60 / 60 / 24);
     }
 
     protected Date onDate(LocalDate referenceDate, int numberOfWeeks, Time alertTime) {
@@ -187,11 +187,12 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         mockCurrentDate(today);
         return today;
     }
+
     protected DateTime mockToday(DateTime today) {
         mockCurrentDate(today);
         return today;
     }
-    
+
     protected LocalDate newDate(String date) {
         try {
             return DateUtil.newDate(new SimpleDateFormat("dd-MMM-yyyy").parse(date));
@@ -203,12 +204,12 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     protected DateTime newDateWithTime(String date, String time) {
         try {
             String dateToParse = date + " " + time;
-            return newDateTime(parseDate(dateToParse, new String[] {"dd-MMM-yyyy HH:mm", "dd-MMM-yyyy HH:mm:ss"}));
+            return newDateTime(parseDate(dateToParse, new String[]{"dd-MMM-yyyy HH:mm", "dd-MMM-yyyy HH:mm:ss"}));
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }
     }
-    
+
     protected TestAlert alert(WindowName windowName, Date alertDate) {
         return new TestAlert(windowName, alertDate);
     }
