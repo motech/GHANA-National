@@ -50,9 +50,17 @@ public class PregnancyEncounterFactoryTest {
         request.setPostAbortionFPAccepted(Boolean.TRUE);
         request.setPostAbortionFPCounselling(Boolean.FALSE);
         final Date terminationDate = new Date();
-        request.setTerminationDate(terminationDate);
+        request.setTerminationDate(terminationDate)
+        ;
+        final MRSObservation activePregnancyObservation = new MRSObservation(new Date(), "PREG", "Value");
+        MRSObservation<Boolean> pregnancyStatusBeforeDelivery = new MRSObservation<Boolean>(terminationDate, PREGNANCY_STATUS.getName(), Boolean.TRUE);
+        activePregnancyObservation.addDependantObservation(pregnancyStatusBeforeDelivery);
 
-        Encounter encounter = factory.createTerminationEncounter(request, null);
+        Encounter encounter = factory.createTerminationEncounter(request, activePregnancyObservation);
+
+        MRSObservation<Boolean> pregnancyStatusAfterDelivery = new MRSObservation<Boolean>(terminationDate, PREGNANCY_STATUS.getName(), Boolean.FALSE);
+        activePregnancyObservation.getDependantObservations().remove(pregnancyStatusBeforeDelivery);
+        activePregnancyObservation.addDependantObservation(pregnancyStatusAfterDelivery);
 
         Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Integer>(terminationDate, TERMINATION_TYPE.getName(), 2));
@@ -64,6 +72,7 @@ public class PregnancyEncounterFactoryTest {
             add(new MRSObservation<String>(terminationDate, COMMENTS.getName(), "Patient lost lot of blood"));
             add(new MRSObservation<Boolean>(terminationDate, POST_ABORTION_FP_COUNSELING.getName(), Boolean.FALSE));
             add(new MRSObservation<Boolean>(terminationDate, POST_ABORTION_FP_ACCEPTED.getName(), Boolean.TRUE));
+            add(activePregnancyObservation);
         }};
 
         assertEquals(EncounterType.PREG_TERM_VISIT.value(), encounter.getType());
@@ -111,10 +120,14 @@ public class PregnancyEncounterFactoryTest {
         pregnancyDeliveryRequest.addDeliveredChildRequest(deliveredChildRequest3);
 
         final MRSObservation activePregnancyObservation = new MRSObservation(new Date(), "PREG", "Value");
+        MRSObservation<Boolean> pregnancyStatusBeforeDelivery = new MRSObservation<Boolean>(deliveryDate, PREGNANCY_STATUS.getName(), Boolean.TRUE);
+        activePregnancyObservation.addDependantObservation(pregnancyStatusBeforeDelivery);
+
         Encounter encounter = factory.createDeliveryEncounter(pregnancyDeliveryRequest, activePregnancyObservation);
 
-        MRSObservation<Boolean> pregnancyStatusObservation = new MRSObservation<Boolean>(deliveryDate, PREGNANCY_STATUS.getName(), Boolean.FALSE);
-        activePregnancyObservation.addDependantObservation(pregnancyStatusObservation);
+        MRSObservation<Boolean> pregnancyStatusAfterDelivery = new MRSObservation<Boolean>(deliveryDate, PREGNANCY_STATUS.getName(), Boolean.FALSE);
+        activePregnancyObservation.getDependantObservations().remove(pregnancyStatusBeforeDelivery);
+        activePregnancyObservation.addDependantObservation(pregnancyStatusAfterDelivery);
 
         Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Integer>(deliveryDate, DELIVERY_MODE.getName(), Integer.parseInt(pregnancyDeliveryRequest.getChildDeliveryMode().getValue())));
