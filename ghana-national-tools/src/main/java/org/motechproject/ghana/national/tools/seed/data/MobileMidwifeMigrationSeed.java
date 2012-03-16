@@ -5,8 +5,10 @@ import org.apache.log4j.Logger;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.motechproject.ghana.national.tools.seed.data.source.MobileMidwifeSource;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +27,11 @@ public class MobileMidwifeMigrationSeed extends Seed {
     @Autowired
     AllMobileMidwifeEnrollments allMobileMidwifeEnrollments;
 
+    @Autowired
+    private MobileMidwifeService mobileMidwifeService;
+
     private static Map<String, String> FACILITY_CACHE = new HashMap<String, String>();
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     @Override
     protected void load() {
@@ -43,22 +49,43 @@ public class MobileMidwifeMigrationSeed extends Seed {
                 }
             }
             sortEnrollmentsByDate(enrollments);
-            addMobileMidwifeEnrollmentDataToDB(mobileMidwifeEnrollment, enrollments);
+            try {
+                addMobileMidwifeEnrollmentDataToDB(mobileMidwifeEnrollment, enrollments);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private void addMobileMidwifeEnrollmentDataToDB(MobileMidwifeEnrollment mobileMidwifeEnrollment, List<Map<String, Object>> enrollments) {
+    private void addMobileMidwifeEnrollmentDataToDB(MobileMidwifeEnrollment mobileMidwifeEnrollment, List<Map<String, Object>> enrollments) throws ParseException {
         for (int i = 0; i < enrollments.size(); i++) {
-            String patientMotechId = (String) enrollments.get(i).get("patient_motech_id");
-            ServiceType serviceType = (((String) enrollments.get(i).get("programName")).contains("Pregnancy")) ? ServiceType.PREGNANCY : ServiceType.CHILD_CARE;
+            Map<String, Object> map = enrollments.get(i);
+            String patientMotechId = (String) map.get("patient_motech_id");
             boolean active = i == 0;
-            mobileMidwifeEnrollment = setEnrollmentDetails(mobileMidwifeEnrollment, patientMotechId, serviceType, active);
-            setFacility(mobileMidwifeEnrollment, enrollments.get(i));
-            setStaffId(mobileMidwifeEnrollment, enrollments.get(i));
-            allMobileMidwifeEnrollments.add(mobileMidwifeEnrollment);
-            LOG.info("Migrated MobileMidwifeEnrollment for : " + mobileMidwifeEnrollment.getPatientId() + " in facility " + mobileMidwifeEnrollment.getFacilityId() + " under " + mobileMidwifeEnrollment.getServiceType().getDisplayName() + " campaign");
+            Map<String, Object> earliestMessage = getEarliestMessage((String) map.get("enrollment_id"));
+            if (earliestMessage != null) {
+                String earliestMessageKey = (String) earliestMessage.get("message_key");
+                String[] splitMessageKey = StringUtils.split(earliestMessageKey, ".");
+                ServiceType serviceType = (earliestMessageKey.contains("child")) ? ServiceType.CHILD_CARE : ServiceType.PREGNANCY;
+                int startWeek = Integer.parseInt(splitMessageKey[2]);
+                int messageStartWeek = (serviceType.equals(ServiceType.CHILD_CARE)) ? (startWeek + 40) : startWeek;
+                if (messageStartWeek != 0) {
+                    mobileMidwifeEnrollment.setMessageStartWeek(String.valueOf(messageStartWeek));
+                    mobileMidwifeEnrollment.setEnrollmentDateTime(DateUtil.now());
+                    mobileMidwifeEnrollment = setEnrollmentDetails(mobileMidwifeEnrollment, patientMotechId, serviceType, active);
+                    setFacility(mobileMidwifeEnrollment, map);
+                    setStaffId(mobileMidwifeEnrollment, map);
+                    allMobileMidwifeEnrollments.add(mobileMidwifeEnrollment);
+                    mobileMidwifeService.startMobileMidwifeCampaign(mobileMidwifeEnrollment);
+                    LOG.info("Migrated MobileMidwifeEnrollment for : " + mobileMidwifeEnrollment.getPatientId() + " in facility " + mobileMidwifeEnrollment.getFacilityId() + " under " + mobileMidwifeEnrollment.getServiceType().getDisplayName() + " campaign");
+                }
+            }
+            else {
+                LOG.info("No schedule to migrate for "+mobileMidwifeEnrollment.getPatientId());
+            }
         }
     }
+
 
     private void setStaffId(MobileMidwifeEnrollment mobileMidwifeEnrollment, Map<String, Object> map) {
         String staffMotechId;
@@ -98,11 +125,16 @@ public class MobileMidwifeMigrationSeed extends Seed {
     private MobileMidwifeEnrollment setEnrollmentDetails(MobileMidwifeEnrollment mobileMidwifeEnrollment, String patientMotechId, ServiceType serviceType, boolean active) {
         mobileMidwifeEnrollment = MobileMidwifeEnrollment.cloneNew(mobileMidwifeEnrollment);
         mobileMidwifeEnrollment.setServiceType(serviceType);
-        mobileMidwifeEnrollment.setMessageStartWeek("1");
         mobileMidwifeEnrollment.setActive(active);
         mobileMidwifeEnrollment.setConsent(true);
         mobileMidwifeEnrollment.setPatientId(patientMotechId);
         return mobileMidwifeEnrollment;
+    }
+
+    private Map<String, Object> getEarliestMessage(String enrollmentId) {
+        List<Map<String, Object>> messages = mobileMidwifeSource.scheduledMessage(enrollmentId);
+        sortMessagesByDate(messages);
+        return (!messages.isEmpty()) ? messages.get(0) : null;
     }
 
     private void sortEnrollmentsByDate(List<Map<String, Object>> newList) {
@@ -110,8 +142,21 @@ public class MobileMidwifeMigrationSeed extends Seed {
             @Override
             public int compare(Map<String, Object> o1, Map<String, Object> o2) {
                 try {
-                    final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
                     return (dateFormat.parse((String) o1.get("startDate")).after(dateFormat.parse((String) o2.get("startDate")))) ? -1 : 1;
+                } catch (ParseException e) {
+                    return 0;
+                }
+            }
+        });
+    }
+
+    private void sortMessagesByDate(List<Map<String, Object>> newList) {
+        Collections.sort(newList, new Comparator<Map<String, Object>>() {
+            @Override
+            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                try {
+                    return (dateFormat.parse((String) o1.get("scheduled_date")).after(dateFormat.parse((String) o2.get("scheduled_date")))) ? -1 : 1;
                 } catch (ParseException e) {
                     return 0;
                 }
@@ -126,7 +171,7 @@ public class MobileMidwifeMigrationSeed extends Seed {
             final HashMap<String, Object> newHashMap = new HashMap<String, Object>();
 
             String patientMotechId = mobileMidwifeSource.getPatientMotechId(patientId);
-            if (patientMotechId == null)    {
+            if (patientMotechId == null) {
                 LOG.info("Patient does not have a MotechId: " + patientId);
                 continue;  //patient has no motech id
             }
@@ -143,6 +188,7 @@ public class MobileMidwifeMigrationSeed extends Seed {
 
             newHashMap.put("programName", map.get("programName"));
             newHashMap.put("startDate", map.get("startDate"));
+            newHashMap.put("enrollment_id", map.get("enrollment_id"));
             newListOfHashMaps.add(newHashMap);
         }
         return newListOfHashMaps;

@@ -10,6 +10,15 @@
             <param value="%d %p [%c] - %m%n" name="ConversionPattern"/>
         </layout>
     </appender>
+    <appender class="org.apache.log4j.RollingFileAppender" name="migrationLogfile">
+        <param value="logs/ghana-migration.log" name="File"/>
+        <param name="Append" value="true"/>
+        <param name="MaxFileSize" value="4096KB"/>
+        <param name="maxBackupIndex" value="5"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param value="%d %p [%c] - %m%n" name="ConversionPattern"/>
+        </layout>
+    </appender>
      <appender class="org.apache.log4j.RollingFileAppender" name="passwordLog">
         <param value="logs/ghana_password.log" name="File"/>
         <param name="Append" value="true"/>
@@ -33,6 +42,12 @@
         <level value="info"/>
         <appender-ref ref="logfile"/>
     </logger>
+
+    <logger name="org.motechproject.ghana.national.tools">
+        <level value="info"/>
+        <appender-ref ref="migrationLogfile"/>
+    </logger>
+
     <root>
         <priority value="warn"/>
         <appender-ref ref="logfile"/>

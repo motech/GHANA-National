@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class MobileMidwifeSource extends BaseSeedSource{
+public class MobileMidwifeSource extends BaseSeedSource {
 
     public List<HashMap<String, String>> getEnrollmentData() {
-        return jdbcTemplate.query("select program_name, person_id, start_date, obs_id " +
+        return jdbcTemplate.query("select program_name, person_id, start_date, obs_id, motechmodule_enrollment_id " +
                 "from motechmodule_enrollment " +
-                "where program_name != 'Expected Care Message Program'", new RowMapper<HashMap<String, String>>() {
+                "where program_name != 'Expected Care Message Program' and end_date is null", new RowMapper<HashMap<String, String>>() {
             @Override
             public HashMap<String, String> mapRow(ResultSet resultSet, int i) throws SQLException {
                 final HashMap<String, String> map = new HashMap<String, String>();
@@ -31,6 +31,7 @@ public class MobileMidwifeSource extends BaseSeedSource{
                 map.put("programName", resultSet.getString("program_name"));
                 map.put("startDate", resultSet.getString("start_date"));
                 map.put("obs_id", resultSet.getString("obs_id"));
+                map.put("enrollment_id", resultSet.getString("motechmodule_enrollment_id"));
                 return map;
             }
         });
@@ -234,5 +235,30 @@ public class MobileMidwifeSource extends BaseSeedSource{
             how = how.split(",")[0];
         }
         return how;
+    }
+
+    public List<Map<String, Object>> scheduledMessage(final String enrollmentId) {
+        return jdbcTemplate.query(new PreparedStatementCreator() {
+                    @Override
+                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                        PreparedStatement preparedStatement = connection.prepareStatement("select en.program_name as program_name, sm.recipient_id as person_id, md.message_key as message_key, sm.scheduled_for as scheduled_date " +
+                                "from motechmodule_scheduledmessage sm, motechmodule_messagedefinition md, motechmodule_enrollment en where sm.definition_id = md.motechmodule_messagedefinition_id and sm.care_name is null " +
+                                "and en.end_date is null and en.obs_id is not null and sm.enrollment_id= ? and DATEDIFF(sm.scheduled_for,SYSDATE())>=0");
+                        preparedStatement.setString(1, enrollmentId);
+                        return preparedStatement;
+                    }
+                },
+                new RowMapper<Map<String, Object>>() {
+                    @Override
+                    public Map<String, Object> mapRow(ResultSet resultSet, int i) throws SQLException {
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        map.put("program_name", resultSet.getString("program_name"));
+                        map.put("person_id", resultSet.getString("person_id"));
+                        map.put("message_key", resultSet.getString("message_key"));
+                        map.put("scheduled_date", resultSet.getString("scheduled_date"));
+                        return map;
+                    }
+                }
+        );
     }
 }

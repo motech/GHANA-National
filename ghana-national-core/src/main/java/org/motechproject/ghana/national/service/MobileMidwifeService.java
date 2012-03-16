@@ -26,6 +26,10 @@ public class MobileMidwifeService {
         enrollment.setActive(true);
         allEnrollments.add(enrollment);
 
+        startMobileMidwifeCampaign(enrollment);
+    }
+
+    public void startMobileMidwifeCampaign(MobileMidwifeEnrollment enrollment) {
         if (enrollment.campaignApplicable()) {
             //TODO: Hack for 24 hour interval
             //Cycle Date One Day Back For 24 Hour Interval With 2 hour Buffer ForFuture Schedule, if it falls on the same day
