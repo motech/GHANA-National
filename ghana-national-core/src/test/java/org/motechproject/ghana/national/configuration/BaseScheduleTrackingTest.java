@@ -67,8 +67,8 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     @Before
     public void setUp() {
         preferredAlertTime = new Time(10, 10);
-        EnrollmentAlertService enrollmentAlertService = new EnrollmentAlertService(allTrackedSchedules, motechSchedulerService);
-        EnrollmentDefaultmentService enrollmentDefaultmentService = new EnrollmentDefaultmentService(allTrackedSchedules, motechSchedulerService);
+        EnrollmentAlertService enrollmentAlertService = new EnrollmentAlertService(motechSchedulerService);
+        EnrollmentDefaultmentService enrollmentDefaultmentService = new EnrollmentDefaultmentService(motechSchedulerService);
         EnrollmentService enrollmentService = new EnrollmentService(allTrackedSchedules, allEnrollments, enrollmentAlertService, enrollmentDefaultmentService);
         scheduleTrackingService = new ScheduleTrackingServiceImpl(allTrackedSchedules, allEnrollments, enrollmentService, null, enrollmentRecordMapper);
     }
