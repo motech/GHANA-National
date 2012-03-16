@@ -46,7 +46,7 @@ public class AllAppointmentsTest {
     }
 
     @Test
-    public void shouldFulfillCurrentANCVisitSchedule(){
+    public void shouldFulfillCurrentANCVisitSchedule() {
         String motechId = "1212121";
         Date visitedDate = new Date();
         allAppointments.fulfillCurrentANCVisit(new Patient(new MRSPatient(motechId, null, null)), visitedDate);
@@ -57,7 +57,6 @@ public class AllAppointmentsTest {
     public void shouldCreateANCVisitSchedule() {
         String motechId = "1234556";
         DateTime nextANCVisit = DateTime.now();
-        Date visitedDate = new Date();
 
         allAppointments.updateANCVisitSchedule(new Patient(new MRSPatient(motechId, null, null)), nextANCVisit);
 
@@ -68,10 +67,10 @@ public class AllAppointmentsTest {
         List<ReminderConfiguration> actualReminderConfigurations = actualVisitRequest.getAppointmentReminderConfigurations();
 
         List<ReminderConfiguration> expectedReminderConfigurations = new ArrayList<ReminderConfiguration>();
-        expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.TWO_WEEK_BEFORE));
         expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.ONE_WEEK_BEFORE));
         expectedReminderConfigurations.add(new ReminderConfiguration());
         expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.ONE_WEEK_LATER));
+        expectedReminderConfigurations.add(new ReminderConfiguration().setRemindFrom(AllAppointments.TWO_WEEKS_LATER));
 
         assertThat(actualReminderConfigurations.size(), is(4));
         assertThat(actualVisitRequest.getVisitName(), is(EncounterType.ANC_VISIT.value()));

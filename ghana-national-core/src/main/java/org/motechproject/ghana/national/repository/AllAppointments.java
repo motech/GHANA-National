@@ -17,10 +17,9 @@ public class AllAppointments {
 
     @Autowired
     AppointmentService appointmentService;
-    static final int TWO_WEEK_BEFORE = 14;   //to be in sync with motech-appointments api
     static final int ONE_WEEK_BEFORE = 7;   //to be in sync with motech-appointments api
     static final int ONE_WEEK_LATER = -7;   //to be in sync with motech-appointments api
-//    static final int THREE_WEEKS_LATER = -21;
+    static final int TWO_WEEKS_LATER = -14;
 
     public void remove(Patient patient) {
         appointmentService.removeCalendar(patient.getMotechId());
@@ -29,10 +28,10 @@ public class AllAppointments {
     public void updateANCVisitSchedule(Patient patient, DateTime nextVisitDate) {
         CreateVisitRequest createVisitRequest = new CreateVisitRequest().setAppointmentDueDate(nextVisitDate).setVisitName(EncounterType.ANC_VISIT.value());
 
-        createVisitRequest.addAppointmentReminderConfiguration(new ReminderConfiguration().setRemindFrom(TWO_WEEK_BEFORE));
         createVisitRequest.addAppointmentReminderConfiguration(new ReminderConfiguration().setRemindFrom(ONE_WEEK_BEFORE));
         createVisitRequest.addAppointmentReminderConfiguration(new ReminderConfiguration());
         createVisitRequest.addAppointmentReminderConfiguration(new ReminderConfiguration().setRemindFrom(ONE_WEEK_LATER));
+        createVisitRequest.addAppointmentReminderConfiguration(new ReminderConfiguration().setRemindFrom(TWO_WEEKS_LATER));
         appointmentService.addVisit(patient.getMotechId(), createVisitRequest);
     }
 
