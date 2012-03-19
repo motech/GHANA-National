@@ -44,6 +44,15 @@ public class PregnancyEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, request.getTerminationDate(), POST_ABORTION_FP_ACCEPTED.getName(), request.getPostAbortionFPAccepted());
         setObservation(mrsObservations, request.getTerminationDate(), POST_ABORTION_FP_COUNSELING.getName(), request.getPostAbortionFPCounselling());
         if (activePregnancyObservation != null) {
+            Set<MRSObservation> dependantObservations = activePregnancyObservation.getDependantObservations();
+            if (dependantObservations != null) {
+                for (MRSObservation dependantObservation : dependantObservations) {
+                    if (dependantObservation.getConceptName().equals(PREGNANCY_STATUS.getName())) {
+                        dependantObservations.remove(dependantObservation);
+                        break;
+                    }
+                }
+            }
             activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(request.getTerminationDate(), PREGNANCY_STATUS.getName(), false));
             mrsObservations.add(activePregnancyObservation);
         }
@@ -71,6 +80,17 @@ public class PregnancyEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, deliveryDate, VVF_REPAIR.getName(), safeEnumValue(pregnancyDeliveryRequest.getVvf()));
         setObservation(mrsObservations, deliveryDate, MATERNAL_DEATH.getName(), pregnancyDeliveryRequest.getMaternalDeath());
         setObservation(mrsObservations, deliveryDate, COMMENTS.getName(), pregnancyDeliveryRequest.getComments());
+        if (activePregnancyObservation != null) {
+            Set<MRSObservation> dependantObservations = activePregnancyObservation.getDependantObservations();
+            if (dependantObservations != null) {
+                for (MRSObservation dependantObservation : dependantObservations) {
+                    if (dependantObservation.getConceptName().equals(PREGNANCY_STATUS.getName())) {
+                        dependantObservations.remove(dependantObservation);
+                        break;
+                    }
+                }
+            }
+        }
         activePregnancyObservation.addDependantObservation(new MRSObservation(deliveryDate, PREGNANCY_STATUS.getName(), Boolean.FALSE));
         mrsObservations.add(activePregnancyObservation);
 

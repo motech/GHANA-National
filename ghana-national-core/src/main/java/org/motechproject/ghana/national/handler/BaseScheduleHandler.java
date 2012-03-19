@@ -11,7 +11,6 @@ import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduler.MotechSchedulerService;
-import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 
 import java.util.HashMap;
@@ -49,11 +48,11 @@ public abstract class BaseScheduleHandler {
         char reminderCount = jobId.charAt(jobId.length() - 1);
         switch (reminderCount) {
             case '0':
-                return WindowName.due.name();
+                return "Due";
             case '1':
             case '2':
             case '3':
-                return WindowName.late.name();
+                return "Overdue";
         }
         return null;
     }

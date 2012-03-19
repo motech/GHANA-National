@@ -75,7 +75,7 @@ public class BaseScheduleHandlerTest {
 
         assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, patientMotechId);
-            put(WINDOW, "late");
+            put(WINDOW, "Overdue");
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastname);
             put(SCHEDULE_NAME, visitName);
