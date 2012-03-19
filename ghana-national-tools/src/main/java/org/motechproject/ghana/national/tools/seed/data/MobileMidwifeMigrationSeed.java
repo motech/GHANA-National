@@ -1,15 +1,12 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.ghana.national.domain.Patient;
+import org.apache.log4j.Logger;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
-import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
-import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.motechproject.ghana.national.tools.seed.data.source.MobileMidwifeSource;
-import org.motechproject.mrs.model.MRSPatient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,17 +17,13 @@ import java.util.*;
 @Component
 public class MobileMidwifeMigrationSeed extends Seed {
 
+    private static Logger LOG = Logger.getLogger(MobileMidwifeMigrationSeed.class);
+
     @Autowired
     MobileMidwifeSource mobileMidwifeSource;
 
     @Autowired
     AllMobileMidwifeEnrollments allMobileMidwifeEnrollments;
-
-    @Autowired
-    AllPatients allPatients;
-
-    @Autowired
-    AllFacilities allFacilities;
 
     private static Map<String, String> FACILITY_CACHE = new HashMap<String, String>();
 
@@ -41,78 +34,74 @@ public class MobileMidwifeMigrationSeed extends Seed {
         List<Map<String, Object>> newListOfHashMaps = mobileMidwifeEnrollmentData(enrollmentData);
 
         for (MobileMidwifeEnrollment mobileMidwifeEnrollment : mobileMidwifeEnrollments) {
-            String patientId = mobileMidwifeEnrollment.getPatientId();
-            final List<Map<String, Object>> newList = new ArrayList<Map<String, Object>>();
+            final List<Map<String, Object>> enrollments = new ArrayList<Map<String, Object>>();
+            String patientMotechId = mobileMidwifeEnrollment.getPatientId();
             for (Map<String, Object> map : newListOfHashMaps) {
-                final Patient patient = (Patient) map.get("patient");
-                if (patient != null && patient.getMrsPatient().getMotechId().equals(patientId)) {
-                    newList.add(map);
+                final String enrollmentPatientMotechId = (String) map.get("patient_motech_id");
+                if (enrollmentPatientMotechId != null && enrollmentPatientMotechId.equals(patientMotechId)) {
+                    enrollments.add(map);
                 }
             }
-            sortEnrollmentsByDate(newList);
-            addMobileMidwifeEnrollmentDataToDB(mobileMidwifeEnrollment, newList);
+            sortEnrollmentsByDate(enrollments);
+            addMobileMidwifeEnrollmentDataToDB(mobileMidwifeEnrollment, enrollments);
         }
     }
 
-    private void addMobileMidwifeEnrollmentDataToDB(MobileMidwifeEnrollment mobileMidwifeEnrollment, List<Map<String, Object>> newList) {
-        for (int i = 0; i < newList.size(); i++) {
-            Patient patient = (Patient) newList.get(i).get("patient");
-            ServiceType serviceType = (((String) newList.get(i).get("programName")).contains("Pregnancy")) ? ServiceType.PREGNANCY : ServiceType.CHILD_CARE;
+    private void addMobileMidwifeEnrollmentDataToDB(MobileMidwifeEnrollment mobileMidwifeEnrollment, List<Map<String, Object>> enrollments) {
+        for (int i = 0; i < enrollments.size(); i++) {
+            String patientMotechId = (String) enrollments.get(i).get("patient_motech_id");
+            ServiceType serviceType = (((String) enrollments.get(i).get("programName")).contains("Pregnancy")) ? ServiceType.PREGNANCY : ServiceType.CHILD_CARE;
             boolean active = i == 0;
-            mobileMidwifeEnrollment = setEnrollmentDetails(mobileMidwifeEnrollment, patient, serviceType, active);
-            setFacility(mobileMidwifeEnrollment, patient, newList.get(i));
-            setStaffId(mobileMidwifeEnrollment, patient, newList.get(i));
-
+            mobileMidwifeEnrollment = setEnrollmentDetails(mobileMidwifeEnrollment, patientMotechId, serviceType, active);
+            setFacility(mobileMidwifeEnrollment, enrollments.get(i));
+            setStaffId(mobileMidwifeEnrollment, enrollments.get(i));
+            allMobileMidwifeEnrollments.add(mobileMidwifeEnrollment);
+            LOG.info("Migrated MobileMidwifeEnrollment for : " + mobileMidwifeEnrollment.getPatientId() + " in facility " + mobileMidwifeEnrollment.getFacilityId() + " under " + mobileMidwifeEnrollment.getServiceType().getDisplayName() + " campaign");
         }
     }
 
-    private void setStaffId(MobileMidwifeEnrollment mobileMidwifeEnrollment, Patient patient, Map<String, Object> map) {
+    private void setStaffId(MobileMidwifeEnrollment mobileMidwifeEnrollment, Map<String, Object> map) {
         String staffMotechId;
-        String patientId = patient.getMrsPatient().getId();
         String staffId = (String) map.get("systemId");
         if (StringUtils.isNotBlank(staffId)) {
             staffMotechId = staffId;
         } else {
-            staffMotechId = mobileMidwifeSource.getStaffIdFromPatientEncounter(patientId);
+            staffMotechId = mobileMidwifeSource.getStaffIdFromPatientEncounter((String) map.get("patientId"));
         }
-        if(staffMotechId == null) {
+        if (staffMotechId == null) {
             //child clients who don't have *ANY* encounters.
             staffMotechId = mobileMidwifeSource.getMotechStaffIdForMotechFacilityId(mobileMidwifeEnrollment.getFacilityId());
         }
         mobileMidwifeEnrollment.setStaffId(staffMotechId);
-        allMobileMidwifeEnrollments.add(mobileMidwifeEnrollment);
     }
 
-    private void setFacility(MobileMidwifeEnrollment mobileMidwifeEnrollment, Patient patient, Map<String, Object> map) {
+    private void setFacility(MobileMidwifeEnrollment mobileMidwifeEnrollment, Map<String, Object> map) {
         String facilityId;
         if (StringUtils.isBlank((String) map.get("facilityId"))) {
-            if (patient.getMrsPatient().getFacility() == null) {
-                facilityId = "1"; //unknown location
-            } else {
-                facilityId = patient.getMrsPatient().getFacility().getId();
-            }
+            facilityId = (String) map.get("patient_facility_id");
         } else {
             facilityId = (String) map.get("facilityId");
-            if (facilityId.equals("33")) facilityId = "1"; //33 equals 'Ghana' country, so its an unknown location.
         }
+
+        if (facilityId.equals("33")) facilityId = "1"; //33 equals 'Ghana' country, so its an unknown location.
 
         String facilityMotechId;
         if (FACILITY_CACHE.get(facilityId) != null) {
             facilityMotechId = FACILITY_CACHE.get(facilityId);
         } else {
-            facilityMotechId = allFacilities.findByMrsFacilityId(facilityId).getMotechId();
+            facilityMotechId = mobileMidwifeSource.getMotechFacilityId(facilityId);
             FACILITY_CACHE.put(facilityId, facilityMotechId);
         }
         mobileMidwifeEnrollment.setFacilityId(facilityMotechId);
     }
 
-    private MobileMidwifeEnrollment setEnrollmentDetails(MobileMidwifeEnrollment mobileMidwifeEnrollment, Patient patient, ServiceType serviceType, boolean active) {
+    private MobileMidwifeEnrollment setEnrollmentDetails(MobileMidwifeEnrollment mobileMidwifeEnrollment, String patientMotechId, ServiceType serviceType, boolean active) {
         mobileMidwifeEnrollment = MobileMidwifeEnrollment.cloneNew(mobileMidwifeEnrollment);
         mobileMidwifeEnrollment.setServiceType(serviceType);
         mobileMidwifeEnrollment.setMessageStartWeek("1");
         mobileMidwifeEnrollment.setActive(active);
         mobileMidwifeEnrollment.setConsent(true);
-        mobileMidwifeEnrollment.setPatientId(patient.getMrsPatient().getMotechId());
+        mobileMidwifeEnrollment.setPatientId(patientMotechId);
         return mobileMidwifeEnrollment;
     }
 
@@ -136,20 +125,22 @@ public class MobileMidwifeMigrationSeed extends Seed {
             String patientId = map.get("patientId");
             final HashMap<String, Object> newHashMap = new HashMap<String, Object>();
 
-            Patient patient = allPatients.patientByOpenmrsId(patientId);
-            if (patient == null) continue;  //patient has no motech id
-            if (patient.getMrsPatient().getMotechId() == null) {  //patient is voided. can't get details from api, hence direct sql call.
-                patient = new Patient(new MRSPatient(patientId, mobileMidwifeSource.getPatientMotechId(patientId), null, patient.getMrsPatient().getFacility()));
+            String patientMotechId = mobileMidwifeSource.getPatientMotechId(patientId);
+            if (patientMotechId == null)    {
+                LOG.info("Patient does not have a MotechId: " + patientId);
+                continue;  //patient has no motech id
             }
+            newHashMap.put("patient_motech_id", patientMotechId);
 
-            if (StringUtils.isNotBlank(map.get("obs_id"))) {
+            newHashMap.put("patient_facility_id", mobileMidwifeSource.getPatientFacility(patientId));
+
+            if (StringUtils.isNotBlank(map.get("obs_id"))) { // Only Pregnant women will have observations captured.
                 String observationId = map.get("obs_id");
                 Map<String, String> locationProviderMap = mobileMidwifeSource.locationToProviderMapping(observationId);
                 newHashMap.put("facilityId", locationProviderMap.get("location_id"));
                 newHashMap.put("systemId", locationProviderMap.get("system_id"));
             }
 
-            newHashMap.put("patient", patient);
             newHashMap.put("programName", map.get("programName"));
             newHashMap.put("startDate", map.get("startDate"));
             newListOfHashMaps.add(newHashMap);

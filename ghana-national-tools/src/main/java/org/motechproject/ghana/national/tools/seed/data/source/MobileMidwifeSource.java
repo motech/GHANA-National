@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.tools.seed.data.source;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
@@ -59,7 +60,7 @@ public class MobileMidwifeSource extends BaseSeedSource{
                     @Override
                     public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                         PreparedStatement preparedStatement = connection.prepareStatement("select e.location_id, u.system_id from encounter e, obs o, users u  " +
-                                "where o.encounter_id = e.encounter_id and e.provider_id = u.person_id and o.obs_id=?");
+                                "where o.encounter_id = e.encounter_id and e.provider_id = u.user_id and o.obs_id=?");
                         preparedStatement.setString(1, observationId);
                         return preparedStatement;
                     }
@@ -82,7 +83,7 @@ public class MobileMidwifeSource extends BaseSeedSource{
                     @Override
                     public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                         PreparedStatement preparedStatement = connection.prepareStatement("select u.system_id from users u, encounter e where " +
-                                "e.provider_id = u.person_id and e.patient_id = ? limit 1");
+                                "e.provider_id = u.user_id and e.patient_id = ? limit 1");
                         preparedStatement.setString(1, patientId);
                         return preparedStatement;
                     }
@@ -103,7 +104,7 @@ public class MobileMidwifeSource extends BaseSeedSource{
                     @Override
                     public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                         PreparedStatement preparedStatement = connection.prepareStatement("select u.system_id from encounter e, motechmodule_facility mf, users u " +
-                                "where mf.location_id = e.location_id and e.provider_id = u.person_id and mf.facility_id = ? limit 1");
+                                "where mf.location_id = e.location_id and e.provider_id = u.user_id and mf.facility_id = ? limit 1");
                         preparedStatement.setString(1, facilityId);
                         return preparedStatement;
                     }
@@ -111,7 +112,6 @@ public class MobileMidwifeSource extends BaseSeedSource{
                 new RowMapper<String>() {
                     @Override
                     public String mapRow(ResultSet resultSet, int i) throws SQLException {
-
                         return resultSet.getString("system_id");
                     }
                 }
@@ -191,6 +191,42 @@ public class MobileMidwifeSource extends BaseSeedSource{
                         return enrollment;
                     }
                 });
+    }
+
+    public String getPatientFacility(final String patientId) {
+        List<String> facilities = jdbcTemplate.query(new PreparedStatementCreator() {
+                    @Override
+                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                        PreparedStatement preparedStatement = connection.prepareStatement("select location_id from patient_identifier where patient_id = ?");
+                        preparedStatement.setString(1, patientId);
+                        return preparedStatement;
+                    }
+                },
+                new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                        return resultSet.getString(1);
+                    }
+                });
+        return CollectionUtils.isEmpty(facilities) ? null : facilities.get(0);
+    }
+
+    public String getMotechFacilityId(final String locationId) {
+        List<String> facilities = jdbcTemplate.query(new PreparedStatementCreator() {
+                    @Override
+                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                        PreparedStatement preparedStatement = connection.prepareStatement("select facility_id from motechmodule_facility where location_id= ?");
+                        preparedStatement.setString(1, locationId);
+                        return preparedStatement;
+                    }
+                },
+                new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                        return resultSet.getString(1);
+                    }
+                });
+        return CollectionUtils.isEmpty(facilities) ? null : facilities.get(0);
     }
 
     private String correctText(String how) {
