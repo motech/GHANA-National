@@ -60,13 +60,13 @@ public class PregnancyService {
         allEncounters.persistEncounter(encounterFactory.createTerminationEncounter(request, allObservations.activePregnancyObservation(request.getPatient().getMotechId())));
         if (request.isDead()) {
             patientService.deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
-            mobileMidwifeService.unRegister(request.getPatient().getMotechId());
 
         }
         else{
             allSchedules.unEnroll(request.getPatient().getMRSPatientId(), request.getPatient().ancCareProgramsToUnEnroll());
             allAppointments.remove(request.getPatient());
         }
+        mobileMidwifeService.unRegister(request.getPatient().getMotechId());
     }
 
     private Patient registerChild(DeliveredChildRequest childRequest, Date birthDate, String parentMotechId, Facility facility) {
