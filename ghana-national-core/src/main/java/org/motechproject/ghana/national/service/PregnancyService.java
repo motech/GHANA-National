@@ -100,7 +100,7 @@ public class PregnancyService {
 
         MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(patient.getMotechId());
         allEncounters.persistEncounter(encounterFactory.createDeliveryEncounter(request, activePregnancyObservation));
-        allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), ScheduleNames.ANC_DELIVERY, request.getDeliveryDateTime().toLocalDate());
+        allSchedules.safeFulfilCurrentMilestone(patient.getMRSPatientId(), ScheduleNames.ANC_DELIVERY, request.getDeliveryDateTime().toLocalDate());
         allSchedules.unEnroll(patient.getMRSPatientId(),patient.ancCareProgramsToUnEnroll());
         allAppointments.remove(patient);
     }

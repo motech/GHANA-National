@@ -200,7 +200,7 @@ public class PregnancyServiceTest {
             put(LAST_NAME, childDefaultLastName);
         }}, smsTemplateValuesArgCaptor.getValue());
 
-        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, ScheduleNames.ANC_DELIVERY, deliveryDate.toLocalDate());
+        verify(mockAllSchedules).safeFulfilCurrentMilestone(mrsPatientId, ScheduleNames.ANC_DELIVERY, deliveryDate.toLocalDate());
         verify(mockAllAppointments).remove(mockPatient);
     }
 

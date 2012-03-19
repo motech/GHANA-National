@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.Time;
+import org.motechproject.scheduletracking.api.domain.exception.InvalidEnrollmentException;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.scheduletracking.api.service.EnrollmentsQuery;
@@ -15,6 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -120,5 +123,18 @@ public class AllSchedulesTest {
         EnrollmentsQuery enrollmentsQuery = mock(EnrollmentsQuery.class);
         allSchedules.search(enrollmentsQuery);
         verify(mockScheduleTrackingService).searchWithWindowDates(enrollmentsQuery);
+    }
+
+    @Test
+    public void shouldFulfilCurrentMilestoneSafely() {
+        doNothing().when(mockScheduleTrackingService).fulfillCurrentMilestone(Matchers.<String>any(), Matchers.<String>any(), Matchers.<LocalDate>any());
+        assertTrue(allSchedules.safeFulfilCurrentMilestone("id", "some name", null));
+
+        reset(mockScheduleTrackingService);
+
+        doThrow(new InvalidEnrollmentException("not exists")).when(mockScheduleTrackingService).fulfillCurrentMilestone(Matchers.<String>any(), Matchers.<String>any(), Matchers.<LocalDate>any());
+        assertFalse(allSchedules.safeFulfilCurrentMilestone("id", "some name", null));
+
+
     }
 }
