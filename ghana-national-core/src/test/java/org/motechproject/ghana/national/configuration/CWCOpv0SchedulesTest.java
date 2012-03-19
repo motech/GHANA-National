@@ -21,7 +21,7 @@ public class CWCOpv0SchedulesTest extends BaseScheduleTrackingTest {
     @Before
     public void setUp() {
         super.setUp();
-        scheduleName = ScheduleNames.OPV_0;
+        scheduleName = ScheduleNames.CWC_OPV_0;
     }
 
     @Test
