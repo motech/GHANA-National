@@ -11,18 +11,16 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.SMSGateway;
-import org.motechproject.ghana.national.service.CareProgramQueryService;
+import org.motechproject.ghana.national.service.MobileClientQueryService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.*;
-import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
@@ -32,9 +30,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.Constants.*;
 import static org.motechproject.ghana.national.handlers.ClientQueryFormHandler.FIND_CLIENT_RESPONSE_SMS_KEY;
-import static org.motechproject.ghana.national.handlers.ClientQueryFormHandler.UPCOMING_CARE_CLIENT_QUERY_RESPONSE_SMS_KEY;
 import static org.motechproject.ghana.national.util.AssertionUtility.assertContainsTemplateValues;
-import static org.motechproject.util.DateUtil.newDateTime;
 
 public class ClientQueryFormHandlerTest {
     private ClientQueryFormHandler clientQueryFormHandler;
@@ -45,7 +41,7 @@ public class ClientQueryFormHandlerTest {
     @Mock
     private AllObservations mockAllObservations;
     @Mock
-    private CareProgramQueryService mockCareProgramQueryService;
+    private MobileClientQueryService mockMobileClientQueryService;
 
     @Before
     public void setUp() {
@@ -54,7 +50,7 @@ public class ClientQueryFormHandlerTest {
         ReflectionTestUtils.setField(clientQueryFormHandler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(clientQueryFormHandler, "allObservations", mockAllObservations);
         ReflectionTestUtils.setField(clientQueryFormHandler, "smsGateway", mockSmsGateway);
-        ReflectionTestUtils.setField(clientQueryFormHandler, "careProgramQueryService", mockCareProgramQueryService);
+        ReflectionTestUtils.setField(clientQueryFormHandler, "mobileClientQueryService", mockMobileClientQueryService);
     }
 
     @Test
@@ -155,58 +151,21 @@ public class ClientQueryFormHandlerTest {
     public void shouldSendUpcomingCareDetailsIfQueryTypeIsUpcomingCare() {
         final String motechId = "motech-id";
         String responsePhoneNumber = "94423232";
-        final String facilityId = "facilityId";
-        final String firstName = "Sachin";
-        final String lastName = "A";
 
-        HashMap<String, Object> params = createClientQueryFormForFindClientId(null, null, null, null, responsePhoneNumber, facilityId, motechId, ClientQueryType.UPCOMING_CARE);
+        HashMap<String, Object> params = createClientQueryFormForFindClientId(null, null, null, responsePhoneNumber, null, null, motechId, ClientQueryType.UPCOMING_CARE);
 
-        final Patient patient = new Patient(new MRSPatient(motechId, new MRSPerson().gender("M").firstName(firstName).lastName(lastName)
-                .dateOfBirth(newDateTime(2012, 4, 5, 2, 2, 0).toDate()), null));
-        EnrollmentRecord ttEnrollmentRecord = new EnrollmentRecord("", "TT schedule", "", null, null, null, null, newDateTime(2012, 3, 3, 1, 1, 0), null, null);
-        EnrollmentRecord iptEnrollmentRecord = new EnrollmentRecord("", "IPT schedule", "", null, null, null, null, newDateTime(2012, 4, 5, 2, 2, 0), null, null);
-        List<EnrollmentRecord> upcomingEnrollments = asList(ttEnrollmentRecord, iptEnrollmentRecord);
+        final Patient patient = new Patient(new MRSPatient(motechId, null, null));
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
-        when(mockCareProgramQueryService.upcomingCareProgramsForCurrentWeek(patient)).thenReturn(upcomingEnrollments);
-        when(mockSmsGateway.getSMSTemplate(UPCOMING_CARE_CLIENT_QUERY_RESPONSE_SMS_KEY))
-                .thenReturn("Upcoming care programs for ${firstName} ${lastName} (MotechID:${motechId}):\\n $T{UPCOMING_CARE_DUE_CLIENT_QUERY}.");
-        when(mockSmsGateway.getSMSTemplate(ClientQueryFormHandler.UPCOMING_CARE_DUE_CLIENT_QUERY))
-                .thenReturn("${scheduleName}: ${date}");
-
         clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
-        String expectedMsg = format("Upcoming care programs for %s %s (MotechID:%s):\\n %s."
-                ,firstName, lastName, motechId, "TT schedule: 03 Mar 2012, IPT schedule: 05 Apr 2012");
-        verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), eq(expectedMsg));
+        verify(mockMobileClientQueryService).queryUpcomingCare(patient, responsePhoneNumber);
     }
 
-    @Test
-    public void shouldSendNoResultsFoundIfNoUpcomingCareDetailsFound() {
-        final String motechId = "motech-id";
-        String responsePhoneNumber = "94423232";
-        final String facilityId = "facilityId";
-        final String firstName = "Sachin";
-        final String lastName = "A";
-
-        HashMap<String, Object> params = createClientQueryFormForFindClientId(null, null, null, null, responsePhoneNumber, facilityId, motechId, ClientQueryType.UPCOMING_CARE);
-
-        final Patient patient = new Patient(new MRSPatient(motechId, new MRSPerson().gender("M").firstName(firstName).lastName(lastName)
-                .dateOfBirth(newDateTime(2012, 4, 5, 2, 2, 0).toDate()), null));
-        List<EnrollmentRecord> upcomingEnrollments = Collections.emptyList();
-        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
-        when(mockCareProgramQueryService.upcomingCareProgramsForCurrentWeek(patient)).thenReturn(upcomingEnrollments);
-        when(mockSmsGateway.getSMSTemplate(ClientQueryFormHandler.NONE_UPCOMING)).thenReturn("None upcoming for MotechID:${motechId}");
-
-        clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
-        String expectedMsg = "None upcoming for MotechID:%s".format(motechId);
-        mockSmsGateway.dispatchSMS(eq(responsePhoneNumber), eq(expectedMsg));
-    }
-
-    private HashMap<String, Object> createClientQueryFormForFindClientId(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String responsePhoneNumber, String facilityId, String motechId, ClientQueryType clientQueryType) {
-        final ClientQueryForm clientQueryForm = clientQueryForm(facilityId, motechId, "323", responsePhoneNumber, clientQueryType.toString());
+    private HashMap<String, Object> createClientQueryFormForFindClientId(String firstName, String lastName, Date dateOfBirth, String responsePhoneNumber, String senderNumber, String facilityId, String motechId, ClientQueryType clientQueryType) {
+        final ClientQueryForm clientQueryForm = clientQueryForm(facilityId, motechId, "323", senderNumber, clientQueryType.toString());
         clientQueryForm.setFirstName(firstName);
         clientQueryForm.setLastName(lastName);
         clientQueryForm.setDateOfBirth(dateOfBirth);
-        clientQueryForm.setPhoneNumber(phoneNumber);
+        clientQueryForm.setPhoneNumber(responsePhoneNumber);
         clientQueryForm.setNhis(null);
 
         return new HashMap<String, Object>() {{
@@ -239,12 +198,12 @@ public class ClientQueryFormHandlerTest {
         }};
     }
 
-    private ClientQueryForm clientQueryForm(String facilityId, String motechId, String staffId, String responsePhoneNumber, String clientQueryType) {
+    private ClientQueryForm clientQueryForm(String facilityId, String motechId, String staffId, String senderPhoneNumber, String clientQueryType) {
         ClientQueryForm clientQueryForm = new ClientQueryForm();
         clientQueryForm.setFacilityId(facilityId);
         clientQueryForm.setMotechId(motechId);
         clientQueryForm.setStaffId(staffId);
-        clientQueryForm.setSender(responsePhoneNumber);
+        clientQueryForm.setSender(senderPhoneNumber);
         clientQueryForm.setQueryType(clientQueryType);
         return clientQueryForm;
     }
