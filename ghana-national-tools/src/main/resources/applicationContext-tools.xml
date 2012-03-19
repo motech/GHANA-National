@@ -26,7 +26,6 @@
                 <ref bean="staffTypeSeed"/>
                 <ref bean="facilitySeed"/>
                 <ref bean="SMSTextContentSeed"/>
-                <ref bean="mobileMidwifeMigrationSeed"/>
                 <ref bean="mobileMidwifeMessageSeed"/>
             </list>
         </constructor-arg>
@@ -45,6 +44,7 @@
                 <ref bean="yellowFeverVaccineSeed"/>
                 <ref bean="pncMotherVaccineSeed"/>
                 <ref bean="pncBabyVaccineSeed"/>
+                <ref bean="mobileMidwifeMigrationSeed"/>
             </list>
         </constructor-arg>
     </bean>
