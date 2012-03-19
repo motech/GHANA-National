@@ -16,7 +16,7 @@ import static java.util.Arrays.asList;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class CWCOpvSchedulesTest extends BaseScheduleTrackingTest {
+public class CWCOpv0SchedulesTest extends BaseScheduleTrackingTest {
 
     @Before
     public void setUp() {
@@ -26,18 +26,18 @@ public class CWCOpvSchedulesTest extends BaseScheduleTrackingTest {
 
     @Test
     public void shouldVerifyOPV0scheduleOnBirthOfChild() throws SchedulerException {
-        LocalDate dateOfBirth = newDate("1-JAN-2012");
+        LocalDate dateOfBirth = newDate("1-APR-2012");
         mockToday(dateOfBirth);
 
         enrollmentId = scheduleAlertForOPV(dateOfBirth);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-                alert(WindowName.late, onDate("03-JAN-2012")),
-                alert(WindowName.late, onDate("10-JAN-2012"))
+                alert(WindowName.late, onDate("03-APR-2012")),
+                alert(WindowName.late, onDate("10-APR-2012"))
         ));
     }
 
     @Test
-    public void shouldVerifyOPV0scheduleOnRegistration() throws SchedulerException {
+    public void shouldVerifyOPV0scheduleOnRegistrationAtAgeUptoTenDays() throws SchedulerException {
         LocalDate dateOfBirth = newDate("2-JAN-2012");
         LocalDate dateOfRegistration = newDate("12-JAN-2012");
         mockToday(dateOfRegistration);
