@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.IPTVaccine;
+import org.motechproject.ghana.national.domain.OPVDose;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.factory.ChildVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
@@ -21,9 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
-import static org.motechproject.ghana.national.domain.Concept.BCG;
-import static org.motechproject.ghana.national.domain.Concept.MEASLES;
-import static org.motechproject.ghana.national.domain.Concept.YF;
+import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.time;
 
@@ -44,7 +43,20 @@ public class ChildVisitService {
         updateYellowFeverSchedule(cwcVisit);
         updateMeaslesSchedule(cwcVisit);
         updateBCGSchedule(cwcVisit);
+        updateOPVSchedule(cwcVisit);
         return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(cwcVisit));
+    }
+
+    void updateOPVSchedule(CWCVisit cwcVisit) {
+        if (cwcVisit.getImmunizations().contains(OPV.name())) {
+            Patient patient = cwcVisit.getPatient();
+            LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
+            if (OPVDose.OPV_0.equals(OPVDose.byValue(cwcVisit.getOpvdose())))
+                allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_OPV_0, visitDate);
+            else
+                allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_OPV_OTHERS, visitDate);
+        }
+
     }
 
     public MRSEncounter save(PNCBabyRequest pncBabyRequest) {
@@ -56,7 +68,7 @@ public class ChildVisitService {
     }
 
     void updateBCGSchedule(CWCVisit cwcVisit) {
-       if (cwcVisit.getImmunizations().contains(BCG.name())) {
+        if (cwcVisit.getImmunizations().contains(BCG.name())) {
             Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
             allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_BCG, visitDate);
@@ -65,7 +77,7 @@ public class ChildVisitService {
 
     void updateIPTSchedule(CWCVisit cwcVisit) {
         IPTVaccine iptVaccine = IPTVaccine.createFromCWCVisit(cwcVisit);
-        if(iptVaccine != null) {
+        if (iptVaccine != null) {
             Patient patient = iptVaccine.getGivenTo();
             LocalDate visitDate = newDate(cwcVisit.getDate());
             EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.cwcIPTPatientCareEnrollOnVisitAfter14Weeks(visitDate), iptVaccine.getIptMilestone());

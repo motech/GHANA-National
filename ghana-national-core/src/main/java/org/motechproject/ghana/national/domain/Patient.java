@@ -81,6 +81,8 @@ public class Patient {
                 CWC_BCG,
                 CWC_MEASLES_VACCINE,
                 CWC_PENTA,
+                CWC_OPV_0,
+                CWC_OPV_OTHERS,
                 CWC_IPT_VACCINE,
                 CWC_YELLOW_FEVER,
                 TT_VACCINATION_VISIT);
@@ -97,6 +99,8 @@ public class Patient {
                 cwcIPTPatientCareEnrollOnRegistration(childCare, enrollmentDate),
                 new PatientCare(CWC_BCG, referenceDate, enrollmentDate),
                 new PatientCare(CWC_YELLOW_FEVER, referenceDate, enrollmentDate),
+                new PatientCare(CWC_OPV_0,referenceDate,enrollmentDate),
+                new PatientCare(CWC_OPV_OTHERS,referenceDate,enrollmentDate),
                 pentaPatientCare(enrollmentDate),
                 measlesChildCare(enrollmentDate));
     }

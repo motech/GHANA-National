@@ -68,7 +68,7 @@ public abstract class ScheduleMigrationSeed extends Seed {
             try {
                 enroll(getReferenceDate(schedule), mapMilestoneName(schedule.getMilestoneName()), new Patient(new MRSPatient(schedule.getPatientId(), schedule.getMotechId(), null, null)));
             } catch (Exception e) {
-                LOG.error("Encountered exception while migrating schedules for patients, " + schedule.getPatientId());
+                LOG.error("Encountered exception while migrating schedules for patients, " + schedule.getPatientId(), e);
             }
         }
     }
