@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.motechproject.model.Time;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
+import org.motechproject.scheduletracking.api.service.EnrollmentsQuery;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 
 import java.util.Arrays;
@@ -112,5 +113,12 @@ public class AllSchedulesTest {
         EnrollmentRequest request = new EnrollmentRequest("123", "scheduleName", new Time(12, 0), new LocalDate(), null, null, null, null);
         allSchedules.enrollment(request);
         verify(mockScheduleTrackingService).getEnrollment(request.getExternalId(), request.getScheduleName());
+    }
+
+    @Test
+    public void shouldFetchEnrollmentAlongWithAllStartWindowDateInfo() {
+        EnrollmentsQuery enrollmentsQuery = mock(EnrollmentsQuery.class);
+        allSchedules.search(enrollmentsQuery);
+        verify(mockScheduleTrackingService).searchWithWindowDates(enrollmentsQuery);
     }
 }

@@ -67,6 +67,24 @@ public class ClientQueryFormValidatorTest {
         assertThat(formErrors, hasItem(new FormError("queryType", INSUFFICIENT_SEARCH_CRITERIA)));
     }
 
+    @Test
+    public void shouldValidateTheClientQueryFormBeanForUpComingCare() {
+        String facilityId = "13161";
+        String motechId = "123458";
+        String staffId = "23";
+        ClientQueryForm clientQueryForm = createClientQueryForm(facilityId, motechId, staffId, ClientQueryType.UPCOMING_CARE.toString());
+
+        when(formValidator.validateIfFacilityExists(facilityId)).thenReturn(asList(new FormError(facilityId, NOT_FOUND)));
+        when(formValidator.validateIfPatientExistsAndIsAlive(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(asList(new FormError(motechId, Constants.IS_NOT_ALIVE)));
+        when(formValidator.validateIfStaffExists(staffId)).thenReturn(asList(new FormError(staffId, NOT_FOUND)));
+
+        List<FormError> formErrors = clientQueryFormValidator.validate(clientQueryForm);
+
+        assertThat(formErrors, hasItem(new FormError(motechId, Constants.IS_NOT_ALIVE)));
+        assertThat(formErrors, hasItem(new FormError(facilityId, NOT_FOUND)));
+        assertThat(formErrors, hasItem(new FormError(staffId, NOT_FOUND)));
+    }
+
     private ClientQueryForm createClientQueryForm(String facilityId, String motechId, String staffId, String clientDetails) {
         ClientQueryForm clientQueryForm = new ClientQueryForm();
         clientQueryForm.setFacilityId(facilityId);
