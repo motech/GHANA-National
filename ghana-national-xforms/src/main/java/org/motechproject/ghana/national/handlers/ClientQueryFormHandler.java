@@ -2,13 +2,13 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.ClientQueryForm;
 import org.motechproject.ghana.national.domain.ClientQueryType;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMSTemplate;
 import org.motechproject.ghana.national.messagegateway.domain.MessageDispatcher;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.ghana.national.service.CareProgramQueryService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
@@ -16,24 +16,32 @@ import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
+import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static ch.lambdaj.Lambda.join;
+import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.motechproject.ghana.national.domain.Concept.EDD;
 import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
+import static org.motechproject.ghana.national.domain.Constants.*;
 
 @Component
 public class ClientQueryFormHandler implements FormPublishHandler {
 
     public static final String PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY = "PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY";
     public static final String NON_PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY = "NON_PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY";
+    public static final String UPCOMING_CARE_CLIENT_QUERY_RESPONSE_SMS_KEY = "UPCOMING_CARE_CLIENT_QUERY_RESPONSE_SMS_KEY";
+    public static final String UPCOMING_CARE_DUE_CLIENT_QUERY = "UPCOMING_CARE_DUE_CLIENT_QUERY";
     public static final String FIND_CLIENT_RESPONSE_SMS_KEY = "FIND_CLIENT_RESPONSE_SMS_KEY";
+    public static final String NONE_UPCOMING = "NONE_UPCOMING";
 
     @Autowired
     private PatientService patientService;
@@ -41,24 +49,50 @@ public class ClientQueryFormHandler implements FormPublishHandler {
     private SMSGateway smsGateway;
     @Autowired
     private AllObservations allObservations;
+    @Autowired
+    private CareProgramQueryService careProgramQueryService;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseQuery.clientQuery")
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
-        ClientQueryForm clientQueryForm = (ClientQueryForm) event.getParameters().get(Constants.FORM_BEAN);
+        ClientQueryForm clientQueryForm = (ClientQueryForm) event.getParameters().get(FORM_BEAN);
 
         if (clientQueryForm.getQueryType().equals(ClientQueryType.CLIENT_DETAILS.toString())) {
             getPatientDetails(clientQueryForm);
-        } else {
+        } else if(clientQueryForm.getQueryType().equals(ClientQueryType.FIND_CLIENT_ID.toString())) {
             searchPatient(clientQueryForm);
+        } else if(clientQueryForm.getQueryType().equals(ClientQueryType.UPCOMING_CARE.toString())) {
+            queryUpcomingCare(clientQueryForm);
+        }
+    }
+
+    private void queryUpcomingCare(ClientQueryForm clientQueryForm) {
+        Patient patient = patientService.getPatientByMotechId(clientQueryForm.getMotechId());
+        List<EnrollmentRecord> upcomingEnrollments = careProgramQueryService.upcomingCareProgramsForCurrentWeek(patient);
+
+        if(isEmpty(upcomingEnrollments)) {
+            String nocaresTemplate = smsGateway.getSMSTemplate(NONE_UPCOMING);
+            smsGateway.dispatchSMS(clientQueryForm.getSender(), SMS.fill(nocaresTemplate, new SMSTemplate().fillPatientDetails(patient).getRuntimeVariables()));
+        }   else {
+            String caresDueTemplate = smsGateway.getSMSTemplate(UPCOMING_CARE_DUE_CLIENT_QUERY);
+            List<String> caresDuesText = new ArrayList<String>();
+            for (EnrollmentRecord enrollmentRecord : upcomingEnrollments) {
+                SMSTemplate template = new SMSTemplate().fillCareSchedulesDueDate(enrollmentRecord.getScheduleName(), enrollmentRecord.getStartOfDueWindow());
+                caresDuesText.add(SMS.fill(caresDueTemplate, template.getRuntimeVariables()));
+            }
+
+            String baseMsgTemplate = smsGateway.getSMSTemplate(UPCOMING_CARE_CLIENT_QUERY_RESPONSE_SMS_KEY);
+            Map<String, String> baseMsgTemplateValues = new SMSTemplate().fillPatientDetails(patient)
+                    .fillTemplate(UPCOMING_CARE_DUE_CLIENT_QUERY, join(caresDuesText, SMS_LIST_SEPERATOR)).getRuntimeVariables();
+            smsGateway.dispatchSMS(clientQueryForm.getSender(), SMS.fill(baseMsgTemplate, baseMsgTemplateValues));
         }
     }
 
     private void searchPatient(ClientQueryForm clientQueryForm) {
         List<MRSPatient> patients = patientService.getPatients(clientQueryForm.getFirstName(), clientQueryForm.getLastName(), clientQueryForm.getPhoneNumber(), clientQueryForm.getDateOfBirth(), clientQueryForm.getNhis());
-        String message = (patients.size() == 0) ? Constants.NO_MATCHING_RECORDS_FOUND : createMessage(patients);
+        String message = (patients.size() == 0) ? NO_MATCHING_RECORDS_FOUND : createMessage(patients);
         smsGateway.dispatchSMS(clientQueryForm.getSender(), message);
     }
 

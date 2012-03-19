@@ -80,7 +80,9 @@ public class PatientTest extends BaseUnitTest {
                 new PatientCare(CWC_YELLOW_FEVER, dateOfBirth,todayAs6June2012.toLocalDate()),
                 new PatientCare(CWC_PENTA, dateOfBirth, todayAs6June2012.toLocalDate()),
                 new PatientCare(CWC_MEASLES_VACCINE, dateOfBirth,todayAs6June2012.toLocalDate()),
-                new PatientCare(CWC_IPT_VACCINE, dateOfBirth,todayAs6June2012.toLocalDate())));
+                new PatientCare(CWC_IPT_VACCINE, dateOfBirth,todayAs6June2012.toLocalDate()),
+                new PatientCare(CWC_OPV_0, dateOfBirth,todayAs6June2012.toLocalDate()),
+                new PatientCare(CWC_OPV_OTHERS, dateOfBirth,todayAs6June2012.toLocalDate())));
     }
 
     @Test

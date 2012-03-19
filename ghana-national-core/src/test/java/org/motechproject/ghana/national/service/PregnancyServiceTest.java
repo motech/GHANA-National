@@ -88,6 +88,7 @@ public class PregnancyServiceTest {
 
         verify(mockPatientService).deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
         verify(mockMobileMidwifeService).unRegister(request.getPatient().getMotechId());
+
     }
 
     @Test
@@ -113,7 +114,7 @@ public class PregnancyServiceTest {
         verify(mockAllSchedules).unEnroll(patientMRSId, mockPatient.ancCareProgramsToUnEnroll());
         verify(mockAllAppointments).remove(mockPatient);
         verify(mockAllEncounters).persistEncounter(argumentCaptor.capture());
-
+        verify(mockMobileMidwifeService).unRegister(request.getPatient().getMotechId());
         assertReflectionEquals(expectedEncounter, argumentCaptor.getValue());
     }
 
@@ -199,7 +200,7 @@ public class PregnancyServiceTest {
             put(LAST_NAME, childDefaultLastName);
         }}, smsTemplateValuesArgCaptor.getValue());
 
-        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, ScheduleNames.ANC_DELIVERY, deliveryDate.toLocalDate());
+        verify(mockAllSchedules).safeFulfilCurrentMilestone(mrsPatientId, ScheduleNames.ANC_DELIVERY, deliveryDate.toLocalDate());
         verify(mockAllAppointments).remove(mockPatient);
     }
 

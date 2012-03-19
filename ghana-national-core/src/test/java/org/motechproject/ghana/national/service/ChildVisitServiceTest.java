@@ -8,12 +8,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
-import org.motechproject.ghana.national.domain.Concept;
-import org.motechproject.ghana.national.domain.Encounter;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.IPTDose;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientCare;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.request.PNCBabyRequest;
@@ -50,11 +45,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_BCG;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_IPT_VACCINE;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_MEASLES_VACCINE;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PENTA;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_YELLOW_FEVER;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
+import static org.motechproject.ghana.national.domain.Concept.BCG;
 import static org.motechproject.ghana.national.domain.Concept.IPTI;
 import static org.motechproject.ghana.national.domain.Concept.MEASLES;
 import static org.motechproject.ghana.national.domain.PNCChildVisit.PNC1;
@@ -94,6 +86,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         verify(spyService).updateYellowFeverSchedule(cwcVisit);
         verify(spyService).updateIPTSchedule(cwcVisit);
         verify(spyService).updateBCGSchedule(cwcVisit);
+        verify(spyService).updateOPVSchedule(cwcVisit);
     }
 
     @Test
@@ -256,6 +249,30 @@ public class ChildVisitServiceTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldFulFillOPV0ScheduleIfChosen(){
+       String mrsPatientId = "1234";
+        CWCVisit testCWCVisit = createTestCWCVisit(new Date(), new MRSUser(), mock(Facility.class), new Patient(new MRSPatient(mrsPatientId)));
+        testCWCVisit.immunizations(asList(Concept.OPV.name()));
+        testCWCVisit.opvdose(OPVDose.OPV_0.value().toString());
+
+        service.updateOPVSchedule(testCWCVisit);
+
+        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_0, DateUtil.newDate(testCWCVisit.getDate()));
+    }
+
+    @Test
+    public void shouldFulFillOtherOPVScheduleIfChosen(){
+       String mrsPatientId = "1234";
+        CWCVisit testCWCVisit = createTestCWCVisit(new Date(), new MRSUser(), mock(Facility.class), new Patient(new MRSPatient(mrsPatientId)));
+        testCWCVisit.immunizations(asList(Concept.OPV.name()));
+        testCWCVisit.opvdose(OPVDose.OPV_3.value().toString());
+
+        service.updateOPVSchedule(testCWCVisit);
+
+        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_OTHERS, DateUtil.newDate(testCWCVisit.getDate()));
+    }
+
+    @Test
     public void shouldFulfilMilestoneIfEnrolledAndTakenMeaslesVaccineOnVisit() {
 
         String mrsPatientId = "mrsPatientId";
@@ -268,6 +285,19 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         service.save(cwcVisit);
 
         verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_MEASLES_VACCINE, visitDate);
+    }
+
+    @Test
+    public void shouldNotFulFillAnyOPVMilestoneIfDosageNotTaken(){
+       String mrsPatientId = "mrsPatientId";
+        Patient patient = new Patient(new MRSPatient(mrsPatientId, "motechId", new MRSPerson().dateOfBirth(newDate(2011, 3, 30).toDate()), new MRSFacility(null)));
+        LocalDate visitDate = newDate(2012, 2, 3);
+        CWCVisit cwcVisit = createTestCWCVisit(visitDate.toDate(), mock(MRSUser.class), mock(Facility.class), patient)
+                .immunizations(asList(BCG.name()));
+        service.save(cwcVisit);
+
+        verify(mockAllSchedules,never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_0, visitDate);
+        verify(mockAllSchedules,never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_OTHERS, visitDate);
     }
 
     @Test

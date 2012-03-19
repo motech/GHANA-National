@@ -204,7 +204,7 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     protected DateTime newDateWithTime(String date, String time) {
         try {
             String dateToParse = date + " " + time;
-            return newDateTime(parseDate(dateToParse, new String[]{"dd-MMM-yyyy HH:mm", "dd-MMM-yyyy HH:mm:ss"}));
+            return newDateTime(parseDate(dateToParse, new String[]{"dd-MMM-yyyy HH:mm", "dd-MMM-yyyy HH:mm:ss", "dd-MMM-yyyy HH:mm:ss.SSS"}));
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }
