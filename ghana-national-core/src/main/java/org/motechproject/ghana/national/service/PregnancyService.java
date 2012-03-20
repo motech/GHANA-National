@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.Set;
 
+import static org.motechproject.ghana.national.domain.Concept.EDD;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.REGISTER_SUCCESS_SMS_KEY;
 
 @Service
@@ -102,5 +104,18 @@ public class PregnancyService {
         allSchedules.safeFulfilCurrentMilestone(patient.getMRSPatientId(), ScheduleNames.ANC_DELIVERY, request.getDeliveryDateTime().toLocalDate());
         allSchedules.unEnroll(patient.getMRSPatientId(), Patient.ancCareProgramsToUnEnroll);
         allAppointments.remove(patient);
+    }
+
+    public Date activePregnancyEDD(String motechId) {
+        MRSObservation pregObservation = allObservations.activePregnancyObservation(motechId);
+        if (pregObservation != null && pregObservation.getDependantObservations() != null) {
+            Set<MRSObservation> dependentObservations = pregObservation.getDependantObservations();
+            for (MRSObservation observation : dependentObservations) {
+                if (EDD.getName().equals(observation.getConceptName())) {
+                    return (Date) observation.getValue();
+                }
+            }
+        }
+        return null;
     }
 }

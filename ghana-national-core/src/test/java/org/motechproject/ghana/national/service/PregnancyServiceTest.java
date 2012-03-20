@@ -19,18 +19,20 @@ import org.motechproject.util.DateUtil;
 
 import java.util.*;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.joda.time.DateTime.now;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FIRST_NAME;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.LAST_NAME;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.MOTECH_ID;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.Constants.OTHER_CAUSE_OF_DEATH;
 import static org.motechproject.ghana.national.domain.Constants.PREGNANCY_TERMINATION;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.REGISTER_SUCCESS_SMS_KEY;
+import static org.motechproject.util.DateUtil.newDateTime;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 public class PregnancyServiceTest {
@@ -202,6 +204,37 @@ public class PregnancyServiceTest {
 
         verify(mockAllSchedules).safeFulfilCurrentMilestone(mrsPatientId, ScheduleNames.ANC_DELIVERY, deliveryDate.toLocalDate());
         verify(mockAllAppointments).remove(mockPatient);
+    }
+
+    @Test
+    public void shouldFetchActiveEDDIfHasPregnancyWithDependentEDDObservation() {
+
+        String motechId = "motechId";
+        DateTime edd = newDateTime(2012, 12, 2, 2, 2, 0);
+        when(mockAllObservations.activePregnancyObservation(motechId)).thenReturn(mockPregnancyObservationWithEDD(edd.toDate()));
+        Date actualEDD = pregnancyService.activePregnancyEDD(motechId);
+
+        assertThat(actualEDD, is(edd.toDate()));
+    }
+
+    @Test
+    public void shouldFetchActiveEDDIfHasNoPregnancyOrNoEDDObservation() {
+
+        String motechId = "motechId";
+        when(mockAllObservations.activePregnancyObservation(motechId)).thenReturn(new MRSObservation(now().toDate(), Concept.PREGNANCY.name(), "preg"));
+        assertNull(pregnancyService.activePregnancyEDD(motechId));
+
+        reset(mockAllObservations);
+
+        when(mockAllObservations.activePregnancyObservation(motechId)).thenReturn(null);
+        assertNull(pregnancyService.activePregnancyEDD(motechId));
+    }
+       
+    private MRSObservation mockPregnancyObservationWithEDD(Date edd) {
+        MRSObservation<Concept> pregnancyObservation = new MRSObservation<Concept>(DateUtil.now().toDate(), Concept.PREGNANCY.getName(), null);
+        MRSObservation eddObservation = new MRSObservation<Date>(DateUtil.now().toDate(), Concept.EDD.getName(), edd);
+        pregnancyObservation.setDependantObservations(new HashSet<MRSObservation>(asList(eddObservation)));
+        return pregnancyObservation;
     }
 
     private PregnancyTerminationRequest pregnancyTermination(Patient mockPatient, MRSUser mockUser, Facility mockFacility) {

@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Map;
 
+import static org.apache.commons.lang.StringUtils.trimToEmpty;
+
 public class SMS implements DeliveryTimeAware, Serializable{
     private String phoneNumber;
     private String text;
@@ -34,7 +36,7 @@ public class SMS implements DeliveryTimeAware, Serializable{
     public static String fill(String template, Map<String, String> runTimeValues) {
         String text="";
         for (Map.Entry<String, String> runTimeValue : runTimeValues.entrySet()) {
-            text = template.replace(runTimeValue.getKey(), runTimeValue.getValue());
+            text = template.replace(runTimeValue.getKey(), trimToEmpty(runTimeValue.getValue()));
             template = text;
         }
         return text;
