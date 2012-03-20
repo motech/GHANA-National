@@ -2,11 +2,16 @@ package org.motechproject.ghana.national.web;
 
 import org.motechproject.MotechException;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllPatients;
+import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.scheduler.MotechSchedulerServiceImpl;
+import org.motechproject.scheduletracking.api.domain.Enrollment;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.constants.EventDataKeys;
 import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
+import org.motechproject.scheduletracking.api.repository.AllEnrollments;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
@@ -34,12 +39,17 @@ public class ScheduleController {
     private SchedulerFactoryBean schedulerFactoryBean;
 
     @Autowired
-    private AllSchedules allSchedules;
+    private AllEnrollments allEnrollments;
+
+    @Autowired
+    private AllPatients allPatients;
 
     private Pattern ALERT_ORDER_INDEX_REGEX = Pattern.compile("^.*\\.(.*?)-repeat$");
 
     @RequestMapping(value = "patient", method = RequestMethod.GET)
     @ResponseBody
+    @LoginAsAdmin
+    @ApiSession
     public String newStaff(HttpServletRequest request) throws UnsupportedEncodingException, ParseException {
         final String motechId = request.getParameter("id");
         final Map<String, List<TestAlert>> schedules = getAllSchedulesFor(motechId);
@@ -48,13 +58,17 @@ public class ScheduleController {
 
     private Map<String, List<TestAlert>> getAllSchedulesFor(final String motechId) {
 
+        Patient patientByMotechId = allPatients.getPatientByMotechId(motechId);
+        String patientId=patientByMotechId.getMRSPatientId();
         Map<String, List<TestAlert>> schedules = new HashMap<String, List<TestAlert>>();
         try {
             for (Field field : ScheduleNames.class.getFields()) {
                 try {
                     final String scheduleName = (String) field.get(field);
-                    String externalId = allSchedules.getActiveEnrollment(motechId, scheduleName).getExternalId();
-                    schedules.put(scheduleName, captureAlertsForNextMilestone(externalId));
+                    Enrollment activeEnrollment = allEnrollments.getActiveEnrollment(patientId, scheduleName);
+                    if(activeEnrollment==null)continue;
+                    String activeEnrollmentId = activeEnrollment.getId();
+                    schedules.put(scheduleName, captureAlertsForNextMilestone(activeEnrollmentId));
                 } catch (IllegalAccessException e) {
                     throw new MotechException("Encountered exception, ", e);
                 }
