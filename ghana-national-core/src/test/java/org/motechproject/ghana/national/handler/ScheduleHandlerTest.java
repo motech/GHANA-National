@@ -77,6 +77,18 @@ public class ScheduleHandlerTest {
         verify(careScheduleHandler).handlePentaVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 
+    @Test
+    public void shouldHandleOPV0VaccinationSchedules(){
+        fireScheduleHandler(CWC_OPV_0);
+        verify(careScheduleHandler).handleOpvVaccinationAlert(Matchers.<MilestoneEvent>any());
+    }
+
+    @Test
+    public void shouldHandleOtherOPVVaccinationSchedules(){
+        fireScheduleHandler(CWC_OPV_OTHERS);
+        verify(careScheduleHandler).handleOpvVaccinationAlert(Matchers.<MilestoneEvent>any());
+    }
+
     private void fireScheduleHandler(final String scheduleName) {
         scheduleHandler.handleAlert(new MotechEvent(EventSubjects.MILESTONE_ALERT, new HashMap<String, Object>(){{
             put("schedule_name", scheduleName);

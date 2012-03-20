@@ -61,7 +61,7 @@ public class ClientQueryFormHandlerTest {
         final Integer age = 30;
         final String gender = "Male";
         final String phoneNumber = "phoneNumber";
-        String responsePhoneNumber = "responsePhoneNumber";
+        final String responsePhoneNumber = "responsePhoneNumber";
         final Date edd = DateUtil.now().toDate();
 
         String facilityId = "facilityId";
@@ -150,12 +150,16 @@ public class ClientQueryFormHandlerTest {
     @Test
     public void shouldSendUpcomingCareDetailsIfQueryTypeIsUpcomingCare() {
         final String motechId = "motech-id";
+        final String facilityId = "facilityId";
+        final String staffId = "staffId";
+
         String responsePhoneNumber = "94423232";
 
-        HashMap<String, Object> params = createClientQueryFormForFindClientId(null, null, null, responsePhoneNumber, null, null, motechId, ClientQueryType.UPCOMING_CARE);
+        Map<String, Object> params = createMotechEventWithForm(facilityId, motechId, staffId, responsePhoneNumber, ClientQueryType.UPCOMING_CARE.toString());
 
         final Patient patient = new Patient(new MRSPatient(motechId, null, null));
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
+
         clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
         verify(mockMobileClientQueryService).queryUpcomingCare(patient, responsePhoneNumber);
     }

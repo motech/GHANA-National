@@ -10,6 +10,7 @@ public class SmsTemplateKeys {
     public static final String CWC_MEASLES_SMS_KEY = "CWC_MEASLES_SMS_KEY";
     public static final String CWC_PENTA_SMS_KEY = "CWC_PENTA_SMS_KEY";
     public static final String CWC_YF_SMS_KEY = "CWC_YF_SMS_KEY";
+    public static final String CWC_OPV_SMS_KEY = "CWC_OPV_SMS_KEY";
     public static final String CWC_IPTi_VACCINATION_SMS_KEY = "CWC_IPTi_VACCINATION_SMS_KEY";
     public static final String PNC_MOTHER_SMS_KEY = "PNC_MOTHER_SMS_KEY";
     public static final String PNC_CHILD_SMS_KEY = "PNC_CHILD_SMS_KEY";
