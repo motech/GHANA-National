@@ -61,7 +61,7 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
             }
 
         } catch (Exception e) {
-            log.error("Exception occured in saving Delivery Notification details for: " + formBean.getMotechId(), e);
+            log.error("Exception occured in saving Outpatient Visit details", e);
 
         }
 
