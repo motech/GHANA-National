@@ -5,10 +5,18 @@
             "name" : "TT1",
             "scheduleWindows" : {
                 "earliest":[],
-                "due":["1 day"],
-                "late":[],
+                "due":["1 Week"],
+                "late":["4 Weeks"],
                 "max":[]
-            }
+            },
+            "alerts" : [
+                {
+                    "window" : "late",
+                    "interval" : ["1 Weeks"],
+                    "count" : "3",
+                    "offset" : ["-1 Weeks"]
+                }
+            ]
         },
         {
             "name" : "TT2",

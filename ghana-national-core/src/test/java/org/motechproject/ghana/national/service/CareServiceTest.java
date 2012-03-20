@@ -16,6 +16,7 @@ import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
@@ -30,6 +31,7 @@ import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_MOTHER_1;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
@@ -338,7 +340,6 @@ public class CareServiceTest extends BaseUnitTest {
 
     @Test
     public void shouldCreateSchedulesForANCProgramRegistration() {
-
         String patientId = "Id", patientMotechId = "motechId";
         Pregnancy pregnancy = basedOnDeliveryDate(new LocalDate(2000, 1, 1));
 
@@ -347,13 +348,30 @@ public class CareServiceTest extends BaseUnitTest {
         setupPatient(patientId, patientMotechId);
         PatientCare patientCare = new PatientCare("test", new LocalDate(), null);
         LocalDate registrationDate = newDate(2000, 1, 1);
-        when(mockPatient.ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery(), registrationDate)).thenReturn(asList(patientCare));
         final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.IN_PAST, registrationDate.toDate(), "facilityId", null,
                 patientMotechId, new ArrayList<ANCCareHistory>(), pregnancy.dateOfDelivery().toDate());
 
+        EnrollmentRecord mockEnrollmentRecord = mock(EnrollmentRecord.class);
+        when(mockAllSchedules.getActiveEnrollment(patientId, TT_VACCINATION)).thenReturn(mockEnrollmentRecord);
+
+        ActiveCareSchedules activeCareSchedules = new ActiveCareSchedules().setActiveCareSchedule(TT_VACCINATION, mockEnrollmentRecord);
+        when(mockPatient.ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery(), registrationDate, ancvo.getAncCareHistoryVO(), activeCareSchedules)).thenReturn(asList(patientCare));
+
         careService.enroll(ancvo);
-        verify(mockPatient).ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery(), registrationDate);
+        verify(mockPatient).ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery(), registrationDate, ancvo.getAncCareHistoryVO(), activeCareSchedules);
         verifyIfScheduleEnrolled(0, patientId, patientCare.startingOn(), registrationDate, patientCare.name());
+    }
+
+    @Test
+    public void shouldGetActiveCareSchedulesForAPatient(){
+        String patientId = "patientId";
+        setupPatient(patientId,"patientMotechId");
+        when(mockAllSchedules.getActiveEnrollment(patientId, TT_VACCINATION)).thenReturn(null);
+        assertThat(careService.activeCareSchedules(mockPatient).hasActiveTTSchedule(), is(equalTo(false)));
+
+        EnrollmentRecord enrollmentRecord = mock(EnrollmentRecord.class);
+        when(mockAllSchedules.getActiveEnrollment(patientId, TT_VACCINATION)).thenReturn(enrollmentRecord);
+        assertThat(careService.activeCareSchedules(mockPatient).hasActiveTTSchedule(), is(equalTo(true)));
     }
     
     @Test
@@ -433,5 +451,9 @@ public class CareServiceTest extends BaseUnitTest {
 
     private void mockPatientService(Patient patient) {
         when(mockAllPatients.getPatientByMotechId(patient.getMotechId())).thenReturn(patient);
+    }
+
+    private ANCCareHistoryVO noANCHistory() {
+        return new ANCCareHistoryVO(false, new ArrayList<ANCCareHistory>(), null, null , null, null);
     }
 }

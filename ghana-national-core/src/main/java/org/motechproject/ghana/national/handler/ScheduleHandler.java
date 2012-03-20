@@ -24,7 +24,7 @@ public class ScheduleHandler {
             MilestoneEvent milestoneEvent = new MilestoneEvent(motechEvent);
             if (milestoneEvent.getScheduleName().equals(ANC_DELIVERY))
                 careScheduleHandler.handlePregnancyAlert(milestoneEvent);
-            else if (milestoneEvent.getScheduleName().equals(TT_VACCINATION_VISIT))
+            else if (milestoneEvent.getScheduleName().equals(TT_VACCINATION))
                 careScheduleHandler.handleTTVaccinationAlert(milestoneEvent);
             else if (milestoneEvent.getScheduleName().equals(ANC_IPT_VACCINE))
                 careScheduleHandler.handleIPTpVaccinationAlert(milestoneEvent);

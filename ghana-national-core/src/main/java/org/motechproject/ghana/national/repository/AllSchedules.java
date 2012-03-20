@@ -90,4 +90,8 @@ public class AllSchedules {
         return search(new EnrollmentsQuery().havingExternalId(externalId)
                 .havingWindowStartingDuring(WindowName.due, startToday, endOfDay(startToday.plus(period).toDate())));
     }
+
+    public EnrollmentRecord getActiveEnrollment(String externalId, String scheduleName) {
+        return scheduleTrackingService.getEnrollment(externalId, scheduleName);
+    }
 }

@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
 import org.joda.time.DateTime;
-import org.motechproject.MotechException;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.TTVaccineDosage;
@@ -39,19 +38,19 @@ public class TTVaccineSeed extends ScheduleMigrationSeed {
 
     @Override
     public String getScheduleName(String milestoneName) {
-        return ScheduleNames.TT_VACCINATION_VISIT;
+        return ScheduleNames.TT_VACCINATION;
     }
 
     @Override
     protected void enroll(DateTime milestoneReferenceDate, String milestoneName, Patient patient) {
         if (TTVaccineDosage.TT1.getScheduleMilestoneName().equals(milestoneName)) {
-            throw new MotechException("Cannot migrate schedules for first milestone of TT vaccine " + patient.getMRSPatientId() + " " + milestoneReferenceDate);
-        } else {
-            EnrollmentRequest enrollmentRequest = new EnrollmentRequest(patient.getMRSPatientId(),
-                    getScheduleName(milestoneName), new Time(DateUtil.now().toLocalTime()),
-                    milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
-                    milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()), milestoneName);
-            allSchedules.enroll(enrollmentRequest);
+            milestoneReferenceDate = milestoneReferenceDate.minusWeeks(1);
         }
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(patient.getMRSPatientId(),
+                getScheduleName(milestoneName), new Time(DateUtil.now().toLocalTime()),
+                milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
+                milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()), milestoneName);
+        allSchedules.enroll(enrollmentRequest);
+
     }
 }

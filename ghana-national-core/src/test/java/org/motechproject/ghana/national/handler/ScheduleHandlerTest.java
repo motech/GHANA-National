@@ -37,7 +37,7 @@ public class ScheduleHandlerTest {
 
     @Test
     public void shouldHandleTTVaccinationSchedules(){
-        fireScheduleHandler(TT_VACCINATION_VISIT);
+        fireScheduleHandler(TT_VACCINATION);
         verify(careScheduleHandler).handleTTVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 

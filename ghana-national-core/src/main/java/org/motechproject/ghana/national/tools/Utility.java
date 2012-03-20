@@ -88,5 +88,4 @@ public class Utility {
         }
         return fromDate.dayOfMonth().addToCopy(noOfDaysToNearestCycleDate);
     }
-
 }

@@ -36,7 +36,7 @@ public class TTVaccinationEnrollmentMapperTest extends BaseUnitTest {
 
         EnrollmentRequest request = new TTVaccinationEnrollmentMapper().map(new TTVaccine(vaccinationDate, TT1, patient));
         assertThat(request.getExternalId(), is(equalTo(patientId)));
-        assertThat(request.getScheduleName(), is(equalTo(ScheduleNames.TT_VACCINATION_VISIT)));
+        assertThat(request.getScheduleName(), is(equalTo(ScheduleNames.TT_VACCINATION)));
         assertThat(request.getPreferredAlertTime(), is(equalTo(new Time(now.toLocalTime()))));
         assertThat(request.getReferenceDate(), is(equalTo(vaccinationDate.toLocalDate())));
         assertThat(request.getStartingMilestoneName(), is(equalTo(TT1.getScheduleMilestoneName())));

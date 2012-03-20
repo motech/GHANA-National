@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.domain;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
 import org.motechproject.ghana.national.vo.ChildCare;
 import org.motechproject.mrs.model.MRSPatient;
 
@@ -17,6 +18,10 @@ import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDateTime;
 
 public class Patient {
+    public static List<String> ancCareProgramsToUnEnroll = Arrays.asList(ANC_DELIVERY, ANC_IPT_VACCINE, TT_VACCINATION);
+    public static List<String> cwcCareProgramsToUnEnroll = Arrays.asList(CWC_BCG, CWC_MEASLES_VACCINE, CWC_PENTA, CWC_OPV_0,
+                                                CWC_OPV_OTHERS, CWC_IPT_VACCINE, CWC_YELLOW_FEVER, TT_VACCINATION);
+
     private MRSPatient mrsPatient;
 
     private String parentId;
@@ -63,33 +68,22 @@ public class Patient {
         return mrsPatient.getPerson().getLastName();
     }
 
-    public List<PatientCare> ancCareProgramsToEnrollOnRegistration(LocalDate expectedDeliveryDate, LocalDate enrollmentDate) {
+    public List<PatientCare> ancCareProgramsToEnrollOnRegistration(LocalDate expectedDeliveryDate, LocalDate enrollmentDate, ANCCareHistoryVO ancCareHistoryVO, ActiveCareSchedules activeCareSchedules) {
         return nullSafeList(
                 new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), enrollmentDate),
+                ttVaccinePatientCareEnrollmentOnRegistration(enrollmentDate, ancCareHistoryVO != null ? ancCareHistoryVO.getLastTT() : null, activeCareSchedules.hasActiveTTSchedule()),
                 ancIPTPatientCareEnrollOnRegistration(expectedDeliveryDate, enrollmentDate));
     }
 
-    public List<String> ancCareProgramsToUnEnroll() {
-        return Arrays.asList(
-                ANC_DELIVERY,
-                ANC_IPT_VACCINE,
-                TT_VACCINATION_VISIT);
-    }
-
-    public List<String> cwcCareProgramsToUnEnroll() {
-        return Arrays.asList(
-                CWC_BCG,
-                CWC_MEASLES_VACCINE,
-                CWC_PENTA,
-                CWC_OPV_0,
-                CWC_OPV_OTHERS,
-                CWC_IPT_VACCINE,
-                CWC_YELLOW_FEVER,
-                TT_VACCINATION_VISIT);
+    private PatientCare ttVaccinePatientCareEnrollmentOnRegistration(LocalDate enrollmentDate, String ttVaccinationHistory, Boolean hasActiveTTSchedule) {
+        if (ttVaccinationHistory == null && !hasActiveTTSchedule) {
+            return new PatientCare(TT_VACCINATION, enrollmentDate, enrollmentDate);
+        }
+        return null;
     }
 
     public List<String> allCareProgramsToUnEnroll() {
-        return new ArrayList<String>(new HashSet<String>(union(ancCareProgramsToUnEnroll(), cwcCareProgramsToUnEnroll())));
+        return new ArrayList<String>(new HashSet<String>(union(ancCareProgramsToUnEnroll, cwcCareProgramsToUnEnroll)));
     }
 
     public List<PatientCare> cwcCareProgramToEnrollOnRegistration(LocalDate enrollmentDate) {
@@ -99,18 +93,19 @@ public class Patient {
                 cwcIPTPatientCareEnrollOnRegistration(childCare, enrollmentDate),
                 new PatientCare(CWC_BCG, referenceDate, enrollmentDate),
                 new PatientCare(CWC_YELLOW_FEVER, referenceDate, enrollmentDate),
-                new PatientCare(CWC_OPV_0,referenceDate,enrollmentDate),
-                new PatientCare(CWC_OPV_OTHERS,referenceDate,enrollmentDate),
+                new PatientCare(CWC_OPV_0, referenceDate, enrollmentDate),
+                new PatientCare(CWC_OPV_OTHERS, referenceDate, enrollmentDate),
                 pentaPatientCare(enrollmentDate),
                 measlesChildCare(enrollmentDate));
     }
 
-    public PatientCare ancIPTPatientCareEnrollOnRegistration(LocalDate expectedDeliveryDate, LocalDate enrollmentDate) {
+    private PatientCare ancIPTPatientCareEnrollOnRegistration(LocalDate expectedDeliveryDate, LocalDate enrollmentDate) {
         if (expectedDeliveryDate != null && basedOnDeliveryDate(expectedDeliveryDate).applicableForIPT()) {
             return new PatientCare(ANC_IPT_VACCINE, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), enrollmentDate);
         }
         return null;
     }
+
 
     private PatientCare cwcIPTPatientCareEnrollOnRegistration(ChildCare childCare, LocalDate enrollmentDate) {
         if (childCare != null && childCare.applicableForIPT()) {

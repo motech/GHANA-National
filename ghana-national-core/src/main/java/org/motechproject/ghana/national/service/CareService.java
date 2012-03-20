@@ -2,10 +2,7 @@ package org.motechproject.ghana.national.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.ANCCareHistory;
-import org.motechproject.ghana.national.domain.CwcCareHistory;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientCare;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
@@ -24,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
 import static org.motechproject.ghana.national.domain.RegistrationToday.TODAY;
@@ -67,7 +65,11 @@ public class CareService {
 
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), ANC_REG_VISIT.value(), registrationDate, prepareObservations(ancVO));
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, registerPregnancy(ancVO, patient));
-        enrollPatientCares(patient.ancCareProgramsToEnrollOnRegistration(expectedDeliveryDate, newDate(registrationDate)), patient);
+        enrollPatientCares(patient.ancCareProgramsToEnrollOnRegistration(expectedDeliveryDate, newDate(registrationDate),ancVO.getAncCareHistoryVO(), activeCareSchedules(patient)), patient);
+    }
+
+    public ActiveCareSchedules activeCareSchedules(Patient patient) {
+        return new ActiveCareSchedules().setActiveCareSchedule(TT_VACCINATION, allSchedules.getActiveEnrollment(patient.getMRSPatientId(), TT_VACCINATION));
     }
 
     public void enrollMotherForPNC(Patient patient, DateTime deliveryDateTime) {

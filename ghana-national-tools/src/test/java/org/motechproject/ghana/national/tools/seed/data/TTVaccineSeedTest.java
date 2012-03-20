@@ -42,4 +42,16 @@ public class TTVaccineSeedTest {
         assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT2", "1000", referenceDate);
     }
 
+    @Test
+    public void shouldEnrollForTTVaccinationMileStoneWithAReferenceDateWhichIsOneWeekBeforeTheDueDate(){
+        final DateTime dueDate = DateUtil.newDateTime(2012, 2, 8, new Time(10, 10));
+        final Patient patient = new Patient(new MRSPatient("1000"));
+        ttVaccineSeed.enroll(dueDate, "TT1", patient);
+
+        ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(allSchedules).enroll(enrollmentRequestCaptor.capture());
+        DateTime referenceDate = DateUtil.newDateTime(2012, 2, 1, new Time(10, 10));
+        assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT1", "1000", referenceDate);
+    }
+
 }

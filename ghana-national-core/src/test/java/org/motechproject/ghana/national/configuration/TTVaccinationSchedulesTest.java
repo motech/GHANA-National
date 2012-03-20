@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.text.ParseException;
 
 import static java.util.Arrays.asList;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 import static org.motechproject.scheduletracking.api.domain.WindowName.due;
 import static org.motechproject.scheduletracking.api.domain.WindowName.late;
 
@@ -23,7 +23,7 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
     @Before
     public void setUp() {
         super.setUp();
-        scheduleName = TT_VACCINATION_VISIT;
+        scheduleName = TT_VACCINATION;
     }
 
     @Test
@@ -69,6 +69,17 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         fulfillCurrentMilestone(firstDosageDate);
 
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("29-FEB-2000"), newDate("07-MAR-2000"), newDate("14-MAR-2000")));
+    }
+
+    @Test
+    public void shouldVerifyTTVaccinationScheduleOnANCRegistration() throws SchedulerException {
+        LocalDate ancRegistrationDate = mockToday(newDate("19-Mar-2012"));
+        enrollmentId = scheduleAlertForTTVaccination(ancRegistrationDate);
+
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(late, onDate("19-Mar-2012")),
+                alert(late, onDate("26-Mar-2012")),
+                alert(late, onDate("2-Apr-2012"))));
     }
 
     private String scheduleAlertForTTVaccination(LocalDate firstDosageDate) {

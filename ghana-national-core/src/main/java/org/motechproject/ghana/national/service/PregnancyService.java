@@ -41,7 +41,7 @@ public class PregnancyService {
     @Autowired
     public PregnancyService(AllPatients allPatients, AllEncounters allEncounters,
                             AllSchedules allSchedules, AllAppointments allAppointments, IdentifierGenerator identifierGenerator,
-                            AllObservations allObservations, CareService careService, SMSGateway smsGateway,PatientService patientService,
+                            AllObservations allObservations, CareService careService, SMSGateway smsGateway, PatientService patientService,
                             MobileMidwifeService mobileMidwifeService) {
         this.allPatients = allPatients;
         this.allEncounters = allEncounters;
@@ -51,8 +51,8 @@ public class PregnancyService {
         this.allObservations = allObservations;
         this.careService = careService;
         this.smsGateway = smsGateway;
-        this.patientService=patientService;
-        this.mobileMidwifeService=mobileMidwifeService;
+        this.patientService = patientService;
+        this.mobileMidwifeService = mobileMidwifeService;
         encounterFactory = new PregnancyEncounterFactory();
     }
 
@@ -61,9 +61,8 @@ public class PregnancyService {
         if (request.isDead()) {
             patientService.deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
 
-        }
-        else{
-            allSchedules.unEnroll(request.getPatient().getMRSPatientId(), request.getPatient().ancCareProgramsToUnEnroll());
+        } else {
+            allSchedules.unEnroll(request.getPatient().getMRSPatientId(), Patient.ancCareProgramsToUnEnroll);
             allAppointments.remove(request.getPatient());
         }
         mobileMidwifeService.unRegister(request.getPatient().getMotechId());
@@ -101,7 +100,7 @@ public class PregnancyService {
         MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(patient.getMotechId());
         allEncounters.persistEncounter(encounterFactory.createDeliveryEncounter(request, activePregnancyObservation));
         allSchedules.safeFulfilCurrentMilestone(patient.getMRSPatientId(), ScheduleNames.ANC_DELIVERY, request.getDeliveryDateTime().toLocalDate());
-        allSchedules.unEnroll(patient.getMRSPatientId(),patient.ancCareProgramsToUnEnroll());
+        allSchedules.unEnroll(patient.getMRSPatientId(), Patient.ancCareProgramsToUnEnroll);
         allAppointments.remove(patient);
     }
 }

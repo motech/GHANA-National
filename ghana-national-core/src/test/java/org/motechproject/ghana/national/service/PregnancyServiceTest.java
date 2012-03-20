@@ -81,7 +81,7 @@ public class PregnancyServiceTest {
 
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
         when(mockPatient.getMRSPatientId()).thenReturn(patientMRSId);
-        when(mockPatient.ancCareProgramsToUnEnroll()).thenReturn(schedules);
+        Patient.ancCareProgramsToUnEnroll = schedules;
         when(mockFacility.getMrsFacilityId()).thenReturn(mrsFacilityId);
 
         pregnancyService.terminatePregnancy(request);
@@ -100,7 +100,7 @@ public class PregnancyServiceTest {
         List<String> schedules = Arrays.asList("schedule1", "schedule2");
 
         when(mockPatient.getMRSPatientId()).thenReturn(patientMRSId);
-        when(mockPatient.ancCareProgramsToUnEnroll()).thenReturn(schedules);
+        Patient.ancCareProgramsToUnEnroll = schedules;
         final Date date = DateUtil.newDate(2000, 12, 12).toDate();
         PregnancyTerminationRequest request = pregnancyTermination(mockPatient, mockStaff, mockFacility);
         request.setTerminationDate(date);
@@ -111,7 +111,7 @@ public class PregnancyServiceTest {
         Encounter expectedEncounter = new PregnancyEncounterFactory().createTerminationEncounter(request, null);
         ArgumentCaptor<Encounter> argumentCaptor = ArgumentCaptor.forClass(Encounter.class);
 
-        verify(mockAllSchedules).unEnroll(patientMRSId, mockPatient.ancCareProgramsToUnEnroll());
+        verify(mockAllSchedules).unEnroll(patientMRSId, Patient.ancCareProgramsToUnEnroll);
         verify(mockAllAppointments).remove(mockPatient);
         verify(mockAllEncounters).persistEncounter(argumentCaptor.capture());
         verify(mockMobileMidwifeService).unRegister(request.getPatient().getMotechId());
@@ -154,7 +154,7 @@ public class PregnancyServiceTest {
         when(mockPatient.getMRSPatientId()).thenReturn(mrsPatientId);
         when(mockPatient.getMotechId()).thenReturn(parentMotechId);
         when(mockAllObservations.activePregnancyObservation(parentMotechId)).thenReturn(activePregnancyObservation);
-        when(mockPatient.ancCareProgramsToUnEnroll()).thenReturn(schedules);
+        Patient.ancCareProgramsToUnEnroll = schedules;
         Patient child = new Patient(childMRSPatient);
         when(mockAllPatients.save(Matchers.<Patient>any())).thenReturn(child);
         pregnancyService.handleDelivery(deliveryRequest);

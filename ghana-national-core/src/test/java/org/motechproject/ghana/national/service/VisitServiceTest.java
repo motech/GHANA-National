@@ -24,7 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION_VISIT;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 import static org.motechproject.ghana.national.domain.EncounterType.TT_VISIT;
 import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT2;
 
@@ -57,7 +57,7 @@ public class VisitServiceTest {
         assertThat(fulfillmentDateCaptor.getValue(), is(vaccinationDate.toLocalDate()));
 
         EnrollmentRequest enrollmentRequest = enrollmentRequestCaptor.getValue();
-        assertThat(enrollmentRequest.getScheduleName(), is(equalTo(TT_VACCINATION_VISIT)));
+        assertThat(enrollmentRequest.getScheduleName(), is(equalTo(TT_VACCINATION)));
         assertThat(enrollmentRequest.getStartingMilestoneName(), is(equalTo(TT2.name())));
         assertThat(enrollmentRequest.getReferenceDate(), is(equalTo(vaccinationDate.toLocalDate())));
     }

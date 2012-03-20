@@ -10,7 +10,7 @@ import org.motechproject.util.DateUtil;
 public class TTVaccinationEnrollmentMapper {
     public EnrollmentRequest map(TTVaccine ttVaccine) {
         final LocalDate vaccinationDate = ttVaccine.getVaccinationDate().toLocalDate();
-        return new EnrollmentRequest(ttVaccine.getPatient().getMRSPatientId(), ScheduleNames.TT_VACCINATION_VISIT,
+        return new EnrollmentRequest(ttVaccine.getPatient().getMRSPatientId(), ScheduleNames.TT_VACCINATION,
                 new Time(DateUtil.now().toLocalTime()), vaccinationDate, null, vaccinationDate, null, ttVaccine.getDosage().getScheduleMilestoneName());
     }
 }

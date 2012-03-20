@@ -16,7 +16,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -134,7 +137,15 @@ public class AllSchedulesTest {
 
         doThrow(new InvalidEnrollmentException("not exists")).when(mockScheduleTrackingService).fulfillCurrentMilestone(Matchers.<String>any(), Matchers.<String>any(), Matchers.<LocalDate>any());
         assertFalse(allSchedules.safeFulfilCurrentMilestone("id", "some name", null));
+    }
 
+    @Test
+    public void shouldReturnActiveEnrollmentToAScheduleGivenAnEnrollmentIdAndScheduleName(){
+        String externalId = "external id";
+        String scheduleName = "schedule name";
+        EnrollmentRecord enrollmentRecord = mock(EnrollmentRecord.class);
 
+        when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(enrollmentRecord);
+        assertThat(enrollmentRecord, is(equalTo(allSchedules.getActiveEnrollment(externalId, scheduleName))));
     }
 }
