@@ -58,7 +58,7 @@ public class ClientQueryFormHandler implements FormPublishHandler {
         } else if(clientQueryForm.getQueryType().equals(ClientQueryType.FIND_CLIENT_ID.toString())) {
             searchPatient(clientQueryForm);
         } else if(clientQueryForm.getQueryType().equals(ClientQueryType.UPCOMING_CARE.toString())) {
-            mobileClientQueryService.queryUpcomingCare(patientService.getPatientByMotechId(clientQueryForm.getMotechId()), clientQueryForm.getPhoneNumber());
+            mobileClientQueryService.queryUpcomingCare(patientService.getPatientByMotechId(clientQueryForm.getMotechId()), clientQueryForm.getSender());
         }
     }
 
