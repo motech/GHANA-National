@@ -30,11 +30,11 @@ public class PNCBabyVaccineSeed extends ScheduleMigrationSeed {
 
     @Override
     public String getScheduleName(String milestoneName) {
-        if("PNC1".equals(milestoneName) || "PNC-CHILD-1".equals(milestoneName))
+        if("PNC1".equals(milestoneName) || "PNC-C1".equals(milestoneName))
             return ScheduleNames.PNC_CHILD_1;
-        else if("PNC2".equals(milestoneName) || "PNC-CHILD-2".equals(milestoneName))
+        else if("PNC2".equals(milestoneName) || "PNC-C2".equals(milestoneName))
             return ScheduleNames.PNC_CHILD_2;
-        else if("PNC3".equals(milestoneName) || "PNC-CHILD-3".equals(milestoneName))
+        else if("PNC3".equals(milestoneName) || "PNC-C3".equals(milestoneName))
             return ScheduleNames.PNC_CHILD_3;
         return null;
     }

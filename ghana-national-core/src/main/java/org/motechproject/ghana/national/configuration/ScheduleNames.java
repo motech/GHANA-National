@@ -9,8 +9,8 @@ public class ScheduleNames {
     public static final String CWC_YELLOW_FEVER = "CWCYellowFeverVaccine";
     public static final String CWC_PENTA = "CWCPentaVaccine";
     public static final String TT_VACCINATION_VISIT = "TTVaccine";
-    public static final String OPV_0 = "CWCOPV-0";
-    public static final String OPV_OTHERS = "OPV-OTHERS";
+    public static final String CWC_OPV_0 = "CWCOPV-0";
+    public static final String CWC_OPV_OTHERS = "OPV-OTHERS";
     public static final String PNC_CHILD_1 = "PNC-CHILD-1";
     public static final String PNC_CHILD_2 = "PNC-CHILD-2";
     public static final String PNC_CHILD_3 = "PNC-CHILD-3";

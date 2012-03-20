@@ -22,9 +22,9 @@ public class PNCMotherVaccineSeedTest {
         assertThat(pncMotherVaccineSeed.getScheduleName("PNC1"), is(equalTo(ScheduleNames.PNC_MOTHER_1)));
         assertThat(pncMotherVaccineSeed.getScheduleName("PNC2"), is(equalTo(ScheduleNames.PNC_MOTHER_2)));
         assertThat(pncMotherVaccineSeed.getScheduleName("PNC3"), is(equalTo(ScheduleNames.PNC_MOTHER_3)));
-        assertThat(pncMotherVaccineSeed.getScheduleName("PNC-MOTHER-1"), is(equalTo(ScheduleNames.PNC_MOTHER_1)));
-        assertThat(pncMotherVaccineSeed.getScheduleName("PNC-MOTHER-2"), is(equalTo(ScheduleNames.PNC_MOTHER_2)));
-        assertThat(pncMotherVaccineSeed.getScheduleName("PNC-MOTHER-3"), is(equalTo(ScheduleNames.PNC_MOTHER_3)));
+        assertThat(pncMotherVaccineSeed.getScheduleName("PNC-M1"), is(equalTo(ScheduleNames.PNC_MOTHER_1)));
+        assertThat(pncMotherVaccineSeed.getScheduleName("PNC-M2"), is(equalTo(ScheduleNames.PNC_MOTHER_2)));
+        assertThat(pncMotherVaccineSeed.getScheduleName("PNC-M3"), is(equalTo(ScheduleNames.PNC_MOTHER_3)));
     }
 
     @Test

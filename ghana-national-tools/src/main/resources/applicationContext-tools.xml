@@ -11,7 +11,7 @@
 
     <beans:import resource="classpath:applicationContext-core.xml"/>
 
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="migrationDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="${migration.db.connection.string}"/>
         <property name="username" value="${migration.db.username}"/>

@@ -10,7 +10,7 @@ public class BaseSeedSource {
     protected JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public void init(@Qualifier("dataSource") DataSource dataSource) {
+    public void init(@Qualifier("migrationDataSource") DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 

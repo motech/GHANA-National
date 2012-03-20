@@ -2,13 +2,13 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.ClientQueryForm;
 import org.motechproject.ghana.national.domain.ClientQueryType;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMSTemplate;
 import org.motechproject.ghana.national.messagegateway.domain.MessageDispatcher;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.ghana.national.service.MobileClientQueryService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
@@ -27,6 +27,8 @@ import java.util.Map;
 
 import static org.motechproject.ghana.national.domain.Concept.EDD;
 import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
+import static org.motechproject.ghana.national.domain.Constants.FORM_BEAN;
+import static org.motechproject.ghana.national.domain.Constants.NO_MATCHING_RECORDS_FOUND;
 
 @Component
 public class ClientQueryFormHandler implements FormPublishHandler {
@@ -41,24 +43,28 @@ public class ClientQueryFormHandler implements FormPublishHandler {
     private SMSGateway smsGateway;
     @Autowired
     private AllObservations allObservations;
+    @Autowired
+    private MobileClientQueryService mobileClientQueryService;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseQuery.clientQuery")
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
-        ClientQueryForm clientQueryForm = (ClientQueryForm) event.getParameters().get(Constants.FORM_BEAN);
+        ClientQueryForm clientQueryForm = (ClientQueryForm) event.getParameters().get(FORM_BEAN);
 
         if (clientQueryForm.getQueryType().equals(ClientQueryType.CLIENT_DETAILS.toString())) {
             getPatientDetails(clientQueryForm);
-        } else {
+        } else if(clientQueryForm.getQueryType().equals(ClientQueryType.FIND_CLIENT_ID.toString())) {
             searchPatient(clientQueryForm);
+        } else if(clientQueryForm.getQueryType().equals(ClientQueryType.UPCOMING_CARE.toString())) {
+            mobileClientQueryService.queryUpcomingCare(patientService.getPatientByMotechId(clientQueryForm.getMotechId()), clientQueryForm.getPhoneNumber());
         }
     }
 
     private void searchPatient(ClientQueryForm clientQueryForm) {
         List<MRSPatient> patients = patientService.getPatients(clientQueryForm.getFirstName(), clientQueryForm.getLastName(), clientQueryForm.getPhoneNumber(), clientQueryForm.getDateOfBirth(), clientQueryForm.getNhis());
-        String message = (patients.size() == 0) ? Constants.NO_MATCHING_RECORDS_FOUND : createMessage(patients);
+        String message = (patients.size() == 0) ? NO_MATCHING_RECORDS_FOUND : createMessage(patients);
         smsGateway.dispatchSMS(clientQueryForm.getSender(), message);
     }
 
