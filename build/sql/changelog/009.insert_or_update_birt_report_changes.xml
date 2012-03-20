@@ -1,0 +1,50 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="admin" id="1323410456950-1">
+        <update tableName="global_property">
+            <column name="property_value" value="/var/lib/birt/ReportEngine"/>
+            <where>property='birt.birtHome'</where>
+        </update>
+        <update tableName="global_property">
+            <column name="property_value" value="/home/motech/.OpenMRS/reports/datasets"/>
+            <where>property='birt.datasetDir'</where>
+        </update>
+        <update tableName="global_property">
+            <column name="property_value" value="default.rptdesign"/>
+            <where>property='birt.defaultReportDesignFile'</where>
+        </update>
+        <update tableName="global_property">
+            <column name="property_value" value="/home/motech/.OpenMRS/reports/output/images"/>
+            <where>property='birt.imageDir'</where>
+        </update>
+        <update tableName="global_property">
+            <column name="property_value" value="/home/motech/.OpenMRS/reports/logs"/>
+            <where>property='birt.loggingDir'</where>
+        </update>
+        <update tableName="global_property">
+            <column name="property_value" value="/home/motech/.OpenMRS/reports/output"/>
+            <where>property='birt.outputDir'</where>
+        </update>
+        <update tableName="global_property">
+            <column name="property_value" value="/home/motech/.OpenMRS/reports"/>
+            <where>property='birt.reportDir'</where>
+        </update>
+        <update tableName="global_property">
+            <column name="property_value" value=""/>
+            <where>property='birt.reportOutputFile'</where>
+        </update>
+        <update tableName="global_property">
+            <column name="property_value" value="xml"/>
+            <where>property='birt.reportOutputFormat'</where>
+        </update>
+        <update tableName="global_property">
+            <column name="property_value" value=""/>
+            <where>property='birt.reportPreviewFile'</where>
+        </update>
+        <update tableName="global_property">
+            <column name="property_value" value="true"/>
+            <where>property='birt.started'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

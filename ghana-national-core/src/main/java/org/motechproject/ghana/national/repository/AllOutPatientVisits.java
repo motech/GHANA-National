@@ -14,4 +14,9 @@ public class AllOutPatientVisits extends MotechBaseRepository<OutPatientVisit> {
     public AllOutPatientVisits(@Qualifier("couchDbConnector") CouchDbConnector db) {
         super(OutPatientVisit.class, db);
     }
+
+    @Override
+    public void add(OutPatientVisit outPatientVisit) {
+        super.add(outPatientVisit);
+    }
 }

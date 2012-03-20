@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.filter;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.select;
 import static org.hamcrest.core.Is.is;
 
 @Service
@@ -23,6 +26,7 @@ public class FacilityService {
 
     private AllFacilities allFacilities;
     private IdentifierGenerator identifierGenerator;
+
 
     @Autowired
     public FacilityService(AllFacilities allFacilities, IdentifierGenerator identifierGenerator) {
@@ -36,16 +40,15 @@ public class FacilityService {
         isDuplicate(facilities, mrsFacility, phoneNumber);
         final Facility facility = new Facility(mrsFacility).phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber1).
                 additionalPhoneNumber2(additionalPhoneNumber2).additionalPhoneNumber3(additionalPhoneNumber3).motechId(identifierGenerator.newFacilityId());
-        return save(facility);
-
+        save(facility);
+        return facility.mrsFacilityId();
     }
 
-    private String save(Facility facility) {
+    private void save(Facility facility) {
         if (facility.mrsFacilityId() == null)
             allFacilities.add(facility);
         else
             allFacilities.update(facility);
-        return facility.mrsFacilityId();
     }
 
     public List<Facility> facilities() {
@@ -99,7 +102,7 @@ public class FacilityService {
         }
         List<Facility> facilities = facilities();
         List<Facility> existingFacility = select(facilities, having(on(Facility.class).getMrsFacilityId(), is(facilityToBeUpdated.mrsFacilityId())));
-        if(!existingFacility.isEmpty())
+        if (!existingFacility.isEmpty())
             facilities.remove(existingFacility.get(0));
         isDuplicate(facilities, facilityToBeUpdated.mrsFacility(), facilityToBeUpdated.phoneNumber());
         save(facilityToBeUpdated);

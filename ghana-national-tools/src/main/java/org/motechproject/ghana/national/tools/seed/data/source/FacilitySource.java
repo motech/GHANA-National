@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-public class FacilitySource extends BaseSeedSource{
+public class FacilitySource extends BaseSeedSource {
     public List<OldGhanaFacility> getMotechFacilityNameAndIds() {
         return jdbcTemplate.query("select loc.name, fac.facility_id from motechmodule_facility fac, location loc where loc.location_id = fac.location_id",
                 new RowMapper<OldGhanaFacility>() {

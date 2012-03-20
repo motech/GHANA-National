@@ -27,16 +27,20 @@ import static org.hamcrest.core.Is.is;
 @Repository
 public class AllFacilities extends MotechBaseRepository<Facility> {
     private MRSFacilityAdapter facilityAdapter;
+    private AllMotechModuleFacilities allMotechModuleFacilities;
 
     @Autowired
-    public AllFacilities(@Qualifier("couchDbConnector") CouchDbConnector db, MRSFacilityAdapter facilityAdapter) {
+    public AllFacilities(@Qualifier("couchDbConnector") CouchDbConnector db, MRSFacilityAdapter facilityAdapter,
+                         AllMotechModuleFacilities allMotechModuleFacilities) {
         super(Facility.class, db);
         this.facilityAdapter = facilityAdapter;
+        this.allMotechModuleFacilities = allMotechModuleFacilities;
     }
 
     @Override
     public void add(Facility facility) {
         saveMRSFacility(facility);
+        allMotechModuleFacilities.save(facility);
         super.add(facility);
     }
 
@@ -48,6 +52,7 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
         existingFacility.additionalPhoneNumber2(facility.additionalPhoneNumber2());
         existingFacility.additionalPhoneNumber3(facility.additionalPhoneNumber3());
         saveMRSFacility(facility);
+        allMotechModuleFacilities.update(facility);
         super.update(existingFacility);
     }
 

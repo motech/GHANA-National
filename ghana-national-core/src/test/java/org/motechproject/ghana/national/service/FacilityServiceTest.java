@@ -21,7 +21,10 @@ import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class FacilityServiceTest {
@@ -41,7 +44,6 @@ public class FacilityServiceTest {
     @Test
     public void shouldCreateAFacility() throws FacilityAlreadyFoundException {
         String motechId = "12345678";
-        String facilityId = "23";
         String facilityName = "name";
         String country = "country";
         String region = "region";
@@ -56,7 +58,6 @@ public class FacilityServiceTest {
         facilityService.create(facilityName, country, region, district, province, phoneNumber, additionalPhoneNumber1, additionalPhoneNumber2, additionalPhoneNumber3);
         final ArgumentCaptor<Facility> captor = ArgumentCaptor.forClass(Facility.class);
         verify(mockAllFacilities).add(captor.capture());
-
         final Facility savedFacility = captor.getValue();
         assertThat(savedFacility.motechId(), is(equalTo(motechId)));
         assertThat(savedFacility.name(), is(equalTo(facilityName)));

@@ -25,6 +25,8 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
 
     @Mock
     MRSFacilityAdapter mockMrsFacilityAdapter;
+    @Mock
+    AllMotechModuleFacilities mockAllMotechModuleFacilities;
 
     @Autowired
     private AllFacilities allFacilities;
@@ -33,6 +35,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
     public void init() {
         initMocks(this);
         ReflectionTestUtils.setField(allFacilities, "facilityAdapter", mockMrsFacilityAdapter);
+        ReflectionTestUtils.setField(allFacilities, "allMotechModuleFacilities", mockAllMotechModuleFacilities);
     }
 
     @Test
@@ -191,7 +194,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldGetFacilityByMotechFacilityId(){
+    public void shouldGetFacilityByMotechFacilityId() {
         AllFacilities allFacilitiesSpy = spy(allFacilities);
         String motechFacilityId = "10000";
         String mrsFacilityId = "10";
@@ -266,7 +269,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         final MRSFacility mrsFacility = new MRSFacility(facilityName);
         Facility facility = facility(phoneNumber, additionalPhone1, additionalPhone2, additionalPhone3, mrsFacility);
 
-         when(mockMrsFacilityAdapter.saveFacility(mrsFacility)).thenReturn(new MRSFacility(facilityId, facilityName,
+        when(mockMrsFacilityAdapter.saveFacility(mrsFacility)).thenReturn(new MRSFacility(facilityId, facilityName,
                 "country", "region", "district", "province"));
         allFacilities.add(facility);
 

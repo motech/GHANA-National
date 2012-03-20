@@ -240,10 +240,14 @@
                                 <delete dir="${openmrs.directory}"/>
                                 <mkdir dir="${openmrs.directory}"/>
                                 <mkdir dir="${openmrs.directory}/modules"/>
+                                <mkdir dir="${openmrs.directory}/reports"/>
+                                <mkdir dir="${openmrs.directory}/reports/datasets"/>
+                                <mkdir dir="${openmrs.directory}/reports/output"/>
+                                <mkdir dir="${openmrs.directory}/reports/output/images"/>
+                                <mkdir dir="${openmrs.directory}/reports/logs"/>
                                 <copy file="../ghana-national-common/src/main/resources/openmrs-data/openmrs-runtime.properties"
                                       tofile="${openmrs.directory}/openmrs-runtime.properties"/>
-                                <copy file="../idgen-omod/target/idgen-omod.omod"
-                                      tofile="${openmrs.directory}/modules/idgen-omod.omod"/>
+                                <copy file="../idgen-omod/target/idgen-omod.omod" tofile="${openmrs.directory}/modules/idgen-omod.omod"/>
                                 <copy todir="${openmrs.directory}/modules">
                                     <fileset
                                             dir="../ghana-national-common/src/main/resources/openmrs-data/modules"/>

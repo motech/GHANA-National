@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.repository;
 
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;

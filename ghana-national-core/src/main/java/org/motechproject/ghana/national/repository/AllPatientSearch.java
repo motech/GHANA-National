@@ -24,11 +24,10 @@ import java.util.List;
 
 @Repository
 public class AllPatientSearch {
-
     protected JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public void AllPatientSearch(@Qualifier("dataSource") DataSource dataSource) {
+    public void init(@Qualifier("dataSource") DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -40,7 +39,8 @@ public class AllPatientSearch {
             @Override
             public MRSPatient mapRow(ResultSet rs, int rowNum) throws SQLException {
                 MRSFacility facility = new MRSFacility(rs.getString("facility"), null, null, null, null);
-                MRSPerson person = new MRSPerson().firstName(rs.getString("firstName")).lastName(rs.getString("lastName")).gender(rs.getString("gender")).dateOfBirth(rs.getDate("dateOfBirth"));
+                MRSPerson person = new MRSPerson().firstName(rs.getString("firstName")).lastName(rs.getString("lastName"))
+                        .gender(rs.getString("gender")).dateOfBirth(rs.getDate("dateOfBirth"));
                 return new MRSPatient(rs.getString("motechId"), person, facility);
             }
         });
@@ -51,7 +51,6 @@ public class AllPatientSearch {
         String dateString = (dateOfBirth != null) ? new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDateTime(dateOfBirth).toDate()) : "";   //if date is null
 
         String select = "SELECT " +
-
                 "pname.given_name as firstName, " +
                 "pname.family_name as lastName, " +
                 "per.gender as gender, " +
@@ -60,7 +59,6 @@ public class AllPatientSearch {
                 "loc.name as facility";
 
         String from = "FROM " +
-
                 "person_name pname, " +
                 "patient pat, person per, " +
                 "patient_identifier p_identifier, " +
@@ -109,7 +107,6 @@ public class AllPatientSearch {
         from = StringUtils.join(fromList, fromConjunction);
         where = StringUtils.join(whereList, whereConjunction);
 
-        String query = select + " " + from + " " + where + " limit 20";
-        return query;
+        return select + " " + from + " " + where + " limit 20";
     }
 }

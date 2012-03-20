@@ -16,19 +16,16 @@ public class AllOutPatientVisitsTest extends BaseIntegrationTest {
     AllOutPatientVisits allOutPatientVisits;
 
     @Test
-    public void shouldAddANewOutPatientVisit(){
-
-        OutPatientVisit visit=new OutPatientVisit();
+    public void shouldAddANewOutPatientVisit() {
+        OutPatientVisit visit = new OutPatientVisit();
         Date dateOfBirth = new Date(2010, 10, 10);
         visit.setDateOfBirth(dateOfBirth);
 
         allOutPatientVisits.add(visit);
 
-        List<OutPatientVisit> all=allOutPatientVisits.getAll();
-        assertEquals(1,all.size());
-
-        assertEquals(dateOfBirth,all.get(0).getDateOfBirth());
-
+        List<OutPatientVisit> all = allOutPatientVisits.getAll();
+        assertEquals(1, all.size());
+        assertEquals(dateOfBirth, all.get(0).getDateOfBirth());
     }
 
     @After

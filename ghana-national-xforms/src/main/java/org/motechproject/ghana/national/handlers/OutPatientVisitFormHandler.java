@@ -39,7 +39,8 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
     FacilityService facilityService;
 
     @Autowired
-    private MRSPatientAdapter patientAdapter;
+    MRSPatientAdapter patientAdapter;
+
     public static Integer OTHER_DIAGNOSIS = 78;
 
     @Autowired
