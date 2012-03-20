@@ -59,6 +59,14 @@ public class CareScheduleHandlerTest {
     }
 
     @Test
+    public void shouldHandleOPVAlert() {
+
+        final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
+        careScheduleHandlerSpy.handleOpvVaccinationAlert(milestoneEvent);
+        verify(careScheduleHandlerSpy).sendAggregativeSMSToFacility(CWC_OPV_SMS_KEY, milestoneEvent);
+    }
+
+    @Test
     public void shouldHandleAncVisitAlert() {
         MotechEvent motechEvent = new MotechEvent("subject", new HashMap<String, Object>());
         doNothing().when(careScheduleHandlerSpy).sendAggregativeSMSToFacilityForAnAppointment(ANC_VISIT_SMS_KEY, motechEvent);

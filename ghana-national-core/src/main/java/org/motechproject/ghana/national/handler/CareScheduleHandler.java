@@ -79,6 +79,12 @@ public class CareScheduleHandler extends BaseScheduleHandler {
 
     @LoginAsAdmin
     @ApiSession
+    public void handleOpvVaccinationAlert(final MilestoneEvent milestoneEvent) {
+       sendAggregativeSMSToFacility(CWC_OPV_SMS_KEY, milestoneEvent);
+    }
+
+    @LoginAsAdmin
+    @ApiSession
     public void handlePNCMotherAlert(final MilestoneEvent milestoneEvent) {
         sendInstantSMSToFacility(PNC_MOTHER_SMS_KEY, milestoneEvent);
     }
