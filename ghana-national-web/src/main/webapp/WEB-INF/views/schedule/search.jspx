@@ -7,7 +7,7 @@
     <spring:url value="/debug/schedule/searchWithinRange" var="schedulesWithinRangeUrl"/>
     <spring:url value="/resources/js/schedules.js" var="schedulesJsUrl"/>
     <script src="${schedulesJsUrl}" type="text/javascript"><!--closing tag needed--></script>
-    <h2>by patient identifier</h2>
+    <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;" >by patient identifier</p>
     <form id="schedules" action="${fn:escapeXml(schedulesUrl)}" method="GET" title="Schedules">
         <label for="patientId">Patient id (MoTeCH id):&#160;</label>
         <input type="text" name="patientId" size="20"/>&#160;
@@ -15,7 +15,7 @@
     </form>
 
     <br/>
-    <h2>schedules between dates</h2>
+    <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;">schedules between dates</p>
     <form id="schedulesWithinRange" action="${fn:escapeXml(schedulesWithinRangeUrl)}" method="GET"
           title="Schedules within range">
         <label for="startDate">Start date :&#160;</label>
@@ -28,7 +28,7 @@
     <div id="search-results">
         <c:if test="${patientSchedules ne null}">
             <br/>
-            <h2>results</h2>
+            <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;">result</p>
             <table id="allSchedulesResult">
                 <th>Patient</th>
                 <th>Schedules
