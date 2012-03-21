@@ -135,21 +135,20 @@ public class OutPatientVisitFormHandlerTest {
     }
 
     @Test
-    public void shouldPersistRecordIfPatientIsVisitor(){
+    public void shouldPersistRecordIfPatientIsVisitor() {
         final OutPatientVisitForm form = new OutPatientVisitForm();
         String staffId = "staffId";
         String motechFacilityId = "motechFacilityId";
-        String facilityId = "facilityId";
         Date visitDate = DateUtil.today().toDate();
-        Date birthDate = new Date(2008,12,12);
+        Date birthDate = new Date(2008, 12, 12);
         PatientType registrantType = PatientType.PREGNANT_MOTHER;
         int secondDiagnosis = 65;
         boolean isNewCase = true;
         boolean isNewPatient = true;
         boolean isReferred = true;
         boolean isInsured = true;
-        String nhis="N his";
-        Date nHisExp=new Date(2012,12,12);
+        String nhis = "N his";
+        Date nHisExp = new Date(2012, 12, 12);
         int diagnosis = 10;
         String motechId = "motechId";
         boolean rdtGiven = true;
@@ -184,30 +183,30 @@ public class OutPatientVisitFormHandlerTest {
 
         handler.handleFormEvent(motechEvent);
 
-        OutPatientVisit expectedVisit=new OutPatientVisit();
+        OutPatientVisit expectedVisit = new OutPatientVisit();
         expectedVisit.setFacilityId(motechFacilityId).setStaffId(staffId).setRegistrantType(registrantType).setVisitDate(visitDate)
                 .setDateOfBirth(birthDate).setInsured(isInsured).setNhis(nhis).setNhisExpires(form.getNhisExpires())
                 .setDiagnosis(diagnosis).setSecondDiagnosis(secondDiagnosis).setActTreated(actTreated).setRdtGiven(rdtGiven).setRdtPositive(rdtPositive)
-                 .setReferred(isReferred).setComments(comments);
+                .setReferred(isReferred).setComments(comments).setNewCase(form.getNewCase()).setNewPatient(form.getNewPatient());
 
-        ArgumentCaptor<OutPatientVisit>captor=ArgumentCaptor.forClass(OutPatientVisit.class);
+        ArgumentCaptor<OutPatientVisit> captor = ArgumentCaptor.forClass(OutPatientVisit.class);
         verify(mockOutPatientVisitService).registerVisit(captor.capture());
-        OutPatientVisit actualVisit=captor.getValue();
+        OutPatientVisit actualVisit = captor.getValue();
 
-        assertThat(actualVisit.getDateOfBirth(),is(expectedVisit.getDateOfBirth()));
-        assertThat(actualVisit.getStaffId(),is(expectedVisit.getStaffId()));
-        assertThat(actualVisit.getFacilityId(),is(expectedVisit.getFacilityId()));
-        assertThat(actualVisit.getInsured(),is(expectedVisit.getInsured()));
-        assertThat(actualVisit.getNhis(),is(expectedVisit.getNhis()));
-        assertThat(actualVisit.getNhisExpires(),is(expectedVisit.getNhisExpires()));
-        assertThat(actualVisit.getRegistrantType(),is(expectedVisit.getRegistrantType()));
-        assertThat(actualVisit.getActTreated(),is(expectedVisit.getActTreated()));
-        assertThat(actualVisit.getNewCase(),is(expectedVisit.getNewCase()));
-        assertThat(actualVisit.getNewPatient(),is(expectedVisit.getNewPatient()));
-        assertThat(actualVisit.getRdtGiven(),is(expectedVisit.getRdtGiven()));
-        assertThat(actualVisit.getRdtPositive(),is(expectedVisit.getRdtPositive()));
-        assertThat(actualVisit.getReferred(),is(expectedVisit.getReferred()));
-        assertThat(actualVisit.getComments(),is(expectedVisit.getComments()));
+        assertThat(actualVisit.getDateOfBirth(), is(expectedVisit.getDateOfBirth()));
+        assertThat(actualVisit.getStaffId(), is(expectedVisit.getStaffId()));
+        assertThat(actualVisit.getFacilityId(), is(expectedVisit.getFacilityId()));
+        assertThat(actualVisit.getInsured(), is(expectedVisit.getInsured()));
+        assertThat(actualVisit.getNhis(), is(expectedVisit.getNhis()));
+        assertThat(actualVisit.getNhisExpires(), is(expectedVisit.getNhisExpires()));
+        assertThat(actualVisit.getRegistrantType(), is(expectedVisit.getRegistrantType()));
+        assertThat(actualVisit.getActTreated(), is(expectedVisit.getActTreated()));
+        assertThat(actualVisit.getNewCase(), is(expectedVisit.getNewCase()));
+        assertThat(actualVisit.getNewPatient(), is(expectedVisit.getNewPatient()));
+        assertThat(actualVisit.getRdtGiven(), is(expectedVisit.getRdtGiven()));
+        assertThat(actualVisit.getRdtPositive(), is(expectedVisit.getRdtPositive()));
+        assertThat(actualVisit.getReferred(), is(expectedVisit.getReferred()));
+        assertThat(actualVisit.getComments(), is(expectedVisit.getComments()));
 
     }
 }

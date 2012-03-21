@@ -40,7 +40,7 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
     @Override
     public void add(Facility facility) {
         saveMRSFacility(facility);
-//        allMotechModuleFacilities.save(facility);
+        allMotechModuleFacilities.save(facility);
         super.add(facility);
     }
 
@@ -52,7 +52,7 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
         existingFacility.additionalPhoneNumber2(facility.additionalPhoneNumber2());
         existingFacility.additionalPhoneNumber3(facility.additionalPhoneNumber3());
         saveMRSFacility(facility);
-//        allMotechModuleFacilities.update(facility);
+        allMotechModuleFacilities.update(facility);
         super.update(existingFacility);
     }
 

@@ -64,6 +64,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         assertThat(actualFacility.additionalPhoneNumber2(), is(equalTo(additionalPhone2)));
         assertThat(actualFacility.additionalPhoneNumber3(), is(equalTo(additionalPhone3)));
         assertThat(actualFacility.mrsFacilityId(), is(equalTo(facilityId)));
+        verify(mockAllMotechModuleFacilities).save(facility);
     }
 
     @Test
@@ -281,6 +282,7 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
                 .mrsFacility(updatedMRSFacility);
 
         allFacilities.update(facility);
+        verify(mockAllMotechModuleFacilities).update(facility);
     }
 
     @After

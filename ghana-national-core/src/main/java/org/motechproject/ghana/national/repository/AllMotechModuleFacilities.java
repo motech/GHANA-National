@@ -18,7 +18,7 @@ public class AllMotechModuleFacilities {
     }
 
     public void save(Facility facility) {
-        jdbcTemplate.update("insert into table motechmodule_facility " +
+        jdbcTemplate.update("insert into motechmodule_facility " +
                 "(facility_id,location_id,phone_number,additional_phone_number1,additional_phone_number2,additional_phone_number3) " +
                 "values (?,?,?,?,?,?)", facility.getMotechId(), facility.getMrsFacilityId(), facility.getPhoneNumber(),
                 facility.getAdditionalPhoneNumber1(), facility.getAdditionalPhoneNumber2(), facility.getAdditionalPhoneNumber3());
