@@ -22,5 +22,6 @@ public class AllOutPatientVisits extends MotechBaseRepository<OutPatientVisit> {
     @Override
     public void add(OutPatientVisit outPatientVisit) {
         super.add(outPatientVisit);
+        allMotechModuleOutPatientVisits.save(outPatientVisit);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Date;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class AllMotechModuleOutPatientVisitsTest {
 
@@ -20,6 +21,7 @@ public class AllMotechModuleOutPatientVisitsTest {
     @Before
     public void setup() {
         mockJdbcTemplate = mock(JdbcTemplate.class);
+        allMotechModuleOutPatientVisits = new AllMotechModuleOutPatientVisits();
         ReflectionTestUtils.setField(allMotechModuleOutPatientVisits, "jdbcTemplate", mockJdbcTemplate);
     }
 
@@ -35,12 +37,14 @@ public class AllMotechModuleOutPatientVisitsTest {
         String nhis = "554";
         Date nhisExpiryDate = DateUtil.newDate(2015, 4, 4).toDate();
         Integer diagnosis = 1;
+        String serialNumber = "serialNumber";
         Integer secondDiagnosis = 2;
         Boolean actTreated = true;
         Boolean rdtGiven = true;
         Boolean rdtPositive = false;
         Boolean isReferred = true;
         String comments = "q234trew";
+        String gender = "F";
         outPatientVisit.setFacilityId(motechFacilityId)
                 .setStaffId(staffId)
                 .setRegistrantType(registrantType)
@@ -48,6 +52,10 @@ public class AllMotechModuleOutPatientVisitsTest {
                 .setDateOfBirth(birthDate)
                 .setInsured(isInsured)
                 .setNhis(nhis)
+                .setNewCase(true)
+                .setNewPatient(true)
+                .setSerialNumber(serialNumber)
+                .setGender(gender)
                 .setNhisExpires(nhisExpiryDate)
                 .setDiagnosis(diagnosis)
                 .setSecondDiagnosis(secondDiagnosis)
@@ -57,5 +65,11 @@ public class AllMotechModuleOutPatientVisitsTest {
                 .setReferred(isReferred)
                 .setComments(comments);
 
+        allMotechModuleOutPatientVisits.save(outPatientVisit);
+
+        verify(mockJdbcTemplate).update("insert into motechmodule_generaloutpatientencounter (visit_date, staff_id, facility_id, serial_number," +
+                " sex,birthdate,insured,newcase,newpatient,diagnosis,secondary_diagnosis,referred,rdt_given,rdt_positive," +
+                "act_treated,comments) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", visitDate, staffId, motechFacilityId,
+                serialNumber, "FEMALE", birthDate, 1, 1, 1, diagnosis, secondDiagnosis, 1, 1, 0, 1, comments);
     }
 }
