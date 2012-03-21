@@ -62,6 +62,10 @@
                 <xf:label>Find client ID</xf:label>
                 <xf:value>FIND_CLIENT_ID</xf:value>
             </xf:item>
+            <xf:item id="UPCOMING_CARE">
+                <xf:label>Upcoming Care</xf:label>
+                <xf:value>UPCOMING_CARE</xf:value>
+            </xf:item>
         </xf:select1>
         <xf:input bind="motechId">
             <xf:label>MoTeCH ID</xf:label>

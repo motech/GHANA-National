@@ -2,7 +2,9 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.ClientQueryType;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
@@ -13,6 +15,7 @@ import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -23,6 +26,7 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
+import static org.motechproject.util.DateUtil.today;
 import static org.testng.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -35,29 +39,47 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
     @Value("#{functionalTestProperties['host']}")
     private String host;
 
+    String patientId;
+
+    String staffId;
+    private TestPatient patient;
+
+    @Value("#{functionalTestProperties['delivery_path']}")
+    private String deliveryPath;
+
+    @Value("#{functionalTestProperties['delivery_clear_path']}")
+    private String deliveryClearPath;
+
+    @BeforeMethod
+    public void setUp() throws IOException {
+
+        clearMessageGateway();
+
+        staffId = staffGenerator.createStaff(browser, homePage);
+                final String firstPatientNameGenerated = new DataGenerator().randomString(5);
+        String patientName = firstPatientNameGenerated + "XXX Client First Name";
+        patient = TestPatient.with(patientName, staffId)
+                        .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
+                        .estimatedDateOfBirth(false);
+        patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
+
+    }
+
     @Test
     public void shouldUploadFormWithClientQueryTypeAsFindClientID() throws IOException {
         DataGenerator dataGenerator = new DataGenerator();
-
-        final String staffId = staffGenerator.createStaff(browser, homePage);
-        final String firstPatientNameGenerated = dataGenerator.randomString(5);
-        String firstPatientName = firstPatientNameGenerated + "XXX Client First Name";
-        final TestPatient firstTestPatient = TestPatient.with(firstPatientName, staffId)
-                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
-                .estimatedDateOfBirth(false);
-        final String firstPatientId = patientGenerator.createPatientWithStaff(firstTestPatient, browser, homePage);
 
         String secondPatientName = dataGenerator.randomString(5)+"XXXXXXClient First ";
         TestPatient secondTestPatient = TestPatient.with(secondPatientName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
-        final String secondPatientId = patientGenerator.createPatientWithStaff(secondTestPatient, browser, homePage);
+        patientGenerator.createPatientWithStaff(secondTestPatient, browser, homePage);
 
         HashMap<String, String> inputParams = new HashMap<String, String>() {{
-            put("facilityId", firstTestPatient.facilityId());
+            put("facilityId", patient.facilityId());
             put("staffId", staffId);
             put("queryType", ClientQueryType.FIND_CLIENT_ID.toString());
-            put("firstName", firstPatientNameGenerated);
+            put("firstName", patient.firstName());
             put("sender", "0987654321");
         }};
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.queryClientForm(), inputParams);
@@ -65,12 +87,9 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
 
         String responseBodyAsString = getMessageGatewayResponse();
 
-        assertThat(responseBodyAsString, containsString(firstPatientId));
-        assertThat(responseBodyAsString, containsString(firstPatientName));
+        assertThat(responseBodyAsString, containsString(patientId));
+        assertThat(responseBodyAsString, containsString(patient.firstName()));
     }
-
-    @Value("#{functionalTestProperties['deliveryPath']}")
-    private String deliveryPath;
 
     @Test
     public void shouldCheckIfAtleastOneInfoIsEnteredForFindClientIDQuery() throws Exception {
@@ -108,6 +127,42 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
     }
 
     @Test
+    public void shouldQueryUpcomingCareSchedules() throws IOException {
+        final LocalDate eddIn14thWeekForDue = today().plusWeeks(26);
+        mobile.upload(MobileForm.registerANCForm(), new HashMap<String, String>() {{
+            put("motechId", patientId);
+            put("facilityId", patient.facilityId());
+            put("staffId", patient.staffId());
+            put("gravida", "1");
+            put("parity", "1");
+            put("height", "61");
+            put("estDeliveryDate", eddIn14thWeekForDue.toString("yyyy-MM-dd"));
+            put("date", today().toString("yyyy-MM-dd"));
+            put("deliveryDateConfirmed", "Y");
+            put("regDateToday", "TODAY");
+            put("addHistory", "0");
+            put("ancRegNumber", "123ABC");
+        }});
+
+        XformHttpClient.XformResponse  xformResponse = mobile.upload(MobileForm.queryClientForm(), new HashMap<String, String>() {{
+            put("queryType", "UPCOMING_CARE");
+            put("motechId", patientId);
+            put("facilityId", patient.facilityId());
+            put("staffId", staffId);
+            put("sender", "0987654321");
+        }});
+        final List<XformHttpClient.Error> errors = xformResponse.getErrors();
+        assertEquals(errors.size(), 0);
+
+        String responseBodyAsString = getMessageGatewayResponse();
+
+        assertThat(responseBodyAsString, containsString(patientId));
+        assertThat(responseBodyAsString, containsString(patient.firstName()));
+        assertThat(responseBodyAsString, containsString(ScheduleNames.ANC_IPT_VACCINE));
+        assertThat(responseBodyAsString, containsString(today().toString(Constants.PATTERN_DD_MMM_YYYY)));
+    }
+
+    @Test
     public void shouldUploadFormWithClientQueryTypeAsClientDetails() throws IOException {
         DataGenerator dataGenerator = new DataGenerator();
 
@@ -129,13 +184,20 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
         assertEquals(1, response.getSuccessCount());
 
         String responseBodyAsString = getMessageGatewayResponse();
-
+                                   System.out.println(responseBodyAsString);
         assertThat(responseBodyAsString, containsString(patientId));
         assertThat(responseBodyAsString, containsString(firstName));
     }
 
     private String getMessageGatewayResponse() throws IOException {
-        String url = String.format("http://%s:%s/%s", host, port, deliveryPath);
+        return httpGet(String.format("http://%s:%s/%s", host, port, deliveryPath));
+    }
+
+    private String clearMessageGateway() throws IOException {
+        return httpGet(String.format("http://%s:%s/%s", host, port, deliveryClearPath));
+    }
+
+    private String httpGet(String url) throws IOException {
         GetMethod getMethod = new GetMethod(url);
         HttpClient httpClient = new HttpClient();
         httpClient.executeMethod(getMethod);

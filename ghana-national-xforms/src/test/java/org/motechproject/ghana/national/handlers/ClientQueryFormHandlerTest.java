@@ -6,23 +6,29 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ClientQueryForm;
 import org.motechproject.ghana.national.domain.ClientQueryType;
-import org.motechproject.ghana.national.domain.Concept;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
-import org.motechproject.ghana.national.repository.AllObservations;
+import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.repository.SMSGateway;
-import org.motechproject.ghana.national.service.MobileClientQueryService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.PregnancyService;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.mrs.model.*;
+import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,26 +37,27 @@ import static org.motechproject.ghana.national.configuration.TextMessageTemplate
 import static org.motechproject.ghana.national.domain.Constants.*;
 import static org.motechproject.ghana.national.handlers.ClientQueryFormHandler.FIND_CLIENT_RESPONSE_SMS_KEY;
 import static org.motechproject.ghana.national.util.AssertionUtility.assertContainsTemplateValues;
+import static org.motechproject.util.DateUtil.today;
 
 public class ClientQueryFormHandlerTest {
     private ClientQueryFormHandler clientQueryFormHandler;
     @Mock
     private PatientService mockPatientService;
     @Mock
+    private PregnancyService mockPregnancyService;
+    @Mock
     private SMSGateway mockSmsGateway;
     @Mock
-    private AllObservations mockAllObservations;
-    @Mock
-    private MobileClientQueryService mockMobileClientQueryService;
+    private AllSchedules mockAllSchedules;
 
     @Before
     public void setUp() {
         initMocks(this);
         clientQueryFormHandler = new ClientQueryFormHandler();
         ReflectionTestUtils.setField(clientQueryFormHandler, "patientService", mockPatientService);
-        ReflectionTestUtils.setField(clientQueryFormHandler, "allObservations", mockAllObservations);
+        ReflectionTestUtils.setField(clientQueryFormHandler, "pregnancyService", mockPregnancyService);
         ReflectionTestUtils.setField(clientQueryFormHandler, "smsGateway", mockSmsGateway);
-        ReflectionTestUtils.setField(clientQueryFormHandler, "mobileClientQueryService", mockMobileClientQueryService);
+        ReflectionTestUtils.setField(clientQueryFormHandler, "allSchedules", mockAllSchedules);
     }
 
     @Test
@@ -73,8 +80,7 @@ public class ClientQueryFormHandlerTest {
         Patient patient = new Patient(new MRSPatient(motechId, person, new MRSFacility(facilityId)));
 
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
-        when(mockAllObservations.findObservation(motechId, Concept.PREGNANCY.getName())).thenReturn(mockPregnancyObservationWithEDD(edd));
-        when(mockAllObservations.hasActivePregnancyStatusObservation(motechId)).thenReturn(Boolean.TRUE);
+        when(mockPregnancyService.activePregnancyEDD(motechId)).thenReturn(edd);
 
         clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
 
@@ -91,8 +97,6 @@ public class ClientQueryFormHandlerTest {
             put(DOB, new SimpleDateFormat(PATTERN_DD_MMM_YYYY).format(dateOfBirth));
 
         }}, templateValuesCaptor.getValue());
-
-
     }
 
     @Test
@@ -154,14 +158,15 @@ public class ClientQueryFormHandlerTest {
         final String staffId = "staffId";
 
         String responsePhoneNumber = "94423232";
+        String mrsPatientId = "patientId";
 
         Map<String, Object> params = createMotechEventWithForm(facilityId, motechId, staffId, responsePhoneNumber, ClientQueryType.UPCOMING_CARE.toString());
 
-        final Patient patient = new Patient(new MRSPatient(motechId, null, null));
+        final Patient patient = new Patient(new MRSPatient(mrsPatientId,motechId, new MRSPerson().dateOfBirth(today().toDate()), null));
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
-
+        when(mockSmsGateway.getSMSTemplate(anyString())).thenReturn("some template");
         clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
-        verify(mockMobileClientQueryService).queryUpcomingCare(patient, responsePhoneNumber);
+        verify(mockAllSchedules).upcomingCareForCurrentWeek(mrsPatientId);
     }
 
     private HashMap<String, Object> createClientQueryFormForFindClientId(String firstName, String lastName, Date dateOfBirth, String responsePhoneNumber, String senderNumber, String facilityId, String motechId, ClientQueryType clientQueryType) {
@@ -175,13 +180,6 @@ public class ClientQueryFormHandlerTest {
         return new HashMap<String, Object>() {{
             put(FORM_BEAN, clientQueryForm);
         }};
-    }
-
-    private MRSObservation mockPregnancyObservationWithEDD(Date edd) {
-        MRSObservation<Concept> pregnancyObservation = new MRSObservation<Concept>(DateUtil.now().toDate(), Concept.PREGNANCY.getName(), null);
-        MRSObservation eddObservation = new MRSObservation<Date>(DateUtil.now().toDate(), Concept.EDD.getName(), edd);
-        pregnancyObservation.setDependantObservations(new HashSet<MRSObservation>(asList(eddObservation)));
-        return pregnancyObservation;
     }
 
     private MRSPerson person(String phoneNumber, Date dateOfBirth, int age, String gender, String lastName, String firstName) {
