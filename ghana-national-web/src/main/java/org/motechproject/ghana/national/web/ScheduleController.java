@@ -16,9 +16,9 @@ import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 import static java.lang.String.format;
 
 @Controller
-@RequestMapping(value = "/schedule/")
+@RequestMapping(value = "/debug/schedule/")
 public class ScheduleController {
 
     @Autowired
@@ -46,34 +46,32 @@ public class ScheduleController {
 
     private Pattern ALERT_ORDER_INDEX_REGEX = Pattern.compile("^.*\\.(.*?)-repeat$");
 
-    @RequestMapping(value = "patient", method = RequestMethod.GET)
-    @ResponseBody
+    @RequestMapping(value = "search", method = RequestMethod.GET)
     @LoginAsAdmin
     @ApiSession
-    public String newStaff(HttpServletRequest request) throws UnsupportedEncodingException, ParseException {
-        final String motechId = request.getParameter("id");
-        final Map<String, List<TestAlert>> schedules = getAllSchedulesFor(motechId);
-        return schedules.toString();
+    public String schedulesOfAPatient(HttpServletRequest request, ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
+        Map<String, List<TestAlert>> schedules = null;
+        final String patientId = request.getParameter("patientId");
+        if (patientId != null) {
+            schedules = getAllSchedulesFor(patientId);
+        }
+        modelMap.put("schedules", schedules);
+        return "schedule/search";
     }
 
     private Map<String, List<TestAlert>> getAllSchedulesFor(final String motechId) {
-
         Patient patientByMotechId = allPatients.getPatientByMotechId(motechId);
-        String patientId=patientByMotechId.getMRSPatientId();
+        String patientId = patientByMotechId.getMRSPatientId();
         Map<String, List<TestAlert>> schedules = new HashMap<String, List<TestAlert>>();
         try {
             for (Field field : ScheduleNames.class.getFields()) {
-                try {
-                    final String scheduleName = (String) field.get(field);
-                    Enrollment activeEnrollment = allEnrollments.getActiveEnrollment(patientId, scheduleName);
-                    if(activeEnrollment==null)continue;
-                    String activeEnrollmentId = activeEnrollment.getId();
-                    schedules.put(scheduleName, captureAlertsForNextMilestone(activeEnrollmentId));
-                } catch (IllegalAccessException e) {
-                    throw new MotechException("Encountered exception, ", e);
+                final String scheduleName = (String) field.get(field);
+                Enrollment activeEnrollment = allEnrollments.getActiveEnrollment(patientId, scheduleName);
+                if (activeEnrollment != null) {
+                    schedules.put(scheduleName, captureAlertsForNextMilestone(activeEnrollment.getId()));
                 }
             }
-        } catch (SchedulerException e) {
+        } catch (Exception e) {
             throw new MotechException("Encountered exception, ", e);
         }
         return schedules;
@@ -144,6 +142,14 @@ public class ScheduleController {
         public TestAlert(WindowName window, Date alertDate) {
             this.window = window;
             this.alertDate = alertDate;
+        }
+
+        public WindowName getWindow() {
+            return window;
+        }
+
+        public Date getAlertDate() {
+            return alertDate;
         }
 
         @Override
