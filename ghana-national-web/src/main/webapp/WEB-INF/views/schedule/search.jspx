@@ -3,38 +3,64 @@
      xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-
-    <spring:url value="/debug/schedule/search" var="form_url"/>
-
-    <form id="schedules" action="${fn:escapeXml(form_url)}" method="GET" title="Schedules">
-        <label for="patientId" >Patient id (MoTeCH id):    </label>
-        <input type="text" name="patientId" size="20"/>
-        <input type="submit" id="submit" value="Submit"/>
+    <spring:url value="/debug/schedule/search" var="schedulesUrl"/>
+    <spring:url value="/debug/schedule/searchWithinRange" var="schedulesWithinRangeUrl"/>
+    <spring:url value="/resources/js/schedules.js" var="schedulesJsUrl"/>
+    <script src="${schedulesJsUrl}" type="text/javascript"><!--closing tag needed--></script>
+    <h2>by patient identifier</h2>
+    <form id="schedules" action="${fn:escapeXml(schedulesUrl)}" method="GET" title="Schedules">
+        <label for="patientId">Patient id (MoTeCH id):&#160;</label>
+        <input type="text" name="patientId" size="20"/>&#160;
+        <input type="submit" id="submit" value="Search"/>
     </form>
 
-    <br/><br/>
-    <c:if test="${schedules ne null}">
-        <table id="schedulesResult" border="1" cellpadding="3">
-            <th>Schedule name</th>
-            <th>Alerts</th>
-            <c:forEach items="${schedules}" var="schedule">
-                <tr>
-                    <td>${schedule.key}</td>
-                    <td>
-                        <table>
-                            <c:forEach items="${schedule.value}" var="alert">
-                                <tr>
-                                    <td>
-                                        <strong>${alert.window}</strong>
-                                    </td>
-                                    <td>${alert.alertDate}</td>
-                                </tr>
-                            </c:forEach>
-                        </table>
-                    </td>
-                </tr>
-            </c:forEach>
-        </table>
-    </c:if>
+    <br/>
+    <h2>schedules between dates</h2>
+    <form id="schedulesWithinRange" action="${fn:escapeXml(schedulesWithinRangeUrl)}" method="GET"
+          title="Schedules within range">
+        <label for="startDate">Start date :&#160;</label>
+        <input type="text" name="startDate" id="startDate" size="20" cssClass="jsDate"/>&#160;
+        <label for="endDate">End date :&#160;</label>
+        <input type="text" name="endDate" id="endDate" size="20" cssClass="jsDate"/>&#160;
+        <input type="submit" id="submit" value="Search"/>
+    </form>
 
+    <div id="search-results">
+        <c:if test="${patientSchedules ne null}">
+            <br/>
+            <h2>results</h2>
+            <table id="allSchedulesResult">
+                <th>Patient</th>
+                <th>Schedules
+                    <c:if test="${startDate ne null}">(start: ${startDate} end: ${endDate})</c:if>
+                </th>
+                <c:forEach items="${patientSchedules}" var="patient">
+                    <tr>
+                        <td>${patient.key}</td>
+                        <td>
+                            <table id="schedulesResult" border="1" cellpadding="3">
+                                <c:forEach items="${patient.value}" var="schedule">
+                                    <tr>
+                                        <td>${schedule.key}</td>
+                                        <td>
+                                            <table>
+                                                <c:forEach items="${schedule.value}" var="alert">
+                                                    <tr>
+                                                        <td style="border: none; !important;">
+                                                            ${alert.window}
+                                                        </td>
+                                                        <td style="border: none; !important;">${alert.alertDate}</td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </table>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:if>
+    </div>
 </div>
