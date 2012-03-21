@@ -43,7 +43,7 @@
                                     <tr>
                                         <td>${schedule.key}</td>
                                         <td>
-                                            <table>
+                                            <table style="border: none; !important;">
                                                 <c:forEach items="${schedule.value}" var="alert">
                                                     <tr>
                                                         <td style="border: none; !important;">
