@@ -40,7 +40,7 @@ public class AllMotechModuleFacilitiesTest {
         facility.phoneNumber(phoneNumber);
         allMotechModuleFacilities.save(facility);
 
-        verify(mockJdbcTemplate).update("insert into table motechmodule_facility " +
+        verify(mockJdbcTemplate).update("insert into motechmodule_facility " +
                 "(facility_id,location_id,phone_number,additional_phone_number1,additional_phone_number2,additional_phone_number3) " +
                 "values (?,?,?,?,?,?)", motechId, locationId, phoneNumber, additionalPhoneNumber1, additionalPhoneNumber2, additionalPhoneNumber3);
     }
