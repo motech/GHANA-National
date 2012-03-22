@@ -108,6 +108,12 @@
                     "fileName":"ClientQuery.xml",
                     "bean":"org.motechproject.ghana.national.bean.ClientQueryForm",
                     "validator":"org.motechproject.ghana.national.validator.ClientQueryFormValidator"
+                },
+                {
+                    "name":"GeneralQuery",
+                    "fileName":"GeneralQuery.xml",
+                    "bean":"org.motechproject.ghana.national.bean.GeneralQueryForm",
+                    "validator":"org.motechproject.ghana.national.validator.GeneralQueryFormValidator"
                 }
          ]
     }

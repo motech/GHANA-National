@@ -1,7 +1,10 @@
 package org.motechproject.ghana.national.bean;
 
 import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
+
+import static org.motechproject.ghana.national.FormFieldRegExPatterns.PHONE_NO_PATTERN;
 
 public class GeneralQueryForm extends FormBean {
     @Required
@@ -9,6 +12,7 @@ public class GeneralQueryForm extends FormBean {
     @Required
     private String facilityId;
     @Required
+    @RegEx(pattern = PHONE_NO_PATTERN)
     private String responsePhoneNumber;
     @Required
     private String queryType;

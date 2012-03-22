@@ -4,6 +4,19 @@ public class MobileForm {
     private String studyName;
     private String xmlTemplateName;
 
+    public MobileForm(String studyName, String xmlTemplateName) {
+        this.studyName = studyName;
+        this.xmlTemplateName = xmlTemplateName;
+    }
+
+    public String getStudyName() {
+        return studyName;
+    }
+
+    public String getXmlTemplateName() {
+        return xmlTemplateName;
+    }
+
     public static MobileForm registerClientForm() {
         return new MobileForm("NurseDataEntry", "register-client-template.xml");
     }
@@ -44,20 +57,13 @@ public class MobileForm {
         return new MobileForm("NurseQuery", "client-query-template.xml");
     }
 
-    public MobileForm(String studyName, String xmlTemplateName) {
-        this.studyName = studyName;
-        this.xmlTemplateName = xmlTemplateName;
-    }
-
-    public String getStudyName() {
-        return studyName;
-    }
-
-    public String getXmlTemplateName() {
-        return xmlTemplateName;
-    }
-
     public static MobileForm registerCWCVisitForm() {
         return new MobileForm("NurseDataEntry", "cwc-visit-template.xml");
     }
+
+    public static MobileForm generalQueryForm() {
+        return new MobileForm("NurseQuery","general-query-template.xml");
+    }
+
+
 }
