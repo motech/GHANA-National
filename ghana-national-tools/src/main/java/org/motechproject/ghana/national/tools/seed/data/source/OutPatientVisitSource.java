@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.tools.seed.data.source;
 
 import org.motechproject.ghana.national.domain.OutPatientVisit;
+import org.motechproject.ghana.national.domain.PatientType;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +32,8 @@ public class OutPatientVisitSource extends BaseSeedSource{
                                 .setRdtGiven(resultSet.getBoolean("rdt_given"))
                                 .setRdtPositive(resultSet.getBoolean("rdt_positive"))
                                 .setActTreated(resultSet.getBoolean("act_treated"))
-                                .setComments(resultSet.getString("comments"));
+                                .setComments(resultSet.getString("comments"))
+                                .setRegistrantType(PatientType.OTHER);
                     }
                 });
     }
