@@ -33,6 +33,7 @@
                 <entry key="org.motechproject.ghana.national.validator.PncBabyFormValidator" value-ref="pncBabyFormValidator"/>
                 <entry key="org.motechproject.ghana.national.validator.PncMotherFormValidator" value-ref="pncMotherFormValidator"/>
                 <entry key="org.motechproject.ghana.national.validator.ClientQueryFormValidator" value-ref="clientQueryFormValidator"/>
+                <entry key="org.motechproject.ghana.national.validator.GeneralQueryFormValidator" value-ref="generalQueryFormValidator"/>
             </map>
         </property>
     </bean>

@@ -3,32 +3,33 @@
   <xf:model>
     <xf:instance id="gen-query">
       <gen-query id="20" name="General Query">
-        <chpsid/>
-        <facilityid/>
-        <formname/>
-        <sender/>
+        <staffId/>
+        <facilityId/>
+        <queryType/>
+        <responsePhoneNumber/>
         <formtype>query</formtype>
         <formname>GeneralQuery</formname>
       </gen-query>
     </xf:instance>
-    <xf:bind id="chpsid" nodeset="/gen-query/chpsid" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
-    <xf:bind id="facilityid" nodeset="/gen-query/facilityid" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
-    <xf:bind id="formname" nodeset="/gen-query/formname" required="true()" type="xsd:string"/>
-    <xf:bind id="sender" constraint=". &lt;= 999999999" message="Number too large. It should be 10 digits long" nodeset="/gen-query/sender" required="true()" type="xsd:int"/>
-    <xf:bind id="formtype" nodeset="/gen-query/formtype" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind id="staffId" nodeset="/gen-query/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+    <xf:bind id="facilityId" nodeset="/gen-query/facilityId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+      <xf:bind id="queryType" nodeset="/gen-query/queryType" required="true()" type="xsd:string"/>
+      <xf:bind id="responsePhoneNumber" constraint=". &lt;= 999999999" message="Number too large. It should be 10 digits long" nodeset="/gen-query/responsePhoneNumber" required="true()" type="xsd:int"/>
+      <xf:bind id="formname" nodeset="/clientQuery/formname" required="true()" type="xsd:string" visible="false()"/>
+      <xf:bind id="formtype" nodeset="/gen-query/formtype" required="true()" type="xsd:string" visible="false()"/>
   </xf:model>
   <xf:group id="1">
     <xf:label>Page1</xf:label>
-    <xf:input bind="chpsid">
+    <xf:input bind="staffId">
       <xf:label>Staff ID</xf:label>
     </xf:input>
-    <xf:input bind="facilityid">
+    <xf:input bind="facilityId">
       <xf:label>Facility ID</xf:label>
     </xf:input>
-    <xf:select1 bind="formname">
+    <xf:select1 bind="queryType">
       <xf:label>Query type</xf:label>
       <xf:item id="ancdefault-jf">
-        <xf:label>ANC  defaulters</xf:label>
+        <xf:label>ANC defaulters</xf:label>
         <xf:value>ancdefault-jf</xf:value>
       </xf:item>
       <xf:item id="ttdefault-jf">
@@ -44,7 +45,7 @@
         <xf:value>pncdefault-jf</xf:value>
       </xf:item>
       <xf:item id="cwcdefault-jf">
-        <xf:label>CWC  defaulters</xf:label>
+        <xf:label>CWC defaulters</xf:label>
         <xf:value>cwcdefault-jf</xf:value>
       </xf:item>
       <xf:item id="upcomingdeliveries-jf">
@@ -60,7 +61,7 @@
         <xf:value>overduedeliveries-jf</xf:value>
       </xf:item>
     </xf:select1>
-    <xf:input bind="sender">
+    <xf:input bind="responsePhoneNumber">
       <xf:label>Response phone number</xf:label>
     </xf:input>
     <xf:input bind="formtype">

@@ -105,19 +105,18 @@ public class ClientQueryFormHandlerTest {
         final String lastName = "lastName";
         final Date dateOfBirth = DateUtil.now().minusYears(20).toDate();
         String dateString = new SimpleDateFormat(PATTERN_DD_MMM_YYYY).format(dateOfBirth);
-        String phoneNumber = "phoneNumber";
         String responsePhoneNumber = "responsePhoneNumber";
         final String facilityId = "facilityId";
         final String motechId = "motechId";
         final MRSFacility mrsFacility = new MRSFacility(facilityId, "name", null, null, null, null);
 
-        HashMap<String, Object> params = createClientQueryFormForFindClientId(firstName, lastName, dateOfBirth, phoneNumber, responsePhoneNumber, facilityId, motechId, ClientQueryType.FIND_CLIENT_ID);
+        HashMap<String, Object> params = createClientQueryFormForFindClientId(firstName, lastName, dateOfBirth, null, responsePhoneNumber, facilityId, motechId, ClientQueryType.FIND_CLIENT_ID);
 
         ArrayList<MRSPatient> patients = new ArrayList<MRSPatient>() {{
             add(new MRSPatient(motechId, new MRSPerson().lastName(lastName).firstName(firstName).dateOfBirth(dateOfBirth).gender("F"), mrsFacility));
             add(new MRSPatient("45423", new MRSPerson().lastName(lastName).firstName("first").gender("M").dateOfBirth(new Date(189, 5, 6)), mrsFacility));
         }};
-        when(mockPatientService.getPatients(firstName, lastName, phoneNumber, dateOfBirth, null)).thenReturn(patients);
+        when(mockPatientService.getPatients(firstName, lastName, null, dateOfBirth, null)).thenReturn(patients);
         when(mockSmsGateway.getSMSTemplate(FIND_CLIENT_RESPONSE_SMS_KEY)).thenReturn("MoTeCH ID=${motechId},${firstName},${lastName}, Sex=${gender}, DoB=${dob}, ${facility}");
 
         clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
@@ -134,13 +133,12 @@ public class ClientQueryFormHandlerTest {
         final String firstName = "firstName";
         final String lastName = "lastName";
         final Date dateOfBirth = DateUtil.now().minusYears(20).toDate();
-        String phoneNumber = "phoneNumber";
         String responsePhoneNumber = "responsePhoneNumber";
         final String facilityId = "facilityId";
 
-        HashMap<String, Object> params = createClientQueryFormForFindClientId(firstName, lastName, dateOfBirth, phoneNumber, responsePhoneNumber, facilityId, null, ClientQueryType.FIND_CLIENT_ID);
+        HashMap<String, Object> params = createClientQueryFormForFindClientId(firstName, lastName, dateOfBirth, "", responsePhoneNumber, facilityId, null, ClientQueryType.FIND_CLIENT_ID);
 
-        when(mockPatientService.getPatients(firstName, lastName, phoneNumber, dateOfBirth, null)).thenReturn(new ArrayList<MRSPatient>());
+        when(mockPatientService.getPatients(firstName, lastName, null, dateOfBirth, null)).thenReturn(new ArrayList<MRSPatient>());
         when(mockSmsGateway.getSMSTemplate(FIND_CLIENT_RESPONSE_SMS_KEY)).thenReturn("MoTeCH ID=${motechId}, FirstName=${firstName}, LastName=${lastName}, Sex=${gender}, DoB=${dob}, Facility=${facility}");
 
         clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
@@ -167,14 +165,16 @@ public class ClientQueryFormHandlerTest {
         when(mockSmsGateway.getSMSTemplate(anyString())).thenReturn("some template");
         clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
         verify(mockAllSchedules).upcomingCareForCurrentWeek(mrsPatientId);
+        ArgumentCaptor<String> templateValuesCaptor = ArgumentCaptor.forClass(String.class);
+        verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), templateValuesCaptor.capture());
     }
 
-    private HashMap<String, Object> createClientQueryFormForFindClientId(String firstName, String lastName, Date dateOfBirth, String responsePhoneNumber, String senderNumber, String facilityId, String motechId, ClientQueryType clientQueryType) {
-        final ClientQueryForm clientQueryForm = clientQueryForm(facilityId, motechId, "323", senderNumber, clientQueryType.toString());
+    private HashMap<String, Object> createClientQueryFormForFindClientId(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String senderResponseNumber, String facilityId, String motechId, ClientQueryType clientQueryType) {
+        final ClientQueryForm clientQueryForm = clientQueryForm(facilityId, motechId, "323", senderResponseNumber, clientQueryType.toString());
         clientQueryForm.setFirstName(firstName);
         clientQueryForm.setLastName(lastName);
         clientQueryForm.setDateOfBirth(dateOfBirth);
-        clientQueryForm.setPhoneNumber(responsePhoneNumber);
+        clientQueryForm.setPhoneNumber(phoneNumber);
         clientQueryForm.setNhis(null);
 
         return new HashMap<String, Object>() {{
@@ -209,6 +209,4 @@ public class ClientQueryFormHandlerTest {
         clientQueryForm.setQueryType(clientQueryType);
         return clientQueryForm;
     }
-
-
 }

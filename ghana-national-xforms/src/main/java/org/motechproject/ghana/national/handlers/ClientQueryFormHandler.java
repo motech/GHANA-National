@@ -65,7 +65,7 @@ public class ClientQueryFormHandler implements FormPublishHandler {
         Patient patient = patientService.getPatientByMotechId(clientQueryForm.getMotechId());
         List<EnrollmentRecord> upcomingEnrollments = allSchedules.upcomingCareForCurrentWeek(patient.getMRSPatientId());
         UpcomingCareSMS upcomingCareSMS = new UpcomingCareSMS(smsGateway, patient, upcomingEnrollments);
-        smsGateway.dispatchSMS(clientQueryForm.getPhoneNumber(), upcomingCareSMS.smsText());
+        smsGateway.dispatchSMS(clientQueryForm.getSender(), upcomingCareSMS.smsText());
     }
 
     private void searchPatient(ClientQueryForm clientQueryForm) {

@@ -1,51 +1,47 @@
 package org.motechproject.ghana.national.bean;
 
 import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.validator.annotations.Required;
 
 public class GeneralQueryForm extends FormBean {
-    private String chpsid;
-    private String sender;
-    private String facilityid;
-    private String formname;
-    private String formtype;
+    @Required
+    private String staffId;
+    @Required
+    private String facilityId;
+    @Required
+    private String responsePhoneNumber;
+    @Required
+    private String queryType;
 
-    public String getChpsid() {
-        return chpsid;
+    public String getStaffId() {
+        return this.staffId;
     }
 
-    public void setChpsid(String chpsid) {
-        this.chpsid = chpsid;
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
     }
 
-    public String getSender() {
-        return sender;
+    public String getFacilityId() {
+        return facilityId;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
     }
 
-    public String getFacilityid() {
-        return facilityid;
+    public String getResponsePhoneNumber() {
+        return responsePhoneNumber;
     }
 
-    public void setFacilityid(String facilityid) {
-        this.facilityid = facilityid;
+    public void setResponsePhoneNumber(String responsePhoneNumber) {
+        this.responsePhoneNumber = responsePhoneNumber;
     }
 
-    public String getFormname() {
-        return formname;
+    public String getQueryType() {
+        return queryType;
     }
 
-    public void setFormname(String formname) {
-        this.formname = formname;
-    }
-
-    public String getFormtype() {
-        return formtype;
-    }
-
-    public void setFormtype(String formtype) {
-        this.formtype = formtype;
+    public void setQueryType(String queryType) {
+        this.queryType = queryType;
     }
 }
