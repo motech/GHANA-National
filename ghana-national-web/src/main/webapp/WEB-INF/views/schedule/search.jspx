@@ -4,12 +4,34 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <spring:url value="/debug/schedule/search" var="schedulesUrl"/>
+    <spring:url value="/debug/schedule/searchByOpenmrsId" var="schedulesByOpenmrsIdUrl"/>
     <spring:url value="/debug/schedule/searchWithinRange" var="schedulesWithinRangeUrl"/>
+    <spring:url value="/debug/schedule/convertPatientId" var="convertPatientIdUrl"/>
     <spring:url value="/resources/js/schedules.js" var="schedulesJsUrl"/>
     <script src="${schedulesJsUrl}" type="text/javascript"><!--closing tag needed--></script>
+
+    <br/>
+    <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;" >convert patient identifier</p>
+    <form id="patientIds" action="${fn:escapeXml(convertPatientIdUrl)}" method="GET" title="Schedules">
+        <label for="motechId">MoTeCH id :&#160;</label>
+        <input type="text" name="motechId" size="20"/>&#160;
+        <label for="mrsId">OpenMRS id :&#160;</label>
+        <input type="text" name="mrsId" size="20"/>&#160;
+        <input type="submit" id="submit" value="Search"/>&#160;&#160;
+        <c:if test="${ids ne null}"><p style="display: inline; font: 15px/15px 'Lucida Grande', 'Verdana', sans-serif; color: grey;">${ids}</p></c:if>
+    </form>
+
+    <br/>
     <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;" >by patient identifier</p>
     <form id="schedules" action="${fn:escapeXml(schedulesUrl)}" method="GET" title="Schedules">
         <label for="patientId">Patient id (MoTeCH id):&#160;</label>
+        <input type="text" name="patientId" size="20"/>&#160;
+        <input type="submit" id="submit" value="Search"/>
+    </form>
+
+    <br/>
+    <form id="schedulesByOpenmrs" action="${fn:escapeXml(schedulesByOpenmrsIdUrl)}" method="GET" title="Schedules">
+        <label for="patientId">Patient id (Openmrs id):&#160;</label>
         <input type="text" name="patientId" size="20"/>&#160;
         <input type="submit" id="submit" value="Search"/>
     </form>
