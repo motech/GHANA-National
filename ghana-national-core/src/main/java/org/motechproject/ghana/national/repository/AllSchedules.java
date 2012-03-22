@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.model.Time;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
+import org.motechproject.scheduletracking.api.service.EnrollmentsQuery;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -57,5 +58,9 @@ public class AllSchedules {
 
     public EnrollmentRecord enrollment(EnrollmentRequest enrollmentRequest) {
         return scheduleTrackingService.getEnrollment(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName());
+    }
+    
+    public List<EnrollmentRecord> search(EnrollmentsQuery enrollmentQuery) {
+        return scheduleTrackingService.searchWithWindowDates(enrollmentQuery);
     }
 }

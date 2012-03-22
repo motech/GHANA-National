@@ -5,9 +5,11 @@ import org.joda.time.LocalDate;
 
 import java.util.HashMap;
 
+import static java.lang.String.format;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.Constants.PATTERN_DD_MMM_YYYY;
 import static org.motechproject.ghana.national.tools.Utility.*;
+import static org.motechproject.ghana.national.tools.Utility.nullSafeToString;
 
 public class SMSTemplate {
 
@@ -38,6 +40,12 @@ public class SMSTemplate {
         runtimeVariables.put(SCHEDULE_NAME, scheduleName);
         return this;
     }
+    
+    public SMSTemplate fillCareSchedulesDueDate(String scheduleName, DateTime startOfDueWindow){
+        runtimeVariables.put(SCHEDULE_NAME, scheduleName);
+        runtimeVariables.put(DATE, nullSafeToString(startOfDueWindow, PATTERN_DD_MMM_YYYY));
+        return this;
+    }
 
     public SMSTemplate fillFacilityDetails(Patient patient){
         runtimeVariables.put(FACILITY, patient.getMrsPatient().getFacility().getName());
@@ -51,5 +59,14 @@ public class SMSTemplate {
     public SMSTemplate fillDeliveryTime(DateTime deliveryTime) {
         runtimeVariables.put(DELIVERY_TIME, nullSafeToString(deliveryTime, PATTERN_DD_MMM_YYYY));
         return this;
+    }
+
+    public SMSTemplate fillTemplate(String templateName, String value) {
+        runtimeVariables.put(template(templateName), value);
+        return this;
+    }
+
+    private String template(String templateName) {
+        return format(TEMPLATE, templateName);
     }
 }

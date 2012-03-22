@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.validator;
 
 import org.motechproject.ghana.national.bean.ClientQueryForm;
-import org.motechproject.ghana.national.domain.ClientQueryType;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
@@ -13,6 +12,9 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.motechproject.ghana.national.domain.ClientQueryType.CLIENT_DETAILS;
+import static org.motechproject.ghana.national.domain.ClientQueryType.FIND_CLIENT_ID;
+import static org.motechproject.ghana.national.domain.ClientQueryType.UPCOMING_CARE;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 
 @Component("clientQueryFormValidator")
@@ -28,16 +30,16 @@ public class ClientQueryFormValidator extends FormValidator<ClientQueryForm> {
         List<FormError> formErrors = super.validate(formBean);
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
-        if (ClientQueryType.CLIENT_DETAILS.toString().equals(formBean.getQueryType())) {
+
+        if (CLIENT_DETAILS.toString().equals(formBean.getQueryType()) || UPCOMING_CARE.toString().equals(formBean.getQueryType())) {
             formErrors.addAll(formValidator.validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
-        }
-        else {
-            formErrors.addAll(validateIfMinimumCriteriaIsPopulated(formBean));
+        } else if (FIND_CLIENT_ID.toString().equals(formBean.getQueryType())) {
+            formErrors.addAll(validateMinimumCriteriaForFindClientID(formBean));
         }
         return formErrors;
     }
 
-    private List<FormError> validateIfMinimumCriteriaIsPopulated(final ClientQueryForm formBean) {
+    private List<FormError> validateMinimumCriteriaForFindClientID(final ClientQueryForm formBean) {
         List<FormError> insufficientDataError = new ArrayList<FormError>(){{
             add(new FormError(Constants.CLIENT_QUERY_TYPE, Constants.INSUFFICIENT_SEARCH_CRITERIA));
         }};
