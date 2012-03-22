@@ -9,7 +9,7 @@ import java.util.List;
 public class OldGhanaScheduleSource extends BaseSeedSource {
 
     public List<UpcomingSchedule> getUpcomingTTSchedules() {
-        return querySchedulesFromDb("select '' as motech_id, patient_id, concept_id as type, care_name , min_datetime, due_datetime, late_datetime, max_datetime, voided from motechmodule_expected_obs where voided = 0 and group_name = 'TT' and care_name <> 'TT1' order by patient_id");
+        return querySchedulesFromDb("select '' as motech_id, patient_id, concept_id as type, care_name , min_datetime, due_datetime, late_datetime, max_datetime, voided from motechmodule_expected_obs where voided = 0 and group_name = 'TT' order by patient_id");
     }
 
     public List<UpcomingSchedule> getUpcomingIPTSchedules() {

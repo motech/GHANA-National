@@ -36,6 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
+import static org.motechproject.util.StringUtil.isNullOrEmpty;
 
 @Controller
 @RequestMapping(value = "/debug/schedule/")
@@ -55,13 +56,40 @@ public class ScheduleController {
     @RequestMapping(value = "search", method = RequestMethod.GET)
     @LoginAsAdmin
     @ApiSession
-    public String schedulesOfAPatient(HttpServletRequest request, ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
+    public String schedulesOfAPatientByMotechId(HttpServletRequest request, ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
         HashMap<String, Map<String, List<Alert>>> schedules = null;
         final String patientId = request.getParameter("patientId");
         if (patientId != null) {
             schedules = new HashMap<String, Map<String, List<Alert>>>(){{put(patientId, getAllSchedulesByMotechId(patientId));}};
         }
         modelMap.put("patientSchedules", schedules);
+        return "schedule/search";
+    }
+
+    @RequestMapping(value = "searchByOpenmrsId", method = RequestMethod.GET)
+    @LoginAsAdmin
+    @ApiSession
+    public String schedulesOfAPatientByOpenmrsId(HttpServletRequest request, ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
+        HashMap<String, Map<String, List<Alert>>> schedules = null;
+        final String patientId = request.getParameter("patientId");
+        if (patientId != null) {
+            schedules = new HashMap<String, Map<String, List<Alert>>>(){{put(patientId, getAllSchedulesByMrsId(patientId));}};
+        }
+        modelMap.put("patientSchedules", schedules);
+        return "schedule/search";
+    }
+
+    @RequestMapping(value = "convertPatientId", method = RequestMethod.GET)
+    @LoginAsAdmin
+    @ApiSession
+    public String convertPatientId(@RequestParam("mrsId") String mrsId, @RequestParam("motechId") String motechId, ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
+        if(!isNullOrEmpty(mrsId)){
+            motechId = allPatients.patientByOpenmrsId(mrsId).getMotechId();
+        }else if(!isNullOrEmpty(motechId)){
+            mrsId = allPatients.getPatientByMotechId(motechId).getMRSPatientId();
+        }
+        if(!isNullOrEmpty(mrsId) && !isNullOrEmpty(motechId))
+            modelMap.put("ids", "(MoTeCH id) " + motechId + " = " + mrsId + " (OpenMRS id)");
         return "schedule/search";
     }
 
@@ -91,8 +119,6 @@ public class ScheduleController {
                 }
             }
         }
-
-
     }
 
     private Map<String, Map<String, List<Alert>>> getAllActiveSchedules() {
@@ -109,7 +135,11 @@ public class ScheduleController {
 
     private Map<String, List<Alert>> getAllSchedulesByMotechId(final String patientId) {
         Patient patientByMotechId = allPatients.getPatientByMotechId(patientId);
-        return getAllSchedulesByMrsPatientId(patientByMotechId.getMRSPatientId());
+        return getAllSchedulesByMrsId(patientByMotechId.getMRSPatientId());
+    }
+
+    private Map<String, List<Alert>> getAllSchedulesByMrsId(String mrsPatientId) {
+        return getAllSchedulesByMrsPatientId(mrsPatientId);
     }
 
     private Map<String, List<Alert>> getAllSchedulesByMrsPatientId(String patientId) {
