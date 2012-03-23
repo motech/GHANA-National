@@ -24,4 +24,8 @@ public class AllOutPatientVisits extends MotechBaseRepository<OutPatientVisit> {
         super.add(outPatientVisit);
         allMotechModuleOutPatientVisits.save(outPatientVisit);
     }
+
+    public void migrateToCouch(OutPatientVisit outPatientVisit) {
+        super.add(outPatientVisit);
+    }
 }

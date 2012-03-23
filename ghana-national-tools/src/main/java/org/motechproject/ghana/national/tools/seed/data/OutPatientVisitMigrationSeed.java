@@ -24,7 +24,7 @@ public class OutPatientVisitMigrationSeed extends Seed {
 
         try {
             for (OutPatientVisit outPatientVisist : outPatientVisitSource.getOutPatientVisitList()) {
-                allOutPatientVisists.add(outPatientVisist);
+                allOutPatientVisists.migrateToCouch(outPatientVisist);
             }
         } catch (Exception e) {
             LOG.info("Exception occurred while migrating OutPatientVisits :" + e);
