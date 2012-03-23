@@ -30,35 +30,35 @@
       <xf:label>Query type</xf:label>
       <xf:item id="ancdefault-jf">
         <xf:label>ANC defaulters</xf:label>
-        <xf:value>ancdefault-jf</xf:value>
+        <xf:value>ANC_DEFAULTERS</xf:value>
       </xf:item>
       <xf:item id="ttdefault-jf">
         <xf:label>TT defaulters</xf:label>
-        <xf:value>ttdefault-jf</xf:value>
+        <xf:value>TT_DEFAULTERS</xf:value>
       </xf:item>
       <xf:item id="ppcdefault-jf">
         <xf:label>PNC (Mo) defaulters</xf:label>
-        <xf:value>ppcdefault-jf</xf:value>
+        <xf:value>PNC_M_DEFAULTERS</xf:value>
       </xf:item>
       <xf:item id="pncdefault-jf">
         <xf:label>PNC (Ch) defaulters</xf:label>
-        <xf:value>pncdefault-jf</xf:value>
+        <xf:value>PNC_C_DEFAULTERS</xf:value>
       </xf:item>
       <xf:item id="cwcdefault-jf">
         <xf:label>CWC defaulters</xf:label>
-        <xf:value>cwcdefault-jf</xf:value>
+        <xf:value>CWC_DEFAULTERS</xf:value>
       </xf:item>
       <xf:item id="upcomingdeliveries-jf">
         <xf:label>Upcoming deliveries</xf:label>
-        <xf:value>upcomingdeliveries-jf</xf:value>
+        <xf:value>UPCOMING_DELIVERIES</xf:value>
       </xf:item>
       <xf:item id="recentdeliveries-jf">
         <xf:label>Recent deliveries</xf:label>
-        <xf:value>recentdeliveries-jf</xf:value>
+        <xf:value>RECENT_DELIVERIES</xf:value>
       </xf:item>
       <xf:item id="overduedeliveries-jf">
         <xf:label>Past EDD/no delivery</xf:label>
-        <xf:value>overduedeliveries-jf</xf:value>
+        <xf:value>OVERDUE_DELIVERIES</xf:value>
       </xf:item>
     </xf:select1>
     <xf:input bind="responsePhoneNumber">

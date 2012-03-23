@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.validator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.GeneralQueryType;
 import org.motechproject.ghana.national.bean.GeneralQueryForm;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -34,7 +35,7 @@ public class GeneralQueryFormValidatorTest {
         String facilityId = "13161";
         String staffId = "23";
         String responsePhoneNumber="0987654321";
-        String queryType="ANC defaulters";
+        GeneralQueryType queryType= GeneralQueryType.ANC_DEFAULTERS;
         GeneralQueryForm generalQueryForm = createGeneralQueryForm(facilityId, staffId, responsePhoneNumber, queryType);
 
         when(formValidator.validateIfFacilityExists(facilityId)).thenReturn(asList(new FormError(facilityId, NOT_FOUND)));
@@ -46,7 +47,7 @@ public class GeneralQueryFormValidatorTest {
         assertThat(formErrors, hasItem(new FormError(staffId, NOT_FOUND)));
     }
 
-    private GeneralQueryForm createGeneralQueryForm(String facilityId, String staffId, String responsePhoneNumber,String queryType) {
+    private GeneralQueryForm createGeneralQueryForm(String facilityId, String staffId, String responsePhoneNumber, GeneralQueryType queryType) {
         GeneralQueryForm generalQueryForm = new GeneralQueryForm();
         generalQueryForm.setFacilityId(facilityId);
         generalQueryForm.setStaffId(staffId);

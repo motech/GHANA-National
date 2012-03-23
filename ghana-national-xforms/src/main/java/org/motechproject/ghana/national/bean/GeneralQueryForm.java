@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
+import org.motechproject.ghana.national.GeneralQueryType;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
@@ -15,7 +16,7 @@ public class GeneralQueryForm extends FormBean {
     @RegEx(pattern = PHONE_NO_PATTERN)
     private String responsePhoneNumber;
     @Required
-    private String queryType;
+    private GeneralQueryType queryType;
 
     public String getStaffId() {
         return this.staffId;
@@ -41,11 +42,11 @@ public class GeneralQueryForm extends FormBean {
         this.responsePhoneNumber = responsePhoneNumber;
     }
 
-    public String getQueryType() {
+    public GeneralQueryType getQueryType() {
         return queryType;
     }
 
-    public void setQueryType(String queryType) {
+    public void setQueryType(GeneralQueryType queryType) {
         this.queryType = queryType;
     }
 }

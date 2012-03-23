@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.GeneralQueryType;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
@@ -68,7 +69,7 @@ public class GeneralQueryFormUploadTest extends LoggedInUserFunctionalTest {
         HashMap<String, String> inputParams = new HashMap<String, String>() {{
             put("facilityId", patient.facilityId());
             put("staffId", staffId);
-            put("queryType", "ancdefault-jf");
+            put("queryType", GeneralQueryType.ANC_DEFAULTERS.toString());
             put("responsePhoneNumber", "0987654321");
         }};
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.generalQueryForm(), inputParams);
@@ -81,7 +82,7 @@ public class GeneralQueryFormUploadTest extends LoggedInUserFunctionalTest {
             put("facilityId", "12345");
             put("staffId", "123");
             put("responsePhoneNumber","123");
-            put("queryType", "ancdefault-jf");
+            put("queryType", GeneralQueryType.CWC_DEFAULTERS.toString());
         }});
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);
