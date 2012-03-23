@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.bean.ClientQueryForm;
 import org.motechproject.ghana.national.domain.ClientQueryType;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
+import org.motechproject.ghana.national.repository.AllAppointments;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.PatientService;
@@ -18,7 +19,6 @@ import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.util.DateUtil;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,6 +38,7 @@ import static org.motechproject.ghana.national.domain.Constants.*;
 import static org.motechproject.ghana.national.handlers.ClientQueryFormHandler.FIND_CLIENT_RESPONSE_SMS_KEY;
 import static org.motechproject.ghana.national.util.AssertionUtility.assertContainsTemplateValues;
 import static org.motechproject.util.DateUtil.today;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class ClientQueryFormHandlerTest {
     private ClientQueryFormHandler clientQueryFormHandler;
@@ -49,15 +50,18 @@ public class ClientQueryFormHandlerTest {
     private SMSGateway mockSmsGateway;
     @Mock
     private AllSchedules mockAllSchedules;
+    @Mock
+    private AllAppointments mockAllAppointments;
 
     @Before
     public void setUp() {
         initMocks(this);
         clientQueryFormHandler = new ClientQueryFormHandler();
-        ReflectionTestUtils.setField(clientQueryFormHandler, "patientService", mockPatientService);
-        ReflectionTestUtils.setField(clientQueryFormHandler, "pregnancyService", mockPregnancyService);
-        ReflectionTestUtils.setField(clientQueryFormHandler, "smsGateway", mockSmsGateway);
-        ReflectionTestUtils.setField(clientQueryFormHandler, "allSchedules", mockAllSchedules);
+        setField(clientQueryFormHandler, "patientService", mockPatientService);
+        setField(clientQueryFormHandler, "pregnancyService", mockPregnancyService);
+        setField(clientQueryFormHandler, "smsGateway", mockSmsGateway);
+        setField(clientQueryFormHandler, "allSchedules", mockAllSchedules);
+        setField(clientQueryFormHandler, "allAppointments", mockAllAppointments);
     }
 
     @Test
@@ -163,10 +167,12 @@ public class ClientQueryFormHandlerTest {
         final Patient patient = new Patient(new MRSPatient(mrsPatientId,motechId, new MRSPerson().dateOfBirth(today().toDate()), null));
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
         when(mockSmsGateway.getSMSTemplate(anyString())).thenReturn("some template");
+
         clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
+
         verify(mockAllSchedules).upcomingCareForCurrentWeek(mrsPatientId);
-        ArgumentCaptor<String> templateValuesCaptor = ArgumentCaptor.forClass(String.class);
-        verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), templateValuesCaptor.capture());
+        verify(mockAllAppointments).upcomingAppointmentsForCurrentWeek(motechId);
+        verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), anyString());
     }
 
     private HashMap<String, Object> createClientQueryFormForFindClientId(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String senderResponseNumber, String facilityId, String motechId, ClientQueryType clientQueryType) {

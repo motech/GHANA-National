@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
+import org.motechproject.appointments.api.contract.VisitResponse;
 import org.motechproject.ghana.national.bean.ClientQueryForm;
 import org.motechproject.ghana.national.domain.ClientQueryType;
 import org.motechproject.ghana.national.domain.Patient;
@@ -7,6 +8,7 @@ import org.motechproject.ghana.national.domain.SMSTemplate;
 import org.motechproject.ghana.national.domain.sms.UpcomingCareSMS;
 import org.motechproject.ghana.national.messagegateway.domain.MessageDispatcher;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
+import org.motechproject.ghana.national.repository.AllAppointments;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.PatientService;
@@ -44,6 +46,8 @@ public class ClientQueryFormHandler implements FormPublishHandler {
     private SMSGateway smsGateway;
     @Autowired
     private AllSchedules allSchedules;
+    @Autowired
+    private AllAppointments allAppointments;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseQuery.clientQuery")
@@ -57,14 +61,15 @@ public class ClientQueryFormHandler implements FormPublishHandler {
         } else if (clientQueryForm.getQueryType().equals(ClientQueryType.FIND_CLIENT_ID.toString())) {
             searchPatient(clientQueryForm);
         } else if (clientQueryForm.getQueryType().equals(ClientQueryType.UPCOMING_CARE.toString())) {
-            queryUpcomingCare(clientQueryForm);
+            queryUpcomingCareAndVisits(clientQueryForm);
         }
     }
 
-    private void queryUpcomingCare(ClientQueryForm clientQueryForm) {
+    private void queryUpcomingCareAndVisits(ClientQueryForm clientQueryForm) {
         Patient patient = patientService.getPatientByMotechId(clientQueryForm.getMotechId());
         List<EnrollmentRecord> upcomingEnrollments = allSchedules.upcomingCareForCurrentWeek(patient.getMRSPatientId());
-        UpcomingCareSMS upcomingCareSMS = new UpcomingCareSMS(smsGateway, patient, upcomingEnrollments);
+        List<VisitResponse> upcomingAppointments = allAppointments.upcomingAppointmentsForCurrentWeek(patient.getMotechId());
+        UpcomingCareSMS upcomingCareSMS = new UpcomingCareSMS(smsGateway, patient, upcomingEnrollments, upcomingAppointments);
         smsGateway.dispatchSMS(clientQueryForm.getSender(), upcomingCareSMS.smsText());
     }
 
