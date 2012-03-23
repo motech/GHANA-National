@@ -16,10 +16,7 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 import static org.motechproject.ghana.national.domain.Concept.*;
@@ -48,14 +45,40 @@ public class CareService {
         Patient patient = allPatients.getPatientByMotechId(cwc.getPatientMotechId());
         allEncounters.persistEncounter(patient.getMrsPatient(), cwc.getStaffId(), cwc.getFacilityId(), CWC_REG_VISIT.value(), cwc.getRegistrationDate(),
                 prepareObservations(cwc));
-        enrollToCWCCarePrograms(cwc.getRegistrationDate(), patient);
+        enrollToCWCCarePrograms(cwc, patient);
     }
 
-    void enrollToCWCCarePrograms(Date registrationDate, Patient patient) {
-        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(newDate(registrationDate));
+    void enrollToCWCCarePrograms(CwcVO cwcVO, Patient patient) {
+        MRSEncounter careHistoryEncounter = allEncounters.getLatest(patient.getMotechId(), PATIENT_HISTORY.value());
+
+        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(newDate(cwcVO.getRegistrationDate()),
+                refineCwcCareHistories(careHistoryEncounter, cwcVO.getCWCCareHistoryVO().getCwcCareHistories()));
+
         for (PatientCare patientCare : patientCares) {
             allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare));
         }
+    }
+
+    List<CwcCareHistory> refineCwcCareHistories(MRSEncounter careHistoryEncounter, List<CwcCareHistory> cwcCareHistories) {
+
+        cwcCareHistories = cwcCareHistories == null ? new ArrayList<CwcCareHistory>() : new ArrayList<CwcCareHistory>(cwcCareHistories);
+
+        if (careHistoryEncounter == null || careHistoryEncounter.getObservations() == null)
+            return cwcCareHistories;
+
+        for (MRSObservation mrsObservation : careHistoryEncounter.getObservations()) {
+            if (mrsObservation.getValue() instanceof MRSConcept) {
+                MRSConcept mrsConcept = (MRSConcept) mrsObservation.getValue();
+                if (Concept.BCG.getName().equals(mrsConcept.getName()))
+                    cwcCareHistories.add(CwcCareHistory.BCG);
+                else if (Concept.YF.getName().equals(mrsConcept.getName()))
+                    cwcCareHistories.add(CwcCareHistory.YF);
+                else if (Concept.MEASLES.getName().equals(mrsConcept.getName()))
+                    cwcCareHistories.add(CwcCareHistory.MEASLES);
+            }
+        }
+
+        return cwcCareHistories;
     }
 
     public void enroll(ANCVO ancVO) {
@@ -65,7 +88,7 @@ public class CareService {
 
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), ANC_REG_VISIT.value(), registrationDate, prepareObservations(ancVO));
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, registerPregnancy(ancVO, patient));
-        enrollPatientCares(patient.ancCareProgramsToEnrollOnRegistration(expectedDeliveryDate, newDate(registrationDate),ancVO.getAncCareHistoryVO(), activeCareSchedules(patient)), patient);
+        enrollPatientCares(patient.ancCareProgramsToEnrollOnRegistration(expectedDeliveryDate, newDate(registrationDate), ancVO.getAncCareHistoryVO(), activeCareSchedules(patient)), patient);
     }
 
     public ActiveCareSchedules activeCareSchedules(Patient patient) {

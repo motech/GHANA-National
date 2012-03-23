@@ -14,6 +14,7 @@ import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -58,12 +59,12 @@ public class PatientTest extends BaseUnitTest {
 
         LocalDate birthDay = todayAs6June2012.minusWeeks(14).plusDays(1).toLocalDate();
         List<PatientCare> patientCares = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(birthDay.toDate()), null))
-                .cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate());
+                .cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(), new ArrayList<CwcCareHistory>());
         assertThat(patientCares, hasItem(new PatientCare(CWC_IPT_VACCINE, birthDay, todayAs6June2012.toLocalDate())));
 
         birthDay = todayAs6June2012.minusWeeks(14).toLocalDate();
         patientCares = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(birthDay.toDate()), null))
-                .cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate());
+                .cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(), new ArrayList<CwcCareHistory>());
         assertThat(patientCares, not(hasItem(new PatientCare(CWC_IPT_VACCINE, birthDay, todayAs6June2012.toLocalDate()))));
     }
 
@@ -80,7 +81,7 @@ public class PatientTest extends BaseUnitTest {
     public void shouldReturnAllCWCCareProgramsApplicableDuringRegistration() {
         LocalDate dateOfBirth = todayAs6June2012.minusMonths(1).toLocalDate();
         Patient patient = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(dateOfBirth.toDate()), null));
-        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate());
+        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(), new ArrayList<CwcCareHistory>());
         assertPatientCares(patientCares, asList(new PatientCare(CWC_BCG, dateOfBirth, todayAs6June2012.toLocalDate()),
                 new PatientCare(CWC_YELLOW_FEVER, dateOfBirth, todayAs6June2012.toLocalDate()),
                 new PatientCare(CWC_PENTA, dateOfBirth, todayAs6June2012.toLocalDate()),
@@ -94,7 +95,21 @@ public class PatientTest extends BaseUnitTest {
     public void shouldNotReturnMeaslesPatientCareForCWCRegistration_IfAgeIsMoreThanAYear() {
         LocalDate dateOfBirth5YearBack = todayAs6June2012.minusYears(5).toLocalDate();
         Patient patient = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(dateOfBirth5YearBack.toDate()), null));
-        assertThat(patient.cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate()), not(hasItem(new PatientCare(CWC_MEASLES_VACCINE, dateOfBirth5YearBack, todayAs6June2012.toLocalDate()))));
+        assertThat(patient.cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(), new ArrayList<CwcCareHistory>()), not(hasItem(new PatientCare(CWC_MEASLES_VACCINE, dateOfBirth5YearBack, todayAs6June2012.toLocalDate()))));
+    }
+
+    @Test
+    public void shouldNotReturnPatientCareIfHistoryIsRecordedForBcgYfMeasles(){
+        LocalDate birthdate = DateUtil.today();
+        Patient patient = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(birthdate.toDate()), null));
+        LocalDate enrollmentDate = birthdate.plusWeeks(1);
+
+        List<CwcCareHistory> cwcCareHistories = Arrays.asList(CwcCareHistory.BCG,CwcCareHistory.MEASLES,CwcCareHistory.YF);
+        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(enrollmentDate, cwcCareHistories);
+        assertThat(patientCares,not(hasItem(new PatientCare(CWC_BCG,birthdate,enrollmentDate))));
+        assertThat(patientCares,not(hasItem(new PatientCare(CWC_YELLOW_FEVER,birthdate,enrollmentDate))));
+        assertThat(patientCares,not(hasItem(new PatientCare(CWC_MEASLES_VACCINE,birthdate,enrollmentDate))));
+
     }
 
     @Test

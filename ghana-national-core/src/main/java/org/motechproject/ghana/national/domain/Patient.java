@@ -86,17 +86,25 @@ public class Patient {
         return new ArrayList<String>(new HashSet<String>(union(ancCareProgramsToUnEnroll, cwcCareProgramsToUnEnroll)));
     }
 
-    public List<PatientCare> cwcCareProgramToEnrollOnRegistration(LocalDate enrollmentDate) {
+    public List<PatientCare> cwcCareProgramToEnrollOnRegistration(LocalDate enrollmentDate, List<CwcCareHistory> cwcCareHistories) {
         ChildCare childCare = childCare();
         LocalDate referenceDate = childCare.birthDate();
         return nullSafeList(
                 cwcIPTPatientCareEnrollOnRegistration(childCare, enrollmentDate),
-                new PatientCare(CWC_BCG, referenceDate, enrollmentDate),
-                new PatientCare(CWC_YELLOW_FEVER, referenceDate, enrollmentDate),
+                bcgChildCare(enrollmentDate, referenceDate, cwcCareHistories),
+                yfChildCare(enrollmentDate, referenceDate, cwcCareHistories),
                 new PatientCare(CWC_OPV_0, referenceDate, enrollmentDate),
                 new PatientCare(CWC_OPV_OTHERS, referenceDate, enrollmentDate),
                 pentaPatientCare(enrollmentDate),
-                measlesChildCare(enrollmentDate));
+                measlesChildCare(enrollmentDate,cwcCareHistories));
+    }
+
+    private PatientCare bcgChildCare(LocalDate enrollmentDate, LocalDate referenceDate, List<CwcCareHistory> cwcCareHistories) {
+        return cwcCareHistories.contains(CwcCareHistory.BCG) ? null : new PatientCare(CWC_BCG, referenceDate, enrollmentDate);
+    }
+
+    private  PatientCare yfChildCare(LocalDate enrollmentDate, LocalDate referenceDate, List<CwcCareHistory> cwcCareHistories) {
+        return cwcCareHistories.contains(CwcCareHistory.YF) ? null : new PatientCare(CWC_YELLOW_FEVER, referenceDate, enrollmentDate);
     }
 
     private PatientCare ancIPTPatientCareEnrollOnRegistration(LocalDate expectedDeliveryDate, LocalDate enrollmentDate) {
@@ -137,9 +145,10 @@ public class Patient {
         return newDateTime(getMrsPatient().getPerson().getDateOfBirth());
     }
 
-    private PatientCare measlesChildCare(LocalDate enrollmentDate) {
+    private  PatientCare measlesChildCare(LocalDate enrollmentDate, List<CwcCareHistory> cwcCareHistories) {
         ChildCare childCare = childCare();
-        return childCare.applicableForMeasles() ? new PatientCare(CWC_MEASLES_VACCINE, childCare.birthDate(), enrollmentDate) : null;
+        return childCare.applicableForMeasles() && !cwcCareHistories.contains(CwcCareHistory.MEASLES)
+                ? new PatientCare(CWC_MEASLES_VACCINE, childCare.birthDate(), enrollmentDate) : null;
     }
 
     public List<PatientCare> pncBabyProgramsToEnrollOnRegistration() {

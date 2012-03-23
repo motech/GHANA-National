@@ -14,6 +14,7 @@ import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSConcept;
+import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
@@ -26,7 +27,9 @@ import java.util.*;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -101,10 +104,10 @@ public class CareServiceTest extends BaseUnitTest {
         }};
         CareService careServiceSpy = spy(careService);
         careServiceSpy.enroll(cwcVO);
-        doNothing().when(careServiceSpy).enrollToCWCCarePrograms(registrationDate, mockPatient);
+        doNothing().when(careServiceSpy).enrollToCWCCarePrograms(cwcVO, mockPatient);
 
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffId, facilityId, CWC_REG_VISIT.value(), registrationDate, expected);
-        verify(careServiceSpy).enrollToCWCCarePrograms(registrationDate, mockPatient);
+        verify(careServiceSpy).enrollToCWCCarePrograms(cwcVO, mockPatient);
     }
 
     @Test
@@ -127,6 +130,38 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<String>(registartionDate, CWC_REG_NUMBER.getName(), serialNumber));
         }};
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffId, facilityId, CWC_REG_VISIT.value(), registartionDate, mrsObservations);
+    }
+
+    @Test
+    public void shouldIncludeCareHistoriesThatAreCapturedInHistoryEncounter() {
+        final LocalDate registartionDate = DateUtil.newDate(2011, 9, 1);
+        MRSEncounter mockHistroyEncounter = mock(MRSEncounter.class);
+        Set<MRSObservation> mrsObservations = new HashSet<MRSObservation>() {{
+            add(new MRSObservation<MRSConcept>(registartionDate.minusMonths(2).toDate(), Concept.IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(BCG.getName())));
+            add(new MRSObservation<MRSConcept>(registartionDate.minusMonths(2).toDate(), Concept.IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(YF.getName())));
+            add(new MRSObservation<MRSConcept>(registartionDate.minusMonths(2).toDate(), Concept.IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(MEASLES.getName())));
+
+        }};
+
+        when(mockHistroyEncounter.getObservations()).thenReturn(mrsObservations);
+
+        List<CwcCareHistory> cwcCareHistories = careService.refineCwcCareHistories(mockHistroyEncounter, null);
+
+        assertThat(cwcCareHistories, hasItem(CwcCareHistory.BCG));
+        assertThat(cwcCareHistories, hasItem(CwcCareHistory.YF));
+        assertThat(cwcCareHistories, hasItem(CwcCareHistory.MEASLES));
+    }
+
+    @Test
+    public void shouldNotIncludeCareHistoriesThatAreNotCapturedInHistoryEncounter() {
+        final LocalDate registartionDate = DateUtil.newDate(2011, 9, 1);
+        MRSEncounter mockHistroyEncounter = mock(MRSEncounter.class);
+
+        List<CwcCareHistory> cwcCareHistories = careService.refineCwcCareHistories(mockHistroyEncounter, null);
+
+        assertThat(cwcCareHistories, not(hasItem(CwcCareHistory.BCG)));
+        assertThat(cwcCareHistories, not(hasItem(CwcCareHistory.YF)));
+        assertThat(cwcCareHistories, not(hasItem(CwcCareHistory.MEASLES)));
     }
 
     @Test
@@ -221,6 +256,7 @@ public class CareServiceTest extends BaseUnitTest {
         assertThat(request.getExternalId(), is(patient.getMRSPatientId()));
     }
 
+
     @Test
     public void shoulUpdateEddObservationIfFound() throws Exception {
         String facilityId = "facility id";
@@ -258,7 +294,6 @@ public class CareServiceTest extends BaseUnitTest {
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), registrationDate, expectedANCObservations);
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, PREG_REG_VISIT.value(), registrationDate, updatedEddObservations);
     }
-
 
     @Test
     public void shouldNotAddObsIfValueNotGiven() {
@@ -363,9 +398,9 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldGetActiveCareSchedulesForAPatient(){
+    public void shouldGetActiveCareSchedulesForAPatient() {
         String patientId = "patientId";
-        setupPatient(patientId,"patientMotechId");
+        setupPatient(patientId, "patientMotechId");
         when(mockAllSchedules.getActiveEnrollment(patientId, TT_VACCINATION)).thenReturn(null);
         assertThat(careService.activeCareSchedules(mockPatient).hasActiveTTSchedule(), is(equalTo(false)));
 
@@ -373,7 +408,7 @@ public class CareServiceTest extends BaseUnitTest {
         when(mockAllSchedules.getActiveEnrollment(patientId, TT_VACCINATION)).thenReturn(enrollmentRecord);
         assertThat(careService.activeCareSchedules(mockPatient).hasActiveTTSchedule(), is(equalTo(true)));
     }
-    
+
     @Test
     public void shouldCreateSchedulesForCWCProgramRegistration() {
         String patientId = "Id";
@@ -384,10 +419,13 @@ public class CareServiceTest extends BaseUnitTest {
         when(mockPatient.getMotechId()).thenReturn(patientMotechId);
 
         PatientCare patientCare = new PatientCare("test", new LocalDate(), registrationDateTime.toLocalDate());
-        when(mockPatient.cwcCareProgramToEnrollOnRegistration(registrationDateTime.toLocalDate())).thenReturn(asList(patientCare));
-        careService.enrollToCWCCarePrograms(registrationDateTime.toDate(), mockPatient);
+        when(mockPatient.cwcCareProgramToEnrollOnRegistration(registrationDateTime.toLocalDate(), new ArrayList<CwcCareHistory>())).thenReturn(asList(patientCare));
 
-        verify(mockPatient).cwcCareProgramToEnrollOnRegistration(registrationDateTime.toLocalDate());
+        CwcVO cwcVO = new CwcVO(null, null, registrationDateTime.toDate(), patientMotechId, null, null, null,
+                null, null, null, null, null, null, null, null, null, true);
+        careService.enrollToCWCCarePrograms(cwcVO, mockPatient);
+
+        verify(mockPatient).cwcCareProgramToEnrollOnRegistration(registrationDateTime.toLocalDate(), new ArrayList<CwcCareHistory>());
         verifyIfScheduleEnrolled(0, patientId, patientCare.startingOn(), registrationDateTime.toLocalDate(), patientCare.name());
     }
 
@@ -427,9 +465,9 @@ public class CareServiceTest extends BaseUnitTest {
         assertThat(actualRequest.getExternalId(), is(equalTo(expectedRequest.getExternalId())));
         assertThat(actualRequest.getScheduleName(), is(equalTo(expectedRequest.getScheduleName())));
         assertThat("preferredAlertTime", actualRequest.getPreferredAlertTime(), is(equalTo(expectedRequest.getPreferredAlertTime())));
-        assertThat("referenceTime",actualRequest.getReferenceDateTime(), is(expectedRequest.getReferenceDateTime()));
+        assertThat("referenceTime", actualRequest.getReferenceDateTime(), is(expectedRequest.getReferenceDateTime()));
         assertThat(actualRequest.getStartingMilestoneName(), is(expectedRequest.getStartingMilestoneName()));
-        assertThat("enrollmentTime",actualRequest.getEnrollmentDateTime(), is(expectedRequest.getEnrollmentDateTime()));
+        assertThat("enrollmentTime", actualRequest.getEnrollmentDateTime(), is(expectedRequest.getEnrollmentDateTime()));
     }
 
     private ANCVO createTestANCVO(String ipt, Date iptDate, String tt, Date ttDate, RegistrationToday registrationToday, Date registrationDate,
@@ -454,6 +492,6 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     private ANCCareHistoryVO noANCHistory() {
-        return new ANCCareHistoryVO(false, new ArrayList<ANCCareHistory>(), null, null , null, null);
+        return new ANCCareHistoryVO(false, new ArrayList<ANCCareHistory>(), null, null, null, null);
     }
 }
