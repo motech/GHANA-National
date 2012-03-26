@@ -7,13 +7,16 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.EventKeys;
+import org.motechproject.ghana.national.domain.Concept;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllFacilities;
+import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.scheduler.MotechSchedulerService;
@@ -23,6 +26,7 @@ import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.motechproject.util.DateUtil;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +47,8 @@ public class BaseScheduleHandlerTest {
     @Mock
     private AllFacilities allFacilities;
     @Mock
+    private AllObservations mockAllObservations;
+    @Mock
     private SMSGateway SMSGateway;
 
     private CareScheduleHandler careScheduleHandler;
@@ -50,7 +56,7 @@ public class BaseScheduleHandlerTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        careScheduleHandler = new CareScheduleHandler(allPatients, allFacilities, SMSGateway);
+        careScheduleHandler = new CareScheduleHandler(allPatients, allFacilities, SMSGateway, mockAllObservations);
     }
 
     @Test
@@ -105,6 +111,7 @@ public class BaseScheduleHandlerTest {
         final String windowName = WindowName.due.name();
         final String scheduleName = "edd";
         final String milestoneName="milestone1";
+        final String serialNumber = "serialNumber";
 
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
         when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
@@ -113,6 +120,7 @@ public class BaseScheduleHandlerTest {
         String additionalPhoneNumber = "addPhone";
         Facility facility = new Facility().phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber);
         when(allFacilities.getFacility(facilityId)).thenReturn(facility);
+        when(mockAllObservations.findObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
 
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
@@ -121,7 +129,7 @@ public class BaseScheduleHandlerTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
         verify(SMSGateway, times(2)).dispatchSMSToAggregator(eq(PREGNANCY_ALERT_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture());
-
+        verify(mockAllObservations).findObservation(patientMotechId, Concept.SERIAL_NUMBER.getName());
         List<String> allPhoneNumbers = captor.getAllValues();
         assertEquals(2, allPhoneNumbers.size());
         assertEquals(facility.getPhoneNumbers(), allPhoneNumbers);
@@ -131,6 +139,7 @@ public class BaseScheduleHandlerTest {
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastname);
             put(MILESTONE_NAME, milestoneName);
+            put(SERIAL_NUMBER, serialNumber);
         }}, templateValuesArgCaptor.getValue());
     }
 

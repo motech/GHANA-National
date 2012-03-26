@@ -10,6 +10,7 @@ public class TextMessageTemplateVariables {
     public final static String AGE = "${age}";
     public final static String FACILITY = "${facility}";
     public final static String PHONE_NUMBER = "${phoneNumber}";
+    public final static String SERIAL_NUMBER = "${serialNumber}";
     public final static String WINDOW = "${window}";
     public final static String MILESTONE_NAME = "${milestoneName}";
     public final static String DELIVERY_TIME = "${deliveryTime}";

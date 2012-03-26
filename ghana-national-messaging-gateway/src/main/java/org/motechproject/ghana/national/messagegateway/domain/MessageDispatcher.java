@@ -20,17 +20,19 @@ public class MessageDispatcher {
 
     public SMS aggregateSMS(List<SMS> smsMessages) {
         final SMS firstSMSInTheGroup = smsMessages.get(0);
-        return SMS.fromText(join(collect(sort(smsMessages, on(SMS.class).getText(), firstSMSInTheGroup.getComparator()), on(SMS.class).getText()), SMS_SEPARATOR),
-                firstSMSInTheGroup.getPhoneNumber(), DateUtil.now(), firstSMSInTheGroup.getDeliveryStrategy(), firstSMSInTheGroup.getComparator());
+        List<SMS> sortedSMSList = sort(smsMessages, on(SMS.class).getText(), firstSMSInTheGroup.getComparator());
+        List<String> smsList = collect(sortedSMSList, on(SMS.class).getText());
+        return SMS.fromText(join(smsList, SMS_SEPARATOR), firstSMSInTheGroup.getPhoneNumber(), DateUtil.now(),
+                firstSMSInTheGroup.getDeliveryStrategy(), firstSMSInTheGroup.getComparator());
     }
 
     @CorrelationStrategy
     public String correlateByRecipientAndDeliveryDate(SMS sms) {
-    	return new FLWSMSIdentifier(sms).toString();
+        return new FLWSMSIdentifier(sms).toString();
     }
 
     @ReleaseStrategy
-    public boolean canBeDispatched(List<SMS> smsMessages){
+    public boolean canBeDispatched(List<SMS> smsMessages) {
         return smsMessages.get(0).canBeDispatched();
     }
 

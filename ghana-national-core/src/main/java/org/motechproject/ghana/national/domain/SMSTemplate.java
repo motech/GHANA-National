@@ -34,6 +34,11 @@ public class SMSTemplate {
         runtimeVariables.put(DATE, nullSafeToString(edd, PATTERN_DD_MMM_YYYY));
         return this;
     }
+    
+    public SMSTemplate fillSerialNumber(String serialNumber) {
+        runtimeVariables.put(SERIAL_NUMBER, serialNumber);
+        return this;
+    }
 
     public SMSTemplate fillScheduleDetails(String milestoneName, String windowName){
         runtimeVariables.put(WINDOW, windowName);

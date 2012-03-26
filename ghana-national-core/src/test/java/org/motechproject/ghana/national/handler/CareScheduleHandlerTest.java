@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.repository.AllFacilities;
+import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.model.MotechEvent;
@@ -25,11 +26,13 @@ public class CareScheduleHandlerTest {
     private AllPatients mockAllPatients;
     @Mock
     private AllFacilities mockAllFacilities;
+    @Mock
+    private AllObservations mockAllObservations;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        careScheduleHandlerSpy = spy(new CareScheduleHandler(mockAllPatients, mockAllFacilities, mockSmsGateway));
+        careScheduleHandlerSpy = spy(new CareScheduleHandler(mockAllPatients, mockAllFacilities, mockSmsGateway, mockAllObservations));
         doNothing().when(careScheduleHandlerSpy).sendAggregativeSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendInstantSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
     }
