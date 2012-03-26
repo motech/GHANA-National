@@ -129,7 +129,7 @@ public class CWCPentaSchedulesTest extends BaseScheduleTrackingTest {
     }
 
     private String scheduleAlertForPenta(LocalDate birthDate, String milestoneName) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, birthDate, null, null, null, milestoneName);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, birthDate, null, null, null, milestoneName, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

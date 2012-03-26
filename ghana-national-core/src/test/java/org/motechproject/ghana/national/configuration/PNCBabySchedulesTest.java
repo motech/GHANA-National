@@ -254,7 +254,7 @@ public class PNCBabySchedulesTest extends BaseScheduleTrackingTest {
     private String scheduleAlertForPNCBaby(DateTime birthDate, String pncScheduleName) {
         scheduleName = pncScheduleName;
         Time referenceTime = new Time(birthDate.getHourOfDay(), birthDate.getMinuteOfHour());
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, null, birthDate.toLocalDate(), referenceTime, null, null, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, null, birthDate.toLocalDate(), referenceTime, null, null, null, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

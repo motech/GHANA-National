@@ -109,7 +109,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enrollOrFulfill(requestCaptor.capture(), eq(visitDate.toLocalDate()), eq(visitTime));
-        assertEnrollmentRequest(new EnrollmentRequest(patientId, PNC2.scheduleName(), null, visitDate.toLocalDate(), visitTime, visitDate.toLocalDate(), visitTime, null)
+        assertEnrollmentRequest(new EnrollmentRequest(patientId, PNC2.scheduleName(), null, visitDate.toLocalDate(), visitTime, visitDate.toLocalDate(), visitTime, null, null)
                 , requestCaptor.getValue());
     }
   
@@ -205,7 +205,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enrollOrFulfill(captor.capture(), eq(visitDate));
-        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, CWC_IPT_VACCINE, deliveryTime, visitDate, deliveryTime, visitDate, null, dose.milestone()), captor.getAllValues().get(0));
+        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, CWC_IPT_VACCINE, deliveryTime, visitDate, deliveryTime, visitDate, null, dose.milestone(), null), captor.getAllValues().get(0));
     }
 
     @Test

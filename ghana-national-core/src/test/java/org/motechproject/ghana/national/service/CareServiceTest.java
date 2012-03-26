@@ -458,7 +458,7 @@ public class CareServiceTest extends BaseUnitTest {
     private EnrollmentRequest expectedRequest(String externalId, PatientCare patientCare, String startingMilestoneName, Time preferredAlertTime) {
         return new EnrollmentRequest(externalId, patientCare.name(),
                 preferredAlertTime, patientCare.startingOn(),
-                patientCare.referenceTime(), patientCare.enrollmentDate(), patientCare.enrollmentTime(), startingMilestoneName);
+                patientCare.referenceTime(), patientCare.enrollmentDate(), patientCare.enrollmentTime(), startingMilestoneName, patientCare.metaData());
     }
 
     private void assertScheduleEnrollmentRequest(EnrollmentRequest actualRequest, EnrollmentRequest expectedRequest) {

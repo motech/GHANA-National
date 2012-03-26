@@ -147,7 +147,7 @@ public class CWCOPV1SchedulesTest extends BaseScheduleTrackingTest {
 
 
     private String scheduleAlertForOPV(LocalDate referenceDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, referenceDate, null, referenceDate, null, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, referenceDate, null, referenceDate, null, null, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }
