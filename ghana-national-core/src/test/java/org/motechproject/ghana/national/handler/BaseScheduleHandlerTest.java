@@ -20,11 +20,12 @@ import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.SMSTemplateTest.assertContainsTemplateValues;
@@ -66,12 +67,19 @@ public class BaseScheduleHandlerTest {
         when(allPatients.getPatientByMotechId(patientMotechId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
-        when(allFacilities.getFacility(facilityId)).thenReturn(new Facility().phoneNumber(phoneNumber));
+        String additionalPhone = "addPhone";
+        Facility facility = new Facility().phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhone);
+        when(allFacilities.getFacility(facilityId)).thenReturn(facility);
 
         careScheduleHandler.sendAggregativeSMSToFacilityForAnAppointment(ancVisitKey, new MotechEvent("subject", parameters));
 
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(SMSGateway).dispatchSMSToAggregator(eq(ancVisitKey), templateValuesArgCaptor.capture(), eq(phoneNumber));
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(SMSGateway, times(2)).dispatchSMSToAggregator(eq(ancVisitKey), templateValuesArgCaptor.capture(), captor.capture());
+
+        List<String> allPhoneNumbers = captor.getAllValues();
+        assertEquals(2, allPhoneNumbers.size());
+        assertEquals(facility.getPhoneNumbers(), allPhoneNumbers);
 
         assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, patientMotechId);
@@ -97,13 +105,20 @@ public class BaseScheduleHandlerTest {
         when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
-        when(allFacilities.getFacility(facilityId)).thenReturn(new Facility().phoneNumber(phoneNumber));
+        String additionalPhoneNumber = "addPhone";
+        Facility facility = new Facility().phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber);
+        when(allFacilities.getFacility(facilityId)).thenReturn(facility);
 
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, null, windowName, null);
         careScheduleHandler.sendAggregativeSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
 
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(SMSGateway).dispatchSMSToAggregator(eq(PREGNANCY_ALERT_SMS_KEY), templateValuesArgCaptor.capture(), eq(phoneNumber));
+        verify(SMSGateway, times(2)).dispatchSMSToAggregator(eq(PREGNANCY_ALERT_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture());
+
+        List<String> allPhoneNumbers = captor.getAllValues();
+        assertEquals(2, allPhoneNumbers.size());
+        assertEquals(facility.getPhoneNumbers(), allPhoneNumbers);
         assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, patientMotechId);
             put(WINDOW, "Due");
@@ -128,14 +143,21 @@ public class BaseScheduleHandlerTest {
         when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
-        when(allFacilities.getFacility(facilityId)).thenReturn(new Facility().phoneNumber(phoneNumber));
+        String additionalPhoneNumber1 = "additionalPhone";
+        Facility facility = new Facility().phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber1);
+        when(allFacilities.getFacility(facilityId)).thenReturn(facility);
 
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, null, windowName, null);
 
         careScheduleHandler.sendInstantSMSToFacility(PNC_CHILD_SMS_KEY, milestoneEvent);
 
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(SMSGateway).dispatchSMS(eq(PNC_CHILD_SMS_KEY), templateValuesArgCaptor.capture(), eq(phoneNumber));
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(SMSGateway, times(2)).dispatchSMS(eq(PNC_CHILD_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture());
+
+        List<String> allPhoneNumbers = captor.getAllValues();
+        assertEquals(2, allPhoneNumbers.size());
+        assertEquals(facility.getPhoneNumbers(), allPhoneNumbers);
         assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, patientMotechId);
             put(WINDOW, "Overdue");

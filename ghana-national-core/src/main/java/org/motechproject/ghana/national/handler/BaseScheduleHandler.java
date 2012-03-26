@@ -40,8 +40,9 @@ public abstract class BaseScheduleHandler {
 
         final String windowName = getVisitWindow((String) parameters.get(MotechSchedulerService.JOB_ID_KEY));
         final String scheduleName = (String) parameters.get(EventKeys.VISIT_NAME);
-
-        smsGateway.dispatchSMSToAggregator(ancVisitSmsKey, patientDetailsMap(patient, windowName, scheduleName), facility.getPhoneNumber());
+        for (String phoneNumber : facility.getPhoneNumbers()) {
+            smsGateway.dispatchSMSToAggregator(ancVisitSmsKey, patientDetailsMap(patient, windowName, scheduleName), phoneNumber);
+        }
     }
 
     private String getVisitWindow(String jobId) {
@@ -64,7 +65,9 @@ public abstract class BaseScheduleHandler {
         Facility facility = allFacilities.getFacility(patient.getMrsPatient().getFacility().getId());
 
         final String windowName = AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName();
-        smsGateway.dispatchSMSToAggregator(smsTemplateKey, patientDetailsMap(patient, windowName, milestoneEvent.getScheduleName()), facility.getPhoneNumber());
+        for (String phoneNumber : facility.getPhoneNumbers()) {
+            smsGateway.dispatchSMSToAggregator(smsTemplateKey, patientDetailsMap(patient, windowName, milestoneEvent.getScheduleName()), phoneNumber);
+        }
     }
 
     protected void sendInstantSMSToFacility(String smsTemplateKey, final MilestoneEvent milestoneEvent) {
@@ -73,7 +76,9 @@ public abstract class BaseScheduleHandler {
         final Facility facility = allFacilities.getFacility(mrsPatient.getFacility().getId());
 
         final String windowName = AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName();
-        smsGateway.dispatchSMS(smsTemplateKey, patientDetailsMap(patient, windowName, milestoneEvent.getScheduleName()), facility.phoneNumber());
+        for (String phoneNumber : facility.getPhoneNumbers()) {
+            smsGateway.dispatchSMS(smsTemplateKey, patientDetailsMap(patient, windowName, milestoneEvent.getScheduleName()), phoneNumber);
+        }
     }
 
     private HashMap<String, String> patientDetailsMap(final Patient patient, final String windowName, final String scheduleName) {

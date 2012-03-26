@@ -23,11 +23,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -87,7 +90,8 @@ public class DeliveryNotificationFormHandlerTest {
 
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
         String facilityPhone = "facilityPhoneNumber";
-        Facility facility = new Facility().phoneNumber(facilityPhone).mrsFacilityId(facilityId);
+        String additionalPhoneNumber1 = "addPhone";
+        Facility facility = new Facility().phoneNumber(facilityPhone).mrsFacilityId(facilityId).additionalPhoneNumber1(additionalPhoneNumber1);
         when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
         when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
 
@@ -98,7 +102,13 @@ public class DeliveryNotificationFormHandlerTest {
                 datetime.toDate(), mrsObservations);
 
         ArgumentCaptor<Map> smsTemplateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(mockSMSGateway).dispatchSMS(eq(DELIVERY_NOTIFICATION_SMS_KEY), smsTemplateValuesArgCaptor.capture(), eq(facilityPhone));
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        verify(mockSMSGateway,times(2)).dispatchSMS(eq(DELIVERY_NOTIFICATION_SMS_KEY), smsTemplateValuesArgCaptor.capture(), captor.capture());
+
+        List<String> allPhoneNumbers = captor.getAllValues();
+        assertEquals(2, allPhoneNumbers.size());
+        assertEquals(facility.getPhoneNumbers(), allPhoneNumbers);
         assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, motechId);
             put(FIRST_NAME, firstName);
