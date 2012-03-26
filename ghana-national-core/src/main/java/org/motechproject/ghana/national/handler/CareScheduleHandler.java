@@ -1,8 +1,8 @@
 package org.motechproject.ghana.national.handler;
 
-import org.motechproject.ghana.national.repository.AllFacilities;
-import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
@@ -19,8 +19,8 @@ public class CareScheduleHandler extends BaseScheduleHandler {
     }
 
     @Autowired
-    public CareScheduleHandler(AllPatients allPatients, AllFacilities allFacilities, SMSGateway smsGateway) {
-        super(allPatients, allFacilities, smsGateway);
+    public CareScheduleHandler(PatientService patientService, FacilityService facilityService, SMSGateway smsGateway) {
+        super(patientService, facilityService, smsGateway);
     }
 
     @LoginAsAdmin

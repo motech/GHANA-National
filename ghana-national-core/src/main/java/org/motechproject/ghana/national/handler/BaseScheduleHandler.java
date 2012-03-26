@@ -5,9 +5,9 @@ import org.motechproject.ghana.national.domain.AlertWindow;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMSTemplate;
-import org.motechproject.ghana.national.repository.AllFacilities;
-import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduler.MotechSchedulerService;
@@ -18,25 +18,25 @@ import java.util.Map;
 
 public abstract class BaseScheduleHandler {
 
-    protected AllPatients allPatients;
+    protected PatientService patientService;
     protected SMSGateway smsGateway;
-    protected AllFacilities allFacilities;
+    protected FacilityService facilityService;
 
     protected BaseScheduleHandler() {
     }
 
-    protected BaseScheduleHandler(AllPatients allPatients, AllFacilities allFacilities, SMSGateway smsGateway) {
-        this.allPatients = allPatients;
+    protected BaseScheduleHandler(PatientService patientService, FacilityService facilityService, SMSGateway smsGateway) {
+        this.patientService = patientService;
         this.smsGateway = smsGateway;
-        this.allFacilities = allFacilities;
+        this.facilityService = facilityService;
     }
 
     protected void sendAggregativeSMSToFacilityForAnAppointment(String ancVisitSmsKey, MotechEvent motechEvent) {
         final Map<String, Object> parameters = motechEvent.getParameters();
         String externalId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
-        final Patient patient = allPatients.getPatientByMotechId(externalId);
+        final Patient patient = patientService.getPatientByMotechId(externalId);
 
-        Facility facility = allFacilities.getFacility(patient.getMrsPatient().getFacility().getId());
+        Facility facility = facilityService.getFacility(patient.getMrsPatient().getFacility().getId());
 
         final String windowName = getVisitWindow((String) parameters.get(MotechSchedulerService.JOB_ID_KEY));
         final String scheduleName = (String) parameters.get(EventKeys.VISIT_NAME);
@@ -59,18 +59,18 @@ public abstract class BaseScheduleHandler {
 
     protected void sendAggregativeSMSToFacility(String smsTemplateKey, final MilestoneEvent milestoneEvent) {
         String externalId = milestoneEvent.getExternalId();
-        final Patient patient = allPatients.patientByOpenmrsId(externalId);
+        final Patient patient = patientService.patientByOpenmrsId(externalId);
 
-        Facility facility = allFacilities.getFacility(patient.getMrsPatient().getFacility().getId());
+        Facility facility = facilityService.getFacility(patient.getMrsPatient().getFacility().getId());
 
         final String windowName = AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName();
         smsGateway.dispatchSMSToAggregator(smsTemplateKey, patientDetailsMap(patient, windowName, milestoneEvent.getScheduleName()), facility.getPhoneNumber());
     }
 
     protected void sendInstantSMSToFacility(String smsTemplateKey, final MilestoneEvent milestoneEvent) {
-        final Patient patient = allPatients.patientByOpenmrsId(milestoneEvent.getExternalId());
+        final Patient patient = patientService.patientByOpenmrsId(milestoneEvent.getExternalId());
         final MRSPatient mrsPatient = patient.getMrsPatient();
-        final Facility facility = allFacilities.getFacility(mrsPatient.getFacility().getId());
+        final Facility facility = facilityService.getFacility(mrsPatient.getFacility().getId());
 
         final String windowName = AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName();
         smsGateway.dispatchSMS(smsTemplateKey, patientDetailsMap(patient, windowName, milestoneEvent.getScheduleName()), facility.phoneNumber());
