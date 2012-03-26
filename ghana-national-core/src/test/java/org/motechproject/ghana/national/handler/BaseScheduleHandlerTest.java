@@ -1,5 +1,7 @@
 package org.motechproject.ghana.national.handler;
 
+import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -15,6 +17,8 @@ import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.scheduler.MotechSchedulerService;
+import org.motechproject.scheduletracking.api.domain.Milestone;
+import org.motechproject.scheduletracking.api.domain.MilestoneAlert;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.motechproject.util.DateUtil;
@@ -86,7 +90,7 @@ public class BaseScheduleHandlerTest {
             put(WINDOW, "Overdue");
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastname);
-            put(SCHEDULE_NAME, visitName);
+            put(MILESTONE_NAME, visitName);
         }}, templateValuesArgCaptor.getValue());
     }
 
@@ -100,6 +104,7 @@ public class BaseScheduleHandlerTest {
         final String lastname = "lastname";
         final String windowName = WindowName.due.name();
         final String scheduleName = "edd";
+        final String milestoneName="milestone1";
 
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
         when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
@@ -109,7 +114,8 @@ public class BaseScheduleHandlerTest {
         Facility facility = new Facility().phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber);
         when(allFacilities.getFacility(facilityId)).thenReturn(facility);
 
-        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, null, windowName, null);
+        MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
         careScheduleHandler.sendAggregativeSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
@@ -124,7 +130,7 @@ public class BaseScheduleHandlerTest {
             put(WINDOW, "Due");
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastname);
-            put(SCHEDULE_NAME, scheduleName);
+            put(MILESTONE_NAME, milestoneName);
         }}, templateValuesArgCaptor.getValue());
     }
 
@@ -147,7 +153,10 @@ public class BaseScheduleHandlerTest {
         Facility facility = new Facility().phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber1);
         when(allFacilities.getFacility(facilityId)).thenReturn(facility);
 
-        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, null, windowName, null);
+        final String milestoneName="milestone1";
+        MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
+
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
 
         careScheduleHandler.sendInstantSMSToFacility(PNC_CHILD_SMS_KEY, milestoneEvent);
 
@@ -163,7 +172,7 @@ public class BaseScheduleHandlerTest {
             put(WINDOW, "Overdue");
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastname);
-            put(SCHEDULE_NAME, scheduleName);
+            put(MILESTONE_NAME, milestoneName);
         }}, templateValuesArgCaptor.getValue());
     }
 }

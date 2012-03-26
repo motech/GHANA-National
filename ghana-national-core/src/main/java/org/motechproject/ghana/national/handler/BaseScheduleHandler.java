@@ -66,7 +66,7 @@ public abstract class BaseScheduleHandler {
 
         final String windowName = AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName();
         for (String phoneNumber : facility.getPhoneNumbers()) {
-            smsGateway.dispatchSMSToAggregator(smsTemplateKey, patientDetailsMap(patient, windowName, milestoneEvent.getScheduleName()), phoneNumber);
+            smsGateway.dispatchSMSToAggregator(smsTemplateKey, patientDetailsMap(patient, windowName, milestoneEvent.getMilestoneAlert().getMilestoneName()), phoneNumber);
         }
     }
 
@@ -77,7 +77,7 @@ public abstract class BaseScheduleHandler {
 
         final String windowName = AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName();
         for (String phoneNumber : facility.getPhoneNumbers()) {
-            smsGateway.dispatchSMS(smsTemplateKey, patientDetailsMap(patient, windowName, milestoneEvent.getScheduleName()), phoneNumber);
+            smsGateway.dispatchSMS(smsTemplateKey, patientDetailsMap(patient, windowName, milestoneEvent.getMilestoneAlert().getMilestoneName()), phoneNumber);
         }
     }
 

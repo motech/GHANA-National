@@ -26,7 +26,7 @@ import static org.motechproject.ghana.national.domain.sms.UpcomingCareSMS.UPCOMI
 import static org.motechproject.ghana.national.domain.sms.UpcomingCareSMS.UPCOMING_CARE_DUE_CLIENT_QUERY;
 import static org.motechproject.util.DateUtil.newDateTime;
 
-public class UpcomingCareSMSTest {
+public class    UpcomingCareSMSTest {
     @Mock
     private SMSGateway mockSmsGateway;
     @Mock

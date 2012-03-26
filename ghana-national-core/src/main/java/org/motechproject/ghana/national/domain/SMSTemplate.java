@@ -35,14 +35,14 @@ public class SMSTemplate {
         return this;
     }
 
-    public SMSTemplate fillScheduleDetails(String scheduleName, String windowName){
+    public SMSTemplate fillScheduleDetails(String milestoneName, String windowName){
         runtimeVariables.put(WINDOW, windowName);
-        runtimeVariables.put(SCHEDULE_NAME, scheduleName);
+        runtimeVariables.put(MILESTONE_NAME, milestoneName);
         return this;
     }
     
-    public SMSTemplate fillCareSchedulesDueDate(String scheduleName, DateTime startOfDueWindow){
-        runtimeVariables.put(SCHEDULE_NAME, scheduleName);
+    public SMSTemplate fillCareSchedulesDueDate(String milestoneName, DateTime startOfDueWindow){
+        runtimeVariables.put(MILESTONE_NAME, milestoneName);
         runtimeVariables.put(DATE, nullSafeToString(startOfDueWindow, PATTERN_DD_MMM_YYYY));
         return this;
     }
