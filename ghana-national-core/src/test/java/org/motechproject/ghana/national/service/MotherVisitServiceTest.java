@@ -241,7 +241,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     }
 
     private ANCVisitRequest createTestANCVisit() {
-        return createTestANCVisit(new MRSUser(), new Facility(), new Patient(new MRSPatient("patientId")));
+        return createTestANCVisit(new MRSUser(), new Facility(), new Patient(new MRSPatient("patientId", new MRSPerson(), new MRSFacility("fid"))));
     }
 
     private ANCVisitRequest createTestANCVisit(MRSUser staff, Facility facility, Patient patient) {
