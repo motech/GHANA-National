@@ -115,6 +115,9 @@
             </exclusions>
         </dependency>
     </dependencies>
+    <properties>
+        <OPENMRS_PORT>8080</OPENMRS_PORT>
+    </properties>
     <build>
         <!--RESOURCE FILTERING-->
         <resources>

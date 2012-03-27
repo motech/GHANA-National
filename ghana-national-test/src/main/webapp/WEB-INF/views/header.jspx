@@ -1,0 +1,9 @@
+<div id="header" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags">
+    <spring:url value="/resources/images/motech.jpeg" var="motech_img_url"/>
+    <spring:url var="home" value="/admin" />
+    <a href="${home}" target="_self" name="home_label">
+    <img src="${motech_img_url}" class="motech-img"/>
+    </a>
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+</div>

@@ -1,0 +1,48 @@
+<html xmlns:tiles="http://tiles.apache.org/tags-tiles" xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:spring="http://www.springframework.org/tags">
+
+<jsp:output omit-xml-declaration="yes"/>
+<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat"/>
+
+<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+<jsp:directive.page pageEncoding="UTF-8"/>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=8"/>
+
+    <title><tiles:insertAttribute name="title" ignore="true"/></title>
+    <spring:url value="/resources/js/lib/jquery-1.6.3.min.js" var="jquery_url"/>
+    <spring:url value="/resources/js/lib/formly.min.js" var="formly_url"/>
+    <spring:url value="/resources/js/lib/modernizr.custom.js" var="modernizr_url"/>
+    <spring:url value="/resources/js/utilities.js" var="utilities_url"/>
+    <spring:url value="/resources/js/form-validations.js" var="form_validations_url"/>
+    <spring:url value="/resources/css/application.css" var="css_url"/>
+    <spring:url value="/resources/css/lib/formly.min.css" var="formly_css_url"/>
+    <spring:url value="/resources/css/lib/jquery-ui-1.8.16.datepicker.css" var="datepicker_css_url"/>
+    <spring:url value="/resources/js/lib/jquery-ui-1.8.16.datepicker.min.js" var="datepicker_url"/>
+    <spring:url value="/resources/js/lib/jquery.ui.datepicker.validation.js" var="datepicker_validation_url"/>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="${formly_css_url}"></link>
+    <link rel="stylesheet" type="text/css" media="screen" href="${css_url}"></link>
+    <link rel="stylesheet" type="text/css" media="screen" href="${datepicker_css_url}"></link>
+    <script src="${jquery_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <script src="${formly_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <script src="${modernizr_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <script src="${utilities_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <script src="${form_validations_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+    <script src="${datepicker_url}" type="text/javascript"><!--closing tag needed--></script>
+    <script src="${datepicker_validation_url}" type="text/javascript"><!--closing tag needed--></script>
+</head>
+<body>
+<div id="page-wrap">
+    <tiles:insertAttribute name="header"/>
+    <tiles:insertAttribute name="menu"/>
+
+    <div id="main-content">
+        <tiles:insertAttribute name="body"/>
+    </div>
+    <tiles:insertAttribute name="footer"/>
+</div>
+</body>
+</html>

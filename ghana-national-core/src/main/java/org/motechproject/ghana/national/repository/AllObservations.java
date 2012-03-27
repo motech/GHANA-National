@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.motechproject.ghana.national.domain.Concept.EDD;
@@ -24,6 +25,10 @@ public class AllObservations {
 
     public MRSObservation findObservation(String patientMotechId, String conceptName) {
         return mrsObservationAdapter.findObservation(patientMotechId, conceptName);
+    }
+
+    public List<MRSObservation> findObservations(String patientMotechId, String conceptName) {
+        return mrsObservationAdapter.findObservations(patientMotechId, conceptName);
     }
 
     public Set<MRSObservation> updateEDD(Date estimatedDeliveryDate, Patient patient, String staffId) {

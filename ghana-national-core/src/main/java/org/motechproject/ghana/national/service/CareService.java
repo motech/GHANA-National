@@ -49,24 +49,21 @@ public class CareService {
     }
 
     void enrollToCWCCarePrograms(CwcVO cwcVO, Patient patient) {
-        MRSEncounter careHistoryEncounter = allEncounters.getLatest(patient.getMotechId(), PATIENT_HISTORY.value());
-
+        List<MRSObservation> capturedHistory = allObservations.findObservations(patient.getMotechId(), Concept.IMMUNIZATIONS_ORDERED.getName());
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(newDate(cwcVO.getRegistrationDate()),
-                refineCwcCareHistories(careHistoryEncounter, cwcVO.getCWCCareHistoryVO().getCwcCareHistories()));
+                refineCwcCareHistories(capturedHistory, cwcVO.getCWCCareHistoryVO().getCwcCareHistories()));
 
         for (PatientCare patientCare : patientCares) {
             allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare));
         }
     }
 
-    List<CwcCareHistory> refineCwcCareHistories(MRSEncounter careHistoryEncounter, List<CwcCareHistory> cwcCareHistories) {
+    List<CwcCareHistory> refineCwcCareHistories(List<MRSObservation>capturedHistory, List<CwcCareHistory> cwcCareHistories) {
 
         cwcCareHistories = cwcCareHistories == null ? new ArrayList<CwcCareHistory>() : new ArrayList<CwcCareHistory>(cwcCareHistories);
 
-        if (careHistoryEncounter == null || careHistoryEncounter.getObservations() == null)
-            return cwcCareHistories;
 
-        for (MRSObservation mrsObservation : careHistoryEncounter.getObservations()) {
+        for (MRSObservation mrsObservation : capturedHistory) {
             if (mrsObservation.getValue() instanceof MRSConcept) {
                 MRSConcept mrsConcept = (MRSConcept) mrsObservation.getValue();
                 if (Concept.BCG.getName().equals(mrsConcept.getName()))

@@ -28,9 +28,9 @@ public class UpcomingSchedule {
         this.voided = (voided == 1);
     }
 
-    private DateTime parse(String minDatetime) {
-        return minDatetime != null ?
-                DateUtil.newDateTime(DateTime.parse(minDatetime, DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss.S")).toDate())
+    private DateTime parse(String dateTime) {
+        return dateTime != null ?
+                DateUtil.newDateTime(DateTime.parse(dateTime, DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss.S")).toDate())
                 : null;
     }
 

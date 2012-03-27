@@ -1,0 +1,56 @@
+<div id="menu" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <nav>
+        <ul>
+            <spring:url value="/admin/facilities/new" var="new_facility_url"/>
+            <spring:url value="/admin/facilities/search" var="search_facility_url"/>
+            <spring:url value="/admin/staffs/search" var="search_staffs_url"/>
+            <spring:url value="/admin/patients/new" var="new_patient_url"/>
+            <spring:url value="/admin/patients/search" var="search_patient_url"/>
+            <spring:url value="/security/password/reset" var="password_reset_url"/>
+            <spring:url value="/logout" var="logout_url"/>
+            <spring:url value="/admin/staffs/new" var="staffs_url"/>
+            <li>
+                <a href="#">Facility</a>
+                <ul>
+                    <li>
+                        <a href="${new_facility_url}" id="newfacility">New</a>
+                    </li>
+                    <li>
+                        <a href="${search_facility_url}" id="searchfacility">Search</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Patient</a>
+                <ul>
+                    <li>
+                        <a href="${new_patient_url}" id="newpatient">New</a>
+                    </li>
+                    <li>
+                        <a href="${search_patient_url}" id="searchpatient">Search</a>
+                    </li>
+                </ul>
+
+            </li>
+            <li>
+                <a href="#">Staff</a>
+                <ul>
+                    <li>
+                        <a href="${staffs_url}" id="newstaff">New</a>
+                    </li>
+                    <li>
+                        <a href="${search_staffs_url}" id="searchstaff">Search</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="${password_reset_url}">Reset Password</a>
+            </li>
+            <li>
+                <a href="${logout_url}">Logout</a>
+            </li>
+        </ul>
+    </nav>
+</div>

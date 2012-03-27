@@ -74,7 +74,7 @@
             <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;">result</p>
             <table id="allSchedulesResult">
                 <th>Patient</th>
-                <th>Alerts scheduled
+                <th>Active schedules
                     <c:if test="${startDate ne null}">(start: ${startDate} end: ${endDate})</c:if>
                 </th>
                 <c:forEach items="${patientSchedules}" var="patient">
