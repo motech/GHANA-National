@@ -38,8 +38,9 @@
     <beans:import resource="classpath:applicationAppointmentsAPI.xml"/>
     <beans:import resource="classpath:applicationContext-messaging-gateway.xml"/>
 
-    <bean id="commonsHttpClient" class="org.apache.commons.httpclient.HttpClient" />
+    <bean id="commonsHttpClient" class="org.apache.commons.httpclient.HttpClient"/>
 
+    <bean id="aggregationStrategy" class="org.motechproject.ghana.national.repository.AggregationStrategyImpl"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
