@@ -49,7 +49,7 @@ public class TTVaccineSeed extends ScheduleMigrationSeed {
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest(patient.getMRSPatientId(),
                 getScheduleName(milestoneName), new Time(DateUtil.now().toLocalTime()),
                 milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
-                milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()), milestoneName);
+                milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()), milestoneName, null);
         allSchedules.enroll(enrollmentRequest);
 
     }

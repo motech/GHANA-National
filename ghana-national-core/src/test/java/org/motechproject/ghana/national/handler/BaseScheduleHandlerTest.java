@@ -14,6 +14,8 @@ import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSObservation;
@@ -43,9 +45,9 @@ import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PREGNANCY_
 public class BaseScheduleHandlerTest {
 
     @Mock
-    private AllPatients allPatients;
+    private PatientService mockPatientService;
     @Mock
-    private AllFacilities allFacilities;
+    private FacilityService mockFacilityService;
     @Mock
     private AllObservations mockAllObservations;
     @Mock
@@ -56,7 +58,7 @@ public class BaseScheduleHandlerTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        careScheduleHandler = new CareScheduleHandler(allPatients, allFacilities, SMSGateway, mockAllObservations);
+        careScheduleHandler = new CareScheduleHandler(mockPatientService, mockFacilityService, SMSGateway, mockAllObservations);
     }
 
     @Test
@@ -74,12 +76,12 @@ public class BaseScheduleHandlerTest {
         parameters.put(MotechSchedulerService.JOB_ID_KEY, visitName + "3");
 
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(1999, 3, 3).toDate());
-        when(allPatients.getPatientByMotechId(patientMotechId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
+        when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
         String additionalPhone = "addPhone";
         Facility facility = new Facility().phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhone);
-        when(allFacilities.getFacility(facilityId)).thenReturn(facility);
+        when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
 
         careScheduleHandler.sendAggregativeSMSToFacilityForAnAppointment(ancVisitKey, new MotechEvent("subject", parameters));
 
@@ -114,13 +116,12 @@ public class BaseScheduleHandlerTest {
         final String serialNumber = "serialNumber";
 
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
-        when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
+        when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
         String additionalPhoneNumber = "addPhone";
         Facility facility = new Facility().phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber);
-        when(allFacilities.getFacility(facilityId)).thenReturn(facility);
-        when(mockAllObservations.findObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
+        when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
 
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
@@ -155,12 +156,12 @@ public class BaseScheduleHandlerTest {
         final String scheduleName = "some schedule";
 
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
-        when(allPatients.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
+        when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
         String additionalPhoneNumber1 = "additionalPhone";
         Facility facility = new Facility().phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhoneNumber1);
-        when(allFacilities.getFacility(facilityId)).thenReturn(facility);
+        when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
 
         final String milestoneName="milestone1";
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());

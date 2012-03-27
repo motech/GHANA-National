@@ -231,8 +231,13 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     }
 
     protected String enroll(LocalDate referenceDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, scheduleName, preferredAlertTime, referenceDate, null, today(), null, null);
+        EnrollmentRequest enrollmentRequest = enrollmentRequest(externalId, scheduleName, preferredAlertTime, referenceDate, null, today(), null, null, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
+    }
+
+    private EnrollmentRequest enrollmentRequest(String externalId, String scheduleName, Time preferredAlertTime, LocalDate referenceDate, Time referenceTime,
+                                                LocalDate registrationDate, Time registrationTime, String startMilestone, Map<String, String> metadata) {
+        return new EnrollmentRequest(externalId, scheduleName, preferredAlertTime, referenceDate, referenceTime, registrationDate, registrationTime, startMilestone, metadata);
     }
 
     protected void fulfillCurrentMilestone(LocalDate fulfillmentDate) {

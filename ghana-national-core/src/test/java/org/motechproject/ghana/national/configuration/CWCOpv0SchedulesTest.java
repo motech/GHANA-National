@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.scheduletracking.api.domain.WindowName;
-import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.quartz.SchedulerException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -59,7 +58,6 @@ public class CWCOpv0SchedulesTest extends BaseScheduleTrackingTest {
     }
 
     private String scheduleAlertForOPV(LocalDate referenceDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, referenceDate, null, referenceDate, null, null);
-        return scheduleTrackingService.enroll(enrollmentRequest);
+        return enroll(referenceDate);
     }
 }

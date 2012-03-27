@@ -122,4 +122,8 @@ public class PatientService {
     public List<MRSPatient> getPatients(String firstName, String lastName, String phoneNumber, Date dateOfBirth, String insuranceNumber) {
         return allPatientSearch.getPatients(firstName, lastName, phoneNumber, dateOfBirth, insuranceNumber);
     }
+
+    public Patient patientByOpenmrsId(String patientId) {
+        return allPatients.patientByOpenmrsId(patientId);
+    }
 }

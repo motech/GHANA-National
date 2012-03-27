@@ -105,7 +105,7 @@ public abstract class ScheduleMigrationSeed extends Seed {
                 getScheduleName(milestoneName), new Time(DateUtil.now().toLocalTime()),
                 milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
                 milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
-                mapMilestoneName(milestoneName));
+                mapMilestoneName(milestoneName), null);
         allSchedules.enroll(enrollmentRequest);
     }
 

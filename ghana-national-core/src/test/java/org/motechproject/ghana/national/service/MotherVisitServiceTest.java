@@ -108,10 +108,10 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         verify(mockAllSchedules, times(1)).enroll(enrollmentRequestCaptor.capture());
         verify(mockAllSchedules, times(1)).enrollOrFulfill(enrollmentRequestCaptor.capture(), eq(visitDate));
 
-        assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, ANC_DELIVERY, null, pregnancy.dateOfConception(), null, null, null, null),
+        assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, ANC_DELIVERY, null, pregnancy.dateOfConception(), null, null, null, null, null),
                 enrollmentRequestCaptor.getAllValues().get(0));
         assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, null, visitDate, null,
-                visitDate, null, IPTDose.byValue(ancVisit.getIptdose()).milestone()),
+                visitDate, null, IPTDose.byValue(ancVisit.getIptdose()).milestone(), null),
                 enrollmentRequestCaptor.getAllValues().get(1));
 //        verify(mockAllAppointments).updateANCVisitSchedule(patient, ancVisit.getDate(), DateUtil.newDateTime(ancVisit.getNextANCDate()));
 
@@ -202,7 +202,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enrollOrFulfill(captor.capture(), eq(visitDate));
-        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, deliveryTime, visitDate, deliveryTime, visitDate, null, dose2.milestone()), captor.getAllValues().get(0));
+        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, deliveryTime, visitDate, deliveryTime, visitDate, null, dose2.milestone(), null), captor.getAllValues().get(0));
     }
 
     @Test

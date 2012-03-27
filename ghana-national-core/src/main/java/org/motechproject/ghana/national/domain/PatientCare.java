@@ -5,6 +5,8 @@ import org.joda.time.LocalDate;
 import org.motechproject.model.Time;
 import org.motechproject.util.DateUtil;
 
+import java.util.Map;
+
 import static org.motechproject.util.DateUtil.time;
 
 public class PatientCare {
@@ -52,6 +54,10 @@ public class PatientCare {
 
     public Time enrollmentTime() {
         return enrollmentTime;
+    }
+
+    public Map<String, String> metaData() {
+        return null;
     }
 
     @Override

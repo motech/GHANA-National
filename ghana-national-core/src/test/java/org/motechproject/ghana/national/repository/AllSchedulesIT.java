@@ -34,7 +34,7 @@ public class AllSchedulesIT extends BaseScheduleTrackingTest {
         mockCurrentDate(today);
         final LocalDate dateOfConception = basedOnDeliveryDate(newDate("22-SEP-2012")).dateOfConception();
 
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, ScheduleNames.ANC_IPT_VACCINE, new Time(10, 10), dateOfConception, null, dateOfConception, null, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, ScheduleNames.ANC_IPT_VACCINE, new Time(10, 10), dateOfConception, null, dateOfConception, null, null, null);
         scheduleTrackingService.enroll(enrollmentRequest);
 
         mockCurrentDate(newDate("17-MAR-2012"));

@@ -4,6 +4,8 @@ import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
@@ -20,8 +22,8 @@ public class CareScheduleHandler extends BaseScheduleHandler {
     }
 
     @Autowired
-    public CareScheduleHandler(AllPatients allPatients, AllFacilities allFacilities, SMSGateway smsGateway, AllObservations allObservations) {
-        super(allPatients, allFacilities, smsGateway, allObservations);
+    public CareScheduleHandler(PatientService patientService, FacilityService facilityService, SMSGateway smsGateway, AllObservations allObservations) {
+        super(patientService, facilityService, smsGateway, allObservations);
     }
 
     @LoginAsAdmin
