@@ -20,9 +20,9 @@ public class DeliveryTimeBasedExpiry implements ExpiryStrategy {
             final Boolean canTheMessageGroupBeDelivered = canTheFirstMessageBeDelivered(group);
             if (canTheMessageGroupBeDelivered != null && canTheMessageGroupBeDelivered) {
                 count++;
-                try{
+                try {
                     messageStore.expire(group);
-                }catch (Exception e){
+                } catch (Exception e) {
                     logger.error("Exception while expiring message group, " + group, e);
                 }
             }

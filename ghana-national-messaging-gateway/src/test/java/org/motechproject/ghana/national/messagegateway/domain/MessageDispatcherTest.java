@@ -43,9 +43,9 @@ public class MessageDispatcherTest extends BaseUnitTest {
         }};
         assertThat(dispatcher.aggregateSMS(messagesList).getText(),
                 is(equalTo("window1: firstName lastName, motechId, serialNumber, milestoneName1, milestoneName2" +
-                "%0awindow2: firstName lastName, motechId, serialNumber, milestoneName, firstName2 lastName3, " +
+                        "%0awindow2: firstName lastName, motechId, serialNumber, milestoneName, firstName2 lastName3, " +
                         "motechId2, serialNumber, milestoneName, firstName2 lastName3, motechId3, serialNumber, milestoneName" +
-                "%0awindow3: firstName lastName, motechId, serialNumber, milestoneName")));
+                        "%0awindow3: firstName lastName, motechId, serialNumber, milestoneName")));
     }
 
     @Test

@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static org.apache.commons.lang.StringUtils.trimToEmpty;
 
-public class SMS implements DeliveryTimeAware, Serializable{
+public class SMS implements DeliveryTimeAware, Serializable {
     private String phoneNumber;
     private String text;
     private DateTime generationTime;
@@ -19,11 +19,11 @@ public class SMS implements DeliveryTimeAware, Serializable{
     protected SMS() {
     }
 
-    public static SMS fromTemplate(String template, Map<String, String> runtimeValues, String phoneNumber, DateTime generationTime, DeliveryStrategy deliveryStrategy, Comparator<String> comparator){
+    public static SMS fromTemplate(String template, Map<String, String> runtimeValues, String phoneNumber, DateTime generationTime, DeliveryStrategy deliveryStrategy, Comparator<String> comparator) {
         return SMS.fromText(SMS.fill(template, runtimeValues), phoneNumber, generationTime, deliveryStrategy, comparator);
     }
 
-    public static SMS fromText(String text, String phoneNumber, DateTime generationTime, DeliveryStrategy deliveryStrategy, Comparator<String> comparator){
+    public static SMS fromText(String text, String phoneNumber, DateTime generationTime, DeliveryStrategy deliveryStrategy, Comparator<String> comparator) {
         SMS sms = new SMS();
         sms.phoneNumber = phoneNumber;
         sms.generationTime = generationTime;
@@ -34,7 +34,7 @@ public class SMS implements DeliveryTimeAware, Serializable{
     }
 
     public static String fill(String template, Map<String, String> runTimeValues) {
-        String text="";
+        String text = "";
         for (Map.Entry<String, String> runTimeValue : runTimeValues.entrySet()) {
             text = template.replace(runTimeValue.getKey(), trimToEmpty(runTimeValue.getValue()));
             template = text;

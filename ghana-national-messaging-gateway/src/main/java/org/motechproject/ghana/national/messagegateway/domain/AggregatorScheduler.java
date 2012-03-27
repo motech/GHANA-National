@@ -19,17 +19,17 @@ public class AggregatorScheduler {
     private JobDetail reaperJob;
 
     @Autowired
-    public AggregatorScheduler(SchedulerFactoryBean schedulerFactoryBean, @Qualifier("reaperTrigger")Trigger reaperTrigger, @Qualifier("reaperJob")JobDetail reaperJob) {
+    public AggregatorScheduler(SchedulerFactoryBean schedulerFactoryBean, @Qualifier("reaperTrigger") Trigger reaperTrigger, @Qualifier("reaperJob") JobDetail reaperJob) {
         this.schedulerFactoryBean = schedulerFactoryBean;
         this.reaperTrigger = reaperTrigger;
         this.reaperJob = reaperJob;
         initialize();
     }
 
-    public void initialize(){
+    public void initialize() {
         try {
             final JobDetail existingReaperJob = schedulerFactoryBean.getScheduler().getJobDetail(reaperJob.getName(), reaperJob.getGroup());
-            if(existingReaperJob != null){
+            if (existingReaperJob != null) {
                 schedulerFactoryBean.getScheduler().deleteJob(reaperJob.getName(), reaperJob.getGroup());
             }
             schedulerFactoryBean.getScheduler().scheduleJob(reaperJob, reaperTrigger);

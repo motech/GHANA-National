@@ -5,7 +5,7 @@ import org.joda.time.format.DateTimeFormat;
 
 import java.io.Serializable;
 
-public class FLWSMSIdentifier implements Serializable{
+public class FLWSMSIdentifier implements Serializable {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     private String phoneNumber;
     private DateTime deliveryDate;

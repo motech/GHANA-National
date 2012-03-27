@@ -2,7 +2,7 @@
     "name" : "CWCMeaslesVaccine",
     "milestones" : [
         {
-            "name" : "Default",
+            "name" : "Measles",
             "scheduleWindows" : {
                 "earliest" : ["9 Months"],
                 "due" : ["9 Months", "4 Weeks"],

@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
-public class DeliveryTimeBasedExpiryTest extends BaseUnitTest{
+public class DeliveryTimeBasedExpiryTest extends BaseUnitTest {
 
     @Test
     public void shouldExpireMessageGroupsBasedOnDeliveryDateOfMessagesInTheGroup() {
@@ -65,7 +65,7 @@ public class DeliveryTimeBasedExpiryTest extends BaseUnitTest{
         return messageGroup;
     }
 
-    class TestMessage<T> implements Message<T>{
+    class TestMessage<T> implements Message<T> {
 
         private T obj;
 

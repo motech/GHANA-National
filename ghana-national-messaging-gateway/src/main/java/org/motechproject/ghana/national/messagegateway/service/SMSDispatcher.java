@@ -11,7 +11,7 @@ public class SMSDispatcher {
     @Autowired
     SmsService smsService;
 
-    public void dispatch(SMS sms){
-        smsService.sendSMS(sms.getPhoneNumber(),sms.getText());
+    public void dispatch(SMS sms) {
+        smsService.sendSMS(sms.getPhoneNumber(), sms.getText());
     }
 }
