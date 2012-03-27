@@ -13,7 +13,6 @@ import java.util.Set;
 
 import static org.motechproject.ghana.national.domain.Concept.EDD;
 import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
-import static org.motechproject.ghana.national.domain.Concept.PREGNANCY_STATUS;
 
 @Repository
 public class AllObservations {
@@ -47,15 +46,6 @@ public class AllObservations {
             activePregnancyObservation = new MRSObservation<Object>(new Date(), PREGNANCY.getName(), null);
         }
         return activePregnancyObservation;
-    }
-
-    public Boolean hasActivePregnancyStatusObservation(String motechId) {
-        MRSObservation activePregnancyObservation = findObservation(motechId, PREGNANCY_STATUS.getName());
-        if (activePregnancyObservation == null) {
-            logger.warn("No active pregnancy status observation found while checking for EDD. Patient ID :" + motechId);
-            return false;
-        }
-        return (Boolean) activePregnancyObservation.getValue();
     }
 
     private MRSObservation createNewEddObservation(MRSObservation activePregnancyObservation, MRSObservation eddObservation, String staffId, Date estDeliveryDate) {

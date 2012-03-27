@@ -68,8 +68,10 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
         if (patient.getMrsPatient().getFacility() != null) {
             Facility facility = facilityService.getFacility(patient.getMrsPatient().getFacility().getId());
 
-            smsGateway.dispatchSMS(DELIVERY_NOTIFICATION_SMS_KEY, new SMSTemplate().fillPatientDetails(patient)
-                    .fillDeliveryTime(deliveryTime).getRuntimeVariables(), facility.getPhoneNumber());
+            for (String phoneNumber : facility.getPhoneNumbers()) {
+                smsGateway.dispatchSMS(DELIVERY_NOTIFICATION_SMS_KEY, new SMSTemplate().fillPatientDetails(patient)
+                        .fillDeliveryTime(deliveryTime).getRuntimeVariables(), phoneNumber);
+            }
         }
     }
 }

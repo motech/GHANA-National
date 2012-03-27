@@ -20,7 +20,7 @@ public class MessageGroupStoreRepearJob extends QuartzJobBean {
         final ApplicationContext applicationContext;
         try {
             applicationContext = (ApplicationContext) jobExecutionContext.getScheduler().getContext().get("applicationContext");
-            ((MessageGroupStoreReaper)applicationContext.getBean("reaper")).run();
+            ((MessageGroupStoreReaper) applicationContext.getBean("reaper")).run();
 
         } catch (SchedulerException e) {
             logger.error("Encountered exception while executing reaper job", e);

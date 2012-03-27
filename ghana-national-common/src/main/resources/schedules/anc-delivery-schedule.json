@@ -2,7 +2,7 @@
     "name" : "Delivery",
     "milestones" : [
         {
-            "name" : "Default",
+            "name" : "Delivery",
             "scheduleWindows" : {
                 "earliest" : ["40 Weeks"],
                 "due" : ["41 Weeks"],

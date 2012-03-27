@@ -5,6 +5,6 @@ import org.springframework.integration.annotation.Gateway;
 
 public interface MessageGateway {
 
-    @Gateway(requestChannel="smsMessages")
+    @Gateway(requestChannel = "smsMessages")
     public void dispatch(SMS sms);
 }

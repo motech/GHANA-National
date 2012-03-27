@@ -3,8 +3,11 @@ package org.motechproject.ghana.national.domain;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.mrs.model.MRSFacility;
+
+import java.util.List;
 
 @TypeDiscriminator("doc.type === 'Facility'")
 public class Facility extends MotechBaseDataObject {
@@ -138,6 +141,10 @@ public class Facility extends MotechBaseDataObject {
 
     public String getMotechId() {
         return motechId;
+    }
+
+    public List<String> getPhoneNumbers() {
+        return Utility.nullSafeList(phoneNumber, additionalPhoneNumber1, additionalPhoneNumber2, additionalPhoneNumber3);
     }
 }
 

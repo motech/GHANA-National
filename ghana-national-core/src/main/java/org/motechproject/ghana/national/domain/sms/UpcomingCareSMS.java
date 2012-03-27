@@ -54,8 +54,7 @@ public class UpcomingCareSMS {
     }
 
     private List<String> appointmentTexts(final String dueTemplate) {
-        return convert(nullSafeList(upcomingAppointments), new Converter<VisitResponse, String>()
-        {
+        return convert(nullSafeList(upcomingAppointments), new Converter<VisitResponse, String>() {
             public String convert(VisitResponse visitResponse) {
                 return createScheduleDueText(dueTemplate, visitResponse.getName(), visitResponse.getAppointmentDueDate());
             }
@@ -63,16 +62,15 @@ public class UpcomingCareSMS {
     }
 
     private List<String> careDuesTexts(final String dueTemplate) {
-        return convert(nullSafeList(upcomingEnrollments), new Converter<EnrollmentRecord, String>()
-        {
+        return convert(nullSafeList(upcomingEnrollments), new Converter<EnrollmentRecord, String>() {
             public String convert(EnrollmentRecord enrollmentRecord) {
-                return createScheduleDueText(dueTemplate, enrollmentRecord.getScheduleName(), enrollmentRecord.getStartOfDueWindow());
+                return createScheduleDueText(dueTemplate, enrollmentRecord.getCurrentMilestoneName(), enrollmentRecord.getStartOfDueWindow());
             }
         });
     }
 
-    private String createScheduleDueText(String dueTemplate, String scheduleName, DateTime dueDate) {
-        SMSTemplate template = new SMSTemplate().fillCareSchedulesDueDate(scheduleName, dueDate);
+    private String createScheduleDueText(String dueTemplate, String milestoneName, DateTime dueDate) {
+        SMSTemplate template = new SMSTemplate().fillCareSchedulesDueDate(milestoneName, dueDate);
         return SMS.fill(dueTemplate, template.getRuntimeVariables());
     }
 

@@ -2,7 +2,7 @@
     "name" : "CWCBCGVaccine",
     "milestones" : [
         {
-            "name" : "Default",
+            "name" : "BCG",
             "scheduleWindows" : {
                 "earliest" : ["0 Days"],
                 "due" : ["2 Days"],
