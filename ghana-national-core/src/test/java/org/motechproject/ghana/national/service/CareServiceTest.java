@@ -136,16 +136,15 @@ public class CareServiceTest extends BaseUnitTest {
     public void shouldIncludeCareHistoriesThatAreCapturedInHistoryEncounter() {
         final LocalDate registartionDate = DateUtil.newDate(2011, 9, 1);
         MRSEncounter mockHistroyEncounter = mock(MRSEncounter.class);
-        Set<MRSObservation> mrsObservations = new HashSet<MRSObservation>() {{
+        List<MRSObservation> mrsObservations = new ArrayList<MRSObservation>() {{
             add(new MRSObservation<MRSConcept>(registartionDate.minusMonths(2).toDate(), Concept.IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(BCG.getName())));
             add(new MRSObservation<MRSConcept>(registartionDate.minusMonths(2).toDate(), Concept.IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(YF.getName())));
             add(new MRSObservation<MRSConcept>(registartionDate.minusMonths(2).toDate(), Concept.IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(MEASLES.getName())));
 
         }};
 
-        when(mockHistroyEncounter.getObservations()).thenReturn(mrsObservations);
 
-        List<CwcCareHistory> cwcCareHistories = careService.refineCwcCareHistories(mockHistroyEncounter, null);
+        List<CwcCareHistory> cwcCareHistories = careService.refineCwcCareHistories(mrsObservations, null);
 
         assertThat(cwcCareHistories, hasItem(CwcCareHistory.BCG));
         assertThat(cwcCareHistories, hasItem(CwcCareHistory.YF));
@@ -155,9 +154,8 @@ public class CareServiceTest extends BaseUnitTest {
     @Test
     public void shouldNotIncludeCareHistoriesThatAreNotCapturedInHistoryEncounter() {
         final LocalDate registartionDate = DateUtil.newDate(2011, 9, 1);
-        MRSEncounter mockHistroyEncounter = mock(MRSEncounter.class);
-
-        List<CwcCareHistory> cwcCareHistories = careService.refineCwcCareHistories(mockHistroyEncounter, null);
+        List<MRSObservation> mrsObservations = new ArrayList<MRSObservation>();
+        List<CwcCareHistory> cwcCareHistories = careService.refineCwcCareHistories(mrsObservations, null);
 
         assertThat(cwcCareHistories, not(hasItem(CwcCareHistory.BCG)));
         assertThat(cwcCareHistories, not(hasItem(CwcCareHistory.YF)));
