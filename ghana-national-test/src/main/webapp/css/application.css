@@ -1,0 +1,179 @@
+body, div, td {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: #666;
+}
+
+h1 {
+    font-size: 14px;
+    color: #003366;
+}
+
+form {
+    width: auto;
+}
+
+#page-wrap {
+    width: 90%;
+    margin: 40px auto 5px;
+    padding: 5px;
+}
+
+.success {
+    color: #5A5;
+    border: 1px solid #5A5;;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-weight: bold;
+    font-size: 1.12em;
+    margin: 5px 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 3px 10px;
+    height: 20px;
+    background: #8FABC7;
+    border-radius: 5px;
+}
+
+nav ul li {
+    display: block;
+    float: left;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+nav ul li a {
+    display: block;
+    padding: 1px 10px;
+    font: 14px/14px "Lucida Grande", "Verdana", sans-serif;
+    text-decoration: none;
+    margin: 0 5px 0 0;
+    color: white;
+    font-size: 1em;
+}
+
+nav ul li a:hover {
+    color: rgba(100, 100, 100, .85);
+}
+
+nav ul li a:active, nav ul li a.current {
+    position: relative;
+    top: 1px;
+}
+
+#menu ul li ul li {
+    padding-bottom: 5px;
+    display: block;
+    float: none;
+}
+
+#menu ul li ul {
+    display: none;
+    position: absolute;
+    top: 2em;
+    left: -10px;
+    height: auto;
+    overflow: hidden;
+}
+
+.formLabel {
+    display: block;
+    float: left;
+    width: 220px;
+    margin-top: 15px;
+}
+
+.alertText {
+    margin-left: 10px;
+    display: inline;
+}
+
+.hide {
+    display: none;
+}
+
+.motech-img {
+    margin-left: 3px;
+    margin-bottom: 5px;
+}
+
+.radio {
+    width: 185px;
+    float: left;
+    padding: 10px 0;
+}
+
+.form-field {
+    height: 40px;
+}
+
+.radioError {
+    display: block;
+    float: left;
+    height: 20px;
+    padding: 10px 0;
+}
+
+.error-message,
+.input-description {
+    font-style: italic;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* SEARCH RESULTS */
+
+#search-results table {
+    border-collapse: collapse;
+    border: 1px solid gray;
+}
+
+#search-results table tr td,
+#search-results table tr th {
+    padding: 7px 21px;
+    border: 1px solid gray;
+}
+
+#search-results table tr th {
+    background-color: gray;
+    color: #ffffff;
+}
+
+#search-results table tr td.action div {
+    display: block;
+    float: left;
+    margin: 0 5px;
+}
+
+#search-results table tr td.action div a {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+#search-results table tr td.action .edit {
+    background: url("../images/pencil-icon.png");
+}
+
+#search-results table tr td.action .delete {
+    background: url("../images/trash-can-icon.png");
+}
+
+/*Enrollment to a program*/
+
+.form-width-60 {
+    width: 60%;
+    float:left;
+}
+
+.enrollment_link_section {
+    border: 1px solid #EEEEEE;
+    padding:1%;
+    float: right;
+    width: 20%;
+}
+
+
