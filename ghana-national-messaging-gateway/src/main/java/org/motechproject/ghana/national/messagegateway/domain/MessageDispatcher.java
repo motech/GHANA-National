@@ -25,7 +25,7 @@ public class MessageDispatcher {
 
     public SMS aggregateSMS(List<SMS> smsMessages) {
         final SMS firstSMSInTheGroup = smsMessages.get(0);
-        ArrayList<SMSDatum> smsData = getSMSData(smsMessages);
+        List<SMSDatum> smsData = getSMSData(smsMessages);
 
         Collection<String> windows = selectDistinct(extract(smsData, on(SMSDatum.class).getWindowName()), firstSMSInTheGroup.getComparator());
         Collection<String> motechIds = selectDistinct(extract(smsData, on(SMSDatum.class).getMotechId()), firstSMSInTheGroup.getComparator());
@@ -34,7 +34,7 @@ public class MessageDispatcher {
         Group<SMSDatum> motechIdSubGroup;
         Group<SMSDatum> subWindowGroup;
 
-        ArrayList<String> messages = new ArrayList<String>();
+        List<String> messages = new ArrayList<String>();
         for (String window : windows) {
             StringBuilder stringBuffer = new StringBuilder();
             stringBuffer.append(window).append(": ");
@@ -45,7 +45,7 @@ public class MessageDispatcher {
                     count += 1;
                     List<SMSDatum> all = motechIdSubGroup.findAll();
                     SMSDatum datum = all.get(0);
-                    if(count != 1) stringBuffer.append(", ");
+                    if (count != 1) stringBuffer.append(", ");
                     stringBuffer.append(datum.getFirstName()).append(" ")
                             .append(datum.getLastName()).append(", ")
                             .append(datum.getMotechId()).append(", ")

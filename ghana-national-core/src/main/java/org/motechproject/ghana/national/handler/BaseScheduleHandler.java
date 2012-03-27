@@ -1,13 +1,8 @@
 package org.motechproject.ghana.national.handler;
 
 import org.motechproject.appointments.api.EventKeys;
-import org.motechproject.ghana.national.domain.AlertWindow;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.SMSTemplate;
-import org.motechproject.ghana.national.repository.AllFacilities;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllObservations;
-import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -41,13 +36,18 @@ public abstract class BaseScheduleHandler {
         final Map<String, Object> parameters = motechEvent.getParameters();
         String externalId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
         final Patient patient = patientService.getPatientByMotechId(externalId);
+        String serialNumber = "-";
+        MRSObservation observation = allObservations.findObservation(patient.getMotechId(), Concept.SERIAL_NUMBER.getName());
+        if(observation != null) {
+            serialNumber = (String) observation.getValue();
+        }
 
         Facility facility = facilityService.getFacility(patient.getMrsPatient().getFacility().getId());
 
         final String windowName = getVisitWindow((String) parameters.get(MotechSchedulerService.JOB_ID_KEY));
         final String scheduleName = (String) parameters.get(EventKeys.VISIT_NAME);
         for (String phoneNumber : facility.getPhoneNumbers()) {
-            smsGateway.dispatchSMSToAggregator(ancVisitSmsKey, patientDetailsMap(patient, windowName, scheduleName, null), phoneNumber);
+            smsGateway.dispatchSMSToAggregator(ancVisitSmsKey, patientDetailsMap(patient, windowName, scheduleName, serialNumber), phoneNumber);
         }
     }
 
@@ -81,7 +81,7 @@ public abstract class BaseScheduleHandler {
     private String getSerialNumber(Patient patient) {
         MRSObservation serialNumberObs = allObservations.findObservation(patient.getMotechId(), Concept.SERIAL_NUMBER.getName());
         String serialNumber = "-";
-        if(serialNumberObs != null) {
+        if (serialNumberObs != null) {
             serialNumber = (String) serialNumberObs.getValue();
         }
         return serialNumber;

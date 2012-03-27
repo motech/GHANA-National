@@ -4,7 +4,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
-import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.ClientQueryType;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
@@ -158,7 +157,7 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
 
         assertThat(responseBodyAsString, containsString(patientId));
         assertThat(responseBodyAsString, containsString(patient.firstName()));
-        assertThat(responseBodyAsString, containsString(ScheduleNames.ANC_IPT_VACCINE));
+        assertThat(responseBodyAsString, containsString("IPT1"));
         assertThat(responseBodyAsString, containsString(today().toString(Constants.PATTERN_DD_MMM_YYYY)));
     }
 

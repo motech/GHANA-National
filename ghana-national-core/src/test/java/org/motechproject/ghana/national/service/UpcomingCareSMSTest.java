@@ -47,14 +47,16 @@ public class    UpcomingCareSMSTest {
         final Patient patient = new Patient(new MRSPatient(mrsPatientId, motechId, new MRSPerson().gender("M").firstName(firstName).lastName(lastName)
                 .dateOfBirth(newDateTime(2012, 4, 5, 2, 2, 0).toDate()), null));
 
-        EnrollmentRecord ttEnrollmentRecord = enrollment("TT schedule", newDateTime(2012, 3, 3, 1, 1, 0));
-        EnrollmentRecord iptEnrollmentRecord = enrollment("IPT schedule", newDateTime(2012, 4, 5, 2, 2, 0));
+        String ttMilestone = "TT mileStoneName";
+        EnrollmentRecord ttEnrollmentRecord = enrollment("TT schedule", newDateTime(2012, 3, 3, 1, 1, 0), ttMilestone);
+        String iptMilestone = "IPT mileStoneName";
+        EnrollmentRecord iptEnrollmentRecord = enrollment("IPT schedule", newDateTime(2012, 4, 5, 2, 2, 0), iptMilestone);
         List<EnrollmentRecord> upcomingEnrollments = asList(ttEnrollmentRecord, iptEnrollmentRecord);
         List<VisitResponse> upcomingAppointments = asList(new VisitResponse().setAppointmentDueDate(newDateTime(2012, 4, 9, 3, 3, 0)).setName("Appointment 1"),
                 new VisitResponse().setAppointmentDueDate(newDateTime(2012, 4, 8, 1, 2, 0)).setName("Appointment 2"));
 
         mockSuccessSmsTemplateMessages();
-        String expectedCareSchedule = "TT schedule: 03 Mar 2012, IPT schedule: 05 Apr 2012";
+        String expectedCareSchedule = ttMilestone + ": 03 Mar 2012, "+ iptMilestone +": 05 Apr 2012";
         String expectedAppointmentsSchedule = "Appointment 1: 09 Apr 2012, Appointment 2: 08 Apr 2012";
 
         upcomingCareSMS = new UpcomingCareSMS(mockSmsGateway, patient, upcomingEnrollments, upcomingAppointments);
@@ -68,15 +70,15 @@ public class    UpcomingCareSMSTest {
         assertThat(upcomingCareSMS.smsText(), is(format("Upcoming care programs for %s %s (MotechID:%s):\\n %s.", firstName, lastName, motechId, expectedAppointmentsSchedule)));
     }
 
-    private EnrollmentRecord enrollment(String enrollmentName, DateTime dueStart) {
-        return new EnrollmentRecord("", enrollmentName, "", null, null, null, null, dueStart, null, null);
+    private EnrollmentRecord enrollment(String enrollmentName, DateTime dueStart, String mileStoneName) {
+        return new EnrollmentRecord("", enrollmentName, mileStoneName, null, null, null, null, dueStart, null, null);
     }
 
     private void mockSuccessSmsTemplateMessages() {
         when(mockSmsGateway.getSMSTemplate(UPCOMING_CARE_CLIENT_QUERY_RESPONSE_SMS_KEY))
                 .thenReturn("Upcoming care programs for ${firstName} ${lastName} (MotechID:${motechId}):\\n $T{UPCOMING_CARE_DUE_CLIENT_QUERY}.");
         when(mockSmsGateway.getSMSTemplate(UPCOMING_CARE_DUE_CLIENT_QUERY))
-                .thenReturn("${scheduleName}: ${date}");
+                .thenReturn("${milestoneName}: ${date}");
     }
 
     @Test
