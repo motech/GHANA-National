@@ -51,6 +51,7 @@ import static org.motechproject.ghana.national.domain.Concept.IPTI;
 import static org.motechproject.ghana.national.domain.Concept.MEASLES;
 import static org.motechproject.ghana.national.domain.PNCChildVisit.PNC1;
 import static org.motechproject.ghana.national.domain.PNCChildVisit.PNC2;
+import static org.motechproject.ghana.national.domain.PatientTest.*;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.newDateTime;
 import static org.motechproject.util.DateUtil.time;
@@ -73,8 +74,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
     public void shouldCreateEncounterForCWCVisitWithAllInfo() {
         MRSUser staff = mock(MRSUser.class);
         Facility facility = mock(Facility.class);
-        Patient patient = mock(Patient.class);
-        when(patient.pentaPatientCare(Matchers.<LocalDate>any())).thenReturn(new PatientCare(CWC_PENTA, DateUtil.today(), today()));
+        Patient patient = createPatient("pId", "motechId", DateUtil.today(), "facilityId");
         CWCVisit cwcVisit = createTestCWCVisit(new Date(), staff, facility, patient);
 
         ChildVisitService spyService = spy(service);
@@ -169,9 +169,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
     @Test
     public void shouldEnrollAndFulfillPentaScheduleIfNotEnrolledEarlier() {
         String mrsPatientId = "mrsPatientId";
-        Patient patient = mock(Patient.class);
-        when(patient.pentaPatientCare(Matchers.<LocalDate>any())).thenReturn(new PatientCare(CWC_PENTA, DateUtil.today(), today()));
-        when(patient.getMRSPatientId()).thenReturn(mrsPatientId);
+        Patient patient = createPatient(mrsPatientId, "motechId", DateUtil.today(), "facilityId");
         when(mockAllSchedules.enrollment(any(EnrollmentRequest.class))).thenReturn(null);
 
         service.updatePentaSchedule(createTestCWCVisit(new Date(), mock(MRSUser.class), mock(Facility.class), patient));
@@ -193,7 +191,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         IPTDose dose = IPTDose.SP2;
         String mrsPatientId = "1234";
         CWCVisit cwcVisit = createTestCWCVisit(visitDate.toDate(), new MRSUser(), mock(Facility.class),
-                new Patient(new MRSPatient(mrsPatientId, "", new MRSPerson().dateOfBirth(newDate(2011, 1, 1).toDate()), null)))
+                new Patient(new MRSPatient(mrsPatientId, "", new MRSPerson().dateOfBirth(newDate(2011, 1, 1).toDate()), new MRSFacility("fid"))))
                 .iptidose(dose.value().toString());
 
         mockCurrentDate(today);
@@ -216,7 +214,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         LocalDate visitDate = today.minusDays(10).toLocalDate();
         String mrsPatientId = "99999";
         CWCVisit cwcVisit = createTestCWCVisit(visitDate.toDate(), new MRSUser(), mock(Facility.class),
-                new Patient(new MRSPatient(mrsPatientId, "", new MRSPerson().dateOfBirth(newDate(2011, 1, 1).toDate()), null)))
+                new Patient(new MRSPatient(mrsPatientId, "", new MRSPerson().dateOfBirth(newDate(2011, 1, 1).toDate()), new MRSFacility("fid"))))
                 .iptidose(null);
 
         service.save(cwcVisit);

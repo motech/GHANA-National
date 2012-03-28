@@ -23,9 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_DELIVERY;
 import static org.motechproject.ghana.national.domain.IPTVaccine.createFromANCVisit;
-import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDate;
 
 @Service
@@ -74,14 +72,12 @@ public class MotherVisitService {
     }
 
     private void updateEDD(ANCVisitRequest ancVisit, Set<MRSObservation> mrsObservations) {
-        Set<MRSObservation> eddObservations = allObservations.updateEDD(ancVisit.getEstDeliveryDate(), ancVisit.getPatient(), ancVisit.getStaff().getId());
+        Patient patient = ancVisit.getPatient();
+        Set<MRSObservation> eddObservations = allObservations.updateEDD(ancVisit.getEstDeliveryDate(), patient, ancVisit.getStaff().getId());
         if (CollectionUtils.isNotEmpty(eddObservations)) {
             mrsObservations.addAll(eddObservations);
-            LocalDate conceptionDate = basedOnDeliveryDate(newDate(ancVisit.getEstDeliveryDate())).dateOfConception();
-            PatientCare ancDeliveryCare = new PatientCare(ANC_DELIVERY, conceptionDate, newDate(ancVisit.getDate()));
-            EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(ancVisit.getPatient(),
-                    ancDeliveryCare);
-            allSchedules.enroll(enrollmentRequest);
+            PatientCare ancDeliveryCare = patient.ancDeliveryCareOnVisit(newDate(ancVisit.getEstDeliveryDate()), newDate(ancVisit.getDate()));
+            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, ancDeliveryCare));
         }
     }
 

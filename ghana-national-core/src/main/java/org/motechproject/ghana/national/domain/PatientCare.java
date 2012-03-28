@@ -5,6 +5,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.model.Time;
 import org.motechproject.util.DateUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.motechproject.util.DateUtil.time;
@@ -15,15 +16,17 @@ public class PatientCare {
     private Time enrollmentTime;
     private Time referenceTime;
     private LocalDate referenceDate;
+    private Map<String, String> metaData = new HashMap<String, String>();
 
-    public PatientCare(String name, LocalDate referenceDate, LocalDate enrollmentDate) {
+    public PatientCare(String name, LocalDate referenceDate, LocalDate enrollmentDate, Map<String, String> metaData) {
         this.name = name;
         this.referenceDate = referenceDate;
         this.enrollmentDate = enrollmentDate;
+        this.metaData = metaData;
     }
 
-    public PatientCare(String name, DateTime referenceDateTime, DateTime enrollmentDateTime) {
-        this(name, referenceDateTime.toLocalDate(), enrollmentDateTime.toLocalDate());
+    public PatientCare(String name, DateTime referenceDateTime, DateTime enrollmentDateTime, Map<String, String> metaData) {
+        this(name, referenceDateTime.toLocalDate(), enrollmentDateTime.toLocalDate(), metaData);
         this.referenceTime = time(referenceDateTime);
         this.enrollmentTime = time(enrollmentDateTime);
     }
@@ -57,7 +60,7 @@ public class PatientCare {
     }
 
     public Map<String, String> metaData() {
-        return null;
+        return metaData;
     }
 
     @Override
