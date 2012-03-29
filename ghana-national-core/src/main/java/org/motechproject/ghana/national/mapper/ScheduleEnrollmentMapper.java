@@ -6,8 +6,7 @@ import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 
 public class ScheduleEnrollmentMapper {
     public EnrollmentRequest map(Patient patient, PatientCare patientCare) {
-        return new EnrollmentRequest(patient.getMRSPatientId(), patientCare.name(),
-                patientCare.preferredTime(), patientCare.startingOn(), patientCare.referenceTime(), patientCare.enrollmentDate(), patientCare.enrollmentTime(), null, patientCare.metaData());
+        return map(patient, patientCare, null);
     }
 
     public EnrollmentRequest map(Patient patient, PatientCare patientCare, String startingMilestone) {

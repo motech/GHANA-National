@@ -1,11 +1,8 @@
 package org.motechproject.ghana.national.service;
 
-import org.motechproject.ghana.national.domain.Encounter;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.TTVaccine;
-import org.motechproject.ghana.national.domain.TTVisit;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.factory.TTVaccinationVisitEncounterFactory;
-import org.motechproject.ghana.national.mapper.TTVaccinationEnrollmentMapper;
+import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.mrs.model.MRSUser;
@@ -34,7 +31,9 @@ public class VisitService {
     }
 
     public void createTTSchedule(TTVaccine ttVaccine) {
-        final EnrollmentRequest enrollmentRequest = new TTVaccinationEnrollmentMapper().map(ttVaccine);
+        Patient patient = ttVaccine.getPatient();
+        PatientCare patientCare = patient.ttVaccinePatientCareOnVisit(ttVaccine.getVaccinationDate().toLocalDate());
+        final EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, patientCare, ttVaccine.getDosage().getScheduleMilestoneName());
         allSchedules.enrollOrFulfill(enrollmentRequest, newDate(ttVaccine.getVaccinationDate().toDate()));
     }
 }

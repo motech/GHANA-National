@@ -2,14 +2,15 @@ package org.motechproject.ghana.national.domain;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
 import org.motechproject.ghana.national.vo.ChildCare;
 import org.motechproject.mrs.model.MRSPatient;
 
 import java.util.*;
 
-import static java.util.Arrays.*;
-import static java.util.Collections.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.collections.CollectionUtils.union;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
@@ -70,6 +71,14 @@ public class Patient {
         return mrsPatient.getPerson().getLastName();
     }
 
+    private ChildCare childCare() {
+        return ChildCare.basedOnBirthDay(dateOfBirth());
+    }
+
+    public DateTime dateOfBirth() {
+        return newDateTime(getMrsPatient().getPerson().getDateOfBirth());
+    }
+
     public List<PatientCare> ancCareProgramsToEnrollOnRegistration(LocalDate expectedDeliveryDate, LocalDate enrollmentDate, ANCCareHistoryVO ancCareHistoryVO, ActiveCareSchedules activeCareSchedules) {
         return nullSafeList(
                 new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), enrollmentDate, facilityMetaData()),
@@ -81,11 +90,15 @@ public class Patient {
         return new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), visitDate, facilityMetaData());
     }
 
-    private PatientCare ttVaccinePatientCareEnrollmentOnRegistration(LocalDate enrollmentDate, String ttVaccinationHistory, Boolean hasActiveTTSchedule) {
+    public PatientCare ttVaccinePatientCareEnrollmentOnRegistration(LocalDate enrollmentDate, String ttVaccinationHistory, Boolean hasActiveTTSchedule) {
         if (ttVaccinationHistory == null && !hasActiveTTSchedule) {
             return new PatientCare(TT_VACCINATION, enrollmentDate, enrollmentDate, facilityMetaData());
         }
         return null;
+    }
+
+    public PatientCare ttVaccinePatientCareOnVisit(LocalDate vaccinationDate) {
+        return new PatientCare(ScheduleNames.TT_VACCINATION, vaccinationDate, vaccinationDate, facilityMetaData());
     }
 
     public List<String> allCareProgramsToUnEnroll() {
@@ -112,7 +125,6 @@ public class Patient {
     private  PatientCare yfChildCare(LocalDate enrollmentDate, LocalDate referenceDate, List<CwcCareHistory> cwcCareHistories) {
         return cwcCareHistories.contains(CwcCareHistory.YF) ? null : new PatientCare(CWC_YELLOW_FEVER, referenceDate, enrollmentDate, facilityMetaData());
     }
-
 
     private PatientCare ancIPTPatientCareEnrollOnRegistration(LocalDate expectedDeliveryDate, LocalDate enrollmentDate) {
         if (expectedDeliveryDate != null && basedOnDeliveryDate(expectedDeliveryDate).applicableForIPT()) {
@@ -143,20 +155,11 @@ public class Patient {
         return new PatientCare(CWC_PENTA, enrollmentDate, enrollmentDate, facilityMetaData());
     }
 
-    private ChildCare childCare() {
-        return ChildCare.basedOnBirthDay(dateOfBirth());
-    }
-
-    public DateTime dateOfBirth() {
-        return newDateTime(getMrsPatient().getPerson().getDateOfBirth());
-    }
-
     private  PatientCare measlesChildCare(LocalDate enrollmentDate, List<CwcCareHistory> cwcCareHistories) {
         ChildCare childCare = childCare();
         return childCare.applicableForMeasles() && !cwcCareHistories.contains(CwcCareHistory.MEASLES)
                 ? new PatientCare(CWC_MEASLES_VACCINE, childCare.birthDate(), enrollmentDate, facilityMetaData()) : null;
     }
-
 
     public List<PatientCare> pncBabyProgramsToEnrollOnRegistration() {
         List<PatientCare> cares = new ArrayList<PatientCare>();

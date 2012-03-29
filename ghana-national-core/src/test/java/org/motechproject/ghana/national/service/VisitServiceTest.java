@@ -13,6 +13,7 @@ import org.motechproject.ghana.national.domain.TTVaccine;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.model.Time;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
@@ -47,7 +48,7 @@ public class VisitServiceTest {
     @Test
     public void shouldEnrollPatientForCurrentScheduleAndCreateSchedulesForTheNextTTVisit() {
         final String patientId = "patient id";
-        final Patient patient = new Patient(new MRSPatient(patientId, null, null));
+        final Patient patient = new Patient(new MRSPatient(patientId, null, new MRSFacility("facilityId")));
         final DateTime vaccinationDate = DateUtil.newDateTime(2000, 2, 1, new Time(10, 10));
         visitService.createTTSchedule(new TTVaccine(vaccinationDate, TT2, patient));
 
@@ -68,7 +69,7 @@ public class VisitServiceTest {
         MRSUser staff = new MRSUser();
         Facility facility = new Facility();
         final String patientId = "patient id";
-        final Patient patient = new Patient(new MRSPatient(patientId, null, null));
+        final Patient patient = new Patient(new MRSPatient(patientId, null, new MRSFacility("facilityId")));
         final DateTime vaccinationDate = DateUtil.newDateTime(2000, 2, 1, new Time(10,10));
         final TTVaccine ttVaccine = new TTVaccine(vaccinationDate, TT2, patient);
         visitServiceSpy.receivedTT(ttVaccine, staff, facility);
