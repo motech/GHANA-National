@@ -83,7 +83,7 @@ public class PregnancyServiceTest {
 
         when(mockPatient.getMrsPatient()).thenReturn(mockMRSPatient);
         when(mockPatient.getMRSPatientId()).thenReturn(patientMRSId);
-        Patient.ancCareProgramsToUnEnroll = schedules;
+        Patient.ancCarePrograms = schedules;
         when(mockFacility.getMrsFacilityId()).thenReturn(mrsFacilityId);
 
         pregnancyService.terminatePregnancy(request);
@@ -102,7 +102,7 @@ public class PregnancyServiceTest {
         List<String> schedules = Arrays.asList("schedule1", "schedule2");
 
         when(mockPatient.getMRSPatientId()).thenReturn(patientMRSId);
-        Patient.ancCareProgramsToUnEnroll = schedules;
+        Patient.ancCarePrograms = schedules;
         final Date date = DateUtil.newDate(2000, 12, 12).toDate();
         PregnancyTerminationRequest request = pregnancyTermination(mockPatient, mockStaff, mockFacility);
         request.setTerminationDate(date);
@@ -113,7 +113,7 @@ public class PregnancyServiceTest {
         Encounter expectedEncounter = new PregnancyEncounterFactory().createTerminationEncounter(request, null);
         ArgumentCaptor<Encounter> argumentCaptor = ArgumentCaptor.forClass(Encounter.class);
 
-        verify(mockAllSchedules).unEnroll(patientMRSId, Patient.ancCareProgramsToUnEnroll);
+        verify(mockAllSchedules).unEnroll(patientMRSId, Patient.ancCarePrograms);
         verify(mockAllAppointments).remove(mockPatient);
         verify(mockAllEncounters).persistEncounter(argumentCaptor.capture());
         verify(mockMobileMidwifeService).unRegister(request.getPatient().getMotechId());
@@ -156,7 +156,7 @@ public class PregnancyServiceTest {
         when(mockPatient.getMRSPatientId()).thenReturn(mrsPatientId);
         when(mockPatient.getMotechId()).thenReturn(parentMotechId);
         when(mockAllObservations.activePregnancyObservation(parentMotechId)).thenReturn(activePregnancyObservation);
-        Patient.ancCareProgramsToUnEnroll = schedules;
+        Patient.ancCarePrograms = schedules;
         Patient child = new Patient(childMRSPatient);
         when(mockAllPatients.save(Matchers.<Patient>any())).thenReturn(child);
         pregnancyService.handleDelivery(deliveryRequest);

@@ -1,5 +1,8 @@
 package org.motechproject.ghana.national.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum PNCChildVisit {
 
     PNC1(1, "PNC-CHILD-1"), PNC2(2, "PNC-CHILD-2"), PNC3(3, "PNC-CHILD-3");
@@ -25,5 +28,13 @@ public enum PNCChildVisit {
 
     public String scheduleName() {
         return scheduleName;
+    }
+
+    public static List<String> schedules() {
+        List<String> schedules = new ArrayList<String>();
+        for (PNCChildVisit visit : PNCChildVisit.values()) {
+             schedules.add(visit.scheduleName());
+        }
+        return schedules;
     }
 }

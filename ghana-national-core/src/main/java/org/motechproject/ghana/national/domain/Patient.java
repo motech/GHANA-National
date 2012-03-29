@@ -8,6 +8,8 @@ import org.motechproject.mrs.model.MRSPatient;
 
 import java.util.*;
 
+import static java.util.Arrays.*;
+import static java.util.Collections.*;
 import static org.apache.commons.collections.CollectionUtils.union;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
@@ -15,9 +17,11 @@ import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDateTime;
 
 public class Patient {
-    public static List<String> ancCareProgramsToUnEnroll = Arrays.asList(ANC_DELIVERY, ANC_IPT_VACCINE, TT_VACCINATION);
-    public static List<String> cwcCareProgramsToUnEnroll = Arrays.asList(CWC_BCG, CWC_MEASLES_VACCINE, CWC_PENTA, CWC_OPV_0,
-                                                CWC_OPV_OTHERS, CWC_IPT_VACCINE, CWC_YELLOW_FEVER, TT_VACCINATION);
+    public static List<String> ancCarePrograms = unmodifiableList(asList(ANC_DELIVERY, ANC_IPT_VACCINE, TT_VACCINATION));
+    public static List<String> cwcCarePrograms = unmodifiableList(asList(CWC_BCG, CWC_MEASLES_VACCINE, CWC_PENTA, CWC_OPV_0,
+            CWC_OPV_OTHERS, CWC_IPT_VACCINE, CWC_YELLOW_FEVER, TT_VACCINATION));
+    public static final List<String> pncMotherCarePrograms = unmodifiableList(PNCMotherVisit.schedules());
+    public static final List<String> pncChildCarePrograms = unmodifiableList(PNCChildVisit.schedules());
     public static final String FACILITY_META = "facilityId";
 
     private MRSPatient mrsPatient;
@@ -85,7 +89,7 @@ public class Patient {
     }
 
     public List<String> allCareProgramsToUnEnroll() {
-        return new ArrayList<String>(new HashSet<String>(union(ancCareProgramsToUnEnroll, cwcCareProgramsToUnEnroll)));
+        return new ArrayList<String>(new HashSet<String>(union(ancCarePrograms, cwcCarePrograms)));
     }
 
     public List<PatientCare> cwcCareProgramToEnrollOnRegistration(LocalDate enrollmentDate, List<CwcCareHistory> cwcCareHistories) {
@@ -158,16 +162,16 @@ public class Patient {
         List<PatientCare> cares = new ArrayList<PatientCare>();
         ChildCare care = childCare();
         DateTime birthDateTime = care.birthTime();
-        for (PNCChildVisit visit : PNCChildVisit.values()) {
-            cares.add(new PatientCare(visit.scheduleName(), birthDateTime, birthDateTime, facilityMetaData()));
+        for (String scheduleName : pncChildCarePrograms) {
+            cares.add(new PatientCare(scheduleName, birthDateTime, birthDateTime, facilityMetaData()));
         }
         return cares;
     }
 
     public List<PatientCare> pncMotherProgramsToEnrollOnRegistration(DateTime deliveryDateTime) {
         List<PatientCare> cares = new ArrayList<PatientCare>();
-        for (PNCMotherVisit visit : PNCMotherVisit.values()) {
-            cares.add(new PatientCare(visit.scheduleName(), deliveryDateTime, deliveryDateTime, facilityMetaData()));
+        for (String scheduleName : pncMotherCarePrograms) {
+            cares.add(new PatientCare(scheduleName, deliveryDateTime, deliveryDateTime, facilityMetaData()));
         }
         return cares;
     }

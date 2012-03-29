@@ -145,12 +145,6 @@ public class PatientTest extends BaseUnitTest {
                 new PatientCare(PNC_CHILD_3, dateOfBirth, dateOfBirth, metaData)));
     }
 
-    private HashMap<String, String> facilityMetaData(final String facilityId) {
-        return new HashMap<String, String>(){{
-            put(Patient.FACILITY_META, facilityId);
-        }};
-    }
-
     @Test
     public void shouldReturnPatientCaresForPNCMotherProgram() {
         DateTime deliveryDate = todayAs6June2012.minusDays(10);
@@ -207,5 +201,11 @@ public class PatientTest extends BaseUnitTest {
 
     public static Patient createPatient(String patientId, String motechId, LocalDate dob, String facilityId) {
         return new Patient(new MRSPatient(patientId, motechId, new MRSPerson().dateOfBirth(dob.toDate()), new MRSFacility(facilityId)));
+    }
+
+    public static HashMap<String, String> facilityMetaData(final String facilityId) {
+        return new HashMap<String, String>(){{
+            put(Patient.FACILITY_META, facilityId);
+        }};
     }
 }

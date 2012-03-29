@@ -64,7 +64,7 @@ public class PregnancyService {
             patientService.deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
 
         } else {
-            allSchedules.unEnroll(request.getPatient().getMRSPatientId(), Patient.ancCareProgramsToUnEnroll);
+            allSchedules.unEnroll(request.getPatient().getMRSPatientId(), Patient.ancCarePrograms);
             allAppointments.remove(request.getPatient());
         }
         mobileMidwifeService.unRegister(request.getPatient().getMotechId());
@@ -102,7 +102,7 @@ public class PregnancyService {
         MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(patient.getMotechId());
         allEncounters.persistEncounter(encounterFactory.createDeliveryEncounter(request, activePregnancyObservation));
         allSchedules.safeFulfilCurrentMilestone(patient.getMRSPatientId(), ScheduleNames.ANC_DELIVERY, request.getDeliveryDateTime().toLocalDate());
-        allSchedules.unEnroll(patient.getMRSPatientId(), Patient.ancCareProgramsToUnEnroll);
+        allSchedules.unEnroll(patient.getMRSPatientId(), Patient.ancCarePrograms);
         allAppointments.remove(patient);
     }
 

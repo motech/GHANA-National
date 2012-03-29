@@ -91,6 +91,11 @@ public class AllSchedules {
                 .havingWindowStartingDuring(WindowName.due, startToday, endOfDay(startToday.plus(period).toDate())));
     }
 
+    public List<EnrollmentRecord> defaultersByMetaSearch(String metaField, String value) {
+        return search(new EnrollmentsQuery().currentlyInWindow(WindowName.late)
+                .havingMetadata(metaField, value));
+    }
+
     public EnrollmentRecord getActiveEnrollment(String externalId, String scheduleName) {
         return scheduleTrackingService.getEnrollment(externalId, scheduleName);
     }
