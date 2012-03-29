@@ -103,6 +103,15 @@ public class AllObservationsTest {
         Set<MRSObservation> mrsObservations = allObservations.updateEDD(null, null, null);
         verifyZeroInteractions(mockMrsObservationAdapter);
         assertTrue(mrsObservations.isEmpty());
+    }
 
+    @Test
+    public void shouldVoidObservations() {
+        MRSObservation mockMRSObservation = mock(MRSObservation.class);
+        String reason = "reason";
+        String staffId = "staff-id";
+        allObservations.voidObservation(mockMRSObservation, reason, staffId);
+
+        verify(mockMrsObservationAdapter).voidObservation(mockMRSObservation, reason, staffId);
     }
 }

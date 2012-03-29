@@ -58,7 +58,7 @@ public class CareService {
         }
     }
 
-    List<CwcCareHistory> refineCwcCareHistories(List<MRSObservation>capturedHistory, List<CwcCareHistory> cwcCareHistories) {
+    List<CwcCareHistory> refineCwcCareHistories(List<MRSObservation> capturedHistory, List<CwcCareHistory> cwcCareHistories) {
 
         cwcCareHistories = cwcCareHistories == null ? new ArrayList<CwcCareHistory>() : new ArrayList<CwcCareHistory>(cwcCareHistories);
 
@@ -124,20 +124,42 @@ public class CareService {
 
     private Set<MRSObservation> registerPregnancy(ANCVO ancVO, Patient patient) {
         Date today = DateUtil.today().toDate();
-        Set<MRSObservation> eddObservation = allObservations.updateEDD(ancVO.getEstimatedDateOfDelivery(), patient, ancVO.getStaffId());
-
+        Set<MRSObservation> activePregnancyObservation = allObservations.updateEDD(ancVO.getEstimatedDateOfDelivery(), patient, ancVO.getStaffId());
         MRSObservation activePregnancy;
-        if (!eddObservation.isEmpty()) {
-            activePregnancy = eddObservation.iterator().next();
+        if (!activePregnancyObservation.isEmpty()) {
+            activePregnancy = activePregnancyObservation.iterator().next();
+
         } else {
             activePregnancy = new MRSObservation<Object>(today, PREGNANCY.getName(), null);
             addDependentObservation(activePregnancy, today, EDD.getName(), ancVO.getEstimatedDateOfDelivery());
         }
+
         addDependentObservation(activePregnancy, today, CONFINEMENT_CONFIRMED.getName(), ancVO.getDeliveryDateConfirmed());
         addDependentObservation(activePregnancy, today, PREGNANCY_STATUS.getName(), true);
-        HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
+
+        if (ancVO.getAddHistory()) {
+            ANCCareHistoryVO ancCareHistoryVO = ancVO.getAncCareHistoryVO();
+            addObservationIfWithinPregnancyPeriod(activePregnancy, IPT, ancCareHistoryVO.getLastIPTDate(), safeParseInteger(ancCareHistoryVO.getLastIPT()));
+            addObservationIfWithinPregnancyPeriod(activePregnancy, TT, ancCareHistoryVO.getLastTTDate(), safeParseInteger(ancCareHistoryVO.getLastTT()));
+        }
+        Set<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         mrsObservations.add(activePregnancy);
         return mrsObservations;
+    }
+
+    private void addObservationIfWithinPregnancyPeriod(MRSObservation activePregnancy, Concept concept, Date observationDate, Integer observationValue) {
+        Date edd = null;
+        Set<MRSObservation> dependantObservations = activePregnancy.getDependantObservations();
+        for (MRSObservation depObs : dependantObservations) {
+            if (EDD.getName().equals(depObs.getConceptName())) {
+                edd = depObs.getDate();
+            }
+        }
+        LocalDate dateOfConception = Pregnancy.basedOnDeliveryDate(DateUtil.newDate(edd)).dateOfConception();
+
+        if (observationDate != null && observationDate.after(dateOfConception.toDate())) {
+            addDependentObservation(activePregnancy, observationDate, concept.getName(), observationValue);
+        }
     }
 
     Set<MRSObservation> addObservationsOnANCHistory(ANCCareHistoryVO ancCareHistoryVO) {
@@ -200,6 +222,19 @@ public class CareService {
 
     public MRSEncounter addCareHistory(CareHistoryVO careHistory) {
         Patient patient = allPatients.getPatientByMotechId(careHistory.getPatientMotechId());
+        ANCCareHistoryVO ancCareHistoryVO = careHistory.getAncCareHistoryVO();
+
+        final MRSObservation activePregnancyObservation = allObservations.findObservation(patient.getMotechId(), PREGNANCY.getName());
+        if (activePregnancyObservation != null) {
+            allObservations.voidObservation(activePregnancyObservation,"Updated in " + ANC_VISIT.value() + " encounter", careHistory.getStaffId());
+
+            addObservationIfWithinPregnancyPeriod(activePregnancyObservation, TT, ancCareHistoryVO.getLastTTDate(), safeParseInteger(ancCareHistoryVO.getLastTT()));
+            addObservationIfWithinPregnancyPeriod(activePregnancyObservation, IPT, ancCareHistoryVO.getLastIPTDate(), safeParseInteger(ancCareHistoryVO.getLastIPT()));
+            allEncounters.persistEncounter(patient.getMrsPatient(), careHistory.getStaffId(), careHistory.getFacilityId(), ANC_VISIT.value(), careHistory.getDate(), new HashSet<MRSObservation>() {{
+                add(activePregnancyObservation);
+            }});
+
+        }
         return allEncounters.persistEncounter(patient.getMrsPatient(), careHistory.getStaffId(), careHistory.getFacilityId(), PATIENT_HISTORY.value(), careHistory.getDate(),
                 addObservationsForCareHistory(careHistory));
     }

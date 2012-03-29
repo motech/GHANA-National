@@ -633,7 +633,7 @@
             </xf:item>
         </xf:select>
         <xf:select1 bind="lastIPT">
-            <xf:label>Last IPT</xf:label>
+            <xf:label>Last IPT for current ANC</xf:label>
             <xf:item id="1">
                 <xf:label>IPT 1</xf:label>
                 <xf:value>1</xf:value>
@@ -648,10 +648,10 @@
             </xf:item>
         </xf:select1>
         <xf:input bind="lastIPTDate">
-            <xf:label>Last IPT date</xf:label>
+            <xf:label>Last IPT date for current ANC</xf:label>
         </xf:input>
         <xf:select1 bind="lastTT">
-            <xf:label>Last TT</xf:label>
+            <xf:label>Last TT for current ANC</xf:label>
             <xf:item id="1">
                 <xf:label>TT 1</xf:label>
                 <xf:value>1</xf:value>
@@ -674,7 +674,7 @@
             </xf:item>
         </xf:select1>
         <xf:input bind="lastTTDate">
-            <xf:label>Last TT Date</xf:label>
+            <xf:label>Last TT Date for current ANC</xf:label>
         </xf:input>
         <xf:select1 bind="enroll">
             <xf:label>Enroll to Mobile Midwife?</xf:label>

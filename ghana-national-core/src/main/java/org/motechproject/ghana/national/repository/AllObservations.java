@@ -54,10 +54,14 @@ public class AllObservations {
     }
 
     private MRSObservation createNewEddObservation(MRSObservation activePregnancyObservation, MRSObservation eddObservation, String staffId, Date estDeliveryDate) {
-        if (eddObservation != null) {
-            mrsObservationAdapter.voidObservation(eddObservation, "Replaced by new EDD value", staffId);
-        }
+        voidObservation(eddObservation, "Replaced by new EDD value", staffId);
         activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(new Date(), EDD.getName(), estDeliveryDate));
         return activePregnancyObservation;
+    }
+
+    public void voidObservation(MRSObservation mrsObservation, String reason ,String staffId){
+        if (mrsObservation != null) {
+            mrsObservationAdapter.voidObservation(mrsObservation, reason, staffId);
+        }
     }
 }

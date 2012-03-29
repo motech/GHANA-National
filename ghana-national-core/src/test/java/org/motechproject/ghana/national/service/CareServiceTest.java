@@ -20,6 +20,7 @@ import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
+import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import java.util.*;
 
@@ -27,7 +28,9 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentCaptor.forClass;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_MOTHER_1;
@@ -37,6 +40,7 @@ import static org.motechproject.ghana.national.domain.EncounterType.*;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.newDateTime;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 public class CareServiceTest extends BaseUnitTest {
     CareService careService;
@@ -184,7 +188,7 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldEnrollToANCProgram() throws Exception {
+    public void shouldEnrollToANCProgramWithTTAndIPTVaccinesTakenDuringPregnancyPeriod() throws Exception {
         String facilityId = "facility id";
         String patientId = "patient id";
         String patientMotechId = "patient motech id";
@@ -192,8 +196,55 @@ public class CareServiceTest extends BaseUnitTest {
         final Date registrationDate = new Date(2012, 3, 1);
         final Date today = DateUtil.today().toDate();
 
-        final ANCVO ancvo = createTestANCVO("3", new Date(2011, 12, 9), "4", new Date(2011, 7, 5), RegistrationToday.IN_PAST, registrationDate, facilityId,
+        Date iptDate = new Date(2011, 12, 9);
+        Date ttDate = new Date(2011, 7, 5);
+        Integer tt = 4;
+        Integer ipt = 3;
+        final ANCVO ancvo = createTestANCVO(ipt.toString(), iptDate, tt.toString(), ttDate, RegistrationToday.IN_PAST, registrationDate, facilityId,
                 staffUserId, patientMotechId, Arrays.asList(ANCCareHistory.values()), new Date());
+
+        setupPatient(patientId, patientMotechId);
+
+        careService.enroll(ancvo);
+
+        final MRSObservation pregnancyObs = new MRSObservation(today, PREGNANCY.getName(), null);
+        pregnancyObs.addDependantObservation(new MRSObservation<Date>(today, EDD.getName(), ancvo.getEstimatedDateOfDelivery()));
+        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
+        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, PREGNANCY_STATUS.getName(), true));
+        pregnancyObs.addDependantObservation(new MRSObservation<Integer>(iptDate, IPT.getName(),ipt ));
+        pregnancyObs.addDependantObservation(new MRSObservation<Integer>(ttDate, TT.getName(),tt ));
+
+        final HashSet<MRSObservation> expectedPregnancyObservations = new HashSet<MRSObservation>() {{
+            add(pregnancyObs);
+        }};
+
+        final Set<MRSObservation> expectedANCObservations = new HashSet<MRSObservation>() {{
+            add(new MRSObservation<Integer>(today, GRAVIDA.getName(), ancvo.getGravida()));
+            add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
+            add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
+            add(new MRSObservation<String>(registrationDate, ANC_REG_NUM.getName(), ancvo.getSerialNumber()));
+            add(new MRSObservation<Integer>(ancvo.getAncCareHistoryVO().getLastIPTDate(), IPT.getName(), Integer.valueOf(ancvo.getAncCareHistoryVO().getLastIPT())));
+            add(new MRSObservation<Integer>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), Integer.valueOf(ancvo.getAncCareHistoryVO().getLastTT())));
+        }};
+
+        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), registrationDate, expectedANCObservations);
+        ArgumentCaptor<Set> obsCaptor = ArgumentCaptor.forClass(Set.class);
+        verify(mockAllEncounters).persistEncounter(eq(mockMRSPatient), eq(staffUserId), eq(facilityId), eq(PREG_REG_VISIT.value()), eq(registrationDate), obsCaptor.capture());
+        assertReflectionEquals(expectedPregnancyObservations, obsCaptor.getValue(), ReflectionComparatorMode.LENIENT_ORDER);
+
+    }
+
+    @Test
+    public void shouldEnrollToANCProgramWithNoVaccinesTakenDuringPregnancyPeriod() throws Exception {
+        String facilityId = "facility id";
+        String patientId = "patient id";
+        String patientMotechId = "patient motech id";
+        String staffUserId = "staff user id";
+        final Date registrationDate = new Date(2012, 3, 1);
+        final Date today = DateUtil.today().toDate();
+
+        final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.IN_PAST, registrationDate, facilityId,
+                staffUserId, patientMotechId, new ArrayList<ANCCareHistory>(), new Date());
 
         setupPatient(patientId, patientMotechId);
 
@@ -208,17 +259,17 @@ public class CareServiceTest extends BaseUnitTest {
             add(pregnancyObs);
         }};
 
-        final HashSet<MRSObservation> expectedANCObservations = new HashSet<MRSObservation>() {{
+        final Set<MRSObservation> expectedANCObservations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Integer>(today, GRAVIDA.getName(), ancvo.getGravida()));
             add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
             add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
             add(new MRSObservation<String>(registrationDate, ANC_REG_NUM.getName(), ancvo.getSerialNumber()));
-            add(new MRSObservation<Integer>(ancvo.getAncCareHistoryVO().getLastIPTDate(), IPT.getName(), Integer.valueOf(ancvo.getAncCareHistoryVO().getLastIPT())));
-            add(new MRSObservation<Integer>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), Integer.valueOf(ancvo.getAncCareHistoryVO().getLastTT())));
         }};
 
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), registrationDate, expectedANCObservations);
-        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, PREG_REG_VISIT.value(), registrationDate, expectedPregnancyObservations);
+        ArgumentCaptor<Set> obsCaptor = ArgumentCaptor.forClass(Set.class);
+        verify(mockAllEncounters).persistEncounter(eq(mockMRSPatient), eq(staffUserId), eq(facilityId), eq(PREG_REG_VISIT.value()), eq(registrationDate), obsCaptor.capture());
+        assertEquals(expectedPregnancyObservations, obsCaptor.getValue());
 
     }
 
@@ -261,23 +312,27 @@ public class CareServiceTest extends BaseUnitTest {
         final Date registrationDate = new Date(2012, 3, 1);
         final Date today = DateUtil.today().toDate();
 
+        Date estimatedDateOfDelivery = new Date();
         final ANCVO ancvo = createTestANCVO("3", new Date(2011, 12, 9), "4", new Date(2011, 7, 5), RegistrationToday.IN_PAST, registrationDate, facilityId,
-                staffUserId, patientMotechId, Arrays.asList(ANCCareHistory.values()), new Date());
+                staffUserId, patientMotechId, Arrays.asList(ANCCareHistory.values()), estimatedDateOfDelivery);
 
         setupPatient(patientId, patientMotechId);
 
         final MRSObservation activePregnancy = new MRSObservation<Object>(today, PREGNANCY.getName(), null);
+
+        activePregnancy.addDependantObservation(new MRSObservation<Date>(today, EDD.getName(), estimatedDateOfDelivery));
         activePregnancy.addDependantObservation(new MRSObservation<Boolean>(today, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
         activePregnancy.addDependantObservation(new MRSObservation<Boolean>(today, PREGNANCY_STATUS.getName(), true));
-        Set<MRSObservation> updatedEddObservations = new HashSet<MRSObservation>() {{
-            add(activePregnancy);
-        }};
+
+        final Set<MRSObservation> updatedEddObservations = new HashSet<MRSObservation>();
+        updatedEddObservations.add(activePregnancy);
+
         when(mockAllObservations.updateEDD(ancvo.getEstimatedDateOfDelivery(), mockPatient,
                 ancvo.getStaffId())).thenReturn(updatedEddObservations);
 
         careService.enroll(ancvo);
 
-        final HashSet<MRSObservation> expectedANCObservations = new HashSet<MRSObservation>() {{
+        HashSet<MRSObservation> expectedANCObservations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Integer>(today, GRAVIDA.getName(), ancvo.getGravida()));
             add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
             add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
@@ -287,7 +342,9 @@ public class CareServiceTest extends BaseUnitTest {
         }};
 
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), registrationDate, expectedANCObservations);
-        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, PREG_REG_VISIT.value(), registrationDate, updatedEddObservations);
+        ArgumentCaptor<Set> obsCaptor = ArgumentCaptor.forClass(Set.class);
+        verify(mockAllEncounters).persistEncounter(eq(mockMRSPatient), eq(staffUserId), eq(facilityId), eq(PREG_REG_VISIT.value()), eq(registrationDate), obsCaptor.capture());
+        assertEquals(obsCaptor.getValue(), updatedEddObservations);
     }
 
     @Test
@@ -366,6 +423,56 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<String>(cwcRegDate, conceptTwoName, conceptTwoValue));
         }};
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffId, facilityId, PATIENT_HISTORY.value(), date, expectedObservations);
+    }
+
+    @Test
+    public void shouldSaveCareHistoryDetailsWithTTandIPTIfThereIsAnActivePregnancy() {
+        final String ttDose = "1";
+        final String iptDose = "2";
+        final Date ttDate = DateUtil.newDate(2011, 12, 23).toDate();
+        final Date iptDate = DateUtil.newDate(2011, 1, 2).toDate();
+        String staffId = "staff id";
+        String facilityId = "facility id";
+        String patientMotechId = "patient motech id";
+        String patientId = "patient id";
+        LocalDate careHistoryCapturedDate = DateUtil.newDate(2011, 11, 11);
+        LocalDate ancRegDate=careHistoryCapturedDate.minusWeeks(1);
+        LocalDate edd=careHistoryCapturedDate.plusMonths(9);
+
+        ANCCareHistoryVO ancCareHistory = new ANCCareHistoryVO(true, Arrays.asList(ANCCareHistory.values()),iptDose, ttDose, iptDate, ttDate);
+
+        setupPatient(patientId, patientMotechId);
+        CareHistoryVO careHistory = new CareHistoryVO(staffId, facilityId, patientMotechId, careHistoryCapturedDate.toDate(), ancCareHistory, new CWCCareHistoryVO(false, null, null,null,null,null,null,null,null,null,null,null));
+
+        final MRSObservation activePregnancyObservation = new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY.getName(),true);
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(ancRegDate.toDate(), EDD.getName(), edd.toDate()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY_STATUS.getName(), true));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(ttDate, TT.getName(), ttDose));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(iptDate, IPT.getName(), iptDose));
+
+        when(mockAllObservations.findObservation(patientMotechId, PREGNANCY.getName())).thenReturn(activePregnancyObservation);
+
+        careService.addCareHistory(careHistory);
+
+        final Set<MRSObservation> expectedHistoryObservations = new HashSet<MRSObservation>() {{
+            add(new MRSObservation<Integer>(ttDate, TT.getName(), Integer.parseInt(ttDose)));
+            add(new MRSObservation<Integer>(iptDate, IPT.getName(),Integer.parseInt(iptDose)));
+        }};
+
+        ArgumentCaptor<Set> observationCaptor = ArgumentCaptor.forClass(Set.class);
+        ArgumentCaptor<String> encounterTypeCaptor = ArgumentCaptor.forClass(String.class);
+        verify(mockAllEncounters,times(2)).persistEncounter(eq(mockMRSPatient),eq(staffId), eq(facilityId),encounterTypeCaptor.capture(),eq(careHistoryCapturedDate.toDate()),observationCaptor.capture());
+
+        HashSet<MRSObservation> expectedActivePregnancyObs = new HashSet<MRSObservation>() {{
+            add(activePregnancyObservation);
+        }};
+
+        assertEquals(expectedActivePregnancyObs, observationCaptor.getAllValues().get(0));
+        assertEquals(expectedHistoryObservations, observationCaptor.getAllValues().get(1));
+
+        assertEquals(ANC_VISIT.value(), encounterTypeCaptor.getAllValues().get(0));
+        assertEquals(PATIENT_HISTORY.value(), encounterTypeCaptor.getAllValues().get(1));
     }
 
     @Test
@@ -467,7 +574,7 @@ public class CareServiceTest extends BaseUnitTest {
     private ANCVO createTestANCVO(String ipt, Date iptDate, String tt, Date ttDate, RegistrationToday registrationToday, Date registrationDate,
                                   String facilityId, String staffId, String patientMotechId, List<ANCCareHistory> careHistories, Date estimatedDateOfDelivery) {
         return new ANCVO(staffId, facilityId, patientMotechId, registrationDate, registrationToday, "2321322", estimatedDateOfDelivery,
-                12.34, 12, 34, true, true, careHistories, ipt, tt, iptDate, ttDate, true);
+                12.34, 12, 34, true, (!careHistories.isEmpty()), careHistories, ipt, tt, iptDate, ttDate, true);
     }
 
     private void setupPatient(String patientId, String patientMotechId) {
