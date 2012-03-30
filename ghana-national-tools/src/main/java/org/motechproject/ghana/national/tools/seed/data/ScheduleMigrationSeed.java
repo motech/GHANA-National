@@ -6,6 +6,8 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.motechproject.MotechException;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientCare;
+import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.motechproject.ghana.national.tools.seed.data.domain.DuplicateScheduleFilter;
@@ -27,6 +29,7 @@ import java.util.List;
 import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.group.Groups.by;
 import static ch.lambdaj.group.Groups.group;
+import static org.motechproject.util.DateUtil.newDateTime;
 
 public abstract class ScheduleMigrationSeed extends Seed {
 
@@ -103,11 +106,10 @@ public abstract class ScheduleMigrationSeed extends Seed {
     }
 
     protected void enroll(DateTime milestoneReferenceDate, String milestoneName, Patient patient) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(patient.getMRSPatientId(),
-                getScheduleName(milestoneName), null,
-                milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
-                milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()),
-                mapMilestoneName(milestoneName), null);
+
+        DateTime mileStoneReferenceTime = newDateTime(milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()));
+        PatientCare patientCare = patient.patientCareWithoutMetaData(getScheduleName(milestoneName), mileStoneReferenceTime, mileStoneReferenceTime);
+        EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, patientCare, mapMilestoneName(milestoneName));
         allSchedules.enroll(enrollmentRequest);
     }
 

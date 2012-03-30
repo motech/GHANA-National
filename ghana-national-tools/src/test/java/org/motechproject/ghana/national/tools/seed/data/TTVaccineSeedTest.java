@@ -9,9 +9,12 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.tools.seed.data.source.OldGhanaScheduleSource;
 import org.motechproject.model.Time;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
+
+import java.util.HashMap;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -35,23 +38,23 @@ public class TTVaccineSeedTest {
     @Test
     public void shouldEnrollForAppropriateTTVaccinationMileStoneWithReferenceDateCalculatedFromTheDueDate() {
         final DateTime referenceDate = DateUtil.newDateTime(2012, 2, 1, new Time(10, 10));
-        final Patient patient = new Patient(new MRSPatient("1000"));
+        final Patient patient = new Patient(new MRSPatient("1000", null, null, new MRSFacility("fid")));
         ttVaccineSeed.enroll(referenceDate, "TT2", patient);
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(allSchedules).enroll(enrollmentRequestCaptor.capture());
-        assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT2", "1000", referenceDate);
+        assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT2", "1000", referenceDate, new HashMap<String, String>());
     }
 
     @Test
     public void shouldEnrollForTTVaccinationMileStoneWithAReferenceDateWhichIsOneWeekBeforeTheDueDate(){
         final DateTime dueDate = DateUtil.newDateTime(2012, 2, 8, new Time(10, 10));
-        final Patient patient = new Patient(new MRSPatient("1000"));
+        final Patient patient = new Patient(new MRSPatient("1000", null, null, new MRSFacility("fid")));
         ttVaccineSeed.enroll(dueDate, "TT1", patient);
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(allSchedules).enroll(enrollmentRequestCaptor.capture());
         DateTime referenceDate = DateUtil.newDateTime(2012, 2, 1, new Time(10, 10));
-        assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT1", "1000", referenceDate);
+        assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT1", "1000", referenceDate, new HashMap<String, String>());
     }
 
 }

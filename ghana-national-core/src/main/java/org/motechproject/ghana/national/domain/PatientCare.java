@@ -73,6 +73,7 @@ public class PatientCare {
         if (!enrollmentDate.equals(that.enrollmentDate)) return false;
         if (enrollmentTime != null ? !enrollmentTime.equals(that.enrollmentTime) : that.enrollmentTime != null)
             return false;
+        if (metaData != null ? !metaData.equals(that.metaData) : that.metaData != null) return false;
         if (!name.equals(that.name)) return false;
         if (!referenceDate.equals(that.referenceDate)) return false;
         if (referenceTime != null ? !referenceTime.equals(that.referenceTime) : that.referenceTime != null)
@@ -88,17 +89,7 @@ public class PatientCare {
         result = 31 * result + (enrollmentTime != null ? enrollmentTime.hashCode() : 0);
         result = 31 * result + (referenceTime != null ? referenceTime.hashCode() : 0);
         result = 31 * result + referenceDate.hashCode();
+        result = 31 * result + (metaData != null ? metaData.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "PatientCare{" +
-                "name='" + name + '\'' +
-                ", enrollmentDate=" + enrollmentDate +
-                ", enrollmentTime=" + enrollmentTime +
-                ", referenceTime=" + referenceTime +
-                ", referenceDate=" + referenceDate +
-                '}';
     }
 }

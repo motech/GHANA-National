@@ -86,6 +86,11 @@ public class Patient {
                 ancIPTPatientCareEnrollOnRegistration(expectedDeliveryDate, enrollmentDate));
     }
 
+    // Todo : Fix the meta-data for migration
+    public PatientCare patientCareWithoutMetaData(String scheduleName, DateTime referenceDate, DateTime enrollmentDate) {
+        return new PatientCare(scheduleName, referenceDate, enrollmentDate, null);
+    }
+
     public PatientCare ancDeliveryCareOnVisit(LocalDate expectedDeliveryDate, LocalDate visitDate) {
         return new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), visitDate, facilityMetaData());
     }
@@ -195,7 +200,7 @@ public class Patient {
         return getMrsPatient().getPerson().attrValue(PatientAttributes.PHONE_NUMBER.getAttribute());
     }
 
-    private Map<String, String> facilityMetaData() {
+    public Map<String, String> facilityMetaData() {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put(FACILITY_META, mrsPatient.getFacility().getId());
         return metaData;

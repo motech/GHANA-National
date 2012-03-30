@@ -24,9 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -76,16 +74,16 @@ public class ScheduleMigrationSeedTest {
                 newUpcomingSchedule(patientId2, "2012-2-29 10:30:00.0", "TT2").build());
 
         List<TTVaccine> expectedTTVaccines = Arrays.asList(
-                new TTVaccine(newDateTime(2012, 3, 22, new Time(10, 30)), TTVaccineDosage.TT3, new Patient(new MRSPatient(patientId1))),
-                new TTVaccine(newDateTime(2012, 2, 1, new Time(10, 30)), TTVaccineDosage.TT2, new Patient(new MRSPatient(patientId2))));
+                new TTVaccine(newDateTime(2012, 3, 22, new Time(10, 30)), TTVaccineDosage.TT3, new Patient(new MRSPatient(patientId1, null, null, null))),
+                new TTVaccine(newDateTime(2012, 2, 1, new Time(10, 30)), TTVaccineDosage.TT2, new Patient(new MRSPatient(patientId2, null, null, null))));
 
         ttVaccineSeed.migrate(upcomingSchedulesFromDb);
 
         ArgumentCaptor<EnrollmentRequest> captor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(allSchedules, times(2)).enroll(captor.capture());
         final List<EnrollmentRequest> enrollmentRequests = captor.getAllValues();
-        assertTTEnrollmentRequest(enrollmentRequests.get(0), expectedTTVaccines.get(0).getVaccinationDate(), "TT3", patientId1, expectedTTVaccines.get(0).getVaccinationDate());
-        assertTTEnrollmentRequest(enrollmentRequests.get(1), expectedTTVaccines.get(1).getVaccinationDate(), "TT2", patientId2, expectedTTVaccines.get(1).getVaccinationDate());
+        assertTTEnrollmentRequest(enrollmentRequests.get(0), expectedTTVaccines.get(0).getVaccinationDate(), "TT3", patientId1, expectedTTVaccines.get(0).getVaccinationDate(), new HashMap<String, String>());
+        assertTTEnrollmentRequest(enrollmentRequests.get(1), expectedTTVaccines.get(1).getVaccinationDate(), "TT2", patientId2, expectedTTVaccines.get(1).getVaccinationDate(), new HashMap<String, String>());
     }
 
     @Test
@@ -134,22 +132,27 @@ public class ScheduleMigrationSeedTest {
     @Test
     public void shouldEnrollIntoIPTIVaccineSchedule(){
         DateTime referenceDate = DateUtil.newDateTime(2012, 1, 1, new Time(10, 10));
-        Patient patient = new Patient(new MRSPatient("10000"));
+        Patient patient = new Patient(new MRSPatient("10000", null, null, null));
 
         iptiVaccineSeed.enroll(referenceDate, "IPTI1", patient);
 
         ArgumentCaptor<EnrollmentRequest> enrollmentCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(allSchedules).enroll(enrollmentCaptor.capture());
 
-        assertTTEnrollmentRequest(enrollmentCaptor.getValue(), referenceDate.toDateTime(), "IPT1", "10000", referenceDate.toDateTime());
+        assertTTEnrollmentRequest(enrollmentCaptor.getValue(), referenceDate.toDateTime(), "IPT1", "10000", referenceDate.toDateTime(), new HashMap<String, String>());
     }
 
-
-    public static void assertTTEnrollmentRequest(EnrollmentRequest enrollmentRequest, DateTime referenceDateTime, String milestoneName, String externalId, DateTime enrollmentDateTime) {
+    public static void assertTTEnrollmentRequest(EnrollmentRequest enrollmentRequest, DateTime referenceDateTime, String milestoneName, String externalId, DateTime enrollmentDateTime, Map<String, String> metaData) {
         assertThat(enrollmentRequest.getReferenceDateTime(), is(equalTo(referenceDateTime)));
         assertThat(enrollmentRequest.getStartingMilestoneName(), is(equalTo(milestoneName)));
         assertThat(enrollmentRequest.getExternalId(), is(equalTo(externalId)));
         assertThat(enrollmentRequest.getEnrollmentDateTime(), is(equalTo(enrollmentDateTime)));
+        assertThat(enrollmentRequest.getMetadata(), is(equalTo(metaData)));
     }
 
+    public static  <K, V> Map<K, V> map(K key, V value) {
+        Map<K, V> map = new HashMap<K, V>();
+        map.put(key, value);
+        return map;
+    }
 }

@@ -14,10 +14,7 @@ import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.hasItem;
@@ -170,6 +167,15 @@ public class PatientTest extends BaseUnitTest {
 
         patientCares = patient.ancCareProgramsToEnrollOnRegistration(DateUtil.newDate(2000, 1, 1), registrationDate, null, new ActiveCareSchedules());
         assertThat(patientCares, hasItem(new PatientCare(TT_VACCINATION, registrationDate, registrationDate, facilityMetaData(facilityId))));
+    }
+
+    @Test
+    public void shouldReturnMetaDataMapForPatient() {
+        String facilityId = "facilityId";
+        Patient patient = new Patient(new MRSPatient("patientId", "mId", null, new MRSFacility(facilityId)));
+        Map<String, String > expectedMap = new HashMap<String, String>();
+        expectedMap.put(Patient.FACILITY_META, facilityId);
+        assertThat(patient.facilityMetaData(), is(expectedMap));
     }
 
     private void assertPatientCare(PatientCare patientCare, PatientCare expected) {
