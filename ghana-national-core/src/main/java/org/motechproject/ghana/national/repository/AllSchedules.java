@@ -102,4 +102,9 @@ public class AllSchedules {
     public EnrollmentRecord getActiveEnrollment(String externalId, String scheduleName) {
         return scheduleTrackingService.getEnrollment(externalId, scheduleName);
     }
+    
+    public List<DateTime> getDueWindowAlertTimings(EnrollmentRequest enrollmentRequest){
+        return scheduleTrackingService.getAlertTimings(enrollmentRequest).getDueWindowAlertTimings();
+    }
+
 }

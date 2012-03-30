@@ -7,10 +7,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.Time;
 import org.motechproject.scheduletracking.api.domain.exception.InvalidEnrollmentException;
-import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
-import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
-import org.motechproject.scheduletracking.api.service.EnrollmentsQuery;
-import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
+import org.motechproject.scheduletracking.api.service.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -134,5 +131,14 @@ public class AllSchedulesTest {
 
         when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(enrollmentRecord);
         assertThat(enrollmentRecord, is(equalTo(allSchedules.getActiveEnrollment(externalId, scheduleName))));
+    }
+
+    @Test
+    public void shouldReturnDueAlertsGivenAnEnrollmentRequest() {
+        EnrollmentRequest request = new EnrollmentRequest("123", "scheduleName", new Time(12, 0), new LocalDate(), null, null, null, null, null);
+        MilestoneAlerts mockMilestoneAlerts = mock(MilestoneAlerts.class);
+        when(mockScheduleTrackingService.getAlertTimings(request)).thenReturn(mockMilestoneAlerts);
+        allSchedules.getDueWindowAlertTimings(request);
+        verify(mockMilestoneAlerts).getDueWindowAlertTimings();
     }
 }

@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.care.*;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
@@ -10,10 +11,12 @@ import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.vo.*;
+import org.motechproject.model.Time;
 import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
+import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +27,7 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
 import static org.motechproject.ghana.national.domain.RegistrationToday.TODAY;
-import static org.motechproject.ghana.national.tools.Utility.safeParseDouble;
-import static org.motechproject.ghana.national.tools.Utility.safeToString;
+import static org.motechproject.ghana.national.tools.Utility.*;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.now;
 
@@ -60,7 +62,7 @@ public class CareService {
         final List<CwcCareHistory> mergedHistories = mergeNewHistoriesWithExisting(existingHistories, cwcVO.getCWCCareHistoryVO().getCwcCareHistories());
 
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(newDate(cwcVO.getRegistrationDate()),
-                mergedHistories, cwcVO.getCWCCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_PENTA,CWC_IPT_VACCINE,CWC_OPV_OTHERS)));
+                mergedHistories, cwcVO.getCWCCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_PENTA, CWC_IPT_VACCINE, CWC_OPV_OTHERS)));
 
         for (PatientCare patientCare : patientCares) {
             allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare));
@@ -84,8 +86,7 @@ public class CareService {
             String conceptName = null;
             if (mrsObservation.getValue() instanceof MRSConcept) {
                 conceptName = ((MRSConcept) mrsObservation.getValue()).getName();
-            }
-            else{
+            } else {
                 conceptName = mrsObservation.getConceptName();
             }
             if (conceptToCareHistory.containsKey(conceptName)) {
@@ -106,10 +107,21 @@ public class CareService {
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), ANC_REG_VISIT.value(), registrationDate, prepareObservations(ancVO));
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, pregnancyObservations);
 
-        ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(TT_VACCINATION, ANC_IPT_VACCINE));
 
-        TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, expectedDeliveryDate, newDate(registrationDate), activeCareSchedules.hasActiveTTSchedule(), ancCareHistoryVO.getLastTT(), ancCareHistoryVO.getLastTTDate());
-        IPTVaccineCare iptVaccineCare = new IPTVaccineCare(patient, expectedDeliveryDate, activeCareSchedules.hasActiveIPTSchedule(), ancCareHistoryVO.getLastIPT(), ancCareHistoryVO.getLastIPTDate());
+        ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(TT_VACCINATION, ANC_IPT_VACCINE));
+        Date lastTTDate = ancCareHistoryVO.getLastTTDate();
+        Date lastIPTDate = ancCareHistoryVO.getLastIPTDate();
+        IPTDose nextIPTMilestone = ancCareHistoryVO.getLastIPT()!=null ? getNextOf(IPTDose.byValue(ancCareHistoryVO.getLastIPT())) : null;
+        TTVaccineDosage nextTTMilestone = (ancCareHistoryVO.getLastTT()!=null) ? getNextOf(TTVaccineDosage.byValue(Integer.parseInt(ancCareHistoryVO.getLastTT()))) : null;
+        if(lastTTDate!=null && nextTTMilestone!=null) {
+            lastTTDate= getEnrollmentDate(TT_VACCINATION, DateUtil.newDate(lastTTDate), nextTTMilestone.getScheduleMilestoneName()).toDate();
+        }
+        if(lastIPTDate!=null && nextIPTMilestone!=null) {
+            lastIPTDate = getEnrollmentDate(ANC_IPT_VACCINE, DateUtil.newDate(lastIPTDate), nextIPTMilestone.milestone()).toDate();
+        }
+
+        TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, expectedDeliveryDate, newDate(registrationDate), activeCareSchedules.hasActiveTTSchedule(), ancCareHistoryVO.getLastTT(), lastTTDate);
+        IPTVaccineCare iptVaccineCare = new IPTVaccineCare(patient, expectedDeliveryDate, activeCareSchedules.hasActiveIPTSchedule(), ancCareHistoryVO.getLastIPT(), lastIPTDate);
 
         List<PatientCare> patientCares = new ANCCareRegistration(ttVaccineCare, iptVaccineCare, patient, expectedDeliveryDate).allCares();
         enrollPatientCares(patientCares, patient);
@@ -313,8 +325,22 @@ public class CareService {
         }
     }
 
+    public LocalDate getEnrollmentDate(String scheduleName, LocalDate lastCareTakenDate, String startMilestoneName) {
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(null, scheduleName, null, null, null, lastCareTakenDate, new Time(0,0), startMilestoneName, null);
+        List<DateTime> dueWindowAlertTimings = allSchedules.getDueWindowAlertTimings(enrollmentRequest);
+        if (!dueWindowAlertTimings.isEmpty() && dueWindowAlertTimings.get(0).isBeforeNow())
+            return getDifferenceOfDates(dueWindowAlertTimings.get(0), DateUtil.newDateTime(lastCareTakenDate)).toLocalDate();
+        return lastCareTakenDate;
+    }
+
+    private DateTime getDifferenceOfDates(DateTime dueDate, DateTime lastCareTakenDate) {
+        Period period = new Period(lastCareTakenDate,dueDate);
+        return DateUtil.now().minus(period);
+    }
+
+
     Date getEDD(String motechId) {
         MRSObservation eddObservation = allObservations.findObservation(motechId, EDD.getName());
-        return eddObservation!=null?(Date) eddObservation.getValue():null;
+        return eddObservation != null ? (Date) eddObservation.getValue() : null;
     }
 }

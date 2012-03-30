@@ -160,7 +160,7 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
 
         assertThat(responseBodyAsString, containsString(patientId));
         assertThat(responseBodyAsString, containsString(patient.firstName()));
-        assertThat(responseBodyAsString, containsString("IPT2"));
+        assertThat(responseBodyAsString, containsString("TT1"));
         assertThat(responseBodyAsString, containsString(today().toString(Constants.PATTERN_DD_MMM_YYYY)));
     }
 

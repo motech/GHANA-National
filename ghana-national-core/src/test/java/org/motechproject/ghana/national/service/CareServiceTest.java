@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
@@ -661,6 +662,46 @@ public class CareServiceTest extends BaseUnitTest {
         assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_DELIVERY, dateOfConception, mockPatient.facilityMetaData())));
         assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.TT_VACCINATION, newDate(ttDate), TTVaccineDosage.TT2.getScheduleMilestoneName(), mockPatient.facilityMetaData())));
         assertScheduleEnrollmentRequest(requests.get(2), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, newDate(iptDate), IPTDose.SP3.milestone(), mockPatient.facilityMetaData())));
+    }
+
+    @Test
+    public void shouldCreateSchedulesForANCProgramRegistrationWhenDueDateForHistoryIsInPast() throws ObservationNotFoundException {
+        String patientId = "Id", patientMotechId = "motechId";
+        LocalDate registrationDate = newDate(2012, 3, 1);
+        mockCurrentDate(registrationDate);
+        LocalDate dateOfConception = registrationDate.minusMonths(6);
+        Pregnancy pregnancy = basedOnConceptionDate(dateOfConception);
+        final String ttDose = "1";
+        final String iptDose = "2";
+        final Date ttDate = dateOfConception.plusMonths(1).toDate();
+        final Date iptDate = dateOfConception.plusMonths(2).toDate();
+        CareService careServiceSpy = spy(careService);
+
+        setupPatient(patientId, patientMotechId);
+        final ANCVO ancvo = createTestANCVO(iptDose, iptDate, ttDose, ttDate, RegistrationToday.IN_PAST, registrationDate.toDate(), "facilityId", null,
+                patientMotechId, Arrays.asList(ANCCareHistory.values()), pregnancy.dateOfDelivery().toDate());
+
+        final MRSObservation activePregnancyObservation = new MRSObservation<Boolean>(registrationDate.toDate(), PREGNANCY.getName(), true);
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(registrationDate.toDate(), EDD.getName(), pregnancy.dateOfDelivery().toDate()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(registrationDate.toDate(), PREGNANCY_STATUS.getName(), true));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(registrationDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose)));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose)));
+        Set<MRSObservation> pregnancyObs = new HashSet<MRSObservation>() {{
+            add(activePregnancyObservation);
+        }};
+
+        doReturn(pregnancyObs).when(careServiceSpy).registerPregnancy(ancvo, mockPatient);
+
+        when(mockAllSchedules.getDueWindowAlertTimings(Matchers.<EnrollmentRequest>any())).thenReturn(Arrays.<DateTime>asList(newDateTime(dateOfConception.plusWeeks(10))));
+        careServiceSpy.enroll(ancvo);
+
+        ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedules, times(3)).enroll(requestCaptor.capture());
+        List<EnrollmentRequest> requests = requestCaptor.getAllValues();
+        assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_DELIVERY, dateOfConception, mockPatient.facilityMetaData())));
+        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.TT_VACCINATION, newDate(2012,1,23), TTVaccineDosage.TT2.getScheduleMilestoneName(), mockPatient.facilityMetaData())));
+        assertScheduleEnrollmentRequest(requests.get(2), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, newDate(2012,2,21), IPTDose.SP3.milestone(), mockPatient.facilityMetaData())));
     }
 
     @Test
