@@ -55,15 +55,15 @@ public class FacilityHelper {
     private List<FacilityVO> facilityVOs(List<Facility> facilities) {
         List<FacilityVO> facilityVOs = new ArrayList<FacilityVO>();
         for (Facility facility : facilities) {
-            if (facility.province() != null) {
+            if (StringUtils.isNotBlank(facility.province())) {
                 facilityVOs.add(new FacilityVO(facility.mrsFacility().getId(), facility.name(), facility.province()));
                 continue;
             }
-            if (facility.district() != null) {
+            if (StringUtils.isNotBlank(facility.district())) {
                 facilityVOs.add(new FacilityVO(facility.mrsFacility().getId(), facility.name(), facility.district()));
                 continue;
             }
-            if (facility.region() != null) {
+            if (StringUtils.isNotBlank(facility.region())) {
                 facilityVOs.add(new FacilityVO(facility.mrsFacility().getId(), facility.name(), facility.region()));
             }
         }
