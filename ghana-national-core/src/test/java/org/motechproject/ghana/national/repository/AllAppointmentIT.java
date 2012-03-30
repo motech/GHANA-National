@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.appointments.api.contract.VisitResponse;
+import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.testing.utils.BaseUnitTest;

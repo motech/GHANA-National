@@ -2,11 +2,11 @@ package org.motechproject.ghana.national.repository;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
-import org.motechproject.appointments.api.contract.CreateVisitRequest;
-import org.motechproject.appointments.api.contract.ReminderConfiguration;
-import org.motechproject.appointments.api.contract.VisitResponse;
-import org.motechproject.appointments.api.contract.VisitsQuery;
 import org.motechproject.appointments.api.service.AppointmentService;
+import org.motechproject.appointments.api.service.contract.CreateVisitRequest;
+import org.motechproject.appointments.api.service.contract.ReminderConfiguration;
+import org.motechproject.appointments.api.service.contract.VisitResponse;
+import org.motechproject.appointments.api.service.contract.VisitsQuery;
 import org.motechproject.ghana.national.domain.EncounterType;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.util.DateUtil;

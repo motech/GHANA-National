@@ -2,7 +2,7 @@ package org.motechproject.ghana.national.domain.sms;
 
 import ch.lambdaj.function.convert.Converter;
 import org.joda.time.DateTime;
-import org.motechproject.appointments.api.contract.VisitResponse;
+import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMSTemplate;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;

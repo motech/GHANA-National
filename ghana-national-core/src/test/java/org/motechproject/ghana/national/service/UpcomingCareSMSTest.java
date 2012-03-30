@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.appointments.api.contract.VisitResponse;
+import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.sms.UpcomingCareSMS;
 import org.motechproject.ghana.national.repository.AllSchedules;
