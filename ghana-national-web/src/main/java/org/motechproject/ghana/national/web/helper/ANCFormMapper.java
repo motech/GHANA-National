@@ -8,8 +8,11 @@ import org.motechproject.mrs.model.MRSObservation;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
+import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.Matchers.is;
 import static org.motechproject.ghana.national.domain.Concept.*;
 
 @Component
@@ -71,17 +74,16 @@ public class ANCFormMapper {
         if (mrsEncounter == null) {
             return;
         }
-        Set<MRSObservation> observations = mrsEncounter.getObservations();
-        for (MRSObservation mrsObservation : observations) {
-            String pregnancyObservationConceptName = mrsObservation.getConceptName();
-            Object pregnancyObservationValue = mrsObservation.getValue();
+        Boolean deliveryDateConfirmed = (Boolean) selectLatestObservation(mrsEncounter.getObservations(), CONFINEMENT_CONFIRMED.getName()).getValue();
+        Date estimatedDateOfDelivery = (Date) selectLatestObservation(mrsEncounter.getObservations(), EDD.getName()).getValue();
 
-            if (CONFINEMENT_CONFIRMED.getName().equals(pregnancyObservationConceptName)) {
-                ancEnrollmentForm.setDeliveryDateConfirmed((Boolean) pregnancyObservationValue);
-            }
-            if (EDD.getName().equals(pregnancyObservationConceptName)) {
-                ancEnrollmentForm.setEstimatedDateOfDelivery((Date) pregnancyObservationValue);
-            }
-        }
+        ancEnrollmentForm.setDeliveryDateConfirmed(deliveryDateConfirmed);
+        ancEnrollmentForm.setEstimatedDateOfDelivery(estimatedDateOfDelivery);
+    }
+
+    private MRSObservation selectLatestObservation(Set<MRSObservation> observations, String observationName) {
+        List<MRSObservation> confinementObservations = select(observations, having(on(MRSObservation.class).getConceptName(), is(observationName)));
+        List<MRSObservation<MRSObservation>> sortedConfinements = sort(confinementObservations, on(MRSObservation.class).getDate());
+        return sortedConfinements.get(sortedConfinements.size() - 1);
     }
 }
