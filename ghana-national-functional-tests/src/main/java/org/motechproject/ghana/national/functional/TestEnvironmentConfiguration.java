@@ -11,11 +11,25 @@ public class TestEnvironmentConfiguration {
     @Value("#{functionalTestProperties['port']}")
     private String port;
 
+    @Value("#{functionalTestProperties['openmrs_host']}")
+    private String openMRSHost;
+
+    @Value("#{functionalTestProperties['openmrs_port']}")
+    private String openMRSPort;
+
     public String host() {
         return host;
     }
 
     public String port() {
         return port;
+    }
+
+    public String openMRSHost() {
+        return openMRSHost;
+    }
+
+    public String openMRSPort() {
+        return openMRSPort;
     }
 }

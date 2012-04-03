@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Browser implements DisposableBean {
-    private WebDriver webDriver;
-    private ApplicationURLs applicationURLs;
+    protected WebDriver webDriver;
+    protected ApplicationURLs applicationURLs;
 
     @Autowired
     public Browser(WebDriverProvider webDriverProvider, TestEnvironmentConfiguration configuration) {

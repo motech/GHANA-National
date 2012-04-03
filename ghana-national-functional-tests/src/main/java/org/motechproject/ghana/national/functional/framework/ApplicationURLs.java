@@ -5,6 +5,7 @@ import org.motechproject.ghana.national.functional.TestEnvironmentConfiguration;
 public class ApplicationURLs {
     public static final String LOGIN_PATH = "/ghana-national-web/login.jsp";
     public static final String OPENMRS_PATH = "/openmrs";
+    private static final String PATIENT_PAGE_PATH = "/patientDashboard.form?patientId=";
 
     private TestEnvironmentConfiguration configuration;
 
@@ -21,6 +22,10 @@ public class ApplicationURLs {
     }
 
     public String forOpenMRSHomePage() {
-        return forPath(OPENMRS_PATH);
+        return String.format("http://%s:%s%s", configuration.openMRSHost(), configuration.openMRSPort(), OPENMRS_PATH);
+    }
+
+    public String forOpenMRSPatientPage(String openMrsId) {
+        return String.format("http://%s:%s%s", configuration.openMRSHost(), configuration.openMRSPort(), OPENMRS_PATH + PATIENT_PAGE_PATH + openMrsId);
     }
 }
