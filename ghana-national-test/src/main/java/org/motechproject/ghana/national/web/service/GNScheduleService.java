@@ -125,7 +125,7 @@ public class GNScheduleService {
             Date nextFireTime = alert.getNextFireTime();
             JobDataMap dataMap = jobDetail.getJobDetail().getJobDataMap();
             actualAlertTimes.add(new Alert(window(dataMap), nextFireTime));
-            for (int i = 1; i <= alert.getRepeatCount(); i++) {
+            for (int i = 1; i <= alert.getRepeatCount() - alert.getTimesTriggered(); i++) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime((Date) nextFireTime.clone());
                 calendar.add(Calendar.DAY_OF_MONTH, toDays(i * alert.getRepeatInterval()));
