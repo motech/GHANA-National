@@ -4,21 +4,22 @@ import org.motechproject.ghana.national.functional.pages.BasePage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class OpenMRSHomePage extends BasePage {
+public class OpenMRSPatientPage extends BasePage<OpenMRSPatientPage> {
+    @FindBy(id = "patientEncountersTab")
+    @CacheLookup
+    private WebElement encounterTab;
 
-    @FindBy(id = "userLogout")
-    private WebElement userLogout;
-
-    public OpenMRSHomePage(WebDriver webDriver) {
+    public OpenMRSPatientPage(WebDriver webDriver) {
         super(webDriver);
-        elementPoller.waitFor(webDriver, By.id("userLogout"));
+        elementPoller.waitFor(webDriver, By.id("patientEncountersTab"));
         PageFactory.initElements(webDriver, this);
     }
 
-    public void logout() {
-        userLogout.click();
+    public void encounterTab() {
+        encounterTab.click();
     }
 }

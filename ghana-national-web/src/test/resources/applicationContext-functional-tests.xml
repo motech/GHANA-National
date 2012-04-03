@@ -13,6 +13,14 @@
     <context:component-scan base-package=" org.motechproject.deliverytools.outboundendpoint"/>
     <util:properties id="functionalTestProperties" location="classpath:functional-test.properties"/>
 
+
+    <bean id="openMRSDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="${openmrs_db_connection}"/>
+        <property name="username" value="${openmrs_db_username}"/>
+        <property name="password" value="${openmrs_db_password}"/>
+    </bean>
+
     <bean id="identifierGenerator"
           class="org.motechproject.ghana.national.repository.IdentifierGenerator"/>
     <util:properties id="ghanaNationalProperties" location="classpath:ghana-national.properties"/>

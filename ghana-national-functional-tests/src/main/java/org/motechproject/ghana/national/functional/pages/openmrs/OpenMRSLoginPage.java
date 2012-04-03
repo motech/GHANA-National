@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 
 public class OpenMRSLoginPage extends BasePage<OpenMRSLoginPage> {
     @FindBy(id = "username")
@@ -16,12 +17,14 @@ public class OpenMRSLoginPage extends BasePage<OpenMRSLoginPage> {
     @CacheLookup
     private WebElement password;
 
-    @FindBy(xpath = "//input[3]")
+    @FindBy(xpath = "/html/body/div/div[3]/center/div/div/form/table/tbody/tr[3]/td[2]/input")
     @CacheLookup
     private WebElement submit;
 
     public OpenMRSLoginPage(WebDriver webDriver) {
         super(webDriver);
+        elementPoller.waitForElementID("username", driver);
+        PageFactory.initElements(driver, this);
     }
 
     public void login(OpenMRSTestUser user) {
