@@ -109,7 +109,7 @@ public abstract class ScheduleMigrationSeed extends Seed {
 
         DateTime mileStoneReferenceTime = newDateTime(milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()));
         PatientCare patientCare = patient.patientCareWithoutMetaData(getScheduleName(milestoneName), mileStoneReferenceTime, mileStoneReferenceTime);
-        EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, patientCare, mapMilestoneName(milestoneName));
+        EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, patientCare.milestoneName(mapMilestoneName(milestoneName)));
         allSchedules.enroll(enrollmentRequest);
     }
 

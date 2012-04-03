@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+import static org.motechproject.ghana.national.domain.TTVaccineDosage.*;
 import static org.motechproject.ghana.national.tools.Utility.nextApplicableWeekDay;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 
@@ -117,5 +118,14 @@ public class UtilityTest {
         List<String> actual = nullSafeList(asList("A", null, "B", "C", "D", null));
         List<String> expected = asList("A", "B", "C", "D");
         assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void shouldGetNextOfEnum() {
+        assertThat(Utility.getNextOf(TT1), is(TT2));
+        assertThat(Utility.getNextOf(TT2), is(TT3));
+        assertThat(Utility.getNextOf(TT3), is(TT4));
+        assertThat(Utility.getNextOf(TT4), is(TT5));
+        assertThat(Utility.getNextOf(TT5), is(equalTo(null)));
     }
 }

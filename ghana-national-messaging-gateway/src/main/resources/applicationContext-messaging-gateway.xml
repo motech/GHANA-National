@@ -33,18 +33,18 @@
         <beans:property name="cronExpression" value="${aggregator.cron.expression}"/>
     </beans:bean>
 
-    <gateway id="messageGateway"
-             service-interface="org.motechproject.ghana.national.messagegateway.service.MessageGateway"/>
+    <gateway id="messageAggregatorGateway"
+             service-interface="org.motechproject.ghana.national.messagegateway.service.MessageAggregatorGateway"/>
 
-    <channel id="smsMessages"/>
-    <channel id="dispatchSms"/>
+    <channel id="receivePayload"/>
+    <channel id="dispatchPayload"/>
 
-    <outbound-channel-adapter channel="dispatchSms" ref="smsDispatcher" method="dispatch"/>
+    <outbound-channel-adapter channel="dispatchPayload" ref="payloadDispatcher" method="dispatch"/>
 
     <aggregator
-            input-channel="smsMessages"
-            method="aggregateSMS"
-            output-channel="dispatchSms"
+            input-channel="receivePayload"
+            method="aggregate"
+            output-channel="dispatchPayload"
             message-store="messageStore">
         <beans:bean class="org.motechproject.ghana.national.messagegateway.domain.MessageDispatcher"/>
     </aggregator>

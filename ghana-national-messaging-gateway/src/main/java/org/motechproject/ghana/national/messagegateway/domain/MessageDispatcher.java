@@ -20,7 +20,7 @@ public class MessageDispatcher {
     @Autowired
     AggregationStrategy aggregationStrategy;
 
-    public SMS aggregateSMS(List<SMS> smsMessages) {
+    public SMS aggregate(List<SMS> smsMessages) {
         final SMS firstSMSInTheGroup = smsMessages.get(0);
         return SMS.fromText(aggregationStrategy.aggregate(smsMessages), firstSMSInTheGroup.getPhoneNumber(), DateUtil.now(),
                 firstSMSInTheGroup.getDeliveryStrategy(), firstSMSInTheGroup.getComparator());

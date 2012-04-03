@@ -29,7 +29,13 @@
         </layout>
     </appender>
     <logger name="org.springframework">
-        <level value="debug"/>
+        <level value="info"/>
+    </logger>
+    <logger name="org.quartz">
+        <level value="info"/>
+    </logger>
+    <logger name="org.quartz">
+        <level value="info"/>
     </logger>
     <logger name="org.openxdata">
         <level value="warn"/>
@@ -40,7 +46,6 @@
     </logger>
     <logger name="org.motechproject">
         <level value="info"/>
-        <appender-ref ref="logfile"/>
     </logger>
 
     <logger name="org.motechproject.ghana.national.tools">
@@ -49,7 +54,7 @@
     </logger>
 
     <root>
-        <priority value="warn"/>
+        <priority value="info"/>
         <appender-ref ref="logfile"/>
     </root>
 </log4j:configuration>

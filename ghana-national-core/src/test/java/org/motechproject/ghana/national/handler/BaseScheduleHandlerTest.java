@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.EventKeys;
+import org.motechproject.ghana.national.domain.AggregationMessageIdentifier;
 import org.motechproject.ghana.national.domain.Concept;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
@@ -64,17 +65,17 @@ public class BaseScheduleHandlerTest {
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         String ancVisitKey = "ancVisitKey";
         final String facilityId = "facilityid";
-        final String patientMotechId = "patientmotechid";
+        final String patientId = "patientmotechid";
         final String firstName = "firstName";
         final String lastname = "lastname";
         final String visitName = "ancVisit";
 
-        parameters.put(EventKeys.EXTERNAL_ID_KEY, patientMotechId);
+        parameters.put(EventKeys.EXTERNAL_ID_KEY, patientId);
         parameters.put(EventKeys.VISIT_NAME, visitName);
         parameters.put(MotechSchedulerService.JOB_ID_KEY, visitName + "3");
 
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(1999, 3, 3).toDate());
-        when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
+        when(mockPatientService.getPatientByMotechId(patientId)).thenReturn(new Patient(new MRSPatient(patientId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
         String additionalPhone = "addPhone";
@@ -85,14 +86,14 @@ public class BaseScheduleHandlerTest {
 
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(SMSGateway, times(2)).dispatchSMSToAggregator(eq(ancVisitKey), templateValuesArgCaptor.capture(), captor.capture());
+        verify(SMSGateway, times(2)).dispatchSMSToAggregator(eq(ancVisitKey), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientId, visitName).getIdentifier()));
 
         List<String> allPhoneNumbers = captor.getAllValues();
         assertEquals(2, allPhoneNumbers.size());
         assertEquals(facility.getPhoneNumbers(), allPhoneNumbers);
 
         assertContainsTemplateValues(new HashMap<String, String>() {{
-            put(MOTECH_ID, patientMotechId);
+            put(MOTECH_ID, patientId);
             put(WINDOW, "Overdue");
             put(FIRST_NAME, firstName);
             put(LAST_NAME, lastname);
@@ -127,7 +128,7 @@ public class BaseScheduleHandlerTest {
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(SMSGateway, times(2)).dispatchSMSToAggregator(eq(PREGNANCY_ALERT_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture());
+        verify(SMSGateway, times(2)).dispatchSMSToAggregator(eq(PREGNANCY_ALERT_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientId, scheduleName).getIdentifier()));
         verify(mockAllObservations).findObservation(patientMotechId, Concept.SERIAL_NUMBER.getName());
         List<String> allPhoneNumbers = captor.getAllValues();
         assertEquals(2, allPhoneNumbers.size());

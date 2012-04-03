@@ -12,7 +12,7 @@
     <script src="${schedulesJsUrl}" type="text/javascript"><!--closing tag needed--></script>
 
     <br/>
-    <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;" >create patient</p>
+    <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;">create patient</p>
     <form id="createPatient" action="${fn:escapeXml(createPatientUrl)}" method="GET" title="Schedules">
         <label for="firstName">First Name:&#160;</label>
         <input type="text" name="firstName" size="15" value="Auto${firstNameIndexCounter}"/>&#160;
@@ -25,7 +25,8 @@
             <option value="Mother">Mother</option>
             <option value="Child">Child</option>
             <option value="Other">Other</option>
-        </select>&#160;
+        </select>
+        &#160;
         <label id="patientDateLabel" for="patientDate">EDD:</label>&#160;
         <input type="text" name="patientDate" id="patientDate" size="15" cssClass="jsDate"/>&#160;
 
@@ -33,18 +34,20 @@
     </form>
 
     <br/>
-    <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;" >convert patient identifier</p>
+    <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;">convert patient identifier</p>
     <form id="patientIds" action="${fn:escapeXml(convertPatientIdUrl)}" method="GET" title="Schedules">
         <label for="motechId">MoTeCH id :&#160;</label>
         <input type="text" name="motechId" size="15"/>&#160;
         <label for="mrsId">OpenMRS id :&#160;</label>
         <input type="text" name="mrsId" size="15"/>&#160;
         <input type="submit" id="submit" value="Search"/>&#160;&#160;
-        <c:if test="${ids ne null}"><p style="display: inline; font: 15px/15px 'Lucida Grande', 'Verdana', sans-serif; color: grey;">${ids}</p></c:if>
+        <c:if test="${ids ne null}">
+            <p style="display: inline; font: 15px/15px 'Lucida Grande', 'Verdana', sans-serif; color: grey;">${ids}</p>
+        </c:if>
     </form>
 
     <br/>
-    <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;" >by patient identifier</p>
+    <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;">by patient identifier</p>
     <form id="schedules" action="${fn:escapeXml(schedulesUrl)}" method="GET" title="Schedules">
         <label for="patientId">Patient id (MoTeCH id):&#160;</label>
         <input type="text" name="patientId" size="15"/>&#160;
@@ -101,6 +104,24 @@
                                 </c:forEach>
                             </table>
                         </td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:if>
+        <c:if test="${smsList ne null and fn:length(smsList) ne 0}">
+            <br/>
+            <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;">aggregated SMS</p>
+            <table id="aggregated-sms-table">
+                <th>Generation time</th>
+                <th>Delivery time</th>
+                <th>Phone number</th>
+                <th>SMS text</th>
+                <c:forEach items="${smsList}" var="sms">
+                    <tr>
+                        <td>${sms.generationTime}</td>
+                        <td>${sms.deliveryTime}</td>
+                        <td>${sms.phoneNumber}</td>
+                        <td>${sms.text}</td>
                     </tr>
                 </c:forEach>
             </table>
