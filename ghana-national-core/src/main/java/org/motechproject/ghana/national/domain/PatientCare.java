@@ -92,4 +92,16 @@ public class PatientCare {
         result = 31 * result + (metaData != null ? metaData.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "PatientCare{" +
+                "name='" + name + '\'' +
+                ", enrollmentDate=" + enrollmentDate +
+                ", enrollmentTime=" + enrollmentTime +
+                ", referenceTime=" + referenceTime +
+                ", referenceDate=" + referenceDate +
+                ", metaData=" + metaData +
+                '}';
+    }
 }

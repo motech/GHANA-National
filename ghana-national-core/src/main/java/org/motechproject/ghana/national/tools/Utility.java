@@ -88,4 +88,9 @@ public class Utility {
         }
         return fromDate.dayOfMonth().addToCopy(noOfDaysToNearestCycleDate);
     }
+
+    public static <T extends Enum> T getNextOf(T enumObj){
+        Enum[] enumConstants = enumObj.getClass().getEnumConstants();
+        return enumObj.ordinal() < enumConstants.length - 1 ? (T)enumConstants[enumObj.ordinal() + 1] : null;
+    }
 }

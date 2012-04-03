@@ -3,7 +3,6 @@ package org.motechproject.ghana.national.domain;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
-import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
 import org.motechproject.ghana.national.vo.ChildCare;
 import org.motechproject.mrs.model.MRSPatient;
 
@@ -71,21 +70,6 @@ public class Patient {
         return mrsPatient.getPerson().getLastName();
     }
 
-    private ChildCare childCare() {
-        return ChildCare.basedOnBirthDay(dateOfBirth());
-    }
-
-    public DateTime dateOfBirth() {
-        return newDateTime(getMrsPatient().getPerson().getDateOfBirth());
-    }
-
-    public List<PatientCare> ancCareProgramsToEnrollOnRegistration(LocalDate expectedDeliveryDate, LocalDate enrollmentDate, ANCCareHistoryVO ancCareHistoryVO, ActiveCareSchedules activeCareSchedules) {
-        return nullSafeList(
-                new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), enrollmentDate, facilityMetaData()),
-                ttVaccinePatientCareEnrollmentOnRegistration(enrollmentDate, ancCareHistoryVO != null ? ancCareHistoryVO.getLastTT() : null, activeCareSchedules.hasActiveTTSchedule()),
-                ancIPTPatientCareEnrollOnRegistration(expectedDeliveryDate, enrollmentDate));
-    }
-
     // Todo : Fix the meta-data for migration
     public PatientCare patientCareWithoutMetaData(String scheduleName, DateTime referenceDate, DateTime enrollmentDate) {
         return new PatientCare(scheduleName, referenceDate, enrollmentDate, null);
@@ -93,13 +77,6 @@ public class Patient {
 
     public PatientCare ancDeliveryCareOnVisit(LocalDate expectedDeliveryDate, LocalDate visitDate) {
         return new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), visitDate, facilityMetaData());
-    }
-
-    public PatientCare ttVaccinePatientCareEnrollmentOnRegistration(LocalDate enrollmentDate, String ttVaccinationHistory, Boolean hasActiveTTSchedule) {
-        if (ttVaccinationHistory == null && !hasActiveTTSchedule) {
-            return new PatientCare(TT_VACCINATION, enrollmentDate, enrollmentDate, facilityMetaData());
-        }
-        return null;
     }
 
     public PatientCare ttVaccinePatientCareOnVisit(LocalDate vaccinationDate) {
@@ -120,22 +97,15 @@ public class Patient {
                 new PatientCare(CWC_OPV_0, referenceDate, enrollmentDate, facilityMetaData()),
                 new PatientCare(CWC_OPV_OTHERS, referenceDate, enrollmentDate, facilityMetaData()),
                 pentaPatientCare(enrollmentDate),
-                measlesChildCare(enrollmentDate,cwcCareHistories));
+                measlesChildCare(enrollmentDate, cwcCareHistories));
     }
 
     private PatientCare bcgChildCare(LocalDate enrollmentDate, LocalDate referenceDate, List<CwcCareHistory> cwcCareHistories) {
         return cwcCareHistories.contains(CwcCareHistory.BCG) ? null : new PatientCare(CWC_BCG, referenceDate, enrollmentDate, facilityMetaData());
     }
 
-    private  PatientCare yfChildCare(LocalDate enrollmentDate, LocalDate referenceDate, List<CwcCareHistory> cwcCareHistories) {
+    private PatientCare yfChildCare(LocalDate enrollmentDate, LocalDate referenceDate, List<CwcCareHistory> cwcCareHistories) {
         return cwcCareHistories.contains(CwcCareHistory.YF) ? null : new PatientCare(CWC_YELLOW_FEVER, referenceDate, enrollmentDate, facilityMetaData());
-    }
-
-    private PatientCare ancIPTPatientCareEnrollOnRegistration(LocalDate expectedDeliveryDate, LocalDate enrollmentDate) {
-        if (expectedDeliveryDate != null && basedOnDeliveryDate(expectedDeliveryDate).applicableForIPT()) {
-            return new PatientCare(ANC_IPT_VACCINE, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), enrollmentDate, facilityMetaData());
-        }
-        return null;
     }
 
     private PatientCare cwcIPTPatientCareEnrollOnRegistration(ChildCare childCare, LocalDate enrollmentDate) {
@@ -160,7 +130,15 @@ public class Patient {
         return new PatientCare(CWC_PENTA, enrollmentDate, enrollmentDate, facilityMetaData());
     }
 
-    private  PatientCare measlesChildCare(LocalDate enrollmentDate, List<CwcCareHistory> cwcCareHistories) {
+    private ChildCare childCare() {
+        return ChildCare.basedOnBirthDay(dateOfBirth());
+    }
+
+    public DateTime dateOfBirth() {
+        return newDateTime(getMrsPatient().getPerson().getDateOfBirth());
+    }
+
+    private PatientCare measlesChildCare(LocalDate enrollmentDate, List<CwcCareHistory> cwcCareHistories) {
         ChildCare childCare = childCare();
         return childCare.applicableForMeasles() && !cwcCareHistories.contains(CwcCareHistory.MEASLES)
                 ? new PatientCare(CWC_MEASLES_VACCINE, childCare.birthDate(), enrollmentDate, facilityMetaData()) : null;

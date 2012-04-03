@@ -4,15 +4,11 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
-import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
-import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.testing.utils.BaseUnitTest;
-import org.motechproject.util.DateUtil;
 
 import java.util.*;
 
@@ -22,9 +18,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.joda.time.DateTime.now;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
-import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 
 public class PatientTest extends BaseUnitTest {
 
@@ -34,28 +28,6 @@ public class PatientTest extends BaseUnitTest {
     public void setUp() {
         todayAs6June2012 = new DateTime(2012, 6, 5, 20, 10);
         mockCurrentDate(todayAs6June2012);
-    }
-
-    @Test
-    public void shouldReturnPatientCareForDeliveryFromExpectedDeliveryDate() {
-
-        Pregnancy pregnancy = basedOnDeliveryDate(todayAs6June2012.plusWeeks(28).plusDays(6).toLocalDate());
-
-        String facilityId = "fid";
-        List<PatientCare> patientCares = patient(now().minusYears(26), facilityId).ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery(), todayAs6June2012.toLocalDate(), noANCHistory(), new ActiveCareSchedules());
-        assertPatientCare(patientCares.get(0), patientCare(ANC_DELIVERY, pregnancy.dateOfConception(), todayAs6June2012.toLocalDate(), facilityId));
-    }
-
-    @Test
-    public void shouldReturnPatientCareForIPTpForIfCurrentPregnancyWeekIsOnOrBeforeWeek19() {
-
-        String facilityId = "fid";
-        Patient patient = patient(now().minusYears(26), facilityId);
-        Pregnancy pregnancy = basedOnDeliveryDate(todayAs6June2012.plusWeeks(28).plusDays(6).toLocalDate());
-
-        List<PatientCare> patientCares = patient.ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery(), todayAs6June2012.toLocalDate(), noANCHistory(), new ActiveCareSchedules());
-
-        assertThat(patientCares, hasItem(new PatientCare(ANC_IPT_VACCINE, pregnancy.dateOfConception(), todayAs6June2012.toLocalDate(), facilityMetaData(facilityId))));
     }
 
     @Test
@@ -74,15 +46,6 @@ public class PatientTest extends BaseUnitTest {
         assertThat(patientCares, not(hasItem(new PatientCare(CWC_IPT_VACCINE, birthDay.toLocalDate(), todayAs6June2012.toLocalDate(), facilityMetaData(facilityId)))));
     }
 
-    @Test
-    public void shouldNotReturnPatientCareForIPTpForIfCurrentPregnancyWeekIsAfterWeek13() {
-
-        Pregnancy pregnancy = basedOnDeliveryDate(todayAs6June2012.plusWeeks(12).plusDays(6).toLocalDate());
-        String facilityId = "fid";
-        List<PatientCare> patientCares = patient(now().minusYears(26), facilityId).ancCareProgramsToEnrollOnRegistration(pregnancy.dateOfDelivery(), todayAs6June2012.toLocalDate(), noANCHistory(), new ActiveCareSchedules());
-
-        assertThat(patientCares, not(hasItem(new PatientCare(ScheduleNames.ANC_IPT_VACCINE, todayAs6June2012.toLocalDate(), todayAs6June2012.toLocalDate(), facilityMetaData(facilityId)))));
-    }
 
     @Test
     public void shouldReturnAllCWCCareProgramsApplicableDuringRegistration() {
@@ -155,19 +118,6 @@ public class PatientTest extends BaseUnitTest {
                 new PatientCare(PNC_MOTHER_3, deliveryDate, deliveryDate, metaData)));
     }
 
-    @Test
-    public void shouldReturnPatientCareForTTVaccineIfNoActiveScheduleAndNoHistoryIsPresent() {
-        LocalDate registrationDate = todayAs6June2012.toLocalDate();
-        String facilityId = "fid";
-        Patient patient = patient(now().minusYears(30), facilityId);
-
-        EnrollmentRecord ttEnrollmentRecord = mock(EnrollmentRecord.class);
-        List<PatientCare> patientCares = patient.ancCareProgramsToEnrollOnRegistration(DateUtil.newDate(2000, 1, 1), registrationDate, null, new ActiveCareSchedules().setActiveCareSchedule(TT_VACCINATION, ttEnrollmentRecord));
-        assertThat(patientCares, not(hasItem(new PatientCare(TT_VACCINATION, registrationDate, registrationDate, facilityMetaData(facilityId)))));
-
-        patientCares = patient.ancCareProgramsToEnrollOnRegistration(DateUtil.newDate(2000, 1, 1), registrationDate, null, new ActiveCareSchedules());
-        assertThat(patientCares, hasItem(new PatientCare(TT_VACCINATION, registrationDate, registrationDate, facilityMetaData(facilityId))));
-    }
 
     @Test
     public void shouldReturnMetaDataMapForPatient() {
