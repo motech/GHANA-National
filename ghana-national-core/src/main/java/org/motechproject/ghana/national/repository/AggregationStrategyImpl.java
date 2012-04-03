@@ -21,7 +21,7 @@ import static ch.lambdaj.group.Groups.group;
 
 public class AggregationStrategyImpl implements AggregationStrategy {
 
-    public static final String SMS_SEPARATOR = "%0a";
+    public static final String SMS_SEPARATOR = "%0A";
 
     @Override
     public String aggregate(List<SMS> smsMessages) {
