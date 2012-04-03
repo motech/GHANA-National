@@ -28,7 +28,7 @@ public class ANCCareRegistration {
 
     public List<PatientCare> allCares() {
          return nullSafeList(
-                new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), enrollmentDate, patient.facilityMetaData()),
+                new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), enrollmentDate, null, patient.facilityMetaData()),
                 ttVaccineCare.care(),
                 iptVaccineCare.care(expectedDeliveryDate)
          );

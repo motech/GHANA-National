@@ -14,6 +14,7 @@ import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.mrs.model.MRSConcept;
+import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
@@ -194,12 +195,13 @@ public class CareServiceTest extends BaseUnitTest {
         final Date registrationDate = new Date(2012, 3, 1);
         final Date today = DateUtil.today().toDate();
 
-        Date iptDate = new Date(2011, 12, 9);
-        Date ttDate = new Date(2011, 7, 5);
+        Date estimatedDateOfDelivery = new Date();
+        Date iptDate = DateUtil.newDate(estimatedDateOfDelivery).minusWeeks(10).toDate();
+        Date ttDate = DateUtil.newDate(estimatedDateOfDelivery).plusWeeks(3).toDate();
         Integer tt = 4;
         Integer ipt = 3;
         final ANCVO ancvo = createTestANCVO(ipt.toString(), iptDate, tt.toString(), ttDate, RegistrationToday.IN_PAST, registrationDate, facilityId,
-                staffUserId, patientMotechId, Arrays.asList(ANCCareHistory.values()), new Date());
+                staffUserId, patientMotechId, Arrays.asList(ANCCareHistory.values()), estimatedDateOfDelivery);
 
         setupPatient(patientId, patientMotechId);
 
@@ -289,7 +291,7 @@ public class CareServiceTest extends BaseUnitTest {
         Patient patient = mock(Patient.class);
         when(patient.getMRSPatientId()).thenReturn("mrsPatientId");
         DateTime registrationTime = DateUtil.now();
-        List<PatientCare> patientCares = asList(new PatientCare(PNC_MOTHER_1, registrationTime, registrationTime, new HashMap<String, String>()));
+        List<PatientCare> patientCares = asList(new PatientCare(PNC_MOTHER_1, registrationTime, registrationTime, null,new HashMap<String, String>()));
 
         careService.enrollPatientCares(patientCares, patient);
 
@@ -417,6 +419,14 @@ public class CareServiceTest extends BaseUnitTest {
         Date date = DateUtil.newDate(2011, 11, 11).toDate();
 
         setupPatient(patientId, patientMotechId);
+        MRSEncounter mrsEncounter;
+        Set<MRSObservation> pregnancyObservations = new HashSet<MRSObservation>();
+        MRSObservation<Boolean> pregObs = new MRSObservation<Boolean>(new Date(), PREGNANCY.getName(), Boolean.TRUE);
+        pregObs.addDependantObservation(new MRSObservation(new Date(), EDD.getName(), DateUtil.newDate(2012, 12, 1).toDate()));
+        pregnancyObservations.add(pregObs);
+        mrsEncounter = new MRSEncounter("providerId", "creator", "facility", new Date(), patientId, pregnancyObservations, EncounterType.PREG_REG_VISIT.value());
+
+        when(mockAllEncounters.getLatest(patientMotechId, EncounterType.PREG_REG_VISIT.value())).thenReturn(mrsEncounter);
         CareHistoryVO careHistory = new CareHistoryVO(staffId, facilityId, patientMotechId, date, ancCareHistory, cwcCareHistory);
 
         careServiceSpy.addCareHistory(careHistory);
@@ -454,7 +464,7 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<String>(ttDate, TT.getName(), ttDose));
         activePregnancyObservation.addDependantObservation(new MRSObservation<String>(iptDate, IPT.getName(), iptDose));
 
-        when(mockAllObservations.findObservation(patientMotechId, PREGNANCY.getName())).thenReturn(activePregnancyObservation);
+        when(mockAllObservations.activePregnancyObservation(patientMotechId)).thenReturn(activePregnancyObservation);
 
         careService.addCareHistory(careHistory);
 
@@ -495,7 +505,6 @@ public class CareServiceTest extends BaseUnitTest {
         final ANCVO ancvo = createTestANCVO(iptDose, iptDate, ttDose, ttDate, RegistrationToday.IN_PAST, registrationDate.toDate(), "facilityId", null,
                 patientMotechId, Arrays.asList(ANCCareHistory.values()), pregnancy.dateOfDelivery().toDate());
 
-        EnrollmentRecord mockEnrollmentRecord = mock(EnrollmentRecord.class);
         final MRSObservation activePregnancyObservation = new MRSObservation<Boolean>(registrationDate.toDate(), PREGNANCY.getName(),true);
         activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(registrationDate.toDate(), EDD.getName(), pregnancy.dateOfDelivery().toDate()));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(registrationDate.toDate(), PREGNANCY_STATUS.getName(), true));
@@ -513,13 +522,11 @@ public class CareServiceTest extends BaseUnitTest {
         ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, times(3)).enroll(requestCaptor.capture());
         List<EnrollmentRequest> requests = requestCaptor.getAllValues();
-        assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, new PatientCare(ScheduleNames.ANC_DELIVERY, dateOfConception, registrationDate, mockPatient.facilityMetaData()), null));
-        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, new PatientCare(ScheduleNames.TT_VACCINATION, newDate(ttDate), registrationDate, mockPatient.facilityMetaData()), null));
-        assertScheduleEnrollmentRequest(requests.get(2), expectedRequest(patientId, new PatientCare(ScheduleNames.ANC_IPT_VACCINE, newDate(iptDate), registrationDate, mockPatient.facilityMetaData()), null));
+        assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, new PatientCare(ScheduleNames.ANC_DELIVERY, dateOfConception, registrationDate, null, mockPatient.facilityMetaData())));
+        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, new PatientCare(ScheduleNames.TT_VACCINATION, newDate(ttDate), registrationDate, TTVaccineDosage.TT2.name(), mockPatient.facilityMetaData())));
+        assertScheduleEnrollmentRequest(requests.get(2), expectedRequest(patientId, new PatientCare(ScheduleNames.ANC_IPT_VACCINE, newDate(iptDate), registrationDate, IPTDose.SP3.name(), mockPatient.facilityMetaData())));
 
     }
-
-
 
     @Test
     public void shouldGetActiveCareSchedulesForAPatient() {
@@ -542,7 +549,7 @@ public class CareServiceTest extends BaseUnitTest {
         setupPatient(patientId, patientMotechId);
         when(mockPatient.getMotechId()).thenReturn(patientMotechId);
 
-        PatientCare patientCare = new PatientCare("test", new LocalDate(), registrationDateTime.toLocalDate(), null);
+        PatientCare patientCare = new PatientCare("test", new LocalDate(), registrationDateTime.toLocalDate(), null, null);
         when(mockPatient.cwcCareProgramToEnrollOnRegistration(registrationDateTime.toLocalDate(), new ArrayList<CwcCareHistory>())).thenReturn(asList(patientCare));
 
         CwcVO cwcVO = new CwcVO(null, null, registrationDateTime.toDate(), patientMotechId, null, null, null,
@@ -550,15 +557,15 @@ public class CareServiceTest extends BaseUnitTest {
         careService.enrollToCWCCarePrograms(cwcVO, mockPatient);
 
         verify(mockPatient).cwcCareProgramToEnrollOnRegistration(registrationDateTime.toLocalDate(), new ArrayList<CwcCareHistory>());
-        verifyIfScheduleEnrolled(0, expectedRequest(patientId, new PatientCare(patientCare.name(), patientCare.startingOn(), registrationDateTime.toLocalDate(), null), null));
+        verifyIfScheduleEnrolled(0, expectedRequest(patientId, new PatientCare(patientCare.name(), patientCare.startingOn(), registrationDateTime.toLocalDate(), null, null)));
     }
 
     @Test
     public void shouldCreatePNCSchedulesForChild() {
         String patientId = "Id";
         DateTime birthDateTime = newDateTime(2012, 12, 21, 2, 3, 0);
-        PatientCare pnc1 = new PatientCare("PNC1", birthDateTime, birthDateTime, null);
-        PatientCare pnc2 = new PatientCare("PNC2", birthDateTime, birthDateTime, null);
+        PatientCare pnc1 = new PatientCare("PNC1", birthDateTime, birthDateTime,null, null);
+        PatientCare pnc2 = new PatientCare("PNC2", birthDateTime, birthDateTime,null, null);
         setupPatient(patientId, null);
         when(mockPatient.pncBabyProgramsToEnrollOnRegistration()).thenReturn(asList(pnc1, pnc2));
         when(mockPatient.dateOfBirth()).thenReturn(birthDateTime);
@@ -567,8 +574,8 @@ public class CareServiceTest extends BaseUnitTest {
         ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, times(2)).enroll(requestCaptor.capture());
         List<EnrollmentRequest> requests = requestCaptor.getAllValues();
-        assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, pnc1, null));
-        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, pnc2, null));
+        assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, pnc1));
+        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, pnc2));
     }
 
     private void verifyIfScheduleEnrolled(int indexForSchedule, EnrollmentRequest expectedRequest) {
@@ -578,10 +585,10 @@ public class CareServiceTest extends BaseUnitTest {
                 expectedRequest);
     }
 
-    private EnrollmentRequest expectedRequest(String externalId, PatientCare patientCare, String startingMilestoneName) {
+    private EnrollmentRequest expectedRequest(String externalId, PatientCare patientCare) {
         return new EnrollmentRequest(externalId, patientCare.name(),
                 patientCare.preferredTime(), patientCare.startingOn(),
-                patientCare.referenceTime(), patientCare.enrollmentDate(), patientCare.enrollmentTime(), startingMilestoneName, patientCare.metaData());
+                patientCare.referenceTime(), patientCare.enrollmentDate(), patientCare.enrollmentTime(), patientCare.milestoneName(), patientCare.metaData());
     }
 
     private void assertScheduleEnrollmentRequest(EnrollmentRequest actualRequest, EnrollmentRequest expectedRequest) {

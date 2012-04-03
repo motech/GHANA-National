@@ -32,8 +32,8 @@ public class VisitService {
 
     public void createTTSchedule(TTVaccine ttVaccine) {
         Patient patient = ttVaccine.getPatient();
-        PatientCare patientCare = patient.ttVaccinePatientCareOnVisit(ttVaccine.getVaccinationDate().toLocalDate());
-        final EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, patientCare, ttVaccine.getDosage().getScheduleMilestoneName());
+        PatientCare patientCare = patient.ttVaccinePatientCareOnVisit(ttVaccine.getVaccinationDate().toLocalDate()).milestoneName(ttVaccine.getDosage().getScheduleMilestoneName());
+        final EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, patientCare);
         allSchedules.enrollOrFulfill(enrollmentRequest, newDate(ttVaccine.getVaccinationDate().toDate()));
     }
 }

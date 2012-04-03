@@ -26,31 +26,37 @@ public class TTVaccineCare {
     private LocalDate enrollmentDate;
     private Boolean hasActiveTTSchedule;
     private PatientCare patientCareBasedOnHistory;
+    private Boolean careComplete;
 
-    private TTVaccineCare(LocalDate enrollmentDate, Boolean hasActiveTTSchedule, PatientCare patientCareBasedOnHistory, Patient patient) {
+    private TTVaccineCare(LocalDate enrollmentDate, Boolean hasActiveTTSchedule, PatientCare patientCareBasedOnHistory, Patient patient, Boolean careComplete) {
         this.enrollmentDate = enrollmentDate;
         this.hasActiveTTSchedule = hasActiveTTSchedule;
         this.patientCareBasedOnHistory = patientCareBasedOnHistory;
         this.patient = patient;
+        this.careComplete = careComplete;
     }
 
     public static TTVaccineCare createFrom(Patient patient, LocalDate registrationDate, MRSObservation activePregnancyObservation, ActiveCareSchedules activeTTSchedules) {
 
         PatientCare careFromHistory = null;
-        Set<MRSObservation> dependantObservations =  nullSafe(activePregnancyObservation.getDependantObservations(), emptySet());
+        Boolean careComplete=false;
+        Set<MRSObservation> dependantObservations = nullSafe(activePregnancyObservation.getDependantObservations(), emptySet());
         List<MRSObservation> ttObservationHistory = filter(having(on(MRSObservation.class).getConceptName(), is(TT.getName())), dependantObservations);
 
         if (isNotEmpty(ttObservationHistory)) {
-            // TODO #1425: fix patient Care to set the startMilestone
             TTVaccineDosage nextMilestoneToSchedule = getNextOf(TTVaccineDosage.byValue(((Double) ttObservationHistory.get(0).getValue()).intValue()));
-            careFromHistory = new PatientCare(TT_VACCINATION, newDate(ttObservationHistory.get(0).getDate()), registrationDate, patient.facilityMetaData());
+            careFromHistory = (nextMilestoneToSchedule == null) ? null :
+                    new PatientCare(TT_VACCINATION, newDate(ttObservationHistory.get(0).getDate()), registrationDate, nextMilestoneToSchedule.name(), patient.facilityMetaData());
+            careComplete = (careFromHistory == null) ? true : false;
+
         }
-        return new TTVaccineCare(registrationDate, activeTTSchedules.hasActiveTTSchedule(), careFromHistory, patient);
+        return new TTVaccineCare(registrationDate, activeTTSchedules.hasActiveTTSchedule(), careFromHistory, patient,careComplete);
     }
 
     public PatientCare care() {
         if (hasActiveTTSchedule) return null;
+        if(careComplete) return null;
         List<PatientCare> historyTT = Lambda.filter(having(on(PatientCare.class).name(), is(TT_VACCINATION)), patientCareBasedOnHistory);
-        return isNotEmpty(historyTT) ? historyTT.get(0) : new PatientCare(TT_VACCINATION, enrollmentDate, enrollmentDate, patient.facilityMetaData());
+        return isNotEmpty(historyTT) ? historyTT.get(0) : new PatientCare(TT_VACCINATION, enrollmentDate, enrollmentDate, null, patient.facilityMetaData());
     }
 }

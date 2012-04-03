@@ -16,17 +16,20 @@ public class PatientCare {
     private Time enrollmentTime;
     private Time referenceTime;
     private LocalDate referenceDate;
+    private String milestoneName;
     private Map<String, String> metaData = new HashMap<String, String>();
 
-    public PatientCare(String name, LocalDate referenceDate, LocalDate enrollmentDate, Map<String, String> metaData) {
+    public PatientCare(String name, LocalDate referenceDate, LocalDate enrollmentDate, String milestoneName, Map<String, String> metaData) {
         this.name = name;
         this.referenceDate = referenceDate;
         this.enrollmentDate = enrollmentDate;
+        this.milestoneName= milestoneName;
         this.metaData = metaData;
+
     }
 
-    public PatientCare(String name, DateTime referenceDateTime, DateTime enrollmentDateTime, Map<String, String> metaData) {
-        this(name, referenceDateTime.toLocalDate(), enrollmentDateTime.toLocalDate(), metaData);
+    public PatientCare(String name, DateTime referenceDateTime, DateTime enrollmentDateTime, String milestoneName, Map<String, String> metaData) {
+        this(name, referenceDateTime.toLocalDate(), enrollmentDateTime.toLocalDate(), milestoneName, metaData);
         this.referenceTime = time(referenceDateTime);
         this.enrollmentTime = time(enrollmentDateTime);
     }
@@ -61,6 +64,15 @@ public class PatientCare {
 
     public Map<String, String> metaData() {
         return metaData;
+    }
+
+    public String milestoneName() {
+        return milestoneName;
+    }
+
+    public PatientCare milestoneName(String milestoneName){
+        this.milestoneName=milestoneName;
+        return this;
     }
 
     @Override

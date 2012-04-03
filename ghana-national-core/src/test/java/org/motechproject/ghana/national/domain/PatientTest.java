@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -38,12 +37,12 @@ public class PatientTest extends BaseUnitTest {
         Patient patient = patient(birthDay, facilityId);
         List<PatientCare> patientCares = patient
                 .cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(), new ArrayList<CwcCareHistory>());
-        assertThat(patientCares, hasItem(new PatientCare(CWC_IPT_VACCINE, birthDay.toLocalDate(), todayAs6June2012.toLocalDate(), facilityMetaData(facilityId))));
+        assertThat(patientCares, hasItem(new PatientCare(CWC_IPT_VACCINE, birthDay.toLocalDate(), todayAs6June2012.toLocalDate(), null, facilityMetaData(facilityId))));
 
         birthDay = todayAs6June2012.minusWeeks(14);
         patientCares = patient(birthDay, facilityId)
                 .cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(), new ArrayList<CwcCareHistory>());
-        assertThat(patientCares, not(hasItem(new PatientCare(CWC_IPT_VACCINE, birthDay.toLocalDate(), todayAs6June2012.toLocalDate(), facilityMetaData(facilityId)))));
+        assertThat(patientCares, not(hasItem(new PatientCare(CWC_IPT_VACCINE, birthDay.toLocalDate(), todayAs6June2012.toLocalDate(), null, facilityMetaData(facilityId)))));
     }
 
 
@@ -56,13 +55,13 @@ public class PatientTest extends BaseUnitTest {
         HashMap<String, String> metaData = facilityMetaData(facilityId);
 
         LocalDate expectedReferenceDate = dateOfBirthWithTime.toLocalDate();
-        assertPatientCares(patientCares, asList(new PatientCare(CWC_BCG, expectedReferenceDate, todayAs6June2012.toLocalDate(), metaData),
-                new PatientCare(CWC_YELLOW_FEVER, expectedReferenceDate, todayAs6June2012.toLocalDate(), metaData),
-                new PatientCare(CWC_PENTA, expectedReferenceDate, todayAs6June2012.toLocalDate(), metaData),
-                new PatientCare(CWC_MEASLES_VACCINE, expectedReferenceDate, todayAs6June2012.toLocalDate(), metaData),
-                new PatientCare(CWC_IPT_VACCINE, expectedReferenceDate, todayAs6June2012.toLocalDate(), metaData),
-                new PatientCare(CWC_OPV_0, expectedReferenceDate, todayAs6June2012.toLocalDate(), metaData),
-                new PatientCare(CWC_OPV_OTHERS, expectedReferenceDate, todayAs6June2012.toLocalDate(), metaData)));
+        assertPatientCares(patientCares, asList(new PatientCare(CWC_BCG, expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData),
+                new PatientCare(CWC_YELLOW_FEVER, expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData),
+                new PatientCare(CWC_PENTA, expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData),
+                new PatientCare(CWC_MEASLES_VACCINE, expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData),
+                new PatientCare(CWC_IPT_VACCINE, expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData),
+                new PatientCare(CWC_OPV_0, expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData),
+                new PatientCare(CWC_OPV_OTHERS, expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData)));
     }
 
     @Test
@@ -72,7 +71,7 @@ public class PatientTest extends BaseUnitTest {
         Patient patient = patient(dateOfBirth5YearBack, facilityId);
         LocalDate expectedReferenceDate = dateOfBirth5YearBack.toLocalDate();
         assertThat(patient.cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(),
-                new ArrayList<CwcCareHistory>()), not(hasItem(new PatientCare(CWC_MEASLES_VACCINE, expectedReferenceDate, todayAs6June2012.toLocalDate(), facilityMetaData(facilityId)))));
+                new ArrayList<CwcCareHistory>()), not(hasItem(new PatientCare(CWC_MEASLES_VACCINE, expectedReferenceDate, todayAs6June2012.toLocalDate(), null, facilityMetaData(facilityId)))));
     }
 
     @Test
@@ -86,9 +85,9 @@ public class PatientTest extends BaseUnitTest {
         List<CwcCareHistory> cwcCareHistories = Arrays.asList(CwcCareHistory.BCG,CwcCareHistory.MEASLES,CwcCareHistory.YF);
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(enrollmentDate, cwcCareHistories);
         HashMap<String, String> metaData = facilityMetaData(facilityId);
-        assertThat(patientCares,not(hasItem(new PatientCare(CWC_BCG, expectedReferenceDate,enrollmentDate, metaData))));
-        assertThat(patientCares,not(hasItem(new PatientCare(CWC_YELLOW_FEVER, expectedReferenceDate,enrollmentDate, metaData))));
-        assertThat(patientCares,not(hasItem(new PatientCare(CWC_MEASLES_VACCINE, expectedReferenceDate,enrollmentDate, metaData))));
+        assertThat(patientCares,not(hasItem(new PatientCare(CWC_BCG, expectedReferenceDate,enrollmentDate, null, metaData))));
+        assertThat(patientCares,not(hasItem(new PatientCare(CWC_YELLOW_FEVER, expectedReferenceDate,enrollmentDate, null, metaData))));
+        assertThat(patientCares,not(hasItem(new PatientCare(CWC_MEASLES_VACCINE, expectedReferenceDate,enrollmentDate, null, metaData))));
 
     }
 
@@ -100,9 +99,9 @@ public class PatientTest extends BaseUnitTest {
         List<PatientCare> cares = patient.pncBabyProgramsToEnrollOnRegistration();
         HashMap<String, String> metaData = facilityMetaData(facilityId);
         assertPatientCares(cares, asList(
-                new PatientCare(PNC_CHILD_1, dateOfBirth, dateOfBirth, metaData),
-                new PatientCare(PNC_CHILD_2, dateOfBirth, dateOfBirth, metaData),
-                new PatientCare(PNC_CHILD_3, dateOfBirth, dateOfBirth, metaData)));
+                new PatientCare(PNC_CHILD_1, dateOfBirth, dateOfBirth,null,metaData),
+                new PatientCare(PNC_CHILD_2, dateOfBirth, dateOfBirth,null,metaData),
+                new PatientCare(PNC_CHILD_3, dateOfBirth, dateOfBirth,null,metaData)));
     }
 
     @Test
@@ -113,9 +112,9 @@ public class PatientTest extends BaseUnitTest {
         List<PatientCare> cares = patient.pncMotherProgramsToEnrollOnRegistration(deliveryDate);
         HashMap<String, String> metaData = facilityMetaData(facilityId);
         assertPatientCares(cares, asList(
-                new PatientCare(PNC_MOTHER_1, deliveryDate, deliveryDate, metaData),
-                new PatientCare(PNC_MOTHER_2, deliveryDate, deliveryDate, metaData),
-                new PatientCare(PNC_MOTHER_3, deliveryDate, deliveryDate, metaData)));
+                new PatientCare(PNC_MOTHER_1, deliveryDate, deliveryDate,null,metaData),
+                new PatientCare(PNC_MOTHER_2, deliveryDate, deliveryDate,null,metaData),
+                new PatientCare(PNC_MOTHER_3, deliveryDate, deliveryDate,null,metaData)));
     }
 
 
@@ -134,6 +133,7 @@ public class PatientTest extends BaseUnitTest {
         assertThat(patientCare.referenceTime(), is(expected.referenceTime()));
         assertThat(patientCare.enrollmentDate(), is(expected.enrollmentDate()));
         assertThat(patientCare.enrollmentTime(), is(expected.enrollmentTime()));
+        assertThat(patientCare.milestoneName(), is(expected.milestoneName()));
         assertThat(patientCare.preferredTime(), is(expected.preferredTime()));
     }
 
@@ -143,16 +143,8 @@ public class PatientTest extends BaseUnitTest {
             assertThat("Missing " + expectedCare.name(), actualList, hasItem(expectedCare));
     }
 
-    private PatientCare patientCare(String name, LocalDate reference, LocalDate enrollmentDate, String facilityId) {
-        return new PatientCare(name, reference, enrollmentDate, facilityMetaData(facilityId));
-    }
-
     private Patient patient(DateTime birthDay, String facilityId) {
         return new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(birthDay.toDate()), new MRSFacility(facilityId, "fname", "fcountry", "fregion", "fcountry", "state")));
-    }
-
-    private ANCCareHistoryVO noANCHistory() {
-        return new ANCCareHistoryVO(false, new ArrayList<ANCCareHistory>(), null, null, null, null);
     }
 
     public static Patient createPatient(String patientId, String motechId, LocalDate dob, String facilityId) {

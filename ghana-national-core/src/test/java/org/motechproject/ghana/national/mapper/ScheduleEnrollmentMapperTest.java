@@ -29,9 +29,9 @@ public class ScheduleEnrollmentMapperTest {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("data", "value");
         String scheduleName = "name";
-        PatientCare patientCare = new PatientCare(scheduleName, referenceDate, registeredDate, metaData);
         String startMilestone = "startMilestone";
-        EnrollmentRequest request = new ScheduleEnrollmentMapper().map(patient, patientCare, startMilestone);
+        PatientCare patientCare = new PatientCare(scheduleName, referenceDate, registeredDate, startMilestone,metaData);
+        EnrollmentRequest request = new ScheduleEnrollmentMapper().map(patient, patientCare);
 
         assertThat(request.getExternalId(), is(patientId));
         assertThat(request.getScheduleName(), is(scheduleName));

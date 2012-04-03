@@ -89,7 +89,7 @@ public class MotherVisitService {
     public void enrollOrFulfillScheduleIPTp(IPTVaccine iptVaccine) {
         Patient patient = iptVaccine.getGivenTo();
         LocalDate visitDate = iptVaccine.getVaccinationDate();
-        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.ancIPTPatientCareEnrollOnVisitAfter19Weeks(visitDate), iptVaccine.getIptMilestone());
+        EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.ancIPTPatientCareEnrollOnVisitAfter19Weeks(visitDate).milestoneName(iptVaccine.getIptMilestone()));
         allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
     }
 
