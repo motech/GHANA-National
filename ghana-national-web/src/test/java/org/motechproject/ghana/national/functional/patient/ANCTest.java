@@ -2,11 +2,10 @@ package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.domain.RegistrationToday;
-import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
+import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.pages.BasePage;
-import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
 import org.motechproject.ghana.national.functional.pages.patient.ANCEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
@@ -19,7 +18,7 @@ import org.testng.annotations.Test;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class ANCTest extends OpenMRSAwareFunctionalTest {
+public class ANCTest extends LoggedInUserFunctionalTest {
     private PatientPage patientPage;
     private DataGenerator dataGenerator;
 
@@ -60,8 +59,8 @@ public class ANCTest extends OpenMRSAwareFunctionalTest {
 
         ancEnrollmentPage.displaying(ancEnrollment);
 
-        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(ancEnrollmentPage.motechId()));
-        openMRSPatientPage.encounterTab();
+//        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(ancEnrollmentPage.motechId()));
+//        openMRSPatientPage.encounterTab();
 
     }
 

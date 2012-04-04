@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=8"/>
 
-    <title><tiles:insertAttribute name="title" ignore="true"/></title>
+    <title><tiles:insertAttribute name="title" ignore="true" defaultValue="Ghana National - Login"/></title>
     <spring:url value="/resources/js/lib/jquery-1.6.3.min.js" var="jquery_url"/>
     <spring:url value="/resources/js/lib/formly.min.js" var="formly_url"/>
     <spring:url value="/resources/js/lib/modernizr.custom.js" var="modernizr_url"/>
