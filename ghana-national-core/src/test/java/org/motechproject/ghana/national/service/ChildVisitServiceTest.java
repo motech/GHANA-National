@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllSchedulesAndMessages;
 import org.motechproject.ghana.national.service.request.PNCBabyRequest;
 import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.model.Time;
@@ -63,11 +64,13 @@ public class ChildVisitServiceTest extends BaseUnitTest {
     AllEncounters mockAllEncounters;
     @Mock
     private AllSchedules mockAllSchedules;
+    @Mock
+    private AllSchedulesAndMessages mockAllSchedulesAndMessages;
 
     @Before
     public void setUp() {
         initMocks(this);
-        service = new ChildVisitService(mockAllEncounters, mockAllSchedules);
+        service = new ChildVisitService(mockAllEncounters, mockAllSchedules, mockAllSchedulesAndMessages);
     }
 
     @Test
@@ -146,7 +149,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, never()).enroll(enrollmentRequestCaptor.capture());
-        verify(mockAllSchedules).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.CWC_PENTA), any(LocalDate.class));
+        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.CWC_PENTA), any(LocalDate.class));
     }
 
     @Test
@@ -176,7 +179,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules).enroll(enrollmentRequestCaptor.capture());
-        verify(mockAllSchedules).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.CWC_PENTA), any(LocalDate.class));
+        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.CWC_PENTA), any(LocalDate.class));
     }
 
     @Test
@@ -232,7 +235,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         service.updateYellowFeverSchedule(testCWCVisit);
 
-        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_YELLOW_FEVER, DateUtil.newDate(testCWCVisit.getDate()));
+        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(mrsPatientId, CWC_YELLOW_FEVER, DateUtil.newDate(testCWCVisit.getDate()));
     }
 
     @Test
@@ -243,7 +246,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         service.updateBCGSchedule(testCWCVisit);
 
-        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_BCG, DateUtil.newDate(testCWCVisit.getDate()));
+        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(mrsPatientId, CWC_BCG, DateUtil.newDate(testCWCVisit.getDate()));
     }
 
     @Test
@@ -255,7 +258,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         service.updateOPVSchedule(testCWCVisit);
 
-        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_0, DateUtil.newDate(testCWCVisit.getDate()));
+        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_0, DateUtil.newDate(testCWCVisit.getDate()));
     }
 
     @Test
@@ -267,7 +270,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         service.updateOPVSchedule(testCWCVisit);
 
-        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_OTHERS, DateUtil.newDate(testCWCVisit.getDate()));
+        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_OTHERS, DateUtil.newDate(testCWCVisit.getDate()));
     }
 
     @Test
@@ -282,7 +285,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(mockEnrollmentRecord);
         service.save(cwcVisit);
 
-        verify(mockAllSchedules).fulfilCurrentMilestone(mrsPatientId, CWC_MEASLES_VACCINE, visitDate);
+        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(mrsPatientId, CWC_MEASLES_VACCINE, visitDate);
     }
 
     @Test
@@ -294,8 +297,8 @@ public class ChildVisitServiceTest extends BaseUnitTest {
                 .immunizations(asList(BCG.name()));
         service.save(cwcVisit);
 
-        verify(mockAllSchedules,never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_0, visitDate);
-        verify(mockAllSchedules,never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_OTHERS, visitDate);
+        verify(mockAllSchedulesAndMessages,never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_0, visitDate);
+        verify(mockAllSchedulesAndMessages,never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_OTHERS, visitDate);
     }
 
     @Test
@@ -306,7 +309,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         EnrollmentRecord mockEnrollmentRecord = mock(EnrollmentRecord.class);
         when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(mockEnrollmentRecord);
         service.save(cwcVisit);
-        verify(mockAllSchedules, never()).fulfilCurrentMilestone(eq("mrsPatientId"), eq(CWC_MEASLES_VACCINE), Matchers.<LocalDate>any());
+        verify(mockAllSchedulesAndMessages, never()).fulfilCurrentMilestone(eq("mrsPatientId"), eq(CWC_MEASLES_VACCINE), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -316,7 +319,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         CWCVisit cwcVisit = createTestCWCVisit(today().toDate(), mock(MRSUser.class), mock(Facility.class), patient).immunizations(asList(MEASLES.name()));
         when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(null);
         service.save(cwcVisit);
-        verify(mockAllSchedules, never()).fulfilCurrentMilestone(eq("mrsPatientId"), eq(CWC_MEASLES_VACCINE), Matchers.<LocalDate>any());
+        verify(mockAllSchedulesAndMessages, never()).fulfilCurrentMilestone(eq("mrsPatientId"), eq(CWC_MEASLES_VACCINE), Matchers.<LocalDate>any());
     }
 
     private CWCVisit createTestCWCVisit(Date registrationDate, MRSUser staff, Facility facility, Patient patient) {

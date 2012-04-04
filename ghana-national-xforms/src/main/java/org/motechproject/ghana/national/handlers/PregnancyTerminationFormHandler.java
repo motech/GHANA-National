@@ -24,8 +24,6 @@ public class PregnancyTerminationFormHandler implements FormPublishHandler {
     @Autowired
     PregnancyService pregnancyService;
 
-
-
     @Autowired
     FacilityService facilityService;
 

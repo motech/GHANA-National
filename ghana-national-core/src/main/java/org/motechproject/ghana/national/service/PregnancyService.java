@@ -30,8 +30,7 @@ public class PregnancyService {
 
     private AllPatients allPatients;
     private AllEncounters allEncounters;
-    private AllSchedules allSchedules;
-    private AllAppointments allAppointments;
+    private AllAppointmentsAndMessages allAppointmentsAndMessages;
     private IdentifierGenerator identifierGenerator;
     private PregnancyEncounterFactory encounterFactory;
     private AllObservations allObservations;
@@ -39,22 +38,23 @@ public class PregnancyService {
     private SMSGateway smsGateway;
     private PatientService patientService;
     private MobileMidwifeService mobileMidwifeService;
+    private AllSchedulesAndMessages allSchedulesAndMessages;
 
     @Autowired
     public PregnancyService(AllPatients allPatients, AllEncounters allEncounters,
-                            AllSchedules allSchedules, AllAppointments allAppointments, IdentifierGenerator identifierGenerator,
+                            AllAppointmentsAndMessages allAppointmentsAndMessages, IdentifierGenerator identifierGenerator,
                             AllObservations allObservations, CareService careService, SMSGateway smsGateway, PatientService patientService,
-                            MobileMidwifeService mobileMidwifeService) {
+                            MobileMidwifeService mobileMidwifeService, AllSchedulesAndMessages allSchedulesAndMessages) {
         this.allPatients = allPatients;
         this.allEncounters = allEncounters;
-        this.allSchedules = allSchedules;
-        this.allAppointments = allAppointments;
+        this.allAppointmentsAndMessages = allAppointmentsAndMessages;
         this.identifierGenerator = identifierGenerator;
         this.allObservations = allObservations;
         this.careService = careService;
         this.smsGateway = smsGateway;
         this.patientService = patientService;
         this.mobileMidwifeService = mobileMidwifeService;
+        this.allSchedulesAndMessages = allSchedulesAndMessages;
         encounterFactory = new PregnancyEncounterFactory();
     }
 
@@ -64,8 +64,8 @@ public class PregnancyService {
             patientService.deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
 
         } else {
-            allSchedules.unEnroll(request.getPatient().getMRSPatientId(), Patient.ancCarePrograms);
-            allAppointments.remove(request.getPatient());
+            allSchedulesAndMessages.unEnroll(request.getPatient().getMRSPatientId(), Patient.ancCarePrograms);
+            allAppointmentsAndMessages.remove(request.getPatient());
         }
         mobileMidwifeService.unRegister(request.getPatient().getMotechId());
     }
@@ -101,9 +101,9 @@ public class PregnancyService {
 
         MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(patient.getMotechId());
         allEncounters.persistEncounter(encounterFactory.createDeliveryEncounter(request, activePregnancyObservation));
-        allSchedules.safeFulfilCurrentMilestone(patient.getMRSPatientId(), ScheduleNames.ANC_DELIVERY, request.getDeliveryDateTime().toLocalDate());
-        allSchedules.unEnroll(patient.getMRSPatientId(), Patient.ancCarePrograms);
-        allAppointments.remove(patient);
+        allSchedulesAndMessages.safeFulfilCurrentMilestone(patient.getMRSPatientId(), ScheduleNames.ANC_DELIVERY, request.getDeliveryDateTime().toLocalDate());
+        allSchedulesAndMessages.unEnroll(patient.getMRSPatientId(), Patient.ancCarePrograms);
+        allAppointmentsAndMessages.remove(patient);
     }
 
     public Date activePregnancyEDD(String motechId) {

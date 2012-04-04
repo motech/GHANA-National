@@ -19,7 +19,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static java.lang.String.format;
-import static java.util.Arrays.asList;
 import static org.motechproject.util.DateUtil.endOfDay;
 
 @Repository
@@ -64,12 +63,8 @@ public class AllSchedules {
         scheduleTrackingService.fulfillCurrentMilestone(externalId, scheduleName, fulfillmentDate);
     }
 
-    public void fulfilCurrentMilestone(String externalId, String scheduleName, LocalDate fulfillmentDate, Time fulfillmentTime) {
+    void fulfilCurrentMilestone(String externalId, String scheduleName, LocalDate fulfillmentDate, Time fulfillmentTime) {
         scheduleTrackingService.fulfillCurrentMilestone(externalId, scheduleName, fulfillmentDate, fulfillmentTime);
-    }
-
-    public void unEnroll(String externalId, String scheduleName) {
-        scheduleTrackingService.unenroll(externalId, asList(scheduleName));
     }
 
     public void unEnroll(String externalId, List<String> scheduleNames) {

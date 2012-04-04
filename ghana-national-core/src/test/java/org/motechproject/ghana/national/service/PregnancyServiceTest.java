@@ -42,30 +42,28 @@ public class PregnancyServiceTest {
     @Mock
     private AllEncounters mockAllEncounters;
     @Mock
-    private AllSchedules mockAllSchedules;
+    private AllSchedulesAndMessages mockAllSchedules;
     @Mock
-    private AllAppointments mockAllAppointments;
+    private AllAppointmentsAndMessages mockAllAppointmentsAndMessages;
     @Mock
     private IdentifierGenerator mockIdentifierGenerator;
     @Mock
     private SMSGateway mockSmsGateway;
-
     @Mock
     private  AllObservations mockAllObservations;
     @Mock
     private CareService mockCareService;
-
     @Mock
     private PatientService mockPatientService;
-
     @Mock
     private MobileMidwifeService mockMobileMidwifeService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        pregnancyService = new PregnancyService(mockAllPatients, mockAllEncounters, mockAllSchedules, mockAllAppointments,
-                mockIdentifierGenerator, mockAllObservations, mockCareService, mockSmsGateway,mockPatientService, mockMobileMidwifeService);
+        pregnancyService = new PregnancyService(mockAllPatients, mockAllEncounters, mockAllAppointmentsAndMessages,
+                mockIdentifierGenerator, mockAllObservations, mockCareService, mockSmsGateway,
+                mockPatientService, mockMobileMidwifeService, mockAllSchedules);
     }
 
     @Test
@@ -114,7 +112,7 @@ public class PregnancyServiceTest {
         ArgumentCaptor<Encounter> argumentCaptor = ArgumentCaptor.forClass(Encounter.class);
 
         verify(mockAllSchedules).unEnroll(patientMRSId, Patient.ancCarePrograms);
-        verify(mockAllAppointments).remove(mockPatient);
+        verify(mockAllAppointmentsAndMessages).remove(mockPatient);
         verify(mockAllEncounters).persistEncounter(argumentCaptor.capture());
         verify(mockMobileMidwifeService).unRegister(request.getPatient().getMotechId());
         assertReflectionEquals(expectedEncounter, argumentCaptor.getValue());
@@ -203,7 +201,7 @@ public class PregnancyServiceTest {
         }}, smsTemplateValuesArgCaptor.getValue());
 
         verify(mockAllSchedules).safeFulfilCurrentMilestone(mrsPatientId, ScheduleNames.ANC_DELIVERY, deliveryDate.toLocalDate());
-        verify(mockAllAppointments).remove(mockPatient);
+        verify(mockAllAppointmentsAndMessages).remove(mockPatient);
     }
 
     @Test

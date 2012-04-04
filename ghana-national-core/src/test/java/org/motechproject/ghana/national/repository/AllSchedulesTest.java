@@ -7,20 +7,17 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.Time;
 import org.motechproject.scheduletracking.api.domain.exception.InvalidEnrollmentException;
-import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
+import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.EnrollmentsQuery;
 import org.motechproject.scheduletracking.api.service.ScheduleTrackingService;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -42,16 +39,6 @@ public class AllSchedulesTest {
         EnrollmentRequest mockEnrollmentRequest = Matchers.any();
         allSchedules.enroll(mockEnrollmentRequest);
         verify(mockScheduleTrackingService).enroll(mockEnrollmentRequest);
-    }
-
-    @Test
-    public void shouldUnEnroll() {
-        String patientId = "12";
-        String scheduleName = "scheduleName";
-
-        allSchedules.unEnroll(patientId, scheduleName);
-
-        verify(mockScheduleTrackingService).unenroll(patientId, asList(scheduleName));
     }
 
     @Test

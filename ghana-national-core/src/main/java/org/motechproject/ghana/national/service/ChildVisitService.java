@@ -10,6 +10,7 @@ import org.motechproject.ghana.national.factory.ChildVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllSchedulesAndMessages;
 import org.motechproject.ghana.national.service.request.PNCBabyRequest;
 import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -30,11 +31,13 @@ import static org.motechproject.util.DateUtil.time;
 public class ChildVisitService {
     private AllEncounters allEncounters;
     private AllSchedules allSchedules;
+    private AllSchedulesAndMessages allSchedulesAndMessages;
 
     @Autowired
-    public ChildVisitService(AllEncounters allEncounters, AllSchedules allSchedules) {
+    public ChildVisitService(AllEncounters allEncounters, AllSchedules allSchedules, AllSchedulesAndMessages allSchedulesAndMessages) {
         this.allEncounters = allEncounters;
         this.allSchedules = allSchedules;
+        this.allSchedulesAndMessages = allSchedulesAndMessages;
     }
 
     public MRSEncounter save(CWCVisit cwcVisit) {
@@ -52,9 +55,9 @@ public class ChildVisitService {
             Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
             if (OPVDose.OPV_0.equals(OPVDose.byValue(cwcVisit.getOpvdose())))
-                allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_OPV_0, visitDate);
+                allSchedulesAndMessages.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_OPV_0, visitDate);
             else
-                allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_OPV_OTHERS, visitDate);
+                allSchedulesAndMessages.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_OPV_OTHERS, visitDate);
         }
 
     }
@@ -71,7 +74,7 @@ public class ChildVisitService {
         if (cwcVisit.getImmunizations().contains(BCG.name())) {
             Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
-            allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_BCG, visitDate);
+            allSchedulesAndMessages.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_BCG, visitDate);
         }
     }
 
@@ -89,7 +92,7 @@ public class ChildVisitService {
         List<String> immunizations = cwcVisit.getImmunizations();
         Patient patient = cwcVisit.getPatient();
         if (immunizations.contains(MEASLES.name()) && enrollment(patient.getMRSPatientId(), CWC_MEASLES_VACCINE) != null) {
-            allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_MEASLES_VACCINE, newDate(cwcVisit.getDate()));
+            allSchedulesAndMessages.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_MEASLES_VACCINE, newDate(cwcVisit.getDate()));
         }
     }
 
@@ -97,7 +100,7 @@ public class ChildVisitService {
         if (cwcVisit.getImmunizations().contains(YF.name())) {
             Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
-            allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_YELLOW_FEVER, visitDate);
+            allSchedulesAndMessages.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_YELLOW_FEVER, visitDate);
         }
     }
 
@@ -109,7 +112,7 @@ public class ChildVisitService {
             if (null == enrollment(patient.getMRSPatientId(), CWC_PENTA)) {
                 allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patient.pentaPatientCare(visitDate).milestoneName(milestoneName(cwcVisit))));
             }
-            allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_PENTA, visitDate);
+            allSchedulesAndMessages.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_PENTA, visitDate);
         }
     }
 
