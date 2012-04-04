@@ -7,6 +7,7 @@
 
   <definition name="default" template="/WEB-INF/layouts/default.jspx">
     <put-attribute name="header" value="/WEB-INF/views/header.jspx" />
+    <put-attribute name="title" type="string" value="Ghana National" />
     <put-attribute name="menu" value="/WEB-INF/views/adminMenu.jspx" />
     <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
   </definition>
