@@ -29,11 +29,11 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
     private String motherMotechId;
     @Required
     private PatientType registrantType;
-    @Required @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
+    @Required @MaxLength(size = 50) @RegEx(pattern = NAME_PATTERN)
     private String firstName;
-    @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
+    @MaxLength(size = 50) @RegEx(pattern = NAME_PATTERN)
     private String middleName;
-    @Required @MaxLength(size = 100) @RegEx(pattern = NAME_PATTERN)
+    @Required @MaxLength(size = 50) @RegEx(pattern = NAME_PATTERN)
     private String lastName;
     @Required
     private Date dateOfBirth;
