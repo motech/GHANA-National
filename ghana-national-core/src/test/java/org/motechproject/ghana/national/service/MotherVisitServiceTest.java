@@ -10,10 +10,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.repository.AllAppointments;
-import org.motechproject.ghana.national.repository.AllEncounters;
-import org.motechproject.ghana.national.repository.AllObservations;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.ghana.national.vo.Pregnancy;
@@ -62,11 +59,14 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     private VisitService mockVisitService;
     @Mock
     private AllAppointments mockAllAppointments;
+    @Mock
+    private AllAppointmentsAndMessages mockAllAppointmentsAndMessages;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        motherVisitService = new MotherVisitService(mockAllEncounters, mockAllObservations, mockAllSchedules, mockAllAppointments, mockVisitService);
+        motherVisitService = new MotherVisitService(mockAllEncounters, mockAllObservations, mockAllSchedules,
+                mockAllAppointments, mockAllAppointmentsAndMessages, mockVisitService);
     }
 
     @Test
@@ -113,8 +113,8 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, null, visitDate, null,
                 visitDate, null, IPTDose.byValue(ancVisit.getIptdose()).milestone(), null),
                 enrollmentRequestCaptor.getAllValues().get(1));
-//        verify(mockAllAppointments).updateANCVisitSchedule(patient, ancVisit.getDate(), DateUtil.newDateTime(ancVisit.getNextANCDate()));
-
+        verify(mockAllAppointments).updateANCVisitSchedule(patient, DateUtil.newDateTime(ancVisit.getNextANCDate()));
+        verify(mockAllAppointmentsAndMessages).fulfillCurrentANCVisit(patient, ancVisit.getDate());
     }
 
     @Test

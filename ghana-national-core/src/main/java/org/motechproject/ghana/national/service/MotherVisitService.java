@@ -8,10 +8,7 @@ import org.motechproject.ghana.national.domain.PatientCare;
 import org.motechproject.ghana.national.domain.TTVaccine;
 import org.motechproject.ghana.national.factory.MotherVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
-import org.motechproject.ghana.national.repository.AllAppointments;
-import org.motechproject.ghana.national.repository.AllEncounters;
-import org.motechproject.ghana.national.repository.AllObservations;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -34,14 +31,17 @@ public class MotherVisitService {
     private AllObservations allObservations;
     private AllAppointments allAppointments;
     private MotherVisitEncounterFactory factory;
+    private AllAppointmentsAndMessages allAppointmentsAndMessages;
     private VisitService visitService;
 
     @Autowired
-    public MotherVisitService(AllEncounters allEncounters, AllObservations allObservations, AllSchedules allSchedules, AllAppointments allAppointments, VisitService visitService) {
+    public MotherVisitService(AllEncounters allEncounters, AllObservations allObservations, AllSchedules allSchedules,
+                              AllAppointments allAppointments, AllAppointmentsAndMessages allAppointmentsAndMessages, VisitService visitService) {
         this.allEncounters = allEncounters;
         this.allObservations = allObservations;
         this.allAppointments = allAppointments;
         this.allSchedules = allSchedules;
+        this.allAppointmentsAndMessages = allAppointmentsAndMessages;
         this.visitService = visitService;
         factory = new MotherVisitEncounterFactory();
     }
@@ -82,7 +82,7 @@ public class MotherVisitService {
     }
 
     private void updateANCVisit(ANCVisitRequest ancVisitRequest) {
-        allAppointments.fulfillCurrentANCVisit(ancVisitRequest.getPatient(), ancVisitRequest.getDate());
+        allAppointmentsAndMessages.fulfillCurrentANCVisit(ancVisitRequest.getPatient(), ancVisitRequest.getDate());
         allAppointments.updateANCVisitSchedule(ancVisitRequest.getPatient(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
     }
 

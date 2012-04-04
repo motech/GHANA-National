@@ -27,17 +27,17 @@ public class PatientService {
     private AllPatients allPatients;
     private IdentifierGenerator identifierGenerator;
     private AllEncounters allEncounters;
-    private AllSchedules allSchedules;
-    private AllAppointments allAppointments;
+    private AllSchedulesAndMessages allSchedulesAndMessages;
+    private AllAppointmentsAndMessages allAppointmentsAndMessages;
     private AllPatientSearch allPatientSearch;
 
     @Autowired
-    public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator, AllEncounters allEncounters, AllSchedules allSchedules, AllAppointments allAppointments, AllPatientSearch allPatientSearch) {
+    public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator, AllEncounters allEncounters, AllSchedulesAndMessages allSchedulesAndMessages, AllAppointmentsAndMessages allAppointmentsAndMessages, AllPatientSearch allPatientSearch) {
         this.allPatients = allPatients;
         this.identifierGenerator = identifierGenerator;
         this.allEncounters = allEncounters;
-        this.allSchedules = allSchedules;
-        this.allAppointments = allAppointments;
+        this.allSchedulesAndMessages = allSchedulesAndMessages;
+        this.allAppointmentsAndMessages = allAppointmentsAndMessages;
         this.allPatientSearch = allPatientSearch;
     }
 
@@ -115,8 +115,8 @@ public class PatientService {
     public void deceasePatient(Date dateOfDeath, String patientMotechId, String causeOfDeath, String comment) {
         Patient patient = getPatientByMotechId(patientMotechId);
         allPatients.deceasePatient(dateOfDeath, patientMotechId, (causeOfDeath.equals("OTHER") ? "OTHER NON-CODED" : "NONE"), comment);
-        allSchedules.unEnroll(patient.getMRSPatientId(), patient.allCareProgramsToUnEnroll());
-        allAppointments.remove(patient);
+        allSchedulesAndMessages.unEnroll(patient.getMRSPatientId(), patient.allCareProgramsToUnEnroll());
+        allAppointmentsAndMessages.remove(patient);
     }
 
     public List<MRSPatient> getPatients(String firstName, String lastName, String phoneNumber, Date dateOfBirth, String insuranceNumber) {

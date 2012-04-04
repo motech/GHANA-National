@@ -40,9 +40,9 @@ public class PatientServiceTest {
     @Mock
     private AllEncounters mockAllEncounters;
     @Mock
-    private AllSchedules mockAllSchedules;
+    private AllSchedulesAndMessages mockAllSchedulesAndSchedules;
     @Mock
-    private AllAppointments mockAllAppointments;
+    private AllAppointmentsAndMessages mockAllAppointmentsAndMessages;
     @Mock
     private AllPatientSearch mockAllPatientSearch;
 
@@ -50,7 +50,7 @@ public class PatientServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(mockAllPatients, mockIdentifierGenerator, mockAllEncounters, mockAllSchedules, mockAllAppointments, mockAllPatientSearch);
+        patientService = new PatientService(mockAllPatients, mockIdentifierGenerator, mockAllEncounters, mockAllSchedulesAndSchedules, mockAllAppointmentsAndMessages, mockAllPatientSearch);
     }
 
     @Test
@@ -276,8 +276,8 @@ public class PatientServiceTest {
         patientService.deceasePatient(dateOfDeath, patientMotechId, causeOfDeath, comment);
 
         verify(mockAllPatients).deceasePatient(dateOfDeath, patientMotechId, "OTHER NON-CODED", comment);
-        verify(mockAllSchedules).unEnroll(patientMRSId, schedules);
-        verify(mockAllAppointments).remove(patient);
+        verify(mockAllSchedulesAndSchedules).unEnroll(patientMRSId, schedules);
+        verify(mockAllAppointmentsAndMessages).remove(patient);
     }
 
     @Test
