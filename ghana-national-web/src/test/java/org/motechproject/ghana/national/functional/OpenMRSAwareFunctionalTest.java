@@ -34,7 +34,7 @@ public abstract class OpenMRSAwareFunctionalTest extends FunctionalTest {
     }
 
     protected void openMRSLogin() {
-        OpenMRSLoginPage openMRSLoginPage = openMRSBrowser.toOpenMrsLoginPage();
+        OpenMRSLoginPage openMRSLoginPage = openMRSBrowser.toOpenMRSLoginPage();
         openMRSLoginPage.login(OpenMRSTestUser.admin());
         openMRSHomePage = openMRSBrowser.openMRSHomePage();
     }

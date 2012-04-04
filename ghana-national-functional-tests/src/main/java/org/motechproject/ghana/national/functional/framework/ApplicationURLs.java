@@ -6,7 +6,7 @@ public class ApplicationURLs {
     public static final String LOGIN_PATH = "/ghana-national-web/login.jsp";
     public static final String OPENMRS_PATH = "/openmrs";
     private static final String PATIENT_PAGE_PATH = "/patientDashboard.form?patientId=";
-
+    private static final String ENCOUNTER_PAGE_PATH = "/admin/encounters/encounter.form?encounterId=";
     private TestEnvironmentConfiguration configuration;
 
     public ApplicationURLs(TestEnvironmentConfiguration configuration) {
@@ -27,5 +27,9 @@ public class ApplicationURLs {
 
     public String forOpenMRSPatientPage(String openMrsId) {
         return String.format("http://%s:%s%s", configuration.openMRSHost(), configuration.openMRSPort(), OPENMRS_PATH + PATIENT_PAGE_PATH + openMrsId);
+    }
+
+    public String forOpenMRSEncounterPage(String encounterId) {
+        return String.format("http://%s:%s%s", configuration.openMRSHost(), configuration.openMRSPort(), OPENMRS_PATH + ENCOUNTER_PAGE_PATH + encounterId);
     }
 }

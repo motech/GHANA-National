@@ -11,10 +11,10 @@ public class TestEnvironmentConfiguration {
     @Value("#{functionalTestProperties['port']}")
     private String port;
 
-    @Value("#{functionalTestProperties['openmrs_host']}")
+    @Value("#{ghanaNationalProperties['omod.identifier.service.host']}")
     private String openMRSHost;
 
-    @Value("#{functionalTestProperties['openmrs_port']}")
+    @Value("#{ghanaNationalProperties['omod.identifier.service.port']}")
     private String openMRSPort;
 
     public String host() {

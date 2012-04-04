@@ -2,10 +2,13 @@ package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.domain.RegistrationToday;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
+import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.pages.BasePage;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
 import org.motechproject.ghana.national.functional.pages.patient.ANCEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
@@ -18,7 +21,7 @@ import org.testng.annotations.Test;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class ANCTest extends LoggedInUserFunctionalTest {
+public class ANCTest extends OpenMRSAwareFunctionalTest {
     private PatientPage patientPage;
     private DataGenerator dataGenerator;
 
@@ -32,7 +35,7 @@ public class ANCTest extends LoggedInUserFunctionalTest {
         // create
         String staffId = staffGenerator.createStaff(browser, homePage);
 
-        String patientFirstName = "patient first name" + dataGenerator.randomString(5);
+        String patientFirstName = "ANC patient first name" + dataGenerator.randomString(5);
         TestPatient testPatient = TestPatient.with(patientFirstName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
@@ -59,9 +62,13 @@ public class ANCTest extends LoggedInUserFunctionalTest {
 
         ancEnrollmentPage.displaying(ancEnrollment);
 
-//        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(ancEnrollmentPage.motechId()));
-//        openMRSPatientPage.encounterTab();
+        String motechId = ancEnrollmentPage.motechId();
+        String estimatedDeliveryDate= ancEnrollmentPage.getEstimatedDateOfDelivery();
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        String encounterId = openMRSPatientPage.chooseEncounter("PREGREGVISIT");
 
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(new OpenMRSObservationVO("PREGNANCY STATUS","true"));
     }
 
     private PatientEditPage searchPatient(String patientFirstName, TestPatient testPatient, BasePage basePage) {

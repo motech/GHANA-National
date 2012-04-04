@@ -4,7 +4,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
+import org.apache.commons.lang.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,15 +26,23 @@ public class HtmlTableParser {
     public WebElement getRow(WebDriver driver, String tableId, Map<String, String> data) {
         WebElement table = driver.findElement(By.id(tableId));
         List<WebElement> rows = table.findElements(By.xpath("id('" + tableId + "')/tbody/tr"));
-        List<String> headings = collect(rows.get(0).findElements(By.xpath("th")), on(WebElement.class).getText());
+        List<String> headings = getHeading(table, tableId);
         for (WebElement row : rows) {
-            List<WebElement> cols = row.findElements(By.xpath("td"));
+            List<WebElement> cols = new ArrayList<WebElement>();
+            if(!StringUtils.isEmpty(row.getText())) {
+                cols = row.findElements(By.xpath("td"));
+            }
             List<String> rowText = collect(cols, on(WebElement.class).getText());
             if (matchRow(data, headings, rowText)) {
                 return row;
             }
         }
         return null;
+    }
+
+    protected List<String> getHeading(WebElement table, String tableId) {
+        List<WebElement> rows = table.findElements(By.xpath("id('" + tableId + "')/tbody/tr"));
+        return collect(rows.get(0).findElements(By.xpath("th")), on(WebElement.class).getText());
     }
 
     private boolean matchRow(Map<String, String> data, List<String> headings, List<String> rowText) {

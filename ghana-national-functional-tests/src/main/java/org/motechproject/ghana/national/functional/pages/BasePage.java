@@ -39,6 +39,10 @@ public class BasePage<T> {
         return driver.findElement(by);
     }
 
+    protected void setHtmlTableParser(HtmlTableParser htmlTableParser) {
+        this.htmlTableParser = htmlTableParser;
+    }
+
     protected String attrValue(WebElement webElement, String key) {
         return webElement.getAttribute(key);
     }
