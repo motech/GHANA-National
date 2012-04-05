@@ -15,8 +15,6 @@ import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
-import org.motechproject.openmrs.advice.ApiSession;
-import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.openmrs.patient.UnallowedIdentifierException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,8 +32,6 @@ public class GNPatientService {
     @Autowired
     private CareService careService;
 
-    @LoginAsAdmin
-    @ApiSession
     public Patient createPatient(String firstName, String lastName, Date dob, String facilityId, String staffMotechId, int patientCounterValue) throws UnallowedIdentifierException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
         final boolean hasBeenInsured = false;
         Boolean isDateOfBirthEstimated = true;
@@ -59,33 +55,23 @@ public class GNPatientService {
         }
     }
 
-    @LoginAsAdmin
-    @ApiSession
     public List<MRSPatient> getPatients(String firstName, String lastName, String phoneNumber, Date dateOfBirth, String insuranceNumber) {
         return patientService.getPatients(firstName, lastName, phoneNumber, dateOfBirth, insuranceNumber);
     }
 
-    @LoginAsAdmin
-    @ApiSession
     public Patient patientByOpenmrsId(String patientId) {
         return patientService.patientByOpenmrsId(patientId);
     }
 
-    @LoginAsAdmin
-    @ApiSession
     public Patient getPatientByMotechId(String patientId) {
         return patientService.getPatientByMotechId(patientId);
     }
 
-    @LoginAsAdmin
-    @ApiSession
     public void enrollForANCWithoutHistory(String staffMotechId, String facilityMrsId, String patientMotechId, Date regDate, String serialNumber, Date edd) {
         careService.enroll(new ANCVO(staffMotechId, facilityMrsId, patientMotechId, regDate,
                 RegistrationToday.TODAY, serialNumber, edd, 155.0, 1, 1, Boolean.FALSE, null, null, null, null, null, null, null));
     }
 
-    @LoginAsAdmin
-    @ApiSession
     public void enrollForCWCWithoutHistory(String staffMotechId, String facilityMrsId, String patientMotechId, Date regDate, String serialNumber) {
         careService.enroll(new CwcVO(staffMotechId, facilityMrsId, regDate, patientMotechId,
                 new ArrayList<CwcCareHistory>(), null, null, null, null, null, null, null, null, null, null, serialNumber, Boolean.FALSE));

@@ -61,12 +61,14 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     private AllAppointments mockAllAppointments;
     @Mock
     private AllAppointmentsAndMessages mockAllAppointmentsAndMessages;
+    @Mock
+    private AllSchedulesAndMessages mockAllSchedulesAndMessages;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
         motherVisitService = new MotherVisitService(mockAllEncounters, mockAllObservations, mockAllSchedules,
-                mockAllAppointments, mockAllAppointmentsAndMessages, mockVisitService);
+                mockAllAppointments, mockAllAppointmentsAndMessages, mockVisitService, mockAllSchedulesAndMessages);
     }
 
     @Test
@@ -106,7 +108,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, times(1)).enroll(enrollmentRequestCaptor.capture());
-        verify(mockAllSchedules, times(1)).enrollOrFulfill(enrollmentRequestCaptor.capture(), eq(visitDate));
+        verify(mockAllSchedulesAndMessages, times(1)).enrollOrFulfill(enrollmentRequestCaptor.capture(), eq(visitDate));
 
         assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, ANC_DELIVERY, null, pregnancy.dateOfConception(), null, null, null, null, null),
                 enrollmentRequestCaptor.getAllValues().get(0));
@@ -144,7 +146,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestArgumentCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         ArgumentCaptor<LocalDate> localDateArgumentCaptor = ArgumentCaptor.forClass(LocalDate.class);
-        verify(mockAllSchedules, times(1)).enrollOrFulfill(enrollmentRequestArgumentCaptor.capture(), localDateArgumentCaptor.capture());
+        verify(mockAllSchedulesAndMessages, times(1)).enrollOrFulfill(enrollmentRequestArgumentCaptor.capture(), localDateArgumentCaptor.capture());
 
         final DateTime expectedDateTime = date.withSecondOfMinute(0).withMillisOfSecond(0);
         assertThat(localDateArgumentCaptor.getValue(), is(equalTo(today())));
@@ -201,7 +203,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         assertIfObservationsAvailableForConcepts(true, encounterCaptor.getValue().getObservations(), IPT.getName(), IPT_REACTION.getName());
 
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
-        verify(mockAllSchedules).enrollOrFulfill(captor.capture(), eq(visitDate));
+        verify(mockAllSchedulesAndMessages).enrollOrFulfill(captor.capture(), eq(visitDate));
         assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE, deliveryTime, visitDate, deliveryTime, visitDate, null, dose2.milestone(), null), captor.getAllValues().get(0));
     }
 

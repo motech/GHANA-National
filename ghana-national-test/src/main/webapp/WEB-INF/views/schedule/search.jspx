@@ -40,6 +40,8 @@
         <input type="text" name="motechId" size="15"/>&#160;
         <label for="mrsId">OpenMRS id :&#160;</label>
         <input type="text" name="mrsId" size="15"/>&#160;
+        <label for="name">First name :&#160;</label>
+        <input type="text" name="name" size="15"/>&#160;
         <input type="submit" id="submit" value="Search"/>&#160;&#160;
         <c:if test="${ids ne null}">
             <p style="display: inline; font: 15px/15px 'Lucida Grande', 'Verdana', sans-serif; color: grey;">${ids}</p>

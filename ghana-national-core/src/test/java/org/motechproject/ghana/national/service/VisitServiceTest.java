@@ -11,7 +11,7 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.TTVaccine;
 import org.motechproject.ghana.national.repository.AllEncounters;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllSchedulesAndMessages;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
@@ -34,7 +34,7 @@ public class VisitServiceTest {
     private VisitService visitService;
 
     @Mock
-    private AllSchedules allSchedules;
+    private AllSchedulesAndMessages allSchedulesAndMessages;
 
     @Mock
     private AllEncounters allEncounters;
@@ -42,7 +42,7 @@ public class VisitServiceTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        visitService = new VisitService(allSchedules, allEncounters);
+        visitService = new VisitService(allSchedulesAndMessages, allEncounters);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class VisitServiceTest {
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         ArgumentCaptor<LocalDate> fulfillmentDateCaptor = ArgumentCaptor.forClass(LocalDate.class);
-        verify(allSchedules).enrollOrFulfill(enrollmentRequestCaptor.capture(), fulfillmentDateCaptor.capture());
+        verify(allSchedulesAndMessages).enrollOrFulfill(enrollmentRequestCaptor.capture(), fulfillmentDateCaptor.capture());
         assertThat(fulfillmentDateCaptor.getValue(), is(vaccinationDate.toLocalDate()));
 
         EnrollmentRequest enrollmentRequest = enrollmentRequestCaptor.getValue();

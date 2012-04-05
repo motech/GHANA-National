@@ -27,6 +27,7 @@ import static org.motechproject.util.DateUtil.newDate;
 public class MotherVisitService {
 
     private AllSchedules allSchedules;
+    private AllSchedulesAndMessages allSchedulesAndMessages;
     private AllEncounters allEncounters;
     private AllObservations allObservations;
     private AllAppointments allAppointments;
@@ -36,13 +37,14 @@ public class MotherVisitService {
 
     @Autowired
     public MotherVisitService(AllEncounters allEncounters, AllObservations allObservations, AllSchedules allSchedules,
-                              AllAppointments allAppointments, AllAppointmentsAndMessages allAppointmentsAndMessages, VisitService visitService) {
+                              AllAppointments allAppointments, AllAppointmentsAndMessages allAppointmentsAndMessages, VisitService visitService, AllSchedulesAndMessages allSchedulesAndMessages) {
         this.allEncounters = allEncounters;
         this.allObservations = allObservations;
         this.allAppointments = allAppointments;
         this.allSchedules = allSchedules;
         this.allAppointmentsAndMessages = allAppointmentsAndMessages;
         this.visitService = visitService;
+        this.allSchedulesAndMessages = allSchedulesAndMessages;
         factory = new MotherVisitEncounterFactory();
     }
 
@@ -90,7 +92,7 @@ public class MotherVisitService {
         Patient patient = iptVaccine.getGivenTo();
         LocalDate visitDate = iptVaccine.getVaccinationDate();
         EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.ancIPTPatientCareEnrollOnVisitAfter19Weeks(visitDate).milestoneName(iptVaccine.getIptMilestone()));
-        allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
+        allSchedulesAndMessages.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
     }
 
     public void enrollOrFulfillPNCSchedulesForMother(PNCMotherRequest pncMotherRequest) {
@@ -98,6 +100,6 @@ public class MotherVisitService {
         allEncounters.persistEncounter(new MotherVisitEncounterFactory().createEncounter(pncMotherRequest));
         PatientCare patientCare = patient.pncProgramToFulfilOnVisit(pncMotherRequest.getDate(), pncMotherRequest.getVisit().scheduleName());
         LocalDate visitDate = pncMotherRequest.getDate().toLocalDate();
-        allSchedules.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient, patientCare), visitDate);
+        allSchedulesAndMessages.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient, patientCare), visitDate);
     }
 }
