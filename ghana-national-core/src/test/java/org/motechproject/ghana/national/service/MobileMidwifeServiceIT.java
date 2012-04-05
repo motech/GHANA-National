@@ -4,16 +4,18 @@ import org.junit.Test;
 import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
-import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllCampaigns;
+import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.messagecampaign.EventKeys;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.motechproject.server.messagecampaign.dao.AllMessageCampaigns;
-import org.motechproject.server.messagecampaign.domain.campaign.CampaignEnrollment;
+import org.motechproject.server.messagecampaign.domain.campaign.CampaignEnrollmentStatus;
 import org.motechproject.server.messagecampaign.domain.message.CampaignMessage;
-import org.motechproject.server.messagecampaign.service.CampaignEnrollmentService;
+import org.motechproject.server.messagecampaign.service.CampaignEnrollmentRecord;
+import org.motechproject.server.messagecampaign.service.CampaignEnrollmentsQuery;
+import org.motechproject.server.messagecampaign.service.MessageCampaignService;
 import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -41,9 +43,9 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
     @Autowired
     private AllMessageCampaigns allMessageCampaigns;
     @Autowired
-    private CampaignEnrollmentService campaignEnrollmentService;
-    @Autowired
     private IdentifierGenerator identifierGenerator;
+    @Autowired
+    private MessageCampaignService messageCampaignService;
 
     @Test
     public void shouldCreateMobileMidwifeEnrollmentAndCreateScheduleIfNotRegisteredAlready() {
@@ -64,19 +66,23 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
 
     protected void assertCampaignSchedule(CampaignRequest campaignRequest) {
 
-        CampaignEnrollment campaignEnrollment = campaignEnrollmentService.findByExternalIdAndCampaignName(campaignRequest.externalId(), campaignRequest.campaignName());
-        assertThat(campaignEnrollment.getStartDate(), is(campaignRequest.referenceDate()));
-        assertThat((Integer) ReflectionTestUtils.getField(campaignEnrollment, "startOffset"), is(campaignRequest.startOffset()));
+        String externalId = campaignRequest.externalId();
+        String campaignName = campaignRequest.campaignName();
+        CampaignEnrollmentsQuery campaignEnrollmentQuery = new CampaignEnrollmentsQuery().withExternalId(externalId).withCampaignName(campaignName).havingState(CampaignEnrollmentStatus.ACTIVE);
+        CampaignEnrollmentRecord campaignEnrollmentRecord = messageCampaignService.search(campaignEnrollmentQuery).get(0);
+        assertThat(campaignEnrollmentRecord.getStartDate(), is(campaignRequest.referenceDate()));
+        assertThat((String) ReflectionTestUtils.getField(campaignEnrollmentRecord, "externalId"), is(campaignRequest.externalId()));
+        assertThat((String) ReflectionTestUtils.getField(campaignEnrollmentRecord, "campaignName"), is(campaignRequest.campaignName()));
 
-        String messageKey = getMessageKey(campaignRequest.campaignName());
-        String jobId = String.format("%s-%s.%s.%s", INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT, campaignRequest.campaignName(), campaignRequest.externalId(), messageKey);
+        String messageKey = getMessageKey(campaignName);
+        String jobId = String.format("%s-MessageJob.%s.%s.%s", INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT, campaignName, externalId, messageKey);
         try {
             JobDetail jobDetail = schedulerFactoryBean.getScheduler().getJobDetail(jobId, "default");
             CronTrigger cronTrigger = (CronTrigger) schedulerFactoryBean.getScheduler().getTrigger(jobId, "default");
             assertNotNull(cronTrigger.getCronExpression());
             JobDataMap map = jobDetail.getJobDataMap();
-            assertThat(map.get(EventKeys.EXTERNAL_ID_KEY).toString(), is(campaignRequest.externalId()));
-            assertThat(map.get(EventKeys.CAMPAIGN_NAME_KEY).toString(), is(campaignRequest.campaignName()));
+            assertThat(map.get(EventKeys.EXTERNAL_ID_KEY).toString(), is(externalId));
+            assertThat(map.get(EventKeys.CAMPAIGN_NAME_KEY).toString(), is(campaignName));
             assertThat(map.get("eventType").toString(), is(INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT));
         } catch (SchedulerException e) {
             throw new AssertionError(e);
