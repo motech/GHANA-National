@@ -4,7 +4,7 @@ import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.factory.TTVaccinationVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllEncounters;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllSchedulesAndMessages;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +14,12 @@ import static org.motechproject.util.DateUtil.newDate;
 
 @Service
 public class VisitService {
-    private AllSchedules allSchedules;
+    private AllSchedulesAndMessages allSchedulesAndMessages;
     private AllEncounters allEncounters;
 
     @Autowired
-    public VisitService(AllSchedules allSchedules, AllEncounters allEncounters) {
-        this.allSchedules = allSchedules;
+    public VisitService(AllSchedulesAndMessages allSchedulesAndMessages, AllEncounters allEncounters) {
+        this.allSchedulesAndMessages = allSchedulesAndMessages;
         this.allEncounters = allEncounters;
     }
 
@@ -34,6 +34,6 @@ public class VisitService {
         Patient patient = ttVaccine.getPatient();
         PatientCare patientCare = patient.ttVaccinePatientCareOnVisit(ttVaccine.getVaccinationDate().toLocalDate()).milestoneName(ttVaccine.getDosage().getScheduleMilestoneName());
         final EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, patientCare);
-        allSchedules.enrollOrFulfill(enrollmentRequest, newDate(ttVaccine.getVaccinationDate().toDate()));
+        allSchedulesAndMessages.enrollOrFulfill(enrollmentRequest, newDate(ttVaccine.getVaccinationDate().toDate()));
     }
 }

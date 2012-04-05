@@ -1,23 +1,25 @@
 package org.motechproject.ghana.national.web.helper;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.motechproject.ghana.national.domain.Concept;
+import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSObservation;
+import org.motechproject.util.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
-import static ch.lambdaj.Lambda.*;
-import static org.hamcrest.Matchers.is;
 import static org.motechproject.ghana.national.domain.Concept.*;
 
 @Component
 public class ANCFormMapper {
+    @Autowired
+    private AllObservations allObservations;
 
     public ANCEnrollmentForm convertMRSEncounterToView(MRSEncounter mrsEncounter) {
         ANCEnrollmentForm ancEnrollmentForm = new ANCEnrollmentForm();
@@ -71,22 +73,20 @@ public class ANCFormMapper {
         return ancEnrollmentForm;
     }
 
-    public void populatePregnancyInfo(MRSEncounter mrsEncounter, ANCEnrollmentForm ancEnrollmentForm) {
-        if (mrsEncounter == null) {
-            return;
-        }
-        MRSObservation confinement = selectLatestObservation(mrsEncounter.getObservations(), CONFINEMENT_CONFIRMED.getName());
-        Boolean deliveryDateConfirmed = (null != confinement) ? (Boolean) confinement.getValue() : Boolean.FALSE;
-        MRSObservation eddObservation = selectLatestObservation(mrsEncounter.getObservations(), EDD.getName());
-        Date estimatedDateOfDelivery = (null != eddObservation.getValue()) ? (Date) eddObservation.getValue() : null;
-
-        ancEnrollmentForm.setDeliveryDateConfirmed(deliveryDateConfirmed);
-        ancEnrollmentForm.setEstimatedDateOfDelivery(estimatedDateOfDelivery);
+    public void populatePregnancyInfo(String motechPatientId, ANCEnrollmentForm enrollmentForm) {
+        MRSObservation eddObservation = getLatestObservation(motechPatientId, Concept.EDD.getName());
+        if (null != eddObservation)
+            enrollmentForm.setEstimatedDateOfDelivery((Date) eddObservation.getValue());
+        MRSObservation confinementConfirmed = getLatestObservation(motechPatientId, Concept.CONFINEMENT_CONFIRMED.getName());
+        if (null != confinementConfirmed)
+            enrollmentForm.setDeliveryDateConfirmed((Boolean) confinementConfirmed.getValue());
     }
 
-    private MRSObservation selectLatestObservation(Set<MRSObservation> observations, String observationName) {
-        List<MRSObservation> confinementObservations = select(observations, having(on(MRSObservation.class).getConceptName(), is(observationName)));
-        List<MRSObservation<MRSObservation>> sortedConfinements = sort(confinementObservations, on(MRSObservation.class).getDate());
-        return (CollectionUtils.isEmpty(sortedConfinements)) ? null : sortedConfinements.get(sortedConfinements.size() - 1);
+    private MRSObservation getLatestObservation(String motechPatientId, String conceptName) {
+        return allObservations.findLatestObservation(motechPatientId, conceptName);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(DateUtil.newDate(2012, 12, 22).minusWeeks(40).toDate());
     }
 }

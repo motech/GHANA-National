@@ -59,8 +59,6 @@ public class GNScheduleService {
         }
     }
 
-    @LoginAsAdmin
-    @ApiSession
     public Map<String, Map<String, List<Alert>>> getAllActiveSchedules() {
         final List<Enrollment> enrollments = allEnrollments.getAll();
         Map<String, Map<String, List<Alert>>> schedules = new HashMap<String, Map<String, List<Alert>>>();
@@ -73,8 +71,6 @@ public class GNScheduleService {
         return schedules;
     }
 
-    @LoginAsAdmin
-    @ApiSession
     public Map<String, List<Alert>> getAllSchedulesByMotechId(final String patientId) {
         Patient patientByMotechId = patientService.getPatientByMotechId(patientId);
         return getAllSchedulesByMrsId(patientByMotechId.getMRSPatientId());

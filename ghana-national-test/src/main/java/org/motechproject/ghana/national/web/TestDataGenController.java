@@ -23,13 +23,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static ch.lambdaj.Lambda.convert;
+import static ch.lambdaj.Lambda.*;
 import static org.motechproject.util.StringUtil.isNullOrEmpty;
 
 @Controller
@@ -53,24 +50,6 @@ public class TestDataGenController {
 
     private AtomicInteger phoneNumberCounter = new AtomicInteger(1);
 
-    @RequestMapping(value = "search", method = RequestMethod.GET)
-    @LoginAsAdmin
-    @ApiSession
-    public String schedulesOfAPatientByMotechId(HttpServletRequest request, ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
-
-        HashMap<String, Map<String, List<Alert>>> schedules = null;
-        final String patientId = request.getParameter("patientId");
-        if (patientId != null) {
-            schedules = new HashMap<String, Map<String, List<Alert>>>() {{
-                put(patientId, scheduleService.getAllSchedulesByMotechId(patientId));
-            }};
-        }
-        modelMap.put("patientSchedules", schedules);
-        listAggregatedSMS(modelMap);
-        modelMap.put("firstNameIndexCounter", incrementPatientNameCounter());
-        return "schedule/search";
-    }
-
     @RequestMapping(value = "create", method = RequestMethod.GET)
     @LoginAsAdmin
     @ApiSession
@@ -93,11 +72,29 @@ public class TestDataGenController {
         String staffMotechId = staffService.createStaff(firstName, patientCounterValue);
         Patient patient = patientService.createPatient(firstName, lastName, dateOfBirth, facilityId, staffMotechId, patientCounterValue);
 
-        if(patientType.equals("Mother")){
+        if (patientType.equals("Mother")) {
             patientService.enrollForANCWithoutHistory(staffMotechId, facilityId, patient.getMotechId(), parsedRegDate, serialNumber, parsedPatientDate);
-        }else if(patientType.equals("Child")){
+        } else if (patientType.equals("Child")) {
             patientService.enrollForCWCWithoutHistory(staffMotechId, facilityId, patient.getMotechId(), parsedRegDate, serialNumber);
         }
+        return "schedule/search";
+    }
+
+    @RequestMapping(value = "search", method = RequestMethod.GET)
+    @LoginAsAdmin
+    @ApiSession
+    public String schedulesOfAPatientByMotechId(HttpServletRequest request, ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
+
+        HashMap<String, Map<String, List<Alert>>> schedules = null;
+        final String patientId = request.getParameter("patientId");
+        if (patientId != null) {
+            schedules = new HashMap<String, Map<String, List<Alert>>>() {{
+                put(patientId, scheduleService.getAllSchedulesByMotechId(patientId));
+            }};
+        }
+        modelMap.put("patientSchedules", schedules);
+        listAggregatedSMS(modelMap);
+        modelMap.put("firstNameIndexCounter", incrementPatientNameCounter());
         return "schedule/search";
     }
 
@@ -120,17 +117,38 @@ public class TestDataGenController {
     @RequestMapping(value = "convertPatientId", method = RequestMethod.GET)
     @LoginAsAdmin
     @ApiSession
-    public String convertPatientId(@RequestParam("mrsId") String mrsId, @RequestParam("motechId") String motechId, ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
+    public String convertPatientId(@RequestParam("mrsId") String mrsId, @RequestParam("motechId") String motechId, @RequestParam("name") String name, ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
+        List<Patient> patients = new ArrayList<Patient>();
         if (!isNullOrEmpty(mrsId)) {
-            motechId = patientService.patientByOpenmrsId(mrsId).getMotechId();
+            final Patient patient = patientService.patientByOpenmrsId(mrsId);
+            if (patient != null) {
+                patients.add(patient);
+            }
         } else if (!isNullOrEmpty(motechId)) {
-            mrsId = patientService.getPatientByMotechId(motechId).getMRSPatientId();
+            final Patient patient = patientService.getPatientByMotechId(motechId);
+            if (patient != null) {
+                patients.add(patient);
+            }
+        } else if (!isNullOrEmpty(name)) {
+            patients.addAll(convert(patientService.getPatients(name, null, null, null, null), new Converter<MRSPatient, Patient>() {
+                @Override
+                public Patient convert(MRSPatient mrsPatient) {
+                    return new Patient(mrsPatient);
+                }
+            }));
         }
-        if (!isNullOrEmpty(mrsId) && !isNullOrEmpty(motechId))
-            modelMap.put("ids", "(MoTeCH id) " + motechId + " = " + mrsId + " (OpenMRS id)");
+
+        modelMap.put("ids", join(convert(patients, new Converter<Patient, String>() {
+            @Override
+            public String convert(Patient patient) {
+                return "(MoTeCH id) " + patient.getMotechId() + " = " + patient.getMRSPatientId() + " (OpenMRS id)" + " = (First name) " + patient.getFirstName();
+            }
+        }), "  |||  "));
+
         modelMap.put("firstNameIndexCounter", incrementPatientNameCounter());
         return "schedule/search";
     }
+
 
     @RequestMapping(value = "searchWithinRange", method = RequestMethod.GET)
     @LoginAsAdmin
@@ -145,18 +163,23 @@ public class TestDataGenController {
         modelMap.put("firstNameIndexCounter", incrementPatientNameCounter());
         return "schedule/search";
     }
+
     private void listAggregatedSMS(ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
         modelMap.put("smsList", gnAggregatorService.allMessages());
     }
 
     private int incrementPatientNameCounter() {
-        final int newCounterValue = Lambda.<Integer>max(convert(patientService.getPatients("Auto", null, null, null, null), new Converter<MRSPatient, Integer>() {
-            @Override
-            public Integer convert(MRSPatient patient) {
-                return Integer.parseInt(patient.getPerson().getFirstName().substring(4));
-            }
-        })) + 1;
-        while (!phoneNumberCounter.compareAndSet(phoneNumberCounter.get(), newCounterValue)){
+        final List<MRSPatient> patients = patientService.getPatients("Auto", null, null, null, null);
+        int newCounterValue = 0;
+        if (!patients.isEmpty()) {
+            newCounterValue = Lambda.<Integer>max(convert(patients, new Converter<MRSPatient, Integer>() {
+                @Override
+                public Integer convert(MRSPatient patient) {
+                    return Integer.parseInt(patient.getPerson().getFirstName().substring(4));
+                }
+            })) + 1;
+        }
+        while (!phoneNumberCounter.compareAndSet(phoneNumberCounter.get(), newCounterValue)) {
         }
         return phoneNumberCounter.get();
     }

@@ -66,7 +66,7 @@ public class ChildVisitService {
         DateTime visitDate = pncBabyRequest.getDate();
         Patient patient = pncBabyRequest.getPatient();
         EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.pncProgramToFulfilOnVisit(visitDate, pncBabyRequest.getVisit().scheduleName()));
-        allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate.toLocalDate(), time(visitDate));
+        allSchedulesAndMessages.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate.toLocalDate(), time(visitDate));
         return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(pncBabyRequest));
     }
 
@@ -84,7 +84,7 @@ public class ChildVisitService {
             Patient patient = iptVaccine.getGivenTo();
             LocalDate visitDate = newDate(cwcVisit.getDate());
             EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.cwcIPTPatientCareEnrollOnVisitAfter14Weeks(visitDate).milestoneName(iptVaccine.getIptMilestone()));
-            allSchedules.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
+            allSchedulesAndMessages.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
         }
     }
 

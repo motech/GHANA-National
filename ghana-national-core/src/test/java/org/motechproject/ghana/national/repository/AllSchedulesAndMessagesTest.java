@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.AggregationMessageIdentifier;
 import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
+import org.motechproject.model.Time;
+import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
@@ -43,6 +45,22 @@ public class AllSchedulesAndMessagesTest {
 
         allSchedulesAndMessages.fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
         verify(allSchedules).fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
+        verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
+
+        reset(allSchedules);
+        reset(messageGateway);
+
+        Time fulfillmentTime = new Time(10, 10);
+        final EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, scheduleName, null, null, null, null, null, null, null);
+        allSchedulesAndMessages.enrollOrFulfill(enrollmentRequest, fulfillmentDate, fulfillmentTime);
+        verify(allSchedules).enrollOrFulfill(enrollmentRequest, fulfillmentDate, fulfillmentTime);
+        verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
+
+        reset(allSchedules);
+        reset(messageGateway);
+
+        allSchedulesAndMessages.enrollOrFulfill(enrollmentRequest, fulfillmentDate);
+        verify(allSchedules).enrollOrFulfill(enrollmentRequest, fulfillmentDate);
         verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
     }
 

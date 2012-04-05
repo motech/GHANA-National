@@ -19,21 +19,12 @@ import org.motechproject.mrs.model.MRSEncounter;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 import static org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.domain.EncounterType.ANC_REG_VISIT;
 
@@ -142,8 +133,8 @@ public class ANCControllerTest {
         ancController.newANC(motechPatientId, modelMap);
         assertTrue(modelMap.containsKey("ancEnrollmentForm"));
         assertTrue(reflectionEquals(modelMap.get("ancEnrollmentForm"), ancEnrollmentForm));
-        verify(mockAllEncounters, times(2)).getLatest(eq(motechPatientId), anyString());
-        verify(mockANCFormMapper).populatePregnancyInfo(Matchers.<MRSEncounter>any(), eq(ancEnrollmentForm));
+        verify(mockAllEncounters).getLatest(eq(motechPatientId), anyString());
+        verify(mockANCFormMapper).populatePregnancyInfo(Matchers.<String>any(), eq(ancEnrollmentForm));
         checkIfCareHistoryAttributesArePlacedInModelMap(modelMap, ancEnrollmentForm);
     }
 

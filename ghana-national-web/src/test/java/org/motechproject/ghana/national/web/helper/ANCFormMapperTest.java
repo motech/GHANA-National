@@ -2,8 +2,13 @@ package org.motechproject.ghana.national.web.helper;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.Concept;
+import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
 import org.motechproject.mrs.model.*;
+import org.motechproject.util.DateUtil;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -11,15 +16,22 @@ import java.util.HashSet;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.domain.Concept.*;
 
 public class ANCFormMapperTest {
 
     private ANCFormMapper ancFormMapper;
+    @Mock
+    private AllObservations allObservation;
 
     @Before
     public void setUp() {
+        initMocks(this);
         ancFormMapper = new ANCFormMapper();
+        ReflectionTestUtils.setField(ancFormMapper, "allObservations", allObservation);
     }
 
     @Test
@@ -123,18 +135,23 @@ public class ANCFormMapperTest {
     
     @Test
     public void shouldPopulatePregnancyObservationInfoToView() {
-        final Date observationDate = new Date();
         final Boolean deliveryDateConfirmed = true;
         final Date estimatedDateOfDelivery = new Date();
-        final HashSet<MRSObservation> observations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Date>(observationDate, EDD.getName(), estimatedDateOfDelivery));
-            add(new MRSObservation<Boolean>(observationDate, CONFINEMENT_CONFIRMED.getName(), deliveryDateConfirmed));
-            add(new MRSObservation<Boolean>(observationDate, PREGNANCY_STATUS.getName(), true));
-        }};
+
+        String motechPatientId = "motechId";
+        MRSObservation eddObservation = mock(MRSObservation.class);
+        when(eddObservation.getDate()).thenReturn(DateUtil.now().toDate());
+        when(eddObservation.getValue()).thenReturn(estimatedDateOfDelivery);
+
+        MRSObservation confinementObservation= mock(MRSObservation.class);
+        when(confinementObservation.getDate()).thenReturn(DateUtil.now().toDate());
+        when(confinementObservation.getValue()).thenReturn(deliveryDateConfirmed);
+
+        when(allObservation.findLatestObservation(motechPatientId, Concept.EDD.getName())).thenReturn(eddObservation);
+        when(allObservation.findLatestObservation(motechPatientId, Concept.CONFINEMENT_CONFIRMED.getName())).thenReturn(confinementObservation);
 
         ANCEnrollmentForm ancEnrollmentForm = new ANCEnrollmentForm();
-        MRSEncounter mrsEncounter = new MRSEncounter(null, null, null, null, null, null, observations, null);
-        ancFormMapper.populatePregnancyInfo(mrsEncounter, ancEnrollmentForm);
+        ancFormMapper.populatePregnancyInfo(motechPatientId, ancEnrollmentForm);
         
         assertThat(ancEnrollmentForm.getDeliveryDateConfirmed(), is(equalTo(deliveryDateConfirmed)));
         assertThat(ancEnrollmentForm.getEstimatedDateOfDelivery(), is(equalTo(estimatedDateOfDelivery)));

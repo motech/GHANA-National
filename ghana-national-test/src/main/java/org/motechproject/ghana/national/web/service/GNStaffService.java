@@ -8,8 +8,6 @@ import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
-import org.motechproject.openmrs.advice.ApiSession;
-import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +17,6 @@ public class GNStaffService {
     @Autowired
     private StaffService staffService;
 
-    @LoginAsAdmin
-    @ApiSession
     public String createStaff(String firstName, int patientCounterValue) throws UserAlreadyExistsException {
         final String roleOfStaff = StaffType.Role.COMMUNITY_HEALTH_NURSE.key();
         MRSPerson mrsPerson = new MRSPerson().firstName(firstName).lastName("LastName")

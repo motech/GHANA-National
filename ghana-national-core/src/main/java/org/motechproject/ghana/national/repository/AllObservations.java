@@ -1,5 +1,7 @@
 package org.motechproject.ghana.national.repository;
 
+import ch.lambdaj.Lambda;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.mrs.model.MRSObservation;
@@ -12,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static ch.lambdaj.Lambda.on;
 import static org.motechproject.ghana.national.domain.Concept.EDD;
 import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
 
@@ -29,6 +32,15 @@ public class AllObservations {
 
     public List<MRSObservation> findObservations(String patientMotechId, String conceptName) {
         return mrsObservationAdapter.findObservations(patientMotechId, conceptName);
+    }
+
+    public MRSObservation findLatestObservation(String patientMotechId, String conceptName) {
+        List<MRSObservation> observations = mrsObservationAdapter.findObservations(patientMotechId, conceptName);
+        if (CollectionUtils.isNotEmpty(observations)) {
+            List<MRSObservation> sortedList = Lambda.sort(observations, on(MRSObservation.class).getDate());
+            return sortedList.get(sortedList.size() - 1);
+        }
+        return null;
     }
 
     public Set<MRSObservation> updateEDD(Date estimatedDeliveryDate, Patient patient, String staffId) {
@@ -59,7 +71,7 @@ public class AllObservations {
         return activePregnancyObservation;
     }
 
-    public void voidObservation(MRSObservation mrsObservation, String reason ,String staffId){
+    public void voidObservation(MRSObservation mrsObservation, String reason, String staffId) {
         if (mrsObservation != null) {
             mrsObservationAdapter.voidObservation(mrsObservation, reason, staffId);
         }

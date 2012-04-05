@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.repository;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -13,9 +14,13 @@ import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -41,6 +46,23 @@ public class AllObservationsTest {
     public void shouldFindObservation() {
         allObservations.findObservation("11", "abc");
         verify(mockMrsObservationAdapter).findObservation("11", "abc");
+    }
+    
+    @Test
+    public void shouldFindLatestObservations() {
+        String patientMotechId = "motechId";
+        String conceptName = "conceptName";
+
+        DateTime observationDate = DateUtil.now();
+
+        MRSObservation expectedObs = new MRSObservation(observationDate.toDate(), conceptName, DateUtil.now().toDate());
+        List<MRSObservation> mrsObservations = asList(
+                expectedObs,
+                new MRSObservation(observationDate.minusDays(1).toDate(), conceptName, DateUtil.now().toDate()));
+        
+        when(mockMrsObservationAdapter.findObservations(patientMotechId, conceptName)).thenReturn(mrsObservations);
+        MRSObservation latestObservation = allObservations.findLatestObservation(patientMotechId, conceptName);
+        assertThat(latestObservation, is(expectedObs));
     }
 
     @Test
