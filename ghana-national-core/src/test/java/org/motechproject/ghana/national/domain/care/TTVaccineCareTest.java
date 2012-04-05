@@ -23,7 +23,6 @@ import static org.motechproject.util.DateUtil.today;
 public class TTVaccineCareTest {
 
     @Test
-    // TODO #1425: create milestone - once patient care is changes
     public void shouldCreateTTVaccineCareWithCorrectMilestoneGivenAnObservation() {
 
         LocalDate enrollmentDate = newDate(2012, 3, 3);
@@ -38,7 +37,7 @@ public class TTVaccineCareTest {
 
         TTVaccineCare vaccineCare = TTVaccineCare.createFrom(patient, enrollmentDate, activePregnancyObs, mockActiveCareSchedules);
 
-        PatientCare expectedPatientCare = new PatientCare(ScheduleNames.TT_VACCINATION, ttVaccinationDate, enrollmentDate, TTVaccineDosage.TT4.name(), new HashMap<String, String>() {{
+        PatientCare expectedPatientCare = PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.TT_VACCINATION, ttVaccinationDate, TTVaccineDosage.TT4.name(), new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
         }});
         assertThat(this.<PatientCare>getField(vaccineCare, "patientCareBasedOnHistory"), is(expectedPatientCare));
@@ -48,7 +47,6 @@ public class TTVaccineCareTest {
     }
 
     @Test
-    // TODO #1425: create milestone - once patient care is changes
     public void shouldNotCreateScheduleIfActiveScheduleAlreadyExists() {
 
         LocalDate enrollmentDate = newDate(2012, 3, 3);
@@ -65,7 +63,6 @@ public class TTVaccineCareTest {
     }
 
     @Test
-    // TODO #1425: create milestone - once patient care is changes
     public void shouldReturnHistoryPatientCareWithNextMilestone_IfActiveScheduleNotExistsAndHistoryIsProvided() {
 
         LocalDate enrollmentDate = newDate(2012, 3, 3);
@@ -80,7 +77,7 @@ public class TTVaccineCareTest {
 
         PatientCare patientCare = TTVaccineCare.createFrom(patient, enrollmentDate, activePregnancyObs, noActiveSchedules).care();
 
-        PatientCare expectedPatientCare = new PatientCare(ScheduleNames.TT_VACCINATION, ttVaccinationDate, enrollmentDate, TTVaccineDosage.TT3.name(), new HashMap<String, String>() {{
+        PatientCare expectedPatientCare = PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.TT_VACCINATION, ttVaccinationDate, TTVaccineDosage.TT3.name(), new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
         }});
         assertThat(patientCare, is(expectedPatientCare));
@@ -99,7 +96,7 @@ public class TTVaccineCareTest {
 
         PatientCare patientCare = TTVaccineCare.createFrom(patient, enrollmentDate, activePregnancyObsWithoutTT, noActiveSchedules).care();
 
-        PatientCare expectedPatientCare = new PatientCare(ScheduleNames.TT_VACCINATION, enrollmentDate, enrollmentDate, null, new HashMap<String, String>() {{
+        PatientCare expectedPatientCare = PatientCare.forEnrollmentFromStart(ScheduleNames.TT_VACCINATION, enrollmentDate, new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
         }});
         assertThat(patientCare, is(expectedPatientCare));

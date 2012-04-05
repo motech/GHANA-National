@@ -16,16 +16,25 @@ public class PatientCare {
     private Time enrollmentTime;
     private Time referenceTime;
     private LocalDate referenceDate;
-    private String milestoneName;
+    private String startingMilestoneName;
     private Map<String, String> metaData = new HashMap<String, String>();
+
+    public static PatientCare forEnrollmentInBetweenProgram(String name, LocalDate lastCareTakenDate, String startMilestoneName, Map<String, String> metaData) {
+        return new PatientCare(name, null, lastCareTakenDate, startMilestoneName, metaData);
+    }
+
+    public static PatientCare forEnrollmentFromStart(String name, LocalDate scheduleReferenceDate, Map<String, String> metaData) {
+        return new PatientCare(name, scheduleReferenceDate, null, null, metaData);
+    }
+
+    public PatientCare(){}
 
     public PatientCare(String name, LocalDate referenceDate, LocalDate enrollmentDate, String milestoneName, Map<String, String> metaData) {
         this.name = name;
         this.referenceDate = referenceDate;
         this.enrollmentDate = enrollmentDate;
-        this.milestoneName= milestoneName;
+        this.startingMilestoneName = milestoneName;
         this.metaData = metaData;
-
     }
 
     public PatientCare(String name, DateTime referenceDateTime, DateTime enrollmentDateTime, String milestoneName, Map<String, String> metaData) {
@@ -67,11 +76,11 @@ public class PatientCare {
     }
 
     public String milestoneName() {
-        return milestoneName;
+        return startingMilestoneName;
     }
 
     public PatientCare milestoneName(String milestoneName){
-        this.milestoneName=milestoneName;
+        this.startingMilestoneName =milestoneName;
         return this;
     }
 
@@ -82,13 +91,17 @@ public class PatientCare {
 
         PatientCare that = (PatientCare) o;
 
-        if (!enrollmentDate.equals(that.enrollmentDate)) return false;
+        if (enrollmentDate != null ? !enrollmentDate.equals(that.enrollmentDate) : that.enrollmentDate != null)
+            return false;
         if (enrollmentTime != null ? !enrollmentTime.equals(that.enrollmentTime) : that.enrollmentTime != null)
             return false;
         if (metaData != null ? !metaData.equals(that.metaData) : that.metaData != null) return false;
         if (!name.equals(that.name)) return false;
-        if (!referenceDate.equals(that.referenceDate)) return false;
+        if (referenceDate != null ? !referenceDate.equals(that.referenceDate) : that.referenceDate != null)
+            return false;
         if (referenceTime != null ? !referenceTime.equals(that.referenceTime) : that.referenceTime != null)
+            return false;
+        if (startingMilestoneName != null ? !startingMilestoneName.equals(that.startingMilestoneName) : that.startingMilestoneName != null)
             return false;
 
         return true;
@@ -97,10 +110,11 @@ public class PatientCare {
     @Override
     public int hashCode() {
         int result = name.hashCode();
-        result = 31 * result + enrollmentDate.hashCode();
+        result = 31 * result + (enrollmentDate != null ? enrollmentDate.hashCode() : 0);
         result = 31 * result + (enrollmentTime != null ? enrollmentTime.hashCode() : 0);
         result = 31 * result + (referenceTime != null ? referenceTime.hashCode() : 0);
-        result = 31 * result + referenceDate.hashCode();
+        result = 31 * result + (referenceDate != null ? referenceDate.hashCode() : 0);
+        result = 31 * result + (startingMilestoneName != null ? startingMilestoneName.hashCode() : 0);
         result = 31 * result + (metaData != null ? metaData.hashCode() : 0);
         return result;
     }
@@ -113,6 +127,7 @@ public class PatientCare {
                 ", enrollmentTime=" + enrollmentTime +
                 ", referenceTime=" + referenceTime +
                 ", referenceDate=" + referenceDate +
+                ", startingMilestoneName='" + startingMilestoneName + '\'' +
                 ", metaData=" + metaData +
                 '}';
     }

@@ -45,8 +45,9 @@ public class TTVaccineCare {
 
         if (isNotEmpty(ttObservationHistory)) {
             TTVaccineDosage nextMilestoneToSchedule = getNextOf(TTVaccineDosage.byValue(((Double) ttObservationHistory.get(0).getValue()).intValue()));
+            LocalDate lastTTdate = newDate(ttObservationHistory.get(0).getDate());
             careFromHistory = (nextMilestoneToSchedule == null) ? null :
-                    new PatientCare(TT_VACCINATION, newDate(ttObservationHistory.get(0).getDate()), registrationDate, nextMilestoneToSchedule.name(), patient.facilityMetaData());
+                    PatientCare.forEnrollmentInBetweenProgram(TT_VACCINATION, lastTTdate, nextMilestoneToSchedule.name(), patient.facilityMetaData());
             careComplete = (careFromHistory == null) ? true : false;
 
         }
@@ -57,6 +58,6 @@ public class TTVaccineCare {
         if (hasActiveTTSchedule) return null;
         if(careComplete) return null;
         List<PatientCare> historyTT = Lambda.filter(having(on(PatientCare.class).name(), is(TT_VACCINATION)), patientCareBasedOnHistory);
-        return isNotEmpty(historyTT) ? historyTT.get(0) : new PatientCare(TT_VACCINATION, enrollmentDate, enrollmentDate, null, patient.facilityMetaData());
+        return isNotEmpty(historyTT) ? historyTT.get(0) : PatientCare.forEnrollmentFromStart(TT_VACCINATION, enrollmentDate, patient.facilityMetaData());
     }
 }

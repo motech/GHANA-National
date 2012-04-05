@@ -617,8 +617,8 @@ public class CareServiceTest extends BaseUnitTest {
         verify(mockAllSchedules, times(3)).enroll(requestCaptor.capture());
         List<EnrollmentRequest> requests = requestCaptor.getAllValues();
         assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, new PatientCare(ScheduleNames.ANC_DELIVERY, dateOfConception, registrationDate, null, mockPatient.facilityMetaData())));
-        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, new PatientCare(ScheduleNames.TT_VACCINATION, newDate(ttDate), registrationDate, TTVaccineDosage.TT2.name(), mockPatient.facilityMetaData())));
-        assertScheduleEnrollmentRequest(requests.get(2), expectedRequest(patientId, new PatientCare(ScheduleNames.ANC_IPT_VACCINE, newDate(iptDate), registrationDate, IPTDose.SP3.name(), mockPatient.facilityMetaData())));
+        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.TT_VACCINATION, newDate(ttDate), TTVaccineDosage.TT2.name(), mockPatient.facilityMetaData())));
+        assertScheduleEnrollmentRequest(requests.get(2), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, newDate(iptDate), IPTDose.SP3.name(), mockPatient.facilityMetaData())));
 
     }
 
