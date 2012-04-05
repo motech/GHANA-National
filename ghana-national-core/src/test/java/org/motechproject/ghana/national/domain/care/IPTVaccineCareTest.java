@@ -29,24 +29,25 @@ public class IPTVaccineCareTest {
     public void setUp(){
         initMocks(this);
     }
-        @Test
+
+    @Test
     public void shouldCreateIPTVaccineCareWithCorrectMilestoneGivenAnObservation() {
 
-        LocalDate enrollmentDate = newDate(2012, 3, 3);
+        LocalDate dateOfConception = newDate(2012, 3, 3);
         LocalDate iptVaccinationDate = newDate(2012, 1, 1);
         final String facilityId = "fid";
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
-        MRSObservation<String> activePregnancyObs = createPregnacyObservationWithIPTDependent(enrollmentDate, iptVaccinationDate, 1.0);
+        MRSObservation<String> activePregnancyObs = createPregnacyObservationWithIPTDependent(dateOfConception, iptVaccinationDate, 1.0);
 
-        IPTVaccineCare vaccineCare = IPTVaccineCare.createFrom(patient, enrollmentDate, activePregnancyObs);
+        IPTVaccineCare vaccineCare = IPTVaccineCare.createFrom(patient, dateOfConception, activePregnancyObs);
 
         PatientCare expectedPatientCare = PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, iptVaccinationDate, IPTDose.SP2.name(), new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
         }});
         assertThat(this.<PatientCare>getField(vaccineCare, "patientCareBasedOnHistory"), is(expectedPatientCare));
         assertThat(this.<Patient>getField(vaccineCare, "patient"), is(patient));
-        assertThat(this.<LocalDate>getField(vaccineCare, "enrollmentDate"), is(enrollmentDate));
+        assertThat(this.<LocalDate>getField(vaccineCare, "expectedDeliveryDate"), is(dateOfConception));
     }
 
     @Test
@@ -60,7 +61,7 @@ public class IPTVaccineCareTest {
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         MRSObservation<String> activePregnancyObs = createPregnacyObservationWithIPTDependent(enrollmentDate, lastIPTVaccinationDate, 1.0);
 
-        PatientCare patientCare = IPTVaccineCare.createFrom(patient, enrollmentDate, activePregnancyObs).care(pregnancy.dateOfDelivery());
+        PatientCare patientCare = IPTVaccineCare.createFrom(patient, pregnancy.dateOfDelivery(), activePregnancyObs).care();
 
         PatientCare expectedPatientCare = PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, lastIPTVaccinationDate, IPTDose.SP2.name(), new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
@@ -77,7 +78,7 @@ public class IPTVaccineCareTest {
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         MRSObservation<String> activePregnancyObsWithoutIPT = new MRSObservation<String>(enrollmentDate.toDate(), Concept.PREGNANCY.getName(), null);
-        PatientCare patientCare = IPTVaccineCare.createFrom(patient, enrollmentDate, activePregnancyObsWithoutIPT).care(pregnancy.dateOfDelivery());
+        PatientCare patientCare = IPTVaccineCare.createFrom(patient, pregnancy.dateOfDelivery(), activePregnancyObsWithoutIPT).care();
 
         PatientCare expectedPatientCare = PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_IPT_VACCINE, pregnancy.dateOfConception(), new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
@@ -95,7 +96,7 @@ public class IPTVaccineCareTest {
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         MRSObservation<String> activePregnancyObs = createPregnacyObservationWithIPTDependent(enrollmentDate, lastIPTVaccinationDate, 3.0);
-        PatientCare patientCare = IPTVaccineCare.createFrom(patient, enrollmentDate, activePregnancyObs).care(pregnancy.dateOfDelivery());
+        PatientCare patientCare = IPTVaccineCare.createFrom(patient, enrollmentDate, activePregnancyObs).care();
 
         assertNull(patientCare);
     }

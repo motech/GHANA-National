@@ -96,8 +96,8 @@ public class CareService {
 
     List<PatientCare> createANCRegistrationCares(Date registrationDate, Patient patient, LocalDate expectedDeliveryDate, MRSObservation pregnancyObservation) {
         TTVaccineCare ttVaccineCare = TTVaccineCare.createFrom(patient, newDate(registrationDate), pregnancyObservation, activeCareSchedules(patient));
-        IPTVaccineCare iptVaccineCare = IPTVaccineCare.createFrom(patient, newDate(registrationDate), pregnancyObservation);
-        return new ANCCareRegistration(ttVaccineCare, iptVaccineCare, patient, expectedDeliveryDate, newDate(registrationDate)).allCares();
+        IPTVaccineCare iptVaccineCare = IPTVaccineCare.createFrom(patient, expectedDeliveryDate, pregnancyObservation);
+        return new ANCCareRegistration(ttVaccineCare, iptVaccineCare, patient, expectedDeliveryDate).allCares();
     }
 
     ActiveCareSchedules activeCareSchedules(Patient patient) {

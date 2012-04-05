@@ -24,18 +24,18 @@ import static org.motechproject.util.DateUtil.newDate;
 public class IPTVaccineCare {
 
     private Patient patient;
-    private LocalDate enrollmentDate;
+    private LocalDate expectedDeliveryDate;
     private PatientCare patientCareBasedOnHistory;
     private Boolean isCareAlreadyCompleted;
 
-    private IPTVaccineCare(LocalDate enrollmentDate, PatientCare patientCareBasedOnHistory, Patient patient, Boolean isCareAlreadyCompleted) {
-        this.enrollmentDate = enrollmentDate;
+    private IPTVaccineCare(LocalDate expectedDeliveryDate, PatientCare patientCareBasedOnHistory, Patient patient, Boolean isCareAlreadyCompleted) {
+        this.expectedDeliveryDate = expectedDeliveryDate;
         this.patientCareBasedOnHistory = patientCareBasedOnHistory;
         this.patient = patient;
         this.isCareAlreadyCompleted = isCareAlreadyCompleted;
     }
 
-    public static IPTVaccineCare createFrom(Patient patient, LocalDate registrationDate, MRSObservation activePregnancyObservation) {
+    public static IPTVaccineCare createFrom(Patient patient, LocalDate expectedDeliveryDate, MRSObservation activePregnancyObservation) {
 
         PatientCare careFromHistory = null;
         Set<MRSObservation> dependantObservations = nullSafe(activePregnancyObservation.getDependantObservations(), emptySet());
@@ -52,10 +52,10 @@ public class IPTVaccineCare {
                 careFromHistory = PatientCare.forEnrollmentInBetweenProgram(ANC_IPT_VACCINE, lastIPTDate, nextMilestoneToSchedule.name(), patient.facilityMetaData());
             }
         }
-        return new IPTVaccineCare(registrationDate, careFromHistory, patient, isProgramAlreadyEnded);
+        return new IPTVaccineCare(expectedDeliveryDate, careFromHistory, patient, isProgramAlreadyEnded);
     }
 
-    public PatientCare care(LocalDate expectedDeliveryDate) {
+    public PatientCare care() {
         if(isCareAlreadyCompleted) return null;
         List<PatientCare> historyIPT = Lambda.filter(having(on(PatientCare.class).name(), is(ANC_IPT_VACCINE)), patientCareBasedOnHistory);
         return isNotEmpty(historyIPT) ? historyIPT.get(0) : newEnrollment(expectedDeliveryDate);

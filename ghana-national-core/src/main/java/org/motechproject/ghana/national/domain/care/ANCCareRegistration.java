@@ -16,21 +16,19 @@ public class ANCCareRegistration {
     IPTVaccineCare iptVaccineCare;
     Patient patient;
     private LocalDate expectedDeliveryDate;
-    private LocalDate enrollmentDate;
 
-    public ANCCareRegistration(TTVaccineCare ttVaccineCare, IPTVaccineCare iptVaccineCare, Patient patient, LocalDate expectedDeliveryDate, LocalDate enrollmentDate) {
+    public ANCCareRegistration(TTVaccineCare ttVaccineCare, IPTVaccineCare iptVaccineCare, Patient patient, LocalDate expectedDeliveryDate) {
         this.ttVaccineCare = ttVaccineCare;
         this.iptVaccineCare=iptVaccineCare;
         this.patient = patient;
         this.expectedDeliveryDate = expectedDeliveryDate;
-        this.enrollmentDate = enrollmentDate;
     }
 
     public List<PatientCare> allCares() {
          return nullSafeList(
-                new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), enrollmentDate, null, patient.facilityMetaData()),
+                PatientCare.forEnrollmentFromStart(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), patient.facilityMetaData()),
                 ttVaccineCare.care(),
-                iptVaccineCare.care(expectedDeliveryDate)
+                iptVaccineCare.care()
          );
     }
 }
