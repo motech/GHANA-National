@@ -4,18 +4,15 @@ import ch.lambdaj.group.Group;
 import org.motechproject.ghana.national.messagegateway.domain.AggregationStrategy;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
 import org.motechproject.ghana.national.messagegateway.domain.SMSDatum;
+import org.motechproject.ghana.national.tools.Utility;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.collect;
-import static ch.lambdaj.Lambda.extract;
-import static ch.lambdaj.Lambda.join;
-import static ch.lambdaj.Lambda.joinFrom;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.selectDistinct;
+import static ch.lambdaj.Lambda.*;
 import static ch.lambdaj.group.Groups.by;
 import static ch.lambdaj.group.Groups.group;
 
@@ -24,7 +21,10 @@ public class AggregationStrategyImpl implements AggregationStrategy {
     public static final String SMS_SEPARATOR = "%0A";
 
     @Override
-    public String aggregate(List<SMS> smsMessages) {
+    public List<SMS> aggregate(List<SMS> smsMessages) {
+        final SMS firstSMS = Utility.nullSafe(smsMessages, 0, null);
+        final String phoneNumber = firstSMS != null ? firstSMS.getPhoneNumber() : null;
+
         ArrayList<SMSDatum> smsData = getSMSData(smsMessages);
         Comparator<String> alphabeticalOrder = new Comparator<String>() {
 
@@ -41,7 +41,7 @@ public class AggregationStrategyImpl implements AggregationStrategy {
         Group<SMSDatum> motechIdSubGroup;
         Group<SMSDatum> subWindowGroup;
 
-        List<String> messages = new ArrayList<String>();
+        List<SMS> messages = new ArrayList<SMS>();
         for (String window : windows) {
             StringBuilder builder = new StringBuilder();
             builder.append(window).append(": ");
@@ -57,9 +57,9 @@ public class AggregationStrategyImpl implements AggregationStrategy {
                             .append(", ").append(datum.getSerialNumber()).append(", ").append(joinFrom(all).getMilestone());
                 }
             }
-            messages.add(builder.toString());
+            messages.add(SMS.fromText(builder.toString(), phoneNumber, DateUtil.now(), null ,null));
         }
-        return join(messages, SMS_SEPARATOR);
+        return messages;
     }
 
     private ArrayList<SMSDatum> getSMSData(List<SMS> smsMessages) {

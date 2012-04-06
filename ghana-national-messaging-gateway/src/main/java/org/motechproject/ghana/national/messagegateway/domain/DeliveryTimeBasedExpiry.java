@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.messagegateway.domain;
 
+import org.motechproject.ghana.national.messagegateway.repositories.MessageStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.integration.Message;

@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.messagegateway.domain;
 
 import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.CorrelationStrategy;
 import org.springframework.integration.annotation.MessageEndpoint;
@@ -20,10 +19,8 @@ public class MessageDispatcher {
     @Autowired
     AggregationStrategy aggregationStrategy;
 
-    public SMS aggregate(List<SMS> smsMessages) {
-        final SMS firstSMSInTheGroup = smsMessages.get(0);
-        return SMS.fromText(aggregationStrategy.aggregate(smsMessages), firstSMSInTheGroup.getPhoneNumber(), DateUtil.now(),
-                firstSMSInTheGroup.getDeliveryStrategy(), firstSMSInTheGroup.getComparator());
+    public List<SMS> aggregate(List<SMS> smsMessages) {
+        return aggregationStrategy.aggregate(smsMessages);
     }
 
     @CorrelationStrategy

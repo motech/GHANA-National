@@ -9,8 +9,6 @@ import org.motechproject.ghana.national.web.domain.Alert;
 import org.motechproject.ghana.national.web.service.*;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.openmrs.advice.ApiSession;
-import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +24,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.convert;
+import static ch.lambdaj.Lambda.join;
 import static org.motechproject.util.StringUtil.isNullOrEmpty;
 
 @Controller
@@ -51,8 +50,6 @@ public class TestDataGenController {
     private AtomicInteger phoneNumberCounter = new AtomicInteger(1);
 
     @RequestMapping(value = "create", method = RequestMethod.GET)
-    @LoginAsAdmin
-    @ApiSession
     public String createPatient(@RequestParam("firstName") String firstName,
                                 @RequestParam("lastName") String lastName,
                                 @RequestParam("regDate") String regDate,
@@ -81,8 +78,6 @@ public class TestDataGenController {
     }
 
     @RequestMapping(value = "search", method = RequestMethod.GET)
-    @LoginAsAdmin
-    @ApiSession
     public String schedulesOfAPatientByMotechId(HttpServletRequest request, ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
 
         HashMap<String, Map<String, List<Alert>>> schedules = null;
@@ -99,8 +94,6 @@ public class TestDataGenController {
     }
 
     @RequestMapping(value = "searchByOpenmrsId", method = RequestMethod.GET)
-    @LoginAsAdmin
-    @ApiSession
     public String schedulesOfAPatientByOpenmrsId(HttpServletRequest request, ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
         HashMap<String, Map<String, List<Alert>>> schedules = null;
         final String patientId = request.getParameter("patientId");
@@ -115,8 +108,6 @@ public class TestDataGenController {
     }
 
     @RequestMapping(value = "convertPatientId", method = RequestMethod.GET)
-    @LoginAsAdmin
-    @ApiSession
     public String convertPatientId(@RequestParam("mrsId") String mrsId, @RequestParam("motechId") String motechId, @RequestParam("name") String name, ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
         List<Patient> patients = new ArrayList<Patient>();
         if (!isNullOrEmpty(mrsId)) {
@@ -151,8 +142,6 @@ public class TestDataGenController {
 
 
     @RequestMapping(value = "searchWithinRange", method = RequestMethod.GET)
-    @LoginAsAdmin
-    @ApiSession
     public String schedulesWithinRange(@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate, ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
         Map<String, Map<String, List<Alert>>> schedules = scheduleService.getAllActiveSchedules();
         final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");

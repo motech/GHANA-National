@@ -6,6 +6,8 @@ import org.motechproject.sms.api.service.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 // TODO: this class should go to the client of Aggregator module
 @Service("payloadDispatcher")
 public class PayloadDispatcher {
@@ -14,8 +16,8 @@ public class PayloadDispatcher {
     SmsService smsService;
 
     public void dispatch(Payload payload) {
-        if(payload instanceof SMS){
-            SMS sms = (SMS) payload;
+        List<SMS> smsList = (List<SMS>) payload;
+        for (SMS sms : smsList) {
             smsService.sendSMS(sms.getPhoneNumber(), sms.getText());
         }
     }
