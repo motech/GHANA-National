@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -12,6 +13,7 @@ import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -25,7 +27,7 @@ import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import java.util.*;
 
-import static java.lang.Double.*;
+import static java.lang.Double.parseDouble;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -440,9 +442,9 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldSaveCareHistoryDetailsWithTTandIPTIfThereIsAnActivePregnancy() {
-        final String ttDose = "1";
-        final String iptDose = "2";
+    public void shouldSaveCareHistoryDetailsWithTTandIPTIfThereIsAnActivePregnancyAndCreateCareScheduleIfNotAlreadyExists() {
+        final TTVaccineDosage ttDose = TTVaccineDosage.byValue(Integer.parseInt("1"));
+        final IPTDose iptDose = IPTDose.byValue("2");
         final Date ttDate = DateUtil.newDate(2011, 12, 23).toDate();
         final Date iptDate = DateUtil.newDate(2011, 1, 2).toDate();
         String staffId = "staff id";
@@ -453,7 +455,7 @@ public class CareServiceTest extends BaseUnitTest {
         LocalDate ancRegDate = careHistoryCapturedDate.minusWeeks(1);
         LocalDate edd = careHistoryCapturedDate.plusMonths(9);
 
-        ANCCareHistoryVO ancCareHistory = new ANCCareHistoryVO(true, Arrays.asList(ANCCareHistory.values()), iptDose, ttDose, iptDate, ttDate);
+        ANCCareHistoryVO ancCareHistory = new ANCCareHistoryVO(true, Arrays.asList(ANCCareHistory.values()), iptDose.value().toString(), ttDose.getDosage().toString(), iptDate, ttDate);
 
         setupPatient(patientId, patientMotechId);
         CareHistoryVO careHistory = new CareHistoryVO(staffId, facilityId, patientMotechId, careHistoryCapturedDate.toDate(), ancCareHistory, new CWCCareHistoryVO(false, null, null, null, null, null, null, null, null, null, null, null));
@@ -462,16 +464,16 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(ancRegDate.toDate(), EDD.getName(), edd.toDate()));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY_STATUS.getName(), true));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
-        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose)));
-        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose)));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose.getDosage().toString())));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose.value().toString())));
 
         when(mockAllObservations.activePregnancyObservation(patientMotechId)).thenReturn(activePregnancyObservation);
 
         careService.addCareHistory(careHistory);
 
         final Set<MRSObservation> expectedHistoryObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose)));
-            add(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose)));
+            add(new MRSObservation<Double>(ttDate, TT.getName(), ttDose.getDosageAsDouble()));
+            add(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose.value().toString())));
         }};
 
         ArgumentCaptor<Set> observationCaptor = ArgumentCaptor.forClass(Set.class);
@@ -487,6 +489,34 @@ public class CareServiceTest extends BaseUnitTest {
 
         assertEquals(ANC_VISIT.value(), encounterTypeCaptor.getAllValues().get(0));
         assertEquals(PATIENT_HISTORY.value(), encounterTypeCaptor.getAllValues().get(1));
+        ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+
+        verify(mockAllSchedules, times(2)).enrollIfNotActive(enrollmentRequestCaptor.capture());
+        List<EnrollmentRequest> allValues = enrollmentRequestCaptor.getAllValues();
+        TTVaccineDosage nextTTDose = Utility.getNextOf(ttDose);
+        PatientCare expectedTTCare = PatientCare.forEnrollmentInBetweenProgram(TT_VACCINATION, newDate(ttDate), nextTTDose.getScheduleMilestoneName(), PatientTest.facilityMetaData(facilityId));
+        PatientCare expectedIPTCare = PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, newDate(iptDate), Utility.getNextOf(iptDose).milestone(), PatientTest.facilityMetaData(facilityId));
+        assertEnrollmentRequests(allValues, asList(expectedRequest(patientId, expectedTTCare), expectedRequest(patientId, expectedIPTCare)));
+    }
+
+    @Test
+    public void shouldNotCreateScheduleForCareHistoryIfNotActivePregancyObservationExists() {
+
+        final TTVaccineDosage ttDose = TTVaccineDosage.byValue(Integer.parseInt("1"));
+        final IPTDose iptDose = IPTDose.byValue("2");
+        final Date ttDate = DateUtil.newDate(2011, 12, 23).toDate();
+        final Date iptDate = DateUtil.newDate(2011, 1, 2).toDate();
+        String patientId = "patient id";
+        String patientMotechId = "patientMotechId";
+        ANCCareHistoryVO ancCareHistory = new ANCCareHistoryVO(true, Arrays.asList(ANCCareHistory.values()), iptDose.value().toString(), ttDose.getDosage().toString(), iptDate, ttDate);
+
+        setupPatient(patientId, patientMotechId);
+        when(mockAllObservations.activePregnancyObservation(patientMotechId)).thenReturn(null);
+
+        careService.addCareHistory(new CareHistoryVO("staffId", "facilityId", patientMotechId, newDate(2012, 2, 2).toDate(),
+                ancCareHistory, new CWCCareHistoryVO(false, null, null, null, null, null, null, null, null, null, null, null)));
+
+        verify(mockAllSchedules, never()).enrollIfNotActive((EnrollmentRequest) any());
     }
 
     @Test
@@ -683,6 +713,14 @@ public class CareServiceTest extends BaseUnitTest {
         return new EnrollmentRequest(externalId, patientCare.name(),
                 patientCare.preferredTime(), patientCare.startingOn(),
                 patientCare.referenceTime(), patientCare.enrollmentDate(), patientCare.enrollmentTime(), patientCare.milestoneName(), patientCare.metaData());
+    }
+
+    private void assertEnrollmentRequests(List<EnrollmentRequest> actualRequests, List<EnrollmentRequest> expectedRequests) {
+        Assert.assertThat(expectedRequests.size(), is(actualRequests.size()));
+        int index = 0;
+        for(EnrollmentRequest actual : actualRequests) {
+            assertScheduleEnrollmentRequest(actual, expectedRequests.get(index++));
+        }
     }
 
     private void assertScheduleEnrollmentRequest(EnrollmentRequest actualRequest, EnrollmentRequest expectedRequest) {

@@ -43,6 +43,23 @@ public class ANCCareRegistrationTest {
         List<PatientCare> patientCares = ancCareRegistration.allCares();
         //Delivery with date of conception as reference date
         assertThat(patientCares, is(asList(PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_DELIVERY, pregnancy.dateOfConception(), patient.facilityMetaData()), ttPatientCare, iptPatientCare)));
+    }
 
+    @Test
+    public void shouldCreateCareForHistory() {
+        IPTVaccineCare mockIptVaccineCare = mock(IPTVaccineCare.class);
+        TTVaccineCare mockTTVaccineCare = mock(TTVaccineCare.class);
+        final String facilityId = "fid";
+
+        Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
+        ancCareRegistration = new ANCCareRegistration(mockTTVaccineCare, mockIptVaccineCare, patient, null);
+
+        PatientCare iptPatientCare = mock(PatientCare.class);
+        PatientCare ttPatientCare = mock(PatientCare.class);
+        when(mockIptVaccineCare.care()).thenReturn(iptPatientCare);
+        when(mockTTVaccineCare.care()).thenReturn(ttPatientCare);
+
+        List<PatientCare> patientCares = ancCareRegistration.caresForHistory();
+        assertThat(patientCares, is(asList(ttPatientCare, iptPatientCare)));
     }
 }

@@ -263,7 +263,9 @@ public class CareService {
                     add(activePregnancyObservation);
                 }});
             }
-
+            ANCCareRegistration ancCareRegistration = ancCareRegistration(careHistory.getDate(), patient, newDate(edd), activePregnancyObservation, null);
+            for(PatientCare patientCare : ancCareRegistration.caresForHistory())
+                allSchedules.enrollIfNotActive(new ScheduleEnrollmentMapper().map(patient, patientCare));
         }
         return allEncounters.persistEncounter(patient.getMrsPatient(), careHistory.getStaffId(), careHistory.getFacilityId(), PATIENT_HISTORY.value(), careHistory.getDate(),
                 addObservationsForCareHistory(careHistory));
