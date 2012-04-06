@@ -40,6 +40,10 @@ public class Utility {
         return string == null ? null : ((StringUtils.isEmpty(string.trim())) ? null : string);
     }
 
+    public static <T> T safeFetch(List<T> list, int itemNo) {
+        return itemNo <= nullSafe(list, Collections.<T>emptyList()).size() ? list.get(itemNo-1) : null;
+    }
+
     public static Integer safeParseInteger(String string) {
         return (string == null) ? null : Integer.parseInt(string);
     }

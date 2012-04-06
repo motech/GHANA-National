@@ -25,6 +25,7 @@ import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import java.util.*;
 
+import static java.lang.Double.*;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -223,8 +224,8 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
             add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
             add(new MRSObservation<String>(registrationDate, ANC_REG_NUM.getName(), ancvo.getSerialNumber()));
-            add(new MRSObservation<Integer>(ancvo.getAncCareHistoryVO().getLastIPTDate(), IPT.getName(), Integer.valueOf(ancvo.getAncCareHistoryVO().getLastIPT())));
-            add(new MRSObservation<Integer>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), Integer.valueOf(ancvo.getAncCareHistoryVO().getLastTT())));
+            add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastIPTDate(), IPT.getName(), parseDouble(ancvo.getAncCareHistoryVO().getLastIPT())));
+            add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), parseDouble(ancvo.getAncCareHistoryVO().getLastTT())));
         }};
 
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), registrationDate, expectedANCObservations);
@@ -337,8 +338,8 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
             add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
             add(new MRSObservation<String>(registrationDate, ANC_REG_NUM.getName(), ancvo.getSerialNumber()));
-            add(new MRSObservation<Integer>(ancvo.getAncCareHistoryVO().getLastIPTDate(), IPT.getName(), Integer.valueOf(ancvo.getAncCareHistoryVO().getLastIPT())));
-            add(new MRSObservation<Integer>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), Integer.valueOf(ancvo.getAncCareHistoryVO().getLastTT())));
+            add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastIPTDate(), IPT.getName(), Double.valueOf(ancvo.getAncCareHistoryVO().getLastIPT())));
+            add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), Double.valueOf(ancvo.getAncCareHistoryVO().getLastTT())));
         }};
 
         ArgumentCaptor<Set> observationCaptor = ArgumentCaptor.forClass(Set.class);
@@ -461,16 +462,16 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(ancRegDate.toDate(), EDD.getName(), edd.toDate()));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY_STATUS.getName(), true));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
-        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(ttDate, TT.getName(), ttDose));
-        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(iptDate, IPT.getName(), iptDose));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose)));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose)));
 
         when(mockAllObservations.activePregnancyObservation(patientMotechId)).thenReturn(activePregnancyObservation);
 
         careService.addCareHistory(careHistory);
 
         final Set<MRSObservation> expectedHistoryObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Integer>(ttDate, TT.getName(), Integer.parseInt(ttDose)));
-            add(new MRSObservation<Integer>(iptDate, IPT.getName(), Integer.parseInt(iptDose)));
+            add(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose)));
+            add(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose)));
         }};
 
         ArgumentCaptor<Set> observationCaptor = ArgumentCaptor.forClass(Set.class);
@@ -509,16 +510,16 @@ public class CareServiceTest extends BaseUnitTest {
 
         final MRSObservation activePregnancyObservation = new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY.getName(), true);
         activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(ancRegDate.toDate(), EDD.getName(), edd.toDate()));
-        activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY_STATUS.getName(), true));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
 
         when(mockAllObservations.activePregnancyObservation(patientMotechId)).thenReturn(activePregnancyObservation);
 
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY_STATUS.getName(), true));
         careService.addCareHistory(careHistory);
 
         final Set<MRSObservation> expectedHistoryObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Integer>(ttDate, TT.getName(), Integer.parseInt(ttDose)));
-            add(new MRSObservation<Integer>(iptDate, IPT.getName(), Integer.parseInt(iptDose)));
+            add(new MRSObservation<Double>(ttDate, TT.getName(), Double.parseDouble(ttDose)));
+            add(new MRSObservation<Double>(iptDate, IPT.getName(), Double.parseDouble(iptDose)));
         }};
 
         ArgumentCaptor<Set> observationCaptor = ArgumentCaptor.forClass(Set.class);
@@ -563,8 +564,8 @@ public class CareServiceTest extends BaseUnitTest {
         careService.addCareHistory(careHistory);
 
         final Set<MRSObservation> expectedHistoryObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Integer>(ttDate, TT.getName(), Integer.parseInt(ttDose)));
-            add(new MRSObservation<Integer>(iptDate, IPT.getName(), Integer.parseInt(iptDose)));
+            add(new MRSObservation<Double>(ttDate, TT.getName(), Double.parseDouble(ttDose)));
+            add(new MRSObservation<Double>(iptDate, IPT.getName(), Double.parseDouble(iptDose)));
         }};
 
         ArgumentCaptor<Set> observationCaptor = ArgumentCaptor.forClass(Set.class);
@@ -603,8 +604,8 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(registrationDate.toDate(), EDD.getName(), pregnancy.dateOfDelivery().toDate()));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(registrationDate.toDate(), PREGNANCY_STATUS.getName(), true));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(registrationDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
-        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), Double.parseDouble(ttDose)));
-        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), Double.parseDouble(iptDose)));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose)));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose)));
         Set<MRSObservation> pregnancyObs = new HashSet<MRSObservation>() {{
             add(activePregnancyObservation);
         }};
@@ -617,8 +618,8 @@ public class CareServiceTest extends BaseUnitTest {
         verify(mockAllSchedules, times(3)).enroll(requestCaptor.capture());
         List<EnrollmentRequest> requests = requestCaptor.getAllValues();
         assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_DELIVERY, dateOfConception, mockPatient.facilityMetaData())));
-        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.TT_VACCINATION, newDate(ttDate), TTVaccineDosage.TT2.name(), mockPatient.facilityMetaData())));
-        assertScheduleEnrollmentRequest(requests.get(2), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, newDate(iptDate), IPTDose.SP3.name(), mockPatient.facilityMetaData())));
+        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.TT_VACCINATION, newDate(ttDate), TTVaccineDosage.TT2.getScheduleMilestoneName(), mockPatient.facilityMetaData())));
+        assertScheduleEnrollmentRequest(requests.get(2), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, newDate(iptDate), IPTDose.SP3.milestone(), mockPatient.facilityMetaData())));
     }
 
     @Test
@@ -626,11 +627,11 @@ public class CareServiceTest extends BaseUnitTest {
         String patientId = "patientId";
         setupPatient(patientId, "patientMotechId");
         when(mockAllSchedules.getActiveEnrollment(patientId, TT_VACCINATION)).thenReturn(null);
-        assertThat(careService.activeCareSchedules(mockPatient).hasActiveTTSchedule(), is(equalTo(false)));
+        assertThat(careService.activeCareSchedules(mockPatient, TT_VACCINATION).hasActiveTTSchedule(), is(equalTo(false)));
 
         EnrollmentRecord enrollmentRecord = mock(EnrollmentRecord.class);
         when(mockAllSchedules.getActiveEnrollment(patientId, TT_VACCINATION)).thenReturn(enrollmentRecord);
-        assertThat(careService.activeCareSchedules(mockPatient).hasActiveTTSchedule(), is(equalTo(true)));
+        assertThat(careService.activeCareSchedules(mockPatient, TT_VACCINATION).hasActiveTTSchedule(), is(equalTo(true)));
     }
 
     @Test

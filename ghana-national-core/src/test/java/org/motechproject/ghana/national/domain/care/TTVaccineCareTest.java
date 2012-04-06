@@ -23,30 +23,6 @@ import static org.motechproject.util.DateUtil.today;
 public class TTVaccineCareTest {
 
     @Test
-    public void shouldCreateTTVaccineCareWithCorrectMilestoneGivenAnObservation() {
-
-        LocalDate enrollmentDate = newDate(2012, 3, 3);
-        LocalDate ttVaccinationDate = newDate(2012, 1, 1);
-        final String facilityId = "fid";
-
-        Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
-        Double ttDose=3.0;
-        MRSObservation<String> activePregnancyObs = createPregnacyObservationWithTTDependent(enrollmentDate, ttVaccinationDate,ttDose);
-        ActiveCareSchedules mockActiveCareSchedules = mock(ActiveCareSchedules.class);
-        when(mockActiveCareSchedules.hasActiveTTSchedule()).thenReturn(true);
-
-        TTVaccineCare vaccineCare = TTVaccineCare.createFrom(patient, enrollmentDate, activePregnancyObs, mockActiveCareSchedules);
-
-        PatientCare expectedPatientCare = PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.TT_VACCINATION, ttVaccinationDate, TTVaccineDosage.TT4.name(), new HashMap<String, String>() {{
-            put(Patient.FACILITY_META, facilityId);
-        }});
-        assertThat(this.<PatientCare>getField(vaccineCare, "patientCareBasedOnHistory"), is(expectedPatientCare));
-        assertThat(this.<Patient>getField(vaccineCare, "patient"), is(patient));
-        assertThat(this.<LocalDate>getField(vaccineCare, "enrollmentDate"), is(enrollmentDate));
-        assertThat(this.<Boolean>getField(vaccineCare, "hasActiveTTSchedule"), is(true));
-    }
-
-    @Test
     public void shouldNotCreateScheduleIfActiveScheduleAlreadyExists() {
 
         LocalDate enrollmentDate = newDate(2012, 3, 3);
@@ -57,7 +33,7 @@ public class TTVaccineCareTest {
         ActiveCareSchedules mockActiveCareSchedules = mock(ActiveCareSchedules.class);
         when(mockActiveCareSchedules.hasActiveTTSchedule()).thenReturn(true);
 
-        PatientCare patientCare = TTVaccineCare.createFrom(patient, enrollmentDate, activePregnancyObsWithoutTT, mockActiveCareSchedules).care();
+        PatientCare patientCare = new TTVaccineCare(patient, enrollmentDate, activePregnancyObsWithoutTT, mockActiveCareSchedules).care();
 
         assertNull(patientCare);
     }
@@ -70,12 +46,12 @@ public class TTVaccineCareTest {
         final String facilityId = "fid";
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
-        Double ttDose=2.0;
-        MRSObservation<String> activePregnancyObs = createPregnacyObservationWithTTDependent(enrollmentDate, ttVaccinationDate,ttDose);
+        Double ttDose = 2.0;
+        MRSObservation<String> activePregnancyObs = createPregnacyObservationWithTTDependent(enrollmentDate, ttVaccinationDate, ttDose);
         ActiveCareSchedules noActiveSchedules = mock(ActiveCareSchedules.class);
         when(noActiveSchedules.hasActiveTTSchedule()).thenReturn(false);
 
-        PatientCare patientCare = TTVaccineCare.createFrom(patient, enrollmentDate, activePregnancyObs, noActiveSchedules).care();
+        PatientCare patientCare = new TTVaccineCare(patient, enrollmentDate, activePregnancyObs, noActiveSchedules).care();
 
         PatientCare expectedPatientCare = PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.TT_VACCINATION, ttVaccinationDate, TTVaccineDosage.TT3.name(), new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
@@ -94,7 +70,7 @@ public class TTVaccineCareTest {
         ActiveCareSchedules noActiveSchedules = mock(ActiveCareSchedules.class);
         when(noActiveSchedules.hasActiveTTSchedule()).thenReturn(false);
 
-        PatientCare patientCare = TTVaccineCare.createFrom(patient, enrollmentDate, activePregnancyObsWithoutTT, noActiveSchedules).care();
+        PatientCare patientCare = new TTVaccineCare(patient, enrollmentDate, activePregnancyObsWithoutTT, noActiveSchedules).care();
 
         PatientCare expectedPatientCare = PatientCare.forEnrollmentFromStart(ScheduleNames.TT_VACCINATION, enrollmentDate, new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
@@ -103,22 +79,22 @@ public class TTVaccineCareTest {
     }
 
     @Test
-    public void shouldNotCreatePatientCareIfHistoryProvidedIsTheLastMilestone(){
-       LocalDate enrollmentDate = today();
+    public void shouldNotCreatePatientCareIfHistoryProvidedIsTheLastMilestone() {
+        LocalDate enrollmentDate = today();
         final String facilityId = "fid";
         Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(enrollmentDate.minusMonths(9));
-        LocalDate lastTTVaccinationDate=pregnancy.dateOfConception().plusMonths(6);
+        LocalDate lastTTVaccinationDate = pregnancy.dateOfConception().plusMonths(6);
         ActiveCareSchedules noActiveSchedules = mock(ActiveCareSchedules.class);
         when(noActiveSchedules.hasActiveTTSchedule()).thenReturn(false);
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         MRSObservation<String> activePregnancyObs = createPregnacyObservationWithTTDependent(enrollmentDate, lastTTVaccinationDate, 5.0);
-        PatientCare patientCare = TTVaccineCare.createFrom(patient, enrollmentDate, activePregnancyObs,noActiveSchedules).care();
+        PatientCare patientCare = new TTVaccineCare(patient, enrollmentDate, activePregnancyObs, noActiveSchedules).care();
 
         assertNull(patientCare);
     }
 
-    private MRSObservation<String> createPregnacyObservationWithTTDependent(LocalDate enrollmentDate, LocalDate ttVaccinationDate,Double ttDose) {
+    private MRSObservation<String> createPregnacyObservationWithTTDependent(LocalDate enrollmentDate, LocalDate ttVaccinationDate, Double ttDose) {
         MRSObservation<String> activePregnancyObs = new MRSObservation<String>(enrollmentDate.toDate(), Concept.PREGNANCY.getName(), null);
         activePregnancyObs.addDependantObservation(new MRSObservation<Double>(ttVaccinationDate.toDate(), Concept.TT.getName(), ttDose));
         return activePregnancyObs;

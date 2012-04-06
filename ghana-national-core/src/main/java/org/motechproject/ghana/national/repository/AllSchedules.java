@@ -49,6 +49,14 @@ public class AllSchedules {
         scheduleTrackingService.enroll(enrollmentRequest);
     }
 
+    public boolean enrollIfNotActive(EnrollmentRequest enrollmentRequest) {
+        if (enrollment(enrollmentRequest) == null) {
+            enroll(enrollmentRequest);
+            return true;
+        }
+        return false;
+    }
+
     public boolean safeFulfilCurrentMilestone(String externalId, String scheduleName, LocalDate fulfillmentDate) {
         try {
             scheduleTrackingService.fulfillCurrentMilestone(externalId, scheduleName, fulfillmentDate);
@@ -74,11 +82,11 @@ public class AllSchedules {
     public EnrollmentRecord enrollment(EnrollmentRequest enrollmentRequest) {
         return scheduleTrackingService.getEnrollment(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName());
     }
-    
+
     public List<EnrollmentRecord> search(EnrollmentsQuery enrollmentQuery) {
         return scheduleTrackingService.searchWithWindowDates(enrollmentQuery);
     }
-    
+
     public List<EnrollmentRecord> upcomingCareForCurrentWeek(String externalId) {
         final DateTime startToday = DateUtil.now().withTimeAtStartOfDay();
         Period period = Period.days(6);

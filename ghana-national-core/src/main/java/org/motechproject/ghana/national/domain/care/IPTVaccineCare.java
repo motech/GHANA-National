@@ -1,20 +1,18 @@
 package org.motechproject.ghana.national.domain.care;
 
-import ch.lambdaj.Lambda;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.Concept;
 import org.motechproject.ghana.national.domain.IPTDose;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientCare;
+import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.mrs.model.MRSObservation;
 
-import java.util.List;
 import java.util.Set;
 
 import static ch.lambdaj.Lambda.*;
 import static java.util.Collections.emptySet;
-import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.hamcrest.core.Is.is;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
 import static org.motechproject.ghana.national.tools.Utility.getNextOf;
@@ -25,40 +23,43 @@ public class IPTVaccineCare {
 
     private Patient patient;
     private LocalDate expectedDeliveryDate;
-    private PatientCare patientCareBasedOnHistory;
-    private Boolean isCareAlreadyCompleted;
+    private MRSObservation activePregnancyObservation;
 
-    private IPTVaccineCare(LocalDate expectedDeliveryDate, PatientCare patientCareBasedOnHistory, Patient patient, Boolean isCareAlreadyCompleted) {
+    public IPTVaccineCare(Patient patient, LocalDate expectedDeliveryDate, MRSObservation activePregnancyObservation) {
         this.expectedDeliveryDate = expectedDeliveryDate;
-        this.patientCareBasedOnHistory = patientCareBasedOnHistory;
+        this.activePregnancyObservation = activePregnancyObservation;
         this.patient = patient;
-        this.isCareAlreadyCompleted = isCareAlreadyCompleted;
-    }
-
-    public static IPTVaccineCare createFrom(Patient patient, LocalDate expectedDeliveryDate, MRSObservation activePregnancyObservation) {
-
-        PatientCare careFromHistory = null;
-        Set<MRSObservation> dependantObservations = nullSafe(activePregnancyObservation.getDependantObservations(), emptySet());
-        List<MRSObservation> iptObservationHistory = filter(having(on(MRSObservation.class).getConceptName(), is(Concept.IPT.getName())), dependantObservations);
-        boolean isProgramAlreadyEnded  = false;
-
-        if (isNotEmpty(iptObservationHistory)) {
-            Double doseVal = (Double) iptObservationHistory.get(0).getValue();
-            IPTDose nextMilestoneToSchedule = getNextOf(IPTDose.byValue((Integer.toString(doseVal.intValue()))));
-            isProgramAlreadyEnded = (nextMilestoneToSchedule == null);
-
-            if(!isProgramAlreadyEnded) {
-                LocalDate lastIPTDate = newDate(iptObservationHistory.get(0).getDate());
-                careFromHistory = PatientCare.forEnrollmentInBetweenProgram(ANC_IPT_VACCINE, lastIPTDate, nextMilestoneToSchedule.name(), patient.facilityMetaData());
-            }
-        }
-        return new IPTVaccineCare(expectedDeliveryDate, careFromHistory, patient, isProgramAlreadyEnded);
     }
 
     public PatientCare care() {
-        if(isCareAlreadyCompleted) return null;
-        List<PatientCare> historyIPT = Lambda.filter(having(on(PatientCare.class).name(), is(ANC_IPT_VACCINE)), patientCareBasedOnHistory);
-        return isNotEmpty(historyIPT) ? historyIPT.get(0) : newEnrollment(expectedDeliveryDate);
+        if(isCareProgramComplete()) return null;
+        PatientCare scheduleForNextIPTDose = createCareHistory(patient, lastIPTObservation());
+        return scheduleForNextIPTDose != null ? scheduleForNextIPTDose : newEnrollment(expectedDeliveryDate);
+    }
+
+    private  MRSObservation lastIPTObservation() {
+        Set<MRSObservation> dependantObservations = nullSafe(activePregnancyObservation.getDependantObservations(), emptySet());
+        return Utility.safeFetch(filter(having(on(MRSObservation.class).getConceptName(), is(Concept.IPT.getName())), dependantObservations), 1);
+    }
+
+    private boolean isCareProgramComplete() {
+        MRSObservation lastIPTObservation = lastIPTObservation();
+        return (lastIPTObservation != null && nextVaccineDose(lastIPTObservation) == null);
+    }
+
+    private static IPTDose nextVaccineDose(MRSObservation lastIPTObservation) {
+        Double doseVal = (Double) lastIPTObservation.getValue();
+        return getNextOf(IPTDose.byValue((Integer.toString(doseVal.intValue()))));
+    }
+
+    private PatientCare createCareHistory(Patient patient, MRSObservation lastIPTObservation) {
+
+        if (lastIPTObservation != null) {
+            IPTDose nextMilestoneToSchedule = nextVaccineDose(lastIPTObservation);
+            LocalDate lastIPTDate = newDate(lastIPTObservation.getDate());
+            return PatientCare.forEnrollmentInBetweenProgram(ANC_IPT_VACCINE, lastIPTDate, nextMilestoneToSchedule.milestone(), patient.facilityMetaData());
+        }
+        return null;
     }
 
     private PatientCare newEnrollment(LocalDate expectedDeliveryDate) {

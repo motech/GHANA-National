@@ -76,7 +76,7 @@ public class UtilityTest {
         assertNull(Utility.emptyToNull(" "));
         assertEquals("Facility", Utility.emptyToNull("Facility"));
     }
-    
+
     @Test
     public void shouldGetNearestCycleDateBasedOnCurrentDayOfWeek() {
 
@@ -113,7 +113,7 @@ public class UtilityTest {
     }
 
     @Test
-    public void shouldCreateNullSafeList( ) {
+    public void shouldCreateNullSafeList() {
 
         List<String> actual = nullSafeList(asList("A", null, "B", "C", "D", null));
         List<String> expected = asList("A", "B", "C", "D");
@@ -128,4 +128,14 @@ public class UtilityTest {
         assertThat(Utility.getNextOf(TT4), is(TT5));
         assertThat(Utility.getNextOf(TT5), is(equalTo(null)));
     }
+
+    @Test
+    public void shouldFetchItemByIndexSafely() {
+
+        assertNull(Utility.safeFetch(null, 5));
+        assertNull(Utility.safeFetch(asList(), 5));
+        assertNull(Utility.safeFetch(asList(1, 2, 3), 5));
+        assertThat(Utility.safeFetch(asList(1, 2, 3, 4), 4), is(4));
+    }
+
 }
