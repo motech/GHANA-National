@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
+import org.motechproject.mrs.exception.PatientNotFoundException;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -110,19 +111,19 @@ public class AllPatientsTest {
         final Patient actualPatient = allPatients.getPatientByMotechId(patientId);
         assertNull(actualPatient);
     }
-    
+
     @Test
     public void shouldReturnMotechIdByPatientId() {
-       String patientId="123";
+        String patientId = "123";
         final MRSPatient mrsPatient = mock(MRSPatient.class);
         when(mockMrsPatientAdapter.getPatient(patientId)).thenReturn(mrsPatient);
         Patient actualPatient = allPatients.patientByOpenmrsId(patientId);
-        assertThat(actualPatient.getMrsPatient(),is(equalTo(mrsPatient)));
+        assertThat(actualPatient.getMrsPatient(), is(equalTo(mrsPatient)));
     }
 
     @Test
     public void shouldReturnNullForMotechIdByPatientIdIfNotFound() {
-       String patientId="123";
+        String patientId = "123";
         when(mockMrsPatientAdapter.getPatient(patientId)).thenReturn(null);
         Patient actualPatient = allPatients.patientByOpenmrsId(patientId);
         assertNull(actualPatient);
@@ -138,6 +139,7 @@ public class AllPatientsTest {
         final Patient actualPatient = allPatients.getPatientByMotechId(patientId);
         assertThat(actualPatient.getMrsPatient(), is(patient));
     }
+
     @Test
     public void shouldFetchPatientByIdAndPopulateRelationshipIfFound() {
         final String patientId = "1";
@@ -154,11 +156,12 @@ public class AllPatientsTest {
         final String motherMotechId = "111";
 
         when(mockMrsPatientAdapter.search(motherName.getFullName(), null)).thenReturn(new ArrayList<MRSPatient>() {{
-            add(new MRSPatient(motherMotechId, new MRSPerson().id(String.valueOf(motherPersonId)), null));}});
+            add(new MRSPatient(motherMotechId, new MRSPerson().id(String.valueOf(motherPersonId)), null));
+        }});
         when(mockOpenMRSRelationshipAdapter.getMotherRelationship(personId)).thenReturn(motherRelationship);
-        
+
         final Patient actualPatient = allPatients.getPatientByMotechId(patientId);
-        
+
         assertThat(actualPatient.getMrsPatient(), is(childPatient));
         assertThat(actualPatient.getParentId(), is(motherMotechId));
     }
@@ -196,7 +199,7 @@ public class AllPatientsTest {
         final String motechIdForUpdatedPatient = allPatients.update(patient);
         assertThat(patientId, is(motechIdForUpdatedPatient));
     }
-    
+
     @Test
     public void shouldCreateMotherRelation() {
         MRSPerson mockMother = mock(MRSPerson.class);
@@ -206,7 +209,7 @@ public class AllPatientsTest {
         when(mockMother.getId()).thenReturn(motherId);
         when(mockChild.getId()).thenReturn(childId);
         allPatients.createMotherChildRelationship(mockMother, mockChild);
-        verify(mockOpenMRSRelationshipAdapter).createMotherChildRelationship(motherId,childId);
+        verify(mockOpenMRSRelationshipAdapter).createMotherChildRelationship(motherId, childId);
     }
 
     @Test
@@ -250,7 +253,7 @@ public class AllPatientsTest {
     }
 
     @Test
-    public void shouldSaveCauseOfDeath() {
+    public void shouldSaveCauseOfDeath() throws PatientNotFoundException {
         String mrsPatientId = "patientId";
         Date dateOfDeath = DateUtil.now().toDate();
         String causeOfDeath = "NONE";
@@ -258,5 +261,4 @@ public class AllPatientsTest {
         allPatients.deceasePatient(dateOfDeath, mrsPatientId, causeOfDeath, comment);
         verify(mockMrsPatientAdapter).deceasePatient(mrsPatientId, causeOfDeath, dateOfDeath, comment);
     }
-
 }

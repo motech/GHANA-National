@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.services.MRSObservationAdapter;
@@ -66,7 +67,7 @@ public class AllObservationsTest {
     }
 
     @Test
-    public void shouldUpdateEDDObservationsIfModified() {
+    public void shouldUpdateEDDObservationsIfModified() throws ObservationNotFoundException {
         MRSObservation edd = mock(MRSObservation.class);
         MRSObservation activePregnancy = mock(MRSObservation.class);
         String motechId = "12";
@@ -84,7 +85,7 @@ public class AllObservationsTest {
     }
 
     @Test
-    public void shouldCreateEDDObservationsIfNew() {
+    public void shouldCreateEDDObservationsIfNew() throws ObservationNotFoundException {
         MRSObservation edd = mock(MRSObservation.class);
         MRSObservation activePregnancy = mock(MRSObservation.class);
         String motechId = "12";
@@ -102,7 +103,7 @@ public class AllObservationsTest {
     }
 
     @Test
-    public void shouldNotCreateEDDObservationsDeliveryDateIsTheSame() {
+    public void shouldNotCreateEDDObservationsDeliveryDateIsTheSame() throws ObservationNotFoundException {
         MRSObservation edd = mock(MRSObservation.class);
         MRSObservation activePregnancy = mock(MRSObservation.class);
         String motechId = "12";
@@ -128,7 +129,7 @@ public class AllObservationsTest {
     }
 
     @Test
-    public void shouldVoidObservations() {
+    public void shouldVoidObservations() throws ObservationNotFoundException {
         MRSObservation mockMRSObservation = mock(MRSObservation.class);
         String reason = "reason";
         String staffId = "staff-id";

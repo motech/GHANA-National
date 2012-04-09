@@ -4,6 +4,7 @@ import ch.lambdaj.Lambda;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.services.MRSObservationAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,8 +73,12 @@ public class AllObservations {
     }
 
     public void voidObservation(MRSObservation mrsObservation, String reason, String staffId) {
-        if (mrsObservation != null) {
-            mrsObservationAdapter.voidObservation(mrsObservation, reason, staffId);
+        try {
+            if (mrsObservation != null) {
+                mrsObservationAdapter.voidObservation(mrsObservation, reason, staffId);
+            }
+        } catch (ObservationNotFoundException e) {
+            logger.warn(e.getMessage());
         }
     }
 }

@@ -3,7 +3,7 @@ package org.motechproject.ghana.national.validator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.GeneralQueryType;
+import org.motechproject.ghana.national.domain.GeneralQueryType;
 import org.motechproject.ghana.national.bean.GeneralQueryForm;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;

@@ -1,7 +1,7 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.junit.runner.RunWith;
-import org.motechproject.ghana.national.GeneralQueryType;
+import org.motechproject.ghana.national.domain.GeneralQueryType;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
