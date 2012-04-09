@@ -1,8 +1,6 @@
 package org.motechproject.ghana.national.handler;
 
-import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllObservations;
-import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -29,61 +27,61 @@ public class CareScheduleHandler extends BaseScheduleHandler {
     @LoginAsAdmin
     @ApiSession
     public void handlePregnancyAlert(final MilestoneEvent milestoneEvent) {
-        sendAggregativeSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
+        sendAggregatedSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
     }
 
     @LoginAsAdmin
     @ApiSession
     public void handleTTVaccinationAlert(MilestoneEvent milestoneEvent) {
-        sendAggregativeSMSToFacility(TT_VACCINATION_SMS_KEY, milestoneEvent);
+        sendAggregatedSMSToFacility(TT_VACCINATION_SMS_KEY, milestoneEvent);
     }
 
     @LoginAsAdmin
     @ApiSession
     public void handleBCGAlert(MilestoneEvent milestoneEvent) {
-        sendAggregativeSMSToFacility(BCG_SMS_KEY, milestoneEvent);
+        sendAggregatedSMSToFacility(BCG_SMS_KEY, milestoneEvent);
     }
 
     @LoginAsAdmin
     @ApiSession
     public void handleAncVisitAlert(MotechEvent motechEvent) {
-        sendAggregativeSMSToFacilityForAnAppointment(ANC_VISIT_SMS_KEY, motechEvent);
+        sendAggregatedSMSToFacilityForAnAppointment(ANC_VISIT_SMS_KEY, motechEvent);
     }
 
     @LoginAsAdmin
     @ApiSession
     public void handleIPTpVaccinationAlert(MilestoneEvent milestoneEvent) {
-        sendAggregativeSMSToFacility(ANC_IPTp_VACCINATION_SMS_KEY, milestoneEvent);
+        sendAggregatedSMSToFacility(ANC_IPTp_VACCINATION_SMS_KEY, milestoneEvent);
     }
 
     @LoginAsAdmin
     @ApiSession
     public void handleIPTiVaccinationAlert(MilestoneEvent milestoneEvent) {
-        sendAggregativeSMSToFacility(CWC_IPTi_VACCINATION_SMS_KEY, milestoneEvent);
+        sendAggregatedSMSToFacility(CWC_IPTi_VACCINATION_SMS_KEY, milestoneEvent);
     }
 
     @LoginAsAdmin
     @ApiSession
     public void handleMeaslesVaccinationAlert(MilestoneEvent milestoneEvent) {
-        sendAggregativeSMSToFacility(CWC_MEASLES_SMS_KEY, milestoneEvent);
+        sendAggregatedSMSToFacility(CWC_MEASLES_SMS_KEY, milestoneEvent);
     }
 
     @LoginAsAdmin
     @ApiSession
     public void handlePentaVaccinationAlert(MilestoneEvent milestoneEvent) {
-        sendAggregativeSMSToFacility(CWC_PENTA_SMS_KEY, milestoneEvent);
+        sendAggregatedSMSToFacility(CWC_PENTA_SMS_KEY, milestoneEvent);
     }
 
     @LoginAsAdmin
     @ApiSession
     public void handleYellowFeverVaccinationAlert(MilestoneEvent milestoneEvent) {
-        sendAggregativeSMSToFacility(CWC_YF_SMS_KEY, milestoneEvent);
+        sendAggregatedSMSToFacility(CWC_YF_SMS_KEY, milestoneEvent);
     }
 
     @LoginAsAdmin
     @ApiSession
     public void handleOpvVaccinationAlert(final MilestoneEvent milestoneEvent) {
-       sendAggregativeSMSToFacility(CWC_OPV_SMS_KEY, milestoneEvent);
+        sendAggregatedSMSToFacility(CWC_OPV_SMS_KEY, milestoneEvent);
     }
 
     @LoginAsAdmin

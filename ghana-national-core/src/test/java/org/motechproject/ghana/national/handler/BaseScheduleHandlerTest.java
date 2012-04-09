@@ -82,7 +82,7 @@ public class BaseScheduleHandlerTest {
         Facility facility = new Facility().phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhone);
         when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
 
-        careScheduleHandler.sendAggregativeSMSToFacilityForAnAppointment(ancVisitKey, new MotechEvent("subject", parameters));
+        careScheduleHandler.sendAggregatedSMSToFacilityForAnAppointment(ancVisitKey, new MotechEvent("subject", parameters));
 
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
@@ -124,7 +124,7 @@ public class BaseScheduleHandlerTest {
         when(mockAllObservations.findObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
-        careScheduleHandler.sendAggregativeSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
+        careScheduleHandler.sendAggregatedSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);

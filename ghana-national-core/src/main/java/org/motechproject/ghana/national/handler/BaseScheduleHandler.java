@@ -35,13 +35,13 @@ public abstract class BaseScheduleHandler {
         this.allObservations = allObservations;
     }
 
-    protected void sendAggregativeSMSToFacilityForAnAppointment(String ancVisitSmsKey, MotechEvent motechEvent) {
+    protected void sendAggregatedSMSToFacilityForAnAppointment(String ancVisitSmsKey, MotechEvent motechEvent) {
         final Map<String, Object> parameters = motechEvent.getParameters();
         String externalId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
         final Patient patient = patientService.getPatientByMotechId(externalId);
         String serialNumber = "-";
         MRSObservation observation = allObservations.findObservation(patient.getMotechId(), Concept.SERIAL_NUMBER.getName());
-        if(observation != null) {
+        if (observation != null) {
             serialNumber = (String) observation.getValue();
         }
 
@@ -50,7 +50,7 @@ public abstract class BaseScheduleHandler {
         final String windowName = getVisitWindow((String) parameters.get(MotechSchedulerService.JOB_ID_KEY));
         final String scheduleName = (String) parameters.get(EventKeys.VISIT_NAME);
         List<String> phoneNumbers = facility.getPhoneNumbers();
-        if(phoneNumbers.size() == 0) {
+        if (phoneNumbers.size() == 0) {
             logger.warn("No Phone Numbers in Facility to send SMS.");
         }
         final String messageIdentifier = new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier();
@@ -63,16 +63,16 @@ public abstract class BaseScheduleHandler {
         char reminderCount = jobId.charAt(jobId.length() - 1);
         switch (reminderCount) {
             case '0':
-                return "Due";
+                return AlertWindow.DUE.getName();
             case '1':
             case '2':
             case '3':
-                return "Overdue";
+                return AlertWindow.OVERDUE.getName();
         }
         return null;
     }
 
-    protected void sendAggregativeSMSToFacility(String smsTemplateKey, final MilestoneEvent milestoneEvent) {
+    protected void sendAggregatedSMSToFacility(String smsTemplateKey, final MilestoneEvent milestoneEvent) {
         String externalId = milestoneEvent.getExternalId();
         final Patient patient = patientService.patientByOpenmrsId(externalId);
 
@@ -98,11 +98,11 @@ public abstract class BaseScheduleHandler {
     }
 
     protected void sendInstantSMSToFacility(String smsTemplateKey, final MilestoneEvent milestoneEvent) {
-        final Patient patient = patientService.patientByOpenmrsId(milestoneEvent.getExternalId());
-        final MRSPatient mrsPatient = patient.getMrsPatient();
-        final Facility facility = facilityService.getFacility(mrsPatient.getFacility().getId());
+        Patient patient = patientService.patientByOpenmrsId(milestoneEvent.getExternalId());
+        MRSPatient mrsPatient = patient.getMrsPatient();
+        Facility facility = facilityService.getFacility(mrsPatient.getFacility().getId());
 
-        final String windowName = AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName();
+        String windowName = AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName();
         for (String phoneNumber : facility.getPhoneNumbers()) {
             smsGateway.dispatchSMS(smsTemplateKey, patientDetailsMap(patient, windowName, milestoneEvent.getMilestoneAlert().getMilestoneName(), null), phoneNumber);
         }
