@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.web.form.PasswordResetForm;
 import org.motechproject.ghana.national.web.security.LoginSuccessHandler;
+import org.motechproject.mrs.exception.MRSException;
 import org.motechproject.mrs.security.MRSSecurityUser;
-import org.motechproject.mrs.services.MRSException;
 import org.motechproject.mrs.services.MRSUserAdapter;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
@@ -21,13 +21,8 @@ import javax.servlet.http.HttpSession;
 import static java.lang.String.format;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PasswordResetControllerTest {

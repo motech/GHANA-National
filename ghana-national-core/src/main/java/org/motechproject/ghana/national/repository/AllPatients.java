@@ -2,8 +2,10 @@ package org.motechproject.ghana.national.repository;
 
 import ch.lambdaj.function.convert.Converter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
+import org.motechproject.mrs.exception.PatientNotFoundException;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.services.MRSPatientAdapter;
@@ -22,6 +24,7 @@ import static ch.lambdaj.Lambda.convert;
 public class AllPatients {
     @Autowired
     private MRSPatientAdapter patientAdapter;
+    Logger logger = Logger.getLogger(AllPatients.class);
 
     @Autowired
     private OpenMRSRelationshipAdapter openMRSRelationshipAdapter;
@@ -30,7 +33,7 @@ public class AllPatients {
         MRSPatient mrsPatient = patientAdapter.savePatient(patient.getMrsPatient());
         if (StringUtils.isNotEmpty(patient.getParentId())) {
             Patient mother = getPatientByMotechId(patient.getParentId());
-            if(mother == null) throw new ParentNotFoundException();
+            if (mother == null) throw new ParentNotFoundException();
             createMotherChildRelationship(mother.getMrsPatient().getPerson(), mrsPatient.getPerson());
         }
         return new Patient(mrsPatient, patient.getParentId());
@@ -107,6 +110,10 @@ public class AllPatients {
     }
 
     public void deceasePatient(Date dateOfDeath, String patientMotechId, String causeOfDeath, String comment) {
-        patientAdapter.deceasePatient(patientMotechId, causeOfDeath, dateOfDeath, comment);
+        try {
+            patientAdapter.deceasePatient(patientMotechId, causeOfDeath, dateOfDeath, comment);
+        } catch (PatientNotFoundException e) {
+            logger.warn(e.getMessage());
+        }
     }
 }
