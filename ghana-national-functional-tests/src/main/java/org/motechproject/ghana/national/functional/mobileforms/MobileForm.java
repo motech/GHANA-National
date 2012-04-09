@@ -21,6 +21,10 @@ public class MobileForm {
         return new MobileForm("NurseDataEntry", "register-client-template.xml");
     }
 
+    public static MobileForm careHistoryForm() {
+        return new MobileForm("NurseDataEntry", "care-history-template.xml");
+    }
+
     public static MobileForm editClientForm() {
         return new MobileForm("NurseDataEntry", "edit-client-template.xml");
     }

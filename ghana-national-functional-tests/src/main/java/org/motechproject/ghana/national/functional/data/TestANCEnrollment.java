@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.joda.time.format.DateTimeFormat.forPattern;
 import static org.motechproject.ghana.national.functional.util.MobileFormUtils.updateFieldByNameAndValue;
 import static org.motechproject.ghana.national.functional.util.MobileFormUtils.updateFieldName;
+import static org.motechproject.ghana.national.tools.Utility.nullSafeToString;
 
 public class TestANCEnrollment implements CareEnrollment {
     private String staffId;
@@ -40,29 +40,37 @@ public class TestANCEnrollment implements CareEnrollment {
     private String country;
 
     public static TestANCEnrollment create() {
-        final TestANCEnrollment enrollment = new TestANCEnrollment();
+        return TestANCEnrollment.createWithoutHistory().addHistoryDetails();
+    }
 
+    public static TestANCEnrollment createWithoutHistory() {
+        final TestANCEnrollment enrollment = new TestANCEnrollment();
         enrollment.registrationDate = DateUtil.today();
         enrollment.registrationToday = RegistrationToday.TODAY;
         enrollment.serialNumber = "serialNumber";
         enrollment.estimatedDateOfDelivery = new LocalDate(2012, 2, 3);
-        enrollment.addHistory = true;
-        enrollment.addCareHistory = Arrays.asList(ANCCareHistory.values());
         enrollment.height = "124.0";
         enrollment.gravida = "3";
         enrollment.parity = "4";
         enrollment.deliveryDateConfirmed = true;
-        enrollment.lastIPT = "1";
-        enrollment.lastTT = "1";
-        enrollment.lastIPTDate = new LocalDate(2011, 2, 3);
-        enrollment.lastTTDate = new LocalDate(2011, 2, 4);
         enrollment.country = "Ghana";
         enrollment.region = "Central Region";
         enrollment.district = "Awutu Senya";
         enrollment.subDistrict = "Kasoa";
         enrollment.facility = "Papaase CHPS";
         enrollment.facilityId = "13212";
+        enrollment.addHistory = false;
         return enrollment;
+    }
+
+    public TestANCEnrollment addHistoryDetails() {
+        this.addHistory = true;
+        this.addCareHistory = Arrays.asList(ANCCareHistory.values());
+        this.lastIPT = "1";
+        this.lastTT = "1";
+        this.lastIPTDate = new LocalDate(2011, 2, 3);
+        this.lastTTDate = new LocalDate(2011, 2, 4);
+        return this;
     }
 
     public Map<String, String> forMobile() {
@@ -70,20 +78,21 @@ public class TestANCEnrollment implements CareEnrollment {
             put("staffId", staffId);
             put("facilityId", facilityId);
             put("motechId", motechPatientId);
-            put("registrationDate", registrationDate.toString(forPattern("yyyy-MM-dd")));
+            put("registrationDate", safe(registrationDate));
             put("regDateToday", registrationToday.name());
             put("ancRegNumber", serialNumber);
-            put("estDeliveryDate", estimatedDateOfDelivery.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
+            put("estDeliveryDate", safe(estimatedDateOfDelivery));
             put("height", height);
             put("gravida", gravida);
             put("parity", parity);
             put("addHistory", booleanCodeForAddHistory(addHistory));
             put("deliveryDateConfirmed", booleanCodeForDateConfirmed(deliveryDateConfirmed));
             put("addCareHistory", "IPT,TT");
+//            put("addCareHistory", join(collect(addCareHistory, on(ANCCareHistory.class).name()), ","));
             put("lastIPT", lastIPT);
             put("lastTT", lastTT);
-            put("lastIPTDate", lastIPTDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
-            put("lastTTDate", lastTTDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
+            put("lastIPTDate", safe(lastIPTDate));
+            put("lastTTDate", safe(lastTTDate));
             put("serialNumber", serialNumber);
         }};
     }
@@ -120,6 +129,11 @@ public class TestANCEnrollment implements CareEnrollment {
 
     public String booleanCodeForDateConfirmed(boolean value) {
         return value ? "Y" : "N";
+    }
+
+    private String safe(LocalDate date) {
+        return nullSafeToString(date, "yyyy-MM-dd");
+
     }
 
     public Boolean addHistory() {

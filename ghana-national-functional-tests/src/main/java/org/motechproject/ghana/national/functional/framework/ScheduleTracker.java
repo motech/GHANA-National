@@ -1,25 +1,26 @@
-package org.motechproject.ghana.national.configuration;
+package org.motechproject.ghana.national.functional.framework;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.junit.After;
-import org.junit.Before;
+import org.joda.time.Period;
+import org.motechproject.ghana.national.functional.domain.Alert;
 import org.motechproject.model.Time;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduler.MotechSchedulerServiceImpl;
 import org.motechproject.scheduletracking.api.domain.Enrollment;
+import org.motechproject.scheduletracking.api.domain.Milestone;
+import org.motechproject.scheduletracking.api.domain.MilestoneWindow;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.constants.EventDataKeys;
 import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
 import org.motechproject.scheduletracking.api.repository.AllEnrollments;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
-import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
-import org.motechproject.scheduletracking.api.service.impl.*;
-import org.motechproject.testing.utils.BaseUnitTest;
+import org.motechproject.scheduletracking.api.service.impl.ScheduleTrackingServiceImpl;
 import org.motechproject.util.DateUtil;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,20 +31,12 @@ import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang.time.DateUtils.parseDate;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.joda.time.PeriodType.millis;
+import static org.motechproject.ghana.national.tools.Utility.nullSafe;
 import static org.motechproject.util.DateUtil.newDateTime;
-import static org.motechproject.util.DateUtil.today;
 
-public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
-
-    protected static final String PATIENT_ID = "Patient id";
-    protected String externalId = PATIENT_ID;
-
-    @Autowired
-    private AllTrackedSchedules allTrackedSchedules;
+@Component
+public class ScheduleTracker {
 
     @Autowired
     protected MotechSchedulerService motechSchedulerService;
@@ -55,27 +48,23 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     private SchedulerFactoryBean schedulerFactoryBean;
 
     @Autowired
-    private EnrollmentRecordMapper enrollmentRecordMapper;
-
     protected ScheduleTrackingServiceImpl scheduleTrackingService;
 
-    protected String enrollmentId;
+    @Autowired
+    AllTrackedSchedules allTrackedSchedules;
+
     private Pattern ALERT_ORDER_INDEX_REGEX = Pattern.compile("^.*\\.(.*?)-repeat$");
     protected Time preferredAlertTime;
-    String scheduleName;
 
-    @Before
     public void setUp() {
         preferredAlertTime = new Time(10, 10);
-        EnrollmentAlertService enrollmentAlertService = new EnrollmentAlertService(motechSchedulerService);
-        EnrollmentDefaultmentService enrollmentDefaultmentService = new EnrollmentDefaultmentService(motechSchedulerService);
-        EnrollmentService enrollmentService = new EnrollmentService(allTrackedSchedules, allEnrollments, enrollmentAlertService, enrollmentDefaultmentService);
-        scheduleTrackingService = new ScheduleTrackingServiceImpl(allTrackedSchedules, allEnrollments, enrollmentService, null, enrollmentRecordMapper);
     }
 
-    @After
+    public String getActiveMilestone(String externalId, String scheduleName){
+        return allEnrollments.getActiveEnrollment(externalId, scheduleName).getCurrentMilestoneName();
+    }
+
     public void deleteAllJobs() throws SchedulerException {
-        super.tearDown();
         for (Enrollment enrollment : allEnrollments.getAll()) {
             allEnrollments.remove(enrollment);
         }
@@ -87,28 +76,41 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         }
     }
 
-    protected List<TestJobDetail> captureAlertsForNextMilestone(String enrollmentId) throws SchedulerException {
+    private void assertNotNull(Object object) {
+        if (object == null) throw new AssertionError("should not be null");
+    }
+
+    public List<org.motechproject.ghana.national.functional.domain.JobDetail> captureScheduleAlerts(String externalId, String scheduleName) {
+        Enrollment activeEnrollment = allEnrollments.getActiveEnrollment(externalId, scheduleName);
+        assertNotNull(activeEnrollment);
+        return captureAlertsForNextMilestone(activeEnrollment.getId());
+    }
+
+    protected List<org.motechproject.ghana.national.functional.domain.JobDetail> captureAlertsForNextMilestone(String enrollmentId) {
         final Scheduler scheduler = schedulerFactoryBean.getScheduler();
         final String jobGroupName = MotechSchedulerServiceImpl.JOB_GROUP_NAME;
-        String[] jobNames = scheduler.getJobNames(jobGroupName);
-        List<TestJobDetail> alertTriggers = new ArrayList<TestJobDetail>();
-
-        for (String jobName : jobNames) {
-            if (jobName.contains(format("%s-%s", EventSubjects.MILESTONE_ALERT, enrollmentId))) {
-                Trigger[] triggersOfJob = scheduler.getTriggersOfJob(jobName, jobGroupName);
-                assertEquals(1, triggersOfJob.length);
-                alertTriggers.add(new TestJobDetail((SimpleTrigger) triggersOfJob[0], scheduler.getJobDetail(jobName, jobGroupName)));
+        String[] jobNames = new String[0];
+        List<org.motechproject.ghana.national.functional.domain.JobDetail> alertTriggers = new ArrayList<org.motechproject.ghana.national.functional.domain.JobDetail>();
+        try {
+            jobNames = scheduler.getJobNames(jobGroupName);
+            for (String jobName : jobNames) {
+                if (jobName.contains(format("%s-%s", EventSubjects.MILESTONE_ALERT, enrollmentId))) {
+                    Trigger[] triggersOfJob = scheduler.getTriggersOfJob(jobName, jobGroupName);
+                    alertTriggers.add(new org.motechproject.ghana.national.functional.domain.JobDetail((SimpleTrigger) triggersOfJob[0], scheduler.getJobDetail(jobName, jobGroupName)));
+                }
             }
+        } catch (SchedulerException e) {
+            throw new RuntimeException(e);
         }
         return alertTriggers;
     }
 
-    protected void assertAlerts(List<TestJobDetail> testJobDetails, List<Date> alertTimes) {
+    public List<Date> alerts(List<org.motechproject.ghana.national.functional.domain.JobDetail> testJobDetails) {
 
         sortBasedOnIndexInAlertName(testJobDetails);
 
         List<Date> actualAlertTimes = new ArrayList<Date>();
-        for (TestJobDetail testJobDetail : testJobDetails) {
+        for (org.motechproject.ghana.national.functional.domain.JobDetail testJobDetail : testJobDetails) {
             SimpleTrigger alert = testJobDetail.trigger();
             Date nextFireTime = alert.getNextFireTime();
             actualAlertTimes.add(nextFireTime);
@@ -119,27 +121,23 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
                 actualAlertTimes.add(calendar.getTime());
             }
         }
-        assertThat(actualAlertTimes, is(equalTo(alertTimes)));
+        return actualAlertTimes;
     }
 
-    protected void assertTestAlerts(List<TestJobDetail> alerts, List<TestAlert> alertTimes) {
-        assertThat(createActualTestAlertTimes(alerts), is(equalTo(alertTimes)));
-    }
-
-    private List<TestAlert> createActualTestAlertTimes(List<TestJobDetail> alertsJobDetails) {
+    private List<Alert> createActualAlertTimes(List<org.motechproject.ghana.national.functional.domain.JobDetail> alertsJobDetails) {
         sortBasedOnIndexInAlertName(alertsJobDetails);
 
-        List<TestAlert> actualAlertTimes = new ArrayList<TestAlert>();
-        for (TestJobDetail testJobDetail : alertsJobDetails) {
+        List<Alert> actualAlertTimes = new ArrayList<Alert>();
+        for (org.motechproject.ghana.national.functional.domain.JobDetail testJobDetail : alertsJobDetails) {
             SimpleTrigger alert = testJobDetail.trigger();
             Date nextFireTime = alert.getNextFireTime();
             JobDataMap dataMap = testJobDetail.getJobDetail().getJobDataMap();
-            actualAlertTimes.add(new TestAlert(window(dataMap), nextFireTime));
+            actualAlertTimes.add(new Alert(window(dataMap), nextFireTime));
             for (int i = 1; i <= alert.getRepeatCount(); i++) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime((Date) nextFireTime.clone());
                 calendar.add(Calendar.DAY_OF_MONTH, toDays(i * alert.getRepeatInterval()));
-                actualAlertTimes.add(new TestAlert(window(dataMap), calendar.getTime()));
+                actualAlertTimes.add(new Alert(window(dataMap), calendar.getTime()));
             }
         }
         return actualAlertTimes;
@@ -154,10 +152,10 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         return matcher.find() ? Integer.parseInt(matcher.group(1)) : null;
     }
 
-    private void sortBasedOnIndexInAlertName(List<TestJobDetail> alertJobDetails) {
-        Collections.sort(alertJobDetails, new Comparator<TestJobDetail>() {
+    private void sortBasedOnIndexInAlertName(List<org.motechproject.ghana.national.functional.domain.JobDetail> alertJobDetails) {
+        Collections.sort(alertJobDetails, new Comparator<org.motechproject.ghana.national.functional.domain.JobDetail>() {
             @Override
-            public int compare(TestJobDetail testJobDetail1, TestJobDetail testJobDetail2) {
+            public int compare(org.motechproject.ghana.national.functional.domain.JobDetail testJobDetail1, org.motechproject.ghana.national.functional.domain.JobDetail testJobDetail2) {
                 return extractIndexFromAlertName(testJobDetail1.trigger().getName()).compareTo(extractIndexFromAlertName(testJobDetail2.trigger().getName()));
             }
         });
@@ -183,16 +181,6 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         return newDateTime(newDate(date), preferredAlertTime).toDate();
     }
 
-    protected LocalDate mockToday(LocalDate today) {
-        mockCurrentDate(today);
-        return today;
-    }
-
-    protected DateTime mockToday(DateTime today) {
-        mockCurrentDate(today);
-        return today;
-    }
-
     protected LocalDate newDate(String date) {
         try {
             return DateUtil.newDate(new SimpleDateFormat("dd-MMM-yyyy").parse(date));
@@ -210,8 +198,8 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         }
     }
 
-    protected TestAlert alert(WindowName windowName, Date alertDate) {
-        return new TestAlert(windowName, alertDate);
+    protected Alert alert(WindowName windowName, Date alertDate) {
+        return new Alert(windowName, alertDate);
     }
 
     protected ArrayList<Date> dates(LocalDate... dates) {
@@ -230,17 +218,36 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         return dateList;
     }
 
-    protected String enroll(LocalDate referenceDate) {
-        EnrollmentRequest enrollmentRequest = enrollmentRequest(externalId, scheduleName, preferredAlertTime, referenceDate, null, today(), null, null, null);
-        return scheduleTrackingService.enroll(enrollmentRequest);
+    public Alert firstAlertScheduledFor(String externalId, String scheduleName) {
+        return nullSafe(createActualAlertTimes(captureScheduleAlerts(externalId, scheduleName)), 0, null);
     }
 
-    private EnrollmentRequest enrollmentRequest(String externalId, String scheduleName, Time preferredAlertTime, LocalDate referenceDate, Time referenceTime,
-                                                LocalDate registrationDate, Time registrationTime, String startMilestone, Map<String, String> metadata) {
-        return new EnrollmentRequest(externalId, scheduleName, preferredAlertTime, referenceDate, referenceTime, registrationDate, registrationTime, startMilestone, metadata);
+    public LocalDate firstAlert(String scheduleName, LocalDate referenceDate) {
+        return firstAlert(scheduleName, referenceDate, allTrackedSchedules.getByName(scheduleName).getFirstMilestone().getName());
     }
 
-    protected void fulfillCurrentMilestone(LocalDate fulfillmentDate) {
-        scheduleTrackingService.fulfillCurrentMilestone(externalId, scheduleName, fulfillmentDate);
+    public LocalDate firstAlert(String scheduleName, LocalDate referenceDate, String milestoneName) {
+        org.motechproject.scheduletracking.api.domain.Schedule schedule = allTrackedSchedules.getByName(scheduleName);
+        Milestone milestone = schedule.getMilestone(milestoneName);
+        return findFirstApplicableAlert(milestone, referenceDate);
+    }
+
+    private LocalDate findFirstApplicableAlert(Milestone milestone, LocalDate referenceDate) {
+
+        List<MilestoneWindow> milestoneWindows = milestone.getMilestoneWindows();
+        for (MilestoneWindow milestoneWindow : milestoneWindows) {
+            Period windowStart = milestone.getWindowStart(milestoneWindow.getName());
+            for (org.motechproject.scheduletracking.api.domain.Alert alert : milestoneWindow.getAlerts()) {
+                LocalDate referenceWindowStartDate = referenceDate.plus(windowStart);
+                int alertCount = alert.getRemainingAlertCount(newDateTime(referenceWindowStartDate.toDate()), null);
+                for (long count = 0; count <= alertCount; count++) {
+                    Period interval = new Period(alert.getInterval().toStandardDuration().getMillis() * count, millis());
+                    LocalDate idealStartDate = referenceWindowStartDate.plus(alert.getOffset()).plusDays((int) interval.toStandardDuration().getStandardDays());
+                    if (idealStartDate.compareTo(DateUtil.today()) > 0) return idealStartDate;
+                }
+
+            }
+        }
+        return null;
     }
 }

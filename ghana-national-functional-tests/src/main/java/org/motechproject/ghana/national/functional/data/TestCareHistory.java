@@ -1,11 +1,12 @@
 package org.motechproject.ghana.national.functional.data;
 
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
 import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.motechproject.ghana.national.tools.Utility.nullSafeToString;
 
 public class TestCareHistory {
     private String staffId;
@@ -27,6 +28,30 @@ public class TestCareHistory {
     private String lastIPTI;
     private LocalDate lastIPTIDate;
     private LocalDate lastVitaminADate;
+
+    public static TestCareHistory withoutHistory(String motechId) {
+        final TestCareHistory careHistory = new TestCareHistory();
+        careHistory.facilityId = "13212";
+        careHistory.motechId = motechId;
+        careHistory.date = DateUtil.newDate(2000, 12, 12);
+        careHistory.addHistory = "";
+        return careHistory;
+    }
+
+    public TestCareHistory withIPT(String dosage, LocalDate lastIPTdate) {
+        lastIPT = dosage;
+        this.lastIPTDate = lastIPTdate;
+        addHistory = addHistory + "IPT";
+        return this;
+    }
+
+    public TestCareHistory withTT(String dosage, LocalDate lastIPTdate) {
+        lastTT = dosage;
+        this.lastTTDate = lastIPTdate;
+        addHistory = addHistory + "TT";
+        return this;
+    }
+
 
     public static TestCareHistory create() {
         TestCareHistory careHistory = new TestCareHistory();
@@ -54,24 +79,28 @@ public class TestCareHistory {
         return new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", facilityId);
-            put("date", date.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
+            put("date", safe(TestCareHistory.this.date));
             put("motechId", motechId);
             put("addHistory", addHistory);
             put("lastIPT", lastIPT);
-            put("lastIPTDate", lastIPTDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
+            put("lastIPTDate", safe(lastIPTDate));
             put("lastTT", lastTT);
-            put("lastTTDate", lastTTDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
-            put("bcgDate", bcgDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
+            put("lastTTDate", safe(lastTTDate));
+            put("bcgDate", safe(bcgDate));
             put("lastOPV", lastOPV);
-            put("lastOPVDate", lastOPVDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
+            put("lastOPVDate", safe(lastOPVDate));
             put("lastPenta", lastPenta);
-            put("lastPentaDate", lastPentaDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
-            put("measlesDate", measlesDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
-            put("yellowFeverDate", yellowFeverDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
+            put("lastPentaDate", safe(lastPentaDate));
+            put("measlesDate", safe(measlesDate));
+            put("yellowFeverDate", safe(yellowFeverDate));
             put("lastIPTI", lastIPTI);
-            put("lastIPTIDate", lastIPTIDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
-            put("lastVitaminADate", lastVitaminADate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
+            put("lastIPTIDate", safe(lastIPTIDate));
+            put("lastVitaminADate", safe(lastVitaminADate));
         }};
+    }
+
+    private String safe(LocalDate date) {
+        return nullSafeToString(date, "yyyy-MM-dd");
     }
 
     public TestCareHistory staffId(String staffId) {
