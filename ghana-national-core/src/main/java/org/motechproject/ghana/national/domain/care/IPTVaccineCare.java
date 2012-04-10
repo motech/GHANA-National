@@ -1,10 +1,7 @@
 package org.motechproject.ghana.national.domain.care;
 
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.Concept;
-import org.motechproject.ghana.national.domain.IPTDose;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientCare;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.mrs.model.MRSObservation;
@@ -24,26 +21,28 @@ public class IPTVaccineCare {
     private Patient patient;
     private LocalDate expectedDeliveryDate;
     private MRSObservation activePregnancyObservation;
+    private Boolean hasActiveIPTVaccine;
 
-    public IPTVaccineCare(Patient patient, LocalDate expectedDeliveryDate, MRSObservation activePregnancyObservation) {
+    public IPTVaccineCare(Patient patient, LocalDate expectedDeliveryDate, MRSObservation activePregnancyObservation, boolean hasActiveIPTVaccine) {
         this.expectedDeliveryDate = expectedDeliveryDate;
         this.activePregnancyObservation = activePregnancyObservation;
+        this.hasActiveIPTVaccine = hasActiveIPTVaccine;
         this.patient = patient;
     }
 
     public PatientCare care() {
-        if(isCareProgramComplete()) return null;
+        if (hasActiveIPTVaccine || isCareProgramComplete()) return null;
         PatientCare scheduleForNextIPTDose = createCareHistory(patient, lastIPTObservation());
         return scheduleForNextIPTDose != null ? scheduleForNextIPTDose : newEnrollment(expectedDeliveryDate);
     }
 
     public PatientCare careForHistory() {
-        if(isCareProgramComplete()) return null;
+        if (hasActiveIPTVaccine || isCareProgramComplete()) return null;
         PatientCare scheduleForNextIPTDose = createCareHistory(patient, lastIPTObservation());
         return scheduleForNextIPTDose != null ? scheduleForNextIPTDose : null;
     }
 
-    private  MRSObservation lastIPTObservation() {
+    private MRSObservation lastIPTObservation() {
         Set<MRSObservation> dependantObservations = nullSafe(activePregnancyObservation.getDependantObservations(), emptySet());
         return Utility.safeFetch(filter(having(on(MRSObservation.class).getConceptName(), is(Concept.IPT.getName())), dependantObservations), 1);
     }
@@ -70,7 +69,7 @@ public class IPTVaccineCare {
 
     private PatientCare newEnrollment(LocalDate expectedDeliveryDate) {
         Pregnancy pregnancy = Pregnancy.basedOnDeliveryDate(expectedDeliveryDate);
-        return  pregnancy.applicableForIPT() ?
+        return pregnancy.applicableForIPT() ?
                 PatientCare.forEnrollmentFromStart(ANC_IPT_VACCINE, pregnancy.dateOfConception(), patient.facilityMetaData())
                 : null;
     }

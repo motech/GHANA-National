@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
@@ -89,18 +90,22 @@ public class CareService {
         Set<MRSObservation> pregnancyObservations = registerPregnancy(ancVO, patient);
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), ANC_REG_VISIT.value(), registrationDate, prepareObservations(ancVO));
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, pregnancyObservations);
-        List<PatientCare> patientCares = ancCareRegistration(registrationDate, patient, expectedDeliveryDate, pregnancyObservations.iterator().next(), activeCareSchedules(patient, TT_VACCINATION)).allCares();
+        List<PatientCare> patientCares = ancCareRegistration(registrationDate, patient, expectedDeliveryDate, pregnancyObservations.iterator().next()).allCares();
         enrollPatientCares(patientCares, patient);
     }
 
-    ANCCareRegistration ancCareRegistration(Date registrationDate, Patient patient, LocalDate expectedDeliveryDate, MRSObservation pregnancyObservation, ActiveCareSchedules activeTTSchedules) {
-        TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, newDate(registrationDate), pregnancyObservation, activeTTSchedules);
-        IPTVaccineCare iptVaccineCare = new IPTVaccineCare(patient, expectedDeliveryDate, pregnancyObservation);
+    ANCCareRegistration ancCareRegistration(Date registrationDate, Patient patient, LocalDate expectedDeliveryDate, MRSObservation pregnancyObservation) {
+        ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(TT_VACCINATION, ANC_IPT_VACCINE));
+        TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, newDate(registrationDate), pregnancyObservation, activeCareSchedules.hasActiveTTSchedule());
+        IPTVaccineCare iptVaccineCare = new IPTVaccineCare(patient, expectedDeliveryDate, pregnancyObservation,activeCareSchedules.hasActiveIPTSchedule());
         return new ANCCareRegistration(ttVaccineCare, iptVaccineCare, patient, expectedDeliveryDate);
     }
 
-    ActiveCareSchedules activeCareSchedules(Patient patient, String scheduleName) {
-        return new ActiveCareSchedules().setActiveCareSchedule(scheduleName, allSchedules.getActiveEnrollment(patient.getMRSPatientId(), scheduleName));
+    ActiveCareSchedules activeCareSchedules(Patient patient, List<String> scheduleNames) {
+        ActiveCareSchedules activeCareSchedules = new ActiveCareSchedules();
+        for(String scheduleName:scheduleNames)
+            activeCareSchedules.setActiveCareSchedule(scheduleName, allSchedules.getActiveEnrollment(patient.getMRSPatientId(), scheduleName));
+        return activeCareSchedules;
     }
 
     public void enrollMotherForPNC(Patient patient, DateTime deliveryDateTime) {
@@ -245,6 +250,12 @@ public class CareService {
 
     public MRSEncounter addCareHistory(CareHistoryVO careHistoryVO) {
         Patient patient = allPatients.getPatientByMotechId(careHistoryVO.getPatientMotechId());
+        processANCHistories(careHistoryVO, patient);
+        return allEncounters.persistEncounter(patient.getMrsPatient(), careHistoryVO.getStaffId(), careHistoryVO.getFacilityId(), PATIENT_HISTORY.value(), careHistoryVO.getDate(),
+                addObservationsForCareHistory(careHistoryVO));
+    }
+
+    private void processANCHistories(CareHistoryVO careHistoryVO, Patient patient) {
         ANCCareHistoryVO ancCareHistoryVO = careHistoryVO.getAncCareHistoryVO();
 
         final MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(patient.getMotechId());
@@ -264,15 +275,14 @@ public class CareService {
                 }});
             }
 
-            TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, newDate(careHistoryVO.getDate()), activePregnancyObservation, null);
-            IPTVaccineCare iptVaccineCare = new IPTVaccineCare(patient, newDate(edd), activePregnancyObservation);
+            ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(TT_VACCINATION, ANC_IPT_VACCINE));
+            TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, newDate(careHistoryVO.getDate()), activePregnancyObservation, activeCareSchedules.hasActiveTTSchedule());
+            IPTVaccineCare iptVaccineCare = new IPTVaccineCare(patient, newDate(edd), activePregnancyObservation,activeCareSchedules.hasActiveIPTSchedule());
 
             CareHistory careHistory = new CareHistory(ttVaccineCare, iptVaccineCare);
 
             for (PatientCare patientCare : careHistory.cares())
                 allSchedules.enrollIfNotActive(new ScheduleEnrollmentMapper().map(patient, patientCare));
         }
-        return allEncounters.persistEncounter(patient.getMrsPatient(), careHistoryVO.getStaffId(), careHistoryVO.getFacilityId(), PATIENT_HISTORY.value(), careHistoryVO.getDate(),
-                addObservationsForCareHistory(careHistoryVO));
     }
 }
