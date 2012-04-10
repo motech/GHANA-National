@@ -243,9 +243,9 @@ public class CareService {
         }};
     }
 
-    public MRSEncounter addCareHistory(CareHistoryVO careHistory) {
-        Patient patient = allPatients.getPatientByMotechId(careHistory.getPatientMotechId());
-        ANCCareHistoryVO ancCareHistoryVO = careHistory.getAncCareHistoryVO();
+    public MRSEncounter addCareHistory(CareHistoryVO careHistoryVO) {
+        Patient patient = allPatients.getPatientByMotechId(careHistoryVO.getPatientMotechId());
+        ANCCareHistoryVO ancCareHistoryVO = careHistoryVO.getAncCareHistoryVO();
 
         final MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(patient.getMotechId());
 
@@ -255,19 +255,24 @@ public class CareService {
             boolean ttInRange = isWithinCurrentPregnancyPeriod(ancCareHistoryVO.getLastTTDate(), edd);
 
             if (iptInRange || ttInRange) {
-                allObservations.voidObservation(activePregnancyObservation, "Updated in " + ANC_VISIT.value() + " encounter", careHistory.getStaffId());
+                allObservations.voidObservation(activePregnancyObservation, "Updated in " + ANC_VISIT.value() + " encounter", careHistoryVO.getStaffId());
 
                 addObservationIfWithinPregnancyPeriod(activePregnancyObservation, TT, ancCareHistoryVO.getLastTTDate(), safeParseDouble(ancCareHistoryVO.getLastTT()));
                 addObservationIfWithinPregnancyPeriod(activePregnancyObservation, IPT, ancCareHistoryVO.getLastIPTDate(), safeParseDouble(ancCareHistoryVO.getLastIPT()));
-                allEncounters.persistEncounter(patient.getMrsPatient(), careHistory.getStaffId(), careHistory.getFacilityId(), ANC_VISIT.value(), careHistory.getDate(), new HashSet<MRSObservation>() {{
+                allEncounters.persistEncounter(patient.getMrsPatient(), careHistoryVO.getStaffId(), careHistoryVO.getFacilityId(), ANC_VISIT.value(), careHistoryVO.getDate(), new HashSet<MRSObservation>() {{
                     add(activePregnancyObservation);
                 }});
             }
-            ANCCareRegistration ancCareRegistration = ancCareRegistration(careHistory.getDate(), patient, newDate(edd), activePregnancyObservation, null);
-            for(PatientCare patientCare : ancCareRegistration.caresForHistory())
+
+            TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, newDate(careHistoryVO.getDate()), activePregnancyObservation, null);
+            IPTVaccineCare iptVaccineCare = new IPTVaccineCare(patient, newDate(edd), activePregnancyObservation);
+
+            CareHistory careHistory = new CareHistory(ttVaccineCare, iptVaccineCare);
+
+            for (PatientCare patientCare : careHistory.cares())
                 allSchedules.enrollIfNotActive(new ScheduleEnrollmentMapper().map(patient, patientCare));
         }
-        return allEncounters.persistEncounter(patient.getMrsPatient(), careHistory.getStaffId(), careHistory.getFacilityId(), PATIENT_HISTORY.value(), careHistory.getDate(),
-                addObservationsForCareHistory(careHistory));
+        return allEncounters.persistEncounter(patient.getMrsPatient(), careHistoryVO.getStaffId(), careHistoryVO.getFacilityId(), PATIENT_HISTORY.value(), careHistoryVO.getDate(),
+                addObservationsForCareHistory(careHistoryVO));
     }
 }

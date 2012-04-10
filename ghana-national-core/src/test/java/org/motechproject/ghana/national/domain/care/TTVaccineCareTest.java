@@ -33,7 +33,7 @@ public class TTVaccineCareTest {
         ActiveCareSchedules mockActiveCareSchedules = mock(ActiveCareSchedules.class);
         when(mockActiveCareSchedules.hasActiveTTSchedule()).thenReturn(true);
 
-        PatientCare patientCare = new TTVaccineCare(patient, enrollmentDate, activePregnancyObsWithoutTT, mockActiveCareSchedules).care();
+        PatientCare patientCare = new TTVaccineCare(patient, enrollmentDate, activePregnancyObsWithoutTT, mockActiveCareSchedules).careForANCReg();
 
         assertNull(patientCare);
     }
@@ -51,7 +51,7 @@ public class TTVaccineCareTest {
         ActiveCareSchedules noActiveSchedules = mock(ActiveCareSchedules.class);
         when(noActiveSchedules.hasActiveTTSchedule()).thenReturn(false);
 
-        PatientCare patientCare = new TTVaccineCare(patient, enrollmentDate, activePregnancyObs, noActiveSchedules).care();
+        PatientCare patientCare = new TTVaccineCare(patient, enrollmentDate, activePregnancyObs, noActiveSchedules).careForANCReg();
 
         PatientCare expectedPatientCare = PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.TT_VACCINATION, ttVaccinationDate, TTVaccineDosage.TT3.name(), new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
@@ -60,7 +60,7 @@ public class TTVaccineCareTest {
     }
 
     @Test
-    public void shouldReturnPatientCareWithDefaultStartMilestoneIfNoActiveScheduleExistsAndNoHistoryIsProvided() {
+    public void shouldReturnPatientCareWithDefaultStartMilestoneIfNoActiveScheduleExistsAndIrrelevantOrNoHistoryIsProvidedDuringRegistration() {
 
         LocalDate enrollmentDate = newDate(2012, 3, 3);
         final String facilityId = "fid";
@@ -70,12 +70,27 @@ public class TTVaccineCareTest {
         ActiveCareSchedules noActiveSchedules = mock(ActiveCareSchedules.class);
         when(noActiveSchedules.hasActiveTTSchedule()).thenReturn(false);
 
-        PatientCare patientCare = new TTVaccineCare(patient, enrollmentDate, activePregnancyObsWithoutTT, noActiveSchedules).care();
+        PatientCare patientCare = new TTVaccineCare(patient, enrollmentDate, activePregnancyObsWithoutTT, noActiveSchedules).careForANCReg();
 
         PatientCare expectedPatientCare = PatientCare.forEnrollmentFromStart(ScheduleNames.TT_VACCINATION, enrollmentDate, new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
         }});
         assertThat(patientCare, is(expectedPatientCare));
+    }
+
+    @Test
+    public void shouldNotReturnPatientCareIfNoActiveScheduleExistsAndIrrelevantOrNoHistoryIsProvidedDuringCareHistoryFormUpload() {
+
+        LocalDate enrollmentDate = newDate(2012, 3, 3);
+        final String facilityId = "fid";
+
+        Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
+        MRSObservation<String> activePregnancyObsWithoutTT = new MRSObservation<String>(enrollmentDate.toDate(), Concept.PREGNANCY.getName(), null);
+        ActiveCareSchedules noActiveSchedules = mock(ActiveCareSchedules.class);
+        when(noActiveSchedules.hasActiveTTSchedule()).thenReturn(false);
+
+        PatientCare patientCare = new TTVaccineCare(patient, enrollmentDate, activePregnancyObsWithoutTT, noActiveSchedules).careForHistory();
+        assertNull(patientCare);
     }
 
     @Test
@@ -89,7 +104,7 @@ public class TTVaccineCareTest {
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         MRSObservation<String> activePregnancyObs = createPregnacyObservationWithTTDependent(enrollmentDate, lastTTVaccinationDate, 5.0);
-        PatientCare patientCare = new TTVaccineCare(patient, enrollmentDate, activePregnancyObs, noActiveSchedules).care();
+        PatientCare patientCare = new TTVaccineCare(patient, enrollmentDate, activePregnancyObs, noActiveSchedules).careForANCReg();
 
         assertNull(patientCare);
     }

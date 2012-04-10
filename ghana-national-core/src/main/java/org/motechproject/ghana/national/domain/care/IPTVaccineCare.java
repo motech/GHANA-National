@@ -37,6 +37,12 @@ public class IPTVaccineCare {
         return scheduleForNextIPTDose != null ? scheduleForNextIPTDose : newEnrollment(expectedDeliveryDate);
     }
 
+    public PatientCare careForHistory() {
+        if(isCareProgramComplete()) return null;
+        PatientCare scheduleForNextIPTDose = createCareHistory(patient, lastIPTObservation());
+        return scheduleForNextIPTDose != null ? scheduleForNextIPTDose : null;
+    }
+
     private  MRSObservation lastIPTObservation() {
         Set<MRSObservation> dependantObservations = nullSafe(activePregnancyObservation.getDependantObservations(), emptySet());
         return Utility.safeFetch(filter(having(on(MRSObservation.class).getConceptName(), is(Concept.IPT.getName())), dependantObservations), 1);

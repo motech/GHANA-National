@@ -33,10 +33,16 @@ public class TTVaccineCare {
         this.patient = patient;
     }
 
-    public PatientCare care() {
+    public PatientCare careForANCReg() {
         if (hasActiveTTSchedule || isCareProgramComplete()) return null;
         PatientCare scheduleForNextTTDose = createCareFromHistory(patient, activePregnancyObservation);
         return scheduleForNextTTDose != null ? scheduleForNextTTDose : PatientCare.forEnrollmentFromStart(TT_VACCINATION, enrollmentDate, patient.facilityMetaData());
+    }
+
+    public PatientCare careForHistory() {
+        if (hasActiveTTSchedule || isCareProgramComplete()) return null;
+        PatientCare scheduleForNextTTDose = createCareFromHistory(patient, activePregnancyObservation);
+        return scheduleForNextTTDose != null ? scheduleForNextTTDose : null;
     }
 
     private PatientCare createCareFromHistory(Patient patient, MRSObservation activePregnancyObservation) {

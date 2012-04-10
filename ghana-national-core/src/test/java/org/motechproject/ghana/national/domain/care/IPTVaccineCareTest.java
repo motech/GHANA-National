@@ -49,7 +49,7 @@ public class IPTVaccineCareTest {
     }
 
     @Test
-    public void shouldReturnPatientCareWithDefaultStartMilestoneIfNoHistoryIsProvided() {
+    public void shouldReturnPatientCareWithDefaultStartMilestoneIfNoHistoryIsProvidedDuringRegistration() {
 
         LocalDate enrollmentDate = newDate(2012, 3, 3);
         final String facilityId = "fid";
@@ -63,6 +63,20 @@ public class IPTVaccineCareTest {
             put(Patient.FACILITY_META, facilityId);
         }});
         assertThat(patientCare, is(expectedPatientCare));
+    }
+
+    @Test
+    public void shouldNotReturnPatientCarIfIrrelevantOrNoHistoryIsProvidedDuringCareHistoryFormUpload() {
+
+        LocalDate enrollmentDate = newDate(2012, 3, 3);
+        final String facilityId = "fid";
+        Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(today().minusWeeks(18));
+
+        Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
+        MRSObservation<String> activePregnancyObsWithoutIPT = new MRSObservation<String>(enrollmentDate.toDate(), Concept.PREGNANCY.getName(), null);
+        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), activePregnancyObsWithoutIPT).careForHistory();
+
+        assertNull(patientCare);
     }
 
     @Test

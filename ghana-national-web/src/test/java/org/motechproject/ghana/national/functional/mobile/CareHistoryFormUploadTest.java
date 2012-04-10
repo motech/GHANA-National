@@ -16,8 +16,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
+import static junit.framework.Assert.assertNull;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
+import static org.motechproject.util.DateUtil.newDate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
@@ -62,6 +64,22 @@ public class CareHistoryFormUploadTest extends LoggedInUserFunctionalTest {
 
         ScheduleHelper.assertAlertDate(expectedFirstAlertDate(TT_VACCINATION, registrationDate),
                 scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate());
+    }
+
+    @Test
+    public void shouldNotCreateSchedulesIfHistoryIsIrrelevantForANC() {
+        String staffId = staffGenerator.createStaff(browser, homePage);
+        String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
+        String openMRSId = openMRSDB.getOpenMRSId(patientId);
+
+        TestCareHistory careHistory = TestCareHistory.withoutHistory(patientId);
+        careHistory.withIPT("1", newDate(2000,10,10));
+        careHistory.withTT("2", newDate(2011,11,11));
+
+        mobile.upload(MobileForm.careHistoryForm(),careHistory.forMobile());
+
+       assertNull(scheduleTracker.activeEnrollment(openMRSId, ANC_IPT_VACCINE));
+       assertNull(scheduleTracker.activeEnrollment(openMRSId, TT_VACCINATION));
     }
 
 
