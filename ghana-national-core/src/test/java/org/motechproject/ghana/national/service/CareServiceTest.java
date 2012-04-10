@@ -35,6 +35,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_MOTHER_1;
@@ -467,7 +468,7 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose.getDosage().toString())));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose.value().toString())));
 
-        when(mockAllObservations.activePregnancyObservation(patientMotechId)).thenReturn(activePregnancyObservation);
+        when(mockAllObservations.findObservation(patientMotechId, Concept.PREGNANCY.getName())).thenReturn(activePregnancyObservation);
 
         careService.addCareHistory(careHistory);
 
@@ -511,7 +512,7 @@ public class CareServiceTest extends BaseUnitTest {
         ANCCareHistoryVO ancCareHistory = new ANCCareHistoryVO(true, Arrays.asList(ANCCareHistory.values()), iptDose.value().toString(), ttDose.getDosage().toString(), iptDate, ttDate);
 
         setupPatient(patientId, patientMotechId);
-        when(mockAllObservations.activePregnancyObservation(patientMotechId)).thenReturn(null);
+        when(mockAllObservations.findObservation(patientMotechId,Concept.PREGNANCY.getName())).thenReturn(null);
 
         careService.addCareHistory(new CareHistoryVO("staffId", "facilityId", patientMotechId, newDate(2012, 2, 2).toDate(),
                 ancCareHistory, new CWCCareHistoryVO(false, null, null, null, null, null, null, null, null, null, null, null)));
@@ -542,7 +543,7 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(ancRegDate.toDate(), EDD.getName(), edd.toDate()));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
 
-        when(mockAllObservations.activePregnancyObservation(patientMotechId)).thenReturn(activePregnancyObservation);
+        when(mockAllObservations.findObservation(patientMotechId,Concept.PREGNANCY.getName())).thenReturn(activePregnancyObservation);
 
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY_STATUS.getName(), true));
         careService.addCareHistory(careHistory);
@@ -589,7 +590,7 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
         activePregnancyObservation.addDependantObservation(new MRSObservation<String>(ancRegDate.toDate(), TT.getName(), ttDose));
 
-        when(mockAllObservations.activePregnancyObservation(patientMotechId)).thenReturn(activePregnancyObservation);
+        when(mockAllObservations.findObservation(patientMotechId, Concept.PREGNANCY.getName())).thenReturn(activePregnancyObservation);
 
         careService.addCareHistory(careHistory);
 

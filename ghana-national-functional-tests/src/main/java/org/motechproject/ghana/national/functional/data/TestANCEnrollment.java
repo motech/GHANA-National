@@ -87,7 +87,7 @@ public class TestANCEnrollment implements CareEnrollment {
             put("parity", parity);
             put("addHistory", booleanCodeForAddHistory(addHistory));
             put("deliveryDateConfirmed", booleanCodeForDateConfirmed(deliveryDateConfirmed));
-            put("addCareHistory", "IPT,TT");
+            put("addCareHistory", "IPT_SP,TT");
 //            put("addCareHistory", join(collect(addCareHistory, on(ANCCareHistory.class).name()), ","));
             put("lastIPT", lastIPT);
             put("lastTT", lastTT);
@@ -340,7 +340,7 @@ public class TestANCEnrollment implements CareEnrollment {
     }
 
     public Boolean hasIPTHistory() {
-        return addCareHistory.contains(ANCCareHistory.IPT);
+        return addCareHistory.contains(ANCCareHistory.IPT_SP);
     }
 
     public Boolean hasTTHistory() {

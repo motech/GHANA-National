@@ -188,7 +188,7 @@ public class CareService {
     Set<MRSObservation> addObservationsOnANCHistory(ANCCareHistoryVO ancCareHistoryVO) {
         List<ANCCareHistory> capturedHistory = ancCareHistoryVO.getCareHistory();
         Set<MRSObservation> observations = new HashSet<MRSObservation>();
-        addObservation(capturedHistory, ANCCareHistory.IPT, observations, ancCareHistoryVO.getLastIPTDate(), IPT.getName(), safeParseDouble(ancCareHistoryVO.getLastIPT()));
+        addObservation(capturedHistory, ANCCareHistory.IPT_SP, observations, ancCareHistoryVO.getLastIPTDate(), IPT.getName(), safeParseDouble(ancCareHistoryVO.getLastIPT()));
         addObservation(capturedHistory, ANCCareHistory.TT, observations, ancCareHistoryVO.getLastTTDate(), TT.getName(), safeParseDouble(ancCareHistoryVO.getLastTT()));
         return observations;
     }
@@ -247,7 +247,7 @@ public class CareService {
         Patient patient = allPatients.getPatientByMotechId(careHistory.getPatientMotechId());
         ANCCareHistoryVO ancCareHistoryVO = careHistory.getAncCareHistoryVO();
 
-        final MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(patient.getMotechId());
+        final MRSObservation activePregnancyObservation = allObservations.findObservation(patient.getMotechId(),Concept.PREGNANCY.getName());
 
         if (activePregnancyObservation != null) {
             Date edd = getEdd(activePregnancyObservation);

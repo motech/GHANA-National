@@ -21,12 +21,12 @@ public class CareHistoryFormTest {
     @Before
     public void setUp(){
         careHistoryForm = new CareHistoryForm();
-        careHistoryForm.setAddHistory("VITA_A IPTI BCG OPV PENTA MEASLES YF IPT TT");
+        careHistoryForm.setAddHistory("VITA_A IPTI BCG OPV PENTA MEASLES YF IPT_SP TT");
     }
 
     @Test
     public void shouldFilterUserSelectAncFormHistories(){
-        assertThat(careHistoryForm.getANCCareHistories(), is(equalTo(Arrays.asList(ANCCareHistory.IPT, ANCCareHistory.TT))));
+        assertThat(careHistoryForm.getANCCareHistories(), is(equalTo(Arrays.asList(ANCCareHistory.IPT_SP, ANCCareHistory.TT))));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class CareHistoryFormTest {
         String facilityId = "facilityId";
         CareHistoryForm historyForm = CareHistoryFormHandlerTest.careHistoryFormWithCwcDetails(facilityId);
         CareHistoryVO careHistoryVO = historyForm.careHistoryVO(facilityId);
-        CareHistoryFormHandlerTest.assertCareHistoryDeatils(careHistoryVO, historyForm, historyForm.getFacilityId());
+        CareHistoryFormHandlerTest.assertCareHistoryDetails(careHistoryVO, historyForm, historyForm.getFacilityId());
         assertThat(careHistoryVO.getCwcCareHistoryVO().getAddCareHistory(), is(equalTo(true)));
         assertThat(careHistoryVO.getAncCareHistoryVO().getAddCareHistory(), is(equalTo(true)));
 

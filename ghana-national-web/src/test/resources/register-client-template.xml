@@ -703,13 +703,13 @@
                  type="xsd:string" visible="false()" action="show" required="true()"/>
         <xf:bind id="lastIPT" nodeset="/patientRegistration/lastIPT" type="xsd:string" visible="false()"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory
-            = 'IPT' and /patientRegistration/addHistory = '1'"
+            = 'IPT_SP' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastIPTDate" nodeset="/patientRegistration/lastIPTDate" type="xsd:date"
                  visible="false()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory
-            = 'IPT' and /patientRegistration/addHistory = '1'"
+            = 'IPT_SP' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastTT" nodeset="/patientRegistration/lastTT" type="xsd:string" visible="false()"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory
@@ -1072,7 +1072,7 @@
             <xf:label>Add Care History</xf:label>
             <xf:item id="1">
                 <xf:label>IPT</xf:label>
-                <xf:value>IPT</xf:value>
+                <xf:value>IPT_SP</xf:value>
             </xf:item>
             <xf:item id="2">
                 <xf:label>TT</xf:label>

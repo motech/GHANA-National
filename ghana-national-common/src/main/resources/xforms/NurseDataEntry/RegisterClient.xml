@@ -703,13 +703,13 @@
                  type="xsd:string" visible="false()" action="show" required="true()"/>
         <xf:bind id="lastIPT" nodeset="/patientRegistration/lastIPT" type="xsd:string" visible="false()"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory
-            = 'IPT' and /patientRegistration/addHistory = '1'"
+            = 'IPT_SP' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastIPTDate" nodeset="/patientRegistration/lastIPTDate" type="xsd:date"
                  visible="false()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory
-            = 'IPT' and /patientRegistration/addHistory = '1'"
+            = 'IPT_SP' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastTT" nodeset="/patientRegistration/lastTT" type="xsd:string" visible="false()"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory
@@ -811,7 +811,8 @@
                  relevant="/patientRegistration/format = 'PERS_VOICE' or /patientRegistration/format = 'HSE_VOICE'"
                  required="true()" type="xsd:time" visible="false()"/>
         <xf:bind action="show" id="reasonToJoin" nodeset="/patientRegistration/reasonToJoin"
-                 relevant="/patientRegistration/enroll = 'Y' and /patientRegistration/consent = 'Y'"
+                 relevant="/patientRegistration/enroll = 'Y' and /patientRegistration/consent = 'Y' and
+            /patientRegistration/registrantType = 'OTHER'"
                  required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="learnedFrom" nodeset="/patientRegistration/learnedFrom"
                  relevant="/patientRegistration/consent = 'Y'" required="true()" type="xsd:string"
@@ -1071,7 +1072,7 @@
             <xf:label>Add Care History</xf:label>
             <xf:item id="1">
                 <xf:label>IPT</xf:label>
-                <xf:value>IPT</xf:value>
+                <xf:value>IPT_SP</xf:value>
             </xf:item>
             <xf:item id="2">
                 <xf:label>TT</xf:label>
@@ -1110,7 +1111,7 @@
             </xf:item>
         </xf:select>
         <xf:select1 bind="lastIPT">
-            <xf:label>Last IPT for current ANC</xf:label>
+            <xf:label>Last IPT</xf:label>
             <xf:item id="1">
                 <xf:label>IPT 1</xf:label>
                 <xf:value>1</xf:value>
@@ -1125,10 +1126,10 @@
             </xf:item>
         </xf:select1>
         <xf:input bind="lastIPTDate">
-            <xf:label>Last IPT date for current ANC</xf:label>
+            <xf:label>Last IPT date</xf:label>
         </xf:input>
         <xf:select1 bind="lastTT">
-            <xf:label>Last TT for current ANC</xf:label>
+            <xf:label>Last TT</xf:label>
             <xf:item id="1">
                 <xf:label>TT 1</xf:label>
                 <xf:value>1</xf:value>
@@ -1151,7 +1152,7 @@
             </xf:item>
         </xf:select1>
         <xf:input bind="lastTTDate">
-            <xf:label>Last TT Date for current ANC</xf:label>
+            <xf:label>Last TT Date</xf:label>
         </xf:input>
         <xf:input bind="bcgDate">
             <xf:label>BCG date</xf:label>
@@ -1274,7 +1275,7 @@
                 <xf:value>N</xf:value>
             </xf:item>
         </xf:select1>
-         <xf:select1 bind="serviceType">
+        <xf:select1 bind="serviceType">
             <xf:label>MM Program</xf:label>
             <xf:item id="PREGNANCY">
                 <xf:label>Pregnancy</xf:label>
@@ -1410,7 +1411,7 @@
                 <xf:value>RADIO</xf:value>
             </xf:item>
         </xf:select1>
-           <xf:select1 bind="messageStartWeek">
+        <xf:select1 bind="messageStartWeek">
             <xf:label>Week to begin messages</xf:label>
             <xf:itemset
                     nodeset="instance('messageStartWeek')/item[@parent=instance('patientRegistration')/serviceType]">

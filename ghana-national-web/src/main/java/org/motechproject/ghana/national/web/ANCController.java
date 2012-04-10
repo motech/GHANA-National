@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web;
 
+import org.motechproject.ghana.national.domain.ANCCareHistory;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
@@ -103,7 +104,7 @@ public class ANCController {
     }
 
     private void addCareHistoryValues(ModelMap modelMap) {
-        modelMap.put("careHistories", Arrays.asList("TT", "IPT"));
+        modelMap.put("careHistories", Arrays.asList(ANCCareHistory.TT.name(), ANCCareHistory.IPT_SP.name()));
         HashMap<Integer,String> lastIPTValues = new LinkedHashMap<Integer, String>();
         lastIPTValues.put(1,"IPT 1");
         lastIPTValues.put(2,"IPT 2");
