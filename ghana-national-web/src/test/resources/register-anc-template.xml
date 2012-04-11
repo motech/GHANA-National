@@ -504,11 +504,11 @@
                  relevant="/ANCRegistration/addHistory = '1'" type="xsd:string" visible="false()" action="show"
                  required="true()"/>
         <xf:bind id="lastIPT" nodeset="/ANCRegistration/lastIPT" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'IPT' and /ANCRegistration/addHistory = '1'"
+                 relevant="/ANCRegistration/addCareHistory = 'IPT_SP' and /ANCRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastIPTDate" nodeset="/ANCRegistration/lastIPTDate" type="xsd:date" visible="false()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
-                 relevant="/ANCRegistration/addCareHistory = 'IPT' and /ANCRegistration/addHistory = '1'" action="show"
+                 relevant="/ANCRegistration/addCareHistory = 'IPT_SP' and /ANCRegistration/addHistory = '1'" action="show"
                  required="true()"/>
         <xf:bind id="lastTT" nodeset="/ANCRegistration/lastTT" type="xsd:string" visible="false()"
                  relevant="/ANCRegistration/addCareHistory = 'TT' and /ANCRegistration/addHistory = '1'"
@@ -625,7 +625,7 @@
             <xf:label>Add Care History</xf:label>
             <xf:item id="1">
                 <xf:label>IPT</xf:label>
-                <xf:value>IPT</xf:value>
+                <xf:value>IPT_SP</xf:value>
             </xf:item>
             <xf:item id="2">
                 <xf:label>TT</xf:label>
@@ -633,7 +633,7 @@
             </xf:item>
         </xf:select>
         <xf:select1 bind="lastIPT">
-            <xf:label>Last IPT</xf:label>
+            <xf:label>Last IPT for current ANC</xf:label>
             <xf:item id="1">
                 <xf:label>IPT 1</xf:label>
                 <xf:value>1</xf:value>
@@ -648,10 +648,10 @@
             </xf:item>
         </xf:select1>
         <xf:input bind="lastIPTDate">
-            <xf:label>Last IPT date</xf:label>
+            <xf:label>Last IPT date for current ANC</xf:label>
         </xf:input>
         <xf:select1 bind="lastTT">
-            <xf:label>Last TT</xf:label>
+            <xf:label>Last TT for current ANC</xf:label>
             <xf:item id="1">
                 <xf:label>TT 1</xf:label>
                 <xf:value>1</xf:value>
@@ -674,7 +674,7 @@
             </xf:item>
         </xf:select1>
         <xf:input bind="lastTTDate">
-            <xf:label>Last TT Date</xf:label>
+            <xf:label>Last TT Date for current ANC</xf:label>
         </xf:input>
         <xf:select1 bind="enroll">
             <xf:label>Enroll to Mobile Midwife?</xf:label>

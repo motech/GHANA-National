@@ -57,7 +57,7 @@ public class CareHistoryFormHandlerTest {
         ArgumentCaptor<CareHistoryVO> careHistoryVOArgumentCaptor = ArgumentCaptor.forClass(CareHistoryVO.class);
         verify(mockCareService).addCareHistory(careHistoryVOArgumentCaptor.capture());
 
-        assertCareHistoryDeatils(careHistoryVOArgumentCaptor.getValue(), careHistoryForm, facilityId);
+        assertCareHistoryDetails(careHistoryVOArgumentCaptor.getValue(), careHistoryForm, facilityId);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class CareHistoryFormHandlerTest {
         verify(careHistoryFormHandler.log).error("Encountered error while saving care history details", mockError);
     }
 
-    public static void assertCareHistoryDeatils(CareHistoryVO careHistoryVO, CareHistoryForm careHistoryForm, String facilityId) {
+    public static void assertCareHistoryDetails(CareHistoryVO careHistoryVO, CareHistoryForm careHistoryForm, String facilityId) {
         assertThat(careHistoryVO.getStaffId(), is(equalTo(careHistoryForm.getStaffId())));
         assertThat(careHistoryVO.getFacilityId(), is(equalTo(facilityId)));
         assertThat(careHistoryVO.getPatientMotechId(), is(equalTo(careHistoryForm.getMotechId())));
@@ -80,13 +80,13 @@ public class CareHistoryFormHandlerTest {
 
         assertCwcCareHistoryDetails(careHistoryForm.getCWCCareHistories(), careHistoryForm.getBcgDate(),
                 careHistoryForm.getLastVitaminADate(), careHistoryForm.getMeaslesDate(), careHistoryForm.getYellowFeverDate(),
-                careHistoryForm.getLastPentaDate(), careHistoryForm.getLastOPVDate(), careHistoryForm.getLastIPTDate(),
+                careHistoryForm.getLastPentaDate(), careHistoryForm.getLastOPVDate(), careHistoryForm.getLastIPTIDate(),
                 careHistoryForm.getLastPenta(), careHistoryForm.getLastOPV(), careHistoryVO.getCwcCareHistoryVO());
     }
 
     public static CareHistoryForm careHistoryFormWithCwcDetails(String facilityMotechId) {
         CareHistoryForm careHistoryForm = new CareHistoryForm();
-        careHistoryForm.setAddHistory("VITA_A IPTI BCG OPV PENTA MEASLES YF IPT TT");
+        careHistoryForm.setAddHistory("VITA_A IPTI BCG OPV PENTA MEASLES YF IPT_SP TT");
         careHistoryForm.setFacilityId(facilityMotechId);
         careHistoryForm.setStaffId("staffId");
         careHistoryForm.setMotechId("motechId");

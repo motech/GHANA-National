@@ -41,7 +41,7 @@ public class TestCareHistory {
     public TestCareHistory withIPT(String dosage, LocalDate lastIPTdate) {
         lastIPT = dosage;
         this.lastIPTDate = lastIPTdate;
-        addHistory = addHistory + "IPT";
+        addHistory = addHistory + "IPT_SP";
         return this;
     }
 
@@ -57,7 +57,7 @@ public class TestCareHistory {
         TestCareHistory careHistory = new TestCareHistory();
         careHistory.facilityId = "13212";
         careHistory.date = DateUtil.newDate(2000, 12, 12);
-        careHistory.addHistory = "VITA_A IPTI BCG OPV PENTA MEASLES YF IPT TT";
+        careHistory.addHistory = "VITA_A IPTI BCG OPV PENTA MEASLES YF IPT_SP TT";
         careHistory.lastIPT = "1";
         careHistory.lastIPTDate = DateUtil.newDate(2000, 12, 12);
         careHistory.lastTT = "2";

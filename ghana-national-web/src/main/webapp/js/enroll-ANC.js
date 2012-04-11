@@ -75,7 +75,7 @@ $(document).ready(function() {
     });
 
     $('input[name = "careHistory"]').change(function(e) {
-        if ($(this).val() == "IPT") {
+        if ($(this).val() == "IPT_SP") {
             if (e.target.checked) $("#jsIPT").show(); else $("#jsIPT").hide();
         }
 

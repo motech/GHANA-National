@@ -60,7 +60,7 @@ public class RegisterANCFormHandlerTest {
         registerANCForm.setEstDeliveryDate(new Date(2012, 3, 4));
         registerANCForm.setFacilityId("12345");
         registerANCForm.setGravida(3);
-        registerANCForm.setAddCareHistory("IPT TT");
+        registerANCForm.setAddCareHistory("IPT_SP TT");
         registerANCForm.setHeight(4.67);
         registerANCForm.setLastIPT("4");
         registerANCForm.setLastIPTDate(new Date(2011, 8, 8));

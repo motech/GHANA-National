@@ -108,13 +108,13 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
 
         ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(editPage);
 
-        TestANCEnrollment exptectedANCEnrollment = testClientRegistration.getEnrollment()
+            TestANCEnrollment expectedANCEnrollment = testClientRegistration.getEnrollment()
                 .withStaffId(testClientRegistration.getPatient().staffId())
                 .withFacilityId(testClientRegistration.getPatient().facilityId())
-                .withMotechPatientId(testClientRegistration.getPatient().motechId())
+                .withMotechPatientId(patientId)
                 .withRegistrationDate(testClientRegistration.getPatient().getRegistrationDate());
 
-        ancEnrollmentPage.displaying(exptectedANCEnrollment);
+        ancEnrollmentPage.displaying(expectedANCEnrollment);
 
         browser.toSearchPatient();
         searchPatientPage.searchWithName(patient.firstName());

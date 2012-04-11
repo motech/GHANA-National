@@ -504,11 +504,11 @@
                  relevant="/ANCRegistration/addHistory = '1'" type="xsd:string" visible="false()" action="show"
                  required="true()"/>
         <xf:bind id="lastIPT" nodeset="/ANCRegistration/lastIPT" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'IPT' and /ANCRegistration/addHistory = '1'"
+                 relevant="/ANCRegistration/addCareHistory = 'IPT_SP' and /ANCRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastIPTDate" nodeset="/ANCRegistration/lastIPTDate" type="xsd:date" visible="false()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
-                 relevant="/ANCRegistration/addCareHistory = 'IPT' and /ANCRegistration/addHistory = '1'" action="show"
+                 relevant="/ANCRegistration/addCareHistory = 'IPT_SP' and /ANCRegistration/addHistory = '1'" action="show"
                  required="true()"/>
         <xf:bind id="lastTT" nodeset="/ANCRegistration/lastTT" type="xsd:string" visible="false()"
                  relevant="/ANCRegistration/addCareHistory = 'TT' and /ANCRegistration/addHistory = '1'"
@@ -625,7 +625,7 @@
             <xf:label>Add Care History</xf:label>
             <xf:item id="1">
                 <xf:label>IPT</xf:label>
-                <xf:value>IPT</xf:value>
+                <xf:value>IPT_SP</xf:value>
             </xf:item>
             <xf:item id="2">
                 <xf:label>TT</xf:label>

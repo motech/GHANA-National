@@ -36,10 +36,10 @@
              constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
     <xf:bind id="addHistory" nodeset="/careHistory/addHistory" type="xsd:string" required="true()"/>
     <xf:bind id="lastIPT" nodeset="/careHistory/lastIPT" type="xsd:string" visible="false()"
-             relevant="/careHistory/addHistory = 'IPT'" action="show" required="true()"/>
+             relevant="/careHistory/addHistory = 'IPT_SP'" action="show" required="true()"/>
     <xf:bind id="lastIPTDate" nodeset="/careHistory/lastIPTDate" type="xsd:date" visible="false()"
              constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
-             relevant="/careHistory/addHistory = 'IPT'" action="show" required="true()"/>
+             relevant="/careHistory/addHistory = 'IPT_SP'" action="show" required="true()"/>
     <xf:bind id="lastTT" nodeset="/careHistory/lastTT" type="xsd:string" visible="false()"
              relevant="/careHistory/addHistory = 'TT'" action="show" required="true()"/>
     <xf:bind id="lastTTDate" nodeset="/careHistory/lastTTDate" type="xsd:date" visible="false()" action="show"
@@ -92,7 +92,7 @@
       <xf:label>Add History</xf:label>
       <xf:item id="1">
         <xf:label>IPT</xf:label>
-        <xf:value>IPT</xf:value>
+        <xf:value>IPT_SP</xf:value>
       </xf:item>
       <xf:item id="2">
         <xf:label>TT</xf:label>
