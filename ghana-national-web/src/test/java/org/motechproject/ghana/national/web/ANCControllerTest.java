@@ -15,6 +15,7 @@ import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.helper.ANCFormMapper;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mobileforms.api.domain.FormError;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
@@ -79,7 +80,7 @@ public class ANCControllerTest {
     }
 
     @Test
-    public void shouldSaveANCEnrollment() {
+    public void shouldSaveANCEnrollment() throws ObservationNotFoundException {
         ModelMap modelMap = new ModelMap();
         ANCEnrollmentForm ancEnrollmentForm = createTestANCEnrollmentForm();
         when(mockValidator.validatePatientAndStaff(ancEnrollmentForm.getMotechPatientId(), ancEnrollmentForm.getStaffId())).thenReturn(Arrays.<FormError>asList());
@@ -95,7 +96,7 @@ public class ANCControllerTest {
     }
 
     @Test
-    public void shouldNotSaveANCEnrollmentDuringValidationErrors() {
+    public void shouldNotSaveANCEnrollmentDuringValidationErrors() throws ObservationNotFoundException {
         ModelMap modelMap = new ModelMap();
         ANCEnrollmentForm ancEnrollmentForm = createTestANCEnrollmentForm();
         ArrayList<FormError> errors = new ArrayList<FormError>();

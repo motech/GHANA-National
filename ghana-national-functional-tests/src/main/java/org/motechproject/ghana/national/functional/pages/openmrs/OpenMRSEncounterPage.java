@@ -10,6 +10,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static com.thoughtworks.selenium.SeleneseTestBase.assertEquals;
 
@@ -26,10 +27,12 @@ public class OpenMRSEncounterPage extends BasePage<OpenMRSEncounterPage> {
     }
 
 
-    public void displaying(final OpenMRSObservationVO openMRSObservationVO) {
-        assertEquals(htmlTableParser.hasRow(driver, PATIENT_OBSERVATION_TABLE, new HashMap<String, String>() {{
-            put("Question Concept", openMRSObservationVO.getObservationName());
-            put("Value", openMRSObservationVO.getValue());
-        }}),true);
+    public void displaying(final List<OpenMRSObservationVO> openMRSObservations) {
+        for(final OpenMRSObservationVO observation : openMRSObservations){
+            assertEquals(htmlTableParser.hasRow(driver, PATIENT_OBSERVATION_TABLE, new HashMap<String, String>() {{
+                put("Question Concept", observation.getObservationName());
+                put("Value", observation.getValue());
+            }}), true);
+        }
     }
 }

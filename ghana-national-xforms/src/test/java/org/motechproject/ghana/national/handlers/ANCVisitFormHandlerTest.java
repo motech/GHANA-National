@@ -14,6 +14,7 @@ import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -55,7 +56,7 @@ public class ANCVisitFormHandlerTest {
     }
 
     @Test
-    public void shouldCreateANCVisitEncounterWithAllInfo() {
+    public void shouldCreateANCVisitEncounterWithAllInfo() throws ObservationNotFoundException {
         String motechFacilityId = "232465";
         String staffId = "465";
         String motechId = "2321465";

@@ -7,7 +7,6 @@ import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -84,9 +83,5 @@ public class ANCFormMapper {
 
     private MRSObservation getLatestObservation(String motechPatientId, String conceptName) {
         return allObservations.findLatestObservation(motechPatientId, conceptName);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(DateUtil.newDate(2012, 12, 22).minusWeeks(40).toDate());
     }
 }

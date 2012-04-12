@@ -15,6 +15,7 @@ import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.ghana.national.vo.*;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
@@ -35,7 +36,6 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_MOTHER_1;
@@ -168,7 +168,7 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldSetRegistrationDateAsCurrentDateIfRegistrationTodayForAncRegistration() {
+    public void shouldSetRegistrationDateAsCurrentDateIfRegistrationTodayForAncRegistration() throws ObservationNotFoundException {
         String facilityId = "facility id";
         String patientId = "patient id";
         String patientMotechId = "patient motech id";
@@ -357,7 +357,7 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldNotAddObsIfValueNotGiven() {
+    public void shouldNotAddObsIfValueNotGiven() throws ObservationNotFoundException {
         String facilityId = "facility id";
         String patientId = "patient id";
         String patientMotechId = "patient motech id";
@@ -391,7 +391,7 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldSaveCareHistoryDetails() {
+    public void shouldSaveCareHistoryDetails() throws ObservationNotFoundException {
         CareService careServiceSpy = spy(careService);
 
         ANCCareHistoryVO ancCareHistory = mock(ANCCareHistoryVO.class);
@@ -443,7 +443,7 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldSaveCareHistoryDetailsWithTTandIPTIfThereIsAnActivePregnancyAndCreateCareScheduleIfNotAlreadyExists() {
+    public void shouldSaveCareHistoryDetailsWithTTandIPTIfThereIsAnActivePregnancyAndCreateCareScheduleIfNotAlreadyExists() throws ObservationNotFoundException {
         final TTVaccineDosage ttDose = TTVaccineDosage.byValue(Integer.parseInt("1"));
         final IPTDose iptDose = IPTDose.byValue("2");
         final Date ttDate = DateUtil.newDate(2011, 12, 23).toDate();
@@ -468,7 +468,7 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose.getDosage().toString())));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose.value().toString())));
 
-        when(mockAllObservations.findObservation(patientMotechId, Concept.PREGNANCY.getName())).thenReturn(activePregnancyObservation);
+        when(mockAllObservations.findObservation(patientMotechId, PREGNANCY.getName())).thenReturn(activePregnancyObservation);
 
         careService.addCareHistory(careHistory);
 
@@ -501,7 +501,7 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldNotCreateScheduleForCareHistoryIfNotActivePregancyObservationExists() {
+    public void shouldNotCreateScheduleForCareHistoryIfNotActivePregancyObservationExists() throws ObservationNotFoundException {
 
         final TTVaccineDosage ttDose = TTVaccineDosage.byValue(Integer.parseInt("1"));
         final IPTDose iptDose = IPTDose.byValue("2");
@@ -521,7 +521,7 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldNotSaveCareHistoryDetailsWithTTandIPTIfOutsideRangeOfActivePregnancy() {
+    public void shouldNotSaveCareHistoryDetailsWithTTandIPTIfOutsideRangeOfActivePregnancy() throws ObservationNotFoundException {
         final String ttDose = "1";
         final String iptDose = "2";
         final Date ttDate = DateUtil.newDate(2010, 12, 23).toDate();
@@ -566,7 +566,7 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldSaveCareHistoryDetailsWithTTOrIPTIfAnyOneIsWithinTheRangeOfActivePregnancy() {
+    public void shouldSaveCareHistoryDetailsWithTTOrIPTIfAnyOneIsWithinTheRangeOfActivePregnancy() throws ObservationNotFoundException {
         final String ttDose = "1";
         final String iptDose = "2";
         final Date ttDate = DateUtil.newDate(2011, 12, 23).toDate();
@@ -590,7 +590,7 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
         activePregnancyObservation.addDependantObservation(new MRSObservation<String>(ancRegDate.toDate(), TT.getName(), ttDose));
 
-        when(mockAllObservations.findObservation(patientMotechId, Concept.PREGNANCY.getName())).thenReturn(activePregnancyObservation);
+        when(mockAllObservations.findObservation(patientMotechId, PREGNANCY.getName())).thenReturn(activePregnancyObservation);
 
         careService.addCareHistory(careHistory);
 
@@ -615,7 +615,7 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldCreateSchedulesForANCProgramRegistration() {
+    public void shouldCreateSchedulesForANCProgramRegistration() throws ObservationNotFoundException {
         String patientId = "Id", patientMotechId = "motechId";
         LocalDate registrationDate = newDate(2000, 1, 1);
         mockCurrentDate(registrationDate);

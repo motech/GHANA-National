@@ -6,6 +6,8 @@ import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.*;
+import org.motechproject.mrs.exception.PatientNotFoundException;
+import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
 import org.openmrs.Person;
@@ -15,6 +17,7 @@ import org.openmrs.api.InvalidCheckDigitException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -84,7 +87,7 @@ public class PatientService {
             updateRelationship(patient.getParentId(), savedPatient, relationship);
         }
         allEncounters.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(),
-                PATIENT_EDIT_VISIT.value(), DateUtil.today().toDate(), null);
+                PATIENT_EDIT_VISIT.value(), DateUtil.today().toDate(), Collections.<MRSObservation>emptySet());
         return savedPatientId;
     }
 
@@ -112,7 +115,7 @@ public class PatientService {
         }
     }
 
-    public void deceasePatient(Date dateOfDeath, String patientMotechId, String causeOfDeath, String comment) {
+    public void deceasePatient(Date dateOfDeath, String patientMotechId, String causeOfDeath, String comment) throws PatientNotFoundException {
         Patient patient = getPatientByMotechId(patientMotechId);
         allPatients.deceasePatient(dateOfDeath, patientMotechId, (causeOfDeath.equals("OTHER") ? "OTHER NON-CODED" : "NONE"), comment);
         allSchedulesAndMessages.unEnroll(patient.getMRSPatientId(), patient.allCareProgramsToUnEnroll());

@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.exception.PatientNotFoundException;
 import org.motechproject.util.DateUtil;
 
 import java.util.Date;
@@ -35,7 +36,7 @@ public class ClientDeathFormHandlerTest {
     }
 
     @Test
-    public void shouldDeceaseThePatient() {
+    public void shouldDeceaseThePatient() throws PatientNotFoundException {
         Map<String, Object> parameters = new HashMap<String, Object>();
         Date deathDate = DateUtil.now().toDate();
         String patientMotechId = "motechId";

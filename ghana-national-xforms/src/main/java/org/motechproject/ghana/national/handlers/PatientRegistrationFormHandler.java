@@ -13,6 +13,7 @@ import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
@@ -99,7 +100,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
         }
     }
 
-    private void registerForANC(RegisterClientForm registerClientForm, String facilityId, String patientMotechId) {
+    private void registerForANC(RegisterClientForm registerClientForm, String facilityId, String patientMotechId) throws ObservationNotFoundException {
         if (PatientType.PREGNANT_MOTHER.equals(registerClientForm.getRegistrantType())) {
             ANCVO ancVO = new ANCVO(registerClientForm.getStaffId(), facilityId, patientMotechId, registerClientForm.getDate()
                     , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),

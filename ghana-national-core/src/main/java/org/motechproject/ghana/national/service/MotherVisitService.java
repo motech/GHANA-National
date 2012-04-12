@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
@@ -48,7 +49,7 @@ public class MotherVisitService {
         factory = new MotherVisitEncounterFactory();
     }
 
-    public MRSEncounter registerANCVisit(ANCVisitRequest ancVisit) {
+    public MRSEncounter registerANCVisit(ANCVisitRequest ancVisit) throws ObservationNotFoundException {
         Set<MRSObservation> mrsObservations = factory.createMRSObservations(ancVisit);
         updateEDD(ancVisit, mrsObservations);
         updateIPT(ancVisit, mrsObservations);
@@ -73,7 +74,7 @@ public class MotherVisitService {
         }
     }
 
-    private void updateEDD(ANCVisitRequest ancVisit, Set<MRSObservation> mrsObservations) {
+    private void updateEDD(ANCVisitRequest ancVisit, Set<MRSObservation> mrsObservations) throws ObservationNotFoundException {
         Patient patient = ancVisit.getPatient();
         Set<MRSObservation> eddObservations = allObservations.updateEDD(ancVisit.getEstDeliveryDate(), patient, ancVisit.getStaff().getId());
         if (CollectionUtils.isNotEmpty(eddObservations)) {

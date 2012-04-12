@@ -22,6 +22,7 @@ import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.model.Time;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -274,7 +275,7 @@ public class PatientRegistrationFormHandlerTest {
     }
 
     @Test
-    public void shouldRegisterForANCAndMobileMidwife() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
+    public void shouldRegisterForANCAndMobileMidwife() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException, ObservationNotFoundException {
 
         HashMap<String, Object> parameters = new HashMap<String, Object>();
 

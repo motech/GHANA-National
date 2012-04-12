@@ -98,6 +98,7 @@ public class XformHttpClient {
             hackDate(formData, "/ancVisit/nextANCDate");
             hackDate(formData, "/abortion/date");
             hackDate(formData, "/clientQuery/dateOfBirth");
+            hackDateTime(formData, "/delivery/date");
             formsList.add(formData);
         }
         final StudyData studyData = new StudyData(studyDef);
@@ -157,6 +158,14 @@ public class XformHttpClient {
         final String answer = (String) question.getAnswer();
         if (answer == null) return;
         formData.setDateValue(variableName, new SimpleDateFormat(Constants.PATTERN_YYYY_MM_DD).parse(answer));
+    }
+
+    private static void hackDateTime(FormData formData, String variableName) throws ParseException {
+        final QuestionData question = formData.getQuestion(variableName);
+        if (question == null) return;
+        final String answer = (String) question.getAnswer();
+        if (answer == null) return;
+        formData.setDateValue(variableName, new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a").parse(answer));
     }
 
     private static XformResponse processResponse(HttpConnection httpConnection) throws IOException {

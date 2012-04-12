@@ -10,6 +10,7 @@ import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
 import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.exception.PatientNotFoundException;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -170,7 +171,7 @@ public class DeliveryFormHandlerTest {
     }
 
     @Test
-    public void shouldDeceaseMotherAndHandleDeliveryInCaseOfMaternalDeath() {
+    public void shouldDeceaseMotherAndHandleDeliveryInCaseOfMaternalDeath() throws PatientNotFoundException {
         String motechFacilityId = "232465";
         String staffId = "465";
         String motechId = "2321465";

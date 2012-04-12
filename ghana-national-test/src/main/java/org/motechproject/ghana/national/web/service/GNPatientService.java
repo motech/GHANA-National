@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.ghana.national.web.util.Util;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
@@ -79,7 +80,7 @@ public class GNPatientService {
 
     @LoginAsAdmin
     @ApiSession
-    public void enrollForANCWithoutHistory(String staffMotechId, String facilityMrsId, String patientMotechId, Date regDate, String serialNumber, Date edd) {
+    public void enrollForANCWithoutHistory(String staffMotechId, String facilityMrsId, String patientMotechId, Date regDate, String serialNumber, Date edd) throws ObservationNotFoundException {
         careService.enroll(new ANCVO(staffMotechId, facilityMrsId, patientMotechId, regDate,
                 RegistrationToday.TODAY, serialNumber, edd, 155.0, 1, 1, Boolean.FALSE, null, null, null, null, null, null, null));
     }

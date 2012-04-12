@@ -7,6 +7,7 @@ import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatExcept
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.web.domain.Alert;
 import org.motechproject.ghana.national.web.service.*;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
@@ -55,7 +56,7 @@ public class TestDataGenController {
                                 @RequestParam("regDate") String regDate,
                                 @RequestParam("patientType") String patientType,
                                 @RequestParam("patientDate") String patientDate,
-                                ModelMap modelMap) throws UnsupportedEncodingException, ParseException, UserAlreadyExistsException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
+                                ModelMap modelMap) throws UnsupportedEncodingException, ParseException, UserAlreadyExistsException, PatientIdIncorrectFormatException, PatientIdNotUniqueException, ObservationNotFoundException {
 
         int patientCounterValue = incrementPatientNameCounter();
         modelMap.put("firstNameIndexCounter", patientCounterValue);

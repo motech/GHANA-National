@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
 import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.ghana.national.vo.CwcVO;
+import org.motechproject.mrs.exception.PatientNotFoundException;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -20,6 +21,7 @@ import java.util.Date;
 import java.util.Set;
 
 import static org.motechproject.ghana.national.domain.Concept.EDD;
+import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.REGISTER_SUCCESS_SMS_KEY;
 
 @Service
@@ -58,7 +60,7 @@ public class PregnancyService {
         encounterFactory = new PregnancyEncounterFactory();
     }
 
-    public void terminatePregnancy(PregnancyTerminationRequest request) {
+    public void terminatePregnancy(PregnancyTerminationRequest request) throws PatientNotFoundException {
         allEncounters.persistEncounter(encounterFactory.createTerminationEncounter(request, allObservations.activePregnancyObservation(request.getPatient().getMotechId())));
         if (request.isDead()) {
             patientService.deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
@@ -107,7 +109,7 @@ public class PregnancyService {
     }
 
     public Date activePregnancyEDD(String motechId) {
-        MRSObservation pregObservation = allObservations.activePregnancyObservation(motechId);
+        MRSObservation pregObservation = allObservations.findObservation(motechId, PREGNANCY.getName());
         if (pregObservation != null && pregObservation.getDependantObservations() != null) {
             Set<MRSObservation> dependentObservations = pregObservation.getDependantObservations();
             for (MRSObservation observation : dependentObservations) {
