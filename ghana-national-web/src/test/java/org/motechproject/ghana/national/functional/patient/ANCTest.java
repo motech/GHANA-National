@@ -16,22 +16,19 @@ import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPa
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.text.ParseException;
+
+import static java.util.Arrays.asList;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class ANCTest extends OpenMRSAwareFunctionalTest {
-    private PatientPage patientPage;
-    private DataGenerator dataGenerator;
-
-    @BeforeMethod
-    public void setUp() {
-        dataGenerator = new DataGenerator();
-    }
 
     @Test
-    public void shouldEnrollForANCForAPatientAndUpdate() {
+    public void shouldEnrollForANCForAPatientAndUpdate() throws ParseException {
+        DataGenerator dataGenerator = new DataGenerator();
         // create
         String staffId = staffGenerator.createStaff(browser, homePage);
 
@@ -39,8 +36,8 @@ public class ANCTest extends OpenMRSAwareFunctionalTest {
         TestPatient testPatient = TestPatient.with(patientFirstName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
-        
-        patientPage = browser.toCreatePatient(homePage);
+
+        PatientPage patientPage = browser.toCreatePatient(homePage);
         patientPage.create(testPatient);
 
         TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withStaffId(staffId).withRegistrationToday(RegistrationToday.IN_PAST);
@@ -63,12 +60,31 @@ public class ANCTest extends OpenMRSAwareFunctionalTest {
         ancEnrollmentPage.displaying(ancEnrollment);
 
         String motechId = ancEnrollmentPage.motechId();
-        String estimatedDeliveryDate= ancEnrollmentPage.getEstimatedDateOfDelivery();
-        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
-        String encounterId = openMRSPatientPage.chooseEncounter("PREGREGVISIT");
+        String estimatedDeliveryDate = ancEnrollmentPage.getEstimatedDateOfDelivery();
 
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        
+
+        String encounterId = openMRSPatientPage.chooseEncounter("PREGREGVISIT");
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
-        openMRSEncounterPage.displaying(new OpenMRSObservationVO("PREGNANCY STATUS","true"));
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", getParsedDate(estimatedDeliveryDate)),
+                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED","true")
+        ));
+
+        openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        encounterId = openMRSPatientPage.chooseEncounter("ANCREGVISIT");
+
+        openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT DOSE", "1.0"),
+                new OpenMRSObservationVO("GRAVIDA", "4.0"),
+                new OpenMRSObservationVO("PARITY", "4.0"),
+                new OpenMRSObservationVO("ANC REGISTRATION NUMBER", "serialNumber"),
+                new OpenMRSObservationVO("HEIGHT (CM)", "160.9")
+        ));
+
     }
 
     private PatientEditPage searchPatient(String patientFirstName, TestPatient testPatient, BasePage basePage) {

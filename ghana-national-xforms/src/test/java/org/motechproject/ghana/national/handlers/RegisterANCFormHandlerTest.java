@@ -16,6 +16,7 @@ import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -51,7 +52,7 @@ public class RegisterANCFormHandlerTest {
     }
 
     @Test
-    public void shouldSaveANCEnrollmentDetails() {
+    public void shouldSaveANCEnrollmentDetails() throws ObservationNotFoundException {
         final RegisterANCForm registerANCForm = new RegisterANCForm();
         registerANCForm.setAddHistory(true);
         registerANCForm.setAncRegNumber("12432423423");
@@ -101,7 +102,7 @@ public class RegisterANCFormHandlerTest {
     }
 
     @Test
-    public void shouldUnRegisterForMobileMidWifeIfNotEnrolled() {
+    public void shouldUnRegisterForMobileMidWifeIfNotEnrolled() throws ObservationNotFoundException {
         final RegisterANCForm registerANCForm = new RegisterANCForm();
 
         final Date registartionDate = new Date(2011, 9, 1);

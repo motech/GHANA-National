@@ -10,6 +10,7 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.exception.PatientNotFoundException;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -50,7 +51,7 @@ public class PregnancyTerminationFormHandlerTest {
     }
 
     @Test
-    public void shouldHandlePregnancyTerminationEvent() {
+    public void shouldHandlePregnancyTerminationEvent() throws PatientNotFoundException {
         String facilityId = "facilityId";
         String staffId = "staffId";
         String motechId = "motechId";

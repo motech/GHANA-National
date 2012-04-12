@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.CareHistoryVO;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -42,7 +43,7 @@ public class CareHistoryFormHandlerTest {
     }
 
     @Test
-    public void shouldCreateEncounterAndObservationsForCareHistory() {
+    public void shouldCreateEncounterAndObservationsForCareHistory() throws ObservationNotFoundException {
         String facilityMotechId = "facility motech Id";
         String facilityId = "facility id";
         final CareHistoryForm careHistoryForm = careHistoryFormWithCwcDetails(facilityMotechId);

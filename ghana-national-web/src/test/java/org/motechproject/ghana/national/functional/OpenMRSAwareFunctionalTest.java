@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 public abstract class OpenMRSAwareFunctionalTest extends FunctionalTest {
     protected HomePage homePage;
     protected OpenMRSHomePage openMRSHomePage;
@@ -37,6 +40,10 @@ public abstract class OpenMRSAwareFunctionalTest extends FunctionalTest {
         OpenMRSLoginPage openMRSLoginPage = openMRSBrowser.toOpenMRSLoginPage();
         openMRSLoginPage.login(OpenMRSTestUser.admin());
         openMRSHomePage = openMRSBrowser.openMRSHomePage();
+    }
+
+    protected String getParsedDate(String estimatedDeliveryDate) throws ParseException {
+        return new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(new SimpleDateFormat("dd/MM/yyyy").parse(estimatedDeliveryDate));
     }
 
     @AfterMethod

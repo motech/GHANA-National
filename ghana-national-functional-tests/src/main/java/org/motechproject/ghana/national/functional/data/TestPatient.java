@@ -29,6 +29,7 @@ public class TestPatient {
     private String staffId;
     private LocalDate registrationDate;
     private String motherMotechId;
+    private String serialNumber;
 
     public static TestPatient with(String firstName, String staffId) {
         TestPatient testPatient = new TestPatient();
@@ -51,6 +52,7 @@ public class TestPatient {
         testPatient.estimatedDateOfBirth = false;
         testPatient.facilityId = "13212";
         testPatient.registrationDate = DateUtil.today();
+        testPatient.serialNumber = "serialNumber";
         return testPatient;
     }
 
@@ -81,6 +83,7 @@ public class TestPatient {
             put("date", registrationDate.toString(DateTimeFormat.forPattern("yyyy-MM-dd")));
             put("staffId", staffId);
             put("motherMotechId", motherMotechId);
+            put("serialNumber", serialNumber);
         }};
     }
 
@@ -218,12 +221,13 @@ public class TestPatient {
         return this;
     }
 
-    public String motherMotechId() {
-        return motherMotechId;
-    }
-
     public TestPatient motherMotechId(String motherMotechId) {
         this.motherMotechId = motherMotechId;
+        return this;
+    }
+
+    public TestPatient serialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
         return this;
     }
 

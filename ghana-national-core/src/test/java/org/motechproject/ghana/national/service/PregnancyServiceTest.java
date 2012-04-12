@@ -14,6 +14,7 @@ import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
 import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.ghana.national.vo.CwcVO;
+import org.motechproject.mrs.exception.PatientNotFoundException;
 import org.motechproject.mrs.model.*;
 import org.motechproject.util.DateUtil;
 
@@ -29,6 +30,7 @@ import static org.joda.time.DateTime.now;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
+import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
 import static org.motechproject.ghana.national.domain.Constants.OTHER_CAUSE_OF_DEATH;
 import static org.motechproject.ghana.national.domain.Constants.PREGNANCY_TERMINATION;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.REGISTER_SUCCESS_SMS_KEY;
@@ -67,7 +69,7 @@ public class PregnancyServiceTest {
     }
 
     @Test
-    public void shouldDeceasePatientIfDeadDuringPregnancyTermination() {
+    public void shouldDeceasePatientIfDeadDuringPregnancyTermination() throws PatientNotFoundException {
         String mrsFacilityId = "mrsFacilityId";
         String patientMRSId = "patientMRSId";
         Patient mockPatient = mock(Patient.class);
@@ -92,7 +94,7 @@ public class PregnancyServiceTest {
     }
 
     @Test
-    public void shouldCreateEncounterOnPregnancyTermination() {
+    public void shouldCreateEncounterOnPregnancyTermination() throws PatientNotFoundException {
         String patientMRSId = "patientMRSId";
         Patient mockPatient = mock(Patient.class);
         Facility mockFacility = mock(Facility.class);
@@ -209,7 +211,7 @@ public class PregnancyServiceTest {
 
         String motechId = "motechId";
         DateTime edd = newDateTime(2012, 12, 2, 2, 2, 0);
-        when(mockAllObservations.activePregnancyObservation(motechId)).thenReturn(mockPregnancyObservationWithEDD(edd.toDate()));
+        when(mockAllObservations.findObservation(motechId, PREGNANCY.getName())).thenReturn(mockPregnancyObservationWithEDD(edd.toDate()));
         Date actualEDD = pregnancyService.activePregnancyEDD(motechId);
 
         assertThat(actualEDD, is(edd.toDate()));

@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.*;
+import org.motechproject.mrs.exception.PatientNotFoundException;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
@@ -262,7 +263,7 @@ public class PatientServiceTest {
     }
 
     @Test
-    public void shouldDeceasePatient() {
+    public void shouldDeceasePatient() throws PatientNotFoundException {
         Date dateOfDeath = DateUtil.now().minusDays(2).toDate();
         String patientMotechId = "patientMotechId";
         String patientMRSId = "patientId";
