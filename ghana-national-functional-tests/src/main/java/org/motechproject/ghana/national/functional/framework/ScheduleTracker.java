@@ -15,6 +15,7 @@ import org.motechproject.scheduletracking.api.events.constants.EventDataKeys;
 import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
 import org.motechproject.scheduletracking.api.repository.AllEnrollments;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
+import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.scheduletracking.api.service.impl.ScheduleTrackingServiceImpl;
 import org.motechproject.util.DateUtil;
 import org.quartz.*;
@@ -62,6 +63,10 @@ public class ScheduleTracker {
 
     public String getActiveMilestone(String externalId, String scheduleName){
         return allEnrollments.getActiveEnrollment(externalId, scheduleName).getCurrentMilestoneName();
+    }
+
+    public EnrollmentRecord activeEnrollment(String externalId, String scheduleName){
+        return scheduleTrackingService.getEnrollment(externalId, scheduleName);
     }
 
     public void deleteAllJobs() throws SchedulerException {

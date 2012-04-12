@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.domain.care;
 
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.ActiveCareSchedules;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientCare;
 import org.motechproject.ghana.national.domain.TTVaccineDosage;
@@ -26,17 +25,23 @@ public class TTVaccineCare {
     private Boolean hasActiveTTSchedule;
     private MRSObservation activePregnancyObservation;
 
-    public TTVaccineCare(Patient patient, LocalDate enrollmentDate, MRSObservation activePregnancyObservation, ActiveCareSchedules activeTTSchedule) {
+    public TTVaccineCare(Patient patient, LocalDate enrollmentDate, MRSObservation activePregnancyObservation, boolean hasActiveTTSchedule) {
         this.enrollmentDate = enrollmentDate;
-        this.hasActiveTTSchedule = activeTTSchedule != null ? activeTTSchedule.hasActiveTTSchedule() : false;
+        this.hasActiveTTSchedule = hasActiveTTSchedule;
         this.activePregnancyObservation = activePregnancyObservation;
         this.patient = patient;
     }
 
-    public PatientCare care() {
+    public PatientCare careForANCReg() {
         if (hasActiveTTSchedule || isCareProgramComplete()) return null;
         PatientCare scheduleForNextTTDose = createCareFromHistory(patient, activePregnancyObservation);
         return scheduleForNextTTDose != null ? scheduleForNextTTDose : PatientCare.forEnrollmentFromStart(TT_VACCINATION, enrollmentDate, patient.facilityMetaData());
+    }
+
+    public PatientCare careForHistory() {
+        if (hasActiveTTSchedule || isCareProgramComplete()) return null;
+        PatientCare scheduleForNextTTDose = createCareFromHistory(patient, activePregnancyObservation);
+        return scheduleForNextTTDose != null ? scheduleForNextTTDose : null;
     }
 
     private PatientCare createCareFromHistory(Patient patient, MRSObservation activePregnancyObservation) {

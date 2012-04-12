@@ -30,17 +30,18 @@ public class IPTVaccineCareTest {
     }
 
     @Test
-    public void shouldReturnHistoryPatientCareWithNextMilestone_IfHistoryIsProvided() {
+    public void shouldReturnHistoryPatientCareWithNextMilestone_IfHistoryIsProvidedAndNoActiveScheduleExists() {
 
         final String facilityId = "fid";
         LocalDate enrollmentDate = newDate(2012, 3, 3);
         LocalDate lastIPTVaccinationDate = newDate(2012, 1, 1);
         Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(today().minusWeeks(14));
+        boolean hasActiveIPTSchedule=false;
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         MRSObservation<String> activePregnancyObs = createPregnacyObservationWithIPTDependent(enrollmentDate, lastIPTVaccinationDate, 1.0);
 
-        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), activePregnancyObs).care();
+        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), activePregnancyObs,hasActiveIPTSchedule).care();
 
         PatientCare expectedPatientCare = PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, lastIPTVaccinationDate, "IPT2", new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
@@ -49,20 +50,36 @@ public class IPTVaccineCareTest {
     }
 
     @Test
-    public void shouldReturnPatientCareWithDefaultStartMilestoneIfNoHistoryIsProvided() {
+    public void shouldReturnPatientCareWithDefaultStartMilestoneIfNoHistoryIsProvidedDuringRegistrationAndNoActiveScheduleExists() {
 
         LocalDate enrollmentDate = newDate(2012, 3, 3);
         final String facilityId = "fid";
         Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(today().minusWeeks(18));
+        boolean hasActiveIPTSchedule=false;
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         MRSObservation<String> activePregnancyObsWithoutIPT = new MRSObservation<String>(enrollmentDate.toDate(), Concept.PREGNANCY.getName(), null);
-        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), activePregnancyObsWithoutIPT).care();
+        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), activePregnancyObsWithoutIPT,hasActiveIPTSchedule).care();
 
         PatientCare expectedPatientCare = PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_IPT_VACCINE, pregnancy.dateOfConception(), new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
         }});
         assertThat(patientCare, is(expectedPatientCare));
+    }
+
+    @Test
+    public void shouldNotReturnPatientCarIfIrrelevantOrNoHistoryIsProvidedDuringCareHistoryFormUploadAndNoActiveScheduleExists() {
+
+        LocalDate enrollmentDate = newDate(2012, 3, 3);
+        final String facilityId = "fid";
+        Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(today().minusWeeks(18));
+        boolean hasActiveIPTSchedule=false;
+
+        Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
+        MRSObservation<String> activePregnancyObsWithoutIPT = new MRSObservation<String>(enrollmentDate.toDate(), Concept.PREGNANCY.getName(), null);
+        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), activePregnancyObsWithoutIPT,hasActiveIPTSchedule).careForHistory();
+
+        assertNull(patientCare);
     }
 
     @Test
@@ -72,10 +89,27 @@ public class IPTVaccineCareTest {
         final String facilityId = "fid";
         LocalDate conceptionDate20WeekInPast = today().minusWeeks(20);
         Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(conceptionDate20WeekInPast);
+        boolean hasActiveIPTSchedule=false;
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         MRSObservation<String> activePregnancyObsWithoutIPT = new MRSObservation<String>(enrollmentDate.toDate(), Concept.PREGNANCY.getName(), null);
-        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), activePregnancyObsWithoutIPT).care();
+        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), activePregnancyObsWithoutIPT,hasActiveIPTSchedule).care();
+
+        assertNull(patientCare);
+    }
+
+    @Test
+    public void shouldNotReturnPatientCareIfThereIsAnActiveIPTEnrollment() {
+
+        LocalDate enrollmentDate = newDate(2012, 3, 3);
+        final String facilityId = "fid";
+        LocalDate conceptionDate20WeekInPast = today().minusWeeks(20);
+        Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(conceptionDate20WeekInPast);
+
+        Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
+        MRSObservation<String> activePregnancyObsWithoutIPT = new MRSObservation<String>(enrollmentDate.toDate(), Concept.PREGNANCY.getName(), null);
+        boolean hasActiveIPTSchedule=true;
+        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), activePregnancyObsWithoutIPT,hasActiveIPTSchedule).care();
 
         assertNull(patientCare);
     }
@@ -90,7 +124,7 @@ public class IPTVaccineCareTest {
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         MRSObservation<String> activePregnancyObs = createPregnacyObservationWithIPTDependent(enrollmentDate, lastIPTVaccinationDate, 3.0);
-        PatientCare patientCare = new IPTVaccineCare(patient, enrollmentDate, activePregnancyObs).care();
+        PatientCare patientCare = new IPTVaccineCare(patient, enrollmentDate, activePregnancyObs,false).care();
 
         assertNull(patientCare);
     }

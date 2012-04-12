@@ -658,11 +658,11 @@ public class CareServiceTest extends BaseUnitTest {
         String patientId = "patientId";
         setupPatient(patientId, "patientMotechId");
         when(mockAllSchedules.getActiveEnrollment(patientId, TT_VACCINATION)).thenReturn(null);
-        assertThat(careService.activeCareSchedules(mockPatient, TT_VACCINATION).hasActiveTTSchedule(), is(equalTo(false)));
+        assertThat(careService.activeCareSchedules(mockPatient, Arrays.asList(TT_VACCINATION)).hasActiveTTSchedule(), is(equalTo(false)));
 
         EnrollmentRecord enrollmentRecord = mock(EnrollmentRecord.class);
         when(mockAllSchedules.getActiveEnrollment(patientId, TT_VACCINATION)).thenReturn(enrollmentRecord);
-        assertThat(careService.activeCareSchedules(mockPatient, TT_VACCINATION).hasActiveTTSchedule(), is(equalTo(true)));
+        assertThat(careService.activeCareSchedules(mockPatient, Arrays.asList(TT_VACCINATION)).hasActiveTTSchedule(), is(equalTo(true)));
     }
 
     @Test
