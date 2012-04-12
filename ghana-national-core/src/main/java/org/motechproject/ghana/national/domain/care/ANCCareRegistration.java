@@ -28,7 +28,7 @@ public class ANCCareRegistration {
         return nullSafeList(
                 PatientCare.forEnrollmentFromStart(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), patient.facilityMetaData()),
                 ttVaccineCare.careForANCReg(),
-                iptVaccineCare.care()
+                iptVaccineCare.careForANCReg()
         );
     }
 }

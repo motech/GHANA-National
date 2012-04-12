@@ -465,14 +465,12 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(ancRegDate.toDate(), EDD.getName(), edd.toDate()));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY_STATUS.getName(), true));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
-        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose.getDosage().toString())));
-        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose.value().toString())));
 
         when(mockAllObservations.findObservation(patientMotechId, Concept.PREGNANCY.getName())).thenReturn(activePregnancyObservation);
 
         careService.addCareHistory(careHistory);
 
-        final Set<MRSObservation> expectedHistoryObservations = new HashSet<MRSObservation>() {{
+        final Set<MRSObservation> expectedActivePregnancyObs = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Double>(ttDate, TT.getName(), ttDose.getDosageAsDouble()));
             add(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose.value().toString())));
         }};
@@ -481,23 +479,24 @@ public class CareServiceTest extends BaseUnitTest {
         ArgumentCaptor<String> encounterTypeCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockAllEncounters, times(2)).persistEncounter(eq(mockMRSPatient), eq(staffId), eq(facilityId), encounterTypeCaptor.capture(), eq(careHistoryCapturedDate.toDate()), observationCaptor.capture());
 
-        HashSet<MRSObservation> expectedActivePregnancyObs = new HashSet<MRSObservation>() {{
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose.getDosage().toString())));
+        HashSet<MRSObservation> expectedHistoryObservations = new HashSet<MRSObservation>() {{
             add(activePregnancyObservation);
         }};
 
-        assertEquals(expectedActivePregnancyObs, observationCaptor.getAllValues().get(0));
-        assertEquals(expectedHistoryObservations, observationCaptor.getAllValues().get(1));
+        assertEquals(expectedHistoryObservations, observationCaptor.getAllValues().get(0));
+        assertEquals(expectedActivePregnancyObs, observationCaptor.getAllValues().get(1));
 
         assertEquals(ANC_VISIT.value(), encounterTypeCaptor.getAllValues().get(0));
         assertEquals(PATIENT_HISTORY.value(), encounterTypeCaptor.getAllValues().get(1));
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
 
-        verify(mockAllSchedules, times(2)).enrollIfNotActive(enrollmentRequestCaptor.capture());
+        verify(mockAllSchedules, times(1)).enroll(enrollmentRequestCaptor.capture());
         List<EnrollmentRequest> allValues = enrollmentRequestCaptor.getAllValues();
         TTVaccineDosage nextTTDose = Utility.getNextOf(ttDose);
         PatientCare expectedTTCare = PatientCare.forEnrollmentInBetweenProgram(TT_VACCINATION, newDate(ttDate), nextTTDose.getScheduleMilestoneName(), PatientTest.facilityMetaData(facilityId));
         PatientCare expectedIPTCare = PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, newDate(iptDate), Utility.getNextOf(iptDose).milestone(), PatientTest.facilityMetaData(facilityId));
-        assertEnrollmentRequests(allValues, asList(expectedRequest(patientId, expectedTTCare), expectedRequest(patientId, expectedIPTCare)));
+        assertEnrollmentRequests(allValues, asList(expectedRequest(patientId, expectedTTCare)));
     }
 
     @Test
