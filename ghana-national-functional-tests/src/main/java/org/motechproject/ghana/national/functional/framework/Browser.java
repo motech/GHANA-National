@@ -51,7 +51,6 @@ public class Browser implements DisposableBean {
     }
 
     public SearchPatientPage toSearchPatient(BasePage fromPage) {
-        fromPage.waitForSuccessfulCompletion();
         return new SearchPatientPage(webDriver);
     }
 
@@ -96,7 +95,6 @@ public class Browser implements DisposableBean {
     }
 
     public ANCEnrollmentPage toEnrollANCPage(PatientEditPage patientEditPage) {
-        patientEditPage.waitForSuccessfulCompletion();
         patientEditPage.clickOnEnrollANCLink();
         return new ANCEnrollmentPage(webDriver);
     }

@@ -31,7 +31,7 @@ public class ChildVisitEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, registrationDate, WEIGHT_KG.getName(), cwcVisit.getWeight());
         setObservation(mrsObservations, registrationDate, HEIGHT.getName(), cwcVisit.getHeight());
         setObservation(mrsObservations, registrationDate, MUAC.getName(), cwcVisit.getMuac());
-        if (!cwcVisit.getCwcLocation().equals(Constants.NOT_APPLICABLE))
+        if (!Constants.NOT_APPLICABLE.equals(cwcVisit.getCwcLocation()))
             setObservation(mrsObservations, registrationDate, CWC_LOCATION.getName(), toInteger(cwcVisit.getCwcLocation()));
         setObservation(mrsObservations, registrationDate, HOUSE.getName(), cwcVisit.getHouse());
         setObservation(mrsObservations, registrationDate, COMMUNITY.getName(), cwcVisit.getCommunity());
