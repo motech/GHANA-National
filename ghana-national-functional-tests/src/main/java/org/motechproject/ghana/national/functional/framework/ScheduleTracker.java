@@ -242,9 +242,12 @@ public class ScheduleTracker {
         List<MilestoneWindow> milestoneWindows = milestone.getMilestoneWindows();
         for (MilestoneWindow milestoneWindow : milestoneWindows) {
             Period windowStart = milestone.getWindowStart(milestoneWindow.getName());
+            Period windowEnd = milestone.getWindowEnd(milestoneWindow.getName());
             for (org.motechproject.scheduletracking.api.domain.Alert alert : milestoneWindow.getAlerts()) {
                 LocalDate referenceWindowStartDate = referenceDate.plus(windowStart);
-                int alertCount = alert.getRemainingAlertCount(newDateTime(referenceWindowStartDate.toDate()), null);
+                LocalDate referenceWindowEndDate = referenceDate.plus(windowEnd);
+
+                int alertCount = alert.getRemainingAlertCount(newDateTime(referenceWindowStartDate.toDate()), newDateTime(referenceWindowEndDate.toDate()), null);
                 for (long count = 0; count <= alertCount; count++) {
                     Period interval = new Period(alert.getInterval().toStandardDuration().getMillis() * count, millis());
                     LocalDate idealStartDate = referenceWindowStartDate.plus(alert.getOffset()).plusDays((int) interval.toStandardDuration().getStandardDays());
