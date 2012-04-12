@@ -3,9 +3,12 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
+import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -13,12 +16,13 @@ import org.testng.annotations.Test;
 
 import java.util.HashMap;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 import static org.joda.time.format.DateTimeFormat.forPattern;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class OutPatientVisitFormUploadTest extends LoggedInUserFunctionalTest {
+public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest{
 
     @Test
     public void shouldUploadOutPatientVisitFormSuccessfullyIfPatientIsNotAVisitor() throws Exception {
@@ -41,14 +45,30 @@ public class OutPatientVisitFormUploadTest extends LoggedInUserFunctionalTest {
             put("visitDate", visitDate.toString(forPattern("yyyy-MM-dd")));
             put("newCase", "Y");
             put("newPatient", "Y");
-            put("diagnosis", "78");
-            put("otherDiagnosis", "10");
+            put("diagnosis", "10");
+            put("secondDiagnosis", "78");
+            put("rdtGiven", "Y");
+            put("rdtPositive", "N");
             put("referred", "Y");
+            put("comments", "Out Patient Visit");
 
         }}));
 
-
         assertEquals(1,response.getSuccessCount());
+
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(patientId));
+        String encounterId = openMRSPatientPage.chooseEncounter("OUTPATIENTVISIT");
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("NEW CASE", "true"),
+                new OpenMRSObservationVO("NEW PATIENT", "true"),
+                new OpenMRSObservationVO("PRIMARY DIAGNOSIS", "10.0"),
+                new OpenMRSObservationVO("SECONDARY DIAGNOSIS", "78.0"),
+                new OpenMRSObservationVO("COMMENTS", "Out Patient Visit"),
+                new OpenMRSObservationVO("SERIAL NUMBER", serialNumber),
+                new OpenMRSObservationVO("MALARIA RAPID TEST", "NEGATIVE"),
+                new OpenMRSObservationVO("REFERRED", "true")
+        ));
     }
 
     @Test

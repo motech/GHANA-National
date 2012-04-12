@@ -77,6 +77,8 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, registrationDate,  LOCHIA_EXCESS_AMOUNT.getName(), pncMotherRequest.getLochiaAmountExcess());
         setObservation(mrsObservations, registrationDate,  LOCHIA_COLOUR.getName(), toInteger(pncMotherRequest.getLochiaColour()));
         setObservation(mrsObservations, registrationDate,  LOCHIA_FOUL_ODOUR.getName(), pncMotherRequest.getLochiaOdourFoul());
+        setObservation(mrsObservations, registrationDate,  TEMPERATURE.getName(), pncMotherRequest.getTemperature());
+        setObservation(mrsObservations, registrationDate,  ANC_PNC_LOCATION.getName(), pncMotherRequest.getLocation());
         return mrsObservations;
     }
 

@@ -11,7 +11,7 @@
                 <procedure/>
                 <complications/>
                 <maternalDeath/>
-                <postAbortiobFPCounseled/>
+                <postAbortionFPCounseled/>
                 <postAbortionFPAccepted/>
                 <referred/>
                 <comments/>
@@ -31,10 +31,10 @@
         <xf:bind id="procedure" nodeset="/abortion/procedure" required="true()" type="xsd:string"/>
         <xf:bind id="complications" nodeset="/abortion/complications" type="xsd:string"/>
         <xf:bind id="maternalDeath" nodeset="/abortion/maternalDeath" required="true()" type="xsd:string"/>
-        <xf:bind action="show" id="postAbortiobFPCounseled" nodeset="/abortion/postAbortiobFPCounseled"
+        <xf:bind action="show" id="postAbortionFPCounseled" nodeset="/abortion/postAbortionFPCounseled"
                  relevant="/abortion/maternalDeath = 'N'" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="postAbortionFPAccepted" nodeset="/abortion/postAbortionFPAccepted"
-                 relevant="/abortion/postAbortiobFPCounseled = 'Y'" required="true()" type="xsd:string"
+                 relevant="/abortion/postAbortionFPCounseled = 'Y'" required="true()" type="xsd:string"
                  visible="false()"/>
         <xf:bind id="referred" nodeset="/abortion/referred" required="true()" type="xsd:string"/>
         <xf:bind id="comments" nodeset="/abortion/comments" type="xsd:string"/>
@@ -116,7 +116,7 @@
             </xf:item>
         </xf:select1>
 
-        <xf:select1 bind="postAbortiobFPCounseled">
+        <xf:select1 bind="postAbortionFPCounseled">
             <xf:label>FP counseled?</xf:label>
             <xf:item id="Y">
                 <xf:label>Yes</xf:label>

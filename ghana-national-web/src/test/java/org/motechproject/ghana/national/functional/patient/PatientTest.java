@@ -1,8 +1,11 @@
 package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
+import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestPatient;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
@@ -14,9 +17,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class PatientTest extends LoggedInUserFunctionalTest {
+public class PatientTest extends OpenMRSAwareFunctionalTest{
 
     @Autowired
     private IdentifierGenerator identifierGenerator;
@@ -46,6 +51,15 @@ public class PatientTest extends LoggedInUserFunctionalTest {
 
         PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, patient);
         patientEditPage.displaying(patient);
+        
+        String motechId=patientEditPage.motechId();
+
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        String encounterId = openMRSPatientPage.chooseEncounter("PATIENTREGVISIT");
+
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+
+        openMRSEncounterPage.displaying(Collections.<OpenMRSObservationVO>emptyList());
     }
 
     @Test

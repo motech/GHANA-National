@@ -118,6 +118,11 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
 
         }
 
+        if (formBean.getSerialNumber() != null) {
+            MRSObservation serialNumberObs = new MRSObservation<String>(formBean.getVisitDate(), SERIAL_NUMBER.getName(), formBean.getSerialNumber());
+            observationList.add(serialNumberObs);
+        }
+
         if (Boolean.TRUE.equals(formBean.getRdtGiven())) {
             MRSObservation rdtGivenObs;
             if (Boolean.TRUE.equals(formBean.getRdtPositive()))

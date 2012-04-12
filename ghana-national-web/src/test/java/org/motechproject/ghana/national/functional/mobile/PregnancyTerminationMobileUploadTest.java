@@ -4,10 +4,13 @@ package org.motechproject.ghana.national.functional.mobile;
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.domain.RegistrationToday;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
+import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
 import org.motechproject.ghana.national.functional.pages.patient.ANCEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
@@ -20,12 +23,13 @@ import org.testng.annotations.Test;
 
 import java.util.HashMap;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 import static org.joda.time.format.DateTimeFormat.forPattern;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class PregnancyTerminationMobileUploadTest extends LoggedInUserFunctionalTest {
+public class PregnancyTerminationMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
     private DataGenerator dataGenerator;
 
@@ -64,12 +68,28 @@ public class PregnancyTerminationMobileUploadTest extends LoggedInUserFunctional
             put("procedure", "2");
             put("complications", "1,2");
             put("maternalDeath", "N");
-            put("postAbortiobFPCounseled", "Y");
+            put("postAbortionFPCounseled", "Y");
             put("postAbortionFPAccepted", "Y");
             put("referred", "Y");
             put("comments", "blah blah");
         }}));
 
         assertEquals(1, response.getSuccessCount());
+
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(patientId));
+        String encounterId = openMRSPatientPage.chooseEncounter("PREGTERMVISIT");
+
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("MATERNAL DEATH","false"),
+//                new OpenMRSObservationVO("POST-ABORTION FP COUNSELING","true"),
+                new OpenMRSObservationVO("POST-ABORTION FP ACCEPTED","true"),
+                new OpenMRSObservationVO("PREGNANCY STATUS","false"),
+                new OpenMRSObservationVO("PREGNANCY, TERMINATION PROCEDURE","2.0"),
+                new OpenMRSObservationVO("REFERRED","true"),
+                new OpenMRSObservationVO("TERMINATION COMPLICATION","2.0"),
+                new OpenMRSObservationVO("COMMENTS","blah blah"),
+                new OpenMRSObservationVO("TERMINATION TYPE","1.0")
+        ));
     }
 }

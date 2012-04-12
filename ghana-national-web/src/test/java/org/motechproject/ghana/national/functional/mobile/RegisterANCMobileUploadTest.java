@@ -265,6 +265,33 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
         assertThat(mobileMidwifeEnrollmentPage.status(), is("INACTIVE"));
     }
 
+    @Test
+    public void shouldCreateANCForAPatientWithMobileDeviceAndSearchForItInWeb() {
+        DataGenerator dataGenerator = new DataGenerator();
+
+        String staffId = staffGenerator.createStaff(browser, homePage);
+
+        TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
+                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
+                .estimatedDateOfBirth(false);
+
+        String patientId = patientGenerator.createPatientWithStaff(testPatient, browser, homePage);
+
+        TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId);
+        TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, testPatient.facilityId()).patientId(patientId);
+
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerANCForm(), ancEnrollment.withMobileMidwifeEnrollmentThroughMobile(mmEnrollmentDetails));
+
+        assertEquals(1, response.getSuccessCount());
+
+        PatientEditPage patientEditPage = toPatientEditPage(testPatient);
+        ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
+        ancEnrollmentPage.displaying(ancEnrollment);
+
+        patientEditPage = toPatientEditPage(testPatient);
+        MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientEditPage);
+        assertThat(mobileMidwifeEnrollmentPage.details(), is(equalTo(mmEnrollmentDetails)));
+    }
 
     private PatientEditPage toPatientEditPage(TestPatient testPatient) {
         SearchPatientPage searchPatientPage = browser.toSearchPatient();

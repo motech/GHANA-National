@@ -99,6 +99,8 @@ public class XformHttpClient {
             hackDate(formData, "/abortion/date");
             hackDate(formData, "/clientQuery/dateOfBirth");
             hackDateTime(formData, "/delivery/date");
+            hackDateTime(formData, "/pncmother/date");
+            hackDateTime(formData, "/deliveryNotify/datetime");
             formsList.add(formData);
         }
         final StudyData studyData = new StudyData(studyDef);
