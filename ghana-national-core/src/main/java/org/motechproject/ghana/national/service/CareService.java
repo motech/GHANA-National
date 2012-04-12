@@ -12,6 +12,7 @@ import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.vo.*;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSObservation;
@@ -82,9 +83,8 @@ public class CareService {
         return cwcCareHistories;
     }
 
-    public void enroll(ANCVO ancVO) {
+    public void enroll(ANCVO ancVO) throws ObservationNotFoundException {
         final ANCCareHistoryVO ancCareHistoryVO = ancVO.getAncCareHistoryVO();
-
         Date registrationDate = (TODAY.equals(ancVO.getRegistrationToday())) ? now().toDate() : ancVO.getRegistrationDate();
         Patient patient = allPatients.getPatientByMotechId(ancVO.getPatientMotechId());
         LocalDate expectedDeliveryDate = newDate(ancVO.getEstimatedDateOfDelivery());
@@ -143,7 +143,7 @@ public class CareService {
         return observations;
     }
 
-    Set<MRSObservation> registerPregnancy(ANCVO ancVO, Patient patient) {
+    Set<MRSObservation> registerPregnancy(ANCVO ancVO, Patient patient) throws ObservationNotFoundException {
         Date today = DateUtil.today().toDate();
         Set<MRSObservation> activePregnancyObservation = allObservations.updateEDD(ancVO.getEstimatedDateOfDelivery(), patient, ancVO.getStaffId());
         MRSObservation activePregnancy;
@@ -264,7 +264,7 @@ public class CareService {
     private void processANCHistories(CareHistoryVO careHistoryVO, Patient patient) {
         ANCCareHistoryVO ancCareHistoryVO = careHistoryVO.getAncCareHistoryVO();
 
-        final MRSObservation activePregnancyObservation = allObservations.findObservation(patient.getMotechId(), Concept.PREGNANCY.getName());
+        final MRSObservation activePregnancyObservation = allObservations.findObservation(patient.getMotechId(), PREGNANCY.getName());
 
         if (activePregnancyObservation != null) {
             Date edd = getEdd(activePregnancyObservation);

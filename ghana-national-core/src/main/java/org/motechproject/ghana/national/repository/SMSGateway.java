@@ -32,7 +32,7 @@ public class SMSGateway {
         try {
             return cmsLiteService.getStringContent(language, key).getValue();
         } catch (ContentNotFoundException e) {
-            throw new MotechException("Encountered error while retrieving SMS template", e);
+            throw new MotechException(String.format("Encountered error while retrieving SMS template for %s - %s", key, language), e);
         }
     }
 

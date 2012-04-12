@@ -2,12 +2,15 @@ package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
+import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestCWCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
 import org.motechproject.ghana.national.functional.pages.BasePage;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
 import org.motechproject.ghana.national.functional.pages.patient.CWCEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
@@ -22,11 +25,12 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class CWCTest extends LoggedInUserFunctionalTest {
+public class CWCTest extends OpenMRSAwareFunctionalTest {
     private DataGenerator dataGenerator;
 
     @BeforeMethod
@@ -46,6 +50,8 @@ public class CWCTest extends LoggedInUserFunctionalTest {
                 .dateOfBirth(DateUtil.newDate(DateUtil.today().getYear() - 1, 11, 11));
 
         patientPage.create(patient);
+        
+        String motechId = patient.motechId();
 
         // create
         SearchPatientPage searchPatientPage = browser.toSearchPatient(homePage);
@@ -70,6 +76,14 @@ public class CWCTest extends LoggedInUserFunctionalTest {
         cwcEnrollmentPage = browser.toEnrollCWCPage(patientEditPage);
 
         cwcEnrollmentPage.displaying(testCWCEnrollment);
+
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        String encounterId = openMRSPatientPage.chooseEncounter("CWCREGVISIT");
+
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("CWC REGISTRATION NUMBER", "serialNumber")
+        ));
     }
 
     @Test
@@ -89,12 +103,12 @@ public class CWCTest extends LoggedInUserFunctionalTest {
         TestCWCEnrollment testCWCEnrollment = TestCWCEnrollment.create().withStaffId(staffId);
         final CWCEnrollmentPage cwcEnrollmentPage = browser.toEnrollCWCPage(patientEditPage);
         cwcEnrollmentPage.save(testCWCEnrollment);
-        
+        final String motechId = cwcEnrollmentPage.getPatientMotechId();
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCVisitForm(), new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", facilityId);
             put("date", "2012-12-11");
-            put("motechId", cwcEnrollmentPage.getPatientMotechId());
+            put("motechId", motechId);
             put("serialNumber", "1234567");
             put("immunizations", "BCG OPV YF");
             put("opvdose", "OPV 1");
@@ -111,6 +125,26 @@ public class CWCTest extends LoggedInUserFunctionalTest {
         }});
 
         assertEquals(0, response.getErrors().size());
+
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        String encounterId = openMRSPatientPage.chooseEncounter("CWCREGVISIT");
+
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("COMMENTS", "Unknown"),
+                new OpenMRSObservationVO("COMMUNITY", "Home"),
+                new OpenMRSObservationVO("CWC LOCATION", "HOME"),
+                new OpenMRSObservationVO("HEIGHT (CM)", "13"),
+                new OpenMRSObservationVO("HOUSE", "32"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "BCG OPV YF"),
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE", "IPT 1"),
+                new OpenMRSObservationVO("MALE INVOLVEMENT", "Y"),
+                new OpenMRSObservationVO("MIDDLE UPPER ARM CIRCUMFERENCE", "12"),
+                new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE", "OPV 1"),
+                new OpenMRSObservationVO("PENTA VACCINATION DOSE", "Penta 1"),
+                new OpenMRSObservationVO("SERIAL NUMBER", "1234567"),
+                new OpenMRSObservationVO("WEIGHT (KG)", "23")
+        ));
     }
 
     private PatientEditPage searchPatient(String patientFirstName, TestPatient testPatient, BasePage basePage) {

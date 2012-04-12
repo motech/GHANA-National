@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
 import org.motechproject.ghana.national.web.helper.ANCFormMapper;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mobileforms.api.domain.FormError;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.util.DateUtil;
@@ -77,7 +78,7 @@ public class ANCController {
 
     @ApiSession
     @RequestMapping(value = "save", method = RequestMethod.POST)
-    public String save(@Valid ANCEnrollmentForm ancEnrollmentForm, ModelMap modelMap) {
+    public String save(@Valid ANCEnrollmentForm ancEnrollmentForm, ModelMap modelMap) throws ObservationNotFoundException {
         List<FormError> formErrors = registerANCFormValidator.validatePatientAndStaff(ancEnrollmentForm.getMotechPatientId(),
                  ancEnrollmentForm.getStaffId());
 

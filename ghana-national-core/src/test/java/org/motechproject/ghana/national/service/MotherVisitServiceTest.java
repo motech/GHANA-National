@@ -15,6 +15,7 @@ import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.model.Time;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.*;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
@@ -72,7 +73,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldCreateEncounterForANCVisitWithAllInfo() {
+    public void shouldCreateEncounterForANCVisitWithAllInfo() throws ObservationNotFoundException {
 
         final MotherVisitService spyMotherVisitService = spy(motherVisitService);
 
@@ -184,7 +185,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     // i) User enrolled after 19th week
     // ii) User enrolled for SP2, taking IPT2 directly based on some pre-history
     @Test
-    public void shouldEnrollOrFulfilIPTpScheduleBasedOnVisitDate_AndRecordObservations() {
+    public void shouldEnrollOrFulfilIPTpScheduleBasedOnVisitDate_AndRecordObservations() throws ObservationNotFoundException {
 
         Time deliveryTime = new Time(20, 2);
         DateTime today = new DateTime(2012, 2, 1, deliveryTime.getHour(), deliveryTime.getMinute());
@@ -208,7 +209,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldNotCreateIPTSchedule_IfIPTReadingsAreNotCaptured() {
+    public void shouldNotCreateIPTSchedule_IfIPTReadingsAreNotCaptured() throws ObservationNotFoundException {
         Time deliveryTime = new Time(20, 2);
         mockCurrentDate(new DateTime(2012, 2, 1, deliveryTime.getHour(), deliveryTime.getMinute()));
         LocalDate visitDate = now().minusDays(10).toLocalDate();
