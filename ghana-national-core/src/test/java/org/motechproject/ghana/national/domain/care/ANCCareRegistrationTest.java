@@ -36,7 +36,7 @@ public class ANCCareRegistrationTest {
 
         PatientCare iptPatientCare = mock(PatientCare.class);
         PatientCare ttPatientCare = mock(PatientCare.class);
-        when(mockIptVaccineCare.care()).thenReturn(iptPatientCare);
+        when(mockIptVaccineCare.careForANCReg()).thenReturn(iptPatientCare);
         when(mockTTVaccineCare.careForANCReg()).thenReturn(ttPatientCare);
 
         List<PatientCare> patientCares = ancCareRegistration.allCares();

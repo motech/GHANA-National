@@ -4,68 +4,28 @@ import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientCare;
 import org.motechproject.ghana.national.domain.TTVaccineDosage;
-import org.motechproject.ghana.national.tools.Utility;
-import org.motechproject.mrs.model.MRSObservation;
 
-import java.util.List;
-import java.util.Set;
+import java.util.Date;
 
-import static ch.lambdaj.Lambda.*;
-import static java.util.Collections.emptySet;
-import static org.hamcrest.core.Is.is;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
-import static org.motechproject.ghana.national.domain.Concept.TT;
 import static org.motechproject.ghana.national.tools.Utility.getNextOf;
-import static org.motechproject.ghana.national.tools.Utility.nullSafe;
-import static org.motechproject.util.DateUtil.newDate;
 
-public class TTVaccineCare {
-    private Patient patient;
+public class TTVaccineCare extends VaccineCare {
     private LocalDate enrollmentDate;
-    private Boolean hasActiveTTSchedule;
-    private MRSObservation activePregnancyObservation;
 
-    public TTVaccineCare(Patient patient, LocalDate enrollmentDate, MRSObservation activePregnancyObservation, boolean hasActiveTTSchedule) {
+    public TTVaccineCare(Patient patient, LocalDate enrollmentDate, Boolean hasActiveTTSchedule, String lastTTDosage, Date lastTTDate, Boolean isPastVaccinationDateWithinRange) {
+        super(patient, hasActiveTTSchedule, TT_VACCINATION, lastTTDosage, lastTTDate, isPastVaccinationDateWithinRange);
         this.enrollmentDate = enrollmentDate;
-        this.hasActiveTTSchedule = hasActiveTTSchedule;
-        this.activePregnancyObservation = activePregnancyObservation;
-        this.patient = patient;
     }
 
-    public PatientCare careForANCReg() {
-        if (hasActiveTTSchedule || isCareProgramComplete()) return null;
-        PatientCare scheduleForNextTTDose = createCareFromHistory(patient, activePregnancyObservation);
-        return scheduleForNextTTDose != null ? scheduleForNextTTDose : PatientCare.forEnrollmentFromStart(TT_VACCINATION, enrollmentDate, patient.facilityMetaData());
+    @Override
+    protected String nextVaccineDose(String dosage) {
+        final TTVaccineDosage nextDosage = getNextOf(TTVaccineDosage.byValue(Integer.valueOf(dosage)));
+        return nextDosage != null ? nextDosage.getScheduleMilestoneName() : null;
     }
 
-    public PatientCare careForHistory() {
-        if (hasActiveTTSchedule || isCareProgramComplete()) return null;
-        PatientCare scheduleForNextTTDose = createCareFromHistory(patient, activePregnancyObservation);
-        return scheduleForNextTTDose != null ? scheduleForNextTTDose : null;
-    }
-
-    private PatientCare createCareFromHistory(Patient patient, MRSObservation activePregnancyObservation) {
-        MRSObservation lastTTObservation = lastTTObservation(activePregnancyObservation);
-        if (lastTTObservation != null) {
-            TTVaccineDosage nextMilestoneToSchedule = nextVaccineDose(lastTTObservation);
-            return (nextMilestoneToSchedule == null) ? null :
-                    PatientCare.forEnrollmentInBetweenProgram(TT_VACCINATION, newDate(lastTTObservation.getDate()), nextMilestoneToSchedule.getScheduleMilestoneName(), patient.facilityMetaData());
-        }
-        return null;
-    }
-
-    private MRSObservation lastTTObservation(MRSObservation activePregnancyObservation) {
-        Set<MRSObservation> dependantObservations = nullSafe(activePregnancyObservation.getDependantObservations(), emptySet());
-        List<MRSObservation> ttObservationsHistory = filter(having(on(MRSObservation.class).getConceptName(), is(TT.getName())), dependantObservations);
-        return Utility.safeFetch(ttObservationsHistory, 1);
-    }
-
-    private static TTVaccineDosage nextVaccineDose(MRSObservation lastTTObservation) {
-        return getNextOf(TTVaccineDosage.byValue(((Double) lastTTObservation.getValue()).intValue()));
-    }
-
-    private boolean isCareProgramComplete() {
-        MRSObservation lastTTObservation = lastTTObservation(activePregnancyObservation);
-        return (lastTTObservation != null && nextVaccineDose(lastTTObservation) == null);
+    @Override
+    protected PatientCare newEnrollmentForCare() {
+        return PatientCare.forEnrollmentFromStart(TT_VACCINATION, enrollmentDate, patient.facilityMetaData());
     }
 }

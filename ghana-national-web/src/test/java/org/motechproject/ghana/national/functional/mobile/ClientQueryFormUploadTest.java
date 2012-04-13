@@ -144,7 +144,7 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
         }});
 
         XformHttpClient.XformResponse  xformResponse = mobile.upload(MobileForm.queryClientForm(), new HashMap<String, String>() {{
-            put("queryType", "UPCOMING_CARE");
+            put("queryType", ClientQueryType.UPCOMING_CARE.toString());
             put("motechId", patientId);
             put("facilityId", patient.facilityId());
             put("staffId", staffId);
@@ -173,10 +173,10 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
 
         final String patientId = patientGenerator.createPatientWithStaff(testPatient, browser, homePage);
         HashMap<String, String> inputParams = new HashMap<String, String>() {{
-            put("motechId", patientId);
             put("facilityId", "13212");
             put("staffId", staffId);
             put("queryType", ClientQueryType.CLIENT_DETAILS.toString());
+            put("motechId", patientId);
             put("sender", "0987654321");
         }};
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.queryClientForm(), inputParams);
