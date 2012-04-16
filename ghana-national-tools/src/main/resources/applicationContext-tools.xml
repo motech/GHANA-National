@@ -45,6 +45,7 @@
                 <ref bean="mobileMidwifeMigrationSeed"/>
                 <ref bean="ancVisitSeed"/>
                 <ref bean="outPatientVisitMigrationSeed"/>
+                <ref bean="opvSeed"/>
             </list>
         </constructor-arg>
     </bean>

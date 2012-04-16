@@ -52,6 +52,10 @@ public class OldGhanaScheduleSource extends BaseSeedSource {
         return querySchedulesFromDb("SELECT pi.identifier as motech_id, mi.patient_id, mi.encounter_type as type, mi.care_name, mi.min_datetime, mi.due_datetime, mi.late_datetime, mi.max_datetime, mi.voided FROM (SELECT MAX(motechmodule_expected_encounter_id) AS mid FROM motechmodule_expected_encounter WHERE group_name = 'ANC' and voided = 0 GROUP BY patient_id) mo, motechmodule_expected_encounter mi, patient_identifier pi where mi.motechmodule_expected_encounter_id = mo.mid and pi.patient_id = mi.patient_id;");
     }
 
+    public List<UpcomingSchedule> getUpcomingOPVSchedules() {
+        return querySchedulesFromDb("(select '' as motech_id, d1.patient_id, d1.concept_id as type, d1.care_name , d1.min_datetime, d1.due_datetime, d1.late_datetime, d1.max_datetime, d1.voided from motechmodule_expected_obs d1 where d1.group_name = 'OPV' and d1.care_name = 'OPV0' and d1.voided = 0) union (select '' as motech_id, a1.patient_id, a1.concept_id as type, a1.care_name , a1.min_datetime, a1.due_datetime, a1.late_datetime, a1.max_datetime, a1.voided from motechmodule_expected_obs a1, (select b1.patient_id, max(b1.late_datetime) as late_datetime from motechmodule_expected_obs b1 where b1.group_name = 'OPV' and b1.care_name <> 'OPV0' and b1.voided = 0 group by b1.patient_id) c1 where a1.patient_id = c1.patient_id and a1.late_datetime = c1.late_datetime and a1.group_name = 'OPV' and a1.care_name <> 'OPV0' and a1.voided = 0)");
+    }
+
     private List<UpcomingSchedule> querySchedulesFromDb(String query) {
         return jdbcTemplate.query(query,
                 new UpcomingScheduleRowMapper());
