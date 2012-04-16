@@ -19,7 +19,7 @@ import static org.motechproject.util.DateUtil.today;
 public class IPTVaccineCareTest {
     @Test
     public void shouldReturnNextDosageGivenADosage() {
-        final IPTVaccineCare iptVaccineCare = new IPTVaccineCare(null, null, null, null, null, null);
+        final IPTVaccineCare iptVaccineCare = new IPTVaccineCare(null, null, null, null, null);
         assertThat(iptVaccineCare.nextVaccineDose("1"), is(equalTo("IPT2")));
         assertThat(iptVaccineCare.nextVaccineDose("3"), is(equalTo(null)));
     }
@@ -33,16 +33,12 @@ public class IPTVaccineCareTest {
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(conceptionDate);
 
-        assertThat(new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), null, null, null, null).newEnrollmentForCare(), is(equalTo(new PatientCare(ANC_IPT_VACCINE, conceptionDate, null, null, new HashMap<String, String>(){{
+        assertThat(new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), null, null, null).newEnrollmentForCare(), is(equalTo(new PatientCare(ANC_IPT_VACCINE, conceptionDate, null, null, new HashMap<String, String>(){{
             put("facilityId", facilityId);
         }}))));
 
-
         pregnancy = Pregnancy.basedOnConceptionDate(today().plusWeeks(70));
-        assertThat(new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), null, null, null, null).newEnrollmentForCare(), is(equalTo(null)));
+        assertThat(new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), null, null, null).newEnrollmentForCare(), is(equalTo(null)));
 
     }
-
-
-
 }

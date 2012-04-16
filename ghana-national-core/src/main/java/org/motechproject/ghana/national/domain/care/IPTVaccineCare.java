@@ -11,14 +11,12 @@ import java.util.Date;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
 import static org.motechproject.ghana.national.tools.Utility.getNextOf;
 
-public class IPTVaccineCare extends VaccineCare {
+public class IPTVaccineCare extends PregnancyVaccineCare {
 
     private Patient patient;
-    private LocalDate expectedDeliveryDate;
 
-    public IPTVaccineCare(Patient patient, LocalDate expectedDeliveryDate, Boolean hasActiveIPTVaccine, String lastIPTDosage, Date lastIPTDate, Boolean isPastVaccinationDateWithinRange) {
-        super(patient, hasActiveIPTVaccine, ANC_IPT_VACCINE, lastIPTDosage, lastIPTDate, isPastVaccinationDateWithinRange);
-        this.expectedDeliveryDate = expectedDeliveryDate;
+    public IPTVaccineCare(Patient patient, LocalDate expectedDeliveryDate, Boolean hasActiveIPTVaccine, String lastIPTDosage, Date lastIPTDate) {
+        super(patient, expectedDeliveryDate, hasActiveIPTVaccine, ANC_IPT_VACCINE, lastIPTDosage, lastIPTDate);
         this.patient = patient;
     }
 

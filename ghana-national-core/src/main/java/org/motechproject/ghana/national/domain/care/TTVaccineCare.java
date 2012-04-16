@@ -10,11 +10,11 @@ import java.util.Date;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 import static org.motechproject.ghana.national.tools.Utility.getNextOf;
 
-public class TTVaccineCare extends VaccineCare {
+public class TTVaccineCare extends PregnancyVaccineCare {
     private LocalDate enrollmentDate;
 
-    public TTVaccineCare(Patient patient, LocalDate enrollmentDate, Boolean hasActiveTTSchedule, String lastTTDosage, Date lastTTDate, Boolean isPastVaccinationDateWithinRange) {
-        super(patient, hasActiveTTSchedule, TT_VACCINATION, lastTTDosage, lastTTDate, isPastVaccinationDateWithinRange);
+    public TTVaccineCare(Patient patient, LocalDate expectedDateOfDelivery, LocalDate enrollmentDate, Boolean hasActiveTTSchedule, String lastTTDosage, Date lastTTDate) {
+        super(patient, expectedDateOfDelivery, hasActiveTTSchedule, TT_VACCINATION, lastTTDosage, lastTTDate);
         this.enrollmentDate = enrollmentDate;
     }
 

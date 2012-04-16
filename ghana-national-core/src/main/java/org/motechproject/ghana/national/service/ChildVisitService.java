@@ -108,11 +108,8 @@ public class ChildVisitService {
         if (!StringUtils.isEmpty(cwcVisit.getPentadose())) {
             Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
-
-            if (null == enrollment(patient.getMRSPatientId(), CWC_PENTA)) {
-                allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patient.pentaPatientCare(visitDate).milestoneName(milestoneName(cwcVisit))));
-            }
-            allSchedulesAndMessages.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_PENTA, visitDate);
+            EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, patient.cwcPentaPatientCareEnrollOnVisitAfter10Weeks(visitDate).milestoneName(milestoneName(cwcVisit)));
+            allSchedulesAndMessages.enrollOrFulfill(enrollmentRequest, visitDate);
         }
     }
 

@@ -36,6 +36,9 @@ public class CWCCareHistoryVO {
         this.lastIPTi=lastIPTi;
     }
 
+    public CWCCareHistoryVO() {
+    }
+
     public List<CwcCareHistory> getCwcCareHistories() {
         return cwcCareHistories;
     }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PENTA;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 
 public class ActiveCareSchedules {
@@ -45,5 +46,9 @@ public class ActiveCareSchedules {
     @Override
     public int hashCode() {
         return allActiveCareSchedules != null ? allActiveCareSchedules.hashCode() : 0;
+    }
+
+    public Boolean hasActivePentaSchedule() {
+        return allActiveCareSchedules.get(CWC_PENTA) != null;
     }
 }

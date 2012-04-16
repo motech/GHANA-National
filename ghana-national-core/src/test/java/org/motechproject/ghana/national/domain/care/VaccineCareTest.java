@@ -14,7 +14,6 @@ import java.util.HashMap;
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.today;
 
 public class VaccineCareTest {
@@ -23,13 +22,13 @@ public class VaccineCareTest {
     public void shouldReturnHistoryPatientCareWithNextMilestone_IfHistoryIsProvidedAndNoActiveScheduleExists() {
 
         final String facilityId = "fid";
-        LocalDate lastIPTVaccinationDate = newDate(2012, 1, 1);
         Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(today().minusWeeks(14));
+        LocalDate lastIPTVaccinationDate = pregnancy.dateOfConception().plusWeeks(13);
         boolean hasActiveIPTSchedule = false;
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
 
-        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), hasActiveIPTSchedule, "1", lastIPTVaccinationDate.toDate(), true).careForANCReg();
+        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), hasActiveIPTSchedule, "1", lastIPTVaccinationDate.toDate()).careForReg();
 
         PatientCare expectedPatientCare = PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, lastIPTVaccinationDate, "IPT2", new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
@@ -45,7 +44,7 @@ public class VaccineCareTest {
         boolean hasActiveIPTSchedule = false;
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
-        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), hasActiveIPTSchedule, null, null, false).careForANCReg();
+        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), hasActiveIPTSchedule, null, null).careForReg();
 
         PatientCare expectedPatientCare = PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_IPT_VACCINE, pregnancy.dateOfConception(), new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
@@ -61,7 +60,7 @@ public class VaccineCareTest {
         boolean hasActiveIPTSchedule = false;
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
-        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), hasActiveIPTSchedule, null, null, false).careForHistory();
+        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), hasActiveIPTSchedule, null, null).careForHistory();
 
         assertNull(patientCare);
     }
@@ -75,7 +74,7 @@ public class VaccineCareTest {
         boolean hasActiveIPTSchedule = false;
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
-        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), hasActiveIPTSchedule, null, null, false).careForANCReg();
+        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), hasActiveIPTSchedule, null, null).careForReg();
 
         assertNull(patientCare);
     }
@@ -89,7 +88,7 @@ public class VaccineCareTest {
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         boolean hasActiveIPTSchedule = true;
-        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), hasActiveIPTSchedule, null, null, false).careForANCReg();
+        PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), hasActiveIPTSchedule, null, null).careForReg();
 
         assertNull(patientCare);
     }
@@ -103,7 +102,7 @@ public class VaccineCareTest {
 
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
-        PatientCare patientCare = new IPTVaccineCare(patient, enrollmentDate, false, "3", lastIPTVaccinationDate.toDate(), true).careForANCReg();
+        PatientCare patientCare = new IPTVaccineCare(patient, enrollmentDate, false, "3", lastIPTVaccinationDate.toDate()).careForReg();
 
         assertNull(patientCare);
     }

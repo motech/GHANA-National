@@ -88,7 +88,6 @@ public class TestANCEnrollment implements CareEnrollment {
             put("addHistory", booleanCodeForAddHistory(addHistory));
             put("deliveryDateConfirmed", booleanCodeForDateConfirmed(deliveryDateConfirmed));
             put("addCareHistory", "IPT_SP,TT");
-//            put("addCareHistory", join(collect(addCareHistory, on(ANCCareHistory.class).name()), ","));
             put("lastIPT", lastIPT);
             put("lastTT", lastTT);
             put("lastIPTDate", safe(lastIPTDate));
