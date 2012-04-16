@@ -1,7 +1,12 @@
 package org.motechproject.ghana.national.handler;
 
+import org.apache.log4j.Logger;
 import org.motechproject.appointments.api.EventKeys;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.AlertWindow;
+import org.motechproject.ghana.national.domain.Concept;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.SMSTemplate;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -13,6 +18,7 @@ import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class BaseScheduleHandler {
@@ -21,6 +27,7 @@ public abstract class BaseScheduleHandler {
     protected SMSGateway smsGateway;
     protected FacilityService facilityService;
     protected AllObservations allObservations;
+    private Logger logger = Logger.getLogger(this.getClass());
 
     protected BaseScheduleHandler() {
     }
@@ -46,7 +53,11 @@ public abstract class BaseScheduleHandler {
 
         final String windowName = getVisitWindow((String) parameters.get(MotechSchedulerService.JOB_ID_KEY));
         final String scheduleName = (String) parameters.get(EventKeys.VISIT_NAME);
-        for (String phoneNumber : facility.getPhoneNumbers()) {
+        List<String> phoneNumbers = facility.getPhoneNumbers();
+        if(phoneNumbers.size() == 0) {
+            logger.warn("No Phone Numbers in Facility to send SMS.");
+        }
+        for (String phoneNumber : phoneNumbers) {
             smsGateway.dispatchSMSToAggregator(ancVisitSmsKey, patientDetailsMap(patient, windowName, scheduleName, serialNumber), phoneNumber);
         }
     }

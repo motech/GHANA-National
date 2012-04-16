@@ -37,7 +37,7 @@ public class Utility {
     }
 
     public static String emptyToNull(String string) {
-        return (StringUtils.isEmpty(string.trim())) ? null : string;
+        return string == null ? null : ((StringUtils.isEmpty(string.trim())) ? null : string);
     }
 
     public static Integer safeParseInteger(String string) {
@@ -58,17 +58,17 @@ public class Utility {
 
     public static <T> List<T> nullSafeList(List<T> items) {
         List<T> result = new ArrayList<T>();
-        for(T item : items) {
-            if(item != null) result.add(item);
+        for (T item : items) {
+            if (item != null) result.add(item);
         }
         return result;
     }
 
-    public static String nullSafeToString(DateTime date, String pattern){
+    public static String nullSafeToString(DateTime date, String pattern) {
         return (date != null) ? new SimpleDateFormat(pattern).format(date.toDate()) : "";
     }
 
-    public static String nullSafeToString(LocalDate date, String pattern){
+    public static String nullSafeToString(LocalDate date, String pattern) {
         return (date != null) ? new SimpleDateFormat(pattern).format(date.toDate()) : "";
     }
 

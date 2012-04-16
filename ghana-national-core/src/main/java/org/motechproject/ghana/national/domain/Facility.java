@@ -3,11 +3,13 @@ package org.motechproject.ghana.national.domain;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.mrs.model.MRSFacility;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
 
 @TypeDiscriminator("doc.type === 'Facility'")
 public class Facility extends MotechBaseDataObject {
@@ -143,8 +145,22 @@ public class Facility extends MotechBaseDataObject {
         return motechId;
     }
 
+    @JsonIgnore
     public List<String> getPhoneNumbers() {
-        return Utility.nullSafeList(phoneNumber, additionalPhoneNumber1, additionalPhoneNumber2, additionalPhoneNumber3);
+        List<String> phoneNumbers = new ArrayList<String>();
+        if (emptyToNull(phoneNumber) != null) {
+            phoneNumbers.add(phoneNumber);
+        }
+        if (emptyToNull(additionalPhoneNumber1) != null) {
+            phoneNumbers.add(additionalPhoneNumber1);
+        }
+        if (emptyToNull(additionalPhoneNumber2) != null) {
+            phoneNumbers.add(additionalPhoneNumber2);
+        }
+        if (emptyToNull(additionalPhoneNumber3) != null) {
+            phoneNumbers.add(additionalPhoneNumber3);
+        }
+        return phoneNumbers;
     }
 }
 
