@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang.time.DateUtils.parseDate;
-import static org.joda.time.PeriodType.millis;
 import static org.motechproject.ghana.national.tools.Utility.nullSafe;
 import static org.motechproject.util.DateUtil.newDateTime;
 
@@ -248,11 +247,14 @@ public class ScheduleTracker {
                 LocalDate referenceWindowEndDate = referenceDate.plus(windowEnd);
 
                 int alertCount = alert.getRemainingAlertCount(newDateTime(referenceWindowStartDate.toDate()), null);
-                for (long count = 0; count <= alertCount; count++) {
+                if (alertCount > 0) {
+                    return alert.getNextAlertDateTime(newDateTime(referenceWindowStartDate.toDate()), null).toLocalDate();
+                }
+                /*for (long count = 0; count <= alertCount; count++) {
                     Period interval = new Period(alert.getInterval().toStandardDuration().getMillis() * count, millis());
                     LocalDate idealStartDate = referenceWindowStartDate.plus(alert.getOffset()).plusDays((int) interval.toStandardDuration().getStandardDays());
                     if (idealStartDate.compareTo(DateUtil.today()) > 0) return idealStartDate;
-                }
+                }*/
 
             }
         }
