@@ -247,7 +247,7 @@ public class ScheduleTracker {
                 LocalDate referenceWindowStartDate = referenceDate.plus(windowStart);
                 LocalDate referenceWindowEndDate = referenceDate.plus(windowEnd);
 
-                int alertCount = alert.getRemainingAlertCount(newDateTime(referenceWindowStartDate.toDate()), newDateTime(referenceWindowEndDate.toDate()), null);
+                int alertCount = alert.getRemainingAlertCount(newDateTime(referenceWindowStartDate.toDate()), null);
                 for (long count = 0; count <= alertCount; count++) {
                     Period interval = new Period(alert.getInterval().toStandardDuration().getMillis() * count, millis());
                     LocalDate idealStartDate = referenceWindowStartDate.plus(alert.getOffset()).plusDays((int) interval.toStandardDuration().getStandardDays());
