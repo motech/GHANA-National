@@ -98,6 +98,16 @@ public class XformHttpClient {
             hackDate(formData, "/ancVisit/nextANCDate");
             hackDate(formData, "/abortion/date");
             hackDate(formData, "/clientQuery/dateOfBirth");
+            hackDate(formData, "/careHistory/date");
+            hackDate(formData, "/careHistory/lastIPTDate");
+            hackDate(formData, "/careHistory/lastTTDate");
+            hackDate(formData, "/careHistory/bcgDate");
+            hackDate(formData, "/careHistory/lastOPVDate");
+            hackDate(formData, "/careHistory/lastPentaDate");
+            hackDate(formData, "/careHistory/measlesDate");
+            hackDate(formData, "/careHistory/yellowFeverDate");
+            hackDate(formData, "/careHistory/lastIPTIDate");
+            hackDate(formData, "/careHistory/lastVitaminADate");
             hackDateTime(formData, "/delivery/date");
             formsList.add(formData);
         }

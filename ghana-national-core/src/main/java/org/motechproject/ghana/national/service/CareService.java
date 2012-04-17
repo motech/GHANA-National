@@ -7,7 +7,6 @@ import org.motechproject.ghana.national.domain.care.ANCCareRegistration;
 import org.motechproject.ghana.national.domain.care.IPTVaccineCare;
 import org.motechproject.ghana.national.domain.care.PentaVaccineCare;
 import org.motechproject.ghana.national.domain.care.TTVaccineCare;
-import org.motechproject.ghana.national.factory.VaccineCareFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
@@ -28,9 +27,8 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
 import static org.motechproject.ghana.national.domain.RegistrationToday.TODAY;
-import static org.motechproject.ghana.national.factory.VaccineCareFactory.iptVaccineCare;
-import static org.motechproject.ghana.national.factory.VaccineCareFactory.ttVaccineCare;
 import static org.motechproject.ghana.national.tools.Utility.safeParseDouble;
+import static org.motechproject.ghana.national.tools.Utility.safeToString;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.now;
 
@@ -102,8 +100,8 @@ public class CareService {
 
         ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(TT_VACCINATION, ANC_IPT_VACCINE));
 
-        TTVaccineCare ttVaccineCare = ttVaccineCare(patient, expectedDeliveryDate, newDate(registrationDate), activeCareSchedules.hasActiveTTSchedule(), ancCareHistoryVO);
-        IPTVaccineCare iptVaccineCare = iptVaccineCare(patient, expectedDeliveryDate, activeCareSchedules.hasActiveIPTSchedule(), ancCareHistoryVO);
+        TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, expectedDeliveryDate, newDate(registrationDate), activeCareSchedules.hasActiveTTSchedule(), ancCareHistoryVO.getLastTT(), ancCareHistoryVO.getLastTTDate());
+        IPTVaccineCare iptVaccineCare = new IPTVaccineCare(patient, expectedDeliveryDate, activeCareSchedules.hasActiveIPTSchedule(), ancCareHistoryVO.getLastIPT(), ancCareHistoryVO.getLastIPTDate());
 
         List<PatientCare> patientCares = new ANCCareRegistration(ttVaccineCare, iptVaccineCare, patient, expectedDeliveryDate).allCares();
         enrollPatientCares(patientCares, patient);
@@ -268,7 +266,7 @@ public class CareService {
         CWCCareHistoryVO cwcCareHistoryVO = careHistoryVO.getCwcCareHistoryVO();
         ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(CWC_PENTA));
 
-        PentaVaccineCare pentaVaccineCare = VaccineCareFactory.pentaVaccineCare(patient, newDate(careHistoryVO.getDate()), activeCareSchedules.hasActivePentaSchedule(), cwcCareHistoryVO);
+        PentaVaccineCare pentaVaccineCare = new PentaVaccineCare(patient, newDate(careHistoryVO.getDate()), activeCareSchedules.hasActivePentaSchedule(), safeToString(cwcCareHistoryVO.getLastPenta()), cwcCareHistoryVO.getLastPentaDate());
         enrollPatientCares(CareHistory.forChildCare(pentaVaccineCare).cares(), patient);
     }
 
@@ -283,8 +281,8 @@ public class CareService {
 
             ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(TT_VACCINATION, ANC_IPT_VACCINE));
 
-            TTVaccineCare ttVaccineCare = ttVaccineCare(patient, newDate(edd), newDate(careHistoryVO.getDate()), activeCareSchedules.hasActiveTTSchedule(), ancCareHistoryVO);
-            IPTVaccineCare iptVaccineCare = iptVaccineCare(patient, newDate(edd), activeCareSchedules.hasActiveIPTSchedule(), ancCareHistoryVO);
+            TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, newDate(edd), newDate(careHistoryVO.getDate()), activeCareSchedules.hasActiveTTSchedule(), ancCareHistoryVO.getLastTT(), ancCareHistoryVO.getLastTTDate());
+            IPTVaccineCare iptVaccineCare = new IPTVaccineCare(patient, newDate(edd), activeCareSchedules.hasActiveIPTSchedule(), ancCareHistoryVO.getLastIPT(), ancCareHistoryVO.getLastIPTDate());
 
             final List<PatientCare> caresApplicableToTheCurrentPregnancy = CareHistory.forPregnancy(ttVaccineCare, iptVaccineCare).cares();
 

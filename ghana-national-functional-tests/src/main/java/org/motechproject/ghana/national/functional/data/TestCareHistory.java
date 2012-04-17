@@ -39,16 +39,16 @@ public class TestCareHistory {
     }
 
     public TestCareHistory withIPT(String dosage, LocalDate lastIPTdate) {
-        lastIPT = dosage;
+        this.lastIPT = dosage;
         this.lastIPTDate = lastIPTdate;
-        addHistory = addHistory + "IPT_SP";
+        this.addHistory = (this.addHistory + " IPT_SP").trim().replace(" ", ",");
         return this;
     }
 
     public TestCareHistory withTT(String dosage, LocalDate lastIPTdate) {
-        lastTT = dosage;
+        this.lastTT = dosage;
         this.lastTTDate = lastIPTdate;
-        addHistory = addHistory + "TT";
+        this.addHistory = (this.addHistory + " TT").trim().replace(" ", ",");
         return this;
     }
 
@@ -79,7 +79,7 @@ public class TestCareHistory {
         return new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", facilityId);
-            put("date", safe(TestCareHistory.this.date));
+            put("date", safe(date));
             put("motechId", motechId);
             put("addHistory", addHistory);
             put("lastIPT", lastIPT);
@@ -110,6 +110,11 @@ public class TestCareHistory {
 
     public TestCareHistory motechId(String motechId) {
         this.motechId = motechId;
+        return this;
+    }
+
+    public TestCareHistory withDate(LocalDate date) {
+        this.date = date;
         return this;
     }
 }
