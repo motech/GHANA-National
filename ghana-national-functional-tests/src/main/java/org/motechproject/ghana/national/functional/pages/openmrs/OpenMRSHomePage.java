@@ -19,6 +19,6 @@ public class OpenMRSHomePage extends BasePage {
     }
 
     public void logout() {
-        userLogout.click();
+        userLogout.findElement(By.tagName("a")).click();
     }
 }

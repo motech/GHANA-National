@@ -82,7 +82,7 @@ public class PregnancyTerminationMobileUploadTest extends OpenMRSAwareFunctional
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("MATERNAL DEATH","false"),
-//                new OpenMRSObservationVO("POST-ABORTION FP COUNSELING","true"),
+                new OpenMRSObservationVO("POST-ABORTION FP COUNSELING","true"),
                 new OpenMRSObservationVO("POST-ABORTION FP ACCEPTED","true"),
                 new OpenMRSObservationVO("PREGNANCY STATUS","false"),
                 new OpenMRSObservationVO("PREGNANCY, TERMINATION PROCEDURE","2.0"),

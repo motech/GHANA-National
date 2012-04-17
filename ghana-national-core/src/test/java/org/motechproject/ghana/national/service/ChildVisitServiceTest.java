@@ -15,11 +15,7 @@ import org.motechproject.ghana.national.repository.AllSchedulesAndMessages;
 import org.motechproject.ghana.national.service.request.PNCBabyRequest;
 import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.model.Time;
-import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSPerson;
-import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.mrs.model.*;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
@@ -28,14 +24,13 @@ import org.motechproject.util.DateUtil;
 import java.util.Date;
 import java.util.Set;
 
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.selectFirst;
+import static ch.lambdaj.Lambda.*;
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Matchers.eq;
@@ -45,11 +40,8 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.PNCChildVisit.PNC1;
 import static org.motechproject.ghana.national.domain.PNCChildVisit.PNC2;
-import static org.motechproject.ghana.national.domain.PatientTest.*;
-import static org.motechproject.util.DateUtil.newDate;
-import static org.motechproject.util.DateUtil.newDateTime;
-import static org.motechproject.util.DateUtil.time;
-import static org.motechproject.util.DateUtil.today;
+import static org.motechproject.ghana.national.domain.PatientTest.createPatient;
+import static org.motechproject.util.DateUtil.*;
 
 public class ChildVisitServiceTest extends BaseUnitTest {
     private ChildVisitService service;
@@ -108,7 +100,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         assertEnrollmentRequest(new EnrollmentRequest(patientId, PNC2.scheduleName(), null, visitDate.toLocalDate(), visitTime, visitDate.toLocalDate(), visitTime, null, null)
                 , requestCaptor.getValue());
     }
-  
+
     private PNCBabyRequest createTestPNCBabyForm(DateTime date, MRSUser staff, Facility facility, Patient patient) {
         PNCBabyRequest pncBabyRequest = new PNCBabyRequest();
         return pncBabyRequest.staff(staff).
@@ -228,53 +220,127 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
     @Test
     public void shouldFulfillYellowFeverScheduleIfYellowFeverIsChosen() {
-        String mrsPatientId = "1234";
-        CWCVisit testCWCVisit = createTestCWCVisit(new Date(), new MRSUser(), mock(Facility.class), new Patient(new MRSPatient(mrsPatientId)));
+        String facilityId = "facilityId";
+        String mrsPatientId = "mrsId";
+        MRSPatient mrsPatient = mock(MRSPatient.class);
+        MRSFacility mockFacility = mock(MRSFacility.class);
+        Facility facility = new Facility(mockFacility);
+        Patient patient = new Patient(mrsPatient);
+
+        CWCVisit testCWCVisit = createTestCWCVisit(new Date(), new MRSUser(), facility, patient);
+
         testCWCVisit.immunizations(asList(Concept.YF.name()));
+        LocalDate date = DateUtil.newDate(testCWCVisit.getDate());
+        when(mrsPatient.getId()).thenReturn(mrsPatientId);
+        when(mrsPatient.getFacility()).thenReturn(mockFacility);
+        when(mrsPatient.getFacility().getId()).thenReturn(facilityId);
 
         service.updateYellowFeverSchedule(testCWCVisit);
 
-        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(mrsPatientId, CWC_YELLOW_FEVER, DateUtil.newDate(testCWCVisit.getDate()));
+        ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedulesAndMessages).enrollOrFulfill(requestCaptor.capture(), eq(date));
+
+        EnrollmentRequest request = requestCaptor.getValue();
+        assertThat(request.getExternalId(), is(mrsPatientId));
+        assertThat(request.getEnrollmentDateTime(), is(date.toDateTimeAtStartOfDay()));
+        assertThat(request.getScheduleName(), is(CWC_YELLOW_FEVER));
+        assertThat(request.getStartingMilestoneName(), is(nullValue()));
     }
 
     @Test
     public void shouldFulfillBCGScheduleIfChosen() {
-        String mrsPatientId = "1234";
-        CWCVisit testCWCVisit = createTestCWCVisit(new Date(), new MRSUser(), mock(Facility.class), new Patient(new MRSPatient(mrsPatientId)));
+        String facilityId = "facilityId";
+        String mrsPatientId = "mrsId";
+
+        MRSPatient mrsPatient = mock(MRSPatient.class);
+        MRSFacility mockFacility = mock(MRSFacility.class);
+        Facility facility = new Facility(mockFacility);
+        Patient patient = new Patient(mrsPatient);
+
+        CWCVisit testCWCVisit = createTestCWCVisit(new Date(), new MRSUser(), facility, patient);
         testCWCVisit.immunizations(asList(Concept.BCG.name()));
+        LocalDate date = DateUtil.newDate(testCWCVisit.getDate());
+
+        when(mrsPatient.getId()).thenReturn(mrsPatientId);
+        when(mrsPatient.getFacility()).thenReturn(mockFacility);
+        when(mrsPatient.getFacility().getId()).thenReturn(facilityId);
 
         service.updateBCGSchedule(testCWCVisit);
 
-        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(mrsPatientId, CWC_BCG, DateUtil.newDate(testCWCVisit.getDate()));
+        ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedulesAndMessages).enrollOrFulfill(requestCaptor.capture(), eq(date));
+
+        EnrollmentRequest request = requestCaptor.getValue();
+        assertThat(request.getExternalId(), is(mrsPatientId));
+        assertThat(request.getEnrollmentDateTime(), is(date.toDateTimeAtStartOfDay()));
+        assertThat(request.getScheduleName(), is(CWC_BCG));
+        assertThat(request.getStartingMilestoneName(), is(nullValue()));
     }
 
     @Test
-    public void shouldFulFillOPV0ScheduleIfChosen(){
-       String mrsPatientId = "1234";
-        CWCVisit testCWCVisit = createTestCWCVisit(new Date(), new MRSUser(), mock(Facility.class), new Patient(new MRSPatient(mrsPatientId)));
+    public void shouldFulFillOPV0ScheduleIfChosen() {
+        String facilityId = "facilityId";
+        String mrsPatientId = "mrsId";
+
+        MRSPatient mrsPatient = mock(MRSPatient.class);
+        MRSFacility mockFacility = mock(MRSFacility.class);
+        Facility facility = new Facility(mockFacility);
+        Patient patient = new Patient(mrsPatient);
+
+        CWCVisit testCWCVisit = createTestCWCVisit(new Date(), new MRSUser(), facility, patient);
         testCWCVisit.immunizations(asList(Concept.OPV.name()));
-        testCWCVisit.opvdose(OPVDose.OPV_0.value().toString());
+        testCWCVisit.opvdose(String.valueOf(OPVDose.OPV_0.value()));
+        LocalDate date = DateUtil.newDate(testCWCVisit.getDate());
+
+        when(mrsPatient.getId()).thenReturn(mrsPatientId);
+        when(mrsPatient.getFacility()).thenReturn(mockFacility);
+        when(mrsPatient.getFacility().getId()).thenReturn(facilityId);
 
         service.updateOPVSchedule(testCWCVisit);
 
-        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_0, DateUtil.newDate(testCWCVisit.getDate()));
+        ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedulesAndMessages).enrollOrFulfill(requestCaptor.capture(), eq(date));
+
+        EnrollmentRequest request = requestCaptor.getValue();
+        assertThat(request.getExternalId(), is(mrsPatientId));
+        assertThat(request.getEnrollmentDateTime(), is(date.toDateTimeAtStartOfDay()));
+        assertThat(request.getScheduleName(), is(CWC_OPV_0));
+        assertThat(request.getStartingMilestoneName(), is(nullValue()));
     }
 
     @Test
-    public void shouldFulFillOtherOPVScheduleIfChosen(){
-       String mrsPatientId = "1234";
-        CWCVisit testCWCVisit = createTestCWCVisit(new Date(), new MRSUser(), mock(Facility.class), new Patient(new MRSPatient(mrsPatientId)));
+    public void shouldFulFillOtherOPVScheduleIfChosen() {
+        String facilityId = "facilityId";
+        String mrsPatientId = "mrsId";
+
+        MRSPatient mrsPatient = mock(MRSPatient.class);
+        MRSFacility mockFacility = mock(MRSFacility.class);
+        Facility facility = new Facility(mockFacility);
+        Patient patient = new Patient(mrsPatient);
+
+        CWCVisit testCWCVisit = createTestCWCVisit(new Date(), new MRSUser(), facility, patient);
         testCWCVisit.immunizations(asList(Concept.OPV.name()));
-        testCWCVisit.opvdose(OPVDose.OPV_3.value().toString());
+        testCWCVisit.opvdose(String.valueOf(OPVDose.OPV_1.value()));
+        LocalDate date = DateUtil.newDate(testCWCVisit.getDate());
+
+        when(mrsPatient.getId()).thenReturn(mrsPatientId);
+        when(mrsPatient.getFacility()).thenReturn(mockFacility);
+        when(mrsPatient.getFacility().getId()).thenReturn(facilityId);
 
         service.updateOPVSchedule(testCWCVisit);
 
-        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_OTHERS, DateUtil.newDate(testCWCVisit.getDate()));
+        ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedulesAndMessages).enrollOrFulfill(requestCaptor.capture(), eq(date));
+
+        EnrollmentRequest request = requestCaptor.getValue();
+        assertThat(request.getExternalId(), is(mrsPatientId));
+        assertThat(request.getEnrollmentDateTime(), is(date.toDateTimeAtStartOfDay()));
+        assertThat(request.getScheduleName(), is(CWC_OPV_OTHERS));
+        assertThat(request.getStartingMilestoneName(), is(nullValue()));
     }
 
     @Test
     public void shouldFulfilMilestoneIfEnrolledAndTakenMeaslesVaccineOnVisit() {
-
         String mrsPatientId = "mrsPatientId";
         Patient patient = new Patient(new MRSPatient(mrsPatientId, "motechId", new MRSPerson().dateOfBirth(newDate(2011, 3, 30).toDate()), new MRSFacility(null)));
         LocalDate visitDate = newDate(2012, 2, 3);
@@ -284,20 +350,21 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(mockEnrollmentRecord);
         service.save(cwcVisit);
 
-        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(mrsPatientId, CWC_MEASLES_VACCINE, visitDate);
+        ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedulesAndMessages).enrollOrFulfill(requestCaptor.capture(), eq(visitDate));
     }
 
     @Test
-    public void shouldNotFulFillAnyOPVMilestoneIfDosageNotTaken(){
-       String mrsPatientId = "mrsPatientId";
+    public void shouldNotFulFillAnyOPVMilestoneIfDosageNotTaken() {
+        String mrsPatientId = "mrsPatientId";
         Patient patient = new Patient(new MRSPatient(mrsPatientId, "motechId", new MRSPerson().dateOfBirth(newDate(2011, 3, 30).toDate()), new MRSFacility(null)));
         LocalDate visitDate = newDate(2012, 2, 3);
         CWCVisit cwcVisit = createTestCWCVisit(visitDate.toDate(), mock(MRSUser.class), mock(Facility.class), patient)
                 .immunizations(asList(BCG.name()));
         service.save(cwcVisit);
 
-        verify(mockAllSchedulesAndMessages,never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_0, visitDate);
-        verify(mockAllSchedulesAndMessages,never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_OTHERS, visitDate);
+        verify(mockAllSchedulesAndMessages, never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_0, visitDate);
+        verify(mockAllSchedulesAndMessages, never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_OTHERS, visitDate);
     }
 
     @Test

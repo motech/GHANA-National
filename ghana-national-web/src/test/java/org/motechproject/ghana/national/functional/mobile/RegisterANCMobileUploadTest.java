@@ -163,7 +163,7 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
                 scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate());
     }
 
-    @Test
+    @Test(enabled = false)
     public void shouldCreateANCWithScheduleForIPTAndTTwithNextMilestones_IfThePatientHasAVaccineHistoryInActivePregnancyPeriod(){
         DataGenerator dataGenerator = new DataGenerator();
         String staffId = staffGenerator.createStaff(browser, homePage);
@@ -172,12 +172,12 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
                 .estimatedDateOfBirth(false);
         String patientId = patientGenerator.createPatientWithStaff(testPatient, browser, homePage);
 
-        Pregnancy pregnancyIn12thWeekOfPregnancy = Pregnancy.basedOnConceptionDate(DateUtil.today().minusWeeks(5));
+        Pregnancy in12thWeekOfPregnancy = Pregnancy.basedOnConceptionDate(DateUtil.today().minusWeeks(11));
         LocalDate registrationDate = DateUtil.today();
-        LocalDate iptVaccinationDate = pregnancyIn12thWeekOfPregnancy.dateOfConception().plusDays(2);
-        LocalDate ttVaccinationDate = pregnancyIn12thWeekOfPregnancy.dateOfConception().plusDays(3);
+        LocalDate iptVaccinationDate = in12thWeekOfPregnancy.dateOfConception().plusDays(2);
+        LocalDate ttVaccinationDate = in12thWeekOfPregnancy.dateOfConception().plusDays(3);
         TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId)
-                .withEstimatedDateOfDelivery(pregnancyIn12thWeekOfPregnancy.dateOfDelivery()).withRegistrationDate(registrationDate)
+                .withEstimatedDateOfDelivery(in12thWeekOfPregnancy.dateOfDelivery()).withRegistrationDate(registrationDate)
                 .withLastIPT("1").withLastIPTDate(iptVaccinationDate)
                 .withLastTT("1").withLastTTDate(ttVaccinationDate);
 

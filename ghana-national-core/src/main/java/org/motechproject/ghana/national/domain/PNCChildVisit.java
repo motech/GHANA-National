@@ -26,15 +26,15 @@ public enum PNCChildVisit {
         throw new IllegalArgumentException("pncvisit not valid : " + visitNumber);
     }
 
-    public String scheduleName() {
-        return scheduleName;
-    }
-
     public static List<String> schedules() {
         List<String> schedules = new ArrayList<String>();
         for (PNCChildVisit visit : PNCChildVisit.values()) {
              schedules.add(visit.scheduleName());
         }
         return schedules;
+    }
+
+    public String scheduleName() {
+        return scheduleName;
     }
 }

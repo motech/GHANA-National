@@ -3,8 +3,8 @@ package org.motechproject.ghana.national.handlers;
 import org.motechproject.ghana.national.bean.PNCBabyForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.PNCChildVisit;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.mapper.PNCBabyRequestMapper;
 import org.motechproject.ghana.national.service.ChildVisitService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -45,10 +45,10 @@ public class PNCBabyFormHandler implements FormPublishHandler {
     public void handleFormEvent(MotechEvent motechEvent) {
         PNCBabyForm pncBabyForm = (PNCBabyForm) motechEvent.getParameters().get(Constants.FORM_BEAN);
         try {
-            childVisitService.save(createRequest(pncBabyForm));
+            PNCBabyRequest pncBabyRequest = createRequest(pncBabyForm);
+            childVisitService.save(pncBabyRequest);
         } catch (Exception e) {
-            log.error("Exception occurred in saving Delivery Notification details for: " + pncBabyForm.getMotechId(), e);
-
+            log.error("Exception occured in saving PNC Mother details for: " + pncBabyForm.getMotechId(), e);
         }
     }
 
@@ -57,24 +57,6 @@ public class PNCBabyFormHandler implements FormPublishHandler {
         MRSUser staff = staffService.getUserByEmailIdOrMotechId(pncBabyForm.getStaffId());
         Patient patient = patientService.getPatientByMotechId(pncBabyForm.getMotechId());
 
-        return new PNCBabyRequest()
-                .patient(patient)
-                .facility(facility)
-                .staff(staff)
-                .visit(PNCChildVisit.byVisitNumber(pncBabyForm.getVisitNumber()))
-                .weight(pncBabyForm.getWeight())
-                .temperature(pncBabyForm.getTemperature())
-                .location(pncBabyForm.getLocation())
-                .house(pncBabyForm.getHouse())
-                .community(pncBabyForm.getCommunity())
-                .referred(pncBabyForm.getReferred())
-                .maleInvolved(pncBabyForm.getMaleInvolved())
-                .date(pncBabyForm.getDate())
-                .respiration(pncBabyForm.getRespiration())
-                .cordConditionNormal(pncBabyForm.getCordConditionNormal())
-                .babyConditionGood(pncBabyForm.getBabyConditionGood())
-                .bcg(pncBabyForm.getBcg())
-                .opv0(pncBabyForm.getOpv0())
-                .comments(pncBabyForm.getComments());
+        return new PNCBabyRequestMapper().map(pncBabyForm, patient, staff, facility);
     }
 }

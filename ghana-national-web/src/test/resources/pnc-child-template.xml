@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xf:xforms xmlns:xf="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="8">
+  <xf:model>
+    <xf:instance id="pncBabyRequest">
+      <pncBabyRequest id="8" name="PNC (baby)">
+        <staffId/>
+        <facilityId/>
+        <date/>
+        <motechId/>
+        <visitNumber/>
+        <weight/>
+        <temperature/>
+        <location/>
+        <house/>
+        <community/>
+        <referred/>
+        <maleInvolved/>
+        <respiration/>
+        <cordConditionNormal/>
+        <babyConditionGood/>
+        <bcg/>
+        <opv0/>
+        <comments/>
+        <formtype>data_entry</formtype>
+        <formname>pncBabyRequest</formname>
+      </pncBabyRequest>
+    </xf:instance>
+    <xf:bind id="staffId" nodeset="/pncBabyRequest/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+    <xf:bind id="facilityId" nodeset="/pncBabyRequest/facilityId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+    <xf:bind id="date" constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future" nodeset="/pncBabyRequest/date" required="true()" type="xsd:dateTime"/>
+    <xf:bind id="motechId" nodeset="/pncBabyRequest/motechId" required="true()" type="xsd:int" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
+    <xf:bind id="visitNumber" nodeset="/pncBabyRequest/visitNumber" required="true()" type="xsd:string"/>
+    <xf:bind id="weight" constraint=". &gt;= 0.2 and . &lt;= 11" message="Value out of range: must be between 0.2 and 11" nodeset="/pncBabyRequest/weight" type="xsd:decimal"/>
+    <xf:bind id="temperature" constraint=". &gt;= 30 and . &lt;= 48" message="Value out of range: must be between 30 and 48" nodeset="/pncBabyRequest/temperature" type="xsd:decimal"/>
+    <xf:bind id="location" nodeset="/pncBabyRequest/location" required="true()" type="xsd:string"/>
+    <xf:bind id="house" action="show" nodeset="/pncBabyRequest/house" relevant="/pncBabyRequest/location = '2'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind id="community" action="show" nodeset="/pncBabyRequest/community" relevant="/pncBabyRequest/location = '2'" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind id="referred" nodeset="/pncBabyRequest/referred" required="true()" type="xsd:string"/>
+    <xf:bind id="maleInvolved" nodeset="/pncBabyRequest/maleInvolved" required="true()" type="xsd:string"/>
+    <xf:bind id="respiration" constraint=". &gt;= 10 and . &lt;= 100" message="Value out of range: must be between 10 and 100" nodeset="/pncBabyRequest/respiration" required="true()" type="xsd:int"/>
+    <xf:bind id="cordConditionNormal" nodeset="/pncBabyRequest/cordConditionNormal" required="true()" type="xsd:string"/>
+    <xf:bind id="babyConditionGood" nodeset="/pncBabyRequest/babyConditionGood" required="true()" type="xsd:string"/>
+    <xf:bind id="bcg" nodeset="/pncBabyRequest/bcg" required="true()" type="xsd:string"/>
+    <xf:bind id="opv0" nodeset="/pncBabyRequest/opv0" required="true()" type="xsd:string"/>
+    <xf:bind id="comments" nodeset="/pncBabyRequest/comments" type="xsd:string"/>
+    <xf:bind id="formtype" nodeset="/pncBabyRequest/formtype" required="true()" type="xsd:string" visible="false()"/>
+    <xf:bind id="formname" nodeset="/pncBabyRequest/formname" required="true()" type="xsd:string" visible="false()"/>
+  </xf:model>
+  <xf:group id="1">
+    <xf:label>Page2</xf:label>
+    <xf:input bind="staffId">
+      <xf:label>Staff ID</xf:label>
+    </xf:input>
+    <xf:input bind="facilityId">
+      <xf:label>Facility ID</xf:label>
+    </xf:input>
+    <xf:input bind="date">
+      <xf:label>Visit date</xf:label>
+    </xf:input>
+    <xf:input bind="motechId">
+      <xf:label>MoTeCH ID</xf:label>
+    </xf:input>
+    <xf:select1 bind="visitNumber">
+      <xf:label>Visit number</xf:label>
+      <xf:item id="1">
+        <xf:label>PNC 1</xf:label>
+        <xf:value>1</xf:value>
+      </xf:item>
+      <xf:item id="2">
+        <xf:label>PNC 2</xf:label>
+        <xf:value>2</xf:value>
+      </xf:item>
+      <xf:item id="3">
+        <xf:label>PNC 3</xf:label>
+        <xf:value>3</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:input bind="weight">
+      <xf:label>Weight (Kg)</xf:label>
+    </xf:input>
+    <xf:input bind="temperature">
+      <xf:label>Temperature (C)</xf:label>
+    </xf:input>
+    <xf:select1 bind="location">
+      <xf:label>Location</xf:label>
+      <xf:item id="1">
+        <xf:label>Facility or clinic</xf:label>
+        <xf:value>1</xf:value>
+      </xf:item>
+      <xf:item id="2">
+        <xf:label>Home</xf:label>
+        <xf:value>2</xf:value>
+      </xf:item>
+      <xf:item id="3">
+        <xf:label>Outreach</xf:label>
+        <xf:value>3</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:input bind="house">
+      <xf:label>House</xf:label>
+    </xf:input>
+    <xf:input bind="community">
+      <xf:label>Community</xf:label>
+    </xf:input>
+    <xf:select1 bind="referred">
+      <xf:label>Referred</xf:label>
+      <xf:item id="Y">
+        <xf:label>Yes</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+      <xf:item id="N">
+        <xf:label>No</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:select1 bind="maleInvolved">
+      <xf:label>Male involvement</xf:label>
+      <xf:item id="Y">
+        <xf:label>Yes</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+      <xf:item id="N">
+        <xf:label>No</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:input bind="respiration">
+      <xf:label>Respiration</xf:label>
+    </xf:input>
+    <xf:select1 bind="cordConditionNormal">
+      <xf:label>Cord condition</xf:label>
+      <xf:item id="Y">
+        <xf:label>Normal</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+      <xf:item id="N">
+        <xf:label>Abnormal</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:select1 bind="babyConditionGood">
+      <xf:label>Baby condition</xf:label>
+      <xf:item id="Y">
+        <xf:label>Good</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+      <xf:item id="N">
+        <xf:label>Bad</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:select1 bind="bcg">
+      <xf:label>BCG</xf:label>
+      <xf:item id="Y">
+        <xf:label>Yes</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+      <xf:item id="N">
+        <xf:label>No</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:select1 bind="opv0">
+      <xf:label>OPV</xf:label>
+      <xf:item id="Y">
+        <xf:label>Yes</xf:label>
+        <xf:value>Y</xf:value>
+      </xf:item>
+      <xf:item id="N">
+        <xf:label>No</xf:label>
+        <xf:value>N</xf:value>
+      </xf:item>
+    </xf:select1>
+    <xf:input bind="comments">
+      <xf:label>Comments</xf:label>
+    </xf:input>
+    <xf:input bind="formtype">
+      <xf:label>formType</xf:label>
+    </xf:input>
+    <xf:input bind="formname">
+      <xf:label>formName</xf:label>
+    </xf:input>
+  </xf:group>
+</xf:xforms>

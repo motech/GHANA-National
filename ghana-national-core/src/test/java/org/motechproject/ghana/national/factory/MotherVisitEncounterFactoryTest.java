@@ -97,7 +97,7 @@ public class MotherVisitEncounterFactoryTest {
         DateTime date = DateUtil.now();
         String fht = "120";
         String house = "house";
-        String location = "location";
+        String location = "2";
         Boolean lochiaAmountExcess = Boolean.TRUE;
         String lochiaColour = "1";
         Boolean lochiaOdourFoul = Boolean.TRUE;
@@ -129,6 +129,8 @@ public class MotherVisitEncounterFactoryTest {
         expectedObservations.add(new MRSObservation<Boolean>(registrationDate, LOCHIA_EXCESS_AMOUNT.getName(), lochiaAmountExcess));
         expectedObservations.add(new MRSObservation<Integer>(registrationDate, LOCHIA_COLOUR.getName(), 1));
         expectedObservations.add(new MRSObservation<Boolean>(registrationDate, LOCHIA_FOUL_ODOUR.getName(), lochiaOdourFoul));
+        expectedObservations.add(new MRSObservation<Double>(registrationDate, TEMPERATURE.getName(), temperature));
+        expectedObservations.add(new MRSObservation<Integer>(registrationDate, ANC_PNC_LOCATION.getName(), Integer.parseInt(location)));
 
         assertReflectionEquals(expectedObservations, mrsObservations, LENIENT_DATES, LENIENT_ORDER);
     }

@@ -32,8 +32,13 @@ public class Browser implements DisposableBean {
     }
 
     public LoginPage gotoLoginPage() {
-        webDriver.get(applicationURLs.forHomePage());
+        webDriver.get(applicationURLs.forLoginPage());
         return new LoginPage(webDriver);
+    }
+
+    public HomePage gotoHomePage() {
+        webDriver.get(applicationURLs.forHomePage());
+        return new HomePage(webDriver);
     }
 
     public HomePage homePage() {

@@ -2,89 +2,99 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
-import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
-import org.motechproject.ghana.national.functional.data.TestCareHistory;
-import org.motechproject.ghana.national.functional.framework.OpenMRSDB;
-import org.motechproject.ghana.national.functional.framework.ScheduleTracker;
-import org.motechproject.ghana.national.functional.helper.ScheduleHelper;
+import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
+import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
-import org.motechproject.ghana.national.vo.Pregnancy;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
 import org.motechproject.util.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
-import static junit.framework.Assert.assertNull;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
-import static org.motechproject.util.DateUtil.newDate;
+import java.util.Arrays;
+import java.util.HashMap;
+
+import static junit.framework.Assert.assertEquals;
+import static org.joda.time.format.DateTimeFormat.forPattern;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class CareHistoryFormUploadTest extends LoggedInUserFunctionalTest {
-
-    @Autowired
-    ScheduleTracker scheduleTracker;
-    @Autowired
-    private OpenMRSDB openMRSDB;
+public class CareHistoryFormUploadTest extends OpenMRSAwareFunctionalTest {
 
     @Test
-    public void shouldNotCreateSchedulesWhileHistoryFormUploadIfThereAreActiveSchedules() {
-        String staffId = staffGenerator.createStaff(browser, homePage);
-        String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
+    public void shouldUploadCareHistoryFormWithRelevantANCDetails() {
+        final String staffId = staffGenerator.createStaff(browser, homePage);
+        final String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
-        LocalDate registrationDate = DateUtil.today();
+        final LocalDate ttDate = DateUtil.newDate(2012, 1, 1);
+        final LocalDate iptDate = DateUtil.newDate(2011, 12, 15);
+        final LocalDate date = DateUtil.newDate(2012, 1, 15);
 
-        Pregnancy pregnancyIn12thWeekOfPregnancy = Pregnancy.basedOnConceptionDate(DateUtil.today().minusWeeks(12));
-        TestANCEnrollment ancEnrollment = TestANCEnrollment.createWithoutHistory().withMotechPatientId(patientId).withStaffId(staffId)
-                .withEstimatedDateOfDelivery(pregnancyIn12thWeekOfPregnancy.dateOfDelivery()).withRegistrationDate(registrationDate).addHistoryDetails();
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.careHistoryForm(), new HashMap<String, String>() {{
+            put("staffId", staffId);
+            put("facilityId", "13212");
+            put("motechId", patientId);
+            put("date", date.toString(forPattern("yyyy-MM-dd")));
+            put("addHistory", "IPT_SP,TT");
+            put("lastIPT", "1");
+            put("lastIPTDate", iptDate.toString(forPattern("yyyy-MM-dd")));
+            put("lastTT", "2");
+            put("lastTTDate", ttDate.toString(forPattern("yyyy-MM-dd")));
+        }});
 
-        mobile.upload(MobileForm.registerANCForm(), ancEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
+        assertEquals(1, response.getSuccessCount());
 
-
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception()),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate());
-
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(TT_VACCINATION, registrationDate),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate());
-
-        final LocalDate dateAfterConception = pregnancyIn12thWeekOfPregnancy.dateOfConception().plusWeeks(3);
-
-        TestCareHistory careHistory = TestCareHistory.withoutHistory(patientId);
-        careHistory.withIPT("1", dateAfterConception);
-        careHistory.withTT("2", dateAfterConception);
-
-        mobile.upload(MobileForm.careHistoryForm(),careHistory.forMobile());
-
-        // schedule dates should not change
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception()),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate());
-
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(TT_VACCINATION, registrationDate),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate());
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSId);
+        String encounterId = openMRSPatientPage.chooseEncounter("PATIENTHISTORY");
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(Arrays.<OpenMRSObservationVO>asList(
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT DOSE", "1.0"),
+                new OpenMRSObservationVO("TETANUS TOXOID DOSE", "2.0")
+        ));
     }
 
     @Test
-    public void shouldNotCreateSchedulesIfHistoryIsIrrelevantForANC() {
-        String staffId = staffGenerator.createStaff(browser, homePage);
-        String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
+    public void shouldUploadCareHistoryFormWithRelevantCWCDetails() {
+        final String staffId = staffGenerator.createStaff(browser, homePage);
+        final String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
+        final LocalDate vaccinationDate = DateUtil.newDate(2012, 1, 1);
+        final LocalDate date = DateUtil.newDate(2012, 1, 15);
 
-        TestCareHistory careHistory = TestCareHistory.withoutHistory(patientId);
-        careHistory.withIPT("1", newDate(2000,10,10));
-        careHistory.withTT("2", newDate(2011,11,11));
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.careHistoryForm(), new HashMap<String, String>() {{
+            put("staffId", staffId);
+            put("facilityId", "13212");
+            put("motechId", patientId);
+            put("date", date.toString(forPattern("yyyy-MM-dd")));
+            put("addHistory", "VITA_A,IPTI,BCG,OPV,PENTA,MEASLES,YF");
+            put("bcgDate", vaccinationDate.toString(forPattern("yyyy-MM-dd")));
+            put("lastOPV", "1");
+            put("lastOPVDate", vaccinationDate.toString(forPattern("yyyy-MM-dd")));
+            put("lastPenta", "1");
+            put("lastPentaDate", vaccinationDate.toString(forPattern("yyyy-MM-dd")));
+            put("measlesDate", vaccinationDate.toString(forPattern("yyyy-MM-dd")));
+            put("yellowFeverDate", vaccinationDate.toString(forPattern("yyyy-MM-dd")));
+            put("lastIPTI", "1");
+            put("lastIPTIDate", vaccinationDate.toString(forPattern("yyyy-MM-dd")));
+            put("lastVitaminADate", vaccinationDate.toString(forPattern("yyyy-MM-dd")));
+        }});
 
-        mobile.upload(MobileForm.careHistoryForm(),careHistory.forMobile());
+        assertEquals(1, response.getSuccessCount());
 
-       assertNull(scheduleTracker.activeEnrollment(openMRSId, ANC_IPT_VACCINE));
-       assertNull(scheduleTracker.activeEnrollment(openMRSId, TT_VACCINATION));
-    }
-
-
-    private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate) {
-        return scheduleTracker.firstAlert(scheduleName, referenceDate);
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSId);
+        String encounterId = openMRSPatientPage.chooseEncounter("PATIENTHISTORY");
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(Arrays.<OpenMRSObservationVO>asList(
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "BACILLE CAMILE-GUERIN VACCINATION"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "MEASLES VACCINATION"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "VITAMIN A"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "YELLOW FEVER VACCINATION"),
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE", "1.0"),
+                new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE", "1.0"),
+                new OpenMRSObservationVO("PENTA VACCINATION DOSE", "1.0")
+        ));
     }
 
 }

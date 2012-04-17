@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.functional.TestEnvironmentConfiguration;
 
 public class ApplicationURLs {
     public static final String LOGIN_PATH = "/ghana-national-web/login.jsp";
+    public static final String HOME_PAGE_PATH = "/ghana-national-web/admin";
     public static final String OPENMRS_PATH = "/openmrs";
     private static final String PATIENT_PAGE_PATH = "/patientDashboard.form?patientId=";
     private static final String ENCOUNTER_PAGE_PATH = "/admin/encounters/encounter.form?encounterId=";
@@ -13,8 +14,12 @@ public class ApplicationURLs {
         this.configuration = configuration;
     }
 
-    public String forHomePage() {
+    public String forLoginPage() {
         return forPath(LOGIN_PATH);
+    }
+
+    public String forHomePage() {
+        return forPath(HOME_PAGE_PATH);
     }
 
     public String forPath(String path) {

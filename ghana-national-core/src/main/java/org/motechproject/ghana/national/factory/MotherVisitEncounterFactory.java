@@ -74,11 +74,11 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, registrationDate, HOUSE.getName(), pncMotherRequest.getHouse());
         setObservation(mrsObservations, registrationDate, MALE_INVOLVEMENT.getName(), pncMotherRequest.getMaleInvolved());
         setObservation(mrsObservations, registrationDate, REFERRED.getName(), pncMotherRequest.getReferred());
-        setObservation(mrsObservations, registrationDate,  LOCHIA_EXCESS_AMOUNT.getName(), pncMotherRequest.getLochiaAmountExcess());
-        setObservation(mrsObservations, registrationDate,  LOCHIA_COLOUR.getName(), toInteger(pncMotherRequest.getLochiaColour()));
-        setObservation(mrsObservations, registrationDate,  LOCHIA_FOUL_ODOUR.getName(), pncMotherRequest.getLochiaOdourFoul());
-        setObservation(mrsObservations, registrationDate,  TEMPERATURE.getName(), pncMotherRequest.getTemperature());
-        setObservation(mrsObservations, registrationDate,  ANC_PNC_LOCATION.getName(), pncMotherRequest.getLocation());
+        setObservation(mrsObservations, registrationDate, LOCHIA_EXCESS_AMOUNT.getName(), pncMotherRequest.getLochiaAmountExcess());
+        setObservation(mrsObservations, registrationDate, LOCHIA_COLOUR.getName(), toInteger(pncMotherRequest.getLochiaColour()));
+        setObservation(mrsObservations, registrationDate, LOCHIA_FOUL_ODOUR.getName(), pncMotherRequest.getLochiaOdourFoul());
+        setObservation(mrsObservations, registrationDate, TEMPERATURE.getName(), pncMotherRequest.getTemperature());
+        setObservation(mrsObservations, registrationDate, ANC_PNC_LOCATION.getName(), toInteger(pncMotherRequest.getLocation()));
         return mrsObservations;
     }
 

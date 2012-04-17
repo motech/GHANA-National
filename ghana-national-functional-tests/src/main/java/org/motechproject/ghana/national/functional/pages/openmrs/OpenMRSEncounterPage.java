@@ -12,7 +12,7 @@ import org.openqa.selenium.support.PageFactory;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.thoughtworks.selenium.SeleneseTestBase.assertEquals;
+import static com.thoughtworks.selenium.SeleneseTestBase.assertTrue;
 
 public class OpenMRSEncounterPage extends BasePage<OpenMRSEncounterPage> {
     public static final String PATIENT_OBSERVATION_TABLE = "obs";
@@ -29,10 +29,11 @@ public class OpenMRSEncounterPage extends BasePage<OpenMRSEncounterPage> {
 
     public void displaying(final List<OpenMRSObservationVO> openMRSObservations) {
         for(final OpenMRSObservationVO observation : openMRSObservations){
-            assertEquals(htmlTableParser.hasRow(driver, PATIENT_OBSERVATION_TABLE, new HashMap<String, String>() {{
-                put("Question Concept", observation.getObservationName());
-                put("Value", observation.getValue());
-            }}), true);
+            assertTrue("Observation is not present: " + observation.getObservationName() + " with Value: " + observation.getValue(),
+                    htmlTableParser.hasRow(driver, PATIENT_OBSERVATION_TABLE, new HashMap<String, String>() {{
+                        put("Question Concept", observation.getObservationName());
+                        put("Value", observation.getValue());
+                }}));
         }
     }
 }

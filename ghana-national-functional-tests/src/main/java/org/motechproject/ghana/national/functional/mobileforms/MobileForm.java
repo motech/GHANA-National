@@ -37,6 +37,10 @@ public class MobileForm {
         return new MobileForm("NurseDataEntry", "pnc-mother-template.xml");
     }
 
+    public static MobileForm pncChildForm() {
+        return new MobileForm("NurseDataEntry", "pnc-child-template.xml");
+    }
+
     public static MobileForm registerCWCForm() {
         return new MobileForm("NurseDataEntry", "register-cwc-template.xml");
     }
@@ -52,16 +56,18 @@ public class MobileForm {
     public static MobileForm ancVisitForm() {
         return new MobileForm("NurseDataEntry", "anc-visit-template.xml");
     }
-
     public static MobileForm deliveryForm() {
         return new MobileForm("NurseDataEntry", "delivery-template.xml");
+    }
+    public static MobileForm ttVisitForm() {
+        return new MobileForm("NurseDataEntry", "tt-visit-template.xml");
     }
 
     public static MobileForm queryClientForm() {
         return new MobileForm("NurseQuery", "client-query-template.xml");
     }
 
-    public static MobileForm registerCWCVisitForm() {
+    public static MobileForm cwcVisitForm() {
         return new MobileForm("NurseDataEntry", "cwc-visit-template.xml");
     }
 

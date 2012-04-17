@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public abstract class OpenMRSAwareFunctionalTest extends FunctionalTest {
+
     protected HomePage homePage;
     protected OpenMRSHomePage openMRSHomePage;
     @Autowired

@@ -73,7 +73,16 @@ public class PatientTest extends OpenMRSAwareFunctionalTest{
                 motechId(identifierGenerator.newPatientId());
         patientPage.create(patient);
         SearchPatientPage searchPatientPage = browser.toSearchPatient(patientPage);
-        searchPatientPage.searchWithMotechId(patient.motechId());
+        String motechId = patient.motechId();
+        searchPatientPage.searchWithMotechId(motechId);
         searchPatientPage.displaying(patient);
+
+
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        String encounterId = openMRSPatientPage.chooseEncounter("PATIENTREGVISIT");
+
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+
+        openMRSEncounterPage.displaying(Collections.<OpenMRSObservationVO>emptyList());
     }
 }

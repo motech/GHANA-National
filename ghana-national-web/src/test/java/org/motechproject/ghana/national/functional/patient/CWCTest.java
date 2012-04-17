@@ -27,6 +27,7 @@ import java.util.HashMap;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
+import static org.joda.time.format.DateTimeFormat.forPattern;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
@@ -42,7 +43,7 @@ public class CWCTest extends OpenMRSAwareFunctionalTest {
     public void shouldEnrollForCWCForAPatient() {
         String staffId = staffGenerator.createStaff(browser, homePage);
 
-        String patientFirstName =  "First Name" + dataGenerator.randomString(5);
+        String patientFirstName = "First Name" + dataGenerator.randomString(5);
         PatientPage patientPage = browser.toCreatePatient(homePage);
         TestPatient patient = TestPatient.with(patientFirstName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE)
@@ -50,8 +51,8 @@ public class CWCTest extends OpenMRSAwareFunctionalTest {
                 .dateOfBirth(DateUtil.newDate(DateUtil.today().getYear() - 1, 11, 11));
 
         patientPage.create(patient);
-        
-        String motechId = patient.motechId();
+
+        String motechId = patientPage.motechId();
 
         // create
         SearchPatientPage searchPatientPage = browser.toSearchPatient(homePage);
@@ -82,7 +83,8 @@ public class CWCTest extends OpenMRSAwareFunctionalTest {
 
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
         openMRSEncounterPage.displaying(asList(
-                new OpenMRSObservationVO("CWC REGISTRATION NUMBER", "serialNumber")
+                new OpenMRSObservationVO("CWC REGISTRATION NUMBER", "serialNumber"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "MEASLES VACCINATION")
         ));
     }
 
@@ -90,7 +92,7 @@ public class CWCTest extends OpenMRSAwareFunctionalTest {
     public void shouldCreateCWCVisit() {
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String facilityId = facilityGenerator.createFacility(browser, homePage);
-        String patientFirstName =  "First Name" + dataGenerator.randomString(5);
+        String patientFirstName = "First Name" + dataGenerator.randomString(5);
         final PatientPage patientPage = browser.toCreatePatient(homePage);
         final TestPatient patient = TestPatient.with(patientFirstName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE)
@@ -100,25 +102,32 @@ public class CWCTest extends OpenMRSAwareFunctionalTest {
         SearchPatientPage searchPatientPage = browser.toSearchPatient(homePage);
         searchPatientPage.searchWithName(patient.firstName());
         PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, patient);
-        TestCWCEnrollment testCWCEnrollment = TestCWCEnrollment.create().withStaffId(staffId);
+        TestCWCEnrollment testCWCEnrollment = TestCWCEnrollment.create().withStaffId(staffId)
+                .withMotechPatientId(patientEditPage.motechId())
+                .withAddCareHistory(asList(CwcCareHistory.YF, CwcCareHistory.BCG, CwcCareHistory.OPV))
+                .withYellowFeverDate(DateUtil.now().toLocalDate())
+                .withBcgDate(DateUtil.now().toLocalDate())
+                .withLastOPV("1")
+                .withLastOPVDate(DateUtil.now().toLocalDate());
         final CWCEnrollmentPage cwcEnrollmentPage = browser.toEnrollCWCPage(patientEditPage);
         cwcEnrollmentPage.save(testCWCEnrollment);
+
         final String motechId = cwcEnrollmentPage.getPatientMotechId();
-        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCVisitForm(), new HashMap<String, String>() {{
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.cwcVisitForm(), new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", facilityId);
-            put("date", "2012-12-11");
+            put("date", DateUtil.now().toString(forPattern("yyyy-MM-dd")));
             put("motechId", motechId);
             put("serialNumber", "1234567");
-            put("immunizations", "BCG OPV YF");
-            put("opvdose", "OPV 1");
-            put("pentadose", "Penta 1");
-            put("iptidose", "IPT 1");
+            put("immunizations", "BCG,OPV,YF");
+            put("opvdose", "1");
+            put("pentadose", "1");
+            put("iptidose", "1");
             put("weight", "23");
             put("muac", "12");
             put("height", "13");
             put("maleInvolved", "Y");
-            put("cwcLocation", "HOME");
+            put("cwcLocation", "2");
             put("house", "32");
             put("community", "Home");
             put("comments", "Unknwon");
@@ -127,23 +136,25 @@ public class CWCTest extends OpenMRSAwareFunctionalTest {
         assertEquals(0, response.getErrors().size());
 
         OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
-        String encounterId = openMRSPatientPage.chooseEncounter("CWCREGVISIT");
+        String encounterId = openMRSPatientPage.chooseEncounter("CWCVISIT");
 
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
         openMRSEncounterPage.displaying(asList(
-                new OpenMRSObservationVO("COMMENTS", "Unknown"),
-                new OpenMRSObservationVO("COMMUNITY", "Home"),
-                new OpenMRSObservationVO("CWC LOCATION", "HOME"),
-                new OpenMRSObservationVO("HEIGHT (CM)", "13"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "ORAL POLIO VACCINATION DOSE"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "BACILLE CAMILE-GUERIN VACCINATION"),
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE", "1.0"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "YELLOW FEVER VACCINATION"),
                 new OpenMRSObservationVO("HOUSE", "32"),
-                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "BCG OPV YF"),
-                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE", "IPT 1"),
-                new OpenMRSObservationVO("MALE INVOLVEMENT", "Y"),
-                new OpenMRSObservationVO("MIDDLE UPPER ARM CIRCUMFERENCE", "12"),
-                new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE", "OPV 1"),
-                new OpenMRSObservationVO("PENTA VACCINATION DOSE", "Penta 1"),
+                new OpenMRSObservationVO("CWC LOCATION", "2.0"),
+                new OpenMRSObservationVO("WEIGHT (KG)", "23.0"),
+                new OpenMRSObservationVO("COMMENTS", "Unknwon"),
+                new OpenMRSObservationVO("COMMUNITY", "Home"),
+                new OpenMRSObservationVO("HEIGHT (CM)", "13.0"),
+                new OpenMRSObservationVO("PENTA VACCINATION DOSE", "1.0"),
+                new OpenMRSObservationVO("MID-UPPER ARM CIRCUMFERENCE", "12.0"),
+                new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE", "1.0"),
                 new OpenMRSObservationVO("SERIAL NUMBER", "1234567"),
-                new OpenMRSObservationVO("WEIGHT (KG)", "23")
+                new OpenMRSObservationVO("MALE INVOLVEMENT", "true")
         ));
     }
 

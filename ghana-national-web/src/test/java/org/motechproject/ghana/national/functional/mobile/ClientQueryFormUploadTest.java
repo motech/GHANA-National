@@ -127,7 +127,7 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
 
     @Test
     public void shouldQueryUpcomingCareSchedules() throws IOException {
-        final LocalDate eddIn14thWeekForDue = today().plusWeeks(26);
+        final LocalDate eddDueIn14Weeks = today().plusWeeks(26);
         mobile.upload(MobileForm.registerANCForm(), new HashMap<String, String>() {{
             put("motechId", patientId);
             put("facilityId", patient.facilityId());
@@ -135,11 +135,14 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
             put("gravida", "1");
             put("parity", "1");
             put("height", "61");
-            put("estDeliveryDate", eddIn14thWeekForDue.toString("yyyy-MM-dd"));
+            put("estDeliveryDate", eddDueIn14Weeks.toString("yyyy-MM-dd"));
             put("date", today().toString("yyyy-MM-dd"));
             put("deliveryDateConfirmed", "Y");
             put("regDateToday", "TODAY");
-            put("addHistory", "0");
+            put("addHistory", "1");
+            put("addCareHistory","IPT_SP");
+            put("lastIPT", "1");
+            put("lastIPTDate",today().minusWeeks(4).toString("yyyy-MM-dd"));
             put("ancRegNumber", "123ABC");
         }});
 
@@ -157,7 +160,7 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
 
         assertThat(responseBodyAsString, containsString(patientId));
         assertThat(responseBodyAsString, containsString(patient.firstName()));
-        assertThat(responseBodyAsString, containsString("IPT1"));
+        assertThat(responseBodyAsString, containsString("IPT2"));
         assertThat(responseBodyAsString, containsString(today().toString(Constants.PATTERN_DD_MMM_YYYY)));
     }
 

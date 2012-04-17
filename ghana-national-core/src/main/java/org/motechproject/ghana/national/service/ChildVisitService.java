@@ -54,10 +54,12 @@ public class ChildVisitService {
         if (cwcVisit.getImmunizations().contains(OPV.name())) {
             Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
+            String opvType;
             if (OPVDose.OPV_0.equals(OPVDose.byValue(cwcVisit.getOpvdose())))
-                allSchedulesAndMessages.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_OPV_0, visitDate);
+                opvType=CWC_OPV_0;
             else
-                allSchedulesAndMessages.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_OPV_OTHERS, visitDate);
+                opvType=CWC_OPV_OTHERS;
+            allSchedulesAndMessages.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient,patient.cwcOPVOnVisit(visitDate, opvType)),visitDate);
         }
 
     }
@@ -74,7 +76,7 @@ public class ChildVisitService {
         if (cwcVisit.getImmunizations().contains(BCG.name())) {
             Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
-            allSchedulesAndMessages.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_BCG, visitDate);
+            allSchedulesAndMessages.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient, patient.cwcBCGOnVisit(visitDate)), visitDate);
         }
     }
 
@@ -92,7 +94,7 @@ public class ChildVisitService {
         List<String> immunizations = cwcVisit.getImmunizations();
         Patient patient = cwcVisit.getPatient();
         if (immunizations.contains(MEASLES.name()) && enrollment(patient.getMRSPatientId(), CWC_MEASLES_VACCINE) != null) {
-            allSchedulesAndMessages.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_MEASLES_VACCINE, newDate(cwcVisit.getDate()));
+            allSchedulesAndMessages.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient, patient.cwcMeaslesOnVisit(newDate(cwcVisit.getDate()))), newDate(cwcVisit.getDate()));
         }
     }
 
@@ -100,7 +102,7 @@ public class ChildVisitService {
         if (cwcVisit.getImmunizations().contains(YF.name())) {
             Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
-            allSchedulesAndMessages.fulfilCurrentMilestone(patient.getMRSPatientId(), CWC_YELLOW_FEVER, visitDate);
+            allSchedulesAndMessages.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient, patient.cwcYellowFeverOnVisit(visitDate)), visitDate);
         }
     }
 

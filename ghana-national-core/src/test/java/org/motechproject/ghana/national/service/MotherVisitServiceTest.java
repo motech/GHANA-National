@@ -143,7 +143,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         assertThat(actualEncounter.getFacility(),is(equalTo(encounterFacility.mrsFacility())));
         assertThat(actualEncounter.getStaff(),is(equalTo(staff)));
         assertThat(actualEncounter.getType(),is(equalTo(EncounterType.PNC_MOTHER_VISIT.value())));
-        assertThat(actualEncounter.getObservations().size(),is(equalTo(9)));
+        assertThat(actualEncounter.getObservations().size(),is(equalTo(11)));
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestArgumentCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         ArgumentCaptor<LocalDate> localDateArgumentCaptor = ArgumentCaptor.forClass(LocalDate.class);
@@ -162,7 +162,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
 
     private PNCMotherRequest createTestPncRequest(Patient patient, Facility facility, MRSUser staff, DateTime date) {
         return new PNCMotherRequest().maleInvolved(Boolean.TRUE).patient(patient).ttDose("1").visit(PNC1).vitaminA("Y").comments("Comments")
-                .community("House").date(date).facility(facility).staff(staff).location("Outreach").lochiaAmountExcess(Boolean.TRUE)
+                .community("House").date(date).facility(facility).staff(staff).location("3").lochiaAmountExcess(Boolean.TRUE)
                 .lochiaColour("1").lochiaOdourFoul(Boolean.TRUE).temperature(10D);
     }
 

@@ -41,8 +41,8 @@ public class PregnancyEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, request.getTerminationDate(), MATERNAL_DEATH.getName(), request.isDead());
         setObservation(mrsObservations, request.getTerminationDate(), REFERRED.getName(), request.isReferred());
         setObservation(mrsObservations, request.getTerminationDate(), COMMENTS.getName(), request.getComments());
-        setObservation(mrsObservations, request.getTerminationDate(), POST_ABORTION_FP_ACCEPTED.getName(), request.getPostAbortionFPAccepted());
         setObservation(mrsObservations, request.getTerminationDate(), POST_ABORTION_FP_COUNSELING.getName(), request.getPostAbortionFPCounselling());
+        setObservation(mrsObservations, request.getTerminationDate(), POST_ABORTION_FP_ACCEPTED.getName(), request.getPostAbortionFPAccepted());
         if (activePregnancyObservation != null) {
             Set<MRSObservation> dependantObservations = activePregnancyObservation.getDependantObservations();
             if (dependantObservations != null) {

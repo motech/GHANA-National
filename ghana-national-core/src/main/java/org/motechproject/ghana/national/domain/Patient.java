@@ -185,4 +185,20 @@ public class Patient {
         metaData.put(FACILITY_META, mrsPatient.getFacility().getId());
         return metaData;
     }
+
+    public PatientCare cwcYellowFeverOnVisit(LocalDate vaccinationDate) {
+        return new PatientCare(ScheduleNames.CWC_YELLOW_FEVER, vaccinationDate, vaccinationDate, null, facilityMetaData());
+    }
+
+    public PatientCare cwcMeaslesOnVisit(LocalDate vaccinationDate) {
+        return new PatientCare(ScheduleNames.CWC_MEASLES_VACCINE,vaccinationDate,vaccinationDate,null,facilityMetaData());
+    }
+
+    public PatientCare cwcBCGOnVisit(LocalDate vaccinationDate) {
+        return new PatientCare(ScheduleNames.CWC_BCG,vaccinationDate,vaccinationDate,null,facilityMetaData());
+    }
+
+    public PatientCare cwcOPVOnVisit(LocalDate vaccinationDate, String opvType) {
+        return new PatientCare(opvType,vaccinationDate,vaccinationDate,null,facilityMetaData());
+    }
 }

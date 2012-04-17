@@ -3,13 +3,19 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
+import org.motechproject.ghana.national.functional.data.OpenMRSTestUser;
 import org.motechproject.ghana.national.functional.data.TestPatient;
+import org.motechproject.ghana.national.functional.framework.OpenMRSBrowser;
+import org.motechproject.ghana.national.functional.framework.OpenMRSDB;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSLoginPage;
 import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
 import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
 import org.motechproject.util.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
@@ -22,7 +28,14 @@ import static org.joda.time.format.DateTimeFormat.forPattern;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest{
+public class OutPatientVisitFormUploadTest extends LoggedInUserFunctionalTest {
+
+    private OpenMRSAwareFunctionalTest openMRSAwareFunctionalTest;
+
+    @Autowired
+    private OpenMRSBrowser openMRSBrowser;
+    @Autowired
+    private OpenMRSDB openMRSDB;
 
     @Test
     public void shouldUploadOutPatientVisitFormSuccessfullyIfPatientIsNotAVisitor() throws Exception {
@@ -30,16 +43,15 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest{
         final String facilityId = facilityGenerator.createFacility(browser, homePage);
         final String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
         final String serialNumber = "serialNumber";
-        final LocalDate visitDate= DateUtil.today();
+        final LocalDate visitDate = DateUtil.today();
+
 
         final XformHttpClient.XformResponse response = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
                 "NurseDataEntry", XformHttpClient.XFormParser.parse("out-patient-visit-template.xml", new HashMap<String, String>() {{
-
-
             put("staffId", staffId);
             put("facilityId", facilityId);
             put("registrantType", TestPatient.PATIENT_TYPE.PREGNANT_MOTHER.toString());
-            put("visitor","N");
+            put("visitor", "N");
             put("motechId", patientId);
             put("serialNumber", serialNumber);
             put("visitDate", visitDate.toString(forPattern("yyyy-MM-dd")));
@@ -54,8 +66,9 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest{
 
         }}));
 
-        assertEquals(1,response.getSuccessCount());
+        assertEquals(1, response.getSuccessCount());
 
+        openMRSLogin();
         OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(patientId));
         String encounterId = openMRSPatientPage.chooseEncounter("OUTPATIENTVISIT");
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
@@ -69,6 +82,13 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest{
                 new OpenMRSObservationVO("MALARIA RAPID TEST", "NEGATIVE"),
                 new OpenMRSObservationVO("REFERRED", "true")
         ));
+        openMRSLogout();
+        // Open Ghana-National home page, just to ensure that the logout happens.
+        browser.gotoHomePage();
+    }
+
+    private void openMRSLogout() {
+        openMRSHomePage.logout();
     }
 
     @Test
@@ -76,22 +96,19 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest{
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String facilityId = facilityGenerator.createFacility(browser, homePage);
         final String serialNumber = "serialNumber";
-        final LocalDate visitDate= DateUtil.today();
-        final LocalDate dateOfBirth= new LocalDate(2000,12,12);
-        final LocalDate nhisExpires= new LocalDate(2012,12,12);
+        final LocalDate visitDate = DateUtil.today();
+        final LocalDate dateOfBirth = new LocalDate(2000, 12, 12);
+        final LocalDate nhisExpires = new LocalDate(2012, 12, 12);
         final String nhis = "nhis";
 
         final XformHttpClient.XformResponse response = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
                 "NurseDataEntry", XformHttpClient.XFormParser.parse("out-patient-visit-template.xml", new HashMap<String, String>() {{
-
-
-
             put("staffId", staffId);
             put("facilityId", facilityId);
             put("registrantType", TestPatient.PATIENT_TYPE.PREGNANT_MOTHER.toString());
             put("serialNumber", serialNumber);
             put("visitDate", visitDate.toString(forPattern("yyyy-MM-dd")));
-            put("visitor","Y");
+            put("visitor", "Y");
             put("dateOfBirth", dateOfBirth.toString(forPattern("yyyy-MM-dd")));
             put("insured", "Y");
             put("nhis", nhis);
@@ -103,13 +120,16 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest{
             put("gender", "M");
             put("rdtGiven", "Y");
             put("rdtPositive", "Y");
-
             put("referred", "Y");
-
         }}));
 
-
-        assertEquals(1,response.getSuccessCount());
+        assertEquals(1, response.getSuccessCount());
     }
 
+    private void openMRSLogin() {
+        openMRSAwareFunctionalTest = new OpenMRSAwareFunctionalTest() {};
+        OpenMRSLoginPage openMRSLoginPage = openMRSBrowser.toOpenMRSLoginPage();
+        openMRSLoginPage.login(OpenMRSTestUser.admin());
+        openMRSHomePage = openMRSBrowser.openMRSHomePage();
+    }
 }

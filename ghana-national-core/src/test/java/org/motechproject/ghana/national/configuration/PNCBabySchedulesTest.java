@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.configuration;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.model.Time;
@@ -18,7 +19,8 @@ import static org.motechproject.scheduletracking.api.domain.WindowName.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
-public class PNCBabySchedulesTest extends BaseScheduleTrackingTest {
+@Ignore
+public class PNCBabySchedulesTest extends BaseScheduleTrackingTest{
 
     @Before
     public void setUp() {
