@@ -12,19 +12,19 @@ public abstract class VaccineCare {
     private Boolean hasActiveSchedule;
     private String vaccineName;
     private String lastDosage;
-    private Date lastTakenDate;
-    private Boolean isPastVaccinationDateWithinRange;
+    protected Date lastTakenDate;
 
-    public VaccineCare(Patient patient, Boolean hasActiveSchedule, String vaccineName, String lastDosage, Date lastTakenDate, Boolean isPastVaccinationDateWithinRange) {
+    public VaccineCare(Patient patient, Boolean hasActiveSchedule, String vaccineName, String lastDosage, Date lastTakenDate) {
         this.patient = patient;
         this.hasActiveSchedule = hasActiveSchedule;
         this.vaccineName = vaccineName;
         this.lastDosage = lastDosage;
         this.lastTakenDate = lastTakenDate;
-        this.isPastVaccinationDateWithinRange = isPastVaccinationDateWithinRange;
     }
 
-    public PatientCare careForANCReg() {
+    public abstract boolean isWithinActiveRange();
+
+    public PatientCare careForReg() {
         if (hasActiveSchedule || isCareProgramComplete()) return null;
         PatientCare patientCare = createCareFromHistory(patient);
         return patientCare != null ? patientCare : newEnrollmentForCare();
@@ -32,12 +32,12 @@ public abstract class VaccineCare {
 
     public PatientCare careForHistory() {
         if (hasActiveSchedule || isCareProgramComplete()) return null;
-        PatientCare scheduleForNextTTDose = createCareFromHistory(patient);
-        return scheduleForNextTTDose != null ? scheduleForNextTTDose : null;
+        PatientCare scheduleForNextVaccineDose = createCareFromHistory(patient);
+        return scheduleForNextVaccineDose != null ? scheduleForNextVaccineDose : null;
     }
 
     private PatientCare createCareFromHistory(Patient patient) {
-        if (lastDosage != null && isPastVaccinationDateWithinRange) {
+        if (lastDosage != null && isWithinActiveRange()) {
             String nextMilestoneToSchedule = nextVaccineDose(lastDosage);
             return (nextMilestoneToSchedule == null) ? null :
                     PatientCare.forEnrollmentInBetweenProgram(vaccineName, newDate(lastTakenDate), nextMilestoneToSchedule, patient.facilityMetaData());

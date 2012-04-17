@@ -3,6 +3,8 @@ package org.motechproject.ghana.national.domain;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
+import org.motechproject.ghana.national.domain.care.PentaVaccineCare;
+import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
 import org.motechproject.ghana.national.vo.ChildCare;
 import org.motechproject.mrs.model.MRSPatient;
 
@@ -12,7 +14,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.collections.CollectionUtils.union;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
-import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
+import static org.motechproject.ghana.national.tools.Utility.*;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDateTime;
 
@@ -72,7 +74,7 @@ public class Patient {
 
     // Todo : Fix the meta-data for migration
     public PatientCare patientCareWithoutMetaData(String scheduleName, DateTime referenceDate, DateTime enrollmentDate) {
-        return new PatientCare(scheduleName, referenceDate, enrollmentDate, null,null);
+        return new PatientCare(scheduleName, referenceDate, enrollmentDate, null, null);
     }
 
     public PatientCare ancDeliveryCareOnVisit(LocalDate expectedDeliveryDate, LocalDate visitDate) {
@@ -87,17 +89,20 @@ public class Patient {
         return new ArrayList<String>(new HashSet<String>(union(ancCarePrograms, cwcCarePrograms)));
     }
 
-    public List<PatientCare> cwcCareProgramToEnrollOnRegistration(LocalDate enrollmentDate, List<CwcCareHistory> cwcCareHistories) {
+    public List<PatientCare> cwcCareProgramToEnrollOnRegistration(LocalDate enrollmentDate, List<CwcCareHistory> historiesCaptured, CWCCareHistoryVO cwcCareHistoryVO, ActiveCareSchedules activeCareSchedules) {
         ChildCare childCare = childCare();
         LocalDate referenceDate = childCare.birthDate();
         return nullSafeList(
                 cwcIPTPatientCareEnrollOnRegistration(childCare, enrollmentDate),
-                bcgChildCare(enrollmentDate, referenceDate, cwcCareHistories),
-                yfChildCare(enrollmentDate, referenceDate, cwcCareHistories),
+                bcgChildCare(enrollmentDate, referenceDate, historiesCaptured),
+                yfChildCare(enrollmentDate, referenceDate, historiesCaptured),
                 new PatientCare(CWC_OPV_0, referenceDate, enrollmentDate, null, facilityMetaData()),
                 new PatientCare(CWC_OPV_OTHERS, referenceDate, enrollmentDate, null, facilityMetaData()),
-                pentaPatientCare(enrollmentDate),
-                measlesChildCare(enrollmentDate, cwcCareHistories));
+
+                new PentaVaccineCare(this, enrollmentDate, activeCareSchedules.hasActivePentaSchedule(),
+                        safeToString(cwcCareHistoryVO.getLastPenta()), cwcCareHistoryVO.getLastPentaDate()).careForReg(),
+
+                measlesChildCare(enrollmentDate, historiesCaptured));
     }
 
     private PatientCare bcgChildCare(LocalDate enrollmentDate, LocalDate referenceDate, List<CwcCareHistory> cwcCareHistories) {
@@ -123,11 +128,8 @@ public class Patient {
         return new PatientCare(CWC_IPT_VACCINE, visitDate, visitDate, null, facilityMetaData());
     }
 
-    public PatientCare pentaPatientCare(LocalDate enrollmentDate) {
-        ChildCare childCare = childCare();
-        if (childCare.applicableForPenta())
-            return new PatientCare(CWC_PENTA, childCare.birthDate(), enrollmentDate, null, facilityMetaData());
-        return new PatientCare(CWC_PENTA, enrollmentDate, enrollmentDate, null, facilityMetaData());
+    public PatientCare cwcPentaPatientCareEnrollOnVisitAfter10Weeks(LocalDate visitDate) {
+        return new PatientCare(CWC_PENTA, visitDate, visitDate, null, facilityMetaData());
     }
 
     private ChildCare childCare() {
@@ -149,7 +151,7 @@ public class Patient {
         ChildCare care = childCare();
         DateTime birthDateTime = care.birthTime();
         for (String scheduleName : pncChildCarePrograms) {
-            cares.add(new PatientCare(scheduleName, birthDateTime, birthDateTime,null, facilityMetaData()));
+            cares.add(new PatientCare(scheduleName, birthDateTime, birthDateTime, null, facilityMetaData()));
         }
         return cares;
     }
@@ -157,13 +159,13 @@ public class Patient {
     public List<PatientCare> pncMotherProgramsToEnrollOnRegistration(DateTime deliveryDateTime) {
         List<PatientCare> cares = new ArrayList<PatientCare>();
         for (String scheduleName : pncMotherCarePrograms) {
-            cares.add(new PatientCare(scheduleName, deliveryDateTime, deliveryDateTime,null, facilityMetaData()));
+            cares.add(new PatientCare(scheduleName, deliveryDateTime, deliveryDateTime, null, facilityMetaData()));
         }
         return cares;
     }
 
     public PatientCare pncProgramToFulfilOnVisit(DateTime visitDateTime, String scheduleName) {
-        return new PatientCare(scheduleName, visitDateTime, visitDateTime,null, facilityMetaData());
+        return new PatientCare(scheduleName, visitDateTime, visitDateTime, null, facilityMetaData());
     }
 
     public String getGender() {

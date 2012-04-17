@@ -39,17 +39,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
-import static org.motechproject.ghana.national.domain.Concept.BCG;
-import static org.motechproject.ghana.national.domain.Concept.IPTI;
-import static org.motechproject.ghana.national.domain.Concept.MEASLES;
+import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.PNCChildVisit.PNC1;
 import static org.motechproject.ghana.national.domain.PNCChildVisit.PNC2;
 import static org.motechproject.ghana.national.domain.PatientTest.*;
@@ -140,16 +133,18 @@ public class ChildVisitServiceTest extends BaseUnitTest {
     @Test
     public void shouldFulfillPentaScheduleIfAlreadyEnrolled() {
         String mrsPatientId = "mrsPatientId";
-        Patient patient = mock(Patient.class);
-        when(patient.getMRSPatientId()).thenReturn(mrsPatientId);
+        Patient patient = createPatient(mrsPatientId, "motechId", DateUtil.today(), "facilityId");
+
         EnrollmentRecord enrollmentRecord = mock(EnrollmentRecord.class);
         when(mockAllSchedules.enrollment(any(EnrollmentRequest.class))).thenReturn(enrollmentRecord);
 
-        service.updatePentaSchedule(createTestCWCVisit(new Date(), mock(MRSUser.class), mock(Facility.class), patient));
+        final LocalDate visitDate = DateUtil.today();
+        service.updatePentaSchedule(createTestCWCVisit(visitDate.toDate(), mock(MRSUser.class), mock(Facility.class), patient).pentadose("2"));
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(mockAllSchedules, never()).enroll(enrollmentRequestCaptor.capture());
-        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.CWC_PENTA), any(LocalDate.class));
+        verify(mockAllSchedulesAndMessages).enrollOrFulfill(enrollmentRequestCaptor.capture(), any(LocalDate.class));
+
+        assertThat(enrollmentRequestCaptor.getValue().getReferenceDate(), is(equalTo(visitDate)));
     }
 
     @Test
@@ -175,11 +170,14 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         Patient patient = createPatient(mrsPatientId, "motechId", DateUtil.today(), "facilityId");
         when(mockAllSchedules.enrollment(any(EnrollmentRequest.class))).thenReturn(null);
 
-        service.updatePentaSchedule(createTestCWCVisit(new Date(), mock(MRSUser.class), mock(Facility.class), patient));
+        final LocalDate visitDate = DateUtil.today();
+        service.updatePentaSchedule(createTestCWCVisit(visitDate.toDate(), mock(MRSUser.class), mock(Facility.class), patient).pentadose("2"));
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(mockAllSchedules).enroll(enrollmentRequestCaptor.capture());
-        verify(mockAllSchedulesAndMessages).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.CWC_PENTA), any(LocalDate.class));
+        verify(mockAllSchedulesAndMessages).enrollOrFulfill(enrollmentRequestCaptor.capture(), any(LocalDate.class));
+
+        assertThat(enrollmentRequestCaptor.getValue().getReferenceDate(), is(equalTo(visitDate)));
+
     }
 
     @Test
@@ -205,6 +203,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         assertIfObservationsAvailableForConcepts(true, encounterCaptor.getValue().getObservations(), IPTI.getName());
 
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
+
         verify(mockAllSchedulesAndMessages).enrollOrFulfill(captor.capture(), eq(visitDate));
         assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, CWC_IPT_VACCINE, deliveryTime, visitDate, deliveryTime, visitDate, null, dose.milestone(), null), captor.getAllValues().get(0));
     }
@@ -324,7 +323,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
     private CWCVisit createTestCWCVisit(Date registrationDate, MRSUser staff, Facility facility, Patient patient) {
         CWCVisit cwcVisit = new CWCVisit();
-        return cwcVisit.staff(staff).facility(facility).patient(patient).date(registrationDate).serialNumber("4ds65").pentadose("2")
+        return cwcVisit.staff(staff).facility(facility).patient(patient).date(registrationDate).serialNumber("4ds65")
                 .weight(65.67d).comments("comments").cwcLocation("34").house("house").community("community").maleInvolved(false);
     }
 

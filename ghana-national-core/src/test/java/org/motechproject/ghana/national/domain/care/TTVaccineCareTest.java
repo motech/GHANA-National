@@ -24,12 +24,13 @@ public class TTVaccineCareTest {
     }
 
     @Test
-    public void shouldReturnANewEnrollmentForTTCare(){
+    public void shouldReturnANewEnrollmentForTTCare() {
         final String facilityId = "facilityId";
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         LocalDate enrollmentDate = DateUtil.today();
-        assertThat(new TTVaccineCare(patient, enrollmentDate, null, null, null, null).newEnrollmentForCare(), is(equalTo(new PatientCare(TT_VACCINATION, enrollmentDate, null, null, new HashMap<String, String>(){{
-            put("facilityId", facilityId);
-        }}))));
+        assertThat(new TTVaccineCare(patient, null, enrollmentDate, null, null, null).newEnrollmentForCare(),
+                is(equalTo(new PatientCare(TT_VACCINATION, enrollmentDate, null, null, new HashMap<String, String>() {{
+                    put("facilityId", facilityId);
+                }}))));
     }
 }

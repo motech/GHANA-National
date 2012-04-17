@@ -5,7 +5,7 @@
             "name" : "PNC-C3",
             "scheduleWindows" : {
                 "earliest" : ["12 Days"],
-                "due" : ["14 Days"],
+                "due" : ["12 Days"],
                 "late" : ["14 Days"],
                 "max" : ["21 Days"]
             },
@@ -14,13 +14,13 @@
                     "window" : "earliest",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["12 Days"]
+                    "offset" : ["12 Days","-1 minute"]
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["0 Days"]
+                    "offset" : ["2 Days","-1 minute"]
                 }                
             ]
         }

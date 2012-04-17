@@ -5,7 +5,7 @@
             "name" : "PNC-C2",
             "scheduleWindows" : {
                 "earliest" : ["5 Days"],
-                "due" : ["7 Days"],
+                "due" : ["5 Days"],
                 "late" : ["7 Days"],
                 "max" : ["12 Days"]
             },
@@ -14,13 +14,13 @@
                     "window" : "earliest",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["5 Days"]
+                    "offset" : ["5 Days", "-1 Minute"]
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["0 Days"]
+                    "offset" : ["2 Days", "-1 Minute"]
                 }
             ]
         }

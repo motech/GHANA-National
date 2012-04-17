@@ -22,7 +22,6 @@ public class ANCCareRegistrationTest {
 
     ANCCareRegistration ancCareRegistration;
 
-
     @Test
     public void shouldIncludeAllANCCaresOnRegistration() {
         LocalDate edd = newDate(2013, 1, 1);
@@ -36,8 +35,8 @@ public class ANCCareRegistrationTest {
 
         PatientCare iptPatientCare = mock(PatientCare.class);
         PatientCare ttPatientCare = mock(PatientCare.class);
-        when(mockIptVaccineCare.careForANCReg()).thenReturn(iptPatientCare);
-        when(mockTTVaccineCare.careForANCReg()).thenReturn(ttPatientCare);
+        when(mockIptVaccineCare.careForReg()).thenReturn(iptPatientCare);
+        when(mockTTVaccineCare.careForReg()).thenReturn(ttPatientCare);
 
         List<PatientCare> patientCares = ancCareRegistration.allCares();
         //Delivery with date of conception as reference date

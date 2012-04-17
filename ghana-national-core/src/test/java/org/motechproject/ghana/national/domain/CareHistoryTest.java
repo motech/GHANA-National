@@ -16,7 +16,7 @@ public class CareHistoryTest {
     public void shouldCreateCareForHistory() {
         IPTVaccineCare mockIptVaccineCare = mock(IPTVaccineCare.class);
         TTVaccineCare mockTTVaccineCare = mock(TTVaccineCare.class);
-        CareHistory careHistory = new CareHistory(mockTTVaccineCare, mockIptVaccineCare);
+        CareHistory careHistory = CareHistory.forPregnancy(mockTTVaccineCare, mockIptVaccineCare);
 
         PatientCare iptPatientCare = mock(PatientCare.class);
         PatientCare ttPatientCare = mock(PatientCare.class);
