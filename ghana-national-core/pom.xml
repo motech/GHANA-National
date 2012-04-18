@@ -102,7 +102,7 @@
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-scheduletracking-api</artifactId>
-            <version>${motech-platform.version}</version>
+            <version>0.9</version>
         </dependency>
     </dependencies>
     <build>

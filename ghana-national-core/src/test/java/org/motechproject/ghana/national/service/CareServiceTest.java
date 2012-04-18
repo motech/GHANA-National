@@ -387,11 +387,11 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldSaveCareHistoryDetails() throws ObservationNotFoundException {
+    public void shouldSaveEncounterForCareHistoryDetails() throws ObservationNotFoundException {
         CareService careServiceSpy = spy(careService);
 
-        ANCCareHistoryVO ancCareHistory = mock(ANCCareHistoryVO.class);
-        CWCCareHistoryVO cwcCareHistory = mock(CWCCareHistoryVO.class);
+        ANCCareHistoryVO ancCareHistory = new ANCCareHistoryVO(null, new ArrayList<ANCCareHistory>(), null, null, null, null);
+        CWCCareHistoryVO cwcCareHistory = new CWCCareHistoryVO();
 
         final String conceptOneValue = "concept one value";
         final String conceptTwoValue = "concept two value";

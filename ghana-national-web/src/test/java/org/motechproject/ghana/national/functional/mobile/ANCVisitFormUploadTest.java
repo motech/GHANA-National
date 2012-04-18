@@ -75,14 +75,10 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         ancEnrollmentPage.save(ancEnrollment);
 
         final LocalDate nextANCVisitDate = DateUtil.today().plusDays(5);
+        String nextVisitDate = new SimpleDateFormat("yyyy-MM-dd").format(nextANCVisitDate.toDate());
         XformHttpClient.XformResponse xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, nextANCVisitDate);
         verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, nextANCVisitDate.minusWeeks(1).toDate(),
                 nextANCVisitDate.toDate(), nextANCVisitDate.plusWeeks(1).toDate(), nextANCVisitDate.plusWeeks(2).toDate());
-
-        LocalDate newANCVisitDate = DateUtil.today().plusDays(35);
-        xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, newANCVisitDate);
-        verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, newANCVisitDate.minusWeeks(1).toDate(),
-                newANCVisitDate.toDate(), newANCVisitDate.plusWeeks(1).toDate(), newANCVisitDate.plusWeeks(2).toDate());
 
         String motechId = ancEnrollmentPage.motechId();
 
@@ -120,7 +116,7 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("ANC PNC LOCATION", "2.0"),
                 new OpenMRSObservationVO("REFERRED", "true"),
                 new OpenMRSObservationVO("DEWORMER", "true"),
-                new OpenMRSObservationVO("NEXT ANC DATE", "22 May 2012 00:00:00 IST"),
+                new OpenMRSObservationVO("NEXT ANC DATE", nextVisitDate),
                 new OpenMRSObservationVO("DIASTOLIC BLOOD PRESSURE", "67.0"),
                 new OpenMRSObservationVO("INSECTICIDE TREATED NET USAGE", "false"),
                 new OpenMRSObservationVO("HOUSE", "house")
@@ -133,7 +129,7 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("staffId", staffId);
             put("facilityId", testPatient.facilityId());
             put("motechId", ancEnrollmentPage.getMotechPatientId());
-            put("date", "2012-01-03");
+            put("date", new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2012,1,3).toDate()));
             put("estDeliveryDate", new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2012,8,3).toDate()));
             put("serialNumber", "4ds65");
             put("visitNumber", "4");

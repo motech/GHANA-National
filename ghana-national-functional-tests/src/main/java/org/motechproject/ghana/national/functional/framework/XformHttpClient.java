@@ -99,6 +99,7 @@ public class XformHttpClient {
             hackDate(formData, "/abortion/date");
             hackDate(formData, "/clientQuery/dateOfBirth");
             hackDate(formData, "/tt/date");
+            hackDate(formData, "/careHistory/date");
             hackDate(formData, "/careHistory/lastIPTDate");
             hackDate(formData, "/careHistory/lastTTDate");
             hackDate(formData, "/careHistory/lastOPVDate");
@@ -108,11 +109,7 @@ public class XformHttpClient {
             hackDate(formData, "/careHistory/bcgDate");
             hackDate(formData, "/careHistory/measlesDate");
             hackDate(formData, "/careHistory/yellowFeverDate");
-            hackDate(formData, "/careHistory/date");
             hackDate(formData, "/child/date");
-//            hackDate(formData, "/ancVisit/date");
-//            hackDate(formData, "/ancVisit/estDeliveryDate");
-//            hackDate(formData, "/ancVisit/nextANCDate");
             hackDateTime(formData, "/delivery/date");
             hackDateTime(formData, "/pncmother/date");
             hackDateTime(formData, "/deliveryNotify/datetime");

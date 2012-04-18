@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -28,20 +29,20 @@ public class CareHistoryFormUploadTest extends OpenMRSAwareFunctionalTest {
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
-        final LocalDate ttDate = DateUtil.newDate(2012, 1, 1);
-        final LocalDate iptDate = DateUtil.newDate(2011, 12, 15);
-        final LocalDate date = DateUtil.newDate(2012, 1, 15);
+        final String ttDate = new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2012, 1, 1).toDate());
+        final String iptDate = new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2011, 12, 15).toDate());
+        final String date = new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2012, 1, 15).toDate());
 
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.careHistoryForm(), new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", "13212");
             put("motechId", patientId);
-            put("date", date.toString(forPattern("yyyy-MM-dd")));
+            put("date", date);
             put("addHistory", "IPT_SP,TT");
             put("lastIPT", "1");
-            put("lastIPTDate", iptDate.toString(forPattern("yyyy-MM-dd")));
+            put("lastIPTDate", iptDate);
             put("lastTT", "2");
-            put("lastTTDate", ttDate.toString(forPattern("yyyy-MM-dd")));
+            put("lastTTDate", ttDate);
         }});
 
         assertEquals(1, response.getSuccessCount());
