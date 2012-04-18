@@ -52,7 +52,7 @@ public class GeneralQueryFormUploadTest extends LoggedInUserFunctionalTest {
         patient = TestPatient.with(patientName, staffId)
                         .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                         .estimatedDateOfBirth(false);
-        patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
+        patientId = patientGenerator.createPatient(patient, browser, homePage);
 
     }
 
@@ -64,7 +64,7 @@ public class GeneralQueryFormUploadTest extends LoggedInUserFunctionalTest {
         TestPatient secondTestPatient = TestPatient.with(secondPatientName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
-        patientGenerator.createPatientWithStaff(secondTestPatient, browser, homePage);
+        patientGenerator.createPatient(secondTestPatient, browser, homePage);
 
         HashMap<String, String> inputParams = new HashMap<String, String>() {{
             put("facilityId", patient.facilityId());

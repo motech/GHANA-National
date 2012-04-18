@@ -48,7 +48,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
 
         // create
         TestPatient patient = TestPatient.with("Samy Johnson" + new DataGenerator().randomString(5), staffId);
-        String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
+        String patientId = patientGenerator.createPatient(patient, browser, homePage);
 
         TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId);
 
@@ -71,7 +71,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
     public void shouldEnrollAPatientToMobileMidwifeProgramAndUnEnroll() {
         // create
         TestPatient patient = TestPatient.with("Samy Johnson" + new DataGenerator().randomString(5), staffId);
-        String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
+        String patientId = patientGenerator.createPatient(patient, browser, homePage);
 
         TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId);
 
@@ -95,7 +95,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
 
         // create
         TestPatient patient = TestPatient.with("Samy Johnson" + new DataGenerator().randomString(5), staffId);
-        patientGenerator.createPatientWithStaff(patient, browser, homePage);
+        patientGenerator.createPatient(patient, browser, homePage);
 
         MobileMidwifeEnrollmentPage enrollmentPage = toMobileMidwifeEnrollmentPage(patient, homePage);
         enrollmentPage.withConsent(true)

@@ -4,7 +4,7 @@ import junit.framework.Assert;
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
+import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestCareHistory;
 import org.motechproject.ghana.national.functional.framework.OpenMRSDB;
@@ -20,7 +20,7 @@ import org.testng.annotations.Test;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class CareHistoryFormUploadSchedulesTest extends LoggedInUserFunctionalTest{
+public class CareHistoryFormUploadSchedulesTest extends OpenMRSAwareFunctionalTest{
     @Autowired
     ScheduleTracker scheduleTracker;
     @Autowired
@@ -29,7 +29,7 @@ public class CareHistoryFormUploadSchedulesTest extends LoggedInUserFunctionalTe
     @Test
     public void shouldNotCreateSchedulesWhileHistoryFormUploadIfThereAreActiveSchedules() {
         String staffId = staffGenerator.createStaff(browser, homePage);
-        String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
+        String patientId = patientGenerator.createPatient(browser, homePage, staffId);
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
         LocalDate registrationDate = DateUtil.today();
 
@@ -65,7 +65,7 @@ public class CareHistoryFormUploadSchedulesTest extends LoggedInUserFunctionalTe
     @Test
     public void shouldNotCreateSchedulesIfHistoryIsIrrelevantForANC() {
         String staffId = staffGenerator.createStaff(browser, homePage);
-        String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
+        String patientId = patientGenerator.createPatient(browser, homePage, staffId);
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
 
         TestCareHistory careHistory = TestCareHistory.withoutHistory(patientId);

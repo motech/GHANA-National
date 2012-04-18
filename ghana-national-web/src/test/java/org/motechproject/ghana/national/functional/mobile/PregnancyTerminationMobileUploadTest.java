@@ -46,7 +46,7 @@ public class PregnancyTerminationMobileUploadTest extends OpenMRSAwareFunctional
 
         TestPatient patient = TestPatient.with(patientFirstName, staffId).
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
-        final String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
+        final String patientId = patientGenerator.createPatient(patient, browser, homePage);
 
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
         searchPatientPage.searchWithMotechId(patientId);

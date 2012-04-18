@@ -31,14 +31,14 @@ public class Browser implements DisposableBean {
         this.webDriver = webDriverProvider.getWebDriver();
     }
 
+    public HomePage gotoHomePage(){
+        webDriver.get(applicationURLs.forHomePage());
+        return homePage();
+    }
+
     public LoginPage gotoLoginPage() {
         webDriver.get(applicationURLs.forLoginPage());
         return new LoginPage(webDriver);
-    }
-
-    public HomePage gotoHomePage() {
-        webDriver.get(applicationURLs.forHomePage());
-        return new HomePage(webDriver);
     }
 
     public HomePage homePage() {

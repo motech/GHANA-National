@@ -57,7 +57,7 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
     }
 
     @Test
-    public void shouldNotGiveErrorForFirstNameIfGiven() throws Exception {
+    public void shouldGiveErrorForFirstNameIfNotGiven() throws Exception {
 
         final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerClientForm(), new HashMap<String, String>() {{
             put("firstName", "Joe");
@@ -128,7 +128,7 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
     public void shouldCreatePatientWithCWCRegistrationInfoAndSearchForChild() {
         String staffId = staffGenerator.createStaff(browser, homePage);
 
-        String motherMotechId = patientGenerator.createPatientWithStaff(browser, homePage,staffId);
+        String motherMotechId = patientGenerator.createPatient(browser, homePage, staffId);
 
         TestPatient patient = TestPatient.with("Second CWC Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).

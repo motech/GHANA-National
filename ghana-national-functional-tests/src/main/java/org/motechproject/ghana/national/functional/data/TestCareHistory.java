@@ -38,21 +38,6 @@ public class TestCareHistory {
         return careHistory;
     }
 
-    public TestCareHistory withIPT(String dosage, LocalDate lastIPTdate) {
-        this.lastIPT = dosage;
-        this.lastIPTDate = lastIPTdate;
-        this.addHistory = (this.addHistory + " IPT_SP").trim().replace(" ", ",");
-        return this;
-    }
-
-    public TestCareHistory withTT(String dosage, LocalDate lastIPTdate) {
-        this.lastTT = dosage;
-        this.lastTTDate = lastIPTdate;
-        this.addHistory = (this.addHistory + " TT").trim().replace(" ", ",");
-        return this;
-    }
-
-
     public static TestCareHistory create() {
         TestCareHistory careHistory = new TestCareHistory();
         careHistory.facilityId = "13212";
@@ -99,8 +84,19 @@ public class TestCareHistory {
         }};
     }
 
-    private String safe(LocalDate date) {
-        return nullSafeToString(date, "yyyy-MM-dd");
+
+    public TestCareHistory withIPT(String dosage, LocalDate lastIPTdate) {
+        this.lastIPT = dosage;
+        this.lastIPTDate = lastIPTdate;
+        this.addHistory = (this.addHistory + " IPT_SP").trim().replace(" ", ",");
+        return this;
+    }
+
+    public TestCareHistory withTT(String dosage, LocalDate lastIPTdate) {
+        this.lastTT = dosage;
+        this.lastTTDate = lastIPTdate;
+        this.addHistory = (this.addHistory + " TT").trim().replace(" ", ",");
+        return this;
     }
 
     public TestCareHistory staffId(String staffId) {
@@ -116,5 +112,16 @@ public class TestCareHistory {
     public TestCareHistory withDate(LocalDate date) {
         this.date = date;
         return this;
+    }
+
+    public TestCareHistory withPenta(String dosage, LocalDate lastPentaDate) {
+        this.lastPenta = dosage;
+        this.lastPentaDate = lastPentaDate;
+        this.addHistory = (this.addHistory + "PENTA").trim().replace(" ", ",");
+        return this;
+    }
+
+    private String safe(LocalDate date) {
+        return nullSafeToString(date, "yyyy-MM-dd");
     }
 }

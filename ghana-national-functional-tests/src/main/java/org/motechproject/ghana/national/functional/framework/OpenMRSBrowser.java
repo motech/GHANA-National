@@ -37,6 +37,11 @@ public class OpenMRSBrowser implements DisposableBean {
         return new OpenMRSEncounterPage(webDriver);
     }
 
+    public OpenMRSHomePage toOpenMRSHomePage() {
+        webDriver.get(applicationURLs.forOpenMRSHomePage());
+        return openMRSHomePage();
+    }
+
     public OpenMRSHomePage openMRSHomePage() {
         return new OpenMRSHomePage(webDriver);
     }

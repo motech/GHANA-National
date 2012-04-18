@@ -99,7 +99,7 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
         TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
 
-        final String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
+        final String patientId = patientGenerator.createPatient(patient, browser, homePage);
 
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId);
 
@@ -124,7 +124,7 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
         TestPatient patient = TestPatient.with("Second ANC Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
 
-        final String patientId = patientGenerator.createPatientWithStaff(patient, browser, homePage);
+        final String patientId = patientGenerator.createPatient(patient, browser, homePage);
 
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId);
 

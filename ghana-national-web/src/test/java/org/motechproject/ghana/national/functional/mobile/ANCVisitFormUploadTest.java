@@ -79,6 +79,11 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, nextANCVisitDate.minusWeeks(1).toDate(),
                 nextANCVisitDate.toDate(), nextANCVisitDate.plusWeeks(1).toDate(), nextANCVisitDate.plusWeeks(2).toDate());
 
+        LocalDate newANCVisitDate = DateUtil.today().plusDays(35);
+        xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, newANCVisitDate);
+        verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, newANCVisitDate.minusWeeks(1).toDate(),
+                newANCVisitDate.toDate(), newANCVisitDate.plusWeeks(1).toDate(), newANCVisitDate.plusWeeks(2).toDate());
+        
         String motechId = ancEnrollmentPage.motechId();
 
         OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));

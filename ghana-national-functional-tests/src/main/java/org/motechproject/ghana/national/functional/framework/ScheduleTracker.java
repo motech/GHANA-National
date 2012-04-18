@@ -250,12 +250,6 @@ public class ScheduleTracker {
                 if (alertCount > 0) {
                     return alert.getNextAlertDateTime(newDateTime(referenceWindowStartDate.toDate()), null).toLocalDate();
                 }
-                /*for (long count = 0; count <= alertCount; count++) {
-                    Period interval = new Period(alert.getInterval().toStandardDuration().getMillis() * count, millis());
-                    LocalDate idealStartDate = referenceWindowStartDate.plus(alert.getOffset()).plusDays((int) interval.toStandardDuration().getStandardDays());
-                    if (idealStartDate.compareTo(DateUtil.today()) > 0) return idealStartDate;
-                }*/
-
             }
         }
         return null;

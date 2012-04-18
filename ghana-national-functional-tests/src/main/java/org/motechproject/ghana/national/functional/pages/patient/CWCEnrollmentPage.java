@@ -398,13 +398,13 @@ public class CWCEnrollmentPage extends HomePage {
         assertEquals(cwcEnrollmentDetails.getSubDistrict(), getSubDistrict());
         assertEquals(cwcEnrollmentDetails.getRegistrationDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy")), getRegistrationDate());
         assertEquals(cwcEnrollmentDetails.getFacility(), getFacility());
-        assertThat(getBcgDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getBcgDate())));
+        assertThat(getBcgDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastBcgDate())));
         assertThat(getLastIPTiDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastIPTiDate())));
         assertThat(getLastOPVDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastOPVDate())));
         assertThat(getLastPentaDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastPentaDate())));
         assertThat(getLastVitaminADate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastVitaminADate())));
-        assertThat(getMeaslesDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getMeaslesDate())));
-        assertThat(getYellowFeverDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getYellowFeverDate())));
+        assertThat(getMeaslesDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastMeaslesDate())));
+        assertThat(getYellowFeverDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastYellowFeverDate())));
         assertThat(nullSafeInteger(getLastIPTi()), is(cwcEnrollmentDetails.getLastIPTi()));
         assertThat(nullSafeInteger(getLastOPV()), is(cwcEnrollmentDetails.getLastOPV()));
         assertThat(nullSafeInteger(getLastPenta()), is(cwcEnrollmentDetails.getLastPenta()));
@@ -438,7 +438,7 @@ public class CWCEnrollmentPage extends HomePage {
                 .withHasYellowFeverHistory(enrollment.hasYellowFeverHistory());
 
         if(enrollment.hasBcgHistory()){
-            withBcgDate(enrollment.getBcgDate());
+            withBcgDate(enrollment.getLastBcgDate());
         }
         if(enrollment.hasIPTiHistory()){
             withLastIPTiDate(enrollment.getLastIPTiDate())
@@ -456,10 +456,10 @@ public class CWCEnrollmentPage extends HomePage {
             withLastVitaminADate(enrollment.getLastVitaminADate());
         }
         if(enrollment.hasMeaslesHistory()) {
-            withMeaslesDate(enrollment.getMeaslesDate());
+            withMeaslesDate(enrollment.getLastMeaslesDate());
         }
         if(enrollment.hasYellowFeverHistory()) {
-            withYellowFeverDate(enrollment.getYellowFeverDate());
+            withYellowFeverDate(enrollment.getLastYellowFeverDate());
         }
         submit();
 
