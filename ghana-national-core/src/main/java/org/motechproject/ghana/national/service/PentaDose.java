@@ -2,6 +2,11 @@ package org.motechproject.ghana.national.service;
 
 public enum PentaDose {
     PENTA1(1, "Penta1"), PENTA2(2, "Penta2"), PENTA3(3, "Penta3");
+
+    public Integer getDose() {
+        return dose;
+    }
+
     private Integer dose;
     private String milestone;
 

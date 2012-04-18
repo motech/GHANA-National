@@ -61,7 +61,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
     }
 
     @Test
-    public void shouldNotGiveErrorForFirstNameIfGiven() throws Exception {
+    public void shouldGiveErrorForFirstNameIfNotGiven() throws Exception {
 
         XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.editClientForm(), new HashMap<String, String>() {{
             put("firstName", "Joe");
@@ -79,7 +79,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
 
         String facilityMotechId = facilityGenerator.createFacility(browser, homePage);
         String staffId = staffGenerator.createStaff(browser, homePage);
-        String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
+        String patientId = patientGenerator.createPatient(browser, homePage, staffId);
 
         TestPatient patient = TestPatient.with("Updated First Name" + dataGenerator.randomString(5), staffId)
                 .patientType(TestPatient.PATIENT_TYPE.OTHER)

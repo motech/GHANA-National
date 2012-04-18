@@ -261,6 +261,15 @@ public class XformHttpClient {
             return formIndex;
         }
 
+        @Override
+        public String toString() {
+            return "Error{" +
+                    "studyIndex=" + studyIndex +
+                    ", formIndex=" + formIndex +
+                    ", error='" + error + '\'' +
+                    '}';
+        }
+
         public Map<String, List<String>> getErrors() {
             final String errors = error.split(":")[1];
             final String[] errorPairsAsString = errors.split("\n");

@@ -30,6 +30,6 @@ public class TestEnvironmentConfiguration {
     }
 
     public String openMRSPort() {
-        return System.getProperty("OPENMRS_PORT", openMRSPort);
+        return "7000";
     }
 }

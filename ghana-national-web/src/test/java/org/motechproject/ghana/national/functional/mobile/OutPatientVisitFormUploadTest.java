@@ -41,7 +41,7 @@ public class OutPatientVisitFormUploadTest extends LoggedInUserFunctionalTest {
     public void shouldUploadOutPatientVisitFormSuccessfullyIfPatientIsNotAVisitor() throws Exception {
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String facilityId = facilityGenerator.createFacility(browser, homePage);
-        final String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
+        final String patientId = patientGenerator.createPatient(browser, homePage, staffId);
         final String serialNumber = "serialNumber";
         final LocalDate visitDate = DateUtil.today();
 

@@ -27,7 +27,7 @@ public class DeliveryNotificationFormUploadTest extends OpenMRSAwareFunctionalTe
 
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String facilityId = facilityGenerator.createFacility(browser, homePage);
-        final String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
+        final String patientId = patientGenerator.createPatient(browser, homePage, staffId);
 
         XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.deliveryNotificationForm() , new HashMap<String, String>() {{
             put("staffId", staffId);

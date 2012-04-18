@@ -12,6 +12,7 @@ import java.util.*;
 import static org.joda.time.format.DateTimeFormat.forPattern;
 import static org.motechproject.ghana.national.functional.util.MobileFormUtils.updateFieldByNameAndValue;
 import static org.motechproject.ghana.national.functional.util.MobileFormUtils.updateFieldName;
+import static org.motechproject.ghana.national.tools.Utility.nullSafeToString;
 
 public class TestCWCEnrollment implements CareEnrollment {
 
@@ -23,13 +24,13 @@ public class TestCWCEnrollment implements CareEnrollment {
     private String serialNumber;
     private Boolean addHistory;
     private List<CwcCareHistory> addCareHistory;
-    private LocalDate bcgDate;
+    private LocalDate lastBcgDate;
     private LocalDate lastOPVDate;
     private LocalDate lastVitaminADate;
     private LocalDate lastIPTiDate;
-    private LocalDate yellowFeverDate;
+    private LocalDate lastYellowFeverDate;
     private LocalDate lastPentaDate;
-    private LocalDate measlesDate;
+    private LocalDate lastMeaslesDate;
     private String lastOPV;
     private String lastIPTi;
     private String lastPenta;
@@ -40,28 +41,38 @@ public class TestCWCEnrollment implements CareEnrollment {
     private String facility;
 
     public static TestCWCEnrollment create() {
+        return createWithoutHistory().addHistoryDetails();
+    }
+
+    public TestCWCEnrollment addHistoryDetails() {
+        this.addHistory = true;
+        this.addCareHistory = Arrays.asList(CwcCareHistory.values());
+        this.lastBcgDate = DateUtil.newDate(2000, 11, 1);
+        this.lastYellowFeverDate = DateUtil.newDate(2000, 11, 5);
+        this.lastMeaslesDate = DateUtil.newDate(2000, 11, 7);
+        this.lastPentaDate = DateUtil.newDate(2000, 11, 6);
+        this.lastOPVDate = DateUtil.newDate(2000, 11, 2);
+        this.lastVitaminADate = DateUtil.newDate(2000, 11, 3);
+        this.lastIPTiDate = DateUtil.newDate(2000, 11, 4);
+        this.lastOPV = "1";
+        this.lastIPTi = "2";
+        this.lastPenta = "3";
+        return this;
+    }
+
+    public static TestCWCEnrollment createWithoutHistory() {
         final TestCWCEnrollment enrollment = new TestCWCEnrollment();
+        enrollment.addCareHistory = new ArrayList<CwcCareHistory>();
         enrollment.registrationToday = RegistrationToday.IN_PAST;
         enrollment.registrationDate = DateUtil.newDate(2011, 2, 2);
         enrollment.serialNumber = "serialNumber";
-        enrollment.addHistory = true;
-        enrollment.addCareHistory = Arrays.asList(CwcCareHistory.values());
-        enrollment.bcgDate = DateUtil.newDate(2000, 11, 1);
-        enrollment.lastOPVDate = DateUtil.newDate(2000, 11, 2);
-        enrollment.lastVitaminADate = DateUtil.newDate(2000, 11, 3);
-        enrollment.lastIPTiDate = DateUtil.newDate(2000, 11, 4);
-        enrollment.yellowFeverDate = DateUtil.newDate(2000, 11, 5);
-        enrollment.lastPentaDate = DateUtil.newDate(2000, 11, 6);
-        enrollment.measlesDate = DateUtil.newDate(2000, 11, 7);
-        enrollment.lastOPV = "1";
-        enrollment.lastIPTi = "2";
-        enrollment.lastPenta = "3";
         enrollment.country = "Ghana";
         enrollment.region = "Central Region";
         enrollment.district = "Awutu Senya";
         enrollment.subDistrict = "Kasoa";
         enrollment.facility = "Papaase CHPS";
         enrollment.facilityId = "13212";
+        enrollment.addHistory = false;
         return enrollment;
     }
 
@@ -96,7 +107,7 @@ public class TestCWCEnrollment implements CareEnrollment {
             put("facilityId", facilityId);
             put("motechId", motechPatientId);
             put("registrationToday", registrationToday.name());
-            put("registrationDate", registrationDate.toString(forPattern("yyyy-MM-dd")));
+            put("registrationDate", safe(registrationDate));
             put("serialNumber", serialNumber);
             put("addHistory", booleanCodeForAddHistory(addHistory));
             List<String> concatenatedCareHistories = new ArrayList<String>();
@@ -104,19 +115,23 @@ public class TestCWCEnrollment implements CareEnrollment {
                 concatenatedCareHistories.add(history.name());
             }
             put("addCareHistory", StringUtils.join(concatenatedCareHistories, ","));
-            put("bcgDate", bcgDate.toString(forPattern("yyyy-MM-dd")));
-            put("lastOPVDate", lastOPVDate.toString(forPattern("yyyy-MM-dd")));
-            put("lastVitaminADate", lastVitaminADate.toString(forPattern("yyyy-MM-dd")));
-            put("lastIPTiDate", lastIPTiDate.toString(forPattern("yyyy-MM-dd")));
-            put("yellowFeverDate", yellowFeverDate.toString(forPattern("yyyy-MM-dd")));
-            put("lastPentaDate", lastPentaDate.toString(forPattern("yyyy-MM-dd")));
-            put("measlesDate", measlesDate.toString(forPattern("yyyy-MM-dd")));
+            put("bcgDate", safe(lastBcgDate));
+            put("lastOPVDate", safe(lastOPVDate));
+            put("lastVitaminADate", safe(lastVitaminADate));
+            put("lastIPTiDate", safe(lastIPTiDate));
+            put("yellowFeverDate", safe(lastYellowFeverDate));
+            put("lastPentaDate", safe(lastPentaDate));
+            put("measlesDate", safe(lastMeaslesDate));
             put("lastPenta", lastPenta);
             put("lastOPV", lastOPV);
             put("lastIPTi", lastIPTi);
 
         }};
 
+    }
+
+    private String safe(LocalDate date) {
+        return nullSafeToString(date, "yyyy-MM-dd");
     }
 
     public String booleanCodeForAddHistory(boolean value) {
@@ -183,7 +198,7 @@ public class TestCWCEnrollment implements CareEnrollment {
 
     public TestCWCEnrollment withAddCareHistory(List<CwcCareHistory> addCareHistory) {
         this.addCareHistory = addCareHistory;
-        bcgDate = null;
+        lastBcgDate = null;
         lastIPTiDate = null;
         lastIPTi = null;
         lastOPV = null;
@@ -191,17 +206,17 @@ public class TestCWCEnrollment implements CareEnrollment {
         lastPenta = null;
         lastPentaDate = null;
         lastVitaminADate = null;
-        measlesDate = null;
-        yellowFeverDate = null;
+        lastMeaslesDate = null;
+        lastYellowFeverDate = null;
         return this;
     }
 
-    public LocalDate getBcgDate() {
-        return bcgDate;
+    public LocalDate getLastBcgDate() {
+        return lastBcgDate;
     }
 
-    public TestCWCEnrollment withBcgDate(LocalDate bcgDate) {
-        this.bcgDate = bcgDate;
+    public TestCWCEnrollment withLastBcgDate(LocalDate bcgDate) {
+        this.lastBcgDate = bcgDate;
         return this;
     }
 
@@ -232,12 +247,12 @@ public class TestCWCEnrollment implements CareEnrollment {
         return this;
     }
 
-    public LocalDate getYellowFeverDate() {
-        return yellowFeverDate;
+    public LocalDate getLastYellowFeverDate() {
+        return lastYellowFeverDate;
     }
 
-    public TestCWCEnrollment withYellowFeverDate(LocalDate yellowFeverDate) {
-        this.yellowFeverDate = yellowFeverDate;
+    public TestCWCEnrollment withLastYellowFeverDate(LocalDate yellowFeverDate) {
+        this.lastYellowFeverDate = yellowFeverDate;
         return this;
     }
 
@@ -250,12 +265,12 @@ public class TestCWCEnrollment implements CareEnrollment {
         return this;
     }
 
-    public LocalDate getMeaslesDate() {
-        return measlesDate;
+    public LocalDate getLastMeaslesDate() {
+        return lastMeaslesDate;
     }
 
-    public TestCWCEnrollment withMeaslesDate(LocalDate measlesDate) {
-        this.measlesDate = measlesDate;
+    public TestCWCEnrollment withLastMeaslesDate(LocalDate measlesDate) {
+        this.lastMeaslesDate = measlesDate;
         return this;
     }
 

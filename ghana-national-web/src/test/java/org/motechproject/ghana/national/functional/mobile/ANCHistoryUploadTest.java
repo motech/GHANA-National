@@ -35,7 +35,7 @@ public class ANCHistoryUploadTest extends LoggedInUserFunctionalTest {
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
 
-        String patientId = patientGenerator.createPatientWithStaff(testPatient, browser, homePage);
+        String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
 
         TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId);
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, testPatient.facilityId()).patientId(patientId);
@@ -63,7 +63,7 @@ public class ANCHistoryUploadTest extends LoggedInUserFunctionalTest {
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
 
-        String patientId = patientGenerator.createPatientWithStaff(testPatient, browser, homePage);
+        String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
 
         PatientEditPage patientEditPage = toPatientEditPage(testPatient);
         MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientEditPage);

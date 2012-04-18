@@ -49,6 +49,7 @@ public abstract class OpenMRSAwareFunctionalTest extends FunctionalTest {
 
     @AfterMethod
     public void logout() {
-        openMRSHomePage.logout();
+        openMRSBrowser.toOpenMRSHomePage().logout();
+        browser.gotoHomePage().logout();
     }
 }

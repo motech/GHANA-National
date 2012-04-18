@@ -94,7 +94,7 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
 
-        String patientId = patientGenerator.createPatientWithStaff(testPatient, browser, homePage);
+        String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
 
         Pregnancy pregnancyIn12thWeekOfPregnancy = Pregnancy.basedOnConceptionDate(DateUtil.today().minusWeeks(12));
         LocalDate registrationDate = DateUtil.today();
@@ -134,7 +134,7 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
         TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
-        String patientId = patientGenerator.createPatientWithStaff(testPatient, browser, homePage);
+        String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
 
         Pregnancy pregnancyIn12thWeekOfPregnancy = Pregnancy.basedOnConceptionDate(DateUtil.today().minusWeeks(12));
         LocalDate registrationDate = DateUtil.today();
@@ -170,7 +170,7 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
         TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
-        String patientId = patientGenerator.createPatientWithStaff(testPatient, browser, homePage);
+        String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
 
         Pregnancy in12thWeekOfPregnancy = Pregnancy.basedOnConceptionDate(DateUtil.today().minusWeeks(11));
         LocalDate registrationDate = DateUtil.today();
@@ -204,7 +204,7 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
         TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
                 .patientType(TestPatient.PATIENT_TYPE.OTHER)
                 .estimatedDateOfBirth(false);
-        String patientId = patientGenerator.createPatientWithStaff(testPatient, browser, homePage);
+        String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
 
         Pregnancy pregnancyIn12thWeekOfPregnancy = Pregnancy.basedOnConceptionDate(DateUtil.today().minusWeeks(12));
         LocalDate registrationDate = DateUtil.today();
@@ -247,7 +247,7 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
 
-        String patientId = patientGenerator.createPatientWithStaff(testPatient, browser, homePage);
+        String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
 
         PatientEditPage patientEditPage = toPatientEditPage(testPatient);
         MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientEditPage);
@@ -275,7 +275,7 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
 
-        String patientId = patientGenerator.createPatientWithStaff(testPatient, browser, homePage);
+        String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
 
         TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId);
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, testPatient.facilityId()).patientId(patientId);

@@ -13,17 +13,17 @@ public class PatientGenerator {
 
     @LoginAsAdmin
     @ApiSession
-    public String createPatientWithStaff(Browser browser, HomePage homePage, String staffId) {
+    public String createPatient(Browser browser, HomePage homePage, String staffId) {
         DataGenerator dataGenerator = new DataGenerator();
         TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false);
 
-        return createPatientWithStaff(patient, browser, homePage);
+        return createPatient(patient, browser, homePage);
     }
 
     @LoginAsAdmin
     @ApiSession
-    public String createPatientWithStaff(TestPatient patient, Browser browser, HomePage homePage) {
+    public String createPatient(TestPatient patient, Browser browser, HomePage homePage) {
         PatientPage patientPage = browser.toCreatePatient(homePage);
         patientPage.create(patient);
         patientPage.waitForSuccessfulCompletion();

@@ -28,7 +28,7 @@ public class TTVisitFormUploadTest extends OpenMRSAwareFunctionalTest{
     public void shouldUploadTTVisitFormSuccessfully() throws Exception {
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String facilityId = facilityGenerator.createFacility(browser, homePage);
-        final String patientId = patientGenerator.createPatientWithStaff(browser, homePage, staffId);
+        final String patientId = patientGenerator.createPatient(browser, homePage, staffId);
         final LocalDate visitDate= DateUtil.today();
 
         final XformHttpClient.XformResponse response = mobile.upload(MobileForm.ttVisitForm(), new HashMap<String, String>() {{
