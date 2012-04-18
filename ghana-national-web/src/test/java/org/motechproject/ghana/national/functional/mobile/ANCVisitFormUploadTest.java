@@ -74,8 +74,7 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         final ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
         ancEnrollmentPage.save(ancEnrollment);
 
-        final LocalDate nextANCVisitDate = DateUtil.today().plusDays(5);
-        String nextVisitDate = new SimpleDateFormat("yyyy-MM-dd").format(nextANCVisitDate.toDate());
+        final LocalDate nextANCVisitDate = DateUtil.newDate(2012,4,10);
         XformHttpClient.XformResponse xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, nextANCVisitDate);
         verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, nextANCVisitDate.minusWeeks(1).toDate(),
                 nextANCVisitDate.toDate(), nextANCVisitDate.plusWeeks(1).toDate(), nextANCVisitDate.plusWeeks(2).toDate());
@@ -116,7 +115,7 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("ANC PNC LOCATION", "2.0"),
                 new OpenMRSObservationVO("REFERRED", "true"),
                 new OpenMRSObservationVO("DEWORMER", "true"),
-                new OpenMRSObservationVO("NEXT ANC DATE", nextVisitDate),
+                new OpenMRSObservationVO("NEXT ANC DATE", "10 April 2012 00:00:00 IST"),
                 new OpenMRSObservationVO("DIASTOLIC BLOOD PRESSURE", "67.0"),
                 new OpenMRSObservationVO("INSECTICIDE TREATED NET USAGE", "false"),
                 new OpenMRSObservationVO("HOUSE", "house")
