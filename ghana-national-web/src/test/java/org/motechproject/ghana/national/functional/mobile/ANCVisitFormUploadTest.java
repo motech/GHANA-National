@@ -71,19 +71,14 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         searchPatientPage.displaying(testPatient);
 
         PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, testPatient);
-        final ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
+        ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
         ancEnrollmentPage.save(ancEnrollment);
 
-        final LocalDate nextANCVisitDate = DateUtil.newDate(2012,4,10);
+        final LocalDate nextANCVisitDate = DateUtil.newDate(2012, 4, 10);
         XformHttpClient.XformResponse xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, nextANCVisitDate);
         verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, nextANCVisitDate.minusWeeks(1).toDate(),
                 nextANCVisitDate.toDate(), nextANCVisitDate.plusWeeks(1).toDate(), nextANCVisitDate.plusWeeks(2).toDate());
 
-        LocalDate newANCVisitDate = DateUtil.today().plusDays(35);
-        xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, newANCVisitDate);
-        verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, newANCVisitDate.minusWeeks(1).toDate(),
-                newANCVisitDate.toDate(), newANCVisitDate.plusWeeks(1).toDate(), newANCVisitDate.plusWeeks(2).toDate());
-        
         String motechId = ancEnrollmentPage.motechId();
 
         OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
@@ -100,10 +95,10 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("MALE INVOLVEMENT", "false"),
                 new OpenMRSObservationVO("VDRL TREATMENT", "true"),
                 new OpenMRSObservationVO("COMMENTS", "comments"),
-                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT","03 February 2012 00:00:00 IST"),
-                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT","03 August 2012 00:00:00 IST"),
-                new OpenMRSObservationVO("PREGNANCY STATUS","true"),
-                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED","true"),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", "03 February 2012 00:00:00 IST"),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", "03 August 2012 00:00:00 IST"),
+                new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
+                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED", "true"),
                 new OpenMRSObservationVO("TETANUS TOXOID DOSE", "1.0"),
                 new OpenMRSObservationVO("IPT REACTION", "REACTIVE"),
                 new OpenMRSObservationVO("URINE PROTEIN TEST", "POSITIVE"),
@@ -126,6 +121,17 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("HOUSE", "house")
         ));
 
+
+        searchPatientPage = browser.toSearchPatient(browser.gotoHomePage());
+        searchPatientPage.searchWithName(patientFirstName);
+
+        patientEditPage = browser.toPatientEditPage(searchPatientPage, testPatient);
+        ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
+
+        LocalDate newANCVisitDate = DateUtil.today().plusDays(35);
+        xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, newANCVisitDate);
+        verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, newANCVisitDate.minusWeeks(1).toDate(),
+                newANCVisitDate.toDate(), newANCVisitDate.plusWeeks(1).toDate(), newANCVisitDate.plusWeeks(2).toDate());
     }
 
     private XformHttpClient.XformResponse createAncVisit(final String staffId, final TestPatient testPatient, final ANCEnrollmentPage ancEnrollmentPage, final LocalDate nextANCVisitDate) {
@@ -133,8 +139,8 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("staffId", staffId);
             put("facilityId", testPatient.facilityId());
             put("motechId", ancEnrollmentPage.getMotechPatientId());
-            put("date", new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2012,1,3).toDate()));
-            put("estDeliveryDate", new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2012,8,3).toDate()));
+            put("date", new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2012, 1, 3).toDate()));
+            put("estDeliveryDate", new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2012, 8, 3).toDate()));
             put("serialNumber", "4ds65");
             put("visitNumber", "4");
             put("bpDiastolic", "67");
