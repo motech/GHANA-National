@@ -15,13 +15,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import static ch.lambdaj.Lambda.convert;
-import static ch.lambdaj.Lambda.extract;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.selectUnique;
+import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.core.Is.is;
 
 @Repository
@@ -117,7 +115,7 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
 
     @View(name = "find_by_motech_facility_id", map = "function(doc) { if(doc.type === 'Facility') emit(doc.motechId, doc) }")
     public Facility findByMotechFacilityId(String facilityId) {
-        if(StringUtils.isEmpty(facilityId)) {
+        if (StringUtils.isEmpty(facilityId)) {
             return null;
         }
         ViewQuery viewQuery = createQuery("find_by_motech_facility_id").key(facilityId).includeDocs(true);
@@ -128,5 +126,14 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
     public Facility getFacilityByMotechId(String motechFacilityId) {
         Facility facility = findByMotechFacilityId(motechFacilityId);
         return (facility != null) ? facility.mrsFacility(facilityAdapter.getFacility(facility.mrsFacilityId())) : null;
+    }
+
+    public Set<String> getAllPhoneNumbers() {
+        List<Facility> facilities = facilities();
+        Set<String> phoneNumbers = new HashSet<String>();
+        for (Facility facility : facilities) {
+            phoneNumbers.addAll(facility.getPhoneNumbers());
+        }
+        return phoneNumbers;
     }
 }

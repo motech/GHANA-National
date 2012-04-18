@@ -90,4 +90,5 @@ public class Constants {
     public static final Integer CWC_PENTA_MAX_WEEK_FOR_REGISTRATION = 10;
     public static final Integer CWC_MEASLES_MAX_AGE_WEEK_FOR_REGISTRATION = 5;
 
+    public static final String FACILITIES_DEFAULT_MESSAGE_SUBJECT = "org.motechproject.ghana.national.facilities.default";
 }
