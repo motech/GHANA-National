@@ -1,30 +1,50 @@
 package org.motechproject.ghana.national.repository;
 
 import ch.lambdaj.group.Group;
+import org.motechproject.cmslite.api.model.ContentNotFoundException;
+import org.motechproject.cmslite.api.model.StringContent;
+import org.motechproject.cmslite.api.service.CMSLiteService;
+import org.motechproject.ghana.national.domain.SmsTemplateKeys;
 import org.motechproject.ghana.national.messagegateway.domain.AggregationStrategy;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
 import org.motechproject.ghana.national.messagegateway.domain.SMSDatum;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.util.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
 import static ch.lambdaj.group.Groups.by;
 import static ch.lambdaj.group.Groups.group;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.IsNot.not;
 
 public class AggregationStrategyImpl implements AggregationStrategy {
 
     public static final String SMS_SEPARATOR = "%0A";
 
+    @Autowired
+    private CMSLiteService cmsLiteService;
+
     @Override
     public List<SMS> aggregate(List<SMS> smsMessages) {
+        try {
+            StringContent defaultMessage = cmsLiteService.getStringContent(Locale.getDefault().getLanguage(), SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY);
+            List<SMS> filteredMessages = filter(having(on(SMS.class).getText(), not(equalTo(defaultMessage.getValue()))), smsMessages);
+            return (filteredMessages.isEmpty()) ?
+                    filter(having(on(SMS.class).getText(), equalTo(defaultMessage.getValue())), smsMessages) :
+                    aggregateMessages(filteredMessages);
+
+        } catch (ContentNotFoundException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    private List<SMS> aggregateMessages(List<SMS> smsMessages) {
         final SMS firstSMS = Utility.nullSafe(smsMessages, 0, null);
         final String phoneNumber = firstSMS != null ? firstSMS.getPhoneNumber() : null;
-
         ArrayList<SMSDatum> smsData = getSMSData(smsMessages);
         Comparator<String> alphabeticalOrder = new Comparator<String>() {
 
@@ -57,7 +77,7 @@ public class AggregationStrategyImpl implements AggregationStrategy {
                             .append(", ").append(datum.getSerialNumber()).append(", ").append(joinFrom(all).getMilestone());
                 }
             }
-            messages.add(SMS.fromText(builder.toString(), phoneNumber, DateUtil.now(), null ,null));
+            messages.add(SMS.fromText(builder.toString(), phoneNumber, DateUtil.now(), null, null));
         }
         return messages;
     }

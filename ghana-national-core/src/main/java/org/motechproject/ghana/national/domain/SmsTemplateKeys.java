@@ -14,4 +14,5 @@ public class SmsTemplateKeys {
     public static final String CWC_IPTi_VACCINATION_SMS_KEY = "CWC_IPTi_VACCINATION_SMS_KEY";
     public static final String PNC_MOTHER_SMS_KEY = "PNC_MOTHER_SMS_KEY";
     public static final String PNC_CHILD_SMS_KEY = "PNC_CHILD_SMS_KEY";
+    public static final String FACILITIES_DEFAULT_MESSAGE_KEY = "FACILITIES_DEFAULT_MESSAGE_KEY";
 }
