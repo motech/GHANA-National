@@ -81,7 +81,7 @@ public class ANCTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT DOSE", "1.0"),
                 new OpenMRSObservationVO("GRAVIDA", "4.0"),
                 new OpenMRSObservationVO("PARITY", "4.0"),
-                new OpenMRSObservationVO("ANC REGISTRATION NUMBER", "serialNumber"),
+                new OpenMRSObservationVO("SERIAL NUMBER", "serialNumber"),
                 new OpenMRSObservationVO("HEIGHT (CM)", "160.9")
         ));
 
