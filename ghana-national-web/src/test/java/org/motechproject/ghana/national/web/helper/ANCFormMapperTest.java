@@ -57,7 +57,7 @@ public class ANCFormMapperTest {
             add(new MRSObservation<Double>(observationDate, GRAVIDA.getName(), gravida));
             add(new MRSObservation<Double>(observationDate, HEIGHT.getName(), height));
             add(new MRSObservation<Double>(observationDate, PARITY.getName(), parity));
-            add(new MRSObservation<String>(observationDate, ANC_REG_NUM.getName(), serialNumber));
+            add(new MRSObservation<String>(observationDate, SERIAL_NUMBER.getName(), serialNumber));
             add(new MRSObservation<Double>(observationDate, IPT.getName(), 2.0));
             add(new MRSObservation<Double>(observationDate, TT.getName(), 3.0));
         }};
@@ -110,7 +110,7 @@ public class ANCFormMapperTest {
             add(new MRSObservation<Double>(observationDate, GRAVIDA.getName(), gravida));
             add(new MRSObservation<Double>(observationDate, HEIGHT.getName(), height));
             add(new MRSObservation<Double>(observationDate, PARITY.getName(), parity));
-            add(new MRSObservation<String>(observationDate, ANC_REG_NUM.getName(), serialNumber));
+            add(new MRSObservation<String>(observationDate, SERIAL_NUMBER.getName(), serialNumber));
         }};
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
         MRSEncounter mrsEncounter = new MRSEncounter("1", new MRSPerson().id(providerId),

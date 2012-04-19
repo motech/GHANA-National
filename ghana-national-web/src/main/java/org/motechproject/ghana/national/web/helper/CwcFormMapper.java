@@ -73,7 +73,7 @@ public class CwcFormMapper {
                 careHistories.add(CwcCareHistory.OPV);
             }
             cwcEnrollmentForm.setCareHistory(careHistories);
-            if (CWC_REG_NUMBER.getName().equals(observation.getConceptName())) {
+            if (SERIAL_NUMBER.getName().equals(observation.getConceptName())) {
                 cwcEnrollmentForm.setSerialNumber((String) observation.getValue());
             }
         }

@@ -47,7 +47,7 @@ public class ANCFormMapper {
             if (GRAVIDA.getName().equals(conceptName)) {
                 ancEnrollmentForm.setGravida(((Double) value).intValue());
             }
-            if (ANC_REG_NUM.getName().equals(conceptName)) {
+            if (SERIAL_NUMBER.getName().equals(conceptName)) {
                 ancEnrollmentForm.setSerialNumber((String) value);
             }
             if (HEIGHT.getName().equals(conceptName)) {

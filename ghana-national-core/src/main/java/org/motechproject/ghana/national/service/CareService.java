@@ -135,7 +135,7 @@ public class CareService {
         addObservation(observations, observationDate, GRAVIDA.getName(), ancVO.getGravida());
         addObservation(observations, observationDate, HEIGHT.getName(), ancVO.getHeight());
         addObservation(observations, observationDate, PARITY.getName(), ancVO.getParity());
-        addObservation(observations, registrationDate, ANC_REG_NUM.getName(), ancVO.getSerialNumber());
+        addObservation(observations, registrationDate, SERIAL_NUMBER.getName(), ancVO.getSerialNumber());
 
         if (ancVO.getAddHistory()) {
             Set<MRSObservation> historyObservations = addObservationsOnANCHistory(ancVO.getAncCareHistoryVO());
@@ -208,7 +208,7 @@ public class CareService {
         HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         Set<MRSObservation> historyObservations = addObservationsOnCWCHistory(cwc.getCWCCareHistoryVO());
         mrsObservations.addAll(historyObservations);
-        mrsObservations.add(new MRSObservation<String>(cwc.getRegistrationDate(), CWC_REG_NUMBER.getName(), cwc.getSerialNumber()));
+        mrsObservations.add(new MRSObservation<String>(cwc.getRegistrationDate(), SERIAL_NUMBER.getName(), cwc.getSerialNumber()));
         return mrsObservations;
     }
 

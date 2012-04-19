@@ -103,7 +103,7 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<Integer>(lastPentaDate, PENTA.getName(), lastPenta));
             add(new MRSObservation<Integer>(lastOPVDate, OPV.getName(), lastOPV));
             add(new MRSObservation<Integer>(lastIPTiDate, IPTI.getName(), lastIPTi));
-            add(new MRSObservation<String>(registrationDate, CWC_REG_NUMBER.getName(), serialNumber));
+            add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), serialNumber));
         }};
         CareService careServiceSpy = spy(careService);
         careServiceSpy.enroll(cwcVO);
@@ -130,7 +130,7 @@ public class CareServiceTest extends BaseUnitTest {
         careService.enroll(cwcVO);
 
         HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<String>(registartionDate, CWC_REG_NUMBER.getName(), serialNumber));
+            add(new MRSObservation<String>(registartionDate, SERIAL_NUMBER.getName(), serialNumber));
         }};
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffId, facilityId, CWC_REG_VISIT.value(), registartionDate, mrsObservations);
     }
@@ -176,7 +176,7 @@ public class CareServiceTest extends BaseUnitTest {
         final HashSet<MRSObservation> expectedObservations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
             add(new MRSObservation<Integer>(today, GRAVIDA.getName(), ancvo.getGravida()));
-            add(new MRSObservation<String>(today, ANC_REG_NUM.getName(), ancvo.getSerialNumber()));
+            add(new MRSObservation<String>(today, SERIAL_NUMBER.getName(), ancvo.getSerialNumber()));
             add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
         }};
 
@@ -222,7 +222,7 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<Integer>(today, GRAVIDA.getName(), ancvo.getGravida()));
             add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
             add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
-            add(new MRSObservation<String>(registrationDate, ANC_REG_NUM.getName(), ancvo.getSerialNumber()));
+            add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), ancvo.getSerialNumber()));
             add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastIPTDate(), IPT.getName(), parseDouble(ancvo.getAncCareHistoryVO().getLastIPT())));
             add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), parseDouble(ancvo.getAncCareHistoryVO().getLastTT())));
         }};
@@ -263,7 +263,7 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<Integer>(today, GRAVIDA.getName(), ancvo.getGravida()));
             add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
             add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
-            add(new MRSObservation<String>(registrationDate, ANC_REG_NUM.getName(), ancvo.getSerialNumber()));
+            add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), ancvo.getSerialNumber()));
         }};
 
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), registrationDate, expectedANCObservations);
@@ -336,7 +336,7 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<Integer>(today, GRAVIDA.getName(), ancvo.getGravida()));
             add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
             add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
-            add(new MRSObservation<String>(registrationDate, ANC_REG_NUM.getName(), ancvo.getSerialNumber()));
+            add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), ancvo.getSerialNumber()));
             add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastIPTDate(), IPT.getName(), Double.valueOf(ancvo.getAncCareHistoryVO().getLastIPT())));
             add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), Double.valueOf(ancvo.getAncCareHistoryVO().getLastTT())));
         }};
@@ -370,7 +370,7 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<Integer>(today, GRAVIDA.getName(), ancvo.getGravida()));
             add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
             add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
-            add(new MRSObservation<String>(registrationDate, ANC_REG_NUM.getName(), ancvo.getSerialNumber()));
+            add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), ancvo.getSerialNumber()));
         }};
 
         final MRSObservation pregnancyObs = new MRSObservation(today, PREGNANCY.getName(), null);

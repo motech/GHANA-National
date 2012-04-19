@@ -101,7 +101,7 @@ public class CwcFormMapperTest {
         observations.add(new MRSObservation<Double>(iptiDate, IPTI.getName(), iptiValue));
         observations.add(new MRSObservation<Double>(pentaDate, PENTA.getName(), pentaValue));
         observations.add(new MRSObservation<Double>(opvDate, OPV.getName(), opvValue));
-        observations.add(new MRSObservation<String>(registrationDate, CWC_REG_NUMBER.getName(), serialNum));
+        observations.add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), serialNum));
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
         MRSEncounter mrsEncounter = new MRSEncounter("1", new MRSPerson().id(providerId),
                 new MRSUser().systemId(creatorId), facility, registrationDate, new MRSPatient(patientId, null, null), observations, "type");
@@ -148,7 +148,7 @@ public class CwcFormMapperTest {
         String region = "region";
         String county = "county";
         String province = "province";
-        observations.add(new MRSObservation<String>(registrationDate, CWC_REG_NUMBER.getName(), serialNum));
+        observations.add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), serialNum));
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
         MRSEncounter mrsEncounter = new MRSEncounter("1", new MRSPerson().id(providerId),
                 new MRSUser().systemId(creatorId), facility, registrationDate, new MRSPatient(patientId, null, null), observations, "type");

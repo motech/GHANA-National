@@ -40,7 +40,7 @@ public abstract class BaseScheduleHandler {
         String externalId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
         final Patient patient = patientService.getPatientByMotechId(externalId);
         String serialNumber = "-";
-        MRSObservation observation = allObservations.findObservation(patient.getMotechId(), Concept.SERIAL_NUMBER.getName());
+        MRSObservation observation = allObservations.findLatestObservation(patient.getMotechId(), Concept.SERIAL_NUMBER.getName());
         if (observation != null) {
             serialNumber = (String) observation.getValue();
         }
@@ -89,7 +89,7 @@ public abstract class BaseScheduleHandler {
     }
 
     private String getSerialNumber(Patient patient) {
-        MRSObservation serialNumberObs = allObservations.findObservation(patient.getMotechId(), Concept.SERIAL_NUMBER.getName());
+        MRSObservation serialNumberObs = allObservations.findLatestObservation(patient.getMotechId(), Concept.SERIAL_NUMBER.getName());
         String serialNumber = "-";
         if (serialNumberObs != null) {
             serialNumber = (String) serialNumberObs.getValue();
