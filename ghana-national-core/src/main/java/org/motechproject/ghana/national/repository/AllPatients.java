@@ -89,8 +89,8 @@ public class AllPatients {
         return patientAdapter.getAgeOfPatientByMotechId(motechId);
     }
 
-    public String update(Patient patient) {
-        return patientAdapter.updatePatient(patient.getMrsPatient());
+    public Patient update(Patient patient) {
+        return new Patient(patientAdapter.updatePatient(patient.getMrsPatient()));
     }
 
     public void createMotherChildRelationship(MRSPerson mother, MRSPerson child) {

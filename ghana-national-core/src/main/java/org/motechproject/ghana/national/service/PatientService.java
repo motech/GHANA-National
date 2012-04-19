@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.service;
 
-import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
@@ -21,6 +20,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static org.apache.commons.lang.StringUtils.isEmpty;
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
 import static org.motechproject.ghana.national.domain.EncounterType.PATIENT_EDIT_VISIT;
 import static org.motechproject.ghana.national.domain.EncounterType.PATIENT_REG_VISIT;
 import static org.motechproject.ghana.national.tools.Utility.emptyToNull;
@@ -48,7 +49,7 @@ public class PatientService {
             throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         try {
 
-            if (StringUtils.isEmpty(patient.getMrsPatient().getMotechId())) {
+            if (isEmpty(patient.getMrsPatient().getMotechId())) {
                 MRSPatient mrsPatient = patient.getMrsPatient();
                 String motechId = identifierGenerator.newPatientId();
                 patient = new Patient(new MRSPatient(mrsPatient.getId(), motechId, mrsPatient.getPerson(), mrsPatient.getFacility()), patient.getParentId());
@@ -73,22 +74,21 @@ public class PatientService {
     }
 
     public String updatePatient(Patient patient, String staffId) throws ParentNotFoundException {
-        String savedPatientId = allPatients.update(patient);
-        Patient savedPatient = getPatientByMotechId(savedPatientId);
+        Patient savedPatient = allPatients.update(patient);
         Relationship relationship = allPatients.getMotherRelationship(savedPatient.getMrsPatient().getPerson());
 
-        if (relationship != null && StringUtils.isEmpty(patient.getParentId())) {
+        if (relationship != null && isEmpty(patient.getParentId())) {
             allPatients.voidMotherChildRelationship(savedPatient.getMrsPatient().getPerson());
         }
-        if (relationship == null && StringUtils.isNotEmpty(patient.getParentId())) {
-            createRelationship(patient.getParentId(), savedPatientId);
+        if (relationship == null && isNotEmpty(patient.getParentId())) {
+            createRelationship(patient.getParentId(), savedPatient.getMotechId());
         }
-        if (relationship != null && StringUtils.isNotEmpty(patient.getParentId())) {
+        if (relationship != null && isNotEmpty(patient.getParentId())) {
             updateRelationship(patient.getParentId(), savedPatient, relationship);
         }
         allEncounters.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(),
                 PATIENT_EDIT_VISIT.value(), DateUtil.today().toDate(), Collections.<MRSObservation>emptySet());
-        return savedPatientId;
+        return savedPatient.getMotechId();
     }
 
     public Integer getAgeOfPatientByMotechId(String motechId) {

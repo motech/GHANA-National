@@ -188,16 +188,16 @@ public class AllPatientsTest {
         Date dateOfBirth = new Date();
         String gender = "male";
         String address = "address";
-        String patientId = "1000";
+        String patientMotechId = "1000";
         Boolean birthDateEstimated = true;
 
         MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last)
                 .dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
-        final MRSPatient mrsPatient = new MRSPatient("", mrsPerson, facility);
+        final MRSPatient mrsPatient = new MRSPatient(patientMotechId, mrsPerson, facility);
         final Patient patient = new Patient(mrsPatient);
-        when(mockMrsPatientAdapter.updatePatient(patient.getMrsPatient())).thenReturn(patientId);
-        final String motechIdForUpdatedPatient = allPatients.update(patient);
-        assertThat(patientId, is(motechIdForUpdatedPatient));
+        when(mockMrsPatientAdapter.updatePatient(patient.getMrsPatient())).thenReturn(mrsPatient);
+        final Patient updatedPatient = allPatients.update(patient);
+        assertThat(patientMotechId, is(updatedPatient.getMotechId()));
     }
 
     @Test
