@@ -52,13 +52,14 @@ public class AllObservations {
         MRSObservation eddObservation = findObservation(patient.getMotechId(), EDD.getName());
         Date oldEdd = (eddObservation == null) ? null : (Date) eddObservation.getValue();
         if (oldEdd == null || !oldEdd.equals(estimatedDeliveryDate)) {
-            observations.add(createNewEddObservation(activePregnancyObservation(patient.getMotechId()), eddObservation, staffId, estimatedDeliveryDate));
+            voidObservation(eddObservation, "Replaced by new EDD value", staffId);
+            observations.add(createNewEddObservation(activePregnancyObservation(patient.getMotechId()), estimatedDeliveryDate));
         }
         return observations;
     }
 
     public MRSObservation activePregnancyObservation(String motechId) {
-        MRSObservation activePregnancyObservation = findObservation(motechId, PREGNANCY.getName());
+        MRSObservation activePregnancyObservation = findLatestObservation(motechId, PREGNANCY.getName());
         if (activePregnancyObservation == null) {
             logger.warn("No active pregnancy found while checking for EDD. Patient ID :" + motechId);
             activePregnancyObservation = new MRSObservation<Object>(new Date(), PREGNANCY.getName(), null);
@@ -66,8 +67,7 @@ public class AllObservations {
         return activePregnancyObservation;
     }
 
-    private MRSObservation createNewEddObservation(MRSObservation activePregnancyObservation, MRSObservation eddObservation, String staffId, Date estDeliveryDate) {
-        voidObservation(eddObservation, "Replaced by new EDD value", staffId);
+    private MRSObservation createNewEddObservation(MRSObservation activePregnancyObservation, Date estDeliveryDate) {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(new Date(), EDD.getName(), estDeliveryDate));
         return activePregnancyObservation;
     }

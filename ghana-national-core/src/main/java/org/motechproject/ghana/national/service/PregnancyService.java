@@ -109,7 +109,7 @@ public class PregnancyService {
     }
 
     public Date activePregnancyEDD(String motechId) {
-        MRSObservation pregObservation = allObservations.findObservation(motechId, PREGNANCY.getName());
+        MRSObservation pregObservation = allObservations.findLatestObservation(motechId, PREGNANCY.getName());
         if (pregObservation != null && pregObservation.getDependantObservations() != null) {
             Set<MRSObservation> dependentObservations = pregObservation.getDependantObservations();
             for (MRSObservation observation : dependentObservations) {

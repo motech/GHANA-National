@@ -211,7 +211,7 @@ public class PregnancyServiceTest {
 
         String motechId = "motechId";
         DateTime edd = newDateTime(2012, 12, 2, 2, 2, 0);
-        when(mockAllObservations.findObservation(motechId, PREGNANCY.getName())).thenReturn(mockPregnancyObservationWithEDD(edd.toDate()));
+        when(mockAllObservations.findLatestObservation(motechId, PREGNANCY.getName())).thenReturn(mockPregnancyObservationWithEDD(edd.toDate()));
         Date actualEDD = pregnancyService.activePregnancyEDD(motechId);
 
         assertThat(actualEDD, is(edd.toDate()));

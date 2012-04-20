@@ -246,7 +246,7 @@ public class ScheduleTracker {
                 LocalDate referenceWindowStartDate = referenceDate.plus(windowStart);
                 LocalDate referenceWindowEndDate = referenceDate.plus(windowEnd);
 
-                int alertCount = alert.getRemainingAlertCount(newDateTime(referenceWindowStartDate.toDate()), null);
+                int alertCount = alert.getRemainingAlertCount(newDateTime(referenceWindowStartDate.toDate()), newDateTime(referenceWindowEndDate.toDate()),null);
                 if (alertCount > 0) {
                     return alert.getNextAlertDateTime(newDateTime(referenceWindowStartDate.toDate()), null).toLocalDate();
                 }

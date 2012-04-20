@@ -69,36 +69,30 @@ public class AllObservationsTest {
     @Test
     public void shouldUpdateEDDObservationsIfModified() throws ObservationNotFoundException {
         MRSObservation edd = mock(MRSObservation.class);
-        MRSObservation activePregnancy = mock(MRSObservation.class);
         String motechId = "12";
         String staffId = "staffId";
         Patient patient = new Patient(new MRSPatient(motechId, null, null));
         when(edd.getValue()).thenReturn(DateUtil.newDate(2010, 12, 11).toDate());
-        when(mockMrsObservationAdapter.findObservation(motechId, PREGNANCY.getName())).thenReturn(activePregnancy);
         when(mockMrsObservationAdapter.findObservation(motechId, EDD.getName())).thenReturn(edd);
 
         Set<MRSObservation> eddObservations = allObservations.updateEDD(new Date(), patient, staffId);
 
         assertTrue(CollectionUtils.isNotEmpty(eddObservations));
-        verify(mockMrsObservationAdapter).findObservation(motechId, PREGNANCY.getName());
         verify(mockMrsObservationAdapter).voidObservation(eq(edd), anyString(), eq(staffId));
     }
 
     @Test
     public void shouldCreateEDDObservationsIfNew() throws ObservationNotFoundException {
         MRSObservation edd = mock(MRSObservation.class);
-        MRSObservation activePregnancy = mock(MRSObservation.class);
         String motechId = "12";
         String staffId = "staffId";
         Patient patient = new Patient(new MRSPatient(motechId, null, null));
         when(edd.getValue()).thenReturn(DateUtil.newDate(2010, 12, 11).toDate());
-        when(mockMrsObservationAdapter.findObservation(motechId, PREGNANCY.getName())).thenReturn(activePregnancy);
         when(mockMrsObservationAdapter.findObservation(motechId, EDD.getName())).thenReturn(null);
 
         Set<MRSObservation> eddObservations = allObservations.updateEDD(new Date(), patient, staffId);
 
         assertTrue(CollectionUtils.isNotEmpty(eddObservations));
-        verify(mockMrsObservationAdapter).findObservation(motechId, PREGNANCY.getName());
         verify(mockMrsObservationAdapter, never()).voidObservation(Matchers.<MRSObservation>anyObject(), anyString(), eq(staffId));
     }
 

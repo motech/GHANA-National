@@ -204,11 +204,13 @@ public class CareServiceTest extends BaseUnitTest {
                 staffUserId, patientMotechId, Arrays.asList(ANCCareHistory.values()), estimatedDateOfDelivery);
 
         setupPatient(patientId, patientMotechId);
+        MRSObservation<Date> eddObservation = new MRSObservation<Date>(today, EDD.getName(), ancvo.getEstimatedDateOfDelivery());
+        when(mockAllObservations.findObservation(patientMotechId, EDD.getName())).thenReturn(eddObservation);
 
         careService.enroll(ancvo);
 
         final MRSObservation pregnancyObs = new MRSObservation(today, PREGNANCY.getName(), null);
-        pregnancyObs.addDependantObservation(new MRSObservation<Date>(today, EDD.getName(), ancvo.getEstimatedDateOfDelivery()));
+        pregnancyObs.addDependantObservation(eddObservation);
         pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
         pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, PREGNANCY_STATUS.getName(), true));
         pregnancyObs.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), ipt.doubleValue()));
@@ -457,16 +459,18 @@ public class CareServiceTest extends BaseUnitTest {
         setupPatient(patientId, patientMotechId);
         CareHistoryVO careHistory = new CareHistoryVO(staffId, facilityId, patientMotechId, careHistoryCapturedDate.toDate(), ancCareHistory, new CWCCareHistoryVO(false, null, null, null, null, null, null, null, null, null, null, null));
 
+        MRSObservation<Date> eddObservation = new MRSObservation<Date>(ancRegDate.toDate(), EDD.getName(), edd.toDate());
         final MRSObservation activePregnancyObservation = new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY.getName(), true);
-        activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(ancRegDate.toDate(), EDD.getName(), edd.toDate()));
+        activePregnancyObservation.addDependantObservation(eddObservation);
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY_STATUS.getName(), true));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
 
-        when(mockAllObservations.findObservation(patientMotechId, PREGNANCY.getName())).thenReturn(activePregnancyObservation);
+        when(mockAllObservations.findLatestObservation(patientMotechId, PREGNANCY.getName())).thenReturn(activePregnancyObservation);
+        when(mockAllObservations.findObservation(patientMotechId, EDD.getName())).thenReturn(eddObservation);
 
         careService.addCareHistory(careHistory);
 
-        final Set<MRSObservation> expectedActivePregnancyObs = new HashSet<MRSObservation>() {{
+        final Set<MRSObservation> expectedHistoryObservations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Double>(ttDate, TT.getName(), ttDose.getDosageAsDouble()));
             add(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose.value().toString())));
         }};
@@ -476,12 +480,12 @@ public class CareServiceTest extends BaseUnitTest {
         verify(mockAllEncounters, times(2)).persistEncounter(eq(mockMRSPatient), eq(staffId), eq(facilityId), encounterTypeCaptor.capture(), eq(careHistoryCapturedDate.toDate()), observationCaptor.capture());
 
         activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose.getDosage().toString())));
-        HashSet<MRSObservation> expectedHistoryObservations = new HashSet<MRSObservation>() {{
+        HashSet<MRSObservation> expectedActivePregnancyObs = new HashSet<MRSObservation>() {{
             add(activePregnancyObservation);
         }};
 
-        assertEquals(expectedHistoryObservations, observationCaptor.getAllValues().get(0));
-        assertEquals(expectedActivePregnancyObs, observationCaptor.getAllValues().get(1));
+        assertEquals(expectedActivePregnancyObs, observationCaptor.getAllValues().get(0));
+        assertEquals(expectedHistoryObservations, observationCaptor.getAllValues().get(1));
 
         assertEquals(ANC_VISIT.value(), encounterTypeCaptor.getAllValues().get(0));
         assertEquals(PATIENT_HISTORY.value(), encounterTypeCaptor.getAllValues().get(1));
@@ -507,7 +511,7 @@ public class CareServiceTest extends BaseUnitTest {
         ANCCareHistoryVO ancCareHistory = new ANCCareHistoryVO(true, Arrays.asList(ANCCareHistory.values()), iptDose.value().toString(), ttDose.getDosage().toString(), iptDate, ttDate);
 
         setupPatient(patientId, patientMotechId);
-        when(mockAllObservations.findObservation(patientMotechId, Concept.PREGNANCY.getName())).thenReturn(null);
+        when(mockAllObservations.findLatestObservation(patientMotechId, Concept.PREGNANCY.getName())).thenReturn(null);
 
         careService.addCareHistory(new CareHistoryVO("staffId", "facilityId", patientMotechId, newDate(2012, 2, 2).toDate(),
                 ancCareHistory, new CWCCareHistoryVO(false, null, null, null, null, null, null, null, null, null, null, null)));
@@ -538,7 +542,7 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(ancRegDate.toDate(), EDD.getName(), edd.toDate()));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
 
-        when(mockAllObservations.findObservation(patientMotechId, Concept.PREGNANCY.getName())).thenReturn(activePregnancyObservation);
+        when(mockAllObservations.findLatestObservation(patientMotechId, Concept.PREGNANCY.getName())).thenReturn(activePregnancyObservation);
 
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY_STATUS.getName(), true));
         careService.addCareHistory(careHistory);
@@ -580,14 +584,18 @@ public class CareServiceTest extends BaseUnitTest {
         CareHistoryVO careHistory = new CareHistoryVO(staffId, facilityId, patientMotechId, careHistoryCapturedDate.toDate(), ancCareHistory, new CWCCareHistoryVO(false, null, null, null, null, null, null, null, null, null, null, null));
 
         final MRSObservation activePregnancyObservation = new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY.getName(), true);
-        activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(ancRegDate.toDate(), EDD.getName(), edd.toDate()));
+        MRSObservation<Date> eddObservation = new MRSObservation<Date>(ancRegDate.toDate(), EDD.getName(), edd.toDate());
+        activePregnancyObservation.addDependantObservation(eddObservation);
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY_STATUS.getName(), true));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(ancRegDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
-        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(ancRegDate.toDate(), TT.getName(), ttDose));
 
-        when(mockAllObservations.findObservation(patientMotechId, PREGNANCY.getName())).thenReturn(activePregnancyObservation);
+        when(mockAllObservations.findLatestObservation(patientMotechId, PREGNANCY.getName())).thenReturn(activePregnancyObservation);
+        when(mockAllObservations.findObservation(patientMotechId, EDD.getName())).thenReturn(eddObservation);
+
 
         careService.addCareHistory(careHistory);
+
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(ancRegDate.toDate(), TT.getName(), ttDose));
 
         final Set<MRSObservation> expectedHistoryObservations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Double>(ttDate, TT.getName(), Double.parseDouble(ttDose)));
