@@ -2,6 +2,10 @@ package org.motechproject.ghana.national.domain;
 
 import org.motechproject.scheduletracking.api.domain.WindowName;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public enum AlertWindow {
     UPCOMING("Upcoming", WindowName.earliest.name(), 1),
     DUE("Due", WindowName.due.name(), 2),
@@ -32,5 +36,13 @@ public enum AlertWindow {
 
     public Integer getOrder() {
         return order;
+    }
+
+    public static List<String> ghanaNationalWindowNames(){
+        List<String> names = new ArrayList<String>();
+        for (AlertWindow alertWindow : Arrays.asList(UPCOMING, DUE, OVERDUE)) {
+            names.add(alertWindow.getName());
+        }
+        return names;
     }
 }

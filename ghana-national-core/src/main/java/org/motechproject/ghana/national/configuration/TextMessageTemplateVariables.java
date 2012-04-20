@@ -15,4 +15,5 @@ public class TextMessageTemplateVariables {
     public final static String MILESTONE_NAME = "${milestoneName}";
     public final static String DELIVERY_TIME = "${deliveryTime}";
     public final static String TEMPLATE = "$T{%s}";
+    public final static String WINDOW_NAMES = "${windowNames}";
 }

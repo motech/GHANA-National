@@ -7,11 +7,13 @@ import org.motechproject.ghana.national.domain.SmsTemplateKeys;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.SMSGateway;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.WINDOW_NAMES;
 
 public class DefaultMessageHandlerTest {
 
@@ -37,9 +39,13 @@ public class DefaultMessageHandlerTest {
         handler.handleDefaultMessagesForFacility();
 
         verify(mockAllFacilities).getAllPhoneNumbers();
-        verify(mockSmsGateway).dispatchSMSTextToAggregator(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY,
-                phone1, phone1);
-        verify(mockSmsGateway).dispatchSMSTextToAggregator(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY,
-                phone2, phone2);
+        verify(mockSmsGateway).dispatchSMSToAggregator(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY,
+                new HashMap<String, String>() {{
+                    put(WINDOW_NAMES, "Upcoming, Due, Overdue");
+                }}, phone1, phone1);
+        verify(mockSmsGateway).dispatchSMSToAggregator(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY,
+                new HashMap<String, String>() {{
+                    put(WINDOW_NAMES, "Upcoming, Due, Overdue");
+                }}, phone2, phone2);
     }
 }

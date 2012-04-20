@@ -15,5 +15,7 @@ public class SMSTest {
             put("${key1}", "value1");
             put("${key2}", "value2");
         }}), is(equalTo("hi-value1-value2")));
+
+        assertThat(SMS.fill("hi", new HashMap<String, String>()), is(equalTo("hi")));
     }
 }

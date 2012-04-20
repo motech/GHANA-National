@@ -33,7 +33,7 @@ public class SMS implements Payload {
     }
 
     public static String fill(String template, Map<String, String> runTimeValues) {
-        String text = "";
+        String text = template;
         for (Map.Entry<String, String> runTimeValue : runTimeValues.entrySet()) {
             text = template.replace(runTimeValue.getKey(), trimToEmpty(runTimeValue.getValue()));
             template = text;
