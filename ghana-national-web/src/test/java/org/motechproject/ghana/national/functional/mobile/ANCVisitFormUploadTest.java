@@ -95,7 +95,6 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("MALE INVOLVEMENT", "false"),
                 new OpenMRSObservationVO("VDRL TREATMENT", "true"),
                 new OpenMRSObservationVO("COMMENTS", "comments"),
-                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", "03 February 2012 00:00:00 IST"),
                 new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", "03 August 2012 00:00:00 IST"),
                 new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
                 new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED", "true"),
