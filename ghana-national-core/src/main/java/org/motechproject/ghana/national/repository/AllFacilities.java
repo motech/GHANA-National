@@ -39,18 +39,27 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
     public void add(Facility facility) {
         saveMRSFacility(facility);
         allMotechModuleFacilities.save(facility);
-        super.add(facility);
+        final Facility existingFacility = findByMrsFacilityId(facility.mrsFacilityId());
+        if (existingFacility == null) {
+            super.add(facility);
+        } else {
+            updateLocally(facility, existingFacility);
+        }
     }
 
     @Override
     public void update(Facility facility) {
         Facility existingFacility = findByMrsFacilityId(facility.mrsFacilityId());
+        updateLocally(facility, existingFacility);
+        allMotechModuleFacilities.update(facility);
+    }
+
+    private void updateLocally(Facility facility, Facility existingFacility) {
         existingFacility.phoneNumber(facility.phoneNumber());
         existingFacility.additionalPhoneNumber1(facility.additionalPhoneNumber1());
         existingFacility.additionalPhoneNumber2(facility.additionalPhoneNumber2());
         existingFacility.additionalPhoneNumber3(facility.additionalPhoneNumber3());
         saveMRSFacility(facility);
-        allMotechModuleFacilities.update(facility);
         super.update(existingFacility);
     }
 

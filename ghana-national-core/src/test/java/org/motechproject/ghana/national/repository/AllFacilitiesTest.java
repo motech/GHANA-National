@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.repository;
 
+import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,9 +10,14 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.services.MRSFacilityAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,6 +33,12 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
     MRSFacilityAdapter mockMrsFacilityAdapter;
     @Mock
     AllMotechModuleFacilities mockAllMotechModuleFacilities;
+
+    @Value("#{couchdbProperties['host']}")
+    private String host;
+
+    @Value("#{couchdbProperties['port']}")
+    private String port;
 
     @Autowired
     private AllFacilities allFacilities;
@@ -65,6 +77,24 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         assertThat(actualFacility.additionalPhoneNumber3(), is(equalTo(additionalPhone3)));
         assertThat(actualFacility.mrsFacilityId(), is(equalTo(facilityId)));
         verify(mockAllMotechModuleFacilities).save(facility);
+    }
+
+    @Test
+    public void shouldBeIdempotentOnDuplicateFacilityCreation() throws IOException, JSONException {
+
+        final String facilityName = "Xyz facility";
+        final MRSFacility mrsFacility = new MRSFacility(facilityName);
+        final String facilityId = "12";
+        when(mockMrsFacilityAdapter.saveFacility(mrsFacility)).thenReturn(new MRSFacility(facilityId, facilityName,
+                "country", "region", "district", "province"));
+
+        final int initialSize = allFacilities.getAll().size();
+
+        allFacilities.add(facility("950001", "123245", "23423243", "2342342342", mrsFacility));
+        assertThat(allFacilities.getAll().size(), is(initialSize + 1));
+
+        allFacilities.add(facility("950002", "123245", "23423243", "2342342342", mrsFacility));
+        assertThat(allFacilities.getAll().size(), is(initialSize + 1));
     }
 
     @Test
