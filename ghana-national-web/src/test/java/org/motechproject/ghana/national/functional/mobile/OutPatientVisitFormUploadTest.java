@@ -43,11 +43,12 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("visitDate", visitDate.toString(forPattern("yyyy-MM-dd")));
             put("newCase", "Y");
             put("newPatient", "Y");
-            put("diagnosis", "10");
+            put("diagnosis", "64");
             put("secondDiagnosis", "78");
             put("rdtGiven", "Y");
             put("rdtPositive", "N");
             put("referred", "Y");
+            put("actTreated", "Y");
             put("comments", "Out Patient Visit");
 
         }}));
@@ -60,10 +61,11 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("NEW CASE", "true"),
                 new OpenMRSObservationVO("NEW PATIENT", "true"),
-                new OpenMRSObservationVO("PRIMARY DIAGNOSIS", "10.0"),
+                new OpenMRSObservationVO("PRIMARY DIAGNOSIS", "64.0"),
                 new OpenMRSObservationVO("SECONDARY DIAGNOSIS", "78.0"),
                 new OpenMRSObservationVO("COMMENTS", "Out Patient Visit"),
                 new OpenMRSObservationVO("SERIAL NUMBER", serialNumber),
+                new OpenMRSObservationVO("ACT TREATMENT", "true"),
                 new OpenMRSObservationVO("MALARIA RAPID TEST", "NEGATIVE"),
                 new OpenMRSObservationVO("REFERRED", "true")
         ));

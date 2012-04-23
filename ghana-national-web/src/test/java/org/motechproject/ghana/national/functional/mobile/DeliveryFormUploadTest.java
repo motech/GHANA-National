@@ -60,6 +60,8 @@ public class DeliveryFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("child1Weight", "3.5");
             put("sender", "0987654321");
             put("comments", "delivery form");
+            put("complications", "ECLAMPSIA,VVF");
+            put("vvf", "REPAIRED");
         }});
         assertEquals(1, xformResponse.getSuccessCount());
 
@@ -76,7 +78,10 @@ public class DeliveryFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("DELIVERY OUTCOME", "1.0"),
                 new OpenMRSObservationVO("MALE INVOLVEMENT", "true"),
                 new OpenMRSObservationVO("MATERNAL DEATH", "false"),
-                new OpenMRSObservationVO("PREGNANCY STATUS", "false")
+                new OpenMRSObservationVO("PREGNANCY STATUS", "false"),
+                new OpenMRSObservationVO("DELIVERY COMPLICATION", "6.0"),
+                new OpenMRSObservationVO("DELIVERY COMPLICATION", "1.0"),
+                new OpenMRSObservationVO("VVF REPAIR", "2.0")
         ));
 
         String childMotechId = openMRSDB.getMotechIdByName(babyName);

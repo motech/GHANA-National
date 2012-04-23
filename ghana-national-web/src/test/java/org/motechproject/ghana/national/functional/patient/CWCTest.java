@@ -119,7 +119,7 @@ public class CWCTest extends OpenMRSAwareFunctionalTest {
             put("date", DateUtil.now().toString(forPattern("yyyy-MM-dd")));
             put("motechId", motechId);
             put("serialNumber", "1234567");
-            put("immunizations", "BCG,OPV,YF");
+            put("immunizations", "BCG,OPV,YF,DEWORMER");
             put("opvdose", "1");
             put("pentadose", "1");
             put("iptidose", "1");
@@ -144,6 +144,7 @@ public class CWCTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "BACILLE CAMILE-GUERIN VACCINATION"),
                 new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE", "1.0"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "YELLOW FEVER VACCINATION"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "DEWORMER"),
                 new OpenMRSObservationVO("HOUSE", "32"),
                 new OpenMRSObservationVO("CWC LOCATION", "2.0"),
                 new OpenMRSObservationVO("WEIGHT (KG)", "23.0"),
