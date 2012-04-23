@@ -30,19 +30,18 @@ import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.*;
 
 @Service
-public class MotherVisitService {
+public class MotherVisitService extends VisitService {
 
     private AllEncounters allEncounters;
     private AllObservations allObservations;
-    private AllSchedules allSchedules;
     private AllAppointments allAppointments;
     MotherVisitEncounterFactory factory;
 
     @Autowired
     public MotherVisitService(AllEncounters allEncounters, AllObservations allObservations, AllSchedules allSchedules, AllAppointments allAppointments) {
+        super(allSchedules);
         this.allEncounters = allEncounters;
         this.allObservations = allObservations;
-        this.allSchedules = allSchedules;
         this.allAppointments = allAppointments;
         factory = new MotherVisitEncounterFactory();
     }
@@ -87,7 +86,7 @@ public class MotherVisitService {
 
     private void createIPTpSchedule(IPTVaccine iptVaccine) {
         Patient patient = iptVaccine.getGivenTo();
-        EnrollmentResponse enrollmentResponse = allSchedules.enrollment(enrollmentRequest(ANC_IPT_VACCINE, patient.getMRSPatientId()));
+        EnrollmentResponse enrollmentResponse = enrollment(patient.getMRSPatientId(), ANC_IPT_VACCINE);
         if(enrollmentResponse == null) {
             LocalDate expectedDeliveryDate = fetchLatestEDD(patient);
             allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patient.iptPatientCareEnroll(expectedDeliveryDate), today(), iptVaccine.getIptMilestone()));
@@ -98,9 +97,5 @@ public class MotherVisitService {
     private LocalDate fetchLatestEDD(Patient patient) {
         MRSObservation eddObservation = allObservations.findObservation(patient.getMRSPatientId(), Concept.EDD.getName());
         return new LocalDate(eddObservation.getValue());
-    }
-
-    private EnrollmentRequest enrollmentRequest(String mrsPatientId, String programName) {
-        return new ScheduleEnrollmentMapper().map(mrsPatientId, programName);
     }
 }

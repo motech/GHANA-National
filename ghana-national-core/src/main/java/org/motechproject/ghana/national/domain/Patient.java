@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.domain;
 
 import org.joda.time.LocalDate;
+import org.motechproject.ghana.national.vo.ChildCare;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
 
@@ -78,7 +79,9 @@ public class Patient {
     }
 
     public List<PatientCare> cwcCareProgramToEnrollOnRegistration() {
-        return nullSafeList(new PatientCare(BCG, DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth())));
+        return nullSafeList(
+                new PatientCare(BCG, DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth())),
+                pentaPatientCare());
     }
 
     public PatientCare iptPatientCareEnroll(LocalDate expectedDeliveryDate) {
@@ -88,5 +91,12 @@ public class Patient {
 
     public PatientCare iptPatientCareVisit() {
         return new PatientCare(ANC_IPT_VACCINE, DateUtil.today());
+    }
+
+    public PatientCare pentaPatientCare() {
+        LocalDate referenceDate = DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth());
+        if (ChildCare.basedOnBirthDay(referenceDate).applicableForPenta())
+            return new PatientCare(PENTA, referenceDate);
+        return new PatientCare(PENTA, DateUtil.today());
     }
 }

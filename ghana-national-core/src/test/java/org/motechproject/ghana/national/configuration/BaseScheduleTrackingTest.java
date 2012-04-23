@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.configuration;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.After;
 import org.junit.Before;
@@ -12,6 +13,7 @@ import org.motechproject.scheduletracking.api.events.constants.EventDataKeys;
 import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
 import org.motechproject.scheduletracking.api.repository.AllEnrollments;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
+import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.impl.EnrollmentAlertService;
 import org.motechproject.scheduletracking.api.service.impl.EnrollmentDefaultmentService;
 import org.motechproject.scheduletracking.api.service.impl.EnrollmentService;
@@ -182,6 +184,10 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         mockCurrentDate(today);
         return today;
     }
+    protected DateTime mockToday(DateTime today) {
+        mockCurrentDate(today);
+        return today;
+    }
     
     protected LocalDate newDate(String date) {
         try {
@@ -201,6 +207,11 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
             dateList.add(onDate(localDate));
         }
         return dateList;
+    }
+
+    protected String enroll(LocalDate referenceDate) {
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, scheduleName, preferredAlertTime, referenceDate, DateUtil.today(), null);
+        return scheduleTrackingService.enroll(enrollmentRequest);
     }
 
     protected void fulfillCurrentMilestone(LocalDate fulfillmentDate) {

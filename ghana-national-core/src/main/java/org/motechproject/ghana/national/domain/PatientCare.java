@@ -39,4 +39,9 @@ public class PatientCare {
         result = 31 * result + (referenceDate != null ? referenceDate.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return name + ": " + referenceDate;
+    }
 }
