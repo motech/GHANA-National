@@ -3,7 +3,6 @@ package org.motechproject.ghana.national.repository;
 import org.junit.After;
 import org.junit.Before;
 import org.motechproject.ghana.national.BaseIntegrationTest;
-import org.motechproject.mrs.services.MRSFacilityAdapter;
 import org.motechproject.openmrs.security.OpenMRSSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public class BaseOpenMrsIntegrationTest extends BaseIntegrationTest {
+public abstract class BaseOpenMrsIntegrationTest extends BaseIntegrationTest {
 
 
     @Value("#{openmrsProperties['openmrs.admin.username']}")
