@@ -5,9 +5,7 @@ import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PENTA;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 
 public class ActiveCareSchedules {
 
@@ -25,7 +23,7 @@ public class ActiveCareSchedules {
         return allActiveCareSchedules.get(ANC_IPT_VACCINE) != null;
     }
 
-    public ActiveCareSchedules setActiveCareSchedule(String careScheduleName, EnrollmentRecord enrollmentRecord){
+    public ActiveCareSchedules setActiveCareSchedule(String careScheduleName, EnrollmentRecord enrollmentRecord) {
         allActiveCareSchedules.put(careScheduleName, enrollmentRecord);
         return this;
     }
@@ -50,5 +48,9 @@ public class ActiveCareSchedules {
 
     public Boolean hasActivePentaSchedule() {
         return allActiveCareSchedules.get(CWC_PENTA) != null;
+    }
+
+    public Boolean hasActiveIPTiSchedule() {
+        return allActiveCareSchedules.get(CWC_IPT_VACCINE) != null;
     }
 }

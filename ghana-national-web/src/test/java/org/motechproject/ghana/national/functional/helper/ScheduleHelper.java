@@ -7,7 +7,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class ScheduleHelper {
-    public static void assertAlertDate(LocalDate expectedAlertTime, LocalDate actualAlertTime) {
+    public static void assertAlertDate(LocalDate actualAlertTime, LocalDate expectedAlertTime) {
         assertThat(actualAlertTime, is(equalTo(expectedAlertTime)));
     }
 

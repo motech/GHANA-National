@@ -30,6 +30,6 @@ public class IPTIVaccineSeed extends ScheduleMigrationSeed {
     }
 
     protected String mapMilestoneName(String milestoneName) {
-        return "IPT" + milestoneName.charAt(milestoneName.length() - 1);
+        return "IPTi" + milestoneName.charAt(milestoneName.length() - 1);
     }
 }

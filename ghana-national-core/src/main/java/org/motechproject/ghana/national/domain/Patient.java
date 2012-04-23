@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.domain;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
+import org.motechproject.ghana.national.domain.care.IPTiVaccineCare;
 import org.motechproject.ghana.national.domain.care.PentaVaccineCare;
 import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
 import org.motechproject.ghana.national.vo.ChildCare;
@@ -14,7 +15,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.collections.CollectionUtils.union;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
-import static org.motechproject.ghana.national.tools.Utility.*;
+import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
+import static org.motechproject.ghana.national.tools.Utility.safeToString;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDateTime;
 
@@ -93,7 +95,7 @@ public class Patient {
         ChildCare childCare = childCare();
         LocalDate referenceDate = childCare.birthDate();
         return nullSafeList(
-                cwcIPTPatientCareEnrollOnRegistration(childCare, enrollmentDate),
+//                cwcIPTPatientCareEnrollOnRegistration(childCare, enrollmentDate),
                 bcgChildCare(enrollmentDate, referenceDate, historiesCaptured),
                 yfChildCare(enrollmentDate, referenceDate, historiesCaptured),
                 new PatientCare(CWC_OPV_0, referenceDate, enrollmentDate, null, facilityMetaData()),
@@ -101,7 +103,8 @@ public class Patient {
 
                 new PentaVaccineCare(this, enrollmentDate, activeCareSchedules.hasActivePentaSchedule(),
                         safeToString(cwcCareHistoryVO.getLastPenta()), cwcCareHistoryVO.getLastPentaDate()).careForReg(),
-
+                new IPTiVaccineCare(this, enrollmentDate, activeCareSchedules.hasActiveIPTiSchedule(),
+                        safeToString(cwcCareHistoryVO.getLastIPTi()), cwcCareHistoryVO.getLastIPTiDate()).careForReg(),
                 measlesChildCare(enrollmentDate, historiesCaptured));
     }
 
@@ -113,12 +116,12 @@ public class Patient {
         return cwcCareHistories.contains(CwcCareHistory.YF) ? null : new PatientCare(CWC_YELLOW_FEVER, referenceDate, enrollmentDate, null, facilityMetaData());
     }
 
-    private PatientCare cwcIPTPatientCareEnrollOnRegistration(ChildCare childCare, LocalDate enrollmentDate) {
-        if (childCare != null && childCare.applicableForIPT()) {
-            return new PatientCare(CWC_IPT_VACCINE, childCare.birthDate(), enrollmentDate, null, facilityMetaData());
-        }
-        return null;
-    }
+//    private PatientCare cwcIPTPatientCareEnrollOnRegistration(ChildCare childCare, LocalDate enrollmentDate) {
+//        if (childCare != null && childCare.applicableForIPTi()) {
+//            return new PatientCare(CWC_IPT_VACCINE, childCare.birthDate(), enrollmentDate, null, facilityMetaData());
+//        }
+//        return null;
+//    }
 
     public PatientCare ancIPTPatientCareEnrollOnVisitAfter19Weeks(LocalDate visitDate) {
         return new PatientCare(ANC_IPT_VACCINE, visitDate, visitDate, null, facilityMetaData());

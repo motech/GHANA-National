@@ -3,7 +3,6 @@ package org.motechproject.ghana.national.service;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.IPTVaccine;
 import org.motechproject.ghana.national.domain.OPVDose;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.factory.ChildVisitEncounterFactory;
@@ -81,11 +80,12 @@ public class ChildVisitService {
     }
 
     void updateIPTSchedule(CWCVisit cwcVisit) {
-        IPTVaccine iptVaccine = IPTVaccine.createFromCWCVisit(cwcVisit);
-        if (iptVaccine != null) {
-            Patient patient = iptVaccine.getGivenTo();
+        String iptiDose = cwcVisit.getIptidose();
+        if (iptiDose!= null) {
+            IPTiDose dose = IPTiDose.byValue(Integer.parseInt(iptiDose));
+            Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = newDate(cwcVisit.getDate());
-            EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.cwcIPTPatientCareEnrollOnVisitAfter14Weeks(visitDate).milestoneName(iptVaccine.getIptMilestone()));
+            EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.cwcIPTPatientCareEnrollOnVisitAfter14Weeks(visitDate).milestoneName(dose.milestoneName()));
             allSchedulesAndMessages.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
         }
     }

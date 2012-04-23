@@ -24,6 +24,6 @@ public class IPTIVaccineSeedTest {
 
     @Test
     public void shouldRemoveExtraCharacterFromMilestoneName(){
-        assertThat(new IPTIVaccineSeed(null, null, null).mapMilestoneName("IPTI1"), is(equalTo("IPT1")));
+        assertThat(new IPTIVaccineSeed(null, null, null).mapMilestoneName("IPTi1"), is(equalTo("IPTi1")));
     }
 }

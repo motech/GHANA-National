@@ -41,7 +41,7 @@ public class ChildCare {
         return DateUtil.newDate(birthTime.toDate());
     }
 
-    public boolean applicableForIPT() {
+    public boolean applicableForIPTi() {
         int currentWeek = currentWeek();
         return currentWeek > 0 && currentWeek <= Constants.CWC_IPT_MAX_BIRTH_WEEK_FOR_REGISTRATION;
     }

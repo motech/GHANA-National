@@ -3,10 +3,7 @@ package org.motechproject.ghana.national.service;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.domain.care.ANCCareRegistration;
-import org.motechproject.ghana.national.domain.care.IPTVaccineCare;
-import org.motechproject.ghana.national.domain.care.PentaVaccineCare;
-import org.motechproject.ghana.national.domain.care.TTVaccineCare;
+import org.motechproject.ghana.national.domain.care.*;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
@@ -57,6 +54,9 @@ public class CareService {
 
     void enrollToCWCCarePrograms(CwcVO cwcVO, Patient patient) {
         List<MRSObservation> existingHistories = allObservations.findObservations(patient.getMotechId(), Concept.IMMUNIZATIONS_ORDERED.getName());
+        existingHistories.addAll(allObservations.findObservations(patient.getMotechId(), Concept.PENTA.getName()));
+        existingHistories.addAll(allObservations.findObservations(patient.getMotechId(), Concept.OPV.getName()));
+        existingHistories.addAll(allObservations.findObservations(patient.getMotechId(), Concept.IPTI.getName()));
         final List<CwcCareHistory> mergedHistories = mergeNewHistoriesWithExisting(existingHistories, cwcVO.getCWCCareHistoryVO().getCwcCareHistories());
 
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(newDate(cwcVO.getRegistrationDate()),
@@ -74,14 +74,22 @@ public class CareService {
             put(Concept.BCG.getName(), CwcCareHistory.BCG);
             put(Concept.YF.getName(), CwcCareHistory.YF);
             put(Concept.MEASLES.getName(), CwcCareHistory.MEASLES);
+            put(Concept.VITA.getName(), CwcCareHistory.VITA_A);
+            put(Concept.PENTA.getName(), CwcCareHistory.PENTA);
+            put(Concept.IPTI.getName(), CwcCareHistory.IPTI);
+            put(Concept.OPV.getName(), CwcCareHistory.OPV);
         }};
 
         for (MRSObservation mrsObservation : existingHistory) {
+            String conceptName = null;
             if (mrsObservation.getValue() instanceof MRSConcept) {
-                String conceptName = ((MRSConcept) mrsObservation.getValue()).getName();
-                if (conceptToCareHistory.containsKey(conceptName)) {
-                    newHistory.add(conceptToCareHistory.get(conceptName));
-                }
+                conceptName = ((MRSConcept) mrsObservation.getValue()).getName();
+            }
+            else{
+                conceptName = mrsObservation.getConceptName();
+            }
+            if (conceptToCareHistory.containsKey(conceptName)) {
+                newHistory.add(conceptToCareHistory.get(conceptName));
             }
         }
 
@@ -264,10 +272,11 @@ public class CareService {
 
     private void processCWCHistories(CareHistoryVO careHistoryVO, Patient patient) {
         CWCCareHistoryVO cwcCareHistoryVO = careHistoryVO.getCwcCareHistoryVO();
-        ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(CWC_PENTA));
+        ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(CWC_PENTA,CWC_IPT_VACCINE));
 
         PentaVaccineCare pentaVaccineCare = new PentaVaccineCare(patient, newDate(careHistoryVO.getDate()), activeCareSchedules.hasActivePentaSchedule(), safeToString(cwcCareHistoryVO.getLastPenta()), cwcCareHistoryVO.getLastPentaDate());
-        enrollPatientCares(CareHistory.forChildCare(pentaVaccineCare).cares(), patient);
+        IPTiVaccineCare iptiVaccineCare = new IPTiVaccineCare(patient, newDate(careHistoryVO.getDate()), activeCareSchedules.hasActiveIPTiSchedule(), safeToString(cwcCareHistoryVO.getLastIPTi()), cwcCareHistoryVO.getLastIPTiDate());
+        enrollPatientCares(CareHistory.forChildCare(pentaVaccineCare,iptiVaccineCare).cares(), patient);
     }
 
 

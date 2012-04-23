@@ -32,7 +32,7 @@ public class CWCPentaSchedulesTest extends BaseScheduleTrackingTest {
         mockToday(newDate("02-JAN-2012"));
         LocalDate dateOfBirth = newDate("30-DEC-2011");
 
-        enrollmentId = scheduleAlertForPenta(dateOfBirth, null);
+        enrollmentId = scheduleAlertForPentaEnrolledFromStart(dateOfBirth, null);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(due, onDate("03-FEB-2012")),
                 alert(late, onDate("10-FEB-2012")),
@@ -44,9 +44,9 @@ public class CWCPentaSchedulesTest extends BaseScheduleTrackingTest {
     @Test
     public void verifyStartPenta2AfterPenta1() throws SchedulerException, ParseException {
         mockToday(newDate("16-JAN-2012"));
-        LocalDate dateOfBirth = newDate("13-JAN-2012");
+//        LocalDate dateOfBirth = newDate("13-JAN-2012");
 
-        enrollmentId = scheduleAlertForPenta(dateOfBirth, null);
+        enrollmentId = scheduleAlertForPentaEnrolledFromStart(null, null);
         fulfillCurrentMilestone(newDate("25-FEB-2012"));
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(due, onDate("17-MAR-2012")),
@@ -61,7 +61,7 @@ public class CWCPentaSchedulesTest extends BaseScheduleTrackingTest {
         mockToday(newDate("10-JAN-2012"));
         LocalDate dateOfBirth = newDate("04-JAN-2012");
 
-        enrollmentId = scheduleAlertForPenta(dateOfBirth, null);
+        enrollmentId = scheduleAlertForPentaEnrolledFromStart(dateOfBirth, null);
         fulfillCurrentMilestone(newDate("17-FEB-2012"));
         fulfillCurrentMilestone(newDate("20-MAR-2012"));
 
@@ -78,7 +78,7 @@ public class CWCPentaSchedulesTest extends BaseScheduleTrackingTest {
         mockToday(newDate("12-FEB-2012"));
         LocalDate dateOfBirth = newDate("30-DEC-2011");
 
-        enrollmentId = scheduleAlertForPenta(dateOfBirth, null);
+        enrollmentId = scheduleAlertForPentaEnrolledFromStart(dateOfBirth, null);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(late, onDate("17-FEB-2012")),
                 alert(late, onDate("24-FEB-2012")))
@@ -90,7 +90,7 @@ public class CWCPentaSchedulesTest extends BaseScheduleTrackingTest {
         mockToday(newDate("18-FEB-2012"));
         LocalDate dateOfBirth = newDate("30-DEC-2011");
 
-        enrollmentId = scheduleAlertForPenta(dateOfBirth, null);
+        enrollmentId = scheduleAlertForPentaEnrolledFromStart(dateOfBirth, null);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(late, onDate("24-FEB-2012")))
         );
@@ -101,7 +101,7 @@ public class CWCPentaSchedulesTest extends BaseScheduleTrackingTest {
         mockToday(newDate("25-FEB-2012"));
         LocalDate dateOfBirth = newDate("30-DEC-2011");
 
-        enrollmentId = scheduleAlertForPenta(dateOfBirth, null);
+        enrollmentId = scheduleAlertForPentaEnrolledFromStart(dateOfBirth, null);
         assertTrue(CollectionUtils.isEmpty(captureAlertsForNextMilestone(enrollmentId)));
     }
 
@@ -110,16 +110,16 @@ public class CWCPentaSchedulesTest extends BaseScheduleTrackingTest {
         mockToday(newDate("06-MAR-2012"));
         LocalDate dateOfBirth = newDate("30-DEC-2011");
 
-        enrollmentId = scheduleAlertForPenta(dateOfBirth, null);
+        enrollmentId = scheduleAlertForPentaEnrolledFromStart(dateOfBirth, null);
         assertTrue(CollectionUtils.isEmpty(captureAlertsForNextMilestone(enrollmentId)));
     }
 
     @Test
     public void verifyPenta2TriggersTheSchedule() throws ParseException, SchedulerException {
-        mockToday(newDate("29-MAR-2012"));
-        LocalDate dateOfBirth = newDate("12-JAN-2012");
+        mockToday(newDate("01-APR-2012"));
+        LocalDate lastPentaDate = newDate("29-MAR-2012");
 
-        enrollmentId = scheduleAlertForPenta(dateOfBirth, "Penta2");
+        enrollmentId = scheduleAlertForPentaEnrolledWithHistory(lastPentaDate, "Penta2");
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(due, onDate("19-APR-2012")),
                 alert(late, onDate("26-APR-2012")),
@@ -128,8 +128,13 @@ public class CWCPentaSchedulesTest extends BaseScheduleTrackingTest {
         );
     }
 
-    private String scheduleAlertForPenta(LocalDate birthDate, String milestoneName) {
+    private String scheduleAlertForPentaEnrolledFromStart(LocalDate birthDate, String milestoneName) {
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, birthDate, null, null, null, milestoneName, null);
+        return scheduleTrackingService.enroll(enrollmentRequest);
+    }
+
+    private String scheduleAlertForPentaEnrolledWithHistory(LocalDate lastPentaDate, String milestoneName) {
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, null, null, lastPentaDate, null, milestoneName, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

@@ -39,6 +39,6 @@ public class ChildCareTest extends BaseUnitTest {
 
     private void assertIfChildIsApplicableForIPT(DateTime today, DateTime birthDate, Matcher<Boolean> expected) {
         mockCurrentDate(today);
-        assertThat(ChildCare.basedOnBirthDay(birthDate).applicableForIPT(), expected);
+        assertThat(ChildCare.basedOnBirthDay(birthDate).applicableForIPTi(), expected);
     }
 }

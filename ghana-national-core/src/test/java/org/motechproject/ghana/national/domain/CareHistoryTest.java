@@ -1,9 +1,9 @@
 package org.motechproject.ghana.national.domain;
 
 import org.junit.Test;
-import org.motechproject.ghana.national.domain.care.IPTVaccineCare;
-import org.motechproject.ghana.national.domain.care.TTVaccineCare;
+import org.motechproject.ghana.national.domain.care.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -29,4 +29,21 @@ public class CareHistoryTest {
         assertThat(patientCares, is(asList(ttPatientCare, iptPatientCare)));
     }
 
+    @Test
+    public void shouldCreateCareHistoryForChild() {
+        PentaVaccineCare pentaVaccineCare = mock(PentaVaccineCare.class);
+        IPTiVaccineCare ipTiVaccineCare = mock(IPTiVaccineCare.class);
+        final PatientCare mockPentaPatientCare = mock(PatientCare.class);
+        final PatientCare mockIPTiPatientCare = mock(PatientCare.class);
+
+        when(pentaVaccineCare.careForHistory()).thenReturn(mockPentaPatientCare);
+        when(ipTiVaccineCare.careForHistory()).thenReturn(mockIPTiPatientCare);
+
+        List<PatientCare> cares = CareHistory.forChildCare(pentaVaccineCare, ipTiVaccineCare).cares();
+        List<PatientCare> expectedChildCares = new ArrayList<PatientCare>() {{
+            add(mockPentaPatientCare);
+            add(mockIPTiPatientCare);
+        }};
+        assertThat(cares, is(expectedChildCares));
+    }
 }

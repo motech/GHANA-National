@@ -142,7 +142,10 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<MRSConcept>(registartionDate.minusMonths(2).toDate(), Concept.IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(BCG.getName())));
             add(new MRSObservation<MRSConcept>(registartionDate.minusMonths(2).toDate(), Concept.IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(YF.getName())));
             add(new MRSObservation<MRSConcept>(registartionDate.minusMonths(2).toDate(), Concept.IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(MEASLES.getName())));
-
+            add(new MRSObservation<MRSConcept>(registartionDate.minusMonths(3).toDate(), Concept.IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(VITA.getName())));
+            add(new MRSObservation<Integer>(registartionDate.minusMonths(3).toDate(), Concept.IPTI.getName(), 1));
+            add(new MRSObservation<Integer>(registartionDate.minusMonths(3).toDate(), Concept.PENTA.getName(), 1));
+            add(new MRSObservation<Integer>(registartionDate.minusMonths(3).toDate(), Concept.OPV.getName(), 1));
         }};
 
 
@@ -151,6 +154,10 @@ public class CareServiceTest extends BaseUnitTest {
         assertThat(cwcCareHistories, hasItem(CwcCareHistory.BCG));
         assertThat(cwcCareHistories, hasItem(CwcCareHistory.YF));
         assertThat(cwcCareHistories, hasItem(CwcCareHistory.MEASLES));
+        assertThat(cwcCareHistories, hasItem(CwcCareHistory.VITA_A));
+        assertThat(cwcCareHistories, hasItem(CwcCareHistory.PENTA));
+        assertThat(cwcCareHistories, hasItem(CwcCareHistory.OPV));
+        assertThat(cwcCareHistories, hasItem(CwcCareHistory.IPTI));
     }
 
     @Test
@@ -683,8 +690,13 @@ public class CareServiceTest extends BaseUnitTest {
                 null, null, null, null, null, null, null, null, null, true);
         final ActiveCareSchedules activeCareSchedules = new ActiveCareSchedules().setActiveCareSchedule(CWC_PENTA, null);
         when(mockPatient.cwcCareProgramToEnrollOnRegistration(registrationDateTime.toLocalDate(), new ArrayList<CwcCareHistory>(), cwcVO.getCWCCareHistoryVO(), activeCareSchedules)).thenReturn(asList(patientCare));
+
         careService.enrollToCWCCarePrograms(cwcVO, mockPatient);
 
+        verify(mockAllObservations).findObservations(patientMotechId, Concept.IMMUNIZATIONS_ORDERED.getName());
+        verify(mockAllObservations).findObservations(patientMotechId, Concept.PENTA.getName());
+        verify(mockAllObservations).findObservations(patientMotechId, Concept.OPV.getName());
+        verify(mockAllObservations).findObservations(patientMotechId, Concept.IPTI.getName());
         verify(mockPatient).cwcCareProgramToEnrollOnRegistration(registrationDateTime.toLocalDate(), new ArrayList<CwcCareHistory>(), cwcVO.getCWCCareHistoryVO(), activeCareSchedules);
         verifyIfScheduleEnrolled(0, expectedRequest(patientId, new PatientCare(patientCare.name(), patientCare.startingOn(), registrationDateTime.toLocalDate(), null, null)));
     }

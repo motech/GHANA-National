@@ -3,7 +3,7 @@ package org.motechproject.ghana.national.functional.mobile;
 import org.apache.commons.collections.MapUtils;
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
+import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
@@ -12,6 +12,9 @@ import org.motechproject.ghana.national.functional.framework.ScheduleTracker;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.helper.ScheduleHelper;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
 import org.motechproject.ghana.national.functional.pages.patient.ANCEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
@@ -24,10 +27,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
@@ -37,7 +43,7 @@ import static org.testng.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
+public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest{
 
     @Autowired
     ScheduleTracker scheduleTracker;
@@ -85,7 +91,7 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
     }
 
     @Test
-    public void shouldCreateANCWithoutHistoryForAPatientWithMobileDeviceAndSearchForItInWeb() {
+    public void shouldCreateANCWithoutHistoryForAPatientWithMobileDeviceAndSearchForItInWeb() throws ParseException {
         DataGenerator dataGenerator = new DataGenerator();
 
         String staffId = staffGenerator.createStaff(browser, homePage);
@@ -98,8 +104,9 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
 
         Pregnancy pregnancyIn12thWeekOfPregnancy = Pregnancy.basedOnConceptionDate(DateUtil.today().minusWeeks(12));
         LocalDate registrationDate = DateUtil.today();
+        LocalDate estimatedDateOfDelivery = pregnancyIn12thWeekOfPregnancy.dateOfDelivery();
         TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId)
-                .withEstimatedDateOfDelivery(pregnancyIn12thWeekOfPregnancy.dateOfDelivery()).withRegistrationDate(registrationDate);
+                .withEstimatedDateOfDelivery(estimatedDateOfDelivery).withRegistrationDate(registrationDate);
 
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, testPatient.facilityId()).patientId(patientId);
 
@@ -112,23 +119,48 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
         ancEnrollmentPage.displaying(ancEnrollment);
 
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ANC_DELIVERY, pregnancyIn12thWeekOfPregnancy.dateOfConception()),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_DELIVERY, pregnancyIn12thWeekOfPregnancy.dateOfConception())
+        );
 
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(TT_VACCINATION, registrationDate),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate(), expectedFirstAlertDate(TT_VACCINATION, registrationDate)
+        );
 
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception()),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception())
+        );
 
         patientEditPage = toPatientEditPage(testPatient);
+        String motechId = patientEditPage.motechId();
         MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientEditPage);
         assertThat(mobileMidwifeEnrollmentPage.details(), is(equalTo(mmEnrollmentDetails)));
+
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+
+        String encounterId = openMRSPatientPage.chooseEncounter("PREGREGVISIT");
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT",  new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(estimatedDateOfDelivery.toDate())),
+                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED","true")
+        ));
+
+        openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        encounterId = openMRSPatientPage.chooseEncounter("ANCREGVISIT");
+
+        openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT DOSE", "1.0"),
+                new OpenMRSObservationVO("TETANUS TOXOID DOSE", "1.0"),
+                new OpenMRSObservationVO("GRAVIDA", "3.0"),
+                new OpenMRSObservationVO("PARITY", "4.0"),
+                new OpenMRSObservationVO("SERIAL NUMBER", "serialNumber"),
+                new OpenMRSObservationVO("HEIGHT (CM)", "124.0")
+        ));
+
     }
 
 
     @Test
-    public void shouldCreateANCWithScheduleForIPTAndTT_IfThePatientHasAVaccineHistoryBeforeTheRecentPregnancyConception() {
+    public void shouldCreateANCWithScheduleForIPTAndTT_IfThePatientHasAVaccineHistoryBeforeTheRecentPregnancyConception() throws ParseException {
         DataGenerator dataGenerator = new DataGenerator();
         String staffId = staffGenerator.createStaff(browser, homePage);
         TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
@@ -140,8 +172,9 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
         LocalDate registrationDate = DateUtil.today();
         LocalDate iptVaccinationDate = pregnancyIn12thWeekOfPregnancy.dateOfConception().minusMonths(2);
         LocalDate ttVaccinationDate = pregnancyIn12thWeekOfPregnancy.dateOfConception().minusMonths(3);
+        LocalDate estimatedDateOfDelivery = pregnancyIn12thWeekOfPregnancy.dateOfDelivery();
         TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId)
-                .withEstimatedDateOfDelivery(pregnancyIn12thWeekOfPregnancy.dateOfDelivery()).withRegistrationDate(registrationDate)
+                .withEstimatedDateOfDelivery(estimatedDateOfDelivery).withRegistrationDate(registrationDate)
                 .withLastIPT("1").withLastIPTDate(iptVaccinationDate)
                 .withLastTT("1").withLastTTDate(ttVaccinationDate);
 
@@ -149,18 +182,41 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
         assertEquals(1, response.getSuccessCount());
 
         PatientEditPage patientEditPage = toPatientEditPage(testPatient);
+        String motechId = patientEditPage.motechId();
         ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
         ancEnrollmentPage.displaying(ancEnrollment);
 
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ANC_DELIVERY, pregnancyIn12thWeekOfPregnancy.dateOfConception()),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_DELIVERY, pregnancyIn12thWeekOfPregnancy.dateOfConception())
+        );
 
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(TT_VACCINATION, registrationDate),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate(), expectedFirstAlertDate(TT_VACCINATION, registrationDate)
+        );
 
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception()),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception())
+        );
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+
+        String encounterId = openMRSPatientPage.chooseEncounter("PREGREGVISIT");
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+        new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT",  new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(estimatedDateOfDelivery.toDate())),
+                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED","true")
+        ));
+
+        openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        encounterId = openMRSPatientPage.chooseEncounter("ANCREGVISIT");
+
+        openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT DOSE", "1.0"),
+                new OpenMRSObservationVO("TETANUS TOXOID DOSE", "1.0"),
+                new OpenMRSObservationVO("GRAVIDA", "3.0"),
+                new OpenMRSObservationVO("PARITY", "4.0"),
+                new OpenMRSObservationVO("SERIAL NUMBER", "serialNumber"),
+                new OpenMRSObservationVO("HEIGHT (CM)", "124.0")
+        ));
     }
 
     @Test(enabled = false)
@@ -198,7 +254,7 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
     }
 
     @Test
-    public void shouldCreateANCWithScheduleForOnlyIPTGivenTTHistoryForAPatient() {
+    public void shouldCreateANCWithScheduleForOnlyIPTGivenTTHistoryForAPatient() throws ParseException {
         DataGenerator dataGenerator = new DataGenerator();
         String staffId = staffGenerator.createStaff(browser, homePage);
         TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
@@ -208,25 +264,50 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
 
         Pregnancy pregnancyIn12thWeekOfPregnancy = Pregnancy.basedOnConceptionDate(DateUtil.today().minusWeeks(12));
         LocalDate registrationDate = DateUtil.today();
+        LocalDate estimatedDateOfDelivery = pregnancyIn12thWeekOfPregnancy.dateOfDelivery();
         TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId)
-                .withEstimatedDateOfDelivery(pregnancyIn12thWeekOfPregnancy.dateOfDelivery()).withRegistrationDate(registrationDate);
+                .withEstimatedDateOfDelivery(estimatedDateOfDelivery).withRegistrationDate(registrationDate);
 
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerANCForm(), ancEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
         assertEquals(1, response.getSuccessCount());
 
         PatientEditPage patientEditPage = toPatientEditPage(testPatient);
+        String motechId = patientEditPage.motechId();
         ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
         ancEnrollmentPage.displaying(ancEnrollment);
 
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ANC_DELIVERY, pregnancyIn12thWeekOfPregnancy.dateOfConception()),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_DELIVERY, pregnancyIn12thWeekOfPregnancy.dateOfConception())
+        );
 
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(TT_VACCINATION, registrationDate),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate(), expectedFirstAlertDate(TT_VACCINATION, registrationDate)
+        );
 
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception()),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception())
+        );
+
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+
+        String encounterId = openMRSPatientPage.chooseEncounter("PREGREGVISIT");
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(estimatedDateOfDelivery.toDate())),
+                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED","true")
+        ));
+
+        openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        encounterId = openMRSPatientPage.chooseEncounter("ANCREGVISIT");
+
+        openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT DOSE", "1.0"),
+                new OpenMRSObservationVO("TETANUS TOXOID DOSE", "1.0"),
+                new OpenMRSObservationVO("GRAVIDA", "3.0"),
+                new OpenMRSObservationVO("PARITY", "4.0"),
+                new OpenMRSObservationVO("SERIAL NUMBER", "serialNumber"),
+                new OpenMRSObservationVO("HEIGHT (CM)", "124.0")
+        ));
     }
 
     private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate) {
@@ -285,12 +366,36 @@ public class RegisterANCMobileUploadTest extends LoggedInUserFunctionalTest {
         assertEquals(1, response.getSuccessCount());
 
         PatientEditPage patientEditPage = toPatientEditPage(testPatient);
+        String motechId = patientEditPage.motechId();
         ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
         ancEnrollmentPage.displaying(ancEnrollment);
 
         patientEditPage = toPatientEditPage(testPatient);
         MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientEditPage);
         assertThat(mobileMidwifeEnrollmentPage.details(), is(equalTo(mmEnrollmentDetails)));
+
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+
+        String encounterId = openMRSPatientPage.chooseEncounter("PREGREGVISIT");
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", "03 February 2012 00:00:00 IST"),
+                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED","true")
+        ));
+
+        openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        encounterId = openMRSPatientPage.chooseEncounter("ANCREGVISIT");
+
+        openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT DOSE", "1.0"),
+                new OpenMRSObservationVO("TETANUS TOXOID DOSE", "1.0"),
+                new OpenMRSObservationVO("GRAVIDA", "3.0"),
+                new OpenMRSObservationVO("PARITY", "4.0"),
+                new OpenMRSObservationVO("SERIAL NUMBER", "serialNumber"),
+                new OpenMRSObservationVO("HEIGHT (CM)", "124.0")
+        ));
     }
 
     private PatientEditPage toPatientEditPage(TestPatient testPatient) {

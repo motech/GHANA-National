@@ -2,10 +2,13 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
 import org.junit.runner.RunWith;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
+import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.*;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
 import org.motechproject.ghana.national.functional.pages.patient.*;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.util.DateUtil;
@@ -13,10 +16,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.testng.Assert.assertEquals;
@@ -25,7 +30,7 @@ import static org.testng.AssertJUnit.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
+public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
 
     DataGenerator dataGenerator;
 
@@ -81,7 +86,15 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
         searchPatientPage.searchWithName(patient.firstName());
         searchPatientPage.displaying(patient);
+        PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage,patient);
 
+        String motechId = patientEditPage.motechId();
+
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        String encounterId = openMRSPatientPage.chooseEncounter("PATIENTREGVISIT");
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+
+        openMRSEncounterPage.displaying(Collections.<OpenMRSObservationVO>emptyList());
     }
 
     @Test
@@ -119,9 +132,38 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
         browser.toSearchPatient();
         searchPatientPage.searchWithName(patient.firstName());
         editPage = browser.toPatientEditPage(searchPatientPage, patient);
+        String motechId = editPage.motechId();
         MobileMidwifeEnrollmentPage enrollmentPage = browser.toMobileMidwifeEnrollmentForm(editPage);
 
         assertEquals(mmEnrollmentDetails.patientId(patientId), enrollmentPage.details());
+
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        String encounterId = openMRSPatientPage.chooseEncounter("PATIENTREGVISIT");
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+
+        openMRSEncounterPage.displaying(Collections.<OpenMRSObservationVO>emptyList());
+
+        openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        encounterId = openMRSPatientPage.chooseEncounter("PREGREGVISIT");
+        openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", "03 February 2012 00:00:00 IST"),
+                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED","true")
+        ));
+
+        openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        encounterId = openMRSPatientPage.chooseEncounter("ANCREGVISIT");
+
+        openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT DOSE", "1.0"),
+                new OpenMRSObservationVO("TETANUS TOXOID DOSE", "1.0"),
+                new OpenMRSObservationVO("GRAVIDA", "3.0"),
+                new OpenMRSObservationVO("PARITY", "4.0"),
+                new OpenMRSObservationVO("SERIAL NUMBER", "serialNumber"),
+                new OpenMRSObservationVO("HEIGHT (CM)", "124.0")
+        ));
     }
 
     @Test
@@ -164,6 +206,22 @@ public class RegisterClientFromMobileTest extends LoggedInUserFunctionalTest {
         MobileMidwifeEnrollmentPage enrollmentPage = browser.toMobileMidwifeEnrollmentForm(editPage);
 
         assertEquals(mmEnrollmentDetails.patientId(patientId), enrollmentPage.details());
+
+
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(patientId));
+        String encounterId = openMRSPatientPage.chooseEncounter("CWCREGVISIT");
+
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("PENTA VACCINATION DOSE","3.0"),
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE","2.0"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","VITAMIN A"),
+                new OpenMRSObservationVO("SERIAL NUMBER","serialNumber"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","MEASLES VACCINATION"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","BACILLE CAMILE-GUERIN VACCINATION"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","YELLOW FEVER VACCINATION"),
+                new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE","1.0")
+        ));
     }
 
 }

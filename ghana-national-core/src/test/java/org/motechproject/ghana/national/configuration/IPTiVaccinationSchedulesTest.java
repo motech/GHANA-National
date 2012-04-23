@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.model.Time;
+import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.quartz.SchedulerException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -113,6 +114,31 @@ public class IPTiVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("21-Apr-2012")),
                 alert(late, onDate("28-Apr-2012")))
         );
+    }
+
+    @Test
+    public void verifyIPTi2TriggersTheSchedule() throws SchedulerException {
+
+        mockToday(newDate("19-JAN-2012"));
+        LocalDate referenceDate = newDate("15-JAN-2012");
+
+        enrollmentId = scheduleAlertForIptiEnrolledWithHistory(referenceDate, "IPTi2");
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(due, onDate("05-FEB-2012")),
+                alert(late, onDate("12-FEB-2012")),
+                alert(late, onDate("19-FEB-2012")),
+                alert(late, onDate("26-FEB-2012")))
+        );
+    }
+
+    private String scheduleAlertForIptiEnrolledFromStart(LocalDate birthDate, String milestoneName) {
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, birthDate, null, null, null, milestoneName, null);
+        return scheduleTrackingService.enroll(enrollmentRequest);
+    }
+
+    private String scheduleAlertForIptiEnrolledWithHistory(LocalDate lastIPTiDate, String milestoneName) {
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, null, null, lastIPTiDate, null, milestoneName, null);
+        return scheduleTrackingService.enroll(enrollmentRequest);
     }
 
     private void fulfilMilestoneOnVisitDate(LocalDate visitDate) {

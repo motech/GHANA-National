@@ -139,7 +139,7 @@ public class ScheduleMigrationSeedTest {
         ArgumentCaptor<EnrollmentRequest> enrollmentCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(allSchedules).enroll(enrollmentCaptor.capture());
 
-        assertTTEnrollmentRequest(enrollmentCaptor.getValue(), referenceDate.toDateTime(), "IPT1", "10000", referenceDate.toDateTime(), new HashMap<String, String>());
+        assertTTEnrollmentRequest(enrollmentCaptor.getValue(), referenceDate.toDateTime(), "IPTi1", "10000", referenceDate.toDateTime(), new HashMap<String, String>());
     }
 
     public static void assertTTEnrollmentRequest(EnrollmentRequest enrollmentRequest, DateTime referenceDateTime, String milestoneName, String externalId, DateTime enrollmentDateTime, Map<String, String> metaData) {

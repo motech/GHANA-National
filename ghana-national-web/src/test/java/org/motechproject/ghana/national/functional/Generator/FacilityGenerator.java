@@ -15,7 +15,7 @@ public class FacilityGenerator {
     public String createFacility(Browser browser, HomePage homePage) {
         DataGenerator dataGenerator = new DataGenerator();
         FacilityPage facilityPage = browser.toFacilityPage(homePage);
-        TestFacility facility = TestFacility.with("facility ghana" + dataGenerator.randomString(2));
+        TestFacility facility = TestFacility.with("facility ghana" + dataGenerator.randomString(5));
         facilityPage.save(facility);
         facilityPage.waitForSuccessMessage();
         return facilityPage.facilityId();

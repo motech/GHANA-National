@@ -39,10 +39,4 @@ public class OpenMRSPatientPage extends BasePage<OpenMRSPatientPage> {
         Matcher matcher = Pattern.compile("^(.*encounterId=(.*)?)$").matcher(link);
         return matcher.matches() ? matcher.group(2) : null;
     }
-
-    public static void main(String[] args) {
-        Matcher matcher = Pattern.compile("^(.*encounterId=(.*)?)$").matcher("http://localhost:7000/openmrs/admin/encounters/encounter.form?encounterId=492");
-        matcher.matches();
-        System.out.println(matcher.group(2));
-    }
 }

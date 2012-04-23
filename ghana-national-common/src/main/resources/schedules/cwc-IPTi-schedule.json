@@ -2,7 +2,7 @@
     "name" : "CWCIPTVaccine",
     "milestones" : [
         {
-            "name" : "IPT1",
+            "name" : "IPTi1",
             "scheduleWindows" : {
                 "earliest" : ["10 Weeks"],
                 "due" : ["11 Weeks"],
@@ -25,7 +25,7 @@
             ]
         },
         {
-            "name" : "IPT2",
+            "name" : "IPTi2",
             "scheduleWindows" : {
                 "earliest" : ["4 Weeks"],
                 "due" : ["5 Weeks"],
@@ -48,7 +48,7 @@
             ]
         },
         {
-            "name" : "IPT3",
+            "name" : "IPTi3",
             "scheduleWindows" : {
                 "earliest" : ["4 Weeks"],
                 "due" : ["5 Weeks"],

@@ -230,6 +230,10 @@ public class ScheduleTracker {
         return firstAlert(scheduleName, referenceDate, allTrackedSchedules.getByName(scheduleName).getFirstMilestone().getName());
     }
 
+    public LocalDate alertFor(String scheduleName, LocalDate referenceDate, String milestoneName) {
+        return firstAlert(scheduleName, referenceDate, allTrackedSchedules.getByName(scheduleName).getMilestone(milestoneName).getName());
+    }
+
     public LocalDate firstAlert(String scheduleName, LocalDate referenceDate, String milestoneName) {
         org.motechproject.scheduletracking.api.domain.Schedule schedule = allTrackedSchedules.getByName(scheduleName);
         Milestone milestone = schedule.getMilestone(milestoneName);
@@ -237,7 +241,6 @@ public class ScheduleTracker {
     }
 
     private LocalDate findFirstApplicableAlert(Milestone milestone, LocalDate referenceDate) {
-
         List<MilestoneWindow> milestoneWindows = milestone.getMilestoneWindows();
         for (MilestoneWindow milestoneWindow : milestoneWindows) {
             Period windowStart = milestone.getWindowStart(milestoneWindow.getName());

@@ -40,11 +40,11 @@ public class CareHistoryFormUploadSchedulesTest extends OpenMRSAwareFunctionalTe
         mobile.upload(MobileForm.registerANCForm(), ancEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
 
 
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ScheduleNames.ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception()),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.ANC_IPT_VACCINE).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.ANC_IPT_VACCINE).getAlertAsLocalDate(), expectedFirstAlertDate(ScheduleNames.ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception())
+        );
 
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ScheduleNames.TT_VACCINATION, registrationDate),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.TT_VACCINATION).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.TT_VACCINATION).getAlertAsLocalDate(), expectedFirstAlertDate(ScheduleNames.TT_VACCINATION, registrationDate)
+        );
 
         final LocalDate dateAfterConception = pregnancyIn12thWeekOfPregnancy.dateOfConception().plusWeeks(3);
 
@@ -55,11 +55,11 @@ public class CareHistoryFormUploadSchedulesTest extends OpenMRSAwareFunctionalTe
         mobile.upload(MobileForm.careHistoryForm(), careHistory.forMobile());
 
         // schedule dates should not change
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ScheduleNames.ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception()),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.ANC_IPT_VACCINE).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.ANC_IPT_VACCINE).getAlertAsLocalDate(), expectedFirstAlertDate(ScheduleNames.ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception())
+        );
 
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ScheduleNames.TT_VACCINATION, registrationDate),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.TT_VACCINATION).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.TT_VACCINATION).getAlertAsLocalDate(), expectedFirstAlertDate(ScheduleNames.TT_VACCINATION, registrationDate)
+        );
     }
 
     @Test

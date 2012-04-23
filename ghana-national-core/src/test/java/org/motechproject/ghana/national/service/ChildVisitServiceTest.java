@@ -181,11 +181,11 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         Time deliveryTime = new Time(20, 2);
         DateTime today = new DateTime(2012, 2, 1, deliveryTime.getHour(), deliveryTime.getMinute());
         LocalDate visitDate = today.minusDays(10).toLocalDate();
-        IPTDose dose = IPTDose.SP2;
+        IPTiDose ipTiDose = IPTiDose.IPTi1;
         String mrsPatientId = "1234";
         CWCVisit cwcVisit = createTestCWCVisit(visitDate.toDate(), new MRSUser(), mock(Facility.class),
                 new Patient(new MRSPatient(mrsPatientId, "", new MRSPerson().dateOfBirth(newDate(2011, 1, 1).toDate()), new MRSFacility("fid"))))
-                .iptidose(dose.value().toString());
+                .iptidose(ipTiDose.getDose(ipTiDose).toString());
 
         mockCurrentDate(today);
         service.save(cwcVisit);
@@ -197,7 +197,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
 
         verify(mockAllSchedulesAndMessages).enrollOrFulfill(captor.capture(), eq(visitDate));
-        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, CWC_IPT_VACCINE, deliveryTime, visitDate, deliveryTime, visitDate, null, dose.milestone(), null), captor.getAllValues().get(0));
+        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, CWC_IPT_VACCINE, deliveryTime, visitDate, deliveryTime, visitDate, null, ipTiDose.milestoneName(), null), captor.getAllValues().get(0));
     }
 
     @Test

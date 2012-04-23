@@ -3,8 +3,9 @@ package org.motechproject.ghana.national.functional.mobile;
 import org.apache.commons.collections.MapUtils;
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.RegistrationToday;
-import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
+import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestCWCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
@@ -13,6 +14,9 @@ import org.motechproject.ghana.national.functional.framework.ScheduleTracker;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.helper.ScheduleHelper;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
+import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
 import org.motechproject.ghana.national.functional.pages.patient.CWCEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEnrollmentPage;
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
@@ -30,9 +34,11 @@ import java.util.Map;
 
 import static ch.lambdaj.Lambda.join;
 import static ch.lambdaj.Lambda.on;
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_IPT_VACCINE;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PENTA;
 import static org.motechproject.ghana.national.functional.data.TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE;
 import static org.motechproject.util.DateUtil.today;
@@ -40,7 +46,7 @@ import static org.testng.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class RegisterCWCMobileUploadTest extends LoggedInUserFunctionalTest {
+public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
     @Autowired
     private OpenMRSDB openMRSDB;
@@ -108,6 +114,21 @@ public class RegisterCWCMobileUploadTest extends LoggedInUserFunctionalTest {
         patientEditPage = toPatientEditPage(testPatient);
         MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientEditPage);
         assertThat(mobileMidwifeEnrollmentPage.details(), is(equalTo(mmEnrollmentDetails)));
+
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(patientId));
+        String encounterId = openMRSPatientPage.chooseEncounter("CWCREGVISIT");
+
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("PENTA VACCINATION DOSE", "3.0"),
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE", "2.0"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "VITAMIN A"),
+                new OpenMRSObservationVO("SERIAL NUMBER", "serialNumber"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "MEASLES VACCINATION"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "BACILLE CAMILE-GUERIN VACCINATION"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "YELLOW FEVER VACCINATION"),
+                new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE", "1.0")
+        ));
     }
 
     @Test
@@ -153,8 +174,8 @@ public class RegisterCWCMobileUploadTest extends LoggedInUserFunctionalTest {
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), testCWCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
         assertThat(join(response.getErrors(), on(XformHttpClient.Error.class).toString()), response.getErrors().size(), is(equalTo(0)));
 
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(CWC_PENTA, patient.dateOfBirth()),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA).getAlertAsLocalDate());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA).getAlertAsLocalDate(), expectedFirstAlertDate(CWC_PENTA, patient.dateOfBirth())
+        );
     }
 
     @Test
@@ -174,8 +195,32 @@ public class RegisterCWCMobileUploadTest extends LoggedInUserFunctionalTest {
         assertNull(scheduleTracker.activeEnrollment(openMRSId, CWC_PENTA));
     }
 
+    @Test
+    public void shouldCreateScheduleFromAppropriateMilestoneIfHistoryIsProvided(){
+        String staffId = staffGenerator.createStaff(browser, homePage);
+        LocalDate dateOfBirth = DateUtil.newDate(2012, 4, 3);
+        TestPatient patient = TestPatient.with("name-new", staffId).dateOfBirth(dateOfBirth).patientType(CHILD_UNDER_FIVE);
+        String patientId = patientGenerator.createPatient(patient, browser, homePage);
+        String openMRSId = openMRSDB.getOpenMRSId(patientId);
+        LocalDate registrationDate = DateUtil.newDate(2012, 4, 18);
+
+        TestCWCEnrollment testCWCEnrollment = TestCWCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId)
+                .withRegistrationDate(registrationDate).withAddHistory(true).withAddCareHistory(asList(CwcCareHistory.PENTA,CwcCareHistory.IPTI))
+                .withLastIPTi("1").withLastIPTiDate(DateUtil.newDate(2012, 4, 16)).withLastPenta("1").withLastPentaDate(DateUtil.newDate(2012, 4, 16));
+
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), testCWCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
+        assertThat(join(response.getErrors(), on(XformHttpClient.Error.class).toString()), response.getErrors().size(), is(equalTo(0)));
+
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA).getAlertAsLocalDate(), expectedAlertDateFor(CWC_PENTA, testCWCEnrollment.getLastPentaDate(), "Penta2"));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_IPT_VACCINE).getAlertAsLocalDate(), expectedAlertDateFor(CWC_IPT_VACCINE, testCWCEnrollment.getLastIPTiDate(), "IPTi2"));
+    }
+
     private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate) {
         return scheduleTracker.firstAlert(scheduleName, referenceDate);
+    }
+
+    private LocalDate expectedAlertDateFor(String scheduleName, LocalDate referenceDate, String milestoneName) {
+        return scheduleTracker.alertFor(scheduleName, referenceDate, milestoneName);
     }
 
     private PatientEditPage toPatientEditPage(TestPatient testPatient) {
