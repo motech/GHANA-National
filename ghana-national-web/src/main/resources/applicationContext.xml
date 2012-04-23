@@ -12,7 +12,6 @@
     <beans:import resource="classpath*:applicationContext-core.xml"/>
     <beans:import resource="classpath*:applicationContext-security.xml"/>
     <beans:import resource="classpath*:applicationContext-idgen-omod.xml"/>
-    <beans:import resource="classpath*:applicationContext-messaging-gateway.xml"/>
     <context:annotation-config/>
     <context:spring-configured/>
     <context:component-scan base-package="org.motechproject.ghana.national"/>

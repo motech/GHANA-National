@@ -13,6 +13,5 @@ public class SMSDispatcher {
 
     public void dispatch(SMS sms){
         smsService.sendSMS(sms.getPhoneNumber(),sms.getText());
-        System.out.println("SMSksjflkdsjfklkdjsflkjdsflkjdslkfj" + sms.getText() + "----" + sms.getPhoneNumber());
     }
 }
