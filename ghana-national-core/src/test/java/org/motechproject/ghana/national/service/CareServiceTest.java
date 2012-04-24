@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -29,12 +28,13 @@ import java.util.*;
 import static java.lang.Double.parseDouble;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
@@ -676,7 +676,6 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
-    @Ignore
     public void shouldCreateSchedulesForCWCPentaProgramRegistration() {
         String patientId = "Id";
         String patientMotechId = "motechId";
@@ -685,19 +684,21 @@ public class CareServiceTest extends BaseUnitTest {
         setupPatient(patientId, patientMotechId);
         when(mockPatient.getMotechId()).thenReturn(patientMotechId);
 
-        PatientCare patientCare = new PatientCare("test", new LocalDate(), registrationDateTime.toLocalDate(), null, null);
+        PatientCare patientCare = new PatientCare(CWC_PENTA, new LocalDate(), registrationDateTime.toLocalDate(), null, null);
 
-        CwcVO cwcVO = new CwcVO(null, null, registrationDateTime.toDate(), patientMotechId, null, null, null,
+        CwcVO cwcVO = new CwcVO(null, null, registrationDateTime.toDate(), patientMotechId, asList(CwcCareHistory.PENTA), null, null,
                 null, null, null, null, null, null, null, null, null, true);
-        final ActiveCareSchedules activeCareSchedules = new ActiveCareSchedules().setActiveCareSchedule(CWC_PENTA, null);
-        when(mockPatient.cwcCareProgramToEnrollOnRegistration(registrationDateTime.toLocalDate(), new ArrayList<CwcCareHistory>(), cwcVO.getCWCCareHistoryVO(), activeCareSchedules)).thenReturn(asList(patientCare));
+        ActiveCareSchedules activeCareSchedules = careService.activeCareSchedules(mockPatient, asList(CWC_PENTA, CWC_IPT_VACCINE, CWC_OPV_OTHERS));
+        when(mockPatient.cwcCareProgramToEnrollOnRegistration(registrationDateTime.toLocalDate(), asList(CwcCareHistory.PENTA), cwcVO.getCWCCareHistoryVO(), activeCareSchedules)).thenReturn(asList(patientCare));
 
         careService.enrollToCWCCarePrograms(cwcVO, mockPatient);
 
         verify(mockAllObservations).findObservations(patientMotechId, Concept.IMMUNIZATIONS_ORDERED.getName());
         verify(mockAllObservations).findObservations(patientMotechId, Concept.PENTA.getName());
         verify(mockAllObservations).findObservations(patientMotechId, Concept.IPTI.getName());
-        verify(mockPatient).cwcCareProgramToEnrollOnRegistration(registrationDateTime.toLocalDate(), new ArrayList<CwcCareHistory>(), cwcVO.getCWCCareHistoryVO(), activeCareSchedules);
+        verify(mockPatient).cwcCareProgramToEnrollOnRegistration(registrationDateTime.toLocalDate(), new ArrayList<CwcCareHistory>() {{
+            add(CwcCareHistory.PENTA);
+        }}, cwcVO.getCWCCareHistoryVO(), activeCareSchedules);
         verifyIfScheduleEnrolled(0, expectedRequest(patientId, new PatientCare(patientCare.name(), patientCare.startingOn(), registrationDateTime.toLocalDate(), null, null)));
     }
 
