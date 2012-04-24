@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class FacilitiesDefaultMessageHandler {
 
     @Autowired
-    private DefaultMessageHandler messageHandler;
+    private DefaultMessageFeeder messageHandler;
 
 
     @MotechListener(subjects = {Constants.FACILITIES_DEFAULT_MESSAGE_SUBJECT})

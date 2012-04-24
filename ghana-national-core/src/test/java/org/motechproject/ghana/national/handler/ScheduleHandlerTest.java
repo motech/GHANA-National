@@ -1,9 +1,11 @@
 package org.motechproject.ghana.national.handler;
 
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.exception.EventHandlerException;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
@@ -11,6 +13,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
@@ -20,7 +25,7 @@ public class ScheduleHandlerTest {
     private ScheduleHandler scheduleHandler;
 
     @Mock
-    private CareScheduleHandler careScheduleHandler;
+    private CareScheduleAlerts careScheduleHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -31,68 +36,84 @@ public class ScheduleHandlerTest {
 
     @Test
     public void shouldHandleDeliveryNotificationSchedules(){
-        fireScheduleHandler(ANC_DELIVERY);
+        fireScheduleHandler(event(ANC_DELIVERY));
         verify(careScheduleHandler).handlePregnancyAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandleTTVaccinationSchedules(){
-        fireScheduleHandler(TT_VACCINATION);
+        fireScheduleHandler(event(TT_VACCINATION));
         verify(careScheduleHandler).handleTTVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandleBCGSchedules(){
-        fireScheduleHandler(CWC_BCG);
+        fireScheduleHandler(event(CWC_BCG));
         verify(careScheduleHandler).handleBCGAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandleIPTpVaccinationSchedules(){
-        fireScheduleHandler(ANC_IPT_VACCINE);
+        fireScheduleHandler(event(ANC_IPT_VACCINE));
         verify(careScheduleHandler).handleIPTpVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
     
     @Test
     public void shouldHandleIPTiVaccinationSchedules(){
-        fireScheduleHandler(CWC_IPT_VACCINE);
+        fireScheduleHandler(event(CWC_IPT_VACCINE));
         verify(careScheduleHandler).handleIPTiVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
     
     @Test
     public void shouldHandleMeaslesVaccinationSchedules(){
-        fireScheduleHandler(CWC_MEASLES_VACCINE);
+        fireScheduleHandler(event(CWC_MEASLES_VACCINE));
         verify(careScheduleHandler).handleMeaslesVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandleYellowFeverVaccinationSchedules(){
-        fireScheduleHandler(CWC_YELLOW_FEVER);
+        fireScheduleHandler(event(CWC_YELLOW_FEVER));
         verify(careScheduleHandler).handleYellowFeverVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandlePentaVaccinationSchedules(){
-        fireScheduleHandler(CWC_PENTA);
+        fireScheduleHandler(event(CWC_PENTA));
         verify(careScheduleHandler).handlePentaVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandleOPV0VaccinationSchedules(){
-        fireScheduleHandler(CWC_OPV_0);
+        fireScheduleHandler(event(CWC_OPV_0));
         verify(careScheduleHandler).handleOpvVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandleOtherOPVVaccinationSchedules(){
-        fireScheduleHandler(CWC_OPV_OTHERS);
+        fireScheduleHandler(event(CWC_OPV_OTHERS));
         verify(careScheduleHandler).handleOpvVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 
-    private void fireScheduleHandler(final String scheduleName) {
-        scheduleHandler.handleAlert(new MotechEvent(EventSubjects.MILESTONE_ALERT, new HashMap<String, Object>(){{
+    @Test
+    public void shouldThrowOnAnyFailureInHandlingAlerts() {
+        doThrow(new RuntimeException("some")).when(careScheduleHandler).handleOpvVaccinationAlert(Matchers.<MilestoneEvent>any());
+        final MotechEvent event = event(CWC_OPV_OTHERS);
+        try {
+            fireScheduleHandler(event);
+            Assert.fail("expected scheduler handler exception");
+        } catch (EventHandlerException she) {
+            assertThat(she.getMessage(), is(event.toString()));
+        }
+    }
+
+    private void fireScheduleHandler(MotechEvent event) {
+        scheduleHandler.handleAlert(event);
+    }
+
+    private MotechEvent event(final String scheduleName) {
+        return new MotechEvent(EventSubjects.MILESTONE_ALERT, new HashMap<String, Object>(){{
             put("schedule_name", scheduleName);
-        }}));
+        }});
     }
 
 

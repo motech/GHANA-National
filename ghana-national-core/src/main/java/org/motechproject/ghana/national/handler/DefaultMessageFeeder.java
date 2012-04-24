@@ -16,7 +16,7 @@ import static org.motechproject.ghana.national.configuration.TextMessageTemplate
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY;
 
 @Component
-public class DefaultMessageHandler {
+public class DefaultMessageFeeder {
 
     @Autowired
     AllFacilities allFacilities;

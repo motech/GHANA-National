@@ -19,7 +19,7 @@ import static org.motechproject.ghana.national.domain.SmsTemplateKeys.*;
 
 public class CareScheduleHandlerTest {
 
-    private CareScheduleHandler careScheduleHandlerSpy;
+    private CareScheduleAlerts careScheduleHandlerSpy;
     @Mock
     private SMSGateway mockSmsGateway;
     @Mock
@@ -32,7 +32,7 @@ public class CareScheduleHandlerTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        careScheduleHandlerSpy = spy(new CareScheduleHandler(mockPatientService, mockFacilityService, mockSmsGateway, mockAllObservations));
+        careScheduleHandlerSpy = spy(new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSmsGateway, mockAllObservations));
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendInstantSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
     }

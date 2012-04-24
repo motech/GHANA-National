@@ -52,12 +52,12 @@ public class BaseScheduleHandlerTest {
     @Mock
     private SMSGateway SMSGateway;
 
-    private CareScheduleHandler careScheduleHandler;
+    private CareScheduleAlerts careScheduleHandler;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        careScheduleHandler = new CareScheduleHandler(mockPatientService, mockFacilityService, SMSGateway, mockAllObservations);
+        careScheduleHandler = new CareScheduleAlerts(mockPatientService, mockFacilityService, SMSGateway, mockAllObservations);
     }
 
     @Test

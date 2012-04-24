@@ -16,9 +16,7 @@ import org.motechproject.mrs.model.MRSUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 import static org.motechproject.ghana.national.domain.Concept.EDD;
 import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
@@ -89,6 +87,15 @@ public class PregnancyService {
         Facility facility = request.getFacility();
         MRSUser staff = request.getStaff();
         Patient patient = request.getPatient();
+
+        MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(patient.getMotechId());
+        allEncounters.persistEncounter(encounterFactory.createDeliveryEncounter(request, activePregnancyObservation));
+        allSchedulesAndMessages.safeFulfilCurrentMilestone(patient.getMRSPatientId(), ScheduleNames.ANC_DELIVERY, request.getDeliveryDateTime().toLocalDate());
+        allSchedulesAndMessages.unEnroll(patient.getMRSPatientId(), Patient.ancCarePrograms);
+        allAppointmentsAndMessages.remove(patient);
+
+        List<SMSTemplate> smsForEachChild = new ArrayList<SMSTemplate>();
+
         for (DeliveredChildRequest childRequest : request.getDeliveredChildRequests()) {
             if (childRequest.getChildBirthOutcome().equals(BirthOutcome.ALIVE)) {
                 Date birthDate = request.getDeliveryDateTime().toDate();
@@ -97,15 +104,12 @@ public class PregnancyService {
                 careService.enroll(new CwcVO(staff.getSystemId(), facility.mrsFacilityId(), birthDate, savedChild.getMotechId(),
                         Collections.<CwcCareHistory>emptyList(), null, null, null, null, null, null, null, null, null, null, savedChild.getMotechId(), false));
                 careService.enrollChildForPNCOnDelivery(savedChild);
-                smsGateway.dispatchSMS(REGISTER_SUCCESS_SMS_KEY, new SMSTemplate().fillPatientDetails(savedChild).getRuntimeVariables(), request.getSender());
+                smsForEachChild.add(new SMSTemplate().fillPatientDetails(savedChild));
             }
         }
-
-        MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(patient.getMotechId());
-        allEncounters.persistEncounter(encounterFactory.createDeliveryEncounter(request, activePregnancyObservation));
-        allSchedulesAndMessages.safeFulfilCurrentMilestone(patient.getMRSPatientId(), ScheduleNames.ANC_DELIVERY, request.getDeliveryDateTime().toLocalDate());
-        allSchedulesAndMessages.unEnroll(patient.getMRSPatientId(), Patient.ancCarePrograms);
-        allAppointmentsAndMessages.remove(patient);
+        for (SMSTemplate smsTemplate : smsForEachChild) {
+            smsGateway.dispatchSMS(REGISTER_SUCCESS_SMS_KEY, smsTemplate.getRuntimeVariables(), request.getSender());
+        }
     }
 
     public Date activePregnancyEDD(String motechId) {

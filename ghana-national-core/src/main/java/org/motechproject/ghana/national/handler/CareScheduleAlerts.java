@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.*;
 
 @Component
-public class CareScheduleHandler extends BaseScheduleHandler {
+public class CareScheduleAlerts extends BaseScheduleHandler {
 
-    public CareScheduleHandler() {
+    public CareScheduleAlerts() {
     }
 
     @Autowired
-    public CareScheduleHandler(PatientService patientService, FacilityService facilityService, SMSGateway smsGateway, AllObservations allObservations) {
+    public CareScheduleAlerts(PatientService patientService, FacilityService facilityService, SMSGateway smsGateway, AllObservations allObservations) {
         super(patientService, facilityService, smsGateway, allObservations);
     }
 

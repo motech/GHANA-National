@@ -21,7 +21,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class FacilitiesDefaultMessageHandlerTest {
 
     @Mock
-    DefaultMessageHandler defaultMessageHandler;
+    DefaultMessageFeeder defaultMessageHandler;
 
     @InjectMocks
     FacilitiesDefaultMessageHandler handler = new FacilitiesDefaultMessageHandler();

@@ -32,14 +32,9 @@ public class AllOutPatientVisits extends MotechBaseRepository<OutPatientVisit> {
     public void add(OutPatientVisit outPatientVisit) {
         List<OutPatientVisit> existingOutPatients = findBy(outPatientVisit.getFacilityId(), outPatientVisit.getStaffId(), outPatientVisit.getSerialNumber(), outPatientVisit.getVisitDate());
         OutPatientVisit existingOutPatientVisit = selectFirst(existingOutPatients, having(on(OutPatientVisit.class), equalTo(outPatientVisit)));
-
         if (existingOutPatientVisit == null) {
             super.add(outPatientVisit);
             allMotechModuleOutPatientVisits.save(outPatientVisit);
-        } else {
-            outPatientVisit.setRevision(existingOutPatientVisit.getRevision());
-            outPatientVisit.setId(existingOutPatientVisit.getId());
-            super.update(outPatientVisit);
         }
     }
 

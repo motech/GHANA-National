@@ -24,7 +24,7 @@ public class DefaultMessageHandlerTest {
     SMSGateway mockSmsGateway;
 
     @InjectMocks
-    DefaultMessageHandler handler = new DefaultMessageHandler();
+    DefaultMessageFeeder handler = new DefaultMessageFeeder();
 
     @Test
     public void shouldSendDefaultMessageToAllFacilitiesOnTrigger() {

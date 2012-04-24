@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handler;
 
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -8,6 +9,7 @@ import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
+import org.motechproject.ghana.national.exception.EventHandlerException;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -16,6 +18,8 @@ import org.motechproject.server.messagecampaign.EventKeys;
 
 import java.util.HashMap;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.server.messagecampaign.scheduler.MessageCampaignScheduler.INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT;
@@ -83,6 +87,18 @@ public class MobileMidwifeCampaignEventHandlerTest {
         MotechEvent lastEvent = motechEvent(patientId, serviceType.name(), messageKey).setLastEvent(true);
         handler.sendProgramMessage(lastEvent);
         verify(mockMobileMidwifeService).unRegister(patientId);
+    }
+
+    @Test
+    public void shouldThrowOnAnyFailureInHandlingAlerts() {
+        doThrow(new RuntimeException("some")).when(mockMobileMidwifeService).findActiveBy(anyString());
+        final MotechEvent event = new MotechEvent("subjectMM", new HashMap<String, Object>());
+        try {
+            handler.sendProgramMessage(event);
+            Assert.fail("expected scheduler handler exception");
+        } catch (EventHandlerException she) {
+            assertThat(she.getMessage(), is(event.toString()));
+        }
     }
 
      private MotechEvent motechEvent(String externalId, String campaignName, String messageKey) {

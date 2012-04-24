@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handler;
 
+import org.motechproject.ghana.national.exception.EventHandlerException;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
@@ -16,7 +17,7 @@ public class ScheduleHandler {
     private Logger logger = LoggerFactory.getLogger(ScheduleHandler.class);
 
     @Autowired
-    private CareScheduleHandler careScheduleHandler;
+    private CareScheduleAlerts careScheduleHandler;
 
     @MotechListener(subjects = {EventSubjects.MILESTONE_ALERT})
     public void handleAlert(MotechEvent motechEvent) {
@@ -48,7 +49,8 @@ public class ScheduleHandler {
             else if (isPNCChildSchedule(milestoneEvent.getScheduleName()))
                 careScheduleHandler.handlePNCChildAlert(milestoneEvent);
         } catch (Exception e) {
-            logger.error("Encountered error while sending pregnancy alert: ", e);
+            logger.error("<Alert Exception>: Encountered error while sending alert: ", e);
+            throw new EventHandlerException(motechEvent, e);
         }
     }
 
