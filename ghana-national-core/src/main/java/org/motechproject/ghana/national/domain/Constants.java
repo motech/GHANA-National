@@ -89,6 +89,8 @@ public class Constants {
     public static final Integer CWC_IPT_MAX_BIRTH_WEEK_FOR_REGISTRATION = 14;  
     public static final Integer CWC_PENTA_MAX_WEEK_FOR_REGISTRATION = 10;
     public static final Integer CWC_MEASLES_MAX_AGE_WEEK_FOR_REGISTRATION = 5;
+    public static final Integer CWC_OPV0_MAX_BIRTH_WEEK_FOR_REGISTRATION = 3;
 
     public static final String FACILITIES_DEFAULT_MESSAGE_SUBJECT = "org.motechproject.ghana.national.facilities.default";
+    public static final int CWC_OPV1_MAX_BIRTH_WEEK_FOR_REGISTRATION = 9;
 }

@@ -53,4 +53,14 @@ public class ChildCare {
     public LocalDate birthDate() {
         return DateUtil.newDate(birthTime.toDate());
     }
+
+    public boolean applicableForOPV0() {
+        int currentWeek = currentWeek();
+        return currentWeek > 0 && currentWeek <= Constants.CWC_OPV0_MAX_BIRTH_WEEK_FOR_REGISTRATION;
+    }
+
+    public boolean applicableForOPVOther() {
+        int currentWeek = currentWeek();
+        return currentWeek > 0 && currentWeek <= Constants.CWC_OPV1_MAX_BIRTH_WEEK_FOR_REGISTRATION;
+    }
 }

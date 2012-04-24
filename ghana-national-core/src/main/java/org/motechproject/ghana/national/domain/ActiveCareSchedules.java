@@ -35,10 +35,8 @@ public class ActiveCareSchedules {
 
         ActiveCareSchedules that = (ActiveCareSchedules) o;
 
-        if (allActiveCareSchedules != null ? !allActiveCareSchedules.equals(that.allActiveCareSchedules) : that.allActiveCareSchedules != null)
-            return false;
+        return !(allActiveCareSchedules != null ? !allActiveCareSchedules.equals(that.allActiveCareSchedules) : that.allActiveCareSchedules != null);
 
-        return true;
     }
 
     @Override
@@ -52,5 +50,9 @@ public class ActiveCareSchedules {
 
     public Boolean hasActiveIPTiSchedule() {
         return allActiveCareSchedules.get(CWC_IPT_VACCINE) != null;
+    }
+
+    public Boolean hasActiveOPVSchedule() {
+        return allActiveCareSchedules.get(CWC_OPV_OTHERS) != null;
     }
 }

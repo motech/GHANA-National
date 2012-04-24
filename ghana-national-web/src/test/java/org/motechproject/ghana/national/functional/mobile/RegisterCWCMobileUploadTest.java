@@ -38,8 +38,7 @@ import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_IPT_VACCINE;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PENTA;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.functional.data.TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE;
 import static org.motechproject.util.DateUtil.today;
 import static org.testng.Assert.assertEquals;
@@ -205,14 +204,15 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         LocalDate registrationDate = DateUtil.newDate(2012, 4, 18);
 
         TestCWCEnrollment testCWCEnrollment = TestCWCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId)
-                .withRegistrationDate(registrationDate).withAddHistory(true).withAddCareHistory(asList(CwcCareHistory.PENTA,CwcCareHistory.IPTI))
-                .withLastIPTi("1").withLastIPTiDate(DateUtil.newDate(2012, 4, 16)).withLastPenta("1").withLastPentaDate(DateUtil.newDate(2012, 4, 16));
+                .withRegistrationDate(registrationDate).withAddHistory(true).withAddCareHistory(asList(CwcCareHistory.PENTA,CwcCareHistory.IPTI,CwcCareHistory.OPV))
+                .withLastIPTi("1").withLastIPTiDate(DateUtil.newDate(2012, 4, 16)).withLastPenta("1").withLastPentaDate(DateUtil.newDate(2012, 4, 16)).withLastOPV("1").withLastOPVDate(DateUtil.newDate(2012, 4, 16));
 
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), testCWCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
         assertThat(join(response.getErrors(), on(XformHttpClient.Error.class).toString()), response.getErrors().size(), is(equalTo(0)));
 
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA).getAlertAsLocalDate(), expectedAlertDateFor(CWC_PENTA, testCWCEnrollment.getLastPentaDate(), "Penta2"));
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_IPT_VACCINE).getAlertAsLocalDate(), expectedAlertDateFor(CWC_IPT_VACCINE, testCWCEnrollment.getLastIPTiDate(), "IPTi2"));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_OPV_OTHERS).getAlertAsLocalDate(), expectedAlertDateFor(CWC_OPV_OTHERS, testCWCEnrollment.getLastOPVDate(), "OPV2"));
     }
 
     private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate) {

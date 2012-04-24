@@ -13,4 +13,11 @@ public class ActiveCareSchedulesTest {
         activeCareSchedules.setActiveCareSchedule(ScheduleNames.CWC_IPT_VACCINE, new EnrollmentRecord(null, null, null, null, null, null, null, null, null, null));
         assertTrue(activeCareSchedules.hasActiveIPTiSchedule());
     }
+
+    @Test
+    public void shouldReturnTrueIfActiveScheduleForOPVIsPresent() {
+        ActiveCareSchedules activeCareSchedules = new ActiveCareSchedules();
+        activeCareSchedules.setActiveCareSchedule(ScheduleNames.CWC_OPV_OTHERS, new EnrollmentRecord(null, null, null, null, null, null, null, null, null, null));
+        assertTrue(activeCareSchedules.hasActiveOPVSchedule());
+    }
 }

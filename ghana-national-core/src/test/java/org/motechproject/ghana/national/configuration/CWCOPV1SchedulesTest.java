@@ -10,9 +10,12 @@ import org.quartz.SchedulerException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
+import static org.motechproject.scheduletracking.api.domain.WindowName.due;
+import static org.motechproject.scheduletracking.api.domain.WindowName.late;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
@@ -145,9 +148,28 @@ public class CWCOPV1SchedulesTest extends BaseScheduleTrackingTest {
 
     }
 
+    @Test
+    public void verifyOPV1TriggersTheSchedule() throws ParseException, SchedulerException {
+        mockToday(newDate("01-APR-2012"));
+        LocalDate lastOPVDate = newDate("29-MAR-2012");
+
+        enrollmentId = scheduleAlertForOPVEnrolledWithHistory(lastOPVDate, "OPV2");
+        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
+                alert(due, onDate("19-APR-2012")),
+                alert(late, onDate("26-APR-2012")),
+                alert(late, onDate("03-MAY-2012")),
+                alert(late, onDate("10-MAY-2012")))
+        );
+    }
+
 
     private String scheduleAlertForOPV(LocalDate referenceDate) {
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, referenceDate, null, referenceDate, null, null, null);
+        return scheduleTrackingService.enroll(enrollmentRequest);
+    }
+
+    private String scheduleAlertForOPVEnrolledWithHistory(LocalDate lastPentaDate, String milestoneName) {
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, null, null, lastPentaDate, null, milestoneName, null);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

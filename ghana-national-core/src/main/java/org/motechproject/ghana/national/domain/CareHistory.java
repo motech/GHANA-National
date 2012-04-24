@@ -11,6 +11,7 @@ public class CareHistory {
     private TTVaccineCare ttVaccineCare;
     private IPTVaccineCare iptVaccineCare;
     private IPTiVaccineCare iptiVaccineCare;
+    private OPVVaccineCare opvVaccineCare;
 
     private CareHistory() {
     }
@@ -27,6 +28,7 @@ public class CareHistory {
                 safeCareForHistory(ttVaccineCare),
                 safeCareForHistory(iptVaccineCare),
                 safeCareForHistory(pentaVaccineCare),
+                safeCareForHistory(opvVaccineCare),
                 safeCareForHistory(iptiVaccineCare)
         );
     }
@@ -43,6 +45,9 @@ public class CareHistory {
             }
             if (childVaccineCare instanceof IPTiVaccineCare) {
                 careHistory.iptiVaccineCare = (IPTiVaccineCare) childVaccineCare;
+            }
+            if(childVaccineCare instanceof OPVVaccineCare){
+                careHistory.opvVaccineCare = (OPVVaccineCare) childVaccineCare;
             }
         }
         return careHistory;
