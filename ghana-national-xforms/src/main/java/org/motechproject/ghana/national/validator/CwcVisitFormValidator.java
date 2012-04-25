@@ -28,7 +28,11 @@ public class CwcVisitFormValidator extends FormValidator<CWCVisitForm> {
     @LoginAsAdmin
     @ApiSession
     public List<FormError> validate(CWCVisitForm formBean) {
-        List<FormError> errors = new ArrayList<FormError>();
+        List<FormError> errors = super.validate(formBean);
+        return businessValidations(formBean, errors);
+    }
+
+    List<FormError>  businessValidations(CWCVisitForm formBean, List<FormError> errors) {
         errors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         errors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         errors.addAll(formValidator.validateIfPatientIsAliveAndIsAChild(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
