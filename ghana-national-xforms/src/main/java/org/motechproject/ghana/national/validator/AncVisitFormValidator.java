@@ -28,7 +28,11 @@ public class AncVisitFormValidator extends FormValidator<ANCVisitForm> {
     @LoginAsAdmin
     @ApiSession
     public List<FormError> validate(ANCVisitForm formBean) {
-        List<FormError> errors = new ArrayList<FormError>();
+        List<FormError> errors = super.validate(formBean);
+        return businessValidations(formBean, errors);
+    }
+
+    List<FormError> businessValidations(ANCVisitForm formBean, List<FormError> errors) {
         errors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         errors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         errors.addAll(formValidator.validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));

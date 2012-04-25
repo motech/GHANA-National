@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.mobileforms.api.domain.FormError;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -67,7 +68,7 @@ public class AncVisitFormValidatorTest {
 
         when(mockAllEncounters.getLatest(motechId, ANC_REG_VISIT.value())).thenReturn(null);
 
-        List<FormError> formErrors = validator.validate(formBean);
+        List<FormError> formErrors = validator.businessValidations(formBean, new ArrayList<FormError>());
 
         assertThat(formErrors.size(), is(equalTo(1)));
         assertThat(formErrors.get(0).getParameter(), is(equalTo(motechId)));
