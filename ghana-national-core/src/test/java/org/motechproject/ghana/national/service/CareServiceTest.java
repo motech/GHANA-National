@@ -311,7 +311,6 @@ public class CareServiceTest extends BaseUnitTest {
         assertThat(request.getExternalId(), is(patient.getMRSPatientId()));
     }
 
-
     @Test
     public void shoulUpdateEddObservationIfFound() throws Exception {
         String facilityId = "facility id";
@@ -337,7 +336,7 @@ public class CareServiceTest extends BaseUnitTest {
         updatedEddObservations.add(activePregnancy);
 
         when(mockAllObservations.updateEDD(ancvo.getEstimatedDateOfDelivery(), mockPatient,
-                ancvo.getStaffId())).thenReturn(updatedEddObservations);
+                ancvo.getStaffId(), ancvo.getRegistrationDate())).thenReturn(updatedEddObservations);
 
         careService.enroll(ancvo);
 

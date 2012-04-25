@@ -76,7 +76,7 @@ public class MotherVisitService {
 
     private void updateEDD(ANCVisitRequest ancVisit, Set<MRSObservation> mrsObservations) throws ObservationNotFoundException {
         Patient patient = ancVisit.getPatient();
-        Set<MRSObservation> eddObservations = allObservations.updateEDD(ancVisit.getEstDeliveryDate(), patient, ancVisit.getStaff().getId());
+        Set<MRSObservation> eddObservations = allObservations.updateEDD(ancVisit.getEstDeliveryDate(), patient, ancVisit.getStaff().getId(), ancVisit.getDate());
         if (CollectionUtils.isNotEmpty(eddObservations)) {
             mrsObservations.addAll(eddObservations);
             PatientCare ancDeliveryCare = patient.ancDeliveryCareOnVisit(newDate(ancVisit.getEstDeliveryDate()), newDate(ancVisit.getDate()));

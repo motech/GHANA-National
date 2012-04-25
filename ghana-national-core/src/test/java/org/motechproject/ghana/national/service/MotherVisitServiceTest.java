@@ -88,7 +88,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         ANCVisitRequest ancVisit = createTestANCVisit(staff, facility, patient).estDeliveryDate(pregnancy.dateOfDelivery().toDate()).date(visitDate.toDate());
 
         mockCurrentDate(new LocalDate(2012, 5, 1));
-        when(mockAllObservations.updateEDD(ancVisit.getEstDeliveryDate(), patient, ancVisit.getStaff().getId()))
+        when(mockAllObservations.updateEDD(ancVisit.getEstDeliveryDate(), patient, ancVisit.getStaff().getId(), ancVisit.getDate()))
                 .thenReturn(new HashSet<MRSObservation>() {{
                     add(new MRSObservation<Object>(new Date(), null, null));
                 }});

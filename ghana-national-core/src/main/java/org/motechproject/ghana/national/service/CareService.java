@@ -154,7 +154,7 @@ public class CareService {
 
     Set<MRSObservation> registerPregnancy(ANCVO ancVO, Patient patient) throws ObservationNotFoundException {
         Date today = DateUtil.today().toDate();
-        Set<MRSObservation> activePregnancyObservation = allObservations.updateEDD(ancVO.getEstimatedDateOfDelivery(), patient, ancVO.getStaffId());
+        Set<MRSObservation> activePregnancyObservation = allObservations.updateEDD(ancVO.getEstimatedDateOfDelivery(), patient, ancVO.getStaffId(), ancVO.getRegistrationDate());
         MRSObservation activePregnancy;
         if (!activePregnancyObservation.isEmpty()) {
             activePregnancy = activePregnancyObservation.iterator().next();
@@ -183,17 +183,6 @@ public class CareService {
             addDependentObservation(activePregnancy, observationDate, concept.getName(), observationValue);
         }
     }
-
-//    private Date getEdd(MRSObservation activePregnancy) {
-//        Date edd = null;
-//        Set<MRSObservation> dependantObservations = activePregnancy.getDependantObservations();
-//        for (MRSObservation depObs : dependantObservations) {
-//            if (EDD.getName().equals(depObs.getConceptName())) {
-//                edd = (Date) depObs.getValue();
-//            }
-//        }
-//        return edd;
-//    }
 
     private boolean isWithinCurrentPregnancyPeriod(Date observationDate, Date edd) {
         if (edd != null) {

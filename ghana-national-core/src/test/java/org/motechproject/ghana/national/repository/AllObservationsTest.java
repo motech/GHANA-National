@@ -75,7 +75,7 @@ public class AllObservationsTest {
         when(edd.getValue()).thenReturn(DateUtil.newDate(2010, 12, 11).toDate());
         when(mockMrsObservationAdapter.findObservation(motechId, EDD.getName())).thenReturn(edd);
 
-        Set<MRSObservation> eddObservations = allObservations.updateEDD(new Date(), patient, staffId);
+        Set<MRSObservation> eddObservations = allObservations.updateEDD(new Date(), patient, staffId, new Date());
 
         assertTrue(CollectionUtils.isNotEmpty(eddObservations));
         verify(mockMrsObservationAdapter).voidObservation(eq(edd), anyString(), eq(staffId));
@@ -90,7 +90,7 @@ public class AllObservationsTest {
         when(edd.getValue()).thenReturn(DateUtil.newDate(2010, 12, 11).toDate());
         when(mockMrsObservationAdapter.findObservation(motechId, EDD.getName())).thenReturn(null);
 
-        Set<MRSObservation> eddObservations = allObservations.updateEDD(new Date(), patient, staffId);
+        Set<MRSObservation> eddObservations = allObservations.updateEDD(new Date(), patient, staffId, new Date());
 
         assertTrue(CollectionUtils.isNotEmpty(eddObservations));
         verify(mockMrsObservationAdapter, never()).voidObservation(Matchers.<MRSObservation>anyObject(), anyString(), eq(staffId));
@@ -108,7 +108,7 @@ public class AllObservationsTest {
         when(mockMrsObservationAdapter.findObservation(motechId, PREGNANCY.getName())).thenReturn(activePregnancy);
         when(mockMrsObservationAdapter.findObservation(motechId, EDD.getName())).thenReturn(edd);
 
-        Set<MRSObservation> eddObservations = allObservations.updateEDD(estimatedDeliveryDate, patient, staffId);
+        Set<MRSObservation> eddObservations = allObservations.updateEDD(estimatedDeliveryDate, patient, staffId, new Date());
 
         assertTrue(CollectionUtils.isEmpty(eddObservations));
         verify(mockMrsObservationAdapter, never()).findObservation(motechId, PREGNANCY.getName());
@@ -117,7 +117,7 @@ public class AllObservationsTest {
 
     @Test
     public void shouldNotRescheduleEDDIfEddIsNotModified() {
-        Set<MRSObservation> mrsObservations = allObservations.updateEDD(null, null, null);
+        Set<MRSObservation> mrsObservations = allObservations.updateEDD(null, null, null, null);
         verifyZeroInteractions(mockMrsObservationAdapter);
         assertTrue(mrsObservations.isEmpty());
     }

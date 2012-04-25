@@ -45,7 +45,7 @@ public class AllObservations {
         return null;
     }
 
-    public Set<MRSObservation> updateEDD(Date estimatedDeliveryDate, Patient patient, String staffId) {
+    public Set<MRSObservation> updateEDD(Date estimatedDeliveryDate, Patient patient, String staffId, Date observationDate) {
         HashSet<MRSObservation> observations = new HashSet<MRSObservation>();
         if (estimatedDeliveryDate == null) {
             return observations;
@@ -54,22 +54,22 @@ public class AllObservations {
         Date oldEdd = (eddObservation == null) ? null : (Date) eddObservation.getValue();
         if (oldEdd == null || !oldEdd.equals(estimatedDeliveryDate)) {
             voidObservation(eddObservation, "Replaced by new EDD value", staffId);
-            observations.add(createNewEddObservation(activePregnancyObservation(patient.getMotechId()), estimatedDeliveryDate));
+            observations.add(createNewEddObservation(activePregnancyObservation(patient.getMotechId(), observationDate), estimatedDeliveryDate, observationDate));
         }
         return observations;
     }
 
-    public MRSObservation activePregnancyObservation(String motechId) {
+    public MRSObservation activePregnancyObservation(String motechId, Date observationDate) {
         MRSObservation activePregnancyObservation = findLatestObservation(motechId, PREGNANCY.getName());
         if (activePregnancyObservation == null) {
             logger.warn("No active pregnancy found while checking for EDD. Patient ID :" + motechId);
-            activePregnancyObservation = new MRSObservation<Object>(new Date(), PREGNANCY.getName(), null);
+            activePregnancyObservation = new MRSObservation<Object>(observationDate, PREGNANCY.getName(), null);
         }
         return activePregnancyObservation;
     }
 
-    private MRSObservation createNewEddObservation(MRSObservation activePregnancyObservation, Date estDeliveryDate) {
-        activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(new Date(), EDD.getName(), estDeliveryDate));
+    private MRSObservation createNewEddObservation(MRSObservation activePregnancyObservation, Date estDeliveryDate, Date observationDate) {
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(observationDate, EDD.getName(), estDeliveryDate));
         return activePregnancyObservation;
     }
 

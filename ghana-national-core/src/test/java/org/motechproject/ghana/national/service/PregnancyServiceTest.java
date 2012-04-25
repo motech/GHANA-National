@@ -27,7 +27,6 @@ import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.joda.time.DateTime.now;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
@@ -53,7 +52,7 @@ public class PregnancyServiceTest {
     @Mock
     private SMSGateway mockSmsGateway;
     @Mock
-    private  AllObservations mockAllObservations;
+    private AllObservations mockAllObservations;
     @Mock
     private CareService mockCareService;
     @Mock
@@ -156,7 +155,7 @@ public class PregnancyServiceTest {
 
         when(mockPatient.getMRSPatientId()).thenReturn(mrsPatientId);
         when(mockPatient.getMotechId()).thenReturn(parentMotechId);
-        when(mockAllObservations.activePregnancyObservation(parentMotechId)).thenReturn(activePregnancyObservation);
+        when(mockAllObservations.activePregnancyObservation(parentMotechId, deliveryRequest.getDeliveryDateTime().toDate())).thenReturn(activePregnancyObservation);
         Patient.ancCarePrograms = schedules;
         Patient child = new Patient(childMRSPatient);
         when(mockAllPatients.save(Matchers.<Patient>any())).thenReturn(child);
@@ -175,7 +174,7 @@ public class PregnancyServiceTest {
         ArgumentCaptor<Encounter> encounterArgumentCaptor = ArgumentCaptor.forClass(Encounter.class);
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<CwcVO> cwcVOArgumentCaptor = ArgumentCaptor.forClass(CwcVO.class);
-        verify(mockAllEncounters,times(2)).persistEncounter(encounterArgumentCaptor.capture());
+        verify(mockAllEncounters, times(2)).persistEncounter(encounterArgumentCaptor.capture());
         verify(mockAllPatients).save(patientArgumentCaptor.capture());
         orderVerifyToSendSMSAtTheEnd.verify(mockCareService).enroll(cwcVOArgumentCaptor.capture());
         orderVerifyToSendSMSAtTheEnd.verify(mockCareService).enrollChildForPNCOnDelivery(child);
@@ -221,17 +220,16 @@ public class PregnancyServiceTest {
 
     @Test
     public void shouldFetchActiveEDDIfHasNoPregnancyOrNoEDDObservation() {
-
         String motechId = "motechId";
-        when(mockAllObservations.activePregnancyObservation(motechId)).thenReturn(new MRSObservation(now().toDate(), Concept.PREGNANCY.name(), "preg"));
+        when(mockAllObservations.findLatestObservation(motechId, PREGNANCY.getName())).thenReturn(new MRSObservation(DateUtil.now().toDate(), Concept.PREGNANCY.name(), "preg"));
         assertNull(pregnancyService.activePregnancyEDD(motechId));
 
         reset(mockAllObservations);
 
-        when(mockAllObservations.activePregnancyObservation(motechId)).thenReturn(null);
+        when(mockAllObservations.findLatestObservation(motechId, PREGNANCY.getName())).thenReturn(null);
         assertNull(pregnancyService.activePregnancyEDD(motechId));
     }
-       
+
     private MRSObservation mockPregnancyObservationWithEDD(Date edd) {
         MRSObservation<Concept> pregnancyObservation = new MRSObservation<Concept>(DateUtil.now().toDate(), Concept.PREGNANCY.getName(), null);
         MRSObservation eddObservation = new MRSObservation<Date>(DateUtil.now().toDate(), Concept.EDD.getName(), edd);

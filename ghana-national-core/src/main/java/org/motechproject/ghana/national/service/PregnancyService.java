@@ -59,7 +59,7 @@ public class PregnancyService {
     }
 
     public void terminatePregnancy(PregnancyTerminationRequest request) throws PatientNotFoundException {
-        allEncounters.persistEncounter(encounterFactory.createTerminationEncounter(request, allObservations.activePregnancyObservation(request.getPatient().getMotechId())));
+        allEncounters.persistEncounter(encounterFactory.createTerminationEncounter(request, allObservations.activePregnancyObservation(request.getPatient().getMotechId(), request.getTerminationDate())));
         if (request.isDead()) {
             patientService.deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
 
@@ -88,7 +88,7 @@ public class PregnancyService {
         MRSUser staff = request.getStaff();
         Patient patient = request.getPatient();
 
-        MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(patient.getMotechId());
+        MRSObservation activePregnancyObservation = allObservations.activePregnancyObservation(patient.getMotechId(), request.getDeliveryDateTime().toDate());
         allEncounters.persistEncounter(encounterFactory.createDeliveryEncounter(request, activePregnancyObservation));
         allSchedulesAndMessages.safeFulfilCurrentMilestone(patient.getMRSPatientId(), ScheduleNames.ANC_DELIVERY, request.getDeliveryDateTime().toLocalDate());
         allSchedulesAndMessages.unEnroll(patient.getMRSPatientId(), Patient.ancCarePrograms);
