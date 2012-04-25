@@ -1,15 +1,17 @@
 package org.motechproject.ghana.national.tools.seed.data.domain;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Filter {
-    private Logger LOG = Logger.getLogger(this.getClass());
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
     public List<UpcomingSchedule> filter(List<UpcomingSchedule> schedules){
-        LOG.info("Applying filter, on patient, " + schedules.get(0).getPatientId());
+        log.info("Applying filter, on patient, " + schedules.get(0).getPatientId());
         final List<UpcomingSchedule> schedulesAfterFiltering = filteringLogic(schedules);
         if(schedulesAfterFiltering.size() < schedules.size()){
             List<UpcomingSchedule> filteredSchedules = new ArrayList<UpcomingSchedule>();
@@ -17,7 +19,7 @@ public abstract class Filter {
                 if(!schedulesAfterFiltering.contains(schedule))
                     filteredSchedules.add(schedule);
             }
-            LOG.info("Filtered schedules, " + filteredSchedules);
+            log.info("Filtered schedules, " + filteredSchedules);
         }
         return schedulesAfterFiltering;
     }

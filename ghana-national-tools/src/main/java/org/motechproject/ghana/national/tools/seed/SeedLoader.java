@@ -1,14 +1,14 @@
 package org.motechproject.ghana.national.tools.seed;
 
-import org.apache.log4j.Logger;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class SeedLoader {
-    private static Logger LOG = Logger.getLogger(SeedLoader.class);
-
+    Logger LOG = LoggerFactory.getLogger(this.getClass());
     private List<Seed> seeds;
 
     public SeedLoader(List<Seed> seeds) {

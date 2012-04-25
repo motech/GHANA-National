@@ -1,14 +1,15 @@
 package org.motechproject.ghana.national.validator.field;
 
-import org.apache.log4j.Logger;
 import org.motechproject.MotechException;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FieldValidator;
 import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
 import org.openmrs.patient.UnallowedIdentifierException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MotechIdValidator implements FieldValidator<MotechId> {
-    private final static Logger log = Logger.getLogger(MotechIdValidator.class);
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public FormError validate(Object fieldValue, String fieldName, Class fieldType, MotechId annotation) {

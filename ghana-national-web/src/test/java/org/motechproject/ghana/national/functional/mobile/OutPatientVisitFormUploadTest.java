@@ -45,6 +45,7 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("newPatient", "Y");
             put("diagnosis", "64");
             put("secondDiagnosis", "78");
+            put("otherSecondaryDiagnosis", "42");
             put("rdtGiven", "Y");
             put("rdtPositive", "N");
             put("referred", "Y");
@@ -62,7 +63,7 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("NEW CASE", "true"),
                 new OpenMRSObservationVO("NEW PATIENT", "true"),
                 new OpenMRSObservationVO("PRIMARY DIAGNOSIS", "64.0"),
-                new OpenMRSObservationVO("SECONDARY DIAGNOSIS", "78.0"),
+                new OpenMRSObservationVO("SECONDARY DIAGNOSIS", "42.0"),
                 new OpenMRSObservationVO("COMMENTS", "Out Patient Visit"),
                 new OpenMRSObservationVO("SERIAL NUMBER", serialNumber),
                 new OpenMRSObservationVO("ACT TREATMENT", "true"),
@@ -97,6 +98,7 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("newPatient", "Y");
             put("diagnosis", "78");
             put("otherDiagnosis", "10");
+            put("otherSecondaryDiagnosis", "42");
             put("gender", "M");
             put("rdtGiven", "Y");
             put("rdtPositive", "Y");

@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.CareHistoryForm;
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CareHistoryFormHandler implements FormPublishHandler {
 
-    Logger log = LoggerFactory.getLogger(CareHistoryFormHandler.class);
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private CareService careService;
@@ -37,6 +38,7 @@ public class CareHistoryFormHandler implements FormPublishHandler {
             careService.addCareHistory(careHistoryForm.careHistoryVO(facilityId));
         } catch (Exception e) {
             log.error("Encountered error while saving care history details", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 }

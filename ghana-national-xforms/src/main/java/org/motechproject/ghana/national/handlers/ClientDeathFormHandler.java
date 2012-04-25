@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.ClientDeathForm;
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
@@ -37,7 +38,8 @@ public class ClientDeathFormHandler implements FormPublishHandler {
             mobileMidwifeService.unRegister(clientDeathForm.getMotechId());
         }
         catch (Exception e) {
-            log.error("Exception while terminating pregnancy");
+            log.error("Encountered error while saving a client death form", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
 
     }

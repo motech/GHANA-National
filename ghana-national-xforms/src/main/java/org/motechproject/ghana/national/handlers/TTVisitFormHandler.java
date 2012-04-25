@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.TTVisitForm;
 import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
@@ -53,6 +54,7 @@ public class TTVisitFormHandler implements FormPublishHandler {
                     staff, facility);
         }catch (Exception e){
             log.error("Encountered error while recording TT vaccination visit", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 }

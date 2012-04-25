@@ -5,6 +5,7 @@ import org.motechproject.ghana.national.domain.ChildDeliveryOutcome;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
 import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
@@ -60,6 +61,7 @@ public class DeliveryFormHandler implements FormPublishHandler {
 
         } catch (Exception e) {
             log.error("Encountered error while saving delivery form details", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 

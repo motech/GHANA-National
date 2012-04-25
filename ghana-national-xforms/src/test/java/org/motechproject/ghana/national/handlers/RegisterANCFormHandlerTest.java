@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -10,11 +11,13 @@ import org.motechproject.ghana.national.domain.ANCCareHistory;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
 import org.motechproject.ghana.national.vo.ANCVO;
+import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSFacility;
@@ -25,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
@@ -49,6 +53,17 @@ public class RegisterANCFormHandlerTest {
         ReflectionTestUtils.setField(registerAncFormHandler, "careService", careService);
         ReflectionTestUtils.setField(registerAncFormHandler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(registerAncFormHandler, "mobileMidwifeService", mockMobileMidwifeService);
+    }
+
+    @Test
+    public void shouldRethrowException() {
+        doThrow(new RuntimeException()).when(careService).enroll(Matchers.<CwcVO>any());
+        try {
+            registerAncFormHandler.handleFormEvent(new MotechEvent("subject"));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            assertThat(e.getMessage(), CoreMatchers.is("subject"));
+        }
     }
 
     @Test

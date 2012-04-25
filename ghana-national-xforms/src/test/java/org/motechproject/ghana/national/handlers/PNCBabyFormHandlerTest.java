@@ -1,12 +1,15 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.motechproject.ghana.national.bean.PNCBabyForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.ChildVisitService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -18,24 +21,47 @@ import org.motechproject.mrs.model.MRSUser;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class PNCBabyFormHandlerTest {
 
-    @Test
-    public void shouldHandlePNCBabyFormProcessing() {
-        PNCBabyFormHandler pncBabyFormHandler = new PNCBabyFormHandler();
-        FacilityService mockFacilityService = mock(FacilityService.class);
-        StaffService mockStaffService = mock(StaffService.class);
-        PatientService mockPatientService = mock(PatientService.class);
-        ChildVisitService mockChildVisitService = mock(ChildVisitService.class);
+    PNCBabyFormHandler pncBabyFormHandler;
+    FacilityService mockFacilityService;
+    StaffService mockStaffService;
+    PatientService mockPatientService;
+    ChildVisitService mockChildVisitService;
+
+    @Before
+    public void setup() {
+        pncBabyFormHandler = new PNCBabyFormHandler();
+        mockFacilityService = mock(FacilityService.class);
+        mockStaffService = mock(StaffService.class);
+        mockPatientService = mock(PatientService.class);
+        mockChildVisitService = mock(ChildVisitService.class);
 
         setField(pncBabyFormHandler, "facilityService", mockFacilityService);
         setField(pncBabyFormHandler, "staffService", mockStaffService);
         setField(pncBabyFormHandler, "patientService", mockPatientService);
         setField(pncBabyFormHandler, "childVisitService", mockChildVisitService);
+    }
 
+    @Test
+    public void shouldRethrowException() {
+        doThrow(new RuntimeException()).when(mockChildVisitService).save(Matchers.<PNCBabyRequest>any());
+        try {
+            pncBabyFormHandler.handleFormEvent(new MotechEvent("subject"));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            assertThat(e.getMessage(), is("subject"));
+        }
+    }
+
+    @Test
+    public void shouldHandlePNCBabyFormProcessing() {
         String facilityId = "motechFacilityId";
         String staffId = "staffId";
         String patientId = "patientId";

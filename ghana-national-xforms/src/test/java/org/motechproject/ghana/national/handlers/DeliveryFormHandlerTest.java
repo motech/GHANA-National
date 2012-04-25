@@ -3,9 +3,11 @@ package org.motechproject.ghana.national.handlers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.DeliveryForm;
 import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
 import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
@@ -20,9 +22,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;
 
+import static junit.framework.Assert.fail;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class DeliveryFormHandlerTest {
@@ -56,6 +60,17 @@ public class DeliveryFormHandlerTest {
         ReflectionTestUtils.setField(handler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(handler, "staffService", mockStaffService);
         ReflectionTestUtils.setField(handler, "careService", mockCareService);
+    }
+
+    @Test
+    public void shouldRethrowException() {
+        doThrow(new RuntimeException()).when(mockPregnancyService).handleDelivery(Matchers.<PregnancyDeliveryRequest>any());
+        try {
+            handler.handleFormEvent(new MotechEvent("subject"));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            assertThat(e.getMessage(), is("subject"));
+        }
     }
 
     @Test

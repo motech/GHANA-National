@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.bean.OutPatientVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.OutPatientVisit;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.OutPatientVisitService;
@@ -46,26 +47,23 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
     @Autowired
     OutPatientVisitService outPatientVisitService;
 
-
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.opvVisit")
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent motechEvent) {
-        OutPatientVisitForm formBean = null;
+    public void handleFormEvent(MotechEvent event) {
+        OutPatientVisitForm formBean;
         try {
-            formBean = (OutPatientVisitForm) motechEvent.getParameters().get(Constants.FORM_BEAN);
+            formBean = (OutPatientVisitForm) event.getParameters().get(Constants.FORM_BEAN);
             if (Boolean.TRUE.equals(formBean.isVisitor())) {
                 persist(formBean);
             } else {
                 persistInMRS(formBean);
             }
-
         } catch (Exception e) {
-            log.error("Exception occured in saving Outpatient Visit details", e);
-
+            log.error("Exception occurred in saving Outpatient Visit details", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
-
     }
 
     private void persist(OutPatientVisitForm formBean) {
@@ -96,13 +94,13 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
             observationList.add(newPatientObs);
         }
         if (formBean.getDiagnosis() != null) {
-            int obsVal = formBean.getDiagnosis() == OTHER_DIAGNOSIS ? formBean.getOtherDiagnosis() : formBean.getDiagnosis();
+            int obsVal = formBean.getDiagnosis().equals(OTHER_DIAGNOSIS) ? formBean.getOtherDiagnosis() : formBean.getDiagnosis();
             MRSObservation diagnosisObs = new MRSObservation<Integer>(formBean.getVisitDate(), PRIMARY_DIAGNOSIS.getName(), obsVal);
             observationList.add(diagnosisObs);
 
         }
         if (formBean.getSecondDiagnosis() != null) {
-            int obsVal = formBean.getSecondDiagnosis() == OTHER_DIAGNOSIS ? formBean.getOtherSecondaryDiagnosis() : formBean.getSecondDiagnosis();
+            int obsVal = formBean.getSecondDiagnosis().equals(OTHER_DIAGNOSIS) ? formBean.getOtherSecondaryDiagnosis() : formBean.getSecondDiagnosis();
             MRSObservation secondDiagnosisObs = new MRSObservation<Integer>(formBean.getVisitDate(), SECONDARY_DIAGNOSIS.getName(), obsVal);
             observationList.add(secondDiagnosisObs);
 

@@ -6,6 +6,7 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMSTemplate;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -48,7 +49,7 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
-        DeliveryNotificationForm deliveryNotificationForm = null;
+        DeliveryNotificationForm deliveryNotificationForm;
         try {
             deliveryNotificationForm = (DeliveryNotificationForm) event.getParameters().get(Constants.FORM_BEAN);
             Patient patient = patientService.getPatientByMotechId(deliveryNotificationForm.getMotechId());
@@ -59,7 +60,8 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
                     deliveryTime.toDate(), new HashSet<MRSObservation>());
             sendDeliveryNotificationMessage(deliveryNotificationForm.getMotechId(), deliveryTime);
         } catch (Exception e) {
-            log.error("Exception occured in saving Delivery Notification details for: " + deliveryNotificationForm.getMotechId(), e);
+            log.error("Exception occured in saving Delivery Notification details", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 

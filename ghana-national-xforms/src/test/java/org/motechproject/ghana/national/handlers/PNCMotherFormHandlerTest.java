@@ -1,12 +1,16 @@
 package org.motechproject.ghana.national.handlers;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.PNCMotherForm;
 import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.model.MotechEvent;
@@ -18,6 +22,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+import static junit.framework.Assert.fail;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
@@ -45,6 +50,17 @@ public class PNCMotherFormHandlerTest {
         ReflectionTestUtils.setField(pncMotherFormHandler, "facilityService", facilityService);
         ReflectionTestUtils.setField(pncMotherFormHandler, "staffService", staffService);
         ReflectionTestUtils.setField(pncMotherFormHandler, "patientService", patientService);
+    }
+
+    @Test
+    public void shouldRethrowException() {
+        doThrow(new RuntimeException()).when(motherVisitService).enrollOrFulfillPNCSchedulesForMother(Matchers.<PNCMotherRequest>any());
+        try {
+            pncMotherFormHandler.handleFormEvent(new MotechEvent("subject"));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            MatcherAssert.assertThat(e.getMessage(), CoreMatchers.is("subject"));
+        }
     }
 
     @Test

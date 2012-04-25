@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.bean.RegisterCWCForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
@@ -39,7 +40,6 @@ public class RegisterCWCFormHandler implements FormPublishHandler {
         RegisterCWCForm registerCWCForm = null;
         try {
             registerCWCForm = (RegisterCWCForm) event.getParameters().get(Constants.FORM_BEAN);
-
             Facility facility = facilityService.getFacilityByMotechId(registerCWCForm.getFacilityId());
 
             careService.enroll(new CwcVO(registerCWCForm.getStaffId(),
@@ -67,7 +67,8 @@ public class RegisterCWCFormHandler implements FormPublishHandler {
                 mobileMidwifeService.unRegister(registerCWCForm.getMotechId());
             }
         } catch (Exception e) {
-            log.error("Exception occured in saving CWC Registration details for: " + registerCWCForm.getMotechId(), e);
+            log.error("Exception occured in saving CWC Registration details", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 }

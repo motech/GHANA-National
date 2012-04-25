@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -27,12 +28,13 @@ import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.EncounterType.PREG_DEL_NOTIFY_VISIT;
@@ -63,6 +65,17 @@ public class DeliveryNotificationFormHandlerTest {
         ReflectionTestUtils.setField(deliveryNotificationFormHandler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(deliveryNotificationFormHandler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(deliveryNotificationFormHandler, "smsGateway", mockSMSGateway);
+    }
+
+    @Test
+    public void shouldRethrowException() {
+        doThrow(new RuntimeException()).when(mockPatientService).getPatientByMotechId(anyString());
+        try {
+            deliveryNotificationFormHandler.handleFormEvent(new MotechEvent("subject"));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            assertThat(e.getMessage(), is("subject"));
+        }
     }
 
     @Test

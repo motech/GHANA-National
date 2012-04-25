@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.handlers;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -83,12 +84,12 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             registerForANC(registerClientForm, facilityId, savedPatient.getMotechId());
 
             if (registerClientForm.getSender() != null) {
-
                 smsGateway.dispatchSMS(REGISTER_SUCCESS_SMS_KEY,
                         new SMSTemplate().fillPatientDetails(savedPatient).getRuntimeVariables(), registerClientForm.getSender());
             }
         } catch (Exception e) {
             log.error("Exception while saving patient", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 

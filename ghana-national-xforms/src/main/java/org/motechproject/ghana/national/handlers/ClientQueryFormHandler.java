@@ -6,6 +6,7 @@ import org.motechproject.ghana.national.domain.ClientQueryType;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMSTemplate;
 import org.motechproject.ghana.national.domain.sms.UpcomingCareSMS;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.messagegateway.domain.MessageDispatcher;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
 import org.motechproject.ghana.national.repository.AllAppointments;
@@ -21,6 +22,8 @@ import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,20 +51,25 @@ public class ClientQueryFormHandler implements FormPublishHandler {
     private AllSchedules allSchedules;
     @Autowired
     private AllAppointments allAppointments;
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseQuery.clientQuery")
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
-        ClientQueryForm clientQueryForm = (ClientQueryForm) event.getParameters().get(FORM_BEAN);
-
-        if (clientQueryForm.getQueryType().equals(ClientQueryType.CLIENT_DETAILS.toString())) {
-            getPatientDetails(clientQueryForm);
-        } else if (clientQueryForm.getQueryType().equals(ClientQueryType.FIND_CLIENT_ID.toString())) {
-            searchPatient(clientQueryForm);
-        } else if (clientQueryForm.getQueryType().equals(ClientQueryType.UPCOMING_CARE.toString())) {
-            queryUpcomingCareAndVisits(clientQueryForm);
+        try {
+            ClientQueryForm clientQueryForm = (ClientQueryForm) event.getParameters().get(FORM_BEAN);
+            if (clientQueryForm.getQueryType().equals(ClientQueryType.CLIENT_DETAILS.toString())) {
+                getPatientDetails(clientQueryForm);
+            } else if (clientQueryForm.getQueryType().equals(ClientQueryType.FIND_CLIENT_ID.toString())) {
+                searchPatient(clientQueryForm);
+            } else if (clientQueryForm.getQueryType().equals(ClientQueryType.UPCOMING_CARE.toString())) {
+                queryUpcomingCareAndVisits(clientQueryForm);
+            }
+        } catch (Exception e) {
+            log.warn("Encountered error in client query form", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 

@@ -6,8 +6,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ClientQueryForm;
 import org.motechproject.ghana.national.domain.ClientQueryType;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.repository.AllAppointments;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.repository.SMSGateway;
@@ -27,11 +29,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static junit.framework.Assert.fail;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.Constants.*;
@@ -62,6 +66,21 @@ public class ClientQueryFormHandlerTest {
         setField(clientQueryFormHandler, "smsGateway", mockSmsGateway);
         setField(clientQueryFormHandler, "allSchedules", mockAllSchedules);
         setField(clientQueryFormHandler, "allAppointments", mockAllAppointments);
+    }
+
+    @Test
+    public void shouldRethrowException() {
+        doThrow(new RuntimeException()).when(mockPatientService).getPatientByMotechId(anyString());
+        try {
+            clientQueryFormHandler.handleFormEvent(new MotechEvent("subject", new HashMap<String, Object>() {{
+                ClientQueryForm clientQueryForm = new ClientQueryForm();
+                clientQueryForm.setQueryType(ClientQueryType.CLIENT_DETAILS.toString());
+                put(Constants.FORM_BEAN, clientQueryForm);
+            }}));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            assertThat(e.getMessage(), is("subject"));
+        }
     }
 
     @Test
@@ -164,7 +183,7 @@ public class ClientQueryFormHandlerTest {
 
         Map<String, Object> params = createMotechEventWithForm(facilityId, motechId, staffId, responsePhoneNumber, ClientQueryType.UPCOMING_CARE.toString());
 
-        final Patient patient = new Patient(new MRSPatient(mrsPatientId,motechId, new MRSPerson().dateOfBirth(today().toDate()), null));
+        final Patient patient = new Patient(new MRSPatient(mrsPatientId, motechId, new MRSPerson().dateOfBirth(today().toDate()), null));
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
         when(mockSmsGateway.getSMSTemplate(anyString())).thenReturn("some template");
 

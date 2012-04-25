@@ -4,7 +4,7 @@ import org.motechproject.ghana.national.bean.EditClientForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
-import org.motechproject.ghana.national.exception.ParentNotFoundException;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
@@ -40,23 +40,21 @@ public class EditPatientFormHandler implements FormPublishHandler {
     @Autowired
     private FacilityService facilityService;
 
-
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.editPatient")
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
-
         EditClientForm form = (EditClientForm) event.getParameters().get(Constants.FORM_BEAN);
-
         try {
-            updatePatient(form);
+            patientService.updatePatient(preparePatient(form), form.getStaffId());
         } catch (Exception e) {
             log.error("Encountered exception while updating patient", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 
-    private MRSPatient updatePatient(EditClientForm form) throws ParentNotFoundException {
+    private Patient preparePatient(EditClientForm form) {
         String motechId = form.getMotechId();
         Patient existingPatient = patientService.getPatientByMotechId(motechId);
 
@@ -86,10 +84,7 @@ public class EditPatientFormHandler implements FormPublishHandler {
         }
 
         person.birthDateEstimated(personFromDb.getBirthDateEstimated());
-
-        Patient patient = new Patient(new MRSPatient(motechId, person, new MRSFacility(facilityId)), form.getMotherMotechId());
-        patientService.updatePatient(patient,form.getStaffId());
-        return patientFromDb;
+        return new Patient(new MRSPatient(motechId, person, new MRSFacility(facilityId)), form.getMotherMotechId());
     }
 
     private Attribute replaceValueFromDbIfNotProvided(String attributeName, String attributeValue, List<Attribute> attributesFromDb) {

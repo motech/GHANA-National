@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.repository;
 
 import ch.lambdaj.function.convert.Converter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.mrs.exception.PatientNotFoundException;
@@ -12,6 +11,8 @@ import org.motechproject.mrs.services.MRSPatientAdapter;
 import org.motechproject.openmrs.services.OpenMRSRelationshipAdapter;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -24,7 +25,8 @@ import static ch.lambdaj.Lambda.convert;
 public class AllPatients {
     @Autowired
     private MRSPatientAdapter patientAdapter;
-    Logger logger = Logger.getLogger(AllPatients.class);
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     @Autowired
     private OpenMRSRelationshipAdapter openMRSRelationshipAdapter;

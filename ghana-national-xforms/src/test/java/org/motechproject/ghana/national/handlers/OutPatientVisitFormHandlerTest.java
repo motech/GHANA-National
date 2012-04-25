@@ -1,12 +1,14 @@
 package org.motechproject.ghana.national.handlers;
 
 
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.OutPatientVisitForm;
 import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.OutPatientVisitService;
@@ -24,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
@@ -60,6 +63,16 @@ public class OutPatientVisitFormHandlerTest {
         ReflectionTestUtils.setField(handler, "outPatientVisitService", mockOutPatientVisitService);
     }
 
+    @Test
+    public void shouldRethrowException() {
+        doThrow(new RuntimeException()).when(mockMRSPatientAdapter).getPatientByMotechId(anyString());
+        try {
+            handler.handleFormEvent(new MotechEvent("subject"));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            MatcherAssert.assertThat(e.getMessage(), is("subject"));
+        }
+    }
     @Test
     public void shouldPersistEncounterIfPatientIsNotAVisitor() {
 

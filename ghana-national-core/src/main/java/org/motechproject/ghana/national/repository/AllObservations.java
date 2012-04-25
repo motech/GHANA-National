@@ -2,11 +2,12 @@ package org.motechproject.ghana.national.repository;
 
 import ch.lambdaj.Lambda;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.log4j.Logger;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.services.MRSObservationAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +26,7 @@ public class AllObservations {
     @Autowired
     MRSObservationAdapter mrsObservationAdapter;
 
-    Logger logger = Logger.getLogger(AllObservations.class);
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public MRSObservation findObservation(String patientMotechId, String conceptName) {
         return mrsObservationAdapter.findObservation(patientMotechId, conceptName);

@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.bean.PNCBabyForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.mapper.PNCBabyRequestMapper;
 import org.motechproject.ghana.national.service.ChildVisitService;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -42,13 +43,14 @@ public class PNCBabyFormHandler implements FormPublishHandler {
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.pncBabyRequest")
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent motechEvent) {
-        PNCBabyForm pncBabyForm = (PNCBabyForm) motechEvent.getParameters().get(Constants.FORM_BEAN);
+    public void handleFormEvent(MotechEvent event) {
+        PNCBabyForm pncBabyForm = (PNCBabyForm) event.getParameters().get(Constants.FORM_BEAN);
         try {
             PNCBabyRequest pncBabyRequest = createRequest(pncBabyForm);
             childVisitService.save(pncBabyRequest);
         } catch (Exception e) {
-            log.error("Exception occured in saving PNC Mother details for: " + pncBabyForm.getMotechId(), e);
+            log.error("Exception occured in saving PNC Mother details", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 

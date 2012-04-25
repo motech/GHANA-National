@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.bean.PregnancyTerminationForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
@@ -37,13 +38,14 @@ public class PregnancyTerminationFormHandler implements FormPublishHandler {
     @MotechListener(subjects = {"form.validation.successful.NurseDataEntry.PregnancyTermination"})
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent motechEvent) {
+    public void handleFormEvent(MotechEvent event) {
         try {
-        PregnancyTerminationForm formBean = (PregnancyTerminationForm) motechEvent.getParameters().get(Constants.FORM_BEAN);
+        PregnancyTerminationForm formBean = (PregnancyTerminationForm) event.getParameters().get(Constants.FORM_BEAN);
         pregnancyService.terminatePregnancy(createPregnancyTerminationVisit(formBean));
         }
         catch (Exception e) {
             log.error("Exception while terminating pregnancy");
+            throw new XFormHandlerException(event.getSubject(), e);
         }
 
     }

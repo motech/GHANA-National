@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.bean.RegisterANCForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
@@ -56,6 +57,7 @@ public class RegisterANCFormHandler implements FormPublishHandler {
             }
         } catch (Exception e) {
             log.error("Exception while creating an ANC encounter", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 }

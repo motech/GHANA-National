@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.functional.util;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.motechproject.MotechException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -15,7 +14,6 @@ import java.lang.reflect.Method;
 @Component
 public class ScreenShotCaptor {
     private static ThreadLocal<String> testIdentification = new ThreadLocal<String>();
-    private Logger logger = Logger.getLogger(this.getClass());
 
     public static void setupFor(Method method) {
         testIdentification.set(String.format("%s_%s", method.getDeclaringClass().getSimpleName(), method.getName()));

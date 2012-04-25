@@ -5,6 +5,7 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.TTVaccine;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.mapper.PNCMotherRequestMapper;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
@@ -38,8 +39,8 @@ public class PNCMotherFormHandler implements FormPublishHandler {
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.pncMotherRequest")
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent motechEvent) {
-        PNCMotherForm pncMotherForm = (PNCMotherForm) motechEvent.getParameters().get(Constants.FORM_BEAN);
+    public void handleFormEvent(MotechEvent event) {
+        PNCMotherForm pncMotherForm = (PNCMotherForm) event.getParameters().get(Constants.FORM_BEAN);
         try {
             PNCMotherRequest pncMotherRequest = createRequest(pncMotherForm);
             TTVaccine ttVaccine = TTVaccine.createFromPncMotherRequest(pncMotherRequest);
@@ -48,7 +49,8 @@ public class PNCMotherFormHandler implements FormPublishHandler {
             }
             motherVisitService.enrollOrFulfillPNCSchedulesForMother(createRequest(pncMotherForm));
         } catch (Exception e) {
-            log.error("Exception occured in saving PNC Mother details for: " + pncMotherForm.getMotechId(), e);
+            log.error("Exception occured in saving PNC Mother details", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 

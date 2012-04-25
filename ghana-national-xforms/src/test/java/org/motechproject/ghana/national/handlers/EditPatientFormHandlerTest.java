@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.handlers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.EditClientForm;
 import org.motechproject.ghana.national.domain.Constants;
@@ -12,6 +13,7 @@ import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
@@ -24,6 +26,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static ch.lambdaj.Lambda.*;
+import static junit.framework.Assert.fail;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -45,6 +49,17 @@ public class EditPatientFormHandlerTest {
         editPatientFormHandler = new EditPatientFormHandler();
         ReflectionTestUtils.setField(editPatientFormHandler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(editPatientFormHandler, "facilityService", mockFacilityService);
+    }
+
+    @Test
+    public void shouldRethrowException() {
+        doThrow(new RuntimeException()).when(mockPatientService).updatePatient(Matchers.<Patient>any(), anyString());
+        try {
+            editPatientFormHandler.handleFormEvent(new MotechEvent("subject"));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            assertThat(e.getMessage(), is("subject"));
+        }
     }
 
     @Test
@@ -123,7 +138,7 @@ public class EditPatientFormHandlerTest {
                               String patientId, String nhisNumber, String sex, String phoneNumber, MotechEvent event, MRSFacility mrsFacilityWherePatientWasEdited, MRSPatient mrsPatient, MRSUser mrsUser) throws ParentNotFoundException {
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<String> staffIdCaptor = ArgumentCaptor.forClass(String.class);
-        doReturn(patientId).when(mockPatientService).updatePatient(patientArgumentCaptor.capture(),staffIdCaptor.capture());
+        doReturn(patientId).when(mockPatientService).updatePatient(patientArgumentCaptor.capture(), staffIdCaptor.capture());
 
         editPatientFormHandler.handleFormEvent(event);
 

@@ -3,10 +3,12 @@ package org.motechproject.ghana.national.handlers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.CWCVisitForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.ChildVisitService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -23,6 +25,11 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -31,7 +38,7 @@ public class CWCVisitFormHandlerTest {
 
     private CWCVisitFormHandler handler;
     @Mock
-    private ChildVisitService childVisitService;
+    private ChildVisitService mockChildVisitService;
     @Mock
     private FacilityService mockFacilityService;
     @Mock
@@ -43,10 +50,21 @@ public class CWCVisitFormHandlerTest {
     public void setUp() {
         initMocks(this);
         handler = new CWCVisitFormHandler();
-        ReflectionTestUtils.setField(handler, "childVisitService", childVisitService);
+        ReflectionTestUtils.setField(handler, "childVisitService", mockChildVisitService);
         ReflectionTestUtils.setField(handler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(handler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(handler, "staffService", mockStaffService);
+    }
+
+    @Test
+    public void shouldRethrowException() {
+        doThrow(new RuntimeException()).when(mockChildVisitService).save(Matchers.<CWCVisit>any());
+        try {
+            handler.handleFormEvent(new MotechEvent("subject"));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            assertThat(e.getMessage(), is("subject"));
+        }
     }
 
     @Test
@@ -88,7 +106,7 @@ public class CWCVisitFormHandlerTest {
         handler.handleFormEvent(motechEvent);
 
         ArgumentCaptor<CWCVisit> captor = ArgumentCaptor.forClass(CWCVisit.class);
-        verify(childVisitService).save(captor.capture());
+        verify(mockChildVisitService).save(captor.capture());
         CWCVisit actualCWCVisit = captor.getValue();
         assertEquals(cwcVisitForm.getStaffId(), actualCWCVisit.getStaff().getId());
         assertEquals(cwcVisitForm.getFacilityId(), actualCWCVisit.getFacility().motechId());

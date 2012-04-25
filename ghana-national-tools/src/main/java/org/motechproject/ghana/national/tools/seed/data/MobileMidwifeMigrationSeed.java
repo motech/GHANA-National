@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
@@ -9,6 +8,8 @@ import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.motechproject.ghana.national.tools.seed.data.source.MobileMidwifeSource;
 import org.motechproject.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +19,7 @@ import java.util.*;
 
 @Component
 public class MobileMidwifeMigrationSeed extends Seed {
-
-    private static Logger LOG = Logger.getLogger(MobileMidwifeMigrationSeed.class);
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     MobileMidwifeSource mobileMidwifeSource;
@@ -52,7 +52,7 @@ public class MobileMidwifeMigrationSeed extends Seed {
             try {
                 addMobileMidwifeEnrollmentDataToDB(mobileMidwifeEnrollment, enrollments);
             } catch (ParseException e) {
-                LOG.info("Exception occured while adding data to DB");
+                log.info("Exception occured while adding data to DB");
             }
         }
     }
@@ -77,11 +77,11 @@ public class MobileMidwifeMigrationSeed extends Seed {
                     setStaffId(mobileMidwifeEnrollment, map);
                     allMobileMidwifeEnrollments.add(mobileMidwifeEnrollment);
                     mobileMidwifeService.startMobileMidwifeCampaign(mobileMidwifeEnrollment);
-                    LOG.info("Migrated MobileMidwifeEnrollment for : " + mobileMidwifeEnrollment.getPatientId() + " in facility " + mobileMidwifeEnrollment.getFacilityId() + " under " + mobileMidwifeEnrollment.getServiceType().getDisplayName() + " campaign");
+                    log.info("Migrated MobileMidwifeEnrollment for : " + mobileMidwifeEnrollment.getPatientId() + " in facility " + mobileMidwifeEnrollment.getFacilityId() + " under " + mobileMidwifeEnrollment.getServiceType().getDisplayName() + " campaign");
                 }
             }
             else {
-                LOG.info("No schedule to migrate for "+patientMotechId);
+                log.info("No schedule to migrate for " + patientMotechId);
             }
         }
     }
@@ -172,7 +172,7 @@ public class MobileMidwifeMigrationSeed extends Seed {
 
             String patientMotechId = mobileMidwifeSource.getPatientMotechId(patientId);
             if (patientMotechId == null) {
-                LOG.info("Patient does not have a MotechId: " + patientId);
+                log.info("Patient does not have a MotechId: " + patientId);
                 continue;  //patient has no motech id
             }
             newHashMap.put("patient_motech_id", patientMotechId);

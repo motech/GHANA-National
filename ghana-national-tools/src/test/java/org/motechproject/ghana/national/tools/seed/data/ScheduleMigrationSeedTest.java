@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +19,7 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -91,10 +91,10 @@ public class ScheduleMigrationSeedTest {
         String patientId = "10000";
         List<UpcomingSchedule> upcomingSchedulesFromDb = Arrays.asList(newUpcomingSchedule(patientId, "2012-9-22 10:30:00.0", "TT3").build(),
                 newUpcomingSchedule(patientId, "2012-2-29 10:30:00.0", "TT2").build());
-        TTVaccineSeed.LOG = mock(Logger.class);
+        ttVaccineSeed.LOG = mock(Logger.class);
 
         ttVaccineSeed.migrate(upcomingSchedulesFromDb);
-        verify(TTVaccineSeed.LOG).error("Patient, " + patientId + " has more than one active schedule");
+        verify(ttVaccineSeed.LOG).error("Patient, " + patientId + " has more than one active schedule");
     }
 
     @Test
@@ -102,14 +102,14 @@ public class ScheduleMigrationSeedTest {
         String patientId = "10000";
         List<UpcomingSchedule> upcomingSchedulesFromDb = Arrays.asList(newUpcomingSchedule(patientId, "2012-9-22 10:30:00.0", "PNC1").build(),
                 newUpcomingSchedule(patientId, "2012-2-29 10:30:00.0", "PNC2").build());
-        PNCMotherVaccineSeed.LOG = mock(Logger.class);
 
         final PNCMotherVaccineSeed pncMotherVaccineSeed = new PNCMotherVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allSchedules);
+        pncMotherVaccineSeed.LOG = mock(Logger.class);
         pncMotherVaccineSeed.filters = new ArrayList<Filter>();
         pncMotherVaccineSeed.migrate(upcomingSchedulesFromDb);
 
         verify(allSchedules, times(2)).enroll(Matchers.<EnrollmentRequest>any());
-        verify(PNCMotherVaccineSeed.LOG, never()).error(anyString());
+        verify(pncMotherVaccineSeed.LOG, never()).error(anyString());
     }
 
     @Test

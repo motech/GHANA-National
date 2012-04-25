@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.bean.CWCVisitForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.ChildVisitService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -26,7 +27,6 @@ public class CWCVisitFormHandler implements FormPublishHandler {
 
     @Autowired
     ChildVisitService childVisitService;
-
     @Autowired
     FacilityService facilityService;
     @Autowired
@@ -44,6 +44,7 @@ public class CWCVisitFormHandler implements FormPublishHandler {
             childVisitService.save(cwcVisitFor(form));
         } catch (Exception e) {
             log.error("Encountered error while saving CWC visit details", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 

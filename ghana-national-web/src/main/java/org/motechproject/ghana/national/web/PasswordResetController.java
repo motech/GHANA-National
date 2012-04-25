@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.web;
 
-import org.apache.log4j.Logger;
 import org.motechproject.ghana.national.web.form.PasswordResetForm;
 import org.motechproject.ghana.national.web.security.LoginSuccessHandler;
 import org.motechproject.mrs.exception.MRSException;
@@ -21,8 +20,6 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping(value = "/security/password/reset")
 public class PasswordResetController {
-    private Logger log = Logger.getLogger("PasswordResetController");
-
     @Autowired
     private MRSUserAdapter mrsUserAdapter;
 

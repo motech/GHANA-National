@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -10,6 +11,7 @@ import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
@@ -26,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
@@ -52,6 +55,16 @@ public class RegisterCWCFormHandlerTest {
         ReflectionTestUtils.setField(formHandlerRegister, "mobileMidwifeService", mobileMidwifeService);
     }
 
+    @Test
+    public void shouldRethrowException() {
+        doThrow(new RuntimeException()).when(careService).enroll(Matchers.<CwcVO>any());
+        try {
+            formHandlerRegister.handleFormEvent(new MotechEvent("subject"));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            assertThat(e.getMessage(), CoreMatchers.is("subject"));
+        }
+    }
 
     @Test
     public void shouldSaveCWCEnrollmentForm() {

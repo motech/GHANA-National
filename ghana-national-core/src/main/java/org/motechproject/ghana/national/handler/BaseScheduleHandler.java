@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.handler;
 
-import org.apache.log4j.Logger;
 import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllObservations;
@@ -12,6 +11,8 @@ import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,7 @@ public abstract class BaseScheduleHandler {
     protected SMSGateway smsGateway;
     protected FacilityService facilityService;
     protected AllObservations allObservations;
-    private Logger logger = Logger.getLogger(this.getClass());
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     protected BaseScheduleHandler() {
     }

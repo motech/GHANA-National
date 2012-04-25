@@ -3,10 +3,12 @@ package org.motechproject.ghana.national.handlers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.MotechException;
 import org.motechproject.ghana.national.bean.CareHistoryForm;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.vo.CareHistoryVO;
@@ -19,6 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,6 +46,17 @@ public class CareHistoryFormHandlerTest {
     }
 
     @Test
+    public void shouldRethrowException() throws ObservationNotFoundException {
+        doThrow(new RuntimeException()).when(mockCareService).addCareHistory(Matchers.<CareHistoryVO>any());
+        try {
+            careHistoryFormHandler.handleFormEvent(new MotechEvent("subject"));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            assertThat(e.getMessage(), is("subject"));
+        }
+    }
+
+    @Test
     public void shouldCreateEncounterAndObservationsForCareHistory() throws ObservationNotFoundException {
         String facilityMotechId = "facility motech Id";
         String facilityId = "facility id";
@@ -50,8 +64,9 @@ public class CareHistoryFormHandlerTest {
         Facility facility = new Facility().mrsFacilityId(facilityId);
         when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(facility);
 
-        Map<String, Object> parameter = new HashMap<String, Object>(){{
-            put("formBean", careHistoryForm);}};
+        Map<String, Object> parameter = new HashMap<String, Object>() {{
+            put("formBean", careHistoryForm);
+        }};
         MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.careHistory", parameter);
         careHistoryFormHandler.handleFormEvent(event);
 
@@ -62,11 +77,17 @@ public class CareHistoryFormHandlerTest {
     }
 
     @Test
-    public void shouldLogErrorIncaseOfErrorWhileProcessing(){
+    public void shouldLogErrorIncaseOfErrorWhileProcessing() {
         careHistoryFormHandler.log = mock(Logger.class);
         MotechException mockError = mock(MotechException.class);
         when(mockFacilityService.getFacilityByMotechId(anyString())).thenThrow(mockError);
-        careHistoryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseDataEntry.careHistory", new HashMap<String, Object>(){{put("formBean", new CareHistoryForm());}}));
+        try {
+        careHistoryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseDataEntry.careHistory", new HashMap<String, Object>() {{
+            put("formBean", new CareHistoryForm());
+        }}));
+        } catch (XFormHandlerException e) {
+            //expected
+        }
         verify(careHistoryFormHandler.log).error("Encountered error while saving care history details", mockError);
     }
 

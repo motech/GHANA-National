@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.handlers;
 import org.motechproject.ghana.national.bean.ANCVisitForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MotherVisitService;
@@ -49,6 +50,7 @@ public class ANCVisitFormHandler implements FormPublishHandler {
             visitService.registerANCVisit(ancVisit);
         } catch (Exception e) {
             log.error("Encountered error while saving ANC visit details", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 

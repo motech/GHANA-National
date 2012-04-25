@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
 import ch.lambdaj.group.Group;
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.motechproject.MotechException;
@@ -22,6 +21,8 @@ import org.motechproject.scheduletracking.api.domain.Schedule;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +38,8 @@ public abstract class ScheduleMigrationSeed extends Seed {
     protected OldGhanaScheduleSource oldGhanaScheduleSource;
     List<Filter> filters = Arrays.asList(new DuplicateScheduleFilter(), new ScheduleExpiryBasedOnThirdLateAlertFilter());
 
-    static Logger LOG = Logger.getLogger(ScheduleMigrationSeed.class);
+    Logger LOG = LoggerFactory.getLogger(this.getClass());
+
     protected AllSchedules allSchedules;
     private Boolean hasIndependentMilestones;
 

@@ -3,9 +3,11 @@ package org.motechproject.ghana.national.handlers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.TTVisitForm;
 import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
@@ -20,6 +22,7 @@ import org.motechproject.util.DateUtil;
 import java.util.Date;
 import java.util.HashMap;
 
+import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,6 +46,17 @@ public class TTVisitFormHandlerTest {
     public void setUp() throws Exception {
         initMocks(this);
         ttVisitFormHandler = new TTVisitFormHandler(ttVaccinationService, patientService, facilityService, staffService);
+    }
+
+    @Test
+    public void shouldRethrowException() {
+        doThrow(new RuntimeException()).when(ttVaccinationService).receivedTT(Matchers.<TTVaccine>any(), Matchers.<MRSUser>any(), Matchers.<Facility>any());
+        try {
+            ttVisitFormHandler.handleFormEvent(new MotechEvent("subject"));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            assertThat(e.getMessage(), is("subject"));
+        }
     }
 
     @Test

@@ -2,12 +2,17 @@ package org.motechproject.ghana.national.handlers;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.PregnancyTerminationForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.service.*;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.PregnancyService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.exception.PatientNotFoundException;
@@ -19,6 +24,9 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -26,8 +34,6 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 
 public class PregnancyTerminationFormHandlerTest {
     private PregnancyTerminationFormHandler pregnancyTerminationFormHandler;
-
-
     @Mock
     PregnancyService mockPregnancyService;
 
@@ -48,6 +54,17 @@ public class PregnancyTerminationFormHandlerTest {
         ReflectionTestUtils.setField(pregnancyTerminationFormHandler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(pregnancyTerminationFormHandler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(pregnancyTerminationFormHandler, "staffService", mockStaffService);
+    }
+
+    @Test
+    public void shouldRethrowException() throws PatientNotFoundException {
+        doThrow(new RuntimeException()).when(mockPregnancyService).terminatePregnancy(Matchers.<PregnancyTerminationRequest>any());
+        try {
+            pregnancyTerminationFormHandler.handleFormEvent(new MotechEvent("subject"));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            assertThat(e.getMessage(), is("subject"));
+        }
     }
 
     @Test

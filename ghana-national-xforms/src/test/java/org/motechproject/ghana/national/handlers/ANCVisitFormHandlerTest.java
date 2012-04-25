@@ -3,10 +3,12 @@ package org.motechproject.ghana.national.handlers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ANCVisitForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MotherVisitService;
@@ -25,8 +27,10 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static junit.framework.Assert.fail;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ANCVisitFormHandlerTest {
@@ -53,6 +57,17 @@ public class ANCVisitFormHandlerTest {
         ReflectionTestUtils.setField(handler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(handler, "staffService", mockStaffService);
         ReflectionTestUtils.setField(handler, "allSchedules", mockAllSchedules);
+    }
+
+    @Test
+    public void shouldRethrowException() throws ObservationNotFoundException {
+        doThrow(new RuntimeException()).when(mockMotherVisitService).registerANCVisit(Matchers.<ANCVisitRequest>any());
+        try {
+            handler.handleFormEvent(new MotechEvent("subject"));
+            fail("Should handle exception");
+        } catch (XFormHandlerException e) {
+            assertThat(e.getMessage(), is("subject"));
+        }
     }
 
     @Test
@@ -96,7 +111,6 @@ public class ANCVisitFormHandlerTest {
         ancVisitForm.setReferred("referred");
         ancVisitForm.setMaleInvolved(false);
         ancVisitForm.setNextANCDate(new Date(2012, 2, 20));
-
 
         MotechEvent motechEvent = new MotechEvent("form.validation.successful.NurseDataEntry.ancVisit", new HashMap<String, Object>() {{
             put("formBean", ancVisitForm);

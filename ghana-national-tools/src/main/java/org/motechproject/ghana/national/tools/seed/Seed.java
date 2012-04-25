@@ -1,9 +1,9 @@
 package org.motechproject.ghana.national.tools.seed;
 
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class Seed {
-    Logger LOG = Logger.getLogger(this.getClass());
+    org.slf4j.Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     public void run() {
         preLoad();

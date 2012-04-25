@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.handlers;
 import org.motechproject.ghana.national.bean.MobileMidwifeForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.RegisterClientAction;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
@@ -36,6 +37,7 @@ public class MobileMidwifeFormHandler implements FormPublishHandler {
             mobileMidwifeService.register(mobileMidwifeForm.createMobileMidwifeEnrollment());
         } catch (Exception e) {
             log.error("Exception occured in registering Mobile Midwife ", e);
+            throw new XFormHandlerException(event.getSubject(), e);
         }
     }
 }
