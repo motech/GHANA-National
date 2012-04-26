@@ -23,6 +23,18 @@ public class ActiveCareSchedules {
         return allActiveCareSchedules.get(ANC_IPT_VACCINE) != null;
     }
 
+    public Boolean hasActivePentaSchedule() {
+        return allActiveCareSchedules.get(CWC_PENTA) != null;
+    }
+
+    public Boolean hasActiveIPTiSchedule() {
+        return allActiveCareSchedules.get(CWC_IPT_VACCINE) != null;
+    }
+
+    public Boolean hasActiveOPVSchedule() {
+        return allActiveCareSchedules.get(CWC_OPV_OTHERS) != null;
+    }
+
     public ActiveCareSchedules setActiveCareSchedule(String careScheduleName, EnrollmentRecord enrollmentRecord) {
         allActiveCareSchedules.put(careScheduleName, enrollmentRecord);
         return this;
@@ -42,17 +54,5 @@ public class ActiveCareSchedules {
     @Override
     public int hashCode() {
         return allActiveCareSchedules != null ? allActiveCareSchedules.hashCode() : 0;
-    }
-
-    public Boolean hasActivePentaSchedule() {
-        return allActiveCareSchedules.get(CWC_PENTA) != null;
-    }
-
-    public Boolean hasActiveIPTiSchedule() {
-        return allActiveCareSchedules.get(CWC_IPT_VACCINE) != null;
-    }
-
-    public Boolean hasActiveOPVSchedule() {
-        return allActiveCareSchedules.get(CWC_OPV_OTHERS) != null;
     }
 }

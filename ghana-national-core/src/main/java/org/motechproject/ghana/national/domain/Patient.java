@@ -98,13 +98,15 @@ public class Patient {
         return nullSafeList(
                 bcgChildCare(enrollmentDate, referenceDate, historiesCaptured),
                 yfChildCare(enrollmentDate, referenceDate, historiesCaptured),
+                measlesChildCare(enrollmentDate, historiesCaptured),
                 opv0ChildCare(enrollmentDate, referenceDate,cwcCareHistoryVO),
                 opv1ChildCare(enrollmentDate, referenceDate, historiesCaptured, activeCareSchedules, cwcCareHistoryVO),
                 new PentaVaccineCare(this, enrollmentDate, activeCareSchedules.hasActivePentaSchedule(),
                         safeToString(cwcCareHistoryVO.getLastPenta()), cwcCareHistoryVO.getLastPentaDate()).careForReg(),
                 new IPTiVaccineCare(this, enrollmentDate, activeCareSchedules.hasActiveIPTiSchedule(),
-                        safeToString(cwcCareHistoryVO.getLastIPTi()), cwcCareHistoryVO.getLastIPTiDate()).careForReg(),
-                measlesChildCare(enrollmentDate, historiesCaptured));
+                        safeToString(cwcCareHistoryVO.getLastIPTi()), cwcCareHistoryVO.getLastIPTiDate()).careForReg()
+        );
+
     }
 
     private PatientCare opv0ChildCare(LocalDate enrollmentDate, LocalDate referenceDate, CWCCareHistoryVO cwcCareHistoryVO) {
@@ -119,7 +121,7 @@ public class Patient {
     
     private PatientCare opv1ChildCare(LocalDate enrollmentDate, LocalDate referenceDate, List<CwcCareHistory> cwcCareHistories, ActiveCareSchedules activeCareSchedules, CWCCareHistoryVO cwcCareHistoryVO) {
         if(cwcCareHistories.contains(CwcCareHistory.OPV))
-            return new OPVVaccineCare(this,enrollmentDate,activeCareSchedules.hasActiveOPVSchedule(),safeToString(cwcCareHistoryVO.getLastOPV()),cwcCareHistoryVO.getLastOPVDate(),CWC_OPV_OTHERS).careForHistory();
+            return new OPVVaccineCare(this,enrollmentDate,activeCareSchedules.hasActiveOPVSchedule(),safeToString(cwcCareHistoryVO.getLastOPV()),cwcCareHistoryVO.getLastOPVDate(),CWC_OPV_OTHERS).careForReg();
         else
             return new PatientCare(CWC_OPV_OTHERS, referenceDate, enrollmentDate, null, facilityMetaData());
     }
