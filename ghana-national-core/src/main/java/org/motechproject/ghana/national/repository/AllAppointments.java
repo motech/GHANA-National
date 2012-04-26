@@ -31,6 +31,7 @@ public class AllAppointments {
         appointmentService.removeCalendar(patient.getMotechId());
     }
 
+    @SuppressWarnings("unchecked")
     public void updateANCVisitSchedule(Patient patient, DateTime nextVisitDate) {
         CreateVisitRequest createVisitRequest = new CreateVisitRequest().setAppointmentDueDate(nextVisitDate).setVisitName(EncounterType.ANC_VISIT.value());
 
@@ -38,6 +39,7 @@ public class AllAppointments {
         createVisitRequest.addAppointmentReminderConfiguration(new ReminderConfiguration());
         createVisitRequest.addAppointmentReminderConfiguration(new ReminderConfiguration().setRemindFrom(ONE_WEEK_LATER));
         createVisitRequest.addAppointmentReminderConfiguration(new ReminderConfiguration().setRemindFrom(TWO_WEEKS_LATER));
+        createVisitRequest.setData(patient.facilityMetaData());
         appointmentService.addVisit(patient.getMotechId(), createVisitRequest);
     }
 

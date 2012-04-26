@@ -261,14 +261,14 @@ public class CareService {
 
     private void processCWCHistories(CareHistoryVO careHistoryVO, Patient patient) {
         CWCCareHistoryVO cwcCareHistoryVO = careHistoryVO.getCwcCareHistoryVO();
-        String opvVaccine = null;
+        String opvVaccine = CWC_OPV_0;
         if(cwcCareHistoryVO.getLastOPV()!=null)
             opvVaccine = (cwcCareHistoryVO.getLastOPV() == 0) ? CWC_OPV_0 : CWC_OPV_OTHERS;
-        ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(CWC_PENTA,CWC_IPT_VACCINE));
+        ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(CWC_PENTA,CWC_IPT_VACCINE,opvVaccine));
 
         PentaVaccineCare pentaVaccineCare = new PentaVaccineCare(patient, newDate(careHistoryVO.getDate()), activeCareSchedules.hasActivePentaSchedule(), safeToString(cwcCareHistoryVO.getLastPenta()), cwcCareHistoryVO.getLastPentaDate());
         IPTiVaccineCare iptiVaccineCare = new IPTiVaccineCare(patient, newDate(careHistoryVO.getDate()), activeCareSchedules.hasActiveIPTiSchedule(), safeToString(cwcCareHistoryVO.getLastIPTi()), cwcCareHistoryVO.getLastIPTiDate());
-        OPVVaccineCare opvVaccineCare = new OPVVaccineCare(patient, newDate(careHistoryVO.getDate()), activeCareSchedules.hasActiveIPTiSchedule(), safeToString(cwcCareHistoryVO.getLastIPTi()), cwcCareHistoryVO.getLastIPTiDate(),opvVaccine);
+        OPVVaccineCare opvVaccineCare = new OPVVaccineCare(patient, newDate(careHistoryVO.getDate()), activeCareSchedules.hasActiveOPVSchedule(), safeToString(cwcCareHistoryVO.getLastOPV()), cwcCareHistoryVO.getLastOPVDate(),opvVaccine);
         enrollPatientCares(CareHistory.forChildCare(pentaVaccineCare,iptiVaccineCare,opvVaccineCare).cares(), patient);
     }
 

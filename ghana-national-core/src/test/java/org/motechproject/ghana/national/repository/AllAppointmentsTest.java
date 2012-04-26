@@ -10,6 +10,7 @@ import org.motechproject.appointments.api.service.contract.CreateVisitRequest;
 import org.motechproject.appointments.api.service.contract.ReminderConfiguration;
 import org.motechproject.ghana.national.domain.EncounterType;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -58,7 +59,7 @@ public class AllAppointmentsTest {
         String motechId = "1234556";
         DateTime nextANCVisit = DateTime.now();
 
-        allAppointments.updateANCVisitSchedule(new Patient(new MRSPatient(motechId, null, null)), nextANCVisit);
+        allAppointments.updateANCVisitSchedule(new Patient(new MRSPatient(motechId, null, new MRSFacility("mrsFacilityId"))), nextANCVisit);
 
         ArgumentCaptor<CreateVisitRequest> argumentCaptor = ArgumentCaptor.forClass(CreateVisitRequest.class);
         verify(mockAppointmentService).addVisit(eq(motechId), argumentCaptor.capture());

@@ -186,7 +186,6 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
         assertEquals(1, response.getSuccessCount());
 
         String responseBodyAsString = getMessageGatewayResponse();
-                                   System.out.println(responseBodyAsString);
         assertThat(responseBodyAsString, containsString(patientId));
         assertThat(responseBodyAsString, containsString(firstName));
     }
