@@ -127,7 +127,7 @@ public class PatientTest extends BaseUnitTest {
     public void shouldReturnMetaDataMapForPatient() {
         String facilityId = "facilityId";
         Patient patient = new Patient(new MRSPatient("patientId", "mId", null, new MRSFacility(facilityId)));
-        Map<String, String > expectedMap = new HashMap<String, String>();
+        Map expectedMap = new HashMap<String, String>();
         expectedMap.put(Patient.FACILITY_META, facilityId);
         assertThat(patient.facilityMetaData(), is(expectedMap));
     }

@@ -190,7 +190,7 @@ public class Patient {
         return getMrsPatient().getPerson().attrValue(PatientAttributes.PHONE_NUMBER.getAttribute());
     }
 
-    public Map<String, String> facilityMetaData() {
+    public Map facilityMetaData() {
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put(FACILITY_META, mrsPatient.getFacility().getId());
         return metaData;
