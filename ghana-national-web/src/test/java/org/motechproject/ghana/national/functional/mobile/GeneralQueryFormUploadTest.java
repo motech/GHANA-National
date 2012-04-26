@@ -56,7 +56,7 @@ public class GeneralQueryFormUploadTest extends LoggedInUserFunctionalTest {
 
     }
 
-    @Test
+    @Test(enabled=false)
     public void shouldUploadFormWithGeneralQueryTypeAsANCDefaulters() throws IOException {
         DataGenerator dataGenerator = new DataGenerator();
 
