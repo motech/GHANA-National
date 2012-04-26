@@ -51,7 +51,7 @@ public class GNPatientService {
                 .lastName(lastName).dateOfBirth(dob).birthDateEstimated(isDateOfBirthEstimated)
                 .gender(gender).attributes(attributes);
 
-        return patientService.registerPatient(new Patient(new MRSPatient(null, mrsPerson, new MRSFacility(facilityId))), staffMotechId);
+        return patientService.registerPatient(new Patient(new MRSPatient(null, mrsPerson, new MRSFacility(facilityId))), staffMotechId, new Date());
     }
 
     private void setAttribute(List<Attribute> attributes, String attributeValue, PatientAttributes patientAttribute) {

@@ -8,7 +8,6 @@ import org.motechproject.ghana.national.repository.*;
 import org.motechproject.mrs.exception.PatientNotFoundException;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.util.DateUtil;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.api.IdentifierNotUniqueException;
@@ -45,7 +44,7 @@ public class PatientService {
         this.allPatientSearch = allPatientSearch;
     }
 
-    public Patient registerPatient(Patient patient, String staffId)
+    public Patient registerPatient(Patient patient, String staffId, Date registrationDate)
             throws ParentNotFoundException, PatientIdNotUniqueException, PatientIdIncorrectFormatException {
         try {
 
@@ -56,7 +55,7 @@ public class PatientService {
             }
             Patient savedPatient = allPatients.save(patient);
             allEncounters.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(),
-                    PATIENT_REG_VISIT.value(), DateUtil.today().toDate(), null);
+                    PATIENT_REG_VISIT.value(), registrationDate, null);
             return savedPatient;
         } catch (IdentifierNotUniqueException e) {
             throw new PatientIdNotUniqueException();
@@ -73,7 +72,7 @@ public class PatientService {
         return allPatients.search(emptyToNull(name), emptyToNull(motechId));
     }
 
-    public String updatePatient(Patient patient, String staffId) throws ParentNotFoundException {
+    public String updatePatient(Patient patient, String staffId, Date updatedDate) throws ParentNotFoundException {
         Patient savedPatient = allPatients.update(patient);
         Relationship relationship = allPatients.getMotherRelationship(savedPatient.getMrsPatient().getPerson());
 
@@ -87,7 +86,7 @@ public class PatientService {
             updateRelationship(patient.getParentId(), savedPatient, relationship);
         }
         allEncounters.persistEncounter(savedPatient.getMrsPatient(), staffId, patient.getMrsPatient().getFacility().getId(),
-                PATIENT_EDIT_VISIT.value(), DateUtil.today().toDate(), Collections.<MRSObservation>emptySet());
+                PATIENT_EDIT_VISIT.value(), updatedDate, Collections.<MRSObservation>emptySet());
         return savedPatient.getMotechId();
     }
 

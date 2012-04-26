@@ -10,13 +10,17 @@ import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatExcept
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.exception.StaffNotFoundException;
 import org.motechproject.ghana.national.repository.IdentifierGenerator;
-import org.motechproject.ghana.national.service.*;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
+import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.form.SearchPatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.ghana.national.web.helper.PatientHelper;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
+import org.motechproject.util.DateUtil;
 import org.openmrs.patient.UnallowedIdentifierException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -97,7 +101,7 @@ public class PatientController {
                     throw new UnallowedIdentifierException("User Id is not allowed");
                 }
             }
-            Patient patient = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility), staffId);
+            Patient patient = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility), staffId, DateUtil.today().toDate());
             if (StringUtils.isNotEmpty(patient.getMotechId())) {
                 modelMap.put("successMessage", "Patient created successfully.");
                 return populateView(modelMap, patient.getMotechId());
@@ -179,7 +183,7 @@ public class PatientController {
             String staffId = patientForm.getStaffId();
             processStaffId(staffId);
             String motechId = patientService.updatePatient(patientHelper.getPatientVO(patientForm,
-                    facilityService.getFacility(patientForm.getFacilityId())), staffId);
+                    facilityService.getFacility(patientForm.getFacilityId())), staffId, new Date());
             modelMap.put("successMessage", "Patient edited successfully.");
             return populateView(modelMap, motechId);
         } catch (UnallowedIdentifierException e) {

@@ -33,6 +33,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.util.DateUtil.newDateTime;
 
 public class RegisterCWCFormHandlerTest {
 
@@ -190,6 +191,7 @@ public class RegisterCWCFormHandlerTest {
         assertThat(actual.getLearnedFrom(), is(exptectedForm.getLearnedFrom()));
         assertThat(actual.getPhoneNumber(), is(exptectedForm.getMmRegPhone()));
         assertThat(actual.getPhoneOwnership(), is(exptectedForm.getPhoneOwnership()));
+        assertThat(actual.getEnrollmentDateTime(), is(newDateTime(exptectedForm.getRegistrationDate())));
     }
 
     private void setMobileMidwifeEnrollment(RegisterCWCForm registerCWCForm) {

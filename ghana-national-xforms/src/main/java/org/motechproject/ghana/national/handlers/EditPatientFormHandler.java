@@ -47,7 +47,7 @@ public class EditPatientFormHandler implements FormPublishHandler {
     public void handleFormEvent(MotechEvent event) {
         EditClientForm form = (EditClientForm) event.getParameters().get(Constants.FORM_BEAN);
         try {
-            patientService.updatePatient(preparePatient(form), form.getStaffId());
+            patientService.updatePatient(preparePatient(form), form.getStaffId(), form.getDate());
         } catch (Exception e) {
             log.error("Encountered exception while updating patient", e);
             throw new XFormHandlerException(event.getSubject(), e);

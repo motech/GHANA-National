@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.REGISTER_SUCCESS_SMS_KEY;
+import static org.motechproject.util.DateUtil.newDateTime;
 
 
 @Component
@@ -77,7 +78,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
             MRSPatient mrsPatient = new MRSPatient(registerClientForm.getMotechId(), mrsPerson, new MRSFacility(facilityId));
 
             Patient patient = new Patient(mrsPatient, registerClientForm.getMotherMotechId());
-            final Patient savedPatient = patientService.registerPatient(patient, registerClientForm.getStaffId());
+            final Patient savedPatient = patientService.registerPatient(patient, registerClientForm.getStaffId(), registerClientForm.getDate());
 
             registerForMobileMidwifeProgram(registerClientForm, savedPatient.getMotechId());
             registerForCWC(registerClientForm, facilityId, savedPatient.getMotechId());
@@ -95,7 +96,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
 
     private void registerForMobileMidwifeProgram(RegisterClientForm registerClientForm, String patientMotechId) {
         if (registerClientForm.isEnrolledForMobileMidwifeProgram()) {
-            MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment(patientMotechId);
+            MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment(patientMotechId).setEnrollmentDateTime(newDateTime(registerClientForm.getDate()));
             mobileMidwifeEnrollment.setFacilityId(registerClientForm.getFacilityId());
             mobileMidwifeService.register(mobileMidwifeEnrollment);
         }

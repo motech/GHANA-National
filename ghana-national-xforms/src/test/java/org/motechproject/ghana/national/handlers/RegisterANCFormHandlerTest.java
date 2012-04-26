@@ -21,6 +21,7 @@ import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
@@ -67,6 +68,23 @@ public class RegisterANCFormHandlerTest {
     }
 
     @Test
+    public void shouldGetCurrentDateIfRegistrationDateisNull() throws ObservationNotFoundException {
+        final RegisterANCForm ancForm = new RegisterANCForm();
+        Facility facility = mock(Facility.class);
+        String mrsFacilityId = "343";
+        when(facility.getMrsFacilityId()).thenReturn(mrsFacilityId);
+        when(mockFacilityService.getFacilityByMotechId(ancForm.getFacilityId())).thenReturn(facility);
+
+        registerAncFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseDataEntry.registerANC", new HashMap<String, Object>() {{
+            put("formBean", ancForm);
+        }}));
+
+        ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
+        verify(careService).enroll(captor.capture());
+        assertThat(captor.getValue().getRegistrationDate(), is(DateUtil.today().toDate()));
+    }
+
+    @Test
     public void shouldSaveANCEnrollmentDetails() throws ObservationNotFoundException {
         final RegisterANCForm registerANCForm = new RegisterANCForm();
         registerANCForm.setAddHistory(true);
@@ -90,9 +108,8 @@ public class RegisterANCFormHandlerTest {
 
         Facility facility = mock(Facility.class);
         String mrsFacilityId = "343";
-
-        when(mockFacilityService.getFacilityByMotechId(registerANCForm.getFacilityId())).thenReturn(facility);
         when(facility.getMrsFacilityId()).thenReturn(mrsFacilityId);
+        when(mockFacilityService.getFacilityByMotechId(registerANCForm.getFacilityId())).thenReturn(facility);
         registerAncFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseDataEntry.registerANC", new HashMap<String, Object>() {{
             put("formBean", registerANCForm);
         }}));
@@ -143,14 +160,13 @@ public class RegisterANCFormHandlerTest {
         verify(mockMobileMidwifeService).unRegister(patientMotechId);
         verify(mockMobileMidwifeService, never()).register(Matchers.<MobileMidwifeEnrollment>any());
         final ANCVO ancVO = captor.getValue();
-
         assertThat(staffId, is(ancVO.getStaffId()));
         assertThat(facilityId, is(facilityId));
         assertThat(registartionDate, is(ancVO.getRegistrationDate()));
         assertThat(patientMotechId, is(ancVO.getPatientMotechId()));
 
     }
-    
+
     public static void assertANCCareHistoryDetails(List<ANCCareHistory> addCareHistory, String lastIPT, Date lastIPTDate, String lastTT, Date lastTTDate, ANCCareHistoryVO ancCareHistoryVO) {
         assertEquals(addCareHistory, ancCareHistoryVO.getCareHistory());
         assertEquals(lastIPT, ancCareHistoryVO.getLastIPT());

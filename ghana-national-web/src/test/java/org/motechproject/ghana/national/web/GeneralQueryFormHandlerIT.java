@@ -45,6 +45,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -404,7 +405,7 @@ public class GeneralQueryFormHandlerIT {
     private Patient createPatient(String motechId, final Facility facility) throws PatientIdIncorrectFormatException, PatientIdNotUniqueException {
         MRSPerson person = new MRSPerson().firstName("patient").dateOfBirth(DateUtil.now().minusYears(21).toDate()).gender("F").birthDateEstimated(true);
         final Patient patient = new Patient(new MRSPatient(motechId, person, facility.mrsFacility()));
-        return patientService.registerPatient(patient, "719");
+        return patientService.registerPatient(patient, "719", new Date());
     }
 
     private Facility createFacility(String facilityName, String phoneNumber) throws FacilityAlreadyFoundException {

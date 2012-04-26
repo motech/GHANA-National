@@ -23,11 +23,9 @@ import java.util.*;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
-import static org.motechproject.ghana.national.domain.RegistrationToday.TODAY;
 import static org.motechproject.ghana.national.tools.Utility.safeParseDouble;
 import static org.motechproject.ghana.national.tools.Utility.safeToString;
 import static org.motechproject.util.DateUtil.newDate;
-import static org.motechproject.util.DateUtil.now;
 
 @Service
 public class CareService {
@@ -98,17 +96,16 @@ public class CareService {
 
     public void enroll(ANCVO ancVO) throws ObservationNotFoundException {
         final ANCCareHistoryVO ancCareHistoryVO = ancVO.getAncCareHistoryVO();
-        Date registrationDate = (TODAY.equals(ancVO.getRegistrationToday())) ? now().toDate() : ancVO.getRegistrationDate();
         Patient patient = allPatients.getPatientByMotechId(ancVO.getPatientMotechId());
         LocalDate expectedDeliveryDate = newDate(ancVO.getEstimatedDateOfDelivery());
 
         Set<MRSObservation> pregnancyObservations = registerPregnancy(ancVO, patient);
-        allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), ANC_REG_VISIT.value(), registrationDate, prepareObservations(ancVO));
-        allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, pregnancyObservations);
+        allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), ANC_REG_VISIT.value(), ancVO.getRegistrationDate(), prepareObservations(ancVO));
+        allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), ancVO.getRegistrationDate(), pregnancyObservations);
 
         ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(TT_VACCINATION, ANC_IPT_VACCINE));
 
-        TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, expectedDeliveryDate, newDate(registrationDate), activeCareSchedules.hasActiveTTSchedule(), ancCareHistoryVO.getLastTT(), ancCareHistoryVO.getLastTTDate());
+        TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, expectedDeliveryDate, newDate(ancVO.getRegistrationDate()), activeCareSchedules.hasActiveTTSchedule(), ancCareHistoryVO.getLastTT(), ancCareHistoryVO.getLastTTDate());
         IPTVaccineCare iptVaccineCare = new IPTVaccineCare(patient, expectedDeliveryDate, activeCareSchedules.hasActiveIPTSchedule(), ancCareHistoryVO.getLastIPT(), ancCareHistoryVO.getLastIPTDate());
 
         List<PatientCare> patientCares = new ANCCareRegistration(ttVaccineCare, iptVaccineCare, patient, expectedDeliveryDate).allCares();
@@ -137,12 +134,11 @@ public class CareService {
     }
 
     private Set<MRSObservation> prepareObservations(ANCVO ancVO) {
-        Date observationDate = DateUtil.today().toDate();
-        Date registrationDate = (TODAY.equals(ancVO.getRegistrationToday())) ? observationDate : ancVO.getRegistrationDate();
+        Date registrationDate = ancVO.getRegistrationDate();
         HashSet<MRSObservation> observations = new HashSet<MRSObservation>();
-        addObservation(observations, observationDate, GRAVIDA.getName(), ancVO.getGravida());
-        addObservation(observations, observationDate, HEIGHT.getName(), ancVO.getHeight());
-        addObservation(observations, observationDate, PARITY.getName(), ancVO.getParity());
+        addObservation(observations, registrationDate, GRAVIDA.getName(), ancVO.getGravida());
+        addObservation(observations, registrationDate, HEIGHT.getName(), ancVO.getHeight());
+        addObservation(observations, registrationDate, PARITY.getName(), ancVO.getParity());
         addObservation(observations, registrationDate, SERIAL_NUMBER.getName(), ancVO.getSerialNumber());
 
         if (ancVO.getAddHistory()) {
@@ -153,18 +149,17 @@ public class CareService {
     }
 
     Set<MRSObservation> registerPregnancy(ANCVO ancVO, Patient patient) throws ObservationNotFoundException {
-        Date today = DateUtil.today().toDate();
         Set<MRSObservation> activePregnancyObservation = allObservations.updateEDD(ancVO.getEstimatedDateOfDelivery(), patient, ancVO.getStaffId(), ancVO.getRegistrationDate());
         MRSObservation activePregnancy;
         if (!activePregnancyObservation.isEmpty()) {
             activePregnancy = activePregnancyObservation.iterator().next();
         } else {
-            activePregnancy = new MRSObservation<Object>(today, PREGNANCY.getName(), null);
-            addDependentObservation(activePregnancy, today, EDD.getName(), ancVO.getEstimatedDateOfDelivery());
+            activePregnancy = new MRSObservation<Object>(ancVO.getRegistrationDate(), PREGNANCY.getName(), null);
+            addDependentObservation(activePregnancy, ancVO.getRegistrationDate(), EDD.getName(), ancVO.getEstimatedDateOfDelivery());
         }
 
-        addDependentObservation(activePregnancy, today, CONFINEMENT_CONFIRMED.getName(), ancVO.getDeliveryDateConfirmed());
-        addDependentObservation(activePregnancy, today, PREGNANCY_STATUS.getName(), true);
+        addDependentObservation(activePregnancy, ancVO.getRegistrationDate(), CONFINEMENT_CONFIRMED.getName(), ancVO.getDeliveryDateConfirmed());
+        addDependentObservation(activePregnancy, ancVO.getRegistrationDate(), PREGNANCY_STATUS.getName(), true);
 
         if (ancVO.getAddHistory()) {
             ANCCareHistoryVO ancCareHistoryVO = ancVO.getAncCareHistoryVO();

@@ -29,7 +29,8 @@ import static ch.lambdaj.Lambda.*;
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -53,7 +54,7 @@ public class EditPatientFormHandlerTest {
 
     @Test
     public void shouldRethrowException() {
-        doThrow(new RuntimeException()).when(mockPatientService).updatePatient(Matchers.<Patient>any(), anyString());
+        doThrow(new RuntimeException()).when(mockPatientService).updatePatient(Matchers.<Patient>any(), anyString(), Matchers.<Date>any());
         try {
             editPatientFormHandler.handleFormEvent(new MotechEvent("subject"));
             fail("Should handle exception");
@@ -87,10 +88,10 @@ public class EditPatientFormHandlerTest {
         String sex = "M";
         String phoneNumber = "0123456789";
         String facilityIdWherePatientWasEdited = "999";
-
+        Date updatedDate = new Date();
 
         populateFormWithValues(facilityId, first, middle, last, dateOfBirth, address, patientId, nhisExpDate, nhisNumber,
-                parentId, sex, phoneNumber, facilityIdWherePatientWasEdited, staffId);
+                parentId, sex, phoneNumber, facilityIdWherePatientWasEdited, staffId, updatedDate);
 
         MRSPerson mrsPerson = new MRSPerson().firstName(first).middleName(middle).lastName(last)
                 .dateOfBirth(dateOfBirth).birthDateEstimated(birthDateEstimated).gender(gender).address(address);
@@ -109,13 +110,13 @@ public class EditPatientFormHandlerTest {
         parameters.put(Constants.FORM_BEAN, editClientForm);
         MotechEvent event = new MotechEvent("subject", parameters);
 
-        assertResult(facilityId, first, middle, last, dateOfBirth, address, patientId, nhisNumber, sex, phoneNumber, event, mrsFacilityWherePatientWasEdited, mrsPatient, mrsUser);
+        assertResult(facilityId, first, middle, last, dateOfBirth, address, patientId, nhisNumber, sex, phoneNumber, updatedDate, event);
     }
 
     private void populateFormWithValues(String facilityId, String first, String middle, String last, Date dateOfBirth,
                                         String address, String patientId, Date nhisExpDate, String nhisNumber,
-                                        String parentId, String sex, String phoneNumber,
-                                        String facilityIdWherePatientWasEdited, String staffId) {
+                                        String parentId, String sex, String phoneNumber, String facilityIdWherePatientWasEdited,
+                                        String staffId, Date updatedDate) {
         editClientForm.setMotechId(patientId);
         editClientForm.setStaffId(staffId);
         editClientForm.setAddress(address);
@@ -131,14 +132,16 @@ public class EditPatientFormHandlerTest {
         editClientForm.setPhoneNumber(phoneNumber);
         editClientForm.setUpdatePatientFacilityId(facilityIdWherePatientWasEdited);
         editClientForm.setAddress(address);
+        editClientForm.setDate(updatedDate);
     }
 
     private void assertResult(String facilityId, String first, String middle, String last,
                               Date dateOfBirth, String address,
-                              String patientId, String nhisNumber, String sex, String phoneNumber, MotechEvent event, MRSFacility mrsFacilityWherePatientWasEdited, MRSPatient mrsPatient, MRSUser mrsUser) throws ParentNotFoundException {
+                              String patientId, String nhisNumber, String sex, String phoneNumber, Date updatedDate, MotechEvent event) throws ParentNotFoundException {
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<String> staffIdCaptor = ArgumentCaptor.forClass(String.class);
-        doReturn(patientId).when(mockPatientService).updatePatient(patientArgumentCaptor.capture(), staffIdCaptor.capture());
+        ArgumentCaptor<Date> dateArgumentCaptor = ArgumentCaptor.forClass(Date.class);
+        doReturn(patientId).when(mockPatientService).updatePatient(patientArgumentCaptor.capture(), staffIdCaptor.capture(), dateArgumentCaptor.capture());
 
         editPatientFormHandler.handleFormEvent(event);
 
@@ -153,6 +156,8 @@ public class EditPatientFormHandlerTest {
         assertThat(savedPerson.getAddress(), is(equalTo(address)));
         assertThat(savedPatient.getMrsPatient().getMotechId(), is(equalTo(patientId)));
         assertThat(savedPerson.getGender(), is(equalTo(sex)));
+        assertThat(dateArgumentCaptor.getValue(), is(updatedDate));
+
         assertThat(((Attribute) selectUnique(savedPerson.getAttributes(), having(on(Attribute.class).name(),
                 equalTo(PatientAttributes.NHIS_NUMBER.getAttribute())))).value(), is(equalTo(nhisNumber)));
         assertThat(((Attribute) selectUnique(savedPerson.getAttributes(), having(on(Attribute.class).name(),

@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.web;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
@@ -84,7 +85,7 @@ public class PatientControllerTest {
         ReflectionTestUtils.setField(patientController, "identifierGenerator", mockIdentifierGenerator);
         ReflectionTestUtils.setField(patientController, "mobileMidwifeService", mobileMidwifeService);
         mockBindingResult = mock(BindingResult.class);
-        when(mockPatientService.registerPatient(any(Patient.class), any(String.class))).thenReturn(new Patient(new MRSPatient(null, null, null)));
+        when(mockPatientService.registerPatient(any(Patient.class), any(String.class), Matchers.<Date>any())).thenReturn(new Patient(new MRSPatient(null, null, null)));
     }
 
     @Test
@@ -123,7 +124,7 @@ public class PatientControllerTest {
         when(mockFacilityService.getFacility(createPatientForm.getFacilityId())).thenReturn(mockFacility);
         createPatientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
         String view = patientController.createPatient(createPatientForm, mockBindingResult, new ModelMap());
-        verify(mockPatientService,never()).registerPatient(any(Patient.class),any(String.class));
+        verify(mockPatientService, never()).registerPatient(any(Patient.class), any(String.class), Matchers.<Date>any());
         assertEquals("patients/new", view);
     }
 
@@ -136,7 +137,7 @@ public class PatientControllerTest {
         String facilityName = "facilityName";
         createPatientForm.setFacilityId(facilityId);
         Facility mockFacility = mock(Facility.class);
-        String staffId="1234";
+        String staffId = "1234";
         createPatientForm.setStaffId(staffId);
         MRSUser mockStaff = mock(MRSUser.class);
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mockStaff);
@@ -204,7 +205,7 @@ public class PatientControllerTest {
     @Test
     public void shouldUpdatePatientWithEditedInfo() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
         String motechId = "12345";
-        String staffId="1234";
+        String staffId = "1234";
         final MRSPerson mrsPerson = new MRSPerson();
         mrsPerson.firstName("fname");
         mrsPerson.middleName("mname");
@@ -229,7 +230,7 @@ public class PatientControllerTest {
         when(mockPatientHelper.getPatientVO(patientForm, mockFacility)).thenReturn(mockPatient);
         String url = patientController.update(patientForm, mockBindingResult, new ModelMap());
         assertThat(PatientController.EDIT_PATIENT_URL, is(url));
-        verify(mockPatientService).updatePatient(eq(mockPatient),eq(staffId));
+        verify(mockPatientService).updatePatient(eq(mockPatient), eq(staffId), eq(new Date()));
 
     }
 }
