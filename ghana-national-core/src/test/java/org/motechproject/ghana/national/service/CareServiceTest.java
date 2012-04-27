@@ -706,6 +706,46 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldCreateSchedulesForANCProgramRegistrationFromStartWhenDueDateForHistoryIsIrrelevantToCurrentPregnancy() throws ObservationNotFoundException {
+        String patientId = "Id", patientMotechId = "motechId";
+        LocalDate registrationDate = newDate(2012, 3, 1);
+        mockCurrentDate(registrationDate);
+        LocalDate dateOfConception = registrationDate.minusMonths(3);
+        Pregnancy pregnancy = basedOnConceptionDate(dateOfConception);
+        final String ttDose = "1";
+        final String iptDose = "2";
+        final Date ttDate = dateOfConception.minusWeeks(1).toDate();
+        final Date iptDate = dateOfConception.minusDays(3).toDate();
+        CareService careServiceSpy = spy(careService);
+
+        setupPatient(patientId, patientMotechId);
+        final ANCVO ancvo = createTestANCVO(iptDose, iptDate, ttDose, ttDate, RegistrationToday.IN_PAST, registrationDate.toDate(), "facilityId", null,
+                patientMotechId, Arrays.asList(ANCCareHistory.values()), pregnancy.dateOfDelivery().toDate());
+
+        final MRSObservation activePregnancyObservation = new MRSObservation<Boolean>(registrationDate.toDate(), PREGNANCY.getName(), true);
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Date>(registrationDate.toDate(), EDD.getName(), pregnancy.dateOfDelivery().toDate()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(registrationDate.toDate(), PREGNANCY_STATUS.getName(), true));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(registrationDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose)));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose)));
+        Set<MRSObservation> pregnancyObs = new HashSet<MRSObservation>() {{
+            add(activePregnancyObservation);
+        }};
+
+        doReturn(pregnancyObs).when(careServiceSpy).registerPregnancy(ancvo, mockPatient);
+
+        when(mockAllSchedules.getDueWindowAlertTimings(Matchers.<EnrollmentRequest>any())).thenReturn(Arrays.<DateTime>asList(newDateTime(dateOfConception.plusWeeks(10))));
+        careServiceSpy.enroll(ancvo);
+
+        ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedules, atLeastOnce()).enroll(requestCaptor.capture());
+        List<EnrollmentRequest> requests = requestCaptor.getAllValues();
+        assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_DELIVERY, dateOfConception, mockPatient.facilityMetaData())));
+        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, PatientCare.forEnrollmentFromStart(ScheduleNames.TT_VACCINATION, registrationDate, mockPatient.facilityMetaData())));
+        assertScheduleEnrollmentRequest(requests.get(2), expectedRequest(patientId, PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_IPT_VACCINE, dateOfConception, mockPatient.facilityMetaData())));
+    }
+
+    @Test
     public void shouldGetActiveCareSchedulesForAPatient() {
         String patientId = "patientId";
         setupPatient(patientId, "patientMotechId");
