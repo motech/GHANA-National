@@ -112,6 +112,7 @@ public class CareServiceTest extends BaseUnitTest {
 
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffId, facilityId, CWC_REG_VISIT.value(), registrationDate, expected);
         verify(careServiceSpy).enrollToCWCCarePrograms(cwcVO, mockPatient);
+        verify(careServiceSpy).enrollChildForPNC(mockPatient);
     }
 
     @Test
@@ -783,7 +784,7 @@ public class CareServiceTest extends BaseUnitTest {
         when(mockPatient.pncBabyProgramsToEnrollOnRegistration()).thenReturn(asList(pnc1, pnc2));
         when(mockPatient.dateOfBirth()).thenReturn(birthDateTime);
 
-        careService.enrollChildForPNCOnDelivery(mockPatient);
+        careService.enrollChildForPNC(mockPatient);
         ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, times(2)).enroll(requestCaptor.capture());
         List<EnrollmentRequest> requests = requestCaptor.getAllValues();
