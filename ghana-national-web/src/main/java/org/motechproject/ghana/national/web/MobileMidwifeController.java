@@ -13,6 +13,7 @@ import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -95,7 +96,7 @@ public class MobileMidwifeController {
         if (isNotEmpty(formErrors)) {
             addFormInfo(modelMap, form).addAttribute("formErrors", formErrors);
         } else {
-            mobileMidwifeService.register(midwifeEnrollment);
+            mobileMidwifeService.register(midwifeEnrollment.setEnrollmentDateTime(DateUtil.now()));
             form = createMobileMidwifeEnrollmentForm(midwifeEnrollment);
             addFormInfo(modelMap, form).addAttribute("successMessage", messages.getMessage(SUCCESS_MESSAGE, null, Locale.getDefault()));
         }

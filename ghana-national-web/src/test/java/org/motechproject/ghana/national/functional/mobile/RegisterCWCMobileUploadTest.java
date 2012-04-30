@@ -22,6 +22,7 @@ import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEn
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
+import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -103,7 +104,10 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         TestCWCEnrollment cwcEnrollment = TestCWCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId);
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, testPatient.facilityId()).patientId(patientId);
 
-        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), cwcEnrollment.withMobileMidwifeEnrollmentThroughMobile(mmEnrollmentDetails));
+        Map<String, String> data = cwcEnrollment.withMobileMidwifeEnrollmentThroughMobile(mmEnrollmentDetails);
+        data.put("registrationDate", Utility.nullSafeToString(DateUtil.today().plusDays(10), "yyyy-MM-dd"));
+
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), data);
         assertEquals(1, response.getSuccessCount());
 
         PatientEditPage patientEditPage = toPatientEditPage(testPatient);

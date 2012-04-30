@@ -98,7 +98,7 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
         if (registerClientForm.isEnrolledForMobileMidwifeProgram()) {
             MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment(patientMotechId).setEnrollmentDateTime(newDateTime(registerClientForm.getDate()));
             mobileMidwifeEnrollment.setFacilityId(registerClientForm.getFacilityId());
-            mobileMidwifeService.register(mobileMidwifeEnrollment);
+            mobileMidwifeService.register(mobileMidwifeEnrollment.setEnrollmentDateTime(newDateTime(registerClientForm.getDate())));
         }
     }
 

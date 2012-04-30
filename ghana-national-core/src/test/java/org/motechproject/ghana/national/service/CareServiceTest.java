@@ -199,8 +199,8 @@ public class CareServiceTest extends BaseUnitTest {
         String patientId = "patient id";
         String patientMotechId = "patient motech id";
         String staffUserId = "staff user id";
-        final Date registrationDate = new Date(2012, 3, 1);
-        final Date today = DateUtil.today().toDate();
+        final Date registrationDate = newDate(2012, 4, 4).toDate();
+
 
         Date estimatedDateOfDelivery = new Date();
         Date iptDate = DateUtil.newDate(estimatedDateOfDelivery).minusWeeks(10).toDate();
@@ -211,15 +211,15 @@ public class CareServiceTest extends BaseUnitTest {
                 staffUserId, patientMotechId, Arrays.asList(ANCCareHistory.values()), estimatedDateOfDelivery);
 
         setupPatient(patientId, patientMotechId);
-        MRSObservation<Date> eddObservation = new MRSObservation<Date>(today, EDD.getName(), ancvo.getEstimatedDateOfDelivery());
+        MRSObservation<Date> eddObservation = new MRSObservation<Date>(registrationDate, EDD.getName(), ancvo.getEstimatedDateOfDelivery());
         when(mockAllObservations.findObservation(patientMotechId, EDD.getName())).thenReturn(eddObservation);
 
         careService.enroll(ancvo);
 
-        final MRSObservation pregnancyObs = new MRSObservation(today, PREGNANCY.getName(), null);
+        final MRSObservation pregnancyObs = new MRSObservation(registrationDate, PREGNANCY.getName(), null);
         pregnancyObs.addDependantObservation(eddObservation);
-        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
-        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, PREGNANCY_STATUS.getName(), true));
+        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(registrationDate, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
+        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(registrationDate, PREGNANCY_STATUS.getName(), true));
         pregnancyObs.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), ipt.doubleValue()));
         pregnancyObs.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), tt.doubleValue()));
 
@@ -228,9 +228,9 @@ public class CareServiceTest extends BaseUnitTest {
         }};
 
         final Set<MRSObservation> expectedANCObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Integer>(today, GRAVIDA.getName(), ancvo.getGravida()));
-            add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
-            add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
+            add(new MRSObservation<Integer>(registrationDate, GRAVIDA.getName(), ancvo.getGravida()));
+            add(new MRSObservation<Double>(registrationDate, HEIGHT.getName(), ancvo.getHeight()));
+            add(new MRSObservation<Integer>(registrationDate, PARITY.getName(), ancvo.getParity()));
             add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), ancvo.getSerialNumber()));
             add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastIPTDate(), IPT.getName(), parseDouble(ancvo.getAncCareHistoryVO().getLastIPT())));
             add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), parseDouble(ancvo.getAncCareHistoryVO().getLastTT())));
@@ -250,7 +250,6 @@ public class CareServiceTest extends BaseUnitTest {
         String patientMotechId = "patient motech id";
         String staffUserId = "staff user id";
         final Date registrationDate = new Date(2012, 3, 1);
-        final Date today = DateUtil.today().toDate();
 
         final ANCVO ancvo = createTestANCVO(null, null, null, null, RegistrationToday.IN_PAST, registrationDate, facilityId,
                 staffUserId, patientMotechId, new ArrayList<ANCCareHistory>(), new Date());
@@ -259,19 +258,19 @@ public class CareServiceTest extends BaseUnitTest {
 
         careService.enroll(ancvo);
 
-        final MRSObservation pregnancyObs = new MRSObservation(today, PREGNANCY.getName(), null);
-        pregnancyObs.addDependantObservation(new MRSObservation<Date>(today, EDD.getName(), ancvo.getEstimatedDateOfDelivery()));
-        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
-        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, PREGNANCY_STATUS.getName(), true));
+        final MRSObservation pregnancyObs = new MRSObservation(registrationDate, PREGNANCY.getName(), null);
+        pregnancyObs.addDependantObservation(new MRSObservation<Date>(registrationDate, EDD.getName(), ancvo.getEstimatedDateOfDelivery()));
+        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(registrationDate, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
+        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(registrationDate, PREGNANCY_STATUS.getName(), true));
 
         final HashSet<MRSObservation> expectedPregnancyObservations = new HashSet<MRSObservation>() {{
             add(pregnancyObs);
         }};
 
         final Set<MRSObservation> expectedANCObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Integer>(today, GRAVIDA.getName(), ancvo.getGravida()));
-            add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
-            add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
+            add(new MRSObservation<Integer>(registrationDate, GRAVIDA.getName(), ancvo.getGravida()));
+            add(new MRSObservation<Double>(registrationDate, HEIGHT.getName(), ancvo.getHeight()));
+            add(new MRSObservation<Integer>(registrationDate, PARITY.getName(), ancvo.getParity()));
             add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), ancvo.getSerialNumber()));
         }};
 
@@ -318,7 +317,7 @@ public class CareServiceTest extends BaseUnitTest {
         String patientMotechId = "patient motech id";
         String staffUserId = "staff user id";
         final Date registrationDate = new Date(2012, 3, 1);
-        final Date today = DateUtil.today().toDate();
+
 
         Date estimatedDateOfDelivery = new Date();
         final ANCVO ancvo = createTestANCVO("3", new Date(2011, 12, 9), "4", new Date(2011, 7, 5), RegistrationToday.IN_PAST, registrationDate, facilityId,
@@ -326,11 +325,11 @@ public class CareServiceTest extends BaseUnitTest {
 
         setupPatient(patientId, patientMotechId);
 
-        final MRSObservation activePregnancy = new MRSObservation<Object>(today, PREGNANCY.getName(), null);
+        final MRSObservation activePregnancy = new MRSObservation<Object>(registrationDate, PREGNANCY.getName(), null);
 
-        activePregnancy.addDependantObservation(new MRSObservation<Date>(today, EDD.getName(), estimatedDateOfDelivery));
-        activePregnancy.addDependantObservation(new MRSObservation<Boolean>(today, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
-        activePregnancy.addDependantObservation(new MRSObservation<Boolean>(today, PREGNANCY_STATUS.getName(), true));
+        activePregnancy.addDependantObservation(new MRSObservation<Date>(registrationDate, EDD.getName(), estimatedDateOfDelivery));
+        activePregnancy.addDependantObservation(new MRSObservation<Boolean>(registrationDate, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
+        activePregnancy.addDependantObservation(new MRSObservation<Boolean>(registrationDate, PREGNANCY_STATUS.getName(), true));
 
         final Set<MRSObservation> updatedEddObservations = new HashSet<MRSObservation>();
         updatedEddObservations.add(activePregnancy);
@@ -341,9 +340,9 @@ public class CareServiceTest extends BaseUnitTest {
         careService.enroll(ancvo);
 
         HashSet<MRSObservation> expectedANCObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Integer>(today, GRAVIDA.getName(), ancvo.getGravida()));
-            add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
-            add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
+            add(new MRSObservation<Integer>(registrationDate, GRAVIDA.getName(), ancvo.getGravida()));
+            add(new MRSObservation<Double>(registrationDate, HEIGHT.getName(), ancvo.getHeight()));
+            add(new MRSObservation<Integer>(registrationDate, PARITY.getName(), ancvo.getParity()));
             add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), ancvo.getSerialNumber()));
             add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastIPTDate(), IPT.getName(), Double.valueOf(ancvo.getAncCareHistoryVO().getLastIPT())));
             add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), Double.valueOf(ancvo.getAncCareHistoryVO().getLastTT())));
@@ -373,18 +372,18 @@ public class CareServiceTest extends BaseUnitTest {
         setupPatient(patientId, patientMotechId);
 
         careService.enroll(ancvo);
-        final Date today = DateUtil.today().toDate();
+
         final HashSet<MRSObservation> expectedANCObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Integer>(today, GRAVIDA.getName(), ancvo.getGravida()));
-            add(new MRSObservation<Double>(today, HEIGHT.getName(), ancvo.getHeight()));
-            add(new MRSObservation<Integer>(today, PARITY.getName(), ancvo.getParity()));
+            add(new MRSObservation<Integer>(registrationDate, GRAVIDA.getName(), ancvo.getGravida()));
+            add(new MRSObservation<Double>(registrationDate, HEIGHT.getName(), ancvo.getHeight()));
+            add(new MRSObservation<Integer>(registrationDate, PARITY.getName(), ancvo.getParity()));
             add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), ancvo.getSerialNumber()));
         }};
 
-        final MRSObservation pregnancyObs = new MRSObservation(today, PREGNANCY.getName(), null);
-        pregnancyObs.addDependantObservation(new MRSObservation<Date>(today, EDD.getName(), ancvo.getEstimatedDateOfDelivery()));
-        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
-        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(today, PREGNANCY_STATUS.getName(), true));
+        final MRSObservation pregnancyObs = new MRSObservation(registrationDate, PREGNANCY.getName(), null);
+        pregnancyObs.addDependantObservation(new MRSObservation<Date>(registrationDate, EDD.getName(), ancvo.getEstimatedDateOfDelivery()));
+        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(registrationDate, CONFINEMENT_CONFIRMED.getName(), ancvo.getDeliveryDateConfirmed()));
+        pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(registrationDate, PREGNANCY_STATUS.getName(), true));
 
         final HashSet<MRSObservation> expectedPregnancyObservations = new HashSet<MRSObservation>() {{
             add(pregnancyObs);

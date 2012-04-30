@@ -57,7 +57,7 @@ public class RegisterANCFormHandler implements FormPublishHandler {
             careService.enroll(ancvo);
             MobileMidwifeEnrollment mobileMidwifeEnrollment = registerANCForm.createMobileMidwifeEnrollment();
             if (mobileMidwifeEnrollment != null) {
-                mobileMidwifeService.register(mobileMidwifeEnrollment.setEnrollmentDateTime(newDateTime(registerANCForm.getDate())));
+                mobileMidwifeService.register(mobileMidwifeEnrollment.setEnrollmentDateTime(newDateTime(registrationDate)));
             } else {
                 mobileMidwifeService.unRegister(registerANCForm.getMotechId());
             }

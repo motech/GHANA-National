@@ -174,7 +174,7 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
 
         TestPatient patient = TestPatient.with("Second CWC Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).
-                motherMotechId(motherMotechId).registrationDate(DateUtil.newDate(2000, 12, 12)).dateOfBirth(DateUtil.newDate(2010,11,11));
+                motherMotechId(motherMotechId).registrationDate(DateUtil.today().plusDays(5)).dateOfBirth(DateUtil.newDate(2010,11,11));
 
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, patient.facilityId());
 
@@ -182,7 +182,8 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
 
         TestClientRegistration<TestCWCEnrollment> testClientRegistration = new TestClientRegistration<TestCWCEnrollment>(patient, cwcEnrollmentDetails, mmEnrollmentDetails);
 
-        mobile.upload(MobileForm.registerClientForm(), testClientRegistration.withProgramEnrollmentThroughMobile());
+        Map<String, String> data = testClientRegistration.withProgramEnrollmentThroughMobile();
+        mobile.upload(MobileForm.registerClientForm(), data);
 
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
         searchPatientPage.searchWithName(patient.firstName());
@@ -192,7 +193,7 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
                 .withStaffId(testClientRegistration.getPatient().staffId())
                 .withFacilityId(testClientRegistration.getPatient().facilityId())
                 .withMotechPatientId(testClientRegistration.getPatient().motechId())
-                .withRegistrationDate(testClientRegistration.getPatient().getRegistrationDate());
+                .withRegistrationDate(patient.getRegistrationDate());
 
         PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
         String patientId = editPage.motechId();

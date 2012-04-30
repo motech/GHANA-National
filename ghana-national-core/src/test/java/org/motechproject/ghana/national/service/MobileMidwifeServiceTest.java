@@ -45,7 +45,7 @@ public class MobileMidwifeServiceTest {
         when(mockAllCampaigns.nearestCycleDate(enrollment)).thenReturn(enrollment.getEnrollmentDateTime());
 
         service.register(enrollment);
-        assertThat(enrollment.getEnrollmentDateTime(), is(DateUtil.now()));
+        assertThat(DateUtil.newDate(enrollment.getEnrollmentDateTime()).toDate(), is(DateUtil.today().toDate()));
 
         verifyCreateNewEnrollment(enrollment);
         verify(mockAllCampaigns).start(enrollment);
