@@ -14,12 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
-import static ch.lambdaj.Lambda.filter;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.select;
+import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.core.Is.is;
 
 @Service
@@ -27,7 +23,6 @@ public class FacilityService {
 
     private AllFacilities allFacilities;
     private IdentifierGenerator identifierGenerator;
-
 
     @Autowired
     public FacilityService(AllFacilities allFacilities, IdentifierGenerator identifierGenerator) {

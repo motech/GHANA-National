@@ -15,6 +15,8 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
+import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.scheduletracking.api.domain.Enrollment;
 import org.motechproject.scheduletracking.api.domain.EnrollmentStatus;
 import org.motechproject.scheduletracking.api.domain.WindowName;
@@ -22,7 +24,6 @@ import org.motechproject.scheduletracking.api.service.EnrollmentsQuery;
 import org.motechproject.scheduletracking.api.service.impl.EnrollmentsQueryService;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.util.DateUtil;
-import org.openmrs.api.EncounterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,6 @@ import static org.motechproject.util.DateUtil.newDateTime;
 
 @Component
 public class GeneralQueryFormHandler implements FormPublishHandler {
-
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -48,16 +48,15 @@ public class GeneralQueryFormHandler implements FormPublishHandler {
     FacilityService facilityService;
 
     @Autowired
-    EncounterService encounterService;
+    SMSGateway smsGateway;
 
     @Autowired
-    private SMSGateway smsGateway;
-
-    @Autowired
-    private PatientService patientService;
+    PatientService patientService;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseQuery.GeneralQuery")
+    @LoginAsAdmin
+    @ApiSession
     public void handleFormEvent(MotechEvent event) {
         GeneralQueryForm generalQueryForm = (GeneralQueryForm) event.getParameters().get(FORM_BEAN);
         GeneralQueryType queryType = generalQueryForm.getQueryType();
@@ -72,20 +71,20 @@ public class GeneralQueryFormHandler implements FormPublishHandler {
     private String prepareMessageContentForQuery(GeneralQueryType queryType, Facility facility, EnrollmentsQuery enrollmentsQuery) {
         StringBuilder messageContent = new StringBuilder();
         StringBuilder messageBody = new StringBuilder();
-        messageContent.append("List of " + queryType.name());
-        if (queryType.getSchedules().length > 1)
-            messageContent.append("-" + StringUtils.join(queryType.getSchedules(), ",")).append(MessageDispatcher.SMS_SEPARATOR);
-        else
+        messageContent.append("List of ").append(queryType.name());
+        if (queryType.getSchedules().length > 1) {
+            messageContent.append("-").append(StringUtils.join(queryType.getSchedules(), ",")).append(MessageDispatcher.SMS_SEPARATOR);
+        } else {
             messageContent.append(MessageDispatcher.SMS_SEPARATOR);
-
+        }
         for (Enrollment enrollment : enrollmentsQueryService.search(enrollmentsQuery)) {
             Patient patient = patientService.patientByOpenmrsId(enrollment.getExternalId());
             String name = enrollment.getCurrentMilestoneName() == null ? enrollment.getScheduleName() : enrollment.getCurrentMilestoneName();
             messageBody.append(messageFor(name, patient)).append(MessageDispatcher.SMS_SEPARATOR);
         }
-        if (GeneralQueryType.ANC_DEFAULTERS.equals(queryType))
+        if (GeneralQueryType.ANC_DEFAULTERS.equals(queryType)) {
             messageBody.append(fetchUnvisitedANCAppointments(facility));
-
+        }
 
         if (StringUtils.isEmpty(messageBody.toString())) {
             messageBody.append("No Patients found for ").append(queryType);
@@ -95,19 +94,14 @@ public class GeneralQueryFormHandler implements FormPublishHandler {
 
     private EnrollmentsQuery getEnrollmentQuery(GeneralQueryForm generalQueryForm, Facility facility) {
         GeneralQueryType queryType = generalQueryForm.getQueryType();
-
         String[] schedules = queryType.getSchedules();
-
         EnrollmentsQuery enrollmentsQuery = new EnrollmentsQuery().havingMetadata("facilityId", facility.getMrsFacilityId()).havingSchedule(schedules);
-
         DateTime today = newDateTime(DateUtil.today());
 
         if (GeneralQueryType.UPCOMING_DELIVERIES.equals(queryType)) {
             enrollmentsQuery = enrollmentsQuery.havingState(EnrollmentStatus.ACTIVE).havingWindowEndingDuring(WindowName.earliest, today.withTimeAtStartOfDay(), today.plusWeeks(1));
-
         } else if (GeneralQueryType.RECENT_DELIVERIES.equals(queryType)) {
             enrollmentsQuery = enrollmentsQuery.completedDuring(today.minusWeeks(1), today);
-
         } else {
             enrollmentsQuery = enrollmentsQuery.havingState(EnrollmentStatus.ACTIVE).currentlyInWindow(WindowName.late, WindowName.max);
         }

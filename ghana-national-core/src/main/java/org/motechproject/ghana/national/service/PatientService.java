@@ -35,7 +35,8 @@ public class PatientService {
     private AllPatientSearch allPatientSearch;
 
     @Autowired
-    public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator, AllEncounters allEncounters, AllSchedulesAndMessages allSchedulesAndMessages, AllAppointmentsAndMessages allAppointmentsAndMessages, AllPatientSearch allPatientSearch) {
+    public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator, AllEncounters allEncounters,
+                          AllSchedulesAndMessages allSchedulesAndMessages, AllAppointmentsAndMessages allAppointmentsAndMessages, AllPatientSearch allPatientSearch) {
         this.allPatients = allPatients;
         this.identifierGenerator = identifierGenerator;
         this.allEncounters = allEncounters;

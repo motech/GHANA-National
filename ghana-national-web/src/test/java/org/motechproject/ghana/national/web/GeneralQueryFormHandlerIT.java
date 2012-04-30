@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.ghana.national.bean.GeneralQueryForm;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.Facility;
@@ -73,12 +74,14 @@ public class GeneralQueryFormHandlerIT {
     private FacilityService facilityService;
 
     @Autowired
+    AppointmentService appointmentService;
+
+    @Autowired
     AllSchedules allSchedules;
 
     @Autowired
     private PatientService patientService;
 
-    @Autowired
     private GeneralQueryFormHandler generalQueryFormHandler;
 
     @Value("#{openmrsProperties['openmrs.admin.username']}")
@@ -119,7 +122,12 @@ public class GeneralQueryFormHandlerIT {
     @Before
     public void setUp() throws FacilityAlreadyFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
         initMocks(this);
+        generalQueryFormHandler = new GeneralQueryFormHandler();
         ReflectionTestUtils.setField(generalQueryFormHandler, "smsGateway", mockSMSGateway);
+        ReflectionTestUtils.setField(generalQueryFormHandler, "enrollmentsQueryService", enrollmentsQueryService);
+        ReflectionTestUtils.setField(generalQueryFormHandler, "appointmentService", appointmentService);
+        ReflectionTestUtils.setField(generalQueryFormHandler, "facilityService", facilityService);
+        ReflectionTestUtils.setField(generalQueryFormHandler, "patientService", patientService);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(new UsernamePasswordAuthenticationToken(OpenMRSSession.login(userName, password), password));
         openMRSSession.open();

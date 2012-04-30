@@ -47,20 +47,20 @@ public class GeneralQueryFormUploadTest extends LoggedInUserFunctionalTest {
     public void setUp() throws IOException {
 
         staffId = staffGenerator.createStaff(browser, homePage);
-                final String firstPatientNameGenerated = new DataGenerator().randomString(5);
+        final String firstPatientNameGenerated = new DataGenerator().randomString(5);
         String patientName = firstPatientNameGenerated + "XXX Client First Name";
         patient = TestPatient.with(patientName, staffId)
-                        .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
-                        .estimatedDateOfBirth(false);
+                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
+                .estimatedDateOfBirth(false);
         patientId = patientGenerator.createPatient(patient, browser, homePage);
 
     }
 
-    @Test(enabled=false)
+    @Test
     public void shouldUploadFormWithGeneralQueryTypeAsANCDefaulters() throws IOException {
         DataGenerator dataGenerator = new DataGenerator();
 
-        String secondPatientName = dataGenerator.randomString(5)+"XXXXXXClient First ";
+        String secondPatientName = dataGenerator.randomString(5) + "XXXXXXClient First ";
         TestPatient secondTestPatient = TestPatient.with(secondPatientName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
@@ -81,13 +81,13 @@ public class GeneralQueryFormUploadTest extends LoggedInUserFunctionalTest {
         final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.generalQueryForm(), new HashMap<String, String>() {{
             put("facilityId", "12345");
             put("staffId", "123");
-            put("responsePhoneNumber","123");
+            put("responsePhoneNumber", "123");
             put("queryType", GeneralQueryType.CWC_DEFAULTERS.toString());
         }});
         final List<XformHttpClient.Error> errors = xformResponse.getErrors();
         assertEquals(errors.size(), 1);
         final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
-        assertEquals(errorsMap.size(),3);
+        assertEquals(errorsMap.size(), 3);
         assertThat(errorsMap.get("staffId"), hasItem("not found"));
         assertThat(errorsMap.get("facilityId"), hasItem("not found"));
         assertThat(errorsMap.get("responsePhoneNumber"), hasItem("wrong format"));
