@@ -101,11 +101,12 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
         String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
 
-        TestCWCEnrollment cwcEnrollment = TestCWCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId);
+        LocalDate registrationDate = DateUtil.today().plusDays(10);
+        TestCWCEnrollment cwcEnrollment = TestCWCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId).withRegistrationDate(registrationDate);
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, testPatient.facilityId()).patientId(patientId);
 
         Map<String, String> data = cwcEnrollment.withMobileMidwifeEnrollmentThroughMobile(mmEnrollmentDetails);
-        data.put("registrationDate", Utility.nullSafeToString(DateUtil.today().plusDays(10), "yyyy-MM-dd"));
+        data.put("registrationDate", Utility.nullSafeToString(registrationDate, "yyyy-MM-dd"));
 
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), data);
         assertEquals(1, response.getSuccessCount());
