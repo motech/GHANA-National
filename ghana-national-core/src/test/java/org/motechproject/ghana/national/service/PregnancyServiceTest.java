@@ -177,7 +177,7 @@ public class PregnancyServiceTest {
         verify(mockAllEncounters, times(2)).persistEncounter(encounterArgumentCaptor.capture());
         verify(mockAllPatients).save(patientArgumentCaptor.capture());
         orderVerifyToSendSMSAtTheEnd.verify(mockCareService).enroll(cwcVOArgumentCaptor.capture());
-        orderVerifyToSendSMSAtTheEnd.verify(mockCareService).enrollChildForPNCOnDelivery(child);
+        orderVerifyToSendSMSAtTheEnd.verify(mockCareService).enrollChildForPNC(child);
 
         List<Encounter> encounters = encounterArgumentCaptor.getAllValues();
         assertThat(encounters.size(), is(equalTo(2)));
