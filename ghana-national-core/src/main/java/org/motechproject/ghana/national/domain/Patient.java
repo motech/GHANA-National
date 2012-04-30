@@ -92,7 +92,7 @@ public class Patient {
         return new ArrayList<String>(new HashSet<String>(union(ancCarePrograms, cwcCarePrograms)));
     }
 
-    public List<PatientCare> cwcCareProgramToEnrollOnRegistration(LocalDate enrollmentDate, List<CwcCareHistory> historiesCaptured, CWCCareHistoryVO cwcCareHistoryVO, ActiveCareSchedules activeCareSchedules) {
+    public List<PatientCare> cwcCareProgramToEnrollOnRegistration(LocalDate enrollmentDate, List<CwcCareHistory> historiesCaptured, CWCCareHistoryVO cwcCareHistoryVO, ActiveCareSchedules activeCareSchedules, Date lastPentaDate, Date lastIPTiDate) {
         ChildCare childCare = childCare();
         LocalDate referenceDate = childCare.birthDate();
         return nullSafeList(
@@ -102,9 +102,9 @@ public class Patient {
                 opv0ChildCare(enrollmentDate, referenceDate,cwcCareHistoryVO),
                 opv1ChildCare(enrollmentDate, referenceDate, historiesCaptured, activeCareSchedules, cwcCareHistoryVO),
                 new PentaVaccineCare(this, enrollmentDate, activeCareSchedules.hasActivePentaSchedule(),
-                        safeToString(cwcCareHistoryVO.getLastPenta()), cwcCareHistoryVO.getLastPentaDate()).careForReg(),
+                        safeToString(cwcCareHistoryVO.getLastPenta()), lastPentaDate).careForReg(),
                 new IPTiVaccineCare(this, enrollmentDate, activeCareSchedules.hasActiveIPTiSchedule(),
-                        safeToString(cwcCareHistoryVO.getLastIPTi()), cwcCareHistoryVO.getLastIPTiDate()).careForReg()
+                        safeToString(cwcCareHistoryVO.getLastIPTi()), lastIPTiDate).careForReg()
         );
 
     }
