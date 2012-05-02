@@ -39,10 +39,10 @@ public class MobileMidwifeCampaignEventHandler {
             String patientId = (String) params.get(EventKeys.EXTERNAL_ID_KEY);
 
             MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(patientId);
-            String messageKey = (String) event.getParameters().get(EventKeys.MESSAGE_KEY);
+            String generatedMessageKey = (String) event.getParameters().get(EventKeys.GENERATED_MESSAGE_KEY);
 
             if (event.isLastEvent()) mobileMidwifeService.unRegister(patientId);
-            sendMessage(enrollment, messageKey);
+            sendMessage(enrollment, generatedMessageKey);
         } catch (Exception e) {
             logger.error("<MobileMidwifeEvent>: Encountered error while sending alert: ", e);
             throw new EventHandlerException(event, e);
