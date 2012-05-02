@@ -49,7 +49,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
         ServiceType serviceType = ServiceType.CHILD_CARE;
         String patientId = "1234568";
         String mobileNumber = "9845312345";
-        String messageKey = "childcare-calendar-week-33-Monday";
+        String genMessageKey = "childcare-calendar-week-33-Monday";
         String messageTemplate = "text-message";
         Language language = Language.EN;
         MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
@@ -57,20 +57,20 @@ public class MobileMidwifeCampaignEventHandlerTest {
 
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 
-        handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), messageKey));
-        verify(mockSMSGateway).dispatchSMS(messageKey, language.name(), mobileNumber);
+        handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), genMessageKey));
+        verify(mockSMSGateway).dispatchSMS(genMessageKey, language.name(), mobileNumber);
     }
 
     @Test
     public void shouldNotSendSMSForEnrollmentWithNonSMSMedium() throws ContentNotFoundException {
         ServiceType serviceType = ServiceType.PREGNANCY;
         String patientId = "1234568";
-        String messageKey = "pregnancy-calendar-week-33-Monday";
+        String genMessageKey = "pregnancy-calendar-week-33-Monday";
         MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
                 .setServiceType(serviceType).setMedium(Medium.VOICE).setPhoneNumber("9845312345");
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 
-        handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), messageKey));
+        handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), genMessageKey));
         verify(mockSMSGateway, never()).dispatchSMS(anyString(), anyString(), anyString());
     }
 
@@ -78,13 +78,13 @@ public class MobileMidwifeCampaignEventHandlerTest {
     public void shouldSendUnRegisteredUserIfItIsTheLastEventForTheProgram() throws ContentNotFoundException {
         ServiceType serviceType = ServiceType.CHILD_CARE;
         String patientId = "1234568";
-        String messageKey = "childcare-calendar-week-33-Monday";
+        String genMessageKey = "childcare-calendar-week-33-Monday";
         Language language = Language.EN;
         MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
                 .setServiceType(serviceType).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber("9845312345");
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 
-        MotechEvent lastEvent = motechEvent(patientId, serviceType.name(), messageKey).setLastEvent(true);
+        MotechEvent lastEvent = motechEvent(patientId, serviceType.name(), genMessageKey).setLastEvent(true);
         handler.sendProgramMessage(lastEvent);
         verify(mockMobileMidwifeService).unRegister(patientId);
     }
@@ -101,12 +101,11 @@ public class MobileMidwifeCampaignEventHandlerTest {
         }
     }
 
-     private MotechEvent motechEvent(String externalId, String campaignName, String messageKey) {
+     private MotechEvent motechEvent(String externalId, String campaignName, String genMessageKey) {
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         parameters.put(EventKeys.CAMPAIGN_NAME_KEY, campaignName);
-        parameters.put(EventKeys.MESSAGE_KEY, messageKey);
+        parameters.put(EventKeys.GENERATED_MESSAGE_KEY, genMessageKey);
         parameters.put(EventKeys.EXTERNAL_ID_KEY, externalId);
         return new MotechEvent(INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT, parameters);
     }
-
 }
