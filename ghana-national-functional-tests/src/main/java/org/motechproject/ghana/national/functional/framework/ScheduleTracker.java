@@ -60,11 +60,11 @@ public class ScheduleTracker {
         preferredAlertTime = new Time(10, 10);
     }
 
-    public String getActiveMilestone(String externalId, String scheduleName){
+    public String getActiveMilestone(String externalId, String scheduleName) {
         return allEnrollments.getActiveEnrollment(externalId, scheduleName).getCurrentMilestoneName();
     }
 
-    public EnrollmentRecord activeEnrollment(String externalId, String scheduleName){
+    public EnrollmentRecord activeEnrollment(String externalId, String scheduleName) {
         return scheduleTrackingService.getEnrollment(externalId, scheduleName);
     }
 
@@ -249,7 +249,7 @@ public class ScheduleTracker {
                 LocalDate referenceWindowStartDate = referenceDate.plus(windowStart);
                 LocalDate referenceWindowEndDate = referenceDate.plus(windowEnd);
 
-                int alertCount = alert.getRemainingAlertCount(newDateTime(referenceWindowStartDate.toDate()), newDateTime(referenceWindowEndDate.toDate()),null);
+                int alertCount = alert.getRemainingAlertCount(newDateTime(referenceWindowStartDate.toDate()), newDateTime(referenceWindowEndDate.toDate()), null);
                 if (alertCount > 0) {
                     return alert.getNextAlertDateTime(newDateTime(referenceWindowStartDate.toDate()), null).toLocalDate();
                 }

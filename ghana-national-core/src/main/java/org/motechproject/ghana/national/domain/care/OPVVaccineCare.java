@@ -20,8 +20,8 @@ public class OPVVaccineCare extends ChildVaccineCare {
 
 
     public OPVVaccineCare(Patient patient, LocalDate enrollmentDate, Boolean hasActiveOPVVaccine, String lastOPVDosage, Date lastOPVDate, String opvVaccine) {
-        super(patient,hasActiveOPVVaccine, opvVaccine, lastOPVDosage, lastOPVDate);
-        this.enrollmentDate=enrollmentDate;
+        super(patient, hasActiveOPVVaccine, opvVaccine, lastOPVDosage, lastOPVDate);
+        this.enrollmentDate = enrollmentDate;
         this.patient = patient;
     }
 
@@ -31,7 +31,7 @@ public class OPVVaccineCare extends ChildVaccineCare {
         if (childCare.applicableForOPV0())
             return new PatientCare(CWC_OPV_0, childCare.birthDate(), enrollmentDate, null, patient.facilityMetaData());
         else if (childCare.applicableForOPVOther())
-            return new PatientCare(CWC_OPV_OTHERS,childCare.birthDate(),enrollmentDate,null,patient.facilityMetaData());
+            return new PatientCare(CWC_OPV_OTHERS, childCare.birthDate(), enrollmentDate, null, patient.facilityMetaData());
         return null;
     }
 

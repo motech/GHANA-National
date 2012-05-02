@@ -54,7 +54,7 @@ public class PatientCare {
     }
 
     public Time preferredTime() {
-        return  defaultPreferredTimeIfNoReferenceTimeIsSet();
+        return defaultPreferredTimeIfNoReferenceTimeIsSet();
     }
 
     private Time defaultPreferredTimeIfNoReferenceTimeIsSet() {
@@ -62,7 +62,7 @@ public class PatientCare {
     }
 
     public LocalDate enrollmentDate() {
-        return enrollmentDate;  
+        return enrollmentDate;
     }
 
     public Time enrollmentTime() {
@@ -77,8 +77,8 @@ public class PatientCare {
         return startingMilestoneName;
     }
 
-    public PatientCare milestoneName(String milestoneName){
-        this.startingMilestoneName =milestoneName;
+    public PatientCare milestoneName(String milestoneName) {
+        this.startingMilestoneName = milestoneName;
         return this;
     }
 
