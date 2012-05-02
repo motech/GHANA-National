@@ -14,7 +14,6 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 import static ch.lambdaj.Lambda.*;
 import static ch.lambdaj.group.Groups.by;
@@ -27,10 +26,6 @@ import static org.motechproject.ghana.national.domain.AlertWindow.ghanaNationalW
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY;
 
 public class AggregationStrategyImpl implements AggregationStrategy {
-
-    public static final String SMS_SEPARATOR = "%0A";
-    private Logger log = Logger.getLogger(AggregationStrategyImpl.class.getName());
-
 
     @Autowired
     private CMSLiteService cmsLiteService;
