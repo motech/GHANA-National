@@ -94,6 +94,24 @@ public class CareHistoryFormUploadSchedulesTest extends OpenMRSAwareFunctionalTe
         Assert.assertNotNull(scheduleTracker.activeEnrollment(openMRSId, ScheduleNames.CWC_IPT_VACCINE));
     }
 
+    @Test
+    public void shouldNotCreateOPV0ScheduleIfOPV1IsTaken() {
+        String staffId = staffGenerator.createStaff(browser, homePage);
+        LocalDate dateOfBirth = DateUtil.today();
+        TestPatient patient = TestPatient.with(dataGenerator.randomString(8), staffId).patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).dateOfBirth(dateOfBirth);
+        String patientId = patientGenerator.createPatient(patient, browser, homePage);
+        String openMRSId = openMRSDB.getOpenMRSId(patientId);
+        LocalDate registrationDate = DateUtil.today();
+
+        TestCWCEnrollment cwcEnrollment = TestCWCEnrollment.createWithoutHistory()
+                .withMotechPatientId(patientId).withStaffId(staffId).withRegistrationDate(registrationDate)
+                .withAddHistory(true).withLastOPV("1").withLastOPVDate(dateOfBirth);
+
+        mobile.upload(MobileForm.registerCWCForm(), cwcEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
+        Assert.assertNull(scheduleTracker.activeEnrollment(openMRSId, ScheduleNames.CWC_OPV_0));
+        Assert.assertNotNull(scheduleTracker.activeEnrollment(openMRSId, ScheduleNames.CWC_OPV_OTHERS));
+    }
+
     LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate) {
         return scheduleTracker.firstAlert(scheduleName, referenceDate);
     }
