@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.bean.GeneralQueryForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.GeneralQueryType;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.messagegateway.domain.MessageDispatcher;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -58,6 +59,7 @@ public class GeneralQueryFormHandler implements FormPublishHandler {
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(MotechEvent event) {
+        try {
         GeneralQueryForm generalQueryForm = (GeneralQueryForm) event.getParameters().get(FORM_BEAN);
         GeneralQueryType queryType = generalQueryForm.getQueryType();
         String facilityMotechId = generalQueryForm.getFacilityId();
@@ -65,7 +67,11 @@ public class GeneralQueryFormHandler implements FormPublishHandler {
 
         String messageContent = prepareMessageContentForQuery(queryType, facility, getEnrollmentQuery(generalQueryForm, facility));
         smsGateway.dispatchSMS(generalQueryForm.getResponsePhoneNumber(), messageContent);
-        log.info(event.getSubject() + "|params=" + event.getParameters());
+        }
+        catch (Exception e){
+            log.error("Exception occured while quering for defaulters", e);
+            throw new XFormHandlerException(event.getSubject(), e);
+        }
     }
 
     private String prepareMessageContentForQuery(GeneralQueryType queryType, Facility facility, EnrollmentsQuery enrollmentsQuery) {
