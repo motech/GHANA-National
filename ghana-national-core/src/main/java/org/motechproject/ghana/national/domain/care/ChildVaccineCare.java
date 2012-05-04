@@ -23,7 +23,7 @@ public abstract class ChildVaccineCare extends VaccineCare {
     private boolean isWithinFiveYearsOfAge() {
         if (dateOfBirth != null) {
             LocalDate maxAge = dateOfBirth.plusYears(5);
-            return lastTakenDate != null && lastTakenDate.after(dateOfBirth.toDate()) && lastTakenDate.before(maxAge.toDate());
+            return lastTakenDate != null && !lastTakenDate.before(dateOfBirth.toDate()) && !lastTakenDate.after(maxAge.toDate());
         }
         return false;
     }
