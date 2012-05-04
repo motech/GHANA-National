@@ -28,7 +28,7 @@
                 "languages" : ["en"],
                 "messageKey": "CHILD_CARE-cw{Offset}-{WeekDay}",
                 "calendarStartOfWeek" : "Sunday",
-                "weekDaysApplicable" : ["Monday", "Wednesday", "Friday"],
+                "weekDaysApplicable" : ["Monday"],
                 "deliverTime" : "10:30"
             }
 
