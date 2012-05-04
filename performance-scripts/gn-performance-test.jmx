@@ -30,12 +30,12 @@
           <collectionProp name="Arguments.arguments">
             <elementProp name="no_of_field_workers" elementType="Argument">
               <stringProp name="Argument.name">no_of_field_workers</stringProp>
-              <stringProp name="Argument.value">1</stringProp>
+              <stringProp name="Argument.value">2</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
             <elementProp name="no_of_test_loops" elementType="Argument">
               <stringProp name="Argument.name">no_of_test_loops</stringProp>
-              <stringProp name="Argument.value">1</stringProp>
+              <stringProp name="Argument.value">3</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
             <elementProp name="temp_dir" elementType="Argument">
@@ -51,6 +51,16 @@
             <elementProp name="epi_handy_jar_loc" elementType="Argument">
               <stringProp name="Argument.name">epi_handy_jar_loc</stringProp>
               <stringProp name="Argument.value">/home/deepans/Public/projects/java/GHANA-National/ghana-national-functional-tests/lib/epihandy-midp.jar</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="forms_to_be_tested" elementType="Argument">
+              <stringProp name="Argument.name">forms_to_be_tested</stringProp>
+              <stringProp name="Argument.value">RegisterClient</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="patient_fname_prefix" elementType="Argument">
+              <stringProp name="Argument.name">patient_fname_prefix</stringProp>
+              <stringProp name="Argument.value">Balaji</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
           </collectionProp>
@@ -81,33 +91,55 @@ import org.motechproject.ghana.national.functional.framework.Mobile;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.MotechException;
 
-registrationDetails = new HashMap();
-registrationDetails{&quot;registrationMode&quot;}=&quot;AUTO_GENERATE_ID&quot;;
-registrationDetails{&quot;registrantType&quot;}=&quot;OTHER&quot;;
-registrationDetails{&quot;firstName&quot;}=&quot;Ausi&quot;;
-registrationDetails{&quot;middleName&quot;}=&quot;Middle Name&quot;;
-registrationDetails{&quot;lastName&quot;}=&quot;Last Name&quot;;
-registrationDetails{&quot;sex&quot;}=&quot;M&quot;;
-registrationDetails{&quot;insured&quot;}=&quot;N&quot;;
-registrationDetails{&quot;address&quot;}=&quot;Dummy Address&quot;;
-registrationDetails{&quot;estimatedBirthDate&quot;}=&quot;N&quot;;
-registrationDetails{&quot;date&quot;}=&quot;${__time(yyyy-MM-dd)}&quot;;
-registrationDetails{&quot;dateOfBirth&quot;}=&quot;1982-01-01&quot;;
-registrationDetails{&quot;serialNumber&quot;}=&quot;SerialNumber&quot;;
-registrationDetails{&quot;facilityId&quot;}=&quot;13212&quot;;
-registrationDetails{&quot;staffId&quot;}=&quot;2051&quot;;
-
-try{
-     mobile = new Mobile();
-     requestStream = new DataOutputStream(new FileOutputStream(pathToFile(vars.get(&quot;temp_dir&quot;) + &quot;request&quot;)));
-     formBuilder= new Mobile.FormBuilder().addForm(&quot;xforms/NurseDataEntry/RegisterClient.xml&quot;, registrationDetails);
-     mobile.fillForms(&quot;NurseDataEntry&quot;, formBuilder, requestStream);
-     requestStream.flush();
-     requestStream.close();
-}catch(Exception e){ 
-    ${__log(e, OUT)};
+patientRegistrationFormFactory(uniqueId){
+    print(uniqueId);
+    details = new HashMap();
+    details{&quot;registrationMode&quot;}=&quot;AUTO_GENERATE_ID&quot;;
+    details{&quot;registrantType&quot;}=&quot;OTHER&quot;;
+    details{&quot;firstName&quot;}= vars.get(&quot;patient_fname_prefix&quot;) + uniqueId;
+    details{&quot;middleName&quot;}=&quot;Middle Name&quot;;
+    details{&quot;lastName&quot;}=&quot;Last Name&quot;;
+    details{&quot;sex&quot;}=&quot;M&quot;;
+    details{&quot;insured&quot;}=&quot;N&quot;;
+    details{&quot;address&quot;}=&quot;Dummy Address&quot;;
+    details{&quot;estimatedBirthDate&quot;}=&quot;N&quot;;
+    details{&quot;date&quot;}=&quot;${__time(yyyy-MM-dd)}&quot;;
+    details{&quot;dateOfBirth&quot;}=&quot;1982-01-01&quot;;
+    details{&quot;serialNumber&quot;}=&quot;SerialNumber&quot;; 
+    details{&quot;facilityId&quot;}=&quot;13212&quot;;
+    details{&quot;staffId&quot;}=&quot;2051&quot;;
+    return details; 
 }
-</stringProp>
+
+formData(formName, uniqueId){
+   formFactory = new HashMap();
+   formFactory{&quot;RegisterClient&quot;} = &quot;patientRegistrationFormFactory&quot;;
+   return this.invokeMethod(formFactory.get(formName), new Object[]{uniqueId});
+}
+
+request_count = Integer.parseInt(vars.get(&quot;no_of_test_loops&quot;)) * Integer.parseInt(vars.get(&quot;no_of_field_workers&quot;));
+
+fillForm(mobile, templatePath, studyName, formData, fileName){
+    try{
+         requestStream = new DataOutputStream(new FileOutputStream(pathToFile(vars.get(&quot;temp_dir&quot;) + fileName)));
+         formBuilder= new Mobile.FormBuilder().addForm(templatePath, formData);
+         mobile.fillForms(studyName, formBuilder, requestStream);
+         requestStream.flush();
+         requestStream.close();    
+    }catch(Exception e){ 
+        ${__log(e, OUT)};
+    }
+}
+
+getFornTemplatePath(formName){
+    return &quot;xforms/NurseDataEntry/&quot; + formName + &quot;.xml&quot;;
+}
+
+mobile = new Mobile();
+for(i=0; i &lt; request_count; i++){
+    formName = vars.get(&quot;forms_to_be_tested&quot;);
+    fillForm(mobile, getFornTemplatePath(formName), &quot;NurseDataEntry&quot;, formData(formName, new Integer(i)), &quot;request_&quot; + i);
+}</stringProp>
             <stringProp name="BeanShellSampler.filename"></stringProp>
             <stringProp name="BeanShellSampler.parameters"></stringProp>
             <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
@@ -133,8 +165,8 @@ try{
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
             <collectionProp name="HTTPFileArgs.files">
-              <elementProp name="/tmp/request" elementType="HTTPFileArg">
-                <stringProp name="File.path">/tmp/request</stringProp>
+              <elementProp name="/tmp/request_${request_counter}" elementType="HTTPFileArg">
+                <stringProp name="File.path">/tmp/request_${request_counter}</stringProp>
                 <stringProp name="File.paramname"></stringProp>
                 <stringProp name="File.mimetype"></stringProp>
               </elementProp>
@@ -212,6 +244,15 @@ if (response.getFailureCount() &gt; 0){
 }
 </stringProp>
           </BeanShellPostProcessor>
+          <hashTree/>
+          <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Request counter" enabled="true">
+            <stringProp name="CounterConfig.start">0</stringProp>
+            <stringProp name="CounterConfig.end"></stringProp>
+            <stringProp name="CounterConfig.incr">1</stringProp>
+            <stringProp name="CounterConfig.name">request_counter</stringProp>
+            <stringProp name="CounterConfig.format"></stringProp>
+            <boolProp name="CounterConfig.per_user">false</boolProp>
+          </CounterConfig>
           <hashTree/>
         </hashTree>
       </hashTree>
