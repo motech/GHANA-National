@@ -19,6 +19,12 @@ public class ChildVaccineCareTest {
         final Patient patient = new Patient(new MRSPatient("mrsPatientId", new MRSPerson().dateOfBirth(birthDate.toDate()), new MRSFacility("facilityId")));
         ChildVaccineCare childVaccineCare = new PentaVaccineCare(patient, DateUtil.today(), false, "PENTA1", lastPentaDate.toDate());
         assertTrue(childVaccineCare.isWithinActiveRange());
+
+        childVaccineCare = new PentaVaccineCare(patient, DateUtil.today(), false, "PENTA1", birthDate.toDate());
+        assertTrue(childVaccineCare.isWithinActiveRange());
+
+        childVaccineCare = new PentaVaccineCare(patient, DateUtil.today(), false, "PENTA1", birthDate.plusYears(5).toDate());
+        assertTrue(childVaccineCare.isWithinActiveRange());
     }
 
     @Test
