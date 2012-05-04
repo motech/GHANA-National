@@ -97,11 +97,11 @@ public class CareHistoryFormUploadSchedulesTest extends OpenMRSAwareFunctionalTe
     @Test
     public void shouldNotCreateOPV0ScheduleIfOPV1IsTaken() {
         String staffId = staffGenerator.createStaff(browser, homePage);
-        LocalDate dateOfBirth = DateUtil.today();
+        LocalDate dateOfBirth = DateUtil.today().minusDays(2);
         TestPatient patient = TestPatient.with(dataGenerator.randomString(8), staffId).patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).dateOfBirth(dateOfBirth);
         String patientId = patientGenerator.createPatient(patient, browser, homePage);
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
-        LocalDate registrationDate = DateUtil.today();
+        LocalDate registrationDate = dateOfBirth;
 
         TestCWCEnrollment cwcEnrollment = TestCWCEnrollment.createWithoutHistory()
                 .withMotechPatientId(patientId).withStaffId(staffId).withRegistrationDate(registrationDate)
