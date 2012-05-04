@@ -26,7 +26,7 @@ public enum AlertWindow {
         return name;
     }
 
-    public static AlertWindow byPlatformName(String platformWindowName){
+    public static AlertWindow byPlatformName(String platformWindowName) {
         for (AlertWindow alertWindow : values()) {
             if (platformWindowName.equals(alertWindow.platformWindowName))
                 return alertWindow;
@@ -38,7 +38,11 @@ public enum AlertWindow {
         return order;
     }
 
-    public static List<String> ghanaNationalWindowNames(){
+    public String getPlatformWindowName() {
+        return platformWindowName;
+    }
+
+    public static List<String> ghanaNationalWindowNames() {
         List<String> names = new ArrayList<String>();
         for (AlertWindow alertWindow : Arrays.asList(UPCOMING, DUE, OVERDUE)) {
             names.add(alertWindow.getName());

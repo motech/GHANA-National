@@ -15,26 +15,19 @@ public class SmsTemplateKeys {
     public static final String PNC_MOTHER_SMS_KEY = "PNC_MOTHER_SMS_KEY";
     public static final String PNC_CHILD_SMS_KEY = "PNC_CHILD_SMS_KEY";
     public static final String FACILITIES_DEFAULT_MESSAGE_KEY = "FACILITIES_DEFAULT_MESSAGE_KEY";
-    public static final String PATIENT_ANC_VISIT_DUE_SMS_KEY = "PATIENT_ANCVISIT_DUE_SMS_KEY";
-    public static final String PATIENT_TT_DUE_SMS_KEY = "PATIENT_TT_DUE_SMS_KEY";
-    public static final String PATIENT_IPT_DUE_SMS_KEY = "PATIENT_IPT_DUE_SMS_KEY";
-    public static final String PATIENT_PNC_MOTHER_DUE_SMS_KEY = "PATIENT_PNCMOTHER_DUE_SMS_KEY";
-    public static final String PATIENT_PNC_BABY_DUE_SMS_KEY = "PATIENT_PNCBABY_DUE_SMS_KEY";
-    public static final String PATIENT_BCG_DUE_SMS_KEY = "PATIENT_BCG_DUE_SMS_KEY";
-    public static final String PATIENT_PENTA_DUE_SMS_KEY = "PATIENT_PENTA_DUE_SMS_KEY";
-    public static final String PATIENT_YELLOW_FEVER_DUE_SMS_KEY = "PATIENT_YELLOWFEVER_DUE_SMS_KEY";
-    public static final String PATIENT_MEASLES_DUE_SMS_KEY = "PATIENT_MEASLES_DUE_SMS_KEY";
-    public static final String PATIENT_OPV_DUE_SMS_KEY = "PATIENT_OPV_DUE_SMS_KEY";
-    public static final String PATIENT_IPTI_DUE_SMS_KEY = "PATIENT_IPTI_DUE_SMS_KEY";
-    public static final String PATIENT_ANC_VISIT_LATE_SMS_KEY = "PATIENT_ANCVISIT_LATE_SMS_KEY";
-    public static final String PATIENT_TT_LATE_SMS_KEY = "PATIENT_TT_LATE_SMS_KEY";
-    public static final String PATIENT_IPT_LATE_SMS_KEY = "PATIENT_IPT_LATE_SMS_KEY";
-    public static final String PATIENT_PNC_MOTHER_LATE_SMS_KEY = "PATIENT_PNCMOTHER_LATE_SMS_KEY";
-    public static final String PATIENT_PNC_BABY_LATE_SMS_KEY = "PATIENT_PNCBABY_LATE_SMS_KEY";
-    public static final String PATIENT_BCG_LATE_SMS_KEY = "PATIENT_BCG_LATE_SMS_KEY";
-    public static final String PATIENT_PENTA_LATE_SMS_KEY = "PATIENT_PENTA_LATE_SMS_KEY";
-    public static final String PATIENT_YELLOW_FEVER_LATE_SMS_KEY = "PATIENT_YELLOWFEVER_LATE_SMS_KEY";
-    public static final String PATIENT_MEASLES_LATE_SMS_KEY = "PATIENT_MEASLES_LATE_SMS_KEY";
-    public static final String PATIENT_OPV_LATE_SMS_KEY = "PATIENT_OPV_LATE_SMS_KEY";
-    public static final String PATIENT_IPTI_LATE_SMS_KEY = "PATIENT_IPTI_LATE_SMS_KEY";
+
+    public static final String PATIENT_ANC_VISIT = "PATIENT_ANCVISIT";
+    public static final String PATIENT_TT = "PATIENT_TT";
+    public static final String PATIENT_IPT = "PATIENT_IPT";
+    public static final String PATIENT_PNC_MOTHER = "PATIENT_PNCMOTHER";
+    public static final String PATIENT_PNC_BABY = "PATIENT_PNCBABY";
+    public static final String PATIENT_BCG = "PATIENT_BCG";
+    public static final String PATIENT_PENTA = "PATIENT_PENTA";
+    public static final String PATIENT_YELLOW_FEVER = "PATIENT_YELLOWFEVER";
+    public static final String PATIENT_MEASLES = "PATIENT_MEASLES";
+    public static final String PATIENT_OPV = "PATIENT_OPV";
+    public static final String PATIENT_IPTI = "PATIENT_IPTI";
+
+    public static final String PATIENT_DUE_SMS_KEY =  "_DUE_SMS_KEY";
+    public static final String PATIENT_LATE_SMS_KEY =  "_LATE_SMS_KEY";
 }

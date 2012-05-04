@@ -32,13 +32,16 @@ public class AggregationStrategyImpl implements AggregationStrategy {
 
     @Override
     public List<SMS> aggregate(List<SMS> smsMessages) {
-        String defaultMessage = SMS.fill(getSMSTemplate(FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>(){{
+        String defaultMessage = SMS.fill(getSMSTemplate(FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
             put(WINDOW_NAMES, join(AlertWindow.ghanaNationalWindowNames(), ", "));
         }});
-        List<SMS> filteredMessages = filter(having(on(SMS.class).getText(), not(equalTo(defaultMessage))), smsMessages);
-        return (filteredMessages.isEmpty()) ?
-                filter(having(on(SMS.class).getText(), equalTo(defaultMessage)), smsMessages) :
-                aggregateMessages(filteredMessages);
+        List<SMS> defaultMessages = filter(having(on(SMS.class).getText(), equalTo(defaultMessage)), smsMessages);
+        if (!defaultMessages.isEmpty()) {
+            List<SMS> filteredMessages = filter(having(on(SMS.class).getText(), not(equalTo(defaultMessage))), smsMessages);
+            return (filteredMessages.isEmpty()) ? defaultMessages : aggregateMessages(filteredMessages);
+        } else {
+            return null;
+        }
     }
 
     private List<SMS> aggregateMessages(List<SMS> smsMessages) {

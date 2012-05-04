@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -28,18 +29,21 @@ public class CareScheduleHandlerTest {
     private FacilityService mockFacilityService;
     @Mock
     private AllObservations mockAllObservations;
-    
+    @Mock
+    private AllMobileMidwifeEnrollments mockAllMobileMidwifeEnrollments;
+
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        careScheduleHandlerSpy = spy(new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSmsGateway, mockAllObservations));
+        careScheduleHandlerSpy = spy(new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSmsGateway, mockAllObservations, mockAllMobileMidwifeEnrollments));
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
+        doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToPatient(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
+        doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToPatientForAppointment(Matchers.<String>any(), Matchers.<MotechEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendInstantSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandlePregnancyAlert() {
-
         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handlePregnancyAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendAggregatedSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
@@ -47,26 +51,26 @@ public class CareScheduleHandlerTest {
 
     @Test
     public void shouldHandleTTVaccinationAlert() {
-
         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handleTTVaccinationAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendAggregatedSMSToFacility(TT_VACCINATION_SMS_KEY, milestoneEvent);
+        verify(careScheduleHandlerSpy).sendAggregatedSMSToPatient(PATIENT_TT, milestoneEvent);
     }
 
     @Test
     public void shouldHandleBCGAlert() {
-
         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handleBCGAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendAggregatedSMSToFacility(BCG_SMS_KEY, milestoneEvent);
+        verify(careScheduleHandlerSpy).sendAggregatedSMSToPatient(PATIENT_BCG, milestoneEvent);
     }
 
     @Test
     public void shouldHandleOPVAlert() {
-
         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handleOpvVaccinationAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendAggregatedSMSToFacility(CWC_OPV_SMS_KEY, milestoneEvent);
+        verify(careScheduleHandlerSpy).sendAggregatedSMSToPatient(PATIENT_OPV, milestoneEvent);
     }
 
     @Test
@@ -77,38 +81,39 @@ public class CareScheduleHandlerTest {
         careScheduleHandlerSpy.handleAncVisitAlert(motechEvent);
 
         verify(careScheduleHandlerSpy).sendAggregatedSMSToFacilityForAnAppointment(ANC_VISIT_SMS_KEY, motechEvent);
+        verify(careScheduleHandlerSpy).sendAggregatedSMSToPatientForAppointment(PATIENT_ANC_VISIT, motechEvent);
     }
 
     @Test
     public void shouldHandleIPTpVaccinationAlert() {
-
         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handleIPTpVaccinationAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendAggregatedSMSToFacility(ANC_IPTp_VACCINATION_SMS_KEY, milestoneEvent);
+        verify(careScheduleHandlerSpy).sendAggregatedSMSToPatient(PATIENT_IPT, milestoneEvent);
     }
 
     @Test
     public void shouldHandleIPTiVaccinationAlert() {
-
         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handleIPTiVaccinationAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendAggregatedSMSToFacility(CWC_IPTi_VACCINATION_SMS_KEY, milestoneEvent);
+        verify(careScheduleHandlerSpy).sendAggregatedSMSToPatient(PATIENT_IPTI, milestoneEvent);
     }
 
     @Test
     public void shouldHandleMeaslesVaccinationAlert() {
-
         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handleMeaslesVaccinationAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendAggregatedSMSToFacility(CWC_MEASLES_SMS_KEY, milestoneEvent);
+        verify(careScheduleHandlerSpy).sendAggregatedSMSToPatient(PATIENT_MEASLES, milestoneEvent);
     }
 
     @Test
     public void shouldHandleYellowFeverVaccinationAlert() {
-
         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handleYellowFeverVaccinationAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendAggregatedSMSToFacility(CWC_YF_SMS_KEY, milestoneEvent);
+        verify(careScheduleHandlerSpy).sendAggregatedSMSToPatient(PATIENT_YELLOW_FEVER, milestoneEvent);
     }
 
     @Test
@@ -116,21 +121,22 @@ public class CareScheduleHandlerTest {
         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handlePentaVaccinationAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendAggregatedSMSToFacility(CWC_PENTA_SMS_KEY, milestoneEvent);
+        verify(careScheduleHandlerSpy).sendAggregatedSMSToPatient(PATIENT_PENTA, milestoneEvent);
     }
 
     @Test
     public void shouldHandlePNCMotherAlert() {
-
         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handlePNCMotherAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendInstantSMSToFacility(PNC_MOTHER_SMS_KEY, milestoneEvent);
+        verify(careScheduleHandlerSpy).sendInstantSMSToPatient(PATIENT_PNC_MOTHER, milestoneEvent);
     }
 
     @Test
     public void shouldHandlePNCChildAlert() {
-
         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handlePNCChildAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendInstantSMSToFacility(PNC_CHILD_SMS_KEY, milestoneEvent);
+        verify(careScheduleHandlerSpy).sendInstantSMSToPatient(PATIENT_PNC_BABY, milestoneEvent);
     }
 }

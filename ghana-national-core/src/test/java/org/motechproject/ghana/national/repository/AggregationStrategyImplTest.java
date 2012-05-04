@@ -22,7 +22,8 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.domain.AlertWindow.*;
+import static org.motechproject.ghana.national.domain.AlertWindow.DUE;
+import static org.motechproject.ghana.national.domain.AlertWindow.UPCOMING;
 
 public class AggregationStrategyImplTest extends BaseUnitTest {
 
@@ -82,7 +83,7 @@ public class AggregationStrategyImplTest extends BaseUnitTest {
 
     @Test
     public void shouldAggregateManySMSBasedOnWindowNames() throws ContentNotFoundException {
-        final String defaultMessage = "Your facility has no ${windowNames} cares for this week";
+        final String defaultMessage = "Your facility has no Overdue cares for this week";
         when(mockCmsLiteService.getStringContent(Locale.getDefault().getLanguage(),
                 SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY)).thenReturn(new StringContent(null, null, defaultMessage));
         List<SMS> messagesList = new ArrayList<SMS>() {{
@@ -98,6 +99,7 @@ public class AggregationStrategyImplTest extends BaseUnitTest {
             add(SMS.fromText(DUE.getName() + ",milestoneName,motechId,serialNumber,firstName,lastName", "ph", null, null, alphabeticalOrder));
             add(SMS.fromText(DUE.getName() + ",milestoneName,motechId2,serialNumber,firstName2,lastName3", "ph", null, null, alphabeticalOrder));
             add(SMS.fromText(DUE.getName() + ",milestoneName,motechId3,serialNumber,firstName2,lastName3", "ph", null, null, alphabeticalOrder));
+            add(SMS.fromText(defaultMessage, "ph", null, null, alphabeticalOrder));
         }};
 
         final List<SMS> aggregatedSMSList = aggregationStrategy.aggregate(messagesList);
