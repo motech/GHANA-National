@@ -193,23 +193,29 @@ public class XformHttpClient {
     }
 
     private static XformResponse processResponse(HttpConnection httpConnection) throws IOException {
+        if (httpConnection.getResponseCode() == HttpConnection.HTTP_OK) {
+            return parseResponse(httpConnection.openInputStream());
+        }
+        return null;
+    }
+
+    public static XformResponse parseResponse(InputStream inputStream) throws IOException {
         DataInputStream dataInputStream = null;
         try {
-            if (httpConnection.getResponseCode() == HttpConnection.HTTP_OK) {
-                dataInputStream = new DataInputStream(new ZInputStream(httpConnection.openInputStream()));
-                final byte status = dataInputStream.readByte();
+            dataInputStream = new DataInputStream(new ZInputStream(inputStream));
+            final byte status = dataInputStream.readByte();
 
-                if (status != 1) {
-                    throw new RuntimeException("xml processing failed.");
-                }
-
-                final XformResponse response = new XformResponse(status, dataInputStream.readInt(), dataInputStream.readInt());
-                for (int i = 0; i < response.getFailureCount(); i++) {
-                    response.addError(new Error(dataInputStream.readByte(), dataInputStream.readShort(), dataInputStream.readUTF()));
-                }
-                return response;
+            if (status != 1) {
+                throw new RuntimeException("xml processing failed.");
             }
-            return null;
+
+            final XformResponse response = new XformResponse(status, dataInputStream.readInt(), dataInputStream.readInt());
+            for (int i = 0; i < response.getFailureCount(); i++) {
+                response.addError(new Error(dataInputStream.readByte(), dataInputStream.readShort(), dataInputStream.readUTF()));
+            }
+            return response;
+        } catch (IOException ioException) {
+            throw ioException;
         } finally {
             if (dataInputStream != null) {
                 dataInputStream.close();
