@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.model.StringContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
+import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
 import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
@@ -79,7 +80,7 @@ public class SMSGatewayTest extends BaseUnitTest{
 
         smsGateway.dispatchSMSToAggregator(templateKey, new HashMap<String, String>() {{
             put(template, smsText);
-        }}, phoneNumber, "identifier");
+        }}, phoneNumber, "identifier", MessageRecipientType.FACILITY);
 
 
         ArgumentCaptor<SMS> smsArgumentCaptor = ArgumentCaptor.forClass(SMS.class);

@@ -7,6 +7,7 @@ import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.domain.AlertWindow;
 import org.motechproject.ghana.national.domain.SmsTemplateKeys;
 import org.motechproject.ghana.national.messagegateway.domain.AggregationStrategy;
+import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
 import org.motechproject.ghana.national.messagegateway.domain.SMSDatum;
 import org.motechproject.ghana.national.tools.Utility;
@@ -29,19 +30,36 @@ public class AggregationStrategyImpl implements AggregationStrategy {
 
     @Autowired
     private CMSLiteService cmsLiteService;
+    public static final String SMS_SEPARATOR = "%0A";
 
     @Override
     public List<SMS> aggregate(List<SMS> smsMessages) {
+        List<SMS> aggregatedSMS = new ArrayList<SMS>();
+        List<SMS> smsForFacility = filter(having(on(SMS.class).getMessageRecipientType(), equalTo(MessageRecipientType.FACILITY)), smsMessages);
+        List<SMS> smsForPatient = filter(having(on(SMS.class).getMessageRecipientType(), equalTo(MessageRecipientType.PATIENT)), smsMessages);
+        if (!smsForFacility.isEmpty()) {
+            aggregatedSMS.addAll(processMessagesForFacility(smsForFacility));
+        }
+        if (!smsForPatient.isEmpty()) {
+            aggregatedSMS.addAll(processMessagesForPatient(smsForPatient));
+        }
+        return aggregatedSMS;
+    }
+
+    private List<SMS> processMessagesForPatient(List<SMS> smsForPatient) {
+        StringBuilder builder = new StringBuilder();
+        for (SMS sms : smsForPatient) {
+            builder.append(sms.getText()).append(SMS_SEPARATOR);
+        }
+        return Arrays.asList(SMS.fromText(builder.toString(), smsForPatient.get(0).getPhoneNumber(), DateUtil.now(), null, MessageRecipientType.PATIENT));
+    }
+
+    private List<SMS> processMessagesForFacility(List<SMS> smsMessages) {
         String defaultMessage = SMS.fill(getSMSTemplate(FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
             put(WINDOW_NAMES, join(AlertWindow.ghanaNationalWindowNames(), ", "));
         }});
-        List<SMS> defaultMessages = filter(having(on(SMS.class).getText(), equalTo(defaultMessage)), smsMessages);
-        if (!defaultMessages.isEmpty()) {
-            List<SMS> filteredMessages = filter(having(on(SMS.class).getText(), not(equalTo(defaultMessage))), smsMessages);
-            return (filteredMessages.isEmpty()) ? defaultMessages : aggregateMessages(filteredMessages);
-        } else {
-            return null;
-        }
+        List<SMS> filteredMessages = filter(having(on(SMS.class).getText(), not(equalTo(defaultMessage))), smsMessages);
+        return (filteredMessages.isEmpty()) ? filter(having(on(SMS.class).getText(), equalTo(defaultMessage)), smsMessages) : aggregateMessages(filteredMessages);
     }
 
     private List<SMS> aggregateMessages(List<SMS> smsMessages) {
@@ -82,14 +100,14 @@ public class AggregationStrategyImpl implements AggregationStrategy {
                 }
             }
             if (count != 0) {
-                messages.add(SMS.fromText(builder.toString(), phoneNumber, DateUtil.now(), null, null));
+                messages.add(SMS.fromText(builder.toString(), phoneNumber, DateUtil.now(), null, MessageRecipientType.FACILITY));
             } else {
                 windowsWithoutSMS.add(window);
             }
         }
         messages.add(SMS.fromTemplate(getSMSTemplate(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
             put(WINDOW_NAMES, join(windowsWithoutSMS, ", "));
-        }}, phoneNumber, DateUtil.now(), null, null));
+        }}, phoneNumber, DateUtil.now(), null, MessageRecipientType.FACILITY));
         return messages;
     }
 

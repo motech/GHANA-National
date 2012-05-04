@@ -5,6 +5,7 @@ import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.SMSGateway;
@@ -52,7 +53,7 @@ public abstract class BaseScheduleHandler {
         if (phoneNumbers.size() == 0) {
             logger.warn("No Phone Numbers in Facility to send SMS.");
         }
-        dispatchSMSToAggregator(facility.getPhoneNumbers(), ancVisitSmsKey, patient, motechEvent);
+        dispatchSMSToAggregator(facility.getPhoneNumbers(), ancVisitSmsKey, patient, motechEvent, MessageRecipientType.FACILITY);
     }
 
     protected void sendAggregatedSMSToPatientForAppointment(String smsTemplateKey, MotechEvent motechEvent) {
@@ -63,14 +64,14 @@ public abstract class BaseScheduleHandler {
         String phoneNumber = getPatientPhoneNumber(patient);
 
         if (smsTemplateName != null && StringUtils.isNotBlank(phoneNumber)) {
-            dispatchSMSToAggregator(Arrays.asList(phoneNumber), smsTemplateName, patient, motechEvent);
+            dispatchSMSToAggregator(Arrays.asList(phoneNumber), smsTemplateName, patient, motechEvent, MessageRecipientType.PATIENT);
         }
     }
 
     protected void sendAggregatedSMSToFacility(String smsTemplateKey, final MilestoneEvent milestoneEvent) {
         Patient patient = patientService.patientByOpenmrsId(milestoneEvent.getExternalId());
         Facility facility = facilityService.getFacility(patient.getMrsPatient().getFacility().getId());
-        dispatchSMSToAggregator(facility.getPhoneNumbers(), milestoneEvent, smsTemplateKey, patient);
+        dispatchSMSToAggregator(facility.getPhoneNumbers(), milestoneEvent, smsTemplateKey, patient, MessageRecipientType.FACILITY);
     }
 
     protected void sendAggregatedSMSToPatient(String smsTemplateKey, MilestoneEvent milestoneEvent) {
@@ -78,7 +79,7 @@ public abstract class BaseScheduleHandler {
         String phoneNumber = getPatientPhoneNumber(patient);
         String smsTemplateName = getSMSTemplateName(smsTemplateKey, milestoneEvent.getWindowName());
         if (smsTemplateName != null && StringUtils.isNotBlank(phoneNumber)) {
-            dispatchSMSToAggregator(Arrays.asList(phoneNumber), milestoneEvent, smsTemplateName, patient);
+            dispatchSMSToAggregator(Arrays.asList(phoneNumber), milestoneEvent, smsTemplateName, patient, MessageRecipientType.PATIENT);
         }
     }
 
@@ -113,7 +114,8 @@ public abstract class BaseScheduleHandler {
         return null;
     }
 
-    private void dispatchSMSToAggregator(List<String> phoneNumbers, String smsTemplateName, Patient patient, MotechEvent motechEvent) {
+    private void dispatchSMSToAggregator(List<String> phoneNumbers, String smsTemplateName, Patient patient,
+                                         MotechEvent motechEvent, MessageRecipientType messageRecipientType) {
         Map<String, Object> parameters = motechEvent.getParameters();
         String windowName = getVisitWindow((String) parameters.get(MotechSchedulerService.JOB_ID_KEY)).getName();
         String scheduleName = (String) parameters.get(EventKeys.VISIT_NAME);
@@ -121,19 +123,22 @@ public abstract class BaseScheduleHandler {
         String externalId = (String) parameters.get(EventKeys.EXTERNAL_ID_KEY);
         String messageIdentifier = new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier();
         for (String phoneNumber : phoneNumbers) {
-            smsGateway.dispatchSMSToAggregator(smsTemplateName, patientDetailsMap(patient, windowName, scheduleName, serialNumber), phoneNumber, messageIdentifier);
+            smsGateway.dispatchSMSToAggregator(smsTemplateName, patientDetailsMap(patient, windowName, scheduleName, serialNumber),
+                    phoneNumber, messageIdentifier, messageRecipientType);
         }
 
     }
 
-    private void dispatchSMSToAggregator(List<String> phoneNumbers, MilestoneEvent milestoneEvent, String smsTemplateKey, Patient patient) {
+    private void dispatchSMSToAggregator(List<String> phoneNumbers, MilestoneEvent milestoneEvent, String smsTemplateKey,
+                                         Patient patient, MessageRecipientType messageRecipientType) {
         String windowName = AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName();
         String serialNumber = getSerialNumber(patient);
         String messageIdentifier = new AggregationMessageIdentifier(milestoneEvent.getExternalId(), milestoneEvent.getScheduleName()).getIdentifier();
 
         for (String phoneNumber : phoneNumbers) {
             smsGateway.dispatchSMSToAggregator(smsTemplateKey, patientDetailsMap(patient, windowName,
-                    milestoneEvent.getMilestoneAlert().getMilestoneName(), serialNumber), phoneNumber, messageIdentifier);
+                    milestoneEvent.getMilestoneAlert().getMilestoneName(), serialNumber),
+                    phoneNumber, messageIdentifier, messageRecipientType);
         }
     }
 

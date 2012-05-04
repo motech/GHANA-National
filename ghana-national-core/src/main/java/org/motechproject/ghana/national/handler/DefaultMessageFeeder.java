@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.handler;
 
 import org.motechproject.ghana.national.domain.AlertWindow;
+import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -31,7 +32,7 @@ public class DefaultMessageFeeder {
         for (String facilityPhoneNumber : facilityPhoneNumbers) {
             smsGateway.dispatchSMSToAggregator(FACILITIES_DEFAULT_MESSAGE_KEY, new HashMap<String, String>(){{
                 put(WINDOW_NAMES, join(AlertWindow.ghanaNationalWindowNames(),", "));
-            }}, facilityPhoneNumber, facilityPhoneNumber);
+            }}, facilityPhoneNumber, facilityPhoneNumber, MessageRecipientType.FACILITY);
         }
     }
 }

@@ -3,7 +3,7 @@ package org.motechproject.ghana.national.repository;
 import org.motechproject.MotechException;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.service.CMSLiteService;
-import org.motechproject.ghana.national.domain.SMSTextComparator;
+import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
 import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
@@ -40,8 +40,8 @@ public class SMSGateway {
         return getSMSTemplate(defaultLanguage(), key);
     }
 
-    public void dispatchSMSToAggregator(String templateKey, Map<String, String> templateValues, String phoneNumber, String identifier) {
-        messageGateway.dispatch(SMS.fromTemplate(getSMSTemplate(templateKey), templateValues, phoneNumber, DateUtil.now(), new NextMondayDispatcher(), new SMSTextComparator<String>()), identifier);
+    public void dispatchSMSToAggregator(String templateKey, Map<String, String> templateValues, String phoneNumber, String identifier, MessageRecipientType messageRecipientType) {
+        messageGateway.dispatch(SMS.fromTemplate(getSMSTemplate(templateKey), templateValues, phoneNumber, DateUtil.now(), new NextMondayDispatcher(), messageRecipientType), identifier);
     }
 
     public void dispatchSMS(String templateKey, Map<String, String> templateValues, String phoneNumber) {

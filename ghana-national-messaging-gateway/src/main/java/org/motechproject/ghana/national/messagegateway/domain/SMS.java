@@ -3,7 +3,6 @@ package org.motechproject.ghana.national.messagegateway.domain;
 import org.joda.time.DateTime;
 import org.motechproject.util.DateUtil;
 
-import java.util.Comparator;
 import java.util.Map;
 
 import static org.apache.commons.lang.StringUtils.trimToEmpty;
@@ -13,22 +12,22 @@ public class SMS implements Payload {
     private String text;
     private DateTime generationTime;
     private DeliveryStrategy deliveryStrategy;
-    private Comparator<String> comparator;
+    private MessageRecipientType messageRecipientType;
 
     protected SMS() {
     }
 
-    public static SMS fromTemplate(String template, Map<String, String> runtimeValues, String phoneNumber, DateTime generationTime, DeliveryStrategy deliveryStrategy, Comparator<String> comparator) {
-        return SMS.fromText(SMS.fill(template, runtimeValues), phoneNumber, generationTime, deliveryStrategy, comparator);
+    public static SMS fromTemplate(String template, Map<String, String> runtimeValues, String phoneNumber, DateTime generationTime, DeliveryStrategy deliveryStrategy, MessageRecipientType recipientType) {
+        return SMS.fromText(SMS.fill(template, runtimeValues), phoneNumber, generationTime, deliveryStrategy, recipientType);
     }
 
-    public static SMS fromText(String text, String phoneNumber, DateTime generationTime, DeliveryStrategy deliveryStrategy, Comparator<String> comparator) {
+    public static SMS fromText(String text, String phoneNumber, DateTime generationTime, DeliveryStrategy deliveryStrategy, MessageRecipientType recipientType) {
         SMS sms = new SMS();
         sms.phoneNumber = phoneNumber;
         sms.generationTime = generationTime;
         sms.deliveryStrategy = deliveryStrategy;
         sms.text = text;
-        sms.comparator = comparator;
+        sms.messageRecipientType = recipientType;
         return sms;
     }
 
@@ -66,8 +65,8 @@ public class SMS implements Payload {
         return getDeliveryTime().toDate().before(DateUtil.now().toDate());
     }
 
-    public Comparator<String> getComparator() {
-        return comparator;
+    public MessageRecipientType getMessageRecipientType() {
+        return messageRecipientType;
     }
 
     @Override
@@ -81,7 +80,7 @@ public class SMS implements Payload {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SMS)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         SMS sms = (SMS) o;
 
@@ -89,6 +88,7 @@ public class SMS implements Payload {
             return false;
         if (generationTime != null ? !generationTime.equals(sms.generationTime) : sms.generationTime != null)
             return false;
+        if (messageRecipientType != sms.messageRecipientType) return false;
         if (phoneNumber != null ? !phoneNumber.equals(sms.phoneNumber) : sms.phoneNumber != null) return false;
         if (text != null ? !text.equals(sms.text) : sms.text != null) return false;
 
@@ -101,6 +101,7 @@ public class SMS implements Payload {
         result = 31 * result + (text != null ? text.hashCode() : 0);
         result = 31 * result + (generationTime != null ? generationTime.hashCode() : 0);
         result = 31 * result + (deliveryStrategy != null ? deliveryStrategy.hashCode() : 0);
+        result = 31 * result + (messageRecipientType != null ? messageRecipientType.hashCode() : 0);
         return result;
     }
 }

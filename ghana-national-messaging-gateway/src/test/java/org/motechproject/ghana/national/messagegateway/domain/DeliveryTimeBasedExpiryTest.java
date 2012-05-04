@@ -42,7 +42,7 @@ public class DeliveryTimeBasedExpiryTest extends BaseUnitTest {
     }
 
     private SimpleMessageGroup mockToReturnOnGroupWithOneSMS(MessageStore messageStore, DateTime generationTime) {
-        List<TestMessage<SMS>> messages = Arrays.asList(new TestMessage<SMS>(SMS.fromText("text", "ph", generationTime, new NextMondayDispatcher(), null)));
+        List<TestMessage<SMS>> messages = Arrays.asList(new TestMessage<SMS>(SMS.fromText("text", "ph", generationTime, new NextMondayDispatcher(), MessageRecipientType.FACILITY)));
         final SimpleMessageGroup messageGroup = new SimpleMessageGroup(messages, "groupId");
         final List<SimpleMessageGroup> messageGroups = Arrays.asList(messageGroup);
 

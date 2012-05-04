@@ -31,13 +31,13 @@ public class MessageDispatcherTest extends BaseUnitTest {
             public DateTime deliveryDate(SMS sms) {
                 return generationTime;
             }
-        }, null);
+        }, MessageRecipientType.FACILITY);
         assertThat(dispatcher.correlateByRecipientAndDeliveryDate(sms), is(equalTo("ph|2000-01-01")));
     }
     @Test
     public void shouldReturnIfTheMessageCanBeDispatched() {
         final DateTime generationTime = DateUtil.newDateTime(DateUtil.newDate(2000, 1, 1), new Time(10, 10));
-        final SMS sms = SMS.fromText("text", "ph", generationTime, new NextMondayDispatcher(), null);
+        final SMS sms = SMS.fromText("text", "ph", generationTime, new NextMondayDispatcher(), MessageRecipientType.FACILITY);
         List<SMS> messagesList = new ArrayList<SMS>() {{
             add(sms);
         }};

@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.SmsTemplateKeys;
+import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.SMSGateway;
 
@@ -42,10 +43,10 @@ public class DefaultMessageHandlerTest {
         verify(mockSmsGateway).dispatchSMSToAggregator(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY,
                 new HashMap<String, String>() {{
                     put(WINDOW_NAMES, "Upcoming, Due, Overdue");
-                }}, phone1, phone1);
+                }}, phone1, phone1, MessageRecipientType.FACILITY);
         verify(mockSmsGateway).dispatchSMSToAggregator(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY,
                 new HashMap<String, String>() {{
                     put(WINDOW_NAMES, "Upcoming, Due, Overdue");
-                }}, phone2, phone2);
+                }}, phone2, phone2, MessageRecipientType.FACILITY);
     }
 }
