@@ -39,6 +39,7 @@ public class CareScheduleHandlerTest {
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToPatient(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToPatientForAppointment(Matchers.<String>any(), Matchers.<MotechEvent>any());
+        doNothing().when(careScheduleHandlerSpy).sendInstantSMSToPatient(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendInstantSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
     }
 

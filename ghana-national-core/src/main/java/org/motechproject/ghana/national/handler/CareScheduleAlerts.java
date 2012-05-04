@@ -106,6 +106,6 @@ public class CareScheduleAlerts extends BaseScheduleHandler {
     @ApiSession
     public void handlePNCChildAlert(final MilestoneEvent milestoneEvent) {
         sendInstantSMSToFacility(PNC_CHILD_SMS_KEY, milestoneEvent);
-        sendInstantSMSToFacility(PATIENT_PNC_BABY, milestoneEvent);
+        sendInstantSMSToPatient(PATIENT_PNC_BABY, milestoneEvent);
     }
 }
