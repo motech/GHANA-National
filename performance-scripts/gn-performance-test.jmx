@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.2">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Field Worker" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">${no_of_test_loops}</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${no_of_field_workers}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1297357225000</longProp>
+        <longProp name="ThreadGroup.end_time">1297357225000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Configs" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="no_of_field_workers" elementType="Argument">
+              <stringProp name="Argument.name">no_of_field_workers</stringProp>
+              <stringProp name="Argument.value">1</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="no_of_test_loops" elementType="Argument">
+              <stringProp name="Argument.name">no_of_test_loops</stringProp>
+              <stringProp name="Argument.value">1</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="temp_dir" elementType="Argument">
+              <stringProp name="Argument.name">temp_dir</stringProp>
+              <stringProp name="Argument.value">/tmp/</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="function_test_module_jar_loc" elementType="Argument">
+              <stringProp name="Argument.name">function_test_module_jar_loc</stringProp>
+              <stringProp name="Argument.value">/home/deepans/Public/projects/java/GHANA-National/ghana-national-functional-tests/target/ghana-national-functional-tests-1.0-SNAPSHOT.jar</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="epi_handy_jar_loc" elementType="Argument">
+              <stringProp name="Argument.name">epi_handy_jar_loc</stringProp>
+              <stringProp name="Argument.value">/home/deepans/Public/projects/java/GHANA-National/ghana-national-functional-tests/lib/epihandy-midp.jar</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </Arguments>
+        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Fill forms" enabled="true">
+          <stringProp name="TestPlan.comments">Setup all form data to be submitted</stringProp>
+        </OnceOnlyController>
+        <hashTree>
+          <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="Fill forms" enabled="true">
+            <stringProp name="BeanShellSampler.query">addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/motechproject/motech-platform-common/0.9.1-SNAPSHOT/motech-platform-common-0.9.1-SNAPSHOT.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/com/jcraft/jzlib/1.0.7/jzlib-1.0.7.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/jasypt/jasypt/1.7/jasypt-1.7.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/ca/uhn/hapi/hapi/0.5/hapi-0.5.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/commons-cli/commons-cli/1.0/commons-cli-1.0.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/jdom/jdom/1.1/jdom-1.1.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/commons-io/commons-io/2.0.1/commons-io-2.0.1.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/slf4j/jcl-over-slf4j/1.6.1/jcl-over-slf4j-1.6.1.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/motechproject/mforms/xforms-server/0.7.0-beta-1/xforms-server-0.7.0-beta-1.jar&quot;));
+
+addClassPath(vars.get(&quot;function_test_module_jar_loc&quot;));
+addClassPath(vars.get(&quot;epi_handy_jar_loc&quot;));
+
+import org.motechproject.ghana.national.functional.framework.Mobile;
+import org.motechproject.ghana.national.functional.framework.XformHttpClient;
+import org.motechproject.MotechException;
+
+registrationDetails = new HashMap();
+registrationDetails{&quot;registrationMode&quot;}=&quot;AUTO_GENERATE_ID&quot;;
+registrationDetails{&quot;registrantType&quot;}=&quot;OTHER&quot;;
+registrationDetails{&quot;firstName&quot;}=&quot;Ausi&quot;;
+registrationDetails{&quot;middleName&quot;}=&quot;Middle Name&quot;;
+registrationDetails{&quot;lastName&quot;}=&quot;Last Name&quot;;
+registrationDetails{&quot;sex&quot;}=&quot;M&quot;;
+registrationDetails{&quot;insured&quot;}=&quot;N&quot;;
+registrationDetails{&quot;address&quot;}=&quot;Dummy Address&quot;;
+registrationDetails{&quot;estimatedBirthDate&quot;}=&quot;N&quot;;
+registrationDetails{&quot;date&quot;}=&quot;${__time(yyyy-MM-dd)}&quot;;
+registrationDetails{&quot;dateOfBirth&quot;}=&quot;1982-01-01&quot;;
+registrationDetails{&quot;serialNumber&quot;}=&quot;SerialNumber&quot;;
+registrationDetails{&quot;facilityId&quot;}=&quot;13212&quot;;
+registrationDetails{&quot;staffId&quot;}=&quot;2051&quot;;
+
+try{
+     mobile = new Mobile();
+     requestStream = new DataOutputStream(new FileOutputStream(pathToFile(vars.get(&quot;temp_dir&quot;) + &quot;request&quot;)));
+     formBuilder= new Mobile.FormBuilder().addForm(&quot;xforms/NurseDataEntry/RegisterClient.xml&quot;, registrationDetails);
+     mobile.fillForms(&quot;NurseDataEntry&quot;, formBuilder, requestStream);
+     requestStream.flush();
+     requestStream.close();
+}catch(Exception e){ 
+    ${__log(e, OUT)};
+}
+</stringProp>
+            <stringProp name="BeanShellSampler.filename"></stringProp>
+            <stringProp name="BeanShellSampler.parameters"></stringProp>
+            <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
+          </BeanShellSampler>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Submit Form" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/ghana-national-web/formupload</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+            <collectionProp name="HTTPFileArgs.files">
+              <elementProp name="/tmp/request" elementType="HTTPFileArg">
+                <stringProp name="File.path">/tmp/request</stringProp>
+                <stringProp name="File.paramname"></stringProp>
+                <stringProp name="File.mimetype"></stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Form submit response" enabled="true">
+            <boolProp name="ResultCollector.error_logging">false</boolProp>
+            <objProp>
+              <name>saveConfig</name>
+              <value class="SampleSaveConfiguration">
+                <time>true</time>
+                <latency>true</latency>
+                <timestamp>true</timestamp>
+                <success>true</success>
+                <label>true</label>
+                <code>true</code>
+                <message>true</message>
+                <threadName>true</threadName>
+                <dataType>true</dataType>
+                <encoding>false</encoding>
+                <assertions>true</assertions>
+                <subresults>true</subresults>
+                <responseData>false</responseData>
+                <samplerData>false</samplerData>
+                <xml>true</xml>
+                <fieldNames>false</fieldNames>
+                <responseHeaders>false</responseHeaders>
+                <requestHeaders>false</requestHeaders>
+                <responseDataOnError>false</responseDataOnError>
+                <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+                <assertionsResultsToSave>0</assertionsResultsToSave>
+                <bytes>true</bytes>
+              </value>
+            </objProp>
+            <stringProp name="filename"></stringProp>
+          </ResultCollector>
+          <hashTree/>
+          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Form response validator" enabled="true">
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="script">addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/motechproject/motech-platform-common/0.9.1-SNAPSHOT/motech-platform-common-0.9.1-SNAPSHOT.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/com/jcraft/jzlib/1.0.7/jzlib-1.0.7.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/jasypt/jasypt/1.7/jasypt-1.7.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/ca/uhn/hapi/hapi/0.5/hapi-0.5.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/commons-cli/commons-cli/1.0/commons-cli-1.0.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/jdom/jdom/1.1/jdom-1.1.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/commons-io/commons-io/2.0.1/commons-io-2.0.1.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/slf4j/jcl-over-slf4j/1.6.1/jcl-over-slf4j-1.6.1.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar&quot;));
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/motechproject/mforms/xforms-server/0.7.0-beta-1/xforms-server-0.7.0-beta-1.jar&quot;));
+
+addClassPath(vars.get(&quot;function_test_module_jar_loc&quot;));
+addClassPath(vars.get(&quot;epi_handy_jar_loc&quot;));
+
+import org.motechproject.ghana.national.functional.framework.XformHttpClient;
+
+response = XformHttpClient.parseResponse(new ByteArrayInputStream(data));
+
+if (response.getFailureCount() &gt; 0){
+    prev.setSuccessful(false);
+    errors = &quot;&quot;;
+    for(error : response.getErrors() ){
+        errors = errors + error;
+    }
+    prev.setResponseData(errors);
+}else{
+    prev.setResponseData(&quot;Uploaded &quot; + response.getSuccessCount() + &quot; forms&quot;);
+}
+</stringProp>
+          </BeanShellPostProcessor>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
