@@ -96,7 +96,7 @@
                             <includeArtifactIds>ghana-national-common</includeArtifactIds>
                             <includeGroupIds>org.motechproject</includeGroupIds>
                             <excludeTransitive>true</excludeTransitive>
-                            <includes>ghana-national.properties</includes>
+                            <includes>xforms/**,ghana-national.properties</includes>
                         </configuration>
                     </execution>
                 </executions>

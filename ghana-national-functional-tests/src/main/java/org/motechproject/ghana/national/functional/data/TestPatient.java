@@ -66,7 +66,6 @@ public class TestPatient {
         return new HashMap<String, String>() {{
             put("registrationMode", registrationMode.name());
             put("motechId", motechId);
-            put("registrantType", registrationMode.name());
             put("firstName", firstName);
             put("middleName", middleName);
             put("lastName", lastName);

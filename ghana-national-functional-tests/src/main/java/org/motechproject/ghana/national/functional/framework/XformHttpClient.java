@@ -28,9 +28,13 @@ public class XformHttpClient {
         HttpConnection httpConnection = (HttpConnection) Connector.open(url);
         setUpConnection(httpConnection);
         DataOutputStream dataOutputStream = httpConnection.openDataOutputStream();
+        serializeForms(studyName, xmlStrings, dataOutputStream);
+        return processResponse(httpConnection);
+    }
+
+    public static void serializeForms(String studyName, String[] xmlStrings, DataOutputStream dataOutputStream) throws IOException, ParseException {
         serializeUserData(dataOutputStream);
         serializeXforms(studyName, dataOutputStream, xmlStrings);
-        return processResponse(httpConnection);
     }
 
     private static void setUpConnection(HttpConnection httpConnection) throws IOException {
@@ -51,6 +55,11 @@ public class XformHttpClient {
 
     private static void serializeXforms(String studyName, DataOutputStream dataOutputStream, String... xmlStrings) throws IOException, ParseException {
         dataOutputStream.writeByte(xmlStrings.length);
+        final StudyData studyData = getStudyData(studyName, xmlStrings);
+        studyData.write(dataOutputStream);
+    }
+
+    public static StudyData getStudyData(String studyName, String[] xmlStrings) throws ParseException {
         StudyDef studyDef = new StudyDef();
         studyDef.setForms(new Vector());
         studyDef.setName(studyName);
@@ -118,7 +127,7 @@ public class XformHttpClient {
         }
         final StudyData studyData = new StudyData(studyDef);
         studyData.addForms(formsList);
-        studyData.write(dataOutputStream);
+        return studyData;
     }
 
     private static void assignOptionsFromDynamicDefs(FormDef formDef, List<DynamicOptionDependency> dynamicOptionDependencies) {
@@ -292,7 +301,7 @@ public class XformHttpClient {
         public static String parse(String templateName, Map<String, String> data) throws Exception {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
-            Document document = db.parse(new File(XFormParser.class.getClassLoader().getResource(templateName).toURI()));
+            Document document = db.parse(XFormParser.class.getClassLoader().getResourceAsStream(templateName));
 
             for (Map.Entry<String, String> entry : data.entrySet()) {
                 final NodeList nodeList = document.getElementsByTagName(entry.getKey());
