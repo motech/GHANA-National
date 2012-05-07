@@ -698,8 +698,8 @@ public class CareServiceTest extends BaseUnitTest {
         verify(mockAllSchedules, times(3)).enroll(requestCaptor.capture());
         List<EnrollmentRequest> requests = requestCaptor.getAllValues();
         assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_DELIVERY, dateOfConception, mockPatient.facilityMetaData())));
-        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.TT_VACCINATION, newDate(2012,1,23), TTVaccineDosage.TT2.getScheduleMilestoneName(), mockPatient.facilityMetaData())));
-        assertScheduleEnrollmentRequest(requests.get(2), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, newDate(2012,2,21), IPTDose.SP3.milestone(), mockPatient.facilityMetaData())));
+        assertScheduleEnrollmentRequest(requests.get(1), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.TT_VACCINATION, newDate(2012, 1, 23), TTVaccineDosage.TT2.getScheduleMilestoneName(), mockPatient.facilityMetaData())));
+        assertScheduleEnrollmentRequest(requests.get(2), expectedRequest(patientId, PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, newDate(2012, 2, 21), IPTDose.SP3.milestone(), mockPatient.facilityMetaData())));
     }
 
     @Test
@@ -791,21 +791,26 @@ public class CareServiceTest extends BaseUnitTest {
         final Patient patient = new Patient(new MRSPatient(patientId, patientMotechId, new MRSPerson().dateOfBirth(today().minusWeeks(10).toDate()), new MRSFacility(facilityId)));
         when(mockAllPatients.getPatientByMotechId(patientId)).thenReturn(patient);
         final LocalDate lastIPTiDate = today().minusWeeks(5);
-        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(true, Arrays.asList(CwcCareHistory.IPTI), null, null, null, null, null,null,null, null, 1,lastIPTiDate.toDate());
+        final LocalDate lastOPVDate = today().minusDays(5);
+        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(true, Arrays.asList(CwcCareHistory.IPTI,CwcCareHistory.OPV), null, null, null, null, null, null, lastOPVDate.toDate(), 1, 1, lastIPTiDate.toDate());
         final ANCCareHistoryVO ancCareHistoryVO = new ANCCareHistoryVO(false, Collections.<ANCCareHistory>emptyList(), null, null, null, null);
         CareHistoryVO careHistoryVO = new CareHistoryVO(staffId, facilityId, patientId, date, ancCareHistoryVO, cwcCareHistoryVO);
         careService.addCareHistory(careHistoryVO);
         ArgumentCaptor<EnrollmentRequest> enrollmentArgumentCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, atLeastOnce()).enroll(enrollmentArgumentCaptor.capture());
         assertThat(enrollmentArgumentCaptor.getValue().getExternalId(), is(equalTo(patientId)));
-        EnrollmentRequest enrollmentRequest = null;
-        for(EnrollmentRequest request : enrollmentArgumentCaptor.getAllValues()){
-            if(request.getScheduleName().equals(CWC_IPT_VACCINE))
-                enrollmentRequest = request;
-        }
+        assertScheduleCreated(lastIPTiDate, enrollmentArgumentCaptor, CWC_IPT_VACCINE);
+        assertScheduleCreated(lastOPVDate, enrollmentArgumentCaptor, CWC_OPV_OTHERS);
+    }
 
-        assertThat(enrollmentRequest.getScheduleName(), is(equalTo(CWC_IPT_VACCINE)));
-        assertThat(enrollmentRequest.getEnrollmentDateTime(), is(equalTo(DateUtil.newDateTime(lastIPTiDate))));
+    private void assertScheduleCreated(LocalDate lastTakenDate, ArgumentCaptor<EnrollmentRequest> enrollmentArgumentCaptor, String scheduleName) {
+        EnrollmentRequest enrollmentRequest = null;
+        for (EnrollmentRequest request : enrollmentArgumentCaptor.getAllValues()) {
+            if (request.getScheduleName().equals(scheduleName)) {
+                enrollmentRequest = request;
+                assertThat(enrollmentRequest.getEnrollmentDateTime(), is(equalTo(DateUtil.newDateTime(lastTakenDate))));
+            }
+        }
     }
 
     @Test
@@ -823,13 +828,13 @@ public class CareServiceTest extends BaseUnitTest {
         PatientCare patientCare = new PatientCare(CWC_PENTA, new LocalDate(), newDate(date), null, null);
         setupPatient(patientId, patientMotechId);
         when(mockAllSchedules.getDueWindowAlertTimings(Matchers.<EnrollmentRequest>any())).thenReturn(Arrays.<DateTime>asList(newDate(dateOfBirth).plusMonths(3).toDateTimeAtCurrentTime()));
-        when(mockPatient.cwcCareProgramToEnrollOnRegistration(Matchers.<LocalDate>any(),Matchers.anyList(),Matchers.<CWCCareHistoryVO>any(),Matchers.<ActiveCareSchedules>any(),Matchers.<Date>any(), Matchers.<Date>any(), Matchers.<Date>any())).thenReturn(asList(patientCare));
+        when(mockPatient.cwcCareProgramToEnrollOnRegistration(Matchers.<LocalDate>any(), Matchers.anyList(), Matchers.<CWCCareHistoryVO>any(), Matchers.<ActiveCareSchedules>any(), Matchers.<Date>any(), Matchers.<Date>any(), Matchers.<Date>any())).thenReturn(asList(patientCare));
         careServiceSpy.enroll(cwcVO);
 
         ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, atLeastOnce()).enroll(requestCaptor.capture());
         List<EnrollmentRequest> requests = requestCaptor.getAllValues();
-        
+
         assertScheduleEnrollmentRequest(requests.get(0), expectedRequest(patientId, patientCare));
     }
 
@@ -844,11 +849,11 @@ public class CareServiceTest extends BaseUnitTest {
         CareService careServiceSpy = spy(careService);
         final LocalDate lastIPTiDate = today().minusWeeks(7);
         CwcVO cwcVO = new CwcVO(staffId, facilityId, date, patientMotechId, asList(CwcCareHistory.PENTA), null, null,
-                null, null, null, null, null, null,lastIPTiDate.toDate(), 1, null, true);
+                null, null, null, null, null, null, lastIPTiDate.toDate(), 1, null, true);
         PatientCare patientCare = new PatientCare(CWC_IPT_VACCINE, new LocalDate(), newDate(date), null, null);
         setupPatient(patientId, patientMotechId);
         when(mockAllSchedules.getDueWindowAlertTimings(Matchers.<EnrollmentRequest>any())).thenReturn(Arrays.<DateTime>asList(newDate(dateOfBirth).plusMonths(3).toDateTimeAtCurrentTime()));
-        when(mockPatient.cwcCareProgramToEnrollOnRegistration(Matchers.<LocalDate>any(),Matchers.anyList(),Matchers.<CWCCareHistoryVO>any(),Matchers.<ActiveCareSchedules>any(),Matchers.<Date>any(), Matchers.<Date>any(), Matchers.<Date>any())).thenReturn(asList(patientCare));
+        when(mockPatient.cwcCareProgramToEnrollOnRegistration(Matchers.<LocalDate>any(), Matchers.anyList(), Matchers.<CWCCareHistoryVO>any(), Matchers.<ActiveCareSchedules>any(), Matchers.<Date>any(), Matchers.<Date>any(), Matchers.<Date>any())).thenReturn(asList(patientCare));
         careServiceSpy.enroll(cwcVO);
 
         ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);

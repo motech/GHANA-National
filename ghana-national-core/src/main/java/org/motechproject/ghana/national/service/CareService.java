@@ -73,7 +73,11 @@ public class CareService {
     }
 
     private Date getLastOPVDate(Patient patient, CWCCareHistoryVO cwcVO) {
-        return cwcVO.getLastOPVDate();
+        Date lastOPVDate = cwcVO.getLastOPVDate();
+        OPVDose nextMilestone = cwcVO.getLastOPV() != null ? getNextOf(OPVDose.byValue(cwcVO.getLastOPV().toString())) : null;
+        if (lastOPVDate != null && nextMilestone != null)
+            lastOPVDate = getEnrollmentDateForChildCareSchedules(ScheduleNames.CWC_OPV_OTHERS, lastOPVDate, nextMilestone.milestoneName(), patient.dateOfBirth().toLocalDate());
+        return lastOPVDate;
     }
 
     private Date getLastIPTiDate(Patient patient, CWCCareHistoryVO cwcVO) {
