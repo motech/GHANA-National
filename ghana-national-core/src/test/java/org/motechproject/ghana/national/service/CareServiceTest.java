@@ -112,7 +112,6 @@ public class CareServiceTest extends BaseUnitTest {
 
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffId, facilityId, CWC_REG_VISIT.value(), registrationDate, expected);
         verify(careServiceSpy).enrollToCWCCarePrograms(cwcVO, mockPatient);
-        verify(careServiceSpy).enrollChildForPNC(mockPatient);
     }
 
     @Test
