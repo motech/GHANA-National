@@ -52,27 +52,28 @@ public class CareService {
         enrollToCWCCarePrograms(cwc, patient);
 
     }
-
     void enrollToCWCCarePrograms(CwcVO cwcVO, Patient patient) {
+        List<PatientCare> patientCares = getPatientCares(cwcVO.getCWCCareHistoryVO(), patient, cwcVO.getRegistrationDate());
+        patientCares.addAll(patient.pncBabyProgramsToEnrollOnRegistration());
+        enrollPatientCares(patientCares, patient);
+        enrollChildForPNC(patient);
+    }
+
+    private List<PatientCare> getPatientCares(CWCCareHistoryVO cwcVO, Patient patient, Date registrationDate) {
         List<MRSObservation> existingHistories = allObservations.findObservations(patient.getMotechId(), Concept.IMMUNIZATIONS_ORDERED.getName());
         existingHistories.addAll(allObservations.findObservations(patient.getMotechId(), Concept.PENTA.getName()));
         existingHistories.addAll(allObservations.findObservations(patient.getMotechId(), Concept.OPV.getName()));
         existingHistories.addAll(allObservations.findObservations(patient.getMotechId(), Concept.IPTI.getName()));
-        final List<CwcCareHistory> mergedHistories = mergeNewHistoriesWithExisting(existingHistories, cwcVO.getCWCCareHistoryVO().getCwcCareHistories());
+        final List<CwcCareHistory> mergedHistories = mergeNewHistoriesWithExisting(existingHistories, cwcVO.getCwcCareHistories());
 
-        Date lastPentaDate = getLastPentaDate(patient, cwcVO.getCWCCareHistoryVO());
-        Date lastIPTiDate = getLastIPTiDate(patient, cwcVO.getCWCCareHistoryVO());
-        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(newDate(cwcVO.getRegistrationDate()),
-                mergedHistories, cwcVO.getCWCCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_PENTA, CWC_IPT_VACCINE, CWC_OPV_OTHERS)), lastPentaDate, lastIPTiDate);
-
-        for (PatientCare patientCare : patientCares) {
-            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare));
-        }
-        enrollChildForPNC(patient);
+        Date lastPentaDate = getLastPentaDate(patient, cwcVO);
+        Date lastIPTiDate = getLastIPTiDate(patient, cwcVO);
+        return patient.cwcCareProgramToEnrollOnRegistration(newDate(registrationDate),
+                mergedHistories, cwcVO, activeCareSchedules(patient, Arrays.asList(CWC_PENTA, CWC_IPT_VACCINE, CWC_OPV_OTHERS)), lastPentaDate, lastIPTiDate);
     }
 
     private Date getLastIPTiDate(Patient patient, CWCCareHistoryVO cwcVO) {
-        Date lastIPTiDate = cwcVO.getLastPentaDate();
+        Date lastIPTiDate = cwcVO.getLastIPTiDate();
         IPTiDose nextMilestone = cwcVO.getLastIPTi() != null ? getNextOf(IPTiDose.byValue(cwcVO.getLastIPTi())) : null;
         if (lastIPTiDate != null && nextMilestone != null)
             lastIPTiDate = getEnrollmentDateForChildCareSchedules(ScheduleNames.CWC_IPT_VACCINE, lastIPTiDate, nextMilestone.milestoneName(), patient.dateOfBirth().toLocalDate());
@@ -298,16 +299,8 @@ public class CareService {
     }
 
     private void processCWCHistories(CareHistoryVO careHistoryVO, Patient patient) {
-        CWCCareHistoryVO cwcCareHistoryVO = careHistoryVO.getCwcCareHistoryVO();
-        String opvVaccine = CWC_OPV_0;
-        if (cwcCareHistoryVO.getLastOPV() != null)
-            opvVaccine = (cwcCareHistoryVO.getLastOPV() == 0) ? CWC_OPV_0 : CWC_OPV_OTHERS;
-        ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(CWC_PENTA, CWC_IPT_VACCINE, opvVaccine));
-
-        PentaVaccineCare pentaVaccineCare = new PentaVaccineCare(patient, newDate(careHistoryVO.getDate()), activeCareSchedules.hasActivePentaSchedule(), safeToString(cwcCareHistoryVO.getLastPenta()), cwcCareHistoryVO.getLastPentaDate());
-        IPTiVaccineCare iptiVaccineCare = new IPTiVaccineCare(patient, newDate(careHistoryVO.getDate()), activeCareSchedules.hasActiveIPTiSchedule(), safeToString(cwcCareHistoryVO.getLastIPTi()), cwcCareHistoryVO.getLastIPTiDate());
-        OPVVaccineCare opvVaccineCare = new OPVVaccineCare(patient, newDate(careHistoryVO.getDate()), activeCareSchedules.hasActiveOPVSchedule(), safeToString(cwcCareHistoryVO.getLastOPV()), cwcCareHistoryVO.getLastOPVDate(), opvVaccine);
-        enrollPatientCares(CareHistory.forChildCare(pentaVaccineCare, iptiVaccineCare, opvVaccineCare).cares(), patient);
+        List<PatientCare> patientCares = getPatientCares(careHistoryVO.getCwcCareHistoryVO(),patient,careHistoryVO.getDate());
+        enrollPatientCares(patientCares, patient);
     }
 
 

@@ -791,23 +791,22 @@ public class CareServiceTest extends BaseUnitTest {
         final String patientMotechId = "patientMotechId";
         final Patient patient = new Patient(new MRSPatient(patientId, patientMotechId, new MRSPerson().dateOfBirth(today().minusWeeks(10).toDate()), new MRSFacility(facilityId)));
         when(mockAllPatients.getPatientByMotechId(patientId)).thenReturn(patient);
-        final LocalDate lastPentaDate = today().minusWeeks(5);
-        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(true, Arrays.asList(CwcCareHistory.PENTA), null, null, null, null, lastPentaDate.toDate(), 1, null, null, null, null);
+        final LocalDate lastIPTiDate = today().minusWeeks(5);
+        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(true, Arrays.asList(CwcCareHistory.IPTI), null, null, null, null, null,null,null, null, 1,lastIPTiDate.toDate());
         final ANCCareHistoryVO ancCareHistoryVO = new ANCCareHistoryVO(false, Collections.<ANCCareHistory>emptyList(), null, null, null, null);
         CareHistoryVO careHistoryVO = new CareHistoryVO(staffId, facilityId, patientId, date, ancCareHistoryVO, cwcCareHistoryVO);
         careService.addCareHistory(careHistoryVO);
         ArgumentCaptor<EnrollmentRequest> enrollmentArgumentCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(mockAllSchedules).enroll(enrollmentArgumentCaptor.capture());
+        verify(mockAllSchedules, atLeastOnce()).enroll(enrollmentArgumentCaptor.capture());
         assertThat(enrollmentArgumentCaptor.getValue().getExternalId(), is(equalTo(patientId)));
-        assertThat(enrollmentArgumentCaptor.getValue().getScheduleName(), is(equalTo(CWC_PENTA)));
-        assertThat(enrollmentArgumentCaptor.getValue().getEnrollmentDateTime(), is(equalTo(DateUtil.newDateTime(lastPentaDate))));
-
+        assertThat(enrollmentArgumentCaptor.getValue().getScheduleName(), is(equalTo(CWC_IPT_VACCINE)));
+        assertThat(enrollmentArgumentCaptor.getValue().getEnrollmentDateTime(), is(equalTo(DateUtil.newDateTime(lastIPTiDate))));
 
         ArgumentCaptor<HashSet> observationsCaptor = ArgumentCaptor.forClass(HashSet.class);
         verify(mockAllEncounters).persistEncounter(eq(patient.getMrsPatient()), eq(staffId), eq(facilityId), eq(PATIENT_HISTORY.value()), eq(date), observationsCaptor.capture());
         assertThat(observationsCaptor.getValue().size(), is(equalTo(1)));
         final Set<MRSObservation> expectedObservations = new HashSet<MRSObservation>() {{
-            add(new MRSObservation<Integer>(lastPentaDate.toDate(), PENTA.getName(), 1));
+            add(new MRSObservation<Integer>(lastIPTiDate.toDate(), IPTI.getName(), 1));
         }};
         assertEquals(expectedObservations, observationsCaptor.getValue());
     }

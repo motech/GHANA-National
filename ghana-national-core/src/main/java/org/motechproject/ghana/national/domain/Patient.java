@@ -109,6 +109,23 @@ public class Patient {
 
     }
 
+    public List<PatientCare> cwcCareProgramToEnrollOnHistoryCapture(LocalDate enrollmentDate, List<CwcCareHistory> historiesCaptured, CWCCareHistoryVO cwcCareHistoryVO, ActiveCareSchedules activeCareSchedules, Date lastPentaDate, Date lastIPTiDate) {
+        ChildCare childCare = childCare();
+        LocalDate referenceDate = childCare.birthDate();
+        return nullSafeList(
+                bcgChildCare(enrollmentDate, referenceDate, historiesCaptured),
+                yfChildCare(enrollmentDate, referenceDate, historiesCaptured),
+                measlesChildCare(enrollmentDate, historiesCaptured),
+                opv0ChildCare(enrollmentDate, referenceDate,cwcCareHistoryVO),
+                opv1ChildCare(enrollmentDate, referenceDate, historiesCaptured, activeCareSchedules, cwcCareHistoryVO),
+                new PentaVaccineCare(this, enrollmentDate, activeCareSchedules.hasActivePentaSchedule(),
+                        safeToString(cwcCareHistoryVO.getLastPenta()), lastPentaDate).careForHistory(),
+                new IPTiVaccineCare(this, enrollmentDate, activeCareSchedules.hasActiveIPTiSchedule(),
+                        safeToString(cwcCareHistoryVO.getLastIPTi()), lastIPTiDate).careForHistory()
+        );
+
+    }
+
     private PatientCare opv0ChildCare(LocalDate enrollmentDate, LocalDate referenceDate, CWCCareHistoryVO cwcCareHistoryVO) {
         if(cwcCareHistoryVO.getLastOPV()==null)
             return new PatientCare(CWC_OPV_0, referenceDate, enrollmentDate, null, facilityMetaData());
@@ -121,7 +138,7 @@ public class Patient {
     
     private PatientCare opv1ChildCare(LocalDate enrollmentDate, LocalDate referenceDate, List<CwcCareHistory> cwcCareHistories, ActiveCareSchedules activeCareSchedules, CWCCareHistoryVO cwcCareHistoryVO) {
         if(cwcCareHistories.contains(CwcCareHistory.OPV))
-            return new OPVVaccineCare(this,enrollmentDate,activeCareSchedules.hasActiveOPVSchedule(),safeToString(cwcCareHistoryVO.getLastOPV()),cwcCareHistoryVO.getLastOPVDate(),CWC_OPV_OTHERS).careForReg();
+            return new OPVVaccineCare(this,enrollmentDate,activeCareSchedules.hasActiveOPVSchedule(),safeToString(cwcCareHistoryVO.getLastOPV()),cwcCareHistoryVO.getLastOPVDate(),CWC_OPV_OTHERS).careForHistory();
         else
             return new PatientCare(CWC_OPV_OTHERS, referenceDate, enrollmentDate, null, facilityMetaData());
     }
