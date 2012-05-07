@@ -3,15 +3,12 @@ package org.motechproject.ghana.national.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
-import org.motechproject.ghana.national.repository.AllEncounters;
-import org.motechproject.ghana.national.repository.AllPatients;
-import org.motechproject.ghana.national.repository.IdentifierGenerator;
+import org.motechproject.ghana.national.repository.*;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
@@ -25,6 +22,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -41,11 +39,15 @@ public class PatientServiceTest {
     private IdentifierGenerator mockIdentifierGenerator;
     @Mock
     private AllEncounters mockAllEncounters;
+    @Mock
+    private AllSchedules mockAllSchedules;
+    @Mock
+    private AllAppointments mockAllAppointments;
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(mockAllPatients, mockIdentifierGenerator, mockAllEncounters);
+        patientService = new PatientService(mockAllPatients, mockIdentifierGenerator, mockAllEncounters, mockAllSchedules, mockAllAppointments);
     }
 
     @Test
@@ -260,16 +262,18 @@ public class PatientServiceTest {
     public void shouldDeceasePatient() {
         Date dateOfDeath = DateUtil.now().minusDays(2).toDate();
         String patientMotechId = "patientMotechId";
+        String patientMRSId = "patientId";
         String causeOfDeath = "OTHER";
         String comment = null;
-        final Patient patient = new Patient(new MRSPatient(""));
+        final Patient patient = spy(new Patient(new MRSPatient(patientMRSId)));
+        List<String> schedules = asList("schedule1", "schedule2");
+        doReturn(schedules).when(patient).allCareProgramsToUnEnroll();
         when(mockAllPatients.getPatientByMotechId(patientMotechId)).thenReturn(patient);
-        when(mockAllPatients.getMotherRelationship(Matchers.<MRSPerson>any())).thenReturn(null);
 
         patientService.deceasePatient(dateOfDeath, patientMotechId, causeOfDeath, comment);
 
         verify(mockAllPatients).deceasePatient(dateOfDeath, patientMotechId, "OTHER NON-CODED", comment);
-
+        verify(mockAllSchedules).unEnroll(patientMRSId, schedules);
+        verify(mockAllAppointments).remove(patient);
     }
-
 }
