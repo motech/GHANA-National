@@ -56,7 +56,6 @@ public class CareService {
         List<PatientCare> patientCares = getPatientCares(cwcVO.getCWCCareHistoryVO(), patient, cwcVO.getRegistrationDate());
         patientCares.addAll(patient.pncBabyProgramsToEnrollOnRegistration());
         enrollPatientCares(patientCares, patient);
-        enrollChildForPNC(patient);
     }
 
     private List<PatientCare> getPatientCares(CWCCareHistoryVO cwcVO, Patient patient, Date registrationDate) {
