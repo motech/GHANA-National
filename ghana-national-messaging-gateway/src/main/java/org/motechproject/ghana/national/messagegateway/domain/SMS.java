@@ -3,13 +3,12 @@ package org.motechproject.ghana.national.messagegateway.domain;
 import org.joda.time.DateTime;
 import org.motechproject.util.DateUtil;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Map;
 
 import static org.apache.commons.lang.StringUtils.trimToEmpty;
 
-public class SMS implements DeliveryTimeAware, Serializable {
+public class SMS implements Payload {
     private String phoneNumber;
     private String text;
     private DateTime generationTime;

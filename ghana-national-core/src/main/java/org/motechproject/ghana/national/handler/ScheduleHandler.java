@@ -20,6 +20,7 @@ public class ScheduleHandler {
 
     @MotechListener(subjects = {EventSubjects.MILESTONE_ALERT})
     public void handleAlert(MotechEvent motechEvent) {
+        logger.info("Received milestone event: " + motechEvent);
         try {
             MilestoneEvent milestoneEvent = new MilestoneEvent(motechEvent);
             if (milestoneEvent.getScheduleName().equals(ANC_DELIVERY))

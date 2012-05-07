@@ -19,9 +19,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.typeCompatibleWith;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -81,11 +79,11 @@ public class SMSGatewayTest extends BaseUnitTest{
 
         smsGateway.dispatchSMSToAggregator(templateKey, new HashMap<String, String>() {{
             put(template, smsText);
-        }}, phoneNumber);
+        }}, phoneNumber, "identifier");
 
 
         ArgumentCaptor<SMS> smsArgumentCaptor = ArgumentCaptor.forClass(SMS.class);
-        verify(mockMessageGateway).dispatch(smsArgumentCaptor.capture());
+        verify(mockMessageGateway).dispatch(smsArgumentCaptor.capture(), eq("identifier"));
         final SMS smsSentToGateway = smsArgumentCaptor.getValue();
         assertThat(smsSentToGateway.getText(), is(equalTo(smsText)));
         assertThat(smsSentToGateway.getPhoneNumber(), is(equalTo(phoneNumber)));

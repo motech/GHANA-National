@@ -40,8 +40,8 @@ public class SMSGateway {
         return getSMSTemplate(defaultLanguage(), key);
     }
 
-    public void dispatchSMSToAggregator(String templateKey, Map<String, String> templateValues, String phoneNumber) {
-        messageGateway.dispatch(SMS.fromTemplate(getSMSTemplate(templateKey), templateValues, phoneNumber, DateUtil.now(), new NextMondayDispatcher(), new SMSTextComparator<String>()));
+    public void dispatchSMSToAggregator(String templateKey, Map<String, String> templateValues, String phoneNumber, String identifier) {
+        messageGateway.dispatch(SMS.fromTemplate(getSMSTemplate(templateKey), templateValues, phoneNumber, DateUtil.now(), new NextMondayDispatcher(), new SMSTextComparator<String>()), identifier);
     }
 
     public void dispatchSMS(String templateKey, Map<String, String> templateValues, String phoneNumber) {

@@ -2,11 +2,7 @@ package org.motechproject.ghana.national.handler;
 
 import org.apache.log4j.Logger;
 import org.motechproject.appointments.api.EventKeys;
-import org.motechproject.ghana.national.domain.AlertWindow;
-import org.motechproject.ghana.national.domain.Concept;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.SMSTemplate;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
@@ -57,8 +53,9 @@ public abstract class BaseScheduleHandler {
         if(phoneNumbers.size() == 0) {
             logger.warn("No Phone Numbers in Facility to send SMS.");
         }
+        final String messageIdentifier = new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier();
         for (String phoneNumber : phoneNumbers) {
-            smsGateway.dispatchSMSToAggregator(ancVisitSmsKey, patientDetailsMap(patient, windowName, scheduleName, serialNumber), phoneNumber);
+            smsGateway.dispatchSMSToAggregator(ancVisitSmsKey, patientDetailsMap(patient, windowName, scheduleName, serialNumber), phoneNumber, messageIdentifier);
         }
     }
 
@@ -83,9 +80,11 @@ public abstract class BaseScheduleHandler {
 
         final String windowName = AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName();
         String serialNumber = getSerialNumber(patient);
+        final String messageIdentifier = new AggregationMessageIdentifier(milestoneEvent.getExternalId(), milestoneEvent.getScheduleName()).getIdentifier();
+
         for (String phoneNumber : facility.getPhoneNumbers()) {
             smsGateway.dispatchSMSToAggregator(smsTemplateKey, patientDetailsMap(patient, windowName,
-                    milestoneEvent.getMilestoneAlert().getMilestoneName(), serialNumber), phoneNumber);
+                    milestoneEvent.getMilestoneAlert().getMilestoneName(), serialNumber), phoneNumber, messageIdentifier);
         }
     }
 

@@ -6,10 +6,7 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.web.domain.Alert;
-import org.motechproject.ghana.national.web.service.GNFacilityService;
-import org.motechproject.ghana.national.web.service.GNPatientService;
-import org.motechproject.ghana.national.web.service.GNScheduleService;
-import org.motechproject.ghana.national.web.service.GNStaffService;
+import org.motechproject.ghana.national.web.service.*;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -51,6 +48,9 @@ public class TestDataGenController {
     @Autowired
     private GNScheduleService scheduleService;
 
+    @Autowired
+    private GNAggregatorService gnAggregatorService;
+
     private AtomicInteger phoneNumberCounter = new AtomicInteger(1);
 
     @RequestMapping(value = "search", method = RequestMethod.GET)
@@ -66,7 +66,7 @@ public class TestDataGenController {
             }};
         }
         modelMap.put("patientSchedules", schedules);
-
+        listAggregatedSMS(modelMap);
         modelMap.put("firstNameIndexCounter", incrementPatientNameCounter());
         return "schedule/search";
     }
@@ -144,6 +144,9 @@ public class TestDataGenController {
         modelMap.put("endDate", endDate);
         modelMap.put("firstNameIndexCounter", incrementPatientNameCounter());
         return "schedule/search";
+    }
+    private void listAggregatedSMS(ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
+        modelMap.put("smsList", gnAggregatorService.allMessages());
     }
 
     private int incrementPatientNameCounter() {
