@@ -9,7 +9,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>idgen-omod</module>
-        <module>ghana-national-functional-tests</module>
         <module>ghana-national-core</module>
         <module>ghana-national-xforms</module>
         <module>ghana-national-tools</module>
@@ -28,8 +27,6 @@
         <environment>qa</environment>
         <openmrs.skip>true</openmrs.skip>
         <drop.db.skip>true</drop.db.skip>
-        <jacoco.agent.path>${project.basedir}/../build/lib/jacocoagent.jar</jacoco.agent.path>
-        <jacoco.file.path>${project.build.directory}/jacoco.exec</jacoco.file.path>
     </properties>
     <repositories>
         <repository>
@@ -266,14 +263,6 @@
             </resource>
         </resources>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>1.0-beta-2</version>
-                <configuration>
-
-                </configuration>
-            </plugin>
             <!--COMPILER -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -297,51 +286,6 @@
                         <exclude>**/functional/**/*Test.java</exclude>
                     </excludes>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>default-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <testNGArtifactName>none:none</testNGArtifactName>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>test-testng</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <junitArtifactName>none:none</junitArtifactName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--FAILSAFE FOR INTEGRATION TESTS-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.9</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <printSummary>true</printSummary>
-                    <argLine>-javaagent:${jacoco.agent.path}=destfile=${jacoco.file.path}</argLine>
-                    <includes>
-                        <include>**/functional/**/*Test.java</include>
-                    </includes>
-                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                </configuration>
-
             </plugin>
             <!--BUILD HELPER-->
             <plugin>
@@ -369,116 +313,9 @@
     </build>
     <!--PROFILES-->
     <profiles>
-        <profile>
-            <id>emulator</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.savage7.maven.plugins</groupId>
-                        <artifactId>maven-external-dependency-plugin</artifactId>
-                        <version>0.5-SONATYPE-r116</version>
-                        <inherited>false</inherited>
-                        <configuration>
-                            <stagingDirectory>
-                                ${project.build.directory}/dependencies/
-                            </stagingDirectory>
-                            <createChecksum>true</createChecksum>
-                            <skipChecksumVerification>false</skipChecksumVerification>
-                            <force>false</force>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>motech-mforms</groupId>
-                                    <artifactId>motech-mforms-tiny</artifactId>
-                                    <version>0.7.0</version>
-                                    <packaging>jar</packaging>
-                                    <downloadUrl>http://motech.rcg.usm.maine.edu/mForms/{artifactId}-{version}.jar
-                                    </downloadUrl>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>clean-external-dependencies</id>
-                                <phase>clean</phase>
-                                <goals>
-                                    <goal>clean-external</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>resolve-install-external-dependencies</id>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>resolve-external</goal>
-                                    <goal>install-external</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>${exec-maven-plugin.version}</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>motech-mforms</groupId>
-                                <artifactId>motech-mforms-tiny</artifactId>
-                                <version>0.7.0</version>
-                            </dependency>
-                        </dependencies>
-                        <executions>
-                            <execution>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>java</goal>
-                                </goals>
-                                <configuration>
-                                    <mainClass>org.me4se.MIDletRunner</mainClass>
-                                    <classpathScope>test</classpathScope>
-                                    <includePluginDependencies>true</includePluginDependencies>
-                                    <arguments>
-                                        <argument>org.fcitmuk.epihandy.forms.MainForm</argument>
-                                        <argument>-width</argument>
-                                        <argument>400</argument>
-                                        <argument>-height</argument>
-                                        <argument>800</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <!--BUILD-NODE-->
         <profile>
             <id>buildNode</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.9</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <functional.test.display>:2</functional.test.display>
-                            </systemPropertyVariables>
-                            <argLine>-javaagent:${jacoco.agent.path}=destfile=${jacoco.file.path}</argLine>
-                            <includes>
-                                <include>**/functional/**/*Test.java</include>
-                            </includes>
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
             <repositories>
                 <repository>
                     <id>motech.nexus</id>

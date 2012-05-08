@@ -90,17 +90,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time-jsptags</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.1.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>ghana-national-common</artifactId>
             <version>1.0-SNAPSHOT</version>
@@ -281,17 +270,6 @@
                         <configuration>
                             <stopPort>9999</stopPort>
                             <stopKey>foo</stopKey>
-                            <skip>${openmrs.skip}</skip>
-                            <contextHandlers>
-                                <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
-                                    <war>build/openmrs/openmrs.war</war>
-                                    <contextPath>/openmrs</contextPath>
-                                </contextHandler>
-                                <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
-                                    <war>ghana-national-common/target/lib/motech-delivery-tools-web-0.3-SNAPSHOT.war</war>
-                                    <contextPath>/deliverytools</contextPath>
-                                </contextHandler>
-                            </contextHandlers>
                         </configuration>
                         <executions>
                             <execution>
