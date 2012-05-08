@@ -25,12 +25,18 @@
           </elementProp>
           <elementProp name="patient_fname_prefix" elementType="Argument">
             <stringProp name="Argument.name">patient_fname_prefix</stringProp>
-            <stringProp name="Argument.value">India</stringProp>
+            <stringProp name="Argument.value">cricket</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="forms_to_be_tested" elementType="Argument">
             <stringProp name="Argument.name">forms_to_be_tested</stringProp>
-            <stringProp name="Argument.value">RegisterClient,RegisterANC</stringProp>
+            <stringProp name="Argument.value">RegisterClient-WithANCAndMM</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">RegisterClient,RegisterANC,RegisterClient-WithANCAndMM</stringProp>
+          </elementProp>
+          <elementProp name="load_pre_printed_ids_from_file" elementType="Argument">
+            <stringProp name="Argument.name">load_pre_printed_ids_from_file</stringProp>
+            <stringProp name="Argument.value">false</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="host" elementType="Argument">
@@ -93,17 +99,47 @@
       <hashTree>
         <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Pre-print MoTeCH ids" enabled="true"/>
         <hashTree>
-          <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="OpenMRS login" enabled="true">
-            <collectionProp name="ModuleController.node_path">
-              <stringProp name="-1227702913">WorkBench</stringProp>
-              <stringProp name="764597751">Test Plan</stringProp>
-              <stringProp name="401440932">OpenMRS</stringProp>
-              <stringProp name="73596745">Login</stringProp>
-            </collectionProp>
-          </ModuleController>
-          <hashTree/>
-          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Pre-print MoTeCH ids" enabled="true"/>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Load pre-printed MoTeCH ids from file" enabled="true">
+            <stringProp name="IfController.condition">&quot;${load_pre_printed_ids_from_file}&quot; == &quot;true&quot;</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+          </IfController>
           <hashTree>
+            <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="Load pre-printed MoTeCH ids from file" enabled="true">
+              <stringProp name="BeanShellSampler.query">import java.nio.charset.Charset;
+import java.nio.channels.FileChannel;
+
+try{
+         file = pathToFile(vars.get(&quot;temp_dir&quot;) + &quot;motech_ids&quot;);
+         stream = new FileInputStream(file);
+         fileChannel = stream.getChannel();
+         motechIds = Charset.defaultCharset().decode(fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size())).toString();
+         vars.put(&quot;pre_printed_motech_ids&quot;, motechIds);
+}catch(Exception e){
+        ${__log(e, OUT)};
+}finally{
+        stream.close();
+}
+</stringProp>
+              <stringProp name="BeanShellSampler.filename"></stringProp>
+              <stringProp name="BeanShellSampler.parameters"></stringProp>
+              <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
+            </BeanShellSampler>
+            <hashTree/>
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Pre-printed MoTeCH ids from OpenMRS" enabled="true">
+            <stringProp name="IfController.condition">&quot;${load_pre_printed_ids_from_file}&quot; == &quot;false&quot;</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+          </IfController>
+          <hashTree>
+            <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="OpenMRS login" enabled="true">
+              <collectionProp name="ModuleController.node_path">
+                <stringProp name="-1227702913">WorkBench</stringProp>
+                <stringProp name="764597751">Test Plan</stringProp>
+                <stringProp name="401440932">OpenMRS</stringProp>
+                <stringProp name="73596745">Login</stringProp>
+              </collectionProp>
+            </ModuleController>
+            <hashTree/>
             <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Pre-print MoTeCH ids" enabled="true">
               <collectionProp name="ModuleController.node_path">
                 <stringProp name="-1227702913">WorkBench</stringProp>
@@ -118,6 +154,24 @@
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="script">vars.put(&quot;pre_printed_motech_ids&quot;, new String(data));</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store MoTeCH ids to file" enabled="true">
+              <boolProp name="resetInterpreter">true</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">try{
+         file = pathToFile(vars.get(&quot;temp_dir&quot;) + &quot;motech_ids&quot;);
+         file.delete();
+         fileWriter = new FileWriter(file);
+         fileWriter.write(new String(data));
+         fileWriter.flush();
+}catch(Exception e){
+        ${__log(e, OUT)};
+}finally{
+         fileWriter.close();
+}
+</stringProp>
             </BeanShellPostProcessor>
             <hashTree/>
           </hashTree>
@@ -172,13 +226,54 @@ ancRegistrationFormFactory(motechId){
     details{&quot;height&quot;}=&quot;165&quot;;
     details{&quot;gravida&quot;}=&quot;1&quot;;
     details{&quot;parity&quot;}=&quot;2&quot;;
-    details{&quot;addHistory&quot;}=&quot;Y&quot;;
+    details{&quot;addHistory&quot;}=&quot;1&quot;;
     details{&quot;deliveryDateConfirmed&quot;}=&quot;Y&quot;;
     details{&quot;addCareHistory&quot;}=&quot;IPT_SP,TT&quot;;
     details{&quot;lastIPT&quot;}=&quot;1&quot;;
     details{&quot;lastTT&quot;}=&quot;1&quot;;
     details{&quot;lastIPTDate&quot;}=format(today().minusDays(5));
     details{&quot;lastTTDate&quot;}=format(today().minusDays(3));
+    return details;
+}
+
+patientRegWithANCAndMMFormFactory(motechId){
+    details = new HashMap();    
+    details{&quot;staffId&quot;}=&quot;2051&quot;;
+    details{&quot;facilityId&quot;}=&quot;13212&quot;;
+    details{&quot;date&quot;}=format(today());
+    details{&quot;registrationMode&quot;}=&quot;AUTO_GENERATE_ID&quot;;
+    details{&quot;motechId&quot;}=motechId;
+    details{&quot;registrantType&quot;}=&quot;PREGNANT_MOTHER&quot;;
+    details{&quot;firstName&quot;}=vars.get(&quot;patient_fname_prefix&quot;) + motechId;
+    details{&quot;middleName&quot;}=&quot;Middle Name&quot;;
+    details{&quot;lastName&quot;}=&quot;Last Name&quot;;
+    details{&quot;dateOfBirth&quot;}=format(today().minusYears(25));
+    details{&quot;estimatedBirthDate&quot;}=&quot;N&quot;;
+    details{&quot;sex&quot;}=&quot;F&quot;;
+    details{&quot;insured&quot;}=&quot;N&quot;;
+    details{&quot;address&quot;}=&quot;Address&quot;;
+    details{&quot;ancRegNumber&quot;}=&quot;serialNumber&quot;;
+    details{&quot;height&quot;}=&quot;124.0&quot;;
+    details{&quot;gravida&quot;}=&quot;3&quot;;
+    details{&quot;parity&quot;}=&quot;4&quot;;
+    details{&quot;addHistory&quot;}=&quot;1&quot;;
+    details{&quot;addMotherHistory&quot;}=&quot;IPT_SP,TT&quot;;
+    details{&quot;lastIPT&quot;}=&quot;1&quot;;
+    details{&quot;lastIPTDate&quot;}=format(today().minusDays(5));
+    details{&quot;lastTT&quot;}=&quot;1&quot;;
+    details{&quot;lastTTDate&quot;}=format(today().minusDays(3));
+    details{&quot;expDeliveryDate&quot;}=format(today().plusMonths(5));
+    details{&quot;deliveryDateConfirmed&quot;}=&quot;Y&quot;;
+    details{&quot;enroll&quot;}=&quot;Y&quot;;
+    details{&quot;consent&quot;}=&quot;Y&quot;;
+    details{&quot;serviceType&quot;}=&quot;PREGNANCY&quot;;
+    details{&quot;phoneOwnership&quot;}=&quot;PERSONAL&quot;;
+    details{&quot;mmRegPhone&quot;}=&quot;0571909491&quot;;
+    details{&quot;format&quot;}=&quot;PERS_TEXT&quot;;
+    details{&quot;language&quot;}=&quot;EN&quot;;
+    details{&quot;reasonToJoin&quot;}=&quot;KNOW_MORE_PREGNANCY_CHILDBIRTH&quot;;
+    details{&quot;learnedFrom&quot;}=&quot;MOTECH_FIELD_AGENT&quot;;
+    details{&quot;messageStartWeek&quot;}=&quot;10&quot;;
     return details;
 }
 
@@ -205,6 +300,7 @@ patientRegistrationFormFactory(motechId){
 formFactory = new HashMap();
 formFactory{&quot;RegisterClient&quot;} = &quot;patientRegistrationFormFactory&quot;;
 formFactory{&quot;RegisterANC&quot;}=&quot;ancRegistrationFormFactory&quot;;
+formFactory{&quot;RegisterClient-WithANCAndMM&quot;}=&quot;patientRegWithANCAndMMFormFactory&quot;;
 
 formData(formName, motechId){
    return this.invokeMethod(formFactory.get(formName), new Object[]{motechId});
@@ -214,7 +310,9 @@ request_count = Integer.parseInt(vars.get(&quot;no_of_test_loops&quot;)) * Integ
 
 fillForms(mobile, studyName, forms, fileName){
     try{
-         requestStream = new DataOutputStream(new FileOutputStream(pathToFile(vars.get(&quot;temp_dir&quot;) + fileName)));
+         file = pathToFile(vars.get(&quot;temp_dir&quot;) + fileName);
+         file.delete();
+         requestStream = new DataOutputStream(new FileOutputStream(file));
          formBuilder= new Mobile.FormBuilder();
          for(form: forms){
              formBuilder.addForm(form.template, form.data);
@@ -222,14 +320,15 @@ fillForms(mobile, studyName, forms, fileName){
          mobile.fillForms(studyName, formBuilder, requestStream);
 
          requestStream.flush();
-         requestStream.close();
     }catch(Exception e){
         ${__log(e, OUT)};
+    }finally{
+         requestStream.close();
     }
 }
 
 getFormTemplatePath(formName){
-    return &quot;xforms/NurseDataEntry/&quot; + formName + &quot;.xml&quot;;
+    return &quot;xforms/NurseDataEntry/&quot; + formName.split(&quot;-&quot;)[0] + &quot;.xml&quot;;
 }
 
 form(templatePath, formData){
@@ -388,7 +487,39 @@ prev.setResponseData(result);</stringProp>
           </CounterConfig>
           <hashTree/>
         </hashTree>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Result" enabled="true">
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Result Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>true</xml>
+              <fieldNames>false</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
