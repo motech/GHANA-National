@@ -9,11 +9,11 @@ import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.SMSGateway;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FACILITY;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.WINDOW_NAMES;
 
 public class DefaultMessageHandlerTest {
@@ -33,20 +33,24 @@ public class DefaultMessageHandlerTest {
         final String phone1 = "phone1";
         final String phone2 = "phone2";
 
-        when(mockAllFacilities.getAllPhoneNumbers()).thenReturn(new HashSet<String>() {{
-            add(phone1);
-            add(phone2);
+        final String facility1 = "facility1";
+        final String facility2 = "facility2";
+        when(mockAllFacilities.getAllPhoneNumberToFacilityNameMapping()).thenReturn(new HashMap<String, String>() {{
+            put(phone1, facility1);
+            put(phone2, facility2);
         }});
         handler.handleDefaultMessagesForFacility();
 
-        verify(mockAllFacilities).getAllPhoneNumbers();
+        verify(mockAllFacilities).getAllPhoneNumberToFacilityNameMapping();
         verify(mockSmsGateway).dispatchSMSToAggregator(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY,
                 new HashMap<String, String>() {{
                     put(WINDOW_NAMES, "Upcoming, Due, Overdue");
+                    put(FACILITY, facility1);
                 }}, phone1, phone1, MessageRecipientType.FACILITY);
         verify(mockSmsGateway).dispatchSMSToAggregator(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY,
                 new HashMap<String, String>() {{
                     put(WINDOW_NAMES, "Upcoming, Due, Overdue");
+                    put(FACILITY, facility2);
                 }}, phone2, phone2, MessageRecipientType.FACILITY);
     }
 }

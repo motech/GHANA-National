@@ -15,11 +15,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.convert;
+import static ch.lambdaj.Lambda.extract;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.selectUnique;
 import static org.hamcrest.core.Is.is;
 
 @Repository
@@ -137,11 +141,13 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
         return (facility != null) ? facility.mrsFacility(facilityAdapter.getFacility(facility.mrsFacilityId())) : null;
     }
 
-    public Set<String> getAllPhoneNumbers() {
+    public Map<String, String> getAllPhoneNumberToFacilityNameMapping() {
         List<Facility> facilities = facilities();
-        Set<String> phoneNumbers = new HashSet<String>();
+        Map<String, String> phoneNumbers = new HashMap<String, String>();
         for (Facility facility : facilities) {
-            phoneNumbers.addAll(facility.getPhoneNumbers());
+            for (String phoneNumber : facility.getPhoneNumbers()) {
+                phoneNumbers.put(phoneNumber, facility.name());
+            }
         }
         return phoneNumbers;
     }

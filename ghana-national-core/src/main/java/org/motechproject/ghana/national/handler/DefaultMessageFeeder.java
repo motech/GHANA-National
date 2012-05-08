@@ -10,9 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.Set;
+import java.util.Map;
 
 import static ch.lambdaj.Lambda.join;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FACILITY;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.WINDOW_NAMES;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY;
 
@@ -28,11 +29,12 @@ public class DefaultMessageFeeder {
     @LoginAsAdmin
     @ApiSession
     public void handleDefaultMessagesForFacility() {
-        Set<String> facilityPhoneNumbers = allFacilities.getAllPhoneNumbers();
-        for (String facilityPhoneNumber : facilityPhoneNumbers) {
+        Map<String, String> facilityPhoneNumbers = allFacilities.getAllPhoneNumberToFacilityNameMapping();
+        for (final Map.Entry<String, String> facilityPhoneNumber : facilityPhoneNumbers.entrySet()) {
             smsGateway.dispatchSMSToAggregator(FACILITIES_DEFAULT_MESSAGE_KEY, new HashMap<String, String>(){{
                 put(WINDOW_NAMES, join(AlertWindow.ghanaNationalWindowNames(),", "));
-            }}, facilityPhoneNumber, facilityPhoneNumber, MessageRecipientType.FACILITY);
+                put(FACILITY,facilityPhoneNumber.getValue());
+            }}, facilityPhoneNumber.getKey(), facilityPhoneNumber.getKey(), MessageRecipientType.FACILITY);
         }
     }
 }
