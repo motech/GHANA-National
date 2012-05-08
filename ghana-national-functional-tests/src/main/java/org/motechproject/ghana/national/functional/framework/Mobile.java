@@ -44,6 +44,4 @@ public class Mobile {
             return forms.toArray(new String[forms.size()]);
         }
     }
-
-
 }

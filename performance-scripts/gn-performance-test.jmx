@@ -11,61 +11,117 @@
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Field Worker" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Configs" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="no_of_field_workers" elementType="Argument">
+            <stringProp name="Argument.name">no_of_field_workers</stringProp>
+            <stringProp name="Argument.value">3</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="no_of_test_loops" elementType="Argument">
+            <stringProp name="Argument.name">no_of_test_loops</stringProp>
+            <stringProp name="Argument.value">3</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="patient_fname_prefix" elementType="Argument">
+            <stringProp name="Argument.name">patient_fname_prefix</stringProp>
+            <stringProp name="Argument.value">India</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="forms_to_be_tested" elementType="Argument">
+            <stringProp name="Argument.name">forms_to_be_tested</stringProp>
+            <stringProp name="Argument.value">RegisterClient,RegisterANC</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="host" elementType="Argument">
+            <stringProp name="Argument.name">host</stringProp>
+            <stringProp name="Argument.value">localhost</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="port" elementType="Argument">
+            <stringProp name="Argument.name">port</stringProp>
+            <stringProp name="Argument.value">8080</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="openmrs_port" elementType="Argument">
+            <stringProp name="Argument.name">openmrs_port</stringProp>
+            <stringProp name="Argument.value">7000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="openmrs_username" elementType="Argument">
+            <stringProp name="Argument.name">openmrs_username</stringProp>
+            <stringProp name="Argument.value">admin</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="openmrs_password" elementType="Argument">
+            <stringProp name="Argument.name">openmrs_password</stringProp>
+            <stringProp name="Argument.value">P@ssw0rd</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="temp_dir" elementType="Argument">
+            <stringProp name="Argument.name">temp_dir</stringProp>
+            <stringProp name="Argument.value">/tmp/</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="function_test_module_jar_loc" elementType="Argument">
+            <stringProp name="Argument.name">function_test_module_jar_loc</stringProp>
+            <stringProp name="Argument.value">/home/deepans/Public/projects/java/GHANA-National/ghana-national-functional-tests/target/ghana-national-functional-tests-1.0-SNAPSHOT.jar</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="epi_handy_jar_loc" elementType="Argument">
+            <stringProp name="Argument.name">epi_handy_jar_loc</stringProp>
+            <stringProp name="Argument.value">/home/deepans/Public/projects/java/GHANA-National/ghana-national-functional-tests/lib/epihandy-midp.jar</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="Prepare for test" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">stoptest</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">${no_of_test_loops}</stringProp>
+          <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${no_of_field_workers}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <longProp name="ThreadGroup.start_time">1297357225000</longProp>
-        <longProp name="ThreadGroup.end_time">1297357225000</longProp>
+        <longProp name="ThreadGroup.start_time">1336369927000</longProp>
+        <longProp name="ThreadGroup.end_time">1336369927000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
-      </ThreadGroup>
+      </SetupThreadGroup>
       <hashTree>
-        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Configs" enabled="true">
-          <collectionProp name="Arguments.arguments">
-            <elementProp name="no_of_field_workers" elementType="Argument">
-              <stringProp name="Argument.name">no_of_field_workers</stringProp>
-              <stringProp name="Argument.value">2</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="no_of_test_loops" elementType="Argument">
-              <stringProp name="Argument.name">no_of_test_loops</stringProp>
-              <stringProp name="Argument.value">3</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="temp_dir" elementType="Argument">
-              <stringProp name="Argument.name">temp_dir</stringProp>
-              <stringProp name="Argument.value">/tmp/</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="function_test_module_jar_loc" elementType="Argument">
-              <stringProp name="Argument.name">function_test_module_jar_loc</stringProp>
-              <stringProp name="Argument.value">/home/deepans/Public/projects/java/GHANA-National/ghana-national-functional-tests/target/ghana-national-functional-tests-1.0-SNAPSHOT.jar</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="epi_handy_jar_loc" elementType="Argument">
-              <stringProp name="Argument.name">epi_handy_jar_loc</stringProp>
-              <stringProp name="Argument.value">/home/deepans/Public/projects/java/GHANA-National/ghana-national-functional-tests/lib/epihandy-midp.jar</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="forms_to_be_tested" elementType="Argument">
-              <stringProp name="Argument.name">forms_to_be_tested</stringProp>
-              <stringProp name="Argument.value">RegisterClient</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="patient_fname_prefix" elementType="Argument">
-              <stringProp name="Argument.name">patient_fname_prefix</stringProp>
-              <stringProp name="Argument.value">Balaji</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-          </collectionProp>
-        </Arguments>
-        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Pre-print MoTeCH ids" enabled="true"/>
+        <hashTree>
+          <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="OpenMRS login" enabled="true">
+            <collectionProp name="ModuleController.node_path">
+              <stringProp name="-1227702913">WorkBench</stringProp>
+              <stringProp name="764597751">Test Plan</stringProp>
+              <stringProp name="401440932">OpenMRS</stringProp>
+              <stringProp name="73596745">Login</stringProp>
+            </collectionProp>
+          </ModuleController>
+          <hashTree/>
+          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Pre-print MoTeCH ids" enabled="true"/>
+          <hashTree>
+            <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Pre-print MoTeCH ids" enabled="true">
+              <collectionProp name="ModuleController.node_path">
+                <stringProp name="-1227702913">WorkBench</stringProp>
+                <stringProp name="764597751">Test Plan</stringProp>
+                <stringProp name="401440932">OpenMRS</stringProp>
+                <stringProp name="-812410003">Pre-print MoTeCH ids</stringProp>
+              </collectionProp>
+            </ModuleController>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store MoTeCH ids to session" enabled="true">
+              <boolProp name="resetInterpreter">true</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">vars.put(&quot;pre_printed_motech_ids&quot;, new String(data));</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
         <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Fill forms" enabled="true">
           <stringProp name="TestPlan.comments">Setup all form data to be submitted</stringProp>
         </OnceOnlyController>
@@ -83,62 +139,116 @@ addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/p
 addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/slf4j/jcl-over-slf4j/1.6.1/jcl-over-slf4j-1.6.1.jar&quot;));
 addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar&quot;));
 addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/org/motechproject/mforms/xforms-server/0.7.0-beta-1/xforms-server-0.7.0-beta-1.jar&quot;));
-
+addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/joda-time/joda-time/2.0/joda-time-2.0.jar&quot;));
 addClassPath(vars.get(&quot;function_test_module_jar_loc&quot;));
 addClassPath(vars.get(&quot;epi_handy_jar_loc&quot;));
 
 import org.motechproject.ghana.national.functional.framework.Mobile;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.MotechException;
+import org.joda.time.DateTimeZone;
+import java.util.Calendar;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 
-patientRegistrationFormFactory(uniqueId){
-    print(uniqueId);
+today() {
+    timeZone = DateTimeZone.forTimeZone(Calendar.getInstance().getTimeZone());
+    return new LocalDate(timeZone);
+}
+
+format(date){
+    return date.toString(DateTimeFormat.forPattern(&quot;yyyy-MM-dd&quot;));
+}
+
+ancRegistrationFormFactory(motechId){
     details = new HashMap();
-    details{&quot;registrationMode&quot;}=&quot;AUTO_GENERATE_ID&quot;;
+    details{&quot;staffId&quot;}=&quot;2051&quot;;
+    details{&quot;facilityId&quot;}=&quot;13212&quot;;
+    details{&quot;motechId&quot;}=motechId;
+    details{&quot;registrationDate&quot;}=format(today());
+    details{&quot;regDateToday&quot;}=&quot;TODAY&quot;;
+    details{&quot;ancRegNumber&quot;}=&quot;SerialNumber&quot;;
+    details{&quot;estDeliveryDate&quot;}=format(today().plusWeeks(10));
+    details{&quot;height&quot;}=&quot;165&quot;;
+    details{&quot;gravida&quot;}=&quot;1&quot;;
+    details{&quot;parity&quot;}=&quot;2&quot;;
+    details{&quot;addHistory&quot;}=&quot;Y&quot;;
+    details{&quot;deliveryDateConfirmed&quot;}=&quot;Y&quot;;
+    details{&quot;addCareHistory&quot;}=&quot;IPT_SP,TT&quot;;
+    details{&quot;lastIPT&quot;}=&quot;1&quot;;
+    details{&quot;lastTT&quot;}=&quot;1&quot;;
+    details{&quot;lastIPTDate&quot;}=format(today().minusDays(5));
+    details{&quot;lastTTDate&quot;}=format(today().minusDays(3));
+    return details;
+}
+
+patientRegistrationFormFactory(motechId){
+    details = new HashMap();
+    details{&quot;registrationMode&quot;}=&quot;USE_PREPRINTED_ID&quot;;
+    details{&quot;motechId&quot;}=motechId;
     details{&quot;registrantType&quot;}=&quot;OTHER&quot;;
-    details{&quot;firstName&quot;}= vars.get(&quot;patient_fname_prefix&quot;) + uniqueId;
+    details{&quot;firstName&quot;}= vars.get(&quot;patient_fname_prefix&quot;) + motechId;
     details{&quot;middleName&quot;}=&quot;Middle Name&quot;;
     details{&quot;lastName&quot;}=&quot;Last Name&quot;;
-    details{&quot;sex&quot;}=&quot;M&quot;;
+    details{&quot;sex&quot;}=&quot;F&quot;;
     details{&quot;insured&quot;}=&quot;N&quot;;
     details{&quot;address&quot;}=&quot;Dummy Address&quot;;
     details{&quot;estimatedBirthDate&quot;}=&quot;N&quot;;
     details{&quot;date&quot;}=&quot;${__time(yyyy-MM-dd)}&quot;;
     details{&quot;dateOfBirth&quot;}=&quot;1982-01-01&quot;;
-    details{&quot;serialNumber&quot;}=&quot;SerialNumber&quot;; 
+    details{&quot;serialNumber&quot;}=&quot;SerialNumber&quot;;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
     details{&quot;staffId&quot;}=&quot;2051&quot;;
-    return details; 
+    return details;
 }
 
-formData(formName, uniqueId){
-   formFactory = new HashMap();
-   formFactory{&quot;RegisterClient&quot;} = &quot;patientRegistrationFormFactory&quot;;
-   return this.invokeMethod(formFactory.get(formName), new Object[]{uniqueId});
+formFactory = new HashMap();
+formFactory{&quot;RegisterClient&quot;} = &quot;patientRegistrationFormFactory&quot;;
+formFactory{&quot;RegisterANC&quot;}=&quot;ancRegistrationFormFactory&quot;;
+
+formData(formName, motechId){
+   return this.invokeMethod(formFactory.get(formName), new Object[]{motechId});
 }
 
 request_count = Integer.parseInt(vars.get(&quot;no_of_test_loops&quot;)) * Integer.parseInt(vars.get(&quot;no_of_field_workers&quot;));
 
-fillForm(mobile, templatePath, studyName, formData, fileName){
+fillForms(mobile, studyName, forms, fileName){
     try{
          requestStream = new DataOutputStream(new FileOutputStream(pathToFile(vars.get(&quot;temp_dir&quot;) + fileName)));
-         formBuilder= new Mobile.FormBuilder().addForm(templatePath, formData);
+         formBuilder= new Mobile.FormBuilder();
+         for(form: forms){
+             formBuilder.addForm(form.template, form.data);
+         }
          mobile.fillForms(studyName, formBuilder, requestStream);
+
          requestStream.flush();
-         requestStream.close();    
-    }catch(Exception e){ 
+         requestStream.close();
+    }catch(Exception e){
         ${__log(e, OUT)};
     }
 }
 
-getFornTemplatePath(formName){
+getFormTemplatePath(formName){
     return &quot;xforms/NurseDataEntry/&quot; + formName + &quot;.xml&quot;;
 }
 
+form(templatePath, formData){
+    template = templatePath;
+    data = formData;
+    return this;
+}
+
 mobile = new Mobile();
+pre_printed_motech_ids = vars.get(&quot;pre_printed_motech_ids&quot;).split(System.getProperty(&quot;line.separator&quot;));
+
 for(i=0; i &lt; request_count; i++){
-    formName = vars.get(&quot;forms_to_be_tested&quot;);
-    fillForm(mobile, getFornTemplatePath(formName), &quot;NurseDataEntry&quot;, formData(formName, new Integer(i)), &quot;request_&quot; + i);
+    formNames = vars.get(&quot;forms_to_be_tested&quot;);
+    forms = new ArrayList();
+    for(formName : formNames.split(&quot;,&quot;)){
+        templatePath = getFormTemplatePath(formName.trim());
+        forms.add(form(templatePath, formData(formName, pre_printed_motech_ids[i])));
+    }
+    fillForms(mobile, &quot;NurseDataEntry&quot;, forms, &quot;request_&quot; + i);
 }</stringProp>
             <stringProp name="BeanShellSampler.filename"></stringProp>
             <stringProp name="BeanShellSampler.parameters"></stringProp>
@@ -146,12 +256,65 @@ for(i=0; i &lt; request_count; i++){
           </BeanShellSampler>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Submit Form" enabled="true">
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="Openmrs login cookie" enabled="true">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+        </CookieManager>
+        <hashTree/>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Result" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>true</xml>
+              <fieldNames>false</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Field Worker" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">${no_of_test_loops}</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${no_of_field_workers}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1297357225000</longProp>
+        <longProp name="ThreadGroup.end_time">1297357225000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Submit Forms" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
-          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.domain">${host}</stringProp>
+          <stringProp name="HTTPSampler.port">${port}</stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
@@ -176,38 +339,6 @@ for(i=0; i &lt; request_count; i++){
           <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Form submit response" enabled="true">
-            <boolProp name="ResultCollector.error_logging">false</boolProp>
-            <objProp>
-              <name>saveConfig</name>
-              <value class="SampleSaveConfiguration">
-                <time>true</time>
-                <latency>true</latency>
-                <timestamp>true</timestamp>
-                <success>true</success>
-                <label>true</label>
-                <code>true</code>
-                <message>true</message>
-                <threadName>true</threadName>
-                <dataType>true</dataType>
-                <encoding>false</encoding>
-                <assertions>true</assertions>
-                <subresults>true</subresults>
-                <responseData>false</responseData>
-                <samplerData>false</samplerData>
-                <xml>true</xml>
-                <fieldNames>false</fieldNames>
-                <responseHeaders>false</responseHeaders>
-                <requestHeaders>false</requestHeaders>
-                <responseDataOnError>false</responseDataOnError>
-                <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
-                <assertionsResultsToSave>0</assertionsResultsToSave>
-                <bytes>true</bytes>
-              </value>
-            </objProp>
-            <stringProp name="filename"></stringProp>
-          </ResultCollector>
-          <hashTree/>
           <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Form response validator" enabled="true">
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -232,17 +363,19 @@ import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 
 response = XformHttpClient.parseResponse(new ByteArrayInputStream(data));
 
+result = &quot;&quot;;
+if (response.getSuccessCount() &gt; 0){
+    result = &quot;Uploaded &quot; + response.getSuccessCount() + &quot; forms successfully.&quot;;
+}
 if (response.getFailureCount() &gt; 0){
     prev.setSuccessful(false);
     errors = &quot;&quot;;
     for(error : response.getErrors() ){
         errors = errors + error;
     }
-    prev.setResponseData(errors);
-}else{
-    prev.setResponseData(&quot;Uploaded &quot; + response.getSuccessCount() + &quot; forms&quot;);
+    result = result + &quot; &quot; + response.getFailureCount() + &quot; forms failed with errors : &quot; + errors;
 }
-</stringProp>
+prev.setResponseData(result);</stringProp>
           </BeanShellPostProcessor>
           <hashTree/>
           <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Request counter" enabled="true">
@@ -253,6 +386,132 @@ if (response.getFailureCount() &gt; 0){
             <stringProp name="CounterConfig.format"></stringProp>
             <boolProp name="CounterConfig.per_user">false</boolProp>
           </CounterConfig>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Result" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>true</xml>
+              <fieldNames>false</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <TestFragmentController guiclass="TestFragmentControllerGui" testclass="TestFragmentController" testname="OpenMRS" enabled="true"/>
+      <hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Login" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LoginPage" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${host}</stringProp>
+            <stringProp name="HTTPSampler.port">${openmrs_port}</stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/openmrs/index.htm</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="uname" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${openmrs_username}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">uname</stringProp>
+                </elementProp>
+                <elementProp name="pw" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${openmrs_password}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">pw</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${host}</stringProp>
+            <stringProp name="HTTPSampler.port">${openmrs_port}</stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/openmrs/loginServlet</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Pre-print MoTeCH ids" enabled="true"/>
+        <hashTree>
+          <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="Calc pre-printed id count" enabled="true">
+            <stringProp name="BeanShellSampler.query">vars.put(&quot;pre_printed_id_count&quot;, (Integer.parseInt(vars.get(&quot;no_of_field_workers&quot;)) * Integer.parseInt(vars.get(&quot;no_of_test_loops&quot;))).toString());</stringProp>
+            <stringProp name="BeanShellSampler.filename"></stringProp>
+            <stringProp name="BeanShellSampler.parameters"></stringProp>
+            <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
+          </BeanShellSampler>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Pre-print MoTeCH ids" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${host}</stringProp>
+            <stringProp name="HTTPSampler.port">${openmrs_port}</stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/openmrs/module/idgen/exportIdentifiers.form?source=1&amp;numberToGenerate=${pre_printed_id_count}&amp;comment=</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
           <hashTree/>
         </hashTree>
       </hashTree>

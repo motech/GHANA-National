@@ -54,7 +54,8 @@ public class XformHttpClient {
     }
 
     private static void serializeXforms(String studyName, DataOutputStream dataOutputStream, String... xmlStrings) throws IOException, ParseException {
-        dataOutputStream.writeByte(xmlStrings.length);
+        int noOfStudies = 1;
+        dataOutputStream.writeByte(noOfStudies);
         final StudyData studyData = getStudyData(studyName, xmlStrings);
         studyData.write(dataOutputStream);
     }
