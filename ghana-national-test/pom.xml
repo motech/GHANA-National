@@ -72,11 +72,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time-jsptags</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-        <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>ghana-national-common</artifactId>
             <version>1.0-SNAPSHOT</version>
