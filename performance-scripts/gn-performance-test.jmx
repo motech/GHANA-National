@@ -25,7 +25,7 @@
           </elementProp>
           <elementProp name="patient_fname_prefix" elementType="Argument">
             <stringProp name="Argument.name">patient_fname_prefix</stringProp>
-            <stringProp name="Argument.value">mac</stringProp>
+            <stringProp name="Argument.value">ibn</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="staff_first_name" elementType="Argument">
@@ -35,13 +35,13 @@
           </elementProp>
           <elementProp name="forms_to_be_tested" elementType="Argument">
             <stringProp name="Argument.name">forms_to_be_tested</stringProp>
-            <stringProp name="Argument.value">RegisterClient-WithANCAndMM</stringProp>
+            <stringProp name="Argument.value">RegisterCWC</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
-            <stringProp name="Argument.desc">RegisterClient,RegisterANC,RegisterClient-WithANCAndMM</stringProp>
+            <stringProp name="Argument.desc">RegisterClient,RegisterClient-child,RegisterClient-mother,RegisterClient-WithANCAndMM,RegisterCWC</stringProp>
           </elementProp>
           <elementProp name="load_pre_printed_ids_from_file" elementType="Argument">
             <stringProp name="Argument.name">load_pre_printed_ids_from_file</stringProp>
-            <stringProp name="Argument.value">false</stringProp>
+            <stringProp name="Argument.value">true</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="host" elementType="Argument">
@@ -56,7 +56,7 @@
           </elementProp>
           <elementProp name="openmrs_port" elementType="Argument">
             <stringProp name="Argument.name">openmrs_port</stringProp>
-            <stringProp name="Argument.value">7000</stringProp>
+            <stringProp name="Argument.value">8080</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="openmrs_username" elementType="Argument">
@@ -76,7 +76,7 @@
           </elementProp>
           <elementProp name="function_test_module_jar_loc" elementType="Argument">
             <stringProp name="Argument.name">function_test_module_jar_loc</stringProp>
-            <stringProp name="Argument.value">/home/deepans/Public/projects/java/GHANA-National/ghana-national-functional-tests/target/ghana-national-functional-tests-1.0-SNAPSHOT.jar</stringProp>
+            <stringProp name="Argument.value">/home/deepans/Public/projects/java/ghana-national-regression/target/ghana-national-regression-1.0-SNAPSHOT.jar</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="epi_handy_jar_loc" elementType="Argument">
@@ -306,6 +306,39 @@ ancRegistrationFormFactory(motechId, staffId){
     return details;
 }
 
+cwcRegistrationFormFactory(motechId, staffId){
+    details = new HashMap();
+    details{&quot;staffId&quot;}=staffId;
+    details{&quot;facilityId&quot;}=&quot;13212&quot;;
+    details{&quot;motechId&quot;}=motechId;
+    details{&quot;registrationToday&quot;}=&quot;TODAY&quot;;
+    details{&quot;registrationDate&quot;}=format(today());
+    details{&quot;serialNumber&quot;}=&quot;serialNumber&quot;;
+    details{&quot;addHistory&quot;}=&quot;1&quot;;
+    details{&quot;addCareHistory&quot;}=&quot;VITA_A,IPTI,BCG,OPV,PENTA,MEASLES,YF&quot;;
+    details{&quot;bcgDate&quot;}=format(today().minusDays(1));
+    details{&quot;lastOPV&quot;}=&quot;1&quot;;
+    details{&quot;lastOPVDate&quot;}=format(today().minusDays(4));
+    details{&quot;lastPenta&quot;}=&quot;3&quot;;
+    details{&quot;lastPentaDate&quot;}=format(today().minusDays(2));
+    details{&quot;measlesDate&quot;}=format(today().minusDays(3));
+    details{&quot;yellowFeverDate&quot;}=format(today().minusDays(5));
+    details{&quot;lastIPTi&quot;}=&quot;2&quot;;
+    details{&quot;lastIPTiDate&quot;}=format(today().minusDays(2));
+    details{&quot;lastVitaminADate&quot;}=format(today().minusDays(1));
+    details{&quot;enroll&quot;}=&quot;Y&quot;;
+    details{&quot;consent&quot;}=&quot;Y&quot;;
+    details{&quot;serviceType&quot;}=&quot;PREGNANCY&quot;;
+    details{&quot;phoneOwnership&quot;}=&quot;PERSONAL&quot;;
+    details{&quot;mmRegPhone&quot;}=&quot;0556669126&quot;;
+    details{&quot;format&quot;}=&quot;PERS_TEXT&quot;;
+    details{&quot;language&quot;}=&quot;EN&quot;;
+    details{&quot;reasonToJoin&quot;}=&quot;KNOW_MORE_PREGNANCY_CHILDBIRTH&quot;;
+    details{&quot;learnedFrom&quot;}=&quot;MOTECH_FIELD_AGENT&quot;;
+    details{&quot;messageStartWeek&quot;}=&quot;10&quot;;
+    return details;
+}
+
 patientRegWithANCAndMMFormFactory(motechId, staffId){
     details = new HashMap();    
     details{&quot;staffId&quot;}=staffId;
@@ -347,11 +380,24 @@ patientRegWithANCAndMMFormFactory(motechId, staffId){
     return details;
 }
 
+childRegistrationFormFactory(motechId, staffId){
+    details = patientRegistrationFormFactory(motechId, staffId);
+    details{&quot;dateOfBirth&quot;}=format(today().minusYears(3));
+    details{&quot;registrantType&quot;}=&quot;CHILD_UNDER_FIVE&quot;;    
+    return details;
+}
+
+motherRegistrationFormFactory(motechId, staffId){
+    details = patientRegistrationFormFactory(motechId, staffId);
+    details{&quot;dateOfBirth&quot;}=format(today().minusYears(30));
+    details{&quot;registrantType&quot;}=&quot;PREGNANT_MOTHER&quot;;    
+    return details;
+}
+
 patientRegistrationFormFactory(motechId, staffId){
     details = new HashMap();
     details{&quot;registrationMode&quot;}=&quot;USE_PREPRINTED_ID&quot;;
     details{&quot;motechId&quot;}=motechId;
-    details{&quot;registrantType&quot;}=&quot;OTHER&quot;;
     details{&quot;firstName&quot;}= vars.get(&quot;patient_fname_prefix&quot;) + motechId;
     details{&quot;middleName&quot;}=&quot;Middle Name&quot;;
     details{&quot;lastName&quot;}=&quot;Last Name&quot;;
@@ -359,18 +405,19 @@ patientRegistrationFormFactory(motechId, staffId){
     details{&quot;insured&quot;}=&quot;N&quot;;
     details{&quot;address&quot;}=&quot;Dummy Address&quot;;
     details{&quot;estimatedBirthDate&quot;}=&quot;N&quot;;
-    details{&quot;date&quot;}=&quot;${__time(yyyy-MM-dd)}&quot;;
-    details{&quot;dateOfBirth&quot;}=&quot;1982-01-01&quot;;
-    details{&quot;serialNumber&quot;}=&quot;SerialNumber&quot;;
+    details{&quot;date&quot;}=format(today());
+    details{&quot;serialNumber&quot;}=&quot;serialNumber&quot;;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
     details{&quot;staffId&quot;}=staffId;
     return details;
 }
 
 formFactory = new HashMap();
-formFactory{&quot;RegisterClient&quot;} = &quot;patientRegistrationFormFactory&quot;;
+formFactory{&quot;RegisterClient-child&quot;} = &quot;childRegistrationFormFactory&quot;;
+formFactory{&quot;RegisterClient-mother&quot;} = &quot;motherRegistrationFormFactory&quot;;
 formFactory{&quot;RegisterANC&quot;}=&quot;ancRegistrationFormFactory&quot;;
 formFactory{&quot;RegisterClient-WithANCAndMM&quot;}=&quot;patientRegWithANCAndMMFormFactory&quot;;
+formFactory{&quot;RegisterCWC&quot;}=&quot;cwcRegistrationFormFactory&quot;;
 
 formData(formName, motechId, staffId){
    return this.invokeMethod(formFactory.get(formName), new Object[]{motechId, staffId});
@@ -386,10 +433,9 @@ fillForms(mobile, studyName, forms, fileName){
              formBuilder.addForm(form.template, form.data);
          }
          mobile.fillForms(studyName, formBuilder, requestStream);
-
          requestStream.flush();
     }catch(Exception e){
-        ${__log(e, OUT)};
+        print(e);
     }finally{
          requestStream.close();
     }
@@ -627,7 +673,7 @@ prev.setResponseData(result);</stringProp>
       <hashTree>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Login" enabled="true"/>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login page" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="OpenMRS Login page" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
               <collectionProp name="Arguments.arguments"/>
             </elementProp>
@@ -648,7 +694,7 @@ prev.setResponseData(result);</stringProp>
             <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           </HTTPSamplerProxy>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="OpenMRS Login" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="uname" elementType="HTTPArgument">
@@ -792,7 +838,7 @@ prev.setResponseData(result);</stringProp>
         </hashTree>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Login" enabled="true"/>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login page" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GN Login page" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
               <collectionProp name="Arguments.arguments"/>
             </elementProp>
@@ -813,7 +859,7 @@ prev.setResponseData(result);</stringProp>
             <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           </HTTPSamplerProxy>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GN Login" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="j_username" elementType="HTTPArgument">
