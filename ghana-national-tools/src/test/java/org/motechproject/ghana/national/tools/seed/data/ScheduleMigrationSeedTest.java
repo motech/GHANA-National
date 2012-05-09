@@ -10,13 +10,12 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.TTVaccine;
 import org.motechproject.ghana.national.domain.TTVaccineDosage;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.tools.seed.data.domain.Filter;
 import org.motechproject.ghana.national.tools.seed.data.domain.UpcomingSchedule;
 import org.motechproject.ghana.national.tools.seed.data.source.OldGhanaScheduleSource;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
@@ -38,9 +37,9 @@ import static org.motechproject.util.DateUtil.newDateTime;
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-tools.xml"})
 public class ScheduleMigrationSeedTest {
     @Autowired
-    AllTrackedSchedules allTrackedSchedules;
+    org.motechproject.scheduletracking.api.repository.AllSchedules allTrackedSchedules;
     @Mock
-    private AllSchedules allSchedules;
+    private AllCareSchedules allCareSchedules;
 
     private TTVaccineSeed ttVaccineSeed;
 
@@ -52,8 +51,8 @@ public class ScheduleMigrationSeedTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        ttVaccineSeed = new TTVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allSchedules);
-        iptiVaccineSeed = new IPTIVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allSchedules);
+        ttVaccineSeed = new TTVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allCareSchedules);
+        iptiVaccineSeed = new IPTIVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allCareSchedules);
     }
 
     @Test
@@ -80,7 +79,7 @@ public class ScheduleMigrationSeedTest {
         ttVaccineSeed.migrate(upcomingSchedulesFromDb);
 
         ArgumentCaptor<EnrollmentRequest> captor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(allSchedules, times(2)).enroll(captor.capture());
+        verify(allCareSchedules, times(2)).enroll(captor.capture());
         final List<EnrollmentRequest> enrollmentRequests = captor.getAllValues();
         assertTTEnrollmentRequest(enrollmentRequests.get(0), expectedTTVaccines.get(0).getVaccinationDate(), "TT3", patientId1, expectedTTVaccines.get(0).getVaccinationDate(), new HashMap<String, String>());
         assertTTEnrollmentRequest(enrollmentRequests.get(1), expectedTTVaccines.get(1).getVaccinationDate(), "TT2", patientId2, expectedTTVaccines.get(1).getVaccinationDate(), new HashMap<String, String>());
@@ -103,12 +102,12 @@ public class ScheduleMigrationSeedTest {
         List<UpcomingSchedule> upcomingSchedulesFromDb = Arrays.asList(newUpcomingSchedule(patientId, "2012-9-22 10:30:00.0", "PNC1").build(),
                 newUpcomingSchedule(patientId, "2012-2-29 10:30:00.0", "PNC2").build());
 
-        final PNCMotherVaccineSeed pncMotherVaccineSeed = new PNCMotherVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allSchedules);
+        final PNCMotherVaccineSeed pncMotherVaccineSeed = new PNCMotherVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allCareSchedules);
         pncMotherVaccineSeed.LOG = mock(Logger.class);
         pncMotherVaccineSeed.filters = new ArrayList<Filter>();
         pncMotherVaccineSeed.migrate(upcomingSchedulesFromDb);
 
-        verify(allSchedules, times(2)).enroll(Matchers.<EnrollmentRequest>any());
+        verify(allCareSchedules, times(2)).enroll(Matchers.<EnrollmentRequest>any());
         verify(pncMotherVaccineSeed.LOG, never()).error(anyString());
     }
 
@@ -137,7 +136,7 @@ public class ScheduleMigrationSeedTest {
         iptiVaccineSeed.enroll(referenceDate, "IPTI1", patient);
 
         ArgumentCaptor<EnrollmentRequest> enrollmentCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(allSchedules).enroll(enrollmentCaptor.capture());
+        verify(allCareSchedules).enroll(enrollmentCaptor.capture());
 
         assertTTEnrollmentRequest(enrollmentCaptor.getValue(), referenceDate.toDateTime(), "IPTi1", "10000", referenceDate.toDateTime(), new HashMap<String, String>());
     }

@@ -7,10 +7,10 @@ import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.care.*;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.AllPatients;
-import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.vo.*;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.exception.ObservationNotFoundException;
@@ -35,14 +35,14 @@ public class CareService {
     AllPatients allPatients;
     AllEncounters allEncounters;
     AllObservations allObservations;
-    AllSchedules allSchedules;
+    AllCareSchedules allCareSchedules;
 
     @Autowired
-    public CareService(AllPatients allPatients, AllEncounters allEncounters, AllObservations allObservations, AllSchedules allSchedules) {
+    public CareService(AllPatients allPatients, AllEncounters allEncounters, AllObservations allObservations, AllCareSchedules allCareSchedules) {
         this.allPatients = allPatients;
         this.allEncounters = allEncounters;
         this.allObservations = allObservations;
-        this.allSchedules = allSchedules;
+        this.allCareSchedules = allCareSchedules;
     }
 
     public void enroll(CwcVO cwc) {
@@ -167,7 +167,7 @@ public class CareService {
     ActiveCareSchedules activeCareSchedules(Patient patient, List<String> scheduleNames) {
         ActiveCareSchedules activeCareSchedules = new ActiveCareSchedules();
         for (String scheduleName : scheduleNames)
-            activeCareSchedules.setActiveCareSchedule(scheduleName, allSchedules.getActiveEnrollment(patient.getMRSPatientId(), scheduleName));
+            activeCareSchedules.setActiveCareSchedule(scheduleName, allCareSchedules.getActiveEnrollment(patient.getMRSPatientId(), scheduleName));
         return activeCareSchedules;
     }
 
@@ -177,7 +177,7 @@ public class CareService {
 
     void enrollPatientCares(List<PatientCare> patientCares, Patient patient) {
         for (PatientCare patientCare : patientCares) {
-            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare));
+            allCareSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patientCare));
         }
     }
 
@@ -353,7 +353,7 @@ public class CareService {
 
     public LocalDate getEnrollmentDateForPregnancySchedules(String scheduleName, LocalDate lastCareTakenDate, String startMilestoneName, LocalDate edd) {
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest(null, scheduleName, null, null, null, lastCareTakenDate, new Time(0, 0), startMilestoneName, null);
-        List<DateTime> dueWindowAlertTimings = allSchedules.getDueWindowAlertTimings(enrollmentRequest);
+        List<DateTime> dueWindowAlertTimings = allCareSchedules.getDueWindowAlertTimings(enrollmentRequest);
         Pregnancy pregnancy = Pregnancy.basedOnDeliveryDate(edd);
         if (!dueWindowAlertTimings.isEmpty() && dueWindowAlertTimings.get(0).isBeforeNow() && lastCareTakenDate.toDate().after(pregnancy.dateOfConception().toDate()))
             return getDifferenceOfDates(dueWindowAlertTimings.get(0), DateUtil.newDateTime(lastCareTakenDate)).toLocalDate();
@@ -362,7 +362,7 @@ public class CareService {
 
     public Date getEnrollmentDateForChildCareSchedules(String scheduleName, Date lastCareTakenDate, String startMilestoneName, LocalDate dateOfBirth) {
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest(null, scheduleName, null, null, null, newDate(lastCareTakenDate), new Time(0, 0), startMilestoneName, null);
-        List<DateTime> dueWindowAlertTimings = allSchedules.getDueWindowAlertTimings(enrollmentRequest);
+        List<DateTime> dueWindowAlertTimings = allCareSchedules.getDueWindowAlertTimings(enrollmentRequest);
         if (!dueWindowAlertTimings.isEmpty() && dueWindowAlertTimings.get(0).isBeforeNow() && lastCareTakenDate.after(dateOfBirth.toDate()))
             return getDifferenceOfDates(dueWindowAlertTimings.get(0), DateUtil.newDateTime(lastCareTakenDate)).toDate();
         return lastCareTakenDate;

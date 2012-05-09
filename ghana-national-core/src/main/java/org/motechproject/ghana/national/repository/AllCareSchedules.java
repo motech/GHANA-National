@@ -22,12 +22,12 @@ import static java.lang.String.format;
 import static org.motechproject.util.DateUtil.endOfDay;
 
 @Repository
-public class AllSchedules {
+public class AllCareSchedules {
     private ScheduleTrackingService scheduleTrackingService;
-    private Logger log = LoggerFactory.getLogger(AllSchedules.class);
+    private Logger log = LoggerFactory.getLogger(AllCareSchedules.class);
 
     @Autowired
-    public AllSchedules(ScheduleTrackingService scheduleTrackingService) {
+    public AllCareSchedules(ScheduleTrackingService scheduleTrackingService) {
         this.scheduleTrackingService = scheduleTrackingService;
     }
 

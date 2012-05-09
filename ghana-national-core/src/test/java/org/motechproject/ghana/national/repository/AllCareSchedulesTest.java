@@ -18,23 +18,23 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class AllSchedulesTest {
+public class AllCareSchedulesTest {
 
     @Mock
     ScheduleTrackingService mockScheduleTrackingService;
 
-    AllSchedules allSchedules;
+    AllCareSchedules allCareSchedules;
 
     @Before
     public void setUp() {
         initMocks(this);
-        allSchedules = new AllSchedules(mockScheduleTrackingService);
+        allCareSchedules = new AllCareSchedules(mockScheduleTrackingService);
     }
 
     @Test
     public void shouldEnroll() {
         EnrollmentRequest mockEnrollmentRequest = Matchers.any();
-        allSchedules.enroll(mockEnrollmentRequest);
+        allCareSchedules.enroll(mockEnrollmentRequest);
         verify(mockScheduleTrackingService).enroll(mockEnrollmentRequest);
     }
 
@@ -43,7 +43,7 @@ public class AllSchedulesTest {
         String patientId = "12";
         List<String> scheduleNames = Arrays.asList("scheduleName1", "scheduleName2", "scheduleName3");
 
-        allSchedules.unEnroll(patientId, scheduleNames);
+        allCareSchedules.unEnroll(patientId, scheduleNames);
 
         verify(mockScheduleTrackingService).unenroll(patientId, scheduleNames);
     }
@@ -55,7 +55,7 @@ public class AllSchedulesTest {
         EnrollmentRequest anyEnrollmentRequest = new EnrollmentRequest(externalId, scheduleName, new Time(12, 0), new LocalDate(), null, null, null, null, null);
         when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(null);
 
-        allSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
+        allCareSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
 
         verify(mockScheduleTrackingService).enroll(anyEnrollmentRequest);
         verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, null);
@@ -69,7 +69,7 @@ public class AllSchedulesTest {
         EnrollmentRecord notNullEnrollment = mock(EnrollmentRecord.class);
         when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(notNullEnrollment);
 
-        allSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
+        allCareSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
 
         verify(mockScheduleTrackingService, never()).enroll(anyEnrollmentRequest);
         verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, null);
@@ -78,7 +78,7 @@ public class AllSchedulesTest {
     @Test
     public void shouldEnrollForSchedule() {
         EnrollmentRequest request = new EnrollmentRequest("123", "sche", new Time(12, 0), new LocalDate(), null, null, null, null, null);
-        allSchedules.enroll(request);
+        allCareSchedules.enroll(request);
         verify(mockScheduleTrackingService).enroll(request);
     }
 
@@ -88,39 +88,39 @@ public class AllSchedulesTest {
         String scheduleName = "scheduleName";
         LocalDate fulfillmentDate = new LocalDate();
 
-        allSchedules.fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
+        allCareSchedules.fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
         verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, fulfillmentDate);
 
         reset(mockScheduleTrackingService);
 
         Time fulfillmentTime = new Time(2, 3);
-        allSchedules.fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate, fulfillmentTime);
+        allCareSchedules.fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate, fulfillmentTime);
         verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, fulfillmentDate, fulfillmentTime);
     }
 
     @Test
     public void shouldFetchEnrollmentForSchedule() {
         EnrollmentRequest request = new EnrollmentRequest("123", "scheduleName", new Time(12, 0), new LocalDate(), null, null, null, null, null);
-        allSchedules.enrollment(request);
+        allCareSchedules.enrollment(request);
         verify(mockScheduleTrackingService).getEnrollment(request.getExternalId(), request.getScheduleName());
     }
 
     @Test
     public void shouldFetchEnrollmentAlongWithAllStartWindowDateInfo() {
         EnrollmentsQuery enrollmentsQuery = mock(EnrollmentsQuery.class);
-        allSchedules.search(enrollmentsQuery);
+        allCareSchedules.search(enrollmentsQuery);
         verify(mockScheduleTrackingService).searchWithWindowDates(enrollmentsQuery);
     }
 
     @Test
     public void shouldFulfilCurrentMilestoneSafely() {
         doNothing().when(mockScheduleTrackingService).fulfillCurrentMilestone(Matchers.<String>any(), Matchers.<String>any(), Matchers.<LocalDate>any());
-        assertTrue(allSchedules.safeFulfilCurrentMilestone("id", "some name", null));
+        assertTrue(allCareSchedules.safeFulfilCurrentMilestone("id", "some name", null));
 
         reset(mockScheduleTrackingService);
 
         doThrow(new InvalidEnrollmentException("not exists")).when(mockScheduleTrackingService).fulfillCurrentMilestone(Matchers.<String>any(), Matchers.<String>any(), Matchers.<LocalDate>any());
-        assertFalse(allSchedules.safeFulfilCurrentMilestone("id", "some name", null));
+        assertFalse(allCareSchedules.safeFulfilCurrentMilestone("id", "some name", null));
     }
 
     @Test
@@ -130,7 +130,7 @@ public class AllSchedulesTest {
         EnrollmentRecord enrollmentRecord = mock(EnrollmentRecord.class);
 
         when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(enrollmentRecord);
-        assertThat(enrollmentRecord, is(equalTo(allSchedules.getActiveEnrollment(externalId, scheduleName))));
+        assertThat(enrollmentRecord, is(equalTo(allCareSchedules.getActiveEnrollment(externalId, scheduleName))));
     }
 
     @Test
@@ -138,7 +138,7 @@ public class AllSchedulesTest {
         EnrollmentRequest request = new EnrollmentRequest("123", "scheduleName", new Time(12, 0), new LocalDate(), null, null, null, null, null);
         MilestoneAlerts mockMilestoneAlerts = mock(MilestoneAlerts.class);
         when(mockScheduleTrackingService.getAlertTimings(request)).thenReturn(mockMilestoneAlerts);
-        allSchedules.getDueWindowAlertTimings(request);
+        allCareSchedules.getDueWindowAlertTimings(request);
         verify(mockMilestoneAlerts).getDueWindowAlertTimings();
     }
 }

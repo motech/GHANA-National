@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.sms.UpcomingCareSMS;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -30,7 +30,7 @@ public class    UpcomingCareSMSTest {
     @Mock
     private SMSGateway mockSmsGateway;
     @Mock
-    private AllSchedules mockAllSchedules;
+    private AllCareSchedules mockAllCareSchedules;
     private UpcomingCareSMS upcomingCareSMS;
 
     @Before

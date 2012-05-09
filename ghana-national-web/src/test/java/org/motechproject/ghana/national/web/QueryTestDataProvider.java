@@ -4,11 +4,11 @@ import ch.lambdaj.Lambda;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.scheduletracking.api.domain.Schedule;
 import org.motechproject.scheduletracking.api.domain.WindowName;
-import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
+import org.motechproject.scheduletracking.api.repository.AllSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
 
@@ -24,15 +24,15 @@ import static org.hamcrest.core.Is.is;
 public class QueryTestDataProvider {
     private static Map<String, PatientWindow> data;
 
-    AllTrackedSchedules allTrackedSchedules;
+    AllSchedules allTrackedSchedules;
 
-    AllSchedules allSchedules;
+    AllCareSchedules allCareSchedules;
 
     private PatientService patientService;
 
-    public QueryTestDataProvider(AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules, PatientService patientService) {
+    public QueryTestDataProvider(AllSchedules allTrackedSchedules, AllCareSchedules allCareSchedules, PatientService patientService) {
         this.allTrackedSchedules = allTrackedSchedules;
-        this.allSchedules = allSchedules;
+        this.allCareSchedules = allCareSchedules;
         this.patientService = patientService;
         data = new HashMap<String, PatientWindow>();
     }
@@ -70,10 +70,10 @@ public class QueryTestDataProvider {
         PatientWindow windowPatient = getWindowForSchedule(scheduleName);
         LocalDate referenceDate = referenceDateToStartInAWindowInAMileStone(scheduleName, windowName, milestoneName);
         if (milestoneName == null) {
-            allSchedules.enroll(new EnrollmentRequest(patient.getMRSPatientId(), scheduleName, null,
+            allCareSchedules.enroll(new EnrollmentRequest(patient.getMRSPatientId(), scheduleName, null,
                     referenceDate, null, null, null, milestoneName, patient.facilityMetaData()));
         } else
-            allSchedules.enroll(new EnrollmentRequest(patient.getMRSPatientId(), scheduleName, null,
+            allCareSchedules.enroll(new EnrollmentRequest(patient.getMRSPatientId(), scheduleName, null,
                     null, null, referenceDate, null, milestoneName, patient.facilityMetaData()));
         windowPatient.addPatient(windowName, patient);
 
@@ -99,7 +99,7 @@ public class QueryTestDataProvider {
     public void fulfill(List<String> patientMotechIds, String scheduleName, LocalDate fulfillmentDate) {
         for (String motechId : patientMotechIds) {
             Patient patient = patientService.getPatientByMotechId(motechId);
-            allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), scheduleName, fulfillmentDate);
+            allCareSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), scheduleName, fulfillmentDate);
         }
     }
 }

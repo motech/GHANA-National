@@ -5,7 +5,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.motechproject.scheduletracking.api.domain.Schedule;
 import org.motechproject.scheduletracking.api.domain.WindowName;
-import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
+import org.motechproject.scheduletracking.api.repository.AllSchedules;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class TestSchedule {
 
     @Autowired
-    AllTrackedSchedules allTrackedSchedules;
+    AllSchedules allTrackedSchedules;
 
     public LocalDate referenceDateToStartInDueWindow(String scheduleName) {
         Period startOfDue = windowPeriod(scheduleName, WindowName.due);

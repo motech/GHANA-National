@@ -12,7 +12,7 @@ import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.constants.EventDataKeys;
 import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
 import org.motechproject.scheduletracking.api.repository.AllEnrollments;
-import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
+import org.motechproject.scheduletracking.api.repository.AllSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.impl.*;
 import org.motechproject.testing.utils.BaseUnitTest;
@@ -43,7 +43,7 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     protected String externalId = PATIENT_ID;
 
     @Autowired
-    private AllTrackedSchedules allTrackedSchedules;
+    private AllSchedules allTrackedSchedules;
 
     @Autowired
     protected MotechSchedulerService motechSchedulerService;

@@ -35,7 +35,7 @@ import static org.motechproject.util.DateUtil.newDateTime;
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
 public class AllSchedulesIT extends BaseScheduleTrackingTest {
     @Autowired
-    private AllSchedules allSchedules;
+    private AllCareSchedules allCareSchedules;
     @Autowired
     private TestSchedule testSchedule;
 
@@ -51,18 +51,18 @@ public class AllSchedulesIT extends BaseScheduleTrackingTest {
         scheduleTrackingService.enroll(enrollmentRequest);
 
         mockCurrentDate(newDate("17-MAR-2012"));
-        assertEquals(0, allSchedules.upcomingCareForCurrentWeek(externalId).size());
+        assertEquals(0, allCareSchedules.upcomingCareForCurrentWeek(externalId).size());
 
         mockCurrentDate(newDateWithTime("18-MAR-2012", "00:00:00"));
-        List<EnrollmentRecord> enrollments = allSchedules.upcomingCareForCurrentWeek(externalId);
+        List<EnrollmentRecord> enrollments = allCareSchedules.upcomingCareForCurrentWeek(externalId);
         assertEquals(1, enrollments.size());
         assertThat(enrollments.get(0).getStartOfDueWindow(), is(newDateTime(2012, 3, 24, 0, 0, 0)));
 
         mockCurrentDate(newDateWithTime("24-MAR-2012", "23:59:59.999"));
-        assertEquals(1, allSchedules.upcomingCareForCurrentWeek(externalId).size());
+        assertEquals(1, allCareSchedules.upcomingCareForCurrentWeek(externalId).size());
 
         mockCurrentDate(newDateWithTime("25-MAR-2012", "00:00:00"));
-        assertEquals(0, allSchedules.upcomingCareForCurrentWeek(externalId).size());
+        assertEquals(0, allCareSchedules.upcomingCareForCurrentWeek(externalId).size());
     }
 
     @Test
@@ -85,10 +85,10 @@ public class AllSchedulesIT extends BaseScheduleTrackingTest {
          scheduleTrackingService.enroll(new EnrollmentRequest(externalId3, ANC_IPT_VACCINE.getName(), new Time(10, 10), patient3ConceptionFallsInDue, null,
                  patient3ConceptionFallsInDue, null, null, PatientTest.facilityMetaData(facilityId2)));
 
-         List<EnrollmentRecord> enrollmentRecords = allSchedules.defaultersByMetaSearch(FACILITY_META, facilityId);
+         List<EnrollmentRecord> enrollmentRecords = allCareSchedules.defaultersByMetaSearch(FACILITY_META, facilityId);
          assertThat(extract(enrollmentRecords, on(EnrollmentRecord.class).getExternalId()), is(asList(externalId2)));
 
-         enrollmentRecords = allSchedules.defaultersByMetaSearch(FACILITY_META, facilityId2);
+         enrollmentRecords = allCareSchedules.defaultersByMetaSearch(FACILITY_META, facilityId2);
          assertThat(extract(enrollmentRecords, on(EnrollmentRecord.class).getExternalId()), is(asList(externalId3)));
      }
 
@@ -99,12 +99,12 @@ public class AllSchedulesIT extends BaseScheduleTrackingTest {
         String externalId2 = "externalId2";
         EnrollmentRequest existingEnrollmentFor2ndMilestone = new EnrollmentRequest(externalId2, ScheduleNames.TT_VACCINATION.getName(),null, null,null,DateUtil.today(),null, TTVaccineDosage.TT2.getScheduleMilestoneName(),null);
 
-        allSchedules.enroll(existingEnrollmentFor2ndMilestone);
+        allCareSchedules.enroll(existingEnrollmentFor2ndMilestone);
 
-        assertNull(allSchedules.getActiveEnrollment(externalId1, TT_VACCINATION.getName()));
-        assertNotNull(allSchedules.getActiveEnrollment(externalId2, TT_VACCINATION.getName()));
+        assertNull(allCareSchedules.getActiveEnrollment(externalId1, TT_VACCINATION.getName()));
+        assertNotNull(allCareSchedules.getActiveEnrollment(externalId2, TT_VACCINATION.getName()));
 
-        assertTrue(allSchedules.enrollIfNotActive(enrollmentRequestFor1stMilestone));
-        assertFalse(allSchedules.enrollIfNotActive(existingEnrollmentFor2ndMilestone));
+        assertTrue(allCareSchedules.enrollIfNotActive(enrollmentRequestFor1stMilestone));
+        assertFalse(allCareSchedules.enrollIfNotActive(existingEnrollmentFor2ndMilestone));
     }
 }

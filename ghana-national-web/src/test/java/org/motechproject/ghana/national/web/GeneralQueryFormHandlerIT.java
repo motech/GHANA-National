@@ -20,7 +20,7 @@ import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.handlers.GeneralQueryFormHandler;
 import org.motechproject.ghana.national.repository.AllAppointments;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -29,7 +29,7 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.security.OpenMRSSession;
 import org.motechproject.scheduletracking.api.repository.AllEnrollments;
-import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
+import org.motechproject.scheduletracking.api.repository.AllSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.impl.EnrollmentsQueryService;
 import org.motechproject.util.DateUtil;
@@ -87,7 +87,7 @@ public class GeneralQueryFormHandlerIT {
     AppointmentService appointmentService;
 
     @Autowired
-    AllSchedules allSchedules;
+    AllCareSchedules allCareSchedules;
 
     @Autowired
     private PatientService patientService;
@@ -106,7 +106,7 @@ public class GeneralQueryFormHandlerIT {
     private AllEnrollments allEnrollments;
 
     @Autowired
-    private AllTrackedSchedules allTrackedSchedules;
+    private AllSchedules allTrackedSchedules;
 
     @Autowired
     private AllAppointments allAppointments;
@@ -144,7 +144,7 @@ public class GeneralQueryFormHandlerIT {
         openMRSSession.authenticate();
 
         if (testData == null) {
-            testData = new QueryTestDataProvider(allTrackedSchedules, allSchedules, patientService);
+            testData = new QueryTestDataProvider(allTrackedSchedules, allCareSchedules, patientService);
 
             facility1 = createFacility("Newfacility1" + new DataGenerator().randomString(5), new DataGenerator().randomPhoneNumber());
             facility2 = createFacility("Newfacility2" + new DataGenerator().randomString(5), new DataGenerator().randomPhoneNumber());
@@ -385,7 +385,7 @@ public class GeneralQueryFormHandlerIT {
 
 
     private void enrollToASchedule(Patient patient, LocalDate referenceDate, String scheduleName) {
-        allSchedules.enroll(new EnrollmentRequest(patient.getMRSPatientId(), scheduleName, null,
+        allCareSchedules.enroll(new EnrollmentRequest(patient.getMRSPatientId(), scheduleName, null,
                 referenceDate, null, null, null, null, patient.facilityMetaData()));
     }
 
