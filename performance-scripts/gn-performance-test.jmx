@@ -20,12 +20,12 @@
           </elementProp>
           <elementProp name="no_of_test_loops" elementType="Argument">
             <stringProp name="Argument.name">no_of_test_loops</stringProp>
-            <stringProp name="Argument.value">3</stringProp>
+            <stringProp name="Argument.value">2</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="patient_fname_prefix" elementType="Argument">
             <stringProp name="Argument.name">patient_fname_prefix</stringProp>
-            <stringProp name="Argument.value">ibn</stringProp>
+            <stringProp name="Argument.value">kijjjsdf</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="staff_first_name" elementType="Argument">
@@ -35,13 +35,13 @@
           </elementProp>
           <elementProp name="forms_to_be_tested" elementType="Argument">
             <stringProp name="Argument.name">forms_to_be_tested</stringProp>
-            <stringProp name="Argument.value">RegisterCWC</stringProp>
+            <stringProp name="Argument.value">RegisterClient-WithCWCAndMM</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
-            <stringProp name="Argument.desc">RegisterClient,RegisterClient-child,RegisterClient-mother,RegisterClient-WithANCAndMM,RegisterCWC</stringProp>
+            <stringProp name="Argument.desc">RegisterClient,RegisterClient-child,RegisterClient-mother,RegisterClient-WithANCAndMM,RegisterCWC,RegisterClient-WithCWCAndMM</stringProp>
           </elementProp>
           <elementProp name="load_pre_printed_ids_from_file" elementType="Argument">
             <stringProp name="Argument.name">load_pre_printed_ids_from_file</stringProp>
-            <stringProp name="Argument.value">true</stringProp>
+            <stringProp name="Argument.value">false</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="host" elementType="Argument">
@@ -328,23 +328,64 @@ cwcRegistrationFormFactory(motechId, staffId){
     details{&quot;lastVitaminADate&quot;}=format(today().minusDays(1));
     details{&quot;enroll&quot;}=&quot;Y&quot;;
     details{&quot;consent&quot;}=&quot;Y&quot;;
-    details{&quot;serviceType&quot;}=&quot;PREGNANCY&quot;;
+    details{&quot;serviceType&quot;}=&quot;CHILD_CARE&quot;;
     details{&quot;phoneOwnership&quot;}=&quot;PERSONAL&quot;;
     details{&quot;mmRegPhone&quot;}=&quot;0556669126&quot;;
     details{&quot;format&quot;}=&quot;PERS_TEXT&quot;;
     details{&quot;language&quot;}=&quot;EN&quot;;
     details{&quot;reasonToJoin&quot;}=&quot;KNOW_MORE_PREGNANCY_CHILDBIRTH&quot;;
     details{&quot;learnedFrom&quot;}=&quot;MOTECH_FIELD_AGENT&quot;;
-    details{&quot;messageStartWeek&quot;}=&quot;10&quot;;
+    details{&quot;messageStartWeek&quot;}=&quot;41&quot;;
     return details;
 }
 
+patientRegWithCWCAndMMFormFactory(motechId, staffId){
+    details = new HashMap();
+    details{&quot;staffId&quot;}=staffId;
+    details{&quot;facilityId&quot;}=&quot;13212&quot;;
+    details{&quot;date&quot;}=format(today());
+    details{&quot;registrationMode&quot;}=&quot;USE_PREPRINTED_ID&quot;;
+    details{&quot;motechId&quot;}=motechId;
+    details{&quot;registrantType&quot;}=&quot;CHILD_UNDER_FIVE&quot;;
+    details{&quot;firstName&quot;}=vars.get(&quot;patient_fname_prefix&quot;) + motechId;
+    details{&quot;middleName&quot;}=&quot;Middle Name&quot;;
+    details{&quot;lastName&quot;}=&quot;Last Name&quot;;
+    details{&quot;dateOfBirth&quot;}=format(today().minusYears(2));
+    details{&quot;estimatedBirthDate&quot;}=&quot;N&quot;;
+    details{&quot;sex&quot;}=&quot;F&quot;;
+    details{&quot;insured&quot;}=&quot;N&quot;;
+    details{&quot;address&quot;}=&quot;Address&quot;;
+    details{&quot;cwcRegNumber&quot;}=&quot;serialNumber&quot;;
+    details{&quot;addHistory&quot;}=&quot;1&quot;;
+    details{&quot;addChildHistory&quot;}=&quot;VITA_A,IPTI,BCG,OPV,PENTA,MEASLES,YF&quot;;
+    details{&quot;bcgDate&quot;}=format(today().minusDays(1));
+    details{&quot;lastOPV&quot;}=&quot;1&quot;;
+    details{&quot;lastOPVDate&quot;}=format(today().minusDays(4));
+    details{&quot;lastPenta&quot;}=&quot;3&quot;;
+    details{&quot;lastPentaDate&quot;}=format(today().minusDays(2));
+    details{&quot;measlesDate&quot;}=format(today().minusDays(3));
+    details{&quot;yellowFeverDate&quot;}=format(today().minusDays(5));
+    details{&quot;lastIPTi&quot;}=&quot;2&quot;;
+    details{&quot;lastIPTiDate&quot;}=format(today().minusDays(2));
+    details{&quot;lastVitaminADate&quot;}=format(today().minusDays(1));
+    details{&quot;enroll&quot;}=&quot;Y&quot;;
+    details{&quot;consent&quot;}=&quot;Y&quot;;
+    details{&quot;serviceType&quot;}=&quot;CHILD_CARE&quot;;
+    details{&quot;phoneOwnership&quot;}=&quot;PERSONAL&quot;;
+    details{&quot;mmRegPhone&quot;}=&quot;0735873793&quot;;
+    details{&quot;format&quot;}=&quot;PERS_TEXT&quot;;
+    details{&quot;language&quot;}=&quot;EN&quot;;
+    details{&quot;reasonToJoin&quot;}=&quot;KNOW_MORE_PREGNANCY_CHILDBIRTH&quot;;
+    details{&quot;learnedFrom&quot;}=&quot;MOTECH_FIELD_AGENT&quot;;
+    details{&quot;messageStartWeek&quot;}=&quot;41&quot;;
+    return details;
+}
 patientRegWithANCAndMMFormFactory(motechId, staffId){
     details = new HashMap();    
     details{&quot;staffId&quot;}=staffId;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
     details{&quot;date&quot;}=format(today());
-    details{&quot;registrationMode&quot;}=&quot;AUTO_GENERATE_ID&quot;;
+    details{&quot;registrationMode&quot;}=&quot;USE_PREPRINTED_ID&quot;;
     details{&quot;motechId&quot;}=motechId;
     details{&quot;registrantType&quot;}=&quot;PREGNANT_MOTHER&quot;;
     details{&quot;firstName&quot;}=vars.get(&quot;patient_fname_prefix&quot;) + motechId;
@@ -417,6 +458,7 @@ formFactory{&quot;RegisterClient-child&quot;} = &quot;childRegistrationFormFacto
 formFactory{&quot;RegisterClient-mother&quot;} = &quot;motherRegistrationFormFactory&quot;;
 formFactory{&quot;RegisterANC&quot;}=&quot;ancRegistrationFormFactory&quot;;
 formFactory{&quot;RegisterClient-WithANCAndMM&quot;}=&quot;patientRegWithANCAndMMFormFactory&quot;;
+formFactory{&quot;RegisterClient-WithCWCAndMM&quot;}=&quot;patientRegWithCWCAndMMFormFactory&quot;;
 formFactory{&quot;RegisterCWC&quot;}=&quot;cwcRegistrationFormFactory&quot;;
 
 formData(formName, motechId, staffId){
