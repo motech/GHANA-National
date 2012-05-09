@@ -23,7 +23,7 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
     @Before
     public void setUp() {
         super.setUp();
-        scheduleName = TT_VACCINATION;
+        scheduleName = TT_VACCINATION.getName();
     }
 
     @Test

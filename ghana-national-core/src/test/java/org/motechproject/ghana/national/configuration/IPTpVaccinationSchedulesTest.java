@@ -28,7 +28,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         super.setUp();
         preferredAlertTime = new Time(10, 10);
         externalId = "patient_id" + randomAlphabetic(6);
-        scheduleName = ANC_IPT_VACCINE;
+        scheduleName = ANC_IPT_VACCINE.getName();
     }
 
     @Test

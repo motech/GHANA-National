@@ -58,7 +58,7 @@ public class VisitServiceTest {
         assertThat(fulfillmentDateCaptor.getValue(), is(vaccinationDate.toLocalDate()));
 
         EnrollmentRequest enrollmentRequest = enrollmentRequestCaptor.getValue();
-        assertThat(enrollmentRequest.getScheduleName(), is(equalTo(TT_VACCINATION)));
+        assertThat(enrollmentRequest.getScheduleName(), is(equalTo(TT_VACCINATION.getName())));
         assertThat(enrollmentRequest.getStartingMilestoneName(), is(equalTo(TT2.name())));
         assertThat(enrollmentRequest.getReferenceDate(), is(equalTo(vaccinationDate.toLocalDate())));
     }

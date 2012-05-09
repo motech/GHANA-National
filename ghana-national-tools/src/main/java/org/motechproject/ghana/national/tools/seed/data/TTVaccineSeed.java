@@ -4,10 +4,9 @@ import org.joda.time.DateTime;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.TTVaccineDosage;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.tools.seed.data.domain.UpcomingSchedule;
 import org.motechproject.ghana.national.tools.seed.data.source.OldGhanaScheduleSource;
-import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,8 +18,8 @@ import static java.lang.Boolean.FALSE;
 public class TTVaccineSeed extends ScheduleMigrationSeed {
 
     @Autowired
-    public TTVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules, FALSE);
+    public TTVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, org.motechproject.scheduletracking.api.repository.AllSchedules allTrackedSchedules, AllCareSchedules allCareSchedules) {
+        super(allTrackedSchedules, oldGhanaScheduleSource, allCareSchedules, FALSE);
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {
@@ -35,7 +34,7 @@ public class TTVaccineSeed extends ScheduleMigrationSeed {
 
     @Override
     public String getScheduleName(String milestoneName) {
-        return ScheduleNames.TT_VACCINATION;
+        return ScheduleNames.TT_VACCINATION.getName();
     }
 
     @Override

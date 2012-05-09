@@ -9,7 +9,7 @@ import org.motechproject.ghana.national.bean.ANCVisitForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MotherVisitService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -45,7 +45,7 @@ public class ANCVisitFormHandlerTest {
     @Mock
     private StaffService mockStaffService;
     @Mock
-    private AllSchedules mockAllSchedules;
+    private AllCareSchedules mockAllCareSchedules;
 
 
     @Before
@@ -56,7 +56,7 @@ public class ANCVisitFormHandlerTest {
         ReflectionTestUtils.setField(handler, "facilityService", mockFacilityService);
         ReflectionTestUtils.setField(handler, "patientService", mockPatientService);
         ReflectionTestUtils.setField(handler, "staffService", mockStaffService);
-        ReflectionTestUtils.setField(handler, "allSchedules", mockAllSchedules);
+        ReflectionTestUtils.setField(handler, "allCareSchedules", mockAllCareSchedules);
     }
 
     @Test

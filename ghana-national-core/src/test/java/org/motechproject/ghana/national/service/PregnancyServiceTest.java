@@ -167,7 +167,7 @@ public class PregnancyServiceTest {
 
         InOrder orderVerifyToSendSMSAtTheEnd = inOrder(mockAllSchedulesAndMessages, mockAllAppointmentsAndMessages, mockCareService, mockSmsGateway);
 
-        orderVerifyToSendSMSAtTheEnd.verify(mockAllSchedulesAndMessages).safeFulfilCurrentMilestone(mrsPatientId, ScheduleNames.ANC_DELIVERY, deliveryDate.toLocalDate());
+        orderVerifyToSendSMSAtTheEnd.verify(mockAllSchedulesAndMessages).safeFulfilCurrentMilestone(mrsPatientId, ScheduleNames.ANC_DELIVERY.getName(), deliveryDate.toLocalDate());
         orderVerifyToSendSMSAtTheEnd.verify(mockAllSchedulesAndMessages).unEnroll(mrsPatientId, schedules);
         orderVerifyToSendSMSAtTheEnd.verify(mockAllAppointmentsAndMessages).remove(mockPatient);
 

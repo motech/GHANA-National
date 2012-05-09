@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
+import ch.lambdaj.group.Group;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.motechproject.appointments.api.service.AppointmentService;
@@ -32,6 +33,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.group.Groups.by;
+import static ch.lambdaj.group.Groups.group;
 import static org.motechproject.ghana.national.domain.Constants.FORM_BEAN;
 import static org.motechproject.util.DateUtil.newDateTime;
 
@@ -79,14 +83,21 @@ public class GeneralQueryFormHandler implements FormPublishHandler {
         StringBuilder messageBody = new StringBuilder();
         messageContent.append("List of ").append(queryType.name());
         if (queryType.getSchedules().length > 1) {
-            messageContent.append("-").append(StringUtils.join(queryType.getSchedules(), ",")).append(MessageDispatcher.SMS_SEPARATOR);
+            messageContent.append("-").append(StringUtils.join(queryType.getFriendlyNames(), ",")).append(MessageDispatcher.SMS_SEPARATOR);
         } else {
             messageContent.append(MessageDispatcher.SMS_SEPARATOR);
         }
-        for (Enrollment enrollment : enrollmentsQueryService.search(enrollmentsQuery)) {
-            Patient patient = patientService.patientByOpenmrsId(enrollment.getExternalId());
-            String name = enrollment.getCurrentMilestoneName() == null ? enrollment.getScheduleName() : enrollment.getCurrentMilestoneName();
-            messageBody.append(messageFor(name, patient)).append(MessageDispatcher.SMS_SEPARATOR);
+        List<Enrollment> enrollments = enrollmentsQueryService.search(enrollmentsQuery);
+        Group<Enrollment> groupedByExternalId = group(enrollments, by(on(Enrollment.class).getExternalId()));
+        for (String externalId : groupedByExternalId.keySet()) {
+            Patient patient = patientService.patientByOpenmrsId(externalId);
+            messageBody.append(messageFor(patient));
+            for (Enrollment enrollment : groupedByExternalId.find(externalId)) {
+                String name = enrollment.getCurrentMilestoneName() == null ? enrollment.getScheduleName() : enrollment.getCurrentMilestoneName();
+                messageBody.append(name).append(",");
+            }
+            messageBody = messageBody.replace(messageBody.length() - 1,messageBody.length(),"");
+            messageBody.append(MessageDispatcher.SMS_SEPARATOR);
         }
         if (GeneralQueryType.ANC_DEFAULTERS.equals(queryType)) {
             messageBody.append(fetchUnvisitedANCAppointments(facility));
@@ -121,12 +132,12 @@ public class GeneralQueryFormHandler implements FormPublishHandler {
         List<VisitResponse> visitResults = appointmentService.search(visitsQuery);
         for (VisitResponse visitResult : visitResults) {
             Patient patient = patientService.getPatientByMotechId(visitResult.getExternalId());
-            messageContent.append(messageFor(visitResult.getName(), patient)).append(MessageDispatcher.SMS_SEPARATOR);
+            messageContent.append(messageFor(patient)).append("ANCVISIT").append(MessageDispatcher.SMS_SEPARATOR);
         }
         return messageContent;
     }
 
-    private String messageFor(String milestone, Patient patient) {
-        return String.format("%s %s, %s %s", patient.getFirstName(), patient.getLastName(), patient.getMotechId(), milestone);
+    private String messageFor(Patient patient) {
+        return String.format("%s %s, %s", patient.getFirstName(), patient.getLastName(), patient.getMotechId());
     }
 }

@@ -20,7 +20,7 @@ public class PentaVaccineCare extends ChildVaccineCare {
 
 
     public PentaVaccineCare(Patient patient,LocalDate enrollmentDate, Boolean hasActivePentaVaccine, String lastPentaDosage, Date lastPentaDate) {
-        super(patient,hasActivePentaVaccine, ScheduleNames.CWC_PENTA, lastPentaDosage, lastPentaDate);
+        super(patient,hasActivePentaVaccine, ScheduleNames.CWC_PENTA.getName(), lastPentaDosage, lastPentaDate);
         this.enrollmentDate=enrollmentDate;
         this.patient = patient;
     }
@@ -29,7 +29,7 @@ public class PentaVaccineCare extends ChildVaccineCare {
     protected PatientCare newEnrollmentForCare() {
         ChildCare childCare = ChildCare.basedOnBirthDay(newDateTime(dateOfBirth));
         if (childCare.applicableForPenta())
-            return new PatientCare(CWC_PENTA, childCare.birthDate(), enrollmentDate, null, patient.facilityMetaData());
+            return new PatientCare(CWC_PENTA.getName(), childCare.birthDate(), enrollmentDate, null, patient.facilityMetaData());
         return null;
     }
 

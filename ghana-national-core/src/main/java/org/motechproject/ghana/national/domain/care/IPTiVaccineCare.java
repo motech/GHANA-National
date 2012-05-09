@@ -20,7 +20,7 @@ public class IPTiVaccineCare extends ChildVaccineCare {
 
 
     public IPTiVaccineCare(Patient patient, LocalDate enrollmentDate, Boolean hasActiveIPTiVaccine, String lastIPTiDosage, Date lastIPTiDate) {
-        super(patient,hasActiveIPTiVaccine, ScheduleNames.CWC_IPT_VACCINE, lastIPTiDosage, lastIPTiDate);
+        super(patient,hasActiveIPTiVaccine, ScheduleNames.CWC_IPT_VACCINE.getName(), lastIPTiDosage, lastIPTiDate);
         this.enrollmentDate=enrollmentDate;
         this.patient = patient;
     }
@@ -29,7 +29,7 @@ public class IPTiVaccineCare extends ChildVaccineCare {
     protected PatientCare newEnrollmentForCare() {
         ChildCare childCare = ChildCare.basedOnBirthDay(newDateTime(dateOfBirth));
         if (childCare.applicableForIPTi())
-            return new PatientCare(CWC_IPT_VACCINE, childCare.birthDate(), enrollmentDate, null, patient.facilityMetaData());
+            return new PatientCare(CWC_IPT_VACCINE.getName(), childCare.birthDate(), enrollmentDate, null, patient.facilityMetaData());
         return null;
     }
 

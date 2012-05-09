@@ -3,12 +3,12 @@ package org.motechproject.ghana.national.tools.seed.data;
 import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllAppointments;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.tools.seed.data.domain.ANCExpiredScheduleFilter;
 import org.motechproject.ghana.national.tools.seed.data.domain.DuplicateScheduleFilter;
 import org.motechproject.ghana.national.tools.seed.data.domain.UpcomingSchedule;
 import org.motechproject.ghana.national.tools.seed.data.source.OldGhanaScheduleSource;
-import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
+import org.motechproject.scheduletracking.api.repository.AllSchedules;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +23,8 @@ public class ANCVisitSeed extends ScheduleMigrationSeed {
     private AllAppointments allAppointments;
 
     @Autowired
-    public ANCVisitSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules, AllAppointments allAppointments) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules, FALSE);
+    public ANCVisitSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allTrackedSchedules, AllCareSchedules allCareSchedules, AllAppointments allAppointments) {
+        super(allTrackedSchedules, oldGhanaScheduleSource, allCareSchedules, FALSE);
         this.allAppointments = allAppointments;
         this.filters = Arrays.asList(new DuplicateScheduleFilter(), new ANCExpiredScheduleFilter());
     }

@@ -13,40 +13,40 @@ import java.util.List;
 @Repository
 public class AllSchedulesAndMessages {
 
-    private AllSchedules allSchedules;
+    private AllCareSchedules allCareSchedules;
     private MessageGateway messageGateway;
 
     @Autowired
-    public AllSchedulesAndMessages(AllSchedules allSchedules, MessageGateway messageGateway){
-        this.allSchedules = allSchedules;
+    public AllSchedulesAndMessages(AllCareSchedules allCareSchedules, MessageGateway messageGateway){
+        this.allCareSchedules = allCareSchedules;
         this.messageGateway = messageGateway;
     }
 
     public void enrollOrFulfill(EnrollmentRequest enrollmentRequest, LocalDate fulfillmentDate, Time fulfillmentTime) {
         messageGateway.delete(new AggregationMessageIdentifier(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName()).getIdentifier());
-        allSchedules.enrollOrFulfill(enrollmentRequest, fulfillmentDate, fulfillmentTime);
+        allCareSchedules.enrollOrFulfill(enrollmentRequest, fulfillmentDate, fulfillmentTime);
     }
 
     public void enrollOrFulfill(EnrollmentRequest enrollmentRequest, LocalDate fulfillmentDate) {
         messageGateway.delete(new AggregationMessageIdentifier(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName()).getIdentifier());
-        allSchedules.enrollOrFulfill(enrollmentRequest, fulfillmentDate);
+        allCareSchedules.enrollOrFulfill(enrollmentRequest, fulfillmentDate);
     }
 
     public boolean safeFulfilCurrentMilestone(String externalId, String scheduleName, LocalDate fulfillmentDate) {
         messageGateway.delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
-        return allSchedules.safeFulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
+        return allCareSchedules.safeFulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
     }
 
     public void fulfilCurrentMilestone(String externalId, String scheduleName, LocalDate fulfillmentDate) {
         messageGateway.delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
-        allSchedules.fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
+        allCareSchedules.fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
     }
 
     public void unEnroll(String externalId, List<String> scheduleNames) {
         for (String scheduleName : scheduleNames) {
             messageGateway.delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
         }
-        allSchedules.unEnroll(externalId, scheduleNames);
+        allCareSchedules.unEnroll(externalId, scheduleNames);
     }
 
 }

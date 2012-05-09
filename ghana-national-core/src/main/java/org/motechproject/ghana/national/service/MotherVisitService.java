@@ -27,7 +27,7 @@ import static org.motechproject.util.DateUtil.newDate;
 @Service
 public class MotherVisitService {
 
-    private AllSchedules allSchedules;
+    private AllCareSchedules allCareSchedules;
     private AllSchedulesAndMessages allSchedulesAndMessages;
     private AllEncounters allEncounters;
     private AllObservations allObservations;
@@ -37,12 +37,12 @@ public class MotherVisitService {
     private VisitService visitService;
 
     @Autowired
-    public MotherVisitService(AllEncounters allEncounters, AllObservations allObservations, AllSchedules allSchedules,
+    public MotherVisitService(AllEncounters allEncounters, AllObservations allObservations, AllCareSchedules allCareSchedules,
                               AllAppointments allAppointments, AllAppointmentsAndMessages allAppointmentsAndMessages, VisitService visitService, AllSchedulesAndMessages allSchedulesAndMessages) {
         this.allEncounters = allEncounters;
         this.allObservations = allObservations;
         this.allAppointments = allAppointments;
-        this.allSchedules = allSchedules;
+        this.allCareSchedules = allCareSchedules;
         this.allAppointmentsAndMessages = allAppointmentsAndMessages;
         this.visitService = visitService;
         this.allSchedulesAndMessages = allSchedulesAndMessages;
@@ -80,7 +80,7 @@ public class MotherVisitService {
         if (CollectionUtils.isNotEmpty(eddObservations)) {
             mrsObservations.addAll(eddObservations);
             PatientCare ancDeliveryCare = patient.ancDeliveryCareOnVisit(newDate(ancVisit.getEstDeliveryDate()), newDate(ancVisit.getDate()));
-            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, ancDeliveryCare));
+            allCareSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, ancDeliveryCare));
         }
     }
 

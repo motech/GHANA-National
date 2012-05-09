@@ -33,7 +33,7 @@ public class IPTVaccineCareTest {
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         Pregnancy pregnancy = Pregnancy.basedOnConceptionDate(conceptionDate);
 
-        assertThat(new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), null, null, null).newEnrollmentForCare(), is(equalTo(new PatientCare(ANC_IPT_VACCINE, conceptionDate, null, null, new HashMap<String, String>(){{
+        assertThat(new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), null, null, null).newEnrollmentForCare(), is(equalTo(new PatientCare(ANC_IPT_VACCINE.getName(), conceptionDate, null, null, new HashMap<String, String>(){{
             put("facilityId", facilityId);
         }}))));
 

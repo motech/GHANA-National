@@ -10,7 +10,7 @@ import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.messagegateway.domain.MessageDispatcher;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
 import org.motechproject.ghana.national.repository.AllAppointments;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.PregnancyService;
@@ -48,7 +48,7 @@ public class ClientQueryFormHandler implements FormPublishHandler {
     @Autowired
     private SMSGateway smsGateway;
     @Autowired
-    private AllSchedules allSchedules;
+    private AllCareSchedules allCareSchedules;
     @Autowired
     private AllAppointments allAppointments;
     Logger log = LoggerFactory.getLogger(this.getClass());
@@ -75,7 +75,7 @@ public class ClientQueryFormHandler implements FormPublishHandler {
 
     private void queryUpcomingCareAndVisits(ClientQueryForm clientQueryForm) {
         Patient patient = patientService.getPatientByMotechId(clientQueryForm.getMotechId());
-        List<EnrollmentRecord> upcomingEnrollments = allSchedules.upcomingCareForCurrentWeek(patient.getMRSPatientId());
+        List<EnrollmentRecord> upcomingEnrollments = allCareSchedules.upcomingCareForCurrentWeek(patient.getMRSPatientId());
         List<VisitResponse> upcomingAppointments = allAppointments.upcomingAppointmentsForCurrentWeek(patient.getMotechId());
         UpcomingCareSMS upcomingCareSMS = new UpcomingCareSMS(smsGateway, patient, upcomingEnrollments, upcomingAppointments);
         smsGateway.dispatchSMS(clientQueryForm.getSender(), upcomingCareSMS.smsText());

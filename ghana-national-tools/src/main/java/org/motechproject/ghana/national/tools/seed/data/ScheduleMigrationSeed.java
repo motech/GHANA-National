@@ -7,7 +7,7 @@ import org.motechproject.MotechException;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientCare;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.motechproject.ghana.national.tools.seed.data.domain.DuplicateScheduleFilter;
 import org.motechproject.ghana.national.tools.seed.data.domain.Filter;
@@ -19,7 +19,7 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.domain.Milestone;
 import org.motechproject.scheduletracking.api.domain.Schedule;
 import org.motechproject.scheduletracking.api.domain.WindowName;
-import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
+import org.motechproject.scheduletracking.api.repository.AllSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,19 +34,19 @@ import static org.motechproject.util.DateUtil.newDateTime;
 
 public abstract class ScheduleMigrationSeed extends Seed {
 
-    private AllTrackedSchedules allTrackedSchedules;
+    private AllSchedules allTrackedSchedules;
     protected OldGhanaScheduleSource oldGhanaScheduleSource;
     List<Filter> filters = Arrays.asList(new DuplicateScheduleFilter(), new ScheduleExpiryBasedOnThirdLateAlertFilter());
 
     Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    protected AllSchedules allSchedules;
+    protected AllCareSchedules allCareSchedules;
     private Boolean hasIndependentMilestones;
 
-    protected ScheduleMigrationSeed(AllTrackedSchedules allTrackedSchedules, OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allSchedules, Boolean hasIndependentMilestones) {
+    protected ScheduleMigrationSeed(AllSchedules allTrackedSchedules, OldGhanaScheduleSource oldGhanaScheduleSource, AllCareSchedules allCareSchedules, Boolean hasIndependentMilestones) {
         this.allTrackedSchedules = allTrackedSchedules;
         this.oldGhanaScheduleSource = oldGhanaScheduleSource;
-        this.allSchedules = allSchedules;
+        this.allCareSchedules = allCareSchedules;
         this.hasIndependentMilestones = hasIndependentMilestones;
     }
 
@@ -112,7 +112,7 @@ public abstract class ScheduleMigrationSeed extends Seed {
         DateTime mileStoneReferenceTime = newDateTime(milestoneReferenceDate.toLocalDate(), new Time(milestoneReferenceDate.toLocalTime()));
         PatientCare patientCare = patient.patientCareWithoutMetaData(getScheduleName(milestoneName), mileStoneReferenceTime, mileStoneReferenceTime);
         EnrollmentRequest enrollmentRequest = new ScheduleEnrollmentMapper().map(patient, patientCare.milestoneName(mapMilestoneName(milestoneName)));
-        allSchedules.enroll(enrollmentRequest);
+        allCareSchedules.enroll(enrollmentRequest);
     }
 
     protected abstract List<UpcomingSchedule> getAllUpcomingSchedules();

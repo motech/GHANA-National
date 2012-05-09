@@ -1,20 +1,36 @@
 package org.motechproject.ghana.national.configuration;
 
-public class ScheduleNames {
-    public static final String ANC_DELIVERY = "Delivery";
-    public static final String ANC_IPT_VACCINE = "ANCIPTVaccine";
-    public static final String CWC_MEASLES_VACCINE = "CWCMeaslesVaccine";
-    public static final String CWC_IPT_VACCINE = "CWCIPTVaccine";
-    public static final String CWC_BCG = "CWCBCGVaccine";
-    public static final String CWC_YELLOW_FEVER = "CWCYellowFeverVaccine";
-    public static final String CWC_PENTA = "CWCPentaVaccine";
-    public static final String TT_VACCINATION = "TTVaccine";
-    public static final String CWC_OPV_0 = "CWCOPV-0";
-    public static final String CWC_OPV_OTHERS = "CWC_OPV_OTHERS";
-    public static final String PNC_CHILD_1 = "PNC-CHILD-1";
-    public static final String PNC_CHILD_2 = "PNC-CHILD-2";
-    public static final String PNC_CHILD_3 = "PNC-CHILD-3";
-    public static final String PNC_MOTHER_1 = "PNC-MOTHER-1";
-    public static final String PNC_MOTHER_2 = "PNC-MOTHER-2";
-    public static final String PNC_MOTHER_3 = "PNC-MOTHER-3";
+public enum ScheduleNames {
+    ANC_DELIVERY("Delivery","Delivery"),
+    ANC_IPT_VACCINE("ANCIPTVaccine","IPTp"),
+    CWC_MEASLES_VACCINE("CWCMeaslesVaccine","Measles"),
+    CWC_IPT_VACCINE("CWCIPTVaccine","IPTi"),
+    CWC_BCG("CWCBCGVaccine","BCG"),
+    CWC_YELLOW_FEVER("CWCYellowFeverVaccine","YF"),
+    CWC_PENTA("CWCPentaVaccine","Penta"),
+    TT_VACCINATION("TTVaccine","TT"),
+    CWC_OPV_0("CWCOPV-0","OPV0"),
+    CWC_OPV_OTHERS("CWC_OPV_OTHERS","OPV1,OPV2,OPV3"),
+    PNC_CHILD_1("PNC-CHILD-1","PNC-CHILD-1"),
+    PNC_CHILD_2("PNC-CHILD-2","PNC-CHILD-2"),
+    PNC_CHILD_3("PNC-CHILD-3","PNC-CHILD-3"),
+    PNC_MOTHER_1("PNC-MOTHER-1","PNC-MOTHER-1"),
+    PNC_MOTHER_2("PNC-MOTHER-2","PNC-MOTHER-2"),
+    PNC_MOTHER_3("PNC-MOTHER-3","PNC-MOTHER-3");
+
+    private String name;
+    private String friendlyName;
+
+    ScheduleNames(String name,String friendlyName) {
+        this.name = name;
+        this.friendlyName=friendlyName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getFriendlyName(){
+        return friendlyName;
+    }
 }

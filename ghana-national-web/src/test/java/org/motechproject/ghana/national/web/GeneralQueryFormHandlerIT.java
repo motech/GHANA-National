@@ -19,9 +19,8 @@ import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatExcept
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.handlers.GeneralQueryFormHandler;
-import org.motechproject.ghana.national.messagegateway.domain.MessageDispatcher;
 import org.motechproject.ghana.national.repository.AllAppointments;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -30,7 +29,7 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.security.OpenMRSSession;
 import org.motechproject.scheduletracking.api.repository.AllEnrollments;
-import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
+import org.motechproject.scheduletracking.api.repository.AllSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.impl.EnrollmentsQueryService;
 import org.motechproject.util.DateUtil;
@@ -57,8 +56,19 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
-import static org.motechproject.scheduletracking.api.domain.WindowName.*;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_DELIVERY;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_IPT_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_OPV_0;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_OPV_OTHERS;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PENTA;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_CHILD_2;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_CHILD_3;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_MOTHER_2;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_MOTHER_3;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
+import static org.motechproject.scheduletracking.api.domain.WindowName.due;
+import static org.motechproject.scheduletracking.api.domain.WindowName.earliest;
+import static org.motechproject.scheduletracking.api.domain.WindowName.late;
 import static org.motechproject.util.DateUtil.newDateTime;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -77,7 +87,7 @@ public class GeneralQueryFormHandlerIT {
     AppointmentService appointmentService;
 
     @Autowired
-    AllSchedules allSchedules;
+    AllCareSchedules allCareSchedules;
 
     @Autowired
     private PatientService patientService;
@@ -96,7 +106,7 @@ public class GeneralQueryFormHandlerIT {
     private AllEnrollments allEnrollments;
 
     @Autowired
-    private AllTrackedSchedules allTrackedSchedules;
+    private AllSchedules allTrackedSchedules;
 
     @Autowired
     private AllAppointments allAppointments;
@@ -134,7 +144,7 @@ public class GeneralQueryFormHandlerIT {
         openMRSSession.authenticate();
 
         if (testData == null) {
-            testData = new QueryTestDataProvider(allTrackedSchedules, allSchedules, patientService);
+            testData = new QueryTestDataProvider(allTrackedSchedules, allCareSchedules, patientService);
 
             facility1 = createFacility("Newfacility1" + new DataGenerator().randomString(5), new DataGenerator().randomPhoneNumber());
             facility2 = createFacility("Newfacility2" + new DataGenerator().randomString(5), new DataGenerator().randomPhoneNumber());
@@ -159,55 +169,57 @@ public class GeneralQueryFormHandlerIT {
     @Test
     public void shouldReturnUpcomingDeliveries() throws PatientIdIncorrectFormatException, PatientIdNotUniqueException, FacilityAlreadyFoundException {
         LocalDate referenceDate1234560 = DateUtil.today().plusDays(3).minusWeeks(40);
-        enrollToASchedule(patient1234560_InFacility1, referenceDate1234560, ScheduleNames.ANC_DELIVERY);
+        enrollToASchedule(patient1234560_InFacility1, referenceDate1234560, ScheduleNames.ANC_DELIVERY.getName());
 
         LocalDate referenceDate1234562 = DateUtil.today().minusDays(1).minusWeeks(40);
-        enrollToASchedule(patient1234562_InFacility1, referenceDate1234562, ScheduleNames.ANC_DELIVERY);
+        enrollToASchedule(patient1234562_InFacility1, referenceDate1234562, ScheduleNames.ANC_DELIVERY.getName());
 
         LocalDate referenceDate1234561 = DateUtil.today().plusDays(6).minusWeeks(40);
-        enrollToASchedule(patient1234561_InFacility2, referenceDate1234561, ScheduleNames.ANC_DELIVERY);
+        enrollToASchedule(patient1234561_InFacility2, referenceDate1234561, ScheduleNames.ANC_DELIVERY.getName());
 
         LocalDate referenceDate1234563 = DateUtil.today().plusDays(8).minusWeeks(40);
-        enrollToASchedule(patient1234563_InFacility2, referenceDate1234563, ScheduleNames.ANC_DELIVERY);
+        enrollToASchedule(patient1234563_InFacility2, referenceDate1234563, ScheduleNames.ANC_DELIVERY.getName());
 
         String responsePhoneNumber = "0542319876";
 
         String message = submitForFacility(responsePhoneNumber, GeneralQueryType.UPCOMING_DELIVERIES,
                 facility1);
-        assertMessageFor(asList("1234560"), "Delivery", message);
+        assertMessageFor("1234560", "Delivery", message);
         assertNoMessageFor(asList("1234562"), "Delivery", message);
 
         responsePhoneNumber = "0901823765";
         message = submitForFacility(responsePhoneNumber, GeneralQueryType.UPCOMING_DELIVERIES,
                 facility2);
-        assertMessageFor(asList("1234561"), "Delivery", message);
+        assertMessageFor("1234561", "Delivery", message);
         assertNoMessageFor(asList("1234563"), "Delivery", message);
     }
 
     @Test
     public void shouldReturnRecentDeliveries() throws PatientIdIncorrectFormatException, PatientIdNotUniqueException {
-        testData.addToEarlyWindow(patient1234560_InFacility1, ANC_DELIVERY, null);
-        testData.addToEarlyWindow(patient1234561_InFacility2, ANC_DELIVERY, null);
+        testData.addToEarlyWindow(patient1234560_InFacility1, ANC_DELIVERY.getName(), null);
+        testData.addToEarlyWindow(patient1234561_InFacility2, ANC_DELIVERY.getName(), null);
 
-        testData.addToDueWindow(patient1234562_InFacility1, ANC_DELIVERY, null);
-        testData.addToDueWindow(patient1234563_InFacility2, ANC_DELIVERY, null);
-        testData.addToDueWindow(patient1234564_InFacility2, ANC_DELIVERY, null);
+        testData.addToDueWindow(patient1234562_InFacility1, ANC_DELIVERY.getName(), null);
+        testData.addToDueWindow(patient1234563_InFacility2, ANC_DELIVERY.getName(), null);
+        testData.addToDueWindow(patient1234564_InFacility2, ANC_DELIVERY.getName(), null);
 
-        testData.addToLateWindow(patient1234565_InFacility1, ANC_DELIVERY, null);
+        testData.addToLateWindow(patient1234565_InFacility1, ANC_DELIVERY.getName(), null);
 
         List<String> patientToBeFulfilled = asList("1234562", "1234563", "1234564", "1234565");
 
-        testData.fulfill(patientToBeFulfilled, ANC_DELIVERY, DateUtil.today());
+        testData.fulfill(patientToBeFulfilled, ANC_DELIVERY.getName(), DateUtil.today());
 
         String responsePhoneNumber = "0542319876";
 
         String message = submitForFacility(responsePhoneNumber, GeneralQueryType.RECENT_DELIVERIES, facility1);
-        assertMessageFor(asList("1234562", "1234565"), "Delivery", message);
+        assertMessageFor("1234562", "Delivery", message);
+        assertMessageFor("1234565", "Delivery", message);
         assertNoMessageFor(asList("1234560"), "Delivery", message);
 
         responsePhoneNumber = "0901823765";
         message = submitForFacility(responsePhoneNumber, GeneralQueryType.RECENT_DELIVERIES, facility2);
-        assertMessageFor(asList("1234563", "1234564"), "Delivery", message);
+        assertMessageFor("1234563", "Delivery", message);
+        assertMessageFor("1234564", "Delivery", message);
         assertNoMessageFor(asList("1234561"), "Delivery", message);
     }
 
@@ -229,59 +241,63 @@ public class GeneralQueryFormHandlerIT {
 
     @Test
     public void shouldReturnOverDueDeliveries() throws PatientIdIncorrectFormatException, PatientIdNotUniqueException {
-        testData.addToEarlyWindow(patient1234560_InFacility1, ANC_DELIVERY, null);
-        testData.addToEarlyWindow(patient1234561_InFacility2, ANC_DELIVERY, null);
+        testData.addToEarlyWindow(patient1234560_InFacility1, ANC_DELIVERY.getName(), null);
+        testData.addToEarlyWindow(patient1234561_InFacility2, ANC_DELIVERY.getName(), null);
 
-        testData.addToDueWindow(patient1234562_InFacility1, ANC_DELIVERY, null);
-        testData.addToDueWindow(patient1234563_InFacility2, ANC_DELIVERY, null);
+        testData.addToDueWindow(patient1234562_InFacility1, ANC_DELIVERY.getName(), null);
+        testData.addToDueWindow(patient1234563_InFacility2, ANC_DELIVERY.getName(), null);
 
 
-        testData.addToLateWindow(patient1234565_InFacility1, ANC_DELIVERY, null);
-        testData.addToLateWindow(patient1234566_InFacility2, ANC_DELIVERY, null);
+        testData.addToLateWindow(patient1234565_InFacility1, ANC_DELIVERY.getName(), null);
+        testData.addToLateWindow(patient1234566_InFacility2, ANC_DELIVERY.getName(), null);
 
         String responsePhoneNumber = "0542319876";
         String message = submitForFacility(responsePhoneNumber,
                 GeneralQueryType.OVERDUE_DELIVERIES, facility1);
-        assertMessageFor(QueryTestDataProvider.getPatientIdsInWindowsForSchedules(asList(late.name()), facility1.getMrsFacilityId(), ScheduleNames.ANC_DELIVERY), "Delivery", message);
-        assertNoMessageFor(QueryTestDataProvider.getPatientIdsInWindowsForSchedules(asList(earliest.name(), due.name()), facility1.getMrsFacilityId(), ScheduleNames.ANC_DELIVERY), "Delivery", message);
+        for (String motechId : QueryTestDataProvider.getPatientIdsInWindowsForSchedules(asList(late.name()), facility1.getMrsFacilityId(), ScheduleNames.ANC_DELIVERY.getName())) {
+            assertMessageFor(motechId, "Delivery", message);
+        }
+        assertNoMessageFor(QueryTestDataProvider.getPatientIdsInWindowsForSchedules(asList(earliest.name(), due.name()), facility1.getMrsFacilityId(), ScheduleNames.ANC_DELIVERY.getName()), "Delivery", message);
 
         responsePhoneNumber = "0901823765";
         message = submitForFacility(responsePhoneNumber, GeneralQueryType.OVERDUE_DELIVERIES, facility2);
-        assertMessageFor(QueryTestDataProvider.getPatientIdsInWindowsForSchedules(asList(late.name()), facility2.getMrsFacilityId(), ScheduleNames.ANC_DELIVERY), "Delivery", message);
-        assertNoMessageFor(QueryTestDataProvider.getPatientIdsInWindowsForSchedules(asList(earliest.name(), due.name()), facility1.getMrsFacilityId(), ScheduleNames.ANC_DELIVERY), "Delivery", message);
+        for (String motechId : QueryTestDataProvider.getPatientIdsInWindowsForSchedules(asList(late.name()), facility2.getMrsFacilityId(), ScheduleNames.ANC_DELIVERY.getName())) {
+            assertMessageFor(motechId, "Delivery", message);
+        }
+        assertNoMessageFor(QueryTestDataProvider.getPatientIdsInWindowsForSchedules(asList(earliest.name(), due.name()), facility1.getMrsFacilityId(), ScheduleNames.ANC_DELIVERY.getName()), "Delivery", message);
     }
 
     @Test
     public void shouldReturnTTDefaulters() {
-        testData.addToLateWindow(patient1234560_InFacility1, TT_VACCINATION, null);
-        testData.addToDueWindow(patient1234562_InFacility1, TT_VACCINATION, null);
-        testData.addToDueWindow(patient1234565_InFacility1, TT_VACCINATION, null);
-        testData.addToLateWindow(patient1234561_InFacility2, TT_VACCINATION, "TT2");
-        testData.addToDueWindow(patient1234567_InFacility2, TT_VACCINATION, "TT2");
-        testData.addToDueWindow(patient1234566_InFacility2, TT_VACCINATION, "TT2");
-        testData.addToLateWindow(patient1234563_InFacility2, TT_VACCINATION, "TT3");
+        testData.addToLateWindow(patient1234560_InFacility1, TT_VACCINATION.getName(), null);
+        testData.addToDueWindow(patient1234562_InFacility1, TT_VACCINATION.getName(), null);
+        testData.addToDueWindow(patient1234565_InFacility1, TT_VACCINATION.getName(), null);
+        testData.addToLateWindow(patient1234561_InFacility2, TT_VACCINATION.getName(), "TT2");
+        testData.addToDueWindow(patient1234567_InFacility2, TT_VACCINATION.getName(), "TT2");
+        testData.addToDueWindow(patient1234566_InFacility2, TT_VACCINATION.getName(), "TT2");
+        testData.addToLateWindow(patient1234563_InFacility2, TT_VACCINATION.getName(), "TT2");
 
         String responsePhoneNumber = "0542319876";
         String message = submitForFacility(responsePhoneNumber,
                 GeneralQueryType.TT_DEFAULTERS, facility1);
-        assertMessageFor(asList("1234560"), "TT1", message);
+        assertMessageFor("1234560", "TT1", message);
         assertNoMessageFor(asList("1234562", "1234565"), "TT1", message);
 
         responsePhoneNumber = "0901823765";
         message = submitForFacility(responsePhoneNumber,
                 GeneralQueryType.TT_DEFAULTERS, facility2);
 
-        assertMessageFor(asList("1234561"), "TT2", message);
-        assertMessageFor(asList("1234563"), "TT3", message);
+        assertMessageFor("1234561", "TT2", message);
+        assertMessageFor("1234563", "TT2", message);
         assertNoMessageFor(asList("1234567", "1234566"), "TT2", message);
     }
 
     @Test
     public void shouldReturnANCDefaulters() {
-        testData.addToLateWindow(patient1234560_InFacility1, ScheduleNames.ANC_IPT_VACCINE, "IPT2");
-        testData.addToDueWindow(patient1234562_InFacility1, ScheduleNames.ANC_IPT_VACCINE, null);
-        testData.addToLateWindow(patient1234562_InFacility1, ScheduleNames.TT_VACCINATION, "TT3");
-        testData.addToDueWindow(patient1234560_InFacility1, ScheduleNames.TT_VACCINATION, null);
+        testData.addToLateWindow(patient1234560_InFacility1, ScheduleNames.ANC_IPT_VACCINE.getName(), "IPT2");
+        testData.addToDueWindow(patient1234562_InFacility1, ScheduleNames.ANC_IPT_VACCINE.getName(), null);
+        testData.addToLateWindow(patient1234562_InFacility1, ScheduleNames.TT_VACCINATION.getName(), "TT2");
+        testData.addToDueWindow(patient1234560_InFacility1, ScheduleNames.TT_VACCINATION.getName(), null);
 
         DateTime referenceDateTime=newDateTime(DateUtil.today());
 
@@ -297,9 +313,12 @@ public class GeneralQueryFormHandlerIT {
         String message = submitForFacility(responsePhoneNumber,
                 GeneralQueryType.ANC_DEFAULTERS, facility1);
 
-        assertMessageFor(asList("1234560"), "IPT2", message);
-        assertMessageFor(asList("1234562"), "TT3", message);
-        assertMessageFor(asList("1234560","1234562","1234565","1234568"),"ANCVISIT",message);
+        assertMessageFor("1234560", "IPT2", message);
+        assertMessageFor("1234562", "TT2", message);
+        assertMessageFor("1234560","ANCVISIT",message);
+        assertMessageFor("1234562","ANCVISIT",message);
+        assertMessageFor("1234565","ANCVISIT",message);
+        assertMessageFor("1234568","ANCVISIT",message);
         assertNoMessageFor(asList("1234562"), "IPT1", message);
         assertNoMessageFor(asList("1234560"), "TT1", message);
 
@@ -314,58 +333,59 @@ public class GeneralQueryFormHandlerIT {
 
     @Test
     public void shouldReturnPNCChildDefaulters() {
-        testData.addToEarlyWindow(patient1234560_InFacility1, PNC_CHILD_2, null);
-        testData.addToLateWindow(patient1234562_InFacility1, PNC_CHILD_2, null);
-        testData.addToMaxWindow(patient1234565_InFacility1, PNC_CHILD_3, null);
+        testData.addToEarlyWindow(patient1234560_InFacility1, PNC_CHILD_2.getName(), null);
+        testData.addToLateWindow(patient1234562_InFacility1, PNC_CHILD_2.getName(), null);
+        testData.addToMaxWindow(patient1234565_InFacility1, PNC_CHILD_3.getName(), null);
 
         String responsePhoneNumber = "0542319876";
         GeneralQueryType generalQueryType = GeneralQueryType.PNC_C_DEFAULTERS;
         String message = submitForFacility(responsePhoneNumber,
                 generalQueryType, facility1);
-        assertMessageFor(asList("1234562"), allTrackedSchedules.getByName(PNC_CHILD_2).getFirstMilestone().getName(), message);
-        assertMessageFor(asList("1234565"), allTrackedSchedules.getByName(PNC_CHILD_3).getFirstMilestone().getName(), message);
+        assertMessageFor("1234562", allTrackedSchedules.getByName(PNC_CHILD_2.getName()).getFirstMilestone().getName(), message);
+        assertMessageFor("1234565", allTrackedSchedules.getByName(PNC_CHILD_3.getName()).getFirstMilestone().getName(), message);
         assertNoMessageFor(asList("1234560"), "PNC-C2", message);
     }
 
     @Test
     public void shouldReturnPNCMotherDefaulters() {
-        testData.addToEarlyWindow(patient1234560_InFacility1, PNC_MOTHER_2, null);
-        testData.addToLateWindow(patient1234562_InFacility1, PNC_MOTHER_2, null);
-        testData.addToMaxWindow(patient1234565_InFacility1, PNC_MOTHER_3, null);
+        testData.addToEarlyWindow(patient1234560_InFacility1, PNC_MOTHER_2.getName(), null);
+        testData.addToLateWindow(patient1234562_InFacility1, PNC_MOTHER_2.getName(), null);
+        testData.addToMaxWindow(patient1234565_InFacility1, PNC_MOTHER_3.getName(), null);
 
         String responsePhoneNumber = "0542319876";
         GeneralQueryType generalQueryType = GeneralQueryType.PNC_M_DEFAULTERS;
         String message = submitForFacility(responsePhoneNumber,
                 generalQueryType, facility1);
-        assertMessageFor(asList("1234562"), allTrackedSchedules.getByName(PNC_MOTHER_2).getFirstMilestone().getName(), message);
-        assertMessageFor(asList("1234565"), allTrackedSchedules.getByName(PNC_MOTHER_3).getFirstMilestone().getName(), message);
+        assertMessageFor("1234562", allTrackedSchedules.getByName(PNC_MOTHER_2.getName()).getFirstMilestone().getName(), message);
+        assertMessageFor("1234565", allTrackedSchedules.getByName(PNC_MOTHER_3.getName()).getFirstMilestone().getName(), message);
         assertNoMessageFor(asList("1234560"), "PNC-M2", message);
     }
 
     @Test
     public void shouldReturnCWCDefaulters() {
-        testData.addToEarlyWindow(patient1234560_InFacility1, CWC_IPT_VACCINE, null);
-        testData.addToLateWindow(patient1234562_InFacility1, CWC_IPT_VACCINE, "IPTi2");
-        testData.addToDueWindow(patient1234562_InFacility1, CWC_OPV_0, null);
-        testData.addToLateWindow(patient1234560_InFacility1, CWC_OPV_OTHERS, "OPV3");
-        testData.addToDueWindow(patient1234560_InFacility1, CWC_PENTA, null);
-        testData.addToLateWindow(patient1234565_InFacility1, CWC_PENTA, "Penta2");
+        testData.addToEarlyWindow(patient1234560_InFacility1, CWC_IPT_VACCINE.getName(), null);
+        testData.addToLateWindow(patient1234562_InFacility1, CWC_IPT_VACCINE.getName(), "IPTi2");
+        testData.addToDueWindow(patient1234562_InFacility1, CWC_OPV_0.getName(), null);
+        testData.addToLateWindow(patient1234560_InFacility1, CWC_OPV_OTHERS.getName(), "OPV3");
+        testData.addToDueWindow(patient1234560_InFacility1, CWC_PENTA.getName(), null);
+        testData.addToLateWindow(patient1234565_InFacility1, CWC_PENTA.getName(), "Penta2");
 
         String responsePhoneNumber = "0542319876";
         GeneralQueryType generalQueryType = GeneralQueryType.CWC_DEFAULTERS;
         String message = submitForFacility(responsePhoneNumber,
                 generalQueryType, facility1);
-        assertMessageFor(asList("1234562"), "IPTi2", message);
+        assertTrue(message,message.contains("List of CWC_DEFAULTERS-IPTi,OPV0,OPV1,OPV2,OPV3,Penta"));
+        assertMessageFor("1234562", "IPTi2", message);
         assertNoMessageFor(asList("1234560"), "IPTi1", message);
         assertNoMessageFor(asList("1234562"), "OPV0", message);
-        assertMessageFor(asList("1234560"), "OPV3", message);
+        assertMessageFor("1234560", "OPV3", message);
         assertNoMessageFor(asList("1234560"), "Penta1", message);
-        assertMessageFor(asList("1234565"), "Penta2", message);
+        assertMessageFor("1234565", "Penta2", message);
     }
 
 
     private void enrollToASchedule(Patient patient, LocalDate referenceDate, String scheduleName) {
-        allSchedules.enroll(new EnrollmentRequest(patient.getMRSPatientId(), scheduleName, null,
+        allCareSchedules.enroll(new EnrollmentRequest(patient.getMRSPatientId(), scheduleName, null,
                 referenceDate, null, null, null, null, patient.facilityMetaData()));
     }
 
@@ -393,21 +413,21 @@ public class GeneralQueryFormHandlerIT {
 
     private void assertNoMessageFor(List<String> notInList, String milestoneName, String message) {
         for (String motechId : notInList) {
-            String expectedMessage = buildMessage(milestoneName, motechId);
+            String expectedMessage = buildMessage(motechId);
+            expectedMessage = expectedMessage + milestoneName;
             assertFalse(message, message.contains(expectedMessage));
         }
     }
 
-    private void assertMessageFor(List<String> inList, String milestoneName, String message) {
-        for (String motechId : inList) {
-            String expectedMessage = buildMessage(milestoneName, motechId);
+    private void assertMessageFor(String motechId, String milestoneName, String message) {
+            String expectedMessage = buildMessage(motechId);
+            expectedMessage = expectedMessage + milestoneName;
             assertTrue(message, message.contains(expectedMessage));
-        }
     }
 
-    private String buildMessage(String milestoneName, String motechId) {
+    private String buildMessage(String motechId) {
         Patient patient = patientMap.get(motechId);
-        return String.format("%s %s, %s %s%s", patient.getFirstName(), patient.getLastName(), motechId, milestoneName, MessageDispatcher.SMS_SEPARATOR);
+        return String.format("%s %s, %s", patient.getFirstName(), patient.getLastName(), motechId);
     }
 
     private Patient createPatient(String motechId, final Facility facility) throws PatientIdIncorrectFormatException, PatientIdNotUniqueException {

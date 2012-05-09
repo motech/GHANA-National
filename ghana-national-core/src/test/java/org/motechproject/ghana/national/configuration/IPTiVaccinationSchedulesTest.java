@@ -28,7 +28,7 @@ public class IPTiVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         super.setUp();
         preferredAlertTime = new Time(10, 10);
         externalId = "patient_id" + randomAlphabetic(6);
-        scheduleName = CWC_IPT_VACCINE;
+        scheduleName = CWC_IPT_VACCINE.getName();
     }
 
     @Test

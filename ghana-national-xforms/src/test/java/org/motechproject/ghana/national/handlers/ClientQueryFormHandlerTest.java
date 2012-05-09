@@ -11,7 +11,7 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.repository.AllAppointments;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.PregnancyService;
@@ -53,7 +53,7 @@ public class ClientQueryFormHandlerTest {
     @Mock
     private SMSGateway mockSmsGateway;
     @Mock
-    private AllSchedules mockAllSchedules;
+    private AllCareSchedules mockAllCareSchedules;
     @Mock
     private AllAppointments mockAllAppointments;
 
@@ -64,7 +64,7 @@ public class ClientQueryFormHandlerTest {
         setField(clientQueryFormHandler, "patientService", mockPatientService);
         setField(clientQueryFormHandler, "pregnancyService", mockPregnancyService);
         setField(clientQueryFormHandler, "smsGateway", mockSmsGateway);
-        setField(clientQueryFormHandler, "allSchedules", mockAllSchedules);
+        setField(clientQueryFormHandler, "allCareSchedules", mockAllCareSchedules);
         setField(clientQueryFormHandler, "allAppointments", mockAllAppointments);
     }
 
@@ -189,7 +189,7 @@ public class ClientQueryFormHandlerTest {
 
         clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
 
-        verify(mockAllSchedules).upcomingCareForCurrentWeek(mrsPatientId);
+        verify(mockAllCareSchedules).upcomingCareForCurrentWeek(mrsPatientId);
         verify(mockAllAppointments).upcomingAppointmentsForCurrentWeek(motechId);
         verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), anyString());
     }

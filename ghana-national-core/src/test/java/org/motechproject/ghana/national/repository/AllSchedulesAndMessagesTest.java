@@ -19,7 +19,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AllSchedulesAndMessagesTest {
     @Mock
-    private AllSchedules allSchedules;
+    private AllCareSchedules allCareSchedules;
     @Mock
     private MessageGateway messageGateway;
 
@@ -28,7 +28,7 @@ public class AllSchedulesAndMessagesTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        allSchedulesAndMessages = new AllSchedulesAndMessages(allSchedules, messageGateway);
+        allSchedulesAndMessages = new AllSchedulesAndMessages(allCareSchedules, messageGateway);
     }
     
     @Test
@@ -37,30 +37,30 @@ public class AllSchedulesAndMessagesTest {
         String externalId = "externalId";
         final LocalDate fulfillmentDate = DateUtil.today();
         allSchedulesAndMessages.safeFulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
-        verify(allSchedules).safeFulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
+        verify(allCareSchedules).safeFulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
         verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
 
-        reset(allSchedules);
+        reset(allCareSchedules);
         reset(messageGateway);
 
         allSchedulesAndMessages.fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
-        verify(allSchedules).fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
+        verify(allCareSchedules).fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
         verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
 
-        reset(allSchedules);
+        reset(allCareSchedules);
         reset(messageGateway);
 
         Time fulfillmentTime = new Time(10, 10);
         final EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, scheduleName, null, null, null, null, null, null, null);
         allSchedulesAndMessages.enrollOrFulfill(enrollmentRequest, fulfillmentDate, fulfillmentTime);
-        verify(allSchedules).enrollOrFulfill(enrollmentRequest, fulfillmentDate, fulfillmentTime);
+        verify(allCareSchedules).enrollOrFulfill(enrollmentRequest, fulfillmentDate, fulfillmentTime);
         verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
 
-        reset(allSchedules);
+        reset(allCareSchedules);
         reset(messageGateway);
 
         allSchedulesAndMessages.enrollOrFulfill(enrollmentRequest, fulfillmentDate);
-        verify(allSchedules).enrollOrFulfill(enrollmentRequest, fulfillmentDate);
+        verify(allCareSchedules).enrollOrFulfill(enrollmentRequest, fulfillmentDate);
         verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
     }
 
@@ -69,7 +69,7 @@ public class AllSchedulesAndMessagesTest {
         String externalId = "externalId";
         List<String> scheduleNames = Arrays.asList("schedule1", "schedule2");
         allSchedulesAndMessages.unEnroll(externalId, scheduleNames);
-        verify(allSchedules).unEnroll(externalId, scheduleNames);
+        verify(allCareSchedules).unEnroll(externalId, scheduleNames);
         for (String scheduleName : scheduleNames) {
             verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
         }

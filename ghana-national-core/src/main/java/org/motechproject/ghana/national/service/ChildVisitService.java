@@ -7,8 +7,8 @@ import org.motechproject.ghana.national.domain.OPVDose;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.factory.ChildVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.repository.AllEncounters;
-import org.motechproject.ghana.national.repository.AllSchedules;
 import org.motechproject.ghana.national.repository.AllSchedulesAndMessages;
 import org.motechproject.ghana.national.service.request.PNCBabyRequest;
 import org.motechproject.ghana.national.vo.CWCVisit;
@@ -29,13 +29,13 @@ import static org.motechproject.util.DateUtil.time;
 @Service
 public class ChildVisitService {
     private AllEncounters allEncounters;
-    private AllSchedules allSchedules;
+    private AllCareSchedules allCareSchedules;
     private AllSchedulesAndMessages allSchedulesAndMessages;
 
     @Autowired
-    public ChildVisitService(AllEncounters allEncounters, AllSchedules allSchedules, AllSchedulesAndMessages allSchedulesAndMessages) {
+    public ChildVisitService(AllEncounters allEncounters, AllCareSchedules allCareSchedules, AllSchedulesAndMessages allSchedulesAndMessages) {
         this.allEncounters = allEncounters;
-        this.allSchedules = allSchedules;
+        this.allCareSchedules = allCareSchedules;
         this.allSchedulesAndMessages = allSchedulesAndMessages;
     }
 
@@ -55,9 +55,9 @@ public class ChildVisitService {
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
             String opvType;
             if (OPVDose.OPV_0.equals(OPVDose.byValue(cwcVisit.getOpvdose())))
-                opvType=CWC_OPV_0;
+                opvType=CWC_OPV_0.getName();
             else
-                opvType=CWC_OPV_OTHERS;
+                opvType=CWC_OPV_OTHERS.getName();
             allSchedulesAndMessages.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient,patient.cwcOPVOnVisit(visitDate, opvType)),visitDate);
         }
 
@@ -93,7 +93,7 @@ public class ChildVisitService {
     private void updateMeaslesSchedule(CWCVisit cwcVisit) {
         List<String> immunizations = cwcVisit.getImmunizations();
         Patient patient = cwcVisit.getPatient();
-        if (immunizations.contains(MEASLES.name()) && enrollment(patient.getMRSPatientId(), CWC_MEASLES_VACCINE) != null) {
+        if (immunizations.contains(MEASLES.name()) && enrollment(patient.getMRSPatientId(), CWC_MEASLES_VACCINE.getName()) != null) {
             allSchedulesAndMessages.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient, patient.cwcMeaslesOnVisit(newDate(cwcVisit.getDate()))), newDate(cwcVisit.getDate()));
         }
     }
@@ -120,6 +120,6 @@ public class ChildVisitService {
     }
 
     private EnrollmentRecord enrollment(String mrsPatientId, String programName) {
-        return allSchedules.enrollment(new ScheduleEnrollmentMapper().map(mrsPatientId, programName));
+        return allCareSchedules.enrollment(new ScheduleEnrollmentMapper().map(mrsPatientId, programName));
     }
 }

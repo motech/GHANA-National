@@ -26,7 +26,7 @@ public class CWCMeaslesVaccineSchedulesTest extends BaseScheduleTrackingTest {
         super.setUp();
         preferredAlertTime = new Time(10, 10);
         externalId = "patient_id" + randomAlphabetic(6);
-        scheduleName = ScheduleNames.CWC_MEASLES_VACCINE;
+        scheduleName = ScheduleNames.CWC_MEASLES_VACCINE.getName();
     }
 
     @Test

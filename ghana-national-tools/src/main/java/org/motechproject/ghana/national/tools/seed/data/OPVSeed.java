@@ -1,10 +1,10 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
 import org.motechproject.ghana.national.configuration.ScheduleNames;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.tools.seed.data.domain.UpcomingSchedule;
 import org.motechproject.ghana.national.tools.seed.data.source.OldGhanaScheduleSource;
-import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
+import org.motechproject.scheduletracking.api.repository.AllSchedules;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +16,8 @@ import static java.lang.Boolean.TRUE;
 public class OPVSeed extends ScheduleMigrationSeed {
 
     @Autowired
-    public OPVSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllTrackedSchedules allTrackedSchedules, AllSchedules allSchedules) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allSchedules, TRUE);
+    public OPVSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allTrackedSchedules, AllCareSchedules allCareSchedules) {
+        super(allTrackedSchedules, oldGhanaScheduleSource, allCareSchedules, TRUE);
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {
@@ -32,9 +32,9 @@ public class OPVSeed extends ScheduleMigrationSeed {
     @Override
     public String getScheduleName(String milestoneName) {
         if ("OPV0".equals(milestoneName)){
-            return ScheduleNames.CWC_OPV_0;
+            return ScheduleNames.CWC_OPV_0.getName();
         }else if ("OPV1".equals(milestoneName) || "OPV2".equals(milestoneName) || "OPV3".equals(milestoneName)){
-            return ScheduleNames.CWC_OPV_OTHERS;
+            return ScheduleNames.CWC_OPV_OTHERS.getName();
         }
         return null;
     }

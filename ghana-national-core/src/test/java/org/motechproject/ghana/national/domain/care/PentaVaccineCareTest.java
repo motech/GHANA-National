@@ -37,7 +37,7 @@ public class PentaVaccineCareTest {
         LocalDate birthDate=enrollmentDate.minusWeeks(9);
         Patient patient = new Patient(new MRSPatient("pid", "mid", new MRSPerson().dateOfBirth(birthDate.toDate()), new MRSFacility(facilityId)));
         assertThat(new PentaVaccineCare(patient, enrollmentDate, null, null, null).newEnrollmentForCare(),
-                is(equalTo(new PatientCare(ScheduleNames.CWC_PENTA, birthDate, enrollmentDate, null, new HashMap<String, String>() {{
+                is(equalTo(new PatientCare(ScheduleNames.CWC_PENTA.getName(), birthDate, enrollmentDate, null, new HashMap<String, String>() {{
                     put("facilityId", facilityId);
                 }}))));
     }

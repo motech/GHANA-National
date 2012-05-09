@@ -40,7 +40,7 @@ public class ANCCareRegistrationTest {
 
         List<PatientCare> patientCares = ancCareRegistration.allCares();
         //Delivery with date of conception as reference date
-        assertThat(patientCares, is(asList(PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_DELIVERY, pregnancy.dateOfConception(), patient.facilityMetaData()), ttPatientCare, iptPatientCare)));
+        assertThat(patientCares, is(asList(PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_DELIVERY.getName(), pregnancy.dateOfConception(), patient.facilityMetaData()), ttPatientCare, iptPatientCare)));
     }
 
 

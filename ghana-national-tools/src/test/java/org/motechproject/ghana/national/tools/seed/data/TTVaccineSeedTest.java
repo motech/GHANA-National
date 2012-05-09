@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.tools.seed.data.source.OldGhanaScheduleSource;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSFacility;
@@ -27,12 +27,12 @@ public class TTVaccineSeedTest {
 
     private TTVaccineSeed ttVaccineSeed;
     @Mock
-    private AllSchedules allSchedules;
+    private AllCareSchedules allCareSchedules;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        ttVaccineSeed = new TTVaccineSeed(oldGhanaScheduleSource, null, allSchedules);
+        ttVaccineSeed = new TTVaccineSeed(oldGhanaScheduleSource, null, allCareSchedules);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class TTVaccineSeedTest {
         final Patient patient = new Patient(new MRSPatient("1000", null, null, new MRSFacility("fid")));
         ttVaccineSeed.enroll(referenceDate, "TT2", patient);
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(allSchedules).enroll(enrollmentRequestCaptor.capture());
+        verify(allCareSchedules).enroll(enrollmentRequestCaptor.capture());
         assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT2", "1000", referenceDate, new HashMap<String, String>());
     }
 
@@ -52,7 +52,7 @@ public class TTVaccineSeedTest {
         ttVaccineSeed.enroll(dueDate, "TT1", patient);
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
-        verify(allSchedules).enroll(enrollmentRequestCaptor.capture());
+        verify(allCareSchedules).enroll(enrollmentRequestCaptor.capture());
         DateTime referenceDate = DateUtil.newDateTime(2012, 2, 1, new Time(10, 10));
         assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT1", "1000", referenceDate, new HashMap<String, String>());
     }

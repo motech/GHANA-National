@@ -4,7 +4,7 @@ import org.motechproject.ghana.national.bean.ANCVisitForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
-import org.motechproject.ghana.national.repository.AllSchedules;
+import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MotherVisitService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -37,7 +37,7 @@ public class ANCVisitFormHandler implements FormPublishHandler {
     @Autowired
     private PatientService patientService;
     @Autowired
-    private AllSchedules allSchedules;
+    private AllCareSchedules allCareSchedules;
 
     @Override
     @MotechListener(subjects = "form.validation.successful.NurseDataEntry.ancVisit")
