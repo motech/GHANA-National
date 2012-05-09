@@ -25,7 +25,12 @@
           </elementProp>
           <elementProp name="patient_fname_prefix" elementType="Argument">
             <stringProp name="Argument.name">patient_fname_prefix</stringProp>
-            <stringProp name="Argument.value">cricket</stringProp>
+            <stringProp name="Argument.value">mac</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="staff_first_name" elementType="Argument">
+            <stringProp name="Argument.name">staff_first_name</stringProp>
+            <stringProp name="Argument.value">apple</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="forms_to_be_tested" elementType="Argument">
@@ -97,6 +102,66 @@
         <stringProp name="ThreadGroup.delay"></stringProp>
       </SetupThreadGroup>
       <hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Create staff" enabled="true"/>
+        <hashTree>
+          <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Login to Ghana National web app" enabled="true">
+            <collectionProp name="ModuleController.node_path">
+              <stringProp name="-1227702913">WorkBench</stringProp>
+              <stringProp name="764597751">Test Plan</stringProp>
+              <stringProp name="-972103084">Ghana National web app</stringProp>
+              <stringProp name="73596745">Login</stringProp>
+            </collectionProp>
+          </ModuleController>
+          <hashTree/>
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop as many field works" enabled="true">
+            <boolProp name="LoopController.continue_forever">true</boolProp>
+            <stringProp name="LoopController.loops">${no_of_field_workers}</stringProp>
+          </LoopController>
+          <hashTree>
+            <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="Create staff" enabled="true">
+              <collectionProp name="ModuleController.node_path">
+                <stringProp name="-1227702913">WorkBench</stringProp>
+                <stringProp name="764597751">Test Plan</stringProp>
+                <stringProp name="-972103084">Ghana National web app</stringProp>
+                <stringProp name="239148764">Create staff</stringProp>
+              </collectionProp>
+            </ModuleController>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="Store staff ids to session" enabled="true">
+              <boolProp name="resetInterpreter">true</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+response = new String(data);
+pattern = Pattern.compile(&quot;&lt;input(?!&lt;input).*?/&gt;&quot;, Pattern.DOTALL);
+matcher= pattern.matcher(response);
+
+staffIds = vars.get(&quot;staffIds&quot;);
+staffIds = staffIds != null ? staffIds : &quot;&quot;;
+
+while(matcher.find())
+{
+    inputTag = matcher.group(0);
+    if(inputTag.contains(&quot;staffId&quot;)){
+        substringFromValueAttribute = inputTag.substring(inputTag.indexOf(&quot;value=&quot;));
+        staffIdWithQuotes = substringFromValueAttribute.substring(6, substringFromValueAttribute.indexOf(&quot; &quot;));       
+        vars.put(&quot;staffIds&quot;, (staffIds + &quot; &quot; + staffIdWithQuotes.substring(1, staffIdWithQuotes.length() - 1)).trim());
+        break;
+    }
+}
+
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="Ghana National cookie manager" enabled="true">
+            <collectionProp name="CookieManager.cookies"/>
+            <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          </CookieManager>
+          <hashTree/>
+        </hashTree>
         <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Pre-print MoTeCH ids" enabled="true"/>
         <hashTree>
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Load pre-printed MoTeCH ids from file" enabled="true">
@@ -174,6 +239,11 @@ try{
 </stringProp>
             </BeanShellPostProcessor>
             <hashTree/>
+            <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="Openmrs login cookie" enabled="true">
+              <collectionProp name="CookieManager.cookies"/>
+              <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+            </CookieManager>
+            <hashTree/>
           </hashTree>
         </hashTree>
         <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Fill forms" enabled="true">
@@ -214,9 +284,9 @@ format(date){
     return date.toString(DateTimeFormat.forPattern(&quot;yyyy-MM-dd&quot;));
 }
 
-ancRegistrationFormFactory(motechId){
+ancRegistrationFormFactory(motechId, staffId){
     details = new HashMap();
-    details{&quot;staffId&quot;}=&quot;2051&quot;;
+    details{&quot;staffId&quot;}=staffId;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
     details{&quot;motechId&quot;}=motechId;
     details{&quot;registrationDate&quot;}=format(today());
@@ -236,9 +306,9 @@ ancRegistrationFormFactory(motechId){
     return details;
 }
 
-patientRegWithANCAndMMFormFactory(motechId){
+patientRegWithANCAndMMFormFactory(motechId, staffId){
     details = new HashMap();    
-    details{&quot;staffId&quot;}=&quot;2051&quot;;
+    details{&quot;staffId&quot;}=staffId;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
     details{&quot;date&quot;}=format(today());
     details{&quot;registrationMode&quot;}=&quot;AUTO_GENERATE_ID&quot;;
@@ -277,7 +347,7 @@ patientRegWithANCAndMMFormFactory(motechId){
     return details;
 }
 
-patientRegistrationFormFactory(motechId){
+patientRegistrationFormFactory(motechId, staffId){
     details = new HashMap();
     details{&quot;registrationMode&quot;}=&quot;USE_PREPRINTED_ID&quot;;
     details{&quot;motechId&quot;}=motechId;
@@ -293,7 +363,7 @@ patientRegistrationFormFactory(motechId){
     details{&quot;dateOfBirth&quot;}=&quot;1982-01-01&quot;;
     details{&quot;serialNumber&quot;}=&quot;SerialNumber&quot;;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
-    details{&quot;staffId&quot;}=&quot;2051&quot;;
+    details{&quot;staffId&quot;}=staffId;
     return details;
 }
 
@@ -302,11 +372,9 @@ formFactory{&quot;RegisterClient&quot;} = &quot;patientRegistrationFormFactory&q
 formFactory{&quot;RegisterANC&quot;}=&quot;ancRegistrationFormFactory&quot;;
 formFactory{&quot;RegisterClient-WithANCAndMM&quot;}=&quot;patientRegWithANCAndMMFormFactory&quot;;
 
-formData(formName, motechId){
-   return this.invokeMethod(formFactory.get(formName), new Object[]{motechId});
+formData(formName, motechId, staffId){
+   return this.invokeMethod(formFactory.get(formName), new Object[]{motechId, staffId});
 }
-
-request_count = Integer.parseInt(vars.get(&quot;no_of_test_loops&quot;)) * Integer.parseInt(vars.get(&quot;no_of_field_workers&quot;));
 
 fillForms(mobile, studyName, forms, fileName){
     try{
@@ -340,14 +408,22 @@ form(templatePath, formData){
 mobile = new Mobile();
 pre_printed_motech_ids = vars.get(&quot;pre_printed_motech_ids&quot;).split(System.getProperty(&quot;line.separator&quot;));
 
-for(i=0; i &lt; request_count; i++){
-    formNames = vars.get(&quot;forms_to_be_tested&quot;);
-    forms = new ArrayList();
-    for(formName : formNames.split(&quot;,&quot;)){
-        templatePath = getFormTemplatePath(formName.trim());
-        forms.add(form(templatePath, formData(formName, pre_printed_motech_ids[i])));
+request_count = Integer.parseInt(vars.get(&quot;no_of_test_loops&quot;)) * Integer.parseInt(vars.get(&quot;no_of_field_workers&quot;));
+staffIds = vars.get(&quot;staffIds&quot;).split(&quot; &quot;);
+
+index = 0;
+for(int flwIndex=0; flwIndex &lt; Integer.parseInt(vars.get(&quot;no_of_field_workers&quot;)); flwIndex++){
+    staffId = staffIds[new Integer(flwIndex)];
+    for(loopIndex=0; loopIndex &lt; Integer.parseInt(vars.get(&quot;no_of_test_loops&quot;)); loopIndex++){
+        formNames = vars.get(&quot;forms_to_be_tested&quot;);
+        forms = new ArrayList();
+        for(formName : formNames.split(&quot;,&quot;)){
+            templatePath = getFormTemplatePath(formName.trim());
+            forms.add(form(templatePath, formData(formName, pre_printed_motech_ids[index], staffId)));
+        }
+        fillForms(mobile, &quot;NurseDataEntry&quot;, forms, &quot;request_&quot; + (flwIndex + 1) + &quot;_&quot; + loopIndex);
+        index++;
     }
-    fillForms(mobile, &quot;NurseDataEntry&quot;, forms, &quot;request_&quot; + i);
 }</stringProp>
             <stringProp name="BeanShellSampler.filename"></stringProp>
             <stringProp name="BeanShellSampler.parameters"></stringProp>
@@ -355,11 +431,6 @@ for(i=0; i &lt; request_count; i++){
           </BeanShellSampler>
           <hashTree/>
         </hashTree>
-        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="Openmrs login cookie" enabled="true">
-          <collectionProp name="CookieManager.cookies"/>
-          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
-        </CookieManager>
-        <hashTree/>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Result" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
@@ -427,8 +498,8 @@ for(i=0; i &lt; request_count; i++){
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
             <collectionProp name="HTTPFileArgs.files">
-              <elementProp name="/tmp/request_${request_counter}" elementType="HTTPFileArg">
-                <stringProp name="File.path">/tmp/request_${request_counter}</stringProp>
+              <elementProp name="/tmp/request_${__threadNum()}_${request_counter}" elementType="HTTPFileArg">
+                <stringProp name="File.path">/tmp/request_${__threadNum()}_${request_counter}</stringProp>
                 <stringProp name="File.paramname"></stringProp>
                 <stringProp name="File.mimetype"></stringProp>
               </elementProp>
@@ -483,7 +554,7 @@ prev.setResponseData(result);</stringProp>
             <stringProp name="CounterConfig.incr">1</stringProp>
             <stringProp name="CounterConfig.name">request_counter</stringProp>
             <stringProp name="CounterConfig.format"></stringProp>
-            <boolProp name="CounterConfig.per_user">false</boolProp>
+            <boolProp name="CounterConfig.per_user">true</boolProp>
           </CounterConfig>
           <hashTree/>
         </hashTree>
@@ -556,7 +627,7 @@ prev.setResponseData(result);</stringProp>
       <hashTree>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Login" enabled="true"/>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LoginPage" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login page" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
               <collectionProp name="Arguments.arguments"/>
             </elementProp>
@@ -635,6 +706,140 @@ prev.setResponseData(result);</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">/openmrs/module/idgen/exportIdentifiers.form?source=1&amp;numberToGenerate=${pre_printed_id_count}&amp;comment=</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <TestFragmentController guiclass="TestFragmentControllerGui" testclass="TestFragmentController" testname="Ghana National web app" enabled="true"/>
+      <hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Create staff" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create staff" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="firstName" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${staff_first_name}_${staff_name_index}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">firstName</stringProp>
+                </elementProp>
+                <elementProp name="lastName" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">Staff last name</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">lastName</stringProp>
+                </elementProp>
+                <elementProp name="phoneNumber" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">0${staff_phone_number}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">phoneNumber</stringProp>
+                </elementProp>
+                <elementProp name="newRole" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">CHN</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">newRole</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${host}</stringProp>
+            <stringProp name="HTTPSampler.port">${post}</stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/ghana-national-web/admin/staffs/create</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Staff phone number counter" enabled="true">
+            <stringProp name="CounterConfig.start">111111111</stringProp>
+            <stringProp name="CounterConfig.end"></stringProp>
+            <stringProp name="CounterConfig.incr">1</stringProp>
+            <stringProp name="CounterConfig.name">staff_phone_number</stringProp>
+            <stringProp name="CounterConfig.format"></stringProp>
+            <boolProp name="CounterConfig.per_user">false</boolProp>
+          </CounterConfig>
+          <hashTree/>
+          <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Staff name counter" enabled="true">
+            <stringProp name="CounterConfig.start">0</stringProp>
+            <stringProp name="CounterConfig.end"></stringProp>
+            <stringProp name="CounterConfig.incr">1</stringProp>
+            <stringProp name="CounterConfig.name">staff_name_index</stringProp>
+            <stringProp name="CounterConfig.format"></stringProp>
+            <boolProp name="CounterConfig.per_user">false</boolProp>
+          </CounterConfig>
+          <hashTree/>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Login" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login page" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${host}</stringProp>
+            <stringProp name="HTTPSampler.port">${port}</stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/ghana-national-web/admin</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="j_username" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${openmrs_username}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">j_username</stringProp>
+                </elementProp>
+                <elementProp name="j_password" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${openmrs_password}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  <stringProp name="Argument.name">j_password</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${host}</stringProp>
+            <stringProp name="HTTPSampler.port">${post}</stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/ghana-national-web/j_spring_security_check</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
