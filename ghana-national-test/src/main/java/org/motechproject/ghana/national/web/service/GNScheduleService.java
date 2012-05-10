@@ -88,7 +88,7 @@ public class GNScheduleService {
         Map<String, List<Alert>> schedules = new ConcurrentHashMap<String, List<Alert>>();
         try {
             for (Field field : ScheduleNames.class.getFields()) {
-                final String scheduleName = (String) field.get(field);
+                final String scheduleName = ((ScheduleNames) field.get(field)).getName();
                 Enrollment activeEnrollment = allEnrollments.getActiveEnrollment(patientId, scheduleName);
                 if (activeEnrollment != null) {
                     schedules.put(scheduleName + "(" + activeEnrollment.getCurrentMilestoneName() + ")", captureAlertsForNextMilestone(activeEnrollment.getId()));
