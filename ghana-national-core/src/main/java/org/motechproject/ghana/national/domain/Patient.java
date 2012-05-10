@@ -137,8 +137,8 @@ public class Patient {
     }
     
     private PatientCare opv1ChildCare(LocalDate enrollmentDate, LocalDate referenceDate, List<CwcCareHistory> cwcCareHistories, ActiveCareSchedules activeCareSchedules, CWCCareHistoryVO cwcCareHistoryVO,Date lastOPVDate) {
-        if(cwcCareHistories.contains(CwcCareHistory.OPV))
-            return new OPVVaccineCare(this,enrollmentDate,activeCareSchedules.hasActiveOPVSchedule(),safeToString(cwcCareHistoryVO.getLastOPV()),lastOPVDate,CWC_OPV_OTHERS.getName()).careForHistory();
+        if(cwcCareHistories.contains(CwcCareHistory.OPV) && cwcCareHistoryVO.getLastOPV()!= 0)
+            return new OPVVaccineCare(this,referenceDate,activeCareSchedules.hasActiveOPVSchedule(),safeToString(cwcCareHistoryVO.getLastOPV()),lastOPVDate,CWC_OPV_OTHERS.getName()).careForHistory();
         else
             return new PatientCare(CWC_OPV_OTHERS.getName(), referenceDate, enrollmentDate, null, facilityMetaData());
     }
