@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.service;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
@@ -56,11 +57,11 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
                 messageStartWeek("20").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
                 .active(true).build();
         service.register(enrollment);
-        verifyCreateNewEnrollment(enrollment);
+        verifyCreateNewEnrollment(enrollment, allCampaigns.nearestCycleDate(enrollment).toLocalDate());
     }
 
-    private void verifyCreateNewEnrollment(MobileMidwifeEnrollment expected) {
-        assertCampaignSchedule(expected.createCampaignRequest());
+    private void verifyCreateNewEnrollment(MobileMidwifeEnrollment expected, LocalDate expectedScheduleStartDate) {
+        assertCampaignSchedule(expected.createCampaignRequest(expectedScheduleStartDate));
         assertEnrollment(expected, allEnrollments.findActiveBy(expected.getPatientId()));
     }
 
