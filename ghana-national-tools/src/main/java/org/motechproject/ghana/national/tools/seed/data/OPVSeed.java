@@ -16,8 +16,8 @@ import static java.lang.Boolean.TRUE;
 public class OPVSeed extends ScheduleMigrationSeed {
 
     @Autowired
-    public OPVSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allTrackedSchedules, AllCareSchedules allCareSchedules) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allCareSchedules, TRUE);
+    public OPVSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allSchedules, AllCareSchedules allCareSchedules) {
+        super(allSchedules, oldGhanaScheduleSource, allCareSchedules, TRUE);
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {

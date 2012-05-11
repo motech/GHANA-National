@@ -23,8 +23,8 @@ public class ANCVisitSeed extends ScheduleMigrationSeed {
     private AllAppointments allAppointments;
 
     @Autowired
-    public ANCVisitSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allTrackedSchedules, AllCareSchedules allCareSchedules, AllAppointments allAppointments) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allCareSchedules, FALSE);
+    public ANCVisitSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allSchedules, AllCareSchedules allCareSchedules, AllAppointments allAppointments) {
+        super(allSchedules, oldGhanaScheduleSource, allCareSchedules, FALSE);
         this.allAppointments = allAppointments;
         this.filters = Arrays.asList(new DuplicateScheduleFilter(), new ANCExpiredScheduleFilter());
     }

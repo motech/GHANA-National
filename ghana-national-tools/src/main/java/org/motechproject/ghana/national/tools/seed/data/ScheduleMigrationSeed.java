@@ -34,7 +34,7 @@ import static org.motechproject.util.DateUtil.newDateTime;
 
 public abstract class ScheduleMigrationSeed extends Seed {
 
-    private AllSchedules allTrackedSchedules;
+    private AllSchedules allSchedules;
     protected OldGhanaScheduleSource oldGhanaScheduleSource;
     List<Filter> filters = Arrays.asList(new DuplicateScheduleFilter(), new ScheduleExpiryBasedOnThirdLateAlertFilter());
 
@@ -43,8 +43,8 @@ public abstract class ScheduleMigrationSeed extends Seed {
     protected AllCareSchedules allCareSchedules;
     private Boolean hasIndependentMilestones;
 
-    protected ScheduleMigrationSeed(AllSchedules allTrackedSchedules, OldGhanaScheduleSource oldGhanaScheduleSource, AllCareSchedules allCareSchedules, Boolean hasIndependentMilestones) {
-        this.allTrackedSchedules = allTrackedSchedules;
+    protected ScheduleMigrationSeed(AllSchedules allSchedules, OldGhanaScheduleSource oldGhanaScheduleSource, AllCareSchedules allCareSchedules, Boolean hasIndependentMilestones) {
+        this.allSchedules = allSchedules;
         this.oldGhanaScheduleSource = oldGhanaScheduleSource;
         this.allCareSchedules = allCareSchedules;
         this.hasIndependentMilestones = hasIndependentMilestones;
@@ -88,7 +88,7 @@ public abstract class ScheduleMigrationSeed extends Seed {
     }
 
     DateTime getReferenceDate(UpcomingSchedule upcomingSchedule) {
-        final Schedule schedule = allTrackedSchedules.getByName(getScheduleName(upcomingSchedule.getMilestoneName()));
+        final Schedule schedule = allSchedules.getByName(getScheduleName(upcomingSchedule.getMilestoneName()));
         final Milestone milestone = schedule.getMilestone(mapMilestoneName(upcomingSchedule.getMilestoneName()));
         final Period windowPeriod = milestone.getMilestoneWindow(WindowName.earliest).getPeriod();
         return upcomingSchedule.getDueDatetime().minus(windowPeriod);

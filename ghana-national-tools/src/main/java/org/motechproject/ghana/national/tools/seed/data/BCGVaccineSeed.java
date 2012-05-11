@@ -16,8 +16,8 @@ import static java.lang.Boolean.FALSE;
 public class BCGVaccineSeed extends ScheduleMigrationSeed {
 
     @Autowired
-    public BCGVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allTrackedSchedules, AllCareSchedules allCareSchedules) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allCareSchedules, FALSE);
+    public BCGVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allSchedules, AllCareSchedules allCareSchedules) {
+        super(allSchedules, oldGhanaScheduleSource, allCareSchedules, FALSE);
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {

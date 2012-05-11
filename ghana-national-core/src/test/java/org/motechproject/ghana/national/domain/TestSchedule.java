@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class TestSchedule {
 
     @Autowired
-    AllSchedules allTrackedSchedules;
+    AllSchedules allSchedules;
 
     public LocalDate referenceDateToStartInDueWindow(String scheduleName) {
         Period startOfDue = windowPeriod(scheduleName, WindowName.due);
@@ -32,7 +32,7 @@ public class TestSchedule {
     }
 
     private Period windowPeriod(String scheduleName, WindowName window) {
-        Schedule schedule = allTrackedSchedules.getByName(scheduleName);
+        Schedule schedule = allSchedules.getByName(scheduleName);
         return schedule.getFirstMilestone().getWindowStart(window);
     }
 

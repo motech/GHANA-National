@@ -24,14 +24,14 @@ import static org.hamcrest.core.Is.is;
 public class QueryTestDataProvider {
     private static Map<String, PatientWindow> data;
 
-    AllSchedules allTrackedSchedules;
+    AllSchedules allSchedules;
 
     AllCareSchedules allCareSchedules;
 
     private PatientService patientService;
 
-    public QueryTestDataProvider(AllSchedules allTrackedSchedules, AllCareSchedules allCareSchedules, PatientService patientService) {
-        this.allTrackedSchedules = allTrackedSchedules;
+    public QueryTestDataProvider(AllSchedules allSchedules, AllCareSchedules allCareSchedules, PatientService patientService) {
+        this.allSchedules = allSchedules;
         this.allCareSchedules = allCareSchedules;
         this.patientService = patientService;
         data = new HashMap<String, PatientWindow>();
@@ -90,7 +90,7 @@ public class QueryTestDataProvider {
     }
 
     private Period windowPeriodForAMileStone(String scheduleName, WindowName window, String milestoneName) {
-        Schedule schedule = allTrackedSchedules.getByName(scheduleName);
+        Schedule schedule = allSchedules.getByName(scheduleName);
         return milestoneName==null?
                 schedule.getFirstMilestone().getWindowStart(window):
                 schedule.getMilestone(milestoneName).getWindowStart(window);
