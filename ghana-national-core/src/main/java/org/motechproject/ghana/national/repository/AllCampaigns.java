@@ -5,6 +5,7 @@ import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnroll
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.motechproject.server.messagecampaign.dao.AllMessageCampaigns;
 import org.motechproject.server.messagecampaign.service.MessageCampaignService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +25,13 @@ public class AllCampaigns {
         this.allMessageCampaigns = allMessageCampaigns;
     }
 
-    public Boolean start(MobileMidwifeEnrollment enrollment) {
-        campaignService.startFor(enrollment.createCampaignRequest());
+    public Boolean start(CampaignRequest campaignRequest) {
+        campaignService.startFor(campaignRequest);
         return true;
     }
 
-    public Boolean stop(MobileMidwifeEnrollment enrollment) {
-        campaignService.stopAll(enrollment.stopCampaignRequest());
+    public Boolean stop(CampaignRequest enrollRequest) {
+        campaignService.stopAll(enrollRequest);
         return true;
     }
 

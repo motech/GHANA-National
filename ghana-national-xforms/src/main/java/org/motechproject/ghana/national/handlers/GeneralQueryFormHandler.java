@@ -81,9 +81,9 @@ public class GeneralQueryFormHandler implements FormPublishHandler {
     private String prepareMessageContentForQuery(GeneralQueryType queryType, Facility facility, EnrollmentsQuery enrollmentsQuery) {
         StringBuilder messageContent = new StringBuilder();
         StringBuilder messageBody = new StringBuilder();
-        messageContent.append("List of ").append(queryType.name());
+        messageContent.append("List of ").append(queryType.getName());
         if (queryType.getSchedules().length > 1) {
-            messageContent.append("-").append(StringUtils.join(queryType.getFriendlyNames(), ",")).append(MessageDispatcher.SMS_SEPARATOR);
+            messageContent.append("-").append(StringUtils.join(queryType.getFriendlyNames(), ", ")).append(MessageDispatcher.SMS_SEPARATOR);
         } else {
             messageContent.append(MessageDispatcher.SMS_SEPARATOR);
         }
@@ -94,9 +94,9 @@ public class GeneralQueryFormHandler implements FormPublishHandler {
             messageBody.append(messageFor(patient));
             for (Enrollment enrollment : groupedByExternalId.find(externalId)) {
                 String name = enrollment.getCurrentMilestoneName() == null ? enrollment.getScheduleName() : enrollment.getCurrentMilestoneName();
-                messageBody.append(name).append(",");
+                messageBody.append(name).append(", ");
             }
-            messageBody = messageBody.replace(messageBody.length() - 1,messageBody.length(),"");
+            messageBody = messageBody.replace(messageBody.length() - 2,messageBody.length(),"");
             messageBody.append(MessageDispatcher.SMS_SEPARATOR);
         }
         if (GeneralQueryType.ANC_DEFAULTERS.equals(queryType)) {
@@ -138,6 +138,6 @@ public class GeneralQueryFormHandler implements FormPublishHandler {
     }
 
     private String messageFor(Patient patient) {
-        return String.format("%s %s, %s", patient.getFirstName(), patient.getLastName(), patient.getMotechId());
+        return String.format("%s %s, %s ", patient.getFirstName(), patient.getLastName(), patient.getMotechId());
     }
 }

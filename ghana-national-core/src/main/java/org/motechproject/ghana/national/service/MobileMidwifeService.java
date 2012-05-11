@@ -29,10 +29,8 @@ public class MobileMidwifeService {
 
     public void startMobileMidwifeCampaign(MobileMidwifeEnrollment enrollment) {
         if (enrollment.campaignApplicable()) {
-            //TODO: Hack for 24 hour interval
-            //Cycle Date One Day Back For 24 Hour Interval With 2 hour Buffer ForFuture Schedule, if it falls on the same day
-            DateTime scheduleStartDateFor24HourWindowWith2HourBuffer = allCampaigns.nearestCycleDate(enrollment).plusDays(-1).plusHours(2);
-            allCampaigns.start(enrollment.setScheduleStartDate(scheduleStartDateFor24HourWindowWith2HourBuffer));
+            DateTime nextApplicableDay = allCampaigns.nearestCycleDate(enrollment);
+            allCampaigns.start(enrollment.createCampaignRequest(nextApplicableDay.toLocalDate()));
         }
     }
 
@@ -41,7 +39,7 @@ public class MobileMidwifeService {
         if (enrollment != null) {
             enrollment.setActive(false);
             allEnrollments.update(enrollment);
-            if (enrollment.campaignApplicable()) allCampaigns.stop(enrollment);
+            if (enrollment.campaignApplicable()) allCampaigns.stop(enrollment.stopCampaignRequest());
         }
     }
 

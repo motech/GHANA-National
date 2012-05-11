@@ -106,7 +106,7 @@ public class GeneralQueryFormHandlerIT {
     private AllEnrollments allEnrollments;
 
     @Autowired
-    private AllSchedules allTrackedSchedules;
+    private AllSchedules allSchedules;
 
     @Autowired
     private AllAppointments allAppointments;
@@ -144,7 +144,7 @@ public class GeneralQueryFormHandlerIT {
         openMRSSession.authenticate();
 
         if (testData == null) {
-            testData = new QueryTestDataProvider(allTrackedSchedules, allCareSchedules, patientService);
+            testData = new QueryTestDataProvider(allSchedules, allCareSchedules, patientService);
 
             facility1 = createFacility("Newfacility1" + new DataGenerator().randomString(5), new DataGenerator().randomPhoneNumber());
             facility2 = createFacility("Newfacility2" + new DataGenerator().randomString(5), new DataGenerator().randomPhoneNumber());
@@ -341,8 +341,8 @@ public class GeneralQueryFormHandlerIT {
         GeneralQueryType generalQueryType = GeneralQueryType.PNC_C_DEFAULTERS;
         String message = submitForFacility(responsePhoneNumber,
                 generalQueryType, facility1);
-        assertMessageFor("1234562", allTrackedSchedules.getByName(PNC_CHILD_2.getName()).getFirstMilestone().getName(), message);
-        assertMessageFor("1234565", allTrackedSchedules.getByName(PNC_CHILD_3.getName()).getFirstMilestone().getName(), message);
+        assertMessageFor("1234562", allSchedules.getByName(PNC_CHILD_2.getName()).getFirstMilestone().getName(), message);
+        assertMessageFor("1234565", allSchedules.getByName(PNC_CHILD_3.getName()).getFirstMilestone().getName(), message);
         assertNoMessageFor(asList("1234560"), "PNC-C2", message);
     }
 
@@ -356,8 +356,8 @@ public class GeneralQueryFormHandlerIT {
         GeneralQueryType generalQueryType = GeneralQueryType.PNC_M_DEFAULTERS;
         String message = submitForFacility(responsePhoneNumber,
                 generalQueryType, facility1);
-        assertMessageFor("1234562", allTrackedSchedules.getByName(PNC_MOTHER_2.getName()).getFirstMilestone().getName(), message);
-        assertMessageFor("1234565", allTrackedSchedules.getByName(PNC_MOTHER_3.getName()).getFirstMilestone().getName(), message);
+        assertMessageFor("1234562", allSchedules.getByName(PNC_MOTHER_2.getName()).getFirstMilestone().getName(), message);
+        assertMessageFor("1234565", allSchedules.getByName(PNC_MOTHER_3.getName()).getFirstMilestone().getName(), message);
         assertNoMessageFor(asList("1234560"), "PNC-M2", message);
     }
 
@@ -374,7 +374,7 @@ public class GeneralQueryFormHandlerIT {
         GeneralQueryType generalQueryType = GeneralQueryType.CWC_DEFAULTERS;
         String message = submitForFacility(responsePhoneNumber,
                 generalQueryType, facility1);
-        assertTrue(message,message.contains("List of CWC_DEFAULTERS-IPTi,OPV0,OPV1,OPV2,OPV3,Penta"));
+        assertTrue(message,message.contains("List of CWC Defaulters-IPTi,OPV0,OPV1,OPV2,OPV3,Penta"));
         assertMessageFor("1234562", "IPTi2", message);
         assertNoMessageFor(asList("1234560"), "IPTi1", message);
         assertNoMessageFor(asList("1234562"), "OPV0", message);

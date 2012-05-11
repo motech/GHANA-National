@@ -21,18 +21,20 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_M
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 
 public enum GeneralQueryType {
-    OVERDUE_DELIVERIES(asList(ANC_DELIVERY)),
-    RECENT_DELIVERIES(asList(ANC_DELIVERY)),
-    UPCOMING_DELIVERIES(asList(ANC_DELIVERY)),
-    ANC_DEFAULTERS(asList(ANC_IPT_VACCINE, TT_VACCINATION)),
-    TT_DEFAULTERS(asList(TT_VACCINATION)),
-    PNC_C_DEFAULTERS(asList(PNC_CHILD_1, PNC_CHILD_2, PNC_CHILD_3)),
-    PNC_M_DEFAULTERS(asList(PNC_MOTHER_1, PNC_MOTHER_2, PNC_MOTHER_3)),
-    CWC_DEFAULTERS(asList(CWC_IPT_VACCINE, CWC_OPV_0, CWC_OPV_OTHERS, CWC_PENTA));
+    OVERDUE_DELIVERIES("Overdue Defaulters",asList(ANC_DELIVERY)),
+    RECENT_DELIVERIES("Recent Deliveries",asList(ANC_DELIVERY)),
+    UPCOMING_DELIVERIES("Upcoming Deliveries",asList(ANC_DELIVERY)),
+    ANC_DEFAULTERS("ANC Defaulters",asList(ANC_IPT_VACCINE, TT_VACCINATION)),
+    TT_DEFAULTERS("TT Defaulters",asList(TT_VACCINATION)),
+    PNC_C_DEFAULTERS("PNC Child Defaulters",asList(PNC_CHILD_1, PNC_CHILD_2, PNC_CHILD_3)),
+    PNC_M_DEFAULTERS("PNC Mother Defaulters",asList(PNC_MOTHER_1, PNC_MOTHER_2, PNC_MOTHER_3)),
+    CWC_DEFAULTERS("CWC Defaulters",asList(CWC_IPT_VACCINE, CWC_OPV_0, CWC_OPV_OTHERS, CWC_PENTA));
 
+    private String name;
     private List<ScheduleNames> scheduleNames;
 
-    private GeneralQueryType(List<ScheduleNames> schedules) {
+    private GeneralQueryType(String name,List<ScheduleNames> schedules) {
+        this.name=name;
         this.scheduleNames = schedules;
     }
 
@@ -51,5 +53,9 @@ public enum GeneralQueryType {
         }
         return names.toArray(new String[names.size()]);
 
+    }
+
+    public String getName(){
+        return this.name;
     }
 }

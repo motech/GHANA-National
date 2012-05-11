@@ -37,7 +37,7 @@ import static org.motechproject.util.DateUtil.newDateTime;
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-tools.xml"})
 public class ScheduleMigrationSeedTest {
     @Autowired
-    org.motechproject.scheduletracking.api.repository.AllSchedules allTrackedSchedules;
+    org.motechproject.scheduletracking.api.repository.AllSchedules allSchedules;
     @Mock
     private AllCareSchedules allCareSchedules;
 
@@ -51,8 +51,8 @@ public class ScheduleMigrationSeedTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        ttVaccineSeed = new TTVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allCareSchedules);
-        iptiVaccineSeed = new IPTIVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allCareSchedules);
+        ttVaccineSeed = new TTVaccineSeed(oldGhanaScheduleSource, allSchedules, allCareSchedules);
+        iptiVaccineSeed = new IPTIVaccineSeed(oldGhanaScheduleSource, allSchedules, allCareSchedules);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class ScheduleMigrationSeedTest {
         List<UpcomingSchedule> upcomingSchedulesFromDb = Arrays.asList(newUpcomingSchedule(patientId, "2012-9-22 10:30:00.0", "PNC1").build(),
                 newUpcomingSchedule(patientId, "2012-2-29 10:30:00.0", "PNC2").build());
 
-        final PNCMotherVaccineSeed pncMotherVaccineSeed = new PNCMotherVaccineSeed(oldGhanaScheduleSource, allTrackedSchedules, allCareSchedules);
+        final PNCMotherVaccineSeed pncMotherVaccineSeed = new PNCMotherVaccineSeed(oldGhanaScheduleSource, allSchedules, allCareSchedules);
         pncMotherVaccineSeed.LOG = mock(Logger.class);
         pncMotherVaccineSeed.filters = new ArrayList<Filter>();
         pncMotherVaccineSeed.migrate(upcomingSchedulesFromDb);

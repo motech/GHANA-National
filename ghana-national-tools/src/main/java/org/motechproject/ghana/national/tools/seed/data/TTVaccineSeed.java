@@ -18,8 +18,8 @@ import static java.lang.Boolean.FALSE;
 public class TTVaccineSeed extends ScheduleMigrationSeed {
 
     @Autowired
-    public TTVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, org.motechproject.scheduletracking.api.repository.AllSchedules allTrackedSchedules, AllCareSchedules allCareSchedules) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allCareSchedules, FALSE);
+    public TTVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, org.motechproject.scheduletracking.api.repository.AllSchedules allSchedules, AllCareSchedules allCareSchedules) {
+        super(allSchedules, oldGhanaScheduleSource, allCareSchedules, FALSE);
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {

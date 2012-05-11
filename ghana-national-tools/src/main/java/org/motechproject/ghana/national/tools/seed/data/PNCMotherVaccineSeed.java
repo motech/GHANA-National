@@ -18,8 +18,8 @@ import static java.lang.Boolean.TRUE;
 public class PNCMotherVaccineSeed extends ScheduleMigrationSeed {
 
     @Autowired
-    public PNCMotherVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, org.motechproject.scheduletracking.api.repository.AllSchedules allTrackedSchedules, AllCareSchedules allCareSchedules) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allCareSchedules, TRUE);
+    public PNCMotherVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, org.motechproject.scheduletracking.api.repository.AllSchedules allSchedules, AllCareSchedules allCareSchedules) {
+        super(allSchedules, oldGhanaScheduleSource, allCareSchedules, TRUE);
         filters = Arrays.asList(new DuplicateScheduleFilter(), new ScheduleExpiryBasedOnFirstLateAlertFilter());
     }
 

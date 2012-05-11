@@ -244,7 +244,8 @@
                                 <mkdir dir="${openmrs.directory}/reports/logs"/>
                                 <copy file="../ghana-national-common/src/main/resources/openmrs-data/openmrs-runtime.properties"
                                       tofile="${openmrs.directory}/openmrs-runtime.properties"/>
-                                <copy file="../idgen-omod/target/idgen-omod.omod" tofile="${openmrs.directory}/modules/idgen-omod.omod"/>
+                                <copy file="../idgen-omod/target/idgen-omod.omod"
+                                      tofile="${openmrs.directory}/modules/idgen-omod.omod"/>
                                 <copy todir="${openmrs.directory}/modules">
                                     <fileset
                                             dir="../ghana-national-common/src/main/resources/openmrs-data/modules"/>
@@ -275,6 +276,17 @@
                         <configuration>
                             <stopPort>9999</stopPort>
                             <stopKey>foo</stopKey>
+                            <skip>${openmrs.skip}</skip>
+                            <contextHandlers>
+                                <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
+                                    <war>build/openmrs/openmrs.war</war>
+                                    <contextPath>/openmrs</contextPath>
+                                </contextHandler>
+                                <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
+                                    <war>ghana-national-common/target/lib/motech-delivery-tools-web-0.3-SNAPSHOT.war</war>
+                                    <contextPath>/deliverytools</contextPath>
+                                </contextHandler>
+                            </contextHandlers>
                         </configuration>
                         <executions>
                             <execution>
@@ -313,7 +325,8 @@
                             <stopKey>foo</stopKey>
                             <contextHandlers>
                                 <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
-                                    <war>ghana-national-common/target/lib/motech-delivery-tools-web-0.3-SNAPSHOT.war</war>
+                                    <war>ghana-national-common/target/lib/motech-delivery-tools-web-0.3-SNAPSHOT.war
+                                    </war>
                                     <contextPath>/deliverytools</contextPath>
                                 </contextHandler>
                             </contextHandlers>

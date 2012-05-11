@@ -15,8 +15,8 @@ import static java.lang.Boolean.FALSE;
 public class IPTIVaccineSeed extends ScheduleMigrationSeed {
 
     @Autowired
-    public IPTIVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, org.motechproject.scheduletracking.api.repository.AllSchedules allTrackedSchedules, AllCareSchedules allCareSchedules) {
-        super(allTrackedSchedules, oldGhanaScheduleSource, allCareSchedules, FALSE);
+    public IPTIVaccineSeed(OldGhanaScheduleSource oldGhanaScheduleSource, org.motechproject.scheduletracking.api.repository.AllSchedules allSchedules, AllCareSchedules allCareSchedules) {
+        super(allSchedules, oldGhanaScheduleSource, allCareSchedules, FALSE);
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {
