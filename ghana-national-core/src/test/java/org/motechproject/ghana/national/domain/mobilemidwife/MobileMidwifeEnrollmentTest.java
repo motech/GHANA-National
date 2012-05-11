@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.Test;
-import org.motechproject.model.Time;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.motechproject.util.DateUtil;
 
@@ -22,17 +21,17 @@ public class MobileMidwifeEnrollmentTest {
         String patientId = "patientId";
         String messageStartWeekKey = "55";
         LocalDate cycleStartDate = new LocalDate();
+        final DateTime scheduleStartDate = cycleStartDate.toDateTime(LocalTime.now());
         MobileMidwifeEnrollment mobileMidwifeEnrollment = newEnrollment().setPatientId(patientId)
-                .setServiceType(serviceType).setMessageStartWeek(messageStartWeekKey).setScheduleStartDate(cycleStartDate.toDateTime(LocalTime.now()));
+                .setServiceType(serviceType).setMessageStartWeek(messageStartWeekKey);
 
-        CampaignRequest campaignRequest = mobileMidwifeEnrollment.createCampaignRequest();
+        CampaignRequest campaignRequest = mobileMidwifeEnrollment.createCampaignRequest(scheduleStartDate.toLocalDate());
         assertThat(campaignRequest.campaignName(), is(serviceType.name()));
         assertThat(campaignRequest.externalId(), is(patientId));
         assertThat(campaignRequest.referenceDate(), is(DateUtil.today()));
         assertThat(campaignRequest.startOffset(), is(MessageStartWeek.findBy(messageStartWeekKey).getWeek()));
 
-        DateTime enrolledDateTime = mobileMidwifeEnrollment.getEnrollmentDateTime();
-        assertThat(campaignRequest.reminderTime(), is(new Time(enrolledDateTime.getHourOfDay(), enrolledDateTime.getMinuteOfHour())));
+        assertNull(campaignRequest.reminderTime());
         assertThat(campaignRequest.referenceDate(), is(equalTo(cycleStartDate)));
     }
 
