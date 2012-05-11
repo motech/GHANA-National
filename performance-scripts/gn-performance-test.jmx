@@ -15,17 +15,17 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="no_of_field_workers" elementType="Argument">
             <stringProp name="Argument.name">no_of_field_workers</stringProp>
-            <stringProp name="Argument.value">3</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="no_of_test_loops" elementType="Argument">
             <stringProp name="Argument.name">no_of_test_loops</stringProp>
-            <stringProp name="Argument.value">2</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="patient_fname_prefix" elementType="Argument">
             <stringProp name="Argument.name">patient_fname_prefix</stringProp>
-            <stringProp name="Argument.value">Hari</stringProp>
+            <stringProp name="Argument.value">zqdasadq1</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="staff_first_name" elementType="Argument">
@@ -35,13 +35,18 @@
           </elementProp>
           <elementProp name="forms_to_be_tested" elementType="Argument">
             <stringProp name="Argument.name">forms_to_be_tested</stringProp>
-            <stringProp name="Argument.value">GeneralQuery</stringProp>
+            <stringProp name="Argument.value">RegisterClient-other</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
-            <stringProp name="Argument.desc">RegisterClient,RegisterClient-child,RegisterClient-mother,RegisterClient-WithANCAndMM,RegisterCWC,RegisterClient-WithCWCAndMM,CareHistory-ANC,ClientQuery,GeneralQuery</stringProp>
+            <stringProp name="Argument.desc">RegisterClient-other,RegisterANC,RegisterClient-WithANCAndMM,RegisterCWC,RegisterClient-WithCWCAndMM,CareHistory-ANC,ClientQuery,GeneralQuery</stringProp>
           </elementProp>
           <elementProp name="load_pre_printed_ids_from_file" elementType="Argument">
             <stringProp name="Argument.name">load_pre_printed_ids_from_file</stringProp>
-            <stringProp name="Argument.value">true</stringProp>
+            <stringProp name="Argument.value">false</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="form_submission_date" elementType="Argument">
+            <stringProp name="Argument.name">form_submission_date</stringProp>
+            <stringProp name="Argument.value">2012-05-10</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="host" elementType="Argument">
@@ -56,7 +61,7 @@
           </elementProp>
           <elementProp name="openmrs_port" elementType="Argument">
             <stringProp name="Argument.name">openmrs_port</stringProp>
-            <stringProp name="Argument.value">8080</stringProp>
+            <stringProp name="Argument.value">7000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="openmrs_username" elementType="Argument">
@@ -284,7 +289,7 @@ format(date){
     return date.toString(DateTimeFormat.forPattern(&quot;yyyy-MM-dd&quot;));
 }
 
-generalQueryFormFactory(motechId, staffId){
+generalQueryFormFactory(motechId, staffId, form_submission_date){
     details = new HashMap();
     details{&quot;staffId&quot;}=staffId;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
@@ -293,7 +298,7 @@ generalQueryFormFactory(motechId, staffId){
     return details;
 }
 
-clientQueryFormFactory(motechId, staffId){
+clientQueryFormFactory(motechId, staffId, form_submission_date){
     details = new HashMap();
     details{&quot;staffId&quot;}=staffId;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
@@ -307,48 +312,32 @@ clientQueryFormFactory(motechId, staffId){
     return details;
 }
 
-ancRegistrationFormFactory(motechId, staffId){
+ancRegistrationFormFactory(motechId, staffId, form_submission_date){
     details = new HashMap();
     details{&quot;staffId&quot;}=staffId;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
     details{&quot;motechId&quot;}=motechId;
-    details{&quot;registrationDate&quot;}=format(today());
+    details{&quot;date&quot;}=form_submission_date;
     details{&quot;regDateToday&quot;}=&quot;TODAY&quot;;
     details{&quot;ancRegNumber&quot;}=&quot;SerialNumber&quot;;
     details{&quot;estDeliveryDate&quot;}=format(today().plusWeeks(10));
     details{&quot;height&quot;}=&quot;165&quot;;
     details{&quot;gravida&quot;}=&quot;1&quot;;
     details{&quot;parity&quot;}=&quot;2&quot;;
-    details{&quot;addHistory&quot;}=&quot;1&quot;;
     details{&quot;deliveryDateConfirmed&quot;}=&quot;Y&quot;;
-    details{&quot;addCareHistory&quot;}=&quot;IPT_SP,TT&quot;;
-    details{&quot;lastIPT&quot;}=&quot;1&quot;;
-    details{&quot;lastTT&quot;}=&quot;1&quot;;
-    details{&quot;lastIPTDate&quot;}=format(today().minusDays(5));
-    details{&quot;lastTTDate&quot;}=format(today().minusDays(3));
+    details{&quot;addHistory&quot;}=&quot;0&quot;;
     return details;
 }
 
-cwcRegistrationFormFactory(motechId, staffId){
+cwcRegistrationFormFactory(motechId, staffId, form_submission_date){
     details = new HashMap();
     details{&quot;staffId&quot;}=staffId;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
     details{&quot;motechId&quot;}=motechId;
     details{&quot;registrationToday&quot;}=&quot;TODAY&quot;;
-    details{&quot;registrationDate&quot;}=format(today());
+    details{&quot;registrationDate&quot;}=form_submission_date;
     details{&quot;serialNumber&quot;}=&quot;serialNumber&quot;;
-    details{&quot;addHistory&quot;}=&quot;1&quot;;
-    details{&quot;addCareHistory&quot;}=&quot;VITA_A,IPTI,BCG,OPV,PENTA,MEASLES,YF&quot;;
-    details{&quot;bcgDate&quot;}=format(today().minusDays(1));
-    details{&quot;lastOPV&quot;}=&quot;1&quot;;
-    details{&quot;lastOPVDate&quot;}=format(today().minusDays(4));
-    details{&quot;lastPenta&quot;}=&quot;3&quot;;
-    details{&quot;lastPentaDate&quot;}=format(today().minusDays(2));
-    details{&quot;measlesDate&quot;}=format(today().minusDays(3));
-    details{&quot;yellowFeverDate&quot;}=format(today().minusDays(5));
-    details{&quot;lastIPTi&quot;}=&quot;2&quot;;
-    details{&quot;lastIPTiDate&quot;}=format(today().minusDays(2));
-    details{&quot;lastVitaminADate&quot;}=format(today().minusDays(1));
+    details{&quot;addHistory&quot;}=&quot;0&quot;;
     details{&quot;enroll&quot;}=&quot;Y&quot;;
     details{&quot;consent&quot;}=&quot;Y&quot;;
     details{&quot;serviceType&quot;}=&quot;CHILD_CARE&quot;;
@@ -362,11 +351,11 @@ cwcRegistrationFormFactory(motechId, staffId){
     return details;
 }
 
-patientRegWithCWCAndMMFormFactory(motechId, staffId){
+patientRegWithCWCAndMMFormFactory(motechId, staffId, form_submission_date){
     details = new HashMap();
     details{&quot;staffId&quot;}=staffId;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
-    details{&quot;date&quot;}=format(today());
+    details{&quot;date&quot;}=form_submission_date;
     details{&quot;registrationMode&quot;}=&quot;USE_PREPRINTED_ID&quot;;
     details{&quot;motechId&quot;}=motechId;
     details{&quot;registrantType&quot;}=&quot;CHILD_UNDER_FIVE&quot;;
@@ -404,11 +393,11 @@ patientRegWithCWCAndMMFormFactory(motechId, staffId){
     return details;
 }
 
-patientRegWithANCAndMMFormFactory(motechId, staffId){
+patientRegWithANCAndMMFormFactory(motechId, staffId, form_submission_date){
     details = new HashMap();    
     details{&quot;staffId&quot;}=staffId;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
-    details{&quot;date&quot;}=format(today());
+    details{&quot;date&quot;}=form_submission_date;
     details{&quot;registrationMode&quot;}=&quot;USE_PREPRINTED_ID&quot;;
     details{&quot;motechId&quot;}=motechId;
     details{&quot;registrantType&quot;}=&quot;PREGNANT_MOTHER&quot;;
@@ -445,11 +434,11 @@ patientRegWithANCAndMMFormFactory(motechId, staffId){
     return details;
 }
 
-ancHistoryFormFactory(motechId, staffId){
+ancHistoryFormFactory(motechId, staffId, form_submission_date){
     details = new HashMap();
     details{&quot;staffId&quot;}=staffId;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
-    details{&quot;date&quot;}=format(today());
+    details{&quot;date&quot;}=form_submission_date;
     details{&quot;motechId&quot;}=motechId;
     details{&quot;addHistory&quot;}=&quot;IPT_SP,TT&quot;;
     details{&quot;lastIPT&quot;}=&quot;2&quot;;
@@ -459,21 +448,7 @@ ancHistoryFormFactory(motechId, staffId){
     return details;
 }
 
-childRegistrationFormFactory(motechId, staffId){
-    details = patientRegistrationFormFactory(motechId, staffId);
-    details{&quot;dateOfBirth&quot;}=format(today().minusYears(3));
-    details{&quot;registrantType&quot;}=&quot;CHILD_UNDER_FIVE&quot;;    
-    return details;
-}
-
-motherRegistrationFormFactory(motechId, staffId){
-    details = patientRegistrationFormFactory(motechId, staffId);
-    details{&quot;dateOfBirth&quot;}=format(today().minusYears(30));
-    details{&quot;registrantType&quot;}=&quot;PREGNANT_MOTHER&quot;;    
-    return details;
-}
-
-patientRegistrationFormFactory(motechId, staffId){
+registerClientFormFactory(motechId, staffId, form_submission_date){
     details = new HashMap();
     details{&quot;registrationMode&quot;}=&quot;USE_PREPRINTED_ID&quot;;
     details{&quot;motechId&quot;}=motechId;
@@ -483,8 +458,10 @@ patientRegistrationFormFactory(motechId, staffId){
     details{&quot;sex&quot;}=&quot;F&quot;;
     details{&quot;insured&quot;}=&quot;N&quot;;
     details{&quot;address&quot;}=&quot;Dummy Address&quot;;
+    details{&quot;dateOfBirth&quot;}=format(today().minusYears(30));
+    details{&quot;registrantType&quot;}=&quot;OTHER&quot;;    
     details{&quot;estimatedBirthDate&quot;}=&quot;N&quot;;
-    details{&quot;date&quot;}=format(today());
+    details{&quot;date&quot;}=form_submission_date;
     details{&quot;serialNumber&quot;}=&quot;serialNumber&quot;;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
     details{&quot;staffId&quot;}=staffId;
@@ -492,8 +469,7 @@ patientRegistrationFormFactory(motechId, staffId){
 }
 
 formFactory = new HashMap();
-formFactory{&quot;RegisterClient-child&quot;} = &quot;childRegistrationFormFactory&quot;;
-formFactory{&quot;RegisterClient-mother&quot;} = &quot;motherRegistrationFormFactory&quot;;
+formFactory{&quot;RegisterClient-other&quot;} = &quot;registerClientFormFactory&quot;;
 formFactory{&quot;RegisterANC&quot;}=&quot;ancRegistrationFormFactory&quot;;
 formFactory{&quot;RegisterClient-WithANCAndMM&quot;}=&quot;patientRegWithANCAndMMFormFactory&quot;;
 formFactory{&quot;RegisterClient-WithCWCAndMM&quot;}=&quot;patientRegWithCWCAndMMFormFactory&quot;;
@@ -502,8 +478,8 @@ formFactory{&quot;CareHistory-ANC&quot;}=&quot;ancHistoryFormFactory&quot;;
 formFactory{&quot;ClientQuery&quot;}=&quot;clientQueryFormFactory&quot;;
 formFactory{&quot;GeneralQuery&quot;}=&quot;generalQueryFormFactory&quot;;
 
-formData(formName, motechId, staffId){
-   return this.invokeMethod(formFactory.get(formName), new Object[]{motechId, staffId});
+formData(formName, motechId, staffId, form_submission_date){
+   return this.invokeMethod(formFactory.get(formName), new Object[]{motechId, staffId, form_submission_date});
 }
 
 fillForms(mobile, studyName, forms, fileName){
@@ -551,6 +527,8 @@ studyName(formNames){
 
 index = 0;
 formNames = vars.get(&quot;forms_to_be_tested&quot;);
+form_submission_date = vars.get(&quot;form_submission_date&quot;);
+
 for(int flwIndex=0; flwIndex &lt; Integer.parseInt(vars.get(&quot;no_of_field_workers&quot;)); flwIndex++){
     staffId = staffIds[new Integer(flwIndex)];
 studyName=studyName(formNames);	
@@ -558,7 +536,7 @@ studyName=studyName(formNames);
         forms = new ArrayList();
         for(formName : formNames.split(&quot;,&quot;)){
             templatePath = getFormTemplatePath(formName.trim(),studyName);
-            forms.add(form(templatePath, formData(formName, pre_printed_motech_ids[index], staffId)));
+            forms.add(form(templatePath, formData(formName, pre_printed_motech_ids[index], staffId, form_submission_date)));
         }
         fillForms(mobile,studyName , forms, &quot;request_&quot; + (flwIndex + 1) + &quot;_&quot; + loopIndex);
         index++;
