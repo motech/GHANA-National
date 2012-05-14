@@ -15,9 +15,9 @@ public class PayloadDispatcher {
     @Autowired
     SmsService smsService;
 
-    public void dispatch(Payload payload) {
-        List<SMS> smsList = (List<SMS>) payload;
-        for (SMS sms : smsList) {
+    public void dispatch(List<Payload> payloads) {
+        for (Payload payload : payloads) {
+            SMS sms = (SMS) payload;
             smsService.sendSMS(sms.getPhoneNumber(), sms.getText());
         }
     }
