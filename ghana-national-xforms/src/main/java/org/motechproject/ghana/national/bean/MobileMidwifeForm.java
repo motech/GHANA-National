@@ -6,6 +6,7 @@ import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
+import org.motechproject.util.DateUtil;
 
 public class MobileMidwifeForm extends AbstractMobileMidWifeForm {
 
@@ -65,7 +66,7 @@ public class MobileMidwifeForm extends AbstractMobileMidWifeForm {
     }
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
-        MobileMidwifeEnrollment enrollment = fillEnrollment(MobileMidwifeEnrollment.newEnrollment());
+        MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment(DateUtil.now()));
         return enrollment.setStaffId(getStaffId()).setFacilityId(getFacilityId()).setPatientId(getPatientId())
                 .setConsent(getConsent());
     }

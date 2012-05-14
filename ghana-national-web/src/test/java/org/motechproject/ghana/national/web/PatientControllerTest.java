@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -194,7 +195,7 @@ public class PatientControllerTest {
         final ModelMap modelMap = new ModelMap();
 
         String motechId = "";
-        when(mobileMidwifeService.findActiveBy(motechId)).thenReturn(new MobileMidwifeEnrollment());
+        when(mobileMidwifeService.findActiveBy(motechId)).thenReturn(new MobileMidwifeEnrollment(DateTime.now()));
         when(mockFacilityHelper.locationMap()).thenReturn(new HashMap<String, Object>() {{
             put("key", new Object());
         }});

@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.service;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllCampaigns;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
@@ -29,8 +29,8 @@ public class MobileMidwifeService {
 
     public void startMobileMidwifeCampaign(MobileMidwifeEnrollment enrollment) {
         if (enrollment.campaignApplicable()) {
-            DateTime nextApplicableDay = allCampaigns.nearestCycleDate(enrollment);
-            allCampaigns.start(enrollment.createCampaignRequest(nextApplicableDay.toLocalDate()));
+            LocalDate nextApplicableDay = allCampaigns.nextCycleDateFromToday(enrollment.getServiceType());
+            allCampaigns.start(enrollment.createCampaignRequest(nextApplicableDay));
         }
     }
 

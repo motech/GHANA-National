@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.joda.time.DateTime.now;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.server.messagecampaign.scheduler.MessageCampaignScheduler.INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT;
@@ -52,7 +53,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
         String genMessageKey = "childcare-calendar-week-33-Monday";
         String messageTemplate = "text-message";
         Language language = Language.EN;
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now()).setPatientId(patientId)
                 .setServiceType(serviceType).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber(mobileNumber);
 
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
@@ -66,7 +67,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
         ServiceType serviceType = ServiceType.PREGNANCY;
         String patientId = "1234568";
         String genMessageKey = "pregnancy-calendar-week-33-Monday";
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now()).setPatientId(patientId)
                 .setServiceType(serviceType).setMedium(Medium.VOICE).setPhoneNumber("9845312345");
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 
@@ -80,7 +81,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
         String patientId = "1234568";
         String genMessageKey = "childcare-calendar-week-33-Monday";
         Language language = Language.EN;
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId)
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now()).setPatientId(patientId)
                 .setServiceType(serviceType).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber("9845312345");
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 

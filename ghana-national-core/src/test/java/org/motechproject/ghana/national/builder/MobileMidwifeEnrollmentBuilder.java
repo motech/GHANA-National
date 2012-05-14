@@ -5,6 +5,8 @@ import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 
+import static org.motechproject.util.DateUtil.now;
+
 public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwifeEnrollment>{
 
     private String patientId;
@@ -22,7 +24,7 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
     private ReasonToJoin reasonToJoin;
     private String messageStartWeek;
     private Boolean active;
-    private DateTime enrollmentDateTime = new DateTime();
+    private DateTime enrollmentDateTime = now();
 
     public MobileMidwifeEnrollmentBuilder patientId(String patientId) {
         this.patientId = patientId;
@@ -106,6 +108,6 @@ public class MobileMidwifeEnrollmentBuilder extends AbstractBuilder<MobileMidwif
     
     @Override
     public MobileMidwifeEnrollment build() {
-        return generate(new MobileMidwifeEnrollment());
+        return generate(new MobileMidwifeEnrollment(now()));
     }
 }

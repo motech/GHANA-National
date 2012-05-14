@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.MOTECH_ID_PATTERN;
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.NUMERIC_OR_NOTAPPLICABLE_PATTERN;
+import static org.motechproject.util.DateUtil.newDateTime;
 
 public class RegisterCWCForm extends MobileMidWifeIncludeForm {
 
@@ -206,7 +207,7 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
         if(isEnrolledForMobileMidwifeProgram()) {
-            MobileMidwifeEnrollment enrollment = fillEnrollment(MobileMidwifeEnrollment.newEnrollment());
+            MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment(newDateTime(getRegistrationDate())));
             return enrollment.setStaffId(getStaffId()).setFacilityId(getFacilityId()).setPatientId(getMotechId());
         }
         return null;

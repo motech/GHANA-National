@@ -9,6 +9,7 @@ import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
 import org.motechproject.mobileforms.api.validator.annotations.Required;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.MOTECH_ID_PATTERN;
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.NUMERIC_OR_NOTAPPLICABLE_PATTERN;
+import static org.motechproject.util.DateUtil.newDateTime;
 
 public class RegisterANCForm extends MobileMidWifeIncludeForm {
 
@@ -209,7 +211,7 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
         if (isEnrolledForMobileMidwifeProgram()) {
-            MobileMidwifeEnrollment enrollment = fillEnrollment(MobileMidwifeEnrollment.newEnrollment());
+            MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment(newDateTime(getRegistrationDate())));
             return enrollment.setStaffId(getStaffId()).setFacilityId(getFacilityId()).setPatientId(getMotechId());
         }
         return null;
@@ -223,6 +225,10 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
             }
         }
         return ancCareHistories;
+    }
+
+    public Date getRegistrationDate() {
+         return getDate() == null ? DateUtil.today().toDate() : getDate();
     }
 }
 

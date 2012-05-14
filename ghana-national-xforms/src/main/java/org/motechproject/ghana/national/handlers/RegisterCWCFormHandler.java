@@ -19,8 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.motechproject.util.DateUtil.newDateTime;
-
 @Component
 public class RegisterCWCFormHandler implements FormPublishHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -64,7 +62,7 @@ public class RegisterCWCFormHandler implements FormPublishHandler {
 
             MobileMidwifeEnrollment mobileMidwifeEnrollment = registerCWCForm.createMobileMidwifeEnrollment();
             if (mobileMidwifeEnrollment != null) {
-                mobileMidwifeService.register(mobileMidwifeEnrollment.setEnrollmentDateTime(newDateTime(registerCWCForm.getRegistrationDate())));
+                mobileMidwifeService.register(mobileMidwifeEnrollment);
             }else{
                 mobileMidwifeService.unRegister(registerCWCForm.getMotechId());
             }

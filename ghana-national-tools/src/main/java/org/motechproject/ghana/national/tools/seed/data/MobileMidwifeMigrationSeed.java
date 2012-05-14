@@ -7,7 +7,6 @@ import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.motechproject.ghana.national.tools.seed.data.source.MobileMidwifeSource;
-import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +70,6 @@ public class MobileMidwifeMigrationSeed extends Seed {
                 int messageStartWeek = (serviceType.equals(ServiceType.CHILD_CARE)) ? (startWeek + 40) : startWeek;
                 if (messageStartWeek != 0) {
                     mobileMidwifeEnrollment.setMessageStartWeek(String.valueOf(messageStartWeek));
-                    mobileMidwifeEnrollment.setEnrollmentDateTime(DateUtil.now());
                     mobileMidwifeEnrollment = setEnrollmentDetails(mobileMidwifeEnrollment, patientMotechId, serviceType, active);
                     setFacility(mobileMidwifeEnrollment, map);
                     setStaffId(mobileMidwifeEnrollment, map);

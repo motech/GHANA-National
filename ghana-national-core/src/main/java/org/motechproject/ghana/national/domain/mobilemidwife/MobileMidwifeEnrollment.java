@@ -9,7 +9,6 @@ import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.model.Time;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 
-import static org.motechproject.util.DateUtil.now;
 import static org.motechproject.util.DateUtil.setTimeZone;
 
 @TypeDiscriminator("doc.type === 'MobileMidwifeEnrollment'")
@@ -49,11 +48,10 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     @JsonProperty
     private DateTime enrollmentDateTime;
 
-    public MobileMidwifeEnrollment() {
-    }
+   private MobileMidwifeEnrollment(){}
 
-    public static MobileMidwifeEnrollment newEnrollment() {
-        return new MobileMidwifeEnrollment().setEnrollmentDateTime(now());
+    public MobileMidwifeEnrollment(DateTime enrollmentDateTime) {
+        this.enrollmentDateTime = enrollmentDateTime;
     }
 
     public String getPatientId() {
@@ -195,14 +193,8 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         return enrollmentDateTime == null ? null : setTimeZone(enrollmentDateTime);
     }
 
-    public MobileMidwifeEnrollment setEnrollmentDateTime(DateTime enrollmentDateTime) {
-        this.enrollmentDateTime = enrollmentDateTime;
-        return this;
-    }
-
     public static MobileMidwifeEnrollment cloneNew(MobileMidwifeEnrollment midwifeEnrollment) {
-        final MobileMidwifeEnrollment newEnrollment = new MobileMidwifeEnrollment();
-        newEnrollment.setEnrollmentDateTime(midwifeEnrollment.getEnrollmentDateTime());
+        final MobileMidwifeEnrollment newEnrollment = new MobileMidwifeEnrollment(midwifeEnrollment.getEnrollmentDateTime());
         newEnrollment.setMessageStartWeek(midwifeEnrollment.getMessageStartWeek());
         newEnrollment.setDayOfWeek(midwifeEnrollment.getDayOfWeek());
         newEnrollment.setLearnedFrom(midwifeEnrollment.getLearnedFrom());

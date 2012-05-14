@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.validator;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -39,7 +40,7 @@ public class MobileMidwifeValidatorTest {
         String patientId = "1231231";
         String staffId = "11";
         String facilityId = "34";
-        MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId(patientId).setFacilityId(facilityId)
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(DateTime.now()).setPatientId(patientId).setFacilityId(facilityId)
                 .setStaffId(staffId);
 
         mobileMidwifeValidator.validate(enrollment);
@@ -103,7 +104,7 @@ public class MobileMidwifeValidatorTest {
     @Test
     public void shouldValidateIncludeFormCheckForCommonFieldValuesAnd_NeverCheckForFacilityPatientAndStaffExistence() {
 
-        MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment().setPatientId("1234567").setFacilityId("13161")
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(DateTime.now()).setPatientId("1234567").setFacilityId("13161")
                 .setStaffId("465");
         mobileMidwifeValidator = spy(mobileMidwifeValidator);
         doReturn(emptyList()).when(mobileMidwifeValidator).validateFieldValues(enrollment);
@@ -114,7 +115,7 @@ public class MobileMidwifeValidatorTest {
     }
 
     private MobileMidwifeEnrollment with(Time timeOfDay) {
-        return  MobileMidwifeEnrollment.newEnrollment().setPatientId("1234568").setFacilityId("465")
+        return  new MobileMidwifeEnrollment(DateTime.now()).setPatientId("1234568").setFacilityId("465")
                 .setStaffId("13161").setConsent(true).setMedium(Medium.VOICE).setTimeOfDay(timeOfDay);
     }
 

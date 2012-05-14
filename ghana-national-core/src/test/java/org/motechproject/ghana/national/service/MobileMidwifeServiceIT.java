@@ -57,7 +57,7 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
                 messageStartWeek("20").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
                 .active(true).build();
         service.register(enrollment);
-        verifyCreateNewEnrollment(enrollment, allCampaigns.nearestCycleDate(enrollment).toLocalDate());
+        verifyCreateNewEnrollment(enrollment, allCampaigns.nextCycleDateFromToday(enrollment.getServiceType()));
     }
 
     private void verifyCreateNewEnrollment(MobileMidwifeEnrollment expected, LocalDate expectedScheduleStartDate) {

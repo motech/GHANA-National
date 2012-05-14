@@ -1,13 +1,14 @@
 package org.motechproject.ghana.national.repository;
 
 import org.joda.time.DateTime;
-import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.motechproject.server.messagecampaign.dao.AllMessageCampaigns;
 import org.motechproject.server.messagecampaign.service.MessageCampaignService;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -35,10 +36,9 @@ public class AllCampaigns {
         return true;
     }
 
-    public DateTime nearestCycleDate(MobileMidwifeEnrollment enrollment) {
-        DateTime fromDate = enrollment.getEnrollmentDateTime();
-        ServiceType serviceType = enrollment.getServiceType();
+    public LocalDate nextCycleDateFromToday(ServiceType serviceType) {
+        DateTime fromDate = DateUtil.now();
         List<DayOfWeek> applicableDays = allMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), serviceType.getServiceName());
-        return Utility.nextApplicableWeekDay(fromDate, applicableDays);
+        return Utility.nextApplicableWeekDay(fromDate, applicableDays).toLocalDate();
     }
 }

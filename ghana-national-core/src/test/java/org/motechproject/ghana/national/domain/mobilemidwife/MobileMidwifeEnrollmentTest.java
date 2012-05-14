@@ -1,8 +1,6 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.junit.Test;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.motechproject.util.DateUtil;
@@ -10,8 +8,8 @@ import org.motechproject.util.DateUtil;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.joda.time.DateTime.now;
 import static org.junit.Assert.*;
-import static org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment.newEnrollment;
 
 public class MobileMidwifeEnrollmentTest {
 
@@ -20,19 +18,18 @@ public class MobileMidwifeEnrollmentTest {
         ServiceType serviceType = ServiceType.CHILD_CARE;
         String patientId = "patientId";
         String messageStartWeekKey = "55";
-        LocalDate cycleStartDate = new LocalDate();
-        final DateTime scheduleStartDate = cycleStartDate.toDateTime(LocalTime.now());
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = newEnrollment().setPatientId(patientId)
+        DateTime registrationTime = DateUtil.now();
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(registrationTime).setPatientId(patientId)
                 .setServiceType(serviceType).setMessageStartWeek(messageStartWeekKey);
 
-        CampaignRequest campaignRequest = mobileMidwifeEnrollment.createCampaignRequest(scheduleStartDate.toLocalDate());
+        CampaignRequest campaignRequest = mobileMidwifeEnrollment.createCampaignRequest(registrationTime.toLocalDate());
         assertThat(campaignRequest.campaignName(), is(serviceType.name()));
         assertThat(campaignRequest.externalId(), is(patientId));
         assertThat(campaignRequest.referenceDate(), is(DateUtil.today()));
         assertThat(campaignRequest.startOffset(), is(MessageStartWeek.findBy(messageStartWeekKey).getWeek()));
 
         assertNull(campaignRequest.reminderTime());
-        assertThat(campaignRequest.referenceDate(), is(equalTo(cycleStartDate)));
+        assertThat(campaignRequest.referenceDate(), is(equalTo(registrationTime.toLocalDate())));
     }
 
     @Test
@@ -40,7 +37,7 @@ public class MobileMidwifeEnrollmentTest {
         ServiceType serviceType = ServiceType.CHILD_CARE;
         String patientId = "patientId";
 
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = newEnrollment().setPatientId(patientId).setServiceType(serviceType);
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now()).setPatientId(patientId).setServiceType(serviceType);
 
         CampaignRequest stopRequest = mobileMidwifeEnrollment.stopCampaignRequest();
         assertThat(stopRequest.campaignName(), is(serviceType.name()));
@@ -51,13 +48,13 @@ public class MobileMidwifeEnrollmentTest {
 
     @Test
     public void shouldCheckIfCampaignApplicableForEnrollment() {
-        assertTrue(newEnrollment().setConsent(true).setPhoneOwnership(PhoneOwnership.HOUSEHOLD).campaignApplicable());
-        assertTrue(newEnrollment().setConsent(true).setPhoneOwnership(PhoneOwnership.PERSONAL).campaignApplicable());
+        assertTrue(new MobileMidwifeEnrollment(DateUtil.now()).setConsent(true).setPhoneOwnership(PhoneOwnership.HOUSEHOLD).campaignApplicable());
+        assertTrue(new MobileMidwifeEnrollment(DateUtil.now()).setConsent(true).setPhoneOwnership(PhoneOwnership.PERSONAL).campaignApplicable());
 
-        MobileMidwifeEnrollment enrollmentWithPublicOwnership = newEnrollment().setConsent(true).setPhoneOwnership(PhoneOwnership.PUBLIC);
+        MobileMidwifeEnrollment enrollmentWithPublicOwnership = new MobileMidwifeEnrollment(DateUtil.now()).setConsent(true).setPhoneOwnership(PhoneOwnership.PUBLIC);
         assertFalse(enrollmentWithPublicOwnership.campaignApplicable());
 
-        assertFalse(newEnrollment().setConsent(false).campaignApplicable());
+        assertFalse(new MobileMidwifeEnrollment(DateUtil.now()).setConsent(false).campaignApplicable());
     }
 
     public static void assertEnrollment(MobileMidwifeEnrollment expected, MobileMidwifeEnrollment actual) {
