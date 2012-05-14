@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.domain.care;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientCare;
@@ -34,16 +33,16 @@ public class ANCCareRegistrationTest {
         final String facilityId = "fid";
 
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
-        ancCareRegistration = new ANCCareRegistration(mockTTVaccineCare, mockIptVaccineCare, patient, edd, enrollmentDate);
+        ancCareRegistration = new ANCCareRegistration(mockTTVaccineCare, mockIptVaccineCare, patient, edd);
 
         PatientCare iptPatientCare = mock(PatientCare.class);
         PatientCare ttPatientCare = mock(PatientCare.class);
-        when(mockIptVaccineCare.care(Matchers.<LocalDate>any())).thenReturn(iptPatientCare);
+        when(mockIptVaccineCare.care()).thenReturn(iptPatientCare);
         when(mockTTVaccineCare.care()).thenReturn(ttPatientCare);
 
         List<PatientCare> patientCares = ancCareRegistration.allCares();
         //Delivery with date of conception as reference date
-        assertThat(patientCares, is(asList(new PatientCare(ScheduleNames.ANC_DELIVERY, pregnancy.dateOfConception(), enrollmentDate, null, patient.facilityMetaData()), ttPatientCare, iptPatientCare)));
+        assertThat(patientCares, is(asList(PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_DELIVERY, pregnancy.dateOfConception(), patient.facilityMetaData()), ttPatientCare, iptPatientCare)));
 
     }
 }

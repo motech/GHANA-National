@@ -27,8 +27,6 @@ public class PatientCare {
         return new PatientCare(name, scheduleReferenceDate, null, null, metaData);
     }
 
-    public PatientCare(){}
-
     public PatientCare(String name, LocalDate referenceDate, LocalDate enrollmentDate, String milestoneName, Map<String, String> metaData) {
         this.name = name;
         this.referenceDate = referenceDate;

@@ -26,7 +26,6 @@ import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
 import static org.motechproject.ghana.national.domain.RegistrationToday.TODAY;
 import static org.motechproject.ghana.national.tools.Utility.safeParseDouble;
-import static org.motechproject.ghana.national.tools.Utility.safeParseInteger;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.now;
 
@@ -90,18 +89,18 @@ public class CareService {
         Set<MRSObservation> pregnancyObservations = registerPregnancy(ancVO, patient);
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), ANC_REG_VISIT.value(), registrationDate, prepareObservations(ancVO));
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), registrationDate, pregnancyObservations);
-        List<PatientCare> patientCares = createANCRegistrationCares(registrationDate, patient, expectedDeliveryDate, pregnancyObservations.iterator().next());
+        List<PatientCare> patientCares = ancCareRegistration(registrationDate, patient, expectedDeliveryDate, pregnancyObservations.iterator().next(), activeCareSchedules(patient, TT_VACCINATION)).allCares();
         enrollPatientCares(patientCares, patient);
     }
 
-    List<PatientCare> createANCRegistrationCares(Date registrationDate, Patient patient, LocalDate expectedDeliveryDate, MRSObservation pregnancyObservation) {
-        TTVaccineCare ttVaccineCare = TTVaccineCare.createFrom(patient, newDate(registrationDate), pregnancyObservation, activeCareSchedules(patient));
-        IPTVaccineCare iptVaccineCare = IPTVaccineCare.createFrom(patient, newDate(registrationDate), pregnancyObservation);
-        return new ANCCareRegistration(ttVaccineCare, iptVaccineCare, patient, expectedDeliveryDate, newDate(registrationDate)).allCares();
+    ANCCareRegistration ancCareRegistration(Date registrationDate, Patient patient, LocalDate expectedDeliveryDate, MRSObservation pregnancyObservation, ActiveCareSchedules activeTTSchedules) {
+        TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, newDate(registrationDate), pregnancyObservation, activeTTSchedules);
+        IPTVaccineCare iptVaccineCare = new IPTVaccineCare(patient, expectedDeliveryDate, pregnancyObservation);
+        return new ANCCareRegistration(ttVaccineCare, iptVaccineCare, patient, expectedDeliveryDate);
     }
 
-    ActiveCareSchedules activeCareSchedules(Patient patient) {
-        return new ActiveCareSchedules().setActiveCareSchedule(TT_VACCINATION, allSchedules.getActiveEnrollment(patient.getMRSPatientId(), TT_VACCINATION));
+    ActiveCareSchedules activeCareSchedules(Patient patient, String scheduleName) {
+        return new ActiveCareSchedules().setActiveCareSchedule(scheduleName, allSchedules.getActiveEnrollment(patient.getMRSPatientId(), scheduleName));
     }
 
     public void enrollMotherForPNC(Patient patient, DateTime deliveryDateTime) {
@@ -189,8 +188,8 @@ public class CareService {
     Set<MRSObservation> addObservationsOnANCHistory(ANCCareHistoryVO ancCareHistoryVO) {
         List<ANCCareHistory> capturedHistory = ancCareHistoryVO.getCareHistory();
         Set<MRSObservation> observations = new HashSet<MRSObservation>();
-        addObservation(capturedHistory, ANCCareHistory.IPT, observations, ancCareHistoryVO.getLastIPTDate(), IPT.getName(), safeParseInteger(ancCareHistoryVO.getLastIPT()));
-        addObservation(capturedHistory, ANCCareHistory.TT, observations, ancCareHistoryVO.getLastTTDate(), TT.getName(), safeParseInteger(ancCareHistoryVO.getLastTT()));
+        addObservation(capturedHistory, ANCCareHistory.IPT, observations, ancCareHistoryVO.getLastIPTDate(), IPT.getName(), safeParseDouble(ancCareHistoryVO.getLastIPT()));
+        addObservation(capturedHistory, ANCCareHistory.TT, observations, ancCareHistoryVO.getLastTTDate(), TT.getName(), safeParseDouble(ancCareHistoryVO.getLastTT()));
         return observations;
     }
 

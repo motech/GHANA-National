@@ -4,11 +4,14 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.configuration.BaseScheduleTrackingTest;
+import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.PatientTest;
+import org.motechproject.ghana.national.domain.TTVaccineDosage;
 import org.motechproject.ghana.national.domain.TestSchedule;
 import org.motechproject.model.Time;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -18,11 +21,12 @@ import java.util.List;
 import static ch.lambdaj.Lambda.extract;
 import static ch.lambdaj.Lambda.on;
 import static java.util.Arrays.asList;
-import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.joda.time.Period.weeks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 import static org.motechproject.ghana.national.domain.Patient.FACILITY_META;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDateTime;
@@ -87,4 +91,20 @@ public class AllSchedulesIT extends BaseScheduleTrackingTest {
          enrollmentRecords = allSchedules.defaultersByMetaSearch(FACILITY_META, facilityId2);
          assertThat(extract(enrollmentRecords, on(EnrollmentRecord.class).getExternalId()), is(asList(externalId3)));
      }
+
+    @Test
+    public void shouldEnrollOnlyIfThereIsNoActiveEnrollment() {
+        String externalId1 = "externalId";
+        EnrollmentRequest enrollmentRequestFor1stMilestone = new EnrollmentRequest(externalId1, ScheduleNames.TT_VACCINATION,null, DateUtil.today(),null,null,null,null,null);
+        String externalId2 = "externalId2";
+        EnrollmentRequest existingEnrollmentFor2ndMilestone = new EnrollmentRequest(externalId2, ScheduleNames.TT_VACCINATION,null, null,null,DateUtil.today(),null, TTVaccineDosage.TT2.getScheduleMilestoneName(),null);
+
+        allSchedules.enroll(existingEnrollmentFor2ndMilestone);
+
+        assertNull(allSchedules.getActiveEnrollment(externalId1, TT_VACCINATION));
+        assertNotNull(allSchedules.getActiveEnrollment(externalId2, TT_VACCINATION));
+
+        assertTrue(allSchedules.enrollIfNotActive(enrollmentRequestFor1stMilestone));
+        assertFalse(allSchedules.enrollIfNotActive(existingEnrollmentFor2ndMilestone));
+    }
 }
