@@ -27,6 +27,7 @@
         <environment>qa</environment>
         <openmrs.skip>true</openmrs.skip>
         <drop.db.skip>true</drop.db.skip>
+        <include.background.job.logging>false</include.background.job.logging>
     </properties>
     <repositories>
         <repository>

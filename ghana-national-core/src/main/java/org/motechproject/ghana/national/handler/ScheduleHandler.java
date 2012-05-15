@@ -17,7 +17,7 @@ public class ScheduleHandler {
     private Logger logger = LoggerFactory.getLogger(ScheduleHandler.class);
 
     @Autowired
-    private CareScheduleAlerts careScheduleHandler;
+    private CareScheduleHandler careScheduleHandler;
 
     @MotechListener(subjects = {EventSubjects.MILESTONE_ALERT})
     public void handleAlert(MotechEvent motechEvent) {

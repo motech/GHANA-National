@@ -25,7 +25,7 @@ public class AncVisitScheduleHandlerTest {
 
     AncVisitScheduleHandler ancVisitScheduleHandler;
     @Mock
-    CareScheduleAlerts mockCareScheduleHandler;
+    CareScheduleHandler mockCareScheduleHandler;
 
     @Before
     public void setUp() {
