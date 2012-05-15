@@ -7,6 +7,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.DeliveryForm;
 import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
@@ -23,6 +24,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.HashMap;
 
 import static junit.framework.Assert.fail;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -183,6 +185,67 @@ public class DeliveryFormHandlerTest {
         assertEquals(deliveryForm.getChild3Weight(), deliveredChild3.getChildWeight());
 
         assertEquals(deliveryForm.getSender(), deliveryRequest.getSender());
+    }
+    
+    @Test
+    public void shouldCreateADeliveryRequestAndRolloverMotherFromMMPregnancyToChildCare_IfMotherAndAtleastOneChildIsAlive() {
+        String motechFacilityId = "232465";
+        String staffId = "465";
+        String motechId = "2321465";
+
+        final DeliveryForm deliveryForm = new DeliveryForm();
+        deliveryForm.setStaffId(staffId);
+        deliveryForm.setFacilityId(motechFacilityId);
+        deliveryForm.setMotechId(motechId);
+        deliveryForm.setDate(DateUtil.now());
+        deliveryForm.setComments("comments");
+        deliveryForm.setMaleInvolved(false);
+
+
+        deliveryForm.setMode(ChildDeliveryMode.C_SECTION);
+        deliveryForm.setOutcome(ChildDeliveryOutcome.TRIPLETS);
+        deliveryForm.setDeliveryLocation(ChildDeliveryLocation.GOVERNMENT_HOSPITAL);
+        deliveryForm.setDeliveredBy(ChildDeliveredBy.DOCTOR);
+        deliveryForm.setComplications(DeliveryComplications.OTHER.name());
+        deliveryForm.setVvf(VVF.REFERRED);
+        deliveryForm.setMaternalDeath(false);
+
+        deliveryForm.setChild1Outcome(BirthOutcome.ALIVE);
+        deliveryForm.setChild1RegistrationType(RegistrationType.USE_PREPRINTED_ID);
+        deliveryForm.setChild1MotechId("1234544");
+        deliveryForm.setChild1Sex("male");
+        deliveryForm.setChild1FirstName("baby1");
+        deliveryForm.setChild1Weight("1");
+
+        deliveryForm.setChild2Outcome(BirthOutcome.FRESH_STILL_BIRTH);
+        deliveryForm.setChild2RegistrationType(RegistrationType.AUTO_GENERATE_ID);
+        deliveryForm.setChild2Sex("female");
+        deliveryForm.setChild2FirstName("baby2");
+        deliveryForm.setChild2Weight("1.2");
+
+        deliveryForm.setSender("sender");
+
+
+        MotechEvent motechEvent = new MotechEvent("form.validation.successful.NurseDataEntry.delivery", new HashMap<String, Object>() {{
+            put("formBean", deliveryForm);
+        }});
+
+        String facilityId = "111";
+        MRSFacility mrsFacility = new MRSFacility(facilityId);
+        Patient patient = new Patient(new MRSPatient("patientId", motechId, new MRSPerson(), mrsFacility));
+        MRSUser staff = new MRSUser();
+        staff.id(staffId);
+        Facility facility = new Facility(mrsFacility);
+        facility.motechId(motechFacilityId);
+
+        when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
+        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
+        when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
+        when(mockPregnancyService.isDeliverySuccessful(Matchers.<PregnancyDeliveryRequest>any())).thenReturn(true);
+
+        handler.handleFormEvent(motechEvent);
+
+        verify(mockMobileMidwifeService).rollover(deliveryForm.getMotechId(), deliveryForm.getDate());
     }
 
     @Test

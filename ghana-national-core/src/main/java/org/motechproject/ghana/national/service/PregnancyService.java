@@ -124,4 +124,14 @@ public class PregnancyService {
         }
         return null;
     }
+
+    public boolean isDeliverySuccessful(PregnancyDeliveryRequest deliveryRequest) {
+        for (DeliveredChildRequest childRequest : deliveryRequest.getDeliveredChildRequests()) {
+            if (childRequest.getChildBirthOutcome().equals(BirthOutcome.ALIVE)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

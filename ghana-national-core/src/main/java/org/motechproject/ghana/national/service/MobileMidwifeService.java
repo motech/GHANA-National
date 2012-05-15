@@ -1,7 +1,9 @@
 package org.motechproject.ghana.national.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.repository.AllCampaigns;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +51,16 @@ public class MobileMidwifeService {
 
     public MobileMidwifeEnrollment findLatestEnrollment(String patientId) {
         return allEnrollments.findLatestEnrollment(patientId);
+    }
+
+    public void rollover(String motechId,DateTime enrollmentDate) {
+        MobileMidwifeEnrollment activeMobileMidwifeEnrollment = findActiveBy(motechId);
+        if(activeMobileMidwifeEnrollment==null || activeMobileMidwifeEnrollment.getServiceType().equals(ServiceType.CHILD_CARE)) return;
+        unRegister(motechId);
+        MobileMidwifeEnrollment newMobileMidwifeEnrollment = MobileMidwifeEnrollment.cloneNew(activeMobileMidwifeEnrollment);
+        newMobileMidwifeEnrollment.setEnrollmentDateTime(enrollmentDate);
+        newMobileMidwifeEnrollment.setServiceType(ServiceType.CHILD_CARE);
+        newMobileMidwifeEnrollment.setMessageStartWeek("41");
+        register(newMobileMidwifeEnrollment);
     }
 }
