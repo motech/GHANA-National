@@ -153,4 +153,13 @@ public class MobileMidwifeBuilder {
         registerAction = register;
         return this;
     }
+
+    public static MobileMidwifeBuilder builderWithSampleData(String staffId, String facilityId) {
+        return new MobileMidwifeBuilder().staffId(staffId).facilityId(facilityId).patientId("patientId")
+                .consent(true).dayOfWeek(DayOfWeek.Monday).language(Language.EN).learnedFrom(LearnedFrom.FRIEND).format("PERS_VOICE")
+                .timeOfDay(new Time(10, 0)).messageStartWeek("10").phoneNumber("9500012343")
+                .phoneOwnership(PhoneOwnership.PERSONAL).reasonToJoin(ReasonToJoin.FAMILY_FRIEND_DELIVERED)
+                .serviceType(ServiceType.CHILD_CARE).registrationAction(RegisterClientAction.REGISTER);
+    }
+
 }

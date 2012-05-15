@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
+import org.motechproject.util.DateUtil;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -142,7 +143,7 @@ public class MobileMidwifeSource extends BaseSeedSource {
                 new RowMapper<MobileMidwifeEnrollment>() {
                     @Override
                     public MobileMidwifeEnrollment mapRow(ResultSet resultSet, int i) throws SQLException {
-                        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment();
+                        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(DateUtil.now());
                         // TODO: to set enrolled date
                         enrollment.setPatientId(resultSet.getString(1));
 

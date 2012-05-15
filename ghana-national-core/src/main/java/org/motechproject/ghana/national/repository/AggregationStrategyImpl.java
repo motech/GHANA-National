@@ -14,14 +14,28 @@ import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.collect;
+import static ch.lambdaj.Lambda.extract;
+import static ch.lambdaj.Lambda.filter;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.join;
+import static ch.lambdaj.Lambda.joinFrom;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.selectDistinct;
 import static ch.lambdaj.group.Groups.by;
 import static ch.lambdaj.group.Groups.group;
 import static java.util.Locale.getDefault;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.IsNot.not;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FACILITY;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.WINDOW_NAMES;
 import static org.motechproject.ghana.national.domain.AlertWindow.ghanaNationalWindowNames;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY;
@@ -57,9 +71,10 @@ public class AggregationStrategyImpl implements AggregationStrategy {
     private List<SMS> processMessagesForFacility(List<SMS> smsMessages) {
         String defaultMessage = SMS.fill(getSMSTemplate(FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
             put(WINDOW_NAMES, join(AlertWindow.ghanaNationalWindowNames(), ", "));
+            put(FACILITY, "");
         }});
-        List<SMS> filteredMessages = filter(having(on(SMS.class).getText(), not(equalTo(defaultMessage))), smsMessages);
-        return (filteredMessages.isEmpty()) ? filter(having(on(SMS.class).getText(), equalTo(defaultMessage)), smsMessages) : aggregateMessages(filteredMessages);
+        List<SMS> filteredMessages = filter(having(on(SMS.class).getText(), not(containsString(defaultMessage))), smsMessages);
+        return (filteredMessages.isEmpty()) ? filter(having(on(SMS.class).getText(), containsString(defaultMessage)), smsMessages) : aggregateMessages(filteredMessages);
     }
 
     private List<SMS> aggregateMessages(List<SMS> smsMessages) {

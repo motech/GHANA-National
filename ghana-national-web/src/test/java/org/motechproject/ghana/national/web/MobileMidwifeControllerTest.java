@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.web;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.util.DateUtil;
 import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
 
@@ -61,7 +63,7 @@ public class MobileMidwifeControllerTest {
     @Test
     public void shouldRetrieveEnrollmentForAPatient() {
         String patientId = "12344";
-        MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment();
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(DateTime.now());
         enrollment.setActive(true);
         String locationId = "facilityMotechId";
         enrollment.setFacilityId(locationId);
@@ -90,7 +92,7 @@ public class MobileMidwifeControllerTest {
         String facilityId = "13161";
         when(mockFacility.getMotechId()).thenReturn(facilityId);
 
-        MobileMidwifeEnrollment midwifeEnrollment = controller.createEnrollment(enrollmentForm);
+        MobileMidwifeEnrollment midwifeEnrollment = controller.createEnrollment(enrollmentForm, DateUtil.now());
         assertEquals(facilityId, midwifeEnrollment.getFacilityId());
         assertFormWithEnrollment(enrollmentForm, midwifeEnrollment);
         assertEquals(new LocalDate(), midwifeEnrollment.getEnrollmentDateTime().toLocalDate());
@@ -129,7 +131,7 @@ public class MobileMidwifeControllerTest {
         String successMsg = "Changes successful";
 
         MobileMidwifeEnrollmentForm form = createEnrollmentForm(patientId, facilityId, "staffId", Medium.SMS, new Time(23, 45));
-        MobileMidwifeEnrollment existingEnrollment = MobileMidwifeEnrollment.newEnrollment();
+        MobileMidwifeEnrollment existingEnrollment = new MobileMidwifeEnrollment(DateTime.now());
         existingEnrollment.setPatientId(patientId);
         existingEnrollment.setFacilityId("oldFacilityId");
         existingEnrollment.setStaffId("oldStaffId");

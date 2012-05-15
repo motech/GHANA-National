@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.*;
+import static org.motechproject.util.DateUtil.newDateTime;
 
 public class RegisterClientForm extends MobileMidWifeIncludeForm {
 
@@ -493,6 +494,6 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
     }
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment(String patientMotechId) {
-        return fillEnrollment(MobileMidwifeEnrollment.newEnrollment()).setStaffId(getStaffId()).setPatientId(patientMotechId);
+        return fillEnrollment(new MobileMidwifeEnrollment(newDateTime(getDate()))).setStaffId(getStaffId()).setPatientId(patientMotechId);
     }
 }

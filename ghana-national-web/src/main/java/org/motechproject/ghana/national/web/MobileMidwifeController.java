@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web;
 
+import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
@@ -13,7 +14,6 @@ import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.openmrs.advice.ApiSession;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static java.lang.Boolean.*;
+import static java.lang.Boolean.TRUE;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 @Controller
@@ -91,12 +91,12 @@ public class MobileMidwifeController {
     @ApiSession
     @RequestMapping(value = "/admin/enroll/mobile-midwife/save", method = RequestMethod.POST)
     public String save(MobileMidwifeEnrollmentForm form, BindingResult bindingResult, ModelMap modelMap) {
-        MobileMidwifeEnrollment midwifeEnrollment = createEnrollment(form);
+        MobileMidwifeEnrollment midwifeEnrollment = createEnrollment(form, DateTime.now());
         List<FormError> formErrors = mobileMidwifeValidator.validate(midwifeEnrollment);
         if (isNotEmpty(formErrors)) {
             addFormInfo(modelMap, form).addAttribute("formErrors", formErrors);
         } else {
-            mobileMidwifeService.register(midwifeEnrollment.setEnrollmentDateTime(DateUtil.now()));
+            mobileMidwifeService.register(midwifeEnrollment);
             form = createMobileMidwifeEnrollmentForm(midwifeEnrollment);
             addFormInfo(modelMap, form).addAttribute("successMessage", messages.getMessage(SUCCESS_MESSAGE, null, Locale.getDefault()));
         }
@@ -153,8 +153,8 @@ public class MobileMidwifeController {
         return options;
     }
 
-    MobileMidwifeEnrollment createEnrollment(MobileMidwifeEnrollmentForm form) {
-        MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment();
+    MobileMidwifeEnrollment createEnrollment(MobileMidwifeEnrollmentForm form, DateTime enrollmentDateTime) {
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(enrollmentDateTime);
         String facilityId = facilityService.getFacility(form.getFacilityForm().getFacilityId()).getMotechId();
 
         enrollment.setStaffId(form.getStaffMotechId()).setPatientId(form.getPatientMotechId()).setFacilityId(facilityId)

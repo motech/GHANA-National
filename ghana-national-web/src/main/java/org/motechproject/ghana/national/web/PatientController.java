@@ -167,7 +167,7 @@ public class PatientController {
         }
         modelMap.mergeAttributes(facilityHelper.locationMap());
         modelMap.put("registerForMobileMidwife", mobileMidwifeService.findActiveBy(motechId) != null);
-        return PatientController.EDIT_PATIENT_URL;
+        return EDIT_PATIENT_URL;
     }
 
     private void handleError(BindingResult bindingResult, ModelMap modelMap, String message) {

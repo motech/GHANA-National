@@ -13,9 +13,14 @@ var facilities = (function() {
             }
             if (element.find('option:selected').attr('parent') != 'select') {
                 facilities.initializeSelectBoxWithTheCompleteFacilityList();
-                $('#facilities').html($('#facilities').find('option').filter(function() {
-                    return ($(this).attr('parent') == element.find('option:selected').text());
-                }));
+                var options = $('#facilities').find('option');
+                for (var indx = 0; indx < options.length; indx++) {
+                    var optionValue = $(options[indx]).val();
+                    if ($(options[indx]).attr('parent') != element.find('option:selected').text()) {
+                        $('#facilities option[value=' + optionValue + ']').remove();
+                    }
+
+                }
                 $('#facilities').prepend('<option value="" parent="select">Select Facility</option>');
                 $('#facilities').find('option:first').html('Select Facility');
                 $('#facilities').parent().show();

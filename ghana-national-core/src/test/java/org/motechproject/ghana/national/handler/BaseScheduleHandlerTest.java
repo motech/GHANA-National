@@ -23,7 +23,6 @@ import org.motechproject.scheduletracking.api.domain.Milestone;
 import org.motechproject.scheduletracking.api.domain.MilestoneAlert;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
-import org.motechproject.util.DateUtil;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -41,6 +40,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.SMSTemplateTest.assertContainsTemplateValues;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.*;
+import static org.motechproject.util.DateUtil.newDate;
+import static org.motechproject.util.DateUtil.now;
 
 public class BaseScheduleHandlerTest {
 
@@ -77,7 +78,7 @@ public class BaseScheduleHandlerTest {
         parameters.put(EventKeys.VISIT_NAME, visitName);
         parameters.put(MotechSchedulerService.JOB_ID_KEY, visitName + "3");
 
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(1999, 3, 3).toDate());
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(1999, 3, 3).toDate());
         when(mockPatientService.getPatientByMotechId(patientId)).thenReturn(new Patient(new MRSPatient(patientId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
@@ -131,7 +132,7 @@ public class BaseScheduleHandlerTest {
         parameters.put(EventKeys.VISIT_NAME, visitName);
         parameters.put(MotechSchedulerService.JOB_ID_KEY, visitName + "3");
 
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastName).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastName).dateOfBirth(newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
         when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123"))));
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
         careScheduleHandler.sendAggregatedSMSToPatientForAppointment(PATIENT_IPT, new MotechEvent("subject", parameters));
@@ -162,10 +163,10 @@ public class BaseScheduleHandlerTest {
         parameters.put(EventKeys.EXTERNAL_ID_KEY, patientMotechId);
         parameters.put(EventKeys.VISIT_NAME, visitName);
         parameters.put(MotechSchedulerService.JOB_ID_KEY, visitName + "3");
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate());
         when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123"))));
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment().setMedium(Medium.SMS);
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setMedium(Medium.SMS);
         when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(enrollment);
 
         careScheduleHandler.sendAggregatedSMSToPatientForAppointment(PATIENT_IPT, new MotechEvent("subject", parameters));
@@ -186,10 +187,10 @@ public class BaseScheduleHandlerTest {
         parameters.put(EventKeys.EXTERNAL_ID_KEY, patientMotechId);
         parameters.put(EventKeys.VISIT_NAME, visitName);
         parameters.put(MotechSchedulerService.JOB_ID_KEY, visitName + "3");
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
         when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123"))));
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment().setMedium(Medium.SMS).setPhoneNumber(mmRegisteredPhoneNumber);
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setMedium(Medium.SMS).setPhoneNumber(mmRegisteredPhoneNumber);
         when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(enrollment);
 
         careScheduleHandler.sendAggregatedSMSToPatientForAppointment(PATIENT_IPT, new MotechEvent("subject", parameters));
@@ -223,7 +224,7 @@ public class BaseScheduleHandlerTest {
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
         String patientPhoneNumber = "123456";
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
         when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123"))));
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
 
@@ -257,10 +258,10 @@ public class BaseScheduleHandlerTest {
         final String serialNumber = "serialNumber";
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate());
         when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123"))));
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment().setMedium(Medium.SMS);
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setMedium(Medium.SMS);
         when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(enrollment);
 
         careScheduleHandler.sendAggregatedSMSToPatient(PATIENT_IPT, milestoneEvent);
@@ -282,10 +283,10 @@ public class BaseScheduleHandlerTest {
         String patientPhoneNumber = "123456";
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
         when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123"))));
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment().setMedium(Medium.SMS).setPhoneNumber(mmRegisteredPhoneNumber);
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setMedium(Medium.SMS).setPhoneNumber(mmRegisteredPhoneNumber);
         when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(enrollment);
 
         careScheduleHandler.sendAggregatedSMSToPatient(PATIENT_IPT, milestoneEvent);
@@ -319,7 +320,7 @@ public class BaseScheduleHandlerTest {
         final String scheduleName = "edd";
         final String milestoneName="milestone1";
 
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate());
         when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
@@ -359,7 +360,7 @@ public class BaseScheduleHandlerTest {
         final String windowName = WindowName.late.name();
         final String scheduleName = "some schedule";
 
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate());
         when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";

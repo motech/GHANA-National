@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.repository;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -10,16 +11,18 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.motechproject.server.messagecampaign.dao.AllMessageCampaigns;
 import org.motechproject.server.messagecampaign.service.MessageCampaignService;
+import org.motechproject.testing.utils.BaseUnitTest;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
+import static org.joda.time.DateTime.now;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class AllCampaignsTest {
+public class AllCampaignsTest extends BaseUnitTest {
 
     AllCampaigns campaign;
 
@@ -37,14 +40,14 @@ public class AllCampaignsTest {
     @Test
     public void shouldStartCampaignservice() {
         final DateTime scheduleStartDate = new DateTime();
-        MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment().setServiceType(ServiceType.PREGNANCY).setMessageStartWeek("33");
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setServiceType(ServiceType.PREGNANCY).setMessageStartWeek("33");
         campaign.start(enrollment.createCampaignRequest(scheduleStartDate.toLocalDate()));
         verify(mockMessageCampaignService).startFor(any(CampaignRequest.class));
     }
 
     @Test
     public void shouldStopCampaignservice() {
-        MobileMidwifeEnrollment enrollment = MobileMidwifeEnrollment.newEnrollment().setServiceType(ServiceType.CHILD_CARE)
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setServiceType(ServiceType.CHILD_CARE)
                 .setMessageStartWeek("53");
         campaign.stop(enrollment.stopCampaignRequest());
         verify(mockMessageCampaignService).stopAll(any(CampaignRequest.class));
@@ -54,14 +57,14 @@ public class AllCampaignsTest {
     @Test
     public void shouldReturnCycleStartDateForEnrollmentRegistrationDateAndDaysApplicable() {
         ServiceType serviceType = ServiceType.CHILD_CARE;
-        DateTime registrationThuFeb2_2012 = new DateTime(2012, 2, 2, 4, 15, 0);
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment().setEnrollmentDateTime(registrationThuFeb2_2012).setServiceType(serviceType);
+        DateTime currentDay = new DateTime(2012, 2, 2, 4, 15, 0);
+        mockCurrentDate(currentDay);
+
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(currentDay).setServiceType(serviceType);
         when(mockAllMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), ServiceType.CHILD_CARE.getServiceName())).thenReturn(asList(DayOfWeek.Monday));
 
-        DateTime actualDateTime = campaign.nearestCycleDate(enrollment);
-        assertThat(actualDateTime, is(registrationThuFeb2_2012.dayOfMonth().addToCopy(4)));
-
-
+        LocalDate actualDateTime = campaign.nextCycleDateFromToday(enrollment.getServiceType());
+        assertThat(actualDateTime, is(currentDay.dayOfMonth().addToCopy(4).toLocalDate()));
     }
 
 }

@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.REGISTER_SUCCESS_SMS_KEY;
-import static org.motechproject.util.DateUtil.newDateTime;
 
 
 @Component
@@ -96,9 +95,9 @@ public class PatientRegistrationFormHandler implements FormPublishHandler {
 
     private void registerForMobileMidwifeProgram(RegisterClientForm registerClientForm, String patientMotechId) {
         if (registerClientForm.isEnrolledForMobileMidwifeProgram()) {
-            MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment(patientMotechId).setEnrollmentDateTime(newDateTime(registerClientForm.getDate()));
+            MobileMidwifeEnrollment mobileMidwifeEnrollment = registerClientForm.createMobileMidwifeEnrollment(patientMotechId);
             mobileMidwifeEnrollment.setFacilityId(registerClientForm.getFacilityId());
-            mobileMidwifeService.register(mobileMidwifeEnrollment.setEnrollmentDateTime(newDateTime(registerClientForm.getDate())));
+            mobileMidwifeService.register(mobileMidwifeEnrollment);
         }
     }
 

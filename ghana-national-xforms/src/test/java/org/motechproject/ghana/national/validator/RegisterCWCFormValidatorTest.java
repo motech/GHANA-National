@@ -13,6 +13,7 @@ import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.domain.FormError;
+import org.motechproject.util.DateUtil;
 
 import java.util.Collections;
 import java.util.Date;
@@ -85,8 +86,10 @@ public class RegisterCWCFormValidatorTest {
         String motechId = "1231231";
         String staffId = "11";
         String facilityId = "34";
+        final RegisterCWCForm registerCWCForm = new RegisterCWCForm();
+        registerCWCForm.setRegistrationDate(DateUtil.now().toDate());
         RegisterCWCForm formBean = new MobileMidwifeBuilder().enroll(true).consent(false).facilityId(facilityId)
-                .staffId(staffId).patientId(motechId).buildRegisterCWCForm(new RegisterCWCForm());
+                .staffId(staffId).patientId(motechId).buildRegisterCWCForm(registerCWCForm);
 
         registerCWCFormValidator = spy(registerCWCFormValidator);
         doReturn(emptyList()).when(registerCWCFormValidator).validatePatient(anyString());

@@ -14,15 +14,12 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
-import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-
-import static org.motechproject.util.DateUtil.newDateTime;
 
 @Component
 public class RegisterANCFormHandler implements FormPublishHandler {
@@ -46,7 +43,7 @@ public class RegisterANCFormHandler implements FormPublishHandler {
             RegisterANCForm registerANCForm = (RegisterANCForm) event.getParameters().get(Constants.FORM_BEAN);
             Facility facility = facilityService.getFacilityByMotechId(registerANCForm.getFacilityId());
 
-            Date registrationDate = registerANCForm.getDate() == null ? DateUtil.today().toDate() : registerANCForm.getDate();
+            Date registrationDate = registerANCForm.getRegistrationDate();
             ANCVO ancvo = new ANCVO(registerANCForm.getStaffId(), facility.getMrsFacilityId(),
                     registerANCForm.getMotechId(), registrationDate, registerANCForm.getRegDateToday(),
                     registerANCForm.getAncRegNumber(), registerANCForm.getEstDeliveryDate(), registerANCForm.getHeight(),
@@ -57,7 +54,7 @@ public class RegisterANCFormHandler implements FormPublishHandler {
             careService.enroll(ancvo);
             MobileMidwifeEnrollment mobileMidwifeEnrollment = registerANCForm.createMobileMidwifeEnrollment();
             if (mobileMidwifeEnrollment != null) {
-                mobileMidwifeService.register(mobileMidwifeEnrollment.setEnrollmentDateTime(newDateTime(registrationDate)));
+                mobileMidwifeService.register(mobileMidwifeEnrollment);
             } else {
                 mobileMidwifeService.unRegister(registerANCForm.getMotechId());
             }
