@@ -14,7 +14,7 @@ public class TTVaccineCare extends PregnancyVaccineCare {
     private LocalDate enrollmentDate;
 
     public TTVaccineCare(Patient patient, LocalDate expectedDateOfDelivery, LocalDate enrollmentDate, Boolean hasActiveTTSchedule, String lastTTDosage, Date lastTTDate) {
-        super(patient, expectedDateOfDelivery, hasActiveTTSchedule, TT_VACCINATION, lastTTDosage, lastTTDate);
+        super(patient, expectedDateOfDelivery, hasActiveTTSchedule, TT_VACCINATION.getName(), lastTTDosage, lastTTDate);
         this.enrollmentDate = enrollmentDate;
     }
 
@@ -26,6 +26,6 @@ public class TTVaccineCare extends PregnancyVaccineCare {
 
     @Override
     protected PatientCare newEnrollmentForCare() {
-        return PatientCare.forEnrollmentFromStart(TT_VACCINATION, enrollmentDate, patient.facilityMetaData());
+        return PatientCare.forEnrollmentFromStart(TT_VACCINATION.getName(), enrollmentDate, patient.facilityMetaData());
     }
 }

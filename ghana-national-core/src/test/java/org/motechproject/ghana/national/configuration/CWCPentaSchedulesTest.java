@@ -24,7 +24,7 @@ public class CWCPentaSchedulesTest extends BaseScheduleTrackingTest {
     @Before
     public void setUp() {
         super.setUp();
-        scheduleName = ScheduleNames.CWC_PENTA;
+        scheduleName = ScheduleNames.CWC_PENTA.getName();
     }
 
     @Test

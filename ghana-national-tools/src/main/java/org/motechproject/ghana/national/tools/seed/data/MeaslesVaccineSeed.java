@@ -26,7 +26,7 @@ public class MeaslesVaccineSeed extends ScheduleMigrationSeed {
 
     @Override
     public String getScheduleName(String milestoneName) {
-        return ScheduleNames.CWC_MEASLES_VACCINE;
+        return ScheduleNames.CWC_MEASLES_VACCINE.getName();
     }
 
     protected String mapMilestoneName(String milestoneName) {

@@ -29,9 +29,9 @@ public class OPVVaccineCare extends ChildVaccineCare {
     protected PatientCare newEnrollmentForCare() {
         ChildCare childCare = ChildCare.basedOnBirthDay(newDateTime(dateOfBirth));
         if (childCare.applicableForOPV0())
-            return new PatientCare(CWC_OPV_0, childCare.birthDate(), enrollmentDate, null, patient.facilityMetaData());
+            return new PatientCare(CWC_OPV_0.getName(), childCare.birthDate(), enrollmentDate, null, patient.facilityMetaData());
         else if (childCare.applicableForOPVOther())
-            return new PatientCare(CWC_OPV_OTHERS, childCare.birthDate(), enrollmentDate, null, patient.facilityMetaData());
+            return new PatientCare(CWC_OPV_OTHERS.getName(), childCare.birthDate(), enrollmentDate, null, patient.facilityMetaData());
         return null;
     }
 

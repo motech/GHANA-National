@@ -35,7 +35,7 @@ public class TTVaccineSeed extends ScheduleMigrationSeed {
 
     @Override
     public String getScheduleName(String milestoneName) {
-        return ScheduleNames.TT_VACCINATION;
+        return ScheduleNames.TT_VACCINATION.getName();
     }
 
     @Override

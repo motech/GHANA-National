@@ -18,12 +18,12 @@ public class PNCBabyVaccineSeedTest {
 
     @Test
     public void shouldReturnScheduleNamesBasedOnMilestoneNames(){
-        assertThat(pncBabyVaccineSeed.getScheduleName("PNC1"), is(equalTo(ScheduleNames.PNC_CHILD_1)));
-        assertThat(pncBabyVaccineSeed.getScheduleName("PNC2"), is(equalTo(ScheduleNames.PNC_CHILD_2)));
-        assertThat(pncBabyVaccineSeed.getScheduleName("PNC3"), is(equalTo(ScheduleNames.PNC_CHILD_3)));
-        assertThat(pncBabyVaccineSeed.getScheduleName("PNC-C1"), is(equalTo(ScheduleNames.PNC_CHILD_1)));
-        assertThat(pncBabyVaccineSeed.getScheduleName("PNC-C2"), is(equalTo(ScheduleNames.PNC_CHILD_2)));
-        assertThat(pncBabyVaccineSeed.getScheduleName("PNC-C3"), is(equalTo(ScheduleNames.PNC_CHILD_3)));
+        assertThat(pncBabyVaccineSeed.getScheduleName("PNC1"), is(equalTo(ScheduleNames.PNC_CHILD_1.getName())));
+        assertThat(pncBabyVaccineSeed.getScheduleName("PNC2"), is(equalTo(ScheduleNames.PNC_CHILD_2.getName())));
+        assertThat(pncBabyVaccineSeed.getScheduleName("PNC3"), is(equalTo(ScheduleNames.PNC_CHILD_3.getName())));
+        assertThat(pncBabyVaccineSeed.getScheduleName("PNC-C1"), is(equalTo(ScheduleNames.PNC_CHILD_1.getName())));
+        assertThat(pncBabyVaccineSeed.getScheduleName("PNC-C2"), is(equalTo(ScheduleNames.PNC_CHILD_2.getName())));
+        assertThat(pncBabyVaccineSeed.getScheduleName("PNC-C3"), is(equalTo(ScheduleNames.PNC_CHILD_3.getName())));
     }
 
     @Test

@@ -36,68 +36,68 @@ public class ScheduleHandlerTest {
 
     @Test
     public void shouldHandleDeliveryNotificationSchedules(){
-        fireScheduleHandler(event(ANC_DELIVERY));
+        fireScheduleHandler(event(ANC_DELIVERY.getName()));
         verify(careScheduleHandler).handlePregnancyAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandleTTVaccinationSchedules(){
-        fireScheduleHandler(event(TT_VACCINATION));
+        fireScheduleHandler(event(TT_VACCINATION.getName()));
         verify(careScheduleHandler).handleTTVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandleBCGSchedules(){
-        fireScheduleHandler(event(CWC_BCG));
+        fireScheduleHandler(event(CWC_BCG.getName()));
         verify(careScheduleHandler).handleBCGAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandleIPTpVaccinationSchedules(){
-        fireScheduleHandler(event(ANC_IPT_VACCINE));
+        fireScheduleHandler(event(ANC_IPT_VACCINE.getName()));
         verify(careScheduleHandler).handleIPTpVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
     
     @Test
     public void shouldHandleIPTiVaccinationSchedules(){
-        fireScheduleHandler(event(CWC_IPT_VACCINE));
+        fireScheduleHandler(event(CWC_IPT_VACCINE.getName()));
         verify(careScheduleHandler).handleIPTiVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
     
     @Test
     public void shouldHandleMeaslesVaccinationSchedules(){
-        fireScheduleHandler(event(CWC_MEASLES_VACCINE));
+        fireScheduleHandler(event(CWC_MEASLES_VACCINE.getName()));
         verify(careScheduleHandler).handleMeaslesVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandleYellowFeverVaccinationSchedules(){
-        fireScheduleHandler(event(CWC_YELLOW_FEVER));
+        fireScheduleHandler(event(CWC_YELLOW_FEVER.getName()));
         verify(careScheduleHandler).handleYellowFeverVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandlePentaVaccinationSchedules(){
-        fireScheduleHandler(event(CWC_PENTA));
+        fireScheduleHandler(event(CWC_PENTA.getName()));
         verify(careScheduleHandler).handlePentaVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandleOPV0VaccinationSchedules(){
-        fireScheduleHandler(event(CWC_OPV_0));
+        fireScheduleHandler(event(CWC_OPV_0.getName()));
         verify(careScheduleHandler).handleOpvVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldHandleOtherOPVVaccinationSchedules(){
-        fireScheduleHandler(event(CWC_OPV_OTHERS));
+        fireScheduleHandler(event(CWC_OPV_OTHERS.getName()));
         verify(careScheduleHandler).handleOpvVaccinationAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test
     public void shouldThrowOnAnyFailureInHandlingAlerts() {
         doThrow(new RuntimeException("some")).when(careScheduleHandler).handleOpvVaccinationAlert(Matchers.<MilestoneEvent>any());
-        final MotechEvent event = event(CWC_OPV_OTHERS);
+        final MotechEvent event = event(CWC_OPV_OTHERS.getName());
         try {
             fireScheduleHandler(event);
             Assert.fail("expected scheduler handler exception");

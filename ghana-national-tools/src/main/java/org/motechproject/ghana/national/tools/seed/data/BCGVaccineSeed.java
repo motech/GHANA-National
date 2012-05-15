@@ -26,7 +26,7 @@ public class BCGVaccineSeed extends ScheduleMigrationSeed {
 
     @Override
     public String getScheduleName(String milestoneName) {
-        return ScheduleNames.CWC_BCG;
+        return ScheduleNames.CWC_BCG.getName();
     }
 
     protected String mapMilestoneName(String milestoneName) {

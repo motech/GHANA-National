@@ -59,7 +59,7 @@ public class CareService {
         Date lastIPTiDate = getLastIPTiDate(patient, cwcVO.getCWCCareHistoryVO());
         Date lastOPVDate = getLastOPVDate(patient,cwcVO.getCWCCareHistoryVO());
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(newDate(cwcVO.getRegistrationDate()),
-                mergedHistories, cwcVO.getCWCCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_PENTA, CWC_IPT_VACCINE, CWC_OPV_OTHERS)), lastPentaDate, lastIPTiDate, lastOPVDate);
+                mergedHistories, cwcVO.getCWCCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_PENTA.getName(), CWC_IPT_VACCINE.getName(), CWC_OPV_OTHERS.getName())), lastPentaDate, lastIPTiDate, lastOPVDate);
         patientCares.addAll(patient.pncBabyProgramsToEnrollOnRegistration());
         enrollPatientCares(patientCares, patient);
     }
@@ -76,7 +76,7 @@ public class CareService {
         Date lastOPVDate = cwcVO.getLastOPVDate();
         OPVDose nextMilestone = cwcVO.getLastOPV() != null ? getNextOf(OPVDose.byValue(cwcVO.getLastOPV().toString())) : null;
         if (lastOPVDate != null && nextMilestone != null)
-            lastOPVDate = getEnrollmentDateForChildCareSchedules(ScheduleNames.CWC_OPV_OTHERS, lastOPVDate, nextMilestone.milestoneName(), patient.dateOfBirth().toLocalDate());
+            lastOPVDate = getEnrollmentDateForChildCareSchedules(ScheduleNames.CWC_OPV_OTHERS.getName(), lastOPVDate, nextMilestone.milestoneName(), patient.dateOfBirth().toLocalDate());
         return lastOPVDate;
     }
 
@@ -84,7 +84,7 @@ public class CareService {
         Date lastIPTiDate = cwcVO.getLastIPTiDate();
         IPTiDose nextMilestone = cwcVO.getLastIPTi() != null ? getNextOf(IPTiDose.byValue(cwcVO.getLastIPTi())) : null;
         if (lastIPTiDate != null && nextMilestone != null)
-            lastIPTiDate = getEnrollmentDateForChildCareSchedules(ScheduleNames.CWC_IPT_VACCINE, lastIPTiDate, nextMilestone.milestoneName(), patient.dateOfBirth().toLocalDate());
+            lastIPTiDate = getEnrollmentDateForChildCareSchedules(ScheduleNames.CWC_IPT_VACCINE.getName(), lastIPTiDate, nextMilestone.milestoneName(), patient.dateOfBirth().toLocalDate());
         return lastIPTiDate;
     }
 
@@ -92,7 +92,7 @@ public class CareService {
         Date lastPentaDate = cwcVO.getLastPentaDate();
         PentaDose nextMilestone = cwcVO.getLastPenta() != null ? getNextOf(PentaDose.byValue(cwcVO.getLastPenta())) : null;
         if (lastPentaDate != null && nextMilestone != null)
-            lastPentaDate = getEnrollmentDateForChildCareSchedules(ScheduleNames.CWC_PENTA, lastPentaDate, nextMilestone.milestoneName(), patient.dateOfBirth().toLocalDate());
+            lastPentaDate = getEnrollmentDateForChildCareSchedules(ScheduleNames.CWC_PENTA.getName(), lastPentaDate, nextMilestone.milestoneName(), patient.dateOfBirth().toLocalDate());
         return lastPentaDate;
     }
 
@@ -134,7 +134,7 @@ public class CareService {
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), ancVO.getRegistrationDate(), pregnancyObservations);
 
 
-        ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(TT_VACCINATION, ANC_IPT_VACCINE));
+        ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(TT_VACCINATION.getName(), ANC_IPT_VACCINE.getName()));
 
         Date lastTTDate = getLastTTDate(ancCareHistoryVO, expectedDeliveryDate);
         TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, expectedDeliveryDate, newDate(ancVO.getRegistrationDate()), activeCareSchedules.hasActiveTTSchedule(), ancCareHistoryVO.getLastTT(), lastTTDate);
@@ -150,7 +150,7 @@ public class CareService {
         IPTDose nextIPTMilestone = ancCareHistoryVO.getLastIPT() != null ? getNextOf(IPTDose.byValue(ancCareHistoryVO.getLastIPT())) : null;
         Date lastIPTDate = ancCareHistoryVO.getLastIPTDate();
         if (lastIPTDate != null && nextIPTMilestone != null) {
-            lastIPTDate = getEnrollmentDateForPregnancySchedules(ANC_IPT_VACCINE, DateUtil.newDate(lastIPTDate), nextIPTMilestone.milestone(), edd).toDate();
+            lastIPTDate = getEnrollmentDateForPregnancySchedules(ANC_IPT_VACCINE.getName(), DateUtil.newDate(lastIPTDate), nextIPTMilestone.milestone(), edd).toDate();
         }
         return lastIPTDate;
     }
@@ -159,7 +159,7 @@ public class CareService {
         Date lastTTDate = ancCareHistoryVO.getLastTTDate();
         TTVaccineDosage nextTTMilestone = (ancCareHistoryVO.getLastTT() != null) ? getNextOf(TTVaccineDosage.byValue(Integer.parseInt(ancCareHistoryVO.getLastTT()))) : null;
         if (lastTTDate != null && nextTTMilestone != null) {
-            lastTTDate = getEnrollmentDateForPregnancySchedules(TT_VACCINATION, DateUtil.newDate(lastTTDate), nextTTMilestone.getScheduleMilestoneName(), edd).toDate();
+            lastTTDate = getEnrollmentDateForPregnancySchedules(TT_VACCINATION.getName(), DateUtil.newDate(lastTTDate), nextTTMilestone.getScheduleMilestoneName(), edd).toDate();
         }
         return lastTTDate;
     }
@@ -313,7 +313,7 @@ public class CareService {
         Date lastIPTiDate = getLastIPTiDate(patient, careHistoryVO.getCwcCareHistoryVO());
         Date lastOPVDate = getLastOPVDate(patient,careHistoryVO.getCwcCareHistoryVO());
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnHistoryCapture(newDate(careHistoryVO.getDate()),
-                mergedHistories, careHistoryVO.getCwcCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_PENTA, CWC_IPT_VACCINE, CWC_OPV_OTHERS)), lastPentaDate, lastIPTiDate, lastOPVDate);
+                mergedHistories, careHistoryVO.getCwcCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_PENTA.getName(), CWC_IPT_VACCINE.getName(), CWC_OPV_OTHERS.getName())), lastPentaDate, lastIPTiDate, lastOPVDate);
         patientCares.addAll(patient.pncBabyProgramsToEnrollOnRegistration());
         enrollPatientCares(patientCares, patient);
     }
@@ -328,7 +328,7 @@ public class CareService {
             Date edd = getEDD(patient.getMotechId());
             LocalDate expectedDeliveryDate = newDate(edd);
 
-            ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(TT_VACCINATION, ANC_IPT_VACCINE));
+            ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(TT_VACCINATION.getName(), ANC_IPT_VACCINE.getName()));
             Date lastTTDate = getLastTTDate(ancCareHistoryVO, expectedDeliveryDate);
             TTVaccineCare ttVaccineCare = new TTVaccineCare(patient, expectedDeliveryDate, newDate(careHistoryVO.getDate()), activeCareSchedules.hasActiveTTSchedule(), ancCareHistoryVO.getLastTT(), lastTTDate);
 

@@ -55,9 +55,9 @@ public class ChildVisitService {
             LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
             String opvType;
             if (OPVDose.OPV_0.equals(OPVDose.byValue(cwcVisit.getOpvdose())))
-                opvType=CWC_OPV_0;
+                opvType=CWC_OPV_0.getName();
             else
-                opvType=CWC_OPV_OTHERS;
+                opvType=CWC_OPV_OTHERS.getName();
             allSchedulesAndMessages.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient,patient.cwcOPVOnVisit(visitDate, opvType)),visitDate);
         }
 
@@ -93,7 +93,7 @@ public class ChildVisitService {
     private void updateMeaslesSchedule(CWCVisit cwcVisit) {
         List<String> immunizations = cwcVisit.getImmunizations();
         Patient patient = cwcVisit.getPatient();
-        if (immunizations.contains(MEASLES.name()) && enrollment(patient.getMRSPatientId(), CWC_MEASLES_VACCINE) != null) {
+        if (immunizations.contains(MEASLES.name()) && enrollment(patient.getMRSPatientId(), CWC_MEASLES_VACCINE.getName()) != null) {
             allSchedulesAndMessages.enrollOrFulfill(new ScheduleEnrollmentMapper().map(patient, patient.cwcMeaslesOnVisit(newDate(cwcVisit.getDate()))), newDate(cwcVisit.getDate()));
         }
     }

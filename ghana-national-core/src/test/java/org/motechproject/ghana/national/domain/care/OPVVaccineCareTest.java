@@ -25,7 +25,7 @@ public class OPVVaccineCareTest {
         LocalDate enrollmentDate = DateUtil.today();
         LocalDate birthDate=enrollmentDate.minusWeeks(9);
         Patient patient = new Patient(new MRSPatient("pid", "mid", new MRSPerson().dateOfBirth(birthDate.toDate()), new MRSFacility("facilityId")));
-        OPVVaccineCare opvVaccineCare = new OPVVaccineCare(patient, null, null, null, null, CWC_OPV_0);
+        OPVVaccineCare opvVaccineCare = new OPVVaccineCare(patient, null, null, null, null, CWC_OPV_0.getName());
         assertThat(opvVaccineCare.nextVaccineDose("0"), is(equalTo("OPV1")));
         assertThat(opvVaccineCare.nextVaccineDose("1"),is(equalTo("OPV2")));
         assertThat(opvVaccineCare.nextVaccineDose("2"),is(equalTo("OPV3")));
@@ -38,8 +38,8 @@ public class OPVVaccineCareTest {
         LocalDate enrollmentDate = DateUtil.today();
         LocalDate birthDate=enrollmentDate.minusWeeks(5);
         Patient patient = new Patient(new MRSPatient("pid", "mid", new MRSPerson().dateOfBirth(birthDate.toDate()), new MRSFacility(facilityId)));
-        assertThat(new OPVVaccineCare(patient, enrollmentDate, null, null, null,CWC_OPV_OTHERS).newEnrollmentForCare(),
-                is(equalTo(new PatientCare(CWC_OPV_OTHERS, birthDate, enrollmentDate, null, new HashMap<String, String>() {{
+        assertThat(new OPVVaccineCare(patient, enrollmentDate, null, null, null,CWC_OPV_OTHERS.getName()).newEnrollmentForCare(),
+                is(equalTo(new PatientCare(CWC_OPV_OTHERS.getName(), birthDate, enrollmentDate, null, new HashMap<String, String>() {{
                     put("facilityId", facilityId);
                 }}))));
     }
@@ -50,6 +50,6 @@ public class OPVVaccineCareTest {
         LocalDate enrollmentDate = DateUtil.today();
         LocalDate birthDate=enrollmentDate.minusWeeks(20);
         Patient patient = new Patient(new MRSPatient("pid", "mid", new MRSPerson().dateOfBirth(birthDate.toDate()), new MRSFacility(facilityId)));
-        assertNull(new OPVVaccineCare(patient, enrollmentDate, null, null, null,CWC_OPV_0).newEnrollmentForCare());
+        assertNull(new OPVVaccineCare(patient, enrollmentDate, null, null, null,CWC_OPV_0.getName()).newEnrollmentForCare());
     }
 }

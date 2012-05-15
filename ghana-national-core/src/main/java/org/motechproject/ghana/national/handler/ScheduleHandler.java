@@ -24,25 +24,25 @@ public class ScheduleHandler {
         logger.info("Received milestone event: " + motechEvent);
         try {
             MilestoneEvent milestoneEvent = new MilestoneEvent(motechEvent);
-            if (milestoneEvent.getScheduleName().equals(ANC_DELIVERY))
+            if (milestoneEvent.getScheduleName().equals(ANC_DELIVERY.getName()))
                 careScheduleHandler.handlePregnancyAlert(milestoneEvent);
-            else if (milestoneEvent.getScheduleName().equals(TT_VACCINATION))
+            else if (milestoneEvent.getScheduleName().equals(TT_VACCINATION.getName()))
                 careScheduleHandler.handleTTVaccinationAlert(milestoneEvent);
-            else if (milestoneEvent.getScheduleName().equals(ANC_IPT_VACCINE))
+            else if (milestoneEvent.getScheduleName().equals(ANC_IPT_VACCINE.getName()))
                 careScheduleHandler.handleIPTpVaccinationAlert(milestoneEvent);
-            else if (milestoneEvent.getScheduleName().equals(CWC_IPT_VACCINE))
+            else if (milestoneEvent.getScheduleName().equals(CWC_IPT_VACCINE.getName()))
                 careScheduleHandler.handleIPTiVaccinationAlert(milestoneEvent);
-            else if (milestoneEvent.getScheduleName().equals(CWC_BCG))
+            else if (milestoneEvent.getScheduleName().equals(CWC_BCG.getName()))
                 careScheduleHandler.handleBCGAlert(milestoneEvent);
-            else if (milestoneEvent.getScheduleName().equals(CWC_MEASLES_VACCINE))
+            else if (milestoneEvent.getScheduleName().equals(CWC_MEASLES_VACCINE.getName()))
                 careScheduleHandler.handleMeaslesVaccinationAlert(milestoneEvent);
-            else if (milestoneEvent.getScheduleName().equals(CWC_PENTA))
+            else if (milestoneEvent.getScheduleName().equals(CWC_PENTA.getName()))
                 careScheduleHandler.handlePentaVaccinationAlert(milestoneEvent);
-            else if (milestoneEvent.getScheduleName().equals(CWC_YELLOW_FEVER))
+            else if (milestoneEvent.getScheduleName().equals(CWC_YELLOW_FEVER.getName()))
                 careScheduleHandler.handleYellowFeverVaccinationAlert(milestoneEvent);
-            else if (milestoneEvent.getScheduleName().equals(CWC_OPV_0))
+            else if (milestoneEvent.getScheduleName().equals(CWC_OPV_0.getName()))
                 careScheduleHandler.handleOpvVaccinationAlert(milestoneEvent);
-            else if (milestoneEvent.getScheduleName().equals(CWC_OPV_OTHERS))
+            else if (milestoneEvent.getScheduleName().equals(CWC_OPV_OTHERS.getName()))
                 careScheduleHandler.handleOpvVaccinationAlert(milestoneEvent);
             else if (isPNCMotherSchedule(milestoneEvent.getScheduleName()))
                 careScheduleHandler.handlePNCMotherAlert(milestoneEvent);

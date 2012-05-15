@@ -31,6 +31,6 @@ public class IPTPVaccineSeed extends ScheduleMigrationSeed {
 
     @Override
     public String getScheduleName(String milestoneName) {
-        return ScheduleNames.ANC_IPT_VACCINE;
+        return ScheduleNames.ANC_IPT_VACCINE.getName();
     }
 }

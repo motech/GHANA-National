@@ -30,7 +30,7 @@ public class VaccineCareTest {
 
         PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), hasActiveIPTSchedule, "1", lastIPTVaccinationDate.toDate()).careForReg();
 
-        PatientCare expectedPatientCare = PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE, lastIPTVaccinationDate, "IPT2", new HashMap<String, String>() {{
+        PatientCare expectedPatientCare = PatientCare.forEnrollmentInBetweenProgram(ScheduleNames.ANC_IPT_VACCINE.getName(), lastIPTVaccinationDate, "IPT2", new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
         }});
         assertThat(patientCare, is(expectedPatientCare));
@@ -46,7 +46,7 @@ public class VaccineCareTest {
         Patient patient = new Patient(new MRSPatient("pid", "mid", null, new MRSFacility(facilityId)));
         PatientCare patientCare = new IPTVaccineCare(patient, pregnancy.dateOfDelivery(), hasActiveIPTSchedule, null, null).careForReg();
 
-        PatientCare expectedPatientCare = PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_IPT_VACCINE, pregnancy.dateOfConception(), new HashMap<String, String>() {{
+        PatientCare expectedPatientCare = PatientCare.forEnrollmentFromStart(ScheduleNames.ANC_IPT_VACCINE.getName(), pregnancy.dateOfConception(), new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
         }});
         assertThat(patientCare, is(expectedPatientCare));

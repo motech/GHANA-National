@@ -31,6 +31,6 @@ public class EDDSeed extends ScheduleMigrationSeed {
 
     @Override
     public String getScheduleName(String milestoneName) {
-        return ScheduleNames.ANC_DELIVERY;
+        return ScheduleNames.ANC_DELIVERY.getName();
     }
 }

@@ -26,7 +26,7 @@ public class PentaVaccineSeed extends ScheduleMigrationSeed {
 
     @Override
     public String getScheduleName(String milestoneName) {
-        return ScheduleNames.CWC_PENTA;
+        return ScheduleNames.CWC_PENTA.getName();
     }
 
     protected String mapMilestoneName(String milestoneName) {

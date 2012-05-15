@@ -22,9 +22,9 @@ import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.util.DateUtil.newDateTime;
 
 public class Patient {
-    public static List<String> ancCarePrograms = unmodifiableList(asList(ANC_DELIVERY, ANC_IPT_VACCINE, TT_VACCINATION));
-    public static List<String> cwcCarePrograms = unmodifiableList(asList(CWC_BCG, CWC_MEASLES_VACCINE, CWC_PENTA, CWC_OPV_0,
-            CWC_OPV_OTHERS, CWC_IPT_VACCINE, CWC_YELLOW_FEVER, TT_VACCINATION));
+    public static List<String> ancCarePrograms = unmodifiableList(asList(ANC_DELIVERY.getName(), ANC_IPT_VACCINE.getName(), TT_VACCINATION.getName()));
+    public static List<String> cwcCarePrograms = unmodifiableList(asList(CWC_BCG.getName(), CWC_MEASLES_VACCINE.getName(), CWC_PENTA.getName(), CWC_OPV_0.getName(),
+            CWC_OPV_OTHERS.getName(), CWC_IPT_VACCINE.getName(), CWC_YELLOW_FEVER.getName(), TT_VACCINATION.getName()));
     public static final List<String> pncMotherCarePrograms = unmodifiableList(PNCMotherVisit.schedules());
     public static final List<String> pncChildCarePrograms = unmodifiableList(PNCChildVisit.schedules());
     public static final String FACILITY_META = "facilityId";
@@ -81,11 +81,11 @@ public class Patient {
     }
 
     public PatientCare ancDeliveryCareOnVisit(LocalDate expectedDeliveryDate, LocalDate visitDate) {
-        return new PatientCare(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), visitDate, null, facilityMetaData());
+        return new PatientCare(ANC_DELIVERY.getName(), basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), visitDate, null, facilityMetaData());
     }
 
     public PatientCare ttVaccinePatientCareOnVisit(LocalDate vaccinationDate) {
-        return new PatientCare(ScheduleNames.TT_VACCINATION, vaccinationDate, vaccinationDate, null, facilityMetaData());
+        return new PatientCare(ScheduleNames.TT_VACCINATION.getName(), vaccinationDate, vaccinationDate, null, facilityMetaData());
     }
 
     public List<String> allCareProgramsToUnEnroll() {
@@ -128,35 +128,35 @@ public class Patient {
 
     private PatientCare opv0ChildCare(LocalDate enrollmentDate, LocalDate referenceDate, CWCCareHistoryVO cwcCareHistoryVO) {
         if(cwcCareHistoryVO.getLastOPV()==null)
-            return new PatientCare(CWC_OPV_0, referenceDate, enrollmentDate, null, facilityMetaData());
+            return new PatientCare(CWC_OPV_0.getName(), referenceDate, enrollmentDate, null, facilityMetaData());
         return null;
     }
 
     private PatientCare bcgChildCare(LocalDate enrollmentDate, LocalDate referenceDate, List<CwcCareHistory> cwcCareHistories) {
-        return cwcCareHistories.contains(CwcCareHistory.BCG) ? null : new PatientCare(CWC_BCG, referenceDate, enrollmentDate, null, facilityMetaData());
+        return cwcCareHistories.contains(CwcCareHistory.BCG) ? null : new PatientCare(CWC_BCG.getName(), referenceDate, enrollmentDate, null, facilityMetaData());
     }
     
     private PatientCare opv1ChildCare(LocalDate enrollmentDate, LocalDate referenceDate, List<CwcCareHistory> cwcCareHistories, ActiveCareSchedules activeCareSchedules, CWCCareHistoryVO cwcCareHistoryVO,Date lastOPVDate) {
         if(cwcCareHistories.contains(CwcCareHistory.OPV))
-            return new OPVVaccineCare(this,enrollmentDate,activeCareSchedules.hasActiveOPVSchedule(),safeToString(cwcCareHistoryVO.getLastOPV()),lastOPVDate,CWC_OPV_OTHERS).careForHistory();
+            return new OPVVaccineCare(this,enrollmentDate,activeCareSchedules.hasActiveOPVSchedule(),safeToString(cwcCareHistoryVO.getLastOPV()),lastOPVDate,CWC_OPV_OTHERS.getName()).careForHistory();
         else
-            return new PatientCare(CWC_OPV_OTHERS, referenceDate, enrollmentDate, null, facilityMetaData());
+            return new PatientCare(CWC_OPV_OTHERS.getName(), referenceDate, enrollmentDate, null, facilityMetaData());
     }
 
     private PatientCare yfChildCare(LocalDate enrollmentDate, LocalDate referenceDate, List<CwcCareHistory> cwcCareHistories) {
-        return cwcCareHistories.contains(CwcCareHistory.YF) ? null : new PatientCare(CWC_YELLOW_FEVER, referenceDate, enrollmentDate, null, facilityMetaData());
+        return cwcCareHistories.contains(CwcCareHistory.YF) ? null : new PatientCare(CWC_YELLOW_FEVER.getName(), referenceDate, enrollmentDate, null, facilityMetaData());
     }
 
     public PatientCare ancIPTPatientCareEnrollOnVisitAfter19Weeks(LocalDate visitDate) {
-        return new PatientCare(ANC_IPT_VACCINE, visitDate, visitDate, null, facilityMetaData());
+        return new PatientCare(ANC_IPT_VACCINE.getName(), visitDate, visitDate, null, facilityMetaData());
     }
 
     public PatientCare cwcIPTPatientCareEnrollOnVisitAfter14Weeks(LocalDate visitDate) {
-        return new PatientCare(CWC_IPT_VACCINE, visitDate, visitDate, null, facilityMetaData());
+        return new PatientCare(CWC_IPT_VACCINE.getName(), visitDate, visitDate, null, facilityMetaData());
     }
 
     public PatientCare cwcPentaPatientCareEnrollOnVisitAfter10Weeks(LocalDate visitDate) {
-        return new PatientCare(CWC_PENTA, visitDate, visitDate, null, facilityMetaData());
+        return new PatientCare(CWC_PENTA.getName(), visitDate, visitDate, null, facilityMetaData());
     }
 
     private ChildCare childCare() {
@@ -170,7 +170,7 @@ public class Patient {
     private PatientCare measlesChildCare(LocalDate enrollmentDate, List<CwcCareHistory> cwcCareHistories) {
         ChildCare childCare = childCare();
         return childCare.applicableForMeasles() && !cwcCareHistories.contains(CwcCareHistory.MEASLES)
-                ? new PatientCare(CWC_MEASLES_VACCINE, childCare.birthDate(), enrollmentDate, null, facilityMetaData()) : null;
+                ? new PatientCare(CWC_MEASLES_VACCINE.getName(), childCare.birthDate(), enrollmentDate, null, facilityMetaData()) : null;
     }
 
     public List<PatientCare> pncBabyProgramsToEnrollOnRegistration() {
@@ -214,15 +214,15 @@ public class Patient {
     }
 
     public PatientCare cwcYellowFeverOnVisit(LocalDate vaccinationDate) {
-        return new PatientCare(ScheduleNames.CWC_YELLOW_FEVER, vaccinationDate, vaccinationDate, null, facilityMetaData());
+        return new PatientCare(ScheduleNames.CWC_YELLOW_FEVER.getName(), vaccinationDate, vaccinationDate, null, facilityMetaData());
     }
 
     public PatientCare cwcMeaslesOnVisit(LocalDate vaccinationDate) {
-        return new PatientCare(ScheduleNames.CWC_MEASLES_VACCINE,vaccinationDate,vaccinationDate,null,facilityMetaData());
+        return new PatientCare(ScheduleNames.CWC_MEASLES_VACCINE.getName(),vaccinationDate,vaccinationDate,null,facilityMetaData());
     }
 
     public PatientCare cwcBCGOnVisit(LocalDate vaccinationDate) {
-        return new PatientCare(ScheduleNames.CWC_BCG,vaccinationDate,vaccinationDate,null,facilityMetaData());
+        return new PatientCare(ScheduleNames.CWC_BCG.getName(),vaccinationDate,vaccinationDate,null,facilityMetaData());
     }
 
     public PatientCare cwcOPVOnVisit(LocalDate vaccinationDate, String opvType) {

@@ -16,23 +16,23 @@ public class ActiveCareSchedules {
     }
 
     public Boolean hasActiveTTSchedule() {
-        return allActiveCareSchedules.get(TT_VACCINATION) != null;
+        return allActiveCareSchedules.get(TT_VACCINATION.getName()) != null;
     }
 
     public Boolean hasActiveIPTSchedule() {
-        return allActiveCareSchedules.get(ANC_IPT_VACCINE) != null;
+        return allActiveCareSchedules.get(ANC_IPT_VACCINE.getName()) != null;
     }
 
     public Boolean hasActivePentaSchedule() {
-        return allActiveCareSchedules.get(CWC_PENTA) != null;
+        return allActiveCareSchedules.get(CWC_PENTA.getName()) != null;
     }
 
     public Boolean hasActiveIPTiSchedule() {
-        return allActiveCareSchedules.get(CWC_IPT_VACCINE) != null;
+        return allActiveCareSchedules.get(CWC_IPT_VACCINE.getName()) != null;
     }
 
     public Boolean hasActiveOPVSchedule() {
-        return allActiveCareSchedules.get(CWC_OPV_OTHERS) != null;
+        return allActiveCareSchedules.get(CWC_OPV_OTHERS.getName()) != null;
     }
 
     public ActiveCareSchedules setActiveCareSchedule(String careScheduleName, EnrollmentRecord enrollmentRecord) {

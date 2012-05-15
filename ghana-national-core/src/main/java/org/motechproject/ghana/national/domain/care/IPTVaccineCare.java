@@ -16,7 +16,7 @@ public class IPTVaccineCare extends PregnancyVaccineCare {
     private Patient patient;
 
     public IPTVaccineCare(Patient patient, LocalDate expectedDeliveryDate, Boolean hasActiveIPTVaccine, String lastIPTDosage, Date lastIPTDate) {
-        super(patient, expectedDeliveryDate, hasActiveIPTVaccine, ANC_IPT_VACCINE, lastIPTDosage, lastIPTDate);
+        super(patient, expectedDeliveryDate, hasActiveIPTVaccine, ANC_IPT_VACCINE.getName(), lastIPTDosage, lastIPTDate);
         this.patient = patient;
     }
 
@@ -24,7 +24,7 @@ public class IPTVaccineCare extends PregnancyVaccineCare {
     protected PatientCare newEnrollmentForCare() {
         Pregnancy pregnancy = Pregnancy.basedOnDeliveryDate(expectedDeliveryDate);
         return pregnancy.applicableForIPT() ?
-                PatientCare.forEnrollmentFromStart(ANC_IPT_VACCINE, pregnancy.dateOfConception(), patient.facilityMetaData())
+                PatientCare.forEnrollmentFromStart(ANC_IPT_VACCINE.getName(), pregnancy.dateOfConception(), patient.facilityMetaData())
                 : null;
     }
 

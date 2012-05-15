@@ -153,7 +153,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedules, never()).enroll(enrollmentRequestCaptor.capture());
-        verify(mockAllSchedules, never()).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.CWC_PENTA), any(LocalDate.class));
+        verify(mockAllSchedules, never()).fulfilCurrentMilestone(eq(mrsPatientId), eq(ScheduleNames.CWC_PENTA.getName()), any(LocalDate.class));
     }
 
     @Test
@@ -197,7 +197,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
 
         verify(mockAllSchedulesAndMessages).enrollOrFulfill(captor.capture(), eq(visitDate));
-        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, CWC_IPT_VACCINE, deliveryTime, visitDate, deliveryTime, visitDate, null, ipTiDose.milestoneName(), null), captor.getAllValues().get(0));
+        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, CWC_IPT_VACCINE.getName(), deliveryTime, visitDate, deliveryTime, visitDate, null, ipTiDose.milestoneName(), null), captor.getAllValues().get(0));
     }
 
     @Test
@@ -215,7 +215,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         ArgumentCaptor<Encounter> encounterCaptor = forClass(Encounter.class);
         verify(mockAllEncounters).persistEncounter(encounterCaptor.capture());
         assertIfObservationsAvailableForConcepts(false, encounterCaptor.getValue().getObservations(), IPTI.getName());
-        verify(mockAllSchedules, never()).fulfilCurrentMilestone(mrsPatientId, CWC_IPT_VACCINE, visitDate);
+        verify(mockAllSchedules, never()).fulfilCurrentMilestone(mrsPatientId, CWC_IPT_VACCINE.getName(), visitDate);
     }
 
     @Test
@@ -243,7 +243,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         EnrollmentRequest request = requestCaptor.getValue();
         assertThat(request.getExternalId(), is(mrsPatientId));
         assertThat(request.getEnrollmentDateTime(), is(date.toDateTimeAtStartOfDay()));
-        assertThat(request.getScheduleName(), is(CWC_YELLOW_FEVER));
+        assertThat(request.getScheduleName(), is(CWC_YELLOW_FEVER.getName()));
         assertThat(request.getStartingMilestoneName(), is(nullValue()));
     }
 
@@ -273,7 +273,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         EnrollmentRequest request = requestCaptor.getValue();
         assertThat(request.getExternalId(), is(mrsPatientId));
         assertThat(request.getEnrollmentDateTime(), is(date.toDateTimeAtStartOfDay()));
-        assertThat(request.getScheduleName(), is(CWC_BCG));
+        assertThat(request.getScheduleName(), is(CWC_BCG.getName()));
         assertThat(request.getStartingMilestoneName(), is(nullValue()));
     }
 
@@ -304,7 +304,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         EnrollmentRequest request = requestCaptor.getValue();
         assertThat(request.getExternalId(), is(mrsPatientId));
         assertThat(request.getEnrollmentDateTime(), is(date.toDateTimeAtStartOfDay()));
-        assertThat(request.getScheduleName(), is(CWC_OPV_0));
+        assertThat(request.getScheduleName(), is(CWC_OPV_0.getName()));
         assertThat(request.getStartingMilestoneName(), is(nullValue()));
     }
 
@@ -335,7 +335,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         EnrollmentRequest request = requestCaptor.getValue();
         assertThat(request.getExternalId(), is(mrsPatientId));
         assertThat(request.getEnrollmentDateTime(), is(date.toDateTimeAtStartOfDay()));
-        assertThat(request.getScheduleName(), is(CWC_OPV_OTHERS));
+        assertThat(request.getScheduleName(), is(CWC_OPV_OTHERS.getName()));
         assertThat(request.getStartingMilestoneName(), is(nullValue()));
     }
 
@@ -363,8 +363,8 @@ public class ChildVisitServiceTest extends BaseUnitTest {
                 .immunizations(asList(BCG.name()));
         service.save(cwcVisit);
 
-        verify(mockAllSchedulesAndMessages, never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_0, visitDate);
-        verify(mockAllSchedulesAndMessages, never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_OTHERS, visitDate);
+        verify(mockAllSchedulesAndMessages, never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_0.getName(), visitDate);
+        verify(mockAllSchedulesAndMessages, never()).fulfilCurrentMilestone(mrsPatientId, CWC_OPV_OTHERS.getName(), visitDate);
     }
 
     @Test
@@ -375,7 +375,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         EnrollmentRecord mockEnrollmentRecord = mock(EnrollmentRecord.class);
         when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(mockEnrollmentRecord);
         service.save(cwcVisit);
-        verify(mockAllSchedulesAndMessages, never()).fulfilCurrentMilestone(eq("mrsPatientId"), eq(CWC_MEASLES_VACCINE), Matchers.<LocalDate>any());
+        verify(mockAllSchedulesAndMessages, never()).fulfilCurrentMilestone(eq("mrsPatientId"), eq(CWC_MEASLES_VACCINE.getName()), Matchers.<LocalDate>any());
     }
 
     @Test
@@ -385,7 +385,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         CWCVisit cwcVisit = createTestCWCVisit(today().toDate(), mock(MRSUser.class), mock(Facility.class), patient).immunizations(asList(MEASLES.name()));
         when(mockAllSchedules.enrollment(Matchers.<EnrollmentRequest>any())).thenReturn(null);
         service.save(cwcVisit);
-        verify(mockAllSchedulesAndMessages, never()).fulfilCurrentMilestone(eq("mrsPatientId"), eq(CWC_MEASLES_VACCINE), Matchers.<LocalDate>any());
+        verify(mockAllSchedulesAndMessages, never()).fulfilCurrentMilestone(eq("mrsPatientId"), eq(CWC_MEASLES_VACCINE.getName()), Matchers.<LocalDate>any());
     }
 
     private CWCVisit createTestCWCVisit(Date registrationDate, MRSUser staff, Facility facility, Patient patient) {

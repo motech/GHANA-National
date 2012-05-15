@@ -32,9 +32,9 @@ public class OPVSeed extends ScheduleMigrationSeed {
     @Override
     public String getScheduleName(String milestoneName) {
         if ("OPV0".equals(milestoneName)){
-            return ScheduleNames.CWC_OPV_0;
+            return ScheduleNames.CWC_OPV_0.getName();
         }else if ("OPV1".equals(milestoneName) || "OPV2".equals(milestoneName) || "OPV3".equals(milestoneName)){
-            return ScheduleNames.CWC_OPV_OTHERS;
+            return ScheduleNames.CWC_OPV_OTHERS.getName();
         }
         return null;
     }

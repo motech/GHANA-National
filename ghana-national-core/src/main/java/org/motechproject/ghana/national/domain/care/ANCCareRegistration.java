@@ -26,7 +26,7 @@ public class ANCCareRegistration {
 
     public List<PatientCare> allCares() {
         return nullSafeList(
-                PatientCare.forEnrollmentFromStart(ANC_DELIVERY, basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), patient.facilityMetaData()),
+                PatientCare.forEnrollmentFromStart(ANC_DELIVERY.getName(), basedOnDeliveryDate(expectedDeliveryDate).dateOfConception(), patient.facilityMetaData()),
                 safeCareForReg(ttVaccineCare),
                 safeCareForReg(iptVaccineCare)
         );

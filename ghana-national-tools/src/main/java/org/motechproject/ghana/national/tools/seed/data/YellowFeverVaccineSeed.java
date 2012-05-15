@@ -26,7 +26,7 @@ public class YellowFeverVaccineSeed extends ScheduleMigrationSeed {
 
     @Override
     public String getScheduleName(String milestoneName) {
-        return ScheduleNames.CWC_YELLOW_FEVER;
+        return ScheduleNames.CWC_YELLOW_FEVER.getName();
     }
 
     protected String mapMilestoneName(String milestoneName) {

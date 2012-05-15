@@ -26,7 +26,7 @@ public class IPTIVaccineSeed extends ScheduleMigrationSeed {
 
     @Override
     public String getScheduleName(String milestoneName) {
-        return ScheduleNames.CWC_IPT_VACCINE;
+        return ScheduleNames.CWC_IPT_VACCINE.getName();
     }
 
     protected String mapMilestoneName(String milestoneName) {

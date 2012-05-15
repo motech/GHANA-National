@@ -27,7 +27,7 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
         super.setUp();
         preferredAlertTime = new Time(10, 10);
         externalId = "patient_id" + randomAlphabetic(6);
-        scheduleName = CWC_YELLOW_FEVER;
+        scheduleName = CWC_YELLOW_FEVER.getName();
     }
 
     @Test
