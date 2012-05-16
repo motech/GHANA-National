@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.model.StringContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
+import org.motechproject.ghana.national.domain.AlertWindow;
 import org.motechproject.ghana.national.domain.SmsTemplateKeys;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static ch.lambdaj.Lambda.join;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
@@ -71,9 +73,9 @@ public class AggregationStrategyImplTest extends BaseUnitTest {
 
     @Test
     public void shouldSendAggregatedSMSForPatient() throws ContentNotFoundException {
-        final String defaultMessage = "Your facility has no Overdue cares for this week";
+        final String defaultMessage = "Ashanti MEPS has no " + join(AlertWindow.ghanaNationalWindowNames(), ", ") + " cares for this week";
         when(mockCmsLiteService.getStringContent(Locale.getDefault().getLanguage(),
-                SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY)).thenReturn(new StringContent(null, null, defaultMessage));
+                SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY)).thenReturn(new StringContent(null, null, "${facility} has no ${windowNames} cares for this week"));
         List<SMS> messagesList = new ArrayList<SMS>() {{
             add(SMS.fromText(UPCOMING.getName() + ",milestoneName1,motechId,serialNumber,firstName,lastName", "ph", null, null, MessageRecipientType.FACILITY));
             add(SMS.fromText(UPCOMING.getName() + ",milestoneName2,motechId,serialNumber,firstName,lastName", "ph", null, null, MessageRecipientType.FACILITY));
@@ -86,7 +88,7 @@ public class AggregationStrategyImplTest extends BaseUnitTest {
         final List<SMS> aggregatedSMSList = aggregationStrategy.aggregate(messagesList);
         assertThat(aggregatedSMSList, hasItem(SMS.fromText(UPCOMING.getName() + ": firstName lastName, motechId, serialNumber, milestoneName1, milestoneName2", "ph", DateUtil.now(), null, MessageRecipientType.FACILITY)));
         assertThat(aggregatedSMSList, hasItem(SMS.fromText(DUE.getName() + ": firstName lastName, motechId, serialNumber, milestoneName, firstName2 lastName3, motechId2, serialNumber, milestoneName, firstName2 lastName3, motechId3, serialNumber, milestoneName", "ph", DateUtil.now(), null, MessageRecipientType.FACILITY)));
-        assertThat(aggregatedSMSList, hasItem(SMS.fromText("Your facility has no Overdue cares for this week", "ph", DateUtil.now(), null, MessageRecipientType.FACILITY)));
+        assertThat(aggregatedSMSList, hasItem(SMS.fromText("Ashanti MEPS has no Overdue cares for this week", "ph", DateUtil.now(), null, MessageRecipientType.FACILITY)));
     }
 
     @Test

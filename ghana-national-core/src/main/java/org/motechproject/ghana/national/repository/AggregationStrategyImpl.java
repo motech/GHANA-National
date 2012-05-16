@@ -69,15 +69,21 @@ public class AggregationStrategyImpl implements AggregationStrategy {
     }
 
     private List<SMS> processMessagesForFacility(List<SMS> smsMessages) {
-        String defaultMessage = SMS.fill(getSMSTemplate(FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
+        String standardMessage = SMS.fill(getSMSTemplate(FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
             put(WINDOW_NAMES, join(AlertWindow.ghanaNationalWindowNames(), ", "));
             put(FACILITY, "");
         }});
-        List<SMS> filteredMessages = filter(having(on(SMS.class).getText(), not(containsString(defaultMessage))), smsMessages);
-        return (filteredMessages.isEmpty()) ? filter(having(on(SMS.class).getText(), containsString(defaultMessage)), smsMessages) : aggregateMessages(filteredMessages);
+        List<SMS> filteredMessages = filter(having(on(SMS.class).getText(), not(containsString(standardMessage))), smsMessages);
+        List<SMS> defaultMessagesList = filter(having(on(SMS.class).getText(), containsString(standardMessage)), smsMessages);
+        String facilityName = minus(defaultMessagesList.get(0).getText(), standardMessage);
+        return (filteredMessages.isEmpty()) ? defaultMessagesList : aggregateMessages(filteredMessages, facilityName);
     }
 
-    private List<SMS> aggregateMessages(List<SMS> smsMessages) {
+    private String minus(String string1, String string2) {
+        return string1.replace(string2, "").trim();
+    }
+
+    private List<SMS> aggregateMessages(List<SMS> smsMessages, final String facilityName) {
         final SMS firstSMS = Utility.nullSafe(smsMessages, 0, null);
         final String phoneNumber = firstSMS != null ? firstSMS.getPhoneNumber() : null;
         ArrayList<SMSDatum> smsData = getSMSData(smsMessages);
@@ -122,6 +128,7 @@ public class AggregationStrategyImpl implements AggregationStrategy {
         }
         messages.add(SMS.fromTemplate(getSMSTemplate(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
             put(WINDOW_NAMES, join(windowsWithoutSMS, ", "));
+            put(FACILITY, facilityName);
         }}, phoneNumber, DateUtil.now(), null, MessageRecipientType.FACILITY));
         return messages;
     }
