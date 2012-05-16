@@ -13,6 +13,7 @@
         <module>ghana-national-xforms</module>
         <module>ghana-national-tools</module>
         <module>ghana-national-web</module>
+        <module>ghana-national-ivr</module>
         <module>ghana-national-common</module>
         <module>ghana-national-messaging-gateway</module>
         <module>ghana-national-test</module>

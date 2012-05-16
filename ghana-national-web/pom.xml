@@ -45,6 +45,11 @@
             <artifactId>ghana-national-xforms</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>ghana-national-ivr</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!--WEB TECH-->
         <dependency>
             <groupId>javax.servlet</groupId>
