@@ -1,10 +1,7 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.DeliveryForm;
-import org.motechproject.ghana.national.domain.ChildDeliveryOutcome;
-import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
@@ -50,8 +47,11 @@ public class DeliveryFormHandler implements FormPublishHandler {
         try {
             DeliveryForm deliveryForm = (DeliveryForm) event.getParameters().get(Constants.FORM_BEAN);
             PregnancyDeliveryRequest deliveryRequest = createDeliveryRequest(deliveryForm);
+            if(pregnancyService.isDeliverySuccessful(deliveryRequest))
+                mobileMidwifeService.rollover(deliveryForm.getMotechId(),deliveryForm.getDate());
+            else
+                mobileMidwifeService.unRegister(deliveryForm.getMotechId());
             pregnancyService.handleDelivery(deliveryRequest);
-            mobileMidwifeService.unRegister(deliveryForm.getMotechId());
 
             if (!deliveryForm.getMaternalDeath()) {
                 careService.enrollMotherForPNC(deliveryRequest.getPatient(), deliveryRequest.getDeliveryDateTime());
@@ -64,6 +64,7 @@ public class DeliveryFormHandler implements FormPublishHandler {
             throw new XFormHandlerException(event.getSubject(), e);
         }
     }
+
 
     private PregnancyDeliveryRequest createDeliveryRequest(DeliveryForm deliveryForm) {
         Facility facility = facilityService.getFacilityByMotechId(deliveryForm.getFacilityId());

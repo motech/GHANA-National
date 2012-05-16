@@ -25,7 +25,7 @@ public class ScheduleHandlerTest {
     private ScheduleHandler scheduleHandler;
 
     @Mock
-    private CareScheduleAlerts careScheduleHandler;
+    private CareScheduleHandler careScheduleHandler;
 
     @Before
     public void setUp() throws Exception {

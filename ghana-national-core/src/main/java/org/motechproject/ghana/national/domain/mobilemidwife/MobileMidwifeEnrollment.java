@@ -193,6 +193,10 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         return enrollmentDateTime == null ? null : setTimeZone(enrollmentDateTime);
     }
 
+    public void setEnrollmentDateTime(DateTime enrollmentDateTime) {
+        this.enrollmentDateTime = enrollmentDateTime;
+    }
+
     public static MobileMidwifeEnrollment cloneNew(MobileMidwifeEnrollment midwifeEnrollment) {
         final MobileMidwifeEnrollment newEnrollment = new MobileMidwifeEnrollment(midwifeEnrollment.getEnrollmentDateTime());
         newEnrollment.setMessageStartWeek(midwifeEnrollment.getMessageStartWeek());

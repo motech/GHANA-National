@@ -15,17 +15,17 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="no_of_field_workers" elementType="Argument">
             <stringProp name="Argument.name">no_of_field_workers</stringProp>
-            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.value">25</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="no_of_test_loops" elementType="Argument">
             <stringProp name="Argument.name">no_of_test_loops</stringProp>
-            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.value">20</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="patient_fname_prefix" elementType="Argument">
             <stringProp name="Argument.name">patient_fname_prefix</stringProp>
-            <stringProp name="Argument.value">zqdasadq1</stringProp>
+            <stringProp name="Argument.value">csk</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="staff_first_name" elementType="Argument">
@@ -35,13 +35,13 @@
           </elementProp>
           <elementProp name="forms_to_be_tested" elementType="Argument">
             <stringProp name="Argument.name">forms_to_be_tested</stringProp>
-            <stringProp name="Argument.value">RegisterClient-other</stringProp>
+            <stringProp name="Argument.value">RegisterANC</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">RegisterClient-other,RegisterANC,RegisterClient-WithANCAndMM,RegisterCWC,RegisterClient-WithCWCAndMM,CareHistory-ANC,ClientQuery,GeneralQuery</stringProp>
           </elementProp>
           <elementProp name="load_pre_printed_ids_from_file" elementType="Argument">
             <stringProp name="Argument.name">load_pre_printed_ids_from_file</stringProp>
-            <stringProp name="Argument.value">false</stringProp>
+            <stringProp name="Argument.value">true</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="form_submission_date" elementType="Argument">

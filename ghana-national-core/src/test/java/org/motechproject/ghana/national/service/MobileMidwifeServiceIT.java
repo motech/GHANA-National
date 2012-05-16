@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.motechproject.ghana.national.BaseIntegrationTest;
@@ -58,6 +59,23 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
                 .active(true).build();
         service.register(enrollment);
         verifyCreateNewEnrollment(enrollment, allCampaigns.nextCycleDateFromToday(enrollment.getServiceType()));
+    }
+
+    @Test
+    public void shouldRolloverMobileMidwifeEnrollmentAndCreateSchedule() {
+
+        String patientId = identifierGenerator.newPatientId();
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().patientId(patientId).
+                facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).serviceType(ServiceType.PREGNANCY).
+                learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).reasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH).
+                messageStartWeek("20").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
+                .active(true).build();
+        service.register(enrollment);
+        MobileMidwifeEnrollment newEnrollment = MobileMidwifeEnrollment.cloneNew(enrollment).setMessageStartWeek("41").setServiceType(ServiceType.CHILD_CARE);
+        newEnrollment.setEnrollmentDateTime(DateTime.now());
+        newEnrollment.setActive(true);
+        service.rollover(patientId, DateTime.now());
+        verifyCreateNewEnrollment(newEnrollment, allCampaigns.nextCycleDateFromToday(newEnrollment.getServiceType()));
     }
 
     private void verifyCreateNewEnrollment(MobileMidwifeEnrollment expected, LocalDate expectedScheduleStartDate) {

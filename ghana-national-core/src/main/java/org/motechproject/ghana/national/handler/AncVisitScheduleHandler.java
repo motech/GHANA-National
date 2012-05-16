@@ -15,7 +15,7 @@ public class AncVisitScheduleHandler {
     private Logger logger = LoggerFactory.getLogger(AncVisitScheduleHandler.class);
 
     @Autowired
-    private CareScheduleAlerts careScheduleHandler;
+    private CareScheduleHandler careScheduleHandler;
 
     @MotechListener(subjects = {EventKeys.APPOINTMENT_REMINDER_EVENT_SUBJECT})
     public void handleAlert(MotechEvent motechEvent) {
