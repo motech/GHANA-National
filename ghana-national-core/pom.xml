@@ -196,7 +196,7 @@
                             <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <skip>${openmrs.skip}</skip>
+                            <skip>${drop.db.skip}</skip>
                             <autocommit>true</autocommit>
                             <sqlCommand>
                                 drop database openmrs_test;
@@ -211,7 +211,7 @@
                             <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <skip>${openmrs.skip}</skip>
+                            <skip>${drop.db.skip}</skip>
                             <autocommit>true</autocommit>
                             <sqlCommand>
                                 create database openmrs_test default charset utf8;
@@ -318,7 +318,6 @@
                     <execution>
                         <phase>process-resources</phase>
                         <configuration>
-                            <skip>${openmrs.skip}</skip>
                             <changeLogFile>../build/sql/master.xml</changeLogFile>
                             <driver>${mysql.driver}</driver>
                             <url>${mysql.url}/${mysql.db}</url>

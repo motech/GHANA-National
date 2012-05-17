@@ -73,7 +73,6 @@ public class AggregationStrategyImplTest extends BaseUnitTest {
 
     @Test
     public void shouldSendAggregatedSMSForPatient() throws ContentNotFoundException {
-        final String defaultMessage = "Ashanti MEPS has no " + join(AlertWindow.ghanaNationalWindowNames(), ", ") + " cares for this week";
         when(mockCmsLiteService.getStringContent(Locale.getDefault().getLanguage(),
                 SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY)).thenReturn(new StringContent(null, null, "${facility} has no ${windowNames} cares for this week"));
         List<SMS> messagesList = new ArrayList<SMS>() {{
@@ -82,7 +81,7 @@ public class AggregationStrategyImplTest extends BaseUnitTest {
             add(SMS.fromText(DUE.getName() + ",milestoneName,motechId,serialNumber,firstName,lastName", "ph", null, null, MessageRecipientType.FACILITY));
             add(SMS.fromText(DUE.getName() + ",milestoneName,motechId2,serialNumber,firstName2,lastName3", "ph", null, null, MessageRecipientType.FACILITY));
             add(SMS.fromText(DUE.getName() + ",milestoneName,motechId3,serialNumber,firstName2,lastName3", "ph", null, null, MessageRecipientType.FACILITY));
-            add(SMS.fromText(defaultMessage, "ph", null, null, MessageRecipientType.FACILITY));
+            add(SMS.fromText("Ashanti MEPS has no " + join(AlertWindow.ghanaNationalWindowNames(), ", ") + " cares for this week", "ph", null, null, MessageRecipientType.FACILITY));
         }};
 
         final List<SMS> aggregatedSMSList = aggregationStrategy.aggregate(messagesList);
