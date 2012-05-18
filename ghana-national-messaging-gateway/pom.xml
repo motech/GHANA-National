@@ -161,7 +161,7 @@
                                     <fileset file="../build/lib/mysql-connector-java-5.1.13.jar"/>
                                 </path>
                                 <sql driver="${mysql.driver}"
-                                     url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.dbQuartz}?autoReconnect=true"
+                                     url="jdbc:mysql://${mysql.server}:${mysql.port}?autoReconnect=true"
                                      userid="${mysql.user}"
                                      classpathref="dependencies"
                                      password="${mysql.password}"
