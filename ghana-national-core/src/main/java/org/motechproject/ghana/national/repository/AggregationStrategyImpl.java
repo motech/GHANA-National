@@ -155,7 +155,7 @@ public class AggregationStrategyImpl implements AggregationStrategy {
         try {
             return cmsLiteService.getStringContent(getDefault().getLanguage(), templateKey).getValue();
         } catch (ContentNotFoundException e) {
-            throw new MotechException("Encountered exception while aggregating SMSPayload, ", e);
+            throw new MotechException("Encountered exception while aggregating SMS, ", e);
         }
     }
 }

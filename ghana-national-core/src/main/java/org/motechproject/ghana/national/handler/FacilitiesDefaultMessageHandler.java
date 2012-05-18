@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Handles the message triggered by weekly cron job for sending 'DEFAULT' SMSPayload to all facilities to aggregate
+ * Handles the message triggered by weekly cron job for sending 'DEFAULT' SMS to all facilities to aggregate
  */
 @Component
 public class FacilitiesDefaultMessageHandler {

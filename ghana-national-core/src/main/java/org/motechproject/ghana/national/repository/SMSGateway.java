@@ -6,7 +6,6 @@ import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher;
 import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
-import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
 import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
 import org.motechproject.sms.api.service.SmsService;
 import org.motechproject.util.DateUtil;
@@ -33,7 +32,7 @@ public class SMSGateway {
         try {
             return cmsLiteService.getStringContent(language, key).getValue();
         } catch (ContentNotFoundException e) {
-            throw new MotechException(String.format("Encountered error while retrieving SMSPayload template for %s - %s", key, language), e);
+            throw new MotechException(String.format("Encountered error while retrieving SMS template for %s - %s", key, language), e);
         }
     }
 
@@ -49,12 +48,12 @@ public class SMSGateway {
         smsService.sendSMS(phoneNumber, SMSPayload.fill(getSMSTemplate(templateKey), templateValues));
     }
 
-    public void dispatchSMS(String templateKey, String language, String phoneNumber){
+    public void dispatchSMS(String templateKey, String language, String phoneNumber) {
         dispatchSMS(phoneNumber, getSMSTemplate(language, templateKey));
     }
 
-    public void dispatchSMS(String phoneNumber,String message){
-        smsService.sendSMS(phoneNumber,message);
+    public void dispatchSMS(String phoneNumber, String message) {
+        smsService.sendSMS(phoneNumber, message);
     }
 
     private String defaultLanguage() {
