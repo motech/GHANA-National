@@ -1,5 +1,7 @@
 package org.motechproject.ghana.national.advice;
 
+import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +23,9 @@ import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.scheduletracking.api.domain.Milestone;
+import org.motechproject.scheduletracking.api.domain.MilestoneAlert;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.springframework.aop.framework.Advised;
@@ -74,8 +79,8 @@ public class FormHandlerLoggingAdviceTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        when(patientService.patientByOpenmrsId(Matchers.<String>any())).thenReturn(new Patient(new MRSPatient("motechId", null, new MRSFacility("id"))));
-        when(facilityService.getFacility(Matchers.<String>any())).thenReturn(new Facility());
+        when(patientService.patientByOpenmrsId(Matchers.<String>any())).thenReturn(new Patient(new MRSPatient("motechId", new MRSPerson().firstName("firstName").lastName("lastName").dateOfBirth(DateTime.now().toDate()), new MRSFacility("id"))));
+        when(facilityService.getFacility(Matchers.<String>any())).thenReturn(new Facility().motechId("facilityMotechId"));
 
         ReflectionTestUtils.setField(formHandlerLoggingAdvice, "jdbcTemplate", jdbcTemplate);
         mockFormPublishHandler();
@@ -84,12 +89,12 @@ public class FormHandlerLoggingAdviceTest {
 
     @Test
     public void shouldLog(){
-
         final ClientDeathForm clientDeathForm = new ClientDeathForm();
         clientDeathFormHandler.handleFormEvent(new MotechEvent("subject", new HashMap<String, Object>() {{
             put(Constants.FORM_BEAN, clientDeathForm);
         }}));
-        careScheduleHandler.handlePregnancyAlert(new MilestoneEvent(null, null, null, WindowName.earliest.name(), null));
+        MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone("milestone", Period.ZERO, Period.days(1), Period.hours(12), Period.months(1)), DateTime.now());
+        careScheduleHandler.handlePregnancyAlert(new MilestoneEvent(null, null, milestoneAlert, WindowName.earliest.name(), null));
         verify(jdbcTemplate, times(2)).execute(anyString());
     }
 

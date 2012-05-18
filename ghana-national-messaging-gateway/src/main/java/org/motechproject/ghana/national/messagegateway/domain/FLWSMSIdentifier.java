@@ -10,9 +10,9 @@ public class FLWSMSIdentifier implements Serializable {
     private String phoneNumber;
     private DateTime deliveryDate;
 
-    public FLWSMSIdentifier(SMS sms) {
-        phoneNumber = sms.getPhoneNumber();
-        deliveryDate = sms.getDeliveryTime();
+    public FLWSMSIdentifier(SMSPayload smsPayload) {
+        phoneNumber = smsPayload.getUniqueId();
+        deliveryDate = smsPayload.getDeliveryTime();
     }
 
     @Override

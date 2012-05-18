@@ -26,20 +26,20 @@ public class MessageDispatcherTest extends BaseUnitTest {
     @Test
     public void shouldCorrelateBasedOnPhoneNumberAndDeliveryDate() {
         final DateTime generationTime = DateUtil.newDateTime(DateUtil.newDate(2000, 1, 1), new Time(10, 10));
-        SMS sms = SMS.fromText("text", "ph", generationTime, new DeliveryStrategy() {
+        SMSPayload smsPayload = SMSPayload.fromText("text", "ph", generationTime, new DeliveryStrategy() {
             @Override
-            public DateTime deliveryDate(SMS sms) {
+            public DateTime deliveryDate(SMSPayload sms) {
                 return generationTime;
             }
         }, MessageRecipientType.FACILITY);
-        assertThat(dispatcher.correlateByRecipientAndDeliveryDate(sms), is(equalTo("ph|2000-01-01")));
+        assertThat(dispatcher.correlateByRecipientAndDeliveryDate(smsPayload), is(equalTo("ph|2000-01-01")));
     }
     @Test
     public void shouldReturnIfTheMessageCanBeDispatched() {
         final DateTime generationTime = DateUtil.newDateTime(DateUtil.newDate(2000, 1, 1), new Time(10, 10));
-        final SMS sms = SMS.fromText("text", "ph", generationTime, new NextMondayDispatcher(), MessageRecipientType.FACILITY);
-        List<SMS> messagesList = new ArrayList<SMS>() {{
-            add(sms);
+        final SMSPayload smsPayload = SMSPayload.fromText("text", "ph", generationTime, new NextMondayDispatcher(), MessageRecipientType.FACILITY);
+        List<SMSPayload> messagesList = new ArrayList<SMSPayload>() {{
+            add(smsPayload);
         }};
 
         mockCurrentDate(DateUtil.newDateTime(DateUtil.newDate(2000, 1, 8), new Time(10, 11)));

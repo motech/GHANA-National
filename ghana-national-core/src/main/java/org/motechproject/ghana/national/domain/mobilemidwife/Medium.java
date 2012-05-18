@@ -8,7 +8,7 @@ import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 public enum Medium {
-    SMS("SMS", asList(PhoneOwnership.PERSONAL, PhoneOwnership.HOUSEHOLD), new HashSet<String>(asList(Medium.TEXT_SMS_MEDIUM))),
+    SMS("SMSPayload", asList(PhoneOwnership.PERSONAL, PhoneOwnership.HOUSEHOLD), new HashSet<String>(asList(Medium.TEXT_SMS_MEDIUM))),
     VOICE("Voice", asList(PhoneOwnership.PERSONAL, PhoneOwnership.PUBLIC, PhoneOwnership.HOUSEHOLD));
     private String displayName;
     private List<PhoneOwnership> phoneOwnerships;

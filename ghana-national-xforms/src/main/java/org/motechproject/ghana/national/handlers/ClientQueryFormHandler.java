@@ -8,7 +8,7 @@ import org.motechproject.ghana.national.domain.SMSTemplate;
 import org.motechproject.ghana.national.domain.sms.UpcomingCareSMS;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.messagegateway.domain.MessageDispatcher;
-import org.motechproject.ghana.national.messagegateway.domain.SMS;
+import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
 import org.motechproject.ghana.national.repository.AllAppointments;
 import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.repository.SMSGateway;
@@ -106,7 +106,7 @@ public class ClientQueryFormHandler implements FormPublishHandler {
         for (final MRSPatient mrsPatient : patients) {
             Patient patient = new Patient(mrsPatient);
             Map<String, String> smsTemplateValues = new SMSTemplate().fillPatientDetails(patient).fillFacilityDetails(patient).getRuntimeVariables();
-            message.append(SMS.fill(smsGateway.getSMSTemplate(messageKey), smsTemplateValues)).append(MessageDispatcher.SMS_SEPARATOR);
+            message.append(SMSPayload.fill(smsGateway.getSMSTemplate(messageKey), smsTemplateValues)).append(MessageDispatcher.SMS_SEPARATOR);
         }
         return message.toString();
     }

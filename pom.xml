@@ -289,6 +289,15 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <argLine>-XX:MaxPermSize=1024M</argLine>
+                    <printSummary>true</printSummary>
+                </configuration>
+            </plugin>
             <!--BUILD HELPER-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

@@ -1,6 +1,8 @@
 package org.motechproject.ghana.national.service;
 
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
@@ -33,16 +35,19 @@ public class PatientService {
     private AllSchedulesAndMessages allSchedulesAndMessages;
     private AllAppointmentsAndMessages allAppointmentsAndMessages;
     private AllPatientSearch allPatientSearch;
+    private AllMobileMidwifeEnrollments allMobileMidwifeEnrollments;
 
     @Autowired
     public PatientService(AllPatients allPatients, IdentifierGenerator identifierGenerator, AllEncounters allEncounters,
-                          AllSchedulesAndMessages allSchedulesAndMessages, AllAppointmentsAndMessages allAppointmentsAndMessages, AllPatientSearch allPatientSearch) {
+                          AllSchedulesAndMessages allSchedulesAndMessages, AllAppointmentsAndMessages allAppointmentsAndMessages,
+                          AllPatientSearch allPatientSearch, AllMobileMidwifeEnrollments allMobileMidwifeEnrollments) {
         this.allPatients = allPatients;
         this.identifierGenerator = identifierGenerator;
         this.allEncounters = allEncounters;
         this.allSchedulesAndMessages = allSchedulesAndMessages;
         this.allAppointmentsAndMessages = allAppointmentsAndMessages;
         this.allPatientSearch = allPatientSearch;
+        this.allMobileMidwifeEnrollments = allMobileMidwifeEnrollments;
     }
 
     public Patient registerPatient(Patient patient, String staffId, Date registrationDate)
@@ -128,5 +133,13 @@ public class PatientService {
 
     public Patient patientByOpenmrsId(String patientId) {
         return allPatients.patientByOpenmrsId(patientId);
+    }
+
+    public String getPatientPhoneNumber(String motechId) {
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = allMobileMidwifeEnrollments.findActiveBy(motechId);
+        if (mobileMidwifeEnrollment != null && mobileMidwifeEnrollment.getMedium().equals(Medium.SMS)) {
+            return mobileMidwifeEnrollment.getPhoneNumber();
+        }
+        return getPatientByMotechId(motechId).getPhoneNumber();
     }
 }

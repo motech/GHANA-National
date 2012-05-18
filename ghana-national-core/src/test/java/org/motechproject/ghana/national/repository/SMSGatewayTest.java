@@ -9,7 +9,8 @@ import org.motechproject.cmslite.api.model.StringContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher;
-import org.motechproject.ghana.national.messagegateway.domain.SMS;
+import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
+import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
 import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
 import org.motechproject.model.Time;
 import org.motechproject.sms.api.service.SmsService;
@@ -83,13 +84,13 @@ public class SMSGatewayTest extends BaseUnitTest{
         }}, phoneNumber, "identifier", MessageRecipientType.FACILITY);
 
 
-        ArgumentCaptor<SMS> smsArgumentCaptor = ArgumentCaptor.forClass(SMS.class);
+        ArgumentCaptor<SMSPayload> smsArgumentCaptor = ArgumentCaptor.forClass(SMSPayload.class);
         verify(mockMessageGateway).dispatch(smsArgumentCaptor.capture(), eq("identifier"));
-        final SMS smsSentToGateway = smsArgumentCaptor.getValue();
-        assertThat(smsSentToGateway.getText(), is(equalTo(smsText)));
-        assertThat(smsSentToGateway.getPhoneNumber(), is(equalTo(phoneNumber)));
-        assertThat(smsSentToGateway.getGenerationTime(), is(equalTo(DateUtil.now())));
-        assertThat(smsSentToGateway.getDeliveryStrategy().getClass(), is(typeCompatibleWith(NextMondayDispatcher.class)));
+        final SMSPayload smsPayloadSentToGateway = smsArgumentCaptor.getValue();
+        assertThat(smsPayloadSentToGateway.getText(), is(equalTo(smsText)));
+        assertThat(smsPayloadSentToGateway.getUniqueId(), is(equalTo(phoneNumber)));
+        assertThat(smsPayloadSentToGateway.getGenerationTime(), is(equalTo(DateUtil.now())));
+        assertThat(smsPayloadSentToGateway.getDeliveryStrategy().getClass(), is(typeCompatibleWith(NextMondayDispatcher.class)));
     }
 
     private StringContent createStringContent(String value) {

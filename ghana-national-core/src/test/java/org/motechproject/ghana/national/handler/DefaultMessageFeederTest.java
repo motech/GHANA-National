@@ -49,7 +49,7 @@ public class DefaultMessageFeederTest {
         hashMap.put(phoneNumber1, facility1);
         final String facility2 = "facility2";
         hashMap.put(phoneNumber2, facility2);
-        when(mockAllFacilities.getAllPhoneNumberToFacilityNameMapping()).thenReturn(hashMap);
+        when(mockAllFacilities.getAllFacilityNameToMotechFacilityIdMapping()).thenReturn(hashMap);
 
         messageFeeder.handleDefaultMessagesForFacility();
 

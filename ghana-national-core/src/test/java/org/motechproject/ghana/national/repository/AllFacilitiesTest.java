@@ -332,28 +332,26 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         String facilityName3 = "name3";
         String facilityName4 = "name4";
         Facility facility1 = new Facility(new MRSFacility("1", facilityName1, "country", "region", "district", "province"))
-                .phoneNumber(phoneNumber1);
+                .phoneNumber(phoneNumber1).motechId("facility1");
         Facility facility2 = new Facility(new MRSFacility("2", facilityName2, "country", "region", "district", "province"))
-                .phoneNumber(phoneNumber2).additionalPhoneNumber1(additionalPhoneNumber1);
+                .phoneNumber(phoneNumber2).additionalPhoneNumber1(additionalPhoneNumber1).motechId("facility2");
         Facility facility3 = new Facility(new MRSFacility("3", facilityName3, "country", "region", "district", "province"))
-                .phoneNumber(phoneNumber3).additionalPhoneNumber3(additionalPhoneNumber2);
+                .phoneNumber(phoneNumber3).additionalPhoneNumber3(additionalPhoneNumber2).motechId("facility3");
         Facility facility4 = new Facility(new MRSFacility("4", facilityName4, "country", "region", "district", "province"))
-                .phoneNumber(phoneNumber4);
+                .phoneNumber(phoneNumber4).motechId("facility4");
 
         AllFacilities allFacilitiesSpy = spy(allFacilities);
         doReturn(Arrays.asList(facility1, facility2, facility3, facility4)).when(allFacilitiesSpy).facilities();
 
-        Map<String,String> expectedPhoneNumbers = new HashMap<String, String>();
-        expectedPhoneNumbers.put(phoneNumber1,facilityName1);
-        expectedPhoneNumbers.put(phoneNumber2,facilityName2);
-        expectedPhoneNumbers.put(additionalPhoneNumber1,facilityName2);
-        expectedPhoneNumbers.put(additionalPhoneNumber2,facilityName3);
-        expectedPhoneNumbers.put(phoneNumber3,facilityName3);
-        expectedPhoneNumbers.put(phoneNumber4,facilityName4);
+        Map<String,String> expectedFacilities = new HashMap<String, String>();
+        expectedFacilities.put("facility1", facilityName1);
+        expectedFacilities.put("facility2", facilityName2);
+        expectedFacilities.put("facility3", facilityName3);
+        expectedFacilities.put("facility4", facilityName4);
 
-        Map<String, String> allPhoneNumbers = allFacilitiesSpy.getAllPhoneNumberToFacilityNameMapping();
+        Map<String, String> allPhoneNumbers = allFacilitiesSpy.getAllFacilityNameToMotechFacilityIdMapping();
 
-        assertReflectionEquals(expectedPhoneNumbers, allPhoneNumbers);
+        assertReflectionEquals(expectedFacilities, allPhoneNumbers);
     }
 
     @After

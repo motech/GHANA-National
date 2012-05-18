@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.messagegateway.service;
 
-import org.motechproject.ghana.national.messagegateway.domain.Payload;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
 import org.motechproject.sms.api.service.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +14,9 @@ public class PayloadDispatcher {
     @Autowired
     SmsService smsService;
 
-    public void dispatch(List<Payload> payloads) {
-        for (Payload payload : payloads) {
-            SMS sms = (SMS) payload;
-            smsService.sendSMS(sms.getPhoneNumber(), sms.getText());
+    public void dispatch(List<SMS> smses) {
+        for (SMS sms : smses) {
+            smsService.sendSMS(sms.getPhoneNumber(), sms.getContent().getText());
         }
     }
 }

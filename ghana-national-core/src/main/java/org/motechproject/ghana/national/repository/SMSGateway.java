@@ -5,7 +5,8 @@ import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher;
-import org.motechproject.ghana.national.messagegateway.domain.SMS;
+import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
+import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
 import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
 import org.motechproject.sms.api.service.SmsService;
 import org.motechproject.util.DateUtil;
@@ -32,7 +33,7 @@ public class SMSGateway {
         try {
             return cmsLiteService.getStringContent(language, key).getValue();
         } catch (ContentNotFoundException e) {
-            throw new MotechException(String.format("Encountered error while retrieving SMS template for %s - %s", key, language), e);
+            throw new MotechException(String.format("Encountered error while retrieving SMSPayload template for %s - %s", key, language), e);
         }
     }
 
@@ -40,12 +41,12 @@ public class SMSGateway {
         return getSMSTemplate(defaultLanguage(), key);
     }
 
-    public void dispatchSMSToAggregator(String templateKey, Map<String, String> templateValues, String phoneNumber, String identifier, MessageRecipientType messageRecipientType) {
-        messageGateway.dispatch(SMS.fromTemplate(getSMSTemplate(templateKey), templateValues, phoneNumber, DateUtil.now(), new NextMondayDispatcher(), messageRecipientType), identifier);
+    public void dispatchSMSToAggregator(String templateKey, Map<String, String> templateValues, String uniqueId, String identifier, MessageRecipientType messageRecipientType) {
+        messageGateway.dispatch(SMSPayload.fromTemplate(getSMSTemplate(templateKey), templateValues, uniqueId, DateUtil.now(), new NextMondayDispatcher(), messageRecipientType), identifier);
     }
 
     public void dispatchSMS(String templateKey, Map<String, String> templateValues, String phoneNumber) {
-        smsService.sendSMS(phoneNumber, SMS.fill(getSMSTemplate(templateKey), templateValues));
+        smsService.sendSMS(phoneNumber, SMSPayload.fill(getSMSTemplate(templateKey), templateValues));
     }
 
     public void dispatchSMS(String templateKey, String language, String phoneNumber){

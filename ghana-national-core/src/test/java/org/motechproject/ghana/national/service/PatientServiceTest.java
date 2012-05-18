@@ -1,10 +1,14 @@
 package org.motechproject.ghana.national.service;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientAttributes;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
@@ -45,12 +49,13 @@ public class PatientServiceTest {
     private AllAppointmentsAndMessages mockAllAppointmentsAndMessages;
     @Mock
     private AllPatientSearch mockAllPatientSearch;
-
+    @Mock
+    private AllMobileMidwifeEnrollments mockAllMobileMidwifeEnrollments;
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientService = new PatientService(mockAllPatients, mockIdentifierGenerator, mockAllEncounters, mockAllSchedulesAndSchedules, mockAllAppointmentsAndMessages, mockAllPatientSearch);
+        patientService = new PatientService(mockAllPatients, mockIdentifierGenerator, mockAllEncounters, mockAllSchedulesAndSchedules, mockAllAppointmentsAndMessages, mockAllPatientSearch, mockAllMobileMidwifeEnrollments);
     }
 
     @Test
@@ -285,4 +290,31 @@ public class PatientServiceTest {
         patientService.getPatients(firstName,null, phoneNumber, dateOfBirth,null);
         verify(mockAllPatientSearch).getPatients(firstName,null,phoneNumber,dateOfBirth,null);
     }
+
+    @Test
+    public void shouldGetPhoneNumberOfMobileMidwifeEnrollmentIfFound() {
+        String patientMotechId = "patientId";
+        Patient patient = new Patient(new MRSPatient(patientMotechId, null, null));
+        String patientPhoneNumber = "23456789";
+        when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(new MobileMidwifeEnrollment(DateTime.now()).setPhoneNumber(patientPhoneNumber).setMedium(Medium.SMS));
+
+        String actualPhoneNumber = patientService.getPatientPhoneNumber(patient.getMotechId());
+
+        assertThat(actualPhoneNumber, is(patientPhoneNumber));
+    }
+
+    @Test
+    public void shouldGetPhoneNumberOfPatientIfNoActiveMobileMidwifeEnrollmentsArePresent() {
+        String patientMotechId = "patientId";
+        String patientPhoneNumber = "23456789";
+        Patient patient = new Patient(new MRSPatient(patientMotechId, new MRSPerson().addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber)), null));
+        when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(null);
+        when(mockAllPatients.getPatientByMotechId(patientMotechId)).thenReturn(patient);
+
+        String actualPhoneNumber = patientService.getPatientPhoneNumber(patient.getMotechId());
+
+        assertThat(actualPhoneNumber, is(patientPhoneNumber));
+    }
+
+
 }

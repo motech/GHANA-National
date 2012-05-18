@@ -19,17 +19,17 @@ public class MessageDispatcher {
     @Autowired
     AggregationStrategy aggregationStrategy;
 
-    public List<SMS> aggregate(List<SMS> smsMessages) {
-        return aggregationStrategy.aggregate(smsMessages);
+    public List<SMS> aggregate(List<SMSPayload> smsPayloadMessages) {
+        return aggregationStrategy.aggregate(smsPayloadMessages);
     }
 
     @CorrelationStrategy
-    public String correlateByRecipientAndDeliveryDate(SMS sms) {
-        return new FLWSMSIdentifier(sms).toString();
+    public String correlateByRecipientAndDeliveryDate(SMSPayload smsPayload) {
+        return new FLWSMSIdentifier(smsPayload).toString();
     }
 
     @ReleaseStrategy
-    public boolean canBeDispatched(List<SMS> smsMessages) {
-        return smsMessages.get(0).canBeDispatched();
+    public boolean canBeDispatched(List<SMSPayload> smsPayloadMessages) {
+        return smsPayloadMessages.get(0).canBeDispatched();
     }
 }

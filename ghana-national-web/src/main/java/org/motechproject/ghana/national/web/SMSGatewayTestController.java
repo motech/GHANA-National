@@ -3,7 +3,8 @@ package org.motechproject.ghana.national.web;
 import org.joda.time.DateTime;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher;
-import org.motechproject.ghana.national.messagegateway.domain.SMS;
+import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
+import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
 import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
 import org.motechproject.model.Time;
 import org.motechproject.util.DateUtil;
@@ -38,7 +39,7 @@ public class SMSGatewayTestController {
                            HttpServletRequest servletRequest) throws UnsupportedEncodingException, ParseException {
         final DateTime dateTime = DateUtil.newDateTime(DateUtil.newDate(new SimpleDateFormat("yyyy-MM-dd").parse(date)),
                 new Time(Integer.parseInt(time.split(":")[0]), Integer.parseInt(time.split(":")[1])));
-        messageGateway.dispatch(SMS.fromText(text, ph, dateTime, new NextMondayDispatcher(), MessageRecipientType.FACILITY), identifier);
+        messageGateway.dispatch(SMSPayload.fromText(text, ph, dateTime, new NextMondayDispatcher(), MessageRecipientType.FACILITY), identifier);
         return "done";
     }
 }

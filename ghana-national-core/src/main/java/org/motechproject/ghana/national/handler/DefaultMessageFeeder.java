@@ -29,12 +29,12 @@ public class DefaultMessageFeeder {
     @LoginAsAdmin
     @ApiSession
     public void handleDefaultMessagesForFacility() {
-        Map<String, String> facilityPhoneNumbers = allFacilities.getAllPhoneNumberToFacilityNameMapping();
-        for (final Map.Entry<String, String> facilityPhoneNumber : facilityPhoneNumbers.entrySet()) {
-            smsGateway.dispatchSMSToAggregator(FACILITIES_DEFAULT_MESSAGE_KEY, new HashMap<String, String>(){{
-                put(WINDOW_NAMES, join(AlertWindow.ghanaNationalWindowNames(),", "));
-                put(FACILITY,facilityPhoneNumber.getValue());
-            }}, facilityPhoneNumber.getKey(), facilityPhoneNumber.getKey(), MessageRecipientType.FACILITY);
+        Map<String, String> facilities = allFacilities.getAllFacilityNameToMotechFacilityIdMapping();
+        for (final Map.Entry<String, String> facility : facilities.entrySet()) {
+            smsGateway.dispatchSMSToAggregator(FACILITIES_DEFAULT_MESSAGE_KEY, new HashMap<String, String>() {{
+                put(WINDOW_NAMES, join(AlertWindow.ghanaNationalWindowNames(), ", "));
+                put(FACILITY, facility.getValue());
+            }}, facility.getKey(), facility.getKey(), MessageRecipientType.FACILITY);
         }
     }
 }

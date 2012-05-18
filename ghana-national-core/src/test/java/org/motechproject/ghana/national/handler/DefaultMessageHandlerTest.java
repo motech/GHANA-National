@@ -35,13 +35,13 @@ public class DefaultMessageHandlerTest {
 
         final String facility1 = "facility1";
         final String facility2 = "facility2";
-        when(mockAllFacilities.getAllPhoneNumberToFacilityNameMapping()).thenReturn(new HashMap<String, String>() {{
+        when(mockAllFacilities.getAllFacilityNameToMotechFacilityIdMapping()).thenReturn(new HashMap<String, String>() {{
             put(phone1, facility1);
             put(phone2, facility2);
         }});
         handler.handleDefaultMessagesForFacility();
 
-        verify(mockAllFacilities).getAllPhoneNumberToFacilityNameMapping();
+        verify(mockAllFacilities).getAllFacilityNameToMotechFacilityIdMapping();
         verify(mockSmsGateway).dispatchSMSToAggregator(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY,
                 new HashMap<String, String>() {{
                     put(WINDOW_NAMES, "Upcoming, Due, Overdue");

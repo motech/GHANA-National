@@ -141,14 +141,12 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
         return (facility != null) ? facility.mrsFacility(facilityAdapter.getFacility(facility.mrsFacilityId())) : null;
     }
 
-    public Map<String, String> getAllPhoneNumberToFacilityNameMapping() {
+    public Map<String, String> getAllFacilityNameToMotechFacilityIdMapping() {
         List<Facility> facilities = facilities();
-        Map<String, String> phoneNumbers = new HashMap<String, String>();
+        Map<String, String> facilityMap = new HashMap<String, String>();
         for (Facility facility : facilities) {
-            for (String phoneNumber : facility.getPhoneNumbers()) {
-                phoneNumbers.put(phoneNumber, facility.name());
-            }
+            facilityMap.put(facility.getMotechId(), facility.name());
         }
-        return phoneNumbers;
+        return facilityMap;
     }
 }

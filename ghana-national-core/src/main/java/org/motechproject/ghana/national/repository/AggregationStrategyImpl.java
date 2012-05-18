@@ -6,31 +6,18 @@ import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.domain.AlertWindow;
 import org.motechproject.ghana.national.domain.SmsTemplateKeys;
-import org.motechproject.ghana.national.messagegateway.domain.AggregationStrategy;
-import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
-import org.motechproject.ghana.national.messagegateway.domain.SMS;
-import org.motechproject.ghana.national.messagegateway.domain.SMSDatum;
+import org.motechproject.ghana.national.messagegateway.domain.*;
+import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-import static ch.lambdaj.Lambda.collect;
-import static ch.lambdaj.Lambda.extract;
-import static ch.lambdaj.Lambda.filter;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.join;
-import static ch.lambdaj.Lambda.joinFrom;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.selectDistinct;
+import static ch.lambdaj.Lambda.*;
 import static ch.lambdaj.group.Groups.by;
 import static ch.lambdaj.group.Groups.group;
+import static java.util.Arrays.asList;
 import static java.util.Locale.getDefault;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -44,49 +31,67 @@ public class AggregationStrategyImpl implements AggregationStrategy {
 
     @Autowired
     private CMSLiteService cmsLiteService;
+
+    @Autowired
+    PatientService patientService;
+
+    @Autowired
+    AllFacilities allFacilities;
+
     public static final String SMS_SEPARATOR = "%0A";
 
     @Override
-    public List<SMS> aggregate(List<SMS> smsMessages) {
-        List<SMS> aggregatedSMS = new ArrayList<SMS>();
-        List<SMS> smsForFacility = filter(having(on(SMS.class).getMessageRecipientType(), equalTo(MessageRecipientType.FACILITY)), smsMessages);
-        List<SMS> smsForPatient = filter(having(on(SMS.class).getMessageRecipientType(), equalTo(MessageRecipientType.PATIENT)), smsMessages);
-        if (!smsForFacility.isEmpty()) {
-            aggregatedSMS.addAll(processMessagesForFacility(smsForFacility));
+    public List<SMS> aggregate(List<SMSPayload> smsPayloadMessages) {
+        List<SMS> aggregatedSMSPayload = new ArrayList<SMS>();
+        List<SMSPayload> smsPayloadForFacility = filter(having(on(SMSPayload.class).getMessageRecipientType(), equalTo(MessageRecipientType.FACILITY)), smsPayloadMessages);
+        List<SMSPayload> smsPayloadForPatient = filter(having(on(SMSPayload.class).getMessageRecipientType(), equalTo(MessageRecipientType.PATIENT)), smsPayloadMessages);
+        if (!smsPayloadForFacility.isEmpty()) {
+            aggregatedSMSPayload.addAll(processMessagesForFacility(smsPayloadForFacility));
         }
-        if (!smsForPatient.isEmpty()) {
-            aggregatedSMS.addAll(processMessagesForPatient(smsForPatient));
+        if (!smsPayloadForPatient.isEmpty()) {
+            aggregatedSMSPayload.addAll(processMessagesForPatient(smsPayloadForPatient));
         }
-        return aggregatedSMS;
+        return aggregatedSMSPayload;
     }
 
-    private List<SMS> processMessagesForPatient(List<SMS> smsForPatient) {
+    private List<SMS> processMessagesForPatient(List<SMSPayload> smsPayloadForPatient) {
         StringBuilder builder = new StringBuilder();
-        for (SMS sms : smsForPatient) {
-            builder.append(sms.getText()).append(SMS_SEPARATOR);
+        for (SMSPayload smsPayload : smsPayloadForPatient) {
+            builder.append(smsPayload.getText()).append(SMS_SEPARATOR);
         }
-        return Arrays.asList(SMS.fromText(builder.toString(), smsForPatient.get(0).getPhoneNumber(), DateUtil.now(), null, MessageRecipientType.PATIENT));
+        SMSPayload smsPayload = SMSPayload.fromText(builder.toString(), smsPayloadForPatient.get(0).getUniqueId(), DateUtil.now(), null, MessageRecipientType.PATIENT);
+
+        return asList(new SMS(smsPayload, patientService.getPatientPhoneNumber(smsPayload.getUniqueId())));
     }
 
-    private List<SMS> processMessagesForFacility(List<SMS> smsMessages) {
-        String standardMessage = SMS.fill(getSMSTemplate(FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
+    private List<SMS> processMessagesForFacility(List<SMSPayload> smsPayloadMessages) {
+        String standardMessage = SMSPayload.fill(getSMSTemplate(FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
             put(WINDOW_NAMES, join(AlertWindow.ghanaNationalWindowNames(), ", "));
             put(FACILITY, "");
         }});
-        List<SMS> filteredMessages = filter(having(on(SMS.class).getText(), not(containsString(standardMessage))), smsMessages);
-        List<SMS> defaultMessagesList = filter(having(on(SMS.class).getText(), containsString(standardMessage)), smsMessages);
+        List<SMSPayload> filteredMessages = filter(having(on(SMSPayload.class).getText(), not(containsString(standardMessage))), smsPayloadMessages);
+        List<SMSPayload> defaultMessagesList = filter(having(on(SMSPayload.class).getText(), containsString(standardMessage)), smsPayloadMessages);
         String facilityName = minus(defaultMessagesList.get(0).getText(), standardMessage);
-        return (filteredMessages.isEmpty()) ? defaultMessagesList : aggregateMessages(filteredMessages, facilityName);
+        List<SMSPayload> smsPayloads = (filteredMessages.isEmpty()) ? defaultMessagesList : aggregateMessages(filteredMessages, facilityName);
+        List<String> phoneNumbers = allFacilities.getFacilityByMotechId(smsPayloads.get(0).getUniqueId()).getPhoneNumbers();
+
+        List<SMS> smsList = new ArrayList<SMS>();
+        for (SMSPayload smsPayload : smsPayloads) {
+            for (String phoneNumber : phoneNumbers) {
+                smsList.add(new SMS(smsPayload, phoneNumber));
+            }
+        }
+        return smsList;
     }
 
     private String minus(String string1, String string2) {
         return string1.replace(string2, "").trim();
     }
 
-    private List<SMS> aggregateMessages(List<SMS> smsMessages, final String facilityName) {
-        final SMS firstSMS = Utility.nullSafe(smsMessages, 0, null);
-        final String phoneNumber = firstSMS != null ? firstSMS.getPhoneNumber() : null;
-        ArrayList<SMSDatum> smsData = getSMSData(smsMessages);
+    private List<SMSPayload> aggregateMessages(List<SMSPayload> smsPayloadMessages, final String facilityName) {
+        final SMSPayload firstSMSPayload = Utility.nullSafe(smsPayloadMessages, 0, null);
+        final String uniqueId = firstSMSPayload != null ? firstSMSPayload.getUniqueId() : null;
+        ArrayList<SMSDatum> smsData = getSMSData(smsPayloadMessages);
         Comparator<String> alphabeticalOrder = new Comparator<String>() {
 
             @Override
@@ -101,7 +106,7 @@ public class AggregationStrategyImpl implements AggregationStrategy {
         Group<SMSDatum> motechIdSubGroup;
         Group<SMSDatum> subWindowGroup;
 
-        final List<SMS> messages = new ArrayList<SMS>();
+        final List<SMSPayload> messages = new ArrayList<SMSPayload>();
         final List<String> windowsWithoutSMS = new ArrayList<String>();
         for (String window : ghanaNationalWindowNames()) {
             StringBuilder builder = new StringBuilder();
@@ -121,20 +126,20 @@ public class AggregationStrategyImpl implements AggregationStrategy {
                 }
             }
             if (count != 0) {
-                messages.add(SMS.fromText(builder.toString(), phoneNumber, DateUtil.now(), null, MessageRecipientType.FACILITY));
+                messages.add(SMSPayload.fromText(builder.toString(), uniqueId, DateUtil.now(), null, MessageRecipientType.FACILITY));
             } else {
                 windowsWithoutSMS.add(window);
             }
         }
-        messages.add(SMS.fromTemplate(getSMSTemplate(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
+        messages.add(SMSPayload.fromTemplate(getSMSTemplate(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
             put(WINDOW_NAMES, join(windowsWithoutSMS, ", "));
             put(FACILITY, facilityName);
-        }}, phoneNumber, DateUtil.now(), null, MessageRecipientType.FACILITY));
+        }}, uniqueId, DateUtil.now(), null, MessageRecipientType.FACILITY));
         return messages;
     }
 
-    private ArrayList<SMSDatum> getSMSData(List<SMS> smsMessages) {
-        List<String> smsList = collect(smsMessages, on(SMS.class).getText());
+    private ArrayList<SMSDatum> getSMSData(List<SMSPayload> smsPayloadMessages) {
+        List<String> smsList = collect(smsPayloadMessages, on(SMSPayload.class).getText());
 
         ArrayList<SMSDatum> smsData = new ArrayList<SMSDatum>();
         for (String sms : smsList) {
@@ -150,7 +155,7 @@ public class AggregationStrategyImpl implements AggregationStrategy {
         try {
             return cmsLiteService.getStringContent(getDefault().getLanguage(), templateKey).getValue();
         } catch (ContentNotFoundException e) {
-            throw new MotechException("Encountered exception while aggregating SMS, ", e);
+            throw new MotechException("Encountered exception while aggregating SMSPayload, ", e);
         }
     }
 }

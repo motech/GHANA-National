@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.web.service;
 
-import org.motechproject.ghana.national.messagegateway.domain.SMS;
+import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
 import org.motechproject.ghana.national.messagegateway.domain.Store;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.Message;
@@ -15,14 +15,14 @@ public class GNAggregatorService {
     @Autowired
     Store store;
 
-    public List<SMS> allMessages(){
-        List<SMS> smsList = new ArrayList<SMS>();
+    public List<SMSPayload> allMessages(){
+        List<SMSPayload> smsPayloadList = new ArrayList<SMSPayload>();
         for (MessageGroup group : store) {
             for (Message<?> message : group.getMessages()) {
-                smsList.add((SMS) message.getPayload());
+                smsPayloadList.add((SMSPayload) message.getPayload());
 
             }
         }
-        return smsList;
+        return smsPayloadList;
     }
 }

@@ -5,7 +5,8 @@ import org.joda.time.DateTime;
 import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMSTemplate;
-import org.motechproject.ghana.national.messagegateway.domain.SMS;
+import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
+import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 
@@ -39,11 +40,11 @@ public class UpcomingCareSMS {
     public String smsText() {
         if (hasUpcoming()) {
             String baseMsgTemplate = smsGateway.getSMSTemplate(UPCOMING_CARE_CLIENT_QUERY_RESPONSE_SMS_KEY);
-            return SMS.fill(baseMsgTemplate, new SMSTemplate().fillPatientDetails(patient)
+            return SMSPayload.fill(baseMsgTemplate, new SMSTemplate().fillPatientDetails(patient)
                     .fillTemplate(UPCOMING_CARE_DUE_CLIENT_QUERY, allDueText()).getRuntimeVariables());
         } else {
             String noneCaresTemplate = smsGateway.getSMSTemplate(NONE_UPCOMING);
-            return SMS.fill(noneCaresTemplate, new SMSTemplate().fillPatientDetails(patient).getRuntimeVariables());
+            return SMSPayload.fill(noneCaresTemplate, new SMSTemplate().fillPatientDetails(patient).getRuntimeVariables());
         }
     }
 
@@ -71,7 +72,7 @@ public class UpcomingCareSMS {
 
     private String createScheduleDueText(String dueTemplate, String milestoneName, DateTime dueDate) {
         SMSTemplate template = new SMSTemplate().fillCareSchedulesDueDate(milestoneName, dueDate);
-        return SMS.fill(dueTemplate, template.getRuntimeVariables());
+        return SMSPayload.fill(dueTemplate, template.getRuntimeVariables());
     }
 
     private boolean hasUpcoming() {
