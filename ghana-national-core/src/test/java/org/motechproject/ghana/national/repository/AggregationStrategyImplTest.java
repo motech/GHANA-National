@@ -9,7 +9,6 @@ import org.motechproject.cmslite.api.model.StringContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.domain.AlertWindow;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.SmsTemplateKeys;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
@@ -137,7 +136,6 @@ public class AggregationStrategyImplTest extends BaseUnitTest {
     @Test
     public void shouldReturnEmptyListIfThereIsNothingToAggregate() {
         List<SMS> smsPayloadList = aggregationStrategy.aggregate(Collections.<SMSPayload>emptyList());
-        assertThat(smsPayload        List<SMS> smsPayloadList = aggregationStrategy.aggregate(Collections.<SMSPayload>emptyList());
         assertThat(smsPayloadList.size(), is(0));
     }
 }
