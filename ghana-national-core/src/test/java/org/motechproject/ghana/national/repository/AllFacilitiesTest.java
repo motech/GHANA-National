@@ -15,15 +15,19 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -323,22 +327,31 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         String additionalPhoneNumber2 = "2323";
         String phoneNumber4 = "4567";
         String phoneNumber3 = "3456";
-        Facility facility1 = new Facility(new MRSFacility("1", "name1", "country", "region", "district", "province"))
+        String facilityName1 = "name1";
+        String facilityName2 = "name2";
+        String facilityName3 = "name3";
+        String facilityName4 = "name4";
+        Facility facility1 = new Facility(new MRSFacility("1", facilityName1, "country", "region", "district", "province"))
                 .phoneNumber(phoneNumber1);
-        Facility facility2 = new Facility(new MRSFacility("2", "name2", "country", "region", "district", "province"))
+        Facility facility2 = new Facility(new MRSFacility("2", facilityName2, "country", "region", "district", "province"))
                 .phoneNumber(phoneNumber2).additionalPhoneNumber1(additionalPhoneNumber1);
-        Facility facility3 = new Facility(new MRSFacility("3", "name3", "country", "region", "district", "province"))
+        Facility facility3 = new Facility(new MRSFacility("3", facilityName3, "country", "region", "district", "province"))
                 .phoneNumber(phoneNumber3).additionalPhoneNumber3(additionalPhoneNumber2);
-        Facility facility4 = new Facility(new MRSFacility("4", "name4", "country", "region", "district", "province"))
+        Facility facility4 = new Facility(new MRSFacility("4", facilityName4, "country", "region", "district", "province"))
                 .phoneNumber(phoneNumber4);
 
         AllFacilities allFacilitiesSpy = spy(allFacilities);
         doReturn(Arrays.asList(facility1, facility2, facility3, facility4)).when(allFacilitiesSpy).facilities();
 
-        Set<String> expectedPhoneNumbers = new HashSet<String>();
-        expectedPhoneNumbers.addAll(Arrays.asList(phoneNumber1, phoneNumber2, phoneNumber3, phoneNumber4,
-                additionalPhoneNumber1, additionalPhoneNumber2));
-        Set<String> allPhoneNumbers = allFacilitiesSpy.getAllPhoneNumbers();
+        Map<String,String> expectedPhoneNumbers = new HashMap<String, String>();
+        expectedPhoneNumbers.put(phoneNumber1,facilityName1);
+        expectedPhoneNumbers.put(phoneNumber2,facilityName2);
+        expectedPhoneNumbers.put(additionalPhoneNumber1,facilityName2);
+        expectedPhoneNumbers.put(additionalPhoneNumber2,facilityName3);
+        expectedPhoneNumbers.put(phoneNumber3,facilityName3);
+        expectedPhoneNumbers.put(phoneNumber4,facilityName4);
+
+        Map<String, String> allPhoneNumbers = allFacilitiesSpy.getAllPhoneNumberToFacilityNameMapping();
 
         assertReflectionEquals(expectedPhoneNumbers, allPhoneNumbers);
     }
