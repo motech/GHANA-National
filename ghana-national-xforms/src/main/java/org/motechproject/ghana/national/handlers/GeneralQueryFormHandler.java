@@ -104,7 +104,7 @@ public class GeneralQueryFormHandler implements FormPublishHandler {
         }
 
         if (StringUtils.isEmpty(messageBody.toString())) {
-            messageBody.append("No Patients found for ").append(queryType);
+            messageBody.append("No Patients found for ").append(queryType.getName());
         }
         return messageContent.append(messageBody).toString();
     }

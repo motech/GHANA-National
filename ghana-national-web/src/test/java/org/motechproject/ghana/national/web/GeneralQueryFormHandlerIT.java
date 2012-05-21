@@ -236,7 +236,7 @@ public class GeneralQueryFormHandlerIT {
         }}));
         ArgumentCaptor<String> messageCaptor=ArgumentCaptor.forClass(String.class);
         verify(mockSMSGateway).dispatchSMS(eq(responsePhoneNumber), messageCaptor.capture());
-        assertTrue(messageCaptor.getValue().contains(String.format("No Patients found for " + generalQueryForm.getQueryType())));
+        assertTrue(messageCaptor.getValue().contains(String.format("No Patients found for " + generalQueryForm.getQueryType().getName())));
     }
 
     @Test
@@ -326,7 +326,7 @@ public class GeneralQueryFormHandlerIT {
         message=submitForFacility(responsePhoneNumber,
                 GeneralQueryType.ANC_DEFAULTERS,facility2);
 
-        assertTrue(message,message.contains(String.format("No Patients found for " + GeneralQueryType.ANC_DEFAULTERS,message)));
+        assertTrue(message,message.contains(String.format("No Patients found for " + GeneralQueryType.ANC_DEFAULTERS.getName(),message)));
 
 
     }
@@ -427,7 +427,7 @@ public class GeneralQueryFormHandlerIT {
 
     private String buildMessage(String motechId) {
         Patient patient = patientMap.get(motechId);
-        return String.format("%s %s, %s", patient.getFirstName(), patient.getLastName(), motechId);
+        return String.format("%s %s, %s ", patient.getFirstName(), patient.getLastName(), motechId);
     }
 
     private Patient createPatient(String motechId, final Facility facility) throws PatientIdIncorrectFormatException, PatientIdNotUniqueException {
