@@ -36,7 +36,6 @@ public class ANCVisitForm extends FormBean {
     @Required
     private String visitNumber;
 
-    @Required
     private Date estDeliveryDate;
 
     private Integer bpSystolic;
@@ -67,7 +66,6 @@ public class ANCVisitForm extends FormBean {
 
     private Double hemoglobin;
 
-    @Required
     private String vdrlReactive;
 
     private String vdrlTreatment;

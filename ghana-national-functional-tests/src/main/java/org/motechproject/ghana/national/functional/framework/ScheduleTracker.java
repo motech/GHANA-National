@@ -18,18 +18,28 @@ import org.motechproject.scheduletracking.api.repository.AllTrackedSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.scheduletracking.api.service.impl.ScheduleTrackingServiceImpl;
 import org.motechproject.util.DateUtil;
-import org.quartz.*;
+import org.quartz.JobDataMap;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Math.ceil;
+import static java.lang.Math.min;
 import static java.lang.String.format;
 import static org.apache.commons.lang.time.DateUtils.parseDate;
 import static org.motechproject.ghana.national.tools.Utility.nullSafe;
@@ -249,12 +259,55 @@ public class ScheduleTracker {
                 LocalDate referenceWindowStartDate = referenceDate.plus(windowStart);
                 LocalDate referenceWindowEndDate = referenceDate.plus(windowEnd);
 
-                int alertCount = alert.getRemainingAlertCount(newDateTime(referenceWindowStartDate.toDate()), newDateTime(referenceWindowEndDate.toDate()), null);
+                int alertCount = getRemainingAlertCount(newDateTime(referenceWindowStartDate.toDate()), newDateTime(referenceWindowEndDate.toDate()), null, alert);
                 if (alertCount > 0) {
-                    return alert.getNextAlertDateTime(newDateTime(referenceWindowStartDate.toDate()), null).toLocalDate();
+                    return getNextAlertDateTime(newDateTime(referenceWindowStartDate.toDate()), null, alert).toLocalDate();
                 }
             }
         }
         return null;
+    }
+
+
+    int getElapsedAlertCount(DateTime startReferenceDateTime, Time preferredAlertTime, org.motechproject.scheduletracking.api.domain.Alert alert) {
+        DateTime idealStartDateWithPreferredTime = preferredAlertDateTime(startReferenceDateTime, preferredAlertTime, alert);
+
+        DateTime now = DateUtil.now();
+        if (idealStartDateWithPreferredTime.isBefore(now)) {
+            long secsSinceIdealStartOfAlert = (now.getMillis() - idealStartDateWithPreferredTime.getMillis()) / 1000;
+            int elapsedAlerts = possibleNumbersOfAlertsInDuration(secsSinceIdealStartOfAlert, alert);
+            return min(elapsedAlerts, alert.getCount());
+        }
+        return 0;
+    }
+
+    public DateTime getNextAlertDateTime(DateTime startReferenceDateTime, Time preferredAlertTime, org.motechproject.scheduletracking.api.domain.Alert alert) {
+        DateTime idealStartDateTime = startReferenceDateTime.plus(alert.getOffset());
+        DateTime nextAlertDateTime = idealStartDateTime.plusDays(getElapsedAlertCount(startReferenceDateTime, preferredAlertTime, alert) * alert.getInterval().toStandardDays().getDays());
+        if (preferredAlertTime != null)
+            return newDateTime(nextAlertDateTime.toLocalDate(), preferredAlertTime.getHour(), preferredAlertTime.getMinute(), 0);
+        return nextAlertDateTime;
+    }
+
+    public int getRemainingAlertCount(DateTime startTimeForAlerts, DateTime windowEndTime, Time preferredAlertTime, org.motechproject.scheduletracking.api.domain.Alert alert) {
+        return min(alert.getCount() - getElapsedAlertCount(startTimeForAlerts, preferredAlertTime, alert), maximumPossibleAlertsCount(startTimeForAlerts, windowEndTime, preferredAlertTime, alert));
+    }
+
+    private int maximumPossibleAlertsCount(DateTime startTimeForAlerts, DateTime windowEndTime, Time preferredAlertTime, org.motechproject.scheduletracking.api.domain.Alert alert) {
+        DateTime preferredStartTimeForAlerts = preferredAlertDateTime(startTimeForAlerts, preferredAlertTime, alert);
+        long windowForAlerts = windowEndTime.minus(preferredStartTimeForAlerts.getMillis()).getMillis() / 1000;
+        return possibleNumbersOfAlertsInDuration(windowForAlerts, alert);
+    }
+
+    private int possibleNumbersOfAlertsInDuration(long duration, org.motechproject.scheduletracking.api.domain.Alert alert) {
+        return (int) ceil(duration / (double) alert.getInterval().toStandardSeconds().getSeconds());
+    }
+
+    private DateTime preferredAlertDateTime(DateTime startReferenceDateTime, Time preferredAlertTime, org.motechproject.scheduletracking.api.domain.Alert alert) {
+        DateTime idealStartDateTime = startReferenceDateTime.plus(alert.getOffset());
+        DateTime idealStartDateWithPreferredTime = idealStartDateTime;
+        if (preferredAlertTime != null)
+            idealStartDateWithPreferredTime = DateUtil.newDateTime(idealStartDateTime.toLocalDate(), preferredAlertTime.getHour(), preferredAlertTime.getMinute(), 0);
+        return idealStartDateWithPreferredTime;
     }
 }
