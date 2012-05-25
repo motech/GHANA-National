@@ -18,13 +18,11 @@ import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.model.DayOfWeek;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSFacility;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.Assert.assertNotNull;
@@ -60,10 +58,10 @@ public class RegisterCWCFormHandlerTest {
     public void shouldRethrowException() {
         doThrow(new RuntimeException()).when(careService).enroll(Matchers.<CwcVO>any());
         try {
-            formHandlerRegister.handleFormEvent(new MotechEvent("subject"));
+            formHandlerRegister.handleFormEvent(new RegisterCWCForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), CoreMatchers.is("subject"));
+            assertThat(e.getMessage(), CoreMatchers.is("Exception occurred while processing CWC Registration form"));
         }
     }
 
@@ -106,9 +104,7 @@ public class RegisterCWCFormHandlerTest {
         final String facilityId = "11";
         when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(new Facility(new MRSFacility(facilityId)));
 
-        formHandlerRegister.handleFormEvent(new MotechEvent("", new HashMap<String, Object>() {{
-            put("formBean", registerCWCForm);
-        }}));
+        formHandlerRegister.handleFormEvent(registerCWCForm);
 
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
         final ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
@@ -143,9 +139,7 @@ public class RegisterCWCFormHandlerTest {
         final String facilityId = "11";
         when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(new Facility(new MRSFacility(facilityId)));
 
-        formHandlerRegister.handleFormEvent(new MotechEvent("", new HashMap<String, Object>() {{
-            put("formBean", registerCWCForm);
-        }}));
+        formHandlerRegister.handleFormEvent(registerCWCForm);
 
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
         verify(careService).enroll(captor.capture());

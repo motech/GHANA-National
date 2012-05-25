@@ -6,7 +6,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ClientQueryForm;
 import org.motechproject.ghana.national.domain.ClientQueryType;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
@@ -15,7 +14,6 @@ import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.PregnancyService;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
@@ -38,7 +36,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
-import static org.motechproject.ghana.national.domain.Constants.*;
+import static org.motechproject.ghana.national.domain.Constants.NO_MATCHING_RECORDS_FOUND;
+import static org.motechproject.ghana.national.domain.Constants.PATTERN_DD_MMM_YYYY;
 import static org.motechproject.ghana.national.handlers.ClientQueryFormHandler.FIND_CLIENT_RESPONSE_SMS_KEY;
 import static org.motechproject.ghana.national.util.AssertionUtility.assertContainsTemplateValues;
 import static org.motechproject.util.DateUtil.today;
@@ -72,14 +71,12 @@ public class ClientQueryFormHandlerTest {
     public void shouldRethrowException() {
         doThrow(new RuntimeException()).when(mockPatientService).getPatientByMotechId(anyString());
         try {
-            clientQueryFormHandler.handleFormEvent(new MotechEvent("subject", new HashMap<String, Object>() {{
-                ClientQueryForm clientQueryForm = new ClientQueryForm();
-                clientQueryForm.setQueryType(ClientQueryType.CLIENT_DETAILS.toString());
-                put(Constants.FORM_BEAN, clientQueryForm);
-            }}));
+            ClientQueryForm clientQueryForm = new ClientQueryForm();
+            clientQueryForm.setQueryType(ClientQueryType.CLIENT_DETAILS.toString());
+            clientQueryFormHandler.handleFormEvent(clientQueryForm);
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), is("subject"));
+            assertThat(e.getMessage(), is("Encountered error while processing client query form"));
         }
     }
 
@@ -97,7 +94,7 @@ public class ClientQueryFormHandlerTest {
         String facilityId = "facilityId";
         String motechId = "motechId";
         String staffId = "staffId";
-        Map<String, Object> params = createMotechEventWithForm(facilityId, motechId, staffId, responsePhoneNumber, ClientQueryType.CLIENT_DETAILS.toString());
+        ClientQueryForm clientQueryForm = createMotechEventWithForm(facilityId, motechId, staffId, responsePhoneNumber, ClientQueryType.CLIENT_DETAILS.toString());
 
         MRSPerson person = person(phoneNumber, dateOfBirth, age, gender, lastName, firstName);
         Patient patient = new Patient(new MRSPatient(motechId, person, new MRSFacility(facilityId)));
@@ -105,7 +102,7 @@ public class ClientQueryFormHandlerTest {
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
         when(mockPregnancyService.activePregnancyEDD(motechId)).thenReturn(edd);
 
-        clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
+        clientQueryFormHandler.handleFormEvent(clientQueryForm);
 
         ArgumentCaptor<Map> templateValuesCaptor = ArgumentCaptor.forClass(Map.class);
         verify(mockSmsGateway).dispatchSMS(eq("PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY"), templateValuesCaptor.capture(), eq(responsePhoneNumber));
@@ -133,7 +130,7 @@ public class ClientQueryFormHandlerTest {
         final String motechId = "motechId";
         final MRSFacility mrsFacility = new MRSFacility(facilityId, "name", null, null, null, null);
 
-        HashMap<String, Object> params = createClientQueryFormForFindClientId(firstName, lastName, dateOfBirth, null, responsePhoneNumber, facilityId, motechId, ClientQueryType.FIND_CLIENT_ID);
+        ClientQueryForm clientQueryFormForFindClientId = createClientQueryFormForFindClientId(firstName, lastName, dateOfBirth, null, responsePhoneNumber, facilityId, motechId, ClientQueryType.FIND_CLIENT_ID);
 
         ArrayList<MRSPatient> patients = new ArrayList<MRSPatient>() {{
             add(new MRSPatient(motechId, new MRSPerson().lastName(lastName).firstName(firstName).dateOfBirth(dateOfBirth).gender("F"), mrsFacility));
@@ -142,7 +139,7 @@ public class ClientQueryFormHandlerTest {
         when(mockPatientService.getPatients(firstName, lastName, null, dateOfBirth, null)).thenReturn(patients);
         when(mockSmsGateway.getSMSTemplate(FIND_CLIENT_RESPONSE_SMS_KEY)).thenReturn("MoTeCH ID=${motechId},${firstName},${lastName}, Sex=${gender}, DoB=${dob}, ${facility}");
 
-        clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
+        clientQueryFormHandler.handleFormEvent(clientQueryFormForFindClientId);
 
         ArgumentCaptor<String> templateValuesCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), templateValuesCaptor.capture());
@@ -159,12 +156,12 @@ public class ClientQueryFormHandlerTest {
         String responsePhoneNumber = "responsePhoneNumber";
         final String facilityId = "facilityId";
 
-        HashMap<String, Object> params = createClientQueryFormForFindClientId(firstName, lastName, dateOfBirth, "", responsePhoneNumber, facilityId, null, ClientQueryType.FIND_CLIENT_ID);
+        ClientQueryForm clientQueryFormForFindClientId = createClientQueryFormForFindClientId(firstName, lastName, dateOfBirth, "", responsePhoneNumber, facilityId, null, ClientQueryType.FIND_CLIENT_ID);
 
         when(mockPatientService.getPatients(firstName, lastName, null, dateOfBirth, null)).thenReturn(new ArrayList<MRSPatient>());
         when(mockSmsGateway.getSMSTemplate(FIND_CLIENT_RESPONSE_SMS_KEY)).thenReturn("MoTeCH ID=${motechId}, FirstName=${firstName}, LastName=${lastName}, Sex=${gender}, DoB=${dob}, Facility=${facility}");
 
-        clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
+        clientQueryFormHandler.handleFormEvent(clientQueryFormForFindClientId);
 
         ArgumentCaptor<String> templateValuesCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), templateValuesCaptor.capture());
@@ -181,20 +178,20 @@ public class ClientQueryFormHandlerTest {
         String responsePhoneNumber = "94423232";
         String mrsPatientId = "patientId";
 
-        Map<String, Object> params = createMotechEventWithForm(facilityId, motechId, staffId, responsePhoneNumber, ClientQueryType.UPCOMING_CARE.toString());
+        ClientQueryForm clientQueryForm = createMotechEventWithForm(facilityId, motechId, staffId, responsePhoneNumber, ClientQueryType.UPCOMING_CARE.toString());
 
         final Patient patient = new Patient(new MRSPatient(mrsPatientId, motechId, new MRSPerson().dateOfBirth(today().toDate()), null));
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
         when(mockSmsGateway.getSMSTemplate(anyString())).thenReturn("some template");
 
-        clientQueryFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseQuery.clientQuery", params));
+        clientQueryFormHandler.handleFormEvent(clientQueryForm);
 
         verify(mockAllCareSchedules).upcomingCareForCurrentWeek(mrsPatientId);
         verify(mockAllAppointments).upcomingAppointmentsForCurrentWeek(motechId);
         verify(mockSmsGateway).dispatchSMS(eq(responsePhoneNumber), anyString());
     }
 
-    private HashMap<String, Object> createClientQueryFormForFindClientId(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String senderResponseNumber, String facilityId, String motechId, ClientQueryType clientQueryType) {
+    private ClientQueryForm createClientQueryFormForFindClientId(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String senderResponseNumber, String facilityId, String motechId, ClientQueryType clientQueryType) {
         final ClientQueryForm clientQueryForm = clientQueryForm(facilityId, motechId, "323", senderResponseNumber, clientQueryType.toString());
         clientQueryForm.setFirstName(firstName);
         clientQueryForm.setLastName(lastName);
@@ -202,9 +199,7 @@ public class ClientQueryFormHandlerTest {
         clientQueryForm.setPhoneNumber(phoneNumber);
         clientQueryForm.setNhis(null);
 
-        return new HashMap<String, Object>() {{
-            put(FORM_BEAN, clientQueryForm);
-        }};
+        return clientQueryForm;
     }
 
     private MRSPerson person(String phoneNumber, Date dateOfBirth, int age, String gender, String lastName, String firstName) {
@@ -218,11 +213,8 @@ public class ClientQueryFormHandlerTest {
         return person;
     }
 
-    private Map<String, Object> createMotechEventWithForm(String facilityId, String motechId, String staffId, String responsePhoneNumber, String clientQueryType) {
-        final ClientQueryForm clientQueryForm = clientQueryForm(facilityId, motechId, staffId, responsePhoneNumber, clientQueryType);
-        return new HashMap<String, Object>() {{
-            put(FORM_BEAN, clientQueryForm);
-        }};
+    private ClientQueryForm createMotechEventWithForm(String facilityId, String motechId, String staffId, String responsePhoneNumber, String clientQueryType) {
+        return clientQueryForm(facilityId, motechId, staffId, responsePhoneNumber, clientQueryType);
     }
 
     private ClientQueryForm clientQueryForm(String facilityId, String motechId, String staffId, String senderPhoneNumber, String clientQueryType) {

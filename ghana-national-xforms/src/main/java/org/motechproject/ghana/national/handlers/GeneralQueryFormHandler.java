@@ -15,8 +15,6 @@ import org.motechproject.ghana.national.messagegateway.domain.MessageDispatcher;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.scheduletracking.api.domain.Enrollment;
@@ -24,7 +22,6 @@ import org.motechproject.scheduletracking.api.domain.EnrollmentStatus;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.service.EnrollmentsQuery;
 import org.motechproject.scheduletracking.api.service.impl.EnrollmentsQueryService;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +33,10 @@ import java.util.List;
 import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.group.Groups.by;
 import static ch.lambdaj.group.Groups.group;
-import static org.motechproject.ghana.national.domain.Constants.FORM_BEAN;
 import static org.motechproject.util.DateUtil.newDateTime;
 
 @Component
-public class GeneralQueryFormHandler implements FormPublishHandler {
+public class GeneralQueryFormHandler{
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -58,13 +54,10 @@ public class GeneralQueryFormHandler implements FormPublishHandler {
     @Autowired
     PatientService patientService;
 
-    @Override
-    @MotechListener(subjects = "form.validation.successful.NurseQuery.GeneralQuery")
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent event) {
+    public void handleFormEvent(GeneralQueryForm generalQueryForm) {
         try {
-        GeneralQueryForm generalQueryForm = (GeneralQueryForm) event.getParameters().get(FORM_BEAN);
         GeneralQueryType queryType = generalQueryForm.getQueryType();
         String facilityMotechId = generalQueryForm.getFacilityId();
         Facility facility = facilityService.getFacilityByMotechId(facilityMotechId);
@@ -73,8 +66,8 @@ public class GeneralQueryFormHandler implements FormPublishHandler {
         smsGateway.dispatchSMS(generalQueryForm.getResponsePhoneNumber(), messageContent);
         }
         catch (Exception e){
-            log.error("Exception occured while quering for defaulters", e);
-            throw new XFormHandlerException(event.getSubject(), e);
+            log.error("Exception occurred while processing general query form", e);
+            throw new XFormHandlerException("Exception occurred while processing general query form", e);
         }
     }
 

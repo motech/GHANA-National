@@ -1,25 +1,24 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.PregnancyTerminationForm;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
-import org.motechproject.ghana.national.service.*;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.PregnancyService;
+import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
-import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PregnancyTerminationFormHandler implements FormPublishHandler {
+public class PregnancyTerminationFormHandler{
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     @Autowired
@@ -34,18 +33,15 @@ public class PregnancyTerminationFormHandler implements FormPublishHandler {
     @Autowired
     PatientService patientService;
 
-    @Override
-    @MotechListener(subjects = {"form.validation.successful.NurseDataEntry.PregnancyTermination"})
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent event) {
+    public void handleFormEvent(PregnancyTerminationForm pregnancyTerminationForm) {
         try {
-        PregnancyTerminationForm formBean = (PregnancyTerminationForm) event.getParameters().get(Constants.FORM_BEAN);
-        pregnancyService.terminatePregnancy(createPregnancyTerminationVisit(formBean));
+        pregnancyService.terminatePregnancy(createPregnancyTerminationVisit(pregnancyTerminationForm));
         }
         catch (Exception e) {
-            log.error("Exception while terminating pregnancy");
-            throw new XFormHandlerException(event.getSubject(), e);
+            log.error("Exception occurred while processing pregnancy termination form");
+            throw new XFormHandlerException("Exception occurred while processing pregnancy termination form", e);
         }
 
     }

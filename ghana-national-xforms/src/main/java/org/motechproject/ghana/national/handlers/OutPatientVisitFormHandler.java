@@ -1,22 +1,18 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.OutPatientVisitForm;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.OutPatientVisit;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.OutPatientVisitService;
-import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.services.MRSPatientAdapter;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +25,7 @@ import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.OUTPATIENT_VISIT;
 
 @Component
-public class OutPatientVisitFormHandler implements FormPublishHandler {
+public class OutPatientVisitFormHandler{
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -47,22 +43,18 @@ public class OutPatientVisitFormHandler implements FormPublishHandler {
     @Autowired
     OutPatientVisitService outPatientVisitService;
 
-    @Override
-    @MotechListener(subjects = "form.validation.successful.NurseDataEntry.opvVisit")
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent event) {
-        OutPatientVisitForm formBean;
+    public void handleFormEvent(OutPatientVisitForm outPatientVisitForm) {
         try {
-            formBean = (OutPatientVisitForm) event.getParameters().get(Constants.FORM_BEAN);
-            if (Boolean.TRUE.equals(formBean.isVisitor())) {
-                persist(formBean);
+            if (Boolean.TRUE.equals(outPatientVisitForm.isVisitor())) {
+                persist(outPatientVisitForm);
             } else {
-                persistInMRS(formBean);
+                persistInMRS(outPatientVisitForm);
             }
         } catch (Exception e) {
-            log.error("Exception occurred in saving Outpatient Visit details", e);
-            throw new XFormHandlerException(event.getSubject(), e);
+            log.error("Exception occurred while processing Outpatient Visit form", e);
+            throw new XFormHandlerException("Exception occurred while processing Outpatient Visit form", e);
         }
     }
 

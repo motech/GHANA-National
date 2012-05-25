@@ -14,13 +14,10 @@ import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.PregnancyService;
-import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,11 +28,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static org.motechproject.ghana.national.domain.Constants.FORM_BEAN;
 import static org.motechproject.ghana.national.domain.Constants.NO_MATCHING_RECORDS_FOUND;
 
 @Component
-public class ClientQueryFormHandler implements FormPublishHandler {
+public class ClientQueryFormHandler{
 
     public static final String PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY = "PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY";
     public static final String NON_PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY = "NON_PREGNANT_CLIENT_QUERY_RESPONSE_SMS_KEY";
@@ -53,13 +49,10 @@ public class ClientQueryFormHandler implements FormPublishHandler {
     private AllAppointments allAppointments;
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Override
-    @MotechListener(subjects = "form.validation.successful.NurseQuery.clientQuery")
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent event) {
+    public void handleFormEvent(ClientQueryForm clientQueryForm) {
         try {
-            ClientQueryForm clientQueryForm = (ClientQueryForm) event.getParameters().get(FORM_BEAN);
             if (clientQueryForm.getQueryType().equals(ClientQueryType.CLIENT_DETAILS.toString())) {
                 getPatientDetails(clientQueryForm);
             } else if (clientQueryForm.getQueryType().equals(ClientQueryType.FIND_CLIENT_ID.toString())) {
@@ -68,8 +61,8 @@ public class ClientQueryFormHandler implements FormPublishHandler {
                 queryUpcomingCareAndVisits(clientQueryForm);
             }
         } catch (Exception e) {
-            log.warn("Encountered error in client query form", e);
-            throw new XFormHandlerException(event.getSubject(), e);
+            log.warn("Encountered error while processing client query form", e);
+            throw new XFormHandlerException("Encountered error while processing client query form", e);
         }
     }
 

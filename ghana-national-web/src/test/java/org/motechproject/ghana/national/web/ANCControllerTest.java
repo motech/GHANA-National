@@ -5,15 +5,18 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.CareService;
+import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.helper.ANCFormMapper;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
+import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -41,12 +44,14 @@ public class ANCControllerTest {
     private ANCFormMapper mockANCFormMapper;
     @Mock
     private AllEncounters mockAllEncounters;
-
+    @Mock 
+    private PatientService mockPatientService;
     @Before
     public void setUp() {
         initMocks(this);
         ancController = new ANCController();
         ReflectionTestUtils.setField(ancController, "careService", mockCareService);
+        ReflectionTestUtils.setField(ancController, "patientService", mockPatientService);
         ReflectionTestUtils.setField(ancController, "facilityHelper", mockFacilityHelper);
         ReflectionTestUtils.setField(ancController, "registerANCFormValidator", mockValidator);
         ReflectionTestUtils.setField(ancController, "ancFormMapper", mockANCFormMapper);
@@ -70,7 +75,8 @@ public class ANCControllerTest {
         lastTTValues.put(3,"TT 3");
         lastTTValues.put(4,"TT 4");
         lastTTValues.put(5,"TT 5");
-
+        Patient patient = mock(Patient.class);
+        when(mockPatientService.getPatientByMotechId(motechPatientId)).thenReturn(patient);
         assertEquals(ANCController.ENROLL_ANC_URL, ancUrl);
         assertTrue("Form attributes are not equal", reflectionEquals(ancEnrollmentForm, new ANCEnrollmentForm(motechPatientId)));
         assertTrue(reflectionEquals(modelMap.get("careHistories"), Arrays.asList("TT", "IPT_SP")));
@@ -126,8 +132,8 @@ public class ANCControllerTest {
         ArrayList<FormError> errors = new ArrayList<FormError>();
 
         MRSEncounter mrsEncounter = new MRSEncounter();
-
-        when(mockValidator.validatePatient(motechPatientId)).thenReturn(errors);
+        Patient patient = mock(Patient.class);
+        when(mockValidator.validatePatient(patient,Collections.<FormBean>emptyList())).thenReturn(errors);
         when(mockAllEncounters.getLatest(motechPatientId, ANC_REG_VISIT.value())).thenReturn(mrsEncounter);
         when(mockANCFormMapper.convertMRSEncounterToView(mrsEncounter)).thenReturn(ancEnrollmentForm);
 
@@ -147,7 +153,8 @@ public class ANCControllerTest {
         ArrayList<FormError> errors = new ArrayList<FormError>() {{
             add(new FormError("motechId", "should be female for registering into ANC"));
         }};
-        when(mockValidator.validatePatient(motechPatientId)).thenReturn(errors);
+        Patient patient = mock(Patient.class);
+        when(mockValidator.validatePatient(patient,Collections.<FormBean>emptyList())).thenReturn(errors);
         ancController.newANC(motechPatientId, modelMap);
         assertTrue(modelMap.containsKey("ancEnrollmentForm"));
 

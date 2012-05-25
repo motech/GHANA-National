@@ -125,4 +125,9 @@ public class ClientQueryForm extends FormBean {
     public void setQueryType(String queryType) {
         this.queryType = queryType;
     }
+
+    @Override
+    public String groupId() {
+        return null;
+    }
 }

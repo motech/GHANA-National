@@ -28,10 +28,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CWCVisitFormHandlerTest {
@@ -60,10 +57,10 @@ public class CWCVisitFormHandlerTest {
     public void shouldRethrowException() {
         doThrow(new RuntimeException()).when(mockChildVisitService).save(Matchers.<CWCVisit>any());
         try {
-            handler.handleFormEvent(new MotechEvent("subject"));
+            handler.handleFormEvent(new CWCVisitForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), is("subject"));
+            assertThat(e.getMessage(), is("Encountered error while processing CWC visit form"));
         }
     }
 
@@ -103,7 +100,7 @@ public class CWCVisitFormHandlerTest {
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(new Patient(new MRSPatient(motechId, new MRSPerson(), mrsFacility)));
         
-        handler.handleFormEvent(motechEvent);
+        handler.handleFormEvent(cwcVisitForm);
 
         ArgumentCaptor<CWCVisit> captor = ArgumentCaptor.forClass(CWCVisit.class);
         verify(mockChildVisitService).save(captor.capture());

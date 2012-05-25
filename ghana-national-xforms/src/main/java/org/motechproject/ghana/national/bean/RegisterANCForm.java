@@ -230,5 +230,10 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
     public Date getRegistrationDate() {
          return getDate() == null ? DateUtil.today().toDate() : getDate();
     }
+
+    @Override
+    public String groupId() {
+        return motechId;
+    }
 }
 

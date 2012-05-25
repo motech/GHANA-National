@@ -261,4 +261,9 @@ public class OutPatientVisitForm extends FormBean {
     public void setGender(String gender) {
         this.gender = gender;
     }
+
+    @Override
+    public String groupId() {
+        return motechId;
+    }
 }

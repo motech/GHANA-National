@@ -24,7 +24,7 @@ public class MobileMidwifeFormTest {
     public static void assertFormWithEnrollment(MobileMidwifeForm exptectedForm, MobileMidwifeEnrollment actual) {
         assertThat(actual.getStaffId(), is(exptectedForm.getStaffId()));
         assertThat(actual.getFacilityId(), is(exptectedForm.getFacilityId()));
-        assertThat(actual.getPatientId(), is(exptectedForm.getPatientId()));
+        assertThat(actual.getPatientId(), is(exptectedForm.getMotechId()));
         assertThat(actual.getServiceType(), is(exptectedForm.getServiceType()));
         assertThat(actual.getReasonToJoin(), is(exptectedForm.getReasonToJoin()));
         assertThat(actual.getMedium(), is(exptectedForm.getMediumStripingOwnership()));

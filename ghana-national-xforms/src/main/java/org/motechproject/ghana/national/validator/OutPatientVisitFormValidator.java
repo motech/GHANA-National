@@ -1,8 +1,10 @@
 package org.motechproject.ghana.national.validator;
 
 import org.motechproject.ghana.national.bean.OutPatientVisitForm;
-import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
+import org.motechproject.ghana.national.validator.patient.*;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -22,21 +24,18 @@ public class OutPatientVisitFormValidator extends FormValidator<OutPatientVisitF
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(OutPatientVisitForm formBean) {
-        List<FormError> formErrors = super.validate(formBean);
+    public List<FormError> validate(OutPatientVisitForm formBean, FormBeanGroup group) {
+        List<FormError> formErrors = super.validate(formBean, group);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         if (Boolean.FALSE.equals(formBean.isVisitor())) {
-            final List<FormError> patientErrors = formValidator.validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME);
-            formErrors.addAll(patientErrors);
-            if (patientErrors.isEmpty()) {
-                if (PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType())) {
-                    formErrors.addAll(formValidator.validateIfPatientIsAChild(formBean.getMotechId()));
-                }
-                if (PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType())) {
-                    formErrors.addAll(formValidator.validateIfPatientIsFemale(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
-                }
-            }
+            Patient patient = formValidator.getPatient(formBean.getMotechId());
+            formErrors.addAll(new DependentValidator().validate(patient, group.getFormBeans(),
+                    new ExistsInDb()
+                            .onSuccess(new IsAlive()
+                                    .onSuccess(new IsAChild(), PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType()))
+                                    .onSuccess(new IsFemale(), PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType())))
+                            .onFailure(new RegClientFormSubmittedInSameUpload())));
         }
         return formErrors;
     }

@@ -1,7 +1,10 @@
 package org.motechproject.ghana.national.validator;
 
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
-import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllEncounters;
+import org.motechproject.ghana.national.validator.patient.*;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -16,20 +19,26 @@ public class DeliveryNotificationFormValidator extends FormValidator<DeliveryNot
 
     @Autowired
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
+    @Autowired
+    private AllEncounters allEncounters;
 
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(DeliveryNotificationForm formBean) {
-        List<FormError> formErrors = super.validate(formBean);
+    public List<FormError> validate(DeliveryNotificationForm formBean, FormBeanGroup group) {
+        List<FormError> formErrors = super.validate(formBean, group);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        final List<FormError> patientErrors = formValidator.validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME);
-        formErrors.addAll(patientErrors);
-        if (patientErrors.isEmpty()) {
-            formErrors.addAll(formValidator.validateIfPatientIsFemale(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
-            formErrors.addAll(formValidator.validateIfPatientIsNotAChild(formBean.getMotechId()));
-        }
+        final Patient patient = formValidator.getPatient(formBean.getMotechId());
+        formErrors.addAll(dependentValidator().validate(patient, group.getFormBeans(),
+                new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsFemale().onSuccess(new AgeMoreThan(5).onSuccess(new EnrolledToANC(allEncounters).onFailure(new RegANCFormSubmittedInSameUpload())))))
+                                .onFailure(new RegANCFormSubmittedInSameUpload()
+                                        .onFailure(new RegCWCFormSubmittedInSameUpload()
+                                                .onSuccess(new RegClientFormSubmittedForMother())))));
         return formErrors;
+    }
+
+    public DependentValidator dependentValidator() {
+        return new DependentValidator();
     }
 }

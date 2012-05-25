@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.motechproject.ghana.national.bean.PNCBabyForm;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
@@ -15,10 +14,7 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.service.request.PNCBabyRequest;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSUser;
-
-import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
@@ -53,10 +49,10 @@ public class PNCBabyFormHandlerTest {
     public void shouldRethrowException() {
         doThrow(new RuntimeException()).when(mockChildVisitService).save(Matchers.<PNCBabyRequest>any());
         try {
-            pncBabyFormHandler.handleFormEvent(new MotechEvent("subject"));
+            pncBabyFormHandler.handleFormEvent(new PNCBabyForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), is("subject"));
+            assertThat(e.getMessage(), is("Exception occurred while processing PNC Mother form"));
         }
     }
 
@@ -79,7 +75,6 @@ public class PNCBabyFormHandlerTest {
         Patient mockPatient = mock(Patient.class);
         MRSUser mockStaff = mock(MRSUser.class);
 
-        HashMap<String, Object> parameters = new HashMap<String, Object>();
         PNCBabyForm babyForm = new PNCBabyForm();
         babyForm.setFacilityId(facilityId);
         babyForm.setMotechId(patientId);
@@ -94,13 +89,12 @@ public class PNCBabyFormHandlerTest {
         babyForm.setLocation(location);
         babyForm.setDate(pncDate);
         babyForm.setVisitNumber(visitNumber);
-        parameters.put(Constants.FORM_BEAN, babyForm);
 
         when(mockFacilityService.getFacilityByMotechId(facilityId)).thenReturn(mockFacility);
         when(mockPatientService.getPatientByMotechId(patientId)).thenReturn(mockPatient);
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(mockStaff);
 
-        pncBabyFormHandler.handleFormEvent(new MotechEvent("subject", parameters));
+        pncBabyFormHandler.handleFormEvent(babyForm);
 
         verify(mockFacilityService).getFacilityByMotechId(facilityId);
         verify(mockStaffService).getUserByEmailIdOrMotechId(staffId);

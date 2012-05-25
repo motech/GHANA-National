@@ -7,15 +7,12 @@ import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +28,7 @@ import static org.motechproject.ghana.national.tools.Utility.nullSafe;
 
 
 @Component
-public class EditPatientFormHandler implements FormPublishHandler {
+public class EditPatientFormHandler{
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -40,17 +37,14 @@ public class EditPatientFormHandler implements FormPublishHandler {
     @Autowired
     private FacilityService facilityService;
 
-    @Override
-    @MotechListener(subjects = "form.validation.successful.NurseDataEntry.editPatient")
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent event) {
-        EditClientForm form = (EditClientForm) event.getParameters().get(Constants.FORM_BEAN);
+    public void handleFormEvent(EditClientForm editClientForm) {
         try {
-            patientService.updatePatient(preparePatient(form), form.getStaffId(), form.getDate());
+            patientService.updatePatient(preparePatient(editClientForm), editClientForm.getStaffId(), editClientForm.getDate());
         } catch (Exception e) {
-            log.error("Encountered exception while updating patient", e);
-            throw new XFormHandlerException(event.getSubject(), e);
+            log.error("Encountered exception processing edit patient form", e);
+            throw new XFormHandlerException("Encountered exception processing edit patient form", e);
         }
     }
 

@@ -196,4 +196,9 @@ public class CWCVisitForm extends FormBean {
     public void setComments(String comments) {
         this.comments = comments;
     }
+
+    @Override
+    public String groupId() {
+        return motechId;
+    }
 }

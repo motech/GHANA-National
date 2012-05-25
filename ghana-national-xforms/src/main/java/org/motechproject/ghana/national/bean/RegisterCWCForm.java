@@ -222,4 +222,9 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
         }
         return cwcCareHistories;
     }
+
+    @Override
+    public String groupId() {
+        return motechId;
+    }
 }

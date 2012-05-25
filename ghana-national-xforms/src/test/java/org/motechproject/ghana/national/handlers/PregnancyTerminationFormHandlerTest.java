@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.PregnancyTerminationForm;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
@@ -14,14 +13,12 @@ import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.PregnancyService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.service.request.PregnancyTerminationRequest;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.exception.PatientNotFoundException;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
@@ -60,10 +57,10 @@ public class PregnancyTerminationFormHandlerTest {
     public void shouldRethrowException() throws PatientNotFoundException {
         doThrow(new RuntimeException()).when(mockPregnancyService).terminatePregnancy(Matchers.<PregnancyTerminationRequest>any());
         try {
-            pregnancyTerminationFormHandler.handleFormEvent(new MotechEvent("subject"));
+            pregnancyTerminationFormHandler.handleFormEvent(new PregnancyTerminationForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), is("subject"));
+            assertThat(e.getMessage(), is("Exception occurred while processing pregnancy termination form"));
         }
     }
 
@@ -74,11 +71,7 @@ public class PregnancyTerminationFormHandlerTest {
         String motechId = "motechId";
         PregnancyTerminationForm form = pregnancyTerminationForm(motechId, staffId, facilityId);
 
-        HashMap<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put(Constants.FORM_BEAN, form);
-        MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.PregnancyTermination", parameters);
-
-        pregnancyTerminationFormHandler.handleFormEvent(event);
+        pregnancyTerminationFormHandler.handleFormEvent(form);
 
         verify(mockPregnancyService).terminatePregnancy(any(PregnancyTerminationRequest.class));
 

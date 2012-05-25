@@ -1,13 +1,19 @@
 package org.motechproject.ghana.national.validator;
 
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.validator.patient.ExistsInDb;
+import org.motechproject.ghana.national.validator.patient.IsAlive;
+import org.motechproject.ghana.national.validator.patient.RegClientFormSubmittedInSameUpload;
+import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.Time;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -24,7 +30,7 @@ public class MobileMidwifeValidator {
 
     public List<FormError> validate(MobileMidwifeEnrollment enrollment) {
         List<FormError> formErrors = new ArrayList<FormError>();
-        formErrors.addAll(validateFacilityPatientAndStaff(enrollment));
+        formErrors.addAll(validateFacilityPatientAndStaff(enrollment.getPatientId(),enrollment.getFacilityId(),enrollment.getStaffId()));
         formErrors.addAll(validateFieldValues(enrollment));
         return formErrors;
     }
@@ -41,15 +47,14 @@ public class MobileMidwifeValidator {
         return formErrors;
     }
 
-    private List<FormError> validateFacilityPatientAndStaff(MobileMidwifeEnrollment enrollment) {
-        return validateFacilityPatientAndStaff(enrollment.getPatientId(), enrollment.getFacilityId(), enrollment.getStaffId());
-    }
-
     public List<FormError> validateFacilityPatientAndStaff(String patientId, String facilityId, String staffId) {
         List<FormError> formErrors = new ArrayList<FormError>();
-        formErrors.addAll(formValidator.validateIfPatientExistsAndIsAlive(patientId, PATIENT_ID_ATTRIBUTE_NAME));
         formErrors.addAll(formValidator.validateIfFacilityExists(facilityId));
         formErrors.addAll(formValidator.validateIfStaffExists(staffId));
+        Patient patient = formValidator.getPatient(patientId);
+        formErrors.addAll(new DependentValidator().validate(patient, Collections.<FormBean>emptyList(),
+                new ExistsInDb().onSuccess(new IsAlive())
+                                .onFailure(new RegClientFormSubmittedInSameUpload())));
         return formErrors;
     }
 

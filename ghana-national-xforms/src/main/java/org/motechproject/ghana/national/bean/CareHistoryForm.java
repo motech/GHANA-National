@@ -245,4 +245,9 @@ public class CareHistoryForm extends FormBean {
 
         return new CareHistoryVO(staffId, facilityId, motechId, date, ancCareHistoryVO, cwcCareHistoryVO);
     }
+
+    @Override
+    public String groupId() {
+        return motechId;
+    }
 }

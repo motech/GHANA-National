@@ -69,8 +69,7 @@ public class Constants {
     //CWC Validators
     public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";
     public static final String CHILD_AGE_PARAMETER = "childAge";
-    public static final String CHILD_AGE_MORE_ERR_MSG = "child cannot be more than 5 years old";
-    public static final String AGE_LESS_ERR_MSG = "patient cannot be less than 5 years old";
+    public static final String CHILD_AGE_MORE_ERR_MSG = "should be a child under age of 5";
 
     public static final String GENDER_ERROR_MSG = "should be female";
     // Mobile Midwife

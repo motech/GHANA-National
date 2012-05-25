@@ -18,7 +18,7 @@ public class MobileMidwifeForm extends AbstractMobileMidWifeForm {
     private String facilityId;
     @Required
     @MotechId(validator = MotechIdVerhoeffValidator.class)
-    private String patientId;
+    private String motechId;
 
     @Required
     private RegisterClientAction action;
@@ -41,12 +41,12 @@ public class MobileMidwifeForm extends AbstractMobileMidWifeForm {
         this.facilityId = facilityId;
     }
 
-    public String getPatientId() {
-        return patientId;
+    public String getMotechId() {
+        return motechId;
     }
 
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
+    public void setMotechId(String motechId) {
+        this.motechId = motechId;
     }
 
     public Boolean getConsent() {
@@ -67,7 +67,12 @@ public class MobileMidwifeForm extends AbstractMobileMidWifeForm {
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
         MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment(DateUtil.now()));
-        return enrollment.setStaffId(getStaffId()).setFacilityId(getFacilityId()).setPatientId(getPatientId())
+        return enrollment.setStaffId(getStaffId()).setFacilityId(getFacilityId()).setPatientId(getMotechId())
                 .setConsent(getConsent());
+    }
+
+    @Override
+    public String groupId() {
+        return motechId;
     }
 }

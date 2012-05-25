@@ -49,4 +49,9 @@ public class GeneralQueryForm extends FormBean {
     public void setQueryType(GeneralQueryType queryType) {
         this.queryType = queryType;
     }
+
+    @Override
+    public String groupId() {
+        return null;
+    }
 }

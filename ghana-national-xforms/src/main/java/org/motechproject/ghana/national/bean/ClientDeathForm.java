@@ -68,4 +68,9 @@ public class ClientDeathForm extends FormBean {
     public void setCauseOfDeath(String causeOfDeath) {
         this.causeOfDeath = causeOfDeath;
     }
+
+    @Override
+    public String groupId() {
+        return motechId;
+    }
 }

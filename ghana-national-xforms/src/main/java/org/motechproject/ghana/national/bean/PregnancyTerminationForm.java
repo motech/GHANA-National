@@ -149,4 +149,9 @@ public class PregnancyTerminationForm extends FormBean {
         }
         return terminationComplications;
     }
+
+    @Override
+    public String groupId() {
+        return motechId;
+    }
 }

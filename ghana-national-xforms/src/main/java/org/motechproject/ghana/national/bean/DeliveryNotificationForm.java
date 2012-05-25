@@ -40,4 +40,9 @@ public class DeliveryNotificationForm extends FormBean {
     public void setStaffId(String staffId) {
         this.staffId = staffId;
     }
+
+    @Override
+    public String groupId() {
+        return motechId;
+    }
 }

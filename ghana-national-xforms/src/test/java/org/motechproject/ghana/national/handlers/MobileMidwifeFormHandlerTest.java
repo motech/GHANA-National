@@ -11,10 +11,7 @@ import org.motechproject.ghana.national.domain.RegisterClientAction;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
-import org.motechproject.model.MotechEvent;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.HashMap;
 
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
@@ -41,10 +38,10 @@ public class MobileMidwifeFormHandlerTest {
     public void shouldRethrowException() {
         doThrow(new RuntimeException()).when(mockMobileMidwifeService).register(Matchers.<MobileMidwifeEnrollment>any());
         try {
-            formHandler.handleFormEvent(new MotechEvent("subject"));
+            formHandler.handleFormEvent(new MobileMidwifeForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), is("subject"));
+            assertThat(e.getMessage(), is("Exception occurred while processing Mobile Midwife form"));
         }
     }
 
@@ -54,9 +51,7 @@ public class MobileMidwifeFormHandlerTest {
         final String facilityId = "11";
         final MobileMidwifeForm form = MobileMidwifeFormTest.setupFormData(staffId, facilityId);
 
-        formHandler.handleFormEvent(new MotechEvent("", new HashMap<String, Object>(){{
-            put("formBean", form);
-        }}));
+        formHandler.handleFormEvent(form);
 
         final ArgumentCaptor<MobileMidwifeEnrollment> captor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         verify(mockMobileMidwifeService).register(captor.capture());
@@ -74,9 +69,7 @@ public class MobileMidwifeFormHandlerTest {
         String patientId = "patientId";
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(form.createMobileMidwifeEnrollment());
 
-        formHandler.handleFormEvent(new MotechEvent("", new HashMap<String, Object>(){{
-            put("formBean", form);
-        }}));
+        formHandler.handleFormEvent(form);
 
         verify(mockMobileMidwifeService).unRegister(patientId);
         verify(mockMobileMidwifeService, never()).register(Matchers.<MobileMidwifeEnrollment>any());

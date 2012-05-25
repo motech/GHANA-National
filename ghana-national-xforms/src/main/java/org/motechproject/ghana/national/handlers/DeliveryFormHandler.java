@@ -1,24 +1,23 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.DeliveryForm;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.ChildDeliveryOutcome;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
 import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
-import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DeliveryFormHandler implements FormPublishHandler {
+public class DeliveryFormHandler{
 
     Logger log = LoggerFactory.getLogger(DeliveryFormHandler.class);
 
@@ -39,13 +38,10 @@ public class DeliveryFormHandler implements FormPublishHandler {
     @Autowired
     private CareService careService;
 
-    @Override
-    @MotechListener(subjects = "form.validation.successful.NurseDataEntry.delivery")
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent event) {
+    public void handleFormEvent(DeliveryForm deliveryForm) {
         try {
-            DeliveryForm deliveryForm = (DeliveryForm) event.getParameters().get(Constants.FORM_BEAN);
             PregnancyDeliveryRequest deliveryRequest = createDeliveryRequest(deliveryForm);
             if(pregnancyService.isDeliverySuccessful(deliveryRequest))
                 mobileMidwifeService.rollover(deliveryForm.getMotechId(),deliveryForm.getDate());
@@ -60,8 +56,8 @@ public class DeliveryFormHandler implements FormPublishHandler {
             }
 
         } catch (Exception e) {
-            log.error("Encountered error while saving delivery form details", e);
-            throw new XFormHandlerException(event.getSubject(), e);
+            log.error("Encountered error while processing delivery form", e);
+            throw new XFormHandlerException("Encountered error while processing delivery form", e);
         }
     }
 

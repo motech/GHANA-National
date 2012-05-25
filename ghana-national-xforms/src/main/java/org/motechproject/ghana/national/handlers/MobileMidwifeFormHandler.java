@@ -1,43 +1,36 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.MobileMidwifeForm;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.RegisterClientAction;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
-import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MobileMidwifeFormHandler implements FormPublishHandler {
+public class MobileMidwifeFormHandler{
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     MobileMidwifeService mobileMidwifeService;
 
-    @Override
-    @MotechListener(subjects = "form.validation.successful.NurseDataEntry.mobileMidwife")
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent event) {
+    public void handleFormEvent(MobileMidwifeForm mobileMidwifeForm) {
         try {
-            final MobileMidwifeForm mobileMidwifeForm = (MobileMidwifeForm) event.getParameters().get(Constants.FORM_BEAN);
             if (RegisterClientAction.UN_REGISTER.equals(mobileMidwifeForm.getAction())) {
-                mobileMidwifeService.unRegister(mobileMidwifeForm.getPatientId());
+                mobileMidwifeService.unRegister(mobileMidwifeForm.getMotechId());
                 return;
             }
 
             mobileMidwifeService.register(mobileMidwifeForm.createMobileMidwifeEnrollment());
         } catch (Exception e) {
-            log.error("Exception occured in registering Mobile Midwife ", e);
-            throw new XFormHandlerException(event.getSubject(), e);
+            log.error("Exception occurred while processing Mobile Midwife form", e);
+            throw new XFormHandlerException("Exception occurred while processing Mobile Midwife form", e);
         }
     }
 }

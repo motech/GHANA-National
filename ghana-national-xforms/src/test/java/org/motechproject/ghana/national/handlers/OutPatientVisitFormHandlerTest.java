@@ -7,12 +7,13 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.OutPatientVisitForm;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.OutPatientVisit;
+import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.OutPatientVisitService;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
@@ -22,7 +23,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,7 +33,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.domain.Concept.*;
-import static org.motechproject.ghana.national.domain.Concept.REFERRED;
 import static org.motechproject.ghana.national.domain.EncounterType.OUTPATIENT_VISIT;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -67,10 +66,10 @@ public class OutPatientVisitFormHandlerTest {
     public void shouldRethrowException() {
         doThrow(new RuntimeException()).when(mockMRSPatientAdapter).getPatientByMotechId(anyString());
         try {
-            handler.handleFormEvent(new MotechEvent("subject"));
+            handler.handleFormEvent(new OutPatientVisitForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            MatcherAssert.assertThat(e.getMessage(), is("subject"));
+            MatcherAssert.assertThat(e.getMessage(), is("Exception occurred while processing Outpatient Visit form"));
         }
     }
     @Test
@@ -112,10 +111,6 @@ public class OutPatientVisitFormHandlerTest {
         form.setRdtPositive(rdtPositive);
         form.setActTreated(actTreated);
 
-        MotechEvent motechEvent = new MotechEvent("form.validation.successful.NurseDataEntry.opvVisit", new HashMap<String, Object>() {{
-            put(Constants.FORM_BEAN, form);
-        }});
-
         MRSPatient mockMrsPatient = mock(MRSPatient.class);
         Facility mockFacility = mock(Facility.class);
 
@@ -123,7 +118,7 @@ public class OutPatientVisitFormHandlerTest {
         when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(mockFacility);
         when(mockFacility.mrsFacilityId()).thenReturn(facilityId);
 
-        handler.handleFormEvent(motechEvent);
+        handler.handleFormEvent(form);
 
         ArgumentCaptor<Set> argumentCaptor = ArgumentCaptor.forClass(Set.class);
 
@@ -190,11 +185,7 @@ public class OutPatientVisitFormHandlerTest {
         form.setReferred(isReferred);
         form.setComments(comments);
 
-        MotechEvent motechEvent = new MotechEvent("form.validation.successful.NurseDataEntry.opvVisit", new HashMap<String, Object>() {{
-            put(Constants.FORM_BEAN, form);
-        }});
-
-        handler.handleFormEvent(motechEvent);
+        handler.handleFormEvent(form);
 
         OutPatientVisit expectedVisit = new OutPatientVisit();
         expectedVisit.setFacilityId(motechFacilityId).setStaffId(staffId).setRegistrantType(registrantType).setVisitDate(visitDate)

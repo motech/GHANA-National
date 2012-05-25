@@ -496,4 +496,9 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment(String patientMotechId) {
         return fillEnrollment(new MobileMidwifeEnrollment(newDateTime(getDate()))).setStaffId(getStaffId()).setPatientId(patientMotechId);
     }
+
+    @Override
+    public String groupId() {
+        return motechId;
+    }
 }

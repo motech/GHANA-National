@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.handlers;
 
 import org.joda.time.DateTime;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMSTemplate;
@@ -11,12 +10,9 @@ import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +23,7 @@ import java.util.HashSet;
 import static org.motechproject.ghana.national.domain.EncounterType.PREG_DEL_NOTIFY_VISIT;
 
 @Component
-public class DeliveryNotificationFormHandler implements FormPublishHandler {
+public class DeliveryNotificationFormHandler{
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     static final String DELIVERY_NOTIFICATION_SMS_KEY = "DELIVERY_NOTIFICATION_SMS_KEY";
@@ -44,14 +40,10 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
     @Autowired
     SMSGateway smsGateway;
 
-    @Override
-    @MotechListener(subjects = "form.validation.successful.NurseDataEntry.deliveryNotify")
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent event) {
-        DeliveryNotificationForm deliveryNotificationForm;
+    public void handleFormEvent(DeliveryNotificationForm deliveryNotificationForm) {
         try {
-            deliveryNotificationForm = (DeliveryNotificationForm) event.getParameters().get(Constants.FORM_BEAN);
             Patient patient = patientService.getPatientByMotechId(deliveryNotificationForm.getMotechId());
             Facility facility = facilityService.getFacilityByMotechId(deliveryNotificationForm.getFacilityId());
             DateTime deliveryTime = deliveryNotificationForm.getDatetime();
@@ -60,8 +52,8 @@ public class DeliveryNotificationFormHandler implements FormPublishHandler {
                     deliveryTime.toDate(), new HashSet<MRSObservation>());
             sendDeliveryNotificationMessage(deliveryNotificationForm.getMotechId(), deliveryTime);
         } catch (Exception e) {
-            log.error("Exception occured in saving Delivery Notification details", e);
-            throw new XFormHandlerException(event.getSubject(), e);
+            log.error("Exception occurred while processing Delivery Notification form", e);
+            throw new XFormHandlerException("Exception occurred while processing Delivery Notification form", e);
         }
     }
 

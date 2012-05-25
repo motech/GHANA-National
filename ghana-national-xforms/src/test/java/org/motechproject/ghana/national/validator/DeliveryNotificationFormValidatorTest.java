@@ -1,75 +1,86 @@
 package org.motechproject.ghana.national.validator;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
-import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.repository.AllEncounters;
+import org.motechproject.ghana.national.validator.patient.*;
+import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
+import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class DeliveryNotificationFormValidatorTest {
 
-    DeliveryNotificationFormValidator validator = new DeliveryNotificationFormValidator();
+    DeliveryNotificationFormValidator validator;
 
     @Mock
     FormValidator formValidator;
+    @Mock
+    private AllEncounters allEncounters;
 
     @Before
     public void setUp() {
         initMocks(this);
+        validator = spy(new DeliveryNotificationFormValidator());
         ReflectionTestUtils.setField(validator, "formValidator", formValidator);
+        ReflectionTestUtils.setField(validator, "allEncounters", allEncounters);
     }
 
     @Test
-    public void shouldVerifyValidationCalls() {
-        DeliveryNotificationForm formBean = new DeliveryNotificationForm();
-        validator.validate(formBean);
-        verify(formValidator).validateIfStaffExists(formBean.getStaffId());
-        verify(formValidator).validateIfFacilityExists(formBean.getFacilityId());
-        verify(formValidator).validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME);
-        verify(formValidator).validateIfPatientIsFemale(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME);
-        verify(formValidator).validateIfPatientIsNotAChild(formBean.getMotechId());
-    }
+    public void shouldValidateDeliveryForm() {
 
+        DeliveryNotificationForm deliveryForm = new DeliveryNotificationForm();
+        String motechId = "motechId";
+        String facilityId = "facilityId";
+        String staffId = "staffId";
+        deliveryForm.setMotechId(motechId);
+        deliveryForm.setFacilityId(facilityId);
+        deliveryForm.setStaffId(staffId);
+
+        final DependentValidator mockDependentValidator = mock(DependentValidator.class);
+        when(validator.dependentValidator()).thenReturn(mockDependentValidator);
+
+        PatientValidator expectedValidator = new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsFemale().onSuccess(new AgeMoreThan(5).onSuccess(new EnrolledToANC(allEncounters).onFailure(new RegANCFormSubmittedInSameUpload())))))
+                .onFailure(new RegANCFormSubmittedInSameUpload().onFailure(new RegClientFormSubmittedInSameUpload().onSuccess(new RegClientFormSubmittedForMother())));
+
+        Patient patient = mock(Patient.class);
+        when(formValidator.getPatient(motechId)).thenReturn(patient);
+
+        final FormBeanGroup formBeanGroup = new FormBeanGroup(Collections.<FormBean>emptyList());
+        validator.validate(deliveryForm, formBeanGroup);
+
+        verify(formValidator).validateIfStaffExists(staffId);
+        verify(formValidator).validateIfFacilityExists(facilityId);
+        verify(mockDependentValidator).validate(patient, Collections.<FormBean>emptyList(), expectedValidator);
+    }
+    
     @Test
-    public void shouldReturnFormErrors() {
-        final DeliveryNotificationForm deliveryNotificationForm = new DeliveryNotificationForm();
-        deliveryNotificationForm.setMotechId("111");
-        deliveryNotificationForm.setStaffId("222");
-        deliveryNotificationForm.setFacilityId("33");
-        List<FormError> staffFormErrors = new ArrayList<FormError>() {
-            {
-                add(new FormError("test1", "error1"));
-            }
-        };
-        List<FormError> facilityFormErrors = new ArrayList<FormError>() {
-            {
-                add(new FormError("test2", "error2"));
-            }
-        };
-        List<FormError> patientFormErrors = new ArrayList<FormError>() {
-            {
-                add(new FormError("test3", "error3"));
-            }
-        };
-        when(formValidator.validateIfStaffExists(deliveryNotificationForm.getStaffId())).thenReturn(staffFormErrors);
-        when(formValidator.validateIfFacilityExists(deliveryNotificationForm.getFacilityId())).thenReturn(facilityFormErrors);
-        when(formValidator.validateIfPatientExistsAndIsAlive(deliveryNotificationForm.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(patientFormErrors);
+    public void shouldThrowErrorWhenPatientIsAChild() {
+        DeliveryNotificationForm deliveryNotificationForm = new DeliveryNotificationForm();
+        String motechId = "motechId";
+        String facilityId = "facilityId";
+        deliveryNotificationForm.setMotechId(motechId);
 
-        final List<FormError> actualFormErrors = validator.validate(deliveryNotificationForm);
-
-        assertTrue(CollectionUtils.isSubCollection(staffFormErrors, actualFormErrors));
-        assertTrue(CollectionUtils.isSubCollection(facilityFormErrors, actualFormErrors));
-        assertTrue(CollectionUtils.isSubCollection(patientFormErrors, actualFormErrors));
+        //patient age less than 5
+        Patient patient= new Patient(new MRSPatient(motechId,new MRSPerson().dead(false).age(4).gender("F"),new MRSFacility(facilityId)));
+        when(formValidator.getPatient(motechId)).thenReturn(patient);
+        List<FormError> errors = validator.validate(deliveryNotificationForm,new FormBeanGroup(Collections.<FormBean>emptyList()));
+        assertThat(errors, hasItem(new FormError("Patient age", "is less than 5")));
     }
+
+
 }

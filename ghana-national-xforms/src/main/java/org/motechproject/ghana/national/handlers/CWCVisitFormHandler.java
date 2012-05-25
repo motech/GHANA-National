@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.CWCVisitForm;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
@@ -10,19 +9,16 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.vo.CWCVisit;
-import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CWCVisitFormHandler implements FormPublishHandler {
+public class CWCVisitFormHandler{
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -34,17 +30,14 @@ public class CWCVisitFormHandler implements FormPublishHandler {
     @Autowired
     private StaffService staffService;
 
-    @Override
-    @MotechListener(subjects = "form.validation.successful.NurseDataEntry.cwcVisit")
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent event) {
+    public void handleFormEvent(CWCVisitForm cwcVisitForm) {
         try {
-            CWCVisitForm form = (CWCVisitForm) event.getParameters().get(Constants.FORM_BEAN);
-            childVisitService.save(cwcVisitFor(form));
+            childVisitService.save(cwcVisitFor(cwcVisitForm));
         } catch (Exception e) {
-            log.error("Encountered error while saving CWC visit details", e);
-            throw new XFormHandlerException(event.getSubject(), e);
+            log.error("Encountered error while processing CWC visit form", e);
+            throw new XFormHandlerException("Encountered error while processing CWC visit form", e);
         }
     }
 

@@ -9,18 +9,17 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.PNCMotherForm;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.TTVaccine;
+import org.motechproject.ghana.national.domain.TTVaccineDosage;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static junit.framework.Assert.fail;
 import static org.hamcrest.core.Is.is;
@@ -56,10 +55,10 @@ public class PNCMotherFormHandlerTest {
     public void shouldRethrowException() {
         doThrow(new RuntimeException()).when(motherVisitService).enrollOrFulfillPNCSchedulesForMother(Matchers.<PNCMotherRequest>any());
         try {
-            pncMotherFormHandler.handleFormEvent(new MotechEvent("subject"));
+            pncMotherFormHandler.handleFormEvent(new PNCMotherForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            MatcherAssert.assertThat(e.getMessage(), CoreMatchers.is("subject"));
+            MatcherAssert.assertThat(e.getMessage(), CoreMatchers.is("Exception occurred while processing PNC Mother form"));
         }
     }
 
@@ -96,12 +95,8 @@ public class PNCMotherFormHandlerTest {
         pncMotherForm.setReferred(referred);
         pncMotherForm.setTtDose(ttDose);
 
-        Map<String, Object> params = new HashMap<String, Object>() {{
-            put(Constants.FORM_BEAN, pncMotherForm);
-        }};
-        pncMotherFormHandler.handleFormEvent(new MotechEvent("subject", params));
+        pncMotherFormHandler.handleFormEvent(pncMotherForm);
 
-        ArgumentCaptor<PNCMotherRequest> requestCaptor = ArgumentCaptor.forClass(PNCMotherRequest.class);
         ArgumentCaptor<TTVaccine> ttVaccineCaptor = ArgumentCaptor.forClass(TTVaccine.class);
 
         verify(visitService).createTTSchedule(ttVaccineCaptor.capture());

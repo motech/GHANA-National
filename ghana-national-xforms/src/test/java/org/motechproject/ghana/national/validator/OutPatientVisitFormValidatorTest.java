@@ -1,26 +1,35 @@
 package org.motechproject.ghana.national.validator;
 
 
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.OutPatientVisitForm;
-import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.bean.RegisterClientForm;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
+import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
+import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertTrue;
+import static java.lang.Boolean.TRUE;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.domain.Constants.*;
 
 public class OutPatientVisitFormValidatorTest {
 
-    OutPatientVisitFormValidator validator=new OutPatientVisitFormValidator();
+    OutPatientVisitFormValidator validator = new OutPatientVisitFormValidator();
     @Mock
     FormValidator formValidator;
 
@@ -32,87 +41,69 @@ public class OutPatientVisitFormValidatorTest {
 
     @Test
     public void shouldVerifyValidationCallsIfPatientIsAFemale() {
-        OutPatientVisitForm formBean = new OutPatientVisitForm();
-        formBean.setRegistrantType(PatientType.PREGNANT_MOTHER);
-        formBean.setVisitor(false);
-        setExpectations(formBean);
+        OutPatientVisitForm formBean = mock(OutPatientVisitForm.class);
 
-        validator.validate(formBean);
+        String motechId = "1231231";
+        String staffId = "11";
+        String facilityId = "34";
 
-        verifyValidations(formBean);
-        verify(formValidator).validateIfPatientIsFemale(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME);
+        when(formBean.getMotechId()).thenReturn(motechId);
+        when(formBean.getStaffId()).thenReturn(staffId);
+        when(formBean.getFacilityId()).thenReturn(facilityId);
 
-    }
+        Patient patient = null;
+        final List<FormBean> formsUploaded = new ArrayList<FormBean>();
 
-    @Test
-    public void shouldVerifyValidationCallsIfPatientIsAChild() {
-        OutPatientVisitForm formBean = new OutPatientVisitForm();
-        formBean.setRegistrantType(PatientType.CHILD_UNDER_FIVE);
-        formBean.setVisitor(false);
-        setExpectations(formBean);
+        when(formValidator.getPatient(motechId)).thenReturn(patient);
 
-        validator.validate(formBean);
+        List<FormError> errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
 
-        verifyValidations(formBean);
-        verify(formValidator).validateIfPatientIsAChild(formBean.getMotechId());
-    }
+        verify(formValidator).validateIfStaffExists(eq(staffId));
+        verify(formValidator).validateIfFacilityExists(eq(facilityId));
 
-    private void setExpectations(OutPatientVisitForm formBean) {
-        when(formValidator.validateIfStaffExists(formBean.getStaffId())).thenReturn(new ArrayList<FormError>());
-        when(formValidator.validateIfFacilityExists(formBean.getFacilityId())).thenReturn(new ArrayList<FormError>());
-        when(formValidator.validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(new ArrayList<FormError>());
-    }
+        assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, NOT_FOUND)));
 
-    private void verifyValidations(OutPatientVisitForm formBean) {
+        // patient is dead
+        patient = new Patient(new MRSPatient("motechId", new MRSPerson().dead(TRUE).gender("F"), new MRSFacility("facilityId")));
+        when(formValidator.getPatient(motechId)).thenReturn(patient);
+        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
+        assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, IS_NOT_ALIVE)));
 
-        verify(formValidator).validateIfStaffExists(formBean.getStaffId());
-        verify(formValidator).validateIfFacilityExists(formBean.getFacilityId());
-        verify(formValidator).validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME);
-    }
+        patient.getMrsPatient().getPerson().gender("M");
+        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
+        assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, IS_NOT_ALIVE)));
 
-    @Test
-    public void shouldReturnFormErrors() {
-        final OutPatientVisitForm outPatientVisitForm = new OutPatientVisitForm();
-        outPatientVisitForm.setMotechId("111");
-        outPatientVisitForm.setStaffId("222");
-        outPatientVisitForm.setFacilityId("33");
-        outPatientVisitForm.setVisitor(false);
-        List<FormError> staffFormErrors = new ArrayList<FormError>() {
-            {
-                add(new FormError("test1", "error1"));
-            }
-        };
-        List<FormError> facilityFormErrors = new ArrayList<FormError>() {
-            {
-                add(new FormError("test2", "error2"));
-            }
-        };
-        List<FormError> patientFormErrors = new ArrayList<FormError>() {
-            {
-                add(new FormError("test3", "error3"));
-            }
-        };
-        when(formValidator.validateIfStaffExists(outPatientVisitForm.getStaffId())).thenReturn(staffFormErrors);
-        when(formValidator.validateIfFacilityExists(outPatientVisitForm.getFacilityId())).thenReturn(facilityFormErrors);
-        when(formValidator.validateIfPatientExistsAndIsAlive(outPatientVisitForm.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME)).thenReturn(patientFormErrors);
+        // registrant type is pregnant mother,patient is not female
+        when(formBean.getRegistrantType()).thenReturn(PatientType.PREGNANT_MOTHER);
+        patient.getMrsPatient().getPerson().dead(Boolean.FALSE).gender("M");
+        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
+        assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG)));
 
-        final List<FormError> actualFormErrors = validator.validate(outPatientVisitForm);
+        // patient not available in db, but form submit has reg client form
+        when(formValidator.getPatient(motechId)).thenReturn(null);
+        final RegisterClientForm registerClientForm = new RegisterClientForm();
+        registerClientForm.setSex("F");
+        registerClientForm.setFormname("registerPatient");
+        formsUploaded.add(registerClientForm);
+        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
+        assertThat(errors, not(hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG))));
+        assertThat(errors, not(hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, NOT_FOUND))));
+        assertThat(errors, not(hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, IS_NOT_ALIVE))));
 
-        assertTrue(CollectionUtils.isSubCollection(staffFormErrors, actualFormErrors));
-        assertTrue(CollectionUtils.isSubCollection(facilityFormErrors, actualFormErrors));
-        assertTrue(CollectionUtils.isSubCollection(patientFormErrors, actualFormErrors));
-    }
+        // registrant type is child,age more than 5 years
+        patient.getMrsPatient().getPerson().dead(Boolean.FALSE).age(6);
+        when(formBean.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
+        when(formValidator.getPatient(motechId)).thenReturn(patient);
+        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
+        assertThat(errors, hasItem(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_MORE_ERR_MSG)));
 
-    @Test
-    public void shouldNotValidatePatientIfVisitor(){
-        OutPatientVisitForm formBean = new OutPatientVisitForm();
-        formBean.setVisitor(true);
+        //patient exists in db,type is other
+        when(formBean.getRegistrantType()).thenReturn(PatientType.OTHER);
+        when(formValidator.getPatient(motechId)).thenReturn(patient);
+        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
+        assertThat(errors, not(hasItem(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_MORE_ERR_MSG))));
+        assertThat(errors, not(hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG))));
 
-        validator.validate(formBean);
-
-        verify(formValidator).validateIfStaffExists(formBean.getStaffId());
-        verify(formValidator).validateIfFacilityExists(formBean.getFacilityId());
-        verifyNoMoreInteractions(formValidator);
     }
 
 }

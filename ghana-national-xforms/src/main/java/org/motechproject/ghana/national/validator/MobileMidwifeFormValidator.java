@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.validator;
 
 import org.motechproject.ghana.national.bean.MobileMidwifeForm;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -19,8 +20,8 @@ public class MobileMidwifeFormValidator extends FormValidator<MobileMidwifeForm>
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(MobileMidwifeForm formBean) {
-        List<FormError> formErrors = super.validate(formBean);
+    public List<FormError> validate(MobileMidwifeForm formBean, FormBeanGroup group) {
+        List<FormError> formErrors = super.validate(formBean,group);
         formErrors.addAll(mobileMidwifeValidator.validate(formBean.createMobileMidwifeEnrollment()));
         return formErrors;
     }

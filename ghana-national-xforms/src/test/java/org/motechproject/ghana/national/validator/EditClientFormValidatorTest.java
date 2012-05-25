@@ -4,98 +4,112 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.EditClientForm;
+import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.validator.patient.ExistsInDb;
+import org.motechproject.ghana.national.validator.patient.IsAlive;
+import org.motechproject.ghana.national.validator.patient.PatientValidator;
+import org.motechproject.ghana.national.validator.patient.RegClientFormSubmittedInSameUpload;
+import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
-import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
+import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.domain.Constants.IS_NOT_ALIVE;
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
 
 public class EditClientFormValidatorTest {
     private EditClientFormValidator editClientFormValidator;
 
     @Mock
-    private EditClientForm mockEditClientForm;
-    @Mock
-    private PatientService mockPatientService;
-    @Mock
-    private MotechIdVerhoeffValidator mockMotechIdVerhoeffValidator;
-    @Mock
     private FormValidator formValidator;
 
     @Before
     public void setUp() {
         initMocks(this);
-        editClientFormValidator = new EditClientFormValidator();
+        editClientFormValidator = spy(new EditClientFormValidator());
         ReflectionTestUtils.setField(editClientFormValidator, "formValidator", formValidator);
-        ReflectionTestUtils.setField(editClientFormValidator, "patientService", mockPatientService);
     }
 
     @Test
-    public void shouldValidateIfAPatientIsAvailableWithIdAsMothersMotechId() {
-        String mothersMotechId = "100";
-        when(mockEditClientForm.getMotherMotechId()).thenReturn(mothersMotechId);
-        Patient patientsMotherMock = mock(Patient.class);
-        when(mockPatientService.getPatientByMotechId(mothersMotechId)).thenReturn(patientsMotherMock);
-        assertThat(editClientFormValidator.validate(mockEditClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
+    public void shouldVerifyEditClientForm() {
+        EditClientForm editClientForm = new EditClientForm();
+        String motechId = "motechId";
+        String facilityId = "facilityId";
+        String staffId = "staffId";
+        editClientForm.setMotechId(motechId);
+        editClientForm.setFacilityId(facilityId);
+        editClientForm.setStaffId(staffId);
 
-        when(mockPatientService.getPatientByMotechId(mothersMotechId)).thenReturn(null);
-        assertThat(editClientFormValidator.validate(mockEditClientForm), hasItem(new FormError("motherMotechId", NOT_FOUND)));
+        final DependentValidator mockDependentValidator = mock(DependentValidator.class);
+        when(editClientFormValidator.dependentValidator()).thenReturn(mockDependentValidator);
+
+        PatientValidator expectedValidator = new ExistsInDb().onSuccess(new IsAlive()).onFailure(new RegClientFormSubmittedInSameUpload());
+
+        Patient patient = mock(Patient.class);
+        when(formValidator.getPatient(motechId)).thenReturn(patient);
+
+        final FormBeanGroup formBeanGroup = new FormBeanGroup(Collections.<FormBean>emptyList());
+        editClientFormValidator.validate(editClientForm, formBeanGroup);
+
+        verify(formValidator).validateIfStaffExists(staffId);
+        verify(formValidator).validateIfFacilityExists(facilityId);
+        verify(mockDependentValidator).validate(patient, Collections.<FormBean>emptyList(), expectedValidator);
     }
 
     @Test
-    public void shouldReturnErrorIfMothersMotechIdIsNotPresent() {
-        String motherId = "12345";
-        when(mockEditClientForm.getMotherMotechId()).thenReturn(motherId);
-        when(mockPatientService.getPatientByMotechId(motherId)).thenReturn(null);
-        assertThat(editClientFormValidator.validate(mockEditClientForm), hasItem(new FormError("motherMotechId", NOT_FOUND)));
-    }
+    public void shouldValidateMothersMotechIdIfOneWasProvided() {
+        EditClientForm editClientForm = new EditClientForm();
 
-    @Test
-    public void shouldValidateTheMotechIdOfThePatient() {
-        String motechId = "12345";
-        Patient mockPatient = mock(Patient.class);
-        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(null);
-        when(mockEditClientForm.getMotechId()).thenReturn(motechId);
-        assertThat(editClientFormValidator.validate(mockEditClientForm), hasItem(new FormError("motechId", NOT_FOUND)));
+        String motechId = "motechId";
+        String facilityId = "facilityId";
+        String staffId = "staffId";
+        String mothersMotechId = "mothersMotechId";
+        editClientForm.setMotechId(motechId);
+        editClientForm.setFacilityId(facilityId);
+        editClientForm.setStaffId(staffId);
+        editClientForm.setMotherMotechId(mothersMotechId);
 
-        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(mockPatient);
-        when(mockEditClientForm.getMotechId()).thenReturn(motechId);
-        assertThat(editClientFormValidator.validate(mockEditClientForm), not(hasItem(new FormError("motechId", NOT_FOUND))));
-    }
 
-    @Test
-    public void shouldVerifyIfStaffIdIsValidOrNot() {
-        String staffId = "21";
-        when(mockEditClientForm.getStaffId()).thenReturn(staffId);
-        editClientFormValidator.validate(mockEditClientForm);
-        verify(formValidator).validateIfStaffExists(eq(staffId));
-    }
+        // mother not in db
+        when(formValidator.getPatient(motechId)).thenReturn(null);
+        List<FormError> errors = editClientFormValidator.validate(editClientForm, new FormBeanGroup(Arrays.<FormBean>asList(editClientForm)));
 
-    @Test
-    public void shouldVerifyIfFacilityIdIsValidOrNot() {
-        String facilityId = "21";
-        when(mockEditClientForm.getFacilityId()).thenReturn(facilityId);
-        editClientFormValidator.validate(mockEditClientForm);
-        verify(formValidator).validateIfFacilityExists(eq(facilityId));
+        verify(formValidator).validateIfStaffExists(staffId);
+        verify(formValidator).validateIfFacilityExists(facilityId);
 
-    }
+        assertThat(errors, hasItem(new FormError("Mothers motech Id", NOT_FOUND)));
 
-    @Test
-    public void shouldVerifyIfFacilityIdsAreValidOrNot() {
-        String facilityId = "21";
-        String encounterFacilityId = "31";
-        when(mockEditClientForm.getFacilityId()).thenReturn(facilityId);
-        when(mockEditClientForm.getUpdatePatientFacilityId()).thenReturn(encounterFacilityId);
-        editClientFormValidator.validate(mockEditClientForm);
-        verify(formValidator).validateIfFacilityExists(eq(facilityId));
-        verify(formValidator).validateIfFacilityExists(eq(encounterFacilityId));
+        // mother in db by dead
+        Patient mother = new Patient(new MRSPatient(motechId, new MRSPerson().dead(true), new MRSFacility(facilityId)));
+        when(formValidator.getPatient(mothersMotechId)).thenReturn(mother);
+        errors = editClientFormValidator.validate(editClientForm, new FormBeanGroup(Arrays.<FormBean>asList(editClientForm)));
+
+        assertThat(errors, hasItem(new FormError("Mothers motech Id", IS_NOT_ALIVE)));
+
+        // mother in db and alive
+        mother.getMrsPatient().getPerson().dead(false);
+        errors = editClientFormValidator.validate(editClientForm, new FormBeanGroup(Arrays.<FormBean>asList(new RegisterClientForm())));
+        assertThat(errors, not(hasItem(new FormError("Mothers motech Id", NOT_FOUND))));
+        assertThat(errors, not(hasItem(new FormError("Mothers motech Id", IS_NOT_ALIVE))));
+
+        // mother's motech id not provided
+        editClientForm.setMotherMotechId(null);
+        when(formValidator.getPatient(motechId)).thenReturn(null);
+        errors = editClientFormValidator.validate(editClientForm, new FormBeanGroup(Arrays.<FormBean>asList(editClientForm)));
+
+        assertThat(errors, not(hasItem(new FormError("Mothers motech Id", NOT_FOUND))));
     }
 }

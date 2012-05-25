@@ -6,13 +6,15 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.TTVisitForm;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.TTVaccine;
+import org.motechproject.ghana.national.domain.TTVaccineDosage;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.service.VisitService;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
@@ -20,7 +22,6 @@ import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.util.DateUtil;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -52,20 +53,16 @@ public class TTVisitFormHandlerTest {
     public void shouldRethrowException() {
         doThrow(new RuntimeException()).when(ttVaccinationService).receivedTT(Matchers.<TTVaccine>any(), Matchers.<MRSUser>any(), Matchers.<Facility>any());
         try {
-            ttVisitFormHandler.handleFormEvent(new MotechEvent("subject"));
+            ttVisitFormHandler.handleFormEvent(new TTVisitForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), is("subject"));
+            assertThat(e.getMessage(), is("Encountered error while processing TT visit form"));
         }
     }
 
     @Test
     public void shouldEnrollToReceiveSchedulesAndCreateVisitEncounter() {
         final TTVisitForm ttVisitForm = setupTTVisitForm(DateUtil.newDate(2000, 1, 1).toDate(), TT1);
-
-        MotechEvent eventMock = new MotechEvent("", new HashMap<String, Object>() {{
-            put(Constants.FORM_BEAN, ttVisitForm);
-        }});
 
         Patient patient = new Patient(new MRSPatient("mrsPatientId"));
         MRSUser staff = new MRSUser();
@@ -74,7 +71,7 @@ public class TTVisitFormHandlerTest {
 
         Facility facility = new Facility(new MRSFacility("mrs facility id"));
         when(facilityService.getFacilityByMotechId(ttVisitForm.getFacilityId())).thenReturn(facility);
-        ttVisitFormHandler.handleFormEvent(eventMock);
+        ttVisitFormHandler.handleFormEvent(ttVisitForm);
 
         ArgumentCaptor<TTVaccine> ttVaccineArgumentCaptor = ArgumentCaptor.forClass(TTVaccine.class);
         verify(ttVaccinationService).receivedTT(ttVaccineArgumentCaptor.capture(), eq(staff), eq(facility));

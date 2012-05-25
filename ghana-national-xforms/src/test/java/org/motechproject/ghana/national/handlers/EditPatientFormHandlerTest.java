@@ -19,7 +19,6 @@ import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.*;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
@@ -56,10 +55,10 @@ public class EditPatientFormHandlerTest {
     public void shouldRethrowException() {
         doThrow(new RuntimeException()).when(mockPatientService).updatePatient(Matchers.<Patient>any(), anyString(), Matchers.<Date>any());
         try {
-            editPatientFormHandler.handleFormEvent(new MotechEvent("subject"));
+            editPatientFormHandler.handleFormEvent(new EditClientForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), is("subject"));
+            assertThat(e.getMessage(), is("Encountered exception processing edit patient form"));
         }
     }
 
@@ -143,7 +142,7 @@ public class EditPatientFormHandlerTest {
         ArgumentCaptor<Date> dateArgumentCaptor = ArgumentCaptor.forClass(Date.class);
         doReturn(patientId).when(mockPatientService).updatePatient(patientArgumentCaptor.capture(), staffIdCaptor.capture(), dateArgumentCaptor.capture());
 
-        editPatientFormHandler.handleFormEvent(event);
+        editPatientFormHandler.handleFormEvent(editClientForm);
 
         Patient savedPatient = patientArgumentCaptor.getValue();
         MRSPerson savedPerson = savedPatient.getMrsPatient().getPerson();
@@ -167,13 +166,7 @@ public class EditPatientFormHandlerTest {
     }
 
     @Test
-    public void shouldBeRegisteredAsAListenerForRegisterPatientEvent() throws NoSuchMethodException {
-        String[] registeredEventSubject = editPatientFormHandler.getClass().getMethod("handleFormEvent", new Class[]{MotechEvent.class}).getAnnotation(MotechListener.class).subjects();
-        assertThat(registeredEventSubject, is(equalTo(new String[]{"form.validation.successful.NurseDataEntry.editPatient"})));
-    }
-
-    @Test
     public void shouldRunAsAdminUser() throws NoSuchMethodException {
-        assertThat(editPatientFormHandler.getClass().getMethod("handleFormEvent", new Class[]{MotechEvent.class}).getAnnotation(LoginAsAdmin.class), is(not(equalTo(null))));
+        assertThat(editPatientFormHandler.getClass().getMethod("handleFormEvent", new Class[]{EditClientForm.class}).getAnnotation(LoginAsAdmin.class), is(not(equalTo(null))));
     }
 }

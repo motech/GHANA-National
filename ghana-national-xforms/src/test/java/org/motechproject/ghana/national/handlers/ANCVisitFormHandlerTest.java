@@ -63,10 +63,10 @@ public class ANCVisitFormHandlerTest {
     public void shouldRethrowException() throws ObservationNotFoundException {
         doThrow(new RuntimeException()).when(mockMotherVisitService).registerANCVisit(Matchers.<ANCVisitRequest>any());
         try {
-            handler.handleFormEvent(new MotechEvent("subject"));
+            handler.handleFormEvent(new ANCVisitForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), is("subject"));
+            assertThat(e.getMessage(), is("Encountered error while processing ANC visit form"));
         }
     }
 
@@ -112,10 +112,6 @@ public class ANCVisitFormHandlerTest {
         ancVisitForm.setMaleInvolved(false);
         ancVisitForm.setNextANCDate(new Date(2012, 2, 20));
 
-        MotechEvent motechEvent = new MotechEvent("form.validation.successful.NurseDataEntry.ancVisit", new HashMap<String, Object>() {{
-            put("formBean", ancVisitForm);
-        }});
-
         String facilityId = "111";
         MRSFacility mrsFacility = new MRSFacility(facilityId);
         Patient patient = new Patient(new MRSPatient("patientId", motechId, new MRSPerson(), mrsFacility));
@@ -128,7 +124,7 @@ public class ANCVisitFormHandlerTest {
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
         
-        handler.handleFormEvent(motechEvent);
+        handler.handleFormEvent(ancVisitForm);
 
         ArgumentCaptor<ANCVisitRequest> captor = ArgumentCaptor.forClass(ANCVisitRequest.class);
         verify(mockMotherVisitService).registerANCVisit(captor.capture());

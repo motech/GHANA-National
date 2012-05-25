@@ -5,6 +5,7 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -30,9 +31,9 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(RegisterClientForm formBean) {
+    public List<FormError> validate(RegisterClientForm formBean, FormBeanGroup group) {
         String motechId = formBean.getMotechId();
-         List<FormError> formErrors = super.validate(formBean);
+        List<FormError> formErrors = super.validate(formBean, group);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(validateMotechId(motechId, formBean.getRegistrationMode()));
@@ -40,7 +41,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         if (PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType())) {
             formErrors.addAll(validateIfPatientIsChild(formBean.getDateOfBirth()));
         }
-        if (PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType())){
+        if (PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType())) {
             formErrors.addAll(validateIfPatientIsAFemale(formBean.getSex()));
         }
         return formErrors;

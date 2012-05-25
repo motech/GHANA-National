@@ -5,11 +5,13 @@ import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.service.CareService;
+import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
 import org.motechproject.ghana.national.web.helper.ANCFormMapper;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
+import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -41,6 +43,8 @@ public class ANCController {
     @Autowired
     CareService careService;
     @Autowired
+    PatientService patientService;
+    @Autowired
     AllEncounters allEncounters;
     @Autowired
     RegisterANCFormValidator registerANCFormValidator;
@@ -62,7 +66,7 @@ public class ANCController {
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newANC(@RequestParam("motechPatientId") String motechPatientId, ModelMap modelMap) {
-        List<FormError> formErrors = registerANCFormValidator.validatePatient(motechPatientId);
+        List<FormError> formErrors = registerANCFormValidator.validatePatient(patientService.getPatientByMotechId(motechPatientId),Collections.<FormBean>emptyList());
         ANCEnrollmentForm enrollmentForm = new ANCEnrollmentForm(motechPatientId);
         if (formErrors.isEmpty()) {
             MRSEncounter mrsEncounter = allEncounters.getLatest(motechPatientId, ANC_REG_VISIT.value());
@@ -80,7 +84,7 @@ public class ANCController {
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String save(@Valid ANCEnrollmentForm ancEnrollmentForm, ModelMap modelMap) throws ObservationNotFoundException {
         List<FormError> formErrors = registerANCFormValidator.validatePatientAndStaff(ancEnrollmentForm.getMotechPatientId(),
-                 ancEnrollmentForm.getStaffId());
+                ancEnrollmentForm.getStaffId());
 
         if (formErrors.isEmpty()) {
             careService.enroll(createANCVO(ancEnrollmentForm));

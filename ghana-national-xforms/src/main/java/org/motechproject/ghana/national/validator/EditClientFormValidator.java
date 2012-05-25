@@ -1,7 +1,9 @@
 package org.motechproject.ghana.national.validator;
 
 import org.motechproject.ghana.national.bean.EditClientForm;
-import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.validator.patient.*;
+import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -9,16 +11,14 @@ import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static org.motechproject.ghana.national.domain.Constants.IS_NOT_ALIVE;
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
 
 
 @Component
 public class EditClientFormValidator extends FormValidator<EditClientForm> {
-    @Autowired
-    private PatientService patientService;
     @Autowired
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
 
@@ -26,33 +26,34 @@ public class EditClientFormValidator extends FormValidator<EditClientForm> {
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(EditClientForm formBean) {
-        List<FormError> formErrors = super.validate(formBean);
+    public List<FormError> validate(EditClientForm formBean, FormBeanGroup group) {
+        List<FormError> formErrors = super.validate(formBean, group);
+
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
-        if (formBean.getFacilityId() != null) {
-            formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
+        formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
+
+        if (formBean.getUpdatePatientFacilityId() != null) {
+            formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getUpdatePatientFacilityId()));
         }
-        formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getUpdatePatientFacilityId()));
-        formErrors.addAll(validateIfMotechId(formBean.getMotechId()));
-        formErrors.addAll(validateIfMotherMotechId(formBean.getMotherMotechId()));
+
+        List<FormBean> formsSubmitted = group.getFormBeans();
+        PatientValidator patientValidator = new ExistsInDb().onSuccess(new IsAlive()).onFailure(new RegClientFormSubmittedInSameUpload());
+        formErrors.addAll(dependentValidator().validate(formValidator.getPatient(formBean.getMotechId()), formsSubmitted, patientValidator));
+        if (formBean.getMotherMotechId() != null)
+            validateMother(formBean, formErrors, formsSubmitted);
+
         return formErrors;
     }
 
-    private List<FormError> validateIfMotechId(String motechId) {
-        if (patientService.getPatientByMotechId(motechId) == null) {
-            return new ArrayList<FormError>() {{
-                add(new FormError("motechId", NOT_FOUND));
-            }};
-        }
-        return new ArrayList<FormError>();
+    private void validateMother(EditClientForm formBean, List<FormError> formErrors, List<FormBean> formBeans) {
+
+        String mothersMotechId = "Mothers motech Id";
+        PatientValidator motherValidator = new ExistsInDb(new FormError(mothersMotechId, NOT_FOUND))
+                .onSuccess(new IsAlive(new FormError(mothersMotechId, IS_NOT_ALIVE)));
+        formErrors.addAll(dependentValidator().validate(formValidator.getPatient(formBean.getMotherMotechId()), formBeans, motherValidator));
     }
 
-    private List<FormError> validateIfMotherMotechId(String motherMotechId) {
-        if (motherMotechId != null && patientService.getPatientByMotechId(motherMotechId) == null) {
-            return new ArrayList<FormError>() {{
-                add(new FormError("motherMotechId", NOT_FOUND));
-            }};
-        }
-        return new ArrayList<FormError>();
+    public DependentValidator dependentValidator() {
+        return new DependentValidator();
     }
 }

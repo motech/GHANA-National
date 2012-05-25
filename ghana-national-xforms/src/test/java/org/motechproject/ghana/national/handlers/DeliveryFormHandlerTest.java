@@ -7,12 +7,10 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.DeliveryForm;
 import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.*;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
 import org.motechproject.ghana.national.service.request.PregnancyDeliveryRequest;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.exception.PatientNotFoundException;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
@@ -21,10 +19,7 @@ import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.HashMap;
-
 import static junit.framework.Assert.fail;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -68,10 +63,10 @@ public class DeliveryFormHandlerTest {
     public void shouldRethrowException() {
         doThrow(new RuntimeException()).when(mockPregnancyService).handleDelivery(Matchers.<PregnancyDeliveryRequest>any());
         try {
-            handler.handleFormEvent(new MotechEvent("subject"));
+            handler.handleFormEvent(new DeliveryForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), is("subject"));
+            assertThat(e.getMessage(), is("Encountered error while processing delivery form"));
         }
     }
 
@@ -119,11 +114,6 @@ public class DeliveryFormHandlerTest {
 
         deliveryForm.setSender("sender");
 
-
-        MotechEvent motechEvent = new MotechEvent("form.validation.successful.NurseDataEntry.delivery", new HashMap<String, Object>() {{
-            put("formBean", deliveryForm);
-        }});
-
         String facilityId = "111";
         MRSFacility mrsFacility = new MRSFacility(facilityId);
         Patient patient = new Patient(new MRSPatient("patientId", motechId, new MRSPerson(), mrsFacility));
@@ -136,7 +126,7 @@ public class DeliveryFormHandlerTest {
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
 
-        handler.handleFormEvent(motechEvent);
+        handler.handleFormEvent(deliveryForm);
 
         verify(mockMobileMidwifeService).unRegister(deliveryForm.getMotechId());
 
@@ -226,10 +216,6 @@ public class DeliveryFormHandlerTest {
         deliveryForm.setSender("sender");
 
 
-        MotechEvent motechEvent = new MotechEvent("form.validation.successful.NurseDataEntry.delivery", new HashMap<String, Object>() {{
-            put("formBean", deliveryForm);
-        }});
-
         String facilityId = "111";
         MRSFacility mrsFacility = new MRSFacility(facilityId);
         Patient patient = new Patient(new MRSPatient("patientId", motechId, new MRSPerson(), mrsFacility));
@@ -243,7 +229,7 @@ public class DeliveryFormHandlerTest {
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
         when(mockPregnancyService.isDeliverySuccessful(Matchers.<PregnancyDeliveryRequest>any())).thenReturn(true);
 
-        handler.handleFormEvent(motechEvent);
+        handler.handleFormEvent(deliveryForm);
 
         verify(mockMobileMidwifeService).rollover(deliveryForm.getMotechId(), deliveryForm.getDate());
     }
@@ -292,10 +278,6 @@ public class DeliveryFormHandlerTest {
         deliveryForm.setSender("sender");
 
 
-        MotechEvent motechEvent = new MotechEvent("form.validation.successful.NurseDataEntry.delivery", new HashMap<String, Object>() {{
-            put("formBean", deliveryForm);
-        }});
-
         String facilityId = "111";
         MRSFacility mrsFacility = new MRSFacility(facilityId);
         Patient patient = new Patient(new MRSPatient("patientId", motechId, new MRSPerson(), mrsFacility));
@@ -308,7 +290,7 @@ public class DeliveryFormHandlerTest {
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
 
-        handler.handleFormEvent(motechEvent);
+        handler.handleFormEvent(deliveryForm);
 
         verify(mockPatientService).deceasePatient(deliveryForm.getDate().toDate(), deliveryForm.getMotechId(), "OTHER", "Delivery");
 

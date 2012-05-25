@@ -331,4 +331,9 @@ public class DeliveryForm extends FormBean {
     public void setSender(String sender) {
         this.sender = sender;
     }
+
+    @Override
+    public String groupId() {
+        return motechId;
+    }
 }

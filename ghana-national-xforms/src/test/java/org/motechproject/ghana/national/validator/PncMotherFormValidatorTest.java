@@ -2,17 +2,21 @@ package org.motechproject.ghana.national.validator;
 
 import org.junit.Test;
 import org.motechproject.ghana.national.bean.PNCMotherForm;
-import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.validator.patient.*;
+import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import java.util.Collections;
+
+import static org.mockito.Mockito.*;
 
 public class PncMotherFormValidatorTest {
 
     @Test
     public void shouldValidatePNCMotherForm() {
-        PncMotherFormValidator pncMotherFormValidator = new PncMotherFormValidator();
+        PncMotherFormValidator pncMotherFormValidator = spy(new PncMotherFormValidator());
         FormValidator mockFormValidator = mock(FormValidator.class);
         ReflectionTestUtils.setField(pncMotherFormValidator, "formValidator", mockFormValidator);
 
@@ -23,9 +27,21 @@ public class PncMotherFormValidatorTest {
         pncMotherForm.setMotechId(motechId);
         pncMotherForm.setFacilityId(facilityId);
         pncMotherForm.setStaffId(staffId);
-        pncMotherFormValidator.validate(pncMotherForm);
+
+        final DependentValidator mockDependentValidator = mock(DependentValidator.class);
+        when(pncMotherFormValidator.dependentValidator()).thenReturn(mockDependentValidator);
+
+        final PatientValidator regClientFormValidations = new RegClientFormSubmittedInSameUpload().onSuccess(new RegClientFormSubmittedForFemale());
+        PatientValidator expectedValidator = new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsFemale())).onFailure(regClientFormValidations);
+
+        Patient patient = mock(Patient.class);
+        when(mockFormValidator.getPatient(motechId)).thenReturn(patient);
+
+        final FormBeanGroup formBeanGroup = new FormBeanGroup(Collections.<FormBean>emptyList());
+        pncMotherFormValidator.validate(pncMotherForm, formBeanGroup);
+
         verify(mockFormValidator).validateIfStaffExists(staffId);
         verify(mockFormValidator).validateIfFacilityExists(facilityId);
-        verify(mockFormValidator).validateIfPatientExistsAndIsAlive(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
+        verify(mockDependentValidator).validate(patient, Collections.<FormBean>emptyList(), expectedValidator);
     }
 }

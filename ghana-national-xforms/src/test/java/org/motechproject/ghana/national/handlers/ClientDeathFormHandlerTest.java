@@ -9,13 +9,10 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.exception.PatientNotFoundException;
 import org.motechproject.util.DateUtil;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
@@ -44,16 +41,15 @@ public class ClientDeathFormHandlerTest {
     public void shouldRethrowException() throws PatientNotFoundException {
         doThrow(new RuntimeException()).when(mockPatientService).deceasePatient(Matchers.<Date>any(), anyString(), anyString(), anyString());
         try {
-            clientDeathFormHandler.handleFormEvent(new MotechEvent("subject"));
+            clientDeathFormHandler.handleFormEvent(new ClientDeathForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), is("subject"));
+            assertThat(e.getMessage(), is("Encountered error while processing client death form"));
         }
     }
 
     @Test
     public void shouldDeceaseThePatient() throws PatientNotFoundException {
-        Map<String, Object> parameters = new HashMap<String, Object>();
         Date deathDate = DateUtil.now().toDate();
         String patientMotechId = "motechId";
         String patientMRSId = "patientMRSId";
@@ -61,11 +57,9 @@ public class ClientDeathFormHandlerTest {
         String causeOfDeath = "NONE";
         Patient mockPatient = mock(Patient.class);
 
-        parameters.put("formBean", clientForm(deathDate, causeOfDeath, comment));
-        MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.clientDeath", parameters);
         when(mockPatient.getMRSPatientId()).thenReturn(patientMRSId);
 
-        clientDeathFormHandler.handleFormEvent(event);
+        clientDeathFormHandler.handleFormEvent(clientForm(deathDate,causeOfDeath,comment));
 
         verify(mockPatientService).deceasePatient(deathDate, patientMotechId, causeOfDeath, comment);
         verify(mockMobileMidwifeService).unRegister(patientMotechId);

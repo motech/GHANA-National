@@ -8,8 +8,12 @@ import org.motechproject.ghana.national.bean.MobileMidwifeForm;
 import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.model.Time;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.Collections;
 
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
@@ -40,7 +44,7 @@ public class MobileMidwifeFormValidatorTest {
         MobileMidwifeForm formBean = new MobileMidwifeBuilder().patientId(patientId).staffId(staffId).facilityId(facilityId)
                 .consent(true).format("PERS_VOICE").timeOfDay(timeOfDay).buildMobileMidwifeForm();
 
-        mobileMidwifeFormValidator.validate(formBean);
+        mobileMidwifeFormValidator.validate(formBean, new FormBeanGroup(Collections.<FormBean>emptyList()));
 
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         verify(mobileMidwifeValidator).validate(mobileMidwifeEnrollmentCaptor.capture());

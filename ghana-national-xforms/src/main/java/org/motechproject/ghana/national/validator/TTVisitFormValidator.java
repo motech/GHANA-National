@@ -1,7 +1,9 @@
 package org.motechproject.ghana.national.validator;
 
 import org.motechproject.ghana.national.bean.TTVisitForm;
-import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.validator.patient.*;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -19,21 +21,15 @@ public class TTVisitFormValidator extends FormValidator<TTVisitForm> {
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(TTVisitForm formBean) {
-        List<FormError> formErrors = super.validate(formBean);
+    public List<FormError> validate(TTVisitForm formBean, FormBeanGroup group) {
+        List<FormError> formErrors = super.validate(formBean, group);
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
-        formErrors.addAll(validatePatient(formBean.getMotechId()));
+        final Patient patient = formValidator.getPatient(formBean.getMotechId());
+        final PatientValidator regClientFormValidations = new RegClientFormSubmittedInSameUpload().onSuccess(new RegClientFormSubmittedForPatientWithAgeLessThan(12));
+        List<FormError> errors = new DependentValidator().validate(patient, group.getFormBeans(),
+                new ExistsInDb().onSuccess(new IsAlive().onSuccess(new AgeMoreThan(12))).onFailure(regClientFormValidations));
+        formErrors.addAll(errors);
         return formErrors;
-    }
-
-    public List<FormError> validatePatient(String motechId) {
-        List<FormError> patientErrors = formValidator.validateIfPatientExistsAndIsAlive(motechId, Constants.MOTECH_ID_ATTRIBUTE_NAME);
-        if(patientErrors.isEmpty()){
-             if(!formValidator.isAgeGreaterThan(motechId,12)){
-                 patientErrors.add(new FormError("Patient age","is less than 12"));
-             }
-        }
-        return patientErrors;
     }
 }

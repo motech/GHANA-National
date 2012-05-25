@@ -18,14 +18,12 @@ import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.vo.CwcVO;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
@@ -60,10 +58,10 @@ public class RegisterANCFormHandlerTest {
     public void shouldRethrowException() {
         doThrow(new RuntimeException()).when(careService).enroll(Matchers.<CwcVO>any());
         try {
-            registerAncFormHandler.handleFormEvent(new MotechEvent("subject"));
+            registerAncFormHandler.handleFormEvent(new RegisterANCForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), CoreMatchers.is("subject"));
+            assertThat(e.getMessage(), CoreMatchers.is("Encountered exception while processing register ANC form"));
         }
     }
 
@@ -75,9 +73,7 @@ public class RegisterANCFormHandlerTest {
         when(facility.getMrsFacilityId()).thenReturn(mrsFacilityId);
         when(mockFacilityService.getFacilityByMotechId(ancForm.getFacilityId())).thenReturn(facility);
 
-        registerAncFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseDataEntry.registerANC", new HashMap<String, Object>() {{
-            put("formBean", ancForm);
-        }}));
+        registerAncFormHandler.handleFormEvent(ancForm);
 
         ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
         verify(careService).enroll(captor.capture());
@@ -110,9 +106,7 @@ public class RegisterANCFormHandlerTest {
         String mrsFacilityId = "343";
         when(facility.getMrsFacilityId()).thenReturn(mrsFacilityId);
         when(mockFacilityService.getFacilityByMotechId(registerANCForm.getFacilityId())).thenReturn(facility);
-        registerAncFormHandler.handleFormEvent(new MotechEvent("form.validation.successful.NurseDataEntry.registerANC", new HashMap<String, Object>() {{
-            put("formBean", registerANCForm);
-        }}));
+        registerAncFormHandler.handleFormEvent(registerANCForm);
 
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
         verify(careService).enroll(captor.capture());
@@ -151,9 +145,7 @@ public class RegisterANCFormHandlerTest {
         final String facilityId = "11";
         when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(new Facility(new MRSFacility(facilityId)));
 
-        registerAncFormHandler.handleFormEvent(new MotechEvent("", new HashMap<String, Object>() {{
-            put("formBean", registerANCForm);
-        }}));
+        registerAncFormHandler.handleFormEvent(registerANCForm);
 
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
         verify(careService).enroll(captor.capture());

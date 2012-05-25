@@ -5,32 +5,34 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.CareHistoryForm;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.validator.patient.ExistsInDb;
+import org.motechproject.ghana.national.validator.patient.IsAlive;
+import org.motechproject.ghana.national.validator.patient.PatientValidator;
+import org.motechproject.ghana.national.validator.patient.RegClientFormSubmittedInSameUpload;
+import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CareHistoryFormValidatorTest {
     private CareHistoryFormValidator careHistoryFormValidator;
     @Mock
     private FormValidator mockFormValidator;
-    @Mock
-    private PatientService patientService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        careHistoryFormValidator = new CareHistoryFormValidator();
+        careHistoryFormValidator = spy(new CareHistoryFormValidator());
         ReflectionTestUtils.setField(careHistoryFormValidator, "formValidator", mockFormValidator);
-        ReflectionTestUtils.setField(careHistoryFormValidator, "patientService", patientService);
     }
 
     @Test
@@ -40,9 +42,13 @@ public class CareHistoryFormValidatorTest {
         String motechId = "0234567";
 
         CareHistoryForm formBean = careHistoryFormBean(staffId, facilityId, motechId);
-        when(patientService.getPatientByMotechId(motechId)).thenReturn(new Patient());
-
-        List<FormError> formErrors = careHistoryFormValidator.validate(formBean);
+        Patient patient = new Patient();
+        when(mockFormValidator.getPatient(motechId)).thenReturn(patient);
+        PatientValidator expectedValidators = new ExistsInDb().onSuccess(new IsAlive()).onFailure(new RegClientFormSubmittedInSameUpload());
+        DependentValidator dependentValidator = mock(DependentValidator.class);
+        when(careHistoryFormValidator.dependentValidator()).thenReturn(dependentValidator);
+        FormBeanGroup group = new FormBeanGroup(Collections.<FormBean>emptyList());
+        List<FormError> formErrors = careHistoryFormValidator.validate(formBean, group);
         assertFalse(formErrors.isEmpty());
         assertFalse(select(formErrors, having(on(FormError.class).getParameter(), is("staffId"))).isEmpty());
         assertFalse(select(formErrors, having(on(FormError.class).getParameter(), is("facilityId"))).isEmpty());
@@ -50,7 +56,7 @@ public class CareHistoryFormValidatorTest {
 
         verify(mockFormValidator).validateIfFacilityExists(facilityId);
         verify(mockFormValidator).validateIfStaffExists(staffId);
-        verify(mockFormValidator).validateIfPatientExistsAndIsAlive(motechId, "motechId");
+        verify(dependentValidator).validate(patient,group.getFormBeans(),expectedValidators);
     }
 
     private CareHistoryForm careHistoryFormBean(String staffId, String facilityId, String motechId) {

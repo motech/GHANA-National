@@ -21,14 +21,12 @@ import org.motechproject.ghana.national.util.AssertionUtility;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.model.DayOfWeek;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -81,17 +79,15 @@ public class PatientRegistrationFormHandlerTest {
     public void shouldRethrowException() throws PatientIdIncorrectFormatException, PatientIdNotUniqueException {
         doThrow(new RuntimeException()).when(mockPatientService).registerPatient(Matchers.<Patient>any(), anyString(), Matchers.<Date>any());
         try {
-            patientRegistrationFormHandler.handleFormEvent(new MotechEvent("subject"));
+            patientRegistrationFormHandler.handleFormEvent(new RegisterClientForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), is("subject"));
+            assertThat(e.getMessage(), is("Encountered exception while processing patient reg form"));
         }
     }
 
     @Test
     public void shouldHandleRegisterClientEventAndInvokeService() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
-        HashMap<String, Object> parameters = new HashMap<String, Object>();
-
         String address = "Address";
         Date dateofBirth = new Date(10, 10, 2011);
         String district = "District";
@@ -116,8 +112,6 @@ public class PatientRegistrationFormHandlerTest {
 
         RegisterClientForm registerClientForm = createRegisterClientForm(address, dateofBirth, district, isBirthDateEstimated,
                 motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
-        parameters.put(Constants.FORM_BEAN, registerClientForm);
-        MotechEvent event = new MotechEvent("subject", parameters);
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<String> staffIdCaptor = ArgumentCaptor.forClass(String.class);
@@ -128,7 +122,7 @@ public class PatientRegistrationFormHandlerTest {
         when(facility.mrsFacilityId()).thenReturn(facilityId);
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
 
-        patientRegistrationFormHandler.handleFormEvent(event);
+        patientRegistrationFormHandler.handleFormEvent(registerClientForm);
 
         Patient patientPassedToRegisterService = patientArgumentCaptor.getValue();
         MRSPerson mrsPerson = patientPassedToRegisterService.getMrsPatient().getPerson();
@@ -143,21 +137,14 @@ public class PatientRegistrationFormHandlerTest {
         }}, smsTemplateArgCaptor.getValue());
     }
 
-    @Test
-    public void shouldBeRegisteredAsAListenerForRegisterPatientEvent() throws NoSuchMethodException {
-        String[] registeredEventSubject = patientRegistrationFormHandler.getClass().getMethod("handleFormEvent", new Class[]{MotechEvent.class}).getAnnotation(MotechListener.class).subjects();
-        assertThat(registeredEventSubject, is(equalTo(new String[]{"form.validation.successful.NurseDataEntry.registerPatient"})));
-    }
 
     @Test
     public void shouldRunAsAdminUser() throws NoSuchMethodException {
-        assertThat(patientRegistrationFormHandler.getClass().getMethod("handleFormEvent", new Class[]{MotechEvent.class}).getAnnotation(LoginAsAdmin.class), is(not(equalTo(null))));
+        assertThat(patientRegistrationFormHandler.getClass().getMethod("handleFormEvent", new Class[]{RegisterClientForm.class}).getAnnotation(LoginAsAdmin.class), is(not(equalTo(null))));
     }
 
     @Test
     public void shouldNotRegisterForMobileMidwifeIfConsentIsNotGiven() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
-        HashMap<String, Object> parameters = new HashMap<String, Object>();
-
         String address = "Address";
         Date dateofBirth = new Date(10, 10, 2011);
         String district = "District";
@@ -197,8 +184,6 @@ public class PatientRegistrationFormHandlerTest {
 
         addMobileMidwifeRegistrationDetails(registerClientForm, serviceType, reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, mmRegPhone, phoneOwnership, consent, enroll);
 
-        parameters.put(Constants.FORM_BEAN, registerClientForm);
-        MotechEvent event = new MotechEvent("subject", parameters);
 
         Facility facility = mock(Facility.class);
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
@@ -206,15 +191,12 @@ public class PatientRegistrationFormHandlerTest {
 
         when(mockPatientService.registerPatient(any(Patient.class), any(String.class), Matchers.<Date>any())).thenReturn(new Patient(new MRSPatient(motechId, new MRSPerson().dateOfBirth(new Date()), null)));
 
-        parameters.put(Constants.FORM_BEAN, registerClientForm);
-        patientRegistrationFormHandler.handleFormEvent(event);
+        patientRegistrationFormHandler.handleFormEvent(registerClientForm);
         verify(mockMobileMidwifeService, never()).register(Matchers.<MobileMidwifeEnrollment>any());
     }
 
     @Test
     public void shouldRegisterForCWCAndMobileMidwife() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
-        HashMap<String, Object> parameters = new HashMap<String, Object>();
-
         String address = "Address";
         Date dateofBirth = new Date(10, 10, 2011);
         String district = "District";
@@ -268,16 +250,13 @@ public class PatientRegistrationFormHandlerTest {
 
         addMobileMidwifeRegistrationDetails(registerClientForm, serviceType, reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, mmRegPhone, phoneOwnership, consent, enroll);
 
-        parameters.put(Constants.FORM_BEAN, registerClientForm);
-        MotechEvent event = new MotechEvent("subject", parameters);
-
         Facility facility = mock(Facility.class);
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         when(facility.mrsFacilityId()).thenReturn(facilityId);
 
         when(mockPatientService.registerPatient(any(Patient.class), any(String.class), Matchers.<Date>any())).thenReturn(new Patient(new MRSPatient(motechId, new MRSPerson().dateOfBirth(new Date()), null)));
         doNothing().when(mockCareService).enroll(any(CwcVO.class));
-        patientRegistrationFormHandler.handleFormEvent(event);
+        patientRegistrationFormHandler.handleFormEvent(registerClientForm);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         final ArgumentCaptor<CwcVO> cwcVOArgumentCaptor = ArgumentCaptor.forClass(CwcVO.class);
         verify(mockCareService).enroll(cwcVOArgumentCaptor.capture());
@@ -291,8 +270,6 @@ public class PatientRegistrationFormHandlerTest {
 
     @Test
     public void shouldRegisterForANCAndMobileMidwife() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException, ObservationNotFoundException {
-
-        HashMap<String, Object> parameters = new HashMap<String, Object>();
 
         String address = "Address";
         Date dateofBirth = new Date(10, 10, 2011);
@@ -347,9 +324,6 @@ public class PatientRegistrationFormHandlerTest {
 
         addMobileMidwifeRegistrationDetails(registerClientForm, serviceType, reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, mmRegPhone, phoneOwnership, consent, enroll);
 
-        parameters.put(Constants.FORM_BEAN, registerClientForm);
-        MotechEvent event = new MotechEvent("subject", parameters);
-
         Facility facility = mock(Facility.class);
         doReturn(facility).when(mockFacilityService).getFacilityByMotechId(motechFacilityId);
         when(facility.mrsFacilityId()).thenReturn(facilityId);
@@ -357,7 +331,7 @@ public class PatientRegistrationFormHandlerTest {
         when(mockPatientService.registerPatient(any(Patient.class), any(String.class), Matchers.<Date>any())).thenReturn(new Patient(new MRSPatient(motechId, new MRSPerson().dateOfBirth(new Date()), null)));
 
         doNothing().when(mockCareService).enroll(any(ANCVO.class));
-        patientRegistrationFormHandler.handleFormEvent(event);
+        patientRegistrationFormHandler.handleFormEvent(registerClientForm);
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentArgumentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
         final ArgumentCaptor<ANCVO> ancvoArgumentCaptor = ArgumentCaptor.forClass(ANCVO.class);
         verify(mockCareService).enroll(ancvoArgumentCaptor.capture());

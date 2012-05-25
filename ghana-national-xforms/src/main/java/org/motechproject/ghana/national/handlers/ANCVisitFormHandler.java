@@ -10,21 +10,16 @@ import org.motechproject.ghana.national.service.MotherVisitService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
-import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.motechproject.ghana.national.domain.Constants.FORM_BEAN;
-
 @Component
-public class ANCVisitFormHandler implements FormPublishHandler {
+public class ANCVisitFormHandler{
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -39,18 +34,15 @@ public class ANCVisitFormHandler implements FormPublishHandler {
     @Autowired
     private AllCareSchedules allCareSchedules;
 
-    @Override
-    @MotechListener(subjects = "form.validation.successful.NurseDataEntry.ancVisit")
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent event) {
+    public void handleFormEvent(ANCVisitForm ancVisitForm) {
         try {
-            ANCVisitForm form = (ANCVisitForm) event.getParameters().get(FORM_BEAN);
-            ANCVisitRequest ancVisit = createANCVisit(form);
+            ANCVisitRequest ancVisit = createANCVisit(ancVisitForm);
             visitService.registerANCVisit(ancVisit);
         } catch (Exception e) {
-            log.error("Encountered error while saving ANC visit details", e);
-            throw new XFormHandlerException(event.getSubject(), e);
+            log.error("Encountered error while processing ANC visit form", e);
+            throw new XFormHandlerException("Encountered error while processing ANC visit form", e);
         }
     }
 

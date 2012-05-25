@@ -174,4 +174,9 @@ public class EditClientForm extends FormBean {
     public void setUpdatePatientFacilityId(String updatePatientFacilityId) {
         this.updatePatientFacilityId = updatePatientFacilityId;
     }
+
+    @Override
+    public String groupId() {
+        return motechId;
+    }
 }

@@ -1,7 +1,9 @@
 package org.motechproject.ghana.national.validator;
 
 import org.motechproject.ghana.national.bean.PNCMotherForm;
-import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.validator.patient.*;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
@@ -18,13 +20,19 @@ public class PncMotherFormValidator extends org.motechproject.mobileforms.api.va
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(PNCMotherForm formBean) {
-        List<FormError> formErrors = super.validate(formBean);
+    public List<FormError> validate(PNCMotherForm formBean, FormBeanGroup group) {
+        List<FormError> formErrors = super.validate(formBean, group);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        formErrors.addAll(formValidator.validateIfPatientExistsAndIsAlive(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
-        if (formErrors.isEmpty())
-            formErrors.addAll(formValidator.validateIfPatientIsFemale(formBean.getMotechId(), Constants.MOTECH_ID_ATTRIBUTE_NAME));
+        final Patient patient = formValidator.getPatient(formBean.getMotechId());
+        formErrors.addAll(dependentValidator().validate(patient, group.getFormBeans(),
+                new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsFemale()))
+                                .onFailure(new RegClientFormSubmittedInSameUpload()
+                                                    .onSuccess(new RegClientFormSubmittedForFemale()))));
         return formErrors;
+    }
+
+    DependentValidator dependentValidator() {
+        return new DependentValidator();
     }
 }

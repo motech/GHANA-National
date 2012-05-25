@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
@@ -9,18 +8,15 @@ import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.vo.CwcVO;
-import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RegisterCWCFormHandler implements FormPublishHandler {
+public class RegisterCWCFormHandler{
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -32,14 +28,10 @@ public class RegisterCWCFormHandler implements FormPublishHandler {
     @Autowired
     FacilityService facilityService;
 
-    @Override
-    @MotechListener(subjects = "form.validation.successful.NurseDataEntry.registerCWC")
     @LoginAsAdmin
     @ApiSession
-    public void handleFormEvent(MotechEvent event) {
-        RegisterCWCForm registerCWCForm = null;
+    public void handleFormEvent(RegisterCWCForm registerCWCForm) {
         try {
-            registerCWCForm = (RegisterCWCForm) event.getParameters().get(Constants.FORM_BEAN);
             Facility facility = facilityService.getFacilityByMotechId(registerCWCForm.getFacilityId());
 
             careService.enroll(new CwcVO(registerCWCForm.getStaffId(),
@@ -67,8 +59,8 @@ public class RegisterCWCFormHandler implements FormPublishHandler {
                 mobileMidwifeService.unRegister(registerCWCForm.getMotechId());
             }
         } catch (Exception e) {
-            log.error("Exception occured in saving CWC Registration details", e);
-            throw new XFormHandlerException(event.getSubject(), e);
+            log.error("Exception occurred while processing CWC Registration form", e);
+            throw new XFormHandlerException("Exception occurred while processing CWC Registration form", e);
         }
     }
 }

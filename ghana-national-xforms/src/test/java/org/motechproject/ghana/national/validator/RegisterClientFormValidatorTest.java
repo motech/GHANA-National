@@ -10,11 +10,14 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -55,10 +58,10 @@ public class RegisterClientFormValidatorTest {
         when(mockRegisterClientForm.getDateOfBirth()).thenReturn(new Date(99,9,9));
         Patient patientsMotherMock = mock(Patient.class);
         when(mockPatientService.getPatientByMotechId(mothersMotechId)).thenReturn(patientsMotherMock);
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList())), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
 
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(null);
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList())), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
     }
 
     @Test
@@ -66,7 +69,7 @@ public class RegisterClientFormValidatorTest {
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(null);
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.PREGNANT_MOTHER);
 
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList())), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
         verify(mockPatientService, never()).getPatientByMotechId(Matchers.<String>any());
     }
 
@@ -78,11 +81,11 @@ public class RegisterClientFormValidatorTest {
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patientMock);
         when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
 
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), hasItem(new FormError("motechId", "in use")));
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList())), hasItem(new FormError("motechId", "in use")));
 
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(null);
         when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motechId", "in use"))));
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList())), not(hasItem(new FormError("motechId", "in use"))));
     }
 
     @Test
@@ -92,7 +95,7 @@ public class RegisterClientFormValidatorTest {
 
 
         when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm), not(hasItem(new FormError("motechId", NOT_FOUND))));
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList())), not(hasItem(new FormError("motechId", NOT_FOUND))));
         verify(mockPatientService, never()).getPatientByMotechId(anyString());
     }
 
@@ -101,7 +104,7 @@ public class RegisterClientFormValidatorTest {
         String staffId = "21";
         when(mockRegisterClientForm.getStaffId()).thenReturn(staffId);
 
-        registerClientFormValidator.validate(mockRegisterClientForm);
+        registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList()));
         verify(formValidator).validateIfStaffExists(eq(staffId));
     }
 
@@ -111,7 +114,7 @@ public class RegisterClientFormValidatorTest {
         when(mockRegisterClientForm.getFacilityId()).thenReturn(facilityId);
 
 
-        registerClientFormValidator.validate(mockRegisterClientForm);
+        registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList()));
         verify(formValidator).validateIfFacilityExists(eq(facilityId));
     }
 
@@ -124,7 +127,7 @@ public class RegisterClientFormValidatorTest {
         when(formValidator.validateIfFacilityExists("212")).thenReturn(new ArrayList<FormError>());
         when(formValidator.validateIfStaffExists("212")).thenReturn(new ArrayList<FormError>());
 
-        List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm);
+        List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList()));
         assertThat(formErrors,hasItem(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_MORE_ERR_MSG)));
 
     }
@@ -138,7 +141,7 @@ public class RegisterClientFormValidatorTest {
         when(formValidator.validateIfFacilityExists("212")).thenReturn(new ArrayList<FormError>());
         when(formValidator.validateIfStaffExists("212")).thenReturn(new ArrayList<FormError>());
 
-        List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm);
+        List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList()));
         assertThat(formErrors, hasItem(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, Constants.GENDER_ERROR_MSG)));
     }
 }

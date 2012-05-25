@@ -13,7 +13,6 @@ import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
@@ -71,10 +70,10 @@ public class DeliveryNotificationFormHandlerTest {
     public void shouldRethrowException() {
         doThrow(new RuntimeException()).when(mockPatientService).getPatientByMotechId(anyString());
         try {
-            deliveryNotificationFormHandler.handleFormEvent(new MotechEvent("subject"));
+            deliveryNotificationFormHandler.handleFormEvent(new DeliveryNotificationForm());
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), is("subject"));
+            assertThat(e.getMessage(), is("Exception occurred while processing Delivery Notification form"));
         }
     }
 
@@ -85,16 +84,12 @@ public class DeliveryNotificationFormHandlerTest {
         final String motechId = "1234567";
         final String staffId = "123456";
         final DateTime datetime = new DateTime();
-        Map<String, Object> parameter = new HashMap<String, Object>() {{
             DeliveryNotificationForm deliveryNotificationForm = new DeliveryNotificationForm() {{
                 setFacilityId(motechFacilityId);
                 setMotechId(motechId);
                 setStaffId(staffId);
                 setDatetime(datetime);
             }};
-            put("formBean", deliveryNotificationForm);
-        }};
-        MotechEvent event = new MotechEvent("form.validation.successful.NurseDataEntry.deliveryNotify", parameter);
 
         final String firstName = "firstName";
         final String lastName = "lastName";
@@ -108,7 +103,7 @@ public class DeliveryNotificationFormHandlerTest {
         when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
         when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
 
-        deliveryNotificationFormHandler.handleFormEvent(event);
+        deliveryNotificationFormHandler.handleFormEvent(deliveryNotificationForm);
 
         final HashSet<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         verify(mockAllEncounters).persistEncounter(new MRSPatient(motechId, person, new MRSFacility(facilityId)), staffId, facilityId, PREG_DEL_NOTIFY_VISIT.value(),
@@ -132,6 +127,6 @@ public class DeliveryNotificationFormHandlerTest {
     @Test
     public void shouldRunAsAdminUser() throws NoSuchMethodException {
         assertThat(deliveryNotificationFormHandler.getClass().getMethod("handleFormEvent",
-                new Class[]{MotechEvent.class}).getAnnotation(LoginAsAdmin.class), is(not(equalTo(null))));
+                new Class[]{DeliveryNotificationForm.class}).getAnnotation(LoginAsAdmin.class), is(not(equalTo(null))));
     }
 }

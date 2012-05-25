@@ -187,4 +187,9 @@ public class PNCMotherForm extends FormBean {
     public void setVisitNumber(int visitNumber) {
         this.visitNumber = visitNumber;
     }
+
+    @Override
+    public String groupId() {
+        return motechId;
+    }
 }

@@ -107,7 +107,7 @@ public class MobileMidwifeBuilder {
         MobileMidwifeForm mobileMidwifeForm = new MobileMidwifeForm();
         mobileMidwifeForm.setStaffId(staffId);
         mobileMidwifeForm.setFacilityId(facilityId);
-        mobileMidwifeForm.setPatientId(patientId);
+        mobileMidwifeForm.setMotechId(patientId);
         mobileMidwifeForm.setAction(registerAction);
         mobileMidwifeForm.setConsent(consent);
         fillAbstractFormFields(mobileMidwifeForm);
