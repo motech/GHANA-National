@@ -5,6 +5,7 @@ import org.motechproject.MotechException;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.domain.AlertWindow;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.SmsTemplateKeys;
 import org.motechproject.ghana.national.messagegateway.domain.*;
 import org.motechproject.ghana.national.service.PatientService;
@@ -28,6 +29,7 @@ import static org.motechproject.ghana.national.configuration.TextMessageTemplate
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.WINDOW_NAMES;
 import static org.motechproject.ghana.national.domain.AlertWindow.ghanaNationalWindowNames;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY;
+import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 
 public class AggregationStrategyImpl implements AggregationStrategy {
 
@@ -40,7 +42,6 @@ public class AggregationStrategyImpl implements AggregationStrategy {
     @Autowired
     AllFacilities allFacilities;
 
-    public static final String SMS_SEPARATOR = "%0A";
 
     @Override
     @LoginAsAdmin
@@ -53,7 +54,7 @@ public class AggregationStrategyImpl implements AggregationStrategy {
             aggregatedSMSPayload.addAll(processMessagesForFacility(smsPayloadForFacility));
         }
         if (!smsPayloadForPatient.isEmpty()) {
-            aggregatedSMSPayload.addAll(processMessagesForPatient(smsPayloadForPatient));
+            aggregatedSMSPayload.addAll(nullSafeList(processMessagesForPatient(smsPayloadForPatient)));
         }
         return aggregatedSMSPayload;
     }
@@ -61,11 +62,14 @@ public class AggregationStrategyImpl implements AggregationStrategy {
     private List<SMS> processMessagesForPatient(List<SMSPayload> smsPayloadForPatient) {
         StringBuilder builder = new StringBuilder();
         for (SMSPayload smsPayload : smsPayloadForPatient) {
-            builder.append(smsPayload.getText()).append(SMS_SEPARATOR);
+            builder.append(smsPayload.getText()).append(Constants.SMS_SEPARATOR);
         }
         SMSPayload smsPayload = SMSPayload.fromText(builder.toString(), smsPayloadForPatient.get(0).getUniqueId(), DateUtil.now(), null, MessageRecipientType.PATIENT);
 
-        return asList(new SMS(smsPayload, patientService.getPatientPhoneNumber(smsPayload.getUniqueId())));
+        String patientPhoneNumber = patientService.getPatientPhoneNumber(smsPayload.getUniqueId());
+        if(patientPhoneNumber!=null)
+            return asList(new SMS(smsPayload, patientPhoneNumber));
+        return new ArrayList<SMS>();
     }
 
     private List<SMS> processMessagesForFacility(List<SMSPayload> smsPayloadMessages) {
@@ -123,7 +127,7 @@ public class AggregationStrategyImpl implements AggregationStrategy {
                         List<SMSDatum> all = motechIdSubGroup.findAll();
                         count += 1;
                         SMSDatum datum = all.get(0);
-                        if (count != 1) builder.append(", ");
+                        if (count != 1) builder.append(Constants.SMS_LIST_SEPERATOR);
                         builder.append(datum.getFirstName()).append(" ").append(datum.getLastName()).append(", ").append(datum.getMotechId())
                                 .append(", ").append(datum.getSerialNumber()).append(", ").append(joinFrom(all).getMilestone());
                     }
@@ -136,7 +140,7 @@ public class AggregationStrategyImpl implements AggregationStrategy {
             }
         }
         messages.add(SMSPayload.fromTemplate(getSMSTemplate(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
-            put(WINDOW_NAMES, join(windowsWithoutSMS, ", "));
+            put(WINDOW_NAMES, join(windowsWithoutSMS, Constants.SMS_LIST_SEPERATOR));
             put(FACILITY, facilityName);
         }}, uniqueId, DateUtil.now(), null, MessageRecipientType.FACILITY));
         return messages;

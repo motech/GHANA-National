@@ -145,7 +145,8 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
         List<Facility> facilities = facilities();
         Map<String, String> facilityMap = new HashMap<String, String>();
         for (Facility facility : facilities) {
-            facilityMap.put(facility.getMotechId(), facility.name());
+            if (facility.getMotechId() != null)
+                facilityMap.put(facility.getMotechId(), facility.name());
         }
         return facilityMap;
     }

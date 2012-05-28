@@ -8,6 +8,7 @@ import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.model.StringContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.domain.AlertWindow;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.SmsTemplateKeys;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
@@ -129,8 +130,8 @@ public class AggregationStrategyImplTest extends BaseUnitTest {
 
         final List<SMS> aggregatedSMSPayloadList = aggregationStrategy.aggregate(messagesList);
         assertThat(aggregatedSMSPayloadList.size(), is(1));
-        assertThat(aggregatedSMSPayloadList, hasItem(new SMS(SMSPayload.fromText(message1 + AggregationStrategyImpl.SMS_SEPARATOR + message2
-                + AggregationStrategyImpl.SMS_SEPARATOR + message3 + AggregationStrategyImpl.SMS_SEPARATOR, motechId, DateUtil.now(), null, MessageRecipientType.PATIENT), phoneNumber)));
+        assertThat(aggregatedSMSPayloadList, hasItem(new SMS(SMSPayload.fromText(message1 + Constants.SMS_SEPARATOR + message2
+                + Constants.SMS_SEPARATOR + message3 + Constants.SMS_SEPARATOR, motechId, DateUtil.now(), null, MessageRecipientType.PATIENT), phoneNumber)));
     }
 
     @Test

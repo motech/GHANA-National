@@ -63,6 +63,8 @@ public class Constants {
     public static final String PENTA_3 = "Penta 3";
 
     public static final String SMS_LIST_SEPERATOR = ", ";
+    public static final String SMS_SEPARATOR = "%0A";
+
 
     //CWC Validators
     public static final String MOTECH_ID_ATTRIBUTE_NAME = "motechId";

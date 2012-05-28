@@ -17,6 +17,15 @@ public class SMS {
         return phoneNumber;
     }
 
+
+    @Override
+    public String toString() {
+        return "SMS{" +
+                "content=" + content +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
