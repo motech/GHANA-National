@@ -21,7 +21,8 @@ public class FormHandlerLoggingAdvice {
     private void scheduleHandlers(){
     }
 
-    @Pointcut("execution(* org.motechproject.ghana.national.handlers.*.handleFormEvent(..))")
+//    @Pointcut("execution(* org.motechproject.ghana.national.handlers.*.handleFormEvent(..))")
+    @Pointcut("execution(* org.motechproject.ghana.national.handlers.MobileFormHandler.handleFormEvent(..))")
     private void formAsyncHandlers() {
     }
 
