@@ -9,7 +9,7 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
     <context:property-placeholder location="classpath*:*.properties" ignore-unresolvable="true"/>
     <beans:import resource="classpath*:applicationContext-core.xml"/>
-    <beans:import resource="classpath*:applicationContext-ivr.xml"/>
+    <beans:import resource="classpath*:applicationContext-xforms.xml"/>
     <beans:import resource="classpath*:applicationContext-security.xml"/>
     <beans:import resource="classpath*:applicationContext-idgen-omod.xml"/>
     <context:annotation-config/>
