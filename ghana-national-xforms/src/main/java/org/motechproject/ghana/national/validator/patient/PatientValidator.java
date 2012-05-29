@@ -26,7 +26,7 @@ public abstract class PatientValidator {
         return this;
     }
 
-    public abstract List<FormError> validate(Patient patient, List<FormBean> formsSubmitted);
+    public abstract List<FormError> validate(Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms);
 
     public PatientValidator getOnFailure() {
         return onFailure;

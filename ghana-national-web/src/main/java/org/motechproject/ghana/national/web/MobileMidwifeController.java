@@ -6,11 +6,13 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
+import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.MobileMidwifeValidator;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
 import org.motechproject.ghana.national.web.form.MobileMidwifeUnEnrollForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
+import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -23,10 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.Boolean.TRUE;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
@@ -42,17 +41,19 @@ public class MobileMidwifeController {
     private MessageSource messages;
     private FacilityHelper facilityHelper;
     private FacilityService facilityService;
+    private FormValidator formValidator;
 
     public MobileMidwifeController() {
     }
 
     @Autowired
-    public MobileMidwifeController(MobileMidwifeValidator mobileMidwifeValidator, MobileMidwifeService mobileMidwifeService, MessageSource messages, FacilityHelper facilityHelper, FacilityService facilityService) {
+    public MobileMidwifeController(MobileMidwifeValidator mobileMidwifeValidator, MobileMidwifeService mobileMidwifeService, MessageSource messages, FacilityHelper facilityHelper, FacilityService facilityService, FormValidator formValidator) {
         this.mobileMidwifeValidator = mobileMidwifeValidator;
         this.mobileMidwifeService = mobileMidwifeService;
         this.messages = messages;
         this.facilityHelper = facilityHelper;
         this.facilityService = facilityService;
+        this.formValidator = formValidator;
     }
 
     @ApiSession
@@ -92,7 +93,7 @@ public class MobileMidwifeController {
     @RequestMapping(value = "/admin/enroll/mobile-midwife/save", method = RequestMethod.POST)
     public String save(MobileMidwifeEnrollmentForm form, BindingResult bindingResult, ModelMap modelMap) {
         MobileMidwifeEnrollment midwifeEnrollment = createEnrollment(form, DateTime.now());
-        List<FormError> formErrors = mobileMidwifeValidator.validate(midwifeEnrollment);
+        List<FormError> formErrors = mobileMidwifeValidator.validate(midwifeEnrollment, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
         if (isNotEmpty(formErrors)) {
             addFormInfo(modelMap, form).addAttribute("formErrors", formErrors);
         } else {
@@ -117,8 +118,11 @@ public class MobileMidwifeController {
     @RequestMapping(value = "/admin/unenroll/mobile-midwife/save")
     public String unregister(MobileMidwifeUnEnrollForm form, ModelMap modelMap) {
         String patientMotechId = form.getPatientMotechId();
-        List<FormError> formErrors = mobileMidwifeValidator.validateFacilityPatientAndStaff(patientMotechId,
-                facilityService.getFacility(form.getFacilityForm().getFacilityId()).getMotechId(), form.getStaffMotechId());
+        List<FormError> formErrors = mobileMidwifeValidator.validatePatient(patientMotechId,
+                Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
+        formErrors.addAll(formValidator.validateIfFacilityExists(form.getFacilityForm().getFacilityId()));
+        formErrors.addAll(formValidator.validateIfStaffExists(form.getStaffMotechId()));
+
         if (formErrors.isEmpty()) {
             mobileMidwifeService.unRegister(patientMotechId);
             modelMap.put("successMessage", "Successfully unregistered");

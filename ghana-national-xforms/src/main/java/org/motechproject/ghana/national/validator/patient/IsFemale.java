@@ -11,8 +11,8 @@ import java.util.List;
 import static org.motechproject.ghana.national.domain.Constants.*;
 
 public class IsFemale extends PatientValidator{
-    public List<FormError> validate(Patient patient, List<FormBean> formsSubmitted){
-        return patient.getMrsPatient().getPerson().getGender().equals(PATIENT_GENDER_MALE)?
+    public List<FormError> validate(Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms){
+        return PATIENT_GENDER_MALE.equals(patient.getMrsPatient().getPerson().getGender())?
                 Arrays.asList(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG)): Collections.<FormError>emptyList();
     }
 }

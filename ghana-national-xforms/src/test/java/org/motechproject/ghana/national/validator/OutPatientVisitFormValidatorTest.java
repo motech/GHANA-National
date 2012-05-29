@@ -17,6 +17,7 @@ import org.motechproject.mrs.model.MRSPerson;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.Boolean.TRUE;
@@ -53,10 +54,11 @@ public class OutPatientVisitFormValidatorTest {
 
         Patient patient = null;
         final List<FormBean> formsUploaded = new ArrayList<FormBean>();
+        formsUploaded.add(formBean);
 
         when(formValidator.getPatient(motechId)).thenReturn(patient);
 
-        List<FormError> errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
+        List<FormError> errors = validator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
 
         verify(formValidator).validateIfStaffExists(eq(staffId));
         verify(formValidator).validateIfFacilityExists(eq(facilityId));
@@ -66,17 +68,17 @@ public class OutPatientVisitFormValidatorTest {
         // patient is dead
         patient = new Patient(new MRSPatient("motechId", new MRSPerson().dead(TRUE).gender("F"), new MRSFacility("facilityId")));
         when(formValidator.getPatient(motechId)).thenReturn(patient);
-        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
+        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, IS_NOT_ALIVE)));
 
         patient.getMrsPatient().getPerson().gender("M");
-        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
+        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, IS_NOT_ALIVE)));
 
         // registrant type is pregnant mother,patient is not female
         when(formBean.getRegistrantType()).thenReturn(PatientType.PREGNANT_MOTHER);
         patient.getMrsPatient().getPerson().dead(Boolean.FALSE).gender("M");
-        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
+        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG)));
 
         // patient not available in db, but form submit has reg client form
@@ -85,7 +87,7 @@ public class OutPatientVisitFormValidatorTest {
         registerClientForm.setSex("F");
         registerClientForm.setFormname("registerPatient");
         formsUploaded.add(registerClientForm);
-        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
+        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, not(hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG))));
         assertThat(errors, not(hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, NOT_FOUND))));
         assertThat(errors, not(hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, IS_NOT_ALIVE))));
@@ -94,13 +96,13 @@ public class OutPatientVisitFormValidatorTest {
         patient.getMrsPatient().getPerson().dead(Boolean.FALSE).age(6);
         when(formBean.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
         when(formValidator.getPatient(motechId)).thenReturn(patient);
-        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
+        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_MORE_ERR_MSG)));
 
         //patient exists in db,type is other
         when(formBean.getRegistrantType()).thenReturn(PatientType.OTHER);
         when(formValidator.getPatient(motechId)).thenReturn(patient);
-        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded));
+        errors = validator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, not(hasItem(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_MORE_ERR_MSG))));
         assertThat(errors, not(hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG))));
 

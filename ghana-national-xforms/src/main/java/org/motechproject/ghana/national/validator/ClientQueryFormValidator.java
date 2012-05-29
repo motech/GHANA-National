@@ -5,6 +5,7 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.validator.patient.ExistsInDb;
 import org.motechproject.ghana.national.validator.patient.IsAlive;
+import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
@@ -28,15 +29,15 @@ public class ClientQueryFormValidator extends FormValidator<ClientQueryForm> {
     @LoginAsAdmin
     @ApiSession
     @Override
-    public List<FormError> validate(ClientQueryForm formBean, FormBeanGroup group) {
-        List<FormError> formErrors = super.validate(formBean, group);
+    public List<FormError> validate(ClientQueryForm formBean, FormBeanGroup group, List<FormBean> allForms) {
+        List<FormError> formErrors = super.validate(formBean, group, allForms);
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
 
         if (CLIENT_DETAILS.toString().equals(formBean.getQueryType()) || UPCOMING_CARE.toString().equals(formBean.getQueryType())) {
             Patient patient = formValidator.getPatient(formBean.getMotechId());
             formErrors.addAll(dependentValidator().validate(patient, group.getFormBeans(),
-                    new ExistsInDb().onSuccess(new IsAlive())));
+                    allForms, new ExistsInDb().onSuccess(new IsAlive())));
         } else if (FIND_CLIENT_ID.toString().equals(formBean.getQueryType())) {
             formErrors.addAll(validateMinimumCriteriaForFindClientID(formBean));
         }

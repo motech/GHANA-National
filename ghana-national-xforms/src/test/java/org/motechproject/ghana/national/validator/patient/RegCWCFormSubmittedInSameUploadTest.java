@@ -22,14 +22,14 @@ public class RegCWCFormSubmittedInSameUploadTest {
         List<FormBean> formsUploaded = new ArrayList<FormBean>();
         final PatientValidator validator = new RegCWCFormSubmittedInSameUpload();
 
-        List<FormError> formErrors = validator.validate(patient, formsUploaded);
+        List<FormError> formErrors = validator.validate(patient, formsUploaded, formsUploaded);
         assertThat(formErrors,is(equalTo(Arrays.asList(new FormError(MOTECH_ID_ATTRIBUTE_NAME, "not registered for CWC")))));
 
         final RegisterCWCForm registerANCForm = new RegisterCWCForm();
         registerANCForm.setFormname("registerCWC");
         formsUploaded.add(registerANCForm);
 
-        formErrors = validator.validate(patient, formsUploaded);
+        formErrors = validator.validate(patient, formsUploaded, formsUploaded);
         assertThat(formErrors.size(), is(equalTo(0)));
     }
 }

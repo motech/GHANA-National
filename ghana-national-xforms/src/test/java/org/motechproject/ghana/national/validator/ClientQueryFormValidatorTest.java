@@ -15,6 +15,7 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,7 +48,8 @@ public class ClientQueryFormValidatorTest {
         when(formValidator.validateIfFacilityExists(facilityId)).thenReturn(asList(new FormError(facilityId, NOT_FOUND)));
         when(formValidator.validateIfStaffExists(staffId)).thenReturn(asList(new FormError(staffId, NOT_FOUND)));
         when(formValidator.getPatient(motechId)).thenReturn(new Patient(new MRSPatient(motechId,new MRSPerson().dead(true),new MRSFacility(facilityId))));
-        List<FormError> formErrors = clientQueryFormValidator.validate(clientQueryForm, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(clientQueryForm);
+        List<FormError> formErrors = clientQueryFormValidator.validate(clientQueryForm, new FormBeanGroup(formBeans), formBeans);
 
         assertThat(formErrors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, Constants.IS_NOT_ALIVE)));
         assertThat(formErrors, hasItem(new FormError(facilityId, NOT_FOUND)));
@@ -63,7 +65,8 @@ public class ClientQueryFormValidatorTest {
         when(formValidator.validateIfFacilityExists(facilityId)).thenReturn(asList(new FormError(facilityId, NOT_FOUND)));
         when(formValidator.validateIfStaffExists(staffId)).thenReturn(asList(new FormError(staffId, NOT_FOUND)));
 
-        List<FormError> formErrors = clientQueryFormValidator.validate(clientQueryForm, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(clientQueryForm);
+        List<FormError> formErrors = clientQueryFormValidator.validate(clientQueryForm, new FormBeanGroup(formBeans), formBeans);
 
         assertThat(formErrors, hasItem(new FormError(facilityId, NOT_FOUND)));
         assertThat(formErrors, hasItem(new FormError(staffId, NOT_FOUND)));
@@ -81,7 +84,8 @@ public class ClientQueryFormValidatorTest {
         when(formValidator.validateIfStaffExists(staffId)).thenReturn(asList(new FormError(staffId, NOT_FOUND)));
         when(formValidator.getPatient(motechId)).thenReturn(new Patient(new MRSPatient(motechId,new MRSPerson().dead(true),new MRSFacility(facilityId))));
 
-        List<FormError> formErrors = clientQueryFormValidator.validate(clientQueryForm, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(clientQueryForm);
+        List<FormError> formErrors = clientQueryFormValidator.validate(clientQueryForm, new FormBeanGroup(formBeans), formBeans);
 
         assertThat(formErrors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, Constants.IS_NOT_ALIVE)));
         assertThat(formErrors, hasItem(new FormError(facilityId, NOT_FOUND)));

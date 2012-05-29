@@ -15,7 +15,7 @@ import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import static ch.lambdaj.Lambda.*;
@@ -47,20 +47,20 @@ public class ClientDeathFormValidatorTest {
         clientDeathForm.setFacilityId("facilityId");
         clientDeathForm.setMotechId("motechId");
         clientDeathForm.setStaffId("staffId");
-        List<FormBean> formBeans = Collections.emptyList();
+        List<FormBean> formBeans = Arrays.<FormBean>asList(clientDeathForm);
 
         PatientValidator expectedValidators = new ExistsInDb().onFailure(new RegClientFormSubmittedInSameUpload());
         Patient patient = new Patient();
         when(mockFormValidator.getPatient("motechId")).thenReturn(patient);
         final DependentValidator mockDependentValidator = mock(DependentValidator.class);
         when(clientDeathFormValidator.dependentValidator()).thenReturn(mockDependentValidator);
-        List<FormError> formErrors = clientDeathFormValidator.validate(clientDeathForm, new FormBeanGroup(formBeans));
+        List<FormError> formErrors = clientDeathFormValidator.validate(clientDeathForm, new FormBeanGroup(formBeans), formBeans);
 
         assertFalse(formErrors.isEmpty());
         assertNotNull(select(formErrors, having(on(FormError.class).getParameter(), is(equalTo("motechId")))));
         assertNotNull(select(formErrors, having(on(FormError.class).getParameter(), is(equalTo("staffId")))));
         assertNotNull(select(formErrors, having(on(FormError.class).getParameter(), is(equalTo("facilityId")))));
-        verify(mockDependentValidator).validate(patient, formBeans, expectedValidators);
+        verify(mockDependentValidator).validate(patient, formBeans, formBeans, expectedValidators);
     }
 
 }

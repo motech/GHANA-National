@@ -13,12 +13,14 @@ import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.model.Time;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -44,10 +46,11 @@ public class MobileMidwifeFormValidatorTest {
         MobileMidwifeForm formBean = new MobileMidwifeBuilder().patientId(patientId).staffId(staffId).facilityId(facilityId)
                 .consent(true).format("PERS_VOICE").timeOfDay(timeOfDay).buildMobileMidwifeForm();
 
-        mobileMidwifeFormValidator.validate(formBean, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(formBean);
+        mobileMidwifeFormValidator.validate(formBean, new FormBeanGroup(formBeans), formBeans);
 
         ArgumentCaptor<MobileMidwifeEnrollment> mobileMidwifeEnrollmentCaptor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        verify(mobileMidwifeValidator).validate(mobileMidwifeEnrollmentCaptor.capture());
+        verify(mobileMidwifeValidator).validate(mobileMidwifeEnrollmentCaptor.capture(), eq(formBeans), eq(formBeans));
         MobileMidwifeEnrollment actualEnrollment = mobileMidwifeEnrollmentCaptor.getValue();
 
         assertThat(actualEnrollment.getFacilityId(), is(equalTo(facilityId)));

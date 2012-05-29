@@ -22,7 +22,7 @@ public class AgeMoreThanTest {
         Patient patient = new Patient(new MRSPatient("motechId",new MRSPerson().age(10),new MRSFacility("facilityId")));
         PatientValidator validator = new AgeMoreThan(12);
         final List<FormBean> formsSubmitted = new ArrayList<FormBean>();
-        List<FormError> formErrors = validator.validate(patient, formsSubmitted);
+        List<FormError> formErrors = validator.validate(patient, formsSubmitted, formsSubmitted);
         assertEquals(Arrays.asList(new FormError("Patient age", "is less than 12")),formErrors);
     }
 }

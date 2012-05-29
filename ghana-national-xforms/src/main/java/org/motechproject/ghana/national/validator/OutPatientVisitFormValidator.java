@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.bean.OutPatientVisitForm;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.validator.patient.*;
+import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
@@ -24,14 +25,14 @@ public class OutPatientVisitFormValidator extends FormValidator<OutPatientVisitF
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(OutPatientVisitForm formBean, FormBeanGroup group) {
-        List<FormError> formErrors = super.validate(formBean, group);
+    public List<FormError> validate(OutPatientVisitForm formBean, FormBeanGroup group, List<FormBean> allForms) {
+        List<FormError> formErrors = super.validate(formBean, group, allForms);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         if (Boolean.FALSE.equals(formBean.isVisitor())) {
             Patient patient = formValidator.getPatient(formBean.getMotechId());
             formErrors.addAll(new DependentValidator().validate(patient, group.getFormBeans(),
-                    new ExistsInDb()
+                    allForms, new ExistsInDb()
                             .onSuccess(new IsAlive()
                                     .onSuccess(new IsAChild(), PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType()))
                                     .onSuccess(new IsFemale(), PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType())))

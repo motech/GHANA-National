@@ -20,11 +20,11 @@ public class ExistsInDbTest {
         Patient patient = null;
         final PatientValidator validator = new ExistsInDb();
         final List<FormBean> formsSubmitted = new ArrayList<FormBean>();
-        List<FormError> formErrors = validator.validate(patient, formsSubmitted);
+        List<FormError> formErrors = validator.validate(patient, formsSubmitted, formsSubmitted);
         assertEquals(Arrays.asList(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME,NOT_FOUND)),formErrors);
 
         patient = new Patient(new MRSPatient("motechId"));
-        formErrors = validator.validate(patient,formsSubmitted);
+        formErrors = validator.validate(patient,formsSubmitted, formsSubmitted);
         assertEquals(0,formErrors.size());
     }
 }

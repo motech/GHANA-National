@@ -28,32 +28,20 @@ public class MobileMidwifeValidator {
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
     final static String PATIENT_ID_ATTRIBUTE_NAME = "patientId";
 
-    public List<FormError> validate(MobileMidwifeEnrollment enrollment) {
+    public List<FormError> validate(MobileMidwifeEnrollment enrollment, List<FormBean> formsWithinGroup, List<FormBean> allForms) {
         List<FormError> formErrors = new ArrayList<FormError>();
-        formErrors.addAll(validateFacilityPatientAndStaff(enrollment.getPatientId(),enrollment.getFacilityId(),enrollment.getStaffId()));
-        formErrors.addAll(validateFieldValues(enrollment));
-        return formErrors;
-    }
-
-    public List<FormError> validateFieldValues(MobileMidwifeEnrollment enrollment) {
-        List<FormError> formErrors = new ArrayList<FormError>();
+        formErrors.addAll(formValidator.validateIfFacilityExists(enrollment.getFacilityId()));
+        formErrors.addAll(formValidator.validateIfStaffExists(enrollment.getStaffId()));
+        formErrors.addAll(validatePatient(enrollment.getPatientId(), formsWithinGroup, allForms));
         formErrors.addAll(validateTime(enrollment));
         return formErrors;
     }
 
-    public List<FormError> validateForIncludeForm(MobileMidwifeEnrollment enrollment) {
+    public List<FormError> validatePatient(String patientId, List<FormBean> formsWithinGroup, List<FormBean> allForms) {
         List<FormError> formErrors = new ArrayList<FormError>();
-        formErrors.addAll(validateFieldValues(enrollment));
-        return formErrors;
-    }
-
-    public List<FormError> validateFacilityPatientAndStaff(String patientId, String facilityId, String staffId) {
-        List<FormError> formErrors = new ArrayList<FormError>();
-        formErrors.addAll(formValidator.validateIfFacilityExists(facilityId));
-        formErrors.addAll(formValidator.validateIfStaffExists(staffId));
         Patient patient = formValidator.getPatient(patientId);
-        formErrors.addAll(new DependentValidator().validate(patient, Collections.<FormBean>emptyList(),
-                new ExistsInDb().onSuccess(new IsAlive())
+        formErrors.addAll(new DependentValidator().validate(patient, formsWithinGroup,
+                allForms, new ExistsInDb().onSuccess(new IsAlive())
                                 .onFailure(new RegClientFormSubmittedInSameUpload())));
         return formErrors;
     }

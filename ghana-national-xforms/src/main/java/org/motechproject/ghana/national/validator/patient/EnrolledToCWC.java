@@ -21,7 +21,7 @@ public class EnrolledToCWC extends PatientValidator {
     }
 
     @Override
-    public List<FormError> validate(final Patient patient, List<FormBean> formsSubmitted) {
+    public List<FormError> validate(final Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms) {
         return allEncounters.getLatest(patient.getMotechId(), CWC_REG_VISIT.value()) == null ?
                 Arrays.asList(new FormError(MOTECH_ID_ATTRIBUTE_NAME, "not registered for CWC")) : new ArrayList<FormError>();
     }

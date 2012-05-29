@@ -27,33 +27,28 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(RegisterANCForm formBean, FormBeanGroup group) {
-        List<FormError> formErrors = super.validate(formBean, group);
+    public List<FormError> validate(RegisterANCForm formBean, FormBeanGroup group, List<FormBean> allForms) {
+        List<FormError> formErrors = super.validate(formBean, group, allForms);
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
-        formErrors.addAll(validatePatient(formValidator.getPatient(formBean.getMotechId()), group.getFormBeans()));
+        formErrors.addAll(validatePatient(formBean.getMotechId(), group.getFormBeans(), allForms));
         formErrors.addAll(validateMobileMidwifeIfEnrolled(formBean));
         return formErrors;
     }
 
-    public List<FormError> validatePatient(Patient patient, List<FormBean> formsUploaded) {
+    public List<FormError> validatePatient(String motechId, List<FormBean> formsUploaded, List<FormBean> allForms) {
+        final Patient patient = formValidator.getPatient(motechId);
         final PatientValidator regClientFormValidators = new RegClientFormSubmittedInSameUpload().onSuccess(new RegClientFormSubmittedForFemale());
         final PatientValidator validator = new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsFemale())).onFailure(regClientFormValidators);
-        return getDependentValidator().validate(patient, formsUploaded, validator);
+        return getDependentValidator().validate(patient, formsUploaded, allForms, validator);
     }
 
-    public DependentValidator getDependentValidator() {
+    DependentValidator getDependentValidator() {
         return new DependentValidator();
     }
 
     private List<FormError> validateMobileMidwifeIfEnrolled(RegisterANCForm formBean) {
         MobileMidwifeEnrollment midwifeEnrollment = formBean.createMobileMidwifeEnrollment();
-        return midwifeEnrollment != null ? mobileMidwifeValidator.validateForIncludeForm(midwifeEnrollment) : Collections.<FormError>emptyList();
-    }
-
-    public List<FormError> validatePatientAndStaff(String motechPatientId, String staffId) {
-        List<FormError> errors = formValidator.validateIfStaffExists(staffId);
-        errors.addAll(validatePatient(formValidator.getPatient(motechPatientId),Collections.<FormBean>emptyList()));
-        return errors;
+        return midwifeEnrollment != null ? mobileMidwifeValidator.validateTime(midwifeEnrollment) : Collections.<FormError>emptyList();
     }
 }

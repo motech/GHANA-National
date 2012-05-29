@@ -63,7 +63,7 @@ public class AncVisitFormValidatorTest {
         MRSEncounter encounter = mock(MRSEncounter.class);
         when(formValidator.getPatient(motechId)).thenReturn(patient);
         when(mockAllEncounters.getLatest(motechId,ANC_REG_VISIT.value())).thenReturn(encounter);
-        List<FormError> errors = validator.validate(formBean, formBeanGroup);
+        List<FormError> errors = validator.validate(formBean, formBeanGroup, Arrays.<FormBean>asList(formBean));
 
         verify(formValidator).validateIfStaffExists(formBean.getStaffId());
         verify(formValidator).validateIfFacilityExists(formBean.getFacilityId());
@@ -72,14 +72,14 @@ public class AncVisitFormValidatorTest {
         //patient is not a female
         patient.getMrsPatient().getPerson().gender("M");
         when(formValidator.getPatient(motechId)).thenReturn(patient);
-        errors = validator.validate(formBean,formBeanGroup);
+        errors = validator.validate(formBean,formBeanGroup, Arrays.<FormBean>asList(formBean));
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG)));
 
         //patient not exists in db,no anc form submitted
         patient.getMrsPatient().getPerson().gender("F");
         when(formValidator.getPatient(motechId)).thenReturn(patient);
         when(mockAllEncounters.getLatest(motechId, ANC_REG_VISIT.value())).thenReturn(null);
-        errors = validator.validate(formBean,formBeanGroup);
+        errors = validator.validate(formBean,formBeanGroup, Arrays.<FormBean>asList(formBean));
         assertThat(errors,hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, "not registered for ANC")));
 
         //patient exists in db,reg anc form submitted
@@ -87,8 +87,8 @@ public class AncVisitFormValidatorTest {
         RegisterANCForm registerANCForm = new RegisterANCForm();
         registerANCForm.setFormname("registerANC");
         registerANCForm.setMotechId(motechId);
-        formBeanGroup=new FormBeanGroup(Arrays.<FormBean>asList(registerANCForm));
-        errors = validator.validate(formBean,formBeanGroup);
+        formBeanGroup=new FormBeanGroup(Arrays.<FormBean>asList(formBean, registerANCForm));
+        errors = validator.validate(formBean,formBeanGroup, Arrays.<FormBean>asList(formBean, registerANCForm));
         assertRegANCDependencyHasNoError(errors);
 
         //patient not in db,reg client form submitted with ANC
@@ -97,8 +97,8 @@ public class AncVisitFormValidatorTest {
         registerClientForm.setFormname("registerPatient");
         registerClientForm.setMotechId(motechId);
         registerClientForm.setRegistrantType(PatientType.PREGNANT_MOTHER);
-        formBeanGroup=new FormBeanGroup(Arrays.<FormBean>asList(registerClientForm));
-        errors = validator.validate(formBean,formBeanGroup);
+        formBeanGroup=new FormBeanGroup(Arrays.<FormBean>asList(formBean, registerClientForm));
+        errors = validator.validate(formBean,formBeanGroup, Arrays.<FormBean>asList(formBean, registerClientForm));
         assertRegANCDependencyHasNoError(errors);
     }
 

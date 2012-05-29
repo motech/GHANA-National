@@ -18,6 +18,7 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -66,27 +67,27 @@ public class RegisterANCFormValidatorTest {
 
         when(formValidator.getPatient(motechId)).thenReturn(patient);
 
-        List<FormError> errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded));
+        List<FormError> errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
 
         verify(formValidator).validateIfStaffExists(eq(staffId));
         verify(formValidator).validateIfFacilityExists(eq(facilityId));
-        verify(mockMobileMidwifeValidator, never()).validateForIncludeForm(Matchers.<MobileMidwifeEnrollment>any());
+        verify(mockMobileMidwifeValidator, never()).validateTime(Matchers.<MobileMidwifeEnrollment>any());
 
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, NOT_FOUND)));
 
         // patient is dead
         patient = new Patient(new MRSPatient("motechId", new MRSPerson().dead(TRUE).gender("F"), new MRSFacility("facilityId")));
         when(formValidator.getPatient(motechId)).thenReturn(patient);
-        errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded));
+        errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, IS_NOT_ALIVE)));
 
         patient.getMrsPatient().getPerson().gender("M");
-        errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded));
+        errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, IS_NOT_ALIVE)));
 
         // patient is not female
         patient.getMrsPatient().getPerson().dead(Boolean.FALSE).gender("M");
-        errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded));
+        errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG)));
 
 
@@ -99,7 +100,7 @@ public class RegisterANCFormValidatorTest {
 
         // reg client form has invalid gender
         registerClientForm.setSex("M");
-        errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded));
+        errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG)));
     }
 
@@ -112,12 +113,13 @@ public class RegisterANCFormValidatorTest {
                 .staffId(staffId).patientId(motechId).buildRegisterANCForm(new RegisterANCForm());
 
         registerANCFormValidator = spy(registerANCFormValidator);
-        doReturn(emptyList()).when(registerANCFormValidator).validatePatient(Matchers.<Patient>any(), anyList());
+        doReturn(emptyList()).when(registerANCFormValidator).validatePatient(eq(motechId), anyList(), anyList());
 
-        registerANCFormValidator.validate(formBean, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(formBean);
+        registerANCFormValidator.validate(formBean, new FormBeanGroup(formBeans), formBeans);
 
         ArgumentCaptor<MobileMidwifeEnrollment> captor = ArgumentCaptor.forClass(MobileMidwifeEnrollment.class);
-        verify(mockMobileMidwifeValidator).validateForIncludeForm(captor.capture());
+        verify(mockMobileMidwifeValidator).validateTime(captor.capture());
         assertThat(captor.getValue().getStaffId(), is(org.hamcrest.Matchers.equalTo(staffId)));
         assertThat(captor.getValue().getPatientId(), is(org.hamcrest.Matchers.equalTo(motechId)));
         assertThat(captor.getValue().getFacilityId(), is(org.hamcrest.Matchers.equalTo(facilityId)));

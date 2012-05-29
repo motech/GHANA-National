@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.bean.DeliveryNotificationForm;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.validator.patient.*;
+import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
@@ -25,13 +26,13 @@ public class DeliveryNotificationFormValidator extends FormValidator<DeliveryNot
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(DeliveryNotificationForm formBean, FormBeanGroup group) {
-        List<FormError> formErrors = super.validate(formBean, group);
+    public List<FormError> validate(DeliveryNotificationForm formBean, FormBeanGroup group, List<FormBean> allForms) {
+        List<FormError> formErrors = super.validate(formBean, group, allForms);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         final Patient patient = formValidator.getPatient(formBean.getMotechId());
         formErrors.addAll(dependentValidator().validate(patient, group.getFormBeans(),
-                new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsFemale().onSuccess(new AgeMoreThan(5).onSuccess(new EnrolledToANC(allEncounters).onFailure(new RegANCFormSubmittedInSameUpload())))))
+                allForms, new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsFemale().onSuccess(new AgeMoreThan(5).onSuccess(new EnrolledToANC(allEncounters).onFailure(new RegANCFormSubmittedInSameUpload())))))
                                 .onFailure(new RegANCFormSubmittedInSameUpload()
                                         .onFailure(new RegCWCFormSubmittedInSameUpload()
                                                 .onSuccess(new RegClientFormSubmittedForMother())))));

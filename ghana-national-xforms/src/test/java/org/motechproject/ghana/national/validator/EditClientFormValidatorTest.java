@@ -19,7 +19,6 @@ import org.motechproject.mrs.model.MRSPerson;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -61,12 +60,13 @@ public class EditClientFormValidatorTest {
         Patient patient = mock(Patient.class);
         when(formValidator.getPatient(motechId)).thenReturn(patient);
 
-        final FormBeanGroup formBeanGroup = new FormBeanGroup(Collections.<FormBean>emptyList());
-        editClientFormValidator.validate(editClientForm, formBeanGroup);
+        List<FormBean> formBeans = Arrays.<FormBean>asList(editClientForm);
+        final FormBeanGroup formBeanGroup = new FormBeanGroup(formBeans);
+        editClientFormValidator.validate(editClientForm, formBeanGroup, formBeans);
 
         verify(formValidator).validateIfStaffExists(staffId);
         verify(formValidator).validateIfFacilityExists(facilityId);
-        verify(mockDependentValidator).validate(patient, Collections.<FormBean>emptyList(), expectedValidator);
+        verify(mockDependentValidator).validate(patient, formBeans, formBeans, expectedValidator);
     }
 
     @Test
@@ -85,7 +85,8 @@ public class EditClientFormValidatorTest {
 
         // mother not in db
         when(formValidator.getPatient(motechId)).thenReturn(null);
-        List<FormError> errors = editClientFormValidator.validate(editClientForm, new FormBeanGroup(Arrays.<FormBean>asList(editClientForm)));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(editClientForm);
+        List<FormError> errors = editClientFormValidator.validate(editClientForm, new FormBeanGroup(formBeans), formBeans);
 
         verify(formValidator).validateIfStaffExists(staffId);
         verify(formValidator).validateIfFacilityExists(facilityId);
@@ -95,20 +96,23 @@ public class EditClientFormValidatorTest {
         // mother in db by dead
         Patient mother = new Patient(new MRSPatient(motechId, new MRSPerson().dead(true), new MRSFacility(facilityId)));
         when(formValidator.getPatient(mothersMotechId)).thenReturn(mother);
-        errors = editClientFormValidator.validate(editClientForm, new FormBeanGroup(Arrays.<FormBean>asList(editClientForm)));
+        formBeans = Arrays.<FormBean>asList(editClientForm);
+        errors = editClientFormValidator.validate(editClientForm, new FormBeanGroup(formBeans), formBeans);
 
         assertThat(errors, hasItem(new FormError("Mothers motech Id", IS_NOT_ALIVE)));
 
         // mother in db and alive
         mother.getMrsPatient().getPerson().dead(false);
-        errors = editClientFormValidator.validate(editClientForm, new FormBeanGroup(Arrays.<FormBean>asList(new RegisterClientForm())));
+        formBeans = Arrays.<FormBean>asList(new RegisterClientForm());
+        errors = editClientFormValidator.validate(editClientForm, new FormBeanGroup(formBeans), formBeans);
         assertThat(errors, not(hasItem(new FormError("Mothers motech Id", NOT_FOUND))));
         assertThat(errors, not(hasItem(new FormError("Mothers motech Id", IS_NOT_ALIVE))));
 
         // mother's motech id not provided
         editClientForm.setMotherMotechId(null);
         when(formValidator.getPatient(motechId)).thenReturn(null);
-        errors = editClientFormValidator.validate(editClientForm, new FormBeanGroup(Arrays.<FormBean>asList(editClientForm)));
+        formBeans = Arrays.<FormBean>asList(editClientForm);
+        errors = editClientFormValidator.validate(editClientForm, new FormBeanGroup(formBeans), formBeans);
 
         assertThat(errors, not(hasItem(new FormError("Mothers motech Id", NOT_FOUND))));
     }

@@ -13,6 +13,7 @@ import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.ghana.national.web.form.CWCEnrollmentForm;
 import org.motechproject.ghana.national.web.helper.CwcFormMapper;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
+import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -29,10 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("admin/cwc")
@@ -110,7 +108,7 @@ public class CWCController {
         modelMap.mergeAttributes(cwcFormMapper.setViewAttributes());
         modelMap.mergeAttributes(facilityHelper.locationMap());
 
-        List<FormError> formErrors = registerCWCFormValidator.validatePatient(cwcEnrollmentForm.getPatientMotechId());
+        List<FormError> formErrors = registerCWCFormValidator.validatePatient(cwcEnrollmentForm.getPatientMotechId(), Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
         formErrors.addAll(formValidator.validateIfStaffExists(cwcEnrollmentForm.getStaffId()));
 
         List<String> validationErrors = new ArrayList<String>();

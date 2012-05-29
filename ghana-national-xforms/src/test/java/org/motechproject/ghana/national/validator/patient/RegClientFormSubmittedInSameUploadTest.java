@@ -22,14 +22,14 @@ public class RegClientFormSubmittedInSameUploadTest {
         List<FormBean> formsUploaded = new ArrayList<FormBean>();
         final PatientValidator validator = new RegClientFormSubmittedInSameUpload();
 
-        List<FormError> formErrors = validator.validate(patient, formsUploaded);
+        List<FormError> formErrors = validator.validate(patient, formsUploaded, formsUploaded);
         assertThat(formErrors,is(equalTo(Arrays.asList(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME,Constants.NOT_FOUND)))));
 
         final RegisterClientForm registerClientForm = new RegisterClientForm();
         registerClientForm.setFormname("registerPatient");
         formsUploaded.add(registerClientForm);
 
-        formErrors = validator.validate(patient, formsUploaded);
+        formErrors = validator.validate(patient, formsUploaded, formsUploaded);
         assertThat(formErrors.size(), is(equalTo(0)));
     }
 }

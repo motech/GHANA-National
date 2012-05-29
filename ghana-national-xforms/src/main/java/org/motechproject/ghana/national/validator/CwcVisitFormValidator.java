@@ -4,6 +4,7 @@ import org.motechproject.ghana.national.bean.CWCVisitForm;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.validator.patient.*;
+import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
@@ -27,19 +28,19 @@ public class CwcVisitFormValidator extends FormValidator<CWCVisitForm> {
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(CWCVisitForm formBean, FormBeanGroup group) {
-        List<FormError> errors = super.validate(formBean, group);
-        errors.addAll(businessValidations(formBean, group));
+    public List<FormError> validate(CWCVisitForm formBean, FormBeanGroup group, List<FormBean> allForms) {
+        List<FormError> errors = super.validate(formBean, group, allForms);
+        errors.addAll(businessValidations(formBean, group.getFormBeans(), allForms));
         return errors;
     }
 
-    List<FormError>  businessValidations(CWCVisitForm formBean,  FormBeanGroup group) {
+    List<FormError>  businessValidations(CWCVisitForm formBean, List<FormBean> formsWithinGroup, List<FormBean> allForms) {
         List<FormError> errors = new ArrayList<FormError>();
         errors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         errors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         Patient patient = formValidator.getPatient(formBean.getMotechId());
-        errors.addAll(dependentValidator().validate(patient, group.getFormBeans(),
-                new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsAChild().onSuccess(new EnrolledToCWC(allEncounters).onFailure(new RegCWCFormSubmittedInSameUpload()))))
+        errors.addAll(dependentValidator().validate(patient, formsWithinGroup,
+                allForms, new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsAChild().onSuccess(new EnrolledToCWC(allEncounters).onFailure(new RegCWCFormSubmittedInSameUpload()))))
                                 .onFailure(new RegCWCFormSubmittedInSameUpload()
                                         .onFailure(new RegClientFormSubmittedInSameUpload()
                                                 .onSuccess(new RegClientFormSubmittedForChild())))));

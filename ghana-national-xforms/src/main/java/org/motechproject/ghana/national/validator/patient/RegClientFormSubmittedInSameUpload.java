@@ -24,8 +24,8 @@ public class RegClientFormSubmittedInSameUpload extends PatientValidator{
     }
 
     @Override
-    public List<FormError> validate(Patient patient, List<FormBean> formsSubmitted) {
-        final List<FormBean> registerPatientForms = filter(having(on(FormBean.class).getFormname(), is("registerPatient")), formsSubmitted);
+    public List<FormError> validate(Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms) {
+        final List<FormBean> registerPatientForms = filter(having(on(FormBean.class).getFormname(), is("registerPatient")), formsSubmittedWithinGroup);
         return registerPatientForms.size() == 1 ? Collections.<FormError>emptyList(): Arrays.asList(getFormError());
     }
 

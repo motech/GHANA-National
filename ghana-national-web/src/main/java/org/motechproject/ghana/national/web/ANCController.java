@@ -5,7 +5,7 @@ import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.service.CareService;
-import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
@@ -43,8 +43,6 @@ public class ANCController {
     @Autowired
     CareService careService;
     @Autowired
-    PatientService patientService;
-    @Autowired
     AllEncounters allEncounters;
     @Autowired
     RegisterANCFormValidator registerANCFormValidator;
@@ -52,6 +50,8 @@ public class ANCController {
     ANCFormMapper ancFormMapper;
     @Autowired
     private AllObservations allObservations;
+    @Autowired
+    private FormValidator formValidator;
 
     public ANCController() {
     }
@@ -66,7 +66,7 @@ public class ANCController {
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newANC(@RequestParam("motechPatientId") String motechPatientId, ModelMap modelMap) {
-        List<FormError> formErrors = registerANCFormValidator.validatePatient(patientService.getPatientByMotechId(motechPatientId),Collections.<FormBean>emptyList());
+        List<FormError> formErrors = registerANCFormValidator.validatePatient(motechPatientId, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
         ANCEnrollmentForm enrollmentForm = new ANCEnrollmentForm(motechPatientId);
         if (formErrors.isEmpty()) {
             MRSEncounter mrsEncounter = allEncounters.getLatest(motechPatientId, ANC_REG_VISIT.value());
@@ -83,9 +83,8 @@ public class ANCController {
     @ApiSession
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String save(@Valid ANCEnrollmentForm ancEnrollmentForm, ModelMap modelMap) throws ObservationNotFoundException {
-        List<FormError> formErrors = registerANCFormValidator.validatePatientAndStaff(ancEnrollmentForm.getMotechPatientId(),
-                ancEnrollmentForm.getStaffId());
-
+        List<FormError> formErrors = registerANCFormValidator.validatePatient(ancEnrollmentForm.getMotechPatientId(), Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
+        formErrors.addAll(formValidator.validateIfStaffExists(ancEnrollmentForm.getStaffId()));
         if (formErrors.isEmpty()) {
             careService.enroll(createANCVO(ancEnrollmentForm));
             modelMap.addAttribute("success", "Updated successfully.");
@@ -110,17 +109,17 @@ public class ANCController {
 
     private void addCareHistoryValues(ModelMap modelMap) {
         modelMap.put("careHistories", Arrays.asList(ANCCareHistory.TT.name(), ANCCareHistory.IPT_SP.name()));
-        HashMap<Integer,String> lastIPTValues = new LinkedHashMap<Integer, String>();
-        lastIPTValues.put(1,"IPT 1");
-        lastIPTValues.put(2,"IPT 2");
-        lastIPTValues.put(3,"IPT 3");
+        HashMap<Integer, String> lastIPTValues = new LinkedHashMap<Integer, String>();
+        lastIPTValues.put(1, "IPT 1");
+        lastIPTValues.put(2, "IPT 2");
+        lastIPTValues.put(3, "IPT 3");
 
-        HashMap<Integer,String> lastTTValues = new LinkedHashMap<Integer, String>();
-        lastTTValues.put(1,"TT 1");
-        lastTTValues.put(2,"TT 2");
-        lastTTValues.put(3,"TT 3");
-        lastTTValues.put(4,"TT 4");
-        lastTTValues.put(5,"TT 5");
+        HashMap<Integer, String> lastTTValues = new LinkedHashMap<Integer, String>();
+        lastTTValues.put(1, "TT 1");
+        lastTTValues.put(2, "TT 2");
+        lastTTValues.put(3, "TT 3");
+        lastTTValues.put(4, "TT 4");
+        lastTTValues.put(5, "TT 5");
 
         modelMap.put("lastIPT", lastIPTValues);
         modelMap.put("lastTT", lastTTValues);

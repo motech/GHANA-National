@@ -19,7 +19,7 @@ public class ExistsInDb extends PatientValidator{
         this.formError = formError;
     }
 
-    public List<FormError> validate(Patient patient, List<FormBean> formsSubmitted){
+    public List<FormError> validate(Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms){
         return (patient == null)? Arrays.asList(getFormError()):Collections.<FormError>emptyList();
     }
 

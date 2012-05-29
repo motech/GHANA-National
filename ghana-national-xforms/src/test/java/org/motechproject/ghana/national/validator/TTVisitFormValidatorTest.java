@@ -53,7 +53,8 @@ public class TTVisitFormValidatorTest {
         form.setFacilityId("facilityId");
         form.setMotechId(motechId);
 
-        List<FormError> errors = validator.validate(form, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(form);
+        List<FormError> errors = validator.validate(form, new FormBeanGroup(formBeans), formBeans);
 
         verify(mockFormValidator).validateIfStaffExists(eq("staffId"));
         verify(mockFormValidator).validateIfFacilityExists(eq("facilityId"));
@@ -64,20 +65,23 @@ public class TTVisitFormValidatorTest {
         Patient patient = new Patient(new MRSPatient(motechId,new MRSPerson().age(10),new MRSFacility("facilityId")));
         doReturn(patient).when(mockFormValidator).getPatient(motechId);
 
-        List<FormError> formErrors = validator.validate(form, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        formBeans = Arrays.<FormBean>asList(form);
+        List<FormError> formErrors = validator.validate(form, new FormBeanGroup(formBeans), formBeans);
         assertThat(formErrors,hasItem(new FormError("Patient age", "is less than 12")));
 
         //patient exists in db,age greater than 12
         patient = new Patient(new MRSPatient(motechId,new MRSPerson().age(15),new MRSFacility("facilityId")));
         doReturn(patient).when(mockFormValidator).getPatient(motechId);
 
-        formErrors = validator.validate(form, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        formBeans = Arrays.<FormBean>asList(form);
+        formErrors = validator.validate(form, new FormBeanGroup(formBeans), formBeans);
         assertThat(formErrors,not(hasItem(new FormError("Patient age", "is less than 12"))));
         assertThat(formErrors,not(hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, NOT_FOUND))));
 
         //patient does not exist in db,reg client form not submitted
         doReturn(null).when(mockFormValidator).getPatient(motechId);
-        formErrors = validator.validate(form, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        formBeans = Arrays.<FormBean>asList(form);
+        formErrors = validator.validate(form, new FormBeanGroup(formBeans), formBeans);
         assertThat(formErrors,hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, NOT_FOUND)));
 
         //patient does not exist in db,reg client form submitted with age less than 12
@@ -86,7 +90,8 @@ public class TTVisitFormValidatorTest {
         registerClientForm.setDateOfBirth(DateUtil.today().minusYears(4).toDate());
         registerClientForm.setFormname("registerPatient");
 
-        formErrors = validator.validate(form, new FormBeanGroup(Arrays.<FormBean>asList(registerClientForm)));
+        formBeans = Arrays.<FormBean>asList(form, registerClientForm);
+        formErrors = validator.validate(form, new FormBeanGroup(formBeans), formBeans);
 
         assertThat(formErrors,hasItem(new FormError("Patient age", "is less than 12")));
 
@@ -94,7 +99,8 @@ public class TTVisitFormValidatorTest {
         doReturn(null).when(mockFormValidator).getPatient(motechId);
         registerClientForm.setDateOfBirth(DateUtil.today().minusYears(15).toDate());
 
-        formErrors = validator.validate(form, new FormBeanGroup(Arrays.<FormBean>asList(registerClientForm)));
+        formBeans = Arrays.<FormBean>asList(form, registerClientForm);
+        formErrors = validator.validate(form, new FormBeanGroup(formBeans), formBeans);
 
         assertThat(formErrors,not(hasItem(new FormError("Patient age", "is less than 12"))));
 

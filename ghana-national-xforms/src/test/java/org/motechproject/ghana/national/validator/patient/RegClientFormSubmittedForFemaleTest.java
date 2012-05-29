@@ -25,11 +25,11 @@ public class RegClientFormSubmittedForFemaleTest {
         formsUploaded.add(registerClientForm);
 
         final PatientValidator validator = new RegClientFormSubmittedForFemale();
-        List<FormError> errors = validator.validate(patient, formsUploaded);
+        List<FormError> errors = validator.validate(patient, formsUploaded, formsUploaded);
         assertThat(errors.size(), is(equalTo(0)));
 
         registerClientForm.setSex("M");
-        errors = validator.validate(patient,formsUploaded);
+        errors = validator.validate(patient,formsUploaded, formsUploaded);
         assertThat(errors,is(equalTo(Arrays.asList(new FormError("Sex","should be female")))));
     }
 }

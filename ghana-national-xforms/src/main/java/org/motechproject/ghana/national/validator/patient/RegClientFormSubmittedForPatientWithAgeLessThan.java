@@ -21,8 +21,8 @@ public class RegClientFormSubmittedForPatientWithAgeLessThan extends PatientVali
     }
 
     @Override
-    public List<FormError> validate(Patient patient, List<FormBean> formsSubmitted) {
-        final RegisterClientForm registerPatientForm = (RegisterClientForm) filter(having(on(FormBean.class).getFormname(), is("registerPatient")), formsSubmitted).get(0);
+    public List<FormError> validate(Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms) {
+        final RegisterClientForm registerPatientForm = (RegisterClientForm) filter(having(on(FormBean.class).getFormname(), is("registerPatient")), formsSubmittedWithinGroup).get(0);
         return DateUtil.getDifferenceOfDatesInYears(registerPatientForm.getDateOfBirth()) < age ?
                 Arrays.asList(new FormError("Patient age", "is less than " + age)): Collections.<FormError>emptyList();
     }

@@ -60,7 +60,8 @@ public class PregnancyTerminationFormValidatorTest {
         Patient patient = new Patient(new MRSPatient(motechId, new MRSPerson().dead(false), new MRSFacility(facilityId)));
         doReturn(patient).when(formValidator).getPatient(motechId);
 
-        List<FormError> formErrors = pregnancyTerminationFormValidator.validate(formBean, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(formBean);
+        List<FormError> formErrors = pregnancyTerminationFormValidator.validate(formBean, new FormBeanGroup(formBeans), formBeans);
 
         assertThat(formErrors, hasItem(new FormError("facility", "not found")));
         assertThat(formErrors, hasItem(new FormError("staff", "not found")));
@@ -70,20 +71,23 @@ public class PregnancyTerminationFormValidatorTest {
         // has valid ANC encounter
         final MRSEncounter encounter = mock(MRSEncounter.class);
         when(allEncounters.getLatest(motechId, ANC_REG_VISIT.value())).thenReturn(encounter);
-        formErrors = pregnancyTerminationFormValidator.validate(formBean, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        formBeans = Arrays.<FormBean>asList(formBean);
+        formErrors = pregnancyTerminationFormValidator.validate(formBean, new FormBeanGroup(formBeans), formBeans);
         assertThat(formErrors, not(hasItem(new FormError("motechId", "not registered for ANC"))));
 
         // has Reg ANC form
         final RegisterANCForm ancForm = new RegisterANCForm();
         ancForm.setFormname("registerANC");
-        formErrors = pregnancyTerminationFormValidator.validate(formBean, new FormBeanGroup(Arrays.<FormBean>asList(ancForm)));
+        formBeans = Arrays.<FormBean>asList(ancForm);
+        formErrors = pregnancyTerminationFormValidator.validate(formBean, new FormBeanGroup(formBeans), formBeans);
         MatcherAssert.assertThat(formErrors, not(hasItem(new FormError("motechId", "not registered for ANC"))));
         MatcherAssert.assertThat(formErrors, not(hasItem(new FormError("motechId", "not found"))));
 
 
         // does not have ANC reg form
         doReturn(null).when(formValidator).getPatient(motechId);
-        formErrors = pregnancyTerminationFormValidator.validate(formBean, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        formBeans = Arrays.<FormBean>asList(formBean);
+        formErrors = pregnancyTerminationFormValidator.validate(formBean, new FormBeanGroup(formBeans), formBeans);
         MatcherAssert.assertThat(formErrors, hasItem(new FormError("motechId", "not registered for ANC")));
 
     }

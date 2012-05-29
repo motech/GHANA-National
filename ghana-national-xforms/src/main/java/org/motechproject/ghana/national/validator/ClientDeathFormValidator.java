@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.validator;
 import org.motechproject.ghana.national.bean.ClientDeathForm;
 import org.motechproject.ghana.national.validator.patient.ExistsInDb;
 import org.motechproject.ghana.national.validator.patient.RegClientFormSubmittedInSameUpload;
+import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
@@ -22,12 +23,12 @@ public class ClientDeathFormValidator extends FormValidator<ClientDeathForm> {
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(ClientDeathForm formBean, FormBeanGroup group) {
-        List<FormError> formErrors = super.validate(formBean, group);
+    public List<FormError> validate(ClientDeathForm formBean, FormBeanGroup group, List<FormBean> allForms) {
+        List<FormError> formErrors = super.validate(formBean, group, allForms);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(dependentValidator().validate(formValidator.getPatient(formBean.getMotechId()), group.getFormBeans(),
-                new ExistsInDb().onFailure(new RegClientFormSubmittedInSameUpload())));
+                allForms, new ExistsInDb().onFailure(new RegClientFormSubmittedInSameUpload())));
         return formErrors;
     }
 

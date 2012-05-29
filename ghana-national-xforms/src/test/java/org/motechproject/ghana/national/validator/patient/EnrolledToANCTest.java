@@ -39,12 +39,12 @@ public class EnrolledToANCTest {
     public void shouldVerifyIfPatientEnrolledForANC(){
         Patient patient = new Patient(new MRSPatient("motechId",new MRSPerson(),new MRSFacility("facilityId")));
         when(allEncounters.getLatest("motechId", ANC_REG_VISIT.value())).thenReturn(null);
-        List<FormError> errors = validator.validate(patient, Collections.<FormBean>emptyList());
+        List<FormError> errors = validator.validate(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
         assertThat(errors,hasItem(new FormError(patient.getMotechId(), "not registered for ANC")));
 
         MRSEncounter mrsEncounter = mock(MRSEncounter.class);
         when(allEncounters.getLatest("motechId",ANC_REG_VISIT.value())).thenReturn(mrsEncounter);
-        errors = validator.validate(patient, Collections.<FormBean>emptyList());
+        errors = validator.validate(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
         assertThat(errors,not(hasItem(new FormError(patient.getMotechId(), "not registered for ANC"))));
     }
 

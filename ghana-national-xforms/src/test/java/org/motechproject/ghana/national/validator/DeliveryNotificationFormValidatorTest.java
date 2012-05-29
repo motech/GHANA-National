@@ -15,7 +15,7 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -60,14 +60,15 @@ public class DeliveryNotificationFormValidatorTest {
         Patient patient = mock(Patient.class);
         when(formValidator.getPatient(motechId)).thenReturn(patient);
 
-        final FormBeanGroup formBeanGroup = new FormBeanGroup(Collections.<FormBean>emptyList());
-        validator.validate(deliveryForm, formBeanGroup);
+        List<FormBean> formBeans = Arrays.<FormBean>asList(deliveryForm);
+        final FormBeanGroup formBeanGroup = new FormBeanGroup(formBeans);
+        validator.validate(deliveryForm, formBeanGroup, formBeans);
 
         verify(formValidator).validateIfStaffExists(staffId);
         verify(formValidator).validateIfFacilityExists(facilityId);
-        verify(mockDependentValidator).validate(patient, Collections.<FormBean>emptyList(), expectedValidator);
+        verify(mockDependentValidator).validate(patient, formBeans, formBeans, expectedValidator);
     }
-    
+
     @Test
     public void shouldThrowErrorWhenPatientIsAChild() {
         DeliveryNotificationForm deliveryNotificationForm = new DeliveryNotificationForm();
@@ -76,9 +77,10 @@ public class DeliveryNotificationFormValidatorTest {
         deliveryNotificationForm.setMotechId(motechId);
 
         //patient age less than 5
-        Patient patient= new Patient(new MRSPatient(motechId,new MRSPerson().dead(false).age(4).gender("F"),new MRSFacility(facilityId)));
+        Patient patient = new Patient(new MRSPatient(motechId, new MRSPerson().dead(false).age(4).gender("F"), new MRSFacility(facilityId)));
         when(formValidator.getPatient(motechId)).thenReturn(patient);
-        List<FormError> errors = validator.validate(deliveryNotificationForm,new FormBeanGroup(Collections.<FormBean>emptyList()));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(deliveryNotificationForm);
+        List<FormError> errors = validator.validate(deliveryNotificationForm, new FormBeanGroup(formBeans), formBeans);
         assertThat(errors, hasItem(new FormError("Patient age", "is less than 5")));
     }
 

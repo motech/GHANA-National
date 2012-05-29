@@ -34,32 +34,29 @@ public class RegisterCWCFormValidator extends FormValidator<RegisterCWCForm> {
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(RegisterCWCForm formBean, FormBeanGroup group) {
-        List<FormError> formErrors = super.validate(formBean, group);
+    public List<FormError> validate(RegisterCWCForm formBean, FormBeanGroup group, List<FormBean> allForms) {
+        List<FormError> formErrors = super.validate(formBean, group, allForms);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(validateMobileMidwifeIfEnrolled(formBean));
 
-        formErrors.addAll(validatePatient(formBean.getMotechId(), group.getFormBeans()));
+        formErrors.addAll(validatePatient(formBean.getMotechId(), group.getFormBeans(), allForms));
 
         return formErrors;
     }
 
-    private List<FormError> validatePatient(String motechId, List<FormBean> formBeans) {
+    public List<FormError> validatePatient(String motechId, List<FormBean> formBeans, List<FormBean> allForms) {
         List<FormError> formErrors = new ArrayList<FormError>();
         final Patient patient = formValidator.getPatient(motechId);
         final PatientValidator regClientFormValidators = new RegClientFormSubmittedInSameUpload().onSuccess(new RegClientFormSubmittedForChild(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_MORE_ERR_MSG)));
-        final List<FormError> errors = new DependentValidator().validate(patient, formBeans, new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsAChild())).onFailure(regClientFormValidators));
+        final List<FormError> errors = new DependentValidator().validate(patient, formBeans, allForms, new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsAChild())).onFailure(regClientFormValidators));
         formErrors.addAll(errors);
         return formErrors;
     }
 
     private List<FormError> validateMobileMidwifeIfEnrolled(RegisterCWCForm formBean) {
         MobileMidwifeEnrollment midwifeEnrollment = formBean.createMobileMidwifeEnrollment();
-        return midwifeEnrollment != null ? mobileMidwifeValidator.validateForIncludeForm(midwifeEnrollment) : Collections.<FormError>emptyList();
+        return midwifeEnrollment != null ? mobileMidwifeValidator.validateTime(midwifeEnrollment) : Collections.<FormError>emptyList();
     }
 
-    public List<FormError> validatePatient(String patientMotechId) {
-        return validatePatient(patientMotechId,Collections.<FormBean>emptyList());            
-    }
 }

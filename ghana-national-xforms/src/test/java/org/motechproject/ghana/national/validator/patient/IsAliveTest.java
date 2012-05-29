@@ -21,11 +21,11 @@ public class IsAliveTest {
         MRSPatient mrsPatient = new MRSPatient("motechId",new MRSPerson().dead(false),new MRSFacility("facilityId"));
         Patient patient = new Patient(mrsPatient);
         PatientValidator validator = new IsAlive();
-        List<FormError> formErrors = validator.validate(patient, Collections.<FormBean>emptyList());
+        List<FormError> formErrors = validator.validate(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
         assertEquals(0,formErrors.size());
 
         patient.getMrsPatient().getPerson().dead(true);
-        formErrors = validator.validate(patient, Collections.<FormBean>emptyList());
+        formErrors = validator.validate(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
         assertEquals(Arrays.asList(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME,Constants.IS_NOT_ALIVE)),formErrors);
     }
 }

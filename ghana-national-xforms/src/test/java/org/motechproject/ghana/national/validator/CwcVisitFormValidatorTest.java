@@ -59,32 +59,33 @@ public class CwcVisitFormValidatorTest {
 
         Patient patient = new Patient(new MRSPatient(motechId, new MRSPerson().dead(false), new MRSFacility("facilityId")));
         patient.getMrsPatient().getPerson().age(3);
-        FormBeanGroup formBeanGroup = new FormBeanGroup(Collections.<FormBean>emptyList());
+        List<FormBean> formBeans = Arrays.<FormBean>asList(formBean);
+        FormBeanGroup formBeanGroup = new FormBeanGroup(formBeans);
 
         //patient exists in db,registered for CWC
         MRSEncounter encounter = mock(MRSEncounter.class);
         when(formValidator.getPatient(motechId)).thenReturn(patient);
         when(mockAllEncounters.getLatest(motechId, CWC_REG_VISIT.value())).thenReturn(encounter);
-        List<FormError> errors = validator.validate(formBean, formBeanGroup);
+        List<FormError> errors = validator.validate(formBean, formBeanGroup, formBeans);
         assertRegCWCDependencyHasNoError(errors);
 
         //patient exists in db,incorrect age
         patient.getMrsPatient().getPerson().age(6);
         when(formValidator.getPatient(motechId)).thenReturn(patient);
-        errors = validator.validate(formBean, formBeanGroup);
+        errors = validator.validate(formBean, formBeanGroup, formBeans);
         assertThat(errors, hasItem(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_MORE_ERR_MSG)));
 
         //patient exists in db,no cwc form submitted
         patient.getMrsPatient().getPerson().age(4);
         when(formValidator.getPatient(motechId)).thenReturn(patient);
         when(mockAllEncounters.getLatest(motechId, CWC_REG_VISIT.value())).thenReturn(null);
-        errors = validator.validate(formBean, formBeanGroup);
+        errors = validator.validate(formBean, formBeanGroup, formBeans);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, "not registered for CWC")));
 
         //patient not in db,no form submitted
         when(formValidator.getPatient(motechId)).thenReturn(null);
         when(mockAllEncounters.getLatest(motechId, CWC_REG_VISIT.value())).thenReturn(null);
-        errors = validator.validate(formBean, formBeanGroup);
+        errors = validator.validate(formBean, formBeanGroup, formBeans);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, NOT_FOUND)));
 
         //patient exists in db,reg cwc form submitted
@@ -92,8 +93,8 @@ public class CwcVisitFormValidatorTest {
         RegisterCWCForm registerCWCForm = new RegisterCWCForm();
         registerCWCForm.setFormname("registerCWC");
         registerCWCForm.setMotechId(motechId);
-        formBeanGroup = new FormBeanGroup(Arrays.<FormBean>asList(registerCWCForm));
-        errors = validator.validate(formBean, formBeanGroup);
+        formBeanGroup = new FormBeanGroup(Arrays.<FormBean>asList(formBean, registerCWCForm));
+        errors = validator.validate(formBean, formBeanGroup, Arrays.<FormBean>asList(formBean, registerCWCForm));
         assertRegCWCDependencyHasNoError(errors);
 
         //patient not in db,reg client form submitted with CWC
@@ -102,8 +103,8 @@ public class CwcVisitFormValidatorTest {
         registerClientForm.setFormname("registerPatient");
         registerClientForm.setMotechId(motechId);
         registerClientForm.setRegistrantType(PatientType.CHILD_UNDER_FIVE);
-        formBeanGroup=new FormBeanGroup(Arrays.<FormBean>asList(registerClientForm));
-        errors = validator.validate(formBean,formBeanGroup);
+        formBeanGroup=new FormBeanGroup(Arrays.<FormBean>asList(registerClientForm, formBean));
+        errors = validator.validate(formBean,formBeanGroup, Arrays.<FormBean>asList(formBean, registerCWCForm));
         assertRegCWCDependencyHasNoError(errors);
     }
 

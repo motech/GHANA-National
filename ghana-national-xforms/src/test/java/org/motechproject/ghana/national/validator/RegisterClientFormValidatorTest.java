@@ -13,13 +13,13 @@ import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
+import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
@@ -53,39 +53,58 @@ public class RegisterClientFormValidatorTest {
     @Test
     public void shouldValidateIfAPatientIsAvailableWithIdAsMothersMotechIdIfMotherMotechIdIsGiven() {
         String mothersMotechId = "100";
+        String motechId = "001";
+        when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(mothersMotechId);
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
-        when(mockRegisterClientForm.getDateOfBirth()).thenReturn(new Date(99,9,9));
+        when(mockRegisterClientForm.getDateOfBirth()).thenReturn(new Date(99, 9, 9));
         Patient patientsMotherMock = mock(Patient.class);
         when(mockPatientService.getPatientByMotechId(mothersMotechId)).thenReturn(patientsMotherMock);
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList())), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(mockRegisterClientForm);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(formBeans), formBeans), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
 
+        Patient patient = new Patient(new MRSPatient(motechId, new MRSPerson().age(4), new MRSFacility("facilityId")));
+        when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(null);
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList())), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
+        when(formValidator.getPatient(motechId)).thenReturn(patient);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(formBeans), formBeans), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
+
+        when(mockRegisterClientForm.getMotherMotechId()).thenReturn(mothersMotechId);
+        when(mockPatientService.getPatientByMotechId(mothersMotechId)).thenReturn(null);
+        RegisterClientForm registerClientFormForMother = new RegisterClientForm();
+        registerClientFormForMother.setMotechId(mothersMotechId);
+        formBeans = Arrays.<FormBean>asList(mockRegisterClientForm, registerClientFormForMother);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(formBeans), formBeans), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
     }
 
     @Test
     public void shouldNotReturnErrorIfPatientTypeIsNotChildAndMothersMotechIdIsNotPresent() {
+        Patient patient = new Patient(new MRSPatient("motechId",new MRSPerson().gender("F"),new MRSFacility("facilityId")));
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(null);
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.PREGNANT_MOTHER);
+        when(mockRegisterClientForm.getMotechId()).thenReturn("motechId");
+        when(formValidator.getPatient(mockRegisterClientForm.getMotechId())).thenReturn(patient);
 
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList())), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(mockRegisterClientForm);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(formBeans), formBeans), not(hasItem(new FormError("motherMotechId", NOT_FOUND))));
         verify(mockPatientService, never()).getPatientByMotechId(Matchers.<String>any());
     }
 
     @Test
     public void shouldValidateTheMotechIdOfThePatientIfRegistrationModeIsPrePrintedId() {
         String motechId = "12345";
-        when(mockRegisterClientForm.getRegistrationMode()).thenReturn(RegistrationType.USE_PREPRINTED_ID);
+        RegisterClientForm registerClientForm = new RegisterClientForm();
+        registerClientForm.setMotechId(motechId);
+        registerClientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
         Patient patientMock = mock(Patient.class);
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patientMock);
-        when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
 
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList())), hasItem(new FormError("motechId", "in use")));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(registerClientForm);
+        assertThat(registerClientFormValidator.validate(registerClientForm, new FormBeanGroup(formBeans), formBeans), hasItem(new FormError("motechId", "in use")));
 
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(null);
-        when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList())), not(hasItem(new FormError("motechId", "in use"))));
+        when(formValidator.getPatient(motechId)).thenReturn(patientMock);
+        assertThat(registerClientFormValidator.validate(registerClientForm, new FormBeanGroup(formBeans), formBeans), not(hasItem(new FormError("motechId", "in use"))));
     }
 
     @Test
@@ -93,9 +112,9 @@ public class RegisterClientFormValidatorTest {
         String motechId = "12345";
         when(mockRegisterClientForm.getRegistrationMode()).thenReturn(RegistrationType.AUTO_GENERATE_ID);
 
-
         when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
-        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList())), not(hasItem(new FormError("motechId", NOT_FOUND))));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(mockRegisterClientForm);
+        assertThat(registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(formBeans), formBeans), not(hasItem(new FormError("motechId", NOT_FOUND))));
         verify(mockPatientService, never()).getPatientByMotechId(anyString());
     }
 
@@ -104,7 +123,8 @@ public class RegisterClientFormValidatorTest {
         String staffId = "21";
         when(mockRegisterClientForm.getStaffId()).thenReturn(staffId);
 
-        registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(mockRegisterClientForm);
+        registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(formBeans), formBeans);
         verify(formValidator).validateIfStaffExists(eq(staffId));
     }
 
@@ -114,34 +134,39 @@ public class RegisterClientFormValidatorTest {
         when(mockRegisterClientForm.getFacilityId()).thenReturn(facilityId);
 
 
-        registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(mockRegisterClientForm);
+        registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(formBeans), formBeans);
         verify(formValidator).validateIfFacilityExists(eq(facilityId));
     }
 
     @Test
-    public void shouldReturnErrorIfChildAgeIsGreaterThanFive(){
+    public void shouldReturnErrorIfChildAgeIsGreaterThanFive() {
         String motechId = "12234";
         when(mockRegisterClientForm.getMotechId()).thenReturn(motechId);
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
-        when(mockRegisterClientForm.getDateOfBirth()).thenReturn(new Date(99,9,9));
+        when(mockRegisterClientForm.getDateOfBirth()).thenReturn(new Date(99, 9, 9));
+        when(mockRegisterClientForm.getFormname()).thenReturn("registerPatient");
         when(formValidator.validateIfFacilityExists("212")).thenReturn(new ArrayList<FormError>());
         when(formValidator.validateIfStaffExists("212")).thenReturn(new ArrayList<FormError>());
 
-        List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList()));
-        assertThat(formErrors,hasItem(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_MORE_ERR_MSG)));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(mockRegisterClientForm);
+        List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(formBeans), formBeans);
 
+        assertThat(formErrors, hasItem(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_MORE_ERR_MSG)));
     }
 
     @Test
-    public void shouldReturnErrorIfMotherIsNotFemale(){
+    public void shouldReturnErrorIfMotherIsNotFemale() {
         String motherMotechId = "12234";
         when(mockRegisterClientForm.getMotherMotechId()).thenReturn(motherMotechId);
         when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.PREGNANT_MOTHER);
         when(mockRegisterClientForm.getSex()).thenReturn(Constants.PATIENT_GENDER_MALE);
         when(formValidator.validateIfFacilityExists("212")).thenReturn(new ArrayList<FormError>());
         when(formValidator.validateIfStaffExists("212")).thenReturn(new ArrayList<FormError>());
+        when(mockRegisterClientForm.getFormname()).thenReturn("registerPatient");
 
-        List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(Collections.<FormBean>emptyList()));
-        assertThat(formErrors, hasItem(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, Constants.GENDER_ERROR_MSG)));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(mockRegisterClientForm);
+        List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(formBeans), formBeans);
+        assertThat(formErrors, hasItem(new FormError("Sex", Constants.GENDER_ERROR_MSG)));
     }
 }

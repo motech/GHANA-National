@@ -14,7 +14,7 @@ import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import static ch.lambdaj.Lambda.*;
@@ -47,8 +47,9 @@ public class CareHistoryFormValidatorTest {
         PatientValidator expectedValidators = new ExistsInDb().onSuccess(new IsAlive()).onFailure(new RegClientFormSubmittedInSameUpload());
         DependentValidator dependentValidator = mock(DependentValidator.class);
         when(careHistoryFormValidator.dependentValidator()).thenReturn(dependentValidator);
-        FormBeanGroup group = new FormBeanGroup(Collections.<FormBean>emptyList());
-        List<FormError> formErrors = careHistoryFormValidator.validate(formBean, group);
+        List<FormBean> formBeans = Arrays.<FormBean>asList(formBean);
+        FormBeanGroup group = new FormBeanGroup(formBeans);
+        List<FormError> formErrors = careHistoryFormValidator.validate(formBean, group, formBeans);
         assertFalse(formErrors.isEmpty());
         assertFalse(select(formErrors, having(on(FormError.class).getParameter(), is("staffId"))).isEmpty());
         assertFalse(select(formErrors, having(on(FormError.class).getParameter(), is("facilityId"))).isEmpty());
@@ -56,7 +57,7 @@ public class CareHistoryFormValidatorTest {
 
         verify(mockFormValidator).validateIfFacilityExists(facilityId);
         verify(mockFormValidator).validateIfStaffExists(staffId);
-        verify(dependentValidator).validate(patient,group.getFormBeans(),expectedValidators);
+        verify(dependentValidator).validate(patient,group.getFormBeans(), formBeans, expectedValidators);
     }
 
     private CareHistoryForm careHistoryFormBean(String staffId, String facilityId, String motechId) {

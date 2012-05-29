@@ -10,6 +10,7 @@ import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,7 +45,8 @@ public class GeneralQueryFormValidatorTest {
         when(formValidator.validateIfFacilityExists(facilityId)).thenReturn(asList(new FormError(facilityId, NOT_FOUND)));
         when(formValidator.validateIfStaffExists(staffId)).thenReturn(asList(new FormError(staffId, NOT_FOUND)));
 
-        List<FormError> formErrors = generalQueryFormValidator.validate(generalQueryForm, new FormBeanGroup(Collections.<FormBean>emptyList()));
+        List<FormBean> formBeans = Arrays.<FormBean>asList(generalQueryForm);
+        List<FormError> formErrors = generalQueryFormValidator.validate(generalQueryForm, new FormBeanGroup(formBeans), formBeans);
 
         assertThat(formErrors, hasItem(new FormError(facilityId, NOT_FOUND)));
         assertThat(formErrors, hasItem(new FormError(staffId, NOT_FOUND)));

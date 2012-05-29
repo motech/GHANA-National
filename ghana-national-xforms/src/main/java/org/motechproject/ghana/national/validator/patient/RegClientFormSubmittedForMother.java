@@ -25,8 +25,8 @@ public class RegClientFormSubmittedForMother extends PatientValidator {
     }
 
     @Override
-    public List<FormError> validate(Patient patient, List<FormBean> formsSubmitted) {
-        final RegisterClientForm registerPatientForm = (RegisterClientForm) filter(having(on(FormBean.class).getFormname(), is("registerPatient")), formsSubmitted).get(0);
+    public List<FormError> validate(Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms) {
+        final RegisterClientForm registerPatientForm = (RegisterClientForm) filter(having(on(FormBean.class).getFormname(), is("registerPatient")), formsSubmittedWithinGroup).get(0);
 
         return !PatientType.PREGNANT_MOTHER.equals(registerPatientForm.getRegistrantType()) ?
                 Arrays.asList(getFormErrorMessage()) : Collections.<FormError>emptyList();

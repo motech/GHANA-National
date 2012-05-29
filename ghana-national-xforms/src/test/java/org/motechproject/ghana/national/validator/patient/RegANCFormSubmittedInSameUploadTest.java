@@ -8,6 +8,7 @@ import org.motechproject.mobileforms.api.domain.FormError;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -22,14 +23,14 @@ public class RegANCFormSubmittedInSameUploadTest {
         List<FormBean> formsUploaded = new ArrayList<FormBean>();
         final PatientValidator validator = new RegANCFormSubmittedInSameUpload();
 
-        List<FormError> formErrors = validator.validate(patient, formsUploaded);
+        List<FormError> formErrors = validator.validate(patient, formsUploaded, formsUploaded);
         assertThat(formErrors,is(equalTo(Arrays.asList(new FormError(MOTECH_ID_ATTRIBUTE_NAME, "not registered for ANC")))));
 
         final RegisterANCForm registerANCForm = new RegisterANCForm();
         registerANCForm.setFormname("registerANC");
         formsUploaded.add(registerANCForm);
 
-        formErrors = validator.validate(patient, formsUploaded);
+        formErrors = validator.validate(patient, formsUploaded, formsUploaded);
         assertThat(formErrors.size(), is(equalTo(0)));
     }
 }

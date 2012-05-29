@@ -8,7 +8,8 @@ import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -37,11 +38,12 @@ public class PncBabyFormValidatorTest {
         Patient patient = mock(Patient.class);
         when(mockFormValidator.getPatient(motechId)).thenReturn(patient);
 
-        final FormBeanGroup formBeanGroup = new FormBeanGroup(Collections.<FormBean>emptyList());
-        pncBabyFormValidator.validate(pncBabyForm, formBeanGroup);
+        List<FormBean> formBeans = Arrays.<FormBean>asList(pncBabyForm);
+        final FormBeanGroup formBeanGroup = new FormBeanGroup(formBeans);
+        pncBabyFormValidator.validate(pncBabyForm, formBeanGroup, formBeans);
 
         verify(mockFormValidator).validateIfStaffExists(staffId);
         verify(mockFormValidator).validateIfFacilityExists(facilityId);
-        verify(mockDependentValidator).validate(patient, Collections.<FormBean>emptyList(), expectedValidator);
+        verify(mockDependentValidator).validate(patient, formBeans, formBeans, expectedValidator);
     }
 }

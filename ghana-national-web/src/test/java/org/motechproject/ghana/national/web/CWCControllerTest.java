@@ -17,6 +17,7 @@ import org.motechproject.ghana.national.web.form.CWCEnrollmentForm;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.helper.CwcFormMapper;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
+import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
@@ -42,9 +43,6 @@ public class CWCControllerTest {
     RegisterCWCFormValidator mockregisterCWCFormValidator;
 
     @Mock
-    FormValidator mockFormValidator;
-
-    @Mock
     CareService mockCareService;
 
     @Mock
@@ -52,6 +50,9 @@ public class CWCControllerTest {
 
     @Mock
     AllEncounters mockAllEncounters;
+
+    @Mock
+    FormValidator mockFormValidator;
 
     @Before
     public void setUp() {
@@ -158,7 +159,7 @@ public class CWCControllerTest {
 
 
         when(mockFormValidator.validateIfStaffExists(staffId)).thenReturn(Collections.<FormError>emptyList());
-        when(mockregisterCWCFormValidator.validatePatient(patientMotechId)).thenReturn(Collections.<FormError>emptyList());
+        when(mockregisterCWCFormValidator.validatePatient(patientMotechId, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(Collections.<FormError>emptyList());
 
         cwcController.save(cwcEnrollmentForm, modelMap);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
@@ -195,7 +196,7 @@ public class CWCControllerTest {
         cwcEnrollmentForm.setFacilityForm(facilityForm);
         final ModelMap modelMap = new ModelMap();
 
-        when(mockregisterCWCFormValidator.validatePatient(motechId)).thenReturn(
+        when(mockregisterCWCFormValidator.validatePatient(motechId, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(
                 new ArrayList<FormError>() {{
                     add(new FormError(Constants.CHILD_AGE_PARAMETER, "description1"));
                     add(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, "description2"));

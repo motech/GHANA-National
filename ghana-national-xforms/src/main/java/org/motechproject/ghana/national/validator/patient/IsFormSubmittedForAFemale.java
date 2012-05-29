@@ -8,15 +8,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class AgeMoreThan extends PatientValidator {
-    private int age;
+import static org.motechproject.ghana.national.domain.Constants.*;
 
-    public AgeMoreThan(int age) {
-        this.age = age;
+public class IsFormSubmittedForAFemale extends PatientValidator {
+    private String gender;
+
+    public IsFormSubmittedForAFemale(String gender) {
+        this.gender = gender;
     }
 
-    @Override
     public List<FormError> validate(Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms) {
-        return patient.getAge() < age ? Arrays.asList(new FormError("Patient age", "is less than " + age)): Collections.<FormError>emptyList();
+        return PATIENT_GENDER_MALE.equals(gender) ?
+                Arrays.asList(new FormError("Sex", GENDER_ERROR_MSG)) : Collections.<FormError>emptyList();
     }
 }

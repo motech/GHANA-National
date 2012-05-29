@@ -20,7 +20,7 @@ public class EnrolledToANC extends PatientValidator {
     }
 
     @Override
-    public List<FormError> validate(final Patient patient, List<FormBean> formsSubmitted) {
+    public List<FormError> validate(final Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms) {
         return allEncounters.getLatest(patient.getMotechId(), ANC_REG_VISIT.value()) == null ?
                 Arrays.asList(new FormError(patient.getMotechId(), "not registered for ANC")) : new ArrayList<FormError>();
     }

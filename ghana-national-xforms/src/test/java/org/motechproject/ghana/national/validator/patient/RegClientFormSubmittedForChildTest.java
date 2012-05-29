@@ -26,11 +26,11 @@ public class RegClientFormSubmittedForChildTest {
         formsUploaded.add(registerClientForm);
 
         final PatientValidator validator = new RegClientFormSubmittedForChild();
-        List<FormError> errors = validator.validate(patient, formsUploaded);
+        List<FormError> errors = validator.validate(patient, formsUploaded, formsUploaded);
         assertThat(errors.size(), is(equalTo(0)));
 
         registerClientForm.setRegistrantType(PatientType.OTHER);
-        errors = validator.validate(patient,formsUploaded);
+        errors = validator.validate(patient,formsUploaded, formsUploaded);
         assertThat(errors,is(equalTo(Arrays.asList(new FormError("Client Type", "should be a child")))));
     }
 }

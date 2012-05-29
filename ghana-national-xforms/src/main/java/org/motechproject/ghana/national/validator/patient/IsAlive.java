@@ -22,7 +22,7 @@ public class IsAlive extends PatientValidator{
     }
 
     @Override
-    public List<FormError> validate(Patient patient, List<FormBean> formsSubmitted) {
+    public List<FormError> validate(Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms) {
         return patient.getMrsPatient().getPerson().isDead()? Arrays.asList(getFormError()): Collections.<FormError>emptyList();
     }
 

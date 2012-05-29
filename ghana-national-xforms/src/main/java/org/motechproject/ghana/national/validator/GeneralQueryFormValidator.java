@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.validator;
 
 import org.motechproject.ghana.national.bean.GeneralQueryForm;
+import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
@@ -20,8 +21,8 @@ public class GeneralQueryFormValidator extends FormValidator<GeneralQueryForm> {
     @LoginAsAdmin
     @ApiSession
     @Override
-    public List<FormError> validate(GeneralQueryForm generalQueryForm, FormBeanGroup group) {
-        List<FormError> formErrors = super.validate(generalQueryForm, group);
+    public List<FormError> validate(GeneralQueryForm generalQueryForm, FormBeanGroup group, List<FormBean> allForms) {
+        List<FormError> formErrors = super.validate(generalQueryForm, group, allForms);
         formErrors.addAll(formValidator.validateIfFacilityExists(generalQueryForm.getFacilityId()));
         formErrors.addAll(formValidator.validateIfStaffExists(generalQueryForm.getStaffId()));
         return formErrors;

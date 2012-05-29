@@ -26,8 +26,8 @@ public class EditClientFormValidator extends FormValidator<EditClientForm> {
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<FormError> validate(EditClientForm formBean, FormBeanGroup group) {
-        List<FormError> formErrors = super.validate(formBean, group);
+    public List<FormError> validate(EditClientForm formBean, FormBeanGroup group, List<FormBean> allForms) {
+        List<FormError> formErrors = super.validate(formBean, group, allForms);
 
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
@@ -38,19 +38,19 @@ public class EditClientFormValidator extends FormValidator<EditClientForm> {
 
         List<FormBean> formsSubmitted = group.getFormBeans();
         PatientValidator patientValidator = new ExistsInDb().onSuccess(new IsAlive()).onFailure(new RegClientFormSubmittedInSameUpload());
-        formErrors.addAll(dependentValidator().validate(formValidator.getPatient(formBean.getMotechId()), formsSubmitted, patientValidator));
+        formErrors.addAll(dependentValidator().validate(formValidator.getPatient(formBean.getMotechId()), formsSubmitted, allForms, patientValidator));
         if (formBean.getMotherMotechId() != null)
-            validateMother(formBean, formErrors, formsSubmitted);
+            validateMother(formBean, formErrors, formsSubmitted, allForms);
 
         return formErrors;
     }
 
-    private void validateMother(EditClientForm formBean, List<FormError> formErrors, List<FormBean> formBeans) {
+    private void validateMother(EditClientForm formBean, List<FormError> formErrors, List<FormBean> formsWithinGroup, List<FormBean> allForms) {
 
         String mothersMotechId = "Mothers motech Id";
         PatientValidator motherValidator = new ExistsInDb(new FormError(mothersMotechId, NOT_FOUND))
                 .onSuccess(new IsAlive(new FormError(mothersMotechId, IS_NOT_ALIVE)));
-        formErrors.addAll(dependentValidator().validate(formValidator.getPatient(formBean.getMotherMotechId()), formBeans, motherValidator));
+        formErrors.addAll(dependentValidator().validate(formValidator.getPatient(formBean.getMotherMotechId()), formsWithinGroup, allForms, motherValidator));
     }
 
     public DependentValidator dependentValidator() {

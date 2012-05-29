@@ -9,18 +9,18 @@ import java.util.List;
 
 public class DependentValidator {
 
-    public List<FormError> validate(Patient patient, List<FormBean> formBeans, PatientValidator validator){
+    public List<FormError> validate(Patient patient, List<FormBean> formsWithinGroup, List<FormBean> allForms, PatientValidator validator){
 
-        final List<FormError> formErrors = validator.validate(patient, formBeans);
+        final List<FormError> formErrors = validator.validate(patient, formsWithinGroup, allForms);
         if(formErrors.isEmpty()){
             if(validator.hasOnSuccessValidation()){
-                return validate(patient, formBeans, validator.getOnSuccess());
+                return validate(patient, formsWithinGroup, allForms, validator.getOnSuccess());
             }else {
                 return formErrors;
             }
         }else{
             if(validator.hasOnFailureValidation()){
-                return validate(patient, formBeans, validator.getOnFailure());
+                return validate(patient, formsWithinGroup, allForms, validator.getOnFailure());
             }else {
                 return formErrors;
             }
