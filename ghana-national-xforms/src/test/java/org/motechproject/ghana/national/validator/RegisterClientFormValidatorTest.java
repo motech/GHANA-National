@@ -41,7 +41,6 @@ public class RegisterClientFormValidatorTest {
     @Mock
     private FormValidator formValidator;
 
-
     @Before
     public void setUp() {
         initMocks(this);
@@ -92,18 +91,17 @@ public class RegisterClientFormValidatorTest {
 
     @Test
     public void shouldValidateTheMotechIdOfThePatientIfRegistrationModeIsPrePrintedId() {
-        String motechId = "12345";
+        String motechId = "1234567";
         RegisterClientForm registerClientForm = new RegisterClientForm();
         registerClientForm.setMotechId(motechId);
         registerClientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
         Patient patientMock = mock(Patient.class);
-        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patientMock);
+        when(formValidator.getPatient(motechId)).thenReturn(patientMock);
 
         List<FormBean> formBeans = Arrays.<FormBean>asList(registerClientForm);
         assertThat(registerClientFormValidator.validate(registerClientForm, new FormBeanGroup(formBeans), formBeans), hasItem(new FormError("motechId", "in use")));
 
-        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(null);
-        when(formValidator.getPatient(motechId)).thenReturn(patientMock);
+        when(formValidator.getPatient(motechId)).thenReturn(null);
         assertThat(registerClientFormValidator.validate(registerClientForm, new FormBeanGroup(formBeans), formBeans), not(hasItem(new FormError("motechId", "in use"))));
     }
 

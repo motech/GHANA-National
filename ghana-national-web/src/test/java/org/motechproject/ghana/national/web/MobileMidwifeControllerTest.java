@@ -214,16 +214,11 @@ public class MobileMidwifeControllerTest {
         final FormError staffFormError = new FormError("staff", "not valid");
         final FormError facilityFormError = new FormError("facility", "not valid");
 
-        when(mobileMidwifeValidator.validatePatient(patientId, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(new ArrayList<FormError>(){{
-            add(patientFormError);
-        }});
-        when(mockFormValidator.validateIfStaffExists(staffId)).thenReturn(new ArrayList<FormError>(){{
-            add(staffFormError);
-        }});
-        when(mockFormValidator.validateIfFacilityExists(facilityId)).thenReturn(new ArrayList<FormError>(){{
-            add(facilityFormError);
-        }});
-
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = mock(MobileMidwifeEnrollment.class);
+        when(mobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
+        when(mobileMidwifeValidator.validate(mobileMidwifeEnrollment,Collections.<FormBean>emptyList(),Collections.<FormBean>emptyList()))
+                .thenReturn(Arrays.<FormError>asList(patientFormError,staffFormError,facilityFormError));
+        
         ModelMap modelMap = new ModelMap();
 
         controller.unregister(mobileMidwifeUnenrollForm, modelMap);
