@@ -48,7 +48,7 @@
         <xf:input bind="staffId">
             <xf:label>Staff ID</xf:label>
         </xf:input>
-        <xf:input bind="updatePatientFacilityId">
+        <xf:input bind="facilityId">
             <xf:label>Facility ID</xf:label>
         </xf:input>
         <xf:input bind="date">
@@ -57,7 +57,7 @@
         <xf:input bind="motechId">
             <xf:label>MoTeCH ID</xf:label>
         </xf:input>
-        <xf:input bind="facilityId">
+        <xf:input bind="updatePatientFacilityId">
             <xf:label>Patient Facility ID</xf:label>
         </xf:input>
         <xf:input bind="firstName">

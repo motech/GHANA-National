@@ -34,7 +34,6 @@ public class CWCVisitForm extends FormBean {
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
 
-    @Required
     private String serialNumber;
 
     @Required
@@ -54,7 +53,7 @@ public class CWCVisitForm extends FormBean {
     private String cwcLocation;
     private String house;
     private String community;
-    @Required
+
     private String comments;
 
     public String getStaffId() {
