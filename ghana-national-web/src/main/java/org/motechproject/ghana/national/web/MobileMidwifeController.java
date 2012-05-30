@@ -118,10 +118,7 @@ public class MobileMidwifeController {
     @RequestMapping(value = "/admin/unenroll/mobile-midwife/save")
     public String unregister(MobileMidwifeUnEnrollForm form, ModelMap modelMap) {
         String patientMotechId = form.getPatientMotechId();
-        List<FormError> formErrors = mobileMidwifeValidator.validatePatient(patientMotechId,
-                Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
-        formErrors.addAll(formValidator.validateIfFacilityExists(form.getFacilityForm().getFacilityId()));
-        formErrors.addAll(formValidator.validateIfStaffExists(form.getStaffMotechId()));
+        List<FormError> formErrors = mobileMidwifeValidator.validate(mobileMidwifeService.findActiveBy(form.getPatientMotechId()),Collections.<FormBean>emptyList(),Collections.<FormBean>emptyList());
 
         if (formErrors.isEmpty()) {
             mobileMidwifeService.unRegister(patientMotechId);

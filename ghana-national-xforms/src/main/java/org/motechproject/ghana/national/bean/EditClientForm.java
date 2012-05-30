@@ -32,14 +32,14 @@ public class EditClientForm extends FormBean {
     @MaxLength(size = 30) @RegEx(pattern = NHIS_NO_PATTERN)
     private String nhis;
     private Date nhisExpires;
-    @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
+    @Required @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String facilityId;
     @MaxLength(size = 50)
     private String address;
     @Required @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN) @MotechId(validator = VerhoeffValidator.class)
     private String staffId;
 
-    @Required @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
+    @MaxLength(size = 50) @RegEx(pattern = NUMERIC_OR_NOTAPPLICABLE_PATTERN)
     private String updatePatientFacilityId;
 
     @Required

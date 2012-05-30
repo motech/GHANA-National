@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.validator;
 
 import org.drools.core.util.StringUtils;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
@@ -14,15 +13,11 @@ import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mobileforms.api.validator.FormValidator;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import static org.motechproject.ghana.national.domain.Constants.MOTECH_ID_ATTRIBUTE_NAME;
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
 
 @Component
@@ -45,7 +40,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
 
         Patient patient = formValidator.getPatient(formBean.getMotechId());
 
-        PatientValidator validators = new AlwaysValid().onSuccess(new ExistsInDb(new FormError(MOTECH_ID_ATTRIBUTE_NAME, "in use")), RegistrationType.USE_PREPRINTED_ID.equals(formBean.getRegistrationMode()))
+        PatientValidator validators = new AlwaysValid().onSuccess(new NotExistsInDb(), RegistrationType.USE_PREPRINTED_ID.equals(formBean.getRegistrationMode()))
                 .onSuccess(new IsFormSubmittedForAChild(formBean.getDateOfBirth()), PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType()))
                 .onSuccess(new IsFormSubmittedForAFemale(formBean.getSex()), PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType()))
                 .onSuccess(new ExistsInDb(new FormError(mothersMotechId, NOT_FOUND))
