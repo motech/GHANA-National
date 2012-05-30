@@ -5,7 +5,7 @@ public enum LearnedFrom{
     MOTECH_FIELD_AGENT("MoTeCH field agent"),
     FRIEND("Friend"),
     POSTERS_ADS("Posters/ads"),
-    FAMILY_MEMBER("family member"),
+    FAMILY_MEMBER("Family Member"),
     RADIO("Radio");
 
     private String displayName;

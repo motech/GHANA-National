@@ -830,6 +830,10 @@
                 <xf:label>MoTeCH field agent</xf:label>
                 <xf:value>MOTECH_FIELD_AGENT</xf:value>
             </xf:item>
+            <xf:item id="FAMILY_MEMBER">
+                <xf:label>Family Member</xf:label>
+                <xf:value>FAMILY_MEMBER</xf:value>
+            </xf:item>
             <xf:item id="FRIEND">
                 <xf:label>Friend</xf:label>
                 <xf:value>FRIEND</xf:value>
