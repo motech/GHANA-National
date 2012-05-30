@@ -276,7 +276,6 @@
                         <configuration>
                             <stopPort>9999</stopPort>
                             <stopKey>foo</stopKey>
-                            <skip>${openmrs.skip}</skip>
                             <contextHandlers>
                                 <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
                                     <war>build/openmrs/openmrs.war</war>
