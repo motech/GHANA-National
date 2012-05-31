@@ -21,6 +21,7 @@ import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.metrics.MetricsAgent;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
@@ -44,6 +45,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -68,7 +70,7 @@ public class FormHandlerLoggingAdviceTest {
     private SMSGateway smsGateway;
 
     @Mock
-    private JdbcTemplate jdbcTemplate;
+    private MetricsAgent metricsAgent;
 
     @Autowired
     private FormHandlerLoggingAdvice formHandlerLoggingAdvice;
@@ -79,6 +81,7 @@ public class FormHandlerLoggingAdviceTest {
 
     @Autowired
     private CareScheduleHandler careScheduleHandler;
+    private Long startTime = 9000L;
 
     @Before
     public void setUp() throws Exception {
@@ -86,7 +89,8 @@ public class FormHandlerLoggingAdviceTest {
         when(patientService.patientByOpenmrsId(Matchers.<String>any())).thenReturn(new Patient(new MRSPatient("motechId", new MRSPerson().firstName("firstName").lastName("lastName").dateOfBirth(DateTime.now().toDate()), new MRSFacility("id"))));
         when(facilityService.getFacility(Matchers.<String>any())).thenReturn(new Facility().motechId("facilityMotechId"));
 
-        ReflectionTestUtils.setField(formHandlerLoggingAdvice, "jdbcTemplate", jdbcTemplate);
+        ReflectionTestUtils.setField(formHandlerLoggingAdvice, "metricsAgent", metricsAgent);
+        when(metricsAgent.startTimer()).thenReturn(startTime);
         mockFormPublishHandler();
         mockCareScheduleHandler();
     }
@@ -99,7 +103,8 @@ public class FormHandlerLoggingAdviceTest {
         }}));
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone("milestone", Period.ZERO, Period.days(1), Period.hours(12), Period.months(1)), DateTime.now());
         careScheduleHandler.handlePregnancyAlert(new MilestoneEvent(null, null, milestoneAlert, WindowName.earliest.name(), null));
-        verify(jdbcTemplate, times(2)).execute(anyString());
+
+        verify(metricsAgent, times(2)).stopTimer(anyString(), eq(startTime));
     }
 
     private void mockCareScheduleHandler() throws Exception {
