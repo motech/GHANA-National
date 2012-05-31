@@ -23,7 +23,6 @@ import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -98,8 +97,13 @@ public class RegisterCWCFormValidatorTest {
         registerClientForm.setRegistrantType(PatientType.PREGNANT_MOTHER);
         formBeans = Arrays.<FormBean>asList(registerClientForm);
         errors = registerCWCFormValidator.validate(registerCWCForm, new FormBeanGroup(formBeans), formBeans);
-        assertThat(errors, hasItem(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_MORE_ERR_MSG)));
-
+        assertThat(errors, hasItem(new FormError("patient type", "cannot be " + registerClientForm.getRegistrantType())));
+        
+        //reg client form submitted for patient type other, age more than 5
+        registerClientForm.setRegistrantType(PatientType.OTHER);
+        registerClientForm.setDateOfBirth(DateUtil.newDate(2000,1,1).toDate());
+        errors = registerCWCFormValidator.validate(registerCWCForm,new FormBeanGroup(formBeans), formBeans);
+        assertThat(errors,hasItem(new FormError("Patient age", "is more than 5")));
     }
 
     @Test

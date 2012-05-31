@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.validator;
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.patient.*;
@@ -48,8 +49,11 @@ public class RegisterCWCFormValidator extends FormValidator<RegisterCWCForm> {
     public List<FormError> validatePatient(String motechId, List<FormBean> formBeans, List<FormBean> allForms) {
         List<FormError> formErrors = new ArrayList<FormError>();
         final Patient patient = formValidator.getPatient(motechId);
-        final PatientValidator regClientFormValidators = new RegClientFormSubmittedInSameUpload().onSuccess(new RegClientFormSubmittedForChild(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_MORE_ERR_MSG)));
-        final List<FormError> errors = new DependentValidator().validate(patient, formBeans, allForms, new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsAChild())).onFailure(regClientFormValidators));
+        final PatientValidator regClientFormValidators = new RegClientFormSubmittedInSameUpload()
+                .onSuccess(new RegClientFormSubmittedForChild(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_MORE_ERR_MSG))
+                    .onFailure(new RegClientFormSubmittedForType(PatientType.OTHER)
+                            .onSuccess(new RegClientFormSubmittedForPatientWithAgeLessThan(5))));
+            final List<FormError> errors = new DependentValidator().validate(patient, formBeans, allForms, new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsAChild())).onFailure(regClientFormValidators));
         formErrors.addAll(errors);
         return formErrors;
     }

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.motechproject.ghana.national.domain.Constants.MOTECH_ID_ATTRIBUTE_NAME;
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
 
 @Component
@@ -37,16 +36,6 @@ public class FormValidator {
 
     public static final String FACILITY_ID = "facilityId";
     public static final String STAFF_ID = "staffId";
-
-    public List<FormError> validateIfPatientExists(Patient patient) {
-        if (patient == null) {
-            return new ArrayList<FormError>() {{
-                add(new FormError(MOTECH_ID_ATTRIBUTE_NAME, NOT_FOUND));
-            }};
-        }
-        return new ArrayList<FormError>();
-    }
-
 
     public List<FormError> validateIfFacilityExists(String facilityId) {
         if (facilityService.getFacilityByMotechId(facilityId) == null) {

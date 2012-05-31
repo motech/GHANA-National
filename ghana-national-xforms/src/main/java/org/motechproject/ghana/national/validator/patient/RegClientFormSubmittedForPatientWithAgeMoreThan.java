@@ -13,17 +13,17 @@ import java.util.List;
 import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.is;
 
-public class RegClientFormSubmittedForPatientWithAgeLessThan extends PatientValidator {
+public class RegClientFormSubmittedForPatientWithAgeMoreThan extends PatientValidator {
     private int age;
 
-    public RegClientFormSubmittedForPatientWithAgeLessThan(int age) {
+    public RegClientFormSubmittedForPatientWithAgeMoreThan(int age) {
         this.age = age;
     }
 
     @Override
     public List<FormError> validate(Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms) {
         final RegisterClientForm registerPatientForm = (RegisterClientForm) filter(having(on(FormBean.class).getFormname(), is("registerPatient")), formsSubmittedWithinGroup).get(0);
-        return DateUtil.getDifferenceOfDatesInYears(registerPatientForm.getDateOfBirth()) > age ?
-                Arrays.asList(new FormError("Patient age", "is more than " + age)): Collections.<FormError>emptyList();
+        return DateUtil.getDifferenceOfDatesInYears(registerPatientForm.getDateOfBirth()) < age ?
+                Arrays.asList(new FormError("Patient age", "is less than " + age)): Collections.<FormError>emptyList();
     }
 }

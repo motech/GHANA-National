@@ -15,23 +15,23 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class RegClientFormSubmittedForPatientWithAgeLessThanTest {
+public class RegClientFormSubmittedForPatientWithAgeMoreThanTest {
     @Test
-    public void shouldVerifyRegClientFormSubmittedWithAppropriateAge() {
-
+    public void shouldValidateAgeOfPatientMoreThanExpected(){
         Patient patient = null;
         List<FormBean> formsUploaded = new ArrayList<FormBean>();
         final RegisterClientForm registerClientForm = new RegisterClientForm();
-        registerClientForm.setDateOfBirth(DateUtil.today().minusYears(3).toDate());
+        registerClientForm.setDateOfBirth(DateUtil.newDate(2000, 1, 1).toDate());
         registerClientForm.setFormname("registerPatient");
         formsUploaded.add(registerClientForm);
 
-        final PatientValidator validator = new RegClientFormSubmittedForPatientWithAgeLessThan(5);
+        final PatientValidator validator = new RegClientFormSubmittedForPatientWithAgeMoreThan(12);
         List<FormError> errors = validator.validate(patient, formsUploaded, formsUploaded);
         assertThat(errors.size(), is(equalTo(0)));
 
         registerClientForm.setDateOfBirth(DateUtil.today().minusYears(10).toDate());
         errors = validator.validate(patient, formsUploaded, formsUploaded);
-        assertThat(errors, is(equalTo(Arrays.asList(new FormError("Patient age", "is more than 5")))));
+        assertThat(errors, is(equalTo(Arrays.asList(new FormError("Patient age", "is less than 12")))));
+
     }
 }

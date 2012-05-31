@@ -27,7 +27,7 @@ public class TTVisitFormValidator extends FormValidator<TTVisitForm> {
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         final Patient patient = formValidator.getPatient(formBean.getMotechId());
-        final PatientValidator regClientFormValidations = new RegClientFormSubmittedInSameUpload().onSuccess(new RegClientFormSubmittedForPatientWithAgeLessThan(12));
+        final PatientValidator regClientFormValidations = new RegClientFormSubmittedInSameUpload().onSuccess(new RegClientFormSubmittedForPatientWithAgeMoreThan(12));
         List<FormError> errors = new DependentValidator().validate(patient, group.getFormBeans(),
                 allForms, new ExistsInDb().onSuccess(new IsAlive().onSuccess(new AgeMoreThan(12))).onFailure(regClientFormValidations));
         formErrors.addAll(errors);
