@@ -156,6 +156,15 @@
                 <configuration>
                     <archiveClasses>false</archiveClasses>
                     <packagingExcludes>WEB-INF/lib/ghana-national-common-1.0-SNAPSHOT.jar</packagingExcludes>
+                    <webResources>
+                        <resource>
+                            <!-- this is relative to the pom.xml directory -->
+                            <directory>../build/sql</directory>
+                            <includes>
+                                <include>**/*.xml</include>
+                            </includes>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
             <plugin>
@@ -282,7 +291,8 @@
                                     <contextPath>/openmrs</contextPath>
                                 </contextHandler>
                                 <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
-                                    <war>ghana-national-common/target/lib/motech-delivery-tools-web-0.3-SNAPSHOT.war</war>
+                                    <war>ghana-national-common/target/lib/motech-delivery-tools-web-0.3-SNAPSHOT.war
+                                    </war>
                                     <contextPath>/deliverytools</contextPath>
                                 </contextHandler>
                             </contextHandlers>
