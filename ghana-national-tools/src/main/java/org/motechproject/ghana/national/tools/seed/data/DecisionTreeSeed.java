@@ -23,10 +23,12 @@ public class DecisionTreeSeed extends Seed {
         Tree tree = new Tree();
         tree.setName("mm");
         HashMap<String, Transition> stepOne = new HashMap<String, Transition>();
-        stepOne.put("1", new Transition().setDestinationNode(new Node().addPrompts(new TextToSpeechPrompt().setMessage("You have chosen 1. Please enter your motech id:"))));
-        stepOne.put("2", new Transition().setDestinationNode(new Node().addPrompts(new TextToSpeechPrompt().setMessage("You have chosen 2. Please enter your motech id:"))));
-        stepOne.put("3", new Transition().setDestinationNode(new Node().addPrompts(new TextToSpeechPrompt().setMessage("You have chosen 3. Please enter your motech id:"))));
-        stepOne.put("4", new Transition().setDestinationNode(new Node().addPrompts(new TextToSpeechPrompt().setMessage("You have chosen 4. Please enter your motech id:"))));
+        HashMap<String, Transition> stepTwo = new HashMap<String, Transition>();
+        stepTwo.put("1234567", new Transition().setDestinationNode(new Node()));
+        stepOne.put("1", new Transition().setDestinationNode(new Node().addPrompts(new TextToSpeechPrompt().setMessage("You have chosen 1. Please enter your motech id:")).setTransitions(stepTwo)));
+        stepOne.put("2", new Transition().setDestinationNode(new Node().addPrompts(new TextToSpeechPrompt().setMessage("You have chosen 2. Please enter your motech id:")).setTransitions(stepTwo)));
+        stepOne.put("3", new Transition().setDestinationNode(new Node().addPrompts(new TextToSpeechPrompt().setMessage("You have chosen 3. Please enter your motech id:")).setTransitions(stepTwo)));
+        stepOne.put("4", new Transition().setDestinationNode(new Node().addPrompts(new TextToSpeechPrompt().setMessage("You have chosen 4. Please enter your motech id:")).setTransitions(stepTwo)));
         tree.setRootNode(new Node().addPrompts(new TextToSpeechPrompt().setMessage("Hello welcome to MoTeCH. Press One for English, Two for Fanti!")).setTransitions(stepOne));
 
         allTrees.add(tree);

@@ -3,7 +3,10 @@ package org.motechproject.ghana.national.web;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllPatientOutboxes;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
@@ -23,20 +26,24 @@ import java.util.List;
 public class VoiceMessageController {
 
     public static final String DECISIONTREE_URL = "/decisiontree/node";
+    public static final String PLAY_INVALID_REGISTRATION = "/verboice-service/playInvalidRegistration";
+    public static final String PLAY_INVALID_MOTECH_ID = "/verboice-service/playInvalidMotechId";
     public static final String PLAY_MESSAGE_URL = "/verboice-service/playMessage";
 
     private VerboiceIVRService verboiceIVRService;
     private PatientService patientService;
     private AllPatientOutboxes allPatientOutboxes;
+    private MobileMidwifeService mobileMidwifeService;
 
     public VoiceMessageController() {
     }
 
     @Autowired
-    public VoiceMessageController(VerboiceIVRService verboiceIVRService, PatientService patientService, AllPatientOutboxes allPatientOutboxes) {
+    public VoiceMessageController(VerboiceIVRService verboiceIVRService, PatientService patientService, AllPatientOutboxes allPatientOutboxes, MobileMidwifeService mobileMidwifeService) {
         this.verboiceIVRService = verboiceIVRService;
         this.patientService = patientService;
         this.allPatientOutboxes = allPatientOutboxes;
+        this.mobileMidwifeService = mobileMidwifeService;
     }
 
     @RequestMapping("/ivr")
@@ -54,10 +61,11 @@ public class VoiceMessageController {
                 if (path.length() >= 2) { // '/1', '/2' will be the inputs for language preference. TODO: Remove this logic of length
                     Patient patient = patientService.getPatientByMotechId(digits);
                     if (patient == null) {
-                        return redirectToDecisionTree(treeName, "1", treePath, language);
+                        return String.format("forward:/%s", PLAY_INVALID_MOTECH_ID).replaceAll("//", "/");
+                    } else if (hasValidMobileMidwifeVoiceRegistration(request, digits)) {
+                        return redirectToPlayMessageController(digits, language);
                     } else {
-                        allPatientOutboxes.addUrlToOutbox(audioURL(request), digits);
-                        return redirectToPlayMessageController(digits, null);
+                        return String.format("forward:/%s", PLAY_INVALID_REGISTRATION).replaceAll("//", "/");
                     }
                 }
             }
@@ -68,8 +76,6 @@ public class VoiceMessageController {
 
     @RequestMapping("/playMessage")
     public String playMessage(HttpServletRequest request, ModelMap modelMap) throws IOException {
-//        ModelAndView modelAndView = new ModelAndView();
-
         String externalId = request.getParameter("externalId");
         String language = request.getParameter("language");
 
@@ -79,17 +85,47 @@ public class VoiceMessageController {
             verboiceResponse.playUrl(audioUrl);
         }
 
-        modelMap.put("playContent",verboiceResponse.toXMLString());
+        modelMap.put("playContent", verboiceResponse.toXMLString());
         return "playMessages";
+    }
+
+    @RequestMapping("/playInvalidMotechId")
+    public String playInvalidMotechId(HttpServletRequest request, ModelMap modelMap) throws IOException {
+        VerboiceResponse verboiceResponse = new VerboiceResponse();
+        // TODO: Replace with actual audio stream
+        verboiceResponse.say("Invalid Motech Id");
+        modelMap.put("playContent", verboiceResponse.toXMLString());
+        return "playMessages";
+
+    }
+
+    @RequestMapping("/playInvalidRegistration")
+    public String playInvalidRegistration(HttpServletRequest request, ModelMap modelMap) throws IOException {
+        VerboiceResponse verboiceResponse = new VerboiceResponse();
+        // TODO: Replace with actual audio stream
+        verboiceResponse.say("No Mobile midwife registration for this motech id");
+        modelMap.put("playContent", verboiceResponse.toXMLString());
+        return "playMessages";
+
+    }
+
+    private boolean hasValidMobileMidwifeVoiceRegistration(HttpServletRequest request, String digits) {
+        MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findActiveBy(digits);
+        if (midwifeEnrollment != null && midwifeEnrollment.getMedium().equals(Medium.VOICE)) {
+            // TODO: Adding dummy message to Outbox, temp fix until other audio/stream are ready.
+            allPatientOutboxes.addUrlToOutbox(audioURL(request), digits);
+            return true;
+        }
+        return false;
+    }
+
+    private String audioURL(HttpServletRequest request) {
+        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/resource/stream/en/welcome.wav";
     }
 
     private String redirectToPlayMessageController(String externalId, String language) {
         return String.format("forward:/%s?language=%s&externalId=%s", PLAY_MESSAGE_URL, language, externalId)
                 .replaceAll("//", "/");
-    }
-
-    private String audioURL(HttpServletRequest request) {
-        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/resource/stream/en/welcome.wav";
     }
 
     private String redirectToDecisionTree(String treeName, String digits, String treePath, String language) {

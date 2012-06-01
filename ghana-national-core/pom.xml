@@ -80,7 +80,7 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
-            <artifactId>motech-platform-ivr</artifactId>
+            <artifactId>motech-platform-ivr-api</artifactId>
             <version>${motech-platform.version}</version>
         </dependency>
         <dependency>
