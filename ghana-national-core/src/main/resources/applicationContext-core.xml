@@ -31,12 +31,15 @@
         <constructor-arg value="ghana-national"/>
     </bean>
 
+    <beans:import resource="classpath:applicationSchedulerTrackingAPI.xml"/>
+    <beans:import resource="classpath:ivrVerboiceContext.xml"/>
     <beans:import resource="classpath:applicationContext-email.xml"/>
     <beans:import resource="classpath:applicationSmsAPI.xml"/>
     <beans:import resource="classpath:applicationSmsHttp.xml"/>
-    <beans:import resource="classpath:applicationSchedulerTrackingAPI.xml"/>
     <beans:import resource="classpath:applicationAppointmentsAPI.xml"/>
     <beans:import resource="classpath:applicationContext-messaging-gateway.xml"/>
+    <beans:import resource="classpath:applicationDecisionTree.xml"/>
+    <beans:import resource="classpath:applicationOutboxAPI.xml"/>
 
     <bean id="aggregationStrategy" class="org.motechproject.ghana.national.repository.AggregationStrategyImpl"/>
 

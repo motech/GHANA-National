@@ -64,6 +64,31 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-ivr-verboice</artifactId>
+            <version>${motech-platform.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-platform-decisiontree</artifactId>
+            <version>${motech-platform.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-platform-decisiontree-common</artifactId>
+            <version>${motech-platform.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-platform-ivr</artifactId>
+            <version>${motech-platform.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-outbox-api</artifactId>
+            <version>${motech-platform.version}</version>
+        </dependency>
+        <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>

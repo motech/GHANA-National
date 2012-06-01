@@ -4,6 +4,8 @@ import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.exception.EventHandlerException;
+import org.motechproject.ghana.national.repository.AllPatientOutboxes;
+import org.motechproject.ghana.national.repository.IVRGateway;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -30,10 +32,13 @@ public class MobileMidwifeCampaignEventHandler {
     private SMSGateway smsGateway;
     @Autowired
     private PatientService patientService;
+    @Autowired
+    private IVRGateway ivrGateway;
+    @Autowired
+    private AllPatientOutboxes allPatientOutboxes;
 
     @MotechListener(subjects = {MESSAGE_CAMPAIGN_SEND_EVENT_SUBJECT})
     public void sendProgramMessage(MotechEvent event) {
-
         try {
             Map params = event.getParameters();
             String patientId = (String) params.get(EventKeys.EXTERNAL_ID_KEY);
@@ -53,6 +58,8 @@ public class MobileMidwifeCampaignEventHandler {
 
         if (Medium.SMS.equals(enrollment.getMedium())) {
             smsGateway.dispatchSMS(messageKey, enrollment.getLanguage().name(), enrollment.getPhoneNumber());
+        } else if (Medium.VOICE.equals(enrollment.getMedium())) {
+            ivrGateway.placeCall(enrollment.getPhoneNumber(), null);
         }
     }
 }
