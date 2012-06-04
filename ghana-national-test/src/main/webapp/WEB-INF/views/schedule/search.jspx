@@ -116,13 +116,13 @@
             <table id="aggregated-sms-table">
                 <th>Generation time</th>
                 <th>Delivery time</th>
-                <th>Phone number</th>
+                <th>Unique Id</th>
                 <th>SMS text</th>
                 <c:forEach items="${smsList}" var="sms">
                     <tr>
                         <td>${sms.generationTime}</td>
                         <td>${sms.deliveryTime}</td>
-                        <td>${sms.phoneNumber}</td>
+                        <td>${sms.uniqueId}</td>
                         <td>${sms.text}</td>
                     </tr>
                 </c:forEach>
