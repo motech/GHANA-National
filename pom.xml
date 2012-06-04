@@ -155,7 +155,7 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
-            <artifactId>motech-platform-common</artifactId>
+            <artifactId>motech-platform-common-api</artifactId>
             <version>${motech-platform.version}</version>
         </dependency>
         <dependency>
