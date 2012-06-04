@@ -159,9 +159,9 @@
                     <webResources>
                         <resource>
                             <!-- this is relative to the pom.xml directory -->
-                            <directory>../build/sql</directory>
+                            <directory>../</directory>
                             <includes>
-                                <include>**/*.xml</include>
+                                <include>build/sql/**/*.*</include>
                             </includes>
                         </resource>
                     </webResources>
