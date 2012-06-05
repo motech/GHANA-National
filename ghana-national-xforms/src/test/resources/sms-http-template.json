@@ -1,0 +1,15 @@
+{
+ "outgoing" : {
+    "request":{
+        "urlPath":"http://localhost:8080/deliverytools/motech-delivery-tools/outbound/receive",
+        "queryParameters":{
+            "recipients":"$recipients",
+            "message":"$message"
+        },
+        "recipientsSeparator": "+"
+    },
+    "response": {
+        "success": "Received"
+    }
+ }
+}

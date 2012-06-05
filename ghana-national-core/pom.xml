@@ -170,7 +170,7 @@
                             <includeGroupIds>org.motechproject</includeGroupIds>
                             <excludeTransitive>true</excludeTransitive>
                             <includes>
-                                log4j.xml, openmrs-data/**, aggregator.properties, sms-http-template.json, osgi.properties, textMessages.properties, activemq.properties, quartz.properties,schedule_tracking.properties,schedules/**,programs/**,messageCampaign.properties
+                                log4j.xml, openmrs-data/**, aggregator.properties, sms-http.properties, sms-http-template.json, osgi.properties, textMessages.properties, activemq.properties, quartz.properties,schedule_tracking.properties,schedules/**,programs/**,messageCampaign.properties
                             </includes>
                         </configuration>
                     </execution>
