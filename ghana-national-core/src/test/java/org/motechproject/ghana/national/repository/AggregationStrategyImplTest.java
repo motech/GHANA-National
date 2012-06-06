@@ -34,8 +34,8 @@ public class AggregationStrategyImplTest {
 
         assertThat(aggregationStrategy.aggregate(messagesList),
                 is(equalTo("window1: firstName lastName, motechId, serialNumber, milestoneName1, milestoneName2" +
-                        "%0awindow2: firstName lastName, motechId, serialNumber, milestoneName, firstName2 lastName3, " +
+                        "%0Awindow2: firstName lastName, motechId, serialNumber, milestoneName, firstName2 lastName3, " +
                         "motechId2, serialNumber, milestoneName, firstName2 lastName3, motechId3, serialNumber, milestoneName" +
-                        "%0awindow3: firstName lastName, motechId, serialNumber, milestoneName")));
+                        "%0Awindow3: firstName lastName, motechId, serialNumber, milestoneName")));
     }
 }
