@@ -6,6 +6,8 @@ import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.care.IPTiVaccineCare;
 import org.motechproject.ghana.national.domain.care.OPVVaccineCare;
 import org.motechproject.ghana.national.domain.care.PentaVaccineCare;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
 import org.motechproject.ghana.national.vo.ChildCare;
 import org.motechproject.mrs.model.MRSPatient;
@@ -227,5 +229,13 @@ public class Patient {
 
     public PatientCare cwcOPVOnVisit(LocalDate vaccinationDate, String opvType) {
         return new PatientCare(opvType,vaccinationDate,vaccinationDate,null,facilityMetaData());
+    }
+
+
+    public String receiveSMSOnPhoneNumber(MobileMidwifeEnrollment mobileMidwifeEnrollment) {
+        if (mobileMidwifeEnrollment != null) {
+            return mobileMidwifeEnrollment.getPhoneNumber();
+        }
+        return getPhoneNumber();
     }
 }

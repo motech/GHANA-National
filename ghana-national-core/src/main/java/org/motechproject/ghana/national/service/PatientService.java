@@ -135,11 +135,4 @@ public class PatientService {
         return allPatients.patientByOpenmrsId(patientId);
     }
 
-    public String getPatientPhoneNumber(String motechId) {
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = allMobileMidwifeEnrollments.findActiveBy(motechId);
-        if (mobileMidwifeEnrollment != null && mobileMidwifeEnrollment.getMedium().equals(Medium.SMS)) {
-            return mobileMidwifeEnrollment.getPhoneNumber();
-        }
-        return getPatientByMotechId(motechId).getPhoneNumber();
-    }
 }

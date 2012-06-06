@@ -4,7 +4,7 @@ import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.exception.EventHandlerException;
-import org.motechproject.ghana.national.repository.AllPatientOutboxes;
+import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.repository.IVRGateway;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
@@ -35,7 +35,7 @@ public class MobileMidwifeCampaignEventHandler {
     @Autowired
     private IVRGateway ivrGateway;
     @Autowired
-    private AllPatientOutboxes allPatientOutboxes;
+    private AllPatientsOutbox allPatientsOutbox;
 
     @MotechListener(subjects = {MESSAGE_CAMPAIGN_SEND_EVENT_SUBJECT})
     public void sendProgramMessage(MotechEvent event) {

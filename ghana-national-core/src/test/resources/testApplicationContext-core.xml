@@ -13,6 +13,7 @@
     <context:component-scan base-package="org.motechproject.ghana.national"/>
 
     <util:properties id="couchdbProperties" location="classpath:couchdb.properties"/>
+    <util:properties id="verboiceProperties" location="classpath:verboice.properties"/>
 
     <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean"/>
 

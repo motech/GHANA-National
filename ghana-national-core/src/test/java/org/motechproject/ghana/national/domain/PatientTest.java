@@ -4,9 +4,11 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.IPTiDose;
 import org.motechproject.ghana.national.service.PentaDose;
 import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
+import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -15,6 +17,7 @@ import org.motechproject.testing.utils.BaseUnitTest;
 import java.util.*;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
@@ -150,6 +153,17 @@ public class PatientTest extends BaseUnitTest {
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnHistoryCapture(enrollmentDate, cwcCareHistories, cwcCareHistoryVO, new ActiveCareSchedules(), lastPentaDate,lastIPTiDate,null);
         assertThat(patientCares,hasItem(new PatientCare(CWC_PENTA.getName(),null,newDate(lastPentaDate),PentaDose.PENTA2.milestoneName(),metaData)));
         assertThat(patientCares,hasItem(new PatientCare(CWC_IPT_VACCINE.getName(),null,newDate(lastIPTiDate), IPTiDose.IPTi2.milestoneName(),metaData)));
+    }
+
+    @Test
+    public void shouldReturnPhoneNumberRegisteredWithMobileMidwifeEnrollmentIfAnyOtherwiseReturnPatientPhoneNumber(){
+        String phoneNumber = "919500012123";
+        String mobileMidwifePhoneNumber = "919544412111";
+        Patient patient = new Patient(new MRSPatient("motechiD", new MRSPerson().attributes(Arrays.asList(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), phoneNumber))), new MRSFacility("facilityid")));
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(DateTime.now());
+        mobileMidwifeEnrollment.setPhoneNumber(mobileMidwifePhoneNumber);
+        assertThat(patient.receiveSMSOnPhoneNumber(mobileMidwifeEnrollment), is(equalTo(mobileMidwifePhoneNumber)));
+        assertThat(patient.receiveSMSOnPhoneNumber(null), is(equalTo(phoneNumber)));
     }
 
     private void assertPatientCares(List<PatientCare> actualList, List<PatientCare> expectedList) {

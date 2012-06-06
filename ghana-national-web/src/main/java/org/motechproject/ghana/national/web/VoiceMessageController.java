@@ -5,7 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
-import org.motechproject.ghana.national.repository.AllPatientOutboxes;
+import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -32,17 +32,17 @@ public class VoiceMessageController {
 
     private VerboiceIVRService verboiceIVRService;
     private PatientService patientService;
-    private AllPatientOutboxes allPatientOutboxes;
+    private AllPatientsOutbox allPatientsOutbox;
     private MobileMidwifeService mobileMidwifeService;
 
     public VoiceMessageController() {
     }
 
     @Autowired
-    public VoiceMessageController(VerboiceIVRService verboiceIVRService, PatientService patientService, AllPatientOutboxes allPatientOutboxes, MobileMidwifeService mobileMidwifeService) {
+    public VoiceMessageController(VerboiceIVRService verboiceIVRService, PatientService patientService, AllPatientsOutbox allPatientsOutbox, MobileMidwifeService mobileMidwifeService) {
         this.verboiceIVRService = verboiceIVRService;
         this.patientService = patientService;
-        this.allPatientOutboxes = allPatientOutboxes;
+        this.allPatientsOutbox = allPatientsOutbox;
         this.mobileMidwifeService = mobileMidwifeService;
     }
 
@@ -80,7 +80,7 @@ public class VoiceMessageController {
         String language = request.getParameter("language");
 
         VerboiceResponse verboiceResponse = new VerboiceResponse();
-        List<String> audioUrls = allPatientOutboxes.getAudioUrlsFor(externalId, language);
+        List<String> audioUrls = allPatientsOutbox.getAudioUrlsFor(externalId, language);
         for (String audioUrl : audioUrls) {
             verboiceResponse.playUrl(audioUrl);
         }
@@ -113,7 +113,7 @@ public class VoiceMessageController {
         MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findActiveBy(digits);
         if (midwifeEnrollment != null && midwifeEnrollment.getMedium().equals(Medium.VOICE)) {
             // TODO: Adding dummy message to Outbox, temp fix until other audio/stream are ready.
-            allPatientOutboxes.addUrlToOutbox(audioURL(request), digits);
+            //allPatientsOutbox.addAudioClip(digits, audioURL(request), sdkfl);
             return true;
         }
         return false;

@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.repository;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -7,15 +8,16 @@ import org.mockito.Mock;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.model.StringContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
-import org.motechproject.ghana.national.domain.AlertWindow;
-import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.SmsTemplateKeys;
+import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
 import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
@@ -42,8 +44,12 @@ public class AggregationStrategyImplTest extends BaseUnitTest {
 
     @InjectMocks
     AggregationStrategyImpl aggregationStrategy = new AggregationStrategyImpl();
+
     @Mock
     private PatientService mockPatientService;
+
+    @Mock
+    private AllMobileMidwifeEnrollments mockAllMobileMidwifeEnrollments;
 
     @Before
     public void setUp() throws Exception {
@@ -120,7 +126,8 @@ public class AggregationStrategyImplTest extends BaseUnitTest {
 
         final String motechId = "motechId";
         String phoneNumber = "PhoneNumber";
-        when(mockPatientService.getPatientPhoneNumber(motechId)).thenReturn(phoneNumber);
+        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(new Patient(new MRSPatient(motechId, new MRSPerson().addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), phoneNumber)), null)));
+        when(mockAllMobileMidwifeEnrollments.findActiveBy(motechId)).thenReturn(null);
 
         List<SMSPayload> messagesList = new ArrayList<SMSPayload>() {{
             add(SMSPayload.fromText(message1, motechId, null, null, MessageRecipientType.PATIENT));

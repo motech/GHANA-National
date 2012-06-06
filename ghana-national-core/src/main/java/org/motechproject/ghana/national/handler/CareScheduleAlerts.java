@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.handler;
 
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllObservations;
+import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -22,8 +23,8 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
 
     @Autowired
     public CareScheduleAlerts(PatientService patientService, FacilityService facilityService,
-                              SMSGateway smsGateway, AllObservations allObservations, AllMobileMidwifeEnrollments allMobileMidwifeEnrollments) {
-        super(patientService, facilityService, smsGateway, allObservations, allMobileMidwifeEnrollments);
+                              SMSGateway smsGateway, AllObservations allObservations, AllMobileMidwifeEnrollments allMobileMidwifeEnrollments,AllPatientsOutbox allPatientsOutbox) {
+        super(patientService, facilityService, smsGateway, allObservations, allMobileMidwifeEnrollments, allPatientsOutbox);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @ApiSession
     public void handleTTVaccinationAlert(MilestoneEvent milestoneEvent) {
         sendAggregatedSMSToFacility(TT_VACCINATION_SMS_KEY, milestoneEvent);
-        sendAggregatedSMSToPatient(PATIENT_TT, milestoneEvent);
+        sendAggregatedMessageToPatient(PATIENT_TT, milestoneEvent);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @ApiSession
     public void handleBCGAlert(MilestoneEvent milestoneEvent) {
         sendAggregatedSMSToFacility(BCG_SMS_KEY, milestoneEvent);
-        sendAggregatedSMSToPatient(PATIENT_BCG, milestoneEvent);
+        sendAggregatedMessageToPatient(PATIENT_BCG, milestoneEvent);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @ApiSession
     public void handleIPTpVaccinationAlert(MilestoneEvent milestoneEvent) {
         sendAggregatedSMSToFacility(ANC_IPTp_VACCINATION_SMS_KEY, milestoneEvent);
-        sendAggregatedSMSToPatient(PATIENT_IPT, milestoneEvent);
+        sendAggregatedMessageToPatient(PATIENT_IPT, milestoneEvent);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @ApiSession
     public void handleIPTiVaccinationAlert(MilestoneEvent milestoneEvent) {
         sendAggregatedSMSToFacility(CWC_IPTi_VACCINATION_SMS_KEY, milestoneEvent);
-        sendAggregatedSMSToPatient(PATIENT_IPTI, milestoneEvent);
+        sendAggregatedMessageToPatient(PATIENT_IPTI, milestoneEvent);
     }
 
     @Override
@@ -78,7 +79,7 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @ApiSession
     public void handleMeaslesVaccinationAlert(MilestoneEvent milestoneEvent) {
         sendAggregatedSMSToFacility(CWC_MEASLES_SMS_KEY, milestoneEvent);
-        sendAggregatedSMSToPatient(PATIENT_MEASLES, milestoneEvent);
+        sendAggregatedMessageToPatient(PATIENT_MEASLES, milestoneEvent);
     }
 
     @Override
@@ -86,7 +87,7 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @ApiSession
     public void handlePentaVaccinationAlert(MilestoneEvent milestoneEvent) {
         sendAggregatedSMSToFacility(CWC_PENTA_SMS_KEY, milestoneEvent);
-        sendAggregatedSMSToPatient(PATIENT_PENTA, milestoneEvent);
+        sendAggregatedMessageToPatient(PATIENT_PENTA, milestoneEvent);
     }
 
     @Override
@@ -94,7 +95,7 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @ApiSession
     public void handleYellowFeverVaccinationAlert(MilestoneEvent milestoneEvent) {
         sendAggregatedSMSToFacility(CWC_YF_SMS_KEY, milestoneEvent);
-        sendAggregatedSMSToPatient(PATIENT_YELLOW_FEVER, milestoneEvent);
+        sendAggregatedMessageToPatient(PATIENT_YELLOW_FEVER, milestoneEvent);
     }
 
     @Override
@@ -102,7 +103,7 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @ApiSession
     public void handleOpvVaccinationAlert(final MilestoneEvent milestoneEvent) {
         sendAggregatedSMSToFacility(CWC_OPV_SMS_KEY, milestoneEvent);
-        sendAggregatedSMSToPatient(PATIENT_OPV, milestoneEvent);
+        sendAggregatedMessageToPatient(PATIENT_OPV, milestoneEvent);
     }
 
     @Override
@@ -110,7 +111,7 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @ApiSession
     public void handlePNCMotherAlert(final MilestoneEvent milestoneEvent) {
         sendInstantSMSToFacility(PNC_MOTHER_SMS_KEY, milestoneEvent);
-        sendInstantSMSToPatient(PATIENT_PNC_MOTHER, milestoneEvent);
+        sendInstantMessageToPatient(PATIENT_PNC_MOTHER, milestoneEvent);
     }
 
     @Override
@@ -118,6 +119,6 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @ApiSession
     public void handlePNCChildAlert(final MilestoneEvent milestoneEvent) {
         sendInstantSMSToFacility(PNC_CHILD_SMS_KEY, milestoneEvent);
-        sendInstantSMSToPatient(PATIENT_PNC_BABY, milestoneEvent);
+        sendInstantMessageToPatient(PATIENT_PNC_BABY, milestoneEvent);
     }
 }

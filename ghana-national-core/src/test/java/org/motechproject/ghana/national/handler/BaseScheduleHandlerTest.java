@@ -8,11 +8,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllObservations;
+import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -23,6 +25,7 @@ import org.motechproject.scheduletracking.api.domain.Milestone;
 import org.motechproject.scheduletracking.api.domain.MilestoneAlert;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
+import org.motechproject.util.DateUtil;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.anyMap;
@@ -53,6 +57,10 @@ public class BaseScheduleHandlerTest {
     private AllObservations mockAllObservations;
     @Mock
     private SMSGateway mockSMSGateway;
+
+    @Mock
+    private AllPatientsOutbox mockAllPatientsOutbox;
+
     @Mock
     private AllMobileMidwifeEnrollments mockAllMobileMidwifeEnrollments;
 
@@ -61,7 +69,7 @@ public class BaseScheduleHandlerTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        careScheduleHandler = new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSMSGateway, mockAllObservations, mockAllMobileMidwifeEnrollments);
+        careScheduleHandler = new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSMSGateway, mockAllObservations, mockAllMobileMidwifeEnrollments,mockAllPatientsOutbox);
     }
 
     @Test
@@ -111,10 +119,10 @@ public class BaseScheduleHandlerTest {
         final String milestoneName="milestone1";
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
         when(mockPatientService.patientByOpenmrsId(anyString())).thenReturn(new Patient(new MRSPatient("121", new MRSPerson(), new MRSFacility("123"))));
-        careScheduleHandler.sendAggregatedSMSToPatient(PATIENT_IPT, new MilestoneEvent(patientId, scheduleName, milestoneAlert, WindowName.earliest.name(), null));
+        careScheduleHandler.sendAggregatedMessageToPatient(PATIENT_IPT, new MilestoneEvent(patientId, scheduleName, milestoneAlert, WindowName.earliest.name(), null));
         verify(mockSMSGateway, never()).dispatchSMSToAggregator(anyString(), anyMap(), anyString(), anyString(), org.mockito.Matchers.<MessageRecipientType>any());
 
-        careScheduleHandler.sendAggregatedSMSToPatient(PATIENT_IPT, new MilestoneEvent(patientId, scheduleName, milestoneAlert, WindowName.max.name(), null));
+        careScheduleHandler.sendAggregatedMessageToPatient(PATIENT_IPT, new MilestoneEvent(patientId, scheduleName, milestoneAlert, WindowName.max.name(), null));
         verify(mockSMSGateway, never()).dispatchSMSToAggregator(anyString(), anyMap(), anyString(), anyString(), org.mockito.Matchers.<MessageRecipientType>any());
     }
 
@@ -205,7 +213,7 @@ public class BaseScheduleHandlerTest {
         when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123"))));
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
 
-        careScheduleHandler.sendAggregatedSMSToPatient(PATIENT_IPT, milestoneEvent);
+        careScheduleHandler.sendAggregatedMessageToPatient(PATIENT_IPT, milestoneEvent);
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
@@ -243,7 +251,7 @@ public class BaseScheduleHandlerTest {
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setMedium(Medium.SMS).setPhoneNumber(mmRegisteredPhoneNumber);
         when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(enrollment);
 
-        careScheduleHandler.sendAggregatedSMSToPatient(PATIENT_IPT, milestoneEvent);
+        careScheduleHandler.sendAggregatedMessageToPatient(PATIENT_IPT, milestoneEvent);
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
@@ -259,6 +267,25 @@ public class BaseScheduleHandlerTest {
         }}, templateValuesArgCaptor.getValue());
 
         assertThat(captor.getValue(), is(patientMotechId));
+    }
+
+    @Test
+    public void shouldSendIVRAudioFileForAggregationIfThePatientHadRegisteredForMobileMidwifeProgramWithVoiceOption(){
+
+        MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone("milestoneName", Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
+        String patientId = "patientOpenMrsId";
+        String patientMotechId = "patientmotechid";
+        String scheduleName = "scheduleName";
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, WindowName.due.name(), DateTime.now());
+        Patient patient = new Patient(new MRSPatient(patientId, patientMotechId, new MRSPerson(), null));
+        when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(patient);
+        MobileMidwifeEnrollment mobileMidwifeEnrollment=new MobileMidwifeEnrollment(DateTime.now()).setMedium(Medium.VOICE).setLanguage(Language.EN);
+
+        when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(mobileMidwifeEnrollment);
+
+
+        careScheduleHandler.sendAggregatedMessageToPatient(null, milestoneEvent);
+        verify(mockSMSGateway).dispatchVoiceToAggregator("prompt_scheduleName_Due", new AggregationMessageIdentifier(patientId, scheduleName).getIdentifier(), patientMotechId);
     }
 
     @Test
@@ -354,23 +381,21 @@ public class BaseScheduleHandlerTest {
         final String lastname = "lastname55";
         final String windowName = WindowName.late.name();
         final String scheduleName = "some schedule";
+        final String milestoneName="milestone1";
+        final String phoneNumber = "121212";
 
-        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate());
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), phoneNumber));
         Patient patient = new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId)));
         when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(patient);
-        String phoneNumber = "121212";
-        when(mockPatientService.getPatientPhoneNumber(patient.getMotechId())).thenReturn(phoneNumber);
 
-        final String milestoneName="milestone1";
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
-
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
 
-        careScheduleHandler.sendInstantSMSToPatient(PNC_CHILD_SMS_KEY, milestoneEvent);
+        careScheduleHandler.sendInstantMessageToPatient(PATIENT_PNC_BABY, milestoneEvent);
 
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(mockSMSGateway).dispatchSMS(eq(PNC_CHILD_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture());
+        verify(mockSMSGateway).dispatchSMS(eq(PATIENT_PNC_BABY + "_LATE_SMS_KEY"), templateValuesArgCaptor.capture(), captor.capture());
 
         String actualPhoneNumber = captor.getValue();
         assertEquals(phoneNumber, actualPhoneNumber);

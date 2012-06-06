@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.repository;
 
 import ch.lambdaj.function.convert.Converter;
 import org.joda.time.DateTime;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.outbox.api.contract.SortKey;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessageStatus;
@@ -18,19 +19,19 @@ import static ch.lambdaj.Lambda.extract;
 import static ch.lambdaj.Lambda.on;
 
 @Repository
-public class AllPatientOutboxes {
+public class AllPatientsOutbox {
 
+    public static final String AUDIO_URL = "AUDIO_URL";
     @Autowired
     VoiceOutboxService voiceOutboxService;
 
-    public void addUrlToOutbox(final String url, String externalId) {
+    public void addAudioClip(Patient patient, final String clipName, DateTime expirationTime) {
         OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
         outboundVoiceMessage.setCreationTime(DateTime.now().toDate());
-        outboundVoiceMessage.setExpirationDate(DateTime.now().plusWeeks(1).toDate());
-        outboundVoiceMessage.setExternalId(externalId);
-        outboundVoiceMessage.setStatus(OutboundVoiceMessageStatus.PENDING);
+        outboundVoiceMessage.setExpirationDate(expirationTime.toDate());
+        outboundVoiceMessage.setExternalId(patient.getMotechId());
         outboundVoiceMessage.setParameters(new HashMap<String, Object>(){{
-            put("AUDIO_URL", url);
+            put(AUDIO_URL, clipName);
         }});
         voiceOutboxService.addMessage(outboundVoiceMessage);
     }
@@ -41,7 +42,7 @@ public class AllPatientOutboxes {
             @Override
             public Object convert(Object o) {
                 Map<String, Object> obj = (Map<String, Object>) o;
-                return obj.get("AUDIO_URL");
+                return obj.get(AUDIO_URL);
             }
         });
     }
