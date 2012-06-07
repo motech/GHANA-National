@@ -28,7 +28,7 @@ public class MessageDispatcherTest extends BaseUnitTest {
         final DateTime generationTime = DateUtil.newDateTime(DateUtil.newDate(2000, 1, 1), new Time(10, 10));
         SMSPayload smsPayload = SMSPayload.fromText("text", "ph", generationTime, new DeliveryStrategy() {
             @Override
-            public DateTime deliveryDate(SMSPayload sms) {
+            public DateTime deliveryDate(Payload sms) {
                 return generationTime;
             }
         }, MessageRecipientType.FACILITY);

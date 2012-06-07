@@ -291,30 +291,4 @@ public class PatientServiceTest {
         verify(mockAllPatientSearch).getPatients(firstName,null,phoneNumber,dateOfBirth,null);
     }
 
-    @Test
-    public void shouldGetPhoneNumberOfMobileMidwifeEnrollmentIfFound() {
-        String patientMotechId = "patientId";
-        Patient patient = new Patient(new MRSPatient(patientMotechId, null, null));
-        String patientPhoneNumber = "23456789";
-        when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(new MobileMidwifeEnrollment(DateTime.now()).setPhoneNumber(patientPhoneNumber).setMedium(Medium.SMS));
-
-        String actualPhoneNumber = patientService.getPatientPhoneNumber(patient.getMotechId());
-
-        assertThat(actualPhoneNumber, is(patientPhoneNumber));
-    }
-
-    @Test
-    public void shouldGetPhoneNumberOfPatientIfNoActiveMobileMidwifeEnrollmentsArePresent() {
-        String patientMotechId = "patientId";
-        String patientPhoneNumber = "23456789";
-        Patient patient = new Patient(new MRSPatient(patientMotechId, new MRSPerson().addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber)), null));
-        when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(null);
-        when(mockAllPatients.getPatientByMotechId(patientMotechId)).thenReturn(patient);
-
-        String actualPhoneNumber = patientService.getPatientPhoneNumber(patient.getMotechId());
-
-        assertThat(actualPhoneNumber, is(patientPhoneNumber));
-    }
-
-
 }

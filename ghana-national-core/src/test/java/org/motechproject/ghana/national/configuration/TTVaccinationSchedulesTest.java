@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.domain.TTVaccineDosage;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.quartz.SchedulerException;
 import org.springframework.test.context.ContextConfiguration;
@@ -82,17 +83,6 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("2-Apr-2012"))));
     }
 
-//    @Test
-//    public void shouldMoveDueDateAccordingToHistoryInput() throws SchedulerException {
-//        mockToday(newDate("19-Apr-2012"));
-//        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, null, null, newDate("01-Mar-2012"), null, TTVaccineDosage.TT2.getScheduleMilestoneName(), null);
-//        enrollmentId = scheduleTrackingService.enroll(enrollmentRequest);
-//
-//        assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
-//                alert(late, onDate("19-Apr-2012")),
-//                alert(late, onDate("26-Apr-2012")),
-//                alert(late, onDate("3-May-2012"))));
-//    }
 
     private String scheduleAlertForTTVaccination(LocalDate firstDosageDate) {
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, firstDosageDate, null, null, null, null, null);

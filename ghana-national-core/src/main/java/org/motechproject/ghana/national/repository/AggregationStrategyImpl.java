@@ -6,7 +6,9 @@ import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.domain.AlertWindow;
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SmsTemplateKeys;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.messagegateway.domain.*;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.tools.Utility;
@@ -37,10 +39,13 @@ public class AggregationStrategyImpl implements AggregationStrategy {
     private CMSLiteService cmsLiteService;
 
     @Autowired
-    PatientService patientService;
+    private PatientService patientService;
 
     @Autowired
-    AllFacilities allFacilities;
+    private AllFacilities allFacilities;
+
+    @Autowired
+    private AllMobileMidwifeEnrollments allMobileMidwifeEnrollments;
 
 
     @Override
@@ -66,7 +71,9 @@ public class AggregationStrategyImpl implements AggregationStrategy {
         }
         SMSPayload smsPayload = SMSPayload.fromText(builder.toString(), smsPayloadForPatient.get(0).getUniqueId(), DateUtil.now(), null, MessageRecipientType.PATIENT);
 
-        String patientPhoneNumber = patientService.getPatientPhoneNumber(smsPayload.getUniqueId());
+        Patient patient = patientService.getPatientByMotechId(smsPayload.getUniqueId());
+        String patientPhoneNumber = patient.receiveSMSOnPhoneNumber(allMobileMidwifeEnrollments.findActiveBy(smsPayload.getUniqueId()));
+
         if(patientPhoneNumber!=null)
             return asList(new SMS(smsPayload, patientPhoneNumber));
         return new ArrayList<SMS>();

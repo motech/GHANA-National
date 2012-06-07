@@ -7,7 +7,7 @@ import org.motechproject.util.DateUtil;
 
 public class NextMondayDispatcher implements DeliveryStrategy {
     @Override
-    public DateTime deliveryDate(SMSPayload smsPayload) {
-        return DateUtil.newDateTime(smsPayload.getGenerationTime().plusWeeks(1).withDayOfWeek(DateTimeConstants.MONDAY).toLocalDate(), new Time(0, 0));
+    public DateTime deliveryDate(Payload payload) {
+        return DateUtil.newDateTime(payload.getGenerationTime().plusWeeks(1).withDayOfWeek(DateTimeConstants.MONDAY).toLocalDate(), new Time(0, 0));
     }
 }

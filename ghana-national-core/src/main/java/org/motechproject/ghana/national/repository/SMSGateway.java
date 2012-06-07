@@ -1,11 +1,13 @@
 package org.motechproject.ghana.national.repository;
 
+import org.joda.time.DateTime;
 import org.motechproject.MotechException;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher;
 import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
+import org.motechproject.ghana.national.messagegateway.domain.VoicePayload;
 import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
 import org.motechproject.sms.api.service.SmsService;
 import org.motechproject.util.DateUtil;
@@ -40,8 +42,12 @@ public class SMSGateway {
         return getSMSTemplate(defaultLanguage(), key);
     }
 
-    public void dispatchSMSToAggregator(String templateKey, Map<String, String> templateValues, String uniqueId, String identifier, MessageRecipientType messageRecipientType) {
-        messageGateway.dispatch(SMSPayload.fromTemplate(getSMSTemplate(templateKey), templateValues, uniqueId, DateUtil.now(), new NextMondayDispatcher(), messageRecipientType), identifier);
+    public void dispatchVoiceToAggregator(String clipName, String clipIdentifier, String recipientIdentifier){
+        messageGateway.dispatch(new VoicePayload(clipName, recipientIdentifier, DateTime.now(), new NextMondayDispatcher()), clipIdentifier);
+    }
+
+    public void dispatchSMSToAggregator(String templateKey, Map<String, String> templateValues, String recipientIdentifier, String smsIdentifier, MessageRecipientType messageRecipientType) {
+        messageGateway.dispatch(SMSPayload.fromTemplate(getSMSTemplate(templateKey), templateValues, recipientIdentifier, DateUtil.now(), new NextMondayDispatcher(), messageRecipientType), smsIdentifier);
     }
 
     public void dispatchSMS(String templateKey, Map<String, String> templateValues, String phoneNumber) {

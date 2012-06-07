@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
-import org.motechproject.ghana.national.repository.AllPatientOutboxes;
+import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -32,7 +32,7 @@ public class VoiceMessageControllerTest {
     private VoiceMessageController voiceMessageController = new VoiceMessageController();
 
     @Mock
-    AllPatientOutboxes mockPatientOutbox;
+    AllPatientsOutbox mockPatientOutbox;
 
     @Mock
     PatientService mockPatientService;

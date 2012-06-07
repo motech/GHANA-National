@@ -26,9 +26,17 @@ public enum AlertWindow {
         return name;
     }
 
+    public static AlertWindow byName(String name){
+        for (AlertWindow alertWindow : values()) {
+            if (alertWindow.name.equals(name))
+                return alertWindow;
+        }
+        return null;
+    }
+
     public static AlertWindow byPlatformName(String platformWindowName) {
         for (AlertWindow alertWindow : values()) {
-            if (platformWindowName.equals(alertWindow.platformWindowName))
+            if (alertWindow.platformWindowName.equals(platformWindowName))
                 return alertWindow;
         }
         return null;
