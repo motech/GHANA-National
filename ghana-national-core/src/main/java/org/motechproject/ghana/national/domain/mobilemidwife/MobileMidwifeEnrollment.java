@@ -9,6 +9,8 @@ import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.model.Time;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 
+import java.util.Arrays;
+
 import static org.motechproject.util.DateUtil.setTimeZone;
 
 @TypeDiscriminator("doc.type === 'MobileMidwifeEnrollment'")
@@ -48,7 +50,8 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     @JsonProperty
     private DateTime enrollmentDateTime;
 
-   private MobileMidwifeEnrollment(){}
+    private MobileMidwifeEnrollment() {
+    }
 
     public MobileMidwifeEnrollment(DateTime enrollmentDateTime) {
         this.enrollmentDateTime = enrollmentDateTime;
@@ -220,7 +223,7 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         return getConsent() && !PhoneOwnership.PUBLIC.equals(getPhoneOwnership());
     }
 
-    public CampaignRequest createCampaignRequest(LocalDate scheduleStartDate) {
+    public CampaignRequest createCampaignRequestForTextMessage(LocalDate scheduleStartDate) {
         return new CampaignRequest(patientId, serviceType.name(), null, scheduleStartDate, MessageStartWeek.findBy(messageStartWeek).getWeek());
     }
 
@@ -228,4 +231,9 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         return new CampaignRequest(patientId, serviceType.name(), null, null);
     }
 
+    public CampaignRequest createCampaignRequestForVoiceMessage(LocalDate nextApplicableDay, DayOfWeek dayOfWeek, Time timeOfDay) {
+        CampaignRequest campaignRequest = new CampaignRequest(patientId, serviceType.name(), nextApplicableDay, timeOfDay, Arrays.asList(dayOfWeek));
+        campaignRequest.setStartOffset(MessageStartWeek.findBy(messageStartWeek).getWeek());
+        return campaignRequest;
+    }
 }

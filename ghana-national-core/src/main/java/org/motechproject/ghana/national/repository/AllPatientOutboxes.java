@@ -29,7 +29,7 @@ public class AllPatientOutboxes {
         outboundVoiceMessage.setExpirationDate(DateTime.now().plusWeeks(1).toDate());
         outboundVoiceMessage.setExternalId(externalId);
         outboundVoiceMessage.setStatus(OutboundVoiceMessageStatus.PENDING);
-        outboundVoiceMessage.setParameters(new HashMap<String, Object>(){{
+        outboundVoiceMessage.setParameters(new HashMap<String, Object>() {{
             put("AUDIO_URL", url);
         }});
         voiceOutboxService.addMessage(outboundVoiceMessage);

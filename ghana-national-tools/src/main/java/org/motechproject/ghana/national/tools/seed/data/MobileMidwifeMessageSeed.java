@@ -5,6 +5,7 @@ import org.motechproject.cmslite.api.model.CMSLiteException;
 import org.motechproject.cmslite.api.model.StringContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.messagecampaign.dao.AllMessageCampaigns;
@@ -45,8 +46,8 @@ public class MobileMidwifeMessageSeed extends Seed {
 
     private void savePropertiesToCMS(Properties properties, Language language) throws CMSLiteException {
 
-        RepeatingCampaignMessage pregnancyCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(PREGNANCY.name(), PREGNANCY.getServiceName());
-        RepeatingCampaignMessage childCareCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(CHILD_CARE.name(), CHILD_CARE.getServiceName());
+        RepeatingCampaignMessage pregnancyCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(PREGNANCY.name(), PREGNANCY.getServiceName(Medium.SMS));
+        RepeatingCampaignMessage childCareCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(CHILD_CARE.name(), CHILD_CARE.getServiceName(Medium.SMS));
         Map<String, String> pregnancyDayMap = createDayMap(pregnancyCampaignMessage);
         Map<String, String> childCareDayMap = createDayMap(childCareCampaignMessage);
 

@@ -5,6 +5,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.model.DayOfWeek;
@@ -41,7 +42,7 @@ public class AllCampaignsTest extends BaseUnitTest {
     public void shouldStartCampaignservice() {
         final DateTime scheduleStartDate = new DateTime();
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setServiceType(ServiceType.PREGNANCY).setMessageStartWeek("33");
-        campaign.start(enrollment.createCampaignRequest(scheduleStartDate.toLocalDate()));
+        campaign.start(enrollment.createCampaignRequestForTextMessage(scheduleStartDate.toLocalDate()));
         verify(mockMessageCampaignService).startFor(any(CampaignRequest.class));
     }
 
@@ -60,10 +61,11 @@ public class AllCampaignsTest extends BaseUnitTest {
         DateTime currentDay = new DateTime(2012, 2, 2, 4, 15, 0);
         mockCurrentDate(currentDay);
 
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(currentDay).setServiceType(serviceType);
-        when(mockAllMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), ServiceType.CHILD_CARE.getServiceName())).thenReturn(asList(DayOfWeek.Monday));
+        Medium medium = Medium.SMS;
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(currentDay).setServiceType(serviceType).setMedium(medium);
+        when(mockAllMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), ServiceType.CHILD_CARE.getServiceName(medium))).thenReturn(asList(DayOfWeek.Monday));
 
-        LocalDate actualDateTime = campaign.nextCycleDateFromToday(enrollment.getServiceType());
+        LocalDate actualDateTime = campaign.nextCycleDateFromToday(enrollment.getServiceType(), medium);
         assertThat(actualDateTime, is(currentDay.dayOfMonth().addToCopy(4).toLocalDate()));
     }
 
