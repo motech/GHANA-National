@@ -12,10 +12,7 @@ import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
-import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
-import org.motechproject.ghana.national.repository.AllObservations;
-import org.motechproject.ghana.national.repository.AllPatientsOutbox;
-import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
@@ -57,7 +54,8 @@ public class BaseScheduleHandlerTest {
     private AllObservations mockAllObservations;
     @Mock
     private SMSGateway mockSMSGateway;
-
+    @Mock
+    private VoiceGateway mockVoiceGateway;
     @Mock
     private AllPatientsOutbox mockAllPatientsOutbox;
 
@@ -69,7 +67,8 @@ public class BaseScheduleHandlerTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        careScheduleHandler = new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSMSGateway, mockAllObservations, mockAllMobileMidwifeEnrollments,mockAllPatientsOutbox);
+        careScheduleHandler = new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSMSGateway, mockVoiceGateway,
+                mockAllObservations, mockAllMobileMidwifeEnrollments,mockAllPatientsOutbox);
     }
 
     @Test
@@ -285,7 +284,7 @@ public class BaseScheduleHandlerTest {
 
 
         careScheduleHandler.sendAggregatedMessageToPatient(null, milestoneEvent);
-        verify(mockSMSGateway).dispatchVoiceToAggregator("prompt_scheduleName_Due", new AggregationMessageIdentifier(patientId, scheduleName).getIdentifier(), patientMotechId);
+        verify(mockVoiceGateway).dispatchVoiceToAggregator("prompt_scheduleName_Due", new AggregationMessageIdentifier(patientId, scheduleName).getIdentifier(), patientMotechId);
     }
 
     @Test

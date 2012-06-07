@@ -42,10 +42,6 @@ public class SMSGateway {
         return getSMSTemplate(defaultLanguage(), key);
     }
 
-    public void dispatchVoiceToAggregator(String clipName, String clipIdentifier, String recipientIdentifier){
-        messageGateway.dispatch(new VoicePayload(clipName, recipientIdentifier, DateTime.now(), new NextMondayDispatcher()), clipIdentifier);
-    }
-
     public void dispatchSMSToAggregator(String templateKey, Map<String, String> templateValues, String recipientIdentifier, String smsIdentifier, MessageRecipientType messageRecipientType) {
         messageGateway.dispatch(SMSPayload.fromTemplate(getSMSTemplate(templateKey), templateValues, recipientIdentifier, DateUtil.now(), new NextMondayDispatcher(), messageRecipientType), smsIdentifier);
     }

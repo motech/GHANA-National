@@ -5,39 +5,39 @@ import org.joda.time.format.DateTimeFormat;
 
 import java.io.Serializable;
 
-public class FLWSMSIdentifier implements Serializable {
+public class PayloadIdentifier implements Serializable {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
-    private String phoneNumber;
+    private String uniqueId;
     private DateTime deliveryDate;
 
-    public FLWSMSIdentifier(SMSPayload smsPayload) {
-        phoneNumber = smsPayload.getUniqueId();
-        deliveryDate = smsPayload.getDeliveryTime();
+    public PayloadIdentifier(Payload payload) {
+        uniqueId = payload.getUniqueId();
+        deliveryDate = payload.getDeliveryTime();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FLWSMSIdentifier)) return false;
+        if (!(o instanceof PayloadIdentifier)) return false;
 
-        FLWSMSIdentifier that = (FLWSMSIdentifier) o;
+        PayloadIdentifier that = (PayloadIdentifier) o;
 
         if (deliveryDate != null ? !deliveryDate.equals(that.deliveryDate) : that.deliveryDate != null) return false;
-        if (phoneNumber != null ? !phoneNumber.equals(that.phoneNumber) : that.phoneNumber != null) return false;
+        if (uniqueId != null ? !uniqueId.equals(that.uniqueId) : that.uniqueId != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = phoneNumber != null ? phoneNumber.hashCode() : 0;
+        int result = uniqueId != null ? uniqueId.hashCode() : 0;
         result = 31 * result + (deliveryDate != null ? deliveryDate.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return phoneNumber + "|" + deliveryDate.toString(DateTimeFormat.forPattern(DATE_FORMAT));
+        return uniqueId + "|" + deliveryDate.toString(DateTimeFormat.forPattern(DATE_FORMAT));
     }
 }
 

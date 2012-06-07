@@ -1,6 +1,8 @@
-package org.motechproject.ghana.national.repository;
+package org.motechproject.ghana.national.domain;
 
+import ch.lambdaj.function.convert.Converter;
 import ch.lambdaj.group.Group;
+import org.apache.commons.collections.CollectionUtils;
 import org.motechproject.MotechException;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.service.CMSLiteService;
@@ -10,12 +12,15 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SmsTemplateKeys;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.messagegateway.domain.*;
+import org.motechproject.ghana.national.repository.AllFacilities;
+import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -26,6 +31,7 @@ import static java.util.Arrays.asList;
 import static java.util.Locale.getDefault;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.IsNot.not;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FACILITY;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.WINDOW_NAMES;
@@ -33,6 +39,7 @@ import static org.motechproject.ghana.national.domain.AlertWindow.ghanaNationalW
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 
+@Component
 public class AggregationStrategyImpl implements AggregationStrategy {
 
     @Autowired
@@ -51,10 +58,17 @@ public class AggregationStrategyImpl implements AggregationStrategy {
     @Override
     @LoginAsAdmin
     @ApiSession
-    public List<SMS> aggregate(List<SMSPayload> smsPayloadMessages) {
-        List<SMS> aggregatedSMSPayload = new ArrayList<SMS>();
-        List<SMSPayload> smsPayloadForFacility = filter(having(on(SMSPayload.class).getMessageRecipientType(), equalTo(MessageRecipientType.FACILITY)), smsPayloadMessages);
-        List<SMSPayload> smsPayloadForPatient = filter(having(on(SMSPayload.class).getMessageRecipientType(), equalTo(MessageRecipientType.PATIENT)), smsPayloadMessages);
+    public List<Payload> aggregate(List<Payload> payloads) {
+        List<Payload> smsPayloads = filter(instanceOf(SMSPayload.class), payloads);
+        final List<Payload> aggregatedVoicePayloads = filter(instanceOf(VoicePayload.class), payloads);
+        final List<Payload> aggregatedSMSPayload = Utility.cast(aggregateSMS(Utility.<Payload, SMSPayload>cast(smsPayloads)));
+        return new ArrayList<Payload>(){{addAll(aggregatedSMSPayload); addAll(aggregatedVoicePayloads);}};
+    }
+
+    private List<SMSPayload> aggregateSMS(List<SMSPayload> payloads) {
+        List<SMSPayload> aggregatedSMSPayload = new ArrayList<SMSPayload>();
+        List<SMSPayload> smsPayloadForFacility = filter(having(on(SMSPayload.class).getMessageRecipientType(), equalTo(MessageRecipientType.FACILITY)), payloads);
+        List<SMSPayload> smsPayloadForPatient = filter(having(on(SMSPayload.class).getMessageRecipientType(), equalTo(MessageRecipientType.PATIENT)), payloads);
         if (!smsPayloadForFacility.isEmpty()) {
             aggregatedSMSPayload.addAll(processMessagesForFacility(smsPayloadForFacility));
         }
@@ -64,7 +78,7 @@ public class AggregationStrategyImpl implements AggregationStrategy {
         return aggregatedSMSPayload;
     }
 
-    private List<SMS> processMessagesForPatient(List<SMSPayload> smsPayloadForPatient) {
+    private List<SMSPayload> processMessagesForPatient(List<SMSPayload> smsPayloadForPatient) {
         StringBuilder builder = new StringBuilder();
         for (SMSPayload smsPayload : smsPayloadForPatient) {
             builder.append(smsPayload.getText()).append(Constants.SMS_SEPARATOR);
@@ -74,12 +88,12 @@ public class AggregationStrategyImpl implements AggregationStrategy {
         Patient patient = patientService.getPatientByMotechId(smsPayload.getUniqueId());
         String patientPhoneNumber = patient.receiveSMSOnPhoneNumber(allMobileMidwifeEnrollments.findActiveBy(smsPayload.getUniqueId()));
 
-        if(patientPhoneNumber!=null)
-            return asList(new SMS(smsPayload, patientPhoneNumber));
-        return new ArrayList<SMS>();
+        if (patientPhoneNumber != null)
+            return asList(SMSPayload.fromPhoneNoAndText(patientPhoneNumber, smsPayload.getText()));
+        return new ArrayList<SMSPayload>();
     }
 
-    private List<SMS> processMessagesForFacility(List<SMSPayload> smsPayloadMessages) {
+    private List<SMSPayload> processMessagesForFacility(List<SMSPayload> smsPayloadMessages) {
         String standardMessage = SMSPayload.fill(getSMSTemplate(FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
             put(WINDOW_NAMES, join(AlertWindow.ghanaNationalWindowNames(), ", "));
             put(FACILITY, "");
@@ -90,10 +104,10 @@ public class AggregationStrategyImpl implements AggregationStrategy {
         List<SMSPayload> smsPayloads = (filteredMessages.isEmpty()) ? defaultMessagesList : aggregateMessages(filteredMessages, facilityName);
         List<String> phoneNumbers = allFacilities.getFacilityByMotechId(smsPayloads.get(0).getUniqueId()).getPhoneNumbers();
 
-        List<SMS> smsList = new ArrayList<SMS>();
+        List<SMSPayload> smsList = new ArrayList<SMSPayload>();
         for (SMSPayload smsPayload : smsPayloads) {
             for (String phoneNumber : phoneNumbers) {
-                smsList.add(new SMS(smsPayload, phoneNumber));
+                smsList.add(SMSPayload.fromPhoneNoAndText(phoneNumber, smsPayload.getText()));
             }
         }
         return smsList;
@@ -146,10 +160,12 @@ public class AggregationStrategyImpl implements AggregationStrategy {
                 windowsWithoutSMS.add(window);
             }
         }
-        messages.add(SMSPayload.fromTemplate(getSMSTemplate(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
-            put(WINDOW_NAMES, join(windowsWithoutSMS, Constants.SMS_LIST_SEPERATOR));
-            put(FACILITY, facilityName);
-        }}, uniqueId, DateUtil.now(), null, MessageRecipientType.FACILITY));
+        if (CollectionUtils.isNotEmpty(windowsWithoutSMS)) {
+            messages.add(SMSPayload.fromTemplate(getSMSTemplate(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY), new HashMap<String, String>() {{
+                put(WINDOW_NAMES, join(windowsWithoutSMS, Constants.SMS_LIST_SEPERATOR));
+                put(FACILITY, facilityName);
+            }}, uniqueId, DateUtil.now(), null, MessageRecipientType.FACILITY));
+        }
         return messages;
     }
 

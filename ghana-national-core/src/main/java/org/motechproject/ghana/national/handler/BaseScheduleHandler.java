@@ -6,10 +6,7 @@ import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
-import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
-import org.motechproject.ghana.national.repository.AllObservations;
-import org.motechproject.ghana.national.repository.AllPatientsOutbox;
-import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
@@ -26,6 +23,7 @@ public abstract class BaseScheduleHandler {
 
     protected PatientService patientService;
     protected SMSGateway smsGateway;
+    private VoiceGateway voiceGateway;
     protected AllPatientsOutbox allPatientsOutbox;
     protected FacilityService facilityService;
     protected AllObservations allObservations;
@@ -37,10 +35,13 @@ public abstract class BaseScheduleHandler {
     protected BaseScheduleHandler() {
     }
 
-    protected BaseScheduleHandler(PatientService patientService, FacilityService facilityService,
-                                  SMSGateway smsGateway, AllObservations allObservations, AllMobileMidwifeEnrollments allMobileMidwifeEnrollments, AllPatientsOutbox allPatientsOutbox) {
+    protected BaseScheduleHandler(PatientService patientService, FacilityService facilityService, SMSGateway smsGateway,
+                                  VoiceGateway voiceGateway, AllObservations allObservations,
+                                  AllMobileMidwifeEnrollments allMobileMidwifeEnrollments, AllPatientsOutbox allPatientsOutbox) {
+
         this.patientService = patientService;
         this.smsGateway = smsGateway;
+        this.voiceGateway = voiceGateway;
         this.facilityService = facilityService;
         this.allObservations = allObservations;
         this.allMobileMidwifeEnrollments = allMobileMidwifeEnrollments;
@@ -74,7 +75,7 @@ public abstract class BaseScheduleHandler {
                 String smsTemplateKeyForWindow = formatTemplateKeyForDueAndLateWindow(smsTemplateKey, alertDetails.getWindow().getPlatformWindowName());
                 dispatchSMSToAggregator(patient.getMotechId(), smsTemplateKeyForWindow, patient, alertDetails, MessageRecipientType.PATIENT);
             } else {
-                smsGateway.dispatchVoiceToAggregator(new IVRClip().name(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId());
+                voiceGateway.dispatchVoiceToAggregator(new IVRClip().name(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId());
             }
         }
     }
@@ -93,7 +94,7 @@ public abstract class BaseScheduleHandler {
                     smsGateway.dispatchSMS(smsTemplateKeyForWindow, patientDetailsMap(patient, alertDetails.getWindow().getName(), alertDetails.getMilestoneName(), null), phoneNumber);
                 }
             } else {
-                allPatientsOutbox.addAudioClip(patient, new IVRClip().name(alertDetails.getScheduleName(), alertDetails.getWindow()), DateUtil.now());
+                allPatientsOutbox.addAudioClip(patient.getMotechId(), new IVRClip().name(alertDetails.getScheduleName(), alertDetails.getWindow()), DateUtil.now());
             }
         }
     }

@@ -1,9 +1,6 @@
 package org.motechproject.ghana.national.handler;
 
-import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
-import org.motechproject.ghana.national.repository.AllObservations;
-import org.motechproject.ghana.national.repository.AllPatientsOutbox;
-import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
@@ -22,9 +19,10 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     }
 
     @Autowired
-    public CareScheduleAlerts(PatientService patientService, FacilityService facilityService,
-                              SMSGateway smsGateway, AllObservations allObservations, AllMobileMidwifeEnrollments allMobileMidwifeEnrollments,AllPatientsOutbox allPatientsOutbox) {
-        super(patientService, facilityService, smsGateway, allObservations, allMobileMidwifeEnrollments, allPatientsOutbox);
+    public CareScheduleAlerts(PatientService patientService, FacilityService facilityService, SMSGateway smsGateway,
+                              VoiceGateway voiceGateway, AllObservations allObservations,
+                              AllMobileMidwifeEnrollments allMobileMidwifeEnrollments,AllPatientsOutbox allPatientsOutbox) {
+        super(patientService, facilityService, smsGateway, voiceGateway, allObservations, allMobileMidwifeEnrollments, allPatientsOutbox);
     }
 
     @Override

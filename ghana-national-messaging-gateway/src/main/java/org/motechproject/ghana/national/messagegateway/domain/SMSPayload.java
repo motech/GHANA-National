@@ -13,8 +13,16 @@ public class SMSPayload implements Payload {
     private DateTime generationTime;
     private DeliveryStrategy deliveryStrategy;
     private MessageRecipientType messageRecipientType;
+    private String phoneNumber;
 
     protected SMSPayload() {
+    }
+
+    public static SMSPayload fromPhoneNoAndText(String phoneNumber, String text){
+        SMSPayload smsPayload = new SMSPayload();
+        smsPayload.text = text;
+        smsPayload.phoneNumber = phoneNumber;
+        return smsPayload;
     }
 
     public static SMSPayload fromTemplate(String template, Map<String, String> runtimeValues, String uniqueId, DateTime generationTime, DeliveryStrategy deliveryStrategy, MessageRecipientType recipientType) {
@@ -60,6 +68,10 @@ public class SMSPayload implements Payload {
         return deliveryStrategy.deliveryDate(this);
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
     @Override
     public Boolean canBeDispatched() {
         return getDeliveryTime().toDate().before(DateUtil.now().toDate());
@@ -70,27 +82,20 @@ public class SMSPayload implements Payload {
     }
 
     @Override
-    public String toString() {
-        return "SMSPayload{" +
-                "text='" + text + '\'' +
-                ", uniqueId='" + uniqueId + '\'' +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SMSPayload smsPayload = (SMSPayload) o;
+        SMSPayload that = (SMSPayload) o;
 
-        if (deliveryStrategy != null ? !deliveryStrategy.equals(smsPayload.deliveryStrategy) : smsPayload.deliveryStrategy != null)
+        if (deliveryStrategy != null ? !deliveryStrategy.equals(that.deliveryStrategy) : that.deliveryStrategy != null)
             return false;
-        if (generationTime != null ? !generationTime.equals(smsPayload.generationTime) : smsPayload.generationTime != null)
+        if (generationTime != null ? !generationTime.equals(that.generationTime) : that.generationTime != null)
             return false;
-        if (messageRecipientType != smsPayload.messageRecipientType) return false;
-        if (uniqueId != null ? !uniqueId.equals(smsPayload.uniqueId) : smsPayload.uniqueId != null) return false;
-        if (text != null ? !text.equals(smsPayload.text) : smsPayload.text != null) return false;
+        if (messageRecipientType != that.messageRecipientType) return false;
+        if (phoneNumber != null ? !phoneNumber.equals(that.phoneNumber) : that.phoneNumber != null) return false;
+        if (text != null ? !text.equals(that.text) : that.text != null) return false;
+        if (uniqueId != null ? !uniqueId.equals(that.uniqueId) : that.uniqueId != null) return false;
 
         return true;
     }
@@ -102,6 +107,19 @@ public class SMSPayload implements Payload {
         result = 31 * result + (generationTime != null ? generationTime.hashCode() : 0);
         result = 31 * result + (deliveryStrategy != null ? deliveryStrategy.hashCode() : 0);
         result = 31 * result + (messageRecipientType != null ? messageRecipientType.hashCode() : 0);
+        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "SMSPayload{" +
+                "uniqueId='" + uniqueId + '\'' +
+                ", text='" + text + '\'' +
+                ", generationTime=" + generationTime +
+                ", deliveryStrategy=" + deliveryStrategy +
+                ", messageRecipientType=" + messageRecipientType +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
     }
 }
