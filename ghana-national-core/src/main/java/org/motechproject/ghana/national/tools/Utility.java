@@ -11,6 +11,7 @@ import org.motechproject.model.DayOfWeek;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static ch.lambdaj.Lambda.convert;
 import static java.util.Arrays.asList;
 import static org.motechproject.model.DayOfWeek.getDayOfWeek;
 
@@ -100,5 +101,15 @@ public class Utility {
     public static <T extends Enum> T getNextOf(T enumObj){
         Enum[] enumConstants = enumObj.getClass().getEnumConstants();
         return enumObj.ordinal() < enumConstants.length - 1 ? (T)enumConstants[enumObj.ordinal() + 1] : null;
+    }
+
+    public static  <L,T> List<T> cast(List<L> payload) {
+        return convert(payload, new Converter<L, T>() {
+            @Override
+            public T convert(L payload) {
+                return (T) payload;
+            }
+        });
+
     }
 }

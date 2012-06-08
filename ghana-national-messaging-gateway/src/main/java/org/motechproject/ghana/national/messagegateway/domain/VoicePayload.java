@@ -12,15 +12,17 @@ public class VoicePayload implements Payload {
     private String clipName;
     private DateTime generationTime;
     private DeliveryStrategy deliveryStrategy;
+    private DateTime expirationTime;
 
     protected VoicePayload() {
     }
 
-    public VoicePayload(String clipName, String uniqueId, DateTime generationTime, DeliveryStrategy deliveryStrategy) {
+    public VoicePayload(String clipName, String uniqueId, DateTime generationTime, DeliveryStrategy deliveryStrategy, DateTime expirationTime) {
         this.clipName = clipName;
         this.uniqueId = uniqueId;
         this.generationTime = generationTime;
         this.deliveryStrategy = deliveryStrategy;
+        this.expirationTime = expirationTime;
     }
 
     public String getClipName() {
@@ -48,6 +50,10 @@ public class VoicePayload implements Payload {
         return getDeliveryTime().toDate().before(DateUtil.now().toDate());
     }
 
+    public DateTime getExpirationTime() {
+        return expirationTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -57,6 +63,8 @@ public class VoicePayload implements Payload {
 
         if (clipName != null ? !clipName.equals(that.clipName) : that.clipName != null) return false;
         if (deliveryStrategy != null ? !deliveryStrategy.equals(that.deliveryStrategy) : that.deliveryStrategy != null)
+            return false;
+        if (expirationTime != null ? !expirationTime.equals(that.expirationTime) : that.expirationTime != null)
             return false;
         if (generationTime != null ? !generationTime.equals(that.generationTime) : that.generationTime != null)
             return false;
@@ -71,6 +79,7 @@ public class VoicePayload implements Payload {
         result = 31 * result + (clipName != null ? clipName.hashCode() : 0);
         result = 31 * result + (generationTime != null ? generationTime.hashCode() : 0);
         result = 31 * result + (deliveryStrategy != null ? deliveryStrategy.hashCode() : 0);
+        result = 31 * result + (expirationTime != null ? expirationTime.hashCode() : 0);
         return result;
     }
 
@@ -81,6 +90,7 @@ public class VoicePayload implements Payload {
                 ", clipName='" + clipName + '\'' +
                 ", generationTime=" + generationTime +
                 ", deliveryStrategy=" + deliveryStrategy +
+                ", expirationTime=" + expirationTime +
                 '}';
     }
 }

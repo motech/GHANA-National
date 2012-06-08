@@ -4,10 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
-import org.motechproject.ghana.national.repository.AllObservations;
-import org.motechproject.ghana.national.repository.AllPatientsOutbox;
-import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.model.MotechEvent;
@@ -25,6 +22,8 @@ public class CareScheduleHandlerTest {
     @Mock
     private SMSGateway mockSmsGateway;
     @Mock
+    private VoiceGateway mockVoiceGateway;
+    @Mock
     private PatientService mockPatientService;
     @Mock
     private FacilityService mockFacilityService;
@@ -38,7 +37,8 @@ public class CareScheduleHandlerTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        careScheduleHandlerSpy = spy(new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSmsGateway, mockAllObservations, mockAllMobileMidwifeEnrollments,mockAllPatientsOutbox));
+        careScheduleHandlerSpy = spy(new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSmsGateway,
+                mockVoiceGateway, mockAllObservations, mockAllMobileMidwifeEnrollments,mockAllPatientsOutbox));
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendAggregatedMessageToPatient(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToPatientForAppointment(Matchers.<String>any(), Matchers.<MotechEvent>any());

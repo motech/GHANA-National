@@ -37,8 +37,8 @@ public class MessageDispatcherTest extends BaseUnitTest {
     @Test
     public void shouldReturnIfTheMessageCanBeDispatched() {
         final DateTime generationTime = DateUtil.newDateTime(DateUtil.newDate(2000, 1, 1), new Time(10, 10));
-        final SMSPayload smsPayload = SMSPayload.fromText("text", "ph", generationTime, new NextMondayDispatcher(), MessageRecipientType.FACILITY);
-        List<SMSPayload> messagesList = new ArrayList<SMSPayload>() {{
+        final Payload smsPayload = SMSPayload.fromText("text", "ph", generationTime, new NextMondayDispatcher(), MessageRecipientType.FACILITY);
+        List<Payload> messagesList = new ArrayList<Payload>() {{
             add(smsPayload);
         }};
 

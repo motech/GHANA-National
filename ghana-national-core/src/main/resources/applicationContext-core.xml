@@ -41,8 +41,6 @@
     <beans:import resource="classpath:applicationDecisionTree.xml"/>
     <beans:import resource="classpath:applicationOutboxAPI.xml"/>
 
-    <bean id="aggregationStrategy" class="org.motechproject.ghana.national.repository.AggregationStrategyImpl"/>
-
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="${connection.string}"/>

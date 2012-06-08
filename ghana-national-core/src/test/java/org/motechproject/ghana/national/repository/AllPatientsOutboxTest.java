@@ -1,7 +1,5 @@
 package org.motechproject.ghana.national.repository;
 
-import org.hamcrest.Matchers;
-import org.hamcrest.core.IsEqual;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.joda.time.LocalDate;
@@ -12,7 +10,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -58,7 +55,7 @@ public class AllPatientsOutboxTest extends BaseUnitTest{
         Date expirationTimeInMillis = new Date(DateTimeUtils.currentTimeMillis());
         DateTime expirationTime = DateUtil.newDateTime(expirationTimeInMillis);
 
-        allPatientsOutbox.addAudioClip(patient, clipName, expirationTime);
+        allPatientsOutbox.addAudioClip(patient.getMotechId(), clipName, expirationTime);
 
         ArgumentCaptor<OutboundVoiceMessage> messageCaptor = ArgumentCaptor.forClass(OutboundVoiceMessage.class);
         verify(mockOutboxService).addMessage(messageCaptor.capture());
