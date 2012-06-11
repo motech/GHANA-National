@@ -155,7 +155,7 @@ public class TestDataGenController {
     }
 
     private void listAggregatedSMS(ModelMap modelMap) throws UnsupportedEncodingException, ParseException {
-        modelMap.put("smsList", gnAggregatorService.allMessages());
+        modelMap.put("aggregatedMessages", gnAggregatorService.allMessages());
     }
 
     private int incrementPatientNameCounter() {
