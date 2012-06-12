@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.util.Map;
+
 @Repository
 public class IVRGateway {
 
@@ -17,7 +19,7 @@ public class IVRGateway {
     @Value("#{verboiceProperties['channel.name']}")
     private String channelName;
 
-    public void placeCall(String phoneNumber) {
-        verboiceIVRService.initiateCall(new CallRequest(phoneNumber, 0, channelName));
+    public void placeCall(String phoneNumber, Map<String, String> params) {
+        verboiceIVRService.initiateCall(new CallRequest(phoneNumber, params, channelName));
     }
 }

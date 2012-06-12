@@ -40,12 +40,10 @@ public class MotechIdValidationTransition extends Transition {
         }
     }
 
-    private Node sendResponseFromOutbox(String input) {
+    private Node sendResponseFromOutbox(String motechId) {
+        List<String> audioUrls = allPatientsOutbox.getAudioFileNames(motechId);
         Node node = new Node();
-        List<String> audioUrls = allPatientsOutbox.getAudioFileNames(input);
-        //TODO: Sort to bring mmw message at the end
         for (String audioUrl : audioUrls) {
-            //if ivr mm prompt
             node.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(audioUrl, Language.valueOf(getName()))));
         }
         return node;
