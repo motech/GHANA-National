@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.anyMap;
@@ -287,7 +286,7 @@ public class BaseScheduleHandlerTest {
 
         when(mockScheduleJsonReader.validity(scheduleName, milestoneName, windowName)).thenReturn(Period.weeks(1));
         careScheduleHandler.sendAggregatedMessageToPatient(null, milestoneEvent);
-        verify(mockVoiceGateway).dispatchVoiceToAggregator("prompt_scheduleName_Due", new AggregationMessageIdentifier(patientId, scheduleName).getIdentifier(), patientMotechId, Period.weeks(1));
+        verify(mockVoiceGateway).dispatchCareMsgToAggregator("prompt_scheduleName_Due", new AggregationMessageIdentifier(patientId, scheduleName).getIdentifier(), patientMotechId, Period.weeks(1), AlertWindow.DUE, milestoneAlert.getDueDateTime());
     }
 
     @Test
@@ -393,7 +392,7 @@ public class BaseScheduleHandlerTest {
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
 
-        careScheduleHandler.sendInstantMessageToPatient(PATIENT_PNC_BABY, milestoneEvent);
+        careScheduleHandler.sendInstantMessageToPatient(PATIENT_PNC_BABY, milestoneEvent, AlertType.CARE);
 
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);

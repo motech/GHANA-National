@@ -1,11 +1,10 @@
 package org.motechproject.ghana.national.web.security;
 
-import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.mrs.security.MRSSecurityUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
 import javax.servlet.ServletException;
@@ -24,7 +23,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         MRSSecurityUser user = (MRSSecurityUser) authentication.getPrincipal();
         request.getSession().setAttribute(LOGGED_IN_USER, user);
-        if (getRedirectUrl(request) == null) {
+        if (getRedirectUrl(request, response) == null) {
             response.sendRedirect("admin"); //TODO: hardcoded until the story for staff role login is played <geet/balaji>
         }
         super.onAuthenticationSuccess(request, response, authentication);
@@ -45,9 +44,15 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
         return roles.contains(role);
     }
 
-    protected SavedRequest getRedirectUrl(HttpServletRequest request) {
+    protected SavedRequest getRedirectUrl(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
-        if (session == null) return null;
-        else return (SavedRequest) session.getAttribute(WebAttributes.SAVED_REQUEST);
+        if (session == null)
+            return null;
+        else
+            return httpSessionRequestCache().getRequest(request, response);
+    }
+
+    private HttpSessionRequestCache httpSessionRequestCache() {
+        return new HttpSessionRequestCache();
     }
 }

@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.messagegateway.domain;
+package org.motechproject.ghana.national.domain;
 
 import org.junit.Test;
 

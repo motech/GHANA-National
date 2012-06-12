@@ -1,7 +1,9 @@
-package org.motechproject.ghana.national.messagegateway.domain;
+package org.motechproject.ghana.national.domain;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.motechproject.ghana.national.messagegateway.domain.DeliveryStrategy;
+import org.motechproject.ghana.national.messagegateway.domain.Payload;
 import org.motechproject.util.DateUtil;
 
 public class VoicePayload implements Payload {
@@ -61,11 +63,10 @@ public class VoicePayload implements Payload {
         if (clipName != null ? !clipName.equals(that.clipName) : that.clipName != null) return false;
         if (deliveryStrategy != null ? !deliveryStrategy.equals(that.deliveryStrategy) : that.deliveryStrategy != null)
             return false;
-        if (validity != null ? !validity.equals(that.validity) : that.validity != null)
-            return false;
         if (generationTime != null ? !generationTime.equals(that.generationTime) : that.generationTime != null)
             return false;
         if (uniqueId != null ? !uniqueId.equals(that.uniqueId) : that.uniqueId != null) return false;
+        if (validity != null ? !validity.equals(that.validity) : that.validity != null) return false;
 
         return true;
     }

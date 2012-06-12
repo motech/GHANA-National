@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.Period;
 import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
@@ -14,7 +15,6 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,9 +29,6 @@ public abstract class BaseScheduleHandler {
     protected AllObservations allObservations;
     protected AllMobileMidwifeEnrollments allMobileMidwifeEnrollments;
     private ScheduleJsonReader scheduleJsonReader;
-
-    @Value("#{verboiceProperties['resource.url']}")
-    private String resourceBaseUrl;
 
     protected BaseScheduleHandler() {
     }
@@ -61,16 +58,16 @@ public abstract class BaseScheduleHandler {
     protected void sendAggregatedSMSToPatientForAppointment(String smsTemplateKey, MotechEvent motechEvent) {
         AlertDetails alertDetails = AlertDetails.createFromAppointment(motechEvent);
         Patient patient = patientService.getPatientByMotechId(alertDetails.getScheduleId());
-        dispatchPatientMessageToAggregator(smsTemplateKey, alertDetails, patient);
+        dispatchPatientMessageToAggregator(smsTemplateKey, alertDetails, patient, AlertType.APPOINTMENT);
     }
 
     protected void sendAggregatedMessageToPatient(String smsTemplateKey, MilestoneEvent milestoneEvent) {
         AlertDetails alertDetails = AlertDetails.createFromSchedule(milestoneEvent);
         Patient patient = patientService.patientByOpenmrsId(alertDetails.getScheduleId());
-        dispatchPatientMessageToAggregator(smsTemplateKey, alertDetails, patient);
+        dispatchPatientMessageToAggregator(smsTemplateKey, alertDetails, patient, AlertType.CARE);
     }
 
-    private void dispatchPatientMessageToAggregator(String smsTemplateKey, AlertDetails alertDetails, Patient patient) {
+    private void dispatchPatientMessageToAggregator(String smsTemplateKey, AlertDetails alertDetails, Patient patient, AlertType alertType) {
         MobileMidwifeEnrollment mobileMidwifeEnrollment = allMobileMidwifeEnrollments.findActiveBy(patient.getMotechId());
         Medium communicationMedium = getCommunicationMedium(mobileMidwifeEnrollment, Medium.SMS);
         if (dueOrLateWindow(alertDetails.getWindow())) {
@@ -79,12 +76,19 @@ public abstract class BaseScheduleHandler {
                 dispatchSMSToAggregator(patient.getMotechId(), smsTemplateKeyForWindow, patient, alertDetails, MessageRecipientType.PATIENT);
             } else {
                 Period messageValidity = scheduleJsonReader.validity(alertDetails.getScheduleName(), alertDetails.getMilestoneName(), alertDetails.getWindow().getPlatformWindowName());
-                voiceGateway.dispatchVoiceToAggregator(new IVRClip().name(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId(), messageValidity);
+                dispatchVoiceMessageToAggregator(alertDetails, patient, alertType, messageValidity);
             }
         }
     }
 
-    protected void sendInstantMessageToPatient(String smsTemplateKey, final MilestoneEvent milestoneEvent) {
+    private void dispatchVoiceMessageToAggregator(AlertDetails alertDetails, Patient patient, AlertType alertType, Period messageValidity) {
+        if(AlertType.CARE.equals(alertType))
+            voiceGateway.dispatchCareMsgToAggregator(AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId(), messageValidity, alertDetails.getWindow(), alertDetails.getWindowStart());
+        else if(AlertType.APPOINTMENT.equals(alertType))
+            voiceGateway.dispatchAppointmentMsgToAggregator(AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId(), messageValidity);
+    }
+
+    protected void sendInstantMessageToPatient(String smsTemplateKey, final MilestoneEvent milestoneEvent, AlertType alertType) {
         AlertDetails alertDetails = AlertDetails.createFromSchedule(milestoneEvent);
 
         Patient patient = patientService.patientByOpenmrsId(alertDetails.getScheduleId());
@@ -99,9 +103,16 @@ public abstract class BaseScheduleHandler {
                 }
             } else {
                 Period messageValidity = scheduleJsonReader.validity(alertDetails.getScheduleName(), alertDetails.getMilestoneName(), alertDetails.getWindow().getPlatformWindowName());
-                allPatientsOutbox.addAudioClip(patient.getMotechId(), new IVRClip().name(alertDetails.getScheduleName(), alertDetails.getWindow()), messageValidity);
+                placeVoiceMessageIntoOutbox(alertDetails, patient, messageValidity, alertType);
             }
         }
+    }
+
+    private void placeVoiceMessageIntoOutbox(AlertDetails alertDetails, Patient patient, Period messageValidity, AlertType alertType) {
+        if(AlertType.APPOINTMENT.equals(alertType))
+            allPatientsOutbox.addAppointmentMessage(patient.getMotechId(), AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), messageValidity);
+        else if(AlertType.CARE.equals(alertType))
+            allPatientsOutbox.addCareMessage(patient.getMotechId(), AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), messageValidity, alertDetails.getWindow(), alertDetails.getWindowStart());
     }
 
     private boolean dueOrLateWindow(AlertWindow alertWindow) {

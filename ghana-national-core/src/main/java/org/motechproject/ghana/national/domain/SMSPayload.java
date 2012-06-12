@@ -1,6 +1,9 @@
-package org.motechproject.ghana.national.messagegateway.domain;
+package org.motechproject.ghana.national.domain;
 
 import org.joda.time.DateTime;
+import org.motechproject.ghana.national.messagegateway.domain.DeliveryStrategy;
+import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
+import org.motechproject.ghana.national.messagegateway.domain.Payload;
 import org.motechproject.util.DateUtil;
 
 import java.util.Map;

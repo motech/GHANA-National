@@ -1,9 +1,8 @@
 package org.motechproject.ghana.national.web.service;
 
-import org.motechproject.ghana.national.messagegateway.domain.Payload;
-import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
+import org.motechproject.ghana.national.domain.SMSPayload;
 import org.motechproject.ghana.national.messagegateway.domain.Store;
-import org.motechproject.ghana.national.messagegateway.domain.VoicePayload;
+import org.motechproject.ghana.national.domain.VoicePayload;
 import org.motechproject.ghana.national.web.domain.AggregatedMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.Message;

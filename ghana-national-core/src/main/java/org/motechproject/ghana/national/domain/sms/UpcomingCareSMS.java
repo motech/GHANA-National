@@ -5,8 +5,7 @@ import org.joda.time.DateTime;
 import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMSTemplate;
-import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
-import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
+import org.motechproject.ghana.national.domain.SMSPayload;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 

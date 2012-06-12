@@ -24,12 +24,12 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.web.VoiceMessageController.*;
+import static org.motechproject.ghana.national.web.VoiceMessageCallbackController.*;
 
-public class VoiceMessageControllerTest {
+public class VoiceMessageCallbackControllerTest {
 
     @InjectMocks
-    private VoiceMessageController voiceMessageController = new VoiceMessageController();
+    private VoiceMessageCallbackController voiceMessageCallbackController = new VoiceMessageCallbackController();
 
     @Mock
     AllPatientsOutbox mockPatientOutbox;
@@ -59,7 +59,7 @@ public class VoiceMessageControllerTest {
         when(mockMobileMidwifeService.findActiveBy(externalId)).thenReturn(new MobileMidwifeEnrollment(DateTime.now()).setMedium(Medium.VOICE));
 
 
-        String redirectUrl = voiceMessageController.handleRequest(mockHttpRequest);
+        String redirectUrl = voiceMessageCallbackController.handleRequest(mockHttpRequest);
 
         assertThat(redirectUrl, is(String.format("forward:/%s?language=%s&externalId=%s", PLAY_MESSAGE_URL, language, externalId).replaceAll("//", "/")));
     }
@@ -76,7 +76,7 @@ public class VoiceMessageControllerTest {
 
         when(mockPatientService.getPatientByMotechId(externalId)).thenReturn(new Patient());
         when(mockMobileMidwifeService.findActiveBy(externalId)).thenReturn(null);
-        String redirectUrl = voiceMessageController.handleRequest(mockHttpRequest);
+        String redirectUrl = voiceMessageCallbackController.handleRequest(mockHttpRequest);
 
         assertThat(redirectUrl, is(String.format("forward:/%s", PLAY_INVALID_REGISTRATION).replaceAll("//", "/")));
     }
@@ -93,7 +93,7 @@ public class VoiceMessageControllerTest {
 
         when(mockPatientService.getPatientByMotechId(externalId)).thenReturn(null);
 
-        String redirectUrl = voiceMessageController.handleRequest(mockHttpRequest);
+        String redirectUrl = voiceMessageCallbackController.handleRequest(mockHttpRequest);
 
         assertThat(redirectUrl, is(String.format("forward:/%s", PLAY_INVALID_MOTECH_ID).replaceAll("//", "/")));
 
@@ -109,10 +109,10 @@ public class VoiceMessageControllerTest {
         ModelMap modelMap = new ModelMap();
 
         List<String> audioUrls = Arrays.asList("url1", "url2");
-        when(mockPatientOutbox.getAudioUrlsFor(externalId, language)).thenReturn(audioUrls);
+        when(mockPatientOutbox.getAudioFileNames(externalId)).thenReturn(audioUrls);
         when(mockMobileMidwifeService.findActiveBy(externalId)).thenReturn(new MobileMidwifeEnrollment(DateTime.now()).setMedium(Medium.VOICE));
 
-        voiceMessageController.playMessage(mockHttpRequest, modelMap);
+        voiceMessageCallbackController.playMessage(mockHttpRequest, modelMap);
 
         String playContent = (String) modelMap.get("playContent");
         assertTrue(playContent.contains("<Play loop=\"1\">url1</Play>"));

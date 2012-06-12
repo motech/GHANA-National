@@ -12,7 +12,6 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
-import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.MobileMidwifeValidator;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
@@ -32,9 +31,7 @@ import java.util.*;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -212,9 +209,9 @@ public class MobileMidwifeControllerTest {
 
         MobileMidwifeEnrollment mobileMidwifeEnrollment = mock(MobileMidwifeEnrollment.class);
         when(mobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
-        when(mobileMidwifeValidator.validate(mobileMidwifeEnrollment,Collections.<FormBean>emptyList(),Collections.<FormBean>emptyList()))
-                .thenReturn(Arrays.<FormError>asList(patientFormError,staffFormError,facilityFormError));
-        
+        when(mobileMidwifeValidator.validate(mobileMidwifeEnrollment, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList()))
+                .thenReturn(Arrays.<FormError>asList(patientFormError, staffFormError, facilityFormError));
+
         ModelMap modelMap = new ModelMap();
 
         controller.unregister(mobileMidwifeUnenrollForm, modelMap);
@@ -232,7 +229,7 @@ public class MobileMidwifeControllerTest {
         String locationId = "54";
 
         MobileMidwifeEnrollmentForm enrollmentForm = createEnrollmentForm("patientId", locationId, "staffId", Medium.VOICE, new Time(23, 45));
-        when(mobileMidwifeValidator.validate(Matchers.<MobileMidwifeEnrollment>any(), eq(Collections.<FormBean>emptyList()),eq(Collections.<FormBean>emptyList()))).thenReturn(new ArrayList<FormError>() {{
+        when(mobileMidwifeValidator.validate(Matchers.<MobileMidwifeEnrollment>any(), eq(Collections.<FormBean>emptyList()), eq(Collections.<FormBean>emptyList()))).thenReturn(new ArrayList<FormError>() {{
             add(new FormError("error1", "description1"));
             add(new FormError("error2", "description2"));
         }});

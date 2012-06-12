@@ -2,11 +2,12 @@ package org.motechproject.ghana.national.domain;
 
 import org.motechproject.scheduletracking.api.domain.WindowName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public enum AlertWindow {
+public enum AlertWindow implements Serializable {
     UPCOMING("Upcoming", WindowName.earliest.name(), 1),
     DUE("Due", WindowName.due.name(), 2),
     OVERDUE("Overdue", WindowName.late.name(), 3),

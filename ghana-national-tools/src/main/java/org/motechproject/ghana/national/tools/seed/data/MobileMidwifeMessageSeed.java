@@ -35,8 +35,8 @@ public class MobileMidwifeMessageSeed extends Seed {
     protected void load() {
         try {
             Language[] languages = {Language.EN};
-            for(Language language : languages) {
-                Properties properties = loadAllProperties("programs/mobilemidwife/sms/message_" + language.name() +".properties");
+            for (Language language : languages) {
+                Properties properties = loadAllProperties("programs/mobilemidwife/sms/message_" + language.name() + ".properties");
                 savePropertiesToCMS(properties, language);
             }
         } catch (Exception e) {
@@ -51,9 +51,9 @@ public class MobileMidwifeMessageSeed extends Seed {
         Map<String, String> pregnancyDayMap = createDayMap(pregnancyCampaignMessage);
         Map<String, String> childCareDayMap = createDayMap(childCareCampaignMessage);
 
-        for(Object key : properties.keySet()) {
+        for (Object key : properties.keySet()) {
             String keyStr = (String) key;
-            String value = (String)properties.get(key);
+            String value = (String) properties.get(key);
             String messageContentKey = null;
             String[] tokens = keyStr.split("-");
 
@@ -70,9 +70,9 @@ public class MobileMidwifeMessageSeed extends Seed {
     private Map<String, String> createDayMap(RepeatingCampaignMessage campaignMessage) {
         List<DayOfWeek> weekDayList = campaignMessage.weekDaysApplicable();
         Map<String, String> weekDayMap = new HashMap<String, String>();
-        int count=0;
-        for(DayOfWeek dayOfWeek : weekDayList) {
-            weekDayMap.put("{d"+ (++count) +"}", dayOfWeek.name());
+        int count = 0;
+        for (DayOfWeek dayOfWeek : weekDayList) {
+            weekDayMap.put("{d" + (++count) + "}", dayOfWeek.name());
         }
         return weekDayMap;
     }

@@ -6,14 +6,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.messagegateway.domain.Payload;
-import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
-import org.motechproject.ghana.national.messagegateway.domain.VoicePayload;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.sms.api.service.SmsService;
+import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -31,17 +29,25 @@ public class AggregatedMessageHandlerImplTest {
     }
 
     @Test
-    public void shouldDespatchMessagesViaCorrespondingHandlers(){
+    public void shouldDispatchMessagesViaCorrespondingHandlers() {
         DateTime now = DateTime.now();
-        String clipName = "clipName";
+        String careClipName = "clipName";
+        String mmClipName = "mmClipName";
         String motechId = "motechId";
+        String appointmentClipName = "appointmentClipName";
 
-        VoicePayload voicePayload = new VoicePayload(clipName, motechId, now, null, Period.weeks(1));
+        DateTime scheduleWindowStart = DateUtil.newDateTime(2000, 1, 1);
+        CareVoicePayload voicePayload = new CareVoicePayload(careClipName, motechId, now, null, Period.weeks(1), AlertWindow.DUE, scheduleWindowStart);
+        MobileMidwifeVoicePayload mobileMidwifeVoicePayload = new MobileMidwifeVoicePayload(mmClipName, motechId, now, null, Period.weeks(2));
+        AppointmentVoicePayload appointmentVoicePayload = new AppointmentVoicePayload(appointmentClipName, motechId, now, null, Period.weeks(3));
+
         String smsText = "text";
         String phoneNumber = "phoneNumber";
         SMSPayload smsPayload = SMSPayload.fromPhoneNoAndText(phoneNumber, smsText);
-        aggregatedMessageHandler.handle(Arrays.<Payload>asList(smsPayload, voicePayload));
-        verify(mockAllPatientsOutbox).addAudioClip(motechId, clipName, Period.weeks(1));
+        aggregatedMessageHandler.handle(Arrays.<Payload>asList(smsPayload, voicePayload, mobileMidwifeVoicePayload, appointmentVoicePayload));
+        verify(mockAllPatientsOutbox).addCareMessage(motechId, careClipName, Period.weeks(1), AlertWindow.DUE, scheduleWindowStart);
+        verify(mockAllPatientsOutbox).addMobileMidwifeMessage(motechId, mmClipName, Period.weeks(2));
+        verify(mockAllPatientsOutbox).addAppointmentMessage(motechId, appointmentClipName, Period.weeks(3));
         verify(mockSMSService).sendSMS(phoneNumber, smsText);
     }
 }

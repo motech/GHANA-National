@@ -1,8 +1,6 @@
 package org.motechproject.ghana.national.domain;
 
 import org.motechproject.ghana.national.messagegateway.domain.Payload;
-import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
-import org.motechproject.ghana.national.messagegateway.domain.VoicePayload;
 import org.motechproject.ghana.national.messagegateway.service.AggregatedMessageHandler;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.sms.api.service.SmsService;
@@ -30,10 +28,17 @@ public class AggregatedMessageHandlerImpl implements AggregatedMessageHandler {
                 SMSPayload sms = (SMSPayload) message;
                 smsService.sendSMS(sms.getPhoneNumber(), sms.getText());
             } else if (message instanceof VoicePayload) {
-                VoicePayload voice = (VoicePayload) message;
-               allPatientsOutbox.addAudioClip(voice.getUniqueId(), voice.getClipName(), voice.getValidity());
+                if(message instanceof CareVoicePayload){
+                    CareVoicePayload voice = (CareVoicePayload) message;
+                    allPatientsOutbox.addCareMessage(voice.getUniqueId(), voice.getClipName(), voice.getValidity(), voice.getScheduleWindow(), voice.getScheduleWindowStart());
+                }else if(message instanceof AppointmentVoicePayload){
+                    AppointmentVoicePayload voice = (AppointmentVoicePayload) message;
+                    allPatientsOutbox.addAppointmentMessage(voice.getUniqueId(), voice.getClipName(), voice.getValidity());
+                }else if(message instanceof MobileMidwifeVoicePayload){
+                    MobileMidwifeVoicePayload voice = (MobileMidwifeVoicePayload) message;
+                    allPatientsOutbox.addMobileMidwifeMessage(voice.getUniqueId(), voice.getClipName(), voice.getValidity());
+                }
             }
         }
-
     }
 }
