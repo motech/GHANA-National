@@ -23,7 +23,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/verboice-service")
-public class VoiceMessageController {
+public class VoiceMessageCallbackController {
 
     public static final String DECISIONTREE_URL = "/decisiontree/node";
     public static final String PLAY_INVALID_REGISTRATION = "/verboice-service/playInvalidRegistration";
@@ -35,11 +35,11 @@ public class VoiceMessageController {
     private AllPatientsOutbox allPatientsOutbox;
     private MobileMidwifeService mobileMidwifeService;
 
-    public VoiceMessageController() {
+    public VoiceMessageCallbackController() {
     }
 
     @Autowired
-    public VoiceMessageController(VerboiceIVRService verboiceIVRService, PatientService patientService, AllPatientsOutbox allPatientsOutbox, MobileMidwifeService mobileMidwifeService) {
+    public VoiceMessageCallbackController(VerboiceIVRService verboiceIVRService, PatientService patientService, AllPatientsOutbox allPatientsOutbox, MobileMidwifeService mobileMidwifeService) {
         this.verboiceIVRService = verboiceIVRService;
         this.patientService = patientService;
         this.allPatientsOutbox = allPatientsOutbox;
