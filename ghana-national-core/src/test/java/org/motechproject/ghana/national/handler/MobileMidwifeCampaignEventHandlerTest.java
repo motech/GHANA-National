@@ -95,7 +95,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 
         handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), genMessageKey));
-        verify(mockIVRGateway).placeCall(mobileMidwifeEnrollment.getPhoneNumber(), null);
+        verify(mockIVRGateway).placeCall(mobileMidwifeEnrollment.getPhoneNumber());
     }
 
     private MotechEvent motechEvent(String externalId, String campaignName, String genMessageKey) {

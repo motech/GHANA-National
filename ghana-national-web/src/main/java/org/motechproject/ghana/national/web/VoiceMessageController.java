@@ -80,7 +80,7 @@ public class VoiceMessageController {
         String language = request.getParameter("language");
 
         VerboiceResponse verboiceResponse = new VerboiceResponse();
-        List<String> audioUrls = allPatientsOutbox.getAudioUrlsFor(externalId, language);
+        List<String> audioUrls = allPatientsOutbox.getAudioFileNames(externalId);
         for (String audioUrl : audioUrls) {
             verboiceResponse.playUrl(audioUrl);
         }
@@ -113,7 +113,7 @@ public class VoiceMessageController {
         MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findActiveBy(digits);
         if (midwifeEnrollment != null && midwifeEnrollment.getMedium().equals(Medium.VOICE)) {
             // TODO: Adding dummy message to Outbox, temp fix until other audio/stream are ready.
-            //allPatientsOutbox.addAudioClip(digits, audioURL(request), sdkfl);
+            //allPatientsOutbox.addAudioFileName(digits, audioURL(request), sdkfl);
             return true;
         }
         return false;

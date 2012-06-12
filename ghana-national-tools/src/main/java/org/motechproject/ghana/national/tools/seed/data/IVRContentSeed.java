@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.motechproject.cmslite.api.model.StreamContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Collection;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 
@@ -28,11 +30,15 @@ public class IVRContentSeed extends Seed {
         FileInputStream audioInputStream = null;
         CheckedInputStream checkedInputStream = null;
         try {
-            audioInputStream = new FileInputStream(new File("/Users/sanjanabayya/Downloads/bugsbunny2.wav"));
-            checkedInputStream = new CheckedInputStream(audioInputStream, new Adler32());
+            Collection<File> files = FileUtils.listFiles(new File("ghana-national-tools/src/main/resources/test-data"), new String[]{"wav"}, false);
+            for (File file : files) {
+                audioInputStream = new FileInputStream(file);
+                checkedInputStream = new CheckedInputStream(audioInputStream, new Adler32());
 
-            cmsLiteService.addContent(new StreamContent(Language.EN.getValue().toLowerCase(), "welcome.wav",
-                    audioInputStream, String.valueOf(checkedInputStream.getChecksum().getValue()), "audio/x-wav;charset=UTF-8"));
+                cmsLiteService.addContent(new StreamContent(Language.EN.getValue(), file.getName(),
+                        audioInputStream, String.valueOf(checkedInputStream.getChecksum().getValue()), "audio/x-wav;charset=UTF-8"));
+            }
+
         } catch (Exception e) {
            logger.error("Exception occurred while uploading audio files to cms", e);
         } finally {

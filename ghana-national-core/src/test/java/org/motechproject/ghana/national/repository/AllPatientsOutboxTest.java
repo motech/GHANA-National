@@ -1,12 +1,19 @@
 package org.motechproject.ghana.national.repository;
 
 import org.joda.time.*;
+import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -22,14 +29,12 @@ import java.util.*;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class AllPatientsOutboxTest extends BaseUnitTest{
+public class AllPatientsOutboxTest extends BaseUnitTest {
 
     @InjectMocks
     AllPatientsOutbox allPatientsOutbox = new AllPatientsOutbox();
@@ -49,9 +54,9 @@ public class AllPatientsOutboxTest extends BaseUnitTest{
         String motechId = "motechId";
         final String clipName = "clip.wav";
         Patient patient = new Patient(new MRSPatient(motechId, new MRSPerson(), new MRSFacility("facilityId")));
-        Date expirationTimeInMillis = DateUtil.newDateTime(new Date(DateTimeUtils.currentTimeMillis())).plus(Period.weeks(1)).toDate() ;
+        Date expirationTimeInMillis = DateUtil.newDateTime(new Date(DateTimeUtils.currentTimeMillis())).plus(Period.weeks(1)).toDate();
 
-        allPatientsOutbox.addAudioClip(patient.getMotechId(), clipName, Period.weeks(1));
+        allPatientsOutbox.addAudioFileName(patient.getMotechId(), clipName, Period.weeks(1));
 
         ArgumentCaptor<OutboundVoiceMessage> messageCaptor = ArgumentCaptor.forClass(OutboundVoiceMessage.class);
         verify(mockOutboxService).addMessage(messageCaptor.capture());
@@ -67,7 +72,7 @@ public class AllPatientsOutboxTest extends BaseUnitTest{
         assertThat(voiceMessage.getParameters(), is(equalTo(expectedParameters)));
     }
 
-    private void assertDate(Date date1, Date date2){
+    private void assertDate(Date date1, Date date2) {
         assertThat(date1.getYear(), is(equalTo(date2.getYear())));
         assertThat(date1.getMonth(), is(equalTo(date2.getMonth())));
         assertThat(date1.getMonth(), is(equalTo(date2.getMonth())));
@@ -76,7 +81,7 @@ public class AllPatientsOutboxTest extends BaseUnitTest{
     }
 
     @Test
-    public void shouldGetAllAudioUrlForExternalId(){
+    public void shouldGetAllAudioUrlForExternalId() {
         String language = "en";
         String externalId = "externalId";
 
@@ -87,8 +92,8 @@ public class AllPatientsOutboxTest extends BaseUnitTest{
         }};
         when(mockOutboxService.getMessages(externalId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime)).thenReturn(messages);
 
-        List<String> audioUrlsFor = allPatientsOutbox.getAudioUrlsFor(externalId, language);
-        assertThat(audioUrlsFor, is(asList("url1","url2","url3")));
+        List<String> audioUrlsFor = allPatientsOutbox.getAudioFileNames(externalId);
+        assertThat(audioUrlsFor, is(asList("url1", "url2", "url3")));
 
         verify(mockOutboxService).getMessages(externalId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
     }

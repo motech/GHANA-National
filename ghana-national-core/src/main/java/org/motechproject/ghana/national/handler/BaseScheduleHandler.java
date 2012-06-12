@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.Period;
 import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
@@ -14,7 +15,6 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,9 +29,6 @@ public abstract class BaseScheduleHandler {
     protected AllObservations allObservations;
     protected AllMobileMidwifeEnrollments allMobileMidwifeEnrollments;
     private ScheduleJsonReader scheduleJsonReader;
-
-    @Value("#{verboiceProperties['resource.url']}")
-    private String resourceBaseUrl;
 
     protected BaseScheduleHandler() {
     }
@@ -79,7 +76,7 @@ public abstract class BaseScheduleHandler {
                 dispatchSMSToAggregator(patient.getMotechId(), smsTemplateKeyForWindow, patient, alertDetails, MessageRecipientType.PATIENT);
             } else {
                 Period messageValidity = scheduleJsonReader.validity(alertDetails.getScheduleName(), alertDetails.getMilestoneName(), alertDetails.getWindow().getPlatformWindowName());
-                voiceGateway.dispatchVoiceToAggregator(new IVRClip().name(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId(), messageValidity);
+                voiceGateway.dispatchVoiceToAggregator(AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId(), messageValidity);
             }
         }
     }
@@ -99,7 +96,7 @@ public abstract class BaseScheduleHandler {
                 }
             } else {
                 Period messageValidity = scheduleJsonReader.validity(alertDetails.getScheduleName(), alertDetails.getMilestoneName(), alertDetails.getWindow().getPlatformWindowName());
-                allPatientsOutbox.addAudioClip(patient.getMotechId(), new IVRClip().name(alertDetails.getScheduleName(), alertDetails.getWindow()), messageValidity);
+                allPatientsOutbox.addAudioFileName(patient.getMotechId(), AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), messageValidity);
             }
         }
     }

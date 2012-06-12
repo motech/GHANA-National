@@ -109,7 +109,7 @@ public class VoiceMessageControllerTest {
         ModelMap modelMap = new ModelMap();
 
         List<String> audioUrls = Arrays.asList("url1", "url2");
-        when(mockPatientOutbox.getAudioUrlsFor(externalId, language)).thenReturn(audioUrls);
+        when(mockPatientOutbox.getAudioFileNames(externalId)).thenReturn(audioUrls);
         when(mockMobileMidwifeService.findActiveBy(externalId)).thenReturn(new MobileMidwifeEnrollment(DateTime.now()).setMedium(Medium.VOICE));
 
         voiceMessageController.playMessage(mockHttpRequest, modelMap);

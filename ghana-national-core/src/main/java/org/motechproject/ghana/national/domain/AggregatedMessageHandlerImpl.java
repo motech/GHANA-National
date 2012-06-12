@@ -31,9 +31,8 @@ public class AggregatedMessageHandlerImpl implements AggregatedMessageHandler {
                 smsService.sendSMS(sms.getPhoneNumber(), sms.getText());
             } else if (message instanceof VoicePayload) {
                 VoicePayload voice = (VoicePayload) message;
-               allPatientsOutbox.addAudioClip(voice.getUniqueId(), voice.getClipName(), voice.getValidity());
+                allPatientsOutbox.addAudioFileName(voice.getUniqueId(), voice.getClipName(), voice.getValidity());
             }
         }
-
     }
 }

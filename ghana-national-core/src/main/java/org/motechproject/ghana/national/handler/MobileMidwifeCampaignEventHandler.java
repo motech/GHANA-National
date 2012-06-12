@@ -56,7 +56,7 @@ public class MobileMidwifeCampaignEventHandler {
         if (Medium.SMS.equals(enrollment.getMedium())) {
             smsGateway.dispatchSMS(messageKey, enrollment.getLanguage().name(), enrollment.getPhoneNumber());
         } else if (Medium.VOICE.equals(enrollment.getMedium())) {
-            ivrGateway.placeCall(enrollment.getPhoneNumber(), null);
+            ivrGateway.placeCall(enrollment.getPhoneNumber());
         }
     }
 }

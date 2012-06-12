@@ -25,7 +25,7 @@ public class AllPatientsOutbox {
     @Autowired
     VoiceOutboxService voiceOutboxService;
 
-    public void addAudioClip(String motechId, final String clipName, Period validity) {
+    public void addAudioFileName(String motechId, final String clipName, Period validity) {
         DateTime now = DateTime.now();
         OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
         outboundVoiceMessage.setCreationTime(now.toDate());
@@ -37,7 +37,7 @@ public class AllPatientsOutbox {
         voiceOutboxService.addMessage(outboundVoiceMessage);
     }
 
-    public List getAudioUrlsFor(String externalId, String language) {
+    public List getAudioFileNames(String externalId) {
         List<OutboundVoiceMessage> messages = voiceOutboxService.getMessages(externalId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
         return convert(extract(messages, on(OutboundVoiceMessage.class).getParameters()), new Converter<Object, Object>() {
             @Override

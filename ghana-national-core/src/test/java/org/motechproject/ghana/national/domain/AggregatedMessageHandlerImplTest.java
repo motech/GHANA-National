@@ -31,7 +31,7 @@ public class AggregatedMessageHandlerImplTest {
     }
 
     @Test
-    public void shouldDespatchMessagesViaCorrespondingHandlers(){
+    public void shouldDespatchMessagesViaCorrespondingHandlers() {
         DateTime now = DateTime.now();
         String clipName = "clipName";
         String motechId = "motechId";
@@ -41,7 +41,7 @@ public class AggregatedMessageHandlerImplTest {
         String phoneNumber = "phoneNumber";
         SMSPayload smsPayload = SMSPayload.fromPhoneNoAndText(phoneNumber, smsText);
         aggregatedMessageHandler.handle(Arrays.<Payload>asList(smsPayload, voicePayload));
-        verify(mockAllPatientsOutbox).addAudioClip(motechId, clipName, Period.weeks(1));
+        verify(mockAllPatientsOutbox).addAudioFileName(motechId, clipName, Period.weeks(1));
         verify(mockSMSService).sendSMS(phoneNumber, smsText);
     }
 }
