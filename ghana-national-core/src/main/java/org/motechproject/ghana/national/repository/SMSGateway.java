@@ -1,13 +1,11 @@
 package org.motechproject.ghana.national.repository;
 
-import org.joda.time.DateTime;
 import org.motechproject.MotechException;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.service.CMSLiteService;
+import org.motechproject.ghana.national.domain.SMSPayload;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher;
-import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
-import org.motechproject.ghana.national.messagegateway.domain.VoicePayload;
 import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
 import org.motechproject.sms.api.service.SmsService;
 import org.motechproject.util.DateUtil;

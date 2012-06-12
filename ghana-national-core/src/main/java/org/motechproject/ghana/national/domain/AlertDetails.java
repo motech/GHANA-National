@@ -1,8 +1,10 @@
 package org.motechproject.ghana.national.domain;
 
+import org.joda.time.DateTime;
 import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.scheduler.MotechSchedulerService;
+import org.motechproject.scheduletracking.api.domain.MilestoneAlert;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 
 import java.util.Map;
@@ -12,6 +14,7 @@ public class AlertDetails {
     private AlertWindow window;
     private String scheduleId;
     private String milestoneName;
+    private DateTime windowStart;
 
     private AlertDetails(){}
 
@@ -21,6 +24,7 @@ public class AlertDetails {
         alertDetails.window = AlertWindow.byPlatformName(milestoneEvent.getWindowName());
         alertDetails.scheduleId = milestoneEvent.getExternalId();
         alertDetails.milestoneName = milestoneEvent.getMilestoneAlert().getMilestoneName();
+        alertDetails.windowStart = alertDetails.windowStart(alertDetails.window, milestoneEvent.getMilestoneAlert());
         return alertDetails;
     }
 
@@ -51,6 +55,10 @@ public class AlertDetails {
         return scheduleId;
     }
 
+    public DateTime getWindowStart() {
+        return windowStart;
+    }
+
     public AlertWindow getVisitWindow(String jobId) {
         char reminderCount = jobId.charAt(jobId.length() - 1);
         switch (reminderCount) {
@@ -61,6 +69,18 @@ public class AlertDetails {
             case '3':
                 return AlertWindow.OVERDUE;
         }
+        return null;
+    }
+
+    private DateTime windowStart(AlertWindow alertWindow, MilestoneAlert milestoneAlert){
+        if(AlertWindow.UPCOMING.equals(alertWindow))
+            return milestoneAlert.getEarliestDateTime();
+        if(AlertWindow.DUE.equals(alertWindow))
+            return milestoneAlert.getDueDateTime();
+        if(AlertWindow.OVERDUE.equals(alertWindow))
+            return milestoneAlert.getLateDateTime();
+        if(AlertWindow.MAX.equals(alertWindow))
+            return milestoneAlert.getDefaultmentDateTime();
         return null;
     }
 }

@@ -8,7 +8,7 @@ import org.motechproject.ghana.national.domain.SMSTemplate;
 import org.motechproject.ghana.national.domain.sms.UpcomingCareSMS;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
 import org.motechproject.ghana.national.messagegateway.domain.MessageDispatcher;
-import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
+import org.motechproject.ghana.national.domain.SMSPayload;
 import org.motechproject.ghana.national.repository.AllAppointments;
 import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.repository.SMSGateway;

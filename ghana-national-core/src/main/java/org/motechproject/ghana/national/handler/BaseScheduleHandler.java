@@ -58,16 +58,16 @@ public abstract class BaseScheduleHandler {
     protected void sendAggregatedSMSToPatientForAppointment(String smsTemplateKey, MotechEvent motechEvent) {
         AlertDetails alertDetails = AlertDetails.createFromAppointment(motechEvent);
         Patient patient = patientService.getPatientByMotechId(alertDetails.getScheduleId());
-        dispatchPatientMessageToAggregator(smsTemplateKey, alertDetails, patient);
+        dispatchPatientMessageToAggregator(smsTemplateKey, alertDetails, patient, AlertType.APPOINTMENT);
     }
 
     protected void sendAggregatedMessageToPatient(String smsTemplateKey, MilestoneEvent milestoneEvent) {
         AlertDetails alertDetails = AlertDetails.createFromSchedule(milestoneEvent);
         Patient patient = patientService.patientByOpenmrsId(alertDetails.getScheduleId());
-        dispatchPatientMessageToAggregator(smsTemplateKey, alertDetails, patient);
+        dispatchPatientMessageToAggregator(smsTemplateKey, alertDetails, patient, AlertType.CARE);
     }
 
-    private void dispatchPatientMessageToAggregator(String smsTemplateKey, AlertDetails alertDetails, Patient patient) {
+    private void dispatchPatientMessageToAggregator(String smsTemplateKey, AlertDetails alertDetails, Patient patient, AlertType alertType) {
         MobileMidwifeEnrollment mobileMidwifeEnrollment = allMobileMidwifeEnrollments.findActiveBy(patient.getMotechId());
         Medium communicationMedium = getCommunicationMedium(mobileMidwifeEnrollment, Medium.SMS);
         if (dueOrLateWindow(alertDetails.getWindow())) {
@@ -76,12 +76,19 @@ public abstract class BaseScheduleHandler {
                 dispatchSMSToAggregator(patient.getMotechId(), smsTemplateKeyForWindow, patient, alertDetails, MessageRecipientType.PATIENT);
             } else {
                 Period messageValidity = scheduleJsonReader.validity(alertDetails.getScheduleName(), alertDetails.getMilestoneName(), alertDetails.getWindow().getPlatformWindowName());
-                voiceGateway.dispatchVoiceToAggregator(AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId(), messageValidity);
+                dispatchVoiceMessageToAggregator(alertDetails, patient, alertType, messageValidity);
             }
         }
     }
 
-    protected void sendInstantMessageToPatient(String smsTemplateKey, final MilestoneEvent milestoneEvent) {
+    private void dispatchVoiceMessageToAggregator(AlertDetails alertDetails, Patient patient, AlertType alertType, Period messageValidity) {
+        if(AlertType.CARE.equals(alertType))
+            voiceGateway.dispatchCareMsgToAggregator(AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId(), messageValidity, alertDetails.getWindow(), alertDetails.getWindowStart());
+        else if(AlertType.APPOINTMENT.equals(alertType))
+            voiceGateway.dispatchAppointmentMsgToAggregator(AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId(), messageValidity);
+    }
+
+    protected void sendInstantMessageToPatient(String smsTemplateKey, final MilestoneEvent milestoneEvent, AlertType alertType) {
         AlertDetails alertDetails = AlertDetails.createFromSchedule(milestoneEvent);
 
         Patient patient = patientService.patientByOpenmrsId(alertDetails.getScheduleId());
@@ -96,9 +103,16 @@ public abstract class BaseScheduleHandler {
                 }
             } else {
                 Period messageValidity = scheduleJsonReader.validity(alertDetails.getScheduleName(), alertDetails.getMilestoneName(), alertDetails.getWindow().getPlatformWindowName());
-                allPatientsOutbox.addAudioFileName(patient.getMotechId(), AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), messageValidity);
+                placeVoiceMessageIntoOutbox(alertDetails, patient, messageValidity, alertType);
             }
         }
+    }
+
+    private void placeVoiceMessageIntoOutbox(AlertDetails alertDetails, Patient patient, Period messageValidity, AlertType alertType) {
+        if(AlertType.APPOINTMENT.equals(alertType))
+            allPatientsOutbox.addAppointmentMessage(patient.getMotechId(), AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), messageValidity);
+        else if(AlertType.CARE.equals(alertType))
+            allPatientsOutbox.addCareMessage(patient.getMotechId(), AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), messageValidity, alertDetails.getWindow(), alertDetails.getWindowStart());
     }
 
     private boolean dueOrLateWindow(AlertWindow alertWindow) {

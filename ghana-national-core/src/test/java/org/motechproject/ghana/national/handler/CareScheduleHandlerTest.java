@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -44,7 +45,7 @@ public class CareScheduleHandlerTest {
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendAggregatedMessageToPatient(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToPatientForAppointment(Matchers.<String>any(), Matchers.<MotechEvent>any());
-        doNothing().when(careScheduleHandlerSpy).sendInstantMessageToPatient(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
+        doNothing().when(careScheduleHandlerSpy).sendInstantMessageToPatient(Matchers.<String>any(), Matchers.<MilestoneEvent>any(), eq(AlertType.CARE));
         doNothing().when(careScheduleHandlerSpy).sendInstantSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
     }
 
@@ -135,7 +136,7 @@ public class CareScheduleHandlerTest {
         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handlePNCMotherAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendInstantSMSToFacility(PNC_MOTHER_SMS_KEY, milestoneEvent);
-        verify(careScheduleHandlerSpy).sendInstantMessageToPatient(PATIENT_PNC_MOTHER, milestoneEvent);
+        verify(careScheduleHandlerSpy).sendInstantMessageToPatient(PATIENT_PNC_MOTHER, milestoneEvent, AlertType.CARE);
     }
 
     @Test
@@ -143,6 +144,6 @@ public class CareScheduleHandlerTest {
         final MilestoneEvent milestoneEvent = mock(MilestoneEvent.class);
         careScheduleHandlerSpy.handlePNCChildAlert(milestoneEvent);
         verify(careScheduleHandlerSpy).sendInstantSMSToFacility(PNC_CHILD_SMS_KEY, milestoneEvent);
-        verify(careScheduleHandlerSpy).sendInstantMessageToPatient(PATIENT_PNC_BABY, milestoneEvent);
+        verify(careScheduleHandlerSpy).sendInstantMessageToPatient(PATIENT_PNC_BABY, milestoneEvent, AlertType.CARE);
     }
 }

@@ -1,16 +1,10 @@
 package org.motechproject.ghana.national.domain;
 
-import ch.lambdaj.function.convert.Converter;
 import ch.lambdaj.group.Group;
 import org.apache.commons.collections.CollectionUtils;
 import org.motechproject.MotechException;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.service.CMSLiteService;
-import org.motechproject.ghana.national.domain.AlertWindow;
-import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.SmsTemplateKeys;
-import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.messagegateway.domain.*;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;

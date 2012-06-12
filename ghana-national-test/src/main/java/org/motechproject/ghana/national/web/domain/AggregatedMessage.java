@@ -1,8 +1,8 @@
 package org.motechproject.ghana.national.web.domain;
 
 import org.joda.time.DateTime;
-import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
-import org.motechproject.ghana.national.messagegateway.domain.VoicePayload;
+import org.motechproject.ghana.national.domain.SMSPayload;
+import org.motechproject.ghana.national.domain.VoicePayload;
 
 public class AggregatedMessage {
     private DateTime generationTime;

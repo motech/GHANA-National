@@ -10,7 +10,7 @@ import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.Payload;
-import org.motechproject.ghana.national.messagegateway.domain.SMSPayload;
+import org.motechproject.ghana.national.domain.SMSPayload;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.mrs.model.Attribute;

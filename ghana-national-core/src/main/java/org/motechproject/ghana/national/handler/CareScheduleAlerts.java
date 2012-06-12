@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handler;
 
+import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
@@ -110,7 +111,7 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @ApiSession
     public void handlePNCMotherAlert(final MilestoneEvent milestoneEvent) {
         sendInstantSMSToFacility(PNC_MOTHER_SMS_KEY, milestoneEvent);
-        sendInstantMessageToPatient(PATIENT_PNC_MOTHER, milestoneEvent);
+        sendInstantMessageToPatient(PATIENT_PNC_MOTHER, milestoneEvent, AlertType.CARE);
     }
 
     @Override
@@ -118,7 +119,7 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @ApiSession
     public void handlePNCChildAlert(final MilestoneEvent milestoneEvent) {
         sendInstantSMSToFacility(PNC_CHILD_SMS_KEY, milestoneEvent);
-        sendInstantMessageToPatient(PATIENT_PNC_BABY, milestoneEvent);
+        sendInstantMessageToPatient(PATIENT_PNC_BABY, milestoneEvent, AlertType.CARE);
     }
 
     @Override
