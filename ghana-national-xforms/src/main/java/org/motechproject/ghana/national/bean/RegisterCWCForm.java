@@ -61,7 +61,7 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
     private Integer lastIPTi;
     private Integer lastPenta;
     private Date lastRotavirusDate;
-    private Integer lastLastRotavirus;
+    private Integer lastRotavirus;
 
     public void setRegistrationToday(RegistrationToday registrationToday) {
         this.registrationToday = registrationToday;
@@ -212,11 +212,11 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
     }
 
     public Integer getLastRotavirus() {
-        return lastLastRotavirus;
+        return lastRotavirus;
     }
 
-    public void setLastLastRotavirus(Integer lastLastRotavirus) {
-        this.lastLastRotavirus = lastLastRotavirus;
+    public void setLastRotavirus(Integer lastRotavirus) {
+        this.lastRotavirus = lastRotavirus;
     }
 
     public void setLastRotavirusDate(Date lastRotavirusDate) {

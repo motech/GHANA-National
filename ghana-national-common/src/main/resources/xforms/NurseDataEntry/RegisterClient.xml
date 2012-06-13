@@ -42,6 +42,8 @@
                 <lastOPVDate/>
                 <lastPenta/>
                 <lastPentaDate/>
+                <lastRotavirus/>
+                <lastRotavirusDate/>
                 <measlesDate/>
                 <yellowFeverDate/>
                 <lastIPTi/>
@@ -746,6 +748,16 @@
             = 'PENTA' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
+        <xf:bind id="lastRotavirus" nodeset="/patientRegistration/lastRotavirus" type="xsd:string" visible="false()"
+                 relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
+            = 'ROTAVIRUS' and /patientRegistration/addHistory = '1'"
+                 action="show" required="true()"/>
+        <xf:bind id="lastRotavirusDate" nodeset="/patientRegistration/lastRotavirusDate" type="xsd:date"
+                 visible="false()"
+                 relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
+            = 'ROTAVIRUS' and /patientRegistration/addHistory = '1'"
+                 action="show" required="true()" constraint=". &lt;= 'today()'"
+                 message="Invalid date: date specified is in the future"/>
         <xf:bind id="measlesDate" nodeset="/patientRegistration/measlesDate" type="xsd:date"
                  visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
@@ -1109,6 +1121,10 @@
                 <xf:label>YF</xf:label>
                 <xf:value>YF</xf:value>
             </xf:item>
+            <xf:item id="10">
+                <xf:label>Rotavirus</xf:label>
+                <xf:value>ROTAVIRUS</xf:value>
+            </xf:item>
         </xf:select>
         <xf:select1 bind="lastIPT">
             <xf:label>Last IPT</xf:label>
@@ -1202,6 +1218,20 @@
         </xf:input>
         <xf:input bind="yellowFeverDate">
             <xf:label>YF date</xf:label>
+        </xf:input>
+        <xf:select1 bind="lastRotavirus">
+            <xf:label>Last Rotavirus</xf:label>
+            <xf:item id="1">
+                <xf:label>Rotavirus 1</xf:label>
+                <xf:value>1</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>Rotavirus 2</xf:label>
+                <xf:value>2</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:input bind="lastRotavirusDate">
+            <xf:label>Last Rotavirus date</xf:label>
         </xf:input>
         <xf:select1 bind="lastIPTi">
             <xf:label>Last IPTi</xf:label>

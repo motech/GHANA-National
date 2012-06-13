@@ -79,13 +79,14 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
     private Date lastIPTiDate;
     private Date yellowFeverDate;
     private Date lastPentaDate;
+    private Date lastRotavirusDate;
     private Date measlesDate;
     private Integer lastOPV;
     private Integer lastIPTi;
     private Integer lastPenta;
+    private Integer lastRotavirus;
 
     //ANC REGISTRATION DETAILS
-
     private String ancRegNumber;
     private Date expDeliveryDate;
     private Boolean deliveryDateConfirmed;
@@ -96,8 +97,6 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
     private Date lastTTDate;
     private String lastIPT;
     private String lastTT;
-    private Date lastRotavirusDate;
-    private Integer lastRotavirus;
 
     public String getMmRegPhone() {
         return mmRegPhone;
