@@ -10,7 +10,6 @@ import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
-import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
@@ -20,6 +19,7 @@ import org.motechproject.mrs.model.MRSPerson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static java.lang.Boolean.TRUE;
@@ -110,7 +110,7 @@ public class RegisterANCFormValidatorTest {
         String staffId = "11";
         String facilityId = "34";
         RegisterANCForm formBean = new MobileMidwifeBuilder().enroll(true).consent(false).facilityId(facilityId)
-                .staffId(staffId).patientId(motechId).serviceType(ServiceType.CHILD_CARE_TEXT).format("PERS_SMS").buildRegisterANCForm(new RegisterANCForm());
+                .staffId(staffId).patientId(motechId).buildRegisterANCForm(new RegisterANCForm());
 
         registerANCFormValidator = spy(registerANCFormValidator);
         doReturn(emptyList()).when(registerANCFormValidator).validatePatient(eq(motechId), anyList(), anyList());

@@ -166,7 +166,7 @@ public class PatientRegistrationFormHandlerTest {
         String phoneNumber = "0123123123";
         PatientType patientType = PatientType.CHILD_UNDER_FIVE;
 
-        ServiceType serviceType = ServiceType.PREGNANCY_TEXT;
+        ServiceType serviceType = ServiceType.PREGNANCY;
         ReasonToJoin reasonToJoin = ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH;
         Medium medium = Medium.SMS;
         DayOfWeek dayOfWeek = DayOfWeek.Monday;
@@ -231,7 +231,7 @@ public class PatientRegistrationFormHandlerTest {
         final int lastOPV = 0;
         final int lastIPTi = 1;
 
-        ServiceType serviceType = ServiceType.PREGNANCY_TEXT;
+        ServiceType serviceType = ServiceType.PREGNANCY;
         ReasonToJoin reasonToJoin = ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH;
         Medium medium = Medium.SMS;
         DayOfWeek dayOfWeek = DayOfWeek.Monday;
@@ -304,7 +304,7 @@ public class PatientRegistrationFormHandlerTest {
         String lastIPT = "lastIPT";
         String lastTT = "lastTT";
 
-        ServiceType serviceType = ServiceType.PREGNANCY_TEXT;
+        ServiceType serviceType = ServiceType.PREGNANCY;
         ReasonToJoin reasonToJoin = ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH;
         Medium medium = Medium.SMS;
         DayOfWeek dayOfWeek = DayOfWeek.Monday;
@@ -476,7 +476,7 @@ public class PatientRegistrationFormHandlerTest {
 
     private void addMobileMidwifeRegistrationDetails(RegisterClientForm registerClientForm, ServiceType serviceType, ReasonToJoin reasonToJoin, Medium medium, DayOfWeek dayOfWeek, Time timeOfDay, Language language, LearnedFrom learnedFrom, String phoneNumber, PhoneOwnership phoneOwnership, Boolean consent, boolean enroll) {
         registerClientForm.setEnroll(enroll);
-        registerClientForm.setServiceType(serviceType.getDisplayName());
+        registerClientForm.setServiceType(serviceType);
         registerClientForm.setReasonToJoin(reasonToJoin);
         registerClientForm.setFormat(medium.getValue());
         registerClientForm.setDayOfWeek(dayOfWeek);

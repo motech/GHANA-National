@@ -8,7 +8,6 @@ import org.motechproject.ghana.national.bean.MobileMidwifeForm;
 import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
-import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.model.Time;
@@ -44,9 +43,8 @@ public class MobileMidwifeFormValidatorTest {
         String staffId = "11";
         String facilityId = "34";
         Time timeOfDay = new Time(22, 10);
-        ServiceType serviceType = ServiceType.CHILD_CARE_VOICE;
         MobileMidwifeForm formBean = new MobileMidwifeBuilder().patientId(patientId).staffId(staffId).facilityId(facilityId)
-                .consent(true).format("PERS_VOICE").timeOfDay(timeOfDay).serviceType(serviceType).buildMobileMidwifeForm();
+                .consent(true).format("PERS_VOICE").timeOfDay(timeOfDay).buildMobileMidwifeForm();
 
         List<FormBean> formBeans = Arrays.<FormBean>asList(formBean);
         mobileMidwifeFormValidator.validate(formBean, new FormBeanGroup(formBeans), formBeans);
@@ -61,6 +59,5 @@ public class MobileMidwifeFormValidatorTest {
         assertTrue(actualEnrollment.getConsent());
         assertThat(actualEnrollment.getMedium(), is(Medium.VOICE));
         assertThat(actualEnrollment.getTimeOfDay(), is(timeOfDay));
-        assertThat(actualEnrollment.getServiceType(), is(serviceType));
     }
 }

@@ -41,14 +41,14 @@ public class AllCampaignsTest extends BaseUnitTest {
     @Test
     public void shouldStartCampaignservice() {
         final DateTime scheduleStartDate = new DateTime();
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setServiceType(ServiceType.PREGNANCY_TEXT).setMessageStartWeek("33");
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setServiceType(ServiceType.PREGNANCY).setMessageStartWeek("33");
         campaign.start(enrollment.createCampaignRequestForTextMessage(scheduleStartDate.toLocalDate()));
         verify(mockMessageCampaignService).startFor(any(CampaignRequest.class));
     }
 
     @Test
     public void shouldStopCampaignservice() {
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setServiceType(ServiceType.CHILD_CARE_TEXT)
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setServiceType(ServiceType.CHILD_CARE)
                 .setMessageStartWeek("53");
         campaign.stop(enrollment.stopCampaignRequest());
         verify(mockMessageCampaignService).stopAll(any(CampaignRequest.class));
@@ -57,13 +57,13 @@ public class AllCampaignsTest extends BaseUnitTest {
 
     @Test
     public void shouldReturnCycleStartDateForEnrollmentRegistrationDateAndDaysApplicable() {
-        ServiceType serviceType = ServiceType.CHILD_CARE_TEXT;
+        ServiceType serviceType = ServiceType.CHILD_CARE;
         DateTime currentDay = new DateTime(2012, 2, 2, 4, 15, 0);
         mockCurrentDate(currentDay);
 
         Medium medium = Medium.SMS;
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(currentDay).setServiceType(serviceType).setMedium(medium);
-        when(mockAllMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), ServiceType.CHILD_CARE_TEXT.getServiceName(medium))).thenReturn(asList(DayOfWeek.Monday));
+        when(mockAllMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), ServiceType.CHILD_CARE.getServiceName(medium))).thenReturn(asList(DayOfWeek.Monday));
 
         LocalDate actualDateTime = campaign.nextCycleDateFromToday(enrollment.getServiceType(), medium);
         assertThat(actualDateTime, is(currentDay.dayOfMonth().addToCopy(4).toLocalDate()));

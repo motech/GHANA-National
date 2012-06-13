@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.motechproject.ghana.national.domain.mobilemidwife.ServiceType.CHILD_CARE_TEXT;
-import static org.motechproject.ghana.national.domain.mobilemidwife.ServiceType.PREGNANCY_TEXT;
+import static org.motechproject.ghana.national.domain.mobilemidwife.ServiceType.CHILD_CARE;
+import static org.motechproject.ghana.national.domain.mobilemidwife.ServiceType.PREGNANCY;
 import static org.springframework.core.io.support.PropertiesLoaderUtils.loadAllProperties;
 
 @Component
@@ -46,8 +46,8 @@ public class MobileMidwifeMessageSeed extends Seed {
 
     private void savePropertiesToCMS(Properties properties, Language language) throws CMSLiteException {
 
-        RepeatingCampaignMessage pregnancyCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(PREGNANCY_TEXT.name(), PREGNANCY_TEXT.getServiceName(Medium.SMS));
-        RepeatingCampaignMessage childCareCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(CHILD_CARE_TEXT.name(), CHILD_CARE_TEXT.getServiceName(Medium.SMS));
+        RepeatingCampaignMessage pregnancyCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(PREGNANCY.name(), PREGNANCY.getServiceName(Medium.SMS));
+        RepeatingCampaignMessage childCareCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(CHILD_CARE.name(), CHILD_CARE.getServiceName(Medium.SMS));
         Map<String, String> pregnancyDayMap = createDayMap(pregnancyCampaignMessage);
         Map<String, String> childCareDayMap = createDayMap(childCareCampaignMessage);
 
@@ -58,9 +58,9 @@ public class MobileMidwifeMessageSeed extends Seed {
             String[] tokens = keyStr.split("-");
 
             String weekDay = tokens[2];
-            if (tokens[0].equals(PREGNANCY_TEXT.name())) {
+            if (tokens[0].equals(PREGNANCY.name())) {
                 messageContentKey = keyStr.replace(weekDay, pregnancyDayMap.get(weekDay));
-            } else if (tokens[0].equals(CHILD_CARE_TEXT.name())) {
+            } else if (tokens[0].equals(CHILD_CARE.name())) {
                 messageContentKey = keyStr.replace(weekDay, childCareDayMap.get(weekDay));
             }
             cmsLiteService.addContent(new StringContent(language.name(), messageContentKey, value));

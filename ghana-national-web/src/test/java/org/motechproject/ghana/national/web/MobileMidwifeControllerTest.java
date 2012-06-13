@@ -64,7 +64,6 @@ public class MobileMidwifeControllerTest {
     public void shouldRetrieveEnrollmentForAPatient() {
         String patientId = "12344";
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(DateTime.now());
-        enrollment.setServiceType(ServiceType.CHILD_CARE_TEXT);
         enrollment.setActive(true);
         String locationId = "facilityMotechId";
         enrollment.setFacilityId(locationId);
@@ -250,6 +249,7 @@ public class MobileMidwifeControllerTest {
         assertEquals(enrollmentForm, map.get("mobileMidwifeEnrollmentForm"));
     }
 
+
     private MobileMidwifeEnrollmentForm createEnrollmentForm(String patientId, String locationId, String staffId, Medium medium, Time timeOfDay) {
         FacilityForm facilityForm = new FacilityForm();
         facilityForm.setFacilityId(locationId);
@@ -260,7 +260,7 @@ public class MobileMidwifeControllerTest {
                 .setLearnedFrom(LearnedFrom.POSTERS_ADS).setMedium(Medium.SMS)
                 .setMessageStartWeek("5").setPhoneNumber("9900011234")
                 .setPhoneOwnership(PhoneOwnership.PERSONAL).setReasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH)
-                .setServiceType(ServiceType.PREGNANCY_TEXT.getDisplayName()).setFacilityForm(facilityForm).setStatus("ACTIVE");
+                .setServiceType(ServiceType.PREGNANCY).setFacilityForm(facilityForm).setStatus("ACTIVE");
 
         return form;
     }
