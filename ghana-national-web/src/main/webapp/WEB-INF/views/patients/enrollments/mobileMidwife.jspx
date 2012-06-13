@@ -214,8 +214,7 @@
     <form:select id="messageStartWeek" path="messageStartWeek">
         <option parent="select" value="">${fn:escapeXml(message_start_week_select)}</option>
         <c:forEach items="${messageStartWeeks}" var="messageStartWeek">
-            <option serviceType="${messageStartWeek.serviceType.value}"
-                    value="${messageStartWeek.key}">${messageStartWeek.displayText}</option>
+            <option serviceType="${messageStartWeek.serviceType.value}" value="${messageStartWeek.key}">${messageStartWeek.displayText}</option>
         </c:forEach>
     </form:select>
             <span id='messageStartWeekError' class='alertText formlyInvalid formlyAlert hide'>

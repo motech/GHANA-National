@@ -10,7 +10,7 @@ import static org.motechproject.ghana.national.FormFieldRegExPatterns.*;
 
 public abstract class AbstractMobileMidWifeForm extends FormBean {
 
-    private ServiceType serviceType;
+    private String serviceType;
     private PhoneOwnership phoneOwnership;
     @RegEx(pattern = PHONE_NO_PATTERN)
     private String mmRegPhone;
@@ -22,17 +22,17 @@ public abstract class AbstractMobileMidWifeForm extends FormBean {
     private LearnedFrom learnedFrom;
     private ReasonToJoin reasonToJoin;
     @RegEx(pattern = MM_MESSAGE_START_WEEK)
-    private String messageStartWeek;                                            
+    private String messageStartWeek;
 
     public Medium getMediumStripingOwnership() {
         return format != null ? Medium.get(format.substring(format.indexOf("_") + 1)) : null;
     }
 
-    public ServiceType getServiceType() {
+    public String getServiceType() {
         return serviceType;
     }
 
-    public void setServiceType(ServiceType serviceType) {
+    public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
     }
 
@@ -109,9 +109,9 @@ public abstract class AbstractMobileMidWifeForm extends FormBean {
     }
 
     public MobileMidwifeEnrollment fillEnrollment(MobileMidwifeEnrollment enrollment) {
-        return enrollment.setServiceType(getServiceType()).setPhoneOwnership(getPhoneOwnership())
-                .setPhoneNumber(getMmRegPhone()).setMedium(getMediumStripingOwnership()).setDayOfWeek(getDayOfWeek())
-                .setTimeOfDay(getTimeOfDay()).setLanguage(getLanguage()).setLearnedFrom(getLearnedFrom())
+        return enrollment.setServiceType(ServiceType.getServiceType(getServiceType(), getMediumStripingOwnership()))
+                .setPhoneOwnership(getPhoneOwnership()).setPhoneNumber(getMmRegPhone()).setMedium(getMediumStripingOwnership())
+                .setDayOfWeek(getDayOfWeek()).setTimeOfDay(getTimeOfDay()).setLanguage(getLanguage()).setLearnedFrom(getLearnedFrom())
                 .setReasonToJoin(getReasonToJoin()).setMessageStartWeek(getMessageStartWeek());
     }
 }

@@ -10,7 +10,7 @@ public class MobileMidwifeEnrollmentForm {
     private String staffMotechId;
     private FacilityForm facilityForm;
     private Boolean consent;
-    private ServiceType serviceType;
+    private String serviceType;
     private PhoneOwnership phoneOwnership;
     private String phoneNumber;
     private Medium medium;
@@ -41,10 +41,6 @@ public class MobileMidwifeEnrollmentForm {
 
     public Boolean getConsent() {
         return consent;
-    }
-
-    public ServiceType getServiceType() {
-        return serviceType;
     }
 
     public PhoneOwnership getPhoneOwnership() {
@@ -111,7 +107,11 @@ public class MobileMidwifeEnrollmentForm {
         return this;
     }
 
-    public MobileMidwifeEnrollmentForm setServiceType(ServiceType serviceType) {
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public MobileMidwifeEnrollmentForm setServiceType(String serviceType) {
         this.serviceType = serviceType;
         return this;
     }

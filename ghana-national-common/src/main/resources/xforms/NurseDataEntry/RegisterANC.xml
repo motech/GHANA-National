@@ -122,355 +122,355 @@
         </xf:instance>
         <xf:instance id="messageStartWeek">
             <dynamiclist>
-                <item id="5" parent="PREGNANCY">
+                <item id="5" parent="Pregnancy">
                     <label>Pregnancy-week 5</label>
                     <value>5</value>
                 </item>
-                <item id="6" parent="PREGNANCY">
+                <item id="6" parent="Pregnancy">
                     <label>Pregnancy-week 6</label>
                     <value>6</value>
                 </item>
-                <item id="7" parent="PREGNANCY">
+                <item id="7" parent="Pregnancy">
                     <label>Pregnancy-week 7</label>
                     <value>7</value>
                 </item>
-                <item id="8" parent="PREGNANCY">
+                <item id="8" parent="Pregnancy">
                     <label>Pregnancy-week 8</label>
                     <value>8</value>
                 </item>
-                <item id="9" parent="PREGNANCY">
+                <item id="9" parent="Pregnancy">
                     <label>Pregnancy-week 9</label>
                     <value>9</value>
                 </item>
-                <item id="10" parent="PREGNANCY">
+                <item id="10" parent="Pregnancy">
                     <label>Pregnancy-week 10</label>
                     <value>10</value>
                 </item>
-                <item id="11" parent="PREGNANCY">
+                <item id="11" parent="Pregnancy">
                     <label>Pregnancy-week 11</label>
                     <value>11</value>
                 </item>
-                <item id="12" parent="PREGNANCY">
+                <item id="12" parent="Pregnancy">
                     <label>Pregnancy-week 12</label>
                     <value>12</value>
                 </item>
-                <item id="13" parent="PREGNANCY">
+                <item id="13" parent="Pregnancy">
                     <label>Pregnancy-week 13</label>
                     <value>13</value>
                 </item>
-                <item id="14" parent="PREGNANCY">
+                <item id="14" parent="Pregnancy">
                     <label>Pregnancy-week 14</label>
                     <value>14</value>
                 </item>
-                <item id="15" parent="PREGNANCY">
+                <item id="15" parent="Pregnancy">
                     <label>Pregnancy-week 15</label>
                     <value>15</value>
                 </item>
-                <item id="16" parent="PREGNANCY">
+                <item id="16" parent="Pregnancy">
                     <label>Pregnancy-week 16</label>
                     <value>16</value>
                 </item>
-                <item id="17" parent="PREGNANCY">
+                <item id="17" parent="Pregnancy">
                     <label>Pregnancy-week 17</label>
                     <value>17</value>
                 </item>
-                <item id="18" parent="PREGNANCY">
+                <item id="18" parent="Pregnancy">
                     <label>Pregnancy-week 18</label>
                     <value>18</value>
                 </item>
-                <item id="19" parent="PREGNANCY">
+                <item id="19" parent="Pregnancy">
                     <label>Pregnancy-week 19</label>
                     <value>19</value>
                 </item>
-                <item id="20" parent="PREGNANCY">
+                <item id="20" parent="Pregnancy">
                     <label>Pregnancy-week 20</label>
                     <value>20</value>
                 </item>
-                <item id="21" parent="PREGNANCY">
+                <item id="21" parent="Pregnancy">
                     <label>Pregnancy-week 21</label>
                     <value>21</value>
                 </item>
-                <item id="22" parent="PREGNANCY">
+                <item id="22" parent="Pregnancy">
                     <label>Pregnancy-week 22</label>
                     <value>22</value>
                 </item>
-                <item id="23" parent="PREGNANCY">
+                <item id="23" parent="Pregnancy">
                     <label>Pregnancy-week 23</label>
                     <value>23</value>
                 </item>
-                <item id="24" parent="PREGNANCY">
+                <item id="24" parent="Pregnancy">
                     <label>Pregnancy-week 24</label>
                     <value>24</value>
                 </item>
-                <item id="25" parent="PREGNANCY">
+                <item id="25" parent="Pregnancy">
                     <label>Pregnancy-week 25</label>
                     <value>25</value>
                 </item>
-                <item id="26" parent="PREGNANCY">
+                <item id="26" parent="Pregnancy">
                     <label>Pregnancy-week 26</label>
                     <value>26</value>
                 </item>
-                <item id="27" parent="PREGNANCY">
+                <item id="27" parent="Pregnancy">
                     <label>Pregnancy-week 27</label>
                     <value>27</value>
                 </item>
-                <item id="28" parent="PREGNANCY">
+                <item id="28" parent="Pregnancy">
                     <label>Pregnancy-week 28</label>
                     <value>28</value>
                 </item>
-                <item id="29" parent="PREGNANCY">
+                <item id="29" parent="Pregnancy">
                     <label>Pregnancy-week 29</label>
                     <value>29</value>
                 </item>
-                <item id="30" parent="PREGNANCY">
+                <item id="30" parent="Pregnancy">
                     <label>Pregnancy-week 30</label>
                     <value>30</value>
                 </item>
-                <item id="31" parent="PREGNANCY">
+                <item id="31" parent="Pregnancy">
                     <label>Pregnancy-week 31</label>
                     <value>31</value>
                 </item>
-                <item id="32" parent="PREGNANCY">
+                <item id="32" parent="Pregnancy">
                     <label>Pregnancy-week 32</label>
                     <value>32</value>
                 </item>
-                <item id="33" parent="PREGNANCY">
+                <item id="33" parent="Pregnancy">
                     <label>Pregnancy-week 33</label>
                     <value>33</value>
                 </item>
-                <item id="34" parent="PREGNANCY">
+                <item id="34" parent="Pregnancy">
                     <label>Pregnancy-week 34</label>
                     <value>34</value>
                 </item>
-                <item id="35" parent="PREGNANCY">
+                <item id="35" parent="Pregnancy">
                     <label>Pregnancy-week 35</label>
                     <value>35</value>
                 </item>
-                <item id="36" parent="PREGNANCY">
+                <item id="36" parent="Pregnancy">
                     <label>Pregnancy-week 36</label>
                     <value>36</value>
                 </item>
-                <item id="37" parent="PREGNANCY">
+                <item id="37" parent="Pregnancy">
                     <label>Pregnancy-week 37</label>
                     <value>37</value>
                 </item>
-                <item id="38" parent="PREGNANCY">
+                <item id="38" parent="Pregnancy">
                     <label>Pregnancy-week 38</label>
                     <value>38</value>
                 </item>
-                <item id="39" parent="PREGNANCY">
+                <item id="39" parent="Pregnancy">
                     <label>Pregnancy-week 39</label>
                     <value>39</value>
                 </item>
-                <item id="40" parent="PREGNANCY">
+                <item id="40" parent="Pregnancy">
                     <label>Pregnancy-week 40</label>
                     <value>40</value>
                 </item>
-                <item id="1" parent="CHILD_CARE">
+                <item id="1" parent="Child Care">
                     <label>Baby-week 1</label>
                     <value>41</value>
                 </item>
-                <item id="2" parent="CHILD_CARE">
+                <item id="2" parent="Child Care">
                     <label>Baby-week 2</label>
                     <value>42</value>
                 </item>
-                <item id="3" parent="CHILD_CARE">
+                <item id="3" parent="Child Care">
                     <label>Baby-week 3</label>
                     <value>43</value>
                 </item>
-                <item id="4" parent="CHILD_CARE">
+                <item id="4" parent="Child Care">
                     <label>Baby-week 4</label>
                     <value>44</value>
                 </item>
-                <item id="5" parent="CHILD_CARE">
+                <item id="5" parent="Child Care">
                     <label>Baby-week 5</label>
                     <value>45</value>
                 </item>
-                <item id="6" parent="CHILD_CARE">
+                <item id="6" parent="Child Care">
                     <label>Baby-week 6</label>
                     <value>46</value>
                 </item>
-                <item id="7" parent="CHILD_CARE">
+                <item id="7" parent="Child Care">
                     <label>Baby-week 7</label>
                     <value>47</value>
                 </item>
-                <item id="8" parent="CHILD_CARE">
+                <item id="8" parent="Child Care">
                     <label>Baby-week 8</label>
                     <value>48</value>
                 </item>
-                <item id="9" parent="CHILD_CARE">
+                <item id="9" parent="Child Care">
                     <label>Baby-week 9</label>
                     <value>49</value>
                 </item>
-                <item id="10" parent="CHILD_CARE">
+                <item id="10" parent="Child Care">
                     <label>Baby-week 10</label>
                     <value>50</value>
                 </item>
-                <item id="11" parent="CHILD_CARE">
+                <item id="11" parent="Child Care">
                     <label>Baby-week 11</label>
                     <value>51</value>
                 </item>
-                <item id="12" parent="CHILD_CARE">
+                <item id="12" parent="Child Care">
                     <label>Baby-week 12</label>
                     <value>52</value>
                 </item>
-                <item id="13" parent="CHILD_CARE">
+                <item id="13" parent="Child Care">
                     <label>Baby-week 13</label>
                     <value>53</value>
                 </item>
-                <item id="14" parent="CHILD_CARE">
+                <item id="14" parent="Child Care">
                     <label>Baby-week 14</label>
                     <value>54</value>
                 </item>
-                <item id="15" parent="CHILD_CARE">
+                <item id="15" parent="Child Care">
                     <label>Baby-week 15</label>
                     <value>55</value>
                 </item>
-                <item id="16" parent="CHILD_CARE">
+                <item id="16" parent="Child Care">
                     <label>Baby-week 16</label>
                     <value>56</value>
                 </item>
-                <item id="17" parent="CHILD_CARE">
+                <item id="17" parent="Child Care">
                     <label>Baby-week 17</label>
                     <value>57</value>
                 </item>
-                <item id="18" parent="CHILD_CARE">
+                <item id="18" parent="Child Care">
                     <label>Baby-week 18</label>
                     <value>58</value>
                 </item>
-                <item id="19" parent="CHILD_CARE">
+                <item id="19" parent="Child Care">
                     <label>Baby-week 19</label>
                     <value>59</value>
                 </item>
-                <item id="20" parent="CHILD_CARE">
+                <item id="20" parent="Child Care">
                     <label>Baby-week 20</label>
                     <value>60</value>
                 </item>
-                <item id="21" parent="CHILD_CARE">
+                <item id="21" parent="Child Care">
                     <label>Baby-week 21</label>
                     <value>61</value>
                 </item>
-                <item id="22" parent="CHILD_CARE">
+                <item id="22" parent="Child Care">
                     <label>Baby-week 22</label>
                     <value>62</value>
                 </item>
-                <item id="23" parent="CHILD_CARE">
+                <item id="23" parent="Child Care">
                     <label>Baby-week 23</label>
                     <value>63</value>
                 </item>
-                <item id="24" parent="CHILD_CARE">
+                <item id="24" parent="Child Care">
                     <label>Baby-week 24</label>
                     <value>64</value>
                 </item>
-                <item id="25" parent="CHILD_CARE">
+                <item id="25" parent="Child Care">
                     <label>Baby-week 25</label>
                     <value>65</value>
                 </item>
-                <item id="26" parent="CHILD_CARE">
+                <item id="26" parent="Child Care">
                     <label>Baby-week 26</label>
                     <value>66</value>
                 </item>
-                <item id="27" parent="CHILD_CARE">
+                <item id="27" parent="Child Care">
                     <label>Baby-week 27</label>
                     <value>67</value>
                 </item>
-                <item id="28" parent="CHILD_CARE">
+                <item id="28" parent="Child Care">
                     <label>Baby-week 28</label>
                     <value>68</value>
                 </item>
-                <item id="29" parent="CHILD_CARE">
+                <item id="29" parent="Child Care">
                     <label>Baby-week 29</label>
                     <value>69</value>
                 </item>
-                <item id="30" parent="CHILD_CARE">
+                <item id="30" parent="Child Care">
                     <label>Baby-week 30</label>
                     <value>70</value>
                 </item>
-                <item id="31" parent="CHILD_CARE">
+                <item id="31" parent="Child Care">
                     <label>Baby-week 31</label>
                     <value>71</value>
                 </item>
-                <item id="32" parent="CHILD_CARE">
+                <item id="32" parent="Child Care">
                     <label>Baby-week 32</label>
                     <value>72</value>
                 </item>
-                <item id="33" parent="CHILD_CARE">
+                <item id="33" parent="Child Care">
                     <label>Baby-week 33</label>
                     <value>73</value>
                 </item>
-                <item id="34" parent="CHILD_CARE">
+                <item id="34" parent="Child Care">
                     <label>Baby-week 34</label>
                     <value>74</value>
                 </item>
-                <item id="35" parent="CHILD_CARE">
+                <item id="35" parent="Child Care">
                     <label>Baby-week 35</label>
                     <value>75</value>
                 </item>
-                <item id="36" parent="CHILD_CARE">
+                <item id="36" parent="Child Care">
                     <label>Baby-week 36</label>
                     <value>76</value>
                 </item>
-                <item id="37" parent="CHILD_CARE">
+                <item id="37" parent="Child Care">
                     <label>Baby-week 37</label>
                     <value>77</value>
                 </item>
-                <item id="38" parent="CHILD_CARE">
+                <item id="38" parent="Child Care">
                     <label>Baby-week 38</label>
                     <value>78</value>
                 </item>
-                <item id="39" parent="CHILD_CARE">
+                <item id="39" parent="Child Care">
                     <label>Baby-week 39</label>
                     <value>79</value>
                 </item>
-                <item id="40" parent="CHILD_CARE">
+                <item id="40" parent="Child Care">
                     <label>Baby-week 40</label>
                     <value>80</value>
                 </item>
-                <item id="41" parent="CHILD_CARE">
+                <item id="41" parent="Child Care">
                     <label>Baby-week 41</label>
                     <value>81</value>
                 </item>
-                <item id="42" parent="CHILD_CARE">
+                <item id="42" parent="Child Care">
                     <label>Baby-week 42</label>
                     <value>82</value>
                 </item>
-                <item id="43" parent="CHILD_CARE">
+                <item id="43" parent="Child Care">
                     <label>Baby-week 43</label>
                     <value>83</value>
                 </item>
-                <item id="44" parent="CHILD_CARE">
+                <item id="44" parent="Child Care">
                     <label>Baby-week 44</label>
                     <value>84</value>
                 </item>
-                <item id="45" parent="CHILD_CARE">
+                <item id="45" parent="Child Care">
                     <label>Baby-week 45</label>
                     <value>85</value>
                 </item>
-                <item id="46" parent="CHILD_CARE">
+                <item id="46" parent="Child Care">
                     <label>Baby-week 46</label>
                     <value>86</value>
                 </item>
-                <item id="47" parent="CHILD_CARE">
+                <item id="47" parent="Child Care">
                     <label>Baby-week 47</label>
                     <value>87</value>
                 </item>
-                <item id="48" parent="CHILD_CARE">
+                <item id="48" parent="Child Care">
                     <label>Baby-week 48</label>
                     <value>88</value>
                 </item>
-                <item id="49" parent="CHILD_CARE">
+                <item id="49" parent="Child Care">
                     <label>Baby-week 49</label>
                     <value>89</value>
                 </item>
-                <item id="50" parent="CHILD_CARE">
+                <item id="50" parent="Child Care">
                     <label>Baby-week 50</label>
                     <value>90</value>
                 </item>
-                <item id="51" parent="CHILD_CARE">
+                <item id="51" parent="Child Care">
                     <label>Baby-week 51</label>
                     <value>91</value>
                 </item>
-                <item id="52" parent="CHILD_CARE">
+                <item id="52" parent="Child Care">
                     <label>Baby-week 52</label>
                     <value>92</value>
                 </item>
@@ -702,11 +702,11 @@
             <xf:label>MM Program</xf:label>
             <xf:item id="PREGNANCY">
                 <xf:label>Pregnancy</xf:label>
-                <xf:value>PREGNANCY</xf:value>
+                <xf:value>Pregnancy</xf:value>
             </xf:item>
             <xf:item id="CHILD_CARE">
                 <xf:label>Child Care</xf:label>
-                <xf:value>CHILD_CARE</xf:value>
+                <xf:value>Child Care</xf:value>
             </xf:item>
         </xf:select1>
         <xf:select1 bind="phoneOwnership">
