@@ -41,7 +41,7 @@ public class AllCampaignsTest extends BaseUnitTest {
     @Test
     public void shouldStartCampaignservice() {
         final DateTime scheduleStartDate = new DateTime();
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setServiceType(ServiceType.PREGNANCY).setMessageStartWeek("33");
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setServiceType(ServiceType.PREGNANCY).setMedium(Medium.VOICE).setMessageStartWeek("33");
         campaign.start(enrollment.createCampaignRequestForTextMessage(scheduleStartDate.toLocalDate()));
         verify(mockMessageCampaignService).startFor(any(CampaignRequest.class));
     }
@@ -49,7 +49,7 @@ public class AllCampaignsTest extends BaseUnitTest {
     @Test
     public void shouldStopCampaignservice() {
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setServiceType(ServiceType.CHILD_CARE)
-                .setMessageStartWeek("53");
+                .setMedium(Medium.VOICE).setMessageStartWeek("53");
         campaign.stop(enrollment.stopCampaignRequest());
         verify(mockMessageCampaignService).stopAll(any(CampaignRequest.class));
 

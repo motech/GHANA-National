@@ -20,10 +20,10 @@ public class MobileMidwifeEnrollmentTest {
         String messageStartWeekKey = "55";
         DateTime registrationTime = DateUtil.now();
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(registrationTime).setPatientId(patientId)
-                .setServiceType(serviceType).setMessageStartWeek(messageStartWeekKey);
+                .setServiceType(serviceType).setMedium(Medium.SMS).setMessageStartWeek(messageStartWeekKey);
 
         CampaignRequest campaignRequest = mobileMidwifeEnrollment.createCampaignRequestForTextMessage(registrationTime.toLocalDate());
-        assertThat(campaignRequest.campaignName(), is(serviceType.name()));
+        assertThat(campaignRequest.campaignName(), is("CHILD_CARE_SMS"));
         assertThat(campaignRequest.externalId(), is(patientId));
         assertThat(campaignRequest.referenceDate(), is(DateUtil.today()));
         assertThat(campaignRequest.startOffset(), is(MessageStartWeek.findBy(messageStartWeekKey).getWeek()));
@@ -37,10 +37,11 @@ public class MobileMidwifeEnrollmentTest {
         ServiceType serviceType = ServiceType.CHILD_CARE;
         String patientId = "patientId";
 
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now()).setPatientId(patientId).setServiceType(serviceType);
+        Medium medium = Medium.VOICE;
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now()).setMedium(medium).setPatientId(patientId).setServiceType(serviceType);
 
         CampaignRequest stopRequest = mobileMidwifeEnrollment.stopCampaignRequest();
-        assertThat(stopRequest.campaignName(), is(serviceType.name()));
+        assertThat(stopRequest.campaignName(), is("CHILD_CARE_VOICE"));
         assertThat(stopRequest.externalId(), is(patientId));
         assertNull(stopRequest.referenceDate());
         assertNull(stopRequest.startOffset());
