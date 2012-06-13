@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeCampaign;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.model.DayOfWeek;
@@ -52,7 +53,6 @@ public class AllCampaignsTest extends BaseUnitTest {
                 .setMedium(Medium.VOICE).setMessageStartWeek("53");
         campaign.stop(enrollment.stopCampaignRequest());
         verify(mockMessageCampaignService).stopAll(any(CampaignRequest.class));
-
     }
 
     @Test
@@ -63,7 +63,8 @@ public class AllCampaignsTest extends BaseUnitTest {
 
         Medium medium = Medium.SMS;
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(currentDay).setServiceType(serviceType).setMedium(medium);
-        when(mockAllMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), ServiceType.CHILD_CARE.getServiceName(medium))).thenReturn(asList(DayOfWeek.Monday));
+        when(mockAllMessageCampaigns.getApplicableDaysForRepeatingCampaign(MobileMidwifeCampaign.getName(serviceType, medium),
+                ServiceType.CHILD_CARE.getServiceName(medium))).thenReturn(asList(DayOfWeek.Monday));
 
         LocalDate actualDateTime = campaign.nextCycleDateFromToday(enrollment.getServiceType(), medium);
         assertThat(actualDateTime, is(currentDay.dayOfMonth().addToCopy(4).toLocalDate()));
