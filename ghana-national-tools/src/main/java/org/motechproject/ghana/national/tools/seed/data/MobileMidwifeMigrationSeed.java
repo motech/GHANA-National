@@ -65,9 +65,9 @@ public class MobileMidwifeMigrationSeed extends Seed {
             if (earliestMessage != null) {
                 String earliestMessageKey = (String) earliestMessage.get("message_key");
                 String[] splitMessageKey = StringUtils.split(earliestMessageKey, ".");
-                ServiceType serviceType = (earliestMessageKey.contains("child")) ? ServiceType.CHILD_CARE : ServiceType.PREGNANCY;
+                ServiceType serviceType = (earliestMessageKey.contains("child")) ? ServiceType.CHILD_CARE_TEXT : ServiceType.PREGNANCY_TEXT;
                 int startWeek = Integer.parseInt(splitMessageKey[2]);
-                int messageStartWeek = (serviceType.equals(ServiceType.CHILD_CARE)) ? (startWeek + 40) : startWeek;
+                int messageStartWeek = (serviceType.equals(ServiceType.CHILD_CARE_TEXT)) ? (startWeek + 40) : startWeek;
                 if (messageStartWeek != 0) {
                     mobileMidwifeEnrollment.setMessageStartWeek(String.valueOf(messageStartWeek));
                     mobileMidwifeEnrollment = setEnrollmentDetails(mobileMidwifeEnrollment, patientMotechId, serviceType, active);

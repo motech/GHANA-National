@@ -6,7 +6,6 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
-import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.MobileMidwifeValidator;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;
@@ -69,7 +68,7 @@ public class MobileMidwifeController {
         MobileMidwifeEnrollmentForm enrollmentForm = new MobileMidwifeEnrollmentForm();
         if (enrollment != null) {
             enrollmentForm.setPatientMotechId(enrollment.getPatientId()).setStaffMotechId(enrollment.getStaffId()).
-                    setConsent(enrollment.getConsent()).setServiceType(enrollment.getServiceType()).setPhoneOwnership(enrollment.getPhoneOwnership())
+                    setConsent(enrollment.getConsent()).setServiceType(enrollment.getServiceType().getDisplayName()).setPhoneOwnership(enrollment.getPhoneOwnership())
                     .setPhoneNumber(enrollment.getPhoneNumber()).setMedium(enrollment.getMedium()).setDayOfWeek(enrollment.getDayOfWeek())
                     .setTimeOfDay(enrollment.getTimeOfDay()).setLanguage(enrollment.getLanguage()).setLearnedFrom(enrollment.getLearnedFrom())
                     .setReasonToJoin(enrollment.getReasonToJoin()).setMessageStartWeek(enrollment.getMessageStartWeek())
@@ -116,7 +115,7 @@ public class MobileMidwifeController {
     @RequestMapping(value = "/admin/unenroll/mobile-midwife/save")
     public String unregister(MobileMidwifeUnEnrollForm form, ModelMap modelMap) {
         String patientMotechId = form.getPatientMotechId();
-        List<FormError> formErrors = mobileMidwifeValidator.validate(mobileMidwifeService.findActiveBy(form.getPatientMotechId()),Collections.<FormBean>emptyList(),Collections.<FormBean>emptyList());
+        List<FormError> formErrors = mobileMidwifeValidator.validate(mobileMidwifeService.findActiveBy(form.getPatientMotechId()), Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
 
         if (formErrors.isEmpty()) {
             mobileMidwifeService.unRegister(patientMotechId);
@@ -130,7 +129,7 @@ public class MobileMidwifeController {
 
     private ModelMap addFormInfo(ModelMap modelMap, MobileMidwifeEnrollmentForm enrollmentForm) {
         modelMap.addAttribute("mobileMidwifeEnrollmentForm", enrollmentForm)
-                .addAttribute("serviceTypes", ServiceType.values())
+                .addAttribute("serviceTypes", ServiceType.displayValues())
                 .addAttribute("phoneOwnerships", PhoneOwnership.values())
                 .addAttribute("reasonsToJoin", ReasonToJoin.values())
                 .addAttribute("learnedFrom", LearnedFrom.values())
@@ -159,7 +158,7 @@ public class MobileMidwifeController {
         enrollment.setStaffId(form.getStaffMotechId()).setPatientId(form.getPatientMotechId()).setFacilityId(facilityId)
                 .setConsent(form.getConsent()).setDayOfWeek(form.getDayOfWeek()).setLearnedFrom(form.getLearnedFrom())
                 .setLanguage(form.getLanguage()).setMedium(form.getMedium()).setMessageStartWeek(form.getMessageStartWeek()).setPhoneNumber(form.getPhoneNumber())
-                .setPhoneOwnership(form.getPhoneOwnership()).setReasonToJoin(form.getReasonToJoin()).setServiceType(form.getServiceType())
+                .setPhoneOwnership(form.getPhoneOwnership()).setReasonToJoin(form.getReasonToJoin()).setServiceType(ServiceType.getServiceType(form.getServiceType(), form.getMedium()))
                 .setTimeOfDay(form.getTimeOfDay());
         return enrollment;
     }

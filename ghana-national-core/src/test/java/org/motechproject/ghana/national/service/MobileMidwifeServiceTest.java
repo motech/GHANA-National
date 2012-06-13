@@ -46,7 +46,7 @@ public class MobileMidwifeServiceTest {
         String patientId = "patientId";
         mockNow(now());
         final DateTime enrollmentDateTime = newDateTime(2012, 2, 3, 4, 3, 2);
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().medium(Medium.SMS).serviceType(ServiceType.CHILD_CARE).facilityId("facility12").
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().medium(Medium.SMS).serviceType(ServiceType.CHILD_CARE_TEXT).facilityId("facility12").
                 patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday).phoneOwnership(PhoneOwnership.HOUSEHOLD)
                 .enrollmentDateTime(enrollmentDateTime).messageStartWeek("52")
                 .build();
@@ -68,14 +68,14 @@ public class MobileMidwifeServiceTest {
         String patientId = "patientId";
         mockNow(now());
         final DateTime enrollmentDateTime = newDateTime(2012, 2, 3, 4, 3, 2);
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().medium(Medium.SMS).serviceType(ServiceType.PREGNANCY).facilityId("facility12").
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().medium(Medium.SMS).serviceType(ServiceType.PREGNANCY_TEXT).facilityId("facility12").
                 patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday).phoneOwnership(PhoneOwnership.HOUSEHOLD)
                 .enrollmentDateTime(enrollmentDateTime).messageStartWeek("52")
                 .build();
         when(mockAllMobileMidwifeEnrollments.findActiveBy(patientId)).thenReturn(null);
         when(mockAllCampaigns.nextCycleDateFromToday(enrollment.getServiceType(), enrollment.getMedium())).thenReturn(enrollmentDateTime.toLocalDate());
         service.register(enrollment);
-        MobileMidwifeEnrollment newEnrollment = MobileMidwifeEnrollment.cloneNew(enrollment).setServiceType(ServiceType.CHILD_CARE).setMessageStartWeek("41");
+        MobileMidwifeEnrollment newEnrollment = MobileMidwifeEnrollment.cloneNew(enrollment).setServiceType(ServiceType.CHILD_CARE_TEXT).setMessageStartWeek("41");
         newEnrollment.setEnrollmentDateTime(DateTime.now());
         newEnrollment.setActive(true);
         when(mockAllMobileMidwifeEnrollments.findActiveBy(patientId)).thenReturn(enrollment);
@@ -113,7 +113,7 @@ public class MobileMidwifeServiceTest {
 
     @Test
     public void shouldCreateNewScheduleOnlyIfEnrolledWithConsentYes() {
-        MobileMidwifeEnrollment enrollmentWithNoConsent = new MobileMidwifeEnrollmentBuilder().serviceType(ServiceType.PREGNANCY).facilityId("facility12").
+        MobileMidwifeEnrollment enrollmentWithNoConsent = new MobileMidwifeEnrollmentBuilder().serviceType(ServiceType.PREGNANCY_TEXT).facilityId("facility12").
                 patientId("patienId").staffId("staff13").consent(false).messageStartWeek("6").phoneOwnership(PhoneOwnership.PERSONAL).build();
         service.register(enrollmentWithNoConsent);
         verify(mockAllMobileMidwifeEnrollments).add(enrollmentWithNoConsent);
@@ -123,12 +123,12 @@ public class MobileMidwifeServiceTest {
     @Test
     public void shouldStopScheduleOnlyIfEnrolledWithConsentYes() {
         String patientId = "patienId";
-        MobileMidwifeEnrollment existingEnrollmentWithNoConsent = new MobileMidwifeEnrollmentBuilder().medium(Medium.SMS).serviceType(ServiceType.PREGNANCY)
+        MobileMidwifeEnrollment existingEnrollmentWithNoConsent = new MobileMidwifeEnrollmentBuilder().medium(Medium.SMS).serviceType(ServiceType.PREGNANCY_TEXT)
                 .facilityId("facility12").patientId(patientId).staffId("staff13").consent(false).phoneOwnership(PhoneOwnership.PERSONAL)
                 .messageStartWeek("9").build();
         when(mockAllMobileMidwifeEnrollments.findActiveBy(patientId)).thenReturn(existingEnrollmentWithNoConsent);
 
-        MobileMidwifeEnrollment newEnrollment = new MobileMidwifeEnrollmentBuilder().medium(Medium.SMS).serviceType(ServiceType.PREGNANCY).patientId(patientId)
+        MobileMidwifeEnrollment newEnrollment = new MobileMidwifeEnrollmentBuilder().medium(Medium.SMS).serviceType(ServiceType.PREGNANCY_TEXT).patientId(patientId)
                 .messageStartWeek("9").phoneOwnership(PhoneOwnership.HOUSEHOLD).consent(true).build();
         when(mockAllCampaigns.nextCycleDateFromToday(newEnrollment.getServiceType(), existingEnrollmentWithNoConsent.getMedium())).thenReturn(newEnrollment.getEnrollmentDateTime().toLocalDate());
         service.register(newEnrollment);
@@ -140,10 +140,10 @@ public class MobileMidwifeServiceTest {
     @Test
     public void shouldDeactivateExistingEnrollmentAndCampaign_AndCreateNewEnrollmentIfEnrolledAlready() {
         String patientId = "patientId";
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().serviceType(ServiceType.PREGNANCY).medium(Medium.SMS).facilityId("facility12").
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().serviceType(ServiceType.PREGNANCY_TEXT).medium(Medium.SMS).facilityId("facility12").
                 patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday).phoneOwnership(PhoneOwnership.PERSONAL)
                 .messageStartWeek("6").build();
-        MobileMidwifeEnrollment existingEnrollment = new MobileMidwifeEnrollmentBuilder().serviceType(ServiceType.PREGNANCY).facilityId("facility12").
+        MobileMidwifeEnrollment existingEnrollment = new MobileMidwifeEnrollmentBuilder().serviceType(ServiceType.PREGNANCY_TEXT).facilityId("facility12").
                 messageStartWeek("6").patientId(patientId).consent(true).phoneOwnership(PhoneOwnership.HOUSEHOLD).build();
         when(mockAllMobileMidwifeEnrollments.findActiveBy(patientId)).thenReturn(existingEnrollment);
         when(mockAllCampaigns.nextCycleDateFromToday(enrollment.getServiceType(), enrollment.getMedium())).thenReturn(enrollment.getEnrollmentDateTime().toLocalDate());
@@ -162,7 +162,7 @@ public class MobileMidwifeServiceTest {
         String patientId = "patientId";
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().facilityId("facility12").
                 patientId(patientId).staffId("staff13").consent(true).dayOfWeek(DayOfWeek.Thursday).phoneOwnership(PhoneOwnership.PERSONAL)
-                .messageStartWeek("6").serviceType(ServiceType.PREGNANCY).build();
+                .messageStartWeek("6").serviceType(ServiceType.PREGNANCY_TEXT).build();
         when(mockAllMobileMidwifeEnrollments.findActiveBy(patientId)).thenReturn(enrollment);
 
         service.unRegister(patientId);
@@ -171,7 +171,7 @@ public class MobileMidwifeServiceTest {
         ArgumentCaptor<CampaignRequest> campaignRequestCaptor = ArgumentCaptor.forClass(CampaignRequest.class);
         verify(mockAllCampaigns).stop(campaignRequestCaptor.capture());
         assertThat(campaignRequestCaptor.getValue().externalId(), is(patientId));
-        assertThat(campaignRequestCaptor.getValue().campaignName(), is(ServiceType.PREGNANCY.name()));
+        assertThat(campaignRequestCaptor.getValue().campaignName(), is(ServiceType.PREGNANCY_TEXT.name()));
     }
 
     @Test
@@ -193,7 +193,7 @@ public class MobileMidwifeServiceTest {
         String patientId = "patientId";
         DayOfWeek dayOfWeek = DayOfWeek.Thursday;
         Time timeOfDay = new Time(11, 11);
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().serviceType(ServiceType.PREGNANCY).medium(Medium.VOICE)
+        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().serviceType(ServiceType.PREGNANCY_TEXT).medium(Medium.VOICE)
                 .facilityId("facility12").patientId(patientId).staffId("staff13").consent(true).dayOfWeek(dayOfWeek).timeOfDay(timeOfDay)
                 .phoneOwnership(PhoneOwnership.PERSONAL).messageStartWeek("6").build();
         service.register(enrollment);

@@ -57,7 +57,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
 
     @Test
     public void shouldSendSMSForEnrollmentWithSMSMedium() throws ContentNotFoundException {
-        ServiceType serviceType = ServiceType.CHILD_CARE;
+        ServiceType serviceType = ServiceType.CHILD_CARE_TEXT;
         String patientId = "1234568";
         String mobileNumber = "9845312345";
         String genMessageKey = "childcare-calendar-week-33-Monday";
@@ -73,7 +73,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
 
     @Test
     public void shouldSendUnRegisteredUserIfItIsTheLastEventForTheProgram() throws ContentNotFoundException {
-        ServiceType serviceType = ServiceType.CHILD_CARE;
+        ServiceType serviceType = ServiceType.CHILD_CARE_TEXT;
         String patientId = "1234568";
         String genMessageKey = "childcare-calendar-week-33-Monday";
         Language language = Language.EN;
@@ -100,7 +100,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
 
     @Test
     public void shouldPlaceCallWhenTheIVRCallEventIsReceived() {
-        ServiceType serviceType = ServiceType.PREGNANCY;
+        ServiceType serviceType = ServiceType.PREGNANCY_TEXT;
         String patientId = "1234568";
         String genMessageKey = "33";
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now()).setPatientId(patientId)

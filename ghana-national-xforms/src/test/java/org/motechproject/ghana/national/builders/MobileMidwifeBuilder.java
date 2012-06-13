@@ -123,7 +123,7 @@ public class MobileMidwifeBuilder {
         mobileMidwifeForm.setMmRegPhone(phoneNumber);
         mobileMidwifeForm.setPhoneOwnership(phoneOwnership);
         mobileMidwifeForm.setReasonToJoin(reasonToJoin);
-        mobileMidwifeForm.setServiceType(serviceType);
+        if(serviceType != null) mobileMidwifeForm.setServiceType(serviceType.getDisplayName());
         mobileMidwifeForm.setTimeOfDay(timeOfDay);
     }
 
@@ -159,7 +159,7 @@ public class MobileMidwifeBuilder {
                 .consent(true).dayOfWeek(DayOfWeek.Monday).language(Language.EN).learnedFrom(LearnedFrom.FRIEND).format("PERS_VOICE")
                 .timeOfDay(new Time(10, 0)).messageStartWeek("10").phoneNumber("9500012343")
                 .phoneOwnership(PhoneOwnership.PERSONAL).reasonToJoin(ReasonToJoin.FAMILY_FRIEND_DELIVERED)
-                .serviceType(ServiceType.CHILD_CARE).registrationAction(RegisterClientAction.REGISTER);
+                .serviceType(ServiceType.CHILD_CARE_TEXT).registrationAction(RegisterClientAction.REGISTER);
     }
 
 }

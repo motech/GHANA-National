@@ -54,11 +54,11 @@ public class MessageStartWeek {
         if (allWeeks.isEmpty()) {
             for (int week = 5; week < 41; week++) {
                 String key = String.valueOf(week);
-                allWeeks.put(key, new MessageStartWeek(key, week, "Pregnancy-week " + week, ServiceType.PREGNANCY));
+                allWeeks.put(key, new MessageStartWeek(key, week, "Pregnancy-week " + week, ServiceType.PREGNANCY_TEXT));
             }
             for (int week = 1; week < 53; week++) {
                 String key = String.valueOf(40 + week);
-                allWeeks.put(key, new MessageStartWeek(key, week, "Baby-week " + week, ServiceType.CHILD_CARE));
+                allWeeks.put(key, new MessageStartWeek(key, week, "Baby-week " + week, ServiceType.CHILD_CARE_TEXT));
             }
         }
         return allWeeks;

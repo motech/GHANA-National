@@ -54,7 +54,7 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
 
         Medium medium = Medium.SMS;
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().patientId(identifierGenerator.newPatientId()).
-                facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).serviceType(ServiceType.PREGNANCY).
+                facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).serviceType(ServiceType.PREGNANCY_TEXT).
                 learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(medium).reasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH).
                 messageStartWeek("20").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
                 .active(true).build();
@@ -68,12 +68,12 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
         String patientId = identifierGenerator.newPatientId();
         Medium medium = Medium.SMS;
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().patientId(patientId).
-                facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).serviceType(ServiceType.PREGNANCY).
+                facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).serviceType(ServiceType.PREGNANCY_TEXT).
                 learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(medium).reasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH).
                 messageStartWeek("20").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
                 .active(true).build();
         service.register(enrollment);
-        MobileMidwifeEnrollment newEnrollment = MobileMidwifeEnrollment.cloneNew(enrollment).setMessageStartWeek("41").setServiceType(ServiceType.CHILD_CARE);
+        MobileMidwifeEnrollment newEnrollment = MobileMidwifeEnrollment.cloneNew(enrollment).setMessageStartWeek("41").setServiceType(ServiceType.CHILD_CARE_TEXT);
         newEnrollment.setEnrollmentDateTime(DateTime.now());
         newEnrollment.setActive(true);
         service.rollover(patientId, DateTime.now());
