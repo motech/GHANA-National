@@ -150,6 +150,7 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<Integer>(registartionDate.minusMonths(3).toDate(), Concept.IPTI.getName(), 1));
             add(new MRSObservation<Integer>(registartionDate.minusMonths(3).toDate(), Concept.PENTA.getName(), 1));
             add(new MRSObservation<Integer>(registartionDate.minusMonths(3).toDate(), Concept.OPV.getName(), 1));
+            add(new MRSObservation<Integer>(registartionDate.minusMonths(3).toDate(), Concept.ROTAVIRUS.getName(), 1));
         }};
 
 

@@ -83,7 +83,7 @@ public class PatientTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldNotReturnPatientCareIfHistoryIsRecordedForBcgYfMeasles(){
+    public void shouldNotReturnPatientCareIfHistoryIsRecordedForBcgYfMeasles() {
         DateTime birthdate = now();
         String facilityId = "fid";
         Patient patient = patient(birthdate, facilityId);
@@ -93,9 +93,9 @@ public class PatientTest extends BaseUnitTest {
         List<CwcCareHistory> cwcCareHistories = Arrays.asList(CwcCareHistory.BCG, CwcCareHistory.MEASLES, CwcCareHistory.YF);
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnHistoryCapture(enrollmentDate, cwcCareHistories, noNewHistory(), new ActiveCareSchedules(), noNewHistory().getLastPentaDate(), noNewHistory().getLastIPTiDate(), null);
         HashMap<String, String> metaData = facilityMetaData(facilityId);
-        assertThat(patientCares,not(hasItem(new PatientCare(CWC_BCG.getName(), expectedReferenceDate,enrollmentDate, null, metaData))));
-        assertThat(patientCares,not(hasItem(new PatientCare(CWC_YELLOW_FEVER.getName(), expectedReferenceDate,enrollmentDate, null, metaData))));
-        assertThat(patientCares,not(hasItem(new PatientCare(CWC_MEASLES_VACCINE.getName(), expectedReferenceDate,enrollmentDate, null, metaData))));
+        assertThat(patientCares, not(hasItem(new PatientCare(CWC_BCG.getName(), expectedReferenceDate, enrollmentDate, null, metaData))));
+        assertThat(patientCares, not(hasItem(new PatientCare(CWC_YELLOW_FEVER.getName(), expectedReferenceDate, enrollmentDate, null, metaData))));
+        assertThat(patientCares, not(hasItem(new PatientCare(CWC_MEASLES_VACCINE.getName(), expectedReferenceDate, enrollmentDate, null, metaData))));
 
     }
 
@@ -107,9 +107,9 @@ public class PatientTest extends BaseUnitTest {
         List<PatientCare> cares = patient.pncBabyProgramsToEnrollOnRegistration();
         HashMap<String, String> metaData = facilityMetaData(facilityId);
         assertPatientCares(cares, asList(
-                new PatientCare(PNC_CHILD_1.getName(), dateOfBirth, dateOfBirth,null,metaData),
-                new PatientCare(PNC_CHILD_2.getName(), dateOfBirth, dateOfBirth,null,metaData),
-                new PatientCare(PNC_CHILD_3.getName(), dateOfBirth, dateOfBirth,null,metaData)));
+                new PatientCare(PNC_CHILD_1.getName(), dateOfBirth, dateOfBirth, null, metaData),
+                new PatientCare(PNC_CHILD_2.getName(), dateOfBirth, dateOfBirth, null, metaData),
+                new PatientCare(PNC_CHILD_3.getName(), dateOfBirth, dateOfBirth, null, metaData)));
     }
 
     @Test
@@ -120,9 +120,9 @@ public class PatientTest extends BaseUnitTest {
         List<PatientCare> cares = patient.pncMotherProgramsToEnrollOnRegistration(deliveryDate);
         HashMap<String, String> metaData = facilityMetaData(facilityId);
         assertPatientCares(cares, asList(
-                new PatientCare(PNC_MOTHER_1.getName(), deliveryDate, deliveryDate,null,metaData),
-                new PatientCare(PNC_MOTHER_2.getName(), deliveryDate, deliveryDate,null,metaData),
-                new PatientCare(PNC_MOTHER_3.getName(), deliveryDate, deliveryDate,null,metaData)));
+                new PatientCare(PNC_MOTHER_1.getName(), deliveryDate, deliveryDate, null, metaData),
+                new PatientCare(PNC_MOTHER_2.getName(), deliveryDate, deliveryDate, null, metaData),
+                new PatientCare(PNC_MOTHER_3.getName(), deliveryDate, deliveryDate, null, metaData)));
     }
 
 
@@ -136,25 +136,27 @@ public class PatientTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldReturnAllApplicableCaresBasedOnHistoryInput(){
+    public void shouldReturnAllApplicableCaresBasedOnHistoryInput() {
         DateTime birthdate = now();
         String facilityId = "fid";
         Patient patient = patient(birthdate, facilityId);
         LocalDate expectedReferenceDate = birthdate.toLocalDate();
         LocalDate enrollmentDate = expectedReferenceDate.plusWeeks(1);
-        List<CwcCareHistory> cwcCareHistories = Arrays.asList(CwcCareHistory.PENTA);
+        List<CwcCareHistory> cwcCareHistories = Arrays.asList(CwcCareHistory.PENTA, CwcCareHistory.IPTI, CwcCareHistory.ROTAVIRUS);
         Date lastPentaDate = birthdate.plusWeeks(4).toDate();
         Date lastIPTiDate = birthdate.plusWeeks(10).toDate();
-        //TODO:handle rotavirus when history story is played
-        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(true, cwcCareHistories, null, null, null, null, lastPentaDate, 1, null, null, 1, lastIPTiDate, null, null);
+        Date lastRotavirusDate = birthdate.plusWeeks(9).toDate();
+
+        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(true, cwcCareHistories, null, null, null, null, lastPentaDate, 1, null, null, 1, lastIPTiDate, 1, lastRotavirusDate);
         HashMap<String, String> metaData = facilityMetaData(facilityId);
-        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnHistoryCapture(enrollmentDate, cwcCareHistories, cwcCareHistoryVO, new ActiveCareSchedules(), lastPentaDate,lastIPTiDate,null);
-        assertThat(patientCares,hasItem(new PatientCare(CWC_PENTA.getName(),null,newDate(lastPentaDate),PentaDose.PENTA2.milestoneName(),metaData)));
-        assertThat(patientCares,hasItem(new PatientCare(CWC_IPT_VACCINE.getName(),null,newDate(lastIPTiDate), IPTiDose.IPTi2.milestoneName(),metaData)));
+        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnHistoryCapture(enrollmentDate, cwcCareHistories, cwcCareHistoryVO, new ActiveCareSchedules(), lastPentaDate, lastIPTiDate, null);
+        assertThat(patientCares, hasItem(new PatientCare(CWC_PENTA.getName(), null, newDate(lastPentaDate), PentaDose.PENTA2.milestoneName(), metaData)));
+        assertThat(patientCares, hasItem(new PatientCare(CWC_IPT_VACCINE.getName(), null, newDate(lastIPTiDate), IPTiDose.IPTi2.milestoneName(), metaData)));
+        assertThat(patientCares, hasItem(new PatientCare(CWC_ROTAVIRUS.getName(), null, newDate(lastRotavirusDate), RotavirusDose.ROTAVIRUS2.milestoneName(), metaData)));
     }
 
     @Test
-    public void shouldReturnPhoneNumberRegisteredWithMobileMidwifeEnrollmentIfAnyOtherwiseReturnPatientPhoneNumber(){
+    public void shouldReturnPhoneNumberRegisteredWithMobileMidwifeEnrollmentIfAnyOtherwiseReturnPatientPhoneNumber() {
         String phoneNumber = "919500012123";
         String mobileMidwifePhoneNumber = "919544412111";
         Patient patient = new Patient(new MRSPatient("motechiD", new MRSPerson().attributes(Arrays.asList(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), phoneNumber))), new MRSFacility("facilityid")));
@@ -179,7 +181,7 @@ public class PatientTest extends BaseUnitTest {
     }
 
     public static HashMap<String, String> facilityMetaData(final String facilityId) {
-        return new HashMap<String, String>(){{
+        return new HashMap<String, String>() {{
             put(Patient.FACILITY_META, facilityId);
         }};
     }

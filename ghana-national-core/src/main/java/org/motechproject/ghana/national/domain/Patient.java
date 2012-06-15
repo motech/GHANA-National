@@ -122,6 +122,8 @@ public class Patient {
                 measlesChildCare(enrollmentDate, historiesCaptured),
                 opv0ChildCare(enrollmentDate, referenceDate,cwcCareHistoryVO),
                 opv1ChildCare(enrollmentDate, referenceDate, historiesCaptured, activeCareSchedules, cwcCareHistoryVO,lastOPVDate),
+                new RotavirusVaccineCare(this, enrollmentDate, activeCareSchedules.hasActiveRotavirusSchedule(),
+                        safeToString(cwcCareHistoryVO.getLastRotavirus()), cwcCareHistoryVO.getLastRotavirusDate()).careForHistory(),
                 new PentaVaccineCare(this, enrollmentDate, activeCareSchedules.hasActivePentaSchedule(),
                         safeToString(cwcCareHistoryVO.getLastPenta()), lastPentaDate).careForHistory(),
                 new IPTiVaccineCare(this, enrollmentDate, activeCareSchedules.hasActiveIPTiSchedule(),

@@ -326,7 +326,9 @@ public class CareService {
         Date lastIPTiDate = getLastIPTiDate(patient, careHistoryVO.getCwcCareHistoryVO());
         Date lastOPVDate = getLastOPVDate(patient,careHistoryVO.getCwcCareHistoryVO());
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnHistoryCapture(newDate(careHistoryVO.getDate()),
-                mergedHistories, careHistoryVO.getCwcCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_PENTA.getName(), CWC_IPT_VACCINE.getName(), CWC_OPV_OTHERS.getName())), lastPentaDate, lastIPTiDate, lastOPVDate);
+                mergedHistories, careHistoryVO.getCwcCareHistoryVO(),
+                activeCareSchedules(patient, Arrays.asList(CWC_PENTA.getName(), CWC_IPT_VACCINE.getName(), CWC_OPV_OTHERS.getName())),
+                lastPentaDate, lastIPTiDate, lastOPVDate);
         patientCares.addAll(patient.pncBabyProgramsToEnrollOnRegistration());
         enrollPatientCares(patientCares, patient);
     }
