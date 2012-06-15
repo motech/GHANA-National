@@ -237,6 +237,32 @@
                     </span>
                 </div>
             </div>
+            <div id="jsRotavirus" class="hide">
+                <div class="form-field">
+                    <label for="lastRotavirus" class="formLabel">
+                        <spring:message code="patient_last_rotavirus"/>
+                        *:
+                    </label>
+                    <form:radiobuttons path="lastRotavirus" items="${lastRotavirus}" cssClass="jsRequire"/>
+                    <span id='lastRotavirusError' class='alertText formlyInvalid formlyAlert hide'>
+                        <spring:message code="patient_last_rotavirus"/> ${fn:escapeXml(required_msg)}
+                    </span>
+                </div>
+
+                <div id="lastRotavirusDateHolder" class="form-field">
+                    <label for="lastRotavirusDate" class="formLabel">
+                        <spring:message code="patient_last_rotavirus_date"/>
+                        *:
+                    </label>
+                    <form:input path="lastRotavirusDate" cssClass="jsDate jsBefore jsRequire"/>
+                    <span id='lastRotavirusDateError' class='alertText formlyInvalid formlyAlert hide'>
+                        <spring:message code="patient_last_rotavirus_date"/> ${fn:escapeXml(required_msg)}
+                    </span>
+                    <span id='lastRotavirusDateFormatError' class='alertText formlyInvalid formlyAlert hide'>
+                        <spring:message code="patient_last_rotavirus_date"/> ${fn:escapeXml(incorrect_msg)}
+                    </span>
+                </div>
+            </div>
             <div id="jsVitA" class="hide">
                 <div id="vitADateHolder" class="form-field">
                     <label for="vitADate" class="formLabel">

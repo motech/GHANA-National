@@ -87,7 +87,7 @@ public class CareServiceTest extends BaseUnitTest {
         final Date lastPentaDate = new Date(2011, 9, 4);
         final Date lastOPVDate = new Date(2011, 9, 5);
         final Date lastIPTiDate = new Date(2011, 9, 6);
-        Integer lastRotavirus = 1;
+        final Integer lastRotavirus = 1;
         final Date lastRotavirusDate = new Date(2011, 9, 6);
         final int lastIPTi = 1;
         final int lastPenta = 1;
@@ -103,7 +103,7 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<MRSConcept>(lastVitADate, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(VITA.getName())));
             add(new MRSObservation<MRSConcept>(lastMeaslesDate, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(MEASLES.getName())));
             add(new MRSObservation<MRSConcept>(lastYfDate, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(YF.getName())));
-            add(new MRSObservation<MRSConcept>(lastRotavirusDate, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(ROTAVIRUS.getName())));
+            add(new MRSObservation<Integer>(lastRotavirusDate, ROTAVIRUS.getName(), lastRotavirus));
             add(new MRSObservation<Integer>(lastPentaDate, PENTA.getName(), lastPenta));
             add(new MRSObservation<Integer>(lastOPVDate, OPV.getName(), lastOPV));
             add(new MRSObservation<Integer>(lastIPTiDate, IPTI.getName(), lastIPTi));

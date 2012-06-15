@@ -43,5 +43,9 @@
             <column name="uuid" value="78688600-9de2-4e3c-8678-de7f6a3074f8"/>
         </insert>
 
+        <insert tableName="concept_numeric">
+            <column name="concept_id" valueNumeric="((select max(concept_id) from concept))"/>
+        </insert>
+
     </changeSet>
 </databaseChangeLog>
