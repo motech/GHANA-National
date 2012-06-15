@@ -224,15 +224,15 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     }
 
     public CampaignRequest createCampaignRequestForTextMessage(LocalDate scheduleStartDate) {
-        return new CampaignRequest(patientId, serviceType.name(), null, scheduleStartDate, MessageStartWeek.findBy(messageStartWeek).getWeek());
+        return new CampaignRequest(patientId, MobileMidwifeCampaign.getName(serviceType, medium), null, scheduleStartDate, MessageStartWeek.findBy(messageStartWeek).getWeek());
     }
 
     public CampaignRequest stopCampaignRequest() {
-        return new CampaignRequest(patientId, serviceType.name(), null, null);
+        return new CampaignRequest(patientId, MobileMidwifeCampaign.getName(serviceType, medium), null, null);
     }
 
     public CampaignRequest createCampaignRequestForVoiceMessage(LocalDate nextApplicableDay, DayOfWeek dayOfWeek, Time timeOfDay) {
-        CampaignRequest campaignRequest = new CampaignRequest(patientId, serviceType.name(), nextApplicableDay, timeOfDay, Arrays.asList(dayOfWeek));
+        CampaignRequest campaignRequest = new CampaignRequest(patientId, MobileMidwifeCampaign.getName(serviceType, medium), nextApplicableDay, timeOfDay, Arrays.asList(dayOfWeek));
         campaignRequest.setStartOffset(MessageStartWeek.findBy(messageStartWeek).getWeek());
         return campaignRequest;
     }

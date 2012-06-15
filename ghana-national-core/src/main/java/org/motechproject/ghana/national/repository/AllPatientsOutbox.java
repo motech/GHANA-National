@@ -1,10 +1,12 @@
 package org.motechproject.ghana.national.repository;
 
+import ch.lambdaj.Lambda;
 import ch.lambdaj.function.convert.Converter;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.domain.AlertWindow;
+import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.outbox.api.contract.SortKey;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessageStatus;
@@ -12,13 +14,11 @@ import org.motechproject.outbox.api.service.VoiceOutboxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static ch.lambdaj.Lambda.convert;
-import static ch.lambdaj.Lambda.extract;
-import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.Matchers.*;
+import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 
 @Repository
 public class AllPatientsOutbox {
@@ -67,13 +67,38 @@ public class AllPatientsOutbox {
         voiceOutboxService.addMessage(outboundVoiceMessage);
     }
 
-    public List getAudioFileNames(String externalId) {
-        List<OutboundVoiceMessage> messages = voiceOutboxService.getMessages(externalId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
-        return convert(extract(messages, on(OutboundVoiceMessage.class).getParameters()), new Converter<Object, Object>() {
+    public List<String> getAudioFileNames(String motechId) {
+        List<OutboundVoiceMessage> messages = voiceOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
+        final List<OutboundVoiceMessage> mmclips = Lambda.filter(having(on(OutboundVoiceMessage.class).getParameters(), hasEntry(TYPE, AlertType.MOBILE_MIDWIFE)), messages);
+        final List<OutboundVoiceMessage> appointmentClips = Lambda.filter(having(on(OutboundVoiceMessage.class).getParameters(), hasEntry(TYPE, AlertType.APPOINTMENT)), messages);
+        final List<OutboundVoiceMessage> careClips = nullSafeList(Lambda.filter(having(on(OutboundVoiceMessage.class).getParameters(), hasEntry(TYPE, AlertType.CARE)), messages));
+        Collections.sort(careClips, new Comparator<OutboundVoiceMessage>() {
             @Override
-            public Object convert(Object o) {
-                Map<String, Object> obj = (Map<String, Object>) o;
-                return obj.get(AUDIO_CLIP_NAME);
+            public int compare(OutboundVoiceMessage outboundVoiceMessage1, OutboundVoiceMessage outboundVoiceMessage2) {
+                AlertWindow messageOneAlertWindow = (AlertWindow) outboundVoiceMessage1.getParameters().get(WINDOW);
+                AlertWindow messageTwoAlertWindow = (AlertWindow) outboundVoiceMessage2.getParameters().get(WINDOW);
+                DateTime messageOneScheduleStart = (DateTime) outboundVoiceMessage1.getParameters().get(WINDOW_START);
+                DateTime messageTwoScheduleStart = (DateTime) outboundVoiceMessage2.getParameters().get(WINDOW_START);
+
+                int windowOrder = messageTwoAlertWindow.getOrder().compareTo(messageOneAlertWindow.getOrder());
+                if (windowOrder == 0) {
+                    return messageOneScheduleStart.compareTo(messageTwoScheduleStart);
+                } else {
+                    return windowOrder;
+                }
+            }
+        });
+
+        ArrayList<OutboundVoiceMessage> sortedMessages = new ArrayList<OutboundVoiceMessage>() {{
+            addAll(careClips);
+            addAll(appointmentClips);
+            addAll(mmclips);
+        }};
+
+        return convert(sortedMessages, new Converter<OutboundVoiceMessage, String>() {
+            @Override
+            public String convert(OutboundVoiceMessage outboundVoiceMessage) {
+                return (String)outboundVoiceMessage.getParameters().get(AUDIO_CLIP_NAME);
             }
         });
     }

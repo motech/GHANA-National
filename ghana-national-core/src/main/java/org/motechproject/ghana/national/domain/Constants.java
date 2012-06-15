@@ -59,8 +59,11 @@ public class Constants {
     public static final String LAST_OPV = "lastOPV";
     public static final String LAST_PENTA = "lastPenta";
     public static final String PENTA_1 = "Penta 1";
-    public static final String PENTA_2 = "Penta 2";
     public static final String PENTA_3 = "Penta 3";
+    public static final String PENTA_2 = "Penta 2";
+    public static final String LAST_ROTAVIRUS = "lastRotavirus";
+    public static final String ROTAVIRUS_1 = "Rotavirus 1";
+    public static final String ROTAVIRUS_2 = "Rotavirus 2";
 
     public static final String SMS_LIST_SEPERATOR = ", ";
     public static final String SMS_SEPARATOR = "%0A";

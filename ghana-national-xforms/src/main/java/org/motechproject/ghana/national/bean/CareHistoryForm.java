@@ -207,6 +207,22 @@ public class CareHistoryForm extends FormBean {
         this.lastVitaminADate = lastVitaminADate;
     }
 
+    public Date getLastRotavirusDate() {
+        return lastRotavirusDate;
+    }
+
+    public void setLastRotavirusDate(Date lastRotavirusDate) {
+        this.lastRotavirusDate = lastRotavirusDate;
+    }
+
+    public Integer getLastRotavirus() {
+        return lastRotavirus;
+    }
+
+    public void setLastRotavirus(Integer lastRotavirus) {
+        this.lastRotavirus = lastRotavirus;
+    }
+
     public List<ANCCareHistory> getANCCareHistories() {
         String[] selectedCareHistories = StringUtils.isNotEmpty(addHistory) ? addHistory.split(" ") : new String[]{};
         final List<String> ancCareHistories = new ArrayList<String>();

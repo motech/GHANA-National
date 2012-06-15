@@ -51,7 +51,7 @@ public class OutgoingCallControllerTest {
 
         String response = controller.call(mockHttpServletRequest);
         assertThat(response, is("<Response><Play loop=\"1\">" + urlForAudio1 + "</Play><Play loop=\"1\">"
-                + urlForAudio2 + "</Play><Redirect method=\"POST\">null</Redirect></Response>"));
+                + urlForAudio2 + "</Play></Response>"));
 
     }
 

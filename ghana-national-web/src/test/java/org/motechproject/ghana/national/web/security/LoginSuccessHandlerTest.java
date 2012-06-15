@@ -5,16 +5,13 @@ import org.junit.Test;
 import org.motechproject.mrs.security.MRSSecurityUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.web.WebAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class LoginSuccessHandlerTest {
     private HttpServletRequest servletRequest;
@@ -53,7 +50,6 @@ public class LoginSuccessHandlerTest {
                 }
             });
         }});
-        when(httpSession.getAttribute(WebAttributes.SAVED_REQUEST)).thenReturn(null);
         when(servletRequest.getSession(false)).thenReturn(httpSession);
 
         new LoginSuccessHandler().onAuthenticationSuccess(servletRequest, response, authentication);
@@ -72,7 +68,6 @@ public class LoginSuccessHandlerTest {
                 }
             });
         }});
-        when(httpSession.getAttribute(WebAttributes.SAVED_REQUEST)).thenReturn(null);
         when(servletRequest.getSession(false)).thenReturn(httpSession);
 
         new LoginSuccessHandler().onAuthenticationSuccess(servletRequest, response, authentication);
@@ -91,7 +86,6 @@ public class LoginSuccessHandlerTest {
                 }
             });
         }});
-        when(httpSession.getAttribute(WebAttributes.SAVED_REQUEST)).thenReturn(null);
         when(servletRequest.getSession(false)).thenReturn(httpSession);
 
         new LoginSuccessHandler().onAuthenticationSuccess(servletRequest, response, authentication);

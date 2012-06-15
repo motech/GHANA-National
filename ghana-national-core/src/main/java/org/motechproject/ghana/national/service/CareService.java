@@ -5,7 +5,9 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.domain.care.*;
+import org.motechproject.ghana.national.domain.care.ANCCareRegistration;
+import org.motechproject.ghana.national.domain.care.IPTVaccineCare;
+import org.motechproject.ghana.national.domain.care.TTVaccineCare;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.repository.AllEncounters;
@@ -27,7 +29,8 @@ import java.util.*;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.*;
-import static org.motechproject.ghana.national.tools.Utility.*;
+import static org.motechproject.ghana.national.tools.Utility.getNextOf;
+import static org.motechproject.ghana.national.tools.Utility.safeParseDouble;
 import static org.motechproject.util.DateUtil.newDate;
 
 @Service
@@ -274,7 +277,7 @@ public class CareService {
             addObservation(capturedHistory, CwcCareHistory.VITA_A, observations, cwcCareHistoryVO.getVitADate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(VITA.getName()));
             addObservation(capturedHistory, CwcCareHistory.MEASLES, observations, cwcCareHistoryVO.getMeaslesDate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(MEASLES.getName()));
             addObservation(capturedHistory, CwcCareHistory.YF, observations, cwcCareHistoryVO.getYfDate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(YF.getName()));
-            addObservation(capturedHistory, CwcCareHistory.ROTAVIRUS, observations, cwcCareHistoryVO.getLastRotavirusDate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(ROTAVIRUS.getName()));
+            addObservation(capturedHistory, CwcCareHistory.ROTAVIRUS, observations, cwcCareHistoryVO.getLastRotavirusDate(), ROTAVIRUS.getName(), cwcCareHistoryVO.getLastRotavirus());
             addObservation(capturedHistory, CwcCareHistory.PENTA, observations, cwcCareHistoryVO.getLastPentaDate(), PENTA.getName(), cwcCareHistoryVO.getLastPenta());
             addObservation(capturedHistory, CwcCareHistory.OPV, observations, cwcCareHistoryVO.getLastOPVDate(), OPV.getName(), cwcCareHistoryVO.getLastOPV());
             addObservation(capturedHistory, CwcCareHistory.IPTI, observations, cwcCareHistoryVO.getLastIPTiDate(), IPTI.getName(), cwcCareHistoryVO.getLastIPTi());
