@@ -15,7 +15,7 @@ public class MobileMidwifeEnrollmentTest {
 
     @Test
     public void shouldCreateCampaignRequestFromEnrollment() {
-        ServiceType serviceType = ServiceType.CHILD_CARE_TEXT;
+        ServiceType serviceType = ServiceType.CHILD_CARE;
         String patientId = "patientId";
         String messageStartWeekKey = "55";
         DateTime registrationTime = DateUtil.now();
@@ -34,7 +34,7 @@ public class MobileMidwifeEnrollmentTest {
 
     @Test
     public void shouldCreateStopCampaignRequest() {
-        ServiceType serviceType = ServiceType.CHILD_CARE_TEXT;
+        ServiceType serviceType = ServiceType.CHILD_CARE;
         String patientId = "patientId";
 
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now()).setPatientId(patientId).setServiceType(serviceType);

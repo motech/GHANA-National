@@ -1,6 +1,6 @@
 [
     {
-        "name" : "PREGNANCY_TEXT",
+        "name" : "PREGNANCY",
         "type" : "REPEATING",
         "maxDuration" : "40 Weeks",
         "messages" : [
@@ -12,14 +12,7 @@
                 "calendarStartOfWeek" : "Sunday",
                 "weekDaysApplicable" : ["Monday" , "Wednesday", "Friday"],
                 "deliverTime" : "10:30"
-            }
-        ]
-    },
-    {
-        "name" : "PREGNANCY_VOICE",
-        "type" : "REPEATING",
-        "maxDuration" : "40 Weeks",
-        "messages" : [
+            },
             {
                 "name" : "Pregnancy Voice Message",
                 "formats" : ["IVR"],
@@ -30,8 +23,9 @@
             }
         ]
     },
+
     {
-        "name" : "CHILD_CARE_TEXT",
+        "name" : "CHILD_CARE",
         "type" : "REPEATING",
         "maxDuration" : "52 Weeks",
         "messages" : [
@@ -43,14 +37,7 @@
                 "calendarStartOfWeek" : "Sunday",
                 "weekDaysApplicable" : ["Monday"],
                 "deliverTime" : "10:30"
-            }
-        ]
-    },
-    {
-        "name" : "CHILD_CARE_VOICE",
-        "type" : "REPEATING",
-        "maxDuration" : "52 Weeks",
-        "messages" : [
+            },
             {
                 "name" : "Child Care Voice Message",
                 "formats" : ["IVR"],

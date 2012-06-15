@@ -4,7 +4,6 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
-import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -22,20 +21,20 @@ public class MobileMidwifeFormTest {
         return MobileMidwifeBuilder.builderWithSampleData(staffId, facilityId).buildMobileMidwifeForm();
     }
 
-    public static void assertFormWithEnrollment(MobileMidwifeForm expectedForm, MobileMidwifeEnrollment actual) {
-        assertThat(actual.getStaffId(), is(expectedForm.getStaffId()));
-        assertThat(actual.getFacilityId(), is(expectedForm.getFacilityId()));
-        assertThat(actual.getPatientId(), is(expectedForm.getMotechId()));
-        assertThat(actual.getServiceType(), is(ServiceType.getServiceType(expectedForm.getServiceType(),expectedForm.getMediumStripingOwnership())));
-        assertThat(actual.getReasonToJoin(), is(expectedForm.getReasonToJoin()));
-        assertThat(actual.getMedium(), is(expectedForm.getMediumStripingOwnership()));
-        assertThat(actual.getDayOfWeek(), is(expectedForm.getDayOfWeek()));
-        assertThat(actual.getTimeOfDay(), is(expectedForm.getTimeOfDay()));
-        assertThat(actual.getLanguage(), is(expectedForm.getLanguage()));
-        assertThat(actual.getLearnedFrom(), is(expectedForm.getLearnedFrom()));
-        assertThat(actual.getPhoneNumber(), is(expectedForm.getMmRegPhone()));
-        assertThat(actual.getPhoneOwnership(), is(expectedForm.getPhoneOwnership()));
-        assertThat(actual.getConsent(), is(expectedForm.getConsent()));
+    public static void assertFormWithEnrollment(MobileMidwifeForm exptectedForm, MobileMidwifeEnrollment actual) {
+        assertThat(actual.getStaffId(), is(exptectedForm.getStaffId()));
+        assertThat(actual.getFacilityId(), is(exptectedForm.getFacilityId()));
+        assertThat(actual.getPatientId(), is(exptectedForm.getMotechId()));
+        assertThat(actual.getServiceType(), is(exptectedForm.getServiceType()));
+        assertThat(actual.getReasonToJoin(), is(exptectedForm.getReasonToJoin()));
+        assertThat(actual.getMedium(), is(exptectedForm.getMediumStripingOwnership()));
+        assertThat(actual.getDayOfWeek(), is(exptectedForm.getDayOfWeek()));
+        assertThat(actual.getTimeOfDay(), is(exptectedForm.getTimeOfDay()));
+        assertThat(actual.getLanguage(), is(exptectedForm.getLanguage()));
+        assertThat(actual.getLearnedFrom(), is(exptectedForm.getLearnedFrom()));
+        assertThat(actual.getPhoneNumber(), is(exptectedForm.getMmRegPhone()));
+        assertThat(actual.getPhoneOwnership(), is(exptectedForm.getPhoneOwnership()));
+        assertThat(actual.getConsent(), is(exptectedForm.getConsent()));
         assertThat(actual.getEnrollmentDateTime().toLocalDate(), is(new LocalDate()));
     }
 

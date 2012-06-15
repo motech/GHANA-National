@@ -5,6 +5,7 @@ import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
@@ -57,7 +58,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
 
     @Test
     public void shouldSendSMSForEnrollmentWithSMSMedium() throws ContentNotFoundException {
-        ServiceType serviceType = ServiceType.CHILD_CARE_TEXT;
+        ServiceType serviceType = ServiceType.CHILD_CARE;
         String patientId = "1234568";
         String mobileNumber = "9845312345";
         String genMessageKey = "childcare-calendar-week-33-Monday";
@@ -73,7 +74,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
 
     @Test
     public void shouldSendUnRegisteredUserIfItIsTheLastEventForTheProgram() throws ContentNotFoundException {
-        ServiceType serviceType = ServiceType.CHILD_CARE_TEXT;
+        ServiceType serviceType = ServiceType.CHILD_CARE;
         String patientId = "1234568";
         String genMessageKey = "childcare-calendar-week-33-Monday";
         Language language = Language.EN;
@@ -100,7 +101,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
 
     @Test
     public void shouldPlaceCallWhenTheIVRCallEventIsReceived() {
-        ServiceType serviceType = ServiceType.PREGNANCY_TEXT;
+        ServiceType serviceType = ServiceType.PREGNANCY;
         String patientId = "1234568";
         String genMessageKey = "33";
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now()).setPatientId(patientId)
@@ -111,7 +112,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
 
         ArgumentCaptor<Map> captor = ArgumentCaptor.forClass(Map.class);
         verify(mockIVRGateway).placeCall(eq(mobileMidwifeEnrollment.getPhoneNumber()), captor.capture());
-        verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, AudioPrompts.fileNameForMobileMidwife(mobileMidwifeEnrollment.getServiceType().getValue(), genMessageKey), Period.weeks(1));
+        verify(mockAllPatientsOutbox).addAudioFileName(patientId, AudioPrompts.fileNameForMobileMidwife(mobileMidwifeEnrollment.getServiceType().getValue(), genMessageKey), Period.weeks(1));
         Map params = captor.getValue();
         assertThat((String) params.get("callback_url"),is("http://localhost:8080/ghana-national-web/outgoing/call?motechId="+patientId+"&ln=EN"));
     }

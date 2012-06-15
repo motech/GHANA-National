@@ -167,25 +167,25 @@ public class RegisterCWCFormHandlerTest {
         assertThat(lastIPTiDate, is(cwcCareHistoryVO.getLastIPTiDate()));
     }
 
-    private void assertMobileMidwifeFormEnrollment(RegisterCWCForm expectedForm, MobileMidwifeEnrollment actual) {
+    private void assertMobileMidwifeFormEnrollment(RegisterCWCForm exptectedForm, MobileMidwifeEnrollment actual) {
 
-        if (expectedForm.isEnrolledForMobileMidwifeProgram()) {
-            assertNotNull(expectedForm.getConsent());
+        if (exptectedForm.isEnrolledForMobileMidwifeProgram()) {
+            assertNotNull(exptectedForm.getConsent());
         }
-        assertThat(actual.getConsent(), is(expectedForm.getConsent()));
-        assertThat(actual.getStaffId(), is(expectedForm.getStaffId()));
-        assertThat(actual.getFacilityId(), is(expectedForm.getFacilityId()));
-        assertThat(actual.getPatientId(), is(expectedForm.getMotechId()));
-        assertThat(actual.getServiceType(), is(ServiceType.getServiceType(expectedForm.getServiceType(),expectedForm.getMediumStripingOwnership())));
-        assertThat(actual.getReasonToJoin(), is(expectedForm.getReasonToJoin()));
-        assertThat(actual.getMedium(), is(expectedForm.getMediumStripingOwnership()));
-        assertThat(actual.getDayOfWeek(), is(expectedForm.getDayOfWeek()));
-        assertThat(actual.getTimeOfDay(), is(expectedForm.getTimeOfDay()));
-        assertThat(actual.getLanguage(), is(expectedForm.getLanguage()));
-        assertThat(actual.getLearnedFrom(), is(expectedForm.getLearnedFrom()));
-        assertThat(actual.getPhoneNumber(), is(expectedForm.getMmRegPhone()));
-        assertThat(actual.getPhoneOwnership(), is(expectedForm.getPhoneOwnership()));
-        assertThat(actual.getEnrollmentDateTime(), is(newDateTime(expectedForm.getRegistrationDate())));
+        assertThat(actual.getConsent(), is(exptectedForm.getConsent()));
+        assertThat(actual.getStaffId(), is(exptectedForm.getStaffId()));
+        assertThat(actual.getFacilityId(), is(exptectedForm.getFacilityId()));
+        assertThat(actual.getPatientId(), is(exptectedForm.getMotechId()));
+        assertThat(actual.getServiceType(), is(exptectedForm.getServiceType()));
+        assertThat(actual.getReasonToJoin(), is(exptectedForm.getReasonToJoin()));
+        assertThat(actual.getMedium(), is(exptectedForm.getMediumStripingOwnership()));
+        assertThat(actual.getDayOfWeek(), is(exptectedForm.getDayOfWeek()));
+        assertThat(actual.getTimeOfDay(), is(exptectedForm.getTimeOfDay()));
+        assertThat(actual.getLanguage(), is(exptectedForm.getLanguage()));
+        assertThat(actual.getLearnedFrom(), is(exptectedForm.getLearnedFrom()));
+        assertThat(actual.getPhoneNumber(), is(exptectedForm.getMmRegPhone()));
+        assertThat(actual.getPhoneOwnership(), is(exptectedForm.getPhoneOwnership()));
+        assertThat(actual.getEnrollmentDateTime(), is(newDateTime(exptectedForm.getRegistrationDate())));
     }
 
     private void setMobileMidwifeEnrollment(RegisterCWCForm registerCWCForm) {
@@ -194,7 +194,7 @@ public class RegisterCWCFormHandlerTest {
                 .consent(true).dayOfWeek(DayOfWeek.Monday).language(Language.EN).learnedFrom(LearnedFrom.FRIEND).format("PERS_VOICE")
                 .timeOfDay(new Time(10, 02)).messageStartWeek("10").phoneNumber("9500012343")
                 .phoneOwnership(PhoneOwnership.PERSONAL).reasonToJoin(ReasonToJoin.FAMILY_FRIEND_DELIVERED)
-                .serviceType(ServiceType.CHILD_CARE_TEXT)
+                .serviceType(ServiceType.CHILD_CARE)
                 .buildRegisterCWCForm(registerCWCForm);
 
     }

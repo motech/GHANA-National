@@ -76,6 +76,6 @@ public class MobileMidwifeCampaignEventHandler {
     }
 
     private void placeMobileMidwifeMessagesToOutbox(MobileMidwifeEnrollment enrollment, String messageKey) {
-        allPatientsOutbox.addMobileMidwifeMessage(enrollment.getPatientId(), AudioPrompts.fileNameForMobileMidwife(enrollment.getServiceType().getValue(), messageKey), Period.weeks(1));
+        allPatientsOutbox.addAudioFileName(enrollment.getPatientId(), AudioPrompts.fileNameForMobileMidwife(enrollment.getServiceType().getValue(), messageKey), Period.weeks(1));
     }
 }

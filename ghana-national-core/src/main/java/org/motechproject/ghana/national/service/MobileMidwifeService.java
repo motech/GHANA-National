@@ -64,12 +64,12 @@ public class MobileMidwifeService {
 
     public void rollover(String motechId, DateTime enrollmentDate) {
         MobileMidwifeEnrollment activeMobileMidwifeEnrollment = findActiveBy(motechId);
-        if (activeMobileMidwifeEnrollment == null || activeMobileMidwifeEnrollment.getServiceType().equals(ServiceType.CHILD_CARE_TEXT))
+        if (activeMobileMidwifeEnrollment == null || activeMobileMidwifeEnrollment.getServiceType().equals(ServiceType.CHILD_CARE))
             return;
         unRegister(motechId);
         MobileMidwifeEnrollment newMobileMidwifeEnrollment = MobileMidwifeEnrollment.cloneNew(activeMobileMidwifeEnrollment);
         newMobileMidwifeEnrollment.setEnrollmentDateTime(enrollmentDate);
-        newMobileMidwifeEnrollment.setServiceType(ServiceType.CHILD_CARE_TEXT);
+        newMobileMidwifeEnrollment.setServiceType(ServiceType.CHILD_CARE);
         newMobileMidwifeEnrollment.setMessageStartWeek("41");
         register(newMobileMidwifeEnrollment);
     }
