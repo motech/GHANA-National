@@ -27,6 +27,13 @@
                 <ref bean="SMSTextContentSeed"/>
                 <ref bean="mobileMidwifeMessageSeed"/>
                 <ref bean="decisionTreeSeed"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="seedAudioFiles" class="org.motechproject.ghana.national.tools.seed.SeedLoader">
+        <constructor-arg>
+            <list>
                 <ref bean="ivrContentSeed"/>
             </list>
         </constructor-arg>

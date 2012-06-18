@@ -4,7 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.motechproject.cmslite.api.model.StreamContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
-import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,24 +22,32 @@ public class IVRContentSeed extends Seed {
     @Autowired
     CMSLiteService cmsLiteService;
 
-     Logger logger = LoggerFactory.getLogger(IVRContentSeed.class);
+    Logger logger = LoggerFactory.getLogger(IVRContentSeed.class);
 
     @Override
     protected void load() {
         FileInputStream audioInputStream = null;
         CheckedInputStream checkedInputStream = null;
-        try {
-            Collection<File> files = FileUtils.listFiles(new File("ghana-national-tools/src/main/resources/test-data"), new String[]{"wav"}, false);
-            for (File file : files) {
-                audioInputStream = new FileInputStream(file);
-                checkedInputStream = new CheckedInputStream(audioInputStream, new Adler32());
 
-                cmsLiteService.addContent(new StreamContent(Language.EN.getValue(), file.getName(),
-                        audioInputStream, String.valueOf(checkedInputStream.getChecksum().getValue()), "audio/x-wav;charset=UTF-8"));
+        try {
+            File[] files = new File("audio").listFiles();
+            assert files != null;
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    Collection<File> audioFiles = FileUtils.listFiles(file, new String[]{"wav"}, false);
+                    for (File audioFile : audioFiles) {
+                        audioInputStream = new FileInputStream(audioFile);
+                        checkedInputStream = new CheckedInputStream(audioInputStream, new Adler32());
+                        cmsLiteService.addContent(new StreamContent(file.getName(), audioFile.getName(),
+                                audioInputStream, String.valueOf(checkedInputStream.getChecksum().getValue()), "audio/x-wav;charset=UTF-8"));
+                        audioInputStream.close();
+                        checkedInputStream.close();
+                    }
+                }
             }
 
         } catch (Exception e) {
-           logger.error("Exception occurred while uploading audio files to cms", e);
+            logger.error("Exception occurred while uploading audio files to cms", e);
         } finally {
             IOUtils.closeQuietly(audioInputStream);
             IOUtils.closeQuietly(checkedInputStream);
