@@ -1,7 +1,7 @@
 package org.motechproject.ghana.national.gateway;
 
-import org.motechproject.gateway.OutboundEventGateway;
-import org.motechproject.model.MotechEvent;
+import org.motechproject.scheduler.domain.MotechEvent;
+import org.motechproject.scheduler.gateway.OutboundEventGateway;
 import org.motechproject.server.event.EventListener;
 import org.motechproject.server.event.EventListenerRegistry;
 import org.springframework.beans.factory.annotation.Autowired;

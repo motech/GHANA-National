@@ -2,8 +2,8 @@ package org.motechproject.ghana.national.domain;
 
 import org.joda.time.DateTime;
 import org.motechproject.appointments.api.EventKeys;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.scheduler.MotechSchedulerService;
+import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.scheduletracking.api.domain.MilestoneAlert;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 
@@ -16,9 +16,10 @@ public class AlertDetails {
     private String milestoneName;
     private DateTime windowStart;
 
-    private AlertDetails(){}
+    private AlertDetails() {
+    }
 
-    public static AlertDetails createFromSchedule(MilestoneEvent milestoneEvent){
+    public static AlertDetails createFromSchedule(MilestoneEvent milestoneEvent) {
         AlertDetails alertDetails = new AlertDetails();
         alertDetails.scheduleName = milestoneEvent.getScheduleName();
         alertDetails.window = AlertWindow.byPlatformName(milestoneEvent.getWindowName());
@@ -28,7 +29,7 @@ public class AlertDetails {
         return alertDetails;
     }
 
-    public static AlertDetails createFromAppointment(MotechEvent motechEvent){
+    public static AlertDetails createFromAppointment(MotechEvent motechEvent) {
         AlertDetails alertDetails = new AlertDetails();
         Map<String, Object> parameters = motechEvent.getParameters();
 
@@ -72,14 +73,14 @@ public class AlertDetails {
         return null;
     }
 
-    private DateTime windowStart(AlertWindow alertWindow, MilestoneAlert milestoneAlert){
-        if(AlertWindow.UPCOMING.equals(alertWindow))
+    private DateTime windowStart(AlertWindow alertWindow, MilestoneAlert milestoneAlert) {
+        if (AlertWindow.UPCOMING.equals(alertWindow))
             return milestoneAlert.getEarliestDateTime();
-        if(AlertWindow.DUE.equals(alertWindow))
+        if (AlertWindow.DUE.equals(alertWindow))
             return milestoneAlert.getDueDateTime();
-        if(AlertWindow.OVERDUE.equals(alertWindow))
+        if (AlertWindow.OVERDUE.equals(alertWindow))
             return milestoneAlert.getLateDateTime();
-        if(AlertWindow.MAX.equals(alertWindow))
+        if (AlertWindow.MAX.equals(alertWindow))
             return milestoneAlert.getDefaultmentDateTime();
         return null;
     }

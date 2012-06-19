@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
-import org.motechproject.model.MotechEvent;
+import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
 
 import java.lang.annotation.Annotation;
@@ -39,9 +39,9 @@ public class FacilitiesDefaultMessageHandlerTest {
         assertTrue(annotations[0] instanceof MotechListener);
         assertThat(((MotechListener) annotations[0]).subjects(), is(new String[]{Constants.FACILITIES_DEFAULT_MESSAGE_SUBJECT}));
     }
-    
+
     @Test
-    public void shouldHandleDefaultMessageDispatch(){
+    public void shouldHandleDefaultMessageDispatch() {
         handler.handleAlert(null);
         verify(defaultMessageHandler).handleDefaultMessagesForFacility();
     }

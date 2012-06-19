@@ -1,7 +1,7 @@
 package org.motechproject.ghana.national.handler;
 
 import org.motechproject.ghana.national.exception.EventHandlerException;
-import org.motechproject.model.MotechEvent;
+import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
 import org.motechproject.server.event.annotations.MotechListener;

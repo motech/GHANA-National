@@ -8,7 +8,7 @@ import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.model.MotechEvent;
+import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 
 import java.util.HashMap;
@@ -41,7 +41,7 @@ public class CareScheduleHandlerTest {
     public void setUp() throws Exception {
         initMocks(this);
         careScheduleHandlerSpy = spy(new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSmsGateway,
-                mockVoiceGateway, mockAllObservations, mockAllMobileMidwifeEnrollments,mockAllPatientsOutbox, mockScheduleJsoneReader));
+                mockVoiceGateway, mockAllObservations, mockAllMobileMidwifeEnrollments, mockAllPatientsOutbox, mockScheduleJsoneReader));
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendAggregatedMessageToPatient(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToPatientForAppointment(Matchers.<String>any(), Matchers.<MotechEvent>any());

@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.*;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
-import org.motechproject.model.MotechEvent;
+import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -108,13 +108,13 @@ public class MobileFormHandlerTest {
         final PNCBabyForm pncBabyForm = new PNCBabyForm();
         final PNCMotherForm pncMotherForm = new PNCMotherForm();
         final PregnancyTerminationForm pregnancyTerminationForm = new PregnancyTerminationForm();
-        final RegisterCWCForm registerCWCForm= new RegisterCWCForm();
-        final TTVisitForm ttVisitForm= new TTVisitForm();
+        final RegisterCWCForm registerCWCForm = new RegisterCWCForm();
+        final TTVisitForm ttVisitForm = new TTVisitForm();
 
         MotechEvent event = new MotechEvent("handle.valid.xforms.group", new HashMap<String, Object>() {{
             put("formBeanGroup", new FormBeanGroup(Arrays.<FormBean>asList(registerClientForm, registerANCForm, ancVisitForm, careHistoryForm, clientDeathForm,
                     clientQueryForm, cwcVisitForm, deliveryForm, deliveryNotificationForm, editClientForm, mobileMidwifeForm, outPatientVisitForm,
-                    pncBabyForm, pncMotherForm,pregnancyTerminationForm,registerCWCForm,ttVisitForm)));
+                    pncBabyForm, pncMotherForm, pregnancyTerminationForm, registerCWCForm, ttVisitForm)));
         }});
 
         mobileFormHandler.handleFormEvent(event);

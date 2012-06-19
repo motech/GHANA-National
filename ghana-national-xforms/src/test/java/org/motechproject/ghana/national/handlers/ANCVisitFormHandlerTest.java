@@ -15,7 +15,6 @@ import org.motechproject.ghana.national.service.MotherVisitService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.service.request.ANCVisitRequest;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
@@ -24,7 +23,6 @@ import org.motechproject.mrs.model.MRSUser;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
@@ -123,7 +121,7 @@ public class ANCVisitFormHandlerTest {
         when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
-        
+
         handler.handleFormEvent(ancVisitForm);
 
         ArgumentCaptor<ANCVisitRequest> captor = ArgumentCaptor.forClass(ANCVisitRequest.class);

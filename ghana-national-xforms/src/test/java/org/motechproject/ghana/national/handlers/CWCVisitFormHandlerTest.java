@@ -14,11 +14,11 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.vo.CWCVisit;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.scheduler.domain.MotechEvent;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
@@ -99,7 +99,7 @@ public class CWCVisitFormHandlerTest {
         when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(new Patient(new MRSPatient(motechId, new MRSPerson(), mrsFacility)));
-        
+
         handler.handleFormEvent(cwcVisitForm);
 
         ArgumentCaptor<CWCVisit> captor = ArgumentCaptor.forClass(CWCVisit.class);

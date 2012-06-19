@@ -4,9 +4,9 @@ import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
+import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @Autowired
     public CareScheduleAlerts(PatientService patientService, FacilityService facilityService, SMSGateway smsGateway,
                               VoiceGateway voiceGateway, AllObservations allObservations,
-                              AllMobileMidwifeEnrollments allMobileMidwifeEnrollments,AllPatientsOutbox allPatientsOutbox,
+                              AllMobileMidwifeEnrollments allMobileMidwifeEnrollments, AllPatientsOutbox allPatientsOutbox,
                               ScheduleJsonReader scheduleJsonReader) {
         super(patientService, facilityService, smsGateway, voiceGateway, allObservations, allMobileMidwifeEnrollments, allPatientsOutbox, scheduleJsonReader);
     }
