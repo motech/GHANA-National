@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.handlers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.ANCVisitForm;
 import org.motechproject.ghana.national.bean.CWCVisitForm;
@@ -27,7 +28,6 @@ import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,8 +41,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/applicationContext-xforms-test.xml")
 public class MobileFormHandlerTest {
-    private MobileFormHandler mobileFormHandler;
-
     @Mock
     private PatientRegistrationFormHandler patientRegistrationFormHandler;
     @Mock
@@ -78,27 +76,12 @@ public class MobileFormHandlerTest {
     @Mock
     private TTVisitFormHandler ttVisitFormHandler;
 
+    @InjectMocks
+    private MobileFormHandler mobileFormHandler = new MobileFormHandler();
+
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        mobileFormHandler = new MobileFormHandler();
-        ReflectionTestUtils.setField(mobileFormHandler, "patientRegistrationFormHandler", patientRegistrationFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "registerANCFormHandler", registerANCFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "ancVisitFormHandler", ancVisitFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "careHistoryFormHandler", careHistoryFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "clientDeathFormHandler", clientDeathFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "clientQueryFormHandler", clientQueryFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "cwcVisitFormHandler", cwcVisitFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "deliveryFormHandler", deliveryFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "deliveryNotificationFormHandler", deliveryNotificationFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "editPatientFormHandler", editPatientFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "mobileMidwifeFormHandler", mobileMidwifeFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "outPatientVisitFormHandler", outPatientVisitFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "pncBabyFormHandler", pncBabyFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "pncMotherFormHandler", pncMotherFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "pregnancyTerminationFormHandler", pregnancyTerminationFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "registerCWCFormHandler", registerCWCFormHandler);
-        ReflectionTestUtils.setField(mobileFormHandler, "ttVisitFormHandler", ttVisitFormHandler);
     }
 
     @Test
