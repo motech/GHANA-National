@@ -2,7 +2,7 @@ package org.motechproject.ghana.national.handler;
 
 import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.exception.EventHandlerException;
-import org.motechproject.model.MotechEvent;
+import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

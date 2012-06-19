@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.exception.EventHandlerException;
-import org.motechproject.model.MotechEvent;
+import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -19,7 +19,21 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_DELIVERY;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_BCG;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_IPT_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_MEASLES_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_OPV_0;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_OPV_OTHERS;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PENTA;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_ROTAVIRUS;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_YELLOW_FEVER;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_CHILD_1;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_CHILD_2;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_CHILD_3;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_MOTHER_1;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 
 public class ScheduleHandlerTest {
 

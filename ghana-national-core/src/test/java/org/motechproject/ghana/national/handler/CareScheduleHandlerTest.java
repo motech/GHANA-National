@@ -5,17 +5,48 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.AlertType;
-import org.motechproject.ghana.national.repository.*;
+import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
+import org.motechproject.ghana.national.repository.AllObservations;
+import org.motechproject.ghana.national.repository.AllPatientsOutbox;
+import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.ghana.national.repository.ScheduleJsonReader;
+import org.motechproject.ghana.national.repository.VoiceGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.model.MotechEvent;
+import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 
 import java.util.HashMap;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.domain.SmsTemplateKeys.*;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.ANC_IPTp_VACCINATION_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.ANC_VISIT_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.BCG_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.CWC_IPTi_VACCINATION_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.CWC_MEASLES_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.CWC_OPV_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.CWC_PENTA_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.CWC_YF_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_ANC_VISIT;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_BCG;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_IPT;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_IPTI;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_MEASLES;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_OPV;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_PENTA;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_PNC_BABY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_PNC_MOTHER;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_TT;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_YELLOW_FEVER;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PNC_CHILD_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PNC_MOTHER_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PREGNANCY_ALERT_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.TT_VACCINATION_SMS_KEY;
 
 public class CareScheduleHandlerTest {
 

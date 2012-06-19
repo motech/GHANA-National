@@ -2,8 +2,8 @@ package org.motechproject.ghana.national.domain;
 
 import org.joda.time.DateTime;
 import org.motechproject.appointments.api.EventKeys;
-import org.motechproject.model.MotechEvent;
 import org.motechproject.scheduler.MotechSchedulerService;
+import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.scheduletracking.api.domain.MilestoneAlert;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 
