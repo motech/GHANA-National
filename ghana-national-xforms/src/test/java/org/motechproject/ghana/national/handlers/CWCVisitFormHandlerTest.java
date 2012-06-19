@@ -101,7 +101,7 @@ public class CWCVisitFormHandlerTest {
         when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(new Patient(new MRSPatient(motechId, new MRSPerson(), mrsFacility)));
-        
+
         handler.handleFormEvent(cwcVisitForm);
 
         ArgumentCaptor<CWCVisit> captor = ArgumentCaptor.forClass(CWCVisit.class);

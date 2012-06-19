@@ -117,7 +117,7 @@ public class MobileMidwifeCampaignEventHandlerTest {
         verify(mockIVRGateway).placeCall(eq(mobileMidwifeEnrollment.getPhoneNumber()), captor.capture());
         verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, AudioPrompts.fileNameForMobileMidwife(mobileMidwifeEnrollment.getServiceType().getValue(), genMessageKey), Period.weeks(1));
         Map params = captor.getValue();
-        assertThat((String) params.get("callback_url"),is("http://localhost:8080/ghana-national-web/outgoing/call?motechId="+patientId+"&ln=EN"));
+        assertThat((String) params.get("callback_url"), is("http://localhost:8080/ghana-national-web/outgoing/call?motechId=" + patientId + "&ln=EN"));
     }
 
     private MotechEvent motechEvent(String externalId, String campaignName, String genMessageKey) {

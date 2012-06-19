@@ -95,9 +95,9 @@ public abstract class BaseScheduleHandler {
     }
 
     private void dispatchVoiceMessageToAggregator(AlertDetails alertDetails, Patient patient, AlertType alertType, Period messageValidity) {
-        if(AlertType.CARE.equals(alertType))
+        if (AlertType.CARE.equals(alertType))
             voiceGateway.dispatchCareMsgToAggregator(AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId(), messageValidity, alertDetails.getWindow(), alertDetails.getWindowStart());
-        else if(AlertType.APPOINTMENT.equals(alertType))
+        else if (AlertType.APPOINTMENT.equals(alertType))
             voiceGateway.dispatchAppointmentMsgToAggregator(AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId(), messageValidity);
     }
 
@@ -122,9 +122,9 @@ public abstract class BaseScheduleHandler {
     }
 
     private void placeVoiceMessageIntoOutbox(AlertDetails alertDetails, Patient patient, Period messageValidity, AlertType alertType) {
-        if(AlertType.APPOINTMENT.equals(alertType))
+        if (AlertType.APPOINTMENT.equals(alertType))
             allPatientsOutbox.addAppointmentMessage(patient.getMotechId(), AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), messageValidity);
-        else if(AlertType.CARE.equals(alertType))
+        else if (AlertType.CARE.equals(alertType))
             allPatientsOutbox.addCareMessage(patient.getMotechId(), AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), messageValidity, alertDetails.getWindow(), alertDetails.getWindowStart());
     }
 

@@ -51,7 +51,7 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @Autowired
     public CareScheduleAlerts(PatientService patientService, FacilityService facilityService, SMSGateway smsGateway,
                               VoiceGateway voiceGateway, AllObservations allObservations,
-                              AllMobileMidwifeEnrollments allMobileMidwifeEnrollments,AllPatientsOutbox allPatientsOutbox,
+                              AllMobileMidwifeEnrollments allMobileMidwifeEnrollments, AllPatientsOutbox allPatientsOutbox,
                               ScheduleJsonReader scheduleJsonReader) {
         super(patientService, facilityService, smsGateway, voiceGateway, allObservations, allMobileMidwifeEnrollments, allPatientsOutbox, scheduleJsonReader);
     }

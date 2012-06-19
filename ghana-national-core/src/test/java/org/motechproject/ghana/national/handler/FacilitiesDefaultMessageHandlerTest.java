@@ -39,9 +39,9 @@ public class FacilitiesDefaultMessageHandlerTest {
         assertTrue(annotations[0] instanceof MotechListener);
         assertThat(((MotechListener) annotations[0]).subjects(), is(new String[]{Constants.FACILITIES_DEFAULT_MESSAGE_SUBJECT}));
     }
-    
+
     @Test
-    public void shouldHandleDefaultMessageDispatch(){
+    public void shouldHandleDefaultMessageDispatch() {
         handler.handleAlert(null);
         verify(defaultMessageHandler).handleDefaultMessagesForFacility();
     }

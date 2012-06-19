@@ -123,7 +123,7 @@ public class ANCVisitFormHandlerTest {
         when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
         when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
-        
+
         handler.handleFormEvent(ancVisitForm);
 
         ArgumentCaptor<ANCVisitRequest> captor = ArgumentCaptor.forClass(ANCVisitRequest.class);
