@@ -26,10 +26,7 @@ import org.motechproject.server.messagecampaign.domain.message.CampaignMessage;
 import org.motechproject.server.messagecampaign.service.CampaignEnrollmentRecord;
 import org.motechproject.server.messagecampaign.service.CampaignEnrollmentsQuery;
 import org.motechproject.server.messagecampaign.service.MessageCampaignService;
-import org.quartz.CronTrigger;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.SchedulerException;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -109,7 +106,7 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
         allPatientsOutbox.addCareMessage(patientId, "care_clip", Period.days(7), AlertWindow.DUE, DateTime.now());
         service.unRegister(patientId);
         List<OutboundVoiceMessage> remainingMessages = voiceOutboxService.getMessages(patientId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
-        assertEquals(1,remainingMessages.size());
+        assertEquals(1, remainingMessages.size());
         assertFalse(remainingMessages.get(0).getParameters().get("TYPE").equals(AlertType.MOBILE_MIDWIFE));
         assertTrue(remainingMessages.get(0).getParameters().get("AUDIO_CLIP_NAME").equals("care_clip"));
     }
@@ -131,8 +128,8 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
         String messageKey = getMessageKey(campaignName,serviceType);
         String jobId = String.format("%s-MessageJob.%s.%s.%s", INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT, campaignName, externalId, messageKey);
         try {
-            JobDetail jobDetail = schedulerFactoryBean.getScheduler().getJobDetail(jobId, "default");
-            CronTrigger cronTrigger = (CronTrigger) schedulerFactoryBean.getScheduler().getTrigger(jobId, "default");
+            JobDetail jobDetail = schedulerFactoryBean.getScheduler().getJobDetail(new JobKey(jobId, "default"));
+            CronTrigger cronTrigger = (CronTrigger) schedulerFactoryBean.getScheduler().getTrigger(new TriggerKey(jobId, "default"));
             assertNotNull(cronTrigger.getCronExpression());
             JobDataMap map = jobDetail.getJobDataMap();
             assertThat(map.get(EventKeys.EXTERNAL_ID_KEY).toString(), is(externalId));

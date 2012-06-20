@@ -18,6 +18,7 @@ import org.motechproject.scheduletracking.api.service.impl.*;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
@@ -81,8 +82,8 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         }
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
         for (String jobGroup : scheduler.getJobGroupNames()) {
-            for (String jobName : scheduler.getJobNames(jobGroup)) {
-                scheduler.deleteJob(jobName, jobGroup);
+            for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(jobGroup))) {
+                scheduler.deleteJob(jobKey);
             }
         }
     }
@@ -90,14 +91,14 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     protected List<TestJobDetail> captureAlertsForNextMilestone(String enrollmentId) throws SchedulerException {
         final Scheduler scheduler = schedulerFactoryBean.getScheduler();
         final String jobGroupName = MotechSchedulerServiceImpl.JOB_GROUP_NAME;
-        String[] jobNames = scheduler.getJobNames(jobGroupName);
+        Set<JobKey> jobNames = scheduler.getJobKeys(GroupMatcher.jobGroupEquals(jobGroupName));
         List<TestJobDetail> alertTriggers = new ArrayList<TestJobDetail>();
 
-        for (String jobName : jobNames) {
-            if (jobName.contains(format("%s-%s", EventSubjects.MILESTONE_ALERT, enrollmentId))) {
-                Trigger[] triggersOfJob = scheduler.getTriggersOfJob(jobName, jobGroupName);
-                assertEquals(1, triggersOfJob.length);
-                alertTriggers.add(new TestJobDetail((SimpleTrigger) triggersOfJob[0], scheduler.getJobDetail(jobName, jobGroupName)));
+        for (JobKey jobKey : jobNames) {
+            if (jobKey.getName().contains(format("%s-%s", EventSubjects.MILESTONE_ALERT, enrollmentId))) {
+                List<? extends Trigger> triggersOfJob = scheduler.getTriggersOfJob(jobKey);
+                assertEquals(1, triggersOfJob.size());
+                alertTriggers.add(new TestJobDetail((SimpleTrigger) triggersOfJob.get(0), scheduler.getJobDetail(jobKey)));
             }
         }
         return alertTriggers;
@@ -158,7 +159,7 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         Collections.sort(alertJobDetails, new Comparator<TestJobDetail>() {
             @Override
             public int compare(TestJobDetail testJobDetail1, TestJobDetail testJobDetail2) {
-                return extractIndexFromAlertName(testJobDetail1.trigger().getName()).compareTo(extractIndexFromAlertName(testJobDetail2.trigger().getName()));
+                return extractIndexFromAlertName(testJobDetail1.trigger().getJobKey().getName()).compareTo(extractIndexFromAlertName(testJobDetail2.trigger().getJobKey().getName()));
             }
         });
     }

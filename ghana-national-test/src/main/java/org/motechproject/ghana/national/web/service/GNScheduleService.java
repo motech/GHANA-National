@@ -16,6 +16,7 @@ import org.motechproject.scheduletracking.api.events.constants.EventDataKeys;
 import org.motechproject.scheduletracking.api.events.constants.EventSubjects;
 import org.motechproject.scheduletracking.api.repository.AllEnrollments;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
@@ -104,13 +105,13 @@ public class GNScheduleService {
     private List<Alert> captureAlertsForNextMilestone(String enrollmentId) throws SchedulerException {
         final Scheduler scheduler = schedulerFactoryBean.getScheduler();
         final String jobGroupName = MotechSchedulerServiceImpl.JOB_GROUP_NAME;
-        String[] jobNames = scheduler.getJobNames(jobGroupName);
+        Set<JobKey> jobNames = scheduler.getJobKeys(GroupMatcher.jobGroupEquals(jobGroupName));
         List<org.motechproject.ghana.national.web.domain.JobDetail> alertTriggers = new ArrayList<JobDetail>();
 
-        for (String jobName : jobNames) {
-            if (jobName.contains(format("%s-%s", EventSubjects.MILESTONE_ALERT, enrollmentId))) {
-                Trigger[] triggersOfJob = scheduler.getTriggersOfJob(jobName, jobGroupName);
-                alertTriggers.add(new org.motechproject.ghana.national.web.domain.JobDetail((SimpleTrigger) triggersOfJob[0], scheduler.getJobDetail(jobName, jobGroupName)));
+        for (JobKey jobKey : jobNames) {
+            if (jobKey.getName().contains(format("%s-%s", EventSubjects.MILESTONE_ALERT, enrollmentId))) {
+                List<? extends Trigger> triggersOfJob = scheduler.getTriggersOfJob(jobKey);
+                alertTriggers.add(new org.motechproject.ghana.national.web.domain.JobDetail((SimpleTrigger) triggersOfJob.get(0), scheduler.getJobDetail(jobKey)));
             }
         }
         return createActualTestAlertTimes(alertTriggers);
@@ -139,7 +140,7 @@ public class GNScheduleService {
         Collections.sort(alertJobDetails, new Comparator<org.motechproject.ghana.national.web.domain.JobDetail>() {
             @Override
             public int compare(org.motechproject.ghana.national.web.domain.JobDetail jobDetail1, org.motechproject.ghana.national.web.domain.JobDetail jobDetail2) {
-                return extractIndexFromAlertName(jobDetail1.trigger().getName()).compareTo(extractIndexFromAlertName(jobDetail2.trigger().getName()));
+                return extractIndexFromAlertName(jobDetail1.trigger().getJobKey().getName()).compareTo(extractIndexFromAlertName(jobDetail2.trigger().getJobKey().getName()));
             }
         });
     }
