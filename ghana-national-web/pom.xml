@@ -36,12 +36,6 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
-            <artifactId>ghana-national-functional-tests</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject</groupId>
             <artifactId>ghana-national-xforms</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

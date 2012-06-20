@@ -2,6 +2,9 @@ package org.motechproject.ghana.national.handler;
 
 import org.joda.time.Period;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
+import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
+import org.motechproject.ghana.national.builder.IVRRequestBuilder;
+import org.motechproject.ghana.national.builder.RetryRequestBuilder;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -11,9 +14,11 @@ import org.motechproject.ghana.national.repository.IVRGateway;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.retry.service.RetryService;
 import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.server.messagecampaign.EventKeys;
+import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +45,11 @@ public class MobileMidwifeCampaignEventHandler {
     private PatientService patientService;
     @Autowired
     private IVRGateway ivrGateway;
-    @Value("#{ghanaNationalProperties['host']}")
-    private String host;
-    @Value("#{ghanaNationalProperties['port']}")
-    private String port;
-    @Value("#{ghanaNationalProperties['context.path']}")
-    private String contextPath;
+    @Autowired
+    private IVRCallbackUrlBuilder ivrCallbackUrlBuilder;
+    @Autowired
+    private RetryService retryService;
+
 
     @MotechListener(subjects = {MESSAGE_CAMPAIGN_SEND_EVENT_SUBJECT})
     public void sendProgramMessage(MotechEvent event) {
@@ -64,14 +68,13 @@ public class MobileMidwifeCampaignEventHandler {
         }
     }
 
-    public void sendMessage(MobileMidwifeEnrollment enrollment, String messageKey) throws ContentNotFoundException {
+    private void sendMessage(MobileMidwifeEnrollment enrollment, String messageKey) throws ContentNotFoundException {
         if (Medium.SMS.equals(enrollment.getMedium())) {
             smsGateway.dispatchSMS(messageKey, enrollment.getLanguage().name(), enrollment.getPhoneNumber());
         } else if (Medium.VOICE.equals(enrollment.getMedium())) {
             placeMobileMidwifeMessagesToOutbox(enrollment, messageKey);
-            HashMap<String, String> params = new HashMap<String, String>();
-            params.put("callback_url", "http://" + host + ":" + port + "/" + contextPath + "/outgoing/call?motechId=" + enrollment.getPatientId() + "&ln=" + enrollment.getLanguage().name());
-            ivrGateway.placeCall(enrollment.getPhoneNumber(), params);
+            retryService.schedule(RetryRequestBuilder.ivrRetryReqest(enrollment.getPatientId(), DateUtil.now()));
+            ivrGateway.placeCall(enrollment.getPhoneNumber(), IVRRequestBuilder.build(ivrCallbackUrlBuilder.outboundCallUrl(enrollment.getPatientId(), enrollment.getLanguage().name())));
         }
     }
 

@@ -11,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.Map;
+
+import static org.motechproject.ghana.national.domain.ivr.AudioPrompts.*;
+import static org.motechproject.ghana.national.domain.mobilemidwife.Language.*;
 
 @Component("decisionTreeSeed")
 public class DecisionTreeSeed extends Seed {
@@ -23,30 +27,45 @@ public class DecisionTreeSeed extends Seed {
     @Override
     protected void load() {
         allTrees.removeAll();
-
-        HashMap<String, ITransition> languageTransition = new HashMap<String, ITransition>();
-        //TODO: Should redirect to another app/channel
-        Transition customerCareTransition = new Transition().setDestinationNode(new Node().addPrompts(new TextToSpeechPrompt().setMessage("Redirecting to Customer Care")));
-        HashMap<String, ITransition> motechIdTransitions = new HashMap<String, ITransition>();
-        motechIdTransitions.put(NINE_DIGITS, new Transition().setDestinationNode(new Node().addPrompts(new TextToSpeechPrompt().setMessage("Redirecting to Customer"))));
-
-        final Language[] languages = Language.values();
-        for (int count = 1; count <= languages.length; count++) {
-            final Language language = languages[count - 1];
-            HashMap<String, ITransition> welcomeMessageTransitions = new HashMap<String, ITransition>();
-            welcomeMessageTransitions.put("0", customerCareTransition);
-            welcomeMessageTransitions.put("1", new Transition().setDestinationNode(new Node().addPrompts(audioPromptFor(AudioPrompts.MOTECHID_PROMPT, language)).setTransitions(motechIdTransitions)));
-            welcomeMessageTransitions.put("2", customerCareTransition);
-
-            languageTransition.put(String.valueOf(count), new Transition().setDestinationNode(new Node().addPrompts(audioPromptFor(AudioPrompts.LANGUAGE_PROMPT, language)).setTransitions(welcomeMessageTransitions)));
-        }
-
-        languageTransition.put("*", customerCareTransition);
         Tree tree = new Tree();
         tree.setName("mm");
-        tree.setRootNode(new Node().addPrompts(audioPromptFor(AudioPrompts.WELCOME_PROMPT, Language.EN)).setTransitions(languageTransition));
-
+        tree.setRootNode(prompt(LANGUAGE_PROMPT, EN).setTransitions(chooseLanguageTransitions()));
         allTrees.addOrReplace(tree);
+    }
+
+
+    private Map<String, ITransition> chooseLanguageTransitions(){
+        Map<String, ITransition> transitions = new HashMap<String, ITransition>();
+        transitions.put("1", new Transition().setDestinationNode(prompt(OPTIONS_PROMPT, EN).setTransitions(chooseActionTransition(EN))));
+        transitions.put("2", new Transition().setDestinationNode(prompt(OPTIONS_PROMPT, KAS).setTransitions(chooseActionTransition(KAS))));
+        transitions.put("3", new Transition().setDestinationNode(prompt(OPTIONS_PROMPT, NAN).setTransitions(chooseActionTransition(NAN))));
+        transitions.put("4", new Transition().setDestinationNode(prompt(OPTIONS_PROMPT, FAN).setTransitions(chooseActionTransition(FAN))));
+        transitions.put("*", customerCareTransition());
+        return transitions;
+    }
+
+    private Map<String, ITransition> chooseActionTransition(Language language){
+        Map<String, ITransition> transitions = new HashMap<String, ITransition>();
+        transitions.put("1", new Transition().setDestinationNode(prompt(MOTECHID_PROMPT, language).setTransitions(validateMotechIdTransition(language))));
+        transitions.put("0", customerCareTransition());
+        transitions.put("2", customerCareTransition());
+        transitions.put("*", customerCareTransition());
+        return transitions;
+    }
+
+    private Map<String, ITransition> validateMotechIdTransition(Language language) {
+        Map<String, ITransition> transitions = new HashMap<String, ITransition>();
+        transitions.put("*", new MotechIdValidationTransition());
+        return transitions;
+    }
+
+    private Node prompt(AudioPrompts clipName, Language language) {
+        return new Node().addPrompts(audioPromptFor(clipName, language));
+    }
+
+
+    private Transition customerCareTransition() {
+        return new Transition().setDestinationNode(new Node().addPrompts(new TextToSpeechPrompt().setMessage("Redirecting to Customer Care")));
     }
 
     private AudioPrompt audioPromptFor(AudioPrompts prompt, Language language) {

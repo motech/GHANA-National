@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="2.2">
+<jmeterTestPlan version="1.2" properties="2.3">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -15,38 +15,38 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="no_of_field_workers" elementType="Argument">
             <stringProp name="Argument.name">no_of_field_workers</stringProp>
-            <stringProp name="Argument.value">25</stringProp>
+            <stringProp name="Argument.value">10</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="no_of_test_loops" elementType="Argument">
             <stringProp name="Argument.name">no_of_test_loops</stringProp>
-            <stringProp name="Argument.value">20</stringProp>
+            <stringProp name="Argument.value">3</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="patient_fname_prefix" elementType="Argument">
             <stringProp name="Argument.name">patient_fname_prefix</stringProp>
-            <stringProp name="Argument.value">csk</stringProp>
+            <stringProp name="Argument.value">deepans</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="staff_first_name" elementType="Argument">
             <stringProp name="Argument.name">staff_first_name</stringProp>
-            <stringProp name="Argument.value">apple</stringProp>
+            <stringProp name="Argument.value">motechstaff</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="forms_to_be_tested" elementType="Argument">
             <stringProp name="Argument.name">forms_to_be_tested</stringProp>
-            <stringProp name="Argument.value">RegisterANC</stringProp>
+            <stringProp name="Argument.value">RegisterClient-other,RegisterCWC</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">RegisterClient-other,RegisterANC,RegisterClient-WithANCAndMM,RegisterCWC,RegisterClient-WithCWCAndMM,CareHistory-ANC,ClientQuery,GeneralQuery</stringProp>
           </elementProp>
           <elementProp name="load_pre_printed_ids_from_file" elementType="Argument">
             <stringProp name="Argument.name">load_pre_printed_ids_from_file</stringProp>
-            <stringProp name="Argument.value">true</stringProp>
+            <stringProp name="Argument.value">false</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="form_submission_date" elementType="Argument">
             <stringProp name="Argument.name">form_submission_date</stringProp>
-            <stringProp name="Argument.value">2012-05-10</stringProp>
+            <stringProp name="Argument.value">2012-06-13</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="host" elementType="Argument">
@@ -61,7 +61,7 @@
           </elementProp>
           <elementProp name="openmrs_port" elementType="Argument">
             <stringProp name="Argument.name">openmrs_port</stringProp>
-            <stringProp name="Argument.value">7000</stringProp>
+            <stringProp name="Argument.value">8080</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="openmrs_username" elementType="Argument">
@@ -81,12 +81,12 @@
           </elementProp>
           <elementProp name="function_test_module_jar_loc" elementType="Argument">
             <stringProp name="Argument.name">function_test_module_jar_loc</stringProp>
-            <stringProp name="Argument.value">/home/deepans/Public/projects/java/ghana-national-regression/target/ghana-national-regression-1.0-SNAPSHOT.jar</stringProp>
+            <stringProp name="Argument.value">/Users/deepansubramani/Projects/ghana-national-regression/target/ghana-national-regression-1.0-SNAPSHOT.jar</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="epi_handy_jar_loc" elementType="Argument">
             <stringProp name="Argument.name">epi_handy_jar_loc</stringProp>
-            <stringProp name="Argument.value">/home/deepans/Public/projects/java/GHANA-National/ghana-national-functional-tests/lib/epihandy-midp.jar</stringProp>
+            <stringProp name="Argument.value">/Users/deepansubramani/Projects/GHANA-National/ghana-national-functional-tests/lib/epihandy-midp.jar</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -458,7 +458,7 @@ registerClientFormFactory(motechId, staffId, form_submission_date){
     details{&quot;sex&quot;}=&quot;F&quot;;
     details{&quot;insured&quot;}=&quot;N&quot;;
     details{&quot;address&quot;}=&quot;Dummy Address&quot;;
-    details{&quot;dateOfBirth&quot;}=format(today().minusYears(30));
+    details{&quot;dateOfBirth&quot;}=format(today().minusYears(4));
     details{&quot;registrantType&quot;}=&quot;OTHER&quot;;    
     details{&quot;estimatedBirthDate&quot;}=&quot;N&quot;;
     details{&quot;date&quot;}=form_submission_date;
@@ -872,7 +872,7 @@ prev.setResponseData(result);</stringProp>
               </collectionProp>
             </elementProp>
             <stringProp name="HTTPSampler.domain">${host}</stringProp>
-            <stringProp name="HTTPSampler.port">${post}</stringProp>
+            <stringProp name="HTTPSampler.port">${port}</stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>
@@ -950,7 +950,7 @@ prev.setResponseData(result);</stringProp>
               </collectionProp>
             </elementProp>
             <stringProp name="HTTPSampler.domain">${host}</stringProp>
-            <stringProp name="HTTPSampler.port">${post}</stringProp>
+            <stringProp name="HTTPSampler.port">${port}</stringProp>
             <stringProp name="HTTPSampler.connect_timeout"></stringProp>
             <stringProp name="HTTPSampler.response_timeout"></stringProp>
             <stringProp name="HTTPSampler.protocol"></stringProp>

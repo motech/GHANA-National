@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.tools.seed.data;
+package org.motechproject.ghana.national.ivr.transition;
 
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.ITransition;
@@ -12,3 +12,4 @@ public class CustomTransition implements ITransition {
                 new AudioPrompt().setAudioFileUrl("custom.wav"));
     }
 }
+

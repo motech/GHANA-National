@@ -9,8 +9,8 @@
     #end
     #if ($node.transitions.size() > 0)
         #foreach( $mapEntry in $node.transitions.entrySet() )
-            #set ($url = "$scheme://$host$contentPath/verboice-service/ivr?type=$type&ln=$language&tree=$treeName&trP=$transitionPath")
-            <Gather method="POST" action="$escape.escapeXml($url)" numDigits="$maxDigits"></Gather>
+            #set ($url = "$scheme://$host$contentPath/verboice/ivr?type=$type&ln=$language&tree=$treeName&trP=$transitionPath")
+            <Gather method="POST" action="$escape.escapeXml($url)"></Gather>
         #end
      #else
     #end

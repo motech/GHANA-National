@@ -1,12 +1,15 @@
 package org.motechproject.ghana.national.handler;
 
 import junit.framework.Assert;
+import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
+import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
+import org.motechproject.ghana.national.builder.IVRRequestBuilder;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
@@ -17,25 +20,26 @@ import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.repository.IVRGateway;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
+import org.motechproject.retry.domain.RetryRequest;
+import org.motechproject.retry.service.RetryService;
 import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.server.messagecampaign.EventKeys;
+import org.motechproject.testing.utils.BaseUnitTest;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.joda.time.DateTime.now;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.server.messagecampaign.scheduler.MessageCampaignScheduler.INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT;
 
-public class MobileMidwifeCampaignEventHandlerTest {
+public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest{
 
     MobileMidwifeCampaignEventHandler handler = new MobileMidwifeCampaignEventHandler();
     @Mock
@@ -46,17 +50,23 @@ public class MobileMidwifeCampaignEventHandlerTest {
     IVRGateway mockIVRGateway;
     @Mock
     AllPatientsOutbox mockAllPatientsOutbox;
+    @Mock
+    IVRCallbackUrlBuilder mockIVRCallbackUrlBuilder;
+    @Mock
+    RetryService mockRetryService;
+    private DateTime now = DateUtil.now();
 
     @Before
     public void init() {
         initMocks(this);
-        ReflectionTestUtils.setField(handler, "host", "localhost");
-        ReflectionTestUtils.setField(handler, "port", "8080");
-        ReflectionTestUtils.setField(handler, "contextPath", "ghana-national-web");
+        ReflectionTestUtils.setField(handler, "ivrCallbackUrlBuilder", mockIVRCallbackUrlBuilder);
         ReflectionTestUtils.setField(handler, "mobileMidwifeService", mockMobileMidwifeService);
         ReflectionTestUtils.setField(handler, "smsGateway", mockSMSGateway);
         ReflectionTestUtils.setField(handler, "ivrGateway", mockIVRGateway);
         ReflectionTestUtils.setField(handler, "allPatientsOutbox", mockAllPatientsOutbox);
+        ReflectionTestUtils.setField(handler, "retryService", mockRetryService);
+        super.mockCurrentDate(now);
+
     }
 
     @Test
@@ -107,17 +117,21 @@ public class MobileMidwifeCampaignEventHandlerTest {
         ServiceType serviceType = ServiceType.PREGNANCY;
         String patientId = "1234568";
         String genMessageKey = "33";
+        final String url = "http://ivr";
+        Language language = Language.EN;
+
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now()).setPatientId(patientId)
-                .setServiceType(serviceType).setMedium(Medium.VOICE).setPhoneNumber("9845312345").setLanguage(Language.EN);
+                .setServiceType(serviceType).setMedium(Medium.VOICE).setPhoneNumber("9845312345").setLanguage(language);
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
+        when(mockIVRCallbackUrlBuilder.outboundCallUrl(patientId, language.name())).thenReturn(url);
 
         handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), genMessageKey));
 
-        ArgumentCaptor<Map> captor = ArgumentCaptor.forClass(Map.class);
-        verify(mockIVRGateway).placeCall(eq(mobileMidwifeEnrollment.getPhoneNumber()), captor.capture());
         verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, AudioPrompts.fileNameForMobileMidwife(mobileMidwifeEnrollment.getServiceType().getValue(), genMessageKey), Period.weeks(1));
-        Map params = captor.getValue();
-        assertThat((String) params.get("callback_url"), is("http://localhost:8080/ghana-national-web/outgoing/call?motechId=" + patientId + "&ln=EN"));
+        verify(mockRetryService).schedule(eq(new RetryRequest("retry-ivr-every-2hrs-and-30mins", patientId, now)));
+        verify(mockIVRGateway).placeCall(mobileMidwifeEnrollment.getPhoneNumber(), new HashMap<String, String>() {{
+            put(IVRRequestBuilder.CALLBACK_URL, url);
+        }});
     }
 
     private MotechEvent motechEvent(String externalId, String campaignName, String genMessageKey) {

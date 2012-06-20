@@ -58,6 +58,7 @@ public class OutgoingCallControllerTest {
     public void shouldShowErrorForBlankMotechId(){
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setParameter("motechId", "");
+        mockHttpServletRequest.setParameter("ln", "EN");
         String response = controller.call(mockHttpServletRequest);
         assertThat(response, is("<Response>\n" +
                 "<Say>Unexpected error</Say>\n" +

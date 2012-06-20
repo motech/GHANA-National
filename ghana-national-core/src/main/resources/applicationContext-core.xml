@@ -42,6 +42,7 @@
     <beans:import resource="classpath:applicationContext-messaging-gateway.xml"/>
     <beans:import resource="classpath:applicationDecisionTree.xml"/>
     <beans:import resource="classpath:applicationOutboxAPI.xml"/>
+    <beans:import resource="classpath:applicationContext-retry.xml"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
