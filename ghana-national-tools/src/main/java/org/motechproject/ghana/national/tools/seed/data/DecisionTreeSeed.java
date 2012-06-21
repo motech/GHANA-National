@@ -18,7 +18,6 @@ import static org.motechproject.ghana.national.domain.mobilemidwife.Language.*;
 
 @Component("decisionTreeSeed")
 public class DecisionTreeSeed extends Seed {
-    public static final String NINE_DIGITS = "000000000";
     @Autowired
     AllTrees allTrees;
     @Autowired
@@ -30,32 +29,31 @@ public class DecisionTreeSeed extends Seed {
         Tree tree = new Tree();
         tree.setName("mm");
         tree.setRootNode(prompt(LANGUAGE_PROMPT, EN).setTransitions(chooseLanguageTransitions()));
-        allTrees.addOrReplace(tree);
+        allTrees.add(tree);
     }
 
-
-    private Map<String, ITransition> chooseLanguageTransitions(){
+    private Map<String, ITransition> chooseLanguageTransitions() {
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
         transitions.put("1", new Transition().setDestinationNode(prompt(OPTIONS_PROMPT, EN).setTransitions(chooseActionTransition(EN))));
         transitions.put("2", new Transition().setDestinationNode(prompt(OPTIONS_PROMPT, KAS).setTransitions(chooseActionTransition(KAS))));
         transitions.put("3", new Transition().setDestinationNode(prompt(OPTIONS_PROMPT, NAN).setTransitions(chooseActionTransition(NAN))));
         transitions.put("4", new Transition().setDestinationNode(prompt(OPTIONS_PROMPT, FAN).setTransitions(chooseActionTransition(FAN))));
-        transitions.put("*", customerCareTransition());
+//        transitions.put("*", customerCareTransition());
         return transitions;
     }
 
-    private Map<String, ITransition> chooseActionTransition(Language language){
+    private Map<String, ITransition> chooseActionTransition(Language language) {
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
-        transitions.put("1", new Transition().setDestinationNode(prompt(MOTECHID_PROMPT, language).setTransitions(validateMotechIdTransition(language))));
+        transitions.put("1", new Transition().setDestinationNode(prompt(MOTECH_ID_PROMPT, language).setTransitions(validateMotechIdTransition(language))));
         transitions.put("0", customerCareTransition());
         transitions.put("2", customerCareTransition());
-        transitions.put("*", customerCareTransition());
+//        transitions.put("*", customerCareTransition());
         return transitions;
     }
 
     private Map<String, ITransition> validateMotechIdTransition(Language language) {
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
-        transitions.put("*", new MotechIdValidationTransition());
+        transitions.put("?", new MotechIdValidationTransition(language.name()));
         return transitions;
     }
 

@@ -1,11 +1,10 @@
 package org.motechproject.ghana.national.domain.ivr;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
-import org.motechproject.decisiontree.model.TextToSpeechPrompt;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ghana.national.domain.IVRClipManager;
-import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
@@ -13,28 +12,36 @@ import org.motechproject.ghana.national.repository.AllSpringBeans;
 import org.motechproject.ghana.national.service.ExecuteAsOpenMRSAdmin;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.openmrs.advice.ApiSession;
-import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.springframework.context.ApplicationContext;
-import sun.awt.AppContext;
 
 import java.util.List;
 
+import static org.motechproject.ghana.national.domain.ivr.AudioPrompts.INVALID_MOTECH_ID_PROMPT;
+import static org.motechproject.ghana.national.domain.ivr.AudioPrompts.NO_MESSAGE_IN_OUTBOX;
+import static org.motechproject.ghana.national.domain.mobilemidwife.Language.valueOf;
+import static org.springframework.util.CollectionUtils.isEmpty;
+
 public class MotechIdValidationTransition extends Transition {
+
+    @JsonProperty
+    String language;
+
+    // Required for Ektorp
+    public MotechIdValidationTransition() {
+    }
+
+    public MotechIdValidationTransition(String language) {
+        this.language = language;
+    }
 
     @Override
     public Node getDestinationNode(String input) {
-        ExecuteAsOpenMRSAdmin executeAsOpenMRSAdmin = (ExecuteAsOpenMRSAdmin) AllSpringBeans.applicationContext.getBean("executeAsOpenMRSAdmin");
-
-        if (!isValidMotechIdentifier(input, executeAsOpenMRSAdmin)) {
-            return new Node().addPrompts(new TextToSpeechPrompt().setMessage("Invalid Motech Id"));
+        if (!isValidMotechIdentifier(input)) {
+            return invalidMotechIdNode();
+        } else if (hasValidMobileMidwifeVoiceRegistration(input)) {
+            return sendResponseFromOutbox(input);
+        } else {
+            return invalidMotechIdNode();
         }
-        return null;
-// else if (hasValidMobileMidwifeVoiceRegistration(input)) {
-//            return sendResponseFromOutbox(input);
-//        } else {
-//            return new Node().addPrompts(new TextToSpeechPrompt().setMessage("No Mobile midwife registration for this motech id"));
-//        }
     }
 
     private Node sendResponseFromOutbox(String motechId) {
@@ -42,13 +49,18 @@ public class MotechIdValidationTransition extends Transition {
         IVRClipManager ivrClipManager = (IVRClipManager) AllSpringBeans.applicationContext.getBean("ivrClipManager");
         List<String> audioUrls = allPatientsOutbox.getAudioFileNames(motechId);
         Node node = new Node();
+        if (isEmpty(audioUrls))
+            return node.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(NO_MESSAGE_IN_OUTBOX.value(), valueOf(language))));
+
         for (String audioUrl : audioUrls) {
-            node.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(audioUrl, Language.valueOf(getName()))));
+            node.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(audioUrl, valueOf(getName()))));
         }
         return node;
     }
 
-    private boolean isValidMotechIdentifier(final String input, ExecuteAsOpenMRSAdmin executeAsOpenMRSAdmin) {
+    private boolean isValidMotechIdentifier(final String input) {
+        ExecuteAsOpenMRSAdmin executeAsOpenMRSAdmin = (ExecuteAsOpenMRSAdmin) AllSpringBeans.applicationContext.getBean("executeAsOpenMRSAdmin");
+
         return executeAsOpenMRSAdmin.execute(new ExecuteAsOpenMRSAdmin.OpenMRSServiceCall() {
             @Override
             public Object invoke() {
@@ -58,6 +70,12 @@ public class MotechIdValidationTransition extends Transition {
         });
     }
 
+    private Node invalidMotechIdNode() {
+        return new Node()
+                .addPrompts(new AudioPrompt().setAudioFileUrl(((IVRClipManager) AllSpringBeans.applicationContext.getBean("ivrClipManager")).urlFor(INVALID_MOTECH_ID_PROMPT.value(), valueOf(language))))
+                .addTransition("?", new MotechIdValidationTransition(language));
+    }
+
     private String trimInputForTrailingHash(String input) {
         return input.replaceAll("#", "");
     }
@@ -65,10 +83,10 @@ public class MotechIdValidationTransition extends Transition {
     private boolean hasValidMobileMidwifeVoiceRegistration(String input) {
         MobileMidwifeService mobileMidwifeService = (MobileMidwifeService) AllSpringBeans.applicationContext.getBean("mobileMidwifeService");
 
-        MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findActiveBy(input);
+        MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findActiveBy(trimInputForTrailingHash(input));
         if (midwifeEnrollment != null && midwifeEnrollment.getMedium().equals(Medium.VOICE)) {
             // TODO: Adding dummy message to Outbox, temp fix until other audio/stream are ready.
-            //allPatientsOutbox.addAudioFileName(digits, audioURL(request), sdkfl);
+//            allPatientsOutbox.addAudioFileName(digits, audioURL(request), sdkfl);
             return true;
         }
         return false;
