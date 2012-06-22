@@ -76,6 +76,7 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         verify(spyService).updateBCGSchedule(cwcVisit);
         verify(spyService).updateOPVSchedule(cwcVisit);
         verify(spyService).updateRotavirusSchedule(cwcVisit);
+        verify(spyService).updatePneumococcalSchedule(cwcVisit);
     }
 
     @Test
@@ -184,6 +185,24 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         final LocalDate visitDate = DateUtil.today();
         service.updateRotavirusSchedule(createTestCWCVisit(visitDate.toDate(), mock(MRSUser.class), mock(Facility.class), patient).rotavirusdose("1"));
+
+        ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
+        verify(mockAllSchedulesAndMessages).enrollOrFulfill(enrollmentRequestCaptor.capture(), any(LocalDate.class));
+
+        assertThat(enrollmentRequestCaptor.getValue().getReferenceDate(), is(equalTo(visitDate)));
+    }
+
+    @Test
+    public void shouldFulfillPneumococcalScheduleIfAlreadyEnrolled() {
+        String mrsPatientId = "mrsPatientId";
+        Patient patient = createPatient(mrsPatientId, "motechId", DateUtil.today(), "facilityId");
+
+        EnrollmentRecord enrollmentRecord = mock(EnrollmentRecord.class);
+        when(mockAllCareSchedules.enrollment(any(EnrollmentRequest.class))).thenReturn(enrollmentRecord);
+
+
+        final LocalDate visitDate = DateUtil.today();
+        service.updatePneumococcalSchedule(createTestCWCVisit(visitDate.toDate(), mock(MRSUser.class), mock(Facility.class), patient).pneumococcaldose("1"));
 
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedulesAndMessages).enrollOrFulfill(enrollmentRequestCaptor.capture(), any(LocalDate.class));

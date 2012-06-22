@@ -42,6 +42,7 @@ public class CWCVisitForm extends FormBean {
     private String pentadose;
     private String iptidose;
     private String rotavirusdose;
+    private String pneumococcaldose;
     @Required
     private Double weight;
     @Required
@@ -208,5 +209,13 @@ public class CWCVisitForm extends FormBean {
     @Override
     public String groupId() {
         return motechId;
+    }
+
+    public String getPneumococcaldose() {
+        return pneumococcaldose;
+    }
+
+    public void setPneumococcaldose(String pneumococcaldose) {
+        this.pneumococcaldose = pneumococcaldose;
     }
 }

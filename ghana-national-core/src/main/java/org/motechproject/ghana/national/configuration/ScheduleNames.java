@@ -9,6 +9,7 @@ public enum ScheduleNames {
     CWC_YELLOW_FEVER("CWCYellowFeverVaccine","YF"),
     CWC_PENTA("CWCPentaVaccine","Penta"),
     CWC_ROTAVIRUS("CWCRotavirus","Rotavirus"),
+    CWC_PNEUMOCOCCAL("CWCPneumococcal","Pneumococcal"),
     TT_VACCINATION("TTVaccine","TT"),
     CWC_OPV_0("CWCOPV-0","OPV0"),
     CWC_OPV_OTHERS("CWC_OPV_OTHERS","OPV1,OPV2,OPV3"),

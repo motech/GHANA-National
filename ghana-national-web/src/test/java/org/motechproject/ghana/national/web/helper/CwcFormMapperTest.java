@@ -35,6 +35,7 @@ public class CwcFormMapperTest {
             put(CwcCareHistory.VITA_A, CwcCareHistory.VITA_A.getDescription());
             put(CwcCareHistory.YF, CwcCareHistory.YF.getDescription());
             put(CwcCareHistory.ROTAVIRUS, CwcCareHistory.ROTAVIRUS.getDescription());
+            put(CwcCareHistory.PNEUMOCOCCAL, CwcCareHistory.PNEUMOCOCCAL.getDescription());
         }}, actual.get(Constants.CARE_HISTORIES));
 
         assertEquals(new LinkedHashMap<RegistrationToday, String>() {{
@@ -62,6 +63,19 @@ public class CwcFormMapperTest {
             put(3, Constants.PENTA_3);
 
         }}, actual.get(Constants.LAST_PENTA));
+
+        assertEquals(new LinkedHashMap<Integer, String>() {{
+            put(1, Constants.ROTAVIRUS_1);
+            put(2, Constants.ROTAVIRUS_2);
+
+        }}, actual.get(Constants.LAST_ROTAVIRUS));
+
+        assertEquals(new LinkedHashMap<Integer, String>() {{
+            put(1, Constants.PNEUMOCOCCAL_1);
+            put(2, Constants.PNEUMOCOCCAL_2);
+            put(3, Constants.PNEUMOCOCCAL_3);
+
+        }}, actual.get(Constants.LAST_PNEUMOCOCCAL));
     }
 
     @Test
@@ -87,11 +101,13 @@ public class CwcFormMapperTest {
         Date opvDate = new Date();
         Date pentaDate = new Date();
         Date rotavirusDate = new Date();
+        Date pneumococcalDate = new Date();
         Double iptiValue = 0.0;
         String serialNum = "serial number";
         Double pentaValue = 2.0;
         Double rotavirusDoseValue = 2.0;
-        Double opvValue = 1.0;
+        Double pneumococcalDoseValue= 2.0;
+        Double opvValue = 2.0;
         String name = "name";
         String country = "country";
         String region = "region";
@@ -103,7 +119,8 @@ public class CwcFormMapperTest {
         observations.add(new MRSObservation<MRSConcept>(vitaDate, IMMUNIZATIONS_ORDERED.getName(), vitaValue));
         observations.add(new MRSObservation<Double>(iptiDate, IPTI.getName(), iptiValue));
         observations.add(new MRSObservation<Double>(pentaDate, PENTA.getName(), pentaValue));
-        observations.add(new MRSObservation<Double>(pentaDate, ROTAVIRUS.getName(), rotavirusDoseValue));
+        observations.add(new MRSObservation<Double>(rotavirusDate, ROTAVIRUS.getName(), rotavirusDoseValue));
+        observations.add(new MRSObservation<Double>(pneumococcalDate, PNEUMOCOCCAL.getName(), pneumococcalDoseValue));
         observations.add(new MRSObservation<Double>(opvDate, OPV.getName(), opvValue));
         observations.add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), serialNum));
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
@@ -131,6 +148,8 @@ public class CwcFormMapperTest {
         assertThat(cwcEnrollmentForm.getLastPenta(), is(equalTo(pentaValue.intValue())));
         assertThat(cwcEnrollmentForm.getLastRotavirusDate(), is(equalTo(rotavirusDate)));
         assertThat(cwcEnrollmentForm.getLastRotavirus(), is(equalTo(rotavirusDoseValue.intValue())));
+        assertThat(cwcEnrollmentForm.getLastPneumococcal(), is(equalTo(pneumococcalDoseValue.intValue())));
+        assertThat(cwcEnrollmentForm.getLastPneumococcalDate(), is(equalTo(pneumococcalDate)));
         assertThat(cwcEnrollmentForm.getLastOPVDate(), is(equalTo(opvDate)));
         assertThat(cwcEnrollmentForm.getLastOPV(), is(equalTo(opvValue.intValue())));
         assertThat(cwcEnrollmentForm.getSerialNumber(), is(equalTo(serialNum)));

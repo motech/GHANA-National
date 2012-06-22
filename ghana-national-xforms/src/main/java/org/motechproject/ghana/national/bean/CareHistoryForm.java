@@ -54,6 +54,8 @@ public class CareHistoryForm extends FormBean {
     private Date lastIPTIDate;
     private Date lastVitaminADate;
     private Date lastRotavirusDate;
+    private Integer lastPneumococcal;
+    private Date lastPneumococcalDate;
 
     public String getStaffId() {
         return staffId;
@@ -223,6 +225,23 @@ public class CareHistoryForm extends FormBean {
         this.lastRotavirus = lastRotavirus;
     }
 
+    public Integer getLastPneumococcal() {
+        return lastPneumococcal;
+    }
+
+    public void setLastPneumococcal(Integer lastPneumococcal) {
+        this.lastPneumococcal = lastPneumococcal;
+    }
+
+    public Date getLastPneumococcalDate() {
+        return lastPneumococcalDate;
+    }
+
+    public void setLastPneumococcalDate(Date lastPneumococcalDate) {
+        this.lastPneumococcalDate = lastPneumococcalDate;
+    }
+
+
     public List<ANCCareHistory> getANCCareHistories() {
         String[] selectedCareHistories = StringUtils.isNotEmpty(addHistory) ? addHistory.split(" ") : new String[]{};
         final List<String> ancCareHistories = new ArrayList<String>();
@@ -259,7 +278,7 @@ public class CareHistoryForm extends FormBean {
         List<ANCCareHistory> ancCareHistories = getANCCareHistories();
         List<CwcCareHistory> cwcCareHistories = getCWCCareHistories();
         ANCCareHistoryVO ancCareHistoryVO = new ANCCareHistoryVO(ancCareHistories.size() > 0, ancCareHistories, lastIPT, lastTT, lastIPTDate, lastTTDate);
-        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(cwcCareHistories.size() > 0, cwcCareHistories, bcgDate, lastVitaminADate, measlesDate, yellowFeverDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTI, lastIPTIDate, lastRotavirus, lastRotavirusDate);
+        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(cwcCareHistories.size() > 0, cwcCareHistories, bcgDate, lastVitaminADate, measlesDate, yellowFeverDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTI, lastIPTIDate, lastRotavirus, lastRotavirusDate,lastPneumococcal,lastPneumococcalDate);
 
         return new CareHistoryVO(staffId, facilityId, motechId, date, ancCareHistoryVO, cwcCareHistoryVO);
     }

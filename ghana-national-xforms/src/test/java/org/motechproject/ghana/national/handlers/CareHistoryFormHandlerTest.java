@@ -93,7 +93,8 @@ public class CareHistoryFormHandlerTest {
         assertCwcCareHistoryDetails(careHistoryForm.getCWCCareHistories(), careHistoryForm.getBcgDate(),
                 careHistoryForm.getLastVitaminADate(), careHistoryForm.getMeaslesDate(), careHistoryForm.getYellowFeverDate(),
                 careHistoryForm.getLastPentaDate(), careHistoryForm.getLastOPVDate(), careHistoryForm.getLastIPTIDate(),
-                careHistoryForm.getLastPenta(), careHistoryForm.getLastOPV(), careHistoryVO.getCwcCareHistoryVO());
+                careHistoryForm.getLastRotavirusDate(), careHistoryForm.getLastPneumococcalDate(), careHistoryForm.getLastPenta(), careHistoryForm.getLastOPV(),
+                careHistoryForm.getLastRotavirus(),careHistoryForm.getLastPneumococcal(), careHistoryVO.getCwcCareHistoryVO());
     }
 
     public static CareHistoryForm careHistoryFormWithCwcDetails(String facilityMotechId) {
@@ -112,6 +113,10 @@ public class CareHistoryFormHandlerTest {
         careHistoryForm.setMeaslesDate(DateUtil.newDate(2001, 12, 5).toDate());
         careHistoryForm.setYellowFeverDate(DateUtil.newDate(2001, 12, 6).toDate());
         careHistoryForm.setBcgDate(DateUtil.newDate(2001, 12, 7).toDate());
+        careHistoryForm.setLastPneumococcal(1);
+        careHistoryForm.setLastPneumococcalDate(DateUtil.newDate(2001, 12, 7).toDate());
+        careHistoryForm.setLastRotavirus(1);
+        careHistoryForm.setLastRotavirusDate(DateUtil.newDate(2001, 12, 7).toDate());
         careHistoryForm.setDate(DateUtil.newDate(2001, 12, 8).toDate());
         return careHistoryForm;
     }

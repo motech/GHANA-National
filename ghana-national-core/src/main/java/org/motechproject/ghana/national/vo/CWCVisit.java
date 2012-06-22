@@ -21,6 +21,7 @@ public class CWCVisit {
     private String pentadose;
     private String iptidose;
     private String rotavirusdose;
+    private String pneumococcaldose;
     private Double weight;
     private Double muac;
     private Double height;
@@ -190,6 +191,15 @@ public class CWCVisit {
 
     public CWCVisit comments(String comments) {
         this.comments = comments;
+        return this;
+    }
+
+    public String getPneumococcaldose() {
+        return pneumococcaldose;
+    }
+
+    public CWCVisit pneumococcaldose(String pneumococcaldose) {
+        this.pneumococcaldose = pneumococcaldose;
         return this;
     }
 }

@@ -10,23 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_DELIVERY;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_BCG;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_IPT_VACCINE;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_MEASLES_VACCINE;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_OPV_0;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_OPV_OTHERS;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PENTA;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_ROTAVIRUS;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_YELLOW_FEVER;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_CHILD_1;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_CHILD_2;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_CHILD_3;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_MOTHER_1;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_MOTHER_2;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.PNC_MOTHER_3;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 
 @Component
 public class ScheduleHandler {
@@ -56,6 +40,8 @@ public class ScheduleHandler {
                 careScheduleHandler.handlePentaVaccinationAlert(milestoneEvent);
             else if (milestoneEvent.getScheduleName().equals(CWC_ROTAVIRUS.getName()))
                 careScheduleHandler.handleRotavirusVaccinationAlert(milestoneEvent);
+            else if (milestoneEvent.getScheduleName().equals(CWC_PNEUMOCOCCAL.getName()))
+                careScheduleHandler.handlePneumococcalVaccinationAlert(milestoneEvent);
             else if (milestoneEvent.getScheduleName().equals(CWC_YELLOW_FEVER.getName()))
                 careScheduleHandler.handleYellowFeverVaccinationAlert(milestoneEvent);
             else if (milestoneEvent.getScheduleName().equals(CWC_OPV_0.getName()))

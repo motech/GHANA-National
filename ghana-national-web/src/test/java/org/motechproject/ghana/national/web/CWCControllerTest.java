@@ -131,9 +131,13 @@ public class CWCControllerTest {
         final Date lastPentaDate = new Date(2011, 9, 4);
         final Date lastOPVDate = new Date(2011, 9, 5);
         final Date lastIPTiDate = new Date(2011, 9, 6);
+        final Date lastRotavirusDate = new Date(2011, 9, 6);
+        final Date lastPneumococcalDate = new Date(2011, 9, 6);
         final String staffId = "456";
         final int lastIPTi = 1;
         final int lastPenta = 1;
+        final int lastRotavirus = 1;
+        final int lastPneumococcal = 1;
         final String patientMotechId = "1234567";
         final int lastOPV = 0;
         ModelMap modelMap = new ModelMap();
@@ -155,6 +159,10 @@ public class CWCControllerTest {
         cwcEnrollmentForm.setLastOPV(lastOPV);
         cwcEnrollmentForm.setLastIPTiDate(lastIPTiDate);
         cwcEnrollmentForm.setLastIPTi(lastIPTi);
+        cwcEnrollmentForm.setLastRotavirus(lastRotavirus);
+        cwcEnrollmentForm.setLastRotavirusDate(lastRotavirusDate);
+        cwcEnrollmentForm.setLastPneumococcal(lastPneumococcal);
+        cwcEnrollmentForm.setLastPneumococcalDate(lastPneumococcalDate);
         cwcEnrollmentForm.setRegistrationToday(RegistrationToday.IN_PAST);
 
 
@@ -178,7 +186,11 @@ public class CWCControllerTest {
         assertThat(lastPenta, is(cwcVO.getCWCCareHistoryVO().getLastPenta()));
         assertThat(lastOPVDate, is(cwcVO.getCWCCareHistoryVO().getLastOPVDate()));
         assertThat(lastOPV, is(cwcVO.getCWCCareHistoryVO().getLastOPV()));
+        assertThat(lastRotavirus, is(cwcVO.getCWCCareHistoryVO().getLastRotavirus()));
+        assertThat(lastPneumococcal, is(cwcVO.getCWCCareHistoryVO().getLastPneumococcal()));
         assertThat(lastIPTiDate, is(cwcVO.getCWCCareHistoryVO().getLastIPTiDate()));
+        assertThat(lastRotavirusDate, is(cwcVO.getCWCCareHistoryVO().getLastRotavirusDate()));
+        assertThat(lastPneumococcalDate, is(cwcVO.getCWCCareHistoryVO().getLastPneumococcalDate()));
         verify(mockCwcFormMapper).setViewAttributes();
         verify(mockFacilityHelper).locationMap();
     }

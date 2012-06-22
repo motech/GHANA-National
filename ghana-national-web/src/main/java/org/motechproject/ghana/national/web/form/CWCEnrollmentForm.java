@@ -28,6 +28,8 @@ public class CWCEnrollmentForm {
     private Integer lastPenta;
     private Date lastRotavirusDate;
     private Integer lastRotavirus;
+    private Date lastPneumococcalDate;
+    private Integer lastPneumococcal;
 
 
     public FacilityForm getFacilityForm() {
@@ -188,5 +190,21 @@ public class CWCEnrollmentForm {
 
     public void setRegistrationToday(RegistrationToday registrationToday) {
         this.registrationToday = registrationToday;
+    }
+
+    public Date getLastPneumococcalDate() {
+        return lastPneumococcalDate;
+    }
+
+    public void setLastPneumococcalDate(Date lastPneumococcalDate) {
+        this.lastPneumococcalDate = lastPneumococcalDate;
+    }
+
+    public Integer getLastPneumococcal() {
+        return lastPneumococcal;
+    }
+
+    public void setLastPneumococcal(Integer lastPneumococcal) {
+        this.lastPneumococcal = lastPneumococcal;
     }
 }

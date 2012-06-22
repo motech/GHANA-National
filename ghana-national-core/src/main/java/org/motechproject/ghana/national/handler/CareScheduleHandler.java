@@ -57,4 +57,8 @@ public interface CareScheduleHandler {
     @LoginAsAdmin
     @ApiSession
     void handleRotavirusVaccinationAlert(MilestoneEvent milestoneEvent);
+
+    @LoginAsAdmin
+    @ApiSession
+    void handlePneumococcalVaccinationAlert(MilestoneEvent milestoneEvent);
 }

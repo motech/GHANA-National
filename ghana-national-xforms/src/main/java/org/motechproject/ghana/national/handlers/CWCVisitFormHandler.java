@@ -50,7 +50,7 @@ public class CWCVisitFormHandler{
                 .date(form.getDate()).serialNumber(form.getSerialNumber()).weight(form.getWeight())
                 .height(form.getHeight()).muac(form.getMuac()).maleInvolved(form.getMaleInvolved())
                 .iptidose(form.getIptidose()).pentadose(form.getPentadose()).opvdose(form.getOpvdose())
-                .rotavirusdose(form.getRotavirusdose()).cwcLocation(form.getCwcLocation())
+                .rotavirusdose(form.getRotavirusdose()).pneumococcaldose(form.getPneumococcaldose()).cwcLocation(form.getCwcLocation())
                 .comments(form.getComments()).house(form.getHouse())
                 .community(form.getCommunity()).immunizations(form.immunizations());
     }

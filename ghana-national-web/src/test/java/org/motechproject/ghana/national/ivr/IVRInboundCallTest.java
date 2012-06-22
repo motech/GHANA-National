@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.ivr;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 
@@ -16,6 +17,7 @@ public class IVRInboundCallTest {
     }
 
     @Test
+    @Ignore
     public void shouldHandleInboundCall() {
         testAppServer.startApplication();
         String response = verboiceStub.handleIncomingCall();

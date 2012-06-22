@@ -64,6 +64,10 @@ public class Constants {
     public static final String LAST_ROTAVIRUS = "lastRotavirus";
     public static final String ROTAVIRUS_1 = "Rotavirus 1";
     public static final String ROTAVIRUS_2 = "Rotavirus 2";
+    public static final String LAST_PNEUMOCOCCAL= "lastPneumococcal";
+    public static final String PNEUMOCOCCAL_1 = "Pneumo 1";
+    public static final String PNEUMOCOCCAL_2 = "Pneumo 2";
+    public static final String PNEUMOCOCCAL_3 = "Pneumo 3";
 
     public static final String SMS_LIST_SEPERATOR = ", ";
     public static final String SMS_SEPARATOR = "%0A";
@@ -93,6 +97,7 @@ public class Constants {
     public static final Integer CWC_IPT_MAX_BIRTH_WEEK_FOR_REGISTRATION = 14;  
     public static final Integer CWC_PENTA_MAX_WEEK_FOR_REGISTRATION = 10;
     public static final Integer CWC_ROTAVIRUS_MAX_WEEK_FOR_REGISTRATION = 10;
+    public static final Integer CWC_PNEUMOCOCCAL_MAX_WEEK_FOR_REGISTRATION = 10;
     public static final Integer CWC_MEASLES_MAX_AGE_WEEK_FOR_REGISTRATION = 5;
     public static final Integer CWC_OPV0_MAX_BIRTH_WEEK_FOR_REGISTRATION = 3;
 

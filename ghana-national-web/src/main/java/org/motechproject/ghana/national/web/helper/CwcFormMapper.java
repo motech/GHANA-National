@@ -72,6 +72,12 @@ public class CwcFormMapper {
                 cwcEnrollmentForm.setLastRotavirus(((Double) observation.getValue()).intValue());
                 careHistories.add(CwcCareHistory.ROTAVIRUS);
             }
+
+            if (PNEUMOCOCCAL.getName().equals(observation.getConceptName())) {
+                cwcEnrollmentForm.setLastPneumococcalDate(observation.getDate());
+                cwcEnrollmentForm.setLastPneumococcal(((Double) observation.getValue()).intValue());
+                careHistories.add(CwcCareHistory.PNEUMOCOCCAL);
+            }
             if (OPV.getName().equals(observation.getConceptName())) {
                 cwcEnrollmentForm.setLastOPVDate(observation.getDate());
                 cwcEnrollmentForm.setLastOPV(((Double) observation.getValue()).intValue());
@@ -90,7 +96,7 @@ public class CwcFormMapper {
         Map<String, Object> map = new HashMap<String, Object>();
 
         List<CwcCareHistory> careHistories = Arrays.asList(CwcCareHistory.BCG, CwcCareHistory.IPTI,
-                CwcCareHistory.MEASLES, CwcCareHistory.OPV, CwcCareHistory.PENTA, CwcCareHistory.VITA_A, CwcCareHistory.YF, CwcCareHistory.ROTAVIRUS);
+                CwcCareHistory.MEASLES, CwcCareHistory.OPV, CwcCareHistory.PENTA, CwcCareHistory.VITA_A, CwcCareHistory.YF, CwcCareHistory.ROTAVIRUS,CwcCareHistory.PNEUMOCOCCAL);
 
         Map<CwcCareHistory, String> cwcCareHistories = new LinkedHashMap<CwcCareHistory, String>();
         for (CwcCareHistory cwcCareHistory : careHistories) {
@@ -123,6 +129,11 @@ public class CwcFormMapper {
         map.put(Constants.LAST_ROTAVIRUS, new LinkedHashMap<Integer, String>() {{
             put(1, Constants.ROTAVIRUS_1);
             put(2, Constants.ROTAVIRUS_2);
+        }});
+        map.put(Constants.LAST_PNEUMOCOCCAL, new LinkedHashMap<Integer, String>() {{
+            put(1, Constants.PNEUMOCOCCAL_1);
+            put(2, Constants.PNEUMOCOCCAL_2);
+            put(3, Constants.PNEUMOCOCCAL_3);
         }});
         return map;
     }

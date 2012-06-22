@@ -31,6 +31,10 @@ public class ActiveCareSchedules {
         return allActiveCareSchedules.get(CWC_ROTAVIRUS.getName()) != null;
     }
 
+    public Boolean hasActivePneumococcalSchedule() {
+        return allActiveCareSchedules.get(CWC_PNEUMOCOCCAL.getName()) != null;
+    }
+
     public Boolean hasActiveIPTiSchedule() {
         return allActiveCareSchedules.get(CWC_IPT_VACCINE.getName()) != null;
     }

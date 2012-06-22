@@ -42,7 +42,6 @@ public class ChildVisitEncounterFactoryTest {
         expectedObservations.add(new MRSObservation<String>(today, COMMUNITY.getName(), "community"));
         expectedObservations.add(new MRSObservation<Integer>(today, ROTAVIRUS.getName(), 1));
         expectedObservations.add(new MRSObservation<MRSConcept>(today, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(Concept.BCG.getName())));
-        expectedObservations.add(new MRSObservation<MRSConcept>(today, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(Concept.ROTAVIRUS.getName())));
 
         assertReflectionEquals(expectedObservations, mrsObservations, ReflectionComparatorMode.LENIENT_DATES,
                 ReflectionComparatorMode.LENIENT_ORDER);

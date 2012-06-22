@@ -1,0 +1,51 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="admin" id="1323410456950-1">
+        <insert tableName="concept">
+            <column name="datatype_id" valueNumeric="1"/>
+            <column name="class_id" valueNumeric="3"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="date_created" value="2012-06-06 13:13:07"/>
+            <column name="uuid" value="78688f7a-9de2-4e3c-8678-de7f6a30j988"/>
+        </insert>
+
+        <insert tableName="concept_answer">
+            <column name="concept_id" valueNumeric="984"/>
+            <column name="answer_concept" valueNumeric="((select max(concept_id) from concept))"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="date_created" value="2012-06-06 13:13:07"/>
+            <column name="uuid" value="78688f7a-9de2-4e3c-8678-de7f6a30ghue"/>
+        </insert>
+
+        <insert tableName="concept_name">
+            <column name="concept_id" valueNumeric="((select max(concept_id) from concept))"/>
+            <column name="name" value="PNEUMOCOCCAL"/>
+            <column name="locale" value="en"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="date_created" value="2012-06-06 13:13:07"/>
+            <column name="uuid" value="78688795-9de2-4e3c-8678-de7f6a1hj56"/>
+        </insert>
+
+        <insert tableName="concept_word">
+            <column name="concept_id" valueNumeric="((select max(concept_id) from concept))"/>
+            <column name="word" value="PNEUMOCOCCAL"/>
+            <column name="locale" value="en"/>
+            <column name="concept_name_id" valueNumeric="((select max(concept_name_id) from concept_name))"/>
+        </insert>
+
+        <insert tableName="concept_description">
+            <column name="concept_id" valueNumeric="((select max(concept_id) from concept))"/>
+            <column name="description" value="Vaccination for Pneumococcal"/>
+            <column name="locale" value="en"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="date_created" value="2012-06-06 13:13:07"/>
+            <column name="uuid" value="78688600-9de2-4e3c-8678-de7f6ag783ft"/>
+        </insert>
+
+        <insert tableName="concept_numeric">
+            <column name="concept_id" valueNumeric="((select max(concept_id) from concept))"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

@@ -77,11 +77,15 @@ public class RegisterCWCFormHandlerTest {
         final Date lastPentaDate = new Date(2011, 9, 4);
         final Date lastOPVDate = new Date(2011, 9, 5);
         final Date lastIPTiDate = new Date(2011, 9, 6);
+        final Date lastRotavirusDate = new Date(2011, 9, 6);
+        final Date lastPneumoDate = new Date(2011, 9, 6);
         final String staffId = "456";
         final int lastIPTi = 1;
         final int lastPenta = 1;
         final String patientMotechId = "1234567";
         final int lastOPV = 0;
+        final int lastRotavirus = 1;
+        final int lastPneumo = 2;
         final String facilityMotechId = "3232";
 
         registerCWCForm.setStaffId(staffId);
@@ -98,7 +102,11 @@ public class RegisterCWCFormHandlerTest {
         registerCWCForm.setLastOPV(lastOPV);
         registerCWCForm.setLastIPTiDate(lastIPTiDate);
         registerCWCForm.setLastIPTi(lastIPTi);
-        registerCWCForm.setAddCareHistory("VITA_A IPTI BCG OPV PENTA MEASLES YF");
+        registerCWCForm.setLastRotavirus(lastRotavirus);
+        registerCWCForm.setLastRotavirusDate(lastRotavirusDate);
+        registerCWCForm.setLastPneumococcal(lastPneumo);
+        registerCWCForm.setLastPneumococcalDate(lastPneumoDate);
+        registerCWCForm.setAddCareHistory("VITA_A IPTI BCG OPV PENTA MEASLES YF ROTAVIRUS PNEUMOCOCCAL");
         setMobileMidwifeEnrollment(registerCWCForm);
 
         final String facilityId = "11";
@@ -116,7 +124,8 @@ public class RegisterCWCFormHandlerTest {
         assertThat(facilityId, is(facilityId));
         assertThat(registartionDate, is(cwcVO.getRegistrationDate()));
         assertThat(patientMotechId, is(cwcVO.getPatientMotechId()));
-        assertCwcCareHistoryDetails(registerCWCForm.getCWCCareHistories(), lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, lastPenta, lastOPV, cwcVO.getCWCCareHistoryVO());
+        assertCwcCareHistoryDetails(registerCWCForm.getCWCCareHistories(), lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, lastPneumoDate,
+                lastRotavirusDate, lastPenta, lastOPV, lastRotavirus, lastPneumo, cwcVO.getCWCCareHistoryVO());
 
         assertMobileMidwifeFormEnrollment(registerCWCForm, mobileMidwifeEnrollmentCaptor.getValue());
     }
@@ -154,7 +163,9 @@ public class RegisterCWCFormHandlerTest {
 
     }
 
-    public static void assertCwcCareHistoryDetails(List<CwcCareHistory> cwcCareHistories, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, int lastPenta, int lastOPV, CWCCareHistoryVO cwcCareHistoryVO) {
+    public static void assertCwcCareHistoryDetails(List<CwcCareHistory> cwcCareHistories, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate,
+                                                   Date lastOPVDate, Date lastIPTiDate, Date lastRotavirusDate, Date lastPneumococcalDate,
+                                                   int lastPenta, int lastOPV, int lastRotavirus, int lastPneumococcal, CWCCareHistoryVO cwcCareHistoryVO) {
         assertThat(cwcCareHistories, is(cwcCareHistoryVO.getCwcCareHistories()));
         assertThat(lastBCGDate, is(cwcCareHistoryVO.getBcgDate()));
         assertThat(lastVitADate, is(cwcCareHistoryVO.getVitADate()));
@@ -165,6 +176,10 @@ public class RegisterCWCFormHandlerTest {
         assertThat(lastOPVDate, is(cwcCareHistoryVO.getLastOPVDate()));
         assertThat(lastOPV, is(cwcCareHistoryVO.getLastOPV()));
         assertThat(lastIPTiDate, is(cwcCareHistoryVO.getLastIPTiDate()));
+        assertThat(lastRotavirusDate, is(cwcCareHistoryVO.getLastRotavirusDate()));
+        assertThat(lastRotavirus, is(cwcCareHistoryVO.getLastRotavirus()));
+        assertThat(lastPneumococcal, is(cwcCareHistoryVO.getLastPneumococcal()));
+        assertThat(lastPneumococcalDate, is(cwcCareHistoryVO.getLastPneumococcalDate()));
     }
 
     private void assertMobileMidwifeFormEnrollment(RegisterCWCForm exptectedForm, MobileMidwifeEnrollment actual) {

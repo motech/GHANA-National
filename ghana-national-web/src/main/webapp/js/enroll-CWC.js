@@ -67,6 +67,10 @@ $(document).ready(function() {
             if (e.target.checked) $("#jsRotavirus").show(); else $("#jsRotavirus").hide();
         }
 
+        if ($(this).val() == "PNEUMOCOCCAL") {
+            if (e.target.checked) $("#jsPneumococcal").show(); else $("#jsPneumococcal").hide();
+        }
+
         if ($(this).val() == "BCG") {
             if (e.target.checked) $("#jsBCG").show(); else $("#jsBCG").hide();
         }
@@ -90,4 +94,5 @@ $(document).ready(function() {
     $('#yfDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#lastPentaDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#lastRotavirusDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
+    $('#lastPneumococcalDate').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
 });

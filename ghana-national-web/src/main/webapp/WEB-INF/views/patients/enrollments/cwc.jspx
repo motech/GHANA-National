@@ -263,6 +263,32 @@
                     </span>
                 </div>
             </div>
+            <div id="jsPneumococcal" class="hide">
+                <div class="form-field">
+                    <label for="lastPneumococcal" class="formLabel">
+                        <spring:message code="patient_last_pneumococcal"/>
+                        *:
+                    </label>
+                    <form:radiobuttons path="lastPneumococcal" items="${lastPneumococcal}" cssClass="jsRequire"/>
+                    <span id='lastPneumococcalError' class='alertText formlyInvalid formlyAlert hide'>
+                        <spring:message code="patient_last_pneumococcal"/> ${fn:escapeXml(required_msg)}
+                    </span>
+                </div>
+
+                <div id="lastPneumococcalDateHolder" class="form-field">
+                    <label for="lastPneumococcalDate" class="formLabel">
+                        <spring:message code="patient_last_pneumococcal_date"/>
+                        *:
+                    </label>
+                    <form:input path="lastPneumococcalDate" cssClass="jsDate jsBefore jsRequire"/>
+                    <span id='lastPneumococcalDateError' class='alertText formlyInvalid formlyAlert hide'>
+                        <spring:message code="patient_last_pneumococcal_date"/> ${fn:escapeXml(required_msg)}
+                    </span>
+                    <span id='lastPneumococcalDateFormatError' class='alertText formlyInvalid formlyAlert hide'>
+                        <spring:message code="patient_last_pneumococcal_date"/> ${fn:escapeXml(incorrect_msg)}
+                    </span>
+                </div>
+            </div>
             <div id="jsVitA" class="hide">
                 <div id="vitADateHolder" class="form-field">
                     <label for="vitADate" class="formLabel">

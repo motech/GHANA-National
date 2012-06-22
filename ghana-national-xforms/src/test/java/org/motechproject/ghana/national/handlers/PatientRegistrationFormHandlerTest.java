@@ -222,14 +222,18 @@ public class PatientRegistrationFormHandlerTest {
         final Date lastBCGDate = new Date(2011, 10, 1);
         final Date lastVitADate = new Date(2011, 11, 1);
         final Date lastMeaslesDate = new Date(2011, 9, 2);
-        final Date lastYfDate = new Date(2011, 9, 3);
-        final Date lastPentaDate = new Date(2011, 9, 4);
-        final Date lastOPVDate = new Date(2011, 9, 5);
-        final Date lastIPTiDate = new Date(2011, 9, 6);
+        final Date lastYfDate = new Date(2011, 11, 3);
+        final Date lastPentaDate = new Date(2011, 11, 4);
+        final Date lastOPVDate = new Date(2011, 11, 5);
+        final Date lastIPTiDate = new Date(2011, 11, 6);
+        final Date lastRotavirusDate = new Date(2011, 11, 6);
+        final Date lastPneumococcalDate = new Date(2011, 11, 3);
         final String staffId = "456";
         final int lastPenta = 1;
         final int lastOPV = 0;
         final int lastIPTi = 1;
+        final int lastRotavirus = 1;
+        final int lastPneumo= 1;
 
         ServiceType serviceType = ServiceType.PREGNANCY;
         ReasonToJoin reasonToJoin = ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH;
@@ -246,7 +250,7 @@ public class PatientRegistrationFormHandlerTest {
         RegisterClientForm registerClientForm = createRegisterClientFormForCWCEnrollment(address, dateofBirth, district, isBirthDateEstimated,
                 motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId,
                 region, registrationMode, sex, subDistrict, phoneNumber, patientType, registartionDate,
-                lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, staffId, lastPenta, lastOPV, lastIPTi);
+                lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, staffId, lastPenta, lastOPV, lastIPTi, lastRotavirus, lastRotavirusDate, lastPneumo, lastPneumococcalDate);
 
         addMobileMidwifeRegistrationDetails(registerClientForm, serviceType, reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, mmRegPhone, phoneOwnership, consent, enroll);
 
@@ -344,7 +348,12 @@ public class PatientRegistrationFormHandlerTest {
         assertMobileMidwifeRegistration(mobileMidwifeEnrollment, staffId, motechFacilityId, motechId, serviceType, reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, mmRegPhone, phoneOwnership, consent, registerClientForm.getDate());
     }
 
-    private RegisterClientForm createRegisterClientFormForCWCEnrollment(String address, Date dateofBirth, String district, Boolean birthDateEstimated, String motechFacilityId, String firstName, Boolean insured, String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId, String region, RegistrationType registrationMode, String sex, String subDistrict, String phoneNumber, PatientType patientType, Date registartionDate, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, String staffId, int lastPenta, int lastOPV, int lastIPTi) {
+    private RegisterClientForm createRegisterClientFormForCWCEnrollment(String address, Date dateofBirth, String district, Boolean birthDateEstimated, String motechFacilityId, String firstName,
+                                                                        Boolean insured, String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId,
+                                                                        String region, RegistrationType registrationMode, String sex, String subDistrict, String phoneNumber,
+                                                                        PatientType patientType, Date registartionDate, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate,
+                                                                        Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, String staffId, Integer lastPenta, Integer lastOPV, Integer lastIPTi,
+                                                                        Integer lastRotavirus, Date lastRotavirusDate, Integer lastPneumo, Date lastPneumoDate) {
         RegisterClientForm registerClientForm = createRegisterClientForm(address, dateofBirth, district, birthDateEstimated,
                 motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
         registerClientForm.setDate(registartionDate);
@@ -358,6 +367,10 @@ public class PatientRegistrationFormHandlerTest {
         registerClientForm.setLastOPV(lastOPV);
         registerClientForm.setLastIPTiDate(lastIPTiDate);
         registerClientForm.setLastIPTi(lastIPTi);
+        registerClientForm.setLastRotavirus(lastRotavirus);
+        registerClientForm.setLastRotavirusDate(lastRotavirusDate);
+        registerClientForm.setLastPneumococcal(lastPneumo);
+        registerClientForm.setLastPneumococcalDate(lastPneumoDate);
         return registerClientForm;
     }
 

@@ -79,12 +79,14 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
     private Date lastIPTiDate;
     private Date yellowFeverDate;
     private Date lastPentaDate;
-    private Date lastRotavirusDate;
     private Date measlesDate;
     private Integer lastOPV;
     private Integer lastIPTi;
     private Integer lastPenta;
     private Integer lastRotavirus;
+    private Date lastRotavirusDate;
+    private Integer lastPneumococcal;
+    private Date lastPneumococcalDate;
 
     //ANC REGISTRATION DETAILS
     private String ancRegNumber;
@@ -488,6 +490,22 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
 
     public void setLastRotavirus(Integer lastRotavirus) {
         this.lastRotavirus = lastRotavirus;
+    }
+
+    public Integer getLastPneumococcal() {
+        return lastPneumococcal;
+    }
+
+    public Date getLastPneumococcalDate() {
+        return lastPneumococcalDate;
+    }
+
+    public void setLastPneumococcalDate(Date lastPneumococcalDate) {
+        this.lastPneumococcalDate = lastPneumococcalDate;
+    }
+
+    public void setLastPneumococcal(Integer lastPneumococcal) {
+        this.lastPneumococcal = lastPneumococcal;
     }
 
     public List<ANCCareHistory> getAncCareHistories() {

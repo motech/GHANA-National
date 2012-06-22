@@ -47,6 +47,16 @@ public class ChildCareTest extends BaseUnitTest {
         assertIfChildIsApplicableForRotavirus(birthDate.plusWeeks(-1), birthDate, is(false));
     }
 
+    @Test
+    public void shouldVerifyIfApplicableForPneumococcalVaccine() {
+
+        DateTime birthDate = newDateTime(2012, 1, 4, 10, 12, 0);
+        assertIfChildIsApplicableForPneumococcal(birthDate.plusWeeks(1), birthDate, is(true));
+        assertIfChildIsApplicableForPneumococcal(birthDate.plusWeeks(9).plusDays(6), birthDate, is(true));
+        assertIfChildIsApplicableForPneumococcal(birthDate.plusWeeks(14), birthDate, is(false));
+        assertIfChildIsApplicableForPneumococcal(birthDate.plusWeeks(-1), birthDate, is(false));
+    }
+
     private void assertIfChildIsApplicableForIPT(DateTime today, DateTime birthDate, Matcher<Boolean> expected) {
         mockCurrentDate(today);
         assertThat(ChildCare.basedOnBirthDay(birthDate).applicableForIPTi(), expected);
@@ -55,5 +65,10 @@ public class ChildCareTest extends BaseUnitTest {
     private void assertIfChildIsApplicableForRotavirus(DateTime today, DateTime birthDate, Matcher<Boolean> expected) {
         mockCurrentDate(today);
         assertThat(ChildCare.basedOnBirthDay(birthDate).applicableForRotavirus(), expected);
+    }
+
+    private void assertIfChildIsApplicableForPneumococcal(DateTime today, DateTime birthDate, Matcher<Boolean> expected) {
+        mockCurrentDate(today);
+        assertThat(ChildCare.basedOnBirthDay(birthDate).applicableForPneumococcal(), expected);
     }
 }

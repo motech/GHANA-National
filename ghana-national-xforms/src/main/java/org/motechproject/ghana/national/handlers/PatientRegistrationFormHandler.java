@@ -110,7 +110,9 @@ public class PatientRegistrationFormHandler{
             CwcVO cwcVO = new CwcVO(registerClientForm.getStaffId(), facilityId, registerClientForm.getDate(),
                     patientMotechId, registerClientForm.getCWCCareHistories(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
                     registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
-                    registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getLastRotavirusDate(),registerClientForm.getLastRotavirus(), registerClientForm.getCwcRegNumber(), registerClientForm.getAddHistory());
+                    registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getLastRotavirusDate(),
+                    registerClientForm.getLastRotavirus(), registerClientForm.getLastPneumococcal(), registerClientForm.getLastPneumococcalDate(), registerClientForm.getCwcRegNumber(),
+                    registerClientForm.getAddHistory());
 
             careService.enroll(cwcVO);
         }

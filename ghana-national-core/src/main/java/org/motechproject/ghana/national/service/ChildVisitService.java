@@ -46,6 +46,7 @@ public class ChildVisitService {
         updateBCGSchedule(cwcVisit);
         updateOPVSchedule(cwcVisit);
         updateRotavirusSchedule(cwcVisit);
+        updatePneumococcalSchedule(cwcVisit);
         return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(cwcVisit));
     }
 
@@ -56,6 +57,17 @@ public class ChildVisitService {
             Patient patient = cwcVisit.getPatient();
             LocalDate visitDate = newDate(cwcVisit.getDate());
             EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.cwcRotavirusPatientCareEnrollOnVisitAfter10Weeks(visitDate).milestoneName(dose.milestoneName()));
+            allSchedulesAndMessages.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
+        }
+    }
+
+    void updatePneumococcalSchedule(CWCVisit cwcVisit) {
+        String pneumococcalDose = cwcVisit.getPneumococcaldose();
+        if (pneumococcalDose!= null) {
+            PneumococcalDose dose = PneumococcalDose.byValue(Integer.parseInt(pneumococcalDose));
+            Patient patient = cwcVisit.getPatient();
+            LocalDate visitDate = newDate(cwcVisit.getDate());
+            EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.cwcPneumococcalPatientCareEnrollOnVisitAfter10Weeks(visitDate).milestoneName(dose.milestoneName()));
             allSchedulesAndMessages.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
         }
     }
