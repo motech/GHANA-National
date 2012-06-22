@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.ivr;
 
-import org.jasypt.contrib.org.apache.commons.codec_1_3.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
@@ -47,21 +46,9 @@ public class IVRInboundCallTest {
         String invalidMotechIdPrompt = AudioPrompts.INVALID_MOTECH_ID_PROMPT.value() + ".wav";
         response = verboiceStub.handle(response, "18374873");
         expectedActions = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN")))
-                .addAction(new TwiML.Gather(testAppServer.path("/verboice/ivr?type=verboice&amp;ln=en&amp;tree=mm&amp;trP=LzEvMS8xODM3NDg3Mw")));
-        verboiceStub.expect(expectedActions, response);
-
-        String noMessagesPrompt = AudioPrompts.NO_MESSAGE_IN_OUTBOX.value() + ".wav";
-        response = verboiceStub.handle(response, "1234568");
-        expectedActions = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(noMessagesPrompt, "EN")));
+                .addAction(new TwiML.Gather(testAppServer.path("/verboice/ivr?type=verboice&amp;ln=en&amp;tree=mm&amp;trP=LzEvMS8_Lz8")));
         verboiceStub.expect(expectedActions, response);
 
         System.out.println(response);
-
-
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new String(Base64.decodeBase64("LzEvMQ".getBytes())));
-
     }
 }

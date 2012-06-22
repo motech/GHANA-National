@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.EventKeys;
+import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.AggregationMessageIdentifier;
 import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.domain.AlertWindow;
@@ -14,6 +15,7 @@ import org.motechproject.ghana.national.domain.Concept;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientAttributes;
+import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -303,7 +305,7 @@ public class BaseScheduleHandlerTest {
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
         String patientId = "patientOpenMrsId";
         String patientMotechId = "patientmotechid";
-        String scheduleName = "scheduleName";
+        String scheduleName = ScheduleNames.CWC_MEASLES_VACCINE.getName();
         String windowName = WindowName.due.name();
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, DateTime.now());
         Patient patient = new Patient(new MRSPatient(patientId, patientMotechId, new MRSPerson(), null));
@@ -314,7 +316,7 @@ public class BaseScheduleHandlerTest {
 
         when(mockScheduleJsonReader.validity(scheduleName, milestoneName, windowName)).thenReturn(Period.weeks(1));
         careScheduleHandler.sendAggregatedMessageToPatient(null, milestoneEvent);
-        verify(mockVoiceGateway).dispatchCareMsgToAggregator("prompt_scheduleName_Due", new AggregationMessageIdentifier(patientId, scheduleName).getIdentifier(), patientMotechId, Period.weeks(1), AlertWindow.DUE, milestoneAlert.getDueDateTime());
+        verify(mockVoiceGateway).dispatchCareMsgToAggregator(AudioPrompts.OTHER_VACCINE_DUE.value(), new AggregationMessageIdentifier(patientId, scheduleName).getIdentifier(), patientMotechId, Period.weeks(1), AlertWindow.DUE, milestoneAlert.getDueDateTime());
     }
 
     @Test

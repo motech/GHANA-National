@@ -36,12 +36,16 @@ public class MotechIdValidationTransition extends Transition {
     @Override
     public Node getDestinationNode(String input) {
         if (!isValidMotechIdentifier(input)) {
-            return invalidMotechIdNode();
+            return invalidMotechIdNode(INVALID_MOTECH_ID_PROMPT);
         } else if (hasValidMobileMidwifeVoiceRegistration(input)) {
             return sendResponseFromOutbox(input);
-        } else {
-            return invalidMotechIdNode();
         }
+        return null;
+
+//        else {
+//            return invalidMotechIdNode(INVALID_MOTECH_ID_PROMPT);
+//        }
+
     }
 
     private Node sendResponseFromOutbox(String motechId) {
@@ -70,9 +74,9 @@ public class MotechIdValidationTransition extends Transition {
         });
     }
 
-    private Node invalidMotechIdNode() {
+    private Node invalidMotechIdNode(AudioPrompts prompt) {
         return new Node()
-                .addPrompts(new AudioPrompt().setAudioFileUrl(((IVRClipManager) AllSpringBeans.applicationContext.getBean("ivrClipManager")).urlFor(INVALID_MOTECH_ID_PROMPT.value(), valueOf(language))))
+                .addPrompts(new AudioPrompt().setAudioFileUrl(((IVRClipManager) AllSpringBeans.applicationContext.getBean("ivrClipManager")).urlFor(prompt.value(), valueOf(language))))
                 .addTransition("?", new MotechIdValidationTransition(language));
     }
 
