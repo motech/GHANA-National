@@ -343,6 +343,9 @@
                     </snapshots>
                 </repository>
             </repositories>
+            <properties>
+                <VERBOICE_HOST>192.168.42.50</VERBOICE_HOST>
+            </properties>
         </profile>
     </profiles>
 </project>

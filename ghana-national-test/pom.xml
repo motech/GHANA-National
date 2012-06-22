@@ -88,6 +88,7 @@
     </dependencies>
     <properties>
         <OPENMRS_PORT>8080</OPENMRS_PORT>
+        <VERBOICE_HOST>centos</VERBOICE_HOST>
     </properties>
     <build>
         <!--RESOURCE FILTERING-->
