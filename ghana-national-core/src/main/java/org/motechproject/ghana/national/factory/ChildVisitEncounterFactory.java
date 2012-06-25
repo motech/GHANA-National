@@ -46,6 +46,7 @@ public class ChildVisitEncounterFactory extends BaseObservationFactory {
         addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate,VITA);
         addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate,MEASLES);
         addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate,YF);
+        addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate,DEWORMER);
         return mrsObservations;
     }
 
