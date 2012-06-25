@@ -9,6 +9,8 @@ import org.motechproject.ghana.national.domain.SmsTemplateKeys;
 import org.motechproject.ghana.national.messagegateway.domain.*;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.tools.Utility;
+import org.motechproject.openmrs.advice.ApiSession;
+import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,6 +43,8 @@ public class AggregationStrategyImpl implements AggregationStrategy {
     public static final String SMS_SEPARATOR = "%0A";
 
     @Override
+    @LoginAsAdmin
+    @ApiSession
     public List<SMS> aggregate(List<SMSPayload> smsPayloadMessages) {
         List<SMS> aggregatedSMSPayload = new ArrayList<SMS>();
         List<SMSPayload> smsPayloadForFacility = filter(having(on(SMSPayload.class).getMessageRecipientType(), equalTo(MessageRecipientType.FACILITY)), smsPayloadMessages);
