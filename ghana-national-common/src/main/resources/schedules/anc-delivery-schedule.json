@@ -14,13 +14,15 @@
                     "window" : "due",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["-1 Weeks"]
+                    "offset" : ["-1 Weeks"],
+                    "validity": "1 Week"
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Weeks"],
                     "count" : "3",
-                    "offset" : ["-1 Weeks"]
+                    "offset" : ["-1 Weeks"],
+                    "validity": "1 Week"
                 }
             ]
         }

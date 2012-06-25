@@ -33,12 +33,14 @@ public class CareScheduleHandlerTest {
     private AllMobileMidwifeEnrollments mockAllMobileMidwifeEnrollments;
     @Mock
     private AllPatientsOutbox mockAllPatientsOutbox;
+    @Mock
+    private ScheduleJsonReader mockScheduleJsoneReader;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
         careScheduleHandlerSpy = spy(new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSmsGateway,
-                mockVoiceGateway, mockAllObservations, mockAllMobileMidwifeEnrollments,mockAllPatientsOutbox));
+                mockVoiceGateway, mockAllObservations, mockAllMobileMidwifeEnrollments,mockAllPatientsOutbox, mockScheduleJsoneReader));
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendAggregatedMessageToPatient(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToPatientForAppointment(Matchers.<String>any(), Matchers.<MotechEvent>any());

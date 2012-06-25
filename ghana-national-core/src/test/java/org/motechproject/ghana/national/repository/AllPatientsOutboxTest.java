@@ -1,9 +1,6 @@
 package org.motechproject.ghana.national.repository;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
+import org.joda.time.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -52,10 +49,9 @@ public class AllPatientsOutboxTest extends BaseUnitTest{
         String motechId = "motechId";
         final String clipName = "clip.wav";
         Patient patient = new Patient(new MRSPatient(motechId, new MRSPerson(), new MRSFacility("facilityId")));
-        Date expirationTimeInMillis = new Date(DateTimeUtils.currentTimeMillis());
-        DateTime expirationTime = DateUtil.newDateTime(expirationTimeInMillis);
+        Date expirationTimeInMillis = DateUtil.newDateTime(new Date(DateTimeUtils.currentTimeMillis())).plus(Period.weeks(1)).toDate() ;
 
-        allPatientsOutbox.addAudioClip(patient.getMotechId(), clipName, expirationTime);
+        allPatientsOutbox.addAudioClip(patient.getMotechId(), clipName, Period.weeks(1));
 
         ArgumentCaptor<OutboundVoiceMessage> messageCaptor = ArgumentCaptor.forClass(OutboundVoiceMessage.class);
         verify(mockOutboxService).addMessage(messageCaptor.capture());

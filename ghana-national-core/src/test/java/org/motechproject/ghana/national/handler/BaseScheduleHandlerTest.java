@@ -22,7 +22,6 @@ import org.motechproject.scheduletracking.api.domain.Milestone;
 import org.motechproject.scheduletracking.api.domain.MilestoneAlert;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
-import org.motechproject.util.DateUtil;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -63,12 +62,14 @@ public class BaseScheduleHandlerTest {
     private AllMobileMidwifeEnrollments mockAllMobileMidwifeEnrollments;
 
     private CareScheduleAlerts careScheduleHandler;
+    @Mock
+    private ScheduleJsonReader mockScheduleJsonReader;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
         careScheduleHandler = new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSMSGateway, mockVoiceGateway,
-                mockAllObservations, mockAllMobileMidwifeEnrollments,mockAllPatientsOutbox);
+                mockAllObservations, mockAllMobileMidwifeEnrollments,mockAllPatientsOutbox, mockScheduleJsonReader);
     }
 
     @Test
@@ -271,20 +272,22 @@ public class BaseScheduleHandlerTest {
     @Test
     public void shouldSendIVRAudioFileForAggregationIfThePatientHadRegisteredForMobileMidwifeProgramWithVoiceOption(){
 
-        MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone("milestoneName", Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
+        String milestoneName = "milestoneName";
+        MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
         String patientId = "patientOpenMrsId";
         String patientMotechId = "patientmotechid";
         String scheduleName = "scheduleName";
-        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, WindowName.due.name(), DateTime.now());
+        String windowName = WindowName.due.name();
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, DateTime.now());
         Patient patient = new Patient(new MRSPatient(patientId, patientMotechId, new MRSPerson(), null));
         when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(patient);
         MobileMidwifeEnrollment mobileMidwifeEnrollment=new MobileMidwifeEnrollment(DateTime.now()).setMedium(Medium.VOICE).setLanguage(Language.EN);
 
         when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(mobileMidwifeEnrollment);
 
-
+        when(mockScheduleJsonReader.validity(scheduleName, milestoneName, windowName)).thenReturn(Period.weeks(1));
         careScheduleHandler.sendAggregatedMessageToPatient(null, milestoneEvent);
-        verify(mockVoiceGateway).dispatchVoiceToAggregator("prompt_scheduleName_Due", new AggregationMessageIdentifier(patientId, scheduleName).getIdentifier(), patientMotechId);
+        verify(mockVoiceGateway).dispatchVoiceToAggregator("prompt_scheduleName_Due", new AggregationMessageIdentifier(patientId, scheduleName).getIdentifier(), patientMotechId, Period.weeks(1));
     }
 
     @Test

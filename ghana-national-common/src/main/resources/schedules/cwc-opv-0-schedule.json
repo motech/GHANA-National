@@ -14,7 +14,8 @@
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "3",
-                    "offset" : ["-1 Weeks"]
+                    "offset" : ["-1 Weeks"],
+                    "validity": "1 Week"
                 }
             ]
         }

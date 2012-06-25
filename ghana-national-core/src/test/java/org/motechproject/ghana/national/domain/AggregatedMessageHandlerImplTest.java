@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.domain;
 
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -12,6 +13,7 @@ import org.motechproject.sms.api.service.SmsService;
 
 import java.util.Arrays;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -34,12 +36,12 @@ public class AggregatedMessageHandlerImplTest {
         String clipName = "clipName";
         String motechId = "motechId";
 
-        VoicePayload voicePayload = new VoicePayload(clipName, motechId, now, null, now);
+        VoicePayload voicePayload = new VoicePayload(clipName, motechId, now, null, Period.weeks(1));
         String smsText = "text";
         String phoneNumber = "phoneNumber";
         SMSPayload smsPayload = SMSPayload.fromPhoneNoAndText(phoneNumber, smsText);
         aggregatedMessageHandler.handle(Arrays.<Payload>asList(smsPayload, voicePayload));
-        verify(mockAllPatientsOutbox).addAudioClip(motechId, clipName, now);
+        verify(mockAllPatientsOutbox).addAudioClip(motechId, clipName, Period.weeks(1));
         verify(mockSMSService).sendSMS(phoneNumber, smsText);
     }
 }

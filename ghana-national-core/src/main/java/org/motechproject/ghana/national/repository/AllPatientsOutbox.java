@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.repository;
 
 import ch.lambdaj.function.convert.Converter;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.motechproject.outbox.api.contract.SortKey;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessageStatus;
@@ -24,10 +25,11 @@ public class AllPatientsOutbox {
     @Autowired
     VoiceOutboxService voiceOutboxService;
 
-    public void addAudioClip(String motechId, final String clipName, DateTime expirationTime) {
+    public void addAudioClip(String motechId, final String clipName, Period validity) {
+        DateTime now = DateTime.now();
         OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
-        outboundVoiceMessage.setCreationTime(DateTime.now().toDate());
-        outboundVoiceMessage.setExpirationDate(expirationTime.toDate());
+        outboundVoiceMessage.setCreationTime(now.toDate());
+        outboundVoiceMessage.setExpirationDate(now.plus(validity).toDate());
         outboundVoiceMessage.setExternalId(motechId);
         outboundVoiceMessage.setParameters(new HashMap<String, Object>(){{
             put(AUDIO_URL, clipName);

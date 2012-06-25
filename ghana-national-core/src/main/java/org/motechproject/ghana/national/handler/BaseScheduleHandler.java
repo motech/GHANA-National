@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.handler;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.Period;
 import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
@@ -13,7 +14,6 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.scheduletracking.api.domain.WindowName;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashMap;
@@ -28,6 +28,7 @@ public abstract class BaseScheduleHandler {
     protected FacilityService facilityService;
     protected AllObservations allObservations;
     protected AllMobileMidwifeEnrollments allMobileMidwifeEnrollments;
+    private ScheduleJsonReader scheduleJsonReader;
 
     @Value("#{verboiceProperties['resource.url']}")
     private String resourceBaseUrl;
@@ -37,7 +38,8 @@ public abstract class BaseScheduleHandler {
 
     protected BaseScheduleHandler(PatientService patientService, FacilityService facilityService, SMSGateway smsGateway,
                                   VoiceGateway voiceGateway, AllObservations allObservations,
-                                  AllMobileMidwifeEnrollments allMobileMidwifeEnrollments, AllPatientsOutbox allPatientsOutbox) {
+                                  AllMobileMidwifeEnrollments allMobileMidwifeEnrollments, AllPatientsOutbox allPatientsOutbox,
+                                  ScheduleJsonReader scheduleJsonReader) {
 
         this.patientService = patientService;
         this.smsGateway = smsGateway;
@@ -46,6 +48,7 @@ public abstract class BaseScheduleHandler {
         this.allObservations = allObservations;
         this.allMobileMidwifeEnrollments = allMobileMidwifeEnrollments;
         this.allPatientsOutbox = allPatientsOutbox;
+        this.scheduleJsonReader = scheduleJsonReader;
     }
 
     protected void sendAggregatedSMSToFacilityForAnAppointment(String ancVisitSmsKey, MotechEvent motechEvent) {
@@ -75,7 +78,8 @@ public abstract class BaseScheduleHandler {
                 String smsTemplateKeyForWindow = formatTemplateKeyForDueAndLateWindow(smsTemplateKey, alertDetails.getWindow().getPlatformWindowName());
                 dispatchSMSToAggregator(patient.getMotechId(), smsTemplateKeyForWindow, patient, alertDetails, MessageRecipientType.PATIENT);
             } else {
-                voiceGateway.dispatchVoiceToAggregator(new IVRClip().name(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId());
+                Period messageValidity = scheduleJsonReader.validity(alertDetails.getScheduleName(), alertDetails.getMilestoneName(), alertDetails.getWindow().getPlatformWindowName());
+                voiceGateway.dispatchVoiceToAggregator(new IVRClip().name(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId(), messageValidity);
             }
         }
     }
@@ -94,7 +98,8 @@ public abstract class BaseScheduleHandler {
                     smsGateway.dispatchSMS(smsTemplateKeyForWindow, patientDetailsMap(patient, alertDetails.getWindow().getName(), alertDetails.getMilestoneName(), null), phoneNumber);
                 }
             } else {
-                allPatientsOutbox.addAudioClip(patient.getMotechId(), new IVRClip().name(alertDetails.getScheduleName(), alertDetails.getWindow()), DateUtil.now());
+                Period messageValidity = scheduleJsonReader.validity(alertDetails.getScheduleName(), alertDetails.getMilestoneName(), alertDetails.getWindow().getPlatformWindowName());
+                allPatientsOutbox.addAudioClip(patient.getMotechId(), new IVRClip().name(alertDetails.getScheduleName(), alertDetails.getWindow()), messageValidity);
             }
         }
     }

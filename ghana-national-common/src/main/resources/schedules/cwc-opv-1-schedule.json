@@ -14,13 +14,15 @@
                     "window" : "due",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["-1 Week"]
+                    "offset" : ["-1 Week"],
+                    "validity": "1 Week"
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "3",
-                    "offset" : ["-1 Week"]
+                    "offset" : ["-1 Week"],
+                    "validity": "1 Week"
 
                 }
             ]
@@ -38,13 +40,15 @@
                     "window" : "due",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["-1 Week"]
+                    "offset" : ["-1 Week"],
+                    "validity": "1 Week"
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "3",
-                    "offset" : ["-1 Week"]
+                    "offset" : ["-1 Week"],
+                    "validity": "1 Week"
                 }
             ]
         },
@@ -61,13 +65,15 @@
                     "window" : "due",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["-1 Week"]
+                    "offset" : ["-1 Week"],
+                    "validity": "1 Week"
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "3",
-                    "offset" : ["-1 Week"]
+                    "offset" : ["-1 Week"],
+                    "validity": "1 Week"
                 }
 
             ]

@@ -14,13 +14,15 @@
                     "window" : "earliest",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["12 Days","-1 minute"]
+                    "offset" : ["12 Days","-1 minute"],
+                    "validity": "2 Days"
                 },
                 {
                     "window" : "late",
                     "interval" : ["1 Week"],
                     "count" : "1",
-                    "offset" : ["2 Days","-1 minute"]
+                    "offset" : ["2 Days","-1 minute"],
+                    "validity": "1 Week"
                 }                
             ]
         }
