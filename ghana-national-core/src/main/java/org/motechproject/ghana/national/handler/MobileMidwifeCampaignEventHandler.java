@@ -6,6 +6,7 @@ import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.builder.IVRRequestBuilder;
 import org.motechproject.ghana.national.builder.RetryRequestBuilder;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
+import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.exception.EventHandlerException;
@@ -79,6 +80,6 @@ public class MobileMidwifeCampaignEventHandler {
     }
 
     private void placeMobileMidwifeMessagesToOutbox(MobileMidwifeEnrollment enrollment, String messageKey) {
-        allPatientsOutbox.addMobileMidwifeMessage(enrollment.getPatientId(), AudioPrompts.fileNameForMobileMidwife(enrollment.getServiceType().getValue(), messageKey), Period.weeks(1));
+        allPatientsOutbox.addMobileMidwifeMessage(enrollment.getPatientId(), MobileMidwifeAudioClips.instance(enrollment.getServiceType().getValue(), messageKey), Period.weeks(1));
     }
 }

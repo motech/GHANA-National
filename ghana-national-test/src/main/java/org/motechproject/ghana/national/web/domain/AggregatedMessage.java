@@ -1,8 +1,9 @@
 package org.motechproject.ghana.national.web.domain;
 
 import org.joda.time.DateTime;
-import org.motechproject.ghana.national.domain.SMSPayload;
-import org.motechproject.ghana.national.domain.VoicePayload;
+import org.motechproject.ghana.national.domain.*;
+
+import static org.apache.commons.lang.StringUtils.join;
 
 public class AggregatedMessage {
     private DateTime generationTime;
@@ -21,7 +22,18 @@ public class AggregatedMessage {
         generationTime = voicePayload.getGenerationTime();
         deliveryTime = voicePayload.getDeliveryTime();
         uniqueId = voicePayload.getUniqueId();
-        content = voicePayload.getClipName();
+        content = getClipNames(voicePayload);
+    }
+
+    private String getClipNames(VoicePayload voicePayload) {
+        if(voicePayload instanceof MobileMidwifeVoicePayload){
+            return join(((MobileMidwifeVoicePayload) voicePayload).getClips().getClipNames(), ",");
+        }else if(voicePayload instanceof CareVoicePayload){
+            return ((CareVoicePayload)voicePayload).getClipName();
+        }else if(voicePayload instanceof AppointmentVoicePayload){
+            return ((AppointmentVoicePayload)voicePayload).getClipName();
+        }
+        return null;
     }
 
     public DateTime getGenerationTime() {

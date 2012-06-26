@@ -16,8 +16,4 @@ public class AudioPromptsTest {
         assertThat(AudioPrompts.fileNameForCareSchedule(ScheduleNames.ANC_DELIVERY.getName(), AlertWindow.DUE), is(equalTo("prompt_IR1")));
     }
 
-    @Test
-    public void shouldReturnMobileMidwifeClipName_GivenProgramNameAndWeek() {
-        assertThat(AudioPrompts.fileNameForMobileMidwife("pregnancy", "33"), is("prompt_pregnancy_33"));
-    }
 }

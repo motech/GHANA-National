@@ -11,6 +11,7 @@ import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.builder.IVRRequestBuilder;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
+import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -127,7 +128,7 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest{
 
         handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), genMessageKey));
 
-        verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, AudioPrompts.fileNameForMobileMidwife(mobileMidwifeEnrollment.getServiceType().getValue(), genMessageKey), Period.weeks(1));
+        verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, MobileMidwifeAudioClips.instance(mobileMidwifeEnrollment.getServiceType().getValue(), genMessageKey), Period.weeks(1));
         verify(mockRetryService).schedule(eq(new RetryRequest("retry-ivr-every-2hrs-and-30mins", patientId, now)));
         verify(mockIVRGateway).placeCall(mobileMidwifeEnrollment.getPhoneNumber(), new HashMap<String, String>() {{
             put(IVRRequestBuilder.CALLBACK_URL, url);

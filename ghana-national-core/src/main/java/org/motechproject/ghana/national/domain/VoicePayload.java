@@ -8,7 +8,6 @@ import org.motechproject.util.DateUtil;
 
 public class VoicePayload implements Payload {
     private String uniqueId;
-    private String clipName;
     private DateTime generationTime;
     private DeliveryStrategy deliveryStrategy;
     private Period validity;
@@ -16,16 +15,11 @@ public class VoicePayload implements Payload {
     protected VoicePayload() {
     }
 
-    public VoicePayload(String clipName, String uniqueId, DateTime generationTime, DeliveryStrategy deliveryStrategy, Period validity) {
-        this.clipName = clipName;
+    public VoicePayload(String uniqueId, DateTime generationTime, DeliveryStrategy deliveryStrategy, Period validity) {
         this.uniqueId = uniqueId;
         this.generationTime = generationTime;
         this.deliveryStrategy = deliveryStrategy;
         this.validity = validity;
-    }
-
-    public String getClipName() {
-        return clipName;
     }
 
     public DeliveryStrategy getDeliveryStrategy() {
@@ -60,7 +54,6 @@ public class VoicePayload implements Payload {
 
         VoicePayload that = (VoicePayload) o;
 
-        if (clipName != null ? !clipName.equals(that.clipName) : that.clipName != null) return false;
         if (deliveryStrategy != null ? !deliveryStrategy.equals(that.deliveryStrategy) : that.deliveryStrategy != null)
             return false;
         if (generationTime != null ? !generationTime.equals(that.generationTime) : that.generationTime != null)
@@ -74,7 +67,6 @@ public class VoicePayload implements Payload {
     @Override
     public int hashCode() {
         int result = uniqueId != null ? uniqueId.hashCode() : 0;
-        result = 31 * result + (clipName != null ? clipName.hashCode() : 0);
         result = 31 * result + (generationTime != null ? generationTime.hashCode() : 0);
         result = 31 * result + (deliveryStrategy != null ? deliveryStrategy.hashCode() : 0);
         result = 31 * result + (validity != null ? validity.hashCode() : 0);
@@ -85,7 +77,6 @@ public class VoicePayload implements Payload {
     public String toString() {
         return "VoicePayload{" +
                 "uniqueId='" + uniqueId + '\'' +
-                ", clipName='" + clipName + '\'' +
                 ", generationTime=" + generationTime +
                 ", deliveryStrategy=" + deliveryStrategy +
                 ", validity=" + validity +

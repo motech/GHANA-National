@@ -9,7 +9,7 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 
 public enum AudioPrompts {
     LANGUAGE_PROMPT("prompt_A", null, null),
-    OPTIONS_PROMPT("prompt_B", null, null),
+    REASON_FOR_CALL_PROMPT("prompt_B", null, null),
     MOTECH_ID_PROMPT("prompt_C", null, null),
     INVALID_MOTECH_ID_PROMPT("prompt_F", null, null),
     NO_MESSAGE_IN_OUTBOX("prompt_H", null, null),
@@ -52,7 +52,4 @@ public enum AudioPrompts {
         return null;
     }
 
-    public static String fileNameForMobileMidwife(String programName, String week) {
-        return "prompt_" + programName + "_" + week;
-    }
 }

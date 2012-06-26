@@ -5,6 +5,7 @@ import org.joda.time.Period;
 import org.motechproject.ghana.national.messagegateway.domain.DeliveryStrategy;
 
 public class CareVoicePayload extends VoicePayload {
+    private String clipName;
     private AlertWindow scheduleWindow;
     private DateTime scheduleWindowStart;
 
@@ -12,9 +13,14 @@ public class CareVoicePayload extends VoicePayload {
     }
 
     public CareVoicePayload(String clipName, String uniqueId, DateTime generationTime, DeliveryStrategy deliveryStrategy, Period validity, AlertWindow scheduleWindow, DateTime scheduleWindowStart) {
-        super(clipName, uniqueId, generationTime, deliveryStrategy, validity);
+        super(uniqueId, generationTime, deliveryStrategy, validity);
+        this.clipName = clipName;
         this.scheduleWindow = scheduleWindow;
         this.scheduleWindowStart = scheduleWindowStart;
+    }
+
+    public String getClipName() {
+        return clipName;
     }
 
     public AlertWindow getScheduleWindow() {
@@ -33,6 +39,7 @@ public class CareVoicePayload extends VoicePayload {
 
         CareVoicePayload that = (CareVoicePayload) o;
 
+        if (clipName != null ? !clipName.equals(that.clipName) : that.clipName != null) return false;
         if (scheduleWindow != that.scheduleWindow) return false;
         if (scheduleWindowStart != null ? !scheduleWindowStart.equals(that.scheduleWindowStart) : that.scheduleWindowStart != null)
             return false;
@@ -43,6 +50,7 @@ public class CareVoicePayload extends VoicePayload {
     @Override
     public int hashCode() {
         int result = super.hashCode();
+        result = 31 * result + (clipName != null ? clipName.hashCode() : 0);
         result = 31 * result + (scheduleWindow != null ? scheduleWindow.hashCode() : 0);
         result = 31 * result + (scheduleWindowStart != null ? scheduleWindowStart.hashCode() : 0);
         return result;
@@ -51,7 +59,8 @@ public class CareVoicePayload extends VoicePayload {
     @Override
     public String toString() {
         return "CareVoicePayload{" +
-                "scheduleWindow=" + scheduleWindow +
+                "clipName='" + clipName + '\'' +
+                ", scheduleWindow=" + scheduleWindow +
                 ", scheduleWindowStart=" + scheduleWindowStart +
                 '}';
     }

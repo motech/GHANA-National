@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
 import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.domain.AlertWindow;
+import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.repository.AllCampaigns;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
@@ -102,7 +103,7 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
                 messageStartWeek("20").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
                 .active(true).build();
         service.register(enrollment);
-        allPatientsOutbox.addMobileMidwifeMessage(patientId, "mm_clip", Period.days(7));
+        allPatientsOutbox.addMobileMidwifeMessage(patientId, MobileMidwifeAudioClips.PREGNANCY_WEEK_7, Period.days(7));
         allPatientsOutbox.addCareMessage(patientId, "care_clip", Period.days(7), AlertWindow.DUE, DateTime.now());
         service.unRegister(patientId);
         List<OutboundVoiceMessage> remainingMessages = voiceOutboxService.getMessages(patientId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);

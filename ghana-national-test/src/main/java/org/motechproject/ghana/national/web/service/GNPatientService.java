@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Service
+@Service("gnPatientService")
 public class GNPatientService {
 
     @Autowired

@@ -36,7 +36,7 @@ public class AggregatedMessageHandlerImpl implements AggregatedMessageHandler {
                     allPatientsOutbox.addAppointmentMessage(voice.getUniqueId(), voice.getClipName(), voice.getValidity());
                 }else if(message instanceof MobileMidwifeVoicePayload){
                     MobileMidwifeVoicePayload voice = (MobileMidwifeVoicePayload) message;
-                    allPatientsOutbox.addMobileMidwifeMessage(voice.getUniqueId(), voice.getClipName(), voice.getValidity());
+                    allPatientsOutbox.addMobileMidwifeMessage(voice.getUniqueId(), voice.getClips(), voice.getValidity());
                 }
             }
         }

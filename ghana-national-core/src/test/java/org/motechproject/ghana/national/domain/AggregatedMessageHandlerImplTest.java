@@ -5,6 +5,7 @@ import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.ghana.national.messagegateway.domain.Payload;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.sms.api.service.SmsService;
@@ -32,7 +33,7 @@ public class AggregatedMessageHandlerImplTest {
     public void shouldDispatchMessagesViaCorrespondingHandlers() {
         DateTime now = DateTime.now();
         String careClipName = "clipName";
-        String mmClipName = "mmClipName";
+        MobileMidwifeAudioClips mmClipName = MobileMidwifeAudioClips.PREGNANCY_WEEK_7;
         String motechId = "motechId";
         String appointmentClipName = "appointmentClipName";
 

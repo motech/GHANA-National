@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.repository;
 
+import ch.lambdaj.function.convert.Converter;
 import org.joda.time.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +10,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.domain.AlertWindow;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
@@ -23,6 +25,7 @@ import org.motechproject.util.DateUtil;
 
 import java.util.*;
 
+import static ch.lambdaj.Lambda.convert;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
@@ -95,7 +98,7 @@ public class AllPatientsOutboxTest extends BaseUnitTest {
 
     @Test
     public void shouldAddMobileMidwifeVoiceMessageToOutboxForAGivenExternalId() {
-        final String clipName = "clip.wav";
+        final MobileMidwifeAudioClips clipName = MobileMidwifeAudioClips.PREGNANCY_WEEK_7;
         Date expirationTimeInMillis = DateUtil.newDateTime(new Date(DateTimeUtils.currentTimeMillis())).plus(Period.weeks(1)).toDate();
 
         allPatientsOutbox.addMobileMidwifeMessage(patient.getMotechId(), clipName, Period.weeks(1));
@@ -145,37 +148,45 @@ public class AllPatientsOutboxTest extends BaseUnitTest {
         String motechId = "motech_id";
         when(mockOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime)).thenReturn(messages);
 
-        List<String> audioClips = allPatientsOutbox.getAudioFileNames(motechId);
+        List<OutboundVoiceMessage> audioFiles = allPatientsOutbox.getAudioFileNames(motechId);
+
+        List<String> audioClips = convert(audioFiles, new Converter<OutboundVoiceMessage, String>() {
+            @Override
+            public String convert(OutboundVoiceMessage outboundVoiceMessage) {
+                return (String) outboundVoiceMessage.getParameters().get(AUDIO_CLIP_NAME);
+            }
+        });
+
         assertThat(audioClips, is(asList(careMaxClip_2000_11_30__8_30, careMaxClip_2000_11_30__9_10, careLateClip_2000_11_26__10_10,
                 careLateClip_2000_11_28__10_10, careDueClip_2000_11_21__10_10, careDueClip_2000_11_25__8_00, careDueClip_2000_11_25__10_10,
                 careEarlyClip_2000_11_17__10_10, careEarlyClip_2000_11_18__10_10, appointmentClip, mmClip)));
     }
 
     @Test
-    public void shouldRemoveMessagesFromOutboxBasedOnMotechIdAndType(){
+    public void shouldRemoveMessagesFromOutboxBasedOnMotechIdAndType() {
         final String motechId = "1234567";
         String patientId = "patientId";
         MRSPatient mrsPatient = mock(MRSPatient.class);
-        final OutboundVoiceMessage outboundVoiceMessage1 = buildOutBoxMessage(motechId, AlertType.MOBILE_MIDWIFE.name(),"preg_care");
-        final OutboundVoiceMessage outboundVoiceMessage2 = buildOutBoxMessage(motechId, AlertType.CARE.name(),"care");
-        final OutboundVoiceMessage outboundVoiceMessage3 = buildOutBoxMessage(motechId, AlertType.CARE.name(),"care1");
-        when(mockOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime)).thenReturn(Arrays.asList(outboundVoiceMessage1,outboundVoiceMessage2,outboundVoiceMessage3));
+        final OutboundVoiceMessage outboundVoiceMessage1 = buildOutBoxMessage(motechId, AlertType.MOBILE_MIDWIFE.name(), "preg_care");
+        final OutboundVoiceMessage outboundVoiceMessage2 = buildOutBoxMessage(motechId, AlertType.CARE.name(), "care");
+        final OutboundVoiceMessage outboundVoiceMessage3 = buildOutBoxMessage(motechId, AlertType.CARE.name(), "care1");
+        when(mockOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime)).thenReturn(Arrays.asList(outboundVoiceMessage1, outboundVoiceMessage2, outboundVoiceMessage3));
         when(mockMRSPatientAdapter.getPatient(patientId)).thenReturn(mrsPatient);
         when(mrsPatient.getMotechId()).thenReturn(motechId);
 
         allPatientsOutbox.removeMobileMidwifeMessages(motechId);
-        allPatientsOutbox.removeCareAndAppointmentMessages(patientId,"care1");
+        allPatientsOutbox.removeCareAndAppointmentMessages(patientId, "care1");
 
-        verify(mockOutboxService,times(2)).getMessages(motechId,OutboundVoiceMessageStatus.PENDING,SortKey.CreationTime);
-        verify(mockOutboxService,times(2)).removeMessage(anyString());
+        verify(mockOutboxService, times(2)).getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
+        verify(mockOutboxService, times(2)).removeMessage(anyString());
     }
 
-    private OutboundVoiceMessage buildOutBoxMessage(String motechId, final String type,final String scheduleName) {
+    private OutboundVoiceMessage buildOutBoxMessage(String motechId, final String type, final String scheduleName) {
         final OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
         outboundVoiceMessage.setExternalId(motechId);
         outboundVoiceMessage.setParameters(new HashMap<String, Object>() {{
             put("TYPE", type);
-            put("AUDIO_CLIP_NAME","prompt_"+scheduleName+"_due");
+            put("AUDIO_CLIP_NAME", "prompt_" + scheduleName + "_due");
         }});
         return outboundVoiceMessage;
     }
@@ -184,9 +195,9 @@ public class AllPatientsOutboxTest extends BaseUnitTest {
         OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
         outboundVoiceMessage.setParameters(new HashMap<String, Object>() {{
             put(AUDIO_CLIP_NAME, careClip);
-            put(TYPE, AlertType.CARE);
-            put(WINDOW, alertWindow);
-            put(WINDOW_START, windowStart);
+            put(TYPE, AlertType.CARE.name());
+            put(WINDOW, alertWindow.name());
+            put(WINDOW_START, windowStart.toString());
         }});
         return outboundVoiceMessage;
     }
@@ -195,7 +206,7 @@ public class AllPatientsOutboxTest extends BaseUnitTest {
         OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
         outboundVoiceMessage.setParameters(new HashMap<String, Object>() {{
             put(AUDIO_CLIP_NAME, appointmentClip);
-            put(TYPE, AlertType.APPOINTMENT);
+            put(TYPE, AlertType.APPOINTMENT.name());
         }});
         return outboundVoiceMessage;
     }
@@ -204,7 +215,7 @@ public class AllPatientsOutboxTest extends BaseUnitTest {
         OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
         outboundVoiceMessage.setParameters(new HashMap<String, Object>() {{
             put(AUDIO_CLIP_NAME, mmClip);
-            put(TYPE, AlertType.MOBILE_MIDWIFE);
+            put(TYPE, AlertType.MOBILE_MIDWIFE.name());
         }});
         return outboundVoiceMessage;
     }

@@ -4,7 +4,7 @@ import org.motechproject.decisiontree.model.*;
 import org.motechproject.decisiontree.repository.AllTrees;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
-import org.motechproject.ghana.national.domain.ivr.MotechIdValidationTransition;
+import org.motechproject.ghana.national.domain.ivr.ValidateMotechIdTransition;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +34,10 @@ public class DecisionTreeSeed extends Seed {
 
     private Map<String, ITransition> chooseLanguageTransitions() {
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
-        transitions.put("1", new Transition().setDestinationNode(prompt(OPTIONS_PROMPT, EN).setTransitions(chooseActionTransition(EN))));
-        transitions.put("2", new Transition().setDestinationNode(prompt(OPTIONS_PROMPT, KAS).setTransitions(chooseActionTransition(KAS))));
-        transitions.put("3", new Transition().setDestinationNode(prompt(OPTIONS_PROMPT, NAN).setTransitions(chooseActionTransition(NAN))));
-        transitions.put("4", new Transition().setDestinationNode(prompt(OPTIONS_PROMPT, FAN).setTransitions(chooseActionTransition(FAN))));
+        transitions.put("1", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, EN).setTransitions(chooseActionTransition(EN))));
+        transitions.put("2", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, KAS).setTransitions(chooseActionTransition(KAS))));
+        transitions.put("3", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, NAN).setTransitions(chooseActionTransition(NAN))));
+        transitions.put("4", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, FAN).setTransitions(chooseActionTransition(FAN))));
 //        transitions.put("*", customerCareTransition());
         return transitions;
     }
@@ -53,7 +53,8 @@ public class DecisionTreeSeed extends Seed {
 
     private Map<String, ITransition> validateMotechIdTransition(Language language) {
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
-        transitions.put("?", new MotechIdValidationTransition(language.name()));
+        ValidateMotechIdTransition validateMotechIdTransition = new ValidateMotechIdTransition(language.name());
+        transitions.put("?", validateMotechIdTransition);
         return transitions;
     }
 

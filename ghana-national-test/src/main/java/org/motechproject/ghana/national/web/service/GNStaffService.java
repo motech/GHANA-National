@@ -13,7 +13,7 @@ import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("gnStaffService")
 public class GNStaffService {
 
     @Autowired

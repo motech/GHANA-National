@@ -1,11 +1,10 @@
 package org.motechproject.ghana.national.repository;
 
-import ch.lambdaj.Lambda;
-import ch.lambdaj.function.convert.Converter;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.domain.AlertWindow;
+import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.mrs.services.MRSPatientAdapter;
 import org.motechproject.outbox.api.contract.SortKey;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
@@ -41,9 +40,9 @@ public class AllPatientsOutbox {
         addMessage(motechId, validity, messageAttributes);
     }
 
-    public void addMobileMidwifeMessage(String motechId, final String clipName, Period validity) {
+    public void addMobileMidwifeMessage(String motechId, final MobileMidwifeAudioClips clipNames, Period validity) {
         HashMap<String, Object> messageAttributes = new HashMap<String, Object>() {{
-            put(AUDIO_CLIP_NAME, clipName);
+            put(AUDIO_CLIP_NAME, clipNames);
             put(TYPE, AlertType.MOBILE_MIDWIFE);
         }};
         addMessage(motechId, validity, messageAttributes);
@@ -69,18 +68,18 @@ public class AllPatientsOutbox {
         voiceOutboxService.addMessage(outboundVoiceMessage);
     }
 
-    public List<String> getAudioFileNames(String motechId) {
+    public List<OutboundVoiceMessage> getAudioFileNames(String motechId) {
         List<OutboundVoiceMessage> messages = voiceOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
-        final List<OutboundVoiceMessage> mmclips = Lambda.filter(having(on(OutboundVoiceMessage.class).getParameters(), hasEntry(TYPE, AlertType.MOBILE_MIDWIFE)), messages);
-        final List<OutboundVoiceMessage> appointmentClips = Lambda.filter(having(on(OutboundVoiceMessage.class).getParameters(), hasEntry(TYPE, AlertType.APPOINTMENT)), messages);
-        final List<OutboundVoiceMessage> careClips = nullSafeList(Lambda.filter(having(on(OutboundVoiceMessage.class).getParameters(), hasEntry(TYPE, AlertType.CARE)), messages));
+        final List<OutboundVoiceMessage> mmclips = filter(having(on(OutboundVoiceMessage.class).getParameters(), hasEntry(TYPE, AlertType.MOBILE_MIDWIFE.name())), messages);
+        final List<OutboundVoiceMessage> appointmentClips = filter(having(on(OutboundVoiceMessage.class).getParameters(), hasEntry(TYPE, AlertType.APPOINTMENT.name())), messages);
+        final List<OutboundVoiceMessage> careClips = nullSafeList(filter(having(on(OutboundVoiceMessage.class).getParameters(), hasEntry(TYPE, AlertType.CARE.name())), messages));
         Collections.sort(careClips, new Comparator<OutboundVoiceMessage>() {
             @Override
             public int compare(OutboundVoiceMessage outboundVoiceMessage1, OutboundVoiceMessage outboundVoiceMessage2) {
-                AlertWindow messageOneAlertWindow = (AlertWindow) outboundVoiceMessage1.getParameters().get(WINDOW);
-                AlertWindow messageTwoAlertWindow = (AlertWindow) outboundVoiceMessage2.getParameters().get(WINDOW);
-                DateTime messageOneScheduleStart = (DateTime) outboundVoiceMessage1.getParameters().get(WINDOW_START);
-                DateTime messageTwoScheduleStart = (DateTime) outboundVoiceMessage2.getParameters().get(WINDOW_START);
+                AlertWindow messageOneAlertWindow = AlertWindow.valueOf((String) outboundVoiceMessage1.getParameters().get(WINDOW));
+                AlertWindow messageTwoAlertWindow = AlertWindow.valueOf((String) outboundVoiceMessage2.getParameters().get(WINDOW));
+                DateTime messageOneScheduleStart = new DateTime(outboundVoiceMessage1.getParameters().get(WINDOW_START));
+                DateTime messageTwoScheduleStart = new DateTime(outboundVoiceMessage2.getParameters().get(WINDOW_START));
 
                 int windowOrder = messageTwoAlertWindow.getOrder().compareTo(messageOneAlertWindow.getOrder());
                 if (windowOrder == 0) {
@@ -91,34 +90,28 @@ public class AllPatientsOutbox {
             }
         });
 
-        ArrayList<OutboundVoiceMessage> sortedMessages = new ArrayList<OutboundVoiceMessage>() {{
+        return new ArrayList<OutboundVoiceMessage>() {{
             addAll(careClips);
             addAll(appointmentClips);
             addAll(mmclips);
         }};
 
-        return convert(sortedMessages, new Converter<OutboundVoiceMessage, String>() {
-            @Override
-            public String convert(OutboundVoiceMessage outboundVoiceMessage) {
-                return (String)outboundVoiceMessage.getParameters().get(AUDIO_CLIP_NAME);
-            }
-        });
     }
-    
-    public void removeMobileMidwifeMessages(String motechId){
+
+    public void removeMobileMidwifeMessages(String motechId) {
         List<OutboundVoiceMessage> messages = voiceOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
         for (OutboundVoiceMessage message : messages) {
-            if(message.getParameters().get(TYPE).equals(AlertType.MOBILE_MIDWIFE.name()))
+            if (message.getParameters().get(TYPE).equals(AlertType.MOBILE_MIDWIFE.name()))
                 voiceOutboxService.removeMessage(message.getId());
         }
     }
-    
-    public void removeCareAndAppointmentMessages(String mrsPatientId, String scheduleName){
+
+    public void removeCareAndAppointmentMessages(String mrsPatientId, String scheduleName) {
         String motechId = mrsPatientAdapter.getPatient(mrsPatientId).getMotechId();
         List<OutboundVoiceMessage> messages = voiceOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
         for (OutboundVoiceMessage message : messages) {
             String audio_clip_name = (String) message.getParameters().get(AUDIO_CLIP_NAME);
-            if(audio_clip_name.contains(scheduleName))
+            if (audio_clip_name.contains(scheduleName))
                 voiceOutboxService.removeMessage(message.getId());
         }
     }
