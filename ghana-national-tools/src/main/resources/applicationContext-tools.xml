@@ -22,10 +22,10 @@
     <bean id="seedLoader" class="org.motechproject.ghana.national.tools.seed.SeedLoader">
         <constructor-arg>
             <list>
-                <!--<ref bean="staffTypeSeed"/>-->
-                <!--<ref bean="facilitySeed"/>-->
-                <!--<ref bean="SMSTextContentSeed"/>-->
-                <!--<ref bean="mobileMidwifeMessageSeed"/>-->
+                <ref bean="staffTypeSeed"/>
+                <ref bean="facilitySeed"/>
+                <ref bean="SMSTextContentSeed"/>
+                <ref bean="mobileMidwifeMessageSeed"/>
                 <ref bean="decisionTreeSeed"/>
             </list>
         </constructor-arg>
