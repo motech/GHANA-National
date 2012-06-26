@@ -3,7 +3,6 @@ package org.motechproject.ghana.national.domain.ivr;
 import ch.lambdaj.Lambda;
 import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.drools.core.util.StringUtils;
 import org.motechproject.decisiontree.model.*;
 import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.domain.IVRClipManager;
