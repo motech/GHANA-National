@@ -54,15 +54,15 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
     private Date lastVitaminADate;
     private Date lastIPTiDate;
     private Date yellowFeverDate;
+    private Date lastRotavirusDate;
     private Date lastPentaDate;
+    private Date lastPneumococcalDate;
     private Date measlesDate;
 
     private Integer lastOPV;
     private Integer lastIPTi;
     private Integer lastPenta;
-    private Date lastRotavirusDate;
     private Integer lastRotavirus;
-    private Date lastPneumococcalDate;
     private Integer lastPneumococcal;
 
     public void setRegistrationToday(RegistrationToday registrationToday) {

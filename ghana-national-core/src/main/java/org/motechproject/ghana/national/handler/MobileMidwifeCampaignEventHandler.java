@@ -1,11 +1,11 @@
 package org.motechproject.ghana.national.handler;
 
+import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.builder.IVRRequestBuilder;
 import org.motechproject.ghana.national.builder.RetryRequestBuilder;
-import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -23,10 +23,8 @@ import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.motechproject.server.messagecampaign.EventKeys.MESSAGE_CAMPAIGN_SEND_EVENT_SUBJECT;
@@ -61,7 +59,7 @@ public class MobileMidwifeCampaignEventHandler {
             MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(patientId);
             String generatedMessageKey = (String) event.getParameters().get(EventKeys.GENERATED_MESSAGE_KEY);
 
-            if (event.isLastEvent()) mobileMidwifeService.unRegister(patientId);
+            if (event.isLastEvent()) mobileMidwifeService.rollover(patientId, DateTime.now());
             sendMessage(enrollment, generatedMessageKey);
         } catch (Exception e) {
             logger.error("<MobileMidwifeEvent>: Encountered error while sending alert: ", e);

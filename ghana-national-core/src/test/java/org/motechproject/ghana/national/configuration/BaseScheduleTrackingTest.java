@@ -244,4 +244,9 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     protected void fulfillCurrentMilestone(LocalDate fulfillmentDate) {
         scheduleTrackingService.fulfillCurrentMilestone(externalId, scheduleName, fulfillmentDate);
     }
+
+    public DateTime mockDate(DateTime today) {
+        mockToday(today);
+        return today;
+    }
 }
