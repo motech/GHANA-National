@@ -75,7 +75,7 @@ public class MobileMidwifeCampaignEventHandler {
         } else if (Medium.VOICE.equals(enrollment.getMedium())) {
             placeMobileMidwifeMessagesToOutbox(enrollment, messageKey);
             retryService.schedule(RetryRequestBuilder.ivrRetryReqest(enrollment.getPatientId(), DateUtil.now()));
-            ivrGateway.placeCall(enrollment.getPhoneNumber(), IVRRequestBuilder.build(ivrCallbackUrlBuilder.outboundCallUrl(enrollment.getPatientId(), enrollment.getLanguage().name())));
+            ivrGateway.placeCall(enrollment.getPhoneNumber(), IVRRequestBuilder.build(ivrCallbackUrlBuilder.outboundCallUrl(enrollment.getPatientId(), enrollment.getLanguage().name(), "OutboundDecisionTree")));
         }
     }
 
