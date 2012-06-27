@@ -540,7 +540,7 @@
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
         <xf:bind id="lastPneumococcal" nodeset="/CWCRegistration/lastPneumococcal" type="xsd:string" visible="false()"
-                 relevant="/CWCRegistration/addCareHistory  = 'Pneumococcal' and /CWCRegistration/addHistory = '1'"
+                 relevant="/CWCRegistration/addCareHistory  = 'PNEUMOCOCCAL' and /CWCRegistration/addHistory = '1'"
                  action="show" required="true()"/>
         <xf:bind id="lastPneumococcalDate" nodeset="/CWCRegistration/lastPneumococcalDate" type="xsd:date"
                  visible="false()"
