@@ -26,7 +26,8 @@
                 <ref bean="facilitySeed"/>
                 <ref bean="SMSTextContentSeed"/>
                 <ref bean="mobileMidwifeMessageSeed"/>
-                <ref bean="decisionTreeSeed"/>
+                <ref bean="inboundDecisionTreeSeed"/>
+                <ref bean="outboundDecisionTreeSeed"/>
             </list>
         </constructor-arg>
     </bean>

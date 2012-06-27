@@ -22,7 +22,7 @@ public class VerboiceStub {
     }
 
     public String handleIncomingCall() {
-        String callbackUrl = testAppServer.path(VERBOICE_URL + "?type=verboice&ln=en&tree=mm&trP=Lw");
+        String callbackUrl = testAppServer.path(VERBOICE_URL + "?type=verboice&ln=en&tree=InboundDecisionTree&trP=Lw");
         return hitApp(callbackUrl);
     }
 

@@ -13,7 +13,7 @@ public class IVRCallbackUrlBuilder {
     @Value("#{ghanaNationalProperties['context.path']}")
     private String contextPath;
 
-    public String outboundCallUrl(String patientId, String language) {
-        return "http://" + host + ":" + port + "/" + contextPath + "/outgoing/call?motechId=" + patientId + "&ln=" + language;
+    public String outboundCallUrl(String patientId, String language, String decisionTree) {
+        return "http://" + host + ":" + port + "/" + contextPath + "/outgoing/call?motechId=" + patientId + "&ln=" + language + "&tree=" + decisionTree;
     }
 }

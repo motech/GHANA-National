@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.ghana.national.domain.IVRClipManager;
+import org.motechproject.ghana.national.domain.ivr.PlayMessagesFromOutboxTree;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.server.verboice.domain.VerboiceResponse;
@@ -23,6 +24,9 @@ public class OutgoingCallController {
     private AllPatientsOutbox allPatientsOutbox;
     @Autowired
     private IVRClipManager ivrClipManager;
+    @Autowired
+    private PlayMessagesFromOutboxTree playMessagesFromOutboxTree;
+
 
     public OutgoingCallController() {
     }

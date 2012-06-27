@@ -24,21 +24,21 @@ public class TwiML {
     }
 
     public TwiML(String xml) throws ParserConfigurationException, IOException, SAXException {
-        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream( xml.getBytes()));
+        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(xml.getBytes()));
         Node responseNode = document.getChildNodes().item(0);
         NodeList actionNodes = responseNode.getChildNodes();
-        for(int i = 0; i < actionNodes.getLength(); i++){
+        for (int i = 0; i < actionNodes.getLength(); i++) {
             Node actionNode = actionNodes.item(i);
-            if("Play".equals(actionNode.getNodeName())){
+            if ("Play".equals(actionNode.getNodeName())) {
                 actions.add(new Play(actionNode.getTextContent()));
-            }else if("Gather".equals(actionNode.getNodeName())){
+            } else if ("Gather".equals(actionNode.getNodeName())) {
                 NamedNodeMap attributes = actionNode.getAttributes();
                 actions.add(new Gather(attributes.getNamedItem("action").getTextContent()));
             }
         }
     }
 
-    public TwiML addAction(Action action){
+    public TwiML addAction(Action action) {
         actions.add(action);
         return this;
     }
@@ -73,15 +73,16 @@ public class TwiML {
 
     public Gather getGather() {
         for (Action action : actions) {
-            if(action instanceof Gather)
-                return (Gather)action;
+            if (action instanceof Gather)
+                return (Gather) action;
         }
         return null;
     }
 
-    public static interface Action{}
+    public static interface Action {
+    }
 
-    public static class Gather implements Action{
+    public static class Gather implements Action {
         private String action;
 
         public Gather() {
@@ -115,7 +116,7 @@ public class TwiML {
         }
     }
 
-    public static class Play implements Action{
+    public static class Play implements Action {
         private String url;
 
         public Play(String url) {

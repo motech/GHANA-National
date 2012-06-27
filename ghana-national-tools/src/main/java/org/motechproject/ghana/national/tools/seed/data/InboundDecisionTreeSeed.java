@@ -16,8 +16,8 @@ import java.util.Map;
 import static org.motechproject.ghana.national.domain.ivr.AudioPrompts.*;
 import static org.motechproject.ghana.national.domain.mobilemidwife.Language.*;
 
-@Component("decisionTreeSeed")
-public class DecisionTreeSeed extends Seed {
+@Component
+public class InboundDecisionTreeSeed extends Seed {
     @Autowired
     AllTrees allTrees;
     @Autowired
@@ -25,9 +25,8 @@ public class DecisionTreeSeed extends Seed {
 
     @Override
     protected void load() {
-        allTrees.removeAll();
         Tree tree = new Tree();
-        tree.setName("mm");
+        tree.setName("InboundDecisionTree");
         tree.setRootNode(prompt(LANGUAGE_PROMPT, EN).setTransitions(chooseLanguageTransitions()));
         allTrees.add(tree);
     }
@@ -53,7 +52,7 @@ public class DecisionTreeSeed extends Seed {
 
     private Map<String, ITransition> validateMotechIdTransition(Language language) {
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
-        ValidateMotechIdTransition validateMotechIdTransition = new ValidateMotechIdTransition(language.name());
+        ValidateMotechIdTransition validateMotechIdTransition = new ValidateMotechIdTransition(language.name(), 3);
         transitions.put("?", validateMotechIdTransition);
         return transitions;
     }

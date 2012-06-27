@@ -124,7 +124,7 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest{
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now()).setPatientId(patientId)
                 .setServiceType(serviceType).setMedium(Medium.VOICE).setPhoneNumber("9845312345").setLanguage(language);
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
-        when(mockIVRCallbackUrlBuilder.outboundCallUrl(patientId, language.name())).thenReturn(url);
+        when(mockIVRCallbackUrlBuilder.outboundCallUrl(patientId, language.name(), "OutboundDecisionTree")).thenReturn(url);
 
         handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), genMessageKey));
 
