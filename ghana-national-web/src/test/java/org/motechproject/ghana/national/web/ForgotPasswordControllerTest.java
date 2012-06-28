@@ -33,7 +33,7 @@ public class ForgotPasswordControllerTest {
 
     @Test
     public void testChangePasswordAndSendEmailSuccessfully() throws Exception {
-        ModelAndView expectedModelAndView = new ModelAndView("redirect:forgotPasswordStatus.jsp");
+        ModelAndView expectedModelAndView = new ModelAndView("redirect:login.jsp");
         final String testEmailId = "a@a.com";
 
         HttpServletRequest mockHttpRequest = mock(HttpServletRequest.class);
@@ -48,7 +48,7 @@ public class ForgotPasswordControllerTest {
 
     @Test
     public void testChangePasswordAndDoNotSendEmailWhenUserNotFound() throws Exception {
-        ModelAndView expectedModelAndView = new ModelAndView("redirect:forgotPasswordStatus.jsp");
+        ModelAndView expectedModelAndView = new ModelAndView("redirect:login.jsp");
         final String testEmailId = "a@a.com";
 
         HttpServletRequest mockHttpRequest = mock(HttpServletRequest.class);

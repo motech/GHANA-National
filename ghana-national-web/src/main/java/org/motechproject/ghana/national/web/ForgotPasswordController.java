@@ -6,11 +6,11 @@ import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.naming.Context;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -30,20 +30,31 @@ public class ForgotPasswordController {
     @ApiSession
     @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
     public ModelAndView changePasswordAndSendEmail(HttpServletRequest request) throws Exception {
-        ModelAndView modelAndView = new ModelAndView("redirect:/forgotPasswordStatus.jsp");
-        int status = staffService.changePasswordByEmailId(request.getParameter("emailId"));
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/login.jsp");
+        ModelMap modelMap = modelAndView.getModelMap();
+        String emailId = request.getParameter("emailId");
+        int status = Constants.EMAIL_USER_NOT_FOUND;
+        if(!isInvalidEmailId(emailId)) {
+            status = staffService.changePasswordByEmailId(emailId);
+        }
 
         switch (status) {
             case Constants.EMAIL_SUCCESS:
-                modelAndView.addObject(Constants.FORGOT_PASSWORD_MESSAGE, Constants.FORGOT_PASSWORD_SUCCESS);
+                modelMap.put(Constants.FORGOT_PASSWORD_MESSAGE, Constants.FORGOT_PASSWORD_SUCCESS);
                 break;
             case Constants.EMAIL_FAILURE:
-                modelAndView.addObject(Constants.FORGOT_PASSWORD_MESSAGE, Constants.FORGOT_PASSWORD_FAILURE);
+                modelMap.put(Constants.FORGOT_PASSWORD_MESSAGE, Constants.FORGOT_PASSWORD_FAILURE);
                 break;
             case Constants.EMAIL_USER_NOT_FOUND:
-                modelAndView.addObject(Constants.FORGOT_PASSWORD_MESSAGE, Constants.FORGOT_PASSWORD_USER_NOT_FOUND);
+                modelMap.put(Constants.FORGOT_PASSWORD_MESSAGE, Constants.FORGOT_PASSWORD_USER_NOT_FOUND);
                 break;
         }
+        modelAndView.addAllObjects(modelMap);
         return modelAndView;
+    }
+
+    private boolean isInvalidEmailId(String emailId) {
+        return (emailId.isEmpty() || emailId.equals("admin"));
     }
 }
