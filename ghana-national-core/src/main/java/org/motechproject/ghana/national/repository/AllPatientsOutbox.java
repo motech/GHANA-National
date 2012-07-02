@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.domain.AlertWindow;
-import org.motechproject.ghana.national.tools.Utility;
+import org.motechproject.mrs.services.MRSPatientAdapter;
 import org.motechproject.outbox.api.contract.SortKey;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessageStatus;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 
 @Repository
@@ -30,6 +30,8 @@ public class AllPatientsOutbox {
 
     @Autowired
     VoiceOutboxService voiceOutboxService;
+    @Autowired
+    MRSPatientAdapter mrsPatientAdapter;
 
     public void addAppointmentMessage(String motechId, final String clipName, Period validity) {
         HashMap<String, Object> messageAttributes = new HashMap<String, Object>() {{
@@ -101,5 +103,23 @@ public class AllPatientsOutbox {
                 return (String)outboundVoiceMessage.getParameters().get(AUDIO_CLIP_NAME);
             }
         });
+    }
+    
+    public void removeMobileMidwifeMessages(String motechId){
+        List<OutboundVoiceMessage> messages = voiceOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
+        for (OutboundVoiceMessage message : messages) {
+            if(message.getParameters().get(TYPE).equals(AlertType.MOBILE_MIDWIFE.name()))
+                voiceOutboxService.removeMessage(message.getId());
+        }
+    }
+    
+    public void removeCareAndAppointmentMessages(String mrsPatientId, String scheduleName){
+        String motechId = mrsPatientAdapter.getPatient(mrsPatientId).getMotechId();
+        List<OutboundVoiceMessage> messages = voiceOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
+        for (OutboundVoiceMessage message : messages) {
+            String audio_clip_name = (String) message.getParameters().get(AUDIO_CLIP_NAME);
+            if(audio_clip_name.contains(scheduleName))
+                voiceOutboxService.removeMessage(message.getId());
+        }
     }
 }

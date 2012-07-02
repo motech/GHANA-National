@@ -22,13 +22,14 @@ public class AllSchedulesAndMessagesTest {
     private AllCareSchedules allCareSchedules;
     @Mock
     private MessageGateway messageGateway;
-
+    @Mock
+    private AllPatientsOutbox allPatientsOutbox;
     private AllSchedulesAndMessages allSchedulesAndMessages;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        allSchedulesAndMessages = new AllSchedulesAndMessages(allCareSchedules, messageGateway);
+        allSchedulesAndMessages = new AllSchedulesAndMessages(allCareSchedules, messageGateway,allPatientsOutbox);
     }
     
     @Test
@@ -39,29 +40,41 @@ public class AllSchedulesAndMessagesTest {
         allSchedulesAndMessages.safeFulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
         verify(allCareSchedules).safeFulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
         verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
+        verify(allPatientsOutbox).removeCareAndAppointmentMessages(externalId,scheduleName);
 
         reset(allCareSchedules);
         reset(messageGateway);
+        reset(allPatientsOutbox);
 
         allSchedulesAndMessages.fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
         verify(allCareSchedules).fulfilCurrentMilestone(externalId, scheduleName, fulfillmentDate);
         verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
+        verify(allPatientsOutbox).removeCareAndAppointmentMessages(externalId,scheduleName);
+
 
         reset(allCareSchedules);
         reset(messageGateway);
+        reset(allPatientsOutbox);
+
 
         Time fulfillmentTime = new Time(10, 10);
         final EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, scheduleName, null, null, null, null, null, null, null);
         allSchedulesAndMessages.enrollOrFulfill(enrollmentRequest, fulfillmentDate, fulfillmentTime);
         verify(allCareSchedules).enrollOrFulfill(enrollmentRequest, fulfillmentDate, fulfillmentTime);
         verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
+        verify(allPatientsOutbox).removeCareAndAppointmentMessages(externalId,scheduleName);
+
 
         reset(allCareSchedules);
         reset(messageGateway);
+        reset(allPatientsOutbox);
+
 
         allSchedulesAndMessages.enrollOrFulfill(enrollmentRequest, fulfillmentDate);
         verify(allCareSchedules).enrollOrFulfill(enrollmentRequest, fulfillmentDate);
         verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
+        verify(allPatientsOutbox).removeCareAndAppointmentMessages(externalId,scheduleName);
+
     }
 
     @Test
@@ -72,6 +85,8 @@ public class AllSchedulesAndMessagesTest {
         verify(allCareSchedules).unEnroll(externalId, scheduleNames);
         for (String scheduleName : scheduleNames) {
             verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());
+            verify(allPatientsOutbox).removeCareAndAppointmentMessages(externalId,scheduleName);
+
         }
     }
 

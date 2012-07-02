@@ -5,9 +5,12 @@ import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
+import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
 import org.motechproject.ghana.national.repository.AllCampaigns;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
+import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.tools.Utility;
+import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +21,15 @@ public class MobileMidwifeService {
 
     private AllMobileMidwifeEnrollments allEnrollments;
     private AllCampaigns allCampaigns;
+    private AllPatientsOutbox allPatientsOutbox;
+    private MessageGateway messageGateway;
 
     @Autowired
-    public MobileMidwifeService(AllMobileMidwifeEnrollments allEnrollments, AllCampaigns allCampaigns) {
+    public MobileMidwifeService(AllMobileMidwifeEnrollments allEnrollments, AllCampaigns allCampaigns, AllPatientsOutbox allPatientsOutbox, MessageGateway messageGateway) {
         this.allEnrollments = allEnrollments;
         this.allCampaigns = allCampaigns;
+        this.allPatientsOutbox= allPatientsOutbox;
+        this.messageGateway = messageGateway;
     }
 
     public void register(MobileMidwifeEnrollment enrollment) {
@@ -50,7 +57,11 @@ public class MobileMidwifeService {
         if (enrollment != null) {
             enrollment.setActive(false);
             allEnrollments.update(enrollment);
-            if (enrollment.campaignApplicable()) allCampaigns.stop(enrollment.stopCampaignRequest());
+            if (enrollment.campaignApplicable()) {
+                CampaignRequest campaignRequest = enrollment.stopCampaignRequest();
+                allCampaigns.stop(campaignRequest);
+                allPatientsOutbox.removeMobileMidwifeMessages(patientId);
+            }
         }
     }
 

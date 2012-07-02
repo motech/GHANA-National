@@ -9,8 +9,10 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
+import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
 import org.motechproject.ghana.national.repository.AllCampaigns;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
+import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
@@ -35,10 +37,14 @@ public class MobileMidwifeServiceTest {
     private AllMobileMidwifeEnrollments mockAllMobileMidwifeEnrollments;
     @Mock
     private AllCampaigns mockAllCampaigns;
+    @Mock
+    private AllPatientsOutbox mockAllPatientsOutbox;
+    @Mock
+    private MessageGateway mockMessageGateway;
 
     public MobileMidwifeServiceTest() {
         initMocks(this);
-        service = new MobileMidwifeService(mockAllMobileMidwifeEnrollments, mockAllCampaigns);
+        service = new MobileMidwifeService(mockAllMobileMidwifeEnrollments, mockAllCampaigns,mockAllPatientsOutbox, mockMessageGateway);
     }
 
     @Test
@@ -87,30 +93,6 @@ public class MobileMidwifeServiceTest {
         verify(mockAllCampaigns, times(2)).start(campaignRequestArgumentCaptor.capture());
     }
 
-    private void mockNow(final DateTime now) {
-        DateTimeSourceUtil.SourceInstance = new DateTimeSource() {
-            @Override
-            public DateTimeZone timeZone() {
-                return DateTimeZone.getDefault();
-            }
-
-            @Override
-            public DateTime now() {
-                return now;
-            }
-
-            @Override
-            public LocalDate today() {
-                return now.toLocalDate();
-            }
-        };
-    }
-
-    private void verifyCreateNewEnrollment(MobileMidwifeEnrollment enrollment) {
-        verify(mockAllCampaigns).nextCycleDateFromToday(enrollment.getServiceType(), enrollment.getMedium());
-        verify(mockAllMobileMidwifeEnrollments).add(enrollment);
-    }
-
     @Test
     public void shouldCreateNewScheduleOnlyIfEnrolledWithConsentYes() {
         MobileMidwifeEnrollment enrollmentWithNoConsent = new MobileMidwifeEnrollmentBuilder().serviceType(ServiceType.PREGNANCY).facilityId("facility12").
@@ -137,6 +119,30 @@ public class MobileMidwifeServiceTest {
         verify(mockAllCampaigns, never()).stop(existingEnrollmentWithNoConsent.stopCampaignRequest());
     }
 
+    private void mockNow(final DateTime now) {
+        DateTimeSourceUtil.SourceInstance = new DateTimeSource() {
+            @Override
+            public DateTimeZone timeZone() {
+                return DateTimeZone.getDefault();
+            }
+
+            @Override
+            public DateTime now() {
+                return now;
+            }
+
+            @Override
+            public LocalDate today() {
+                return now.toLocalDate();
+            }
+        };
+    }
+
+    private void verifyCreateNewEnrollment(MobileMidwifeEnrollment enrollment) {
+        verify(mockAllCampaigns).nextCycleDateFromToday(enrollment.getServiceType(), enrollment.getMedium());
+        verify(mockAllMobileMidwifeEnrollments).add(enrollment);
+    }
+
     @Test
     public void shouldDeactivateExistingEnrollmentAndCampaign_AndCreateNewEnrollmentIfEnrolledAlready() {
         String patientId = "patientId";
@@ -155,6 +161,7 @@ public class MobileMidwifeServiceTest {
         verify(service).unRegister(patientId);
         verifyCreateNewEnrollment(enrollment);
         verify(mockAllCampaigns).start(enrollment.createCampaignRequestForTextMessage(Matchers.<LocalDate>any()));
+        verify(mockAllPatientsOutbox).removeMobileMidwifeMessages(patientId);
     }
 
     @Test
