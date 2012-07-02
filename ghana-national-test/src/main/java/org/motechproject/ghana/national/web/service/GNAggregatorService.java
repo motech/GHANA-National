@@ -23,9 +23,9 @@ public class GNAggregatorService {
         for (MessageGroup group : store) {
             for (Message message : group.getMessages()) {
                 Object payload = message.getPayload();
-                if (message instanceof SMSPayload)
+                if (payload instanceof SMSPayload)
                     payloadList.add(new AggregatedMessage((SMSPayload) payload));
-                else if (message instanceof VoicePayload)
+                else if (payload instanceof VoicePayload)
                     payloadList.add(new AggregatedMessage((VoicePayload) payload));
             }
         }

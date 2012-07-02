@@ -110,7 +110,7 @@
                 </c:forEach>
             </table>
         </c:if>
-        <c:if test="${aggregatedMessages ne null and fn:length(smsList) ne 0}">
+        <c:if test="${aggregatedMessages ne null and fn:length(aggregatedMessages) ne 0}">
             <br/>
             <p style="font: 20px/20px 'Lucida Grande', 'Verdana', sans-serif; color: #C4C0C2;">aggregated SMS</p>
             <table id="aggregated-sms-table">
