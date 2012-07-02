@@ -13,6 +13,9 @@ import java.text.ParseException;
 import java.util.Collections;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.motechproject.scheduletracking.api.domain.WindowName.late;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,6 +37,7 @@ public class CWCBcgSchedulesTest extends BaseScheduleTrackingTest {
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId),
                 asList(alert(late, onDate("1-MAR-2012")),
                        alert(late, onDate("8-MAR-2012"))));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("28-Feb-2013", "00:00").toDate())));
     }
 
     @Test
@@ -45,6 +49,7 @@ public class CWCBcgSchedulesTest extends BaseScheduleTrackingTest {
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId),
                 asList(alert(late, onDate("22-FEB-2012")),
                        alert(late, onDate("29-FEB-2012"))));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("20-Feb-2013", "00:00").toDate())));
     }
 
     @Test
@@ -64,6 +69,7 @@ public class CWCBcgSchedulesTest extends BaseScheduleTrackingTest {
                 asList(alert(late, onDate("22-FEB-2012")), 
                         alert(late, onDate("29-FEB-2012"))));
 
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("20-Feb-2013", "00:00").toDate())));
     }
 
     @Test
@@ -74,6 +80,7 @@ public class CWCBcgSchedulesTest extends BaseScheduleTrackingTest {
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
         
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("01-Feb-2013", "00:00").toDate())));
     }
 
     @Test
@@ -83,6 +90,7 @@ public class CWCBcgSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = scheduleAlertForBCG(dateOfBirth);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("24-Feb-2013", "00:00").toDate())));
     }
 
     private String scheduleAlertForBCG(LocalDate birthDate) {

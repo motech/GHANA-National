@@ -15,6 +15,9 @@ import java.util.Collections;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_IPT_VACCINE;
 import static org.motechproject.scheduletracking.api.domain.WindowName.due;
 import static org.motechproject.scheduletracking.api.domain.WindowName.late;
@@ -44,6 +47,7 @@ public class IPTiVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("11-Apr-2012")),
                 alert(late, onDate("18-Apr-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("02-May-2012", "00:00").toDate())));
     }
 
     @Test
@@ -58,6 +62,7 @@ public class IPTiVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("12-Apr-2012")),
                 alert(late, onDate("19-Apr-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("03-May-2012", "00:00").toDate())));
     }
 
     @Test
@@ -70,6 +75,7 @@ public class IPTiVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(late, onDate("13-Apr-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("27-Apr-2012", "00:00").toDate())));
     }
 
     @Test
@@ -80,6 +86,7 @@ public class IPTiVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = enrollForIPTVaccine(childBirthDate);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("09-Apr-2012", "00:00").toDate())));
     }
 
     @Test
@@ -96,6 +103,7 @@ public class IPTiVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("17-Apr-2012")),
                 alert(late, onDate("24-Apr-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("08-May-2012", "00:00").toDate())));
     }
 
     @Test
@@ -114,6 +122,7 @@ public class IPTiVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("21-Apr-2012")),
                 alert(late, onDate("28-Apr-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("12-May-2012", "00:00").toDate())));
     }
 
     @Test
@@ -129,6 +138,7 @@ public class IPTiVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("19-FEB-2012")),
                 alert(late, onDate("26-FEB-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("11-Mar-2012", "00:00").toDate())));
     }
 
     private String scheduleAlertForIptiEnrolledFromStart(LocalDate birthDate, String milestoneName) {

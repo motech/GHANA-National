@@ -14,6 +14,9 @@ import java.text.ParseException;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.motechproject.scheduletracking.api.domain.WindowName.due;
 import static org.motechproject.scheduletracking.api.domain.WindowName.late;
 
@@ -40,6 +43,7 @@ public class CWCRotavirusVaccineSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("17-FEB-2012")),
                 alert(late, onDate("24-FEB-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("09-Mar-2012", "00:00").toDate())));
     }
 
     @Test
@@ -55,6 +59,7 @@ public class CWCRotavirusVaccineSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("31-MAR-2012")),
                 alert(late, onDate("7-APR-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("21-Apr-2012", "00:00").toDate())));
     }
 
     @Test
@@ -67,6 +72,7 @@ public class CWCRotavirusVaccineSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("17-FEB-2012")),
                 alert(late, onDate("24-FEB-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("09-Mar-2012", "00:00").toDate())));
     }
 
     @Test
@@ -78,6 +84,7 @@ public class CWCRotavirusVaccineSchedulesTest extends BaseScheduleTrackingTest {
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(late, onDate("24-FEB-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("09-Mar-2012", "00:00").toDate())));
     }
 
     @Test
@@ -87,6 +94,7 @@ public class CWCRotavirusVaccineSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = scheduleAlertForRotavirusEnrolledFromStart(dateOfBirth, null);
         assertTrue(CollectionUtils.isEmpty(captureAlertsForNextMilestone(enrollmentId)));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("09-Mar-2012", "00:00").toDate())));
     }
 
     @Test
@@ -96,6 +104,7 @@ public class CWCRotavirusVaccineSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = scheduleAlertForRotavirusEnrolledFromStart(dateOfBirth, null);
         assertTrue(CollectionUtils.isEmpty(captureAlertsForNextMilestone(enrollmentId)));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("09-Mar-2012", "00:00").toDate())));
     }
 
     @Test
@@ -110,6 +119,7 @@ public class CWCRotavirusVaccineSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("03-MAY-2012")),
                 alert(late, onDate("10-MAY-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("24-May-2012", "00:00").toDate())));
     }
 
     private String scheduleAlertForRotavirusEnrolledFromStart(LocalDate birthDate, String milestoneName) {

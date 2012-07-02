@@ -15,6 +15,9 @@ import java.util.Collections;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
 import static org.motechproject.ghana.national.vo.Pregnancy.basedOnDeliveryDate;
 import static org.motechproject.scheduletracking.api.domain.WindowName.*;
@@ -47,6 +50,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("7-APR-2012")),
                 alert(late, onDate("14-APR-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("28-Apr-2012", "00:00").toDate())));
     }
 
     @Test
@@ -63,6 +67,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("07-APR-2012")),
                 alert(late, onDate("14-APR-2012"))
         ));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("28-Apr-2012", "00:00").toDate())));
 
         fulfilMilestoneOnVisitDate(newDate("15-MAR-2012"));
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
@@ -71,6 +76,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("19-APR-2012")),
                 alert(late, onDate("26-APR-2012"))
         ));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("10-May-2012", "00:00").toDate())));
 
         fulfilMilestoneOnVisitDate(newDate("07-MAY-2012"));
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
@@ -79,6 +85,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("11-JUN-2012")),
                 alert(late, onDate("18-JUN-2012"))
         ));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("02-Jul-2012", "00:00").toDate())));
     }
 
     @Test
@@ -95,6 +102,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("07-APR-2012")),
                 alert(late, onDate("14-APR-2012"))
         ));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("28-Apr-2012", "00:00").toDate())));
 
         fulfilMilestoneOnVisitDate(newDate("01-APR-2012"));
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
@@ -103,6 +111,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("06-MAY-2012")),
                 alert(late, onDate("13-MAY-2012"))
         ));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("27-May-2012", "00:00").toDate())));
 
         fulfilMilestoneOnVisitDate(newDate("07-MAY-2012"));
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
@@ -111,6 +120,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("11-JUN-2012")),
                 alert(late, onDate("18-JUN-2012"))
         ));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("02-Jul-2012", "00:00").toDate())));
     }
 
     @Test
@@ -126,6 +136,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("7-APR-2012")),
                 alert(late, onDate("14-APR-2012"))
         ));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("28-Apr-2012", "00:00").toDate())));
     }
 
     @Test
@@ -141,6 +152,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("7-APR-2012")),
                 alert(late, onDate("14-APR-2012"))
         ));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("28-Apr-2012", "00:00").toDate())));
     }
 
     @Test
@@ -155,6 +167,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("7-APR-2012")),
                 alert(late, onDate("14-APR-2012"))
         ));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("28-Apr-2012", "00:00").toDate())));
     }
 
     @Test
@@ -166,6 +179,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = enrollForIPTVaccine(pregnancy.dateOfConception());
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("28-Apr-2012", "00:00").toDate())));
     }
 
     @Test
@@ -183,6 +197,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("19-APR-2012")),
                 alert(late, onDate("26-APR-2012"))
         ));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("10-May-2012", "00:00").toDate())));
     }
 
     @Test
@@ -201,6 +216,7 @@ public class IPTpVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("11-JUN-2012")),
                 alert(late, onDate("18-JUN-2012"))
         ));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("02-Jul-2012", "00:00").toDate())));
     }
 
     private void fulfilMilestoneOnVisitDate(LocalDate visitDate) {

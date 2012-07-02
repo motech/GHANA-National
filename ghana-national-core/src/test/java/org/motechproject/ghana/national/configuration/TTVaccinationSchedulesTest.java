@@ -13,6 +13,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.text.ParseException;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 import static org.motechproject.scheduletracking.api.domain.WindowName.due;
 import static org.motechproject.scheduletracking.api.domain.WindowName.late;
@@ -38,6 +41,7 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("29-Feb-2012")),
                 alert(late, onDate("7-Mar-2012")),
                 alert(late, onDate("14-Mar-2012"))));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("28-Mar-2012", "00:00").toDate())));
         fulfillCurrentMilestone(newDate("22-Mar-2012"));
 
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
@@ -45,6 +49,7 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("25-Sep-2012")),
                 alert(late, onDate("2-Oct-2012")),
                 alert(late, onDate("9-Oct-2012"))));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("23-Oct-2012", "00:00").toDate())));
         fulfillCurrentMilestone(newDate("17-Oct-2012"));
 
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
@@ -52,6 +57,7 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("20-Oct-2013")),
                 alert(late, onDate("27-Oct-2013")),
                 alert(late, onDate("03-Nov-2013"))));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("17-Nov-2013", "00:00").toDate())));
         fulfillCurrentMilestone(newDate("11-Nov-2013"));
 
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
@@ -59,6 +65,7 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("14-Nov-2014")),
                 alert(late, onDate("21-Nov-2014")),
                 alert(late, onDate("28-Nov-2014"))));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("12-Dec-2014", "00:00").toDate())));
     }
 
     @Test
@@ -70,6 +77,7 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
         fulfillCurrentMilestone(firstDosageDate);
 
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("29-FEB-2000"), newDate("07-MAR-2000"), newDate("14-MAR-2000")));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("28-Mar-2000", "00:00").toDate())));
     }
 
     @Test
@@ -81,6 +89,7 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("19-Mar-2012")),
                 alert(late, onDate("26-Mar-2012")),
                 alert(late, onDate("2-Apr-2012"))));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("16-Apr-2012", "00:00").toDate())));
     }
 
 

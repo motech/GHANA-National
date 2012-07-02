@@ -14,6 +14,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
 public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
@@ -30,6 +34,7 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
         assertAlerts(captureAlertsForNextMilestone(enrollmentId),dates(newDate("03-NOV-2012"), newDate("10-NOV-2012"), newDate("17-NOV-2012"), newDate("24-NOV-2012")));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("08-Dec-2012", "00:00").toDate())));
     }
 
     @Test
@@ -39,6 +44,7 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("03-FEB-2012"), newDate("10-FEB-2012"), newDate("17-FEB-2012")));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("02-Mar-2012", "00:00").toDate())));
     }
 
     @Test
@@ -48,6 +54,7 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("06-FEB-2012")));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("20-Feb-2012", "00:00").toDate())));
     }
 
     @Test
@@ -56,6 +63,7 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
         LocalDate expectedDeliveryDate = newDate("12-FEB-2012");
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("05-FEB-2012"),newDate("12-FEB-2012"), newDate("19-FEB-2012"), newDate("26-FEB-2012")));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("11-Mar-2012", "00:00").toDate())));
     }
 
     @Test
@@ -65,6 +73,7 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), dates(newDate("02-FEB-2012"), newDate("09-FEB-2012"), newDate("16-FEB-2012")));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("01-Mar-2012", "00:00").toDate())));
     }
 
     @Test
@@ -74,6 +83,7 @@ public class EDDAlertSchedulesTest extends BaseScheduleTrackingTest {
         enrollmentId = scheduleAlertForDeliveryNotfication(expectedDeliveryDate);
 
         assertAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<Date>());
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("01-Feb-2012", "00:00").toDate())));
     }
 
     private String scheduleAlertForDeliveryNotfication(LocalDate expectedDeliveryDate) {

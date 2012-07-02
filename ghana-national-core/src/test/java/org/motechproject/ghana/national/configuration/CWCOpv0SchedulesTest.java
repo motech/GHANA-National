@@ -12,6 +12,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
@@ -33,6 +36,7 @@ public class CWCOpv0SchedulesTest extends BaseScheduleTrackingTest {
                 alert(WindowName.late, onDate("03-APR-2012")),
                 alert(WindowName.late, onDate("10-APR-2012"))
         ));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("22-Apr-2012", "00:00").toDate())));
     }
 
     @Test
@@ -43,6 +47,7 @@ public class CWCOpv0SchedulesTest extends BaseScheduleTrackingTest {
 
         enrollmentId = scheduleAlertForOPV(dateOfBirth);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<TestAlert>());
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("23-Jan-2012", "00:00").toDate())));
     }
 
     @Test
@@ -55,6 +60,7 @@ public class CWCOpv0SchedulesTest extends BaseScheduleTrackingTest {
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(WindowName.late, onDate("11-JAN-2012"))
         ));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("23-Jan-2012", "00:00").toDate())));
     }
 
     private String scheduleAlertForOPV(LocalDate referenceDate) {

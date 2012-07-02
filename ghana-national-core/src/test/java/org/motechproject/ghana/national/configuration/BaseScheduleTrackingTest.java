@@ -88,6 +88,26 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
         }
     }
 
+    protected Date getDefaultmentDate(String enrollmentId) throws SchedulerException {
+        final Scheduler scheduler = schedulerFactoryBean.getScheduler();
+        final String jobGroupName = MotechSchedulerServiceImpl.JOB_GROUP_NAME;
+        Set<JobKey> jobNames = scheduler.getJobKeys(GroupMatcher.jobGroupEquals(jobGroupName));
+        List<TestJobDetail> alertTriggers = new ArrayList<TestJobDetail>();
+
+        if(jobNames.size() > 0) {
+            for (JobKey jobKey : jobNames) {
+                if (jobKey.getName().contains(format("%s-%s", EventSubjects.DEFAULTMENT_CAPTURE, enrollmentId))) {
+                    List<? extends Trigger> triggersOfJob = scheduler.getTriggersOfJob(jobKey);
+                    assertEquals(1, triggersOfJob.size());
+                    alertTriggers.add(new TestJobDetail((SimpleTrigger) triggersOfJob.get(0), scheduler.getJobDetail(jobKey)));
+                }
+            }
+            return alertTriggers.get(0).trigger().getNextFireTime();
+        }
+        return null;
+    }
+
+
     protected List<TestJobDetail> captureAlertsForNextMilestone(String enrollmentId) throws SchedulerException {
         final Scheduler scheduler = schedulerFactoryBean.getScheduler();
         final String jobGroupName = MotechSchedulerServiceImpl.JOB_GROUP_NAME;

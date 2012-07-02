@@ -14,6 +14,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.motechproject.scheduletracking.api.domain.WindowName.due;
 import static org.motechproject.scheduletracking.api.domain.WindowName.late;
 
@@ -41,11 +44,12 @@ public class CWCOPV1SchedulesTest extends BaseScheduleTrackingTest {
                 alert(WindowName.late, onDate("1-APR-2012"))
         ));
 
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("15-Apr-2012", "00:00").toDate())));
     }
 
     @Test
     public void shouldVerifyOPV1SchedulesOnRegistrationAtFiveWeeksAge() throws SchedulerException {
-         LocalDate dateOfBirth = newDate("11-FEB-2012");
+        LocalDate dateOfBirth = newDate("11-FEB-2012");
         LocalDate dateOfRegistration = newDate("17-MAR-2012");
         mockToday(dateOfRegistration);
 
@@ -57,11 +61,12 @@ public class CWCOPV1SchedulesTest extends BaseScheduleTrackingTest {
                 alert(WindowName.late, onDate("7-APR-2012"))
         ));
 
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("21-Apr-2012", "00:00").toDate())));
     }
 
     @Test
     public void shouldVerifyOPV1SchedulesOnRegistrationAtSixWeeksAge() throws SchedulerException {
-         LocalDate dateOfBirth = newDate("13-FEB-2012");
+        LocalDate dateOfBirth = newDate("13-FEB-2012");
         LocalDate dateOfRegistration = newDate("26-MAR-2012");
         mockToday(dateOfRegistration);
 
@@ -72,11 +77,12 @@ public class CWCOPV1SchedulesTest extends BaseScheduleTrackingTest {
                 alert(WindowName.late, onDate("9-APR-2012"))
         ));
 
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("23-Apr-2012", "00:00").toDate())));
     }
 
     @Test
     public void shouldVerifyOPV1SchedulesOnRegistrationAtSevenWeeksAge() throws SchedulerException {
-         LocalDate dateOfBirth = newDate("23-FEB-2012");
+        LocalDate dateOfBirth = newDate("23-FEB-2012");
         LocalDate dateOfRegistration = newDate("11-APR-2012");
         mockToday(dateOfRegistration);
 
@@ -86,11 +92,12 @@ public class CWCOPV1SchedulesTest extends BaseScheduleTrackingTest {
                 alert(WindowName.late, onDate("19-APR-2012"))
         ));
 
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("03-May-2012", "00:00").toDate())));
     }
 
     @Test
     public void shouldVerifyOPV1SchedulesOnRegistrationUnderTenWeeksAgeWithAnAlert() throws SchedulerException {
-         LocalDate dateOfBirth = newDate("9-MAR-2012");
+        LocalDate dateOfBirth = newDate("9-MAR-2012");
         LocalDate dateOfRegistration = newDate("4-MAY-2012");
         mockToday(dateOfRegistration);
 
@@ -98,23 +105,23 @@ public class CWCOPV1SchedulesTest extends BaseScheduleTrackingTest {
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(WindowName.late, onDate("4-MAY-2012"))
         ));
-
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("18-May-2012", "00:00").toDate())));
     }
 
     @Test
     public void shouldVerifyOPV1SchedulesOnRegistrationOverTenWeeksAge() throws SchedulerException {
-         LocalDate dateOfBirth = newDate("28-APR-2012");
+        LocalDate dateOfBirth = newDate("28-APR-2012");
         LocalDate dateOfRegistration = newDate("7-JUL-2012");
         mockToday(dateOfRegistration);
 
         enrollmentId = scheduleAlertForOPV(dateOfBirth);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), new ArrayList<TestAlert>());
-
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("07-Jul-2012", "00:00").toDate())));
     }
 
     @Test
     public void shouldVerifyOPV2SchedulesOnFulfillmentOfOPV1() throws SchedulerException {
-         LocalDate dateOfBirth = newDate("30-AUG-2012");
+        LocalDate dateOfBirth = newDate("30-AUG-2012");
         LocalDate dateOfRegistration = newDate("13-SEP-2012");
         mockToday(dateOfRegistration);
 
@@ -126,12 +133,12 @@ public class CWCOPV1SchedulesTest extends BaseScheduleTrackingTest {
                 alert(WindowName.late, onDate("31-OCT-2012")),
                 alert(WindowName.late, onDate("7-NOV-2012"))
         ));
-
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("21-Nov-2012", "00:00").toDate())));
     }
 
     @Test
     public void shouldVerifyOPV3SchedulesOnFulfillmentOfOPV2AndOPV1() throws SchedulerException {
-         LocalDate dateOfBirth = newDate("4-APR-2012");
+        LocalDate dateOfBirth = newDate("4-APR-2012");
         LocalDate dateOfRegistration = newDate("25-APR-2012");
         mockToday(dateOfRegistration);
 
@@ -145,7 +152,7 @@ public class CWCOPV1SchedulesTest extends BaseScheduleTrackingTest {
                 alert(WindowName.late, onDate("28-JUL-2012")),
                 alert(WindowName.late, onDate("4-AUG-2012"))
         ));
-
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("18-Aug-2012", "00:00").toDate())));
     }
 
     @Test
@@ -160,6 +167,7 @@ public class CWCOPV1SchedulesTest extends BaseScheduleTrackingTest {
                 alert(late, onDate("03-MAY-2012")),
                 alert(late, onDate("10-MAY-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("24-May-2012", "00:00").toDate())));
     }
 
 

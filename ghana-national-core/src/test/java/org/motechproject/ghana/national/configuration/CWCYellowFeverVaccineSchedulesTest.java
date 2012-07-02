@@ -13,6 +13,9 @@ import java.util.Collections;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.scheduletracking.api.domain.WindowName.due;
 import static org.motechproject.scheduletracking.api.domain.WindowName.late;
@@ -43,6 +46,7 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
                 alert(late, onDate("28-Oct-2012")),
                 alert(late, onDate("4-Nov-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("30-Dec-2016", "00:00").toDate())));
     }
 
     @Test
@@ -57,6 +61,7 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
                 alert(late, onDate("31-Oct-2012")),
                 alert(late, onDate("7-Nov-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("03-Jan-2017", "00:00").toDate())));
     }
 
     @Test
@@ -71,6 +76,7 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
                 alert(late, onDate("1-Nov-2012")),
                 alert(late, onDate("8-Nov-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("04-Jan-2017", "00:00").toDate())));
     }
 
     @Test
@@ -85,6 +91,7 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
                 alert(late, onDate("31-Jul-2012")),
                 alert(late, onDate("7-Aug-2012")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("03-Oct-2016", "00:00").toDate())));
     }
 
     @Test
@@ -97,6 +104,7 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
                 alert(late, onDate("08-Aug-2013")),
                 alert(late, onDate("15-Aug-2013")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("11-Oct-2017", "00:00").toDate())));
 
         deleteAllJobs();
 
@@ -105,6 +113,7 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(late, onDate("15-Aug-2013")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("11-Oct-2017", "00:00").toDate())));
     }
 
     @Test
@@ -116,12 +125,14 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(late, onDate("15-Aug-2013")))
         );
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("11-Oct-2017", "00:00").toDate())));
 
         deleteAllJobs();
 
         mockToday(newDateTime(childBirthDate.plusMonths(9).plusWeeks(5).plusDays(1), new Time(10, 9))); // 16-Aug-2013 10:09 before delivery time
         enrollmentId = enroll(childBirthDate);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("11-Oct-2017", "00:00").toDate())));
     }
 
     @Test
@@ -130,5 +141,6 @@ public class CWCYellowFeverVaccineSchedulesTest extends BaseScheduleTrackingTest
         mockToday(newDateTime(childBirthDate.plusMonths(9).plusWeeks(5).plusDays(3), new Time(10, 9))); // 6-Nov-2012 10:09 before delivery time
         enrollmentId = enroll(childBirthDate);
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("29-Dec-2016", "00:00").toDate())));
     }
 }
