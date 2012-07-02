@@ -11,10 +11,7 @@ import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.builder.IVRRequestBuilder;
 import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
-import org.motechproject.ghana.national.domain.mobilemidwife.Language;
-import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
-import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
-import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
+import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.exception.EventHandlerException;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.repository.IVRGateway;
@@ -38,7 +35,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.server.messagecampaign.scheduler.MessageCampaignScheduler.INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT;
 
-public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest{
+public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
 
     MobileMidwifeCampaignEventHandler handler = new MobileMidwifeCampaignEventHandler();
     @Mock
@@ -98,9 +95,9 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest{
         handler.sendProgramMessage(lastEvent);
         ArgumentCaptor<DateTime> dateArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
         ArgumentCaptor<String> idArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        verify(mockMobileMidwifeService).rollover(idArgumentCaptor.capture(),dateArgumentCaptor.capture());
-        assertThat(idArgumentCaptor.getValue(),is(equalTo(patientId)));
-        assertThat(dateArgumentCaptor.getValue().toLocalDate(),is(equalTo(DateTime.now().toLocalDate())));
+        verify(mockMobileMidwifeService).rollover(idArgumentCaptor.capture(), dateArgumentCaptor.capture());
+        assertThat(idArgumentCaptor.getValue(), is(equalTo(patientId)));
+        assertThat(dateArgumentCaptor.getValue().toLocalDate(), is(equalTo(DateTime.now().toLocalDate())));
     }
 
     @Test
@@ -136,6 +133,29 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest{
             put(IVRRequestBuilder.CALLBACK_URL, url);
         }});
     }
+
+    @Test
+    public void shouldAddMessagesToOutboxAndNotPlaceCallForRegistrationsWithPublicPhone() {
+        ServiceType serviceType = ServiceType.PREGNANCY;
+        String patientId = "1234568";
+        String genMessageKey = "33";
+        final String url = "http://ivr";
+        Language language = Language.EN;
+
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now()).setPatientId(patientId)
+                .setServiceType(serviceType).setMedium(Medium.VOICE).setPhoneOwnership(PhoneOwnership.PUBLIC).setLanguage(language);
+        when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
+        when(mockIVRCallbackUrlBuilder.outboundCallUrl(patientId, language.name(), "OutboundDecisionTree")).thenReturn(url);
+
+        handler.sendProgramMessage(motechEvent(patientId, serviceType.name(), genMessageKey));
+
+        verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, MobileMidwifeAudioClips.instance(mobileMidwifeEnrollment.getServiceType().getValue(), genMessageKey), Period.weeks(1));
+        verify(mockRetryService, never()).schedule(eq(new RetryRequest("retry-ivr-every-2hrs-and-30mins", patientId, now)));
+        verify(mockIVRGateway, never()).placeCall(mobileMidwifeEnrollment.getPhoneNumber(), new HashMap<String, String>() {{
+            put(IVRRequestBuilder.CALLBACK_URL, url);
+        }});
+    }
+
 
     private MotechEvent motechEvent(String externalId, String campaignName, String genMessageKey) {
         HashMap<String, Object> parameters = new HashMap<String, Object>();

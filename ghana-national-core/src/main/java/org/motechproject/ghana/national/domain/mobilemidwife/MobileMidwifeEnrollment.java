@@ -220,7 +220,7 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     }
 
     public boolean campaignApplicable() {
-        return getConsent() && !PhoneOwnership.PUBLIC.equals(getPhoneOwnership());
+        return getConsent();
     }
 
     public CampaignRequest createCampaignRequestForTextMessage(LocalDate scheduleStartDate) {

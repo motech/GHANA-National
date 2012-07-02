@@ -49,11 +49,14 @@ public class MobileMidwifeEnrollmentTest {
 
     @Test
     public void shouldCheckIfCampaignApplicableForEnrollment() {
-        assertTrue(new MobileMidwifeEnrollment(DateUtil.now()).setConsent(true).setPhoneOwnership(PhoneOwnership.HOUSEHOLD).campaignApplicable());
-        assertTrue(new MobileMidwifeEnrollment(DateUtil.now()).setConsent(true).setPhoneOwnership(PhoneOwnership.PERSONAL).campaignApplicable());
+        assertTrue(new MobileMidwifeEnrollment(DateUtil.now()).setConsent(true).setPhoneOwnership(PhoneOwnership.HOUSEHOLD).setMedium(Medium.SMS).campaignApplicable());
+        assertTrue(new MobileMidwifeEnrollment(DateUtil.now()).setConsent(true).setPhoneOwnership(PhoneOwnership.PERSONAL).setMedium(Medium.SMS).campaignApplicable());
 
-        MobileMidwifeEnrollment enrollmentWithPublicOwnership = new MobileMidwifeEnrollment(DateUtil.now()).setConsent(true).setPhoneOwnership(PhoneOwnership.PUBLIC);
-        assertFalse(enrollmentWithPublicOwnership.campaignApplicable());
+        MobileMidwifeEnrollment enrollmentWithPublicOwnership = new MobileMidwifeEnrollment(DateUtil.now()).setConsent(true).setPhoneOwnership(PhoneOwnership.PUBLIC).setMedium(Medium.VOICE);
+        assertTrue(enrollmentWithPublicOwnership.campaignApplicable());
+
+        enrollmentWithPublicOwnership = new MobileMidwifeEnrollment(DateUtil.now()).setConsent(true).setPhoneOwnership(PhoneOwnership.PERSONAL).setMedium(Medium.VOICE);
+        assertTrue(enrollmentWithPublicOwnership.campaignApplicable());
 
         assertFalse(new MobileMidwifeEnrollment(DateUtil.now()).setConsent(false).campaignApplicable());
     }

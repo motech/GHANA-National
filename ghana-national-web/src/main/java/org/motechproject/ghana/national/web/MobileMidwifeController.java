@@ -6,7 +6,6 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
-import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.MobileMidwifeValidator;
 import org.motechproject.ghana.national.web.form.FacilityForm;
 import org.motechproject.ghana.national.web.form.MobileMidwifeEnrollmentForm;

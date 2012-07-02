@@ -10,6 +10,7 @@ import org.motechproject.ghana.national.repository.AllCampaigns;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.tools.Utility;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,15 +42,21 @@ public class MobileMidwifeService {
 
     public void startMobileMidwifeCampaign(MobileMidwifeEnrollment enrollment) {
         if (enrollment.campaignApplicable()) {
-            LocalDate nextApplicableDay;
+            LocalDate referenceDate;
             if (enrollment.getMedium().equals(Medium.SMS)) {
-                nextApplicableDay = allCampaigns.nextCycleDateFromToday(enrollment.getServiceType(), Medium.SMS);
-                allCampaigns.start(enrollment.createCampaignRequestForTextMessage(nextApplicableDay));
+                referenceDate = allCampaigns.nextCycleDateFromToday(enrollment.getServiceType(), Medium.SMS);
+                allCampaigns.start(enrollment.createCampaignRequestForTextMessage(referenceDate));
             } else if (enrollment.getMedium().equals(Medium.VOICE)) {
-                nextApplicableDay = Utility.nextApplicableWeekDay(enrollment.getEnrollmentDateTime(), Arrays.asList(enrollment.getDayOfWeek())).toLocalDate();
-                allCampaigns.start(enrollment.createCampaignRequestForVoiceMessage(nextApplicableDay, enrollment.getDayOfWeek(), enrollment.getTimeOfDay()));
+                DayOfWeek applicableDays = enrollment.getDayOfWeek()!=null ? enrollment.getDayOfWeek() : DayOfWeek.getDayOfWeek(enrollment.getEnrollmentDateTime().dayOfWeek());
+                referenceDate = getReferenceDate(enrollment.getEnrollmentDateTime(),applicableDays, Integer.parseInt(enrollment.getMessageStartWeek()));
+                allCampaigns.start(enrollment.createCampaignRequestForVoiceMessage(referenceDate, applicableDays, enrollment.getTimeOfDay()));
             }
         }
+    }
+
+    //moving reference date according to startOffset such that schedule start date lies on next applicable day
+    private LocalDate getReferenceDate(DateTime enrollmentDateTime,DayOfWeek applicableDays, int startOffset) {
+        return Utility.nextApplicableWeekDay(enrollmentDateTime, Arrays.asList(applicableDays)).minusDays(startOffset).toLocalDate();
     }
 
     public void unRegister(String patientId) {

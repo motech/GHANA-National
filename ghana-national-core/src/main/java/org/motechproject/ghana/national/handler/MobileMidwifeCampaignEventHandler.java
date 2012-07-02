@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.builder.RetryRequestBuilder;
 import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
 import org.motechproject.ghana.national.exception.EventHandlerException;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.repository.IVRGateway;
@@ -27,7 +28,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static org.motechproject.server.messagecampaign.EventKeys.MESSAGE_CAMPAIGN_SEND_EVENT_SUBJECT;
+import static org.motechproject.server.messagecampaign.EventKeys.MESSAGE_CAMPAIGN_FIRED_EVENT_SUBJECT;
 
 @Component
 public class MobileMidwifeCampaignEventHandler {
@@ -50,7 +51,7 @@ public class MobileMidwifeCampaignEventHandler {
     private RetryService retryService;
 
 
-    @MotechListener(subjects = {MESSAGE_CAMPAIGN_SEND_EVENT_SUBJECT})
+    @MotechListener(subjects = {MESSAGE_CAMPAIGN_FIRED_EVENT_SUBJECT})
     public void sendProgramMessage(MotechEvent event) {
         try {
             Map params = event.getParameters();
@@ -72,8 +73,10 @@ public class MobileMidwifeCampaignEventHandler {
             smsGateway.dispatchSMS(messageKey, enrollment.getLanguage().name(), enrollment.getPhoneNumber());
         } else if (Medium.VOICE.equals(enrollment.getMedium())) {
             placeMobileMidwifeMessagesToOutbox(enrollment, messageKey);
-            retryService.schedule(RetryRequestBuilder.ivrRetryReqest(enrollment.getPatientId(), DateUtil.now()));
-            ivrGateway.placeCall(enrollment.getPhoneNumber(), IVRRequestBuilder.build(ivrCallbackUrlBuilder.outboundCallUrl(enrollment.getPatientId(), enrollment.getLanguage().name(), "OutboundDecisionTree")));
+            if (!PhoneOwnership.PUBLIC.equals(enrollment.getPhoneOwnership())) {
+                retryService.schedule(RetryRequestBuilder.ivrRetryReqest(enrollment.getPatientId(), DateUtil.now()));
+                ivrGateway.placeCall(enrollment.getPhoneNumber(), IVRRequestBuilder.build(ivrCallbackUrlBuilder.outboundCallUrl(enrollment.getPatientId(), enrollment.getLanguage().name(), "OutboundDecisionTree")));
+            }
         }
     }
 

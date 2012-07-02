@@ -13,11 +13,11 @@ import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
 import org.motechproject.ghana.national.repository.AllCampaigns;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
-import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.motechproject.util.DateTimeSourceUtil;
+import org.motechproject.util.DateUtil;
 import org.motechproject.util.datetime.DateTimeSource;
 
 import static java.util.Arrays.asList;
@@ -44,7 +44,7 @@ public class MobileMidwifeServiceTest {
 
     public MobileMidwifeServiceTest() {
         initMocks(this);
-        service = new MobileMidwifeService(mockAllMobileMidwifeEnrollments, mockAllCampaigns,mockAllPatientsOutbox, mockMessageGateway);
+        service = new MobileMidwifeService(mockAllMobileMidwifeEnrollments, mockAllCampaigns, mockAllPatientsOutbox, mockMessageGateway);
     }
 
     @Test
@@ -210,18 +210,10 @@ public class MobileMidwifeServiceTest {
         assertThat(actualRequest.getUserPreferredDays(), is(asList(dayOfWeek)));
         assertThat(actualRequest.deliverTime(), is(timeOfDay));
         assertThat(actualRequest.startOffset(), is(6));
-        assertThat(actualRequest.referenceDate(), is(Utility.nextApplicableWeekDay(enrollment.getEnrollmentDateTime(), asList(dayOfWeek)).toLocalDate()));
-    }
-
-    @Test
-    public void shouldCreateEnrollmentAndNotCreateScheduleIfUsersPhoneOwnership_IsPUBLIC() {
-        MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().consent(true).phoneOwnership(PhoneOwnership.PUBLIC).build();
-
-        service.register(enrollment);
-        verify(mockAllMobileMidwifeEnrollments).add(enrollment);
-        verify(mockAllCampaigns, never()).nextCycleDateFromToday(enrollment.getServiceType(), enrollment.getMedium());
-        verify(mockAllCampaigns, never()).start(Matchers.<CampaignRequest>any());
-    }
+        int diffForNextApplicable = dayOfWeek.getValue() - DateUtil.now().getDayOfWeek();
+        int daysToNextApplicableDay = (diffForNextApplicable < 0) ? (7 + diffForNextApplicable) : diffForNextApplicable;
+        assertThat(actualRequest.referenceDate(), is(DateUtil.now().minusDays(daysToNextApplicableDay).toLocalDate()));
+}
 
     private void assertCampaignRequestWith(MobileMidwifeEnrollment enrollment, CampaignRequest actualRequest, LocalDate expectedScheduleStartDate) {
         assertThat(actualRequest.externalId(), is(enrollment.getPatientId()));
