@@ -4,7 +4,7 @@
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
-      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
@@ -20,12 +20,18 @@
           </elementProp>
           <elementProp name="no_of_test_loops" elementType="Argument">
             <stringProp name="Argument.name">no_of_test_loops</stringProp>
-            <stringProp name="Argument.value">3</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="no_of_motech_ids``" elementType="Argument">
+            <stringProp name="Argument.name">no_of_motech_ids``</stringProp>
+            <stringProp name="Argument.value">10</stringProp>
+            <stringProp name="Argument.desc">field workers * test loops</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="patient_fname_prefix" elementType="Argument">
             <stringProp name="Argument.name">patient_fname_prefix</stringProp>
-            <stringProp name="Argument.value">deepans</stringProp>
+            <stringProp name="Argument.value">bets</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="staff_first_name" elementType="Argument">
@@ -35,9 +41,9 @@
           </elementProp>
           <elementProp name="forms_to_be_tested" elementType="Argument">
             <stringProp name="Argument.name">forms_to_be_tested</stringProp>
-            <stringProp name="Argument.value">RegisterClient-other,RegisterCWC</stringProp>
+            <stringProp name="Argument.value">RegisterClient-WithANCAndMMVoice</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
-            <stringProp name="Argument.desc">RegisterClient-other,RegisterANC,RegisterClient-WithANCAndMM,RegisterCWC,RegisterClient-WithCWCAndMM,CareHistory-ANC,ClientQuery,GeneralQuery</stringProp>
+            <stringProp name="Argument.desc">RegisterClient-other,RegisterANC,RegisterClient-WithANCAndMMSMS,,RegisterClient-WithANCAndMMVoice,RegisterCWC,RegisterClient-WithCWCAndMM,CareHistory-ANC,ClientQuery,GeneralQuery</stringProp>
           </elementProp>
           <elementProp name="load_pre_printed_ids_from_file" elementType="Argument">
             <stringProp name="Argument.name">load_pre_printed_ids_from_file</stringProp>
@@ -46,7 +52,7 @@
           </elementProp>
           <elementProp name="form_submission_date" elementType="Argument">
             <stringProp name="Argument.name">form_submission_date</stringProp>
-            <stringProp name="Argument.value">2012-06-13</stringProp>
+            <stringProp name="Argument.value">2012-06-29</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="host" elementType="Argument">
@@ -61,7 +67,7 @@
           </elementProp>
           <elementProp name="openmrs_port" elementType="Argument">
             <stringProp name="Argument.name">openmrs_port</stringProp>
-            <stringProp name="Argument.value">8080</stringProp>
+            <stringProp name="Argument.value">7000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="openmrs_username" elementType="Argument">
@@ -76,17 +82,17 @@
           </elementProp>
           <elementProp name="temp_dir" elementType="Argument">
             <stringProp name="Argument.name">temp_dir</stringProp>
-            <stringProp name="Argument.value">/tmp/</stringProp>
+            <stringProp name="Argument.value">c:/Users/Balaji/AppData/Local/Temp/</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="function_test_module_jar_loc" elementType="Argument">
             <stringProp name="Argument.name">function_test_module_jar_loc</stringProp>
-            <stringProp name="Argument.value">/Users/deepansubramani/Projects/ghana-national-regression/target/ghana-national-regression-1.0-SNAPSHOT.jar</stringProp>
+            <stringProp name="Argument.value">C:/Users/Balaji/Code/motech/ghana-national-functional-tests/target/ghana-national-regression-1.0-SNAPSHOT.jar</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="epi_handy_jar_loc" elementType="Argument">
             <stringProp name="Argument.name">epi_handy_jar_loc</stringProp>
-            <stringProp name="Argument.value">/Users/deepansubramani/Projects/GHANA-National/ghana-national-functional-tests/lib/epihandy-midp.jar</stringProp>
+            <stringProp name="Argument.value">C:/Users/Balaji/Code/motech/ghana-national-functional-tests/lib/epihandy-midp.jar</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -240,6 +246,7 @@ try{
         ${__log(e, OUT)};
 }finally{
          fileWriter.close();
+
 }
 </stringProp>
             </BeanShellPostProcessor>
@@ -393,7 +400,15 @@ patientRegWithCWCAndMMFormFactory(motechId, staffId, form_submission_date){
     return details;
 }
 
-patientRegWithANCAndMMFormFactory(motechId, staffId, form_submission_date){
+patientRegWithANCAndMMSMSFormFactory(motechId, staffId, form_submission_date){
+	patientRegWithANCAndMM(motechId, staffId, form_submission_date,&quot;PERS_TEXT&quot;);
+}
+
+patientRegWithANCAndMMVoiceFormFactory(motechId, staffId, form_submission_date){
+	patientRegWithANCAndMM(motechId, staffId, form_submission_date,&quot;PERS_VOICE&quot;);
+}
+
+patientRegWithANCAndMM(motechId, staffId, form_submission_date,medium){
     details = new HashMap();    
     details{&quot;staffId&quot;}=staffId;
     details{&quot;facilityId&quot;}=&quot;13212&quot;;
@@ -426,7 +441,7 @@ patientRegWithANCAndMMFormFactory(motechId, staffId, form_submission_date){
     details{&quot;serviceType&quot;}=&quot;PREGNANCY&quot;;
     details{&quot;phoneOwnership&quot;}=&quot;PERSONAL&quot;;
     details{&quot;mmRegPhone&quot;}=&quot;0571909491&quot;;
-    details{&quot;format&quot;}=&quot;PERS_TEXT&quot;;
+    details{&quot;format&quot;}=medium;
     details{&quot;language&quot;}=&quot;EN&quot;;
     details{&quot;reasonToJoin&quot;}=&quot;KNOW_MORE_PREGNANCY_CHILDBIRTH&quot;;
     details{&quot;learnedFrom&quot;}=&quot;MOTECH_FIELD_AGENT&quot;;
@@ -471,7 +486,8 @@ registerClientFormFactory(motechId, staffId, form_submission_date){
 formFactory = new HashMap();
 formFactory{&quot;RegisterClient-other&quot;} = &quot;registerClientFormFactory&quot;;
 formFactory{&quot;RegisterANC&quot;}=&quot;ancRegistrationFormFactory&quot;;
-formFactory{&quot;RegisterClient-WithANCAndMM&quot;}=&quot;patientRegWithANCAndMMFormFactory&quot;;
+formFactory{&quot;RegisterClient-WithANCAndMMSMS&quot;}=&quot;patientRegWithANCAndMMSMSFormFactory&quot;;
+formFactory{&quot;RegisterClient-WithANCAndMMVoice&quot;}=&quot;patientRegWithANCAndMMVoiceFormFactory&quot;;
 formFactory{&quot;RegisterClient-WithCWCAndMM&quot;}=&quot;patientRegWithCWCAndMMFormFactory&quot;;
 formFactory{&quot;RegisterCWC&quot;}=&quot;cwcRegistrationFormFactory&quot;;
 formFactory{&quot;CareHistory-ANC&quot;}=&quot;ancHistoryFormFactory&quot;;
@@ -548,7 +564,7 @@ studyName=studyName(formNames);
           </BeanShellSampler>
           <hashTree/>
         </hashTree>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Result" enabled="true">
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -615,8 +631,8 @@ studyName=studyName(formNames);
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
             <collectionProp name="HTTPFileArgs.files">
-              <elementProp name="/tmp/request_${__threadNum()}_${request_counter}" elementType="HTTPFileArg">
-                <stringProp name="File.path">/tmp/request_${__threadNum()}_${request_counter}</stringProp>
+              <elementProp name="${temp_dir}/request_${__threadNum()}_${request_counter}" elementType="HTTPFileArg">
+                <stringProp name="File.path">${temp_dir}/request_${__threadNum()}_${request_counter}</stringProp>
                 <stringProp name="File.paramname"></stringProp>
                 <stringProp name="File.mimetype"></stringProp>
               </elementProp>
@@ -675,7 +691,7 @@ prev.setResponseData(result);</stringProp>
           </CounterConfig>
           <hashTree/>
         </hashTree>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="Result Tree" enabled="true">
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -707,7 +723,167 @@ prev.setResponseData(result);</stringProp>
           <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
-        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="IVR Inbound" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">${no_of_test_loops}</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${no_of_field_workers}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1340867916000</longProp>
+        <longProp name="ThreadGroup.end_time">1340867916000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Make an inbound call" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${host}</stringProp>
+          <stringProp name="HTTPSampler.port">${port}</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/ghana-national-web/verboice/ivr?type=verboice&amp;ln=en&amp;tree=InboundDecisionTree</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="verify" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-995582938">prompt_A</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Choose language" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${host}</stringProp>
+          <stringProp name="HTTPSampler.port">${port}</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/ghana-national-web/verboice/ivr?type=verboice&amp;ln=en&amp;tree=InboundDecisionTree&amp;trP=Lw&amp;Digits=1</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="TestPlan.comments">	</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="verify" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-995582937">prompt_B</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="choose to acknowledge mobilemidwife registration" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${host}</stringProp>
+          <stringProp name="HTTPSampler.port">${port}</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/ghana-national-web/verboice/ivr?type=verboice&amp;ln=en&amp;tree=InboundDecisionTree&amp;trP=LzM&amp;Digits=1</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="verify" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-995582936">prompt_C</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="get MoTeCH ID from stored file" enabled="true">
+            <boolProp name="resetInterpreter">true</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">addClassPath(new URL(&quot;http://nexus.motechproject.org/content/repositories/public/commons-io/commons-io/2.0.1/commons-io-2.0.1.jar&quot;));
+
+import org.apache.commons.io.FileUtils;
+
+try{
+         file = pathToFile(vars.get(&quot;temp_dir&quot;) + &quot;motech_ids&quot;);
+         listOfStrings = FileUtils.readLines(file, null);
+ 	 vars.put(&quot;currentMotechId&quot;, listOfStrings.get(${__threadNum} - 1));
+	 log.info(&quot;motech id is:  &quot; + listOfStrings.get(${__threadNum} - 1));
+}catch(Exception e){
+        ${__log(e, OUT)};
+}
+</stringProp>
+          </BeanShellPostProcessor>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Enter MoTeCH ID" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${host}</stringProp>
+          <stringProp name="HTTPSampler.port">${port}</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/ghana-national-web/verboice/ivr?type=verboice&amp;ln=en&amp;tree=InboundDecisionTree&amp;trP=LzMvMQ&amp;Digits=${currentMotechId}</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="verify" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-995582933">prompt_F</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">6</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -968,6 +1144,54 @@ prev.setResponseData(result);</stringProp>
           <hashTree/>
         </hashTree>
       </hashTree>
+      <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="openmrs database" enabled="true">
+        <boolProp name="autocommit">true</boolProp>
+        <stringProp name="checkQuery">Select 1</stringProp>
+        <stringProp name="connectionAge">5000</stringProp>
+        <stringProp name="dataSource"></stringProp>
+        <stringProp name="dbUrl">jdbc:mysql://localhost:3306</stringProp>
+        <stringProp name="driver">com.mysql.jdbc.Driver</stringProp>
+        <boolProp name="keepAlive">true</boolProp>
+        <stringProp name="password">password</stringProp>
+        <stringProp name="poolMax">10</stringProp>
+        <stringProp name="timeout">10000</stringProp>
+        <stringProp name="transactionIsolation">DEFAULT</stringProp>
+        <stringProp name="trimInterval">60000</stringProp>
+        <stringProp name="username">root</stringProp>
+      </JDBCDataSource>
+      <hashTree/>
+      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>true</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
