@@ -200,19 +200,20 @@ public class MobileMidwifeServiceTest {
         String patientId = "patientId";
         DayOfWeek dayOfWeek = DayOfWeek.Thursday;
         Time timeOfDay = new Time(11, 11);
+        String offset = "6";
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().serviceType(ServiceType.PREGNANCY).medium(Medium.VOICE)
                 .facilityId("facility12").patientId(patientId).staffId("staff13").consent(true).dayOfWeek(dayOfWeek).timeOfDay(timeOfDay)
-                .phoneOwnership(PhoneOwnership.PERSONAL).messageStartWeek("6").build();
+                .phoneOwnership(PhoneOwnership.PERSONAL).messageStartWeek(offset).build();
         service.register(enrollment);
         ArgumentCaptor<CampaignRequest> campaignRequestCaptor = ArgumentCaptor.forClass(CampaignRequest.class);
         verify(mockAllCampaigns).start(campaignRequestCaptor.capture());
         CampaignRequest actualRequest = campaignRequestCaptor.getValue();
         assertThat(actualRequest.getUserPreferredDays(), is(asList(dayOfWeek)));
         assertThat(actualRequest.deliverTime(), is(timeOfDay));
-        assertThat(actualRequest.startOffset(), is(6));
+        assertThat(actualRequest.startOffset(), is(Integer.parseInt(offset)));
         int diffForNextApplicable = dayOfWeek.getValue() - DateUtil.now().getDayOfWeek();
         int daysToNextApplicableDay = (diffForNextApplicable < 0) ? (7 + diffForNextApplicable) : diffForNextApplicable;
-        assertThat(actualRequest.referenceDate(), is(DateUtil.now().minusDays(daysToNextApplicableDay).toLocalDate()));
+        assertThat(actualRequest.referenceDate(), is(DateUtil.now().minusDays(Integer.parseInt(offset) - daysToNextApplicableDay).toLocalDate()));
 }
 
     private void assertCampaignRequestWith(MobileMidwifeEnrollment enrollment, CampaignRequest actualRequest, LocalDate expectedScheduleStartDate) {
