@@ -430,6 +430,19 @@
                                     </sqlCommand>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>execute-db-schema</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <autocommit>true</autocommit>
+                                    <srcFiles>
+                                        <srcFile>../build/sql/0.openmrs-1.8.sql</srcFile>
+                                    </srcFiles>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>

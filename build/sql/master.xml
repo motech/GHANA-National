@@ -4,14 +4,12 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-    <include file="../build/sql/changelog/001.setup-openmrs.xml"/>
     <include file="../build/sql/changelog/002.insert-email-person-attribute.xml"/>
     <include file="../build/sql/changelog/003.remove-old-ghana-data.xml"/>
     <include file="../build/sql/changelog/004.update-patient-with-proper-locations.xml"/>
     <include file="../build/sql/changelog/005.migration-staff-role-names.xml"/>
     <include file="../build/sql/changelog/006.insert_encounter_type_for_edit_patient.xml"/>
     <include file="../build/sql/changelog/007.migrate_person_preferred_names.xml"/>
-    <!--<include file="../build/sql/changelog/008.create_aggregation_tables.xml"/>-->
     <include file="../build/sql/changelog/009.insert_or_update_birt_report_changes.xml"/>
     <include file="../build/sql/changelog/010.reset_idgen_for_facility.xml"/>
     <include file="../build/sql/changelog/011.create-concept-rotavirus.xml"/>
