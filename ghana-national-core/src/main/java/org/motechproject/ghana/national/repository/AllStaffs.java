@@ -74,7 +74,7 @@ public class AllStaffs {
     public Map<String, String> fetchAllRoles() {
         Map<String, String> roles = new LinkedHashMap<String, String>();
         for (StaffType staffType : allStaffTypes.getAll()) {
-            roles.put(staffType.name(), staffType.description());
+            roles.put(staffType.getName(), staffType.getDescription());
         }
         return roles;
     }

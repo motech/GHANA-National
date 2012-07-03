@@ -28,7 +28,7 @@ public class InboundDecisionTreeSeed extends Seed {
         Tree tree = new Tree();
         tree.setName("InboundDecisionTree");
         tree.setRootNode(prompt(LANGUAGE_PROMPT, EN).setTransitions(chooseLanguageTransitions()));
-        allTrees.add(tree);
+        allTrees.addOrReplace(tree);
     }
 
     private Map<String, ITransition> chooseLanguageTransitions() {

@@ -23,7 +23,9 @@ public class SMSTextContentSeed extends Seed {
     protected void load() {
         try {
             for (String property : textMessages.stringPropertyNames()) {
-                cmsLiteService.addContent(new StringContent(Locale.ENGLISH.getLanguage(), property, textMessages.getProperty(property)));
+                if (!cmsLiteService.isStringContentAvailable(property, Locale.ENGLISH.getLanguage())) {
+                    cmsLiteService.addContent(new StringContent(Locale.ENGLISH.getLanguage(), property, textMessages.getProperty(property)));
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -22,7 +22,21 @@ public class AllStaffTypesTest extends BaseIntegrationTest {
 
         List<StaffType> all = allStaffTypes.getAll();
         assertEquals(1, all.size());
-        assertEquals("test", all.get(0).name());
+        assertEquals("test", all.get(0).getName());
+    }
+
+    @Test
+    public void shouldUpdateAUserType() {
+        StaffType staffType = new StaffType("test", "desc");
+
+        allStaffTypes.add(staffType);
+        StaffType staffType2 = new StaffType("test", "desc2");
+        allStaffTypes.addOrReplace(staffType2);
+
+        List<StaffType> all = allStaffTypes.getAll();
+        assertEquals(1, all.size());
+        assertEquals("test", all.get(0).getName());
+        assertEquals("desc2", all.get(0).getDescription());
     }
 
     @After
