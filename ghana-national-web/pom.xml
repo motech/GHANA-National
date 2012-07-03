@@ -407,7 +407,7 @@
                                 <configuration>
                                     <autocommit>true</autocommit>
                                     <sqlCommand>
-                                        drop database openmrs_test;
+                                        drop database ${openmrs.db};
                                     </sqlCommand>
                                     <onError>continue</onError>
                                 </configuration>
@@ -421,12 +421,12 @@
                                 <configuration>
                                     <autocommit>true</autocommit>
                                     <sqlCommand>
-                                        create database openmrs_test default charset utf8;
-                                        grant all on openmrs_test.* to 'openmrs'@'localhost' identified by
+                                        create database ${openmrs.db} default charset utf8;
+                                        grant all on ${openmrs.db}.* to '${openmrs.user}'@'localhost' identified by
                                         'password';
-                                        grant all on openmrs_test.* to 'openmrs'@'%' identified by 'password';
+                                        grant all on ${openmrs.db}.* to '${openmrs.user}'@'%' identified by '${openmrs.password}';
                                         flush privileges;
-                                        use openmrs_test;
+                                        use ${openmrs.db};
                                     </sqlCommand>
                                 </configuration>
                             </execution>
@@ -438,6 +438,10 @@
                                 </goals>
                                 <configuration>
                                     <autocommit>true</autocommit>
+                                    <driver>${mysql.driver}</driver>
+                                    <username>${openmrs.user}</username>
+                                    <password>${openmrs.password}</password>
+                                    <url>${mysql.url}/${openmrs.db}</url>
                                     <srcFiles>
                                         <srcFile>../build/sql/0.openmrs-1.8.sql</srcFile>
                                     </srcFiles>
@@ -462,7 +466,7 @@
                                 <configuration>
                                     <changeLogFile>../build/sql/master.xml</changeLogFile>
                                     <driver>${mysql.driver}</driver>
-                                    <url>${mysql.url}/${mysql.db}</url>
+                                    <url>${mysql.url}/${openmrs.db}</url>
                                     <username>${mysql.user}</username>
                                     <password>${mysql.password}</password>
                                 </configuration>
