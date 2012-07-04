@@ -4,13 +4,11 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 
-@Ignore
 public class IVRInboundCallIT {
 
     private static VerboiceStub verboiceStub;

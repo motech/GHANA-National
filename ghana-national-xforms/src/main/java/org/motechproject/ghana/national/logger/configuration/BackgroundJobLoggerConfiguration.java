@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.logger.configuration;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.motechproject.MotechException;
+import org.motechproject.ghana.national.logger.advice.BackgroundJobDbLogger;
 import org.motechproject.metrics.MetricsAgent;
 import org.motechproject.metrics.MetricsAgentBackend;
 import org.motechproject.metrics.impl.MultipleMetricsAgentImpl;
@@ -9,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 
 @Configuration
+@ImportResource("classpath:statMetricsAgent.xml")
 public class BackgroundJobLoggerConfiguration {
 
     @Autowired
@@ -25,20 +28,11 @@ public class BackgroundJobLoggerConfiguration {
     @Qualifier("statsdAgent")
     private MetricsAgentBackend statsdAgent;
 
-    @Autowired
-    @Qualifier("backgroundJobDbLogger")
-    private MetricsAgentBackend dbLogger;
-
-    @Bean(name = "backgroundJobMetricAgent")
-    public MetricsAgent metricsAgent(){
-        MultipleMetricsAgentImpl multipleMetricsAgent = new MultipleMetricsAgentImpl();
-        multipleMetricsAgent.setMetricsAgents(new ArrayList<MetricsAgentBackend>(){{
-            add(loggingAgent);
-            add(statsdAgent);
-            add(dbLogger);
-        }});
-        return multipleMetricsAgent;
+    @Bean(name="backgroundJobDbLogger")
+    public MetricsAgentBackend dbLogger(){
+        return new BackgroundJobDbLogger(dataSource());
     }
+
 
     // create table background_job_logs(metric varchar(250), st_time datetime, duration mediumint unsigned);
     @Bean(name = "performanceTestlogsDataBase")
@@ -58,4 +52,17 @@ public class BackgroundJobLoggerConfiguration {
             throw new MotechException("Encountered error while creating datasource for logging", e);
         }
     }
+
+    @Bean(name = "backgroundJobMetricAgent")
+    public MetricsAgent metricsAgent(){
+        MultipleMetricsAgentImpl multipleMetricsAgent = new MultipleMetricsAgentImpl();
+        multipleMetricsAgent.setMetricsAgents(new ArrayList<MetricsAgentBackend>(){{
+            add(loggingAgent);
+            add(statsdAgent);
+            add(dbLogger());
+        }});
+        return multipleMetricsAgent;
+    }
+
+
 }

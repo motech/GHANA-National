@@ -21,6 +21,7 @@
         <spring.version>3.1.0.RELEASE</spring.version>
         <org.ektorp.version>1.2.2</org.ektorp.version>
         <motech-platform.version>0.12-SNAPSHOT</motech-platform.version>
+        <motech-platform-contrib.version>0.11-SNAPSHOT</motech-platform-contrib.version>
         <threads>1</threads>
         <skip>false</skip>
         <exec-maven-plugin.version>1.1.1</exec-maven-plugin.version>

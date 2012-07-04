@@ -86,7 +86,7 @@
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-retry</artifactId>
-            <version>${motech-platform.version}</version>
+            <version>${motech-platform-contrib.version}</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>

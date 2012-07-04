@@ -16,6 +16,7 @@ import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
+import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateTimeSourceUtil;
 import org.motechproject.util.DateUtil;
 import org.motechproject.util.datetime.DateTimeSource;
@@ -28,10 +29,11 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.newDateTime;
 import static org.motechproject.util.DateUtil.now;
 
-public class MobileMidwifeServiceTest {
+public class MobileMidwifeServiceTest extends BaseUnitTest{
     private MobileMidwifeService service;
     @Mock
     private AllMobileMidwifeEnrollments mockAllMobileMidwifeEnrollments;
@@ -197,24 +199,22 @@ public class MobileMidwifeServiceTest {
 
     @Test
     public void shouldCreateCampaignForIVREnrollments() {
+        super.mockCurrentDate(DateUtil.newDateTime(DateUtil.newDate(2012, 7, 4), new Time(10, 10))); // wed
         String patientId = "patientId";
         DayOfWeek dayOfWeek = DayOfWeek.Thursday;
         Time timeOfDay = new Time(11, 11);
-        String offset = "6";
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().serviceType(ServiceType.PREGNANCY).medium(Medium.VOICE)
                 .facilityId("facility12").patientId(patientId).staffId("staff13").consent(true).dayOfWeek(dayOfWeek).timeOfDay(timeOfDay)
-                .phoneOwnership(PhoneOwnership.PERSONAL).messageStartWeek(offset).build();
+                .phoneOwnership(PhoneOwnership.PERSONAL).messageStartWeek("6").build();
         service.register(enrollment);
         ArgumentCaptor<CampaignRequest> campaignRequestCaptor = ArgumentCaptor.forClass(CampaignRequest.class);
         verify(mockAllCampaigns).start(campaignRequestCaptor.capture());
         CampaignRequest actualRequest = campaignRequestCaptor.getValue();
         assertThat(actualRequest.getUserPreferredDays(), is(asList(dayOfWeek)));
         assertThat(actualRequest.deliverTime(), is(timeOfDay));
-        assertThat(actualRequest.startOffset(), is(Integer.parseInt(offset)));
-        int diffForNextApplicable = dayOfWeek.getValue() - DateUtil.now().getDayOfWeek();
-        int daysToNextApplicableDay = (diffForNextApplicable < 0) ? (7 + diffForNextApplicable) : diffForNextApplicable;
-        assertThat(actualRequest.referenceDate(), is(DateUtil.now().minusDays(Integer.parseInt(offset) - daysToNextApplicableDay).toLocalDate()));
-}
+        assertThat(actualRequest.startOffset(), is(6));
+        assertThat(actualRequest.referenceDate(), is(newDate(2012,7,5)));
+    }
 
     private void assertCampaignRequestWith(MobileMidwifeEnrollment enrollment, CampaignRequest actualRequest, LocalDate expectedScheduleStartDate) {
         assertThat(actualRequest.externalId(), is(enrollment.getPatientId()));

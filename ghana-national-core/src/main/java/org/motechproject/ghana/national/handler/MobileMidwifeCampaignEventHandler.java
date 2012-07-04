@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.handler;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
@@ -11,7 +12,7 @@ import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
 import org.motechproject.ghana.national.exception.EventHandlerException;
-import org.motechproject.ghana.national.repository.AllPatientsOutbox;
+import org.motechproject.ghana.national.helper.MobileMidwifeWeekCalculator;import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.repository.IVRGateway;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
@@ -28,7 +29,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+import static org.joda.time.Days.daysBetween;
+import static org.joda.time.Hours.hoursBetween;
+import static org.joda.time.Minutes.minutesBetween;
 import static org.motechproject.server.messagecampaign.EventKeys.MESSAGE_CAMPAIGN_FIRED_EVENT_SUBJECT;
+import static org.motechproject.util.DateUtil.newDate;
 
 @Component
 public class MobileMidwifeCampaignEventHandler {
@@ -56,12 +61,16 @@ public class MobileMidwifeCampaignEventHandler {
         try {
             Map params = event.getParameters();
             String patientId = (String) params.get(EventKeys.EXTERNAL_ID_KEY);
+            LocalDate campaignStartDate = (LocalDate) params.get(EventKeys.CAMPAIGN_START_DATE);
+            String repeatInterval = (String) params.get(EventKeys.CAMPAIGN_REPEAT_INTERVAL);
 
             MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(patientId);
-            String generatedMessageKey = (String) event.getParameters().get(EventKeys.GENERATED_MESSAGE_KEY);
+            Integer startWeek = Integer.parseInt(enrollment.getMessageStartWeek());
+
+            String messageKey = new MobileMidwifeWeekCalculator((String)params.get(EventKeys.CAMPAIGN_NAME_KEY)).getMessageKey(campaignStartDate, startWeek, repeatInterval);
 
             if (event.isLastEvent()) mobileMidwifeService.rollover(patientId, DateTime.now());
-            sendMessage(enrollment, generatedMessageKey);
+            sendMessage(enrollment, messageKey);
         } catch (Exception e) {
             logger.error("<MobileMidwifeEvent>: Encountered error while sending alert: ", e);
             throw new EventHandlerException(event, e);
@@ -75,7 +84,7 @@ public class MobileMidwifeCampaignEventHandler {
             placeMobileMidwifeMessagesToOutbox(enrollment, messageKey);
             if (!PhoneOwnership.PUBLIC.equals(enrollment.getPhoneOwnership())) {
                 retryService.schedule(RetryRequestBuilder.ivrRetryReqest(enrollment.getPatientId(), DateUtil.now()));
-                ivrGateway.placeCall(enrollment.getPhoneNumber(), IVRRequestBuilder.build(ivrCallbackUrlBuilder.outboundCallUrl(enrollment.getPatientId(), enrollment.getLanguage().name(), "OutboundDecisionTree")));
+                ivrGateway.placeCall(enrollment.getPhoneNumber(), IVRRequestBuilder.build(ivrCallbackUrlBuilder.outboundCallUrl(enrollment.getPatientId())));
             }
         }
     }

@@ -110,6 +110,13 @@ public class UtilityTest {
         DateTime actualMar3Sat2012 = feb25Sat2012.dayOfYear().addToCopy(7);
         assertNotSame(feb25Sat2012, actualMar3Sat2012);
         assertThat(nextApplicableWeekDay(feb25Sat2012, applicableDays), is(actualMar3Sat2012));
+
+        DateTime jul4Wed2012 = new DateTime(2012, 7, 4, 5, 5);
+
+        applicableDays = asList(DayOfWeek.Thursday);
+        assertThat(nextApplicableWeekDay(jul4Wed2012, applicableDays), is(new DateTime(2012, 7, 5, 5, 5)));
+
+
     }
 
     @Test
