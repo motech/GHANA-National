@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.motechproject.metrics.MetricsAgent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -16,7 +17,7 @@ public class FormHandlerLoggingAdvice {
     private MetricsAgent metricsAgent;
 
     @Pointcut("execution(* org.motechproject.ghana.national.handler.CareScheduleAlerts.*(..))")
-    private void scheduleHandlers(){
+    private void scheduleHandlers() {
     }
 
     @Pointcut("execution(* org.motechproject.ghana.national.handlers.MobileFormHandler.handleFormEvent(..))")
@@ -24,7 +25,7 @@ public class FormHandlerLoggingAdvice {
     }
 
     @Pointcut("formAsyncHandlers() || scheduleHandlers()")
-    private void asyncHandlers(){
+    private void asyncHandlers() {
     }
 
 

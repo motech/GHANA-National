@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.advice;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -44,6 +45,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@Ignore("This test will not be part of the build and can be used to get feedback on enhancing background jobs time logger")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-xforms-test.xml"})
 public class FormHandlerLoggingAdviceTest {

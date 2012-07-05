@@ -65,7 +65,7 @@ public class MobileMidwifeCampaignEventHandler {
             String repeatInterval = (String) params.get(EventKeys.CAMPAIGN_REPEAT_INTERVAL);
 
             MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(patientId);
-            Integer startWeek = Integer.parseInt(enrollment.getMessageStartWeek());
+            Integer startWeek = Integer.parseInt(enrollment.getMessageStartWeekSpecificToServiceType());
 
             String messageKey = new MobileMidwifeWeekCalculator((String)params.get(EventKeys.CAMPAIGN_NAME_KEY)).getMessageKey(campaignStartDate, startWeek, repeatInterval);
 

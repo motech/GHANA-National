@@ -114,6 +114,13 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         return messageStartWeek;
     }
 
+    public String getMessageStartWeekSpecificToServiceType(){
+        if(ServiceType.CHILD_CARE.equals(serviceType)){
+            return Integer.valueOf(messageStartWeek) - 40 + "";
+        }
+        return messageStartWeek;
+    }
+
     public MobileMidwifeEnrollment setPatientId(String patientId) {
         this.patientId = patientId;
         return this;
@@ -232,8 +239,6 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     }
 
     public CampaignRequest createCampaignRequestForVoiceMessage(LocalDate nextApplicableDay, DayOfWeek dayOfWeek, Time timeOfDay) {
-        CampaignRequest campaignRequest = new CampaignRequest(patientId, MobileMidwifeCampaign.getName(serviceType, medium), nextApplicableDay, timeOfDay, Arrays.asList(dayOfWeek));
-        campaignRequest.setStartOffset(MessageStartWeek.findBy(messageStartWeek).getWeek());
-        return campaignRequest;
+        return new CampaignRequest(patientId, MobileMidwifeCampaign.getName(serviceType, medium), nextApplicableDay, timeOfDay, Arrays.asList(dayOfWeek));
     }
 }
