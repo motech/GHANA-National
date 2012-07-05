@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
@@ -114,7 +115,8 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
         return messageStartWeek;
     }
 
-    public String getMessageStartWeekSpecificToServiceType(){
+    @JsonIgnore
+    public String messageStartWeekSpecificToServiceType(){
         if(ServiceType.CHILD_CARE.equals(serviceType)){
             return Integer.valueOf(messageStartWeek) - 40 + "";
         }

@@ -74,7 +74,7 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
         String mobileNumber = "9845312345";
         Language language = Language.EN;
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(newDateTime(DateUtil.newDate(2012, 7, 4), new Time(10, 10))).setPatientId(patientId)
-                .setServiceType(ServiceType.CHILD_CARE).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber(mobileNumber).setMessageStartWeek("10");
+                .setServiceType(ServiceType.CHILD_CARE).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber(mobileNumber).setMessageStartWeek("50");
 
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 

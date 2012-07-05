@@ -34,8 +34,8 @@ public class MobileMidwifeEnrollmentTest {
 
     @Test
     public void shouldGetMessageStartWeekSpecificToServiceType(){
-        assertThat(new MobileMidwifeEnrollment(null).setMessageStartWeek("44").setServiceType(ServiceType.CHILD_CARE).getMessageStartWeekSpecificToServiceType(), is(equalTo("4")));
-        assertThat(new MobileMidwifeEnrollment(null).setMessageStartWeek("5").setServiceType(ServiceType.PREGNANCY).getMessageStartWeekSpecificToServiceType(), is(equalTo("5")));
+        assertThat(new MobileMidwifeEnrollment(null).setMessageStartWeek("44").setServiceType(ServiceType.CHILD_CARE).messageStartWeekSpecificToServiceType(), is(equalTo("4")));
+        assertThat(new MobileMidwifeEnrollment(null).setMessageStartWeek("5").setServiceType(ServiceType.PREGNANCY).messageStartWeekSpecificToServiceType(), is(equalTo("5")));
     }
     @Test
     public void shouldCreateStopCampaignRequest() {
