@@ -36,7 +36,7 @@ public class FacilitySeed extends Seed {
                     on(Facility.class).mrsFacility().getName(), on(Facility.class).mrsFacility().getId());
             for (OldGhanaFacility oldGhanaFacility : facilitySource.getMotechFacilityNameAndIds()) {
                 String OpenMrsFacilityId = OldGhanaFacility.findByName(oldGhanaFacilities, oldGhanaFacility.getName()).getId();
-                allFacilities.addOrReplace(new Facility().mrsFacilityId(OpenMrsFacilityId).motechId(oldGhanaFacility.getId()));
+                allFacilities.saveLocally(new Facility().mrsFacilityId(OpenMrsFacilityId).motechId(oldGhanaFacility.getId()));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

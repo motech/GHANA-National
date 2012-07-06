@@ -5,7 +5,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
-import org.ektorp.support.GenerateView;
 import org.ektorp.support.View;
 import org.motechproject.dao.MotechBaseRepository;
 import org.motechproject.ghana.national.domain.Facility;
@@ -73,12 +72,13 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
         facility.mrsFacilityId(savedFacility.getId());
     }
 
-    public List<Facility> facilitiesByName(String name) {
-        return getFacilitiesWithAllInfo(facilityAdapter.getFacilities(name));
+
+    public void saveLocally(Facility facility) {
+        super.add(facility);
     }
 
-    public void addOrReplace(Facility facility) {
-        super.addOrReplace(facility, "mrsFacilityId", facility.getMrsFacilityId());
+    public List<Facility> facilitiesByName(String name) {
+        return getFacilitiesWithAllInfo(facilityAdapter.getFacilities(name));
     }
 
     public List<Facility> facilities() {
@@ -119,9 +119,11 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
         return db.queryView(viewQuery, Facility.class);
     }
 
-    @GenerateView
+    @View(name = "find_by_mrs_facility_id", map = "function(doc) { if(doc.type === 'Facility') emit(doc.mrsFacilityId, doc) }")
     public Facility findByMrsFacilityId(String facilityId) {
-        return singleResult(queryView("by_mrsFacilityId", facilityId));
+        ViewQuery viewQuery = createQuery("find_by_mrs_facility_id").key(facilityId).includeDocs(true);
+        List<Facility> facilities = db.queryView(viewQuery, Facility.class);
+        return CollectionUtils.isEmpty(facilities) ? null : facilities.get(0);
     }
 
     @View(name = "find_by_motech_facility_id", map = "function(doc) { if(doc.type === 'Facility') emit(doc.motechId, doc) }")

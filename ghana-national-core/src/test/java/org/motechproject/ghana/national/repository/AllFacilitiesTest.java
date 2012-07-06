@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -259,20 +260,6 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldReplaceFacilityIfAlreadyPresent() {
-        String mrsFacilityId = "1234";
-        String country = "Country";
-        MRSFacility mrsFacility = new MRSFacility(mrsFacilityId, "facilityName", country, "Region", null, null);
-        String phoneNumber = "9911002288";
-        String newPhoneNumber= "8911002288";
-        when(mockMrsFacilityAdapter.saveFacility(mrsFacility)).thenReturn(mrsFacility);
-        allFacilities.add(facility(phoneNumber, null, null, null, mrsFacility));
-        allFacilities.addOrReplace(facility(newPhoneNumber, null, null, null, mrsFacility));
-
-        assertThat(allFacilities.findByMrsFacilityId(mrsFacilityId).phoneNumber(), is(newPhoneNumber));
-    }
-
-    @Test
     public void shouldFindFacilityByMotechId() {
         String motechFacilityId = "1346789";
         String mrsFacilityId = "100";
@@ -289,6 +276,14 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
         return new Facility(mrsFacility)
                 .phoneNumber(phoneNumber).additionalPhoneNumber1(additionalPhone1).additionalPhoneNumber2(additionalPhone2)
                 .additionalPhoneNumber3(additionalPhone3);
+    }
+
+    @Test
+    public void shouldSaveLocallyWithoutSavingToOpenMRSDB() {
+        String facilityId = "23";
+        final Facility facility = new Facility().mrsFacilityId(facilityId);
+        allFacilities.saveLocally(facility);
+        assertNotNull(allFacilities.findByMrsFacilityId(facilityId));
     }
 
     @Test
