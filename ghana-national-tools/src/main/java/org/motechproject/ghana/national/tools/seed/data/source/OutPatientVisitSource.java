@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Component
-public class OutPatientVisitSource extends BaseSeedSource{
+public class OutPatientVisitSource extends BaseSeedSource {
 
     public List<OutPatientVisit> getOutPatientVisitList() {
         return jdbcTemplate.query("select * from motechmodule_generaloutpatientencounter",
@@ -18,7 +18,7 @@ public class OutPatientVisitSource extends BaseSeedSource{
                     @Override
                     public OutPatientVisit mapRow(ResultSet resultSet, int rowNum) throws SQLException {
                         return new OutPatientVisit().setVisitDate(resultSet.getDate("visit_date"))
-                            .setStaffId(resultSet.getString("staff_id"))
+                                .setStaffId(resultSet.getString("staff_id"))
                                 .setFacilityId(resultSet.getString("facility_id"))
                                 .setSerialNumber(resultSet.getString("serial_number"))
                                 .setGender(resultSet.getString("sex"))

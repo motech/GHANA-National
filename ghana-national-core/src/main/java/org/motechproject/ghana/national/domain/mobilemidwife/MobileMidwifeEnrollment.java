@@ -243,4 +243,27 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     public CampaignRequest createCampaignRequestForVoiceMessage(LocalDate nextApplicableDay, DayOfWeek dayOfWeek, Time timeOfDay) {
         return new CampaignRequest(patientId, MobileMidwifeCampaign.getName(serviceType, medium), nextApplicableDay, timeOfDay, Arrays.asList(dayOfWeek));
     }
+
+    @Override
+    public String toString() {
+        return "MobileMidwifeEnrollment{" +
+                "type='" + type + '\'' +
+                ", patientId='" + patientId + '\'' +
+                ", staffId='" + staffId + '\'' +
+                ", facilityId='" + facilityId + '\'' +
+                ", consent=" + consent +
+                ", serviceType=" + serviceType +
+                ", phoneOwnership=" + phoneOwnership +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", medium=" + medium +
+                ", dayOfWeek=" + dayOfWeek +
+                ", timeOfDay=" + timeOfDay +
+                ", language=" + language +
+                ", learnedFrom=" + learnedFrom +
+                ", reasonToJoin=" + reasonToJoin +
+                ", messageStartWeek='" + messageStartWeek + '\'' +
+                ", active=" + active +
+                ", enrollmentDateTime=" + enrollmentDateTime +
+                '}';
+    }
 }

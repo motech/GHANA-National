@@ -43,20 +43,20 @@
     <bean id="scheduleMigrator" class="org.motechproject.ghana.national.tools.seed.SeedLoader">
         <constructor-arg>
             <list>
-                <ref bean="ttVaccineSeed"/>
-                <ref bean="iptiVaccineSeed"/>
-                <ref bean="iptpVaccineSeed"/>
-                <ref bean="eddSeed"/>
-                <ref bean="bcgVaccineSeed"/>
-                <ref bean="measlesVaccineSeed"/>
-                <ref bean="pentaVaccineSeed"/>
-                <ref bean="yellowFeverVaccineSeed"/>
-                <ref bean="pncMotherVaccineSeed"/>
-                <ref bean="pncBabyVaccineSeed"/>
+                <!--<ref bean="ttVaccineSeed"/>-->
+                <!--<ref bean="iptiVaccineSeed"/>-->
+                <!--<ref bean="iptpVaccineSeed"/>-->
+                <!--<ref bean="eddSeed"/>-->
+                <!--<ref bean="bcgVaccineSeed"/>-->
+                <!--<ref bean="measlesVaccineSeed"/>-->
+                <!--<ref bean="pentaVaccineSeed"/>-->
+                <!--<ref bean="yellowFeverVaccineSeed"/>-->
+                <!--<ref bean="pncMotherVaccineSeed"/>-->
+                <!--<ref bean="pncBabyVaccineSeed"/>-->
                 <ref bean="mobileMidwifeMigrationSeed"/>
-                <ref bean="ancVisitSeed"/>
-                <ref bean="outPatientVisitMigrationSeed"/>
-                <ref bean="opvSeed"/>
+                <!--<ref bean="ancVisitSeed"/>-->
+                <!--<ref bean="outPatientVisitMigrationSeed"/>-->
+                <!--<ref bean="opvSeed"/>-->
             </list>
         </constructor-arg>
     </bean>
