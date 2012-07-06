@@ -23,6 +23,7 @@ import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
 @Repository
 public class AllObservations {
 
+    //todo remove dependency on mrsObservationAdapter, move to service layer - this class is just an abstraction of couch repo
     @Autowired
     MRSObservationAdapter mrsObservationAdapter;
 

@@ -23,6 +23,7 @@ import static ch.lambdaj.Lambda.convert;
 
 @Repository
 public class AllPatients {
+    //todo remove dependency on patientAdapter, openMRSRelationshipAdapter, move to service layer - this class is just an abstraction of couch repo
     @Autowired
     private MRSPatientAdapter patientAdapter;
     Logger logger = LoggerFactory.getLogger(this.getClass());
