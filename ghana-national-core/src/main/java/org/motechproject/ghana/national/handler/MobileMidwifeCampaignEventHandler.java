@@ -65,11 +65,11 @@ public class MobileMidwifeCampaignEventHandler {
             String repeatInterval = (String) params.get(EventKeys.CAMPAIGN_REPEAT_INTERVAL);
 
             MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(patientId);
-            Integer startWeek = Integer.parseInt(enrollment.getMessageStartWeek());
+            Integer startWeek = Integer.parseInt(enrollment.messageStartWeekSpecificToServiceType());
 
             String messageKey = new MobileMidwifeWeekCalculator((String)params.get(EventKeys.CAMPAIGN_NAME_KEY)).getMessageKey(campaignStartDate, startWeek, repeatInterval);
 
-            if (event.isLastEvent()) mobileMidwifeService.rollover(patientId, DateTime.now());
+            if (event.isLastEvent()) mobileMidwifeService.rollover(patientId, DateUtil.now());
             sendMessage(enrollment, messageKey);
         } catch (Exception e) {
             logger.error("<MobileMidwifeEvent>: Encountered error while sending alert: ", e);

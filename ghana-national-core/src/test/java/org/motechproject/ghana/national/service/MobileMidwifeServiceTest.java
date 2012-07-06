@@ -22,6 +22,7 @@ import org.motechproject.util.DateUtil;
 import org.motechproject.util.datetime.DateTimeSource;
 
 import static java.util.Arrays.asList;
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.core.Is.is;
@@ -212,7 +213,7 @@ public class MobileMidwifeServiceTest extends BaseUnitTest{
         CampaignRequest actualRequest = campaignRequestCaptor.getValue();
         assertThat(actualRequest.getUserPreferredDays(), is(asList(dayOfWeek)));
         assertThat(actualRequest.deliverTime(), is(timeOfDay));
-        assertThat(actualRequest.startOffset(), is(6));
+        assertEquals(null, actualRequest.startOffset());
         assertThat(actualRequest.referenceDate(), is(newDate(2012,7,5)));
     }
 

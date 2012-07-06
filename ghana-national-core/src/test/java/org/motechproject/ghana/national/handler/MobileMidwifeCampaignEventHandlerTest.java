@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.handler;
 
 import junit.framework.Assert;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,11 +33,11 @@ import java.util.HashMap;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.joda.time.DateTime.now;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.server.messagecampaign.EventKeys.MESSAGE_CAMPAIGN_FIRED_EVENT_SUBJECT;
 import static org.motechproject.util.DateUtil.newDateTime;
+import static org.motechproject.util.DateUtil.now;
 
 public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
 
@@ -53,6 +54,7 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
     IVRCallbackUrlBuilder mockIVRCallbackUrlBuilder;
     @Mock
     RetryService mockRetryService;
+
     private DateTime now = DateUtil.newDateTime(DateUtil.newDate(2012, 7, 5), new Time(10, 10));
 
     @Before
@@ -74,7 +76,7 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
         String mobileNumber = "9845312345";
         Language language = Language.EN;
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(newDateTime(DateUtil.newDate(2012, 7, 4), new Time(10, 10))).setPatientId(patientId)
-                .setServiceType(ServiceType.CHILD_CARE).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber(mobileNumber).setMessageStartWeek("10");
+                .setServiceType(ServiceType.CHILD_CARE).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber(mobileNumber).setMessageStartWeek("50");
 
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
 
@@ -98,7 +100,7 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
         ArgumentCaptor<String> idArgumentCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockMobileMidwifeService).rollover(idArgumentCaptor.capture(), dateArgumentCaptor.capture());
         assertThat(idArgumentCaptor.getValue(), is(equalTo(patientId)));
-        assertThat(dateArgumentCaptor.getValue().toLocalDate(), is(equalTo(DateTime.now().toLocalDate())));
+        assertThat(dateArgumentCaptor.getValue().toLocalDate(), is(equalTo(now().toLocalDate())));
     }
 
     @Test

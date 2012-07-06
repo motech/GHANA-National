@@ -48,7 +48,7 @@ public class BackgroundJobLoggerConfiguration {
             comboPooledDataSource.setMaxPoolSize(50);
             comboPooledDataSource.setMaxIdleTime(3600);
             return comboPooledDataSource;
-        } catch (PropertyVetoException e) {
+        } catch (Exception e) {
             throw new MotechException("Encountered error while creating datasource for logging", e);
         }
     }

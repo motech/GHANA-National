@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.domain.mobilemidwife;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
@@ -111,6 +112,14 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     }
 
     public String getMessageStartWeek() {
+        return messageStartWeek;
+    }
+
+    @JsonIgnore
+    public String messageStartWeekSpecificToServiceType(){
+        if(ServiceType.CHILD_CARE.equals(serviceType)){
+            return Integer.valueOf(messageStartWeek) - 40 + "";
+        }
         return messageStartWeek;
     }
 
@@ -232,8 +241,6 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     }
 
     public CampaignRequest createCampaignRequestForVoiceMessage(LocalDate nextApplicableDay, DayOfWeek dayOfWeek, Time timeOfDay) {
-        CampaignRequest campaignRequest = new CampaignRequest(patientId, MobileMidwifeCampaign.getName(serviceType, medium), nextApplicableDay, timeOfDay, Arrays.asList(dayOfWeek));
-        campaignRequest.setStartOffset(MessageStartWeek.findBy(messageStartWeek).getWeek());
-        return campaignRequest;
+        return new CampaignRequest(patientId, MobileMidwifeCampaign.getName(serviceType, medium), nextApplicableDay, timeOfDay, Arrays.asList(dayOfWeek));
     }
 }

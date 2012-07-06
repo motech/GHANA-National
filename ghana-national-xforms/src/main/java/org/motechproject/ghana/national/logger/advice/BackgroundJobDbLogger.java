@@ -5,6 +5,7 @@ import org.motechproject.metrics.MetricsAgentBackend;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -17,15 +18,21 @@ public class BackgroundJobDbLogger implements MetricsAgentBackend {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
+    ApplicationContext context;
+
+    @Autowired
     public BackgroundJobDbLogger(@Qualifier("performanceTestlogsDataBase") DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
     public void logEvent(String metric, Map<String, String> parameters) {
-        String timeStamp = parameters.get("TimeStamp") != null ? "'" + formatTimeStamp(Long.parseLong(parameters.get("TimeStamp"))) + "'": "null";
-        String timeTaken = parameters.get("TimeTaken") != null ? parameters.get("TimeTaken"): "null";
-        jdbcTemplate.execute("insert into background_job_logs values('" + metric + "'," + timeStamp + "," + timeTaken + ")");
+        String environment = context.getEnvironment().getProperty("env");
+        if (environment == null || !"test".equals(environment)) {
+            String timeStamp = parameters.get("TimeStamp") != null ? "'" + formatTimeStamp(Long.parseLong(parameters.get("TimeStamp"))) + "'" : "null";
+            String timeTaken = parameters.get("TimeTaken") != null ? parameters.get("TimeTaken") : "null";
+            jdbcTemplate.execute("insert into background_job_logs values('" + metric + "'," + timeStamp + "," + timeTaken + ")");
+        }
     }
 
     private String formatTimeStamp(long timeStamp) {
@@ -39,7 +46,7 @@ public class BackgroundJobDbLogger implements MetricsAgentBackend {
 
     @Override
     public void logTimedEvent(String metric, final long timeTaken) {
-        logEvent(metric, new HashMap<String, String>(){{
+        logEvent(metric, new HashMap<String, String>() {{
             put("TimeTaken", String.valueOf(timeTaken));
             put("TimeStamp", String.valueOf(System.currentTimeMillis()));
         }});
