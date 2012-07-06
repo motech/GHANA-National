@@ -69,7 +69,7 @@ public class MobileMidwifeCampaignEventHandler {
 
             String messageKey = new MobileMidwifeWeekCalculator((String)params.get(EventKeys.CAMPAIGN_NAME_KEY)).getMessageKey(campaignStartDate, startWeek, repeatInterval);
 
-            if (event.isLastEvent()) mobileMidwifeService.rollover(patientId, DateTime.now());
+            if (event.isLastEvent()) mobileMidwifeService.rollover(patientId, DateUtil.now());
             sendMessage(enrollment, messageKey);
         } catch (Exception e) {
             logger.error("<MobileMidwifeEvent>: Encountered error while sending alert: ", e);
