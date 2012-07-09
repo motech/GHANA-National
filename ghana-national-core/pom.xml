@@ -112,20 +112,6 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
-            <artifactId>ghana-national-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <classifier>resources</classifier>
-            <type>zip</type>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.motechproject</groupId>
-                    <artifactId>motech-delivery-tools-web</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject</groupId>
             <artifactId>motech-message-campaign</artifactId>
             <version>${motech-platform.version}</version>
         </dependency>
