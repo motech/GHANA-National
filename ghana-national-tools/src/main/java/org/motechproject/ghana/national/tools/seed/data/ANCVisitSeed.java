@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.repository.AllAppointments;
 import org.motechproject.ghana.national.repository.AllCareSchedules;
+import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.tools.seed.data.domain.ANCExpiredScheduleFilter;
 import org.motechproject.ghana.national.tools.seed.data.domain.DuplicateScheduleFilter;
 import org.motechproject.ghana.national.tools.seed.data.domain.UpcomingSchedule;
@@ -21,16 +22,23 @@ import static java.lang.Boolean.FALSE;
 public class ANCVisitSeed extends ScheduleMigrationSeed {
 
     private AllAppointments allAppointments;
+    private PatientService patientService;
 
     @Autowired
-    public ANCVisitSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allSchedules, AllCareSchedules allCareSchedules, AllAppointments allAppointments) {
+    public ANCVisitSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allSchedules, AllCareSchedules allCareSchedules, AllAppointments allAppointments, PatientService patientService) {
         super(allSchedules, oldGhanaScheduleSource, allCareSchedules, FALSE);
         this.allAppointments = allAppointments;
+        this.patientService = patientService;
         this.filters = Arrays.asList(new DuplicateScheduleFilter(), new ANCExpiredScheduleFilter());
     }
 
     protected List<UpcomingSchedule> getAllUpcomingSchedules() {
         return oldGhanaScheduleSource.getUpcomingANCVisitSchedules();
+    }
+
+    @Override
+    protected Patient getPatient(String motechId, String patientId) {
+        return patientService.getPatientByMotechId(motechId);
     }
 
     @Override
