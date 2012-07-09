@@ -53,7 +53,7 @@
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
-                    <groupId>org.motechproject</groupId>
+                    <groupId>org.motechproject.ghana-national-delivery</groupId>
                     <artifactId>motech-delivery-tools-web</artifactId>
                 </exclusion>
             </exclusions>

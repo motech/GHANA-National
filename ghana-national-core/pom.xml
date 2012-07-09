@@ -84,7 +84,7 @@
             <version>${motech-platform.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.motechproject</groupId>
+            <groupId>org.motechproject.contrib-ghana-national</groupId>
             <artifactId>motech-retry</artifactId>
             <version>${motech-platform-contrib.version}</version>
         </dependency>
@@ -119,7 +119,7 @@
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
-                    <groupId>org.motechproject</groupId>
+                    <groupId>org.motechproject.ghana-national-delivery</groupId>
                     <artifactId>motech-delivery-tools-web</artifactId>
                 </exclusion>
             </exclusions>
