@@ -62,21 +62,8 @@
     <build>
         <resources>
             <resource>
-                <directory>${basedir}/src/main/resources</directory>
-            </resource>
-            <resource>
-                <directory>${project.build.directory}/generated-resources</directory>
+                <directory>${project.parent.relativePath}/../ghana-national-common/src/main/resources</directory>
                 <filtering>true</filtering>
-                <excludes>
-                    <exclude>**/*.omod</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>${project.build.directory}/generated-resources</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>**/*.omod</include>
-                </includes>
             </resource>
         </resources>
         <plugins>
@@ -95,30 +82,6 @@
                                 <file>${project.parent.relativePath}/../build/maven.properties</file>
                                 <file>${project.parent.relativePath}/../ghana-national-common/src/main/resources/aggregator.properties</file>
                             </files>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.4</version>
-                <executions>
-                    <execution>
-                        <id>unpack-shared-resources</id>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <type>jar</type>
-                            <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
-                            <includeArtifactIds>ghana-national-common</includeArtifactIds>
-                            <includeGroupIds>org.motechproject</includeGroupIds>
-                            <excludeTransitive>true</excludeTransitive>
-                            <includes>
-                                log4j.xml,sms-http-template.json,aggregator.properties,sms-http.properties
-                            </includes>
                         </configuration>
                     </execution>
                 </executions>

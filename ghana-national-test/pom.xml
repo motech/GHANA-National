@@ -93,41 +93,9 @@
         <!--RESOURCE FILTERING-->
         <resources>
             <resource>
-                <directory>${project.build.directory}/generated-resources</directory>
+                <directory>${project.parent.relativePath}/../ghana-national-common/src/main/resources</directory>
                 <filtering>true</filtering>
-                <excludes>
-                    <exclude>**/*.omod</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>${project.build.directory}/generated-resources</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>**/*.omod</include>
-                </includes>
             </resource>
         </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack-shared-resources</id>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
-                            <includeArtifactIds>ghana-national-common</includeArtifactIds>
-                            <includeGroupIds>org.motechproject</includeGroupIds>
-                            <excludeTransitive>true</excludeTransitive>
-                            <excludes>activemq.properties</excludes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
 </project>
