@@ -116,6 +116,17 @@
                 <version>2.1.1</version>
                 <configuration>
                     <archiveClasses>false</archiveClasses>
+                    <packagingExcludes>
+                        WEB-INF/classes/openmrs-data/**/*.*,
+                        WEB-INF/classes/xforms/**/*.xml,
+                        WEB-INF/classes/schedules/*.json,
+                        WEB-INF/classes/retries/*.json,
+                        WEB-INF/classes/emailtemplates/*.vm,
+                        WEB-INF/classes/programs/mobilemidwife/**/*.*,
+                        WEB-INF/classes/*.properties,
+                        WEB-INF/classes/*.json,
+                        WEB-INF/classes/log4j.xml
+                    </packagingExcludes>
                     <webResources>
                         <resource>
                             <!-- this is relative to the pom.xml directory -->

@@ -83,5 +83,24 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <packagingExcludes>
+                        WEB-INF/classes/openmrs-data/**/*.*,
+                        WEB-INF/classes/xforms/**/*.xml,
+                        WEB-INF/classes/schedules/*.json,
+                        WEB-INF/classes/retries/*.json,
+                        WEB-INF/classes/emailtemplates/*.vm,
+                        WEB-INF/classes/programs/mobilemidwife/**/*.*,
+                        WEB-INF/classes/*.properties,
+                        WEB-INF/classes/*.json,
+                        WEB-INF/classes/log4j.xml
+                    </packagingExcludes>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 </project>
