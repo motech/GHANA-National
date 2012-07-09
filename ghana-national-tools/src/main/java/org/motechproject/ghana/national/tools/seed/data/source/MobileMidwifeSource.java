@@ -149,16 +149,16 @@ public class MobileMidwifeSource extends BaseSeedSource {
 
                         enrollment.setPhoneNumber(resultSet.getString(2));
 
-                        String phoneType = resultSet.getString(4);
-                        if (StringUtils.isNotBlank(phoneType) && !",".equals(phoneType)) {
-                            phoneType = correctText(phoneType);
-                            enrollment.setPhoneOwnership(PhoneOwnership.valueOf(phoneType));
-                        }
-
                         String language = resultSet.getString(3);
                         if (StringUtils.isNotBlank(language) && !",".equals(language)) {
                             language = correctText(language);
                             enrollment.setLanguage(Language.valueOf(language.toUpperCase()));
+                        }
+
+                        String phoneType = resultSet.getString(4);
+                        if (StringUtils.isNotBlank(phoneType) && !",".equals(phoneType)) {
+                            phoneType = correctText(phoneType);
+                            enrollment.setPhoneOwnership(PhoneOwnership.valueOf(phoneType));
                         }
 
                         String media = resultSet.getString(5);
@@ -179,16 +179,16 @@ public class MobileMidwifeSource extends BaseSeedSource {
                             enrollment.setTimeOfDay(new Time(Integer.parseInt(times[0]), Integer.parseInt(times[1])));
                         }
 
-                        String reason = resultSet.getString(9);
-                        if (StringUtils.isNotBlank(reason) && !",".equals(reason)) {
-                            reason = correctText(reason);
-                            enrollment.setReasonToJoin(ReasonToJoin.valueOf(reason));
-                        }
-
                         String how = resultSet.getString(8);
                         if (StringUtils.isNotBlank(how) && !",".equals(how)) {
                             how = correctText(how);
                             enrollment.setLearnedFrom(LearnedFrom.valueOf(how));
+                        }
+
+                        String reason = resultSet.getString(9);
+                        if (StringUtils.isNotBlank(reason) && !",".equals(reason)) {
+                            reason = correctText(reason);
+                            enrollment.setReasonToJoin(ReasonToJoin.valueOf(reason));
                         }
                         return enrollment;
                     }
@@ -231,11 +231,11 @@ public class MobileMidwifeSource extends BaseSeedSource {
         return CollectionUtils.isEmpty(facilities) ? null : facilities.get(0);
     }
 
-    private String correctText(String how) {
-        if (how.split(",").length == 2) {
-            how = how.split(",")[0];
+    private String correctText(String string) {
+        if (string.split(",").length == 2) {
+            string = string.split(",")[0];
         }
-        return how;
+        return string;
     }
 
     public List<Map<String, Object>> scheduledMessage(final String enrollmentId) {
