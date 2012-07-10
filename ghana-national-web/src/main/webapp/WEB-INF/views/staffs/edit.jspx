@@ -1,5 +1,5 @@
 <div id="body" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
-     xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:form="http://www.springframework.org/tags/form"
      xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
@@ -8,7 +8,12 @@
     <spring:url value="/admin/staffs/update" var="form_url"/>
 
     <c:if test="${successMessage ne null}">
-        <br/><span class="success"><c:out value="${successMessage}"/></span><br/><br/>
+        <br/>
+        <span class="success">
+            <c:out value="${successMessage}"/>
+        </span>
+        <br/>
+        <br/>
     </c:if>
 
     <form:form id="staffForm" action="${fn:escapeXml(form_url)}" method="POST" title="Update a Staff Member"
@@ -24,14 +29,15 @@
         <spring:message code="user_email" var="user_email" htmlEscape="false"/>
         <spring:message code="user_role" var="user_role" htmlEscape="false"/>
         <spring:message code="user_role_select" var="user_role_select" htmlEscape="false"/>
-        <spring:message code="staff_phone_number_incorrect_msg" var="staff_phone_number_incorrect_msg" htmlEscape="false"/>
+        <spring:message code="staff_phone_number_incorrect_msg" var="staff_phone_number_incorrect_msg"
+                        htmlEscape="false"/>
 
 
         <div>
             <label for="staffId" class="formLabel">${fn:escapeXml(staff_id)}:</label>
-            <form:input path="staffId" size="20" disabled="true" />
-            <form:hidden path="staffId" />
-            <form:hidden path="id" />
+            <form:input path="staffId" size="20" disabled="true"/>
+            <form:hidden path="staffId"/>
+            <form:hidden path="id"/>
         </div>
         <div>
             <label class="formLabel" for="firstName">${fn:escapeXml(user_first_name)} *:</label>
@@ -79,7 +85,7 @@
                     </c:choose>
                 </c:forEach>
             </form:select>
-            <span id='newRoleError' class='formlyInvalid formlyAlert hide'></span>
+            <span id='newRoleError' class='alertText formlyInvalid formlyAlert hide'></span>
         </div>
         <input type="button" id="submitNewUser" value="Submit"/>
 
