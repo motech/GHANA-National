@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class BackgroundJobDbLogger implements MetricsAgentBackend {
     private JdbcTemplate jdbcTemplate;
 

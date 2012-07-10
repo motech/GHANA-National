@@ -48,15 +48,15 @@ public class MobileMidwifeService {
                 allCampaigns.start(enrollment.createCampaignRequestForTextMessage(referenceDate));
             } else if (enrollment.getMedium().equals(Medium.VOICE)) {
                 DayOfWeek applicableDays = enrollment.getDayOfWeek()!=null ? enrollment.getDayOfWeek() : DayOfWeek.getDayOfWeek(enrollment.getEnrollmentDateTime().dayOfWeek());
-                referenceDate = getReferenceDate(enrollment.getEnrollmentDateTime(),applicableDays, Integer.parseInt(enrollment.getMessageStartWeek()));
+                referenceDate = getReferenceDate(enrollment.getEnrollmentDateTime(),applicableDays);
                 allCampaigns.start(enrollment.createCampaignRequestForVoiceMessage(referenceDate, applicableDays, enrollment.getTimeOfDay()));
             }
         }
     }
 
     //moving reference date according to startOffset such that schedule start date lies on next applicable day
-    private LocalDate getReferenceDate(DateTime enrollmentDateTime,DayOfWeek applicableDays, int startOffset) {
-        return Utility.nextApplicableWeekDay(enrollmentDateTime, Arrays.asList(applicableDays)).minusDays(startOffset).toLocalDate();
+    private LocalDate getReferenceDate(DateTime enrollmentDateTime, DayOfWeek applicableDays) {
+        return Utility.nextApplicableWeekDay(enrollmentDateTime, Arrays.asList(applicableDays)).toLocalDate();
     }
 
     public void unRegister(String patientId) {

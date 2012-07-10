@@ -47,8 +47,8 @@ public class MobileMidwifeMessageSeed extends Seed {
 
     private void savePropertiesToCMS(Properties properties, Language language) throws CMSLiteException {
 
-        RepeatingCampaignMessage pregnancyCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(MobileMidwifeCampaign.getName(PREGNANCY,Medium.SMS), PREGNANCY.getServiceName(Medium.SMS));
-        RepeatingCampaignMessage childCareCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(MobileMidwifeCampaign.getName(CHILD_CARE,Medium.SMS), CHILD_CARE.getServiceName(Medium.SMS));
+        RepeatingCampaignMessage pregnancyCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(MobileMidwifeCampaign.getName(PREGNANCY, Medium.SMS), PREGNANCY.getServiceName(Medium.SMS));
+        RepeatingCampaignMessage childCareCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(MobileMidwifeCampaign.getName(CHILD_CARE, Medium.SMS), CHILD_CARE.getServiceName(Medium.SMS));
         Map<String, String> pregnancyDayMap = createDayMap(pregnancyCampaignMessage);
         Map<String, String> childCareDayMap = createDayMap(childCareCampaignMessage);
 
@@ -64,7 +64,9 @@ public class MobileMidwifeMessageSeed extends Seed {
             } else if (tokens[0].equals(CHILD_CARE.name())) {
                 messageContentKey = keyStr.replace(weekDay, childCareDayMap.get(weekDay));
             }
-            cmsLiteService.addContent(new StringContent(language.name(), messageContentKey, value));
+            if (!cmsLiteService.isStringContentAvailable(messageContentKey, language.name())) {
+                cmsLiteService.addContent(new StringContent(language.name(), messageContentKey, value));
+            }
         }
     }
 

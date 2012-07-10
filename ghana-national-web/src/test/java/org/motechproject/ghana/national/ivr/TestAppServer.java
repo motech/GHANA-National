@@ -54,14 +54,6 @@ public class TestAppServer {
         return contextURL() + path;
     }
 
-    public void join(){
-        try {
-            applicationServer.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
-
     public String clipPath(String prompt, String language) {
         return path("/resource/stream/" + language + "/" + prompt);
     }

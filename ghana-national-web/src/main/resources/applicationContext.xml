@@ -8,8 +8,8 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     <context:property-placeholder location="classpath*:*.properties" ignore-unresolvable="true"/>
-    <beans:import resource="classpath*:applicationContext-xforms.xml"/>
     <beans:import resource="classpath*:applicationContext-core.xml"/>
+    <beans:import resource="classpath*:applicationContext-xforms.xml"/>
     <beans:import resource="classpath*:applicationContext-security.xml"/>
     <beans:import resource="classpath*:applicationContext-idgen-omod.xml"/>
     <context:annotation-config/>
