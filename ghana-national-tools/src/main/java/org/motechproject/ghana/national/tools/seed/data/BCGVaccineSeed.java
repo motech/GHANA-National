@@ -30,6 +30,6 @@ public class BCGVaccineSeed extends ScheduleMigrationSeed {
     }
 
     protected String mapMilestoneName(String milestoneName) {
-        return milestoneName.replace("BCG", "Default");
+        return milestoneName;
     }
 }

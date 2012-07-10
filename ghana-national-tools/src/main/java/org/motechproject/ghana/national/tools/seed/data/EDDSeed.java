@@ -26,7 +26,7 @@ public class EDDSeed extends ScheduleMigrationSeed {
 
     @Override
     protected String mapMilestoneName(String milestoneName) {
-        return milestoneName.replace("EDD", "Default");
+        return "Delivery";
     }
 
     @Override
