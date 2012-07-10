@@ -11,11 +11,24 @@
         <param-value>classpath:applicationContext.xml</param-value>
     </context-param>
 
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>classpath:log4j.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>log4jRefreshInterval</param-name>
+        <param-value>30</param-value>
+    </context-param>
+
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
     </listener>
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
@@ -38,7 +51,7 @@
         <servlet-name>mobileformsDownload</servlet-name>
         <url-pattern>/formdownload</url-pattern>
     </servlet-mapping>
-     <servlet>
+    <servlet>
         <servlet-name>mobileformsUpload</servlet-name>
         <servlet-class>org.motechproject.mobileforms.api.web.FormUploadServlet</servlet-class>
     </servlet>
