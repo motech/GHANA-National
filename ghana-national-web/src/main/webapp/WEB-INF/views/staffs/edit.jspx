@@ -1,5 +1,5 @@
 <div id="body" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
-     xmlns:form="http://www.springframework.org/tags/form"
+     xmlns:form="http://www.springframework.org/tags/form" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
      xmlns:spring="http://www.springframework.org/tags" xmlns:motech="urn:jsptagdir:/WEB-INF/tags/motech">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
