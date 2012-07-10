@@ -385,7 +385,7 @@ public class StaffControllerTest {
 
         final BindingResult mockBindingResult = mock(BindingResult.class);
         final String result = controller.update(staffForm, mockBindingResult, modelMap);
-        assertThat(result, is(equalTo(StaffController.NEW_STAFF_URL)));
+        assertThat(result, is(equalTo(StaffController.EDIT_STAFF_URL)));
         verify(mockStaffService, never()).updateUser(mockMRSUser);
         final ArgumentCaptor<FieldError> captor = ArgumentCaptor.forClass(FieldError.class);
         verify(mockBindingResult).addError(captor.capture());

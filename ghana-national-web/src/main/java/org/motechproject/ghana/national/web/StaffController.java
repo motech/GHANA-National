@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.StaffType;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.web.form.StaffForm;
@@ -90,9 +91,10 @@ public class StaffController {
     public String update(@Valid StaffForm staffForm, BindingResult bindingResult, ModelMap modelMap) {
         MRSUser mrsUser = staffForm.createUser();
         if (!staffForm.getCurrentEmail().equals(staffForm.getNewEmail())
-                && staffService.getUserByEmailIdOrMotechId(staffForm.getNewEmail()) != null) {
+                && staffService.getUserByEmailIdOrMotechId(staffForm.getNewEmail()) != null
+                    && !StringUtils.isNotBlank(staffForm.getNewEmail())) {
             handleUserAlreadyExistsError(modelMap, bindingResult);
-            return NEW_STAFF_URL;
+            return EDIT_STAFF_URL;
         }
 
         Map userData = staffService.updateUser(mrsUser);
