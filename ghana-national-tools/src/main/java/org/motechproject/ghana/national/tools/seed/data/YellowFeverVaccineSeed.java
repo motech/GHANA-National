@@ -29,6 +29,6 @@ public class YellowFeverVaccineSeed extends ScheduleMigrationSeed {
     }
 
     protected String mapMilestoneName(String milestoneName) {
-        return milestoneName.replace("YellowFever", "Default");
+        return "YF";
     }
 }

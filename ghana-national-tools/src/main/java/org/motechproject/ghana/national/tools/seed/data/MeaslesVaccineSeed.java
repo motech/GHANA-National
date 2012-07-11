@@ -29,6 +29,6 @@ public class MeaslesVaccineSeed extends ScheduleMigrationSeed {
     }
 
     protected String mapMilestoneName(String milestoneName) {
-        return milestoneName.replace("Measles", "Default");
+        return milestoneName;
     }
 }

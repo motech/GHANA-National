@@ -4,8 +4,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.model.MotechBaseDataObject;
 
-import java.util.List;
-
 import static java.util.Arrays.asList;
 
 
@@ -75,8 +73,7 @@ public class StaffType extends MotechBaseDataObject {
         }
 
         public static Boolean isAdmin(String roleName) {
-            List<String> allAdmins = asList(SUPER_ADMIN.key(), FACILITY_ADMIN.key(), CALL_CENTER_ADMIN.key(), HEALTH_CARE_ADMIN.key());
-            return allAdmins.contains(roleName);
+            return asList(SUPER_ADMIN.key(), FACILITY_ADMIN.key(), CALL_CENTER_ADMIN.key(), HEALTH_CARE_ADMIN.key()).contains(roleName);
         }
 
         public String key() {

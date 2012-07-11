@@ -12,7 +12,7 @@
     <artifactId>ghana-national-common</artifactId>
     <dependencies>
         <dependency>
-            <groupId>org.motechproject</groupId>
+            <groupId>org.motechproject.ghana-national-delivery</groupId>
             <artifactId>motech-delivery-tools-web</artifactId>
             <version>0.3-SNAPSHOT</version>
             <type>war</type>
