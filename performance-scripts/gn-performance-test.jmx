@@ -20,12 +20,12 @@
           </elementProp>
           <elementProp name="no_of_test_loops" elementType="Argument">
             <stringProp name="Argument.name">no_of_test_loops</stringProp>
-            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.value">20</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="no_of_motech_ids``" elementType="Argument">
-            <stringProp name="Argument.name">no_of_motech_ids``</stringProp>
-            <stringProp name="Argument.value">10</stringProp>
+          <elementProp name="no_of_motech_ids" elementType="Argument">
+            <stringProp name="Argument.name">no_of_motech_ids</stringProp>
+            <stringProp name="Argument.value">200</stringProp>
             <stringProp name="Argument.desc">field workers * test loops</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -41,9 +41,9 @@
           </elementProp>
           <elementProp name="forms_to_be_tested" elementType="Argument">
             <stringProp name="Argument.name">forms_to_be_tested</stringProp>
-            <stringProp name="Argument.value">RegisterClient-WithANCAndMMVoice</stringProp>
+            <stringProp name="Argument.value">RegisterClient-WithANCAndMMVoice,CareHistory-ANC</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
-            <stringProp name="Argument.desc">RegisterClient-other,RegisterANC,RegisterClient-WithANCAndMMSMS,,RegisterClient-WithANCAndMMVoice,RegisterCWC,RegisterClient-WithCWCAndMM,CareHistory-ANC,ClientQuery,GeneralQuery</stringProp>
+            <stringProp name="Argument.desc">RegisterClient-other,RegisterANC,RegisterClient-WithANCAndMMSMS,RegisterClient-WithANCAndMMVoice,RegisterCWC,RegisterClient-WithCWCAndMM,CareHistory-ANC,ClientQuery,GeneralQuery</stringProp>
           </elementProp>
           <elementProp name="load_pre_printed_ids_from_file" elementType="Argument">
             <stringProp name="Argument.name">load_pre_printed_ids_from_file</stringProp>
@@ -57,7 +57,7 @@
           </elementProp>
           <elementProp name="host" elementType="Argument">
             <stringProp name="Argument.name">host</stringProp>
-            <stringProp name="Argument.value">localhost</stringProp>
+            <stringProp name="Argument.value">10.16.3.174</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="port" elementType="Argument">
@@ -82,17 +82,17 @@
           </elementProp>
           <elementProp name="temp_dir" elementType="Argument">
             <stringProp name="Argument.name">temp_dir</stringProp>
-            <stringProp name="Argument.value">c:/Users/Balaji/AppData/Local/Temp/</stringProp>
+            <stringProp name="Argument.value">/tmp</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="function_test_module_jar_loc" elementType="Argument">
             <stringProp name="Argument.name">function_test_module_jar_loc</stringProp>
-            <stringProp name="Argument.value">C:/Users/Balaji/Code/motech/ghana-national-functional-tests/target/ghana-national-regression-1.0-SNAPSHOT.jar</stringProp>
+            <stringProp name="Argument.value">/Users/arvindkumarc/Public/Projects/ghana-national-regression/target/ghana-national-regression-1.0-SNAPSHOT.jar</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="epi_handy_jar_loc" elementType="Argument">
             <stringProp name="Argument.name">epi_handy_jar_loc</stringProp>
-            <stringProp name="Argument.value">C:/Users/Balaji/Code/motech/ghana-national-functional-tests/lib/epihandy-midp.jar</stringProp>
+            <stringProp name="Argument.value">/Users/arvindkumarc/Public/Projects/ghana-national-regression/target/lib/epihandy-midp.jar</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>

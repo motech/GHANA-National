@@ -376,11 +376,12 @@ public class StaffControllerTest {
         String first = "first";
         String last = "last";
         String phoneNumber = "0123456789";
-        String role = "MMA";
+        String role = StaffType.Role.CALL_CENTER_ADMIN.key();
         String email = "";
-        StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, role, "HPO", "newemail@e.com");
+        StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, role, "HPO", "currentemail@e.com");
         ModelMap modelMap = new ModelMap();
         MRSUser mockMRSUser = mock(MRSUser.class);
+        when(mockMRSUser.getId()).thenReturn("DifferentStaffId");
         when(mockStaffService.getUserByEmailIdOrMotechId(email)).thenReturn(mockMRSUser);
 
         final BindingResult mockBindingResult = mock(BindingResult.class);
