@@ -377,7 +377,7 @@ public class StaffControllerTest {
         String last = "last";
         String phoneNumber = "0123456789";
         String role = StaffType.Role.CALL_CENTER_ADMIN.key();
-        String email = "";
+        String email = "newemail@e.com";
         StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, role, "HPO", "currentemail@e.com");
         ModelMap modelMap = new ModelMap();
         MRSUser mockMRSUser = mock(MRSUser.class);
@@ -394,6 +394,40 @@ public class StaffControllerTest {
 
         assertThat(StaffController.EMAIL, is(actualError.getField()));
         assertThat(StaffController.STAFF_FORM, is(actualError.getObjectName()));
+    }
+
+    @Test
+    public void shouldNotThrowUserAlreadyExistsExceptionWhenNewEmailIsBlank() {
+        String id = "1";
+        String staffId = "112";
+        String first = "first";
+        String last = "last";
+        String phoneNumber = "0123456789";
+        String role = StaffType.Role.CALL_CENTER_ADMIN.key();
+        String email = "";
+        StaffForm staffForm = new StaffForm(id, staffId, first, "", last, email, phoneNumber, role, "HPO", "currentemail@e.com");
+        ModelMap modelMap = new ModelMap();
+        MRSUser mockMRSUser = mock(MRSUser.class);
+        MRSPerson mockMRSPerson = mock(MRSPerson.class);
+
+        when(mockMRSUser.getPerson()).thenReturn(mockMRSPerson);
+        when(mockMRSPerson.getFirstName()).thenReturn(first);
+        when(mockMRSPerson.getMiddleName()).thenReturn("");
+        when(mockMRSPerson.getLastName()).thenReturn(last);
+        when(mockMRSUser.getId()).thenReturn("DifferentStaffId");
+        final HashMap userData = new HashMap();
+        userData.put(OpenMRSUserAdapter.USER_KEY, mockMRSUser);
+        when(mockStaffService.updateUser(Matchers.<MRSUser>any())).thenReturn(userData);
+
+        final BindingResult mockBindingResult = mock(BindingResult.class);
+        final String result = controller.update(staffForm, mockBindingResult, modelMap);
+        assertThat(result, is(equalTo(StaffController.EDIT_STAFF_URL)));
+
+        ArgumentCaptor<MRSUser> userCaptor = ArgumentCaptor.forClass(MRSUser.class);
+        verify(mockStaffService).updateUser(userCaptor.capture());
+        MRSUser value = userCaptor.getValue();
+        assertThat(value.getPerson().getFirstName(), is(mockMRSPerson.getFirstName()));
+        assertThat(value.getPerson().getLastName(), is(mockMRSPerson.getLastName()));
     }
 
     private String attrValue(List<Attribute> attributes, String key) {

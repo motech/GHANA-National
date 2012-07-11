@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 @Controller
 @RequestMapping(value = "/admin/staffs")
 public class StaffController {
@@ -89,8 +91,9 @@ public class StaffController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid StaffForm staffForm, BindingResult bindingResult, ModelMap modelMap) {
         MRSUser mrsUser = staffForm.createUser();
-        MRSUser existingStaffWithSameEmail = staffService.getUserByEmailIdOrMotechId(staffForm.getNewEmail());
-        if (existingStaffWithSameEmail != null && !existingStaffWithSameEmail.getId().equals(staffForm.getId())) {
+        if (!staffForm.getCurrentEmail().equals(staffForm.getNewEmail())
+                && isNotBlank(staffForm.getNewEmail())
+                && staffService.getUserByEmailIdOrMotechId(staffForm.getNewEmail()) != null) {
             handleUserAlreadyExistsError(modelMap, bindingResult);
             return EDIT_STAFF_URL;
         }
