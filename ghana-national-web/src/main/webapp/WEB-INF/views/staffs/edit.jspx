@@ -31,6 +31,7 @@
         <spring:message code="user_role_select" var="user_role_select" htmlEscape="false"/>
         <spring:message code="staff_phone_number_incorrect_msg" var="staff_phone_number_incorrect_msg"
                         htmlEscape="false"/>
+        <spring:message code="required_msg" var="required_msg" htmlEscape="false"/>
 
 
         <div>
@@ -64,9 +65,9 @@
                           errorMsg="${staff_phone_number_incorrect_msg}" required="true"/>
         </div>
         <div>
-            <label class="formLabel" for="user_email">${fn:escapeXml(user_email)}:</label>
-            <form:input id="newEmail" path="newEmail" size="20" label="${fn:escapeXml(user_email)}" cssClass="jsEmail"/>
-            <span id='newEmailerror' class='formlyInvalid formlyAlert hide'>
+            <label class="formLabel" for="newEmail">${fn:escapeXml(user_email)}:</label>
+            <form:input cssClass="jsEmail" path="newEmail" size="20" label="${fn:escapeXml(user_email)}"/>
+            <span id='newEmailError' class='alertText formlyInvalid formlyAlert hide'>
                 ${fn:escapeXml(user_email)} ${fn:escapeXml(required_msg)}
             </span>
         </div>

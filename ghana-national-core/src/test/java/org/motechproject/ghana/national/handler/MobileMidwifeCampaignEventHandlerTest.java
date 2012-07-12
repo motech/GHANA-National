@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.handler;
 
 import junit.framework.Assert;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,7 +84,7 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldSendUnRegisteredUserIfItIsTheLastEventForTheProgram() throws ContentNotFoundException {
+    public void shouldUnRegisteredUserIfItIsTheLastEventForChildCareProgram() throws ContentNotFoundException {
 
         String patientId = "1234568";
         Language language = Language.EN;
@@ -96,9 +95,26 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
 
         MotechEvent lastEvent = motechEvent(patientId, "CHILD_CARE_SMS", mobileMidwifeEnrollment.getEnrollmentDateTime()).setLastEvent(true);
         handler.sendProgramMessage(lastEvent);
-        ArgumentCaptor<DateTime> dateArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
         ArgumentCaptor<String> idArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        verify(mockMobileMidwifeService).rollover(idArgumentCaptor.capture(), dateArgumentCaptor.capture());
+        verify(mockMobileMidwifeService).unRegister(idArgumentCaptor.capture());
+        assertThat(idArgumentCaptor.getValue(), is(equalTo(patientId)));
+    }
+
+    @Test
+    public void shouldRolloverUserIfItIsTheLastEventForPregnancyProgram() throws ContentNotFoundException {
+
+        String patientId = "1234568";
+        Language language = Language.EN;
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now()).setPatientId(patientId)
+                .setServiceType(ServiceType.PREGNANCY).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber("9845312345").setMessageStartWeek("40");
+
+        when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
+
+        MotechEvent lastEvent = motechEvent(patientId, "PREGNANCY_SMS", mobileMidwifeEnrollment.getEnrollmentDateTime()).setLastEvent(true);
+        handler.sendProgramMessage(lastEvent);
+        ArgumentCaptor<String> idArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<DateTime> dateArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
+        verify(mockMobileMidwifeService).rollover(idArgumentCaptor.capture(),dateArgumentCaptor.capture());
         assertThat(idArgumentCaptor.getValue(), is(equalTo(patientId)));
         assertThat(dateArgumentCaptor.getValue().toLocalDate(), is(equalTo(now().toLocalDate())));
     }
