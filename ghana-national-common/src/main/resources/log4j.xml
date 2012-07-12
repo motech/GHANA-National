@@ -5,7 +5,7 @@
         <param value="logs/ghana.log" name="File"/>
         <param name="Append" value="true"/>
         <param name="MaxFileSize" value="4096KB"/>
-        <param name="maxBackupIndex" value="5"/>
+        <param name="maxBackupIndex" value="10"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param value="%d %p [%c] - %m%n" name="ConversionPattern"/>
         </layout>
@@ -14,7 +14,7 @@
         <param value="logs/ghana-migration.log" name="File"/>
         <param name="Append" value="true"/>
         <param name="MaxFileSize" value="4096KB"/>
-        <param name="maxBackupIndex" value="5"/>
+        <param name="maxBackupIndex" value="10"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param value="%d %p [%c] - %m%n" name="ConversionPattern"/>
         </layout>
@@ -28,10 +28,8 @@
             <param value="%d %p [%c] - %m%n" name="ConversionPattern"/>
         </layout>
     </appender>
+
     <logger name="org.springframework">
-        <level value="info"/>
-    </logger>
-    <logger name="org.quartz">
         <level value="info"/>
     </logger>
     <logger name="org.quartz">
@@ -47,7 +45,6 @@
     <logger name="org.motechproject">
         <level value="info"/>
     </logger>
-
     <logger name="org.motechproject.ghana.national.tools">
         <level value="info"/>
         <appender-ref ref="migrationLogfile"/>

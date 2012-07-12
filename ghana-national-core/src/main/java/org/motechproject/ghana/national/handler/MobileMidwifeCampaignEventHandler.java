@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.handler;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
@@ -11,8 +10,10 @@ import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
+import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.exception.EventHandlerException;
-import org.motechproject.ghana.national.helper.MobileMidwifeWeekCalculator;import org.motechproject.ghana.national.repository.AllPatientsOutbox;
+import org.motechproject.ghana.national.helper.MobileMidwifeWeekCalculator;
+import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.repository.IVRGateway;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
@@ -29,11 +30,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static org.joda.time.Days.daysBetween;
-import static org.joda.time.Hours.hoursBetween;
-import static org.joda.time.Minutes.minutesBetween;
 import static org.motechproject.server.messagecampaign.EventKeys.MESSAGE_CAMPAIGN_FIRED_EVENT_SUBJECT;
-import static org.motechproject.util.DateUtil.newDate;
 
 @Component
 public class MobileMidwifeCampaignEventHandler {
@@ -69,7 +66,12 @@ public class MobileMidwifeCampaignEventHandler {
 
             String messageKey = new MobileMidwifeWeekCalculator((String)params.get(EventKeys.CAMPAIGN_NAME_KEY)).getMessageKey(campaignStartDate, startWeek, repeatInterval);
 
-            if (event.isLastEvent()) mobileMidwifeService.rollover(patientId, DateUtil.now());
+            if (event.isLastEvent()) {
+                if(enrollment.getServiceType().equals(ServiceType.PREGNANCY))
+                    mobileMidwifeService.rollover(patientId, DateUtil.now());
+                else
+                    mobileMidwifeService.unRegister(patientId);
+            }
             sendMessage(enrollment, messageKey);
         } catch (Exception e) {
             logger.error("<MobileMidwifeEvent>: Encountered error while sending alert: ", e);

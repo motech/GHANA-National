@@ -63,7 +63,7 @@ public class AllObservations {
     public MRSObservation activePregnancyObservation(String motechId, Date observationDate) {
         MRSObservation activePregnancyObservation = findLatestObservation(motechId, PREGNANCY.getName());
         if (activePregnancyObservation == null) {
-            logger.warn("No active pregnancy found while checking for EDD. Patient ID :" + motechId);
+            logger.debug("No active pregnancy found while checking for EDD. Patient ID :" + motechId);
             activePregnancyObservation = new MRSObservation<Object>(observationDate, PREGNANCY.getName(), null);
         }
         return activePregnancyObservation;
