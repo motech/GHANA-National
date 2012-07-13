@@ -31,12 +31,30 @@ public class IVRInboundCallIT {
     }
 
     @Test
+    public void shouldConnectToCallCenterIfUserOptedForItWhileChoosingLanguage(){
+        String response = verboiceStub.handleIncomingCall();
+
+        String selectLanguagePrompt = fileName(AudioPrompts.LANGUAGE_PROMPT);
+        TwiML expectedActions = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(selectLanguagePrompt, "EN")))
+                .addAction(new TwiML.Gather());
+
+        verboiceStub.expect(expectedActions, response);
+        String connectionToCallCenterOption = "5";
+        response = verboiceStub.handle(response, connectionToCallCenterOption);
+
+        String callCenterPhoneNumber = "0111111111";
+        expectedActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
+
+        verboiceStub.expect(expectedActions, response);
+    }
+
+    @Test
     public void shouldHandleInboundCallForPatientWithMMRegistrationAndNoMessagesInInbox() {
         String response = verboiceStub.handleIncomingCall();
 
         String selectLanguagePrompt = fileName(AudioPrompts.LANGUAGE_PROMPT);
         TwiML expectedActions = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(selectLanguagePrompt, "EN")))
-                .addAction(new TwiML.Gather()).addAction(new TwiML.Gather()).addAction(new TwiML.Gather()).addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather());
 
         verboiceStub.expect(expectedActions, response);
         String englishLanguageChoice = "1";
@@ -44,7 +62,7 @@ public class IVRInboundCallIT {
 
         String reasonForCallPrompt = fileName(AudioPrompts.REASON_FOR_CALL_PROMPT);
         expectedActions = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(reasonForCallPrompt, "EN")))
-                .addAction(new TwiML.Gather()).addAction(new TwiML.Gather()).addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather());
         verboiceStub.expect(expectedActions, response);
 
         String listenMessagesChoice = "1";
@@ -149,7 +167,7 @@ public class IVRInboundCallIT {
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.ANC_DUE), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(0)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(0)), "EN")))
-                .addAction(new TwiML.Gather()).addAction(new TwiML.Gather()).addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather());
 
         verboiceStub.expect(expectedActions, response);
 
@@ -160,7 +178,7 @@ public class IVRInboundCallIT {
         expectedActions = new TwiML()
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(0)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(0)), "EN")))
-                .addAction(new TwiML.Gather()).addAction(new TwiML.Gather()).addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather());
 
         verboiceStub.expect(expectedActions, repeatResponse);
 
@@ -172,7 +190,7 @@ public class IVRInboundCallIT {
         expectedActions = new TwiML()
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(1)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(1)), "EN")))
-                .addAction(new TwiML.Gather()).addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather());
 
         verboiceStub.expect(expectedActions, secondMessageResponse);
 
@@ -183,7 +201,7 @@ public class IVRInboundCallIT {
         expectedActions = new TwiML()
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(1)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(1)), "EN")))
-                .addAction(new TwiML.Gather()).addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather());
 
         verboiceStub.expect(expectedActions, secondMessageRepeatResponse);
 
@@ -195,7 +213,7 @@ public class IVRInboundCallIT {
         expectedActions = new TwiML()
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(2)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(2)), "EN")))
-                .addAction(new TwiML.Gather()).addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather());
 
         verboiceStub.expect(expectedActions, thirdMessageResponse);
 
@@ -207,7 +225,7 @@ public class IVRInboundCallIT {
         expectedActions = new TwiML()
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(2)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(2)), "EN")))
-                .addAction(new TwiML.Gather()).addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather());
 
         verboiceStub.expect(expectedActions, thirdMessageRepeatResponse);
 
@@ -219,7 +237,7 @@ public class IVRInboundCallIT {
         expectedActions = new TwiML()
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(1)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(1)), "EN")))
-                .addAction(new TwiML.Gather()).addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather());
 
         verboiceStub.expect(expectedActions, secondMessageResponse);
 
@@ -230,7 +248,7 @@ public class IVRInboundCallIT {
         expectedActions = new TwiML()
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(2)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(2)), "EN")))
-                .addAction(new TwiML.Gather()).addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather());
 
         verboiceStub.expect(expectedActions, response);
     }

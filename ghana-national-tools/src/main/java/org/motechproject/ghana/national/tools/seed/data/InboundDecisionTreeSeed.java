@@ -8,6 +8,7 @@ import org.motechproject.ghana.national.domain.ivr.ValidateMotechIdTransition;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -18,6 +19,9 @@ import static org.motechproject.ghana.national.domain.mobilemidwife.Language.*;
 
 @Component
 public class InboundDecisionTreeSeed extends Seed {
+    @Value("#{ghanaNationalProperties['callcenter.number']}")
+    private String callCenterPhoneNumber;
+
     @Autowired
     AllTrees allTrees;
     @Autowired
@@ -37,7 +41,7 @@ public class InboundDecisionTreeSeed extends Seed {
         transitions.put("2", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, KAS).setTransitions(chooseActionTransition(KAS))));
         transitions.put("3", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, NAN).setTransitions(chooseActionTransition(NAN))));
         transitions.put("4", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, FAN).setTransitions(chooseActionTransition(FAN))));
-//        transitions.put("*", customerCareTransition());
+        transitions.put("5", customerCareTransition());
         return transitions;
     }
 
@@ -46,7 +50,7 @@ public class InboundDecisionTreeSeed extends Seed {
         transitions.put("1", new Transition().setDestinationNode(prompt(MOTECH_ID_PROMPT, language).setTransitions(validateMotechIdTransition(language))));
         transitions.put("0", customerCareTransition());
         transitions.put("2", customerCareTransition());
-//        transitions.put("*", customerCareTransition());
+        transitions.put("*", customerCareTransition());
         return transitions;
     }
 
@@ -63,7 +67,9 @@ public class InboundDecisionTreeSeed extends Seed {
 
 
     private Transition customerCareTransition() {
-        return new Transition().setDestinationNode(new Node().addPrompts(new TextToSpeechPrompt().setMessage("Redirecting to Customer Care")));
+        DialPrompt callCenterDialPrompt = new DialPrompt(callCenterPhoneNumber);
+        callCenterDialPrompt.setCallerId(callCenterPhoneNumber);
+        return new Transition().setDestinationNode(new Node().addPrompts(callCenterDialPrompt));
     }
 
     private AudioPrompt audioPromptFor(AudioPrompts prompt, Language language) {
