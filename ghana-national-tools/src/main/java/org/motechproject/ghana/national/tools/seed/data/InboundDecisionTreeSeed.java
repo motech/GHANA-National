@@ -4,6 +4,7 @@ import org.motechproject.decisiontree.model.*;
 import org.motechproject.decisiontree.repository.AllTrees;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
+import org.motechproject.ghana.national.domain.ivr.ConnectToCallCenterTransition;
 import org.motechproject.ghana.national.domain.ivr.ValidateMotechIdTransition;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.tools.seed.Seed;
@@ -21,6 +22,8 @@ import static org.motechproject.ghana.national.domain.mobilemidwife.Language.*;
 public class InboundDecisionTreeSeed extends Seed {
     @Value("#{ghanaNationalProperties['callcenter.number']}")
     private String callCenterPhoneNumber;
+
+    private ConnectToCallCenterTransition connectToCallCenterTransition = new ConnectToCallCenterTransition();
 
     @Autowired
     AllTrees allTrees;
@@ -41,16 +44,16 @@ public class InboundDecisionTreeSeed extends Seed {
         transitions.put("2", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, KAS).setTransitions(chooseActionTransition(KAS))));
         transitions.put("3", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, NAN).setTransitions(chooseActionTransition(NAN))));
         transitions.put("4", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, FAN).setTransitions(chooseActionTransition(FAN))));
-        transitions.put("5", customerCareTransition());
+        transitions.put("*", connectToCallCenterTransition.get(callCenterPhoneNumber));
         return transitions;
     }
 
     private Map<String, ITransition> chooseActionTransition(Language language) {
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
         transitions.put("1", new Transition().setDestinationNode(prompt(MOTECH_ID_PROMPT, language).setTransitions(validateMotechIdTransition(language))));
-        transitions.put("0", customerCareTransition());
-        transitions.put("2", customerCareTransition());
-        transitions.put("*", customerCareTransition());
+        transitions.put("0", connectToCallCenterTransition.get(callCenterPhoneNumber));
+        transitions.put("2", connectToCallCenterTransition.get(callCenterPhoneNumber));
+        transitions.put("*", connectToCallCenterTransition.get(callCenterPhoneNumber));
         return transitions;
     }
 
@@ -65,12 +68,6 @@ public class InboundDecisionTreeSeed extends Seed {
         return new Node().addPrompts(audioPromptFor(clipName, language));
     }
 
-
-    private Transition customerCareTransition() {
-        DialPrompt callCenterDialPrompt = new DialPrompt(callCenterPhoneNumber);
-        callCenterDialPrompt.setCallerId(callCenterPhoneNumber);
-        return new Transition().setDestinationNode(new Node().addPrompts(callCenterDialPrompt));
-    }
 
     private AudioPrompt audioPromptFor(AudioPrompts prompt, Language language) {
         return new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(prompt.value(), language));

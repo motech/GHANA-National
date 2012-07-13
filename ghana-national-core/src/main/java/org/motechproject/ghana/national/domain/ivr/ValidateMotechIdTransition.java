@@ -12,29 +12,35 @@ import org.motechproject.ghana.national.service.ExecuteAsOpenMRSAdmin;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import static org.motechproject.ghana.national.domain.ivr.AudioPrompts.INVALID_MOTECH_ID_PROMPT;
 import static org.motechproject.ghana.national.domain.mobilemidwife.Language.valueOf;
 
 public class ValidateMotechIdTransition extends Transition {
 
+    @Value("#{ghanaNationalProperties['callcenter.number']}")
+    private String callCenterPhoneNumber;
+
     @JsonProperty
     String language;
 
     @Autowired
-    PlayMessagesFromOutboxTree playMessagesFromOutboxTree;
+    private PlayMessagesFromOutboxTree playMessagesFromOutboxTree;
 
     @Autowired
-    ExecuteAsOpenMRSAdmin executeAsOpenMRSAdmin;
+    private ExecuteAsOpenMRSAdmin executeAsOpenMRSAdmin;
 
     @Autowired
-    PatientService patientService;
+    private PatientService patientService;
 
     @Autowired
-    IVRClipManager ivrClipManager;
+    private IVRClipManager ivrClipManager;
 
     @Autowired
-    MobileMidwifeService mobileMidwifeService;
+    private MobileMidwifeService mobileMidwifeService;
+
+    private ConnectToCallCenterTransition connectToCallCenterTransition = new ConnectToCallCenterTransition();
 
     @JsonProperty
     int pendingRetries;
@@ -71,8 +77,11 @@ public class ValidateMotechIdTransition extends Transition {
     private Node invalidMotechIdTransition() {
         String invalidMotechIdPromptURL = ivrClipManager.urlFor(INVALID_MOTECH_ID_PROMPT.value(), valueOf(language));
         Node node = new Node().addPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));
-        if (pendingRetries != 0)
+        if (pendingRetries != 0){
+            node.addTransition("0", connectToCallCenterTransition.get(callCenterPhoneNumber));
+            node.addTransition("*", connectToCallCenterTransition.get(callCenterPhoneNumber));
             node.addTransition("?", new ValidateMotechIdTransition(language, pendingRetries - 1));
+        }
         return node;
     }
 

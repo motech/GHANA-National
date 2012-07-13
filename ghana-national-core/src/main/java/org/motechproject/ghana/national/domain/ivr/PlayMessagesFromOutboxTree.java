@@ -79,6 +79,10 @@ public class PlayMessagesFromOutboxTree {
         rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingClips.get(0), valueOf(language))))
                 .addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingPrompts.get(0), valueOf(language))))
                 .setTransitions(transitions);
+        if (pendingClips.size() == 1)
+            rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(AudioPrompts.GHS.value(), valueOf(language))));
+
+
 
         for (Prompt prompt : rootNode.getPrompts()) {
             node.addPrompts(prompt);
