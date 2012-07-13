@@ -25,11 +25,19 @@ $(document).ready(function() {
         $('.jsHideMale').hide();
     };
 
+    var validateMotherMotechId = function() {
+        if($('#parentId').val()==$('#motechId').val()){
+            $("#motherIdError").removeClass('hide');
+            return false;
+        }
+    }
+
     var validate = function(form) {
         formValidator.clearMessages(form);
         formValidator.validateRequiredFields(form);
         formValidator.validateDate(form);
         formValidator.validateDateBefore(form);
+        validateMotherMotechId();
         formValidator.validatePhoneNumbers(form);
         return formValidator.hasErrors(form);
     };

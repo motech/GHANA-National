@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.StaffType;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.web.form.StaffForm;
@@ -24,8 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 @Controller
 @RequestMapping(value = "/admin/staffs")
@@ -92,8 +91,8 @@ public class StaffController {
     public String update(@Valid StaffForm staffForm, BindingResult bindingResult, ModelMap modelMap) {
         MRSUser mrsUser = staffForm.createUser();
         if (!staffForm.getCurrentEmail().equals(staffForm.getNewEmail())
-                && isNotBlank(staffForm.getNewEmail())
-                && staffService.getUserByEmailIdOrMotechId(staffForm.getNewEmail()) != null) {
+                && staffService.getUserByEmailIdOrMotechId(staffForm.getNewEmail()) != null
+                    && StringUtils.isNotBlank(staffForm.getNewEmail())) {
             handleUserAlreadyExistsError(modelMap, bindingResult);
             return EDIT_STAFF_URL;
         }

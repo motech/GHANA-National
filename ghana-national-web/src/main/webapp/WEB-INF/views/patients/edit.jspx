@@ -79,6 +79,8 @@
 <spring:message code="incorrect_msg" var="incorrect_msg" htmlEscape="false"/>
 <spring:message code="phone_number_incorrect_msg" var="phone_number_incorrect_msg"
                 htmlEscape="false"/>
+    <spring:message code="mother_id_incorrect_msg" var="mother_id_incorrect_msg"
+                htmlEscape="false"/>
 <spring:message code="patient_phone_number" var="patient_phone_number" htmlEscape="false"/>
 
 <div>
@@ -124,9 +126,12 @@
     <div class="form-field hide">
         <label class="formLabel" for="parentId">${fn:escapeXml(patient_mothers_motech_id)}:</label>
         <form:input path="parentId" size="20" label="${fn:escapeXml(patient_mothers_motech_id)}"/>
-            <span id='parentIdError' class='alertText formlyInvalid formlyAlert hide'>
-                ${fn:escapeXml(patient_mothers_motech_id)} ${fn:escapeXml(required_msg)}
-            </span>
+        <span id='parentIdError' class='alertText formlyInvalid formlyAlert hide'>
+            ${fn:escapeXml(patient_mothers_motech_id)} ${fn:escapeXml(required_msg)}
+        </span>
+        <span id='motherIdError' class='alertText formlyInvalid formlyAlert hide'>
+            ${fn:escapeXml(mother_id_incorrect_msg)}
+        </span>
     </div>
 
     <div class="form-field">

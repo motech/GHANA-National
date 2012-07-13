@@ -10,6 +10,7 @@ import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
+import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.exception.EventHandlerException;
 import org.motechproject.ghana.national.helper.MobileMidwifeWeekCalculator;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
@@ -68,7 +69,12 @@ public class MobileMidwifeCampaignEventHandler {
             String campaignName=((String) params.get(EventKeys.CAMPAIGN_NAME_KEY));
             String messageKey = mobileMidwifeWeekCalculator.getMessageKey(campaignName,campaignStartDate, startWeek, repeatInterval);
 
-            if (mobileMidwifeWeekCalculator.hasProgramEnded(campaignName,messageKey)) mobileMidwifeService.rollover(patientId, DateUtil.now());
+            if (mobileMidwifeWeekCalculator.hasProgramEnded(campaignName,messageKey)) {
+                if(enrollment.getServiceType().equals(ServiceType.PREGNANCY))
+                    mobileMidwifeService.rollover(patientId, DateUtil.now());
+                else
+                    mobileMidwifeService.unRegister(patientId);
+            }
             sendMessage(enrollment, messageKey);
         } catch (Exception e) {
             logger.error("<MobileMidwifeEvent>: Encountered error while sending alert: ", e);

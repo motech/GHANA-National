@@ -132,7 +132,7 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
         if (StringUtils.isEmpty(facilityId)) {
             return null;
         }
-        ViewQuery viewQuery = createQuery("find_by_motech_facility_id").key(facilityId).includeDocs(true);
+        ViewQuery viewQuery = createQuery("find_by_motech_facility_id").key(facilityId).includeDocs(true).cacheOk(true);
         List<Facility> facilities = db.queryView(viewQuery, Facility.class);
         return CollectionUtils.isEmpty(facilities) ? null : facilities.get(0);
     }
