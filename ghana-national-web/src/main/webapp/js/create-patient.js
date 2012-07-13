@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
     $('#dateOfBirth').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
-    $('#nhisExpirationDate').datepicker({dateFormat: "dd/mm/yy", buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:2100', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
+    $('#nhisExpirationDate').datepicker({dateFormat: "dd/mm/yy", minDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:2100', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#registrationMode').change(function() {
         ($(this).val() == 'USE_PREPRINTED_ID') ? $('#motechId').parent().show() : $('#motechId').parent().hide();
     });
