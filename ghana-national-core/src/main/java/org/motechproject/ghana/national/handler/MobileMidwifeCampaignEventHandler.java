@@ -51,6 +51,8 @@ public class MobileMidwifeCampaignEventHandler {
     private IVRCallbackUrlBuilder ivrCallbackUrlBuilder;
     @Autowired
     private RetryService retryService;
+    @Autowired
+    private MobileMidwifeWeekCalculator mobileMidwifeWeekCalculator;
 
 
     @MotechListener(subjects = {MESSAGE_CAMPAIGN_FIRED_EVENT_SUBJECT})
@@ -64,9 +66,10 @@ public class MobileMidwifeCampaignEventHandler {
             MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(patientId);
             Integer startWeek = Integer.parseInt(enrollment.messageStartWeekSpecificToServiceType());
 
-            String messageKey = new MobileMidwifeWeekCalculator((String)params.get(EventKeys.CAMPAIGN_NAME_KEY)).getMessageKey(campaignStartDate, startWeek, repeatInterval);
+            String campaignName=((String) params.get(EventKeys.CAMPAIGN_NAME_KEY));
+            String messageKey = mobileMidwifeWeekCalculator.getMessageKey(campaignName,campaignStartDate, startWeek, repeatInterval);
 
-            if (event.isLastEvent()) {
+            if (mobileMidwifeWeekCalculator.hasProgramEnded(campaignName,messageKey)) {
                 if(enrollment.getServiceType().equals(ServiceType.PREGNANCY))
                     mobileMidwifeService.rollover(patientId, DateUtil.now());
                 else

@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
+import org.apache.log4j.Logger;
 import org.motechproject.ghana.national.bean.*;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.mobileforms.api.domain.FormBean;
@@ -66,9 +67,12 @@ public class MobileFormHandler implements FormPublishHandler {
     @Autowired
     private TTVisitFormHandler ttVisitFormHandler;
 
+    private static final Logger log = Logger.getLogger(MobileFormHandler.class);
+
     @Override
     @MotechListener(subjects = "handle.valid.xforms.group")
     public void handleFormEvent(MotechEvent event) {
+        log.debug("Received event to group handler" + event);
         FormBeanGroup formBeanGroup = (FormBeanGroup) event.getParameters().get("formBeanGroup");
         for (FormBean formBean : formBeanGroup.getFormBeans()) {
             if (formBean instanceof RegisterClientForm)
