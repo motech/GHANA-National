@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.handler;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
@@ -12,7 +11,8 @@ import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
 import org.motechproject.ghana.national.exception.EventHandlerException;
-import org.motechproject.ghana.national.helper.MobileMidwifeWeekCalculator;import org.motechproject.ghana.national.repository.AllPatientsOutbox;
+import org.motechproject.ghana.national.helper.MobileMidwifeWeekCalculator;
+import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.repository.IVRGateway;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
@@ -29,11 +29,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static org.joda.time.Days.daysBetween;
-import static org.joda.time.Hours.hoursBetween;
-import static org.joda.time.Minutes.minutesBetween;
 import static org.motechproject.server.messagecampaign.EventKeys.MESSAGE_CAMPAIGN_FIRED_EVENT_SUBJECT;
-import static org.motechproject.util.DateUtil.newDate;
 
 @Component
 public class MobileMidwifeCampaignEventHandler {
@@ -54,6 +50,8 @@ public class MobileMidwifeCampaignEventHandler {
     private IVRCallbackUrlBuilder ivrCallbackUrlBuilder;
     @Autowired
     private RetryService retryService;
+    @Autowired
+    private MobileMidwifeWeekCalculator mobileMidwifeWeekCalculator;
 
 
     @MotechListener(subjects = {MESSAGE_CAMPAIGN_FIRED_EVENT_SUBJECT})
@@ -67,9 +65,10 @@ public class MobileMidwifeCampaignEventHandler {
             MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(patientId);
             Integer startWeek = Integer.parseInt(enrollment.messageStartWeekSpecificToServiceType());
 
-            String messageKey = new MobileMidwifeWeekCalculator((String)params.get(EventKeys.CAMPAIGN_NAME_KEY)).getMessageKey(campaignStartDate, startWeek, repeatInterval);
+            String campaignName=((String) params.get(EventKeys.CAMPAIGN_NAME_KEY));
+            String messageKey = mobileMidwifeWeekCalculator.getMessageKey(campaignName,campaignStartDate, startWeek, repeatInterval);
 
-            if (event.isLastEvent()) mobileMidwifeService.rollover(patientId, DateUtil.now());
+            if (mobileMidwifeWeekCalculator.hasProgramEnded(campaignName,messageKey)) mobileMidwifeService.rollover(patientId, DateUtil.now());
             sendMessage(enrollment, messageKey);
         } catch (Exception e) {
             logger.error("<MobileMidwifeEvent>: Encountered error while sending alert: ", e);
