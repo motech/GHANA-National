@@ -43,11 +43,17 @@
         <appender-ref ref="passwordLog"/>
     </logger>
     <logger name="org.motechproject">
-        <level value="info"/>
+        <level value="warn"/>
     </logger>
     <logger name="org.motechproject.ghana.national.tools">
         <level value="info"/>
         <appender-ref ref="migrationLogfile"/>
+    </logger>
+    <logger name="metrics">
+	<level value="warn"/>
+    </logger>
+    <logger name="org.openmrs.api">
+	<level value="warn"/>
     </logger>
 
     <root>
