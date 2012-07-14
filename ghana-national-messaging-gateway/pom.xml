@@ -66,7 +66,6 @@
                         <configuration>
                             <files>
                                 <file>${project.parent.relativePath}/../build/maven.properties</file>
-                                <file>${project.parent.relativePath}/../ghana-national-common/src/main/resources/aggregator.properties</file>
                             </files>
                         </configuration>
                     </execution>
@@ -78,29 +77,6 @@
                 <version>1.7</version>
                 <executions>
                     <execution>
-                        <id>drop-aggregation-schema</id>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <target>
-                                <echo message="Dropping Aggregator database"/>
-                                <path id="dependencies">
-                                    <fileset file="../build/lib/mysql-connector-java-5.1.13.jar"/>
-                                </path>
-                                <sql driver="${mysql.driver}"
-                                     url="jdbc:mysql://${mysql.server}:${mysql.port}?autoReconnect=true"
-                                     userid="${mysql.user}"
-                                     classpathref="dependencies"
-                                     password="${mysql.password}"
-                                     onerror="continue">
-                                    drop database ${aggregator.database};
-                                </sql>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
                         <id>setup-aggregation-schema</id>
                         <phase>process-resources</phase>
                         <configuration>
@@ -111,6 +87,14 @@
                                 </path>
                                 <sql driver="${mysql.driver}"
                                      url="jdbc:mysql://${mysql.server}:${mysql.port}?autoReconnect=true"
+                                     userid="${mysql.user}"
+                                     classpathref="dependencies"
+                                     password="${mysql.password}">
+                                    drop database if exists ${aggregator.db};
+                                    create database ${aggregator.db};
+                                </sql>
+                                <sql driver="${mysql.driver}"
+                                     url="jdbc:mysql://${mysql.server}:${mysql.port}/${aggregator.db}?autoReconnect=true"
                                      userid="${mysql.user}"
                                      classpathref="dependencies"
                                      password="${mysql.password}"
