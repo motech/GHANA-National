@@ -29,11 +29,14 @@ public class TwiML {
         NodeList actionNodes = responseNode.getChildNodes();
         for (int i = 0; i < actionNodes.getLength(); i++) {
             Node actionNode = actionNodes.item(i);
+            NamedNodeMap attributes = actionNode.getAttributes();
+
             if ("Play".equals(actionNode.getNodeName())) {
                 actions.add(new Play(actionNode.getTextContent()));
             } else if ("Gather".equals(actionNode.getNodeName())) {
-                NamedNodeMap attributes = actionNode.getAttributes();
                 actions.add(new Gather(attributes.getNamedItem("action").getTextContent()));
+            } else if ("Dial".equals(actionNode.getNodeName())) {
+                actions.add(new Dial(actionNode.getTextContent(), attributes.getNamedItem("callerId").getTextContent()));
             }
         }
     }
@@ -80,6 +83,56 @@ public class TwiML {
     }
 
     public static interface Action {
+    }
+
+    public static class Dial implements Action {
+        private String phoneNumber;
+
+        private String callerId;
+
+        public Dial() {
+        }
+
+        public Dial(String phoneNumber, String callerId) {
+            this.phoneNumber = phoneNumber;
+            this.callerId = callerId;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public String getCallerId() {
+            return callerId;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Dial dial = (Dial) o;
+
+            if (callerId != null ? !callerId.equals(dial.callerId) : dial.callerId != null) return false;
+            if (phoneNumber != null ? !phoneNumber.equals(dial.phoneNumber) : dial.phoneNumber != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = phoneNumber != null ? phoneNumber.hashCode() : 0;
+            result = 31 * result + (callerId != null ? callerId.hashCode() : 0);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "Dial{" +
+                    "phoneNumber='" + phoneNumber + '\'' +
+                    ", callerId='" + callerId + '\'' +
+                    '}';
+        }
     }
 
     public static class Gather implements Action {

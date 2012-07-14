@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
     $('#dateOfBirth').datepicker({dateFormat: "dd/mm/yy", maxDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
-    $('#nhisExpirationDate').datepicker({dateFormat: "dd/mm/yy", buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:2100', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
+    $('#nhisExpirationDate').datepicker({dateFormat: "dd/mm/yy", minDate: 0, buttonImageOnly: true, changeYear: true, changeMonth: true, yearRange: '1900:2100', buttonImage: '../../resources/images/calendar.gif', showOn: 'both'});
     $('#registrationMode').change(function() {
         ($(this).val() == 'USE_PREPRINTED_ID') ? $('#motechId').parent().show() : $('#motechId').parent().hide();
     });
@@ -25,11 +25,19 @@ $(document).ready(function() {
         $('.jsHideMale').hide();
     };
 
+    var validateMotherMotechId = function() {
+        if($('#parentId').val()==$('#motechId').val()){
+            $("#motherIdError").removeClass('hide');
+            return false;
+        }
+    }
+
     var validate = function(form) {
         formValidator.clearMessages(form);
         formValidator.validateRequiredFields(form);
         formValidator.validateDate(form);
         formValidator.validateDateBefore(form);
+        validateMotherMotechId();
         formValidator.validatePhoneNumbers(form);
         return formValidator.hasErrors(form);
     };
