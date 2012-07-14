@@ -265,7 +265,7 @@
                                      userid="${mysql.user}"
                                      classpathref="dependencies"
                                      password="${mysql.password}"
-                                     src="../build/sql/tables_mysql_innodb.sql"/>
+                                     src="../build/sql/quartz_database_setup.sql"/>
                                 <echo message="Quartz schema loading: END"/>
                             </target>
                         </configuration>
