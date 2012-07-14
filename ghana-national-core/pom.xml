@@ -338,20 +338,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*.properties</exclude>
-                        <exclude>**/*.omod</exclude>
-                        <exclude>**/*.json</exclude>
-                        <exclude>**/*.vm</exclude>
-                        <exclude>xforms/**/*.xml</exclude>
-                        <exclude>log4j.xml</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 </project>

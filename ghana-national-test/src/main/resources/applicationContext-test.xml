@@ -24,7 +24,7 @@
     </bean>
     <bean id="couchDbConnector" class="org.ektorp.impl.StdCouchDbConnector">
         <constructor-arg ref="couchDbInstance"/>
-        <constructor-arg value="ghana-national"/>
+        <constructor-arg value="${document.name}"/>
     </bean>
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
