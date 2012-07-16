@@ -40,7 +40,7 @@ public class ValidateMotechIdTransition extends Transition {
     @Autowired
     private MobileMidwifeService mobileMidwifeService;
 
-    private ConnectToCallCenterTransition connectToCallCenterTransition = new ConnectToCallCenterTransition();
+    private ConnectToCallCenter connectToCallCenter = new ConnectToCallCenter();
 
     @JsonProperty
     int pendingRetries;
@@ -76,10 +76,12 @@ public class ValidateMotechIdTransition extends Transition {
 
     private Node invalidMotechIdTransition() {
         String invalidMotechIdPromptURL = ivrClipManager.urlFor(INVALID_MOTECH_ID_PROMPT.value(), valueOf(language));
-        Node node = new Node().addPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));
+        Node node = new Node();
         if (pendingRetries != 0){
-            node.addTransition("0", connectToCallCenterTransition.get(callCenterPhoneNumber));
-            node.addTransition("*", connectToCallCenterTransition.get(callCenterPhoneNumber));
+            node.addTransitionPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));
+            node.addTransition("0", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
+            node.addTransition("*", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
+            node.addTransition("timeout", new Transition().setDestinationNode(connectToCallCenter.getAsNode(callCenterPhoneNumber)));
             node.addTransition("?", new ValidateMotechIdTransition(language, pendingRetries - 1));
         }
         return node;

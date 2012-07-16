@@ -4,7 +4,7 @@ import org.motechproject.decisiontree.model.*;
 import org.motechproject.decisiontree.repository.AllTrees;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
-import org.motechproject.ghana.national.domain.ivr.ConnectToCallCenterTransition;
+import org.motechproject.ghana.national.domain.ivr.ConnectToCallCenter;
 import org.motechproject.ghana.national.domain.ivr.ValidateMotechIdTransition;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.tools.seed.Seed;
@@ -23,7 +23,7 @@ public class InboundDecisionTreeSeed extends Seed {
     @Value("#{ghanaNationalProperties['callcenter.number']}")
     private String callCenterPhoneNumber;
 
-    private ConnectToCallCenterTransition connectToCallCenterTransition = new ConnectToCallCenterTransition();
+    private ConnectToCallCenter connectToCallCenter = new ConnectToCallCenter();
 
     @Autowired
     AllTrees allTrees;
@@ -34,38 +34,52 @@ public class InboundDecisionTreeSeed extends Seed {
     protected void load() {
         Tree tree = new Tree();
         tree.setName("InboundDecisionTree");
-        tree.setRootNode(prompt(LANGUAGE_PROMPT, EN).setTransitions(chooseLanguageTransitions()));
+        tree.setRootNode(chooseLanguageNodeWithRetry());
         allTrees.addOrReplace(tree);
     }
 
-    private Map<String, ITransition> chooseLanguageTransitions() {
-        Map<String, ITransition> transitions = new HashMap<String, ITransition>();
-        transitions.put("1", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, EN).setTransitions(chooseActionTransition(EN))));
-        transitions.put("2", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, KAS).setTransitions(chooseActionTransition(KAS))));
-        transitions.put("3", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, NAN).setTransitions(chooseActionTransition(NAN))));
-        transitions.put("4", new Transition().setDestinationNode(prompt(REASON_FOR_CALL_PROMPT, FAN).setTransitions(chooseActionTransition(FAN))));
-        transitions.put("*", connectToCallCenterTransition.get(callCenterPhoneNumber));
-        return transitions;
+    private Node chooseLanguageNodeWithRetry(){
+        Node chooseLanguageFirstChance = chooseLanguageNode();
+        Node chooseLanguageSecondChance = chooseLanguageNode();
+        chooseLanguageSecondChance.getTransitions().put("timeout", new Transition().setDestinationNode(connectToCallCenter.getAsNode(callCenterPhoneNumber)));
+        chooseLanguageFirstChance.getTransitions().put("timeout", new Transition().setDestinationNode(chooseLanguageSecondChance));
+        return chooseLanguageFirstChance;
     }
 
-    private Map<String, ITransition> chooseActionTransition(Language language) {
+    private Node chooseLanguageNode() {
+        Node node = prompt(LANGUAGE_PROMPT, EN);
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
-        transitions.put("1", new Transition().setDestinationNode(prompt(MOTECH_ID_PROMPT, language).setTransitions(validateMotechIdTransition(language))));
-        transitions.put("0", connectToCallCenterTransition.get(callCenterPhoneNumber));
-        transitions.put("2", connectToCallCenterTransition.get(callCenterPhoneNumber));
-        transitions.put("*", connectToCallCenterTransition.get(callCenterPhoneNumber));
-        return transitions;
+        transitions.put("1", new Transition().setDestinationNode(chooseActionNode(EN)));
+        transitions.put("2", new Transition().setDestinationNode(chooseActionNode(KAS)));
+        transitions.put("3", new Transition().setDestinationNode(chooseActionNode(NAN)));
+        transitions.put("4", new Transition().setDestinationNode(chooseActionNode(FAN)));
+        node.setTransitions(transitions);
+        return node;
     }
 
-    private Map<String, ITransition> validateMotechIdTransition(Language language) {
+    private Node chooseActionNode(Language language) {
+        Node node = prompt(REASON_FOR_CALL_PROMPT, language);
+        Map<String, ITransition> transitions = new HashMap<String, ITransition>();
+        transitions.put("1", new Transition().setDestinationNode(validateMotechIdNode(language)));
+        transitions.put("0", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
+        transitions.put("2", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
+        transitions.put("*", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
+        transitions.put("timeout", new Transition().setDestinationNode(connectToCallCenter.getAsNode(callCenterPhoneNumber)));
+        node.setTransitions(transitions);
+        return node;
+    }
+
+    private Node validateMotechIdNode(Language language) {
+        Node node = prompt(MOTECH_ID_PROMPT, language);
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
         ValidateMotechIdTransition validateMotechIdTransition = new ValidateMotechIdTransition(language.name(), 3);
         transitions.put("?", validateMotechIdTransition);
-        return transitions;
+        node.setTransitions(transitions);
+        return node;
     }
 
     private Node prompt(AudioPrompts clipName, Language language) {
-        return new Node().addPrompts(audioPromptFor(clipName, language));
+        return new Node().addTransitionPrompts(audioPromptFor(clipName, language));
     }
 
 
