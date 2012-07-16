@@ -6,7 +6,7 @@ import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.care.IPTiVaccineCare;
 import org.motechproject.ghana.national.domain.care.OPVVaccineCare;
 import org.motechproject.ghana.national.domain.care.PentaVaccineCare;
-import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
+import org.motechproject.ghana.national.domain.care.RotavirusVaccineCare;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
 import org.motechproject.ghana.national.vo.ChildCare;
@@ -25,7 +25,7 @@ import static org.motechproject.util.DateUtil.newDateTime;
 
 public class Patient {
     public static List<String> ancCarePrograms = unmodifiableList(asList(ANC_DELIVERY.getName(), ANC_IPT_VACCINE.getName(), TT_VACCINATION.getName()));
-    public static List<String> cwcCarePrograms = unmodifiableList(asList(CWC_BCG.getName(), CWC_MEASLES_VACCINE.getName(), CWC_PENTA.getName(), CWC_OPV_0.getName(),
+    public static List<String> cwcCarePrograms = unmodifiableList(asList(CWC_ROTAVIRUS.getName(),CWC_BCG.getName(), CWC_MEASLES_VACCINE.getName(), CWC_PENTA.getName(), CWC_OPV_0.getName(),
             CWC_OPV_OTHERS.getName(), CWC_IPT_VACCINE.getName(), CWC_YELLOW_FEVER.getName(), TT_VACCINATION.getName()));
     public static final List<String> pncMotherCarePrograms = unmodifiableList(PNCMotherVisit.schedules());
     public static final List<String> pncChildCarePrograms = unmodifiableList(PNCChildVisit.schedules());
@@ -94,17 +94,19 @@ public class Patient {
         return new ArrayList<String>(new HashSet<String>(union(ancCarePrograms, cwcCarePrograms)));
     }
 
-    public List<PatientCare> cwcCareProgramToEnrollOnRegistration(LocalDate enrollmentDate, List<CwcCareHistory> historiesCaptured, CWCCareHistoryVO cwcCareHistoryVO, ActiveCareSchedules activeCareSchedules, Date lastPentaDate, Date lastIPTiDate, Date lastOPVDate) {
+    public List<PatientCare> cwcCareProgramToEnrollOnRegistration(LocalDate enrollmentDate, List<CwcCareHistory> historiesCaptured, CWCCareHistoryVO cwcCareHistoryVO, ActiveCareSchedules activeCareSchedules, Date lastPentaDate, Date lastIPTiDate, Date lastOPVDate, Date lastRotavirusDate) {
         ChildCare childCare = childCare();
         LocalDate referenceDate = childCare.birthDate();
         return nullSafeList(
                 bcgChildCare(enrollmentDate, referenceDate, historiesCaptured),
                 yfChildCare(enrollmentDate, referenceDate, historiesCaptured),
                 measlesChildCare(enrollmentDate, historiesCaptured),
-                opv0ChildCare(enrollmentDate, referenceDate,cwcCareHistoryVO),
-                opv1ChildCare(enrollmentDate, referenceDate, historiesCaptured, activeCareSchedules, cwcCareHistoryVO,lastOPVDate),
+                opv0ChildCare(enrollmentDate, referenceDate, cwcCareHistoryVO),
+                opv1ChildCare(enrollmentDate, referenceDate, historiesCaptured, activeCareSchedules, cwcCareHistoryVO, lastOPVDate),
                 new PentaVaccineCare(this, enrollmentDate, activeCareSchedules.hasActivePentaSchedule(),
                         safeToString(cwcCareHistoryVO.getLastPenta()), lastPentaDate).careForReg(),
+                new RotavirusVaccineCare(this, enrollmentDate, activeCareSchedules.hasActiveRotavirusSchedule(),
+                        safeToString(cwcCareHistoryVO.getLastRotavirus()), lastRotavirusDate).careForReg(),
                 new IPTiVaccineCare(this, enrollmentDate, activeCareSchedules.hasActiveIPTiSchedule(),
                         safeToString(cwcCareHistoryVO.getLastIPTi()), lastIPTiDate).careForReg()
         );
@@ -159,6 +161,10 @@ public class Patient {
 
     public PatientCare cwcPentaPatientCareEnrollOnVisitAfter10Weeks(LocalDate visitDate) {
         return new PatientCare(CWC_PENTA.getName(), visitDate, visitDate, null, facilityMetaData());
+    }
+
+    public PatientCare cwcRotavirusPatientCareEnrollOnVisitAfter10Weeks(LocalDate visitDate) {
+        return new PatientCare(CWC_ROTAVIRUS.getName(), visitDate, visitDate, null, facilityMetaData());
     }
 
     private ChildCare childCare() {

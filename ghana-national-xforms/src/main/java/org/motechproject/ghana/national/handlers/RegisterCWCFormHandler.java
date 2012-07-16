@@ -49,6 +49,8 @@ public class RegisterCWCFormHandler{
                     registerCWCForm.getLastOPV(),
                     registerCWCForm.getLastIPTiDate(),
                     registerCWCForm.getLastIPTi(),
+                    registerCWCForm.getLastRotavirusDate(),
+                    registerCWCForm.getLastRotavirus(),
                     registerCWCForm.getSerialNumber(),
                     registerCWCForm.getAddHistory()));
 

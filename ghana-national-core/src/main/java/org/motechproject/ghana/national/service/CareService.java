@@ -58,8 +58,9 @@ public class CareService {
         Date lastPentaDate = getLastPentaDate(patient, cwcVO.getCWCCareHistoryVO());
         Date lastIPTiDate = getLastIPTiDate(patient, cwcVO.getCWCCareHistoryVO());
         Date lastOPVDate = getLastOPVDate(patient,cwcVO.getCWCCareHistoryVO());
+        Date lastRotavirusDate = getLastRotavirusDate(patient,cwcVO.getCWCCareHistoryVO());
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(newDate(cwcVO.getRegistrationDate()),
-                mergedHistories, cwcVO.getCWCCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_PENTA.getName(), CWC_IPT_VACCINE.getName(), CWC_OPV_OTHERS.getName())), lastPentaDate, lastIPTiDate, lastOPVDate);
+                mergedHistories, cwcVO.getCWCCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_ROTAVIRUS.getName(),CWC_PENTA.getName(), CWC_IPT_VACCINE.getName(), CWC_OPV_OTHERS.getName())), lastPentaDate, lastIPTiDate, lastOPVDate, lastRotavirusDate);
         patientCares.addAll(patient.pncBabyProgramsToEnrollOnRegistration());
         enrollPatientCares(patientCares, patient);
     }
@@ -78,6 +79,14 @@ public class CareService {
         if (lastOPVDate != null && nextMilestone != null)
             lastOPVDate = getEnrollmentDateForChildCareSchedules(ScheduleNames.CWC_OPV_OTHERS.getName(), lastOPVDate, nextMilestone.milestoneName(), patient.dateOfBirth().toLocalDate());
         return lastOPVDate;
+    }
+
+    private Date getLastRotavirusDate(Patient patient, CWCCareHistoryVO cwcVO) {
+        Date lastRotavirusDate = cwcVO.getLastRotavirusDate();
+        RotavirusDose nextMilestone = cwcVO.getLastRotavirus() != null ? getNextOf(RotavirusDose.byValue(cwcVO.getLastRotavirus())) : null;
+        if (lastRotavirusDate != null && nextMilestone != null)
+            lastRotavirusDate = getEnrollmentDateForChildCareSchedules(ScheduleNames.CWC_ROTAVIRUS.getName(), lastRotavirusDate, nextMilestone.milestoneName(), patient.dateOfBirth().toLocalDate());
+        return lastRotavirusDate;
     }
 
     private Date getLastIPTiDate(Patient patient, CWCCareHistoryVO cwcVO) {
@@ -265,6 +274,7 @@ public class CareService {
             addObservation(capturedHistory, CwcCareHistory.VITA_A, observations, cwcCareHistoryVO.getVitADate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(VITA.getName()));
             addObservation(capturedHistory, CwcCareHistory.MEASLES, observations, cwcCareHistoryVO.getMeaslesDate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(MEASLES.getName()));
             addObservation(capturedHistory, CwcCareHistory.YF, observations, cwcCareHistoryVO.getYfDate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(YF.getName()));
+            addObservation(capturedHistory, CwcCareHistory.ROTAVIRUS, observations, cwcCareHistoryVO.getLastRotavirusDate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(ROTAVIRUS.getName()));
             addObservation(capturedHistory, CwcCareHistory.PENTA, observations, cwcCareHistoryVO.getLastPentaDate(), PENTA.getName(), cwcCareHistoryVO.getLastPenta());
             addObservation(capturedHistory, CwcCareHistory.OPV, observations, cwcCareHistoryVO.getLastOPVDate(), OPV.getName(), cwcCareHistoryVO.getLastOPV());
             addObservation(capturedHistory, CwcCareHistory.IPTI, observations, cwcCareHistoryVO.getLastIPTiDate(), IPTI.getName(), cwcCareHistoryVO.getLastIPTi());

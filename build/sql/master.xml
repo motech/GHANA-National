@@ -14,4 +14,5 @@
     <!--<include file="../build/sql/changelog/008.create_aggregation_tables.xml"/>-->
     <include file="../build/sql/changelog/009.insert_or_update_birt_report_changes.xml"/>
     <include file="../build/sql/changelog/010.reset_idgen_for_facility.xml"/>
+    <include file="../build/sql/changelog/011.create-concept-rotavirus.xml"/>
 </databaseChangeLog>

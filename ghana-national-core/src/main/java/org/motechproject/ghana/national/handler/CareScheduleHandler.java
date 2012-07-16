@@ -53,4 +53,8 @@ public interface CareScheduleHandler {
     @LoginAsAdmin
     @ApiSession
     void handlePNCChildAlert(MilestoneEvent milestoneEvent);
+
+    @LoginAsAdmin
+    @ApiSession
+    void handleRotavirusVaccinationAlert(MilestoneEvent milestoneEvent);
 }

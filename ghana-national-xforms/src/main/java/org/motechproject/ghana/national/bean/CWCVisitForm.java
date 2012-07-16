@@ -41,6 +41,7 @@ public class CWCVisitForm extends FormBean {
     private String opvdose;
     private String pentadose;
     private String iptidose;
+    private String rotavirusdose;
     @Required
     private Double weight;
     @Required
@@ -130,6 +131,14 @@ public class CWCVisitForm extends FormBean {
 
     public void setIptidose(String iptidose) {
         this.iptidose = iptidose;
+    }
+
+    public String getRotavirusdose() {
+        return rotavirusdose;
+    }
+
+    public void setRotavirusdose(String rotavirusdose) {
+        this.rotavirusdose = rotavirusdose;
     }
 
     public Double getWeight() {

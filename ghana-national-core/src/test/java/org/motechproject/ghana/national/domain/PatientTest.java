@@ -5,8 +5,6 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
-import org.motechproject.ghana.national.service.IPTiDose;
-import org.motechproject.ghana.national.service.PentaDose;
 import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
 import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
@@ -17,9 +15,7 @@ import org.motechproject.testing.utils.BaseUnitTest;
 import java.util.*;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
@@ -44,12 +40,12 @@ public class PatientTest extends BaseUnitTest {
         Patient patient = patient(birthDay, facilityId);
 
         List<PatientCare> patientCares = patient
-                .cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(), new ArrayList<CwcCareHistory>(), noNewHistory(), new ActiveCareSchedules(), noNewHistory().getLastPentaDate(), noNewHistory().getLastIPTiDate(), null);
+                .cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(), new ArrayList<CwcCareHistory>(), noNewHistory(), new ActiveCareSchedules(), noNewHistory().getLastPentaDate(), noNewHistory().getLastIPTiDate(), null, null);
         assertThat(patientCares, hasItem(new PatientCare(CWC_IPT_VACCINE.getName(), birthDay.toLocalDate(), todayAs6June2012.toLocalDate(), null, facilityMetaData(facilityId))));
 
         birthDay = todayAs6June2012.minusWeeks(14);
         patientCares = patient(birthDay, facilityId)
-                .cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(), new ArrayList<CwcCareHistory>(), noNewHistory(), new ActiveCareSchedules(), noNewHistory().getLastPentaDate(), noNewHistory().getLastIPTiDate(), null);
+                .cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(), new ArrayList<CwcCareHistory>(), noNewHistory(), new ActiveCareSchedules(), noNewHistory().getLastPentaDate(), noNewHistory().getLastIPTiDate(), null, null);
         assertThat(patientCares, not(hasItem(new PatientCare(CWC_IPT_VACCINE.getName(), birthDay.toLocalDate(), todayAs6June2012.toLocalDate(), null, facilityMetaData(facilityId)))));
     }
 
@@ -62,13 +58,14 @@ public class PatientTest extends BaseUnitTest {
         DateTime dateOfBirthWithTime = todayAs6June2012.minusMonths(1);
         String facilityId = "fid";
         Patient patient = patient(dateOfBirthWithTime, facilityId);
-        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(), new ArrayList<CwcCareHistory>(), noNewHistory(), new ActiveCareSchedules(), noNewHistory().getLastPentaDate(), noNewHistory().getLastIPTiDate(), null);
+        List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(), new ArrayList<CwcCareHistory>(), noNewHistory(), new ActiveCareSchedules(), noNewHistory().getLastPentaDate(), noNewHistory().getLastIPTiDate(), null, noNewHistory().getLastRotavirusDate());
         HashMap<String, String> metaData = facilityMetaData(facilityId);
 
         LocalDate expectedReferenceDate = dateOfBirthWithTime.toLocalDate();
         assertPatientCares(patientCares, asList(new PatientCare(CWC_BCG.getName(), expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData),
                 new PatientCare(CWC_YELLOW_FEVER.getName(), expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData),
                 new PatientCare(CWC_PENTA.getName(), expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData),
+                new PatientCare(CWC_ROTAVIRUS.getName(), expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData),
                 new PatientCare(CWC_MEASLES_VACCINE.getName(), expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData),
                 new PatientCare(CWC_IPT_VACCINE.getName(), expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData),
                 new PatientCare(CWC_OPV_0.getName(), expectedReferenceDate, todayAs6June2012.toLocalDate(), null, metaData),
@@ -82,7 +79,7 @@ public class PatientTest extends BaseUnitTest {
         Patient patient = patient(dateOfBirth5YearBack, facilityId);
         LocalDate expectedReferenceDate = dateOfBirth5YearBack.toLocalDate();
         assertThat(patient.cwcCareProgramToEnrollOnRegistration(todayAs6June2012.toLocalDate(),
-                new ArrayList<CwcCareHistory>(), noNewHistory(), new ActiveCareSchedules(), noNewHistory().getLastPentaDate(), noNewHistory().getLastIPTiDate(), null), not(hasItem(new PatientCare(CWC_MEASLES_VACCINE.getName(), expectedReferenceDate, todayAs6June2012.toLocalDate(), null, facilityMetaData(facilityId)))));
+                new ArrayList<CwcCareHistory>(), noNewHistory(), new ActiveCareSchedules(), noNewHistory().getLastPentaDate(), noNewHistory().getLastIPTiDate(), null, null), not(hasItem(new PatientCare(CWC_MEASLES_VACCINE.getName(), expectedReferenceDate, todayAs6June2012.toLocalDate(), null, facilityMetaData(facilityId)))));
     }
 
     @Test
@@ -148,7 +145,8 @@ public class PatientTest extends BaseUnitTest {
         List<CwcCareHistory> cwcCareHistories = Arrays.asList(CwcCareHistory.PENTA);
         Date lastPentaDate = birthdate.plusWeeks(4).toDate();
         Date lastIPTiDate = birthdate.plusWeeks(10).toDate();
-        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(true, cwcCareHistories, null, null, null, null, lastPentaDate, 1, null, null, 1, lastIPTiDate);
+        //TODO:handle rotavirus when history story is played
+        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(true, cwcCareHistories, null, null, null, null, lastPentaDate, 1, null, null, 1, lastIPTiDate, null, null);
         HashMap<String, String> metaData = facilityMetaData(facilityId);
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnHistoryCapture(enrollmentDate, cwcCareHistories, cwcCareHistoryVO, new ActiveCareSchedules(), lastPentaDate,lastIPTiDate,null);
         assertThat(patientCares,hasItem(new PatientCare(CWC_PENTA.getName(),null,newDate(lastPentaDate),PentaDose.PENTA2.milestoneName(),metaData)));

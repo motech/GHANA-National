@@ -11,6 +11,7 @@
                 <immunizations/>
                 <opvdose/>
                 <pentadose/>
+                <rotavirusdose/>
                 <iptidose/>
                 <weight/>
                 <muac/>
@@ -32,6 +33,7 @@
         <xf:bind id="immunizations" nodeset="/child/immunizations" required="true()" type="xsd:string"/>
         <xf:bind action="show" id="opvdose" nodeset="/child/opvdose" relevant="/child/immunizations = 'OPV'" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="pentadose" nodeset="/child/pentadose" relevant="/child/immunizations = 'PENTA'" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="rotavirusdose" nodeset="/child/rotavirusdose" relevant="/child/immunizations = 'ROTAVIRUS'" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="iptidose" nodeset="/child/iptidose" relevant="/child/immunizations = 'IPTI'" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind constraint=". &gt;= 1 and . &lt;= 80" id="weight" required="true()" message="Value out of range: must be between 1 and 80" nodeset="/child/weight" type="xsd:decimal"/>
         <xf:bind constraint=". &gt;= 5 and . &lt;= 25" id="muac" message="Value out of range: must be between 5 and 25"  required="true()" nodeset="/child/muac" type="xsd:decimal"/>
@@ -99,6 +101,10 @@
                 <xf:label>Dewormer</xf:label>
                 <xf:value>DEWORMER</xf:value>
             </xf:item>
+            <xf:item id="10">
+                <xf:label>Rotavirus</xf:label>
+                <xf:value>ROTAVIRUS</xf:value>
+            </xf:item>
         </xf:select>
         <xf:select1 bind="opvdose">
             <xf:label>OPV</xf:label>
@@ -147,6 +153,17 @@
             <xf:item id="3">
                 <xf:label>IPTi 3</xf:label>
                 <xf:value>3</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="rotavirusdose">
+            <xf:label>Rotavirus</xf:label>
+            <xf:item id="1">
+                <xf:label>Rotavirus 1</xf:label>
+                <xf:value>1</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>Rotavirus 2</xf:label>
+                <xf:value>2</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="weight">

@@ -1,0 +1,52 @@
+{
+    "name" : "CWCRotavirus",
+    "milestones" : [
+        {
+            "name" : "Rotavirus1",
+            "scheduleWindows" : {
+                "earliest" : ["6 Weeks"],
+                "due" : ["7 Weeks"],
+                "late" : ["10 Weeks"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : ["1 Week"],
+                    "count" : "1",
+                    "offset" : ["-1 Week"]
+                },
+                {
+                    "window" : "late",
+                    "interval" : ["1 Week"],
+                    "count" : "3",
+                    "offset" : ["-1 Week"]
+                }
+            ]
+        },
+        {
+            "name" : "Rotavirus2",
+            "scheduleWindows" : {
+                "earliest" : ["4 Weeks"],
+                "due" : ["5 Weeks"],
+                "late" : ["8 Weeks"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : ["1 Week"],
+                    "count" : "1",
+                    "offset" : ["-1 Week"]
+                },
+                {
+                    "window" : "late",
+                    "interval" : ["1 Week"],
+                    "count" : "3",
+                    "offset" : ["-1 Week"]
+                }
+            ]
+        }
+
+    ]
+}

@@ -40,7 +40,9 @@ public class ChildVisitEncounterFactoryTest {
         expectedObservations.add(new MRSObservation<Double>(today, WEIGHT_KG.getName(), 65.67d));
         expectedObservations.add(new MRSObservation<String>(today, HOUSE.getName(), "house"));
         expectedObservations.add(new MRSObservation<String>(today, COMMUNITY.getName(), "community"));
+        expectedObservations.add(new MRSObservation<Integer>(today, ROTAVIRUS.getName(), 1));
         expectedObservations.add(new MRSObservation<MRSConcept>(today, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(Concept.BCG.getName())));
+        expectedObservations.add(new MRSObservation<MRSConcept>(today, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(Concept.ROTAVIRUS.getName())));
 
         assertReflectionEquals(expectedObservations, mrsObservations, ReflectionComparatorMode.LENIENT_DATES,
                 ReflectionComparatorMode.LENIENT_ORDER);
@@ -117,6 +119,6 @@ public class ChildVisitEncounterFactoryTest {
     private CWCVisit createTestCWCVisit(Date registrationDate, MRSUser staff, Facility facility, Patient patient) {
         CWCVisit cwcVisit = new CWCVisit();
         return cwcVisit.staff(staff).facility(facility).patient(patient).date(registrationDate).serialNumber("4ds65")
-                .weight(65.67d).comments("comments").cwcLocation("34").house("house").community("community").maleInvolved(false).immunizations(asList("BCG"));
+                .weight(65.67d).comments("comments").cwcLocation("34").house("house").community("community").maleInvolved(false).immunizations(asList("BCG","ROTAVIRUS")).rotavirusdose("1");
     }
 }

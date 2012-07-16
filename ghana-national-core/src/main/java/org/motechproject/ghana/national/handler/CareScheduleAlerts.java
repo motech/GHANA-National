@@ -119,4 +119,14 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
         sendInstantSMSToFacility(PNC_CHILD_SMS_KEY, milestoneEvent);
         sendInstantMessageToPatient(PATIENT_PNC_BABY, milestoneEvent);
     }
+
+    @Override
+    @LoginAsAdmin
+    @ApiSession
+    public void handleRotavirusVaccinationAlert(MilestoneEvent milestoneEvent) {
+        sendAggregatedSMSToFacility(CWC_ROTAVIRUS_SMS_KEY, milestoneEvent);
+        sendAggregatedMessageToPatient(PATIENT_ROTAVIRUS, milestoneEvent);
+    }
+
+
 }

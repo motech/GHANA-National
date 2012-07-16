@@ -26,6 +26,8 @@ public class CWCEnrollmentForm {
     private Integer lastIPTi;
     private Integer lastOPV;
     private Integer lastPenta;
+    private Date lastRotavirusDate;
+    private Integer lastRotavirus;
 
 
     public FacilityForm getFacilityForm() {
@@ -154,6 +156,22 @@ public class CWCEnrollmentForm {
 
     public void setLastOPVDate(Date lastOPVDate) {
         this.lastOPVDate = lastOPVDate;
+    }
+
+    public Date getLastRotavirusDate() {
+        return lastRotavirusDate;
+    }
+
+    public Integer getLastRotavirus() {
+        return lastRotavirus;
+    }
+
+    public void setLastRotavirusDate(Date lastRotavirusDate) {
+        this.lastRotavirusDate = lastRotavirusDate;
+    }
+
+    public void setLastRotavirus(Integer lastRotavirus) {
+        this.lastRotavirus = lastRotavirus;
     }
 
     public String getStaffId() {

@@ -46,12 +46,14 @@ public class CareHistoryForm extends FormBean {
     private Integer lastOPV;
     private Date lastOPVDate;
     private Integer lastPenta;
+    private Integer lastRotavirus;
     private Date lastPentaDate;
     private Date measlesDate;
     private Date yellowFeverDate;
     private Integer lastIPTI;
     private Date lastIPTIDate;
     private Date lastVitaminADate;
+    private Date lastRotavirusDate;
 
     public String getStaffId() {
         return staffId;
@@ -241,7 +243,7 @@ public class CareHistoryForm extends FormBean {
         List<ANCCareHistory> ancCareHistories = getANCCareHistories();
         List<CwcCareHistory> cwcCareHistories = getCWCCareHistories();
         ANCCareHistoryVO ancCareHistoryVO = new ANCCareHistoryVO(ancCareHistories.size() > 0, ancCareHistories, lastIPT, lastTT, lastIPTDate, lastTTDate);
-        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(cwcCareHistories.size() > 0, cwcCareHistories, bcgDate, lastVitaminADate, measlesDate, yellowFeverDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTI, lastIPTIDate);
+        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(cwcCareHistories.size() > 0, cwcCareHistories, bcgDate, lastVitaminADate, measlesDate, yellowFeverDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTI, lastIPTIDate, lastRotavirus, lastRotavirusDate);
 
         return new CareHistoryVO(staffId, facilityId, motechId, date, ancCareHistoryVO, cwcCareHistoryVO);
     }

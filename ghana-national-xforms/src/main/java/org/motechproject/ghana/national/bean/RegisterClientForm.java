@@ -96,6 +96,8 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
     private Date lastTTDate;
     private String lastIPT;
     private String lastTT;
+    private Date lastRotavirusDate;
+    private Integer lastRotavirus;
 
     public String getMmRegPhone() {
         return mmRegPhone;
@@ -471,6 +473,22 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
 
     public void setLastTT(String lastTT) {
         this.lastTT = lastTT;
+    }
+
+    public Date getLastRotavirusDate() {
+        return lastRotavirusDate;
+    }
+
+    public void setLastRotavirusDate(Date lastRotavirusDate) {
+        this.lastRotavirusDate = lastRotavirusDate;
+    }
+
+    public Integer getLastRotavirus() {
+        return lastRotavirus;
+    }
+
+    public void setLastRotavirus(Integer lastRotavirus) {
+        this.lastRotavirus = lastRotavirus;
     }
 
     public List<ANCCareHistory> getAncCareHistories() {

@@ -20,6 +20,7 @@ public class CWCVisit {
     private String opvdose;
     private String pentadose;
     private String iptidose;
+    private String rotavirusdose;
     private Double weight;
     private Double muac;
     private Double height;
@@ -63,6 +64,16 @@ public class CWCVisit {
 
     public String getIptidose() {
         return iptidose;
+    }
+
+
+    public String getRotavirusdose() {
+        return rotavirusdose;
+    }
+
+    public CWCVisit rotavirusdose(String rotavirusdose) {
+        this.rotavirusdose = rotavirusdose;
+        return this;
     }
 
     public Double getWeight() {

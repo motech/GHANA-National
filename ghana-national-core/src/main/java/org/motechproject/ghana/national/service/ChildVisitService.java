@@ -3,8 +3,7 @@ package org.motechproject.ghana.national.service;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.OPVDose;
-import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.factory.ChildVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.AllCareSchedules;
@@ -46,7 +45,19 @@ public class ChildVisitService {
         updateMeaslesSchedule(cwcVisit);
         updateBCGSchedule(cwcVisit);
         updateOPVSchedule(cwcVisit);
+        updateRotavirusSchedule(cwcVisit);
         return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(cwcVisit));
+    }
+
+    void updateRotavirusSchedule(CWCVisit cwcVisit) {
+        String rotavirusdose = cwcVisit.getRotavirusdose();
+        if (rotavirusdose!= null) {
+            RotavirusDose dose = RotavirusDose.byValue(Integer.parseInt(rotavirusdose));
+            Patient patient = cwcVisit.getPatient();
+            LocalDate visitDate = newDate(cwcVisit.getDate());
+            EnrollmentRequest enrollmentOrFulfillRequest = new ScheduleEnrollmentMapper().map(patient, patient.cwcRotavirusPatientCareEnrollOnVisitAfter10Weeks(visitDate).milestoneName(dose.milestoneName()));
+            allSchedulesAndMessages.enrollOrFulfill(enrollmentOrFulfillRequest, visitDate);
+        }
     }
 
     void updateOPVSchedule(CWCVisit cwcVisit) {

@@ -27,6 +27,10 @@ public class ActiveCareSchedules {
         return allActiveCareSchedules.get(CWC_PENTA.getName()) != null;
     }
 
+    public Boolean hasActiveRotavirusSchedule() {
+        return allActiveCareSchedules.get(CWC_ROTAVIRUS.getName()) != null;
+    }
+
     public Boolean hasActiveIPTiSchedule() {
         return allActiveCareSchedules.get(CWC_IPT_VACCINE.getName()) != null;
     }

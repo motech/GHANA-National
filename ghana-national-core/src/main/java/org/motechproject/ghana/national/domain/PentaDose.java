@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.service;
+package org.motechproject.ghana.national.domain;
 
 public enum PentaDose {
     PENTA1(1, "Penta1"), PENTA2(2, "Penta2"), PENTA3(3, "Penta3");

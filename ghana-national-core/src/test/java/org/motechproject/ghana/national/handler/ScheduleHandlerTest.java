@@ -83,6 +83,12 @@ public class ScheduleHandlerTest {
     }
 
     @Test
+    public void shouldHandleRotavirusVaccinationSchedules(){
+        fireScheduleHandler(event(CWC_ROTAVIRUS.getName()));
+        verify(careScheduleHandler).handleRotavirusVaccinationAlert(Matchers.<MilestoneEvent>any());
+    }
+
+    @Test
     public void shouldHandleOPV0VaccinationSchedules(){
         fireScheduleHandler(event(CWC_OPV_0.getName()));
         verify(careScheduleHandler).handleOpvVaccinationAlert(Matchers.<MilestoneEvent>any());

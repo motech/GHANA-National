@@ -60,6 +60,8 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
     private Integer lastOPV;
     private Integer lastIPTi;
     private Integer lastPenta;
+    private Date lastRotavirusDate;
+    private Integer lastLastRotavirus;
 
     public void setRegistrationToday(RegistrationToday registrationToday) {
         this.registrationToday = registrationToday;
@@ -203,6 +205,22 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
 
     public void setLastPenta(Integer lastPenta) {
         this.lastPenta = lastPenta;
+    }
+
+    public Date getLastRotavirusDate() {
+        return lastRotavirusDate;
+    }
+
+    public Integer getLastRotavirus() {
+        return lastLastRotavirus;
+    }
+
+    public void setLastLastRotavirus(Integer lastLastRotavirus) {
+        this.lastLastRotavirus = lastLastRotavirus;
+    }
+
+    public void setLastRotavirusDate(Date lastRotavirusDate) {
+        this.lastRotavirusDate = lastRotavirusDate;
     }
 
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {

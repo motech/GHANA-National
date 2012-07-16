@@ -4,7 +4,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientCare;
-import org.motechproject.ghana.national.service.PentaDose;
+import org.motechproject.ghana.national.domain.PentaDose;
 import org.motechproject.ghana.national.vo.ChildCare;
 
 import java.util.Date;

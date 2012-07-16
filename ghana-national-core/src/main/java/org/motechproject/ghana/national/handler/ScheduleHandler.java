@@ -38,6 +38,8 @@ public class ScheduleHandler {
                 careScheduleHandler.handleMeaslesVaccinationAlert(milestoneEvent);
             else if (milestoneEvent.getScheduleName().equals(CWC_PENTA.getName()))
                 careScheduleHandler.handlePentaVaccinationAlert(milestoneEvent);
+            else if (milestoneEvent.getScheduleName().equals(CWC_ROTAVIRUS.getName()))
+                careScheduleHandler.handleRotavirusVaccinationAlert(milestoneEvent);
             else if (milestoneEvent.getScheduleName().equals(CWC_YELLOW_FEVER.getName()))
                 careScheduleHandler.handleYellowFeverVaccinationAlert(milestoneEvent);
             else if (milestoneEvent.getScheduleName().equals(CWC_OPV_0.getName()))

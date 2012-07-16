@@ -37,8 +37,23 @@ public class ChildCareTest extends BaseUnitTest {
         assertIfChildIsApplicableForIPT(birthDate.plusWeeks(-1), birthDate, is(false));
     }
 
+    @Test
+    public void shouldVerifyIfApplicableForRotavirusVaccine() {
+
+        DateTime birthDate = newDateTime(2012, 1, 4, 10, 12, 0);
+        assertIfChildIsApplicableForRotavirus(birthDate.plusWeeks(1), birthDate, is(true));
+        assertIfChildIsApplicableForRotavirus(birthDate.plusWeeks(9).plusDays(6), birthDate, is(true));
+        assertIfChildIsApplicableForRotavirus(birthDate.plusWeeks(14), birthDate, is(false));
+        assertIfChildIsApplicableForRotavirus(birthDate.plusWeeks(-1), birthDate, is(false));
+    }
+
     private void assertIfChildIsApplicableForIPT(DateTime today, DateTime birthDate, Matcher<Boolean> expected) {
         mockCurrentDate(today);
         assertThat(ChildCare.basedOnBirthDay(birthDate).applicableForIPTi(), expected);
+    }
+
+    private void assertIfChildIsApplicableForRotavirus(DateTime today, DateTime birthDate, Matcher<Boolean> expected) {
+        mockCurrentDate(today);
+        assertThat(ChildCare.basedOnBirthDay(birthDate).applicableForRotavirus(), expected);
     }
 }

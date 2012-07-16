@@ -15,13 +15,14 @@ public class CWCCareHistoryVO {
     private Date yfDate;
     private Date lastPentaDate;
     private Integer lastPenta;
+    private Date lastRotavirusDate;
+    private Integer lastRotavirus;
     private Date lastOPVDate;
     private Integer lastOPV;
     private Date lastIPTiDate;
     private Integer lastIPTi;
-
     public CWCCareHistoryVO(Boolean addCareHistory, List<CwcCareHistory> careHistories, Date bcgDate, Date vitADate, Date measlesDate, Date yfDate, Date lastPentaDate,
-                            Integer lastPenta, Date lastOPVDate, Integer lastOPV, Integer lastIPTi, Date lastIPTiDate) {
+                            Integer lastPenta, Date lastOPVDate, Integer lastOPV, Integer lastIPTi, Date lastIPTiDate, Integer lastRotavirus, Date lastRotavirusDate) {
         this.addCareHistory = addCareHistory;
         this.cwcCareHistories=careHistories;
         this.bcgDate=bcgDate;
@@ -34,6 +35,8 @@ public class CWCCareHistoryVO {
         this.lastOPV=lastOPV;
         this.lastIPTiDate=lastIPTiDate;
         this.lastIPTi=lastIPTi;
+        this.lastRotavirus=lastRotavirus;
+        this.lastRotavirusDate=lastRotavirusDate;
     }
 
     public CWCCareHistoryVO() {
@@ -86,4 +89,13 @@ public class CWCCareHistoryVO {
     public Boolean getAddCareHistory() {
         return addCareHistory;
     }
+
+    public Integer getLastRotavirus() {
+        return lastRotavirus;
+    }
+
+    public Date getLastRotavirusDate() {
+        return lastRotavirusDate;
+    }
+
 }

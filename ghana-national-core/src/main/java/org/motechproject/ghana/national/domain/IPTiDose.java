@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.service;
+package org.motechproject.ghana.national.domain;
 
 public enum IPTiDose {
     IPTi1(1, "IPTi1"), IPTi2(2, "IPTi2"), IPTi3(3, "IPTi3");
