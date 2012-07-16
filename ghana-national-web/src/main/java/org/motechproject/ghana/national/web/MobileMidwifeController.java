@@ -41,19 +41,17 @@ public class MobileMidwifeController {
     private MessageSource messages;
     private FacilityHelper facilityHelper;
     private FacilityService facilityService;
-    private FormValidator formValidator;
 
     public MobileMidwifeController() {
     }
 
     @Autowired
-    public MobileMidwifeController(MobileMidwifeValidator mobileMidwifeValidator, MobileMidwifeService mobileMidwifeService, MessageSource messages, FacilityHelper facilityHelper, FacilityService facilityService, FormValidator formValidator) {
+    public MobileMidwifeController(MobileMidwifeValidator mobileMidwifeValidator, MobileMidwifeService mobileMidwifeService, MessageSource messages, FacilityHelper facilityHelper, FacilityService facilityService) {
         this.mobileMidwifeValidator = mobileMidwifeValidator;
         this.mobileMidwifeService = mobileMidwifeService;
         this.messages = messages;
         this.facilityHelper = facilityHelper;
         this.facilityService = facilityService;
-        this.formValidator = formValidator;
     }
 
     @ApiSession

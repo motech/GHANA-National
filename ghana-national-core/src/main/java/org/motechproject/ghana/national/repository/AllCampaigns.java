@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.repository;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.model.DayOfWeek;
@@ -36,9 +37,9 @@ public class AllCampaigns {
         return true;
     }
 
-    public LocalDate nextCycleDateFromToday(ServiceType serviceType) {
+    public LocalDate nextCycleDateFromToday(ServiceType serviceType, Medium medium) {
         DateTime fromDate = DateUtil.now();
-        List<DayOfWeek> applicableDays = allMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), serviceType.getServiceName());
+        List<DayOfWeek> applicableDays = allMessageCampaigns.getApplicableDaysForRepeatingCampaign(serviceType.name(), serviceType.getServiceName(medium));
         return Utility.nextApplicableWeekDay(fromDate, applicableDays).toLocalDate();
     }
 }

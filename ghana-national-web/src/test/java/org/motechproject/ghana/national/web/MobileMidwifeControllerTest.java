@@ -56,13 +56,11 @@ public class MobileMidwifeControllerTest {
     private FacilityHelper mockFacilityHelper;
     @Mock
     private FacilityService mockFacilityService;
-    @Mock
-    private FormValidator mockFormValidator;
 
     @Before
     public void setUp() {
         initMocks(this);
-        controller = new MobileMidwifeController(mobileMidwifeValidator, mobileMidwifeService, messages, mockFacilityHelper, mockFacilityService, mockFormValidator);
+        controller = new MobileMidwifeController(mobileMidwifeValidator, mobileMidwifeService, messages, mockFacilityHelper, mockFacilityService);
     }
 
     @Test
@@ -181,8 +179,6 @@ public class MobileMidwifeControllerTest {
         facility.motechId(facilityMotechId);
         when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
         when(mobileMidwifeValidator.validatePatient(patientId, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(Collections.<FormError>emptyList());
-        when(mockFormValidator.validateIfStaffExists(staffId)).thenReturn(Collections.<FormError>emptyList());
-        when(mockFormValidator.validateIfFacilityExists(facilityId)).thenReturn(Collections.<FormError>emptyList());
 
         ModelMap modelMap = new ModelMap();
 

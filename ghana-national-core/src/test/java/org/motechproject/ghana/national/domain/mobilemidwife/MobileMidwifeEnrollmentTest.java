@@ -22,7 +22,7 @@ public class MobileMidwifeEnrollmentTest {
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(registrationTime).setPatientId(patientId)
                 .setServiceType(serviceType).setMessageStartWeek(messageStartWeekKey);
 
-        CampaignRequest campaignRequest = mobileMidwifeEnrollment.createCampaignRequest(registrationTime.toLocalDate());
+        CampaignRequest campaignRequest = mobileMidwifeEnrollment.createCampaignRequestForTextMessage(registrationTime.toLocalDate());
         assertThat(campaignRequest.campaignName(), is(serviceType.name()));
         assertThat(campaignRequest.externalId(), is(patientId));
         assertThat(campaignRequest.referenceDate(), is(DateUtil.today()));

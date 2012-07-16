@@ -5,7 +5,7 @@
         "maxDuration" : "40 Weeks",
         "messages" : [
             {
-                "name" : "Pregnancy Message",
+                "name" : "Pregnancy Text Message",
                 "formats" : ["SMS"],
                 "languages" : ["en"],
                 "messageKey": "PREGNANCY-cw{Offset}-{WeekDay}",
@@ -14,11 +14,12 @@
                 "deliverTime" : "10:30"
             },
             {
-                "name" : "Pregnancy IVR Message",
-                "formats" : ["VOICE"],
-                "languages" : ["en"],
+                "name" : "Pregnancy Voice Message",
+                "formats" : ["IVR"],
+                "languages" : ["en","fa","ka","na"],
                 "messageKey": "PREGNANCY-cw{Offset}-{WeekDay}",
-                "calendarStartOfWeek" : "Sunday"
+                "repeatInterval" : "1 Week",
+                "deliverTime" : "0:0"
             }
         ]
     },
@@ -29,7 +30,7 @@
         "maxDuration" : "52 Weeks",
         "messages" : [
             {
-                "name" : "ChildCare Message",
+                "name" : "Child Care Text Message",
                 "formats" : ["SMS"],
                 "languages" : ["en"],
                 "messageKey": "CHILD_CARE-cw{Offset}-{WeekDay}",
@@ -38,13 +39,13 @@
                 "deliverTime" : "10:30"
             },
             {
-                "name" : "ChildCare IVR Message",
-                "formats" : ["VOICE"],
-                "languages" : ["en"],
+                "name" : "Child Care Voice Message",
+                "formats" : ["IVR"],
+                "languages" : ["en","fa","ka","na"],
                 "messageKey": "CHILD_CARE-cw{Offset}-{WeekDay}",
-                "calendarStartOfWeek" : "Sunday"
+                "repeatInterval" : "1 Week",
+                "deliverTime" : "0:0"
             }
-
         ]
     }
 ]

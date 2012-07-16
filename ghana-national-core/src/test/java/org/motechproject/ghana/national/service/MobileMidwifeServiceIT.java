@@ -52,22 +52,24 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
     @Test
     public void shouldCreateMobileMidwifeEnrollmentAndCreateScheduleIfNotRegisteredAlready() {
 
+        Medium medium = Medium.SMS;
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().patientId(identifierGenerator.newPatientId()).
                 facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).serviceType(ServiceType.PREGNANCY).
-                learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).reasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH).
+                learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(medium).reasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH).
                 messageStartWeek("20").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
                 .active(true).build();
         service.register(enrollment);
-        verifyCreateNewEnrollment(enrollment, allCampaigns.nextCycleDateFromToday(enrollment.getServiceType()));
+        verifyCreateNewEnrollment(enrollment, allCampaigns.nextCycleDateFromToday(enrollment.getServiceType(), medium));
     }
 
     @Test
     public void shouldRolloverMobileMidwifeEnrollmentAndCreateSchedule() {
 
         String patientId = identifierGenerator.newPatientId();
+        Medium medium = Medium.SMS;
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollmentBuilder().patientId(patientId).
                 facilityId("23435").staffId("1234").consent(true).dayOfWeek(DayOfWeek.Friday).serviceType(ServiceType.PREGNANCY).
-                learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(Medium.SMS).reasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH).
+                learnedFrom(LearnedFrom.GHS_NURSE).language(Language.KAS).medium(medium).reasonToJoin(ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH).
                 messageStartWeek("20").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
                 .active(true).build();
         service.register(enrollment);
@@ -75,11 +77,11 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
         newEnrollment.setEnrollmentDateTime(DateTime.now());
         newEnrollment.setActive(true);
         service.rollover(patientId, DateTime.now());
-        verifyCreateNewEnrollment(newEnrollment, allCampaigns.nextCycleDateFromToday(newEnrollment.getServiceType()));
+        verifyCreateNewEnrollment(newEnrollment, allCampaigns.nextCycleDateFromToday(newEnrollment.getServiceType(), medium));
     }
 
     private void verifyCreateNewEnrollment(MobileMidwifeEnrollment expected, LocalDate expectedScheduleStartDate) {
-        assertCampaignSchedule(expected.createCampaignRequest(expectedScheduleStartDate));
+        assertCampaignSchedule(expected.createCampaignRequestForTextMessage(expectedScheduleStartDate));
         assertEnrollment(expected, allEnrollments.findActiveBy(expected.getPatientId()));
     }
 
@@ -109,7 +111,7 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
     }
 
     private String getMessageKey(String campaignName) {
-        CampaignMessage message = allMessageCampaigns.getCampaignMessageByMessageName(campaignName, ServiceType.valueOf(campaignName).getServiceName());
+        CampaignMessage message = allMessageCampaigns.getCampaignMessageByMessageName(campaignName, ServiceType.valueOf(campaignName).getServiceName(Medium.SMS));
         return message.messageKey();
     }
 }
