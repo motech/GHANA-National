@@ -23,6 +23,12 @@ public class InboundDecisionTreeSeed extends Seed {
     @Value("#{ghanaNationalProperties['callcenter.number']}")
     private String callCenterPhoneNumber;
 
+    @Value("#{ghanaNationalProperties['callcenter.dtmf.timeout']}")
+    private String callCenterDtmfTimeout;
+
+    @Value("#{ghanaNationalProperties['callcenter.dtmf.finishonkey']}")
+    private String callCenterFinishOnKey;
+
     private ConnectToCallCenter connectToCallCenter = new ConnectToCallCenter();
 
     @Autowired
@@ -53,6 +59,8 @@ public class InboundDecisionTreeSeed extends Seed {
         transitions.put("2", new Transition().setDestinationNode(chooseActionNode(KAS)));
         transitions.put("3", new Transition().setDestinationNode(chooseActionNode(NAN)));
         transitions.put("4", new Transition().setDestinationNode(chooseActionNode(FAN)));
+        node.setTransitionTimeout(callCenterDtmfTimeout);
+        node.setTransitionFinishOnKey(callCenterFinishOnKey);
         node.setTransitions(transitions);
         return node;
     }
@@ -65,6 +73,8 @@ public class InboundDecisionTreeSeed extends Seed {
         transitions.put("2", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
         transitions.put("*", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
         transitions.put("timeout", new Transition().setDestinationNode(connectToCallCenter.getAsNode(callCenterPhoneNumber)));
+        node.setTransitionTimeout(callCenterDtmfTimeout);
+        node.setTransitionFinishOnKey(callCenterFinishOnKey);
         node.setTransitions(transitions);
         return node;
     }
@@ -74,6 +84,8 @@ public class InboundDecisionTreeSeed extends Seed {
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
         ValidateMotechIdTransition validateMotechIdTransition = new ValidateMotechIdTransition(language.name(), 3);
         transitions.put("?", validateMotechIdTransition);
+        node.setTransitionTimeout(callCenterDtmfTimeout);
+        node.setTransitionFinishOnKey(callCenterFinishOnKey);
         node.setTransitions(transitions);
         return node;
     }

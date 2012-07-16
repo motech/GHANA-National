@@ -41,7 +41,9 @@ public class TwiML {
             if ("Play".equals(actionNode.getNodeName())) {
                 actions.add(new Play(actionNode.getTextContent()));
             } else if ("Gather".equals(actionNode.getNodeName())) {
-                Gather gather = new Gather(attributes.getNamedItem("action").getTextContent());
+                Gather gather = new Gather(attributes.getNamedItem("action").getTextContent(),
+                        attributes.getNamedItem("timeout").getTextContent(),
+                        attributes.getNamedItem("finishOnKey").getTextContent());
                 actions.add(gather);
                 for (int j = 0; j < actionNode.getChildNodes().getLength(); j++) {
                     Node childNode = actionNode.getChildNodes().item(j);
@@ -208,13 +210,17 @@ public class TwiML {
 
     public static class Gather implements Action {
         private String action;
+        private String timeoutInSec;
+        private String finishOnKey;
         private List<Play> prompts = new ArrayList<Play>();
 
         public Gather() {
         }
 
-        public Gather(String action) {
+        public Gather(String action, String timeoutInSec, String finishOnKey) {
             this.action = action;
+            this.timeoutInSec = timeoutInSec;
+            this.finishOnKey = finishOnKey;
         }
 
         public Gather addPrompt(Play play) {
@@ -232,20 +238,30 @@ public class TwiML {
             if (o == null || getClass() != o.getClass()) return false;
 
             Gather gather = (Gather) o;
+
+            if (finishOnKey != null ? !finishOnKey.equals(gather.finishOnKey) : gather.finishOnKey != null)
+                return false;
             if (prompts != null ? !prompts.equals(gather.prompts) : gather.prompts != null) return false;
+            if (timeoutInSec != null ? !timeoutInSec.equals(gather.timeoutInSec) : gather.timeoutInSec != null)
+                return false;
 
             return true;
         }
 
         @Override
         public int hashCode() {
-            return prompts != null ? prompts.hashCode() : 0;
+            int result = timeoutInSec != null ? timeoutInSec.hashCode() : 0;
+            result = 31 * result + (finishOnKey != null ? finishOnKey.hashCode() : 0);
+            result = 31 * result + (prompts != null ? prompts.hashCode() : 0);
+            return result;
         }
 
         @Override
         public String toString() {
             return "Gather{" +
                     "action='" + action + '\'' +
+                    ", timeoutInSec='" + timeoutInSec + '\'' +
+                    ", finishOnKey='" + finishOnKey + '\'' +
                     ", prompts=" + prompts +
                     '}';
         }

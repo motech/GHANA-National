@@ -22,6 +22,12 @@ public class ValidateMotechIdTransition extends Transition {
     @Value("#{ghanaNationalProperties['callcenter.number']}")
     private String callCenterPhoneNumber;
 
+    @Value("#{ghanaNationalProperties['callcenter.dtmf.timeout']}")
+    private String callCenterDtmfTimeout;
+
+    @Value("#{ghanaNationalProperties['callcenter.dtmf.finishonkey']}")
+    private String callCenterFinishOnKey;
+
     @JsonProperty
     String language;
 
@@ -78,6 +84,8 @@ public class ValidateMotechIdTransition extends Transition {
         String invalidMotechIdPromptURL = ivrClipManager.urlFor(INVALID_MOTECH_ID_PROMPT.value(), valueOf(language));
         Node node = new Node();
         if (pendingRetries != 0){
+            node.setTransitionTimeout(callCenterDtmfTimeout);
+            node.setTransitionFinishOnKey(callCenterFinishOnKey);
             node.addTransitionPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));
             node.addTransition("0", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
             node.addTransition("*", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
