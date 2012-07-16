@@ -112,20 +112,6 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
-            <artifactId>ghana-national-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <classifier>resources</classifier>
-            <type>zip</type>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.motechproject.ghana-national-delivery</groupId>
-                    <artifactId>motech-delivery-tools-web</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject</groupId>
             <artifactId>motech-message-campaign</artifactId>
             <version>${motech-platform.version}</version>
         </dependency>
@@ -138,17 +124,14 @@
     <build>
         <resources>
             <resource>
-                <directory>${basedir}/src/main/resources</directory>
-            </resource>
-            <resource>
-                <directory>${project.build.directory}/generated-resources</directory>
+                <directory>${project.parent.relativePath}/../ghana-national-common/src/main/resources</directory>
                 <filtering>true</filtering>
                 <excludes>
                     <exclude>**/*.omod</exclude>
                 </excludes>
             </resource>
             <resource>
-                <directory>${project.build.directory}/generated-resources</directory>
+                <directory>${project.parent.relativePath}/../ghana-national-common/src/main/resources</directory>
                 <filtering>false</filtering>
                 <includes>
                     <include>**/*.omod</include>
@@ -157,30 +140,6 @@
         </resources>
         <!--PLUGINS-->
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.4</version>
-                <executions>
-                    <execution>
-                        <id>unpack-shared-resources</id>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <type>jar</type>
-                            <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
-                            <includeArtifactIds>ghana-national-common</includeArtifactIds>
-                            <includeGroupIds>org.motechproject</includeGroupIds>
-                            <excludeTransitive>true</excludeTransitive>
-                            <includes>
-                                log4j.xml, openmrs-data/**, aggregator.properties, sms-http.properties, sms-http-template.json, osgi.properties, textMessages.properties, activemq.properties, quartz.properties,schedule_tracking.properties,schedules/**,programs/**,messageCampaign.properties,retry_schedules.properties,retries/**
-                            </includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <!--READ PROPERTIES-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -220,21 +179,6 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>drop-db</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${drop.db.skip}</skip>
-                            <autocommit>true</autocommit>
-                            <sqlCommand>
-                                drop database ${openmrs.db};
-                            </sqlCommand>
-                            <onError>continue</onError>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>create-db</id>
                         <phase>process-resources</phase>
                         <goals>
@@ -244,10 +188,12 @@
                             <skip>${drop.db.skip}</skip>
                             <autocommit>true</autocommit>
                             <sqlCommand>
+                                drop database if exists ${openmrs.db};
                                 create database ${openmrs.db} default charset utf8;
                                 grant all on ${openmrs.db}.* to '${openmrs.user}'@'localhost' identified by
                                 'password';
-                                grant all on ${openmrs.db}.* to '${openmrs.user}'@'%' identified by '${openmrs.password}';
+                                grant all on ${openmrs.db}.* to '${openmrs.user}'@'%' identified by
+                                '${openmrs.password}';
                                 flush privileges;
                                 use ${openmrs.db};
                             </sqlCommand>
@@ -298,29 +244,6 @@
                         </goals>
                     </execution>
                     <execution>
-                        <id>drop-quartz-schema</id>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <target>
-                                <echo message="Dropping Quartz"/>
-                                <path id="dependencies">
-                                    <fileset file="../build/lib/mysql-connector-java-5.1.13.jar"/>
-                                </path>
-                                <sql driver="${mysql.driver}"
-                                     url="jdbc:mysql://${mysql.server}:${mysql.port}?autoReconnect=true"
-                                     userid="${mysql.user}"
-                                     classpathref="dependencies"
-                                     password="${mysql.password}"
-                                     onerror="continue">
-                                    drop database ${quartz.db};
-                                </sql>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
                         <id>setup-quartz-schema</id>
                         <phase>process-resources</phase>
                         <configuration>
@@ -334,6 +257,7 @@
                                      userid="${mysql.user}"
                                      classpathref="dependencies"
                                      password="${mysql.password}">
+                                    drop database if exists ${quartz.db};
                                     create database ${quartz.db};
                                 </sql>
                                 <sql driver="${mysql.driver}"
@@ -341,7 +265,7 @@
                                      userid="${mysql.user}"
                                      classpathref="dependencies"
                                      password="${mysql.password}"
-                                     src="../build/sql/tables_mysql_innodb.sql"/>
+                                     src="../build/sql/quartz_database_setup.sql"/>
                                 <echo message="Quartz schema loading: END"/>
                             </target>
                         </configuration>

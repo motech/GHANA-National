@@ -5,7 +5,6 @@ import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
-import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
 import org.motechproject.ghana.national.repository.AllCampaigns;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
@@ -23,14 +22,12 @@ public class MobileMidwifeService {
     private AllMobileMidwifeEnrollments allEnrollments;
     private AllCampaigns allCampaigns;
     private AllPatientsOutbox allPatientsOutbox;
-    private MessageGateway messageGateway;
 
     @Autowired
-    public MobileMidwifeService(AllMobileMidwifeEnrollments allEnrollments, AllCampaigns allCampaigns, AllPatientsOutbox allPatientsOutbox, MessageGateway messageGateway) {
+    public MobileMidwifeService(AllMobileMidwifeEnrollments allEnrollments, AllCampaigns allCampaigns, AllPatientsOutbox allPatientsOutbox) {
         this.allEnrollments = allEnrollments;
         this.allCampaigns = allCampaigns;
         this.allPatientsOutbox= allPatientsOutbox;
-        this.messageGateway = messageGateway;
     }
 
     public void register(MobileMidwifeEnrollment enrollment) {

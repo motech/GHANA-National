@@ -41,7 +41,7 @@
     </bean>
 
     <bean id="couchDbConnector" class="org.ektorp.impl.StdCouchDbConnector">
-        <constructor-arg value="ghana-national-test"/>
+        <constructor-arg value="${document.name}"/>
         <constructor-arg ref="couchDbInstance"/>
     </bean>
 

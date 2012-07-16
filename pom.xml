@@ -250,25 +250,6 @@
         </dependency>
     </dependencies>
     <build>
-        <resources>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-            </resource>
-            <resource>
-                <directory>${project.build.directory}/generated-resources</directory>
-                <filtering>true</filtering>
-                <excludes>
-                    <exclude>**/*.omod</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>${project.build.directory}/generated-resources</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>**/*.omod</include>
-                </includes>
-            </resource>
-        </resources>
         <plugins>
             <!--COMPILER -->
             <plugin>
@@ -324,6 +305,20 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*.properties</exclude>
+                        <exclude>**/*.omod</exclude>
+                        <exclude>**/*.json</exclude>
+                        <exclude>**/*.vm</exclude>
+                        <exclude>xforms/**/*.xml</exclude>
+                        <exclude>log4j.xml</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

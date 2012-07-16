@@ -8,8 +8,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
-import org.motechproject.ghana.national.domain.mobilemidwife.*;
-import org.motechproject.ghana.national.messagegateway.service.MessageGateway;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
+import org.motechproject.ghana.national.domain.mobilemidwife.MessageStartWeek;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
+import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.repository.AllCampaigns;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
@@ -28,7 +31,11 @@ import static junit.framework.Assert.assertNull;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.newDateTime;
@@ -42,12 +49,10 @@ public class MobileMidwifeServiceTest extends BaseUnitTest{
     private AllCampaigns mockAllCampaigns;
     @Mock
     private AllPatientsOutbox mockAllPatientsOutbox;
-    @Mock
-    private MessageGateway mockMessageGateway;
 
     public MobileMidwifeServiceTest() {
         initMocks(this);
-        service = new MobileMidwifeService(mockAllMobileMidwifeEnrollments, mockAllCampaigns, mockAllPatientsOutbox, mockMessageGateway);
+        service = new MobileMidwifeService(mockAllMobileMidwifeEnrollments, mockAllCampaigns, mockAllPatientsOutbox);
     }
 
     @Test

@@ -71,20 +71,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.motechproject</groupId>
-            <artifactId>ghana-national-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <classifier>resources</classifier>
-            <type>zip</type>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.motechproject.ghana-national-delivery</groupId>
-                    <artifactId>motech-delivery-tools-web</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
     </dependencies>
     <properties>
         <OPENMRS_PORT>8080</OPENMRS_PORT>
@@ -93,40 +79,27 @@
         <!--RESOURCE FILTERING-->
         <resources>
             <resource>
-                <directory>${project.build.directory}/generated-resources</directory>
+                <directory>${project.parent.relativePath}/../ghana-national-common/src/main/resources</directory>
                 <filtering>true</filtering>
-                <excludes>
-                    <exclude>**/*.omod</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>${project.build.directory}/generated-resources</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>**/*.omod</include>
-                </includes>
             </resource>
         </resources>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack-shared-resources</id>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
-                            <includeArtifactIds>ghana-national-common</includeArtifactIds>
-                            <includeGroupIds>org.motechproject</includeGroupIds>
-                            <excludeTransitive>true</excludeTransitive>
-                            <excludes>activemq.properties</excludes>
-                        </configuration>
-                    </execution>
-                </executions>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <packagingExcludes>
+                        WEB-INF/classes/openmrs-data/**/*.*,
+                        WEB-INF/classes/xforms/**/*.xml,
+                        WEB-INF/classes/schedules/*.json,
+                        WEB-INF/classes/retries/*.json,
+                        WEB-INF/classes/emailtemplates/*.vm,
+                        WEB-INF/classes/programs/mobilemidwife/**/*.*,
+                        WEB-INF/classes/*.properties,
+                        WEB-INF/classes/*.json,
+                        WEB-INF/classes/log4j.xml
+                    </packagingExcludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
