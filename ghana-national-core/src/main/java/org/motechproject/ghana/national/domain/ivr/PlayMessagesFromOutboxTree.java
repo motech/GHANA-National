@@ -7,6 +7,7 @@ import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -33,6 +34,12 @@ public class PlayMessagesFromOutboxTree {
 
     @Autowired
     IVRClipManager ivrClipManager;
+
+    @Value("#{ghanaNationalProperties['callcenter.dtmf.timeout']}")
+    private String callCenterDtmfTimeout;
+
+    @Value("#{ghanaNationalProperties['callcenter.dtmf.finishonkey']}")
+    private String callCenterFinishOnKey;
 
     public Node play(String motechId, String language) {
         List<OutboundVoiceMessage> audioClips = allPatientsOutbox.getAudioFileNames(motechId);
@@ -79,14 +86,17 @@ public class PlayMessagesFromOutboxTree {
         rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingClips.get(0), valueOf(language))))
                 .addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingPrompts.get(0), valueOf(language))))
                 .setTransitions(transitions);
+        rootNode.setTransitionTimeout(callCenterDtmfTimeout);
+        rootNode.setTransitionFinishOnKey(callCenterFinishOnKey);
+
         if (pendingClips.size() == 1)
             rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(AudioPrompts.GHS.value(), valueOf(language))));
-
-
 
         for (Prompt prompt : rootNode.getPrompts()) {
             node.addPrompts(prompt);
         }
+        node.setTransitionTimeout(callCenterDtmfTimeout);
+        node.setTransitionFinishOnKey(callCenterFinishOnKey);
         node.setTransitions(transitions);
     }
 

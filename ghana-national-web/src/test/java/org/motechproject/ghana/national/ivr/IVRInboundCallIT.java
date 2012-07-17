@@ -8,12 +8,20 @@ import org.junit.Test;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
+import java.io.IOException;
 
 public class IVRInboundCallIT {
 
     private static VerboiceStub verboiceStub;
     private static TestAppServer testAppServer;
     private static Patient patientWithMM;
+    public static final String INBOUND_DECISION_TREE_NAME = "InboundDecisionTree";
+    private static final String TIMEOUT_IN_SEC = "20";
+    private static final String ANYTHING = null;
+    private static final String FINISH_ON_KEY = "#";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -31,18 +39,7 @@ public class IVRInboundCallIT {
     }
 
     @Test
-    public void shouldConnectToCallCenterIfUserOptedForItWhileChoosingLanguage(){
-        String response = verboiceStub.handleIncomingCall();
-        String connectionToCallCenterOption = "*";
-        response = verboiceStub.handle(response, connectionToCallCenterOption);
-
-        String callCenterPhoneNumber = "0111111111";
-        TwiML expectedActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
-        verboiceStub.expect(expectedActions, response);
-    }
-    
-    @Test
-    public void shouldConnectToCallCenterIfUserOptedForItWhileSelectingAction(){
+    public void shouldConnectToCallCenterIfUserOptedForItWhileSelectingAction() {
         String response = verboiceStub.handleIncomingCall();
         String englishLanguageOption = "1";
         response = verboiceStub.handle(response, englishLanguageOption);
@@ -62,9 +59,9 @@ public class IVRInboundCallIT {
         responseForConnectToCallCenterOption = verboiceStub.handle(response, connectToCallCenterOption);
         verboiceStub.expect(expectedActions, responseForConnectToCallCenterOption);
     }
-    
+
     @Test
-    public void shouldConnectToCallCenterIfUserOptedForIdWhileAskedToEnterTheMotechIdAfterTheUserHavingEnteredAndInvalidId(){
+    public void shouldConnectToCallCenterIfUserOptedForIdWhileAskedToEnterTheMotechIdAfterTheUserHavingEnteredAndInvalidId() {
         String response = verboiceStub.handleIncomingCall();
         String englishLanguageOption = "1";
         response = verboiceStub.handle(response, englishLanguageOption);
@@ -87,28 +84,45 @@ public class IVRInboundCallIT {
     }
 
     @Test
+    public void shouldConnectToCallCenterIfUserDoesNotSelectionAnOptionForReasonForTheCall(){
+        String response = verboiceStub.handleIncomingCall();
+        String englishLanguageChoice = "1";
+        response = verboiceStub.handle(response, englishLanguageChoice);
+
+        String reasonForCallPrompt = fileName(AudioPrompts.REASON_FOR_CALL_PROMPT);
+        TwiML expectedActions = new TwiML()
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(reasonForCallPrompt, "EN"))))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzE&Digits=timeout")));
+
+        verboiceStub.expect(expectedActions, response);
+    }
+
+    @Test
     public void shouldHandleInboundCallForPatientWithMMRegistrationAndNoMessagesInInbox() {
         String response = verboiceStub.handleIncomingCall();
 
         String selectLanguagePrompt = fileName(AudioPrompts.LANGUAGE_PROMPT);
-        TwiML expectedActions = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(selectLanguagePrompt, "EN")))
-                .addAction(new TwiML.Gather());
+        TwiML expectedActions = new TwiML()
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(selectLanguagePrompt, "EN"))))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=Lw&Digits=timeout")));
 
         verboiceStub.expect(expectedActions, response);
         String englishLanguageChoice = "1";
         response = verboiceStub.handle(response, englishLanguageChoice);
 
         String reasonForCallPrompt = fileName(AudioPrompts.REASON_FOR_CALL_PROMPT);
-        expectedActions = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(reasonForCallPrompt, "EN")))
-                .addAction(new TwiML.Gather());
+        expectedActions = new TwiML()
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(reasonForCallPrompt, "EN"))))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzE&Digits=timeout")));
+
         verboiceStub.expect(expectedActions, response);
 
         String listenMessagesChoice = "1";
         response = verboiceStub.handle(response, listenMessagesChoice);
 
         String motechIdPrompt = fileName(AudioPrompts.MOTECH_ID_PROMPT);
-        expectedActions = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(motechIdPrompt, "EN")))
-                .addAction(new TwiML.Gather());
+        expectedActions = new TwiML()
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(motechIdPrompt, "EN"))));
         verboiceStub.expect(expectedActions, response);
 
         String noMessagesPrompt = fileName(AudioPrompts.NO_MESSAGE_IN_OUTBOX);
@@ -129,13 +143,14 @@ public class IVRInboundCallIT {
         response = verboiceStub.handle(response, invalidMotechId);
 
         String invalidMotechIdPrompt = fileName(AudioPrompts.INVALID_MOTECH_ID_PROMPT);
-        TwiML expectedActions = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN")))
-                .addAction(new TwiML.Gather());
+        TwiML expectedActions = new TwiML()
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzEvMS8x&Digits=timeout")));
         verboiceStub.expect(expectedActions, response);
     }
 
     @Test
-    public void shouldHandleInboundCallIfNotRegisteredToMobileMidwife(){
+    public void shouldHandleInboundCallIfNotRegisteredToMobileMidwife() {
         Patient patientWithoutMobileMidwifeRegistration = testAppServer.createPatient("patientWithOutMM", "lastName");
         String response = verboiceStub.handleIncomingCall();
 
@@ -146,8 +161,9 @@ public class IVRInboundCallIT {
         response = verboiceStub.handle(response, patientWithoutMobileMidwifeRegistration.getMotechId());
 
         String invalidMotechIdPrompt = fileName(AudioPrompts.INVALID_MOTECH_ID_PROMPT);
-        TwiML expectedActions = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN")))
-                .addAction(new TwiML.Gather());
+        TwiML expectedActions = new TwiML()
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=" + new BASE64Encoder().encode(("/1/1/" + patientWithoutMobileMidwifeRegistration.getMotechId()).getBytes()) + "&Digits=timeout")));
         verboiceStub.expect(expectedActions, response);
     }
 
@@ -163,20 +179,29 @@ public class IVRInboundCallIT {
         response = verboiceStub.handle(response, invalidMotechId);
 
         String invalidMotechIdPrompt = fileName(AudioPrompts.INVALID_MOTECH_ID_PROMPT);
-        TwiML expectedActions = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN")))
-                .addAction(new TwiML.Gather());
+        TwiML expectedActions = new TwiML()
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=" + new BASE64Encoder().encode(("/1/1/" + invalidMotechId).getBytes()) + "&Digits=timeout")));
 
         verboiceStub.expect(expectedActions, response);
 
         response = verboiceStub.handle(response, invalidMotechId);
+
+        expectedActions = new TwiML()
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzEvMS8xLzE&Digits=timeout")));
+
         verboiceStub.expect(expectedActions, response);
 
         response = verboiceStub.handle(response, invalidMotechId);
+        expectedActions = new TwiML()
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzEvMS8xLzEvMQ&Digits=timeout")));
+
         verboiceStub.expect(expectedActions, response);
 
         response = verboiceStub.handle(response, invalidMotechId);
-
-        expectedActions = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN")));
+        expectedActions = new TwiML().addAction(new TwiML.Exit());
 
         verboiceStub.expect(expectedActions, response);
     }
@@ -205,7 +230,7 @@ public class IVRInboundCallIT {
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.ANC_DUE), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(0)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(0)), "EN")))
-                .addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY));
 
         verboiceStub.expect(expectedActions, response);
 
@@ -216,7 +241,7 @@ public class IVRInboundCallIT {
         expectedActions = new TwiML()
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(0)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(0)), "EN")))
-                .addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY));
 
         verboiceStub.expect(expectedActions, repeatResponse);
 
@@ -227,7 +252,7 @@ public class IVRInboundCallIT {
         expectedActions = new TwiML()
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(1)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(1)), "EN")))
-                .addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY));
 
         verboiceStub.expect(expectedActions, secondMessageResponse);
 
@@ -238,7 +263,7 @@ public class IVRInboundCallIT {
         expectedActions = new TwiML()
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(1)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(1)), "EN")))
-                .addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY));
 
         verboiceStub.expect(expectedActions, secondMessageRepeatResponse);
 
@@ -251,7 +276,7 @@ public class IVRInboundCallIT {
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(2)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(2)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.GHS), "EN")))
-                .addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY));
 
         verboiceStub.expect(expectedActions, thirdMessageResponse);
 
@@ -264,7 +289,7 @@ public class IVRInboundCallIT {
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(2)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(2)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.GHS), "EN")))
-                .addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY));
 
         verboiceStub.expect(expectedActions, thirdMessageRepeatResponse);
 
@@ -276,7 +301,7 @@ public class IVRInboundCallIT {
         expectedActions = new TwiML()
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(1)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(1)), "EN")))
-                .addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY));
 
         verboiceStub.expect(expectedActions, secondMessageResponse);
 
@@ -288,8 +313,25 @@ public class IVRInboundCallIT {
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(2)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(2)), "EN")))
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.GHS), "EN")))
-                .addAction(new TwiML.Gather());
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY));
 
+        verboiceStub.expect(expectedActions, response);
+    }
+
+    @Test
+    public void shouldRepeatLanguageInputMessagesTwiceIfUserDoesNotProvideOneTheFirstTimeAndHangupIfNotOnTheSecondTime() {
+        String response = verboiceStub.handleIncomingCall();
+
+        TwiML expectedActions = new TwiML()
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.LANGUAGE_PROMPT), "EN"))))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=Lw&Digits=timeout")));
+
+        verboiceStub.expect(expectedActions, response);
+        response = verboiceStub.handleRedirect(response);
+
+        expectedActions = new TwiML()
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.LANGUAGE_PROMPT), "EN"))))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=L3RpbWVvdXQ&Digits=timeout")));
         verboiceStub.expect(expectedActions, response);
     }
 

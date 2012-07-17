@@ -56,4 +56,17 @@ public class VerboiceStub {
         }
         assertTrue(xml, actualActions.equals(expectedActions));
     }
+
+    public String handleRedirect(String xml) {
+        TwiML actualActions = null;
+        try {
+            actualActions = new TwiML(xml);
+            TwiML.Redirect redirect = actualActions.getRedirect();
+            if(redirect != null)
+                return hitApp(redirect.getUrl());
+        } catch (Exception e) {
+            throw new MotechException("Unable to process TWIML, " + xml, e);
+        }
+        return null;
+    }
 }
