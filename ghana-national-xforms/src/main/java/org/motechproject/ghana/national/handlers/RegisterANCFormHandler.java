@@ -48,8 +48,6 @@ public class RegisterANCFormHandler {
             MobileMidwifeEnrollment mobileMidwifeEnrollment = registerANCForm.createMobileMidwifeEnrollment();
             if (mobileMidwifeEnrollment != null) {
                 mobileMidwifeService.register(mobileMidwifeEnrollment);
-            } else {
-                mobileMidwifeService.unRegister(registerANCForm.getMotechId());
             }
         } catch (Exception e) {
             log.error("Encountered exception while processing register ANC form", e);

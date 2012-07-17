@@ -127,38 +127,6 @@ public class RegisterANCFormHandlerTest {
         assertEquals(mrsFacilityId, ancVO.getFacilityId());
     }
 
-    @Test
-    public void shouldUnRegisterForMobileMidWifeIfNotEnrolled() throws ObservationNotFoundException {
-        final RegisterANCForm registerANCForm = new RegisterANCForm();
-
-        final Date registartionDate = new Date(2011, 9, 1);
-        final String staffId = "456";
-        final String patientMotechId = "1234567";
-        final String facilityMotechId = "3232";
-
-        registerANCForm.setStaffId(staffId);
-        registerANCForm.setFacilityId(facilityMotechId);
-        registerANCForm.setDate(registartionDate);
-        registerANCForm.setMotechId(patientMotechId);
-        registerANCForm.setEnroll(false);
-
-        final String facilityId = "11";
-        when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(new Facility(new MRSFacility(facilityId)));
-
-        registerAncFormHandler.handleFormEvent(registerANCForm);
-
-        final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
-        verify(careService).enroll(captor.capture());
-        verify(mockMobileMidwifeService).unRegister(patientMotechId);
-        verify(mockMobileMidwifeService, never()).register(Matchers.<MobileMidwifeEnrollment>any());
-        final ANCVO ancVO = captor.getValue();
-        assertThat(staffId, is(ancVO.getStaffId()));
-        assertThat(facilityId, is(facilityId));
-        assertThat(registartionDate, is(ancVO.getRegistrationDate()));
-        assertThat(patientMotechId, is(ancVO.getPatientMotechId()));
-
-    }
-
     public static void assertANCCareHistoryDetails(List<ANCCareHistory> addCareHistory, String lastIPT, Date lastIPTDate, String lastTT, Date lastTTDate, ANCCareHistoryVO ancCareHistoryVO) {
         assertEquals(addCareHistory, ancCareHistoryVO.getCareHistory());
         assertEquals(lastIPT, ancCareHistoryVO.getLastIPT());

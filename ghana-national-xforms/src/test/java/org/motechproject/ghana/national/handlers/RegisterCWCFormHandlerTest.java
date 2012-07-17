@@ -130,39 +130,6 @@ public class RegisterCWCFormHandlerTest {
         assertMobileMidwifeFormEnrollment(registerCWCForm, mobileMidwifeEnrollmentCaptor.getValue());
     }
 
-    @Test
-    public void shouldUnRegisterForMobileMidWifeIfNotEnrolled() {
-        final RegisterCWCForm registerCWCForm = new RegisterCWCForm();
-
-        final Date registartionDate = new Date(2011, 9, 1);
-        final String staffId = "456";
-        final String patientMotechId = "1234567";
-        final String facilityMotechId = "3232";
-
-        registerCWCForm.setStaffId(staffId);
-        registerCWCForm.setFacilityId(facilityMotechId);
-        registerCWCForm.setRegistrationDate(registartionDate);
-        registerCWCForm.setMotechId(patientMotechId);
-        registerCWCForm.setEnroll(false);
-
-        final String facilityId = "11";
-        when(mockFacilityService.getFacilityByMotechId(facilityMotechId)).thenReturn(new Facility(new MRSFacility(facilityId)));
-
-        formHandlerRegister.handleFormEvent(registerCWCForm);
-
-        final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
-        verify(careService).enroll(captor.capture());
-        verify(mobileMidwifeService).unRegister(patientMotechId);
-        verify(mobileMidwifeService, never()).register(Matchers.<MobileMidwifeEnrollment>any());
-        final CwcVO cwcVO = captor.getValue();
-
-        assertThat(staffId, is(cwcVO.getStaffId()));
-        assertThat(facilityId, is(facilityId));
-        assertThat(registartionDate, is(cwcVO.getRegistrationDate()));
-        assertThat(patientMotechId, is(cwcVO.getPatientMotechId()));
-
-    }
-
     public static void assertCwcCareHistoryDetails(List<CwcCareHistory> cwcCareHistories, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate,
                                                    Date lastOPVDate, Date lastIPTiDate, Date lastRotavirusDate, Date lastPneumococcalDate,
                                                    int lastPenta, int lastOPV, int lastRotavirus, int lastPneumococcal, CWCCareHistoryVO cwcCareHistoryVO) {

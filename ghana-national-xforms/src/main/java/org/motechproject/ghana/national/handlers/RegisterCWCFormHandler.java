@@ -59,8 +59,6 @@ public class RegisterCWCFormHandler{
             MobileMidwifeEnrollment mobileMidwifeEnrollment = registerCWCForm.createMobileMidwifeEnrollment();
             if (mobileMidwifeEnrollment != null) {
                 mobileMidwifeService.register(mobileMidwifeEnrollment);
-            }else{
-                mobileMidwifeService.unRegister(registerCWCForm.getMotechId());
             }
         } catch (Exception e) {
             log.error("Exception occurred while processing CWC Registration form", e);
