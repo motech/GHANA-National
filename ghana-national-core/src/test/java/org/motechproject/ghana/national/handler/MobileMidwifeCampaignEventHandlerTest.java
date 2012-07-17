@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.builder.IVRRequestBuilder;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.exception.EventHandlerException;
@@ -232,7 +233,7 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
 
 
         verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, MobileMidwifeAudioClips.instance(mobileMidwifeEnrollment.getServiceType().getValue(), messageStartWeek), Period.weeks(1));
-        verify(mockRetryService).schedule(eq(new RetryRequest("retry-ivr-every-2hrs-and-30mins", patientId, currentDateTime)));
+        verify(mockRetryService).schedule(eq(new RetryRequest(Constants.RETRY_FOR_2_HOURS_EVERY_30MIN, patientId, currentDateTime)));
         verify(mockIVRGateway).placeCall(mobileMidwifeEnrollment.getPhoneNumber(), new HashMap<String, String>() {{
             put(IVRRequestBuilder.CALLBACK_URL, url);
         }});

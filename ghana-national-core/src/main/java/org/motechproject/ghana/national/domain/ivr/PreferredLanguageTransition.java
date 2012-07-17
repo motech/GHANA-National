@@ -10,7 +10,7 @@ import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnroll
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class PlayClipsInPreferredLanguageTransition extends Transition {
+public class PreferredLanguageTransition extends Transition {
     @Autowired
     PlayMessagesFromOutboxTree playMessagesFromOutboxTree;
 

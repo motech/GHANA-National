@@ -57,7 +57,7 @@ public class VerboiceStub {
         assertTrue(xml, actualActions.equals(expectedActions));
     }
 
-    public String handleRedirect(String xml) {
+    public String handleTimeout(String xml) {
         TwiML actualActions = null;
         try {
             actualActions = new TwiML(xml);

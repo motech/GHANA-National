@@ -1,17 +1,17 @@
-{
-    "groupName" : "ivr-retries",
-    "retries" : [
-        {
-            "name" : "retry-ivr-every-2hrs-and-30mins",
-            "retryCount" : "5",
-            "retryInterval" : ["2 hours", "30 minutes"],
-            "offset" : "30 minutes"
-        },
-        {
-            "name" : "retry-every-10Days",
-            "retryCount" : "5",
-            "retryInterval" : ["10 days"],
-            "offset" : "30 minutes"
-        }
-    ]
+ {
+   "groupName" : "ivr-retries",
+   "retries" : [
+       {
+           "name" : "retry-call-for-2hrs-every-30min",
+           "retryCount" : "4",
+           "retryInterval" : ["2 hours"],
+           "offset" : "30 minutes"
+       },
+       {
+           "name" : "retry-call-for-6days-everyday",
+           "retryCount" : "6",
+           "retryInterval" : ["1 day"],
+           "offset" : "1 day"
+       }
+   ]
 }

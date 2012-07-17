@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import static org.motechproject.ghana.national.domain.ivr.AudioPrompts.INVALID_MOTECH_ID_PROMPT;
 import static org.motechproject.ghana.national.domain.mobilemidwife.Language.valueOf;
 
-public class ValidateMotechIdTransition extends Transition {
+public class MotechIdValidationTransition extends Transition {
 
     @Value("#{ghanaNationalProperties['callcenter.number']}")
     private String callCenterPhoneNumber;
@@ -52,9 +52,9 @@ public class ValidateMotechIdTransition extends Transition {
     int pendingRetries;
 
     // Required for Ektorp
-    public ValidateMotechIdTransition() {}
+    public MotechIdValidationTransition() {}
 
-    public ValidateMotechIdTransition(String language, int pendingRetries) {
+    public MotechIdValidationTransition(String language, int pendingRetries) {
         this.language = language;
         this.pendingRetries = pendingRetries;
     }
@@ -90,7 +90,7 @@ public class ValidateMotechIdTransition extends Transition {
             node.addTransition("0", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
             node.addTransition("*", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
             node.addTransition("timeout", new Transition().setDestinationNode(connectToCallCenter.getAsNode(callCenterPhoneNumber)));
-            node.addTransition("?", new ValidateMotechIdTransition(language, pendingRetries - 1));
+            node.addTransition("?", new MotechIdValidationTransition(language, pendingRetries - 1));
         }
         return node;
     }

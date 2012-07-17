@@ -9,6 +9,7 @@ import org.motechproject.MotechException;
 import org.motechproject.ghana.national.domain.AlertWindow;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
+import org.motechproject.ghana.national.domain.ivr.PlayMessagesFromOutboxTree;
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.service.ExecuteAsOpenMRSAdmin;
@@ -17,7 +18,9 @@ import org.motechproject.ghana.national.tools.TestDataGenerator;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
+import org.motechproject.retry.service.RetryService;
 import org.motechproject.util.DateUtil;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
@@ -165,5 +168,11 @@ public class TestAppServer {
         final WebApplicationContext webApplicationContext = dispatcherServlet.getWebApplicationContext();
         AllPatientsOutbox allPatientsOutbox = (AllPatientsOutbox) webApplicationContext.getBean("allPatientsOutbox");
         allPatientsOutbox.addMobileMidwifeMessage(motechId, mobileMidwifeAudioClips, Period.weeks(1));
+    }
+
+    public void mockRetryService(RetryService retryService) {
+        final WebApplicationContext webApplicationContext = dispatcherServlet.getWebApplicationContext();
+        PlayMessagesFromOutboxTree playMessagesFromOutboxTree = (PlayMessagesFromOutboxTree) webApplicationContext.getBean("playMessagesFromOutboxTree");
+        ReflectionTestUtils.setField(playMessagesFromOutboxTree, "retryService", retryService);
     }
 }

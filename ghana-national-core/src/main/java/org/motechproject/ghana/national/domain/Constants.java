@@ -103,4 +103,9 @@ public class Constants {
 
     public static final String FACILITIES_DEFAULT_MESSAGE_SUBJECT = "org.motechproject.ghana.national.facilities.default";
     public static final int CWC_OPV1_MAX_BIRTH_WEEK_FOR_REGISTRATION = 9;
+
+    //retry schedule names
+    public static final String RETRY_GROUP="ivr-retries";
+    public static final String RETRY_FOR_2_HOURS_EVERY_30MIN="retry-call-for-2hrs-every-30min";
+    public static final String RETRY_FOR_6_DAYS_EVERYDAY="retry-call-for-6days-everyday";
 }
