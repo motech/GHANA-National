@@ -53,7 +53,7 @@ public class PregnancyEncounterFactory extends BaseObservationFactory {
                     }
                 }
             }
-            activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(request.getTerminationDate(), PREGNANCY_STATUS.getName(), false));
+            activePregnancyObservation.addDependantObservation(new MRSObservation<>(request.getTerminationDate(), PREGNANCY_STATUS.getName(), false));
             mrsObservations.add(activePregnancyObservation);
         }
         return mrsObservations;

@@ -6,12 +6,14 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.mobileforms.api.domain.FormError;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+import static org.motechproject.ghana.national.domain.Constants.IN_PAST;
+import static org.motechproject.ghana.national.domain.Constants.NHIS_EXPIRY;
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
 
 @Component
@@ -54,4 +56,9 @@ public class FormValidator {
         }
         return new ArrayList<FormError>();
     }
+
+    public List<FormError> validateNHISExpiry(Date nhisExpires) {
+        return nhisExpires!=null && nhisExpires.before(DateUtil.now().toDate()) ? Arrays.asList(new FormError(NHIS_EXPIRY, IN_PAST)) : Collections.<FormError>emptyList();
+    }
+
 }

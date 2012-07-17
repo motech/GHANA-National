@@ -35,7 +35,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         List<FormError> formErrors = super.validate(formBean, group, allForms);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-
+        formErrors.addAll(formValidator.validateNHISExpiry(formBean.getNhisExpires()));
         String mothersMotechId = "Mothers motech Id";
 
         Patient patient = formValidator.getPatient(formBean.getMotechId());
@@ -49,6 +49,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         formErrors.addAll(getDependentValidator().validate(patient, group.getFormBeans(), allForms, validators));
         return formErrors;
     }
+
 
     DependentValidator getDependentValidator() {
         return new DependentValidator();
