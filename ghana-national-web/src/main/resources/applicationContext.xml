@@ -28,6 +28,8 @@
         <constructor-arg value="${document.name}"/>
     </bean>
 
+    <bean id="statsdAgent" class="org.motechproject.metrics.impl.LoggingAgentBackendImpl"/>
+
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
