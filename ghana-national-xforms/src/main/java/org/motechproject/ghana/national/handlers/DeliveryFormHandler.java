@@ -43,7 +43,7 @@ public class DeliveryFormHandler{
     public void handleFormEvent(DeliveryForm deliveryForm) {
         try {
             PregnancyDeliveryRequest deliveryRequest = createDeliveryRequest(deliveryForm);
-            if(pregnancyService.isDeliverySuccessful(deliveryRequest))
+            if(pregnancyService.isDeliverySuccessful(deliveryRequest) && !deliveryRequest.getMaternalDeath())
                 mobileMidwifeService.rollover(deliveryForm.getMotechId(),deliveryForm.getDate());
             else
                 mobileMidwifeService.unRegister(deliveryForm.getMotechId());

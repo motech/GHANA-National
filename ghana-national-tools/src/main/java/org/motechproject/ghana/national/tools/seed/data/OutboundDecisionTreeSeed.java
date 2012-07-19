@@ -21,6 +21,6 @@ public class OutboundDecisionTreeSeed extends Seed {
         }}));
 
         outboundDecisionTree.setName("OutboundDecisionTree");
-        allTrees.add(outboundDecisionTree);
+        allTrees.addOrReplace(outboundDecisionTree);
     }
 }

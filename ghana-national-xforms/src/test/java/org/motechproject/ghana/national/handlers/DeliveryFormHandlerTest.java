@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -339,5 +340,8 @@ public class DeliveryFormHandlerTest {
         assertEquals(deliveryForm.getChild3Weight(), deliveredChild3.getChildWeight());
 
         assertEquals(deliveryForm.getSender(), deliveryRequest.getSender());
+
+        verify(mockMobileMidwifeService,never()).rollover(anyString(),Matchers.<DateTime>any());
+        verify(mockMobileMidwifeService,atLeastOnce()).unRegister(anyString());
     }
 }
