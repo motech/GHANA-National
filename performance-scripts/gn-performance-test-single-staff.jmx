@@ -20,12 +20,12 @@
           </elementProp>
           <elementProp name="no_of_test_loops" elementType="Argument">
             <stringProp name="Argument.name">no_of_test_loops</stringProp>
-            <stringProp name="Argument.value">30</stringProp>
+            <stringProp name="Argument.value">100</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="no_of_motech_ids" elementType="Argument">
             <stringProp name="Argument.name">no_of_motech_ids</stringProp>
-            <stringProp name="Argument.value">30</stringProp>
+            <stringProp name="Argument.value">100</stringProp>
             <stringProp name="Argument.desc">field workers * test loops</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>

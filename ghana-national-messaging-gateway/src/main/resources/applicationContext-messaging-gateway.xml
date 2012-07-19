@@ -52,12 +52,14 @@
         <beans:bean class="org.motechproject.ghana.national.messagegateway.domain.MessageDispatcher"/>
     </aggregator>
 
-    <beans:bean id="aggregatorDataSource" class="org.apache.commons.dbcp.BasicDataSource">
-        <beans:property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <beans:property name="url" value="${aggregator.db.connection.string}"/>
-        <beans:property name="username" value="${aggregator.db.username}"/>
+    <beans:bean id="aggregatorDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <beans:property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <beans:property name="jdbcUrl" value="${aggregator.db.connection.string}"/>
+        <beans:property name="user" value="${aggregator.db.username}"/>
         <beans:property name="password" value="${aggregator.db.password}"/>
-        <beans:property name="initialSize" value="${aggregator.db.pool.size}"/>
+        <beans:property name="minPoolSize" value="${aggregator.db.pool.size}"/>
+        <beans:property name="maxPoolSize" value="${aggregator.db.pool.size}"/>
+        <beans:property name="maxIdleTime" value="${aggregator.db.pool.maxIdleTime}"/>
     </beans:bean>
 
     <tx:annotation-driven transaction-manager="txManager"/>
