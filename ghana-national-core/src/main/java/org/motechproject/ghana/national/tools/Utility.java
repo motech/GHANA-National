@@ -42,7 +42,7 @@ public class Utility {
     }
 
     public static <T> T safeFetch(List<T> list, int itemNo) {
-        return itemNo <= nullSafe(list, Collections.<T>emptyList()).size() ? list.get(itemNo-1) : null;
+        return itemNo <= nullSafe(list, Collections.<T>emptyList()).size() ? list.get(itemNo - 1) : null;
     }
 
     public static Integer safeParseInteger(String string) {
@@ -98,12 +98,12 @@ public class Utility {
         return fromDate.dayOfMonth().addToCopy(noOfDaysToNearestCycleDate);
     }
 
-    public static <T extends Enum> T getNextOf(T enumObj){
+    public static <T extends Enum> T getNextOf(T enumObj) {
         Enum[] enumConstants = enumObj.getClass().getEnumConstants();
-        return enumObj.ordinal() < enumConstants.length - 1 ? (T)enumConstants[enumObj.ordinal() + 1] : null;
+        return enumObj.ordinal() < enumConstants.length - 1 ? (T) enumConstants[enumObj.ordinal() + 1] : null;
     }
 
-    public static  <L,T> List<T> cast(List<L> payload) {
+    public static <L, T> List<T> cast(List<L> payload) {
         return convert(payload, new Converter<L, T>() {
             @Override
             public T convert(L payload) {
@@ -111,5 +111,13 @@ public class Utility {
             }
         });
 
+    }
+
+    public static Integer stringToInteger(String str) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException nfe) {
+            return null;
+        }
     }
 }

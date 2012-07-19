@@ -13,7 +13,6 @@ public enum AudioPrompts {
     MOTECH_ID_PROMPT("prompt_C", null, null),
     INVALID_MOTECH_ID_PROMPT("prompt_F", null, null),
     NO_MESSAGE_IN_OUTBOX("prompt_H", null, null),
-    GHS("GHS", null, null),
 
     ANC_DUE("prompt_IR1", AlertWindow.DUE, asList(ANC_DELIVERY.getName())),
     TT_DUE("prompt_IR2", AlertWindow.DUE, asList(TT_VACCINATION.getName())),

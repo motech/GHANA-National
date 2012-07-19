@@ -59,6 +59,7 @@ public class InboundDecisionTreeSeed extends Seed {
         transitions.put("2", new Transition().setDestinationNode(chooseActionNode(KAS)));
         transitions.put("3", new Transition().setDestinationNode(chooseActionNode(NAN)));
         transitions.put("4", new Transition().setDestinationNode(chooseActionNode(FAN)));
+        transitions.put("?", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
         node.setTransitionNumDigits("1");
         node.setTransitionTimeout(callCenterDtmfTimeout);
         node.setTransitionFinishOnKey(callCenterFinishOnKey);
