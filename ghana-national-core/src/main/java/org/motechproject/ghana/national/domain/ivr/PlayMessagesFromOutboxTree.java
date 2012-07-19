@@ -3,7 +3,9 @@ package org.motechproject.ghana.national.domain.ivr;
 import ch.lambdaj.Lambda;
 import org.apache.commons.collections.CollectionUtils;
 import org.motechproject.MotechException;
+import org.motechproject.decisiontree.FlowSession;
 import org.motechproject.decisiontree.model.*;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.tools.Utility;
@@ -53,14 +55,14 @@ public class PlayMessagesFromOutboxTree {
     @Value("#{ghanaNationalProperties['callcenter.dtmf.finishonkey']}")
     private String callCenterFinishOnKey;
 
-    public Node play(String motechId, String language) {
+    public Node play(final String motechId, final String language) {
         List<OutboundVoiceMessage> audioClips = allPatientsOutbox.getAudioFileNames(motechId);
         List<OutboundVoiceMessage> scheduleClips = Lambda.filter(having(on(OutboundVoiceMessage.class).getParameters(), not(hasEntry(TYPE, MOBILE_MIDWIFE.name()))), audioClips);
         List<OutboundVoiceMessage> mmClips = Lambda.filter(having(on(OutboundVoiceMessage.class).getParameters(), hasEntry(TYPE, MOBILE_MIDWIFE.name())), audioClips);
 
-        Node node = new Node();
+        final Node node = new Node();
         List<String> scheduleClipNames = getClipNames(scheduleClips);
-        List<String> mmClipNames = getClipNames(mmClips);
+        final List<String> mmClipNames = getClipNames(mmClips);
 
         if (isEmpty(audioClips))
             return node.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(NO_MESSAGE_IN_OUTBOX.value(), valueOf(language))));
@@ -69,11 +71,30 @@ public class PlayMessagesFromOutboxTree {
             node.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(scheduleClipName, valueOf(language))));
         }
 
+        final Node mmNode = new Node();
         for (String mmClipName : mmClipNames) {
             MobileMidwifeAudioClips mobileMidwifeAudioClips = MobileMidwifeAudioClips.valueOf(mmClipName);
-            playMultipleMMClips(mobileMidwifeAudioClips.getClipNames(), mobileMidwifeAudioClips.getPromptClipNames(), node, ivrClipManager, language);
-            lastMMClipShouldHaveAnOptionToPlayThePreviousOne(node, node, getLastMMPrompts(node));
+            playMultipleMMClips(mobileMidwifeAudioClips.getClipNames(), mobileMidwifeAudioClips.getPromptClipNames(), mmNode, ivrClipManager, language);
+            lastMMClipShouldHaveAnOptionToPlayThePreviousOne(mmNode, mmNode, getLastMMPrompts(mmNode));
         }
+
+        for (Prompt prompt : mmNode.getPrompts()) {
+            node.addPrompts(prompt);
+        }
+        node.addTransition("?", new Transition(){
+            @Override
+            public Node getDestinationNode(String input, FlowSession session) {
+                retryService.fulfill(motechId, Constants.RETRY_GROUP);
+                ITransition transition = mmNode.getTransitions().get(input) != null? mmNode.getTransitions().get(input):mmNode.getTransitions().get("?");
+                return transition.getDestinationNode(input, session);
+            }
+        });
+        node.addTransition("timeout", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
+        node.setTransitionNumDigits("1");
+        node.setTransitionTimeout(callCenterDtmfTimeout);
+        node.setTransitionFinishOnKey(callCenterFinishOnKey);
+
+
         return node;
     }
 
