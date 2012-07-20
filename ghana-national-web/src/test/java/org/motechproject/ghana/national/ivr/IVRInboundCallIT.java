@@ -69,6 +69,27 @@ public class IVRInboundCallIT {
     }
 
     @Test
+    public void shouldConnectToCallCenterIfTherUserEntersAnInvalidOptionOtherThanTheLanguageOptions(){
+        String response = verboiceStub.handleIncomingCall();
+        String invalidLanguageOption = "5";
+        TwiML expectedActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
+        response = verboiceStub.handle(response, invalidLanguageOption);
+        verboiceStub.expect(expectedActions, response);
+
+        response = verboiceStub.handleIncomingCall();
+        invalidLanguageOption = "*";
+        expectedActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
+        response = verboiceStub.handle(response, invalidLanguageOption);
+        verboiceStub.expect(expectedActions, response);
+
+        response = verboiceStub.handleIncomingCall();
+        invalidLanguageOption = "#";
+        expectedActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
+        response = verboiceStub.handle(response, invalidLanguageOption);
+        verboiceStub.expect(expectedActions, response);
+    }
+
+    @Test
     public void shouldConnectToCallCenterIfUserOptedForItOrUserGaveAnInvalidOptionWhileSelectingAction() {
         String response = verboiceStub.handleIncomingCall();
         String englishLanguageOption = "1";
