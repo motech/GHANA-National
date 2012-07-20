@@ -2,7 +2,7 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
     <appender class="org.apache.log4j.RollingFileAppender" name="logfile">
-        <param value="${catalina.home}/logs/ghana.log" name="File"/>
+        <param value="logs/ghana.log" name="File"/>
         <param name="Append" value="true"/>
         <param name="MaxFileSize" value="4096KB"/>
         <param name="maxBackupIndex" value="10"/>
@@ -11,7 +11,7 @@
         </layout>
     </appender>
     <appender class="org.apache.log4j.RollingFileAppender" name="migrationLogfile">
-        <param value="${catalina.home}/logs/ghana-migration.log" name="File"/>
+        <param value="logs/ghana-migration.log" name="File"/>
         <param name="Append" value="true"/>
         <param name="MaxFileSize" value="4096KB"/>
         <param name="maxBackupIndex" value="10"/>
@@ -20,7 +20,7 @@
         </layout>
     </appender>
      <appender class="org.apache.log4j.RollingFileAppender" name="passwordLog">
-        <param value="${catalina.home}/logs/ghana_password.log" name="File"/>
+        <param value="logs/ghana_password.log" name="File"/>
         <param name="Append" value="true"/>
         <param name="MaxFileSize" value="4096KB"/>
         <param name="maxBackupIndex" value="5"/>
