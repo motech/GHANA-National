@@ -37,9 +37,11 @@ public class TwiML {
             if ("Play".equals(actionNode.getNodeName())) {
                 actions.add(new Play(actionNode.getTextContent()));
             } else if ("Gather".equals(actionNode.getNodeName())) {
+                Node timeout = attributes.getNamedItem("timeout");
+                Node finishOnKey = attributes.getNamedItem("finishOnKey");
                 Gather gather = new Gather(attributes.getNamedItem("action").getTextContent(),
-                        attributes.getNamedItem("timeout").getTextContent(),
-                        attributes.getNamedItem("finishOnKey").getTextContent());
+                        timeout != null ? timeout.getTextContent(): null,
+                        finishOnKey != null ? finishOnKey.getTextContent(): null);
                 actions.add(gather);
                 for (int j = 0; j < actionNode.getChildNodes().getLength(); j++) {
                     Node childNode = actionNode.getChildNodes().item(j);
