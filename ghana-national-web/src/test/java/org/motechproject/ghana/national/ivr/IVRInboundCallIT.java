@@ -247,11 +247,19 @@ public class IVRInboundCallIT {
         response = verboiceStub.handle(response, englishLanguageChoice);
         String listenMessagesChoice = "1";
         response = verboiceStub.handle(response, listenMessagesChoice);
+
+        String motechIdPrompt = fileName(AudioPrompts.MOTECH_ID_PROMPT);
+        TwiML expectedActions = new TwiML()
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(motechIdPrompt, "EN"))))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzEvMQ&Digits=timeout")));
+
+        verboiceStub.expect(expectedActions, response);
+
         String invalidMotechId = "1";
         response = verboiceStub.handle(response, invalidMotechId);
 
         String invalidMotechIdPrompt = fileName(AudioPrompts.INVALID_MOTECH_ID_PROMPT);
-        TwiML expectedActions = new TwiML()
+        expectedActions = new TwiML()
                 .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=" + Base64.encodeBase64URLSafeString(("/1/1/" + invalidMotechId).getBytes()) + "&Digits=timeout")));
 
@@ -262,13 +270,6 @@ public class IVRInboundCallIT {
         expectedActions = new TwiML()
                 .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzEvMS8xLzE&Digits=timeout")));
-
-        verboiceStub.expect(expectedActions, response);
-
-        response = verboiceStub.handle(response, invalidMotechId);
-        expectedActions = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
-                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzEvMS8xLzEvMQ&Digits=timeout")));
 
         verboiceStub.expect(expectedActions, response);
 

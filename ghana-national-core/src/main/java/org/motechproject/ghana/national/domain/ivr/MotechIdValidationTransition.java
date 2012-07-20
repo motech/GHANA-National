@@ -83,7 +83,7 @@ public class MotechIdValidationTransition extends Transition {
     private Node invalidMotechIdTransition() {
         String invalidMotechIdPromptURL = ivrClipManager.urlFor(INVALID_MOTECH_ID_PROMPT.value(), valueOf(language));
         Node node = new Node();
-        if (pendingRetries != 0){
+        if (pendingRetries != 1){
             node.setTransitionTimeout(callCenterDtmfTimeout);
             node.setTransitionFinishOnKey(callCenterFinishOnKey);
             node.addTransitionPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));

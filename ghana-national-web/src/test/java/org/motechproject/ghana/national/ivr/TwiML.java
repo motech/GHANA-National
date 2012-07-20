@@ -26,10 +26,6 @@ public class TwiML {
     }
 
     public TwiML(String xml) throws ParserConfigurationException, IOException, SAXException {
-        if(isExit(xml)){
-            actions.add(new Exit());
-            return;
-        }
         DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = documentBuilder.parse(new ByteArrayInputStream(xml.getBytes()));
         Node responseNode = document.getChildNodes().item(0);
@@ -55,19 +51,10 @@ public class TwiML {
                 actions.add(new Dial(actionNode.getTextContent(), attributes.getNamedItem("callerId").getTextContent()));
             } else if ("Redirect".equals(actionNode.getNodeName())) {
                 actions.add(new Redirect(actionNode.getTextContent()));
+            } else if ("Hangup".equals(actionNode.getNodeName())){
+                actions.add(new Exit());
             }
         }
-    }
-
-    private boolean isExit(String xml) {
-        String actualXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<vxml version=\"2.1\" xmlns=\"http://www.w3.org/2001/vxml\">\n" +
-                "    <form>\n" +
-                "        <exit/>\n" +
-                "    </form>\n" +
-                "</vxml>";
-
-        return actualXml.equals(xml);
     }
 
     public TwiML addAction(Action action) {
