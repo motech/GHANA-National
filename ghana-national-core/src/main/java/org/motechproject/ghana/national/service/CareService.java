@@ -53,8 +53,8 @@ public class CareService {
         allEncounters.persistEncounter(patient.getMrsPatient(), cwc.getStaffId(), cwc.getFacilityId(), CWC_REG_VISIT.value(), cwc.getRegistrationDate(),
                 prepareObservations(cwc));
         enrollToCWCCarePrograms(cwc, patient);
-
     }
+
     void enrollToCWCCarePrograms(CwcVO cwcVO, Patient patient) {
         final List<CwcCareHistory> mergedHistories = getCareHistories(cwcVO.getCWCCareHistoryVO(),patient);
 

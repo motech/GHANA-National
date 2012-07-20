@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.domain.AlertWindow;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSFacility;
@@ -30,9 +31,10 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_DELIVERY;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 import static org.motechproject.ghana.national.repository.AllPatientsOutbox.*;
 
 public class AllPatientsOutboxTest extends BaseUnitTest {
@@ -163,30 +165,42 @@ public class AllPatientsOutboxTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldRemoveMessagesFromOutboxBasedOnMotechIdAndType() {
+    public void shouldRemoveMessagesFromOutboxBasedOnPatientIdAndType() {
         final String motechId = "1234567";
         String patientId = "patientId";
         MRSPatient mrsPatient = mock(MRSPatient.class);
-        final OutboundVoiceMessage outboundVoiceMessage1 = buildOutBoxMessage(motechId, AlertType.MOBILE_MIDWIFE.name(), "preg_care");
-        final OutboundVoiceMessage outboundVoiceMessage2 = buildOutBoxMessage(motechId, AlertType.CARE.name(), "care");
-        final OutboundVoiceMessage outboundVoiceMessage3 = buildOutBoxMessage(motechId, AlertType.CARE.name(), "care1");
-        when(mockOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime)).thenReturn(Arrays.asList(outboundVoiceMessage1, outboundVoiceMessage2, outboundVoiceMessage3));
+        final OutboundVoiceMessage outboundVoiceMessage1 = buildOutboxMessage(motechId, AlertType.MOBILE_MIDWIFE.name(), MobileMidwifeAudioClips.CHILD_CARE_WEEK_1, "mm");
+        final OutboundVoiceMessage outboundVoiceMessage2 = buildOutboxMessage(motechId, AlertType.CARE.name(), AudioPrompts.fileNameForCareSchedule(TT_VACCINATION.getName(), AlertWindow.DUE), "care");
+        final OutboundVoiceMessage outboundVoiceMessage3 = buildOutboxMessage(motechId, AlertType.CARE.name(), AudioPrompts.fileNameForCareSchedule(ANC_DELIVERY.getName(), AlertWindow.DUE), "anc");
+
         when(mockMRSPatientAdapter.getPatient(patientId)).thenReturn(mrsPatient);
         when(mrsPatient.getMotechId()).thenReturn(motechId);
 
-        allPatientsOutbox.removeMobileMidwifeMessages(motechId);
-        allPatientsOutbox.removeCareAndAppointmentMessages(patientId, "care1");
+        when(mockOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime)).thenReturn(Arrays.asList(outboundVoiceMessage1, outboundVoiceMessage2, outboundVoiceMessage3));
+        allPatientsOutbox.removeCareAndAppointmentMessages(patientId, TT_VACCINATION.getName());
+        verify(mockOutboxService).getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
+        verify(mockOutboxService).removeMessage("care");
 
-        verify(mockOutboxService, times(2)).getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
-        verify(mockOutboxService, times(2)).removeMessage(anyString());
+        reset(mockOutboxService);
+        when(mockOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime)).thenReturn(Arrays.asList(outboundVoiceMessage1, outboundVoiceMessage2, outboundVoiceMessage3));
+        allPatientsOutbox.removeCareAndAppointmentMessages(patientId, ANC_DELIVERY.getName());
+        verify(mockOutboxService).getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
+        verify(mockOutboxService).removeMessage("anc");
+
+        reset(mockOutboxService);
+        when(mockOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime)).thenReturn(Arrays.asList(outboundVoiceMessage1, outboundVoiceMessage2, outboundVoiceMessage3));
+        allPatientsOutbox.removeMobileMidwifeMessages(motechId);
+        verify(mockOutboxService).getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
+        verify(mockOutboxService).removeMessage("mm");
     }
 
-    private OutboundVoiceMessage buildOutBoxMessage(String motechId, final String type, final String scheduleName) {
+    private OutboundVoiceMessage buildOutboxMessage(String motechId, final String alertType, final Object audioClipName, String id) {
         final OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
         outboundVoiceMessage.setExternalId(motechId);
+        outboundVoiceMessage.setId(id);
         outboundVoiceMessage.setParameters(new HashMap<String, Object>() {{
-            put("TYPE", type);
-            put("AUDIO_CLIP_NAME", "prompt_" + scheduleName + "_due");
+            put("TYPE", alertType);
+            put("AUDIO_CLIP_NAME", audioClipName);
         }});
         return outboundVoiceMessage;
     }
