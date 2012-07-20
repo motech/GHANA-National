@@ -77,37 +77,40 @@ public class PlayMessagesFromOutboxTree {
             playMultipleMMClips(mobileMidwifeAudioClips.getClipNames(), mobileMidwifeAudioClips.getPromptClipNames(), mmNode, ivrClipManager, language);
             lastMMClipShouldHaveAnOptionToPlayThePreviousOne(mmNode, mmNode, getLastMMPrompts(mmNode));
         }
+        node.addPrompts(mmNode.getPrompts().get(0));
 
-        for (Prompt prompt : mmNode.getPrompts()) {
-            node.addPrompts(prompt);
-        }
-        node.addTransition("?", new Transition(){
+        node.addTransition("timeout", new Transition() {
             @Override
             public Node getDestinationNode(String input, FlowSession session) {
                 retryService.fulfill(motechId, Constants.RETRY_GROUP);
-                ITransition transition = mmNode.getTransitions().get(input) != null? mmNode.getTransitions().get(input):mmNode.getTransitions().get("?");
-                return transition.getDestinationNode(input, session);
+                Node node = new Node();
+                cloneNodeWithoutPrompts(mmNode, node);
+                node.addPrompts(mmNode.getPrompts().get(1));
+                return node;
             }
         });
-        node.addTransition("timeout", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
-        node.setTransitionNumDigits("1");
-        node.setTransitionTimeout(callCenterDtmfTimeout);
-        node.setTransitionFinishOnKey(callCenterFinishOnKey);
-
-
+        node.setTransitionTimeout("0");
         return node;
+    }
+
+    private void cloneNodeWithoutPrompts(Node sourceNode, Node destinationNode) {
+        destinationNode.setTransitionPrompts(sourceNode.getTransitionPrompts());
+        destinationNode.setTransitionFinishOnKey(sourceNode.getTransitionFinishOnKey());
+        destinationNode.setTransitionNumDigits(sourceNode.getTransitionNumDigits());
+        destinationNode.setTransitionTimeout(sourceNode.getTransitionTimeout());
+        destinationNode.setTransitions(sourceNode.getTransitions());
     }
 
     private List<Prompt> getLastMMPrompts(Node node) {
         Integer lastClipTransitionKey = null;
         for (String key : node.getTransitions().keySet()) {
             Integer keyAsInt = Utility.stringToInteger(key);
-            if(keyAsInt != null){
-                if(lastClipTransitionKey == null || keyAsInt > lastClipTransitionKey)
+            if (keyAsInt != null) {
+                if (lastClipTransitionKey == null || keyAsInt > lastClipTransitionKey)
                     lastClipTransitionKey = keyAsInt;
             }
         }
-        return ((Transition)node.getTransitions().get(lastClipTransitionKey.toString())).getDestinationNode().getPrompts();
+        return ((Transition) node.getTransitions().get(lastClipTransitionKey.toString())).getDestinationNode().getPrompts();
     }
 
     private void lastMMClipShouldHaveAnOptionToPlayThePreviousOne(Node node, Node rootNode, List<Prompt> lastMMPromptsOfRootNode) {
@@ -116,8 +119,8 @@ public class PlayMessagesFromOutboxTree {
             Integer keyAsInt = Utility.stringToInteger(key);
             if (keyAsInt != null && !repeatKey.equals(keyAsInt)) {
                 lastMMClipShouldHaveAnOptionToPlayThePreviousOne(getDestinationNode(node.getTransitions().get(key)), rootNode, lastMMPromptsOfRootNode);
-                if(((Transition)node.getTransitions().get(key)).getDestinationNode().getPrompts().equals(lastMMPromptsOfRootNode)){
-                    ((Transition)node.getTransitions().get(key)).getDestinationNode().getTransitions().put("2", rootNode.getTransitions().get("2"));
+                if (((Transition) node.getTransitions().get(key)).getDestinationNode().getPrompts().equals(lastMMPromptsOfRootNode)) {
+                    ((Transition) node.getTransitions().get(key)).getDestinationNode().getTransitions().put("2", rootNode.getTransitions().get("2"));
                 }
             }
         }

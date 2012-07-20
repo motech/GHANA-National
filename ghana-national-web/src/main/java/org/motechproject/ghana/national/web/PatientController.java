@@ -14,10 +14,13 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
+import org.motechproject.ghana.national.validator.EditClientFormValidator;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.form.SearchPatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.ghana.national.web.helper.PatientHelper;
+import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 import org.motechproject.util.DateUtil;
@@ -38,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -72,6 +76,8 @@ public class PatientController {
     private StaffService staffService;
     @Autowired
     private MobileMidwifeService mobileMidwifeService;
+    @Autowired
+    private EditClientFormValidator editClientFormValidator;
 
 
     @InitBinder
@@ -161,11 +167,15 @@ public class PatientController {
     @RequestMapping(value = "edit", method = RequestMethod.GET)
     public String edit(ModelMap modelMap, @RequestParam String motechId) {
         final Patient patient = patientService.getPatientByMotechId(motechId);
+        List<FormError> formErrors = editClientFormValidator.validatePatient(motechId, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
+
         try {
             modelMap.put(PATIENT_FORM, patientHelper.getPatientForm(patient));
         } catch (ParseException ignored) {
         }
         modelMap.mergeAttributes(facilityHelper.locationMap());
+        modelMap.addAttribute("validationErrors",(formErrors.isEmpty() ? null : formErrors));
+        modelMap.addAttribute("disableEdit",formErrors.contains(new FormError("motechId","is not alive")));
         modelMap.put("registerForMobileMidwife", mobileMidwifeService.findActiveBy(motechId) != null);
         return EDIT_PATIENT_URL;
     }

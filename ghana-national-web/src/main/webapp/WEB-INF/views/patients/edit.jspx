@@ -83,6 +83,14 @@
                 htmlEscape="false"/>
 <spring:message code="patient_phone_number" var="patient_phone_number" htmlEscape="false"/>
 
+    <c:if test="${validationErrors ne null}">
+        <div id="errors" class="formlyAlerts formlyInvalid formlyAlert" style="display: block;">
+            <c:forEach items="${validationErrors}" var="errorObj">
+                <c:out value="${errorObj.parameter} "/><c:out value="${errorObj.error}"/><br/>
+            </c:forEach>
+        </div>
+    </c:if>
+
 <div>
     <label for="staffId" class="formLabel"><spring:message code="staff_id"/> *:</label>
     <form:input path="staffId" size="20" cssClass="jsRequire"/>
@@ -278,8 +286,11 @@
         <label class="formLabel" for="address">${fn:escapeXml(patient_address)}:</label>
         <form:textarea path="address" cssClass="jsRequire" size="200" label="${fn:escapeXml(patient_address)}"/>
     </div>
-    <input type="button" id="submitNewPatient" value="Submit"/>
+    <c:if test="${validationErrors == null}">
+        <input type="button" id="submitNewPatient" value="Submit"/>
+    </c:if>
 </div>
+    <c:if test="${validationErrors == null}">
 <div class="enrollment_link_section">
     <h3><label>Enrollment:</label></h3>
     <a id="ancenrollment"
@@ -295,5 +306,6 @@
            href="${pageContext.servletContext.contextPath}/admin/unenroll/mobile-midwife?motechPatientId=${patientForm.motechId}">Unregister MobileMidwife</a>
     </c:if>
 </div>
+    </c:if>
 </form:form>
 </div>
