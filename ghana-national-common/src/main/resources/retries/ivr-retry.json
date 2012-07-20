@@ -4,7 +4,7 @@
        {
            "name" : "retry-call-for-2hrs-every-30min",
            "retryCount" : "4",
-           "retryInterval" : ["2 hours"],
+           "retryInterval" : ["30 minutes"],
            "offset" : "30 minutes"
        },
        {

@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.domain.AlertWindow;
+import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.mrs.services.MRSPatientAdapter;
 import org.motechproject.outbox.api.contract.SortKey;
@@ -110,9 +111,13 @@ public class AllPatientsOutbox {
         String motechId = mrsPatientAdapter.getPatient(mrsPatientId).getMotechId();
         List<OutboundVoiceMessage> messages = voiceOutboxService.getMessages(motechId, OutboundVoiceMessageStatus.PENDING, SortKey.CreationTime);
         for (OutboundVoiceMessage message : messages) {
-            String audio_clip_name = (String) message.getParameters().get(AUDIO_CLIP_NAME);
-            if (audio_clip_name.contains(scheduleName))
-                voiceOutboxService.removeMessage(message.getId());
+            Object audioClipName = message.getParameters().get(AUDIO_CLIP_NAME);
+            if (audioClipName instanceof String) {
+                String audio_clip_name = (String) audioClipName;
+                List<String> promptNamesForSchedule = AudioPrompts.getPromptNamesFor(scheduleName);
+                if (promptNamesForSchedule.contains(audio_clip_name))
+                    voiceOutboxService.removeMessage(message.getId());
+            }
         }
     }
 }

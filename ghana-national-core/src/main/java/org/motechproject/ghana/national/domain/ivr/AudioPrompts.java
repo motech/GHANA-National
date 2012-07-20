@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.domain.ivr;
 
 import org.motechproject.ghana.national.domain.AlertWindow;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -30,26 +31,34 @@ public enum AudioPrompts {
     OTHER_VACCINE_LATE("prompt_IO6", AlertWindow.OVERDUE, asList(CWC_BCG.getName(), CWC_MEASLES_VACCINE.getName(), CWC_OPV_0.getName(), CWC_OPV_OTHERS.getName(), CWC_PENTA.getName(), CWC_ROTAVIRUS.getName(),CWC_PNEUMOCOCCAL.getName(), CWC_YELLOW_FEVER.getName())),
     IPTi_LATE("prompt_IO7", AlertWindow.OVERDUE, asList(CWC_IPT_VACCINE.getName()));
 
-    private String message;
+    private String fileName;
     private AlertWindow window;
     private List<String> scheduleNames;
 
-    AudioPrompts(String message, AlertWindow window, List<String> scheduleNames) {
-        this.message = message;
+    AudioPrompts(String fileName, AlertWindow window, List<String> scheduleNames) {
+        this.fileName = fileName;
         this.window = window;
         this.scheduleNames = scheduleNames;
     }
 
     public String value() {
-        return message;
+        return fileName;
     }
 
     public static String fileNameForCareSchedule(String scheduleName, AlertWindow alertWindow) {
         for (AudioPrompts prompt : values()) {
             if (alertWindow.equals(prompt.window) && prompt.scheduleNames.contains(scheduleName))
-                return prompt.message;
+                return prompt.fileName;
         }
         return null;
     }
 
+    public static List<String> getPromptNamesFor(String scheduleName) {
+        List<String> promptNames = new ArrayList<String>();
+        for (AudioPrompts prompt : values()) {
+            if(prompt.scheduleNames != null && prompt.scheduleNames.contains(scheduleName))
+                promptNames.add(prompt.fileName);
+        }
+        return promptNames;
+    }
 }
