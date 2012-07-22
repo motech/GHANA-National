@@ -357,7 +357,7 @@ public class IVRInboundCallIT {
         // repeat first message
         String repeatOption = "1";
         String repeatResponse = verboiceStub.handle(response, repeatOption);
-        verify(retryServiceMock).unscheduleRetryGroup(patientWithMM.getMotechId(), Constants.RETRY_GROUP);
+        verify(retryServiceMock).fulfill(patientWithMM.getMotechId(), Constants.RETRY_GROUP);
 
         expectedActions = new TwiML()
                 .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(0)), "EN")))

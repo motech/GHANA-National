@@ -82,7 +82,7 @@ public class PlayMessagesFromOutboxTree {
         transitions.put("?", new CustomTransition() {
             @Override
             public Node getDestinationNode(String s, FlowSession session) {
-                retryService.unscheduleRetryGroup(motechId, Constants.RETRY_GROUP);
+                retryService.fulfill(motechId, Constants.RETRY_GROUP);
                 Map<String, ITransition> playNextMMClips = playNextMMClip(initialMMClips, pendingClips, pendingPrompts, node, previousNode, language, motechId, rootNode);
                 ITransition transition = playNextMMClips.get(s) != null? playNextMMClips.get(s):playNextMMClips.get("?");
 
