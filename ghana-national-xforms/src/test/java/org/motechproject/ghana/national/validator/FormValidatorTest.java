@@ -8,8 +8,10 @@ import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mrs.model.MRSUser;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,7 +20,7 @@ import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
+import static org.motechproject.ghana.national.domain.Constants.*;
 
 public class FormValidatorTest {
     private FormValidator formValidator;
@@ -62,5 +64,14 @@ public class FormValidatorTest {
 
         formErrors = formValidator.validateIfStaffExists(staffId);
         assertThat(formErrors, not(hasItem(new FormError(FormValidator.STAFF_ID, NOT_FOUND))));
+    }
+    
+    @Test
+    public void shouldValidateNhisExpiryDate() {
+        Date nhisExpires = DateUtil.now().minusDays(30).toDate();
+        
+        List<FormError> formErrors = formValidator.validateNHISExpiry(nhisExpires);
+        assertThat(formErrors,hasItem(new FormError(NHIS_EXPIRY,IN_PAST)));
+        
     }
 }

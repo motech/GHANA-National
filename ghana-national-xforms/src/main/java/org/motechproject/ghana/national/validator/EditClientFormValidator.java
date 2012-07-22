@@ -36,6 +36,7 @@ public class EditClientFormValidator extends FormValidator<EditClientForm> {
             formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getUpdatePatientFacilityId()));
         }
 
+        formErrors.addAll(formValidator.validateNHISExpiry(formBean.getNhisExpires()));
         List<FormBean> formsSubmitted = group.getFormBeans();
         PatientValidator patientValidator = new ExistsInDb().onSuccess(new IsAlive()).onFailure(new RegClientFormSubmittedInSameUpload());
         formErrors.addAll(dependentValidator().validate(formValidator.getPatient(formBean.getMotechId()), formsSubmitted, allForms, patientValidator));

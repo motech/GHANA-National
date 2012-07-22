@@ -12,12 +12,14 @@ public class Constants {
     public static final String PERSON_ATTRIBUTE_TYPE_STAFF_TYPE = "Staff Type";
     public static final String CLIENT_QUERY_TYPE = "queryType";
     public static final String NO_MATCHING_RECORDS_FOUND = "No matching records found.";
+    public static final String IN_PAST = "cannot be in the past";
 
     public static final String COUNTRIES = "countries";
     public static final String REGIONS = "regions";
     public static final String DISTRICTS = "districts";
     public static final String PROVINCES = "provinces";
     public static final String FACILITIES = "facilities";
+    public static final String NHIS_EXPIRY = "NHIS Expiry Date";
     public static final int EMAIL_SUCCESS = 1;
     public static final int EMAIL_FAILURE = 0;
     public static final int EMAIL_USER_NOT_FOUND = -1;
