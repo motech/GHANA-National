@@ -86,6 +86,7 @@ public class MotechIdValidationTransition extends Transition {
         if (pendingRetries != 0){
             node.setTransitionTimeout(callCenterDtmfTimeout);
             node.setTransitionFinishOnKey(callCenterFinishOnKey);
+            node.setTransitionNumDigits("1");
             node.addTransitionPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));
             node.addTransition("0", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
             node.addTransition("*", connectToCallCenter.getAsTransition(callCenterPhoneNumber));

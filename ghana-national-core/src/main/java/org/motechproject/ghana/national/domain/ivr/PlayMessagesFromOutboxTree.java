@@ -129,6 +129,7 @@ public class PlayMessagesFromOutboxTree {
         rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingClips.get(0), valueOf(language))))
                 .addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingPrompts.get(0), valueOf(language))))
                 .setTransitions(transitions);
+        rootNode.setTransitionNumDigits("1");
         rootNode.setTransitionTimeout(callCenterDtmfTimeout);
         rootNode.setTransitionFinishOnKey(callCenterFinishOnKey);
 
@@ -138,6 +139,7 @@ public class PlayMessagesFromOutboxTree {
         for (Prompt prompt : rootNode.getPrompts()) {
             node.addPrompts(prompt);
         }
+        node.setTransitionNumDigits("1");
         node.setTransitionTimeout(callCenterDtmfTimeout);
         node.setTransitionFinishOnKey(callCenterFinishOnKey);
         node.setTransitions(transitions);
