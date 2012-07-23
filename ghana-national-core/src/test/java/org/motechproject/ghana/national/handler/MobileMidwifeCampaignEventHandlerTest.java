@@ -181,7 +181,7 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
 
         handler.sendProgramMessage(motechEvent(patientId, campaignName, mobileMidwifeEnrollment.getEnrollmentDateTime()));
 
-        verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, MobileMidwifeAudioClips.instance(mobileMidwifeEnrollment.getServiceType().getValue(), messageStartWeek), Period.weeks(1));
+        verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, MobileMidwifeAudioClips.instance(mobileMidwifeEnrollment.getServiceType().getValue(), messageStartWeek, mobileMidwifeEnrollment.getLanguage().name()), Period.weeks(1));
         verify(mockRetryService, never()).schedule(eq(new RetryRequest("retry-ivr-every-2hrs-and-30mins", patientId, now)));
         verify(mockIVRGateway, never()).placeCall(mobileMidwifeEnrollment.getPhoneNumber(), new HashMap<String, String>() {{
             put(IVRRequestBuilder.CALLBACK_URL, url);
@@ -212,7 +212,7 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
         handler.sendProgramMessage(motechEvent(patientId, campaignName, mobileMidwifeEnrollment.getEnrollmentDateTime()));
 
 
-        verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, MobileMidwifeAudioClips.instance(mobileMidwifeEnrollment.getServiceType().getValue(), messageStartWeek), Period.weeks(1));
+        verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, MobileMidwifeAudioClips.instance(mobileMidwifeEnrollment.getServiceType().getValue(), messageStartWeek, mobileMidwifeEnrollment.getLanguage().name()), Period.weeks(1));
         verify(mockRetryService).schedule(eq(new RetryRequest(Constants.RETRY_FOR_2_HOURS_EVERY_30MIN, patientId, now)));
         verify(mockIVRGateway).placeCall(mobileMidwifeEnrollment.getPhoneNumber(), new HashMap<String, String>() {{
             put(IVRRequestBuilder.CALLBACK_URL, url);
@@ -232,7 +232,7 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
         handler.sendProgramMessage(motechEvent(patientId, campaignName, mobileMidwifeEnrollment.getEnrollmentDateTime()));
 
 
-        verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, MobileMidwifeAudioClips.instance(mobileMidwifeEnrollment.getServiceType().getValue(), messageStartWeek), Period.weeks(1));
+        verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, MobileMidwifeAudioClips.instance(mobileMidwifeEnrollment.getServiceType().getValue(), messageStartWeek, mobileMidwifeEnrollment.getLanguage().name()), Period.weeks(1));
         verify(mockRetryService).schedule(eq(new RetryRequest(Constants.RETRY_FOR_2_HOURS_EVERY_30MIN, patientId, currentDateTime)));
         verify(mockIVRGateway).placeCall(mobileMidwifeEnrollment.getPhoneNumber(), new HashMap<String, String>() {{
             put(IVRRequestBuilder.CALLBACK_URL, url);
