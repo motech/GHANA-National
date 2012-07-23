@@ -15,14 +15,20 @@ import static org.motechproject.ghana.national.domain.Constants.CHILD_AGE_PARAME
 
 public class IsFormSubmittedForAChild extends PatientValidator {
     private Date dateOfBirth;
+    private FormError formError;
 
-    public IsFormSubmittedForAChild(Date dateOfBirth) {
+    public  IsFormSubmittedForAChild(Date dateOfBirth, FormError formError) {
         this.dateOfBirth = dateOfBirth;
+        this.formError = formError;
     }
 
     @Override
     public List<FormError> validate(Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms) {
         return DateUtil.isOnOrBefore(DateUtil.newDate(dateOfBirth).toDateTimeAtStartOfDay(),DateUtil.today().minusYears(5).toDateTimeAtStartOfDay()) ?
-                Arrays.asList(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_MORE_ERR_MSG)) : new ArrayList<FormError>();
+                getFormError() : new ArrayList<FormError>();
+    }
+
+    private List<FormError> getFormError() {
+        return formError == null ? Arrays.asList(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_MORE_ERR_MSG)) : Arrays.asList(formError);
     }
 }

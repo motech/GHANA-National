@@ -40,7 +40,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         Patient patient = formValidator.getPatient(formBean.getMotechId());
 
         PatientValidator validators = new AlwaysValid().onSuccess(new NotExistsInDb(), RegistrationType.USE_PREPRINTED_ID.equals(formBean.getRegistrationMode()))
-                .onSuccess(new IsFormSubmittedForAChild(formBean.getDateOfBirth()), PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType()))
+                .onSuccess(new IsFormSubmittedForAChild(formBean.getDateOfBirth(),null), PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType()))
                 .onSuccess(new IsFormSubmittedForAFemale(formBean.getSex()), PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType()))
                 .onFailure(new ExistsInDb(new FormError(mothersMotechId, NOT_FOUND)));
 

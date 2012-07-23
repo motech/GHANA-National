@@ -26,13 +26,13 @@ public class IsFormSubmittedForAChildTest {
 
         //child is less than five years of age
         Date dateOfBirth = DateUtil.now().minusYears(4).toDate();
-        IsFormSubmittedForAChild validator = new IsFormSubmittedForAChild(dateOfBirth);
+        IsFormSubmittedForAChild validator = new IsFormSubmittedForAChild(dateOfBirth,null);
         List<FormError> errors = validator.validate(new Patient(), Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
         assertThat(errors.size(),is(0));
 
         //child is above five years
         dateOfBirth = DateUtil.now().minusYears(6).toDate();
-        validator = new IsFormSubmittedForAChild(dateOfBirth);
+        validator = new IsFormSubmittedForAChild(dateOfBirth,null);
         errors = validator.validate(new Patient(), Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
         assertThat(errors.size(),is(1));
         assertThat(errors, Matchers.hasItem(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_MORE_ERR_MSG)));

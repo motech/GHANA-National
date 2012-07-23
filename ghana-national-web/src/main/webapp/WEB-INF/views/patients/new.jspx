@@ -70,7 +70,13 @@
         <spring:message code="incorrect_msg" var="incorrect_msg" htmlEscape="false"/>
         <spring:message code="phone_number_incorrect_msg" var="phone_number_incorrect_msg" htmlEscape="false"/>
         <spring:message code="patient_phone_number" var="patient_phone_number" htmlEscape="false"/>
-
+        <c:if test="${validationErrors ne null}">
+            <div id="errors" class="formlyAlerts formlyInvalid formlyAlert" style="display: block;">
+                <c:forEach items="${validationErrors}" var="errorObj">
+                    <c:out value="${errorObj.parameter} "/><c:out value="${errorObj.error}"/><br/>
+                </c:forEach>
+            </div>
+        </c:if>
         <div>
             <label for="staffId" class="formLabel"><spring:message code="staff_id"/> *:</label>
             <form:input path="staffId" size="20"  cssClass="jsRequire"/>
