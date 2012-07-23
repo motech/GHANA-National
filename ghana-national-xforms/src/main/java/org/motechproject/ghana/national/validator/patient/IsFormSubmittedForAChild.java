@@ -22,7 +22,7 @@ public class IsFormSubmittedForAChild extends PatientValidator {
 
     @Override
     public List<FormError> validate(Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms) {
-        return DateUtil.getDifferenceOfDatesInYears(dateOfBirth) > 5 ?
+        return DateUtil.isOnOrBefore(DateUtil.newDate(dateOfBirth).toDateTimeAtStartOfDay(),DateUtil.today().minusYears(5).toDateTimeAtStartOfDay()) ?
                 Arrays.asList(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_MORE_ERR_MSG)) : new ArrayList<FormError>();
     }
 }
