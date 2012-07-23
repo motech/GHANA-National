@@ -150,7 +150,7 @@ public class PlayMessagesFromOutboxTree {
             playMultipleMMClips(pendingClips.subList(i, pendingClips.size()), pendingPrompts.subList(i, pendingPrompts.size()), transitionNode, ivrClipManager, language);
             transitions.put(i + 1 + "", new Transition().setDestinationNode(transitionNode));
         }
-        transitions.put("timeout", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
+        transitions.put("timeout", new Transition().setDestinationNode(new Node()));
         transitions.put("?", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
 
 
