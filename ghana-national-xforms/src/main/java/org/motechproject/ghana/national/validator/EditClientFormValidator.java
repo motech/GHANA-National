@@ -38,12 +38,16 @@ public class EditClientFormValidator extends FormValidator<EditClientForm> {
 
         formErrors.addAll(formValidator.validateNHISExpiry(formBean.getNhisExpires()));
         List<FormBean> formsSubmitted = group.getFormBeans();
-        PatientValidator patientValidator = new ExistsInDb().onSuccess(new IsAlive()).onFailure(new RegClientFormSubmittedInSameUpload());
-        formErrors.addAll(dependentValidator().validate(formValidator.getPatient(formBean.getMotechId()), formsSubmitted, allForms, patientValidator));
+        formErrors.addAll(validatePatient(formBean.getMotechId(), allForms, formsSubmitted));
         if (formBean.getMotherMotechId() != null)
             validateMother(formBean, formErrors, formsSubmitted, allForms);
 
         return formErrors;
+    }
+
+    public List<FormError> validatePatient(String motechId, List<FormBean> allForms, List<FormBean> formsSubmitted) {
+        PatientValidator patientValidator = new ExistsInDb().onSuccess(new IsAlive()).onFailure(new RegClientFormSubmittedInSameUpload());
+        return dependentValidator().validate(formValidator.getPatient(motechId), formsSubmitted, allForms, patientValidator);
     }
 
     private void validateMother(EditClientForm formBean, List<FormError> formErrors, List<FormBean> formsWithinGroup, List<FormBean> allForms) {

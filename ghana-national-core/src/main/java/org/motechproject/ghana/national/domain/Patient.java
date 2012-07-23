@@ -13,7 +13,6 @@ import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
-import static org.apache.commons.collections.CollectionUtils.union;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 import static org.motechproject.ghana.national.tools.Utility.safeToString;
@@ -22,7 +21,7 @@ import static org.motechproject.util.DateUtil.newDateTime;
 
 public class Patient {
     public static List<String> ancCarePrograms = unmodifiableList(asList(ANC_DELIVERY.getName(), ANC_IPT_VACCINE.getName(), TT_VACCINATION.getName()));
-    public static List<String> cwcCarePrograms = unmodifiableList(asList(CWC_ROTAVIRUS.getName(),CWC_BCG.getName(), CWC_MEASLES_VACCINE.getName(), CWC_PENTA.getName(), CWC_OPV_0.getName(),
+    public static List<String> cwcCarePrograms = unmodifiableList(asList(CWC_ROTAVIRUS.getName(),CWC_PNEUMOCOCCAL.getName(),CWC_BCG.getName(), CWC_MEASLES_VACCINE.getName(), CWC_PENTA.getName(), CWC_OPV_0.getName(),
             CWC_OPV_OTHERS.getName(), CWC_IPT_VACCINE.getName(), CWC_YELLOW_FEVER.getName(), TT_VACCINATION.getName()));
     public static final List<String> pncMotherCarePrograms = unmodifiableList(PNCMotherVisit.schedules());
     public static final List<String> pncChildCarePrograms = unmodifiableList(PNCChildVisit.schedules());
@@ -88,7 +87,12 @@ public class Patient {
     }
 
     public List<String> allCareProgramsToUnEnroll() {
-        return new ArrayList<String>(new HashSet<String>(union(ancCarePrograms, cwcCarePrograms)));
+        ArrayList<String> schedules = new ArrayList<>();
+        schedules.addAll(ancCarePrograms);
+        schedules.addAll(cwcCarePrograms);
+        schedules.addAll(pncChildCarePrograms);
+        schedules.addAll(pncMotherCarePrograms);
+        return new ArrayList<String>(new HashSet<String>(schedules));
     }
 
     public List<PatientCare> cwcCareProgramToEnrollOnRegistration(LocalDate enrollmentDate, List<CwcCareHistory> historiesCaptured, CWCCareHistoryVO cwcCareHistoryVO, ActiveCareSchedules activeCareSchedules, Date lastPentaDate, Date lastIPTiDate, Date lastOPVDate, Date lastRotavirusDate, Date lastPneumococcalDate) {

@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.ghana.national.bean.EditClientForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationType;
@@ -14,11 +15,17 @@ import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
 import org.motechproject.ghana.national.repository.IdentifierGenerator;
-import org.motechproject.ghana.national.service.*;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
+import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.StaffService;
+import org.motechproject.ghana.national.validator.EditClientFormValidator;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.form.SearchPatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.ghana.national.web.helper.PatientHelper;
+import org.motechproject.mobileforms.api.domain.FormBean;
+import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
@@ -37,6 +44,7 @@ import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -71,6 +79,8 @@ public class PatientControllerTest {
     StaffService mockStaffService;
     @Mock
     MobileMidwifeService mobileMidwifeService;
+    @Mock
+    EditClientFormValidator mockEditClientFormValidator;
 
     @Before
     public void setUp() throws Exception {
@@ -85,6 +95,7 @@ public class PatientControllerTest {
         ReflectionTestUtils.setField(patientController, "motechIdVerhoeffValidator", mockMotechIdVerhoeffValidator);
         ReflectionTestUtils.setField(patientController, "identifierGenerator", mockIdentifierGenerator);
         ReflectionTestUtils.setField(patientController, "mobileMidwifeService", mobileMidwifeService);
+        ReflectionTestUtils.setField(patientController, "editClientFormValidator", mockEditClientFormValidator);
         mockBindingResult = mock(BindingResult.class);
         when(mockPatientService.registerPatient(any(Patient.class), any(String.class), Matchers.<Date>any())).thenReturn(new Patient(new MRSPatient(null, null, null)));
     }
@@ -127,6 +138,26 @@ public class PatientControllerTest {
         String view = patientController.createPatient(createPatientForm, mockBindingResult, new ModelMap());
         verify(mockPatientService, never()).registerPatient(any(Patient.class), any(String.class), Matchers.<Date>any());
         assertEquals("patients/new", view);
+    }
+
+    @Test
+    public void shouldNotSavePatientIfValidationErrors() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
+        EditClientForm editClientForm = new EditClientForm();
+        String motechId = "1267";
+        String facilityId = "12";
+        editClientForm.setStaffId("staffId");
+        editClientForm.setMotechId(motechId);
+        editClientForm.setFacilityId(facilityId);
+        Facility mockFacility = mock(Facility.class);
+        MRSPerson person = new MRSPerson();
+        person.dead(true);
+        Patient patient = new Patient(new MRSPatient(motechId, person,new MRSFacility(facilityId)));
+        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
+        when(mockEditClientFormValidator.validatePatient(motechId, Collections.<FormBean>emptyList(),Collections.<FormBean>emptyList())).thenReturn(Arrays.asList(new FormError("motechId","is not alive")));
+        when(mockFacilityService.getFacility(editClientForm.getFacilityId())).thenReturn(mockFacility);
+        String view = patientController.edit(new ModelMap(), motechId);
+        verify(mockPatientService, never()).updatePatient(any(Patient.class), any(String.class), Matchers.<Date>any());
+        assertEquals("patients/edit", view);
     }
 
     @Test
@@ -193,12 +224,15 @@ public class PatientControllerTest {
     @Test
     public void shouldReturnEditPatientForm() {
         final ModelMap modelMap = new ModelMap();
-
-        String motechId = "";
+        String motechId = "motechId";
+        MRSPerson person = new MRSPerson();
+        person.dead(false);
+        Patient patient = new Patient(new MRSPatient(motechId, person,new MRSFacility("facId")));
         when(mobileMidwifeService.findActiveBy(motechId)).thenReturn(new MobileMidwifeEnrollment(DateTime.now()));
         when(mockFacilityHelper.locationMap()).thenReturn(new HashMap<String, Object>() {{
             put("key", new Object());
         }});
+        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(patient);
         final String edit = patientController.edit(modelMap, motechId);
         assertThat(edit, is(equalTo(PatientController.EDIT_PATIENT_URL)));
     }
