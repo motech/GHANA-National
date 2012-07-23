@@ -47,7 +47,7 @@ public class InboundDecisionTreeSeed extends Seed {
     private Node chooseLanguageNodeWithRetry(){
         Node chooseLanguageFirstChance = chooseLanguageNode();
         Node chooseLanguageSecondChance = chooseLanguageNode();
-        chooseLanguageSecondChance.getTransitions().put("timeout", new Transition().setDestinationNode(connectToCallCenter.getAsNode(callCenterPhoneNumber)));
+        chooseLanguageSecondChance.getTransitions().put("timeout", new Transition().setDestinationNode(new Node()));
         chooseLanguageFirstChance.getTransitions().put("timeout", new Transition().setDestinationNode(chooseLanguageSecondChance));
         return chooseLanguageFirstChance;
     }
@@ -70,7 +70,7 @@ public class InboundDecisionTreeSeed extends Seed {
         Node node = prompt(REASON_FOR_CALL_PROMPT, language);
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
         transitions.put("1", new Transition().setDestinationNode(validateMotechIdNode(language, 3)));
-        transitions.put("timeout", new Transition().setDestinationNode(connectToCallCenter.getAsNode(callCenterPhoneNumber)));
+        transitions.put("timeout", new Transition().setDestinationNode(new Node()));
         transitions.put("?", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
         node.setTransitionNumDigits("1");
         node.setTransitionTimeout(callCenterDtmfTimeout);

@@ -65,6 +65,24 @@ public class IVRInboundCallIT {
     }
 
     @Test
+    public void shouldHangupIfUserDoesNotSelectAValidLanguageOptionAfter20SecTheSecondTime(){
+        String response = verboiceStub.handleIncomingCall();
+        response = verboiceStub.handleTimeout(response);
+
+        String selectLanguagePrompt = fileName(AudioPrompts.LANGUAGE_PROMPT);
+        TwiML expectedActions = new TwiML()
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(selectLanguagePrompt, "EN"))))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=L3RpbWVvdXQ&Digits=timeout")));
+
+        verboiceStub.expect(expectedActions, response);
+
+        response = verboiceStub.handleTimeout(response);
+        expectedActions = new TwiML().addAction(new TwiML.Exit());
+        verboiceStub.expect(expectedActions, response);
+    }
+
+
+    @Test
     public void shouldConnectToCallCenterIfTherUserEntersAnInvalidOptionOtherThanTheLanguageOptions(){
         String response = verboiceStub.handleIncomingCall();
         String invalidLanguageOption = "5";
@@ -134,7 +152,7 @@ public class IVRInboundCallIT {
     }
 
     @Test
-    public void shouldConnectToCallCenterIfUserDoesNotSelectionAnOptionForReasonForTheCall(){
+    public void shouldDisconnectTheCallIfUserDoesNotSelectionAnOptionForReasonForTheCall(){
         String response = verboiceStub.handleIncomingCall();
         String englishLanguageChoice = "1";
         response = verboiceStub.handle(response, englishLanguageChoice);
@@ -144,6 +162,11 @@ public class IVRInboundCallIT {
                 .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(reasonForCallPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzE&Digits=timeout")));
 
+        verboiceStub.expect(expectedActions, response);
+
+        response = verboiceStub.handleTimeout(response);
+
+        expectedActions = new TwiML().addAction(new TwiML.Exit());
         verboiceStub.expect(expectedActions, response);
     }
     
@@ -295,9 +318,9 @@ public class IVRInboundCallIT {
 
         verboiceStub.expect(expectedActions, response);
     }
-    
+
     @Test
-    public void shouldConnectToCallCenterIfUserDoesNotEnterAInputFor20Sec_Or_ProvidesAnInvalidInput_Or_OptsForItWhileListeningToMMMessages(){
+    public void shouldDisconnectTheCallIfUserDoesNotEnterAInputFor20SecForMMMessagePrompt(){
 
         String response = verboiceStub.handleIncomingCall();
         String englishLanguageChoice = "1";
@@ -328,11 +351,44 @@ public class IVRInboundCallIT {
         verboiceStub.expect(expectedActions, response);
 
         // no action - and timed out
-        TwiML expectedConnectToCallCenterActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
+        TwiML expectedConnectToCallCenterActions = new TwiML().addAction(new TwiML.Exit());
 
         String timeOutResponse = verboiceStub.handleTimeout(response);
         verboiceStub.expect(expectedConnectToCallCenterActions, timeOutResponse);
+    }
+    
+    @Test
+    public void shouldConnectToCallCenterIfUserProvidesAnInvalidInput_Or_OptsForItWhileListeningToMMMessages(){
 
+        String response = verboiceStub.handleIncomingCall();
+        String englishLanguageChoice = "1";
+        response = verboiceStub.handle(response, englishLanguageChoice);
+        String listenMessagesChoice = "1";
+        response = verboiceStub.handle(response, listenMessagesChoice);
+
+        // first message
+        response = verboiceStub.handle(response, patientWithMM.getMotechId());
+        TwiML expectedActions = new TwiML()
+                .addAction(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.IPT_DUE), "EN")))
+                .addAction(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.TT_DUE), "EN")))
+                .addAction(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.PNC_MOTHER_DUE), "EN")))
+                .addAction(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.ANC_DUE), "EN")))
+                .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getClipNames().get(0)), "EN")))
+                .addAction(new TwiML.Gather(ANYTHING, "0", null))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=" + Base64.encodeBase64URLSafeString(("/1/1/" + patientWithMM.getMotechId()).getBytes()) + "&Digits=timeout")));
+
+        verboiceStub.expect(expectedActions, response);
+
+        // cancel retry and proceed
+        response = verboiceStub.handleTimeout(response);
+        expectedActions = new TwiML()
+                .addAction(new TwiML.Play(testAppServer.clipPath(fileName(MobileMidwifeAudioClips.PREGNANCY_WEEK_7.getPromptClipNames().get(0)), "EN")))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY))
+                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=" + Base64.encodeBase64URLSafeString(("/1/1/" + patientWithMM.getMotechId() + "/timeout").getBytes()) + "&Digits=timeout")));
+
+        verboiceStub.expect(expectedActions, response);
+
+        TwiML expectedConnectToCallCenterActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
         // invalid input
         String invalidInputResponse = verboiceStub.handle(response, "invalid");
         verboiceStub.expect(expectedConnectToCallCenterActions, invalidInputResponse);
@@ -349,11 +405,6 @@ public class IVRInboundCallIT {
 
 
         verboiceStub.expect(expectedActions, secondMessageResponse);
-
-        // no action - and timed out
-        timeOutResponse = verboiceStub.handleTimeout(secondMessageResponse);
-        verboiceStub.expect(expectedConnectToCallCenterActions, timeOutResponse);
-
 
         // invalid input
         invalidInputResponse = verboiceStub.handle(secondMessageResponse, "invalid");

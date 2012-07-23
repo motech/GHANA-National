@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.validator;
 
-import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
@@ -41,10 +40,9 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         Patient patient = formValidator.getPatient(formBean.getMotechId());
 
         PatientValidator validators = new AlwaysValid().onSuccess(new NotExistsInDb(), RegistrationType.USE_PREPRINTED_ID.equals(formBean.getRegistrationMode()))
-                .onSuccess(new IsFormSubmittedForAChild(formBean.getDateOfBirth()), PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType()))
+                .onSuccess(new IsFormSubmittedForAChild(formBean.getDateOfBirth(),null), PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType()))
                 .onSuccess(new IsFormSubmittedForAFemale(formBean.getSex()), PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType()))
-                .onSuccess(new ExistsInDb(new FormError(mothersMotechId, NOT_FOUND))
-                        .onFailure(new RegClientFormSubmittedInSameUploadForMotechId(formBean.getMotherMotechId())), PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType()) && !StringUtils.isEmpty(formBean.getMotherMotechId()));
+                .onFailure(new ExistsInDb(new FormError(mothersMotechId, NOT_FOUND)));
 
         formErrors.addAll(getDependentValidator().validate(patient, group.getFormBeans(), allForms, validators));
         return formErrors;
