@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.ANCCareHistory;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.helper.FormWithHistoryInput;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
@@ -13,13 +14,14 @@ import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.MOTECH_ID_PATTERN;
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.NUMERIC_OR_NOTAPPLICABLE_PATTERN;
 import static org.motechproject.util.DateUtil.newDateTime;
 
-public class RegisterANCForm extends MobileMidWifeIncludeForm {
+public class RegisterANCForm extends MobileMidWifeIncludeForm implements FormWithHistoryInput{
 
     @Required
     @MaxLength(size = 50)
@@ -234,6 +236,14 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm {
     @Override
     public String groupId() {
         return motechId;
+    }
+
+    @Override
+    public HashMap<String, Date> getHistoryDatesMap() {
+        return new HashMap<String, Date>() {{
+            put("lastIPTDate", lastIPTDate);
+            put("lastTTDate", lastTTDate);
+        }};
     }
 }
 

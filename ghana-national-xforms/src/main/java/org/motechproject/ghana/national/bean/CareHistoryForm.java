@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.bean;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.ANCCareHistory;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
+import org.motechproject.ghana.national.helper.FormWithHistoryInput;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.ghana.national.vo.ANCCareHistoryVO;
 import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
@@ -15,11 +16,12 @@ import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.MOTECH_ID_PATTERN;
 
-public class CareHistoryForm extends FormBean {
+public class CareHistoryForm extends FormBean implements FormWithHistoryInput{
 
     @Required
     @MotechId(validator = VerhoeffValidator.class)
@@ -286,5 +288,22 @@ public class CareHistoryForm extends FormBean {
     @Override
     public String groupId() {
         return motechId;
+    }
+
+    @Override
+    public HashMap<String, Date> getHistoryDatesMap() {
+        return new HashMap<String,Date>() {{
+            put("lastPneumococcalDate",lastPneumococcalDate);
+            put("lastIPTiDate",lastIPTIDate);
+            put("lastOPVDate",lastOPVDate);
+            put("lastPentaDate",lastPentaDate);
+            put("lastRotavirusDate",lastRotavirusDate);
+            put("bcgDate",bcgDate);
+            put("yfDate",yellowFeverDate);
+            put("vitADate",lastVitaminADate);
+            put("measlesDate",measlesDate);
+            put("lastIPTDate",lastIPTDate);
+            put("lastTTDate",lastTTDate);
+        }};
     }
 }

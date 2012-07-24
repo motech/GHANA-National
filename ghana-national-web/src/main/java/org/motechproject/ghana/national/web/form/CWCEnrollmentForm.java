@@ -2,11 +2,13 @@ package org.motechproject.ghana.national.web.form;
 
 import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.helper.FormWithHistoryInput;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
-public class CWCEnrollmentForm {
+public class CWCEnrollmentForm implements FormWithHistoryInput{
 
     private String staffId;
     private String patientMotechId;
@@ -206,5 +208,21 @@ public class CWCEnrollmentForm {
 
     public void setLastPneumococcal(Integer lastPneumococcal) {
         this.lastPneumococcal = lastPneumococcal;
+    }
+
+
+    @Override
+    public HashMap<String, Date> getHistoryDatesMap() {
+        return new HashMap<String,Date>() {{
+            put("lastPneumococcalDate",lastPneumococcalDate);
+            put("lastIPTiDate",lastIPTiDate);
+            put("lastOPVDate",lastOPVDate);
+            put("lastPentaDate",lastPentaDate);
+            put("lastRotavirusDate",lastRotavirusDate);
+            put("bcgDate",bcgDate);
+            put("yfDate",yfDate);
+            put("vitADate",vitADate);
+            put("measlesDate",measlesDate);
+        }};
     }
 }

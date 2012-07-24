@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -9,7 +10,6 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.CareService;
-import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
@@ -21,6 +21,7 @@ import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSEncounter;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 
@@ -28,6 +29,8 @@ import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 import static org.apache.commons.lang.builder.EqualsBuilder.reflectionEquals;
+import static org.hamcrest.Matchers.hasItem;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -89,8 +92,12 @@ public class ANCControllerTest {
     public void shouldSaveANCEnrollment() throws ObservationNotFoundException {
         ModelMap modelMap = new ModelMap();
         ANCEnrollmentForm ancEnrollmentForm = createTestANCEnrollmentForm();
-        when(mockValidator.validatePatient(ancEnrollmentForm.getMotechPatientId(), Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(Collections.<FormError>emptyList());
+        ancEnrollmentForm.setAddHistory(false);
+        Patient patient = mock(Patient.class);
+        when(mockFormValidator.getPatient(ancEnrollmentForm.getMotechPatientId())).thenReturn(patient);
+        when(mockValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(Collections.<FormError>emptyList());
         when(mockFormValidator.validateIfStaffExists(ancEnrollmentForm.getStaffId())).thenReturn(Collections.<FormError>emptyList());
+        when(patient.dateOfBirth()).thenReturn(DateTime.now());
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
 
         ancController.save(ancEnrollmentForm, modelMap);
@@ -113,15 +120,16 @@ public class ANCControllerTest {
         ArrayList<FormError> staffErrors = new ArrayList<FormError>();
         FormError staffIdError = new FormError("staffId", "staffId not found");
         staffErrors.add(staffIdError);
-        when(mockFormValidator.validateIfStaffExists(ancEnrollmentForm.getStaffId())).thenReturn(patientErrors);
-        when(mockValidator.validatePatient(ancEnrollmentForm.getMotechPatientId(), Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(staffErrors);
-
+        when(mockFormValidator.validateIfStaffExists(ancEnrollmentForm.getStaffId())).thenReturn(staffErrors);
+        Patient patient = mock(Patient.class);
+        when(mockFormValidator.getPatient(ancEnrollmentForm.getMotechPatientId())).thenReturn(patient);
+        when(mockValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(patientErrors);
+        when(patient.dateOfBirth()).thenReturn(DateTime.now());
         ancController.save(ancEnrollmentForm, modelMap);
         verify(mockCareService, never()).enroll((ANCVO) null);
         assertTrue(modelMap.containsKey("validationErrors"));
 
         ArrayList<FormError> errorsFromModelMap = (ArrayList<FormError>) modelMap.get("validationErrors");
-        assertEquals(2, errorsFromModelMap.size());
         assertTrue(errorsFromModelMap.contains(motechIdError));
         assertTrue(errorsFromModelMap.contains(staffIdError));
         checkIfCareHistoryAttributesArePlacedInModelMap(modelMap, ancEnrollmentForm);
@@ -136,7 +144,8 @@ public class ANCControllerTest {
 
         MRSEncounter mrsEncounter = new MRSEncounter();
         Patient patient = mock(Patient.class);
-        when(mockValidator.validatePatient(motechPatientId, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(errors);
+        when(mockFormValidator.getPatient(ancEnrollmentForm.getMotechPatientId())).thenReturn(patient);
+        when(mockValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(errors);
         when(mockAllEncounters.getLatest(motechPatientId, ANC_REG_VISIT.value())).thenReturn(mrsEncounter);
         when(mockANCFormMapper.convertMRSEncounterToView(mrsEncounter)).thenReturn(ancEnrollmentForm);
 
@@ -157,11 +166,33 @@ public class ANCControllerTest {
             add(new FormError("motechId", "should be female for registering into ANC"));
         }};
         Patient patient = mock(Patient.class);
-        when(mockValidator.validatePatient(motechPatientId, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(errors);
+        when(mockFormValidator.getPatient(ancEnrollmentForm.getMotechPatientId())).thenReturn(patient);
+        when(mockValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(errors);
         ancController.newANC(motechPatientId, modelMap);
         assertTrue(modelMap.containsKey("ancEnrollmentForm"));
 
         checkIfCareHistoryAttributesArePlacedInModelMap(modelMap, ancEnrollmentForm);
+    }
+
+    @Test
+    public void shouldThrowErrorIfHistoryDatesBeforeDOB() throws ObservationNotFoundException {
+        ModelMap modelMap = new ModelMap();
+        List<FormError> datesError = new ArrayList<FormError>(){{
+            add(new FormError("lastTTDate","should be after date of birth"));
+            add(new FormError("lastIPTDate", "should be after date of birth"));
+        }};
+        ANCEnrollmentForm ancEnrollmentForm = createTestANCEnrollmentForm();
+
+        Patient patient = mock(Patient.class);
+        when(mockFormValidator.getPatient(ancEnrollmentForm.getMotechPatientId())).thenReturn(patient);
+        when(patient.dateOfBirth()).thenReturn(DateTime.now());
+        ancController.save(ancEnrollmentForm,modelMap);
+        assertTrue(modelMap.containsKey("validationErrors"));
+
+        List<FormError> errorsFromModelMap = (List<FormError>) modelMap.get("validationErrors");
+        assertThat(errorsFromModelMap,hasItem(datesError.get(0)));
+        assertThat(errorsFromModelMap,hasItem(datesError.get(1)));
+        verify(mockCareService,never()).enroll(Matchers.<ANCVO>any());
     }
 
     private void checkIfCareHistoryAttributesArePlacedInModelMap(ModelMap modelMap, ANCEnrollmentForm ancEnrollmentForm) {
@@ -197,16 +228,16 @@ public class ANCControllerTest {
         ancEnrollmentForm.setSerialNumber("12432423423");
         ancEnrollmentForm.setRegistrationDate(new Date());
         ancEnrollmentForm.setDeliveryDateConfirmed(true);
-        ancEnrollmentForm.setEstimatedDateOfDelivery(new Date(2012, 3, 4));
+        ancEnrollmentForm.setEstimatedDateOfDelivery(DateUtil.newDate(2012, 3, 4).toDate());
         FacilityForm facilityForm = new FacilityForm();
         facilityForm.setFacilityId("21212");
         ancEnrollmentForm.setFacilityForm(facilityForm);
         ancEnrollmentForm.setGravida(3);
         ancEnrollmentForm.setHeight(4.67);
         ancEnrollmentForm.setLastIPT("4");
-        ancEnrollmentForm.setLastIPTDate(new Date(2011, 8, 8));
+        ancEnrollmentForm.setLastIPTDate(DateUtil.newDate(2011, 8, 8).toDate());
         ancEnrollmentForm.setLastTT("5");
-        ancEnrollmentForm.setLastTTDate(new Date(2011, 7, 6));
+        ancEnrollmentForm.setLastTTDate(DateUtil.newDate(2011, 7, 6).toDate());
         ancEnrollmentForm.setMotechPatientId("343423423");
         ancEnrollmentForm.setParity(3);
         ancEnrollmentForm.setRegistrationToday(RegistrationToday.IN_PAST);
