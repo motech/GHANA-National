@@ -1,12 +1,14 @@
 package org.motechproject.ghana.national.web;
 
 import org.motechproject.ghana.national.domain.ANCCareHistory;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.RegisterANCFormValidator;
+import org.motechproject.ghana.national.validator.patient.HistoryDateValidator;
 import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.web.form.ANCEnrollmentForm;
 import org.motechproject.ghana.national.web.helper.ANCFormMapper;
@@ -66,15 +68,10 @@ public class ANCController {
     @ApiSession
     @RequestMapping(value = "new", method = RequestMethod.GET)
     public String newANC(@RequestParam("motechPatientId") String motechPatientId, ModelMap modelMap) {
-        List<FormError> formErrors = registerANCFormValidator.validatePatient(motechPatientId, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
         ANCEnrollmentForm enrollmentForm = new ANCEnrollmentForm(motechPatientId);
-        if (formErrors.isEmpty()) {
             MRSEncounter mrsEncounter = allEncounters.getLatest(motechPatientId, ANC_REG_VISIT.value());
             enrollmentForm = (mrsEncounter == null) ? enrollmentForm : ancFormMapper.convertMRSEncounterToView(mrsEncounter);
             ancFormMapper.populatePregnancyInfo(motechPatientId, enrollmentForm);
-        } else {
-            modelMap.addAttribute("validationErrors", formErrors);
-        }
         modelMap.put("ancEnrollmentForm", enrollmentForm);
         addCareHistoryValues(modelMap);
         return ENROLL_ANC_URL;
@@ -83,7 +80,10 @@ public class ANCController {
     @ApiSession
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String save(@Valid ANCEnrollmentForm ancEnrollmentForm, ModelMap modelMap) throws ObservationNotFoundException {
-        List<FormError> formErrors = registerANCFormValidator.validatePatient(ancEnrollmentForm.getMotechPatientId(), Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
+        Patient patient = formValidator.getPatient(ancEnrollmentForm.getMotechPatientId());
+        List<FormError> formErrors = registerANCFormValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
+        if(ancEnrollmentForm.getAddHistory())
+            formErrors.addAll(historyDateValidator(ancEnrollmentForm).validate(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList()));
         formErrors.addAll(formValidator.validateIfStaffExists(ancEnrollmentForm.getStaffId()));
         if (formErrors.isEmpty()) {
             careService.enroll(createANCVO(ancEnrollmentForm));
@@ -96,6 +96,11 @@ public class ANCController {
         addCareHistoryValues(modelMap);
         return ENROLL_ANC_URL;
     }
+
+    private HistoryDateValidator historyDateValidator(ANCEnrollmentForm ancEnrollmentForm) {
+        return new HistoryDateValidator(ancEnrollmentForm);
+    }
+
 
     private ANCVO createANCVO(ANCEnrollmentForm ancForm) {
         ancForm.setRegistrationDate((RegistrationToday.TODAY.equals(ancForm.getRegistrationToday())) ? DateUtil.now().toDate() : ancForm.getRegistrationDate());

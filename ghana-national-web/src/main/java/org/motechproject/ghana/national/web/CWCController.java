@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.RegisterCWCFormValidator;
+import org.motechproject.ghana.national.validator.patient.HistoryDateValidator;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.ghana.national.web.form.CWCEnrollmentForm;
 import org.motechproject.ghana.national.web.helper.CwcFormMapper;
@@ -107,23 +108,26 @@ public class CWCController {
         modelMap.addAttribute(ENROLLMENT_CWC_FORM, cwcEnrollmentForm);
         modelMap.mergeAttributes(cwcFormMapper.setViewAttributes());
         modelMap.mergeAttributes(facilityHelper.locationMap());
-
-        List<FormError> formErrors = registerCWCFormValidator.validatePatient(cwcEnrollmentForm.getPatientMotechId(), Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
+        Patient patient = formValidator.getPatient(cwcEnrollmentForm.getPatientMotechId());
+        List<FormError> formErrors = registerCWCFormValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
         formErrors.addAll(formValidator.validateIfStaffExists(cwcEnrollmentForm.getStaffId()));
+        if(cwcEnrollmentForm.getAddHistory())
+            formErrors.addAll(historyDateValidator(cwcEnrollmentForm).validate(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList()));
 
         List<String> validationErrors = new ArrayList<String>();
         for (FormError formError : formErrors) {
             if(formError.getParameter().equals(Constants.CHILD_AGE_PARAMETER))  {
                 validationErrors.add(PATIENT_IS_NOT_A_CHILD);
             }
-            if(formError.getParameter().equals(FormValidator.STAFF_ID)) {
+            else if(formError.getParameter().equals(FormValidator.STAFF_ID)) {
                 validationErrors.add(STAFF_ID_NOT_FOUND);
             }
-            if(formError.getParameter().equals(Constants.MOTECH_ID_ATTRIBUTE_NAME)) {
+            else if(formError.getParameter().equals(Constants.MOTECH_ID_ATTRIBUTE_NAME)) {
                 validationErrors.add("Patient " + StringUtils.capitalize(formError.getError()));
             }
+            else validationErrors.add(formError.getParameter() + " " + formError.getError());
         }
-        
+
         if(!validationErrors.isEmpty()) {
             modelMap.addAttribute(errors, validationErrors);
             return ENROLL_CWC_URL;
@@ -156,5 +160,9 @@ public class CWCController {
                 cwcEnrollmentForm.getAddHistory()));
         modelMap.addAttribute("success", "Client registered for CWC successfully.");
         return ENROLL_CWC_URL;
+    }
+
+    HistoryDateValidator historyDateValidator(CWCEnrollmentForm cwcEnrollmentForm) {
+        return new HistoryDateValidator(cwcEnrollmentForm);
     }
 }

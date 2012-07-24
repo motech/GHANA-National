@@ -6,6 +6,7 @@ import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.helper.FormWithHistoryInput;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
@@ -15,12 +16,13 @@ import org.motechproject.openmrs.omod.validator.VerhoeffValidator;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.*;
 import static org.motechproject.util.DateUtil.newDateTime;
 
-public class RegisterClientForm extends MobileMidWifeIncludeForm {
+public class RegisterClientForm extends MobileMidWifeIncludeForm implements FormWithHistoryInput{
 
     @Required
     private RegistrationType registrationMode;
@@ -535,5 +537,28 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm {
     @Override
     public String groupId() {
         return motechId;
+    }
+
+    @Override
+    public HashMap<String, Date> getHistoryDatesMap() {
+        HashMap<String, Date> map = new HashMap();
+        if(registrantType.equals(PatientType.CHILD_UNDER_FIVE))
+            map = new HashMap<String,Date>() {{
+            put("lastPneumococcalDate",lastPneumococcalDate);
+            put("lastIPTiDate",lastIPTiDate);
+            put("lastOPVDate",lastOPVDate);
+            put("lastPentaDate",lastPentaDate);
+            put("lastRotavirusDate",lastRotavirusDate);
+            put("bcgDate",bcgDate);
+            put("yfDate",yellowFeverDate);
+            put("vitADate",lastVitaminADate);
+            put("measlesDate",measlesDate);
+        }};
+        if(registrantType.equals(PatientType.PREGNANT_MOTHER))
+            map = new HashMap<String, Date>(){{
+                put("lastTTDate",lastTTDate);
+                put("lastIPTDate",lastIPTDate);
+            }};
+        return map;
     }
 }
