@@ -1,10 +1,5 @@
 package org.motechproject.ghana.national.domain.ivr;
 
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.motechproject.ghana.national.domain.mobilemidwife.Language;
-
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;

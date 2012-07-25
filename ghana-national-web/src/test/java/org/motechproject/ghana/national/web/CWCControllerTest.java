@@ -1,8 +1,11 @@
 package org.motechproject.ghana.national.web;
 
+import org.joda.time.DateTime;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
@@ -12,6 +15,7 @@ import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.RegisterCWCFormValidator;
+import org.motechproject.ghana.national.vo.ANCVO;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.ghana.national.web.form.CWCEnrollmentForm;
 import org.motechproject.ghana.national.web.form.FacilityForm;
@@ -19,6 +23,8 @@ import org.motechproject.ghana.national.web.helper.CwcFormMapper;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormError;
+import org.motechproject.mrs.exception.ObservationNotFoundException;
+import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 
@@ -27,6 +33,7 @@ import java.util.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -121,79 +128,41 @@ public class CWCControllerTest {
 
     @Test
     public void shouldSaveCWCEnrollmentForm() {
-        CWCEnrollmentForm cwcEnrollmentForm = new CWCEnrollmentForm();
-
-        final Date registartionDate = new Date(2011, 9, 1);
-        final Date lastBCGDate = new Date(2011, 10, 1);
-        final Date lastVitADate = new Date(2011, 11, 1);
-        final Date lastMeaslesDate = new Date(2011, 9, 2);
-        final Date lastYfDate = new Date(2011, 9, 3);
-        final Date lastPentaDate = new Date(2011, 9, 4);
-        final Date lastOPVDate = new Date(2011, 9, 5);
-        final Date lastIPTiDate = new Date(2011, 9, 6);
-        final Date lastRotavirusDate = new Date(2011, 9, 6);
-        final Date lastPneumococcalDate = new Date(2011, 9, 6);
-        final String staffId = "456";
-        final int lastIPTi = 1;
-        final int lastPenta = 1;
-        final int lastRotavirus = 1;
-        final int lastPneumococcal = 1;
-        final String patientMotechId = "1234567";
-        final int lastOPV = 0;
+        CWCEnrollmentForm cwcEnrollmentForm = createCWCEnrollmentForm();
         ModelMap modelMap = new ModelMap();
-        final String facilityId = "3232";
-
-        cwcEnrollmentForm.setStaffId(staffId);
-        final FacilityForm facilityForm = new FacilityForm();
-        facilityForm.setFacilityId(facilityId);
-        cwcEnrollmentForm.setFacilityForm(facilityForm);
-        cwcEnrollmentForm.setRegistrationDate(registartionDate);
-        cwcEnrollmentForm.setPatientMotechId(patientMotechId);
-        cwcEnrollmentForm.setBcgDate(lastBCGDate);
-        cwcEnrollmentForm.setVitADate(lastVitADate);
-        cwcEnrollmentForm.setMeaslesDate(lastMeaslesDate);
-        cwcEnrollmentForm.setYfDate(lastYfDate);
-        cwcEnrollmentForm.setLastPentaDate(lastPentaDate);
-        cwcEnrollmentForm.setLastPenta(lastPenta);
-        cwcEnrollmentForm.setLastOPVDate(lastOPVDate);
-        cwcEnrollmentForm.setLastOPV(lastOPV);
-        cwcEnrollmentForm.setLastIPTiDate(lastIPTiDate);
-        cwcEnrollmentForm.setLastIPTi(lastIPTi);
-        cwcEnrollmentForm.setLastRotavirus(lastRotavirus);
-        cwcEnrollmentForm.setLastRotavirusDate(lastRotavirusDate);
-        cwcEnrollmentForm.setLastPneumococcal(lastPneumococcal);
-        cwcEnrollmentForm.setLastPneumococcalDate(lastPneumococcalDate);
-        cwcEnrollmentForm.setRegistrationToday(RegistrationToday.IN_PAST);
-
-
-        when(mockFormValidator.validateIfStaffExists(staffId)).thenReturn(Collections.<FormError>emptyList());
-        when(mockregisterCWCFormValidator.validatePatient(patientMotechId, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(Collections.<FormError>emptyList());
-
+        
+        when(mockFormValidator.validateIfStaffExists(cwcEnrollmentForm.getStaffId())).thenReturn(Collections.<FormError>emptyList());
+        Patient patient = mock(Patient.class);
+        when(mockFormValidator.getPatient(cwcEnrollmentForm.getPatientMotechId())).thenReturn(patient);
+        when(patient.dateOfBirth()).thenReturn(DateUtil.newDate(2000,12,12).toDateTimeAtCurrentTime());
+        when(mockregisterCWCFormValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(Collections.<FormError>emptyList());
+        cwcEnrollmentForm.setAddHistory(false);
         cwcController.save(cwcEnrollmentForm, modelMap);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
         verify(mockCareService).enroll(captor.capture());
         final CwcVO cwcVO = captor.getValue();
 
-        assertThat(staffId, is(cwcVO.getStaffId()));
-        assertThat(facilityId, is(cwcVO.getFacilityId()));
-        assertThat(registartionDate, is(cwcVO.getRegistrationDate()));
-        assertThat(patientMotechId, is(cwcVO.getPatientMotechId()));
-        assertThat(lastBCGDate, is(cwcVO.getCWCCareHistoryVO().getBcgDate()));
-        assertThat(lastVitADate, is(cwcVO.getCWCCareHistoryVO().getVitADate()));
-        assertThat(lastMeaslesDate, is(cwcVO.getCWCCareHistoryVO().getMeaslesDate()));
-        assertThat(lastYfDate, is(cwcVO.getCWCCareHistoryVO().getYfDate()));
-        assertThat(lastPentaDate, is(cwcVO.getCWCCareHistoryVO().getLastPentaDate()));
-        assertThat(lastPenta, is(cwcVO.getCWCCareHistoryVO().getLastPenta()));
-        assertThat(lastOPVDate, is(cwcVO.getCWCCareHistoryVO().getLastOPVDate()));
-        assertThat(lastOPV, is(cwcVO.getCWCCareHistoryVO().getLastOPV()));
-        assertThat(lastRotavirus, is(cwcVO.getCWCCareHistoryVO().getLastRotavirus()));
-        assertThat(lastPneumococcal, is(cwcVO.getCWCCareHistoryVO().getLastPneumococcal()));
-        assertThat(lastIPTiDate, is(cwcVO.getCWCCareHistoryVO().getLastIPTiDate()));
-        assertThat(lastRotavirusDate, is(cwcVO.getCWCCareHistoryVO().getLastRotavirusDate()));
-        assertThat(lastPneumococcalDate, is(cwcVO.getCWCCareHistoryVO().getLastPneumococcalDate()));
+        assertThat(cwcEnrollmentForm.getStaffId(), is(cwcVO.getStaffId()));
+        assertThat(cwcEnrollmentForm.getFacilityForm().getFacilityId(), is(cwcVO.getFacilityId()));
+        assertThat(cwcEnrollmentForm.getRegistrationDate(), is(cwcVO.getRegistrationDate()));
+        assertThat(cwcEnrollmentForm.getPatientMotechId(), is(cwcVO.getPatientMotechId()));
+        assertThat(cwcEnrollmentForm.getBcgDate(), is(cwcVO.getCWCCareHistoryVO().getBcgDate()));
+        assertThat(cwcEnrollmentForm.getVitADate(), is(cwcVO.getCWCCareHistoryVO().getVitADate()));
+        assertThat(cwcEnrollmentForm.getMeaslesDate(), is(cwcVO.getCWCCareHistoryVO().getMeaslesDate()));
+        assertThat(cwcEnrollmentForm.getYfDate(), is(cwcVO.getCWCCareHistoryVO().getYfDate()));
+        assertThat(cwcEnrollmentForm.getLastPentaDate(), is(cwcVO.getCWCCareHistoryVO().getLastPentaDate()));
+        assertThat(cwcEnrollmentForm.getLastPenta(), is(cwcVO.getCWCCareHistoryVO().getLastPenta()));
+        assertThat(cwcEnrollmentForm.getLastOPVDate(), is(cwcVO.getCWCCareHistoryVO().getLastOPVDate()));
+        assertThat(cwcEnrollmentForm.getLastOPV(), is(cwcVO.getCWCCareHistoryVO().getLastOPV()));
+        assertThat(cwcEnrollmentForm.getLastRotavirus(), is(cwcVO.getCWCCareHistoryVO().getLastRotavirus()));
+        assertThat(cwcEnrollmentForm.getLastPneumococcal(), is(cwcVO.getCWCCareHistoryVO().getLastPneumococcal()));
+        assertThat(cwcEnrollmentForm.getLastIPTiDate(), is(cwcVO.getCWCCareHistoryVO().getLastIPTiDate()));
+        assertThat(cwcEnrollmentForm.getLastRotavirusDate(), is(cwcVO.getCWCCareHistoryVO().getLastRotavirusDate()));
+        assertThat(cwcEnrollmentForm.getLastPneumococcalDate(), is(cwcVO.getCWCCareHistoryVO().getLastPneumococcalDate()));
         verify(mockCwcFormMapper).setViewAttributes();
         verify(mockFacilityHelper).locationMap();
     }
+
 
     @Test
     public void shouldReturnErrorIfThereAreFormValidations() {
@@ -207,8 +176,11 @@ public class CWCControllerTest {
         facilityForm.setFacilityId(facilityId);
         cwcEnrollmentForm.setFacilityForm(facilityForm);
         final ModelMap modelMap = new ModelMap();
-
-        when(mockregisterCWCFormValidator.validatePatient(motechId, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(
+        cwcEnrollmentForm.setAddHistory(false);
+        Patient patient = mock(Patient.class);
+        when(mockFormValidator.getPatient(cwcEnrollmentForm.getPatientMotechId())).thenReturn(patient);
+        when(patient.dateOfBirth()).thenReturn(DateTime.now());
+        when(mockregisterCWCFormValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(
                 new ArrayList<FormError>() {{
                     add(new FormError(Constants.CHILD_AGE_PARAMETER, "description1"));
                     add(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, "description2"));
@@ -228,4 +200,77 @@ public class CWCControllerTest {
         verify(mockCwcFormMapper).setViewAttributes();
         verify(mockFacilityHelper).locationMap();
     }
+
+    @Test
+    public void shouldThrowErrorIfHistoryDatesBeforeDOB() throws ObservationNotFoundException {
+        ModelMap modelMap = new ModelMap();
+        CWCEnrollmentForm cwcEnrollmentForm = createCWCEnrollmentForm();
+
+        Patient patient = mock(Patient.class);
+        when(mockFormValidator.getPatient(cwcEnrollmentForm.getPatientMotechId())).thenReturn(patient);
+        when(patient.dateOfBirth()).thenReturn(DateTime.now());
+        cwcController.save(cwcEnrollmentForm,modelMap);
+        assertTrue(modelMap.containsKey("errors"));
+
+        List<String> errorsFromModelMap = (List<String>) modelMap.get("errors");
+        Assert.assertThat(errorsFromModelMap, hasItem("lastPentaDate should be after date of birth"));
+        Assert.assertThat(errorsFromModelMap, hasItem("lastOPVDate should be after date of birth"));
+        Assert.assertThat(errorsFromModelMap, hasItem("bcgDate should be after date of birth"));
+        Assert.assertThat(errorsFromModelMap, hasItem("lastRotavirusDate should be after date of birth"));
+        verify(mockCareService,never()).enroll(Matchers.<ANCVO>any());
+    }
+
+    private CWCEnrollmentForm createCWCEnrollmentForm() {
+        final Date registrationDate = DateUtil.newDate(2011, 9, 1).toDate();
+        final Date lastBCGDate = DateUtil.newDate(2011, 10, 1).toDate();
+        final Date lastVitADate = DateUtil.newDate(2011, 11, 1).toDate();
+        final Date lastMeaslesDate = DateUtil.newDate(2011, 9, 2).toDate();
+        final Date lastYfDate = DateUtil.newDate(2011, 9, 3).toDate();
+        final Date lastPentaDate = DateUtil.newDate(2011, 9, 4).toDate();
+        final Date lastOPVDate = DateUtil.newDate(2011, 9, 5).toDate();
+        final Date lastIPTiDate = DateUtil.newDate(2011, 9, 6).toDate();
+        final Date lastRotavirusDate = DateUtil.newDate(2011, 9, 6).toDate();
+        final Date lastPneumococcalDate = DateUtil.newDate(2011, 9, 6).toDate();
+        final String staffId = "456";
+        final int lastIPTi = 1;
+        final int lastPenta = 1;
+        final int lastRotavirus = 1;
+        final int lastPneumococcal = 1;
+        final String patientMotechId = "1234567";
+        final int lastOPV = 0;
+
+        final String facilityId = "3232";
+
+        CWCEnrollmentForm cwcEnrollmentForm = new CWCEnrollmentForm();
+        cwcEnrollmentForm.setStaffId(staffId);
+        final FacilityForm facilityForm = new FacilityForm();
+        facilityForm.setFacilityId(facilityId);
+        cwcEnrollmentForm.setFacilityForm(facilityForm);
+        cwcEnrollmentForm.setRegistrationDate(registrationDate);
+        cwcEnrollmentForm.setPatientMotechId(patientMotechId);
+        cwcEnrollmentForm.setAddHistory(true);
+        cwcEnrollmentForm.setBcgDate(lastBCGDate);
+        cwcEnrollmentForm.setVitADate(lastVitADate);
+        cwcEnrollmentForm.setMeaslesDate(lastMeaslesDate);
+        cwcEnrollmentForm.setYfDate(lastYfDate);
+        cwcEnrollmentForm.setLastPentaDate(lastPentaDate);
+        cwcEnrollmentForm.setLastPenta(lastPenta);
+        cwcEnrollmentForm.setLastOPVDate(lastOPVDate);
+        cwcEnrollmentForm.setLastOPV(lastOPV);
+        cwcEnrollmentForm.setLastIPTiDate(lastIPTiDate);
+        cwcEnrollmentForm.setLastIPTi(lastIPTi);
+        cwcEnrollmentForm.setLastRotavirus(lastRotavirus);
+        cwcEnrollmentForm.setLastRotavirusDate(lastRotavirusDate);
+        cwcEnrollmentForm.setLastPneumococcal(lastPneumococcal);
+        cwcEnrollmentForm.setLastPneumococcalDate(lastPneumococcalDate);
+        cwcEnrollmentForm.setRegistrationToday(RegistrationToday.IN_PAST);
+
+        return cwcEnrollmentForm;
+    }
+
 }                   
+//
+//Expected: a collection containing <FormError{parameter='lastPentaDate', error='should be after date of birth'}>
+//        got: <[FormError{parameter='bcgDate', error='should be after date of birth'},
+//              FormError{parameter='lastPneumococcalDate', error='should be after date of birth'},
+//              FormError{parameter='lastPentaDate', error='should be after date of birth'}, FormError{parameter='yfDate', error='should be after date of birth'}, FormError{parameter='lastRotavirusDate', error='should be after date of birth'}, FormError{parameter='vitADate', error='should be after date of birth'}, FormError{parameter='measlesDate', error='should be after date of birth'}, FormError{parameter='lastOPVDate', error='should be after date of birth'}, FormError{parameter='lastIPTiDate', error='should be after date of birth'}]>

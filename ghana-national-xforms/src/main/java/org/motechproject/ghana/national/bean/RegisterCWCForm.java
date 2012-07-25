@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.helper.FormWithHistoryInput;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
@@ -12,13 +13,14 @@ import org.motechproject.openmrs.omod.validator.MotechIdVerhoeffValidator;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.MOTECH_ID_PATTERN;
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.NUMERIC_OR_NOTAPPLICABLE_PATTERN;
 import static org.motechproject.util.DateUtil.newDateTime;
 
-public class RegisterCWCForm extends MobileMidWifeIncludeForm {
+public class RegisterCWCForm extends MobileMidWifeIncludeForm implements FormWithHistoryInput{
 
     @Required
     @MaxLength(size = 50)
@@ -262,5 +264,20 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm {
     @Override
     public String groupId() {
         return motechId;
+    }
+
+    @Override
+    public HashMap<String, Date> getHistoryDatesMap() {
+        return new HashMap<String, Date>() {{
+            put("lastPneumococcalDate", lastPneumococcalDate);
+            put("lastIPTiDate", lastIPTiDate);
+            put("lastOPVDate", lastOPVDate);
+            put("lastPentaDate", lastPentaDate);
+            put("lastRotavirusDate", lastRotavirusDate);
+            put("bcgDate", bcgDate);
+            put("yfDate", yellowFeverDate);
+            put("vitADate", lastVitaminADate);
+            put("measlesDate", measlesDate);
+        }};
     }
 }

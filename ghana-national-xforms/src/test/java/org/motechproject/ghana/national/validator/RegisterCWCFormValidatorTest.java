@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.validator;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -75,6 +76,7 @@ public class RegisterCWCFormValidatorTest {
         Patient patient = new Patient(new MRSPatient(motechId,new MRSPerson().dead(false).age(6),new MRSFacility(facilityId)));
         doReturn(patient).when(mockFormValidator).getPatient(motechId);
         formBeans = Arrays.<FormBean>asList(registerCWCForm);
+        patient.getMrsPatient().getPerson().dateOfBirth(DateUtil.newDate(2000,12,12).toDate());
         errors = registerCWCFormValidator.validate(registerCWCForm, new FormBeanGroup(formBeans), formBeans);
         assertThat(errors, hasItem(new FormError(CHILD_AGE_PARAMETER, CHILD_AGE_MORE_ERR_MSG)));
 
@@ -88,7 +90,7 @@ public class RegisterCWCFormValidatorTest {
         final RegisterClientForm registerClientForm = new RegisterClientForm();
         registerClientForm.setFormname("registerPatient");
         registerClientForm.setRegistrantType(PatientType.CHILD_UNDER_FIVE);
-
+        registerClientForm.setDateOfBirth(DateUtil.newDate(2000,12,12).toDate());
         formBeans = Arrays.<FormBean>asList(registerClientForm);
         errors = registerCWCFormValidator.validate(registerCWCForm, new FormBeanGroup(formBeans), formBeans);
         assertThat(errors, not(hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, NOT_FOUND))));
@@ -104,6 +106,17 @@ public class RegisterCWCFormValidatorTest {
         registerClientForm.setDateOfBirth(DateUtil.newDate(2000,1,1).toDate());
         errors = registerCWCFormValidator.validate(registerCWCForm,new FormBeanGroup(formBeans), formBeans);
         assertThat(errors,hasItem(new FormError("Patient age", "is more than 5")));
+        
+        //history dates after dob
+        registerCWCForm.setAddHistory(true);
+        registerCWCForm.setLastPentaDate(DateUtil.newDate(2011, 1, 1).toDate());
+        registerCWCForm.setLastRotavirusDate(DateTime.now().toDate());
+        patient.getMrsPatient().getPerson().dateOfBirth(DateTime.now().toDate());
+        when(mockFormValidator.getPatient(registerCWCForm.getMotechId())).thenReturn(patient);
+        errors = registerCWCFormValidator.validate(registerCWCForm,new FormBeanGroup(formBeans),formBeans);
+        
+        assertThat(errors,hasItem(new FormError("lastPentaDate",AFTER_DOB)));
+        assertThat(errors,not(hasItem(new FormError("lastRotavirusDate",AFTER_DOB))));
     }
 
     @Test
@@ -113,6 +126,7 @@ public class RegisterCWCFormValidatorTest {
         String facilityId = "34";
         final RegisterCWCForm registerCWCForm = new RegisterCWCForm();
         registerCWCForm.setRegistrationDate(DateUtil.now().toDate());
+        registerCWCForm.setAddHistory(false);
         RegisterCWCForm formBean = new MobileMidwifeBuilder().enroll(true).consent(false).facilityId(facilityId)
                 .staffId(staffId).patientId(motechId).buildRegisterCWCForm(registerCWCForm);
 

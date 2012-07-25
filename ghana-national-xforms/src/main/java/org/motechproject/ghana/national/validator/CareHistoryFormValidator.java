@@ -1,7 +1,9 @@
 package org.motechproject.ghana.national.validator;
 
 import org.motechproject.ghana.national.bean.CareHistoryForm;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.validator.patient.ExistsInDb;
+import org.motechproject.ghana.national.validator.patient.HistoryDateValidator;
 import org.motechproject.ghana.national.validator.patient.IsAlive;
 import org.motechproject.ghana.national.validator.patient.RegClientFormSubmittedInSameUpload;
 import org.motechproject.mobileforms.api.domain.FormBean;
@@ -29,12 +31,18 @@ public class CareHistoryFormValidator extends FormValidator<CareHistoryForm> {
         List<FormError> formErrors = super.validate(formBean, group, allForms);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        formErrors.addAll(dependentValidator().validate(formValidator.getPatient(formBean.getMotechId()), group.getFormBeans(),
+        Patient patient = formValidator.getPatient(formBean.getMotechId());
+        formErrors.addAll(dependentValidator().validate(patient, group.getFormBeans(),
                 allForms, new ExistsInDb().onSuccess(new IsAlive()).onFailure(new RegClientFormSubmittedInSameUpload())));
+        formErrors.addAll(historyDateValidator(formBean).validate(patient,group.getFormBeans(),allForms));
         return formErrors;
     }
 
-    public DependentValidator dependentValidator() {
+    DependentValidator dependentValidator() {
         return new DependentValidator();
+    }
+
+    HistoryDateValidator historyDateValidator(CareHistoryForm form) {
+        return new HistoryDateValidator(form);
     }
 }

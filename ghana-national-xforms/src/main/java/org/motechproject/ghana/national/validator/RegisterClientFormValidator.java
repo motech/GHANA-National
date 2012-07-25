@@ -32,25 +32,31 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     @ApiSession
     public List<FormError> validate(RegisterClientForm formBean, FormBeanGroup group, List<FormBean> allForms) {
         List<FormError> formErrors = super.validate(formBean, group, allForms);
+        Patient patient = formValidator.getPatient(formBean.getMotechId());
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        formErrors.addAll(formValidator.validateNHISExpiry(formBean.getNhisExpires()));
-        String mothersMotechId = "Mothers motech Id";
 
-        Patient patient = formValidator.getPatient(formBean.getMotechId());
+        String mothersMotechId = "Mothers motech Id";
 
         PatientValidator validators = new AlwaysValid().onSuccess(new NotExistsInDb(), RegistrationType.USE_PREPRINTED_ID.equals(formBean.getRegistrationMode()))
                 .onSuccess(new IsFormSubmittedForAChild(formBean.getDateOfBirth(),null), PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType()))
                 .onSuccess(new IsFormSubmittedForAFemale(formBean.getSex()), PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType()))
                 .onFailure(new ExistsInDb(new FormError(mothersMotechId, NOT_FOUND)));
-
-        formErrors.addAll(getDependentValidator().validate(patient, group.getFormBeans(), allForms, validators));
+        List<FormError> patientValidationErrors = getDependentValidator().validate(patient, group.getFormBeans(), allForms, validators);
+        formErrors.addAll(patientValidationErrors);
+        formErrors.addAll(formValidator.validateNHISExpiry(formBean.getNhisExpires()));
+        if(formBean.getAddHistory())
+            formErrors.addAll(historyDateValidator(formBean).validate(patient,group.getFormBeans(),allForms));
         return formErrors;
     }
 
 
     DependentValidator getDependentValidator() {
         return new DependentValidator();
+    }
+
+    HistoryDateValidator historyDateValidator(RegisterClientForm form) {
+        return new HistoryDateValidator(form);
     }
 }
 
