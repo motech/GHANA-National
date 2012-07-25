@@ -30,6 +30,9 @@ public class InboundDecisionTreeSeed extends Seed {
     @Value("#{ghanaNationalProperties['callcenter.dtmf.finishonkey']}")
     private String callCenterFinishOnKey;
 
+    @Value("#{ghanaNationalProperties['callcenter.no.of.digits.in.motech.id']}")
+    private String noOfDigitsInMotechId;
+
     private ConnectToCallCenter connectToCallCenter = new ConnectToCallCenter();
 
     @Autowired
@@ -90,8 +93,10 @@ public class InboundDecisionTreeSeed extends Seed {
             transitions.put("timeout", new Transition().setDestinationNode(validateMotechIdNode(language, pendingRetries - 1)));
             transitions.put("?", motechIdValidationTransition);
         }
+        // As requested by david, we expect 7 digits for motech id instead of finish on key
+        //  node.setTransitionFinishOnKey(callCenterFinishOnKey);
         node.setTransitionTimeout(callCenterDtmfTimeout);
-        node.setTransitionFinishOnKey(callCenterFinishOnKey);
+        node.setTransitionNumDigits(noOfDigitsInMotechId);
         node.setTransitions(transitions);
         return node;
     }

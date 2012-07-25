@@ -4,11 +4,16 @@ import org.motechproject.decisiontree.FlowSession;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.motechproject.ghana.national.domain.mobilemidwife.Language.EN;
 
 public class PreferredLanguageTransition extends Transition {
     @Autowired
@@ -17,10 +22,20 @@ public class PreferredLanguageTransition extends Transition {
     @Autowired
     MobileMidwifeService mobileMidwifeService;
 
+    @Autowired
+    private IVRClipManager ivrClipManager;
+
+    private Logger logger = LoggerFactory.getLogger(PreferredLanguageTransition.class);
+
     @Override
     public Node getDestinationNode(String input, FlowSession session) {
-        Language language = getMobileMidwifeLanguage(input);
-        return playMessagesFromOutboxTree.play(input, language.name());
+        try {
+            Language language = getMobileMidwifeLanguage(input);
+            return playMessagesFromOutboxTree.play(input, language.name());
+        }catch (Exception e){
+            logger.error("Encountered error while playing clips to the user: " + input, e);
+            return new Node().addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(AudioPrompts.ERROR_ALERT.value(), EN)));
+        }
     }
 
     private String trimInputForTrailingHash(String input) {
@@ -29,7 +44,7 @@ public class PreferredLanguageTransition extends Transition {
 
     private Language getMobileMidwifeLanguage(String patientId) {
         MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findActiveBy(trimInputForTrailingHash(patientId));
-        return midwifeEnrollment != null ? midwifeEnrollment.getLanguage(): Language.EN;
+        return midwifeEnrollment != null ? midwifeEnrollment.getLanguage() : Language.EN;
     }
 
 }

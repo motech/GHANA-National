@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    #if($!{language})
-    #set ($language = "EN")
-    #end
-    <Play>http://localhost:8080/ghana-national-web/resource/stream/$language/prompt_G.wav</Play>
+    <Play>http://localhost:8080/ghana-national-web/resource/stream/EN/prompt_G.wav</Play>
 </Response>

@@ -7,15 +7,19 @@ import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.domain.IVRClipManager;
+import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.ExecuteAsOpenMRSAdmin;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import static org.motechproject.ghana.national.domain.ivr.AudioPrompts.INVALID_MOTECH_ID_PROMPT;
+import static org.motechproject.ghana.national.domain.mobilemidwife.Language.EN;
 import static org.motechproject.ghana.national.domain.mobilemidwife.Language.valueOf;
 
 public class MotechIdValidationTransition extends Transition {
@@ -56,7 +60,11 @@ public class MotechIdValidationTransition extends Transition {
     int pendingRetries;
 
     // Required for Ektorp
-    public MotechIdValidationTransition() {}
+    public MotechIdValidationTransition() {
+    }
+
+    private Logger logger = LoggerFactory.getLogger(MotechIdValidationTransition.class);
+
 
     public MotechIdValidationTransition(String language, int pendingRetries) {
         this.language = language;
@@ -65,14 +73,18 @@ public class MotechIdValidationTransition extends Transition {
 
     @Override
     public Node getDestinationNode(String input, FlowSession session) {
-        if (!isValidMotechId(input)) {
-            return invalidMotechIdTransition();
-        } else if (hasValidMobileMidwifeVoiceRegistration(input)) {
-            return playMessagesFromOutboxTree.play(input, language);
-        } else {
-            return invalidMotechIdTransition();
+        try {
+            if (!isValidMotechId(input)) {
+                return invalidMotechIdTransition();
+            } else if (hasValidMobileMidwifeVoiceRegistration(input)) {
+                return playMessagesFromOutboxTree.play(input, language);
+            } else {
+                return invalidMotechIdTransition();
+            }
+        }catch (Exception e){
+            logger.error("Encountered error while validating user for IVR: " + input, e);
+            return new Node().addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(AudioPrompts.ERROR_ALERT.value(), EN)));
         }
-
     }
 
     private boolean isValidMotechId(final String input) {
@@ -87,7 +99,7 @@ public class MotechIdValidationTransition extends Transition {
     private Node invalidMotechIdTransition() {
         String invalidMotechIdPromptURL = ivrClipManager.urlFor(INVALID_MOTECH_ID_PROMPT.value(), valueOf(language));
         Node node = new Node();
-        if (pendingRetries != 1){
+        if (pendingRetries != 1) {
             node.setTransitionTimeout(callCenterDtmfTimeout);
             node.setTransitionFinishOnKey(callCenterFinishOnKey);
             node.addTransitionPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));

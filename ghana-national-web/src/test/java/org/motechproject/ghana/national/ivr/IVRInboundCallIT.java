@@ -182,20 +182,20 @@ public class IVRInboundCallIT {
 
         String motechIdPrompt = fileName(AudioPrompts.MOTECH_ID_PROMPT);
         TwiML expectedActions = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(motechIdPrompt, "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(motechIdPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzEvMQ&Digits=timeout")));
 
         verboiceStub.expect(expectedActions, response);
 
         expectedActions = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(motechIdPrompt, "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(motechIdPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzEvMS90aW1lb3V0&Digits=timeout")));
 
         response = verboiceStub.handleTimeout(response);
         verboiceStub.expect(expectedActions, response);
 
         expectedActions = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(motechIdPrompt, "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(motechIdPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzEvMS90aW1lb3V0L3RpbWVvdXQ&Digits=timeout")));
 
         response = verboiceStub.handleTimeout(response);
@@ -233,7 +233,7 @@ public class IVRInboundCallIT {
 
         String motechIdPrompt = fileName(AudioPrompts.MOTECH_ID_PROMPT);
         expectedActions = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(motechIdPrompt, "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(motechIdPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzEvMQ&Digits=timeout")));
         verboiceStub.expect(expectedActions, response);
 
@@ -290,7 +290,7 @@ public class IVRInboundCallIT {
 
         String motechIdPrompt = fileName(AudioPrompts.MOTECH_ID_PROMPT);
         TwiML expectedActions = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(motechIdPrompt, "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(motechIdPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzEvMQ&Digits=timeout")));
 
         verboiceStub.expect(expectedActions, response);
