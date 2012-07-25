@@ -15,7 +15,7 @@ public enum AudioPrompts {
     CALL_CENTER_BUSY("prompt_D", null, null),
     INVALID_MOTECH_ID_PROMPT("prompt_F", null, null),
     NO_MESSAGE_IN_OUTBOX("prompt_H", null, null),
-    CALL_CENTER_DIAL_FAILED("f_prompt_E", null, null),
+    CALL_CENTER_DIAL_FAILED("prompt_E", null, null),
 
     ANC_DUE("prompt_IR1", AlertWindow.DUE, asList(ANC_DELIVERY.getName())),
     TT_DUE("prompt_IR2", AlertWindow.DUE, asList(TT_VACCINATION.getName())),
