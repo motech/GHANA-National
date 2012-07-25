@@ -33,7 +33,7 @@ public class AggregatedMessageHandlerImplTest {
     public void shouldDispatchMessagesViaCorrespondingHandlers() {
         DateTime now = DateTime.now();
         String careClipName = "clipName";
-        MobileMidwifeAudioClips mmClipName = MobileMidwifeAudioClips.PREGNANCY_WEEK_7;
+        MobileMidwifeAudioClips mmClipName = MobileMidwifeAudioClips.PREGNANCY_WEEK_7_EN;
         String motechId = "motechId";
         String appointmentClipName = "appointmentClipName";
 

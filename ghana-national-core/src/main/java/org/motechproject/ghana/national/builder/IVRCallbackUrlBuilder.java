@@ -25,4 +25,9 @@ public class IVRCallbackUrlBuilder {
             throw new MotechException("Encountered exception while encoding verboice outbound url, " + url);
         }
     }
+
+    public String callCenterDialStatusUrl(){
+        return  "http://" + host + ":" + port + "/" + contextPath + "/ivr/dial/callback";
+
+    }
 }

@@ -6,14 +6,14 @@ import org.motechproject.decisiontree.model.Transition;
 
 public class ConnectToCallCenter {
 
-    public Transition getAsTransition(String callCenterPhoneNumber) {
-        return new Transition().setDestinationNode(getAsNode(callCenterPhoneNumber));
+    public Transition getAsTransition(String callCenterPhoneNumber, String dialStatusHandlerUrl) {
+        return new Transition().setDestinationNode(getAsNode(callCenterPhoneNumber, dialStatusHandlerUrl));
     }
 
-    public Node getAsNode(String callCenterPhoneNumber){
+    public Node getAsNode(String callCenterPhoneNumber, String dialStatusHandlerUrl){
         DialPrompt callCenterDialPrompt = new DialPrompt(callCenterPhoneNumber);
         callCenterDialPrompt.setCallerId(callCenterPhoneNumber);
+        callCenterDialPrompt.setAction(dialStatusHandlerUrl);
         return new Node().addPrompts(callCenterDialPrompt);
-
     }
 }

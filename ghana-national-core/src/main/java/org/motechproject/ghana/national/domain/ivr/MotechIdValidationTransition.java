@@ -5,6 +5,7 @@ import org.motechproject.decisiontree.FlowSession;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -45,6 +46,9 @@ public class MotechIdValidationTransition extends Transition {
 
     @Autowired
     private MobileMidwifeService mobileMidwifeService;
+
+    @Autowired
+    private IVRCallbackUrlBuilder ivrCallbackUrlBuilder;
 
     private ConnectToCallCenter connectToCallCenter = new ConnectToCallCenter();
 
@@ -87,9 +91,10 @@ public class MotechIdValidationTransition extends Transition {
             node.setTransitionTimeout(callCenterDtmfTimeout);
             node.setTransitionFinishOnKey(callCenterFinishOnKey);
             node.addTransitionPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));
-            node.addTransition("0", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
-            node.addTransition("*", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
-            node.addTransition("timeout", new Transition().setDestinationNode(connectToCallCenter.getAsNode(callCenterPhoneNumber)));
+            String dialStatusHandlerUrl = ivrCallbackUrlBuilder.callCenterDialStatusUrl();
+            node.addTransition("0", connectToCallCenter.getAsTransition(callCenterPhoneNumber, dialStatusHandlerUrl));
+            node.addTransition("*", connectToCallCenter.getAsTransition(callCenterPhoneNumber, dialStatusHandlerUrl));
+            node.addTransition("timeout", new Transition().setDestinationNode(connectToCallCenter.getAsNode(callCenterPhoneNumber, dialStatusHandlerUrl)));
             node.addTransition("?", new MotechIdValidationTransition(language, pendingRetries - 1));
         }
         return node;

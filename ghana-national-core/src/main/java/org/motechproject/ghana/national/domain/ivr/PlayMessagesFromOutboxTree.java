@@ -5,6 +5,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.motechproject.MotechException;
 import org.motechproject.decisiontree.FlowSession;
 import org.motechproject.decisiontree.model.*;
+import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
@@ -42,6 +43,9 @@ public class PlayMessagesFromOutboxTree {
 
     @Autowired
     RetryService retryService;
+
+    @Autowired
+    IVRCallbackUrlBuilder ivrCallbackUrlBuilder;
 
     private ConnectToCallCenter connectToCallCenter = new ConnectToCallCenter();
 
@@ -151,7 +155,7 @@ public class PlayMessagesFromOutboxTree {
             transitions.put(i + 1 + "", new Transition().setDestinationNode(transitionNode));
         }
         transitions.put("timeout", new Transition().setDestinationNode(new Node()));
-        transitions.put("?", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
+        transitions.put("?", connectToCallCenter.getAsTransition(callCenterPhoneNumber, ivrCallbackUrlBuilder.callCenterDialStatusUrl()));
 
 
         rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingClips.get(0), valueOf(language))))

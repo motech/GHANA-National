@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.tools.seed.data;
 
 import org.motechproject.decisiontree.model.*;
 import org.motechproject.decisiontree.repository.AllTrees;
+import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.ivr.ConnectToCallCenter;
@@ -32,6 +33,8 @@ public class InboundDecisionTreeSeed extends Seed {
     private ConnectToCallCenter connectToCallCenter = new ConnectToCallCenter();
 
     @Autowired
+    private IVRCallbackUrlBuilder ivrCallbackUrlBuilder;
+    @Autowired
     AllTrees allTrees;
     @Autowired
     private IVRClipManager ivrClipManager;
@@ -59,7 +62,7 @@ public class InboundDecisionTreeSeed extends Seed {
         transitions.put("2", new Transition().setDestinationNode(chooseActionNode(KAS)));
         transitions.put("3", new Transition().setDestinationNode(chooseActionNode(NAN)));
         transitions.put("4", new Transition().setDestinationNode(chooseActionNode(FAN)));
-        transitions.put("?", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
+        transitions.put("?", connectToCallCenter.getAsTransition(callCenterPhoneNumber, ivrCallbackUrlBuilder.callCenterDialStatusUrl()));
         node.setTransitionNumDigits("1");
         node.setTransitionTimeout(callCenterDtmfTimeout);
         node.setTransitions(transitions);
@@ -71,7 +74,7 @@ public class InboundDecisionTreeSeed extends Seed {
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
         transitions.put("1", new Transition().setDestinationNode(validateMotechIdNode(language, 3)));
         transitions.put("timeout", new Transition().setDestinationNode(new Node()));
-        transitions.put("?", connectToCallCenter.getAsTransition(callCenterPhoneNumber));
+        transitions.put("?", connectToCallCenter.getAsTransition(callCenterPhoneNumber, ivrCallbackUrlBuilder.callCenterDialStatusUrl()));
         node.setTransitionNumDigits("1");
         node.setTransitionTimeout(callCenterDtmfTimeout);
         node.setTransitionFinishOnKey(callCenterFinishOnKey);

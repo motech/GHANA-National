@@ -12,8 +12,10 @@ public enum AudioPrompts {
     LANGUAGE_PROMPT("prompt_A", null, null),
     REASON_FOR_CALL_PROMPT("prompt_B", null, null),
     MOTECH_ID_PROMPT("prompt_C", null, null),
+    CALL_CENTER_BUSY("prompt_D", null, null),
     INVALID_MOTECH_ID_PROMPT("prompt_F", null, null),
     NO_MESSAGE_IN_OUTBOX("prompt_H", null, null),
+    CALL_CENTER_DIAL_FAILED("f_prompt_E", null, null),
 
     ANC_DUE("prompt_IR1", AlertWindow.DUE, asList(ANC_DELIVERY.getName())),
     TT_DUE("prompt_IR2", AlertWindow.DUE, asList(TT_VACCINATION.getName())),
@@ -34,6 +36,10 @@ public enum AudioPrompts {
     private String fileName;
     private AlertWindow window;
     private List<String> scheduleNames;
+
+    public String getFileName() {
+        return fileName;
+    }
 
     AudioPrompts(String fileName, AlertWindow window, List<String> scheduleNames) {
         this.fileName = fileName;
