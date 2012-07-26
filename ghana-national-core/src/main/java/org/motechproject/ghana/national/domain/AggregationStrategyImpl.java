@@ -5,7 +5,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.motechproject.MotechException;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.service.CMSLiteService;
-import org.motechproject.ghana.national.messagegateway.domain.*;
+import org.motechproject.ghana.national.messagegateway.domain.AggregationStrategy;
+import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
+import org.motechproject.ghana.national.messagegateway.domain.Payload;
+import org.motechproject.ghana.national.messagegateway.domain.SMSDatum;
 import org.motechproject.ghana.national.repository.AllFacilities;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.service.PatientService;
@@ -13,12 +16,26 @@ import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.collect;
+import static ch.lambdaj.Lambda.extract;
+import static ch.lambdaj.Lambda.filter;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.join;
+import static ch.lambdaj.Lambda.joinFrom;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.selectDistinct;
 import static ch.lambdaj.group.Groups.by;
 import static ch.lambdaj.group.Groups.group;
 import static java.util.Arrays.asList;
@@ -37,17 +54,18 @@ import static org.motechproject.ghana.national.tools.Utility.nullSafeList;
 public class AggregationStrategyImpl implements AggregationStrategy {
 
     @Autowired
-    private CMSLiteService cmsLiteService;
+    CMSLiteService cmsLiteService;
 
     @Autowired
-    private PatientService patientService;
+    PatientService patientService;
 
     @Autowired
-    private AllFacilities allFacilities;
+    AllFacilities allFacilities;
 
     @Autowired
-    private AllMobileMidwifeEnrollments allMobileMidwifeEnrollments;
+    AllMobileMidwifeEnrollments allMobileMidwifeEnrollments;
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     @LoginAsAdmin
@@ -94,6 +112,10 @@ public class AggregationStrategyImpl implements AggregationStrategy {
         }});
         List<SMSPayload> filteredMessages = filter(having(on(SMSPayload.class).getText(), not(containsString(standardMessage))), smsPayloadMessages);
         List<SMSPayload> defaultMessagesList = filter(having(on(SMSPayload.class).getText(), containsString(standardMessage)), smsPayloadMessages);
+        if(defaultMessagesList.isEmpty()) {
+            logger.warn("No facility name to send messages to. returning empty list." + filteredMessages);
+            return Collections.emptyList();
+        }
         String facilityName = minus(defaultMessagesList.get(0).getText(), standardMessage);
         List<SMSPayload> smsPayloads = (filteredMessages.isEmpty()) ? defaultMessagesList : aggregateMessages(filteredMessages, facilityName);
         List<String> phoneNumbers = allFacilities.getFacilityByMotechId(smsPayloads.get(0).getUniqueId()).getPhoneNumbers();
