@@ -37,18 +37,20 @@ public class RegisterCWCFormValidator extends FormValidator<RegisterCWCForm> {
     @ApiSession
     public List<FormError> validate(RegisterCWCForm formBean, FormBeanGroup group, List<FormBean> allForms) {
         List<FormError> formErrors = super.validate(formBean, group, allForms);
+        final Patient patient = formValidator.getPatient(formBean.getMotechId());
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(validateMobileMidwifeIfEnrolled(formBean));
-
-        formErrors.addAll(validatePatient(formBean.getMotechId(), group.getFormBeans(), allForms));
+        formErrors.addAll(validatePatient(patient, group.getFormBeans(), allForms));
+        if(formBean.getAddHistory())
+            formErrors.addAll(historyDateValidator(formBean).validate(patient,group.getFormBeans(),allForms));
 
         return formErrors;
     }
 
-    public List<FormError> validatePatient(String motechId, List<FormBean> formBeans, List<FormBean> allForms) {
+    public List<FormError> validatePatient(Patient patient, List<FormBean> formBeans, List<FormBean> allForms) {
         List<FormError> formErrors = new ArrayList<FormError>();
-        final Patient patient = formValidator.getPatient(motechId);
+
         final PatientValidator regClientFormValidators = new RegClientFormSubmittedInSameUpload()
                 .onSuccess(new RegClientFormSubmittedForChild(new FormError(Constants.CHILD_AGE_PARAMETER, Constants.CHILD_AGE_MORE_ERR_MSG))
                     .onFailure(new RegClientFormSubmittedForType(PatientType.OTHER)
@@ -61,6 +63,10 @@ public class RegisterCWCFormValidator extends FormValidator<RegisterCWCForm> {
     private List<FormError> validateMobileMidwifeIfEnrolled(RegisterCWCForm formBean) {
         MobileMidwifeEnrollment midwifeEnrollment = formBean.createMobileMidwifeEnrollment();
         return midwifeEnrollment != null ? mobileMidwifeValidator.validateTime(midwifeEnrollment) : Collections.<FormError>emptyList();
+    }
+
+    HistoryDateValidator historyDateValidator(RegisterCWCForm form) {
+        return new HistoryDateValidator(form);
     }
 
 }

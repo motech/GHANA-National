@@ -29,15 +29,20 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
     @ApiSession
     public List<FormError> validate(RegisterANCForm formBean, FormBeanGroup group, List<FormBean> allForms) {
         List<FormError> formErrors = super.validate(formBean, group, allForms);
+
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
-        formErrors.addAll(validatePatient(formBean.getMotechId(), group.getFormBeans(), allForms));
+        final Patient patient = formValidator.getPatient(formBean.getMotechId());
+        formErrors.addAll(validatePatient(patient, group.getFormBeans(), allForms));
+        if(formBean.getAddHistory())
+            formErrors.addAll(historyDateValidator(formBean).validate(patient,group.getFormBeans(),allForms));
         formErrors.addAll(validateMobileMidwifeIfEnrolled(formBean));
         return formErrors;
     }
 
-    public List<FormError> validatePatient(String motechId, List<FormBean> formsUploaded, List<FormBean> allForms) {
-        final Patient patient = formValidator.getPatient(motechId);
+
+
+    public List<FormError> validatePatient(Patient patient, List<FormBean> formsUploaded, List<FormBean> allForms) {
         final PatientValidator regClientFormValidators = new RegClientFormSubmittedInSameUpload().onSuccess(new RegClientFormSubmittedForFemale());
         final PatientValidator validator = new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsFemale())).onFailure(regClientFormValidators);
         return getDependentValidator().validate(patient, formsUploaded, allForms, validator);
@@ -45,6 +50,10 @@ public class RegisterANCFormValidator extends FormValidator<RegisterANCForm> {
 
     DependentValidator getDependentValidator() {
         return new DependentValidator();
+    }
+
+    HistoryDateValidator historyDateValidator(RegisterANCForm form) {
+        return new HistoryDateValidator(form);
     }
 
     private List<FormError> validateMobileMidwifeIfEnrolled(RegisterANCForm formBean) {

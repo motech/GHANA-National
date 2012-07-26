@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.validator;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -8,6 +9,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterANCForm;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.mobileforms.api.domain.FormBean;
@@ -16,11 +18,9 @@ import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.util.DateUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.Boolean.TRUE;
 import static java.util.Collections.emptyList;
@@ -62,6 +62,7 @@ public class RegisterANCFormValidatorTest {
         when(formBean.getStaffId()).thenReturn(staffId);
         when(formBean.getFacilityId()).thenReturn(facilityId);
 
+
         Patient patient = null;
         final List<FormBean> formsUploaded = new ArrayList<FormBean>();
 
@@ -76,7 +77,7 @@ public class RegisterANCFormValidatorTest {
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, NOT_FOUND)));
 
         // patient is dead
-        patient = new Patient(new MRSPatient("motechId", new MRSPerson().dead(TRUE).gender("F"), new MRSFacility("facilityId")));
+        patient = new Patient(new MRSPatient("motechId", new MRSPerson().dead(TRUE).gender("F").dateOfBirth(DateUtil.newDate(2000,12,12).toDate()), new MRSFacility("facilityId")));
         when(formValidator.getPatient(motechId)).thenReturn(patient);
         errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, IS_NOT_ALIVE)));
@@ -90,9 +91,20 @@ public class RegisterANCFormValidatorTest {
         errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG)));
 
-
+        //historyDates are after DOB of patient when available in db
+        patient.getMrsPatient().getPerson().dateOfBirth(DateTime.now().toDate());
+        when(formBean.getAddHistory()).thenReturn(true);
+        when(formBean.getHistoryDatesMap()).thenReturn(new HashMap<String,Date>(){{
+            put("lastIPTDate",DateUtil.newDate(2011, 3, 3).toDate());
+            put("lastTTDate",DateUtil.newDate(2011, 4, 3).toDate());
+        }});
+        errors = registerANCFormValidator.validate(formBean,new FormBeanGroup(formsUploaded), formsUploaded);
+        assertThat(errors,hasItem(new FormError("lastIPTDate", Constants.AFTER_DOB)));
+        assertThat(errors,hasItem(new FormError("lastTTDate", Constants.AFTER_DOB)));
+        
         // patient not available in db, but form submit has reg client form
         patient = null;
+        when(formValidator.getPatient(motechId)).thenReturn(patient);
         final RegisterClientForm registerClientForm = new RegisterClientForm();
         registerClientForm.setSex("F");
         registerClientForm.setFormname("registerPatient");
@@ -100,8 +112,25 @@ public class RegisterANCFormValidatorTest {
 
         // reg client form has invalid gender
         registerClientForm.setSex("M");
+        registerClientForm.setDateOfBirth(DateUtil.newDate(2000, 12, 12).toDate());
         errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
-        assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG)));
+        assertThat(errors, hasItem(new FormError("Sex", GENDER_ERROR_MSG)));
+        
+        //historyDates are after DOB of patient when form uploaded with regANC
+        patient = null;
+        when(formValidator.getPatient(motechId)).thenReturn(patient);
+        registerClientForm.setDateOfBirth(DateTime.now().toDate());
+        registerClientForm.setSex("F");
+        registerClientForm.setFormname("registerPatient");
+        formsUploaded.add(registerClientForm);
+        when(formBean.getAddHistory()).thenReturn(true);
+        when(formBean.getHistoryDatesMap()).thenReturn(new HashMap<String,Date>(){{
+            put("lastIPTDate",DateUtil.newDate(2011, 3, 3).toDate());
+            put("lastTTDate",DateUtil.newDate(2011, 4, 3).toDate());
+        }});
+        errors = registerANCFormValidator.validate(formBean,new FormBeanGroup(formsUploaded),formsUploaded);
+        assertThat(errors,hasItem(new FormError("lastIPTDate", Constants.AFTER_DOB)));
+        assertThat(errors,hasItem(new FormError("lastTTDate", Constants.AFTER_DOB)));
     }
 
     @Test
@@ -111,9 +140,12 @@ public class RegisterANCFormValidatorTest {
         String facilityId = "34";
         RegisterANCForm formBean = new MobileMidwifeBuilder().enroll(true).consent(false).facilityId(facilityId)
                 .staffId(staffId).patientId(motechId).buildRegisterANCForm(new RegisterANCForm());
-
+        formBean.setAddHistory(false);
         registerANCFormValidator = spy(registerANCFormValidator);
-        doReturn(emptyList()).when(registerANCFormValidator).validatePatient(eq(motechId), anyList(), anyList());
+        Patient patient = mock(Patient.class);
+        when(patient.dateOfBirth()).thenReturn(DateTime.now());
+        when(formValidator.getPatient(motechId)).thenReturn(patient);
+        doReturn(emptyList()).when(registerANCFormValidator).validatePatient(eq(patient), anyList(), anyList());
 
         List<FormBean> formBeans = Arrays.<FormBean>asList(formBean);
         registerANCFormValidator.validate(formBean, new FormBeanGroup(formBeans), formBeans);

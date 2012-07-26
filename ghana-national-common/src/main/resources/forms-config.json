@@ -3,6 +3,55 @@
         "name":"NurseDataEntry",
         "forms":[
             {
+                 "name":"opvVisit",
+                 "fileName":"OutPatientVisit.xml",
+                 "depends" : ["registerPatient"],
+                 "bean":"org.motechproject.ghana.national.bean.OutPatientVisitForm",
+                 "validator":"org.motechproject.ghana.national.validator.OutPatientVisitFormValidator"
+            },
+            {
+                 "name":"ancVisit",
+                 "fileName":"ANCVisit.xml",
+                 "depends" : ["registerANC"],
+                 "bean":"org.motechproject.ghana.national.bean.ANCVisitForm",
+                 "validator":"org.motechproject.ghana.national.validator.AncVisitFormValidator"
+            },
+            {
+                 "name":"cwcVisit",
+                 "fileName":"CWCVisit.xml",
+                 "depends" : ["registerCWC"],
+                 "bean":"org.motechproject.ghana.national.bean.CWCVisitForm",
+                 "validator":"org.motechproject.ghana.national.validator.CwcVisitFormValidator"
+            },
+            {
+                "name":"delivery",
+                "fileName":"Delivery.xml",
+                "depends" : ["registerANC"],
+                "bean":"org.motechproject.ghana.national.bean.DeliveryForm",
+                "validator":"org.motechproject.ghana.national.validator.DeliveryFormValidator"
+            },
+            {
+                "name":"deliveryNotify",
+                "fileName":"DeliveryNotification.xml",
+                "depends" : ["registerANC"],
+                "bean":"org.motechproject.ghana.national.bean.DeliveryNotificationForm",
+                "validator":"org.motechproject.ghana.national.validator.DeliveryNotificationFormValidator"
+            },
+            {
+                "name":"pncBabyRequest",
+                "fileName":"PNCBaby.xml",
+                "depends" : ["registerPatient"],
+                "bean":"org.motechproject.ghana.national.bean.PNCBabyForm",
+                "validator":"org.motechproject.ghana.national.validator.PncBabyFormValidator"
+            },
+            {
+                "name":"pncMotherRequest",
+                "fileName":"PNCMother.xml",
+                "depends" : ["registerPatient"],
+                "bean":"org.motechproject.ghana.national.bean.PNCMotherForm",
+                "validator":"org.motechproject.ghana.national.validator.PncMotherFormValidator"
+            },
+            {
                 "name":"registerPatient",
                 "fileName":"RegisterClient.xml",
                 "bean":"org.motechproject.ghana.national.bean.RegisterClientForm",
@@ -44,41 +93,6 @@
                 "validator":"org.motechproject.ghana.national.validator.CareHistoryFormValidator"
             },
             {
-                "name":"clientDeath",
-                "fileName":"ClientDeath.xml",
-                "depends" : ["registerPatient"],
-                "bean":"org.motechproject.ghana.national.bean.ClientDeathForm",
-                "validator":"org.motechproject.ghana.national.validator.ClientDeathFormValidator"
-            },
-            {
-                "name":"deliveryNotify",
-                "fileName":"DeliveryNotification.xml",
-                "depends" : ["registerANC"],
-                "bean":"org.motechproject.ghana.national.bean.DeliveryNotificationForm",
-                "validator":"org.motechproject.ghana.national.validator.DeliveryNotificationFormValidator"
-            },
-            {
-                "name":"opvVisit",
-                "fileName":"OutPatientVisit.xml",
-                "depends" : ["registerPatient"],
-                "bean":"org.motechproject.ghana.national.bean.OutPatientVisitForm",
-                "validator":"org.motechproject.ghana.national.validator.OutPatientVisitFormValidator"
-            },
-            {
-                "name":"ancVisit",
-                "fileName":"ANCVisit.xml",
-                "depends" : ["registerANC"],
-                "bean":"org.motechproject.ghana.national.bean.ANCVisitForm",
-                "validator":"org.motechproject.ghana.national.validator.AncVisitFormValidator"
-            },
-            {
-                "name":"cwcVisit",
-                "fileName":"CWCVisit.xml",
-                "depends" : ["registerCWC"],
-                "bean":"org.motechproject.ghana.national.bean.CWCVisitForm",
-                "validator":"org.motechproject.ghana.national.validator.CwcVisitFormValidator"
-            },
-            {
                 "name":"TTVisit",
                 "fileName":"TTVisit.xml",
                 "depends" : ["registerPatient"],
@@ -93,25 +107,11 @@
                 "validator":"org.motechproject.ghana.national.validator.PregnancyTerminationFormValidator"
             },
             {
-                "name":"delivery",
-                "fileName":"Delivery.xml",
-                "depends" : ["registerANC"],
-                "bean":"org.motechproject.ghana.national.bean.DeliveryForm",
-                "validator":"org.motechproject.ghana.national.validator.DeliveryFormValidator"
-            },
-            {
-                "name":"pncBabyRequest",
-                "fileName":"PNCBaby.xml",
+                "name":"clientDeath",
+                "fileName":"ClientDeath.xml",
                 "depends" : ["registerPatient"],
-                "bean":"org.motechproject.ghana.national.bean.PNCBabyForm",
-                "validator":"org.motechproject.ghana.national.validator.PncBabyFormValidator"
-            },
-            {
-                "name":"pncMotherRequest",
-                "fileName":"PNCMother.xml",
-                "depends" : ["registerPatient"],
-                "bean":"org.motechproject.ghana.national.bean.PNCMotherForm",
-                "validator":"org.motechproject.ghana.national.validator.PncMotherFormValidator"
+                "bean":"org.motechproject.ghana.national.bean.ClientDeathForm",
+                "validator":"org.motechproject.ghana.national.validator.ClientDeathFormValidator"
             }
         ]
     },

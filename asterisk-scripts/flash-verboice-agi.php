@@ -3,7 +3,7 @@
 
 include "HttpClient.class.php";
 
-$callback_url = "http://127.0.0.1:3001/products";
+$callback_url = "http://localhost/ghana-national-web/outgoing/call";
 
 # Don't let script run for more than 1 min
         set_time_limit(60);

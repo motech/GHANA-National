@@ -2,11 +2,13 @@ package org.motechproject.ghana.national.web.form;
 
 import org.motechproject.ghana.national.domain.ANCCareHistory;
 import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.helper.FormWithHistoryInput;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
-public class ANCEnrollmentForm {
+public class ANCEnrollmentForm implements FormWithHistoryInput{
     private String staffId;
     private FacilityForm facilityForm;
     private String motechPatientId;
@@ -173,4 +175,13 @@ public class ANCEnrollmentForm {
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
     }
+
+    @Override
+    public HashMap<String, Date> getHistoryDatesMap(){
+        return new HashMap<String, Date>(){{
+            put("lastIPTDate",lastIPTDate);
+            put("lastTTDate",lastTTDate);
+        }};
+    }
+
 }

@@ -12,9 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-import static org.motechproject.ghana.national.domain.Constants.IN_PAST;
-import static org.motechproject.ghana.national.domain.Constants.NHIS_EXPIRY;
-import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
+import static org.motechproject.ghana.national.domain.Constants.*;
 
 @Component
 public class FormValidator {
@@ -60,5 +58,4 @@ public class FormValidator {
     public List<FormError> validateNHISExpiry(Date nhisExpires) {
         return nhisExpires!=null && nhisExpires.before(DateUtil.now().toDate()) ? Arrays.asList(new FormError(NHIS_EXPIRY, IN_PAST)) : Collections.<FormError>emptyList();
     }
-
 }
