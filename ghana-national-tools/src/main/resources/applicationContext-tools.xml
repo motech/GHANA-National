@@ -29,6 +29,7 @@
                 <ref bean="facilitySeed"/>
                 <ref bean="SMSTextContentSeed"/>
                 <ref bean="mobileMidwifeMessageSeed"/>
+                <ref bean="ivrChannelMappingSeed"/>
                 <ref bean="inboundDecisionTreeSeed"/>
                 <ref bean="outboundDecisionTreeSeed"/>
             </list>
