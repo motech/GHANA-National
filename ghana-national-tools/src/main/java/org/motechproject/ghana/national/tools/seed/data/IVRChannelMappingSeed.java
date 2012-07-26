@@ -34,7 +34,7 @@ public class IVRChannelMappingSeed extends Seed {
                 put("Vodafone", "^0(2|3)0[0-9]+$");
                 put("Tigo", "^0(2|5)7[0-9]+$");
                 put("Airtel", "^026[0-9]+$");
-                put("Expresso", "^$028[0-9]+");
+                put("Expresso", "^028[0-9]+$");
             }};
 
             for (Map.Entry<String, String> channelNameAndPhoneNoPattern : ivrChannelMappings.entrySet()) {

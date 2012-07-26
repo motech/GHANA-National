@@ -41,7 +41,7 @@ public class IVRGatewayTest {
                 new IVRChannelMapping().ivrChannel("Vodafone").phoneNumberPattern("^0(2|3)0[0-9]+$"),
                 new IVRChannelMapping().ivrChannel("Tigo").phoneNumberPattern("^0(2|5)7[0-9]+$"),
                 new IVRChannelMapping().ivrChannel("Airtel").phoneNumberPattern("^026[0-9]+$"),
-                new IVRChannelMapping().ivrChannel("Expresso").phoneNumberPattern("^$028[0-9]+")));
+                new IVRChannelMapping().ivrChannel("Expresso").phoneNumberPattern("^028[0-9]+$")));
     }
 
     @Test
@@ -55,6 +55,18 @@ public class IVRGatewayTest {
         assertThat(callRequest.getPhone(), is(phoneNumber));
         assertThat(callRequest.getPayload(), is(params));
         assertThat(callRequest.getCallBackUrl(), is("Airtel"));
+
+        reset(mockIVRService);
+        phoneNumber = "02401111111";  // ^0(2|5)4[0-9]+$
+        gateway.placeCall(phoneNumber, params);
+        verify(mockIVRService).initiateCall(callRequestCaptor.capture());
+        assertThat(callRequestCaptor.getValue().getCallBackUrl(), is("MTN"));
+
+        reset(mockIVRService);
+        phoneNumber = "0281111111";  // ^028[0-9]+$
+        gateway.placeCall(phoneNumber, params);
+        verify(mockIVRService).initiateCall(callRequestCaptor.capture());
+        assertThat(callRequestCaptor.getValue().getCallBackUrl(), is("Expresso"));
 
         reset(mockIVRService);
         phoneNumber = "02401111111";  // ^0(2|5)4[0-9]+$
