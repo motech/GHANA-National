@@ -36,12 +36,14 @@ public class IVRContentSeed extends Seed {
                 if (file.isDirectory()) {
                     Collection<File> audioFiles = FileUtils.listFiles(file, new String[]{"wav"}, false);
                     for (File audioFile : audioFiles) {
-                        audioInputStream = new FileInputStream(audioFile);
-                        checkedInputStream = new CheckedInputStream(audioInputStream, new Adler32());
-                        cmsLiteService.addContent(new StreamContent(file.getName(), audioFile.getName(),
-                                audioInputStream, String.valueOf(checkedInputStream.getChecksum().getValue()), "audio/x-wav;charset=UTF-8"));
-                        audioInputStream.close();
-                        checkedInputStream.close();
+                        if (!cmsLiteService.isStreamContentAvailable(file.getName(), audioFile.getName())) {
+                            audioInputStream = new FileInputStream(audioFile);
+                            checkedInputStream = new CheckedInputStream(audioInputStream, new Adler32());
+                            cmsLiteService.addContent(new StreamContent(file.getName(), audioFile.getName(),
+                                    audioInputStream, String.valueOf(checkedInputStream.getChecksum().getValue()), "audio/x-wav;charset=UTF-8"));
+                            audioInputStream.close();
+                            checkedInputStream.close();
+                        }
                     }
                 }
             }
