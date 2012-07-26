@@ -6,9 +6,7 @@ import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
 import org.motechproject.dao.MotechBaseRepository;
-import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.IVRChannelMapping;
-import org.motechproject.mrs.services.MRSFacilityAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -43,7 +41,7 @@ public class AllIvrChannelMappings extends MotechBaseRepository<IVRChannelMappin
 
     @Override
     public void add(IVRChannelMapping ivrChannelMapping) {
-        IVRChannelMapping ivrChannelMappingFromDb = findByPhoneNumberPattern(ivrChannelMapping.getIvrChannel());
+        IVRChannelMapping ivrChannelMappingFromDb = findByPhoneNumberPattern(ivrChannelMapping.getPhoneNumberPattern());
         if (ivrChannelMappingFromDb == null) {
             super.add(ivrChannelMapping);
         } else {

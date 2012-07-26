@@ -1,8 +1,5 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
-import org.apache.commons.io.FileUtils;
-import org.motechproject.cmslite.api.model.StreamContent;
-import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.domain.IVRChannelMapping;
 import org.motechproject.ghana.national.repository.AllIvrChannelMappings;
 import org.motechproject.ghana.national.tools.seed.Seed;
@@ -11,13 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedInputStream;
 
 @Component("ivrChannelMappingSeed")
 public class IVRChannelMappingSeed extends Seed {

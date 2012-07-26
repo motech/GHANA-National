@@ -7,10 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,14 +27,14 @@ public class IVRGateway {
 
     public void placeCall(String phoneNumber, Map<String, String> params) {
         String channelName = null;
-        for (IVRChannelMapping ivrChannelMapping :allIvrChannelMappings.allMappings()){
+        for (IVRChannelMapping ivrChannelMapping : allIvrChannelMappings.allMappings()) {
             Matcher channelNameMatcher = Pattern.compile(ivrChannelMapping.getPhoneNumberPattern()).matcher(phoneNumber);
-            if(channelNameMatcher.find()){
+            if (channelNameMatcher.find()) {
                 channelName = ivrChannelMapping.getIvrChannel();
                 break;
             }
         }
-        if(channelName == null){
+        if (channelName == null) {
             logger.warn("Unable to find a ivr channel for phone number: " + phoneNumber + ". Parameters for the call, " + params);
             channelName = allIvrChannelMappings.allMappings().get(0).getIvrChannel();
         }
