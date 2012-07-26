@@ -64,7 +64,7 @@ public class MobileMidwifeMessageSeed extends Seed {
             } else if (tokens[0].equals(CHILD_CARE.name())) {
                 messageContentKey = keyStr.replace(weekDay, childCareDayMap.get(weekDay));
             }
-            if (!cmsLiteService.isStringContentAvailable(messageContentKey, language.name())) {
+            if (!cmsLiteService.isStringContentAvailable(language.name(), messageContentKey)) {
                 cmsLiteService.addContent(new StringContent(language.name(), messageContentKey, value));
             }
         }
