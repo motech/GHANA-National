@@ -30,15 +30,15 @@ public class IVRChannelMappingSeed extends Seed {
     protected void load() {
         try {
             Map<String, String> ivrChannelMappings = new HashMap<String, String>(){{
-                put("MTN", "^0(2|5)4[0-9]+$");
-                put("Vodafone", "^0(2|3)0[0-9]+$");
-                put("Tigo", "^0(2|5)7[0-9]+$");
-                put("Airtel", "^026[0-9]+$");
-                put("Expresso", "^028[0-9]+$");
+                put("^0(2|5)4[0-9]+$", "MTN");
+                put("^0(2|3)0[0-9]+$", "Vodafone");
+                put("^0(2|5)7[0-9]+$", "Tigo");
+                put("^026[0-9]+$", "Airtel");
+                put("^028[0-9]+$", "Expresso");
             }};
 
             for (Map.Entry<String, String> channelNameAndPhoneNoPattern : ivrChannelMappings.entrySet()) {
-                allIvrChannelMappings.add(new IVRChannelMapping().ivrChannel(channelNameAndPhoneNoPattern.getKey()).phoneNumberPattern(channelNameAndPhoneNoPattern.getValue()));
+                allIvrChannelMappings.add(new IVRChannelMapping().ivrChannel(channelNameAndPhoneNoPattern.getValue()).phoneNumberPattern(channelNameAndPhoneNoPattern.getKey()));
             }
 
         } catch (Exception e) {

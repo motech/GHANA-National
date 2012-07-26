@@ -30,20 +30,20 @@ public class AllIvrChannelMappings extends MotechBaseRepository<IVRChannelMappin
         return allMappings;
     }
 
-    @View(name = "find_by_channel_name", map = "function(doc) { if(doc.type === 'IVRChannelMapping') emit(doc.ivrChannel, doc) }")
-    public IVRChannelMapping findByChannelName(String channelName) {
-        if (StringUtils.isEmpty(channelName)) {
+    @View(name = "find_by_phone_number_pattern", map = "function(doc) { if(doc.type === 'IVRChannelMapping') emit(doc.phoneNumberPattern, doc) }")
+    public IVRChannelMapping findByPhoneNumberPattern(String phoneNumberPattern) {
+        if (StringUtils.isEmpty(phoneNumberPattern)) {
             return null;
         }
 
-        ViewQuery viewQuery = createQuery("find_by_channel_name").key(channelName).includeDocs(true).cacheOk(true);
+        ViewQuery viewQuery = createQuery("find_by_phone_number_pattern").key(phoneNumberPattern).includeDocs(true).cacheOk(true);
         List<IVRChannelMapping> ivrChannelMappings = db.queryView(viewQuery, IVRChannelMapping.class);
         return CollectionUtils.isEmpty(ivrChannelMappings) ? null : ivrChannelMappings.get(0);
     }
 
     @Override
     public void add(IVRChannelMapping ivrChannelMapping) {
-        IVRChannelMapping ivrChannelMappingFromDb = findByChannelName(ivrChannelMapping.getIvrChannel());
+        IVRChannelMapping ivrChannelMappingFromDb = findByPhoneNumberPattern(ivrChannelMapping.getIvrChannel());
         if (ivrChannelMappingFromDb == null) {
             super.add(ivrChannelMapping);
         } else {
