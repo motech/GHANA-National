@@ -9,7 +9,7 @@ import org.motechproject.ghana.national.service.CareService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.validator.FormValidator;
 import org.motechproject.ghana.national.validator.RegisterCWCFormValidator;
-import org.motechproject.ghana.national.validator.patient.HistoryDateValidator;
+import org.motechproject.ghana.national.validator.patient.HasValidHistoryDates;
 import org.motechproject.ghana.national.vo.CwcVO;
 import org.motechproject.ghana.national.web.form.CWCEnrollmentForm;
 import org.motechproject.ghana.national.web.helper.CwcFormMapper;
@@ -109,7 +109,7 @@ public class CWCController {
         modelMap.mergeAttributes(cwcFormMapper.setViewAttributes());
         modelMap.mergeAttributes(facilityHelper.locationMap());
         Patient patient = formValidator.getPatient(cwcEnrollmentForm.getPatientMotechId());
-        List<FormError> formErrors = registerCWCFormValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
+        List<FormError> formErrors = registerCWCFormValidator.validatePatient(patient, cwcEnrollmentForm, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList());
         formErrors.addAll(formValidator.validateIfStaffExists(cwcEnrollmentForm.getStaffId()));
         if(cwcEnrollmentForm.getAddHistory())
             formErrors.addAll(historyDateValidator(cwcEnrollmentForm).validate(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList()));
@@ -162,7 +162,7 @@ public class CWCController {
         return ENROLL_CWC_URL;
     }
 
-    HistoryDateValidator historyDateValidator(CWCEnrollmentForm cwcEnrollmentForm) {
-        return new HistoryDateValidator(cwcEnrollmentForm);
+    HasValidHistoryDates historyDateValidator(CWCEnrollmentForm cwcEnrollmentForm) {
+        return new HasValidHistoryDates(cwcEnrollmentForm);
     }
 }

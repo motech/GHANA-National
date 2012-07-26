@@ -95,7 +95,7 @@ public class ANCControllerTest {
         ancEnrollmentForm.setAddHistory(false);
         Patient patient = mock(Patient.class);
         when(mockFormValidator.getPatient(ancEnrollmentForm.getMotechPatientId())).thenReturn(patient);
-        when(mockValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(Collections.<FormError>emptyList());
+        when(mockValidator.validatePatient(patient, ancEnrollmentForm, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(Collections.<FormError>emptyList());
         when(mockFormValidator.validateIfStaffExists(ancEnrollmentForm.getStaffId())).thenReturn(Collections.<FormError>emptyList());
         when(patient.dateOfBirth()).thenReturn(DateTime.now());
         final ArgumentCaptor<ANCVO> captor = ArgumentCaptor.forClass(ANCVO.class);
@@ -123,7 +123,7 @@ public class ANCControllerTest {
         when(mockFormValidator.validateIfStaffExists(ancEnrollmentForm.getStaffId())).thenReturn(staffErrors);
         Patient patient = mock(Patient.class);
         when(mockFormValidator.getPatient(ancEnrollmentForm.getMotechPatientId())).thenReturn(patient);
-        when(mockValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(patientErrors);
+        when(mockValidator.validatePatient(patient, ancEnrollmentForm, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(patientErrors);
         when(patient.dateOfBirth()).thenReturn(DateTime.now());
         ancController.save(ancEnrollmentForm, modelMap);
         verify(mockCareService, never()).enroll((ANCVO) null);
@@ -145,7 +145,7 @@ public class ANCControllerTest {
         MRSEncounter mrsEncounter = new MRSEncounter();
         Patient patient = mock(Patient.class);
         when(mockFormValidator.getPatient(ancEnrollmentForm.getMotechPatientId())).thenReturn(patient);
-        when(mockValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(errors);
+        when(mockValidator.validatePatient(patient, ancEnrollmentForm, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(errors);
         when(mockAllEncounters.getLatest(motechPatientId, ANC_REG_VISIT.value())).thenReturn(mrsEncounter);
         when(mockANCFormMapper.convertMRSEncounterToView(mrsEncounter)).thenReturn(ancEnrollmentForm);
 
@@ -167,7 +167,7 @@ public class ANCControllerTest {
         }};
         Patient patient = mock(Patient.class);
         when(mockFormValidator.getPatient(ancEnrollmentForm.getMotechPatientId())).thenReturn(patient);
-        when(mockValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(errors);
+        when(mockValidator.validatePatient(patient, ancEnrollmentForm, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(errors);
         ancController.newANC(motechPatientId, modelMap);
         assertTrue(modelMap.containsKey("ancEnrollmentForm"));
 
@@ -185,7 +185,8 @@ public class ANCControllerTest {
 
         Patient patient = mock(Patient.class);
         when(mockFormValidator.getPatient(ancEnrollmentForm.getMotechPatientId())).thenReturn(patient);
-        when(patient.dateOfBirth()).thenReturn(DateTime.now());
+        when(mockValidator.validatePatient(patient, ancEnrollmentForm, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(datesError);
+
         ancController.save(ancEnrollmentForm,modelMap);
         assertTrue(modelMap.containsKey("validationErrors"));
 

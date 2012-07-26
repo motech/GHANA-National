@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.builders.MobileMidwifeBuilder;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
@@ -27,6 +28,7 @@ import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -52,19 +54,19 @@ public class RegisterANCFormValidatorTest {
 
     @Test
     public void shouldValidatePatientDetailsWhileUploadingRegisterANCForm() {
-        RegisterANCForm formBean = mock(RegisterANCForm.class);
+        RegisterANCForm formBean = new RegisterANCForm();
 
         String motechId = "1231231";
         String staffId = "11";
         String facilityId = "34";
 
-        when(formBean.getMotechId()).thenReturn(motechId);
-        when(formBean.getStaffId()).thenReturn(staffId);
-        when(formBean.getFacilityId()).thenReturn(facilityId);
+        formBean.setMotechId(motechId);
+        formBean.setStaffId(staffId);
+        formBean.setFacilityId(facilityId);
 
 
         Patient patient = null;
-        final List<FormBean> formsUploaded = new ArrayList<FormBean>();
+        List<FormBean> formsUploaded = new ArrayList<FormBean>();
 
         when(formValidator.getPatient(motechId)).thenReturn(patient);
 
@@ -77,12 +79,11 @@ public class RegisterANCFormValidatorTest {
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, NOT_FOUND)));
 
         // patient is dead
-        patient = new Patient(new MRSPatient("motechId", new MRSPerson().dead(TRUE).gender("F").dateOfBirth(DateUtil.newDate(2000,12,12).toDate()), new MRSFacility("facilityId")));
+        patient = new Patient(new MRSPatient("motechId", new MRSPerson().dead(TRUE).gender("F").dateOfBirth(DateUtil.newDate(2000, 12, 12).toDate()), new MRSFacility("facilityId")));
         when(formValidator.getPatient(motechId)).thenReturn(patient);
         errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, IS_NOT_ALIVE)));
 
-        patient.getMrsPatient().getPerson().gender("M");
         errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, IS_NOT_ALIVE)));
 
@@ -91,17 +92,25 @@ public class RegisterANCFormValidatorTest {
         errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError(MOTECH_ID_ATTRIBUTE_NAME, GENDER_ERROR_MSG)));
 
+        //historyDates are before DOB of patient when available in db
+        formBean.setAddHistory(true);
+        patient.getMrsPatient().getPerson().gender("F");
+
+        formBean.setLastIPTDate(DateUtil.newDate(2000, 12, 1).toDate());
+        formBean.setLastTTDate(DateUtil.newDate(2000, 12, 1).toDate());
+
+        errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
+        assertThat(errors, hasItem(new FormError("lastIPTDate", Constants.AFTER_DOB)));
+        assertThat(errors, hasItem(new FormError("lastTTDate", Constants.AFTER_DOB)));
+
         //historyDates are after DOB of patient when available in db
-        patient.getMrsPatient().getPerson().dateOfBirth(DateTime.now().toDate());
-        when(formBean.getAddHistory()).thenReturn(true);
-        when(formBean.getHistoryDatesMap()).thenReturn(new HashMap<String,Date>(){{
-            put("lastIPTDate",DateUtil.newDate(2011, 3, 3).toDate());
-            put("lastTTDate",DateUtil.newDate(2011, 4, 3).toDate());
-        }});
-        errors = registerANCFormValidator.validate(formBean,new FormBeanGroup(formsUploaded), formsUploaded);
-        assertThat(errors,hasItem(new FormError("lastIPTDate", Constants.AFTER_DOB)));
-        assertThat(errors,hasItem(new FormError("lastTTDate", Constants.AFTER_DOB)));
-        
+        formBean.setLastIPTDate(DateUtil.newDate(2000, 12, 25).toDate());
+        formBean.setLastTTDate(DateUtil.newDate(2000, 12, 25).toDate());
+
+        errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
+        assertThat(errors, not(hasItem(new FormError("lastIPTDate", Constants.AFTER_DOB))));
+        assertThat(errors, not(hasItem(new FormError("lastTTDate", Constants.AFTER_DOB))));
+
         // patient not available in db, but form submit has reg client form
         patient = null;
         when(formValidator.getPatient(motechId)).thenReturn(patient);
@@ -115,22 +124,32 @@ public class RegisterANCFormValidatorTest {
         registerClientForm.setDateOfBirth(DateUtil.newDate(2000, 12, 12).toDate());
         errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
         assertThat(errors, hasItem(new FormError("Sex", GENDER_ERROR_MSG)));
-        
+
         //historyDates are after DOB of patient when form uploaded with regANC
         patient = null;
         when(formValidator.getPatient(motechId)).thenReturn(patient);
-        registerClientForm.setDateOfBirth(DateTime.now().toDate());
+        registerClientForm.setDateOfBirth(DateUtil.newDate(2000, 12, 12).toDate());
         registerClientForm.setSex("F");
         registerClientForm.setFormname("registerPatient");
+        registerClientForm.setRegistrantType(PatientType.PREGNANT_MOTHER);
+        formsUploaded = new ArrayList<FormBean>();
         formsUploaded.add(registerClientForm);
-        when(formBean.getAddHistory()).thenReturn(true);
-        when(formBean.getHistoryDatesMap()).thenReturn(new HashMap<String,Date>(){{
-            put("lastIPTDate",DateUtil.newDate(2011, 3, 3).toDate());
-            put("lastTTDate",DateUtil.newDate(2011, 4, 3).toDate());
-        }});
-        errors = registerANCFormValidator.validate(formBean,new FormBeanGroup(formsUploaded),formsUploaded);
-        assertThat(errors,hasItem(new FormError("lastIPTDate", Constants.AFTER_DOB)));
-        assertThat(errors,hasItem(new FormError("lastTTDate", Constants.AFTER_DOB)));
+        formBean.setAddHistory(true);
+
+        //historyDates are before DOB of patient when available in db
+        formBean.setLastIPTDate(DateUtil.newDate(2000, 12, 1).toDate());
+        formBean.setLastTTDate(DateUtil.newDate(2000, 12, 1).toDate());
+        errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
+        assertThat(errors, hasItem(new FormError("lastIPTDate", Constants.AFTER_DOB)));
+        assertThat(errors, hasItem(new FormError("lastTTDate", Constants.AFTER_DOB)));
+
+
+        //historyDates are after DOB of patient when available in db
+        formBean.setLastIPTDate(DateUtil.newDate(2000, 12, 25).toDate());
+        formBean.setLastTTDate(DateUtil.newDate(2000, 12, 25).toDate());
+        errors = registerANCFormValidator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
+        assertThat(errors, not(hasItem(new FormError("lastIPTDate", Constants.AFTER_DOB))));
+        assertThat(errors, not(hasItem(new FormError("lastTTDate", Constants.AFTER_DOB))));
     }
 
     @Test
@@ -145,7 +164,7 @@ public class RegisterANCFormValidatorTest {
         Patient patient = mock(Patient.class);
         when(patient.dateOfBirth()).thenReturn(DateTime.now());
         when(formValidator.getPatient(motechId)).thenReturn(patient);
-        doReturn(emptyList()).when(registerANCFormValidator).validatePatient(eq(patient), anyList(), anyList());
+        doReturn(emptyList()).when(registerANCFormValidator).validatePatient(eq(patient), eq(formBean), anyList(), anyList());
 
         List<FormBean> formBeans = Arrays.<FormBean>asList(formBean);
         registerANCFormValidator.validate(formBean, new FormBeanGroup(formBeans), formBeans);

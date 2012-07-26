@@ -11,6 +11,7 @@ import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
 
 public class ExistsInDb extends PatientValidator{
     private FormError formError;
+    private Patient patient;
 
     public ExistsInDb() {
     }
@@ -19,7 +20,13 @@ public class ExistsInDb extends PatientValidator{
         this.formError = formError;
     }
 
+    public ExistsInDb(Patient patient, FormError formError) {
+        this(formError);
+        this.patient = patient;
+    }
+
     public List<FormError> validate(Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms){
+        patient = this.patient != null ? this.patient : patient;
         return (patient == null)? Arrays.asList(getFormError()):Collections.<FormError>emptyList();
     }
 

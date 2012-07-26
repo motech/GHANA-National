@@ -20,9 +20,12 @@ public abstract class PatientValidator {
         return this;
     }
 
-    public PatientValidator onSuccess(PatientValidator validator, boolean applyIf){
-        if(applyIf)
+    public PatientValidator onSuccess(boolean shouldEnableNesting, PatientValidator validator, boolean applyIf){
+        if(applyIf){
             onSuccess = validator;
+            if(shouldEnableNesting)
+                return validator;
+        }
         return this;
     }
 

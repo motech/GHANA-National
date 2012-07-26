@@ -135,7 +135,7 @@ public class CWCControllerTest {
         Patient patient = mock(Patient.class);
         when(mockFormValidator.getPatient(cwcEnrollmentForm.getPatientMotechId())).thenReturn(patient);
         when(patient.dateOfBirth()).thenReturn(DateUtil.newDate(2000,12,12).toDateTimeAtCurrentTime());
-        when(mockregisterCWCFormValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(Collections.<FormError>emptyList());
+        when(mockregisterCWCFormValidator.validatePatient(patient, cwcEnrollmentForm, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(Collections.<FormError>emptyList());
         cwcEnrollmentForm.setAddHistory(false);
         cwcController.save(cwcEnrollmentForm, modelMap);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
@@ -180,7 +180,7 @@ public class CWCControllerTest {
         Patient patient = mock(Patient.class);
         when(mockFormValidator.getPatient(cwcEnrollmentForm.getPatientMotechId())).thenReturn(patient);
         when(patient.dateOfBirth()).thenReturn(DateTime.now());
-        when(mockregisterCWCFormValidator.validatePatient(patient, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(
+        when(mockregisterCWCFormValidator.validatePatient(patient, cwcEnrollmentForm, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(
                 new ArrayList<FormError>() {{
                     add(new FormError(Constants.CHILD_AGE_PARAMETER, "description1"));
                     add(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, "description2"));

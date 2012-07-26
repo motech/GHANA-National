@@ -1,12 +1,15 @@
 package org.motechproject.ghana.national.web.form;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
+import org.motechproject.ghana.national.helper.FormWithHistoryInput;
 
 import java.util.Date;
+import java.util.HashMap;
 
-public class PatientForm {
+public class PatientForm implements FormWithHistoryInput {
     private RegistrationType registrationMode;
 
     private String staffId;
@@ -228,5 +231,10 @@ public class PatientForm {
     public PatientForm setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
         return this;
+    }
+
+    @Override
+    public HashMap<String, Date> getHistoryDatesMap() {
+        return new HashMap<>();
     }
 }

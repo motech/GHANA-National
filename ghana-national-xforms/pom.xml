@@ -37,6 +37,12 @@
             <version>3.3</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-testing-utils</artifactId>
+            <version>${motech-platform.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

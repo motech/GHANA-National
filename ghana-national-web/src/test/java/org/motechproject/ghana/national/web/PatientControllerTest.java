@@ -20,6 +20,8 @@ import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
 import org.motechproject.ghana.national.validator.EditClientFormValidator;
+import org.motechproject.ghana.national.validator.FormValidator;
+import org.motechproject.ghana.national.validator.RegisterClientFormValidator;
 import org.motechproject.ghana.national.web.form.PatientForm;
 import org.motechproject.ghana.national.web.form.SearchPatientForm;
 import org.motechproject.ghana.national.web.helper.FacilityHelper;
@@ -81,6 +83,8 @@ public class PatientControllerTest {
     MobileMidwifeService mobileMidwifeService;
     @Mock
     EditClientFormValidator mockEditClientFormValidator;
+    @Mock
+    private FormValidator mockFormValidator;
 
     @Before
     public void setUp() throws Exception {
@@ -96,6 +100,9 @@ public class PatientControllerTest {
         ReflectionTestUtils.setField(patientController, "identifierGenerator", mockIdentifierGenerator);
         ReflectionTestUtils.setField(patientController, "mobileMidwifeService", mobileMidwifeService);
         ReflectionTestUtils.setField(patientController, "editClientFormValidator", mockEditClientFormValidator);
+        RegisterClientFormValidator registerClientFormValidator = new RegisterClientFormValidator();
+        ReflectionTestUtils.setField(registerClientFormValidator, "formValidator", mockFormValidator);
+        ReflectionTestUtils.setField(patientController, "registerClientFormValidator", registerClientFormValidator);
         mockBindingResult = mock(BindingResult.class);
         when(mockPatientService.registerPatient(any(Patient.class), any(String.class), Matchers.<Date>any())).thenReturn(new Patient(new MRSPatient(null, null, null)));
     }
@@ -132,6 +139,7 @@ public class PatientControllerTest {
         createPatientForm.setStaffId(null);
         createPatientForm.setMotechId("1267");
         createPatientForm.setFacilityId("12");
+        createPatientForm.setDateOfBirth(DateUtil.today().toDate());
         Facility mockFacility = mock(Facility.class);
         when(mockFacilityService.getFacility(createPatientForm.getFacilityId())).thenReturn(mockFacility);
         createPatientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
@@ -141,7 +149,34 @@ public class PatientControllerTest {
     }
 
     @Test
-    public void shouldNotSavePatientIfValidationErrors() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
+    public void shouldNotCreateNewPatientIfValidationFails() throws PatientIdIncorrectFormatException, PatientIdNotUniqueException {
+        MRSUser mockStaff = mock(MRSUser.class);
+        PatientForm createPatientForm = new PatientForm();
+        createPatientForm.setStaffId("staffid");
+        when(mockStaffService.getUserByEmailIdOrMotechId("staffid")).thenReturn(mockStaff);
+
+        Facility mockFacility = mock(Facility.class);
+        createPatientForm.setFacilityId("facilityid");
+        when(mockFacilityService.getFacility("facilityid")).thenReturn(mockFacility);
+
+        String patientMotechId = "1267";
+        Patient mockPatient = mock(Patient.class);
+        createPatientForm.setMotechId(patientMotechId);
+        when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(mockPatient);
+
+        createPatientForm.setDateOfBirth(DateUtil.today().toDate());
+        createPatientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
+        when(mockMotechIdVerhoeffValidator.isValid(patientMotechId)).thenReturn(true);
+
+        String view = patientController.createPatient(createPatientForm, mockBindingResult, new ModelMap());
+
+        verify(mockPatientService, never()).registerPatient(any(Patient.class), any(String.class), Matchers.<Date>any());
+        assertEquals("patients/new", view);
+
+    }
+
+    @Test
+    public void shouldNotSavePatientWhileEditingIfValidationFails() throws ParentNotFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
         EditClientForm editClientForm = new EditClientForm();
         String motechId = "1267";
         String facilityId = "12";
@@ -165,6 +200,7 @@ public class PatientControllerTest {
         PatientForm createPatientForm = new PatientForm();
         final String motechId = "1267";
         createPatientForm.setMotechId(motechId);
+        createPatientForm.setDateOfBirth(DateUtil.today().toDate());
         String facilityId = "12";
         String facilityName = "facilityName";
         createPatientForm.setFacilityId(facilityId);

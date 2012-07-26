@@ -30,7 +30,7 @@ public class FormValidator {
     private AllEncounters allEncounters;
 
 
-    public Patient getPatient(String motechId){
+    public Patient getPatient(String motechId) {
         return patientService.getPatientByMotechId(motechId);
     }
 
@@ -56,6 +56,6 @@ public class FormValidator {
     }
 
     public List<FormError> validateNHISExpiry(Date nhisExpires) {
-        return nhisExpires!=null && nhisExpires.before(DateUtil.now().toDate()) ? Arrays.asList(new FormError(NHIS_EXPIRY, IN_PAST)) : Collections.<FormError>emptyList();
+        return nhisExpires != null && nhisExpires.before(DateUtil.now().toDate()) ? Arrays.asList(new FormError(NHIS_EXPIRY, IN_PAST)) : Collections.<FormError>emptyList();
     }
 }

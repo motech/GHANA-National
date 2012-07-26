@@ -4,7 +4,6 @@ import ch.lambdaj.function.convert.Converter;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
@@ -51,7 +50,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static ch.lambdaj.Lambda.convert;
-import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
 
 
 @Controller
@@ -83,6 +81,8 @@ public class PatientController {
     private MobileMidwifeService mobileMidwifeService;
     @Autowired
     private EditClientFormValidator editClientFormValidator;
+    @Autowired
+    private RegisterClientFormValidator registerClientFormValidator;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -103,54 +103,54 @@ public class PatientController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String createPatient(PatientForm createPatientForm, BindingResult result, ModelMap modelMap) {
         Facility facility = facilityService.getFacility(createPatientForm.getFacilityId());
-        PatientValidator validator = new AlwaysValid().onSuccess(new NotExistsInDb(), RegistrationType.USE_PREPRINTED_ID.equals(createPatientForm.getRegistrationMode()))
-                .onSuccess(new IsFormSubmittedForAChild(createPatientForm.getDateOfBirth(),new FormError("Child age","should be less than 5")), PatientType.CHILD_UNDER_FIVE.equals(createPatientForm.getTypeOfPatient()))
-                .onSuccess(new IsFormSubmittedForAFemale(createPatientForm.getSex()), PatientType.PREGNANT_MOTHER.equals(createPatientForm.getTypeOfPatient()))
-                .onFailure(new ExistsInDb(new FormError(createPatientForm.getParentId(), NOT_FOUND)));
-        List<FormError> formErrors = new DependentValidator().validate(null,Collections.<FormBean>emptyList(),Collections.<FormBean>emptyList(),validator);
-       if(formErrors.isEmpty()){
+        Patient patientInDb = null;
+        if(createPatientForm.getMotechId() != null)
+            patientInDb = patientService.getPatientByMotechId(createPatientForm.getMotechId());
 
-           try {
-               String staffId = createPatientForm.getStaffId();
-               processStaffId(staffId);
-               if (createPatientForm.getRegistrationMode().equals(RegistrationType.USE_PREPRINTED_ID)) {
-                   if (!motechIdVerhoeffValidator.isValid(createPatientForm.getMotechId())) {
-                       throw new UnallowedIdentifierException("User Id is not allowed");
-                   }
-               }
-               Patient patient = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility), staffId, DateUtil.today().toDate());
-               if (StringUtils.isNotEmpty(patient.getMotechId())) {
-                   modelMap.put("successMessage", "Patient created successfully.");
-                   return populateView(modelMap, patient.getMotechId());
-               }
-           } catch (ParentNotFoundException e) {
-               handleError(result, modelMap, messageSource.getMessage("patient_parent_not_found", null, Locale.getDefault()));
-               return NEW_PATIENT_URL;
-           } catch (PatientIdNotUniqueException e) {
-               handleError(result, modelMap, messageSource.getMessage("patient_id_duplicate", null, Locale.getDefault()));
-               return NEW_PATIENT_URL;
-           } catch (PatientIdIncorrectFormatException e) {
-               handleError(result, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
-               return NEW_PATIENT_URL;
-           } catch (UnallowedIdentifierException e) {
-               handleError(result, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
-               return NEW_PATIENT_URL;
-           } catch (StaffNotFoundException e) {
-               handleError(result, modelMap, messageSource.getMessage("staff_id_not_found", null, Locale.getDefault()));
-               return NEW_PATIENT_URL;
-           } catch (ParseException ignored) {
-           }
-           return SUCCESS;
-       }
-        else {
-           modelMap.addAttribute("validationErrors",formErrors.isEmpty() ? null : formErrors);
-           modelMap.mergeAttributes(facilityHelper.locationMap());
-           return  NEW_PATIENT_URL;
-       }
+        PatientValidator validators = registerClientFormValidator.patientValidator(createPatientForm, createPatientForm.getRegistrationMode(), createPatientForm.getDateOfBirth(), createPatientForm.getSex(), createPatientForm.getTypeOfPatient(), createPatientForm.getParentId());
+        List<FormError> formErrors = new DependentValidator().validate(patientInDb, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList(), validators);
+
+        if (formErrors.isEmpty()) {
+            try {
+                String staffId = createPatientForm.getStaffId();
+                validateStaffId(staffId);
+                if (createPatientForm.getRegistrationMode().equals(RegistrationType.USE_PREPRINTED_ID)) {
+                    if (!motechIdVerhoeffValidator.isValid(createPatientForm.getMotechId())) {
+                        throw new UnallowedIdentifierException("User Id is not allowed");
+                    }
+                }
+                Patient patient = patientService.registerPatient(patientHelper.getPatientVO(createPatientForm, facility), staffId, DateUtil.today().toDate());
+                if (StringUtils.isNotEmpty(patient.getMotechId())) {
+                    modelMap.put("successMessage", "Patient created successfully.");
+                    return populateView(modelMap, patient.getMotechId());
+                }
+            } catch (ParentNotFoundException e) {
+                handleError(result, modelMap, messageSource.getMessage("patient_parent_not_found", null, Locale.getDefault()));
+                return NEW_PATIENT_URL;
+            } catch (PatientIdNotUniqueException e) {
+                handleError(result, modelMap, messageSource.getMessage("patient_id_duplicate", null, Locale.getDefault()));
+                return NEW_PATIENT_URL;
+            } catch (PatientIdIncorrectFormatException e) {
+                handleError(result, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
+                return NEW_PATIENT_URL;
+            } catch (UnallowedIdentifierException e) {
+                handleError(result, modelMap, messageSource.getMessage("patient_id_incorrect", null, Locale.getDefault()));
+                return NEW_PATIENT_URL;
+            } catch (StaffNotFoundException e) {
+                handleError(result, modelMap, messageSource.getMessage("staff_id_not_found", null, Locale.getDefault()));
+                return NEW_PATIENT_URL;
+            } catch (ParseException ignored) {
+            }
+            return SUCCESS;
+        } else {
+            modelMap.addAttribute("validationErrors", formErrors.isEmpty() ? null : formErrors);
+            modelMap.mergeAttributes(facilityHelper.locationMap());
+            return NEW_PATIENT_URL;
+        }
 
     }
 
-    private void processStaffId(String staffId) throws StaffNotFoundException {
+    private void validateStaffId(String staffId) throws StaffNotFoundException {
         if (StringUtils.isNotEmpty(staffId) && (staffService.getUserByEmailIdOrMotechId(staffId) == null)) {
             throw new StaffNotFoundException();
         }
@@ -192,7 +192,7 @@ public class PatientController {
         } catch (ParseException ignored) {
         }
         modelMap.mergeAttributes(facilityHelper.locationMap());
-        modelMap.addAttribute("validationErrors",(formErrors.isEmpty() ? null : formErrors));
+        modelMap.addAttribute("validationErrors", (formErrors.isEmpty() ? null : formErrors));
         modelMap.addAttribute("disableEdit", formErrors.contains(new FormError("motechId", "is not alive")));
         modelMap.put("registerForMobileMidwife", mobileMidwifeService.findActiveBy(motechId) != null);
         return EDIT_PATIENT_URL;
@@ -209,7 +209,7 @@ public class PatientController {
     public String update(PatientForm patientForm, BindingResult bindingResult, ModelMap modelMap) {
         try {
             String staffId = patientForm.getStaffId();
-            processStaffId(staffId);
+            validateStaffId(staffId);
             String motechId = patientService.updatePatient(patientHelper.getPatientVO(patientForm,
                     facilityService.getFacility(patientForm.getFacilityId())), staffId, new Date());
             modelMap.put("successMessage", "Patient edited successfully.");

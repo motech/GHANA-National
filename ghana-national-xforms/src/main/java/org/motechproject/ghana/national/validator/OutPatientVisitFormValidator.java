@@ -34,8 +34,8 @@ public class OutPatientVisitFormValidator extends FormValidator<OutPatientVisitF
             formErrors.addAll(new DependentValidator().validate(patient, group.getFormBeans(),
                     allForms, new ExistsInDb()
                             .onSuccess(new IsAlive()
-                                    .onSuccess(new IsAChild(), PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType()))
-                                    .onSuccess(new IsFemale(), PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType())))
+                                    .onSuccess(false, new IsAChild(), PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType()))
+                                    .onSuccess(false, new IsFemale(), PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType())))
                             .onFailure(new RegClientFormSubmittedInSameUpload())));
         }
         return formErrors;

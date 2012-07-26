@@ -1,10 +1,11 @@
 package org.motechproject.ghana.national.validator;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
-import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.helper.FormWithHistoryInput;
 import org.motechproject.ghana.national.validator.patient.*;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
@@ -15,6 +16,7 @@ import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
@@ -23,8 +25,6 @@ import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
 public class RegisterClientFormValidator extends FormValidator<RegisterClientForm> {
 
     @Autowired
-    private PatientService patientService;
-    @Autowired
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
 
     @Override
@@ -32,22 +32,42 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
     @ApiSession
     public List<FormError> validate(RegisterClientForm formBean, FormBeanGroup group, List<FormBean> allForms) {
         List<FormError> formErrors = super.validate(formBean, group, allForms);
-        Patient patient = formValidator.getPatient(formBean.getMotechId());
+
+        Patient patient = null;
+        if(formBean.getMotechId() != null)
+            patient = formValidator.getPatient(formBean.getMotechId());
+
+
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
 
-        String mothersMotechId = "Mothers motech Id";
-
-        PatientValidator validators = new AlwaysValid().onSuccess(new NotExistsInDb(), RegistrationType.USE_PREPRINTED_ID.equals(formBean.getRegistrationMode()))
-                .onSuccess(new IsFormSubmittedForAChild(formBean.getDateOfBirth(),null), PatientType.CHILD_UNDER_FIVE.equals(formBean.getRegistrantType()))
-                .onSuccess(new IsFormSubmittedForAFemale(formBean.getSex()), PatientType.PREGNANT_MOTHER.equals(formBean.getRegistrantType()))
-                .onFailure(new ExistsInDb(new FormError(mothersMotechId, NOT_FOUND)));
+        PatientValidator validators = patientValidator(formBean, formBean.getRegistrationMode(), formBean.getDateOfBirth(), formBean.getSex(), formBean.getRegistrantType(), formBean.getMotherMotechId());
         List<FormError> patientValidationErrors = getDependentValidator().validate(patient, group.getFormBeans(), allForms, validators);
         formErrors.addAll(patientValidationErrors);
+
         formErrors.addAll(formValidator.validateNHISExpiry(formBean.getNhisExpires()));
-        if(formBean.getAddHistory())
-            formErrors.addAll(historyDateValidator(formBean).validate(patient,group.getFormBeans(),allForms));
+
         return formErrors;
+    }
+
+    public PatientValidator patientValidator(FormWithHistoryInput formWithHistoryInput, RegistrationType registrationModeFromForm, Date dateOfBirthFromForm, String sexFromForm, PatientType registrantTypeFromForm, String motherMotechIdFromForm) {
+        Patient patientsMother = null;
+        if(motherMotechIdFromForm != null)
+            patientsMother = formValidator.getPatient(motherMotechIdFromForm);
+
+        String mothersMotechId = "Mothers motech Id";
+
+        PatientValidator validators = new AlwaysValid();
+        //do not inline
+        validators
+            .onSuccess(true, new NotExistsInDb(), RegistrationType.USE_PREPRINTED_ID.equals(registrationModeFromForm))
+            .onSuccess(true, new IsFormSubmittedForAChild(dateOfBirthFromForm, null), PatientType.CHILD_UNDER_FIVE.equals(registrantTypeFromForm))
+            .onSuccess(true, new IsFormSubmittedForAFemale(sexFromForm), PatientType.PREGNANT_MOTHER.equals(registrantTypeFromForm))
+            .onSuccess(new IsFormSubmittedWithValidHistoryDates(dateOfBirthFromForm, formWithHistoryInput))
+            .onSuccess(true, new ExistsInDb(patientsMother, new FormError(mothersMotechId, NOT_FOUND))
+                    .onFailure(new RegClientFormSubmittedInSameUploadForMotechId(motherMotechIdFromForm, new FormError(mothersMotechId, NOT_FOUND))), PatientType.CHILD_UNDER_FIVE.equals(registrantTypeFromForm) && !StringUtils.isEmpty(motherMotechIdFromForm));
+
+        return validators;
     }
 
 
@@ -55,8 +75,5 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         return new DependentValidator();
     }
 
-    HistoryDateValidator historyDateValidator(RegisterClientForm form) {
-        return new HistoryDateValidator(form);
-    }
 }
 
