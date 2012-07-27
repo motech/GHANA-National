@@ -40,7 +40,7 @@ public class IVRRetryHandlerTest {
         }});
 
         String phoneNumber = "phonenumber";
-        when(mobileMidwifeService.findActiveBy(motechId)).thenReturn(new MobileMidwifeEnrollment(null).setPhoneNumber(phoneNumber));
+        when(mobileMidwifeService.findLatestEnrollment(motechId)).thenReturn(new MobileMidwifeEnrollment(null).setPhoneNumber(phoneNumber));
         when(ivrCallbackUrlBuilder.outboundCallUrl(motechId)).thenReturn("url");
         ivrRetryHandler.handlerIVRRetry(event);
 

@@ -2,6 +2,8 @@ package org.motechproject.ghana.national.service;
 
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.factory.PregnancyEncounterFactory;
 import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
@@ -61,13 +63,15 @@ public class PregnancyService {
     public void terminatePregnancy(PregnancyTerminationRequest request) throws PatientNotFoundException {
         allEncounters.persistEncounter(encounterFactory.createTerminationEncounter(request, allObservations.activePregnancyObservation(request.getPatient().getMotechId(), request.getTerminationDate())));
         if (request.isDead()) {
+            MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(request.getPatient().getMotechId());
+            if(enrollment != null && ServiceType.PREGNANCY.equals(enrollment.getServiceType()))
+                mobileMidwifeService.unRegister(request.getPatient().getMotechId());
             patientService.deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
 
         } else {
             allSchedulesAndMessages.unEnroll(request.getPatient().getMRSPatientId(), Patient.ancCarePrograms);
             allAppointmentsAndMessages.remove(request.getPatient());
         }
-        mobileMidwifeService.unRegister(request.getPatient().getMotechId());
     }
 
     private Patient registerChild(DeliveredChildRequest childRequest, Date birthDate, String parentMotechId, Facility facility) {

@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
@@ -10,6 +11,8 @@ import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.model.DayOfWeek;
+import org.motechproject.retry.dao.AllRetries;
+import org.motechproject.retry.service.RetryService;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,12 +25,14 @@ public class MobileMidwifeService {
     private AllMobileMidwifeEnrollments allEnrollments;
     private AllCampaigns allCampaigns;
     private AllPatientsOutbox allPatientsOutbox;
+    private RetryService retryService;
 
     @Autowired
-    public MobileMidwifeService(AllMobileMidwifeEnrollments allEnrollments, AllCampaigns allCampaigns, AllPatientsOutbox allPatientsOutbox) {
+    public MobileMidwifeService(AllMobileMidwifeEnrollments allEnrollments, AllCampaigns allCampaigns, AllPatientsOutbox allPatientsOutbox, RetryService retryService) {
         this.allEnrollments = allEnrollments;
         this.allCampaigns = allCampaigns;
-        this.allPatientsOutbox= allPatientsOutbox;
+        this.allPatientsOutbox = allPatientsOutbox;
+        this.retryService = retryService;
     }
 
     public void register(MobileMidwifeEnrollment enrollment) {
@@ -44,8 +49,8 @@ public class MobileMidwifeService {
                 referenceDate = allCampaigns.nextCycleDateFromToday(enrollment.getServiceType(), Medium.SMS);
                 allCampaigns.start(enrollment.createCampaignRequestForTextMessage(referenceDate));
             } else if (enrollment.getMedium().equals(Medium.VOICE)) {
-                DayOfWeek applicableDays = enrollment.getDayOfWeek()!=null ? enrollment.getDayOfWeek() : DayOfWeek.getDayOfWeek(enrollment.getEnrollmentDateTime().dayOfWeek());
-                referenceDate = getReferenceDate(enrollment.getEnrollmentDateTime(),applicableDays);
+                DayOfWeek applicableDays = enrollment.getDayOfWeek() != null ? enrollment.getDayOfWeek() : DayOfWeek.getDayOfWeek(enrollment.getEnrollmentDateTime().dayOfWeek());
+                referenceDate = getReferenceDate(enrollment.getEnrollmentDateTime(), applicableDays);
                 allCampaigns.start(enrollment.createCampaignRequestForVoiceMessage(referenceDate, applicableDays, enrollment.getTimeOfDay()));
             }
         }
@@ -65,6 +70,7 @@ public class MobileMidwifeService {
                 CampaignRequest campaignRequest = enrollment.stopCampaignRequest();
                 allCampaigns.stop(campaignRequest);
                 allPatientsOutbox.removeMobileMidwifeMessages(patientId);
+                retryService.fulfill(patientId, Constants.RETRY_GROUP);
             }
         }
     }

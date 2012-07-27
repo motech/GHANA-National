@@ -9,6 +9,8 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.factory.PregnancyEncounterFactory;
 import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.request.DeliveredChildRequest;
@@ -30,6 +32,7 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
+import static org.motechproject.ghana.national.domain.Concept.NEW_CASE;
 import static org.motechproject.ghana.national.domain.Concept.PREGNANCY;
 import static org.motechproject.ghana.national.domain.Constants.OTHER_CAUSE_OF_DEATH;
 import static org.motechproject.ghana.national.domain.Constants.PREGNANCY_TERMINATION;
@@ -89,7 +92,27 @@ public class PregnancyServiceTest {
         pregnancyService.terminatePregnancy(request);
 
         verify(mockPatientService).deceasePatient(request.getTerminationDate(), request.getPatient().getMotechId(), OTHER_CAUSE_OF_DEATH, PREGNANCY_TERMINATION);
+    }
+
+    @Test
+    public void shouldUnregisterMMProgramOnlyIfMotherIsDeadAndSheHadAPregnancyMMRegistration() throws PatientNotFoundException {
+        String motechId = "motechid";
+        PregnancyTerminationRequest request = pregnancyTermination(new Patient(new MRSPatient(motechId, null, null)), null, new Facility(new MRSFacility("facilityid")));
+        request.setDead(true);
+        when(mockMobileMidwifeService.findActiveBy(motechId)).thenReturn(new MobileMidwifeEnrollment(null).setServiceType(ServiceType.PREGNANCY));
+        pregnancyService.terminatePregnancy(request);
         verify(mockMobileMidwifeService).unRegister(request.getPatient().getMotechId());
+
+        reset(mockMobileMidwifeService);
+        when(mockMobileMidwifeService.findActiveBy(motechId)).thenReturn(new MobileMidwifeEnrollment(null).setServiceType(ServiceType.CHILD_CARE));
+        pregnancyService.terminatePregnancy(request);
+        verify(mockMobileMidwifeService, never()).unRegister(request.getPatient().getMotechId());
+
+        request.setDead(false);
+        reset(mockMobileMidwifeService);
+        when(mockMobileMidwifeService.findActiveBy(motechId)).thenReturn(new MobileMidwifeEnrollment(null).setServiceType(ServiceType.PREGNANCY));
+        pregnancyService.terminatePregnancy(request);
+        verify(mockMobileMidwifeService, never()).unRegister(request.getPatient().getMotechId());
 
     }
 

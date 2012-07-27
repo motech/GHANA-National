@@ -8,6 +8,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MessageStartWeek;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -18,6 +19,7 @@ import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
+import org.motechproject.retry.service.RetryService;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateTimeSourceUtil;
@@ -49,10 +51,12 @@ public class MobileMidwifeServiceTest extends BaseUnitTest{
     private AllCampaigns mockAllCampaigns;
     @Mock
     private AllPatientsOutbox mockAllPatientsOutbox;
+    @Mock
+    private RetryService mockRetryService;
 
     public MobileMidwifeServiceTest() {
         initMocks(this);
-        service = new MobileMidwifeService(mockAllMobileMidwifeEnrollments, mockAllCampaigns, mockAllPatientsOutbox);
+        service = new MobileMidwifeService(mockAllMobileMidwifeEnrollments, mockAllCampaigns, mockAllPatientsOutbox, mockRetryService);
     }
 
     @Test
@@ -185,6 +189,7 @@ public class MobileMidwifeServiceTest extends BaseUnitTest{
         verify(mockAllMobileMidwifeEnrollments).update(enrollment);
         ArgumentCaptor<CampaignRequest> campaignRequestCaptor = ArgumentCaptor.forClass(CampaignRequest.class);
         verify(mockAllCampaigns).stop(campaignRequestCaptor.capture());
+        verify(mockRetryService).fulfill(patientId, Constants.RETRY_GROUP);
         assertThat(campaignRequestCaptor.getValue().externalId(), is(patientId));
         assertThat(campaignRequestCaptor.getValue().campaignName(), is("PREGNANCY_VOICE"));
     }

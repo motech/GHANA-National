@@ -9,6 +9,8 @@ import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.retry.EventKeys;
 import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +34,7 @@ public class IVRRetryHandler {
     @MotechListener(subjects = {EventKeys.RETRY_SUBJECT})
     public void handlerIVRRetry(MotechEvent event){
         String motechId = (String) event.getParameters().get(EXTERNAL_ID);
-        MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(motechId);
+        MobileMidwifeEnrollment enrollment = mobileMidwifeService.findLatestEnrollment(motechId);
         ivrGateway.placeCall(enrollment.getPhoneNumber(), IVRRequestBuilder.build(ivrCallbackUrlBuilder.outboundCallUrl(motechId)));
     }
 }
