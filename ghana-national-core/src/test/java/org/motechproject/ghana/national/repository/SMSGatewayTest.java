@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.model.StringContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
+import org.motechproject.ghana.national.configuration.CountryCodeAppender;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher;
 import org.motechproject.ghana.national.domain.SMSPayload;
@@ -34,6 +35,8 @@ public class SMSGatewayTest extends BaseUnitTest{
     SmsService mockSMSService;
     @Mock
     MessageGateway mockMessageGateway;
+    @Mock
+    private CountryCodeAppender mockCountryCodeAppender;
 
     @Before
     public void init() {
@@ -42,19 +45,21 @@ public class SMSGatewayTest extends BaseUnitTest{
         setField(smsGateway, "smsService", mockSMSService);
         setField(smsGateway, "cmsLiteService", mockCMSLiteService);
         setField(smsGateway, "messageGateway", mockMessageGateway);
+        setField(smsGateway, "countryCodeAppender", mockCountryCodeAppender);
         mockCurrentDate(DateUtil.newDateTime(DateUtil.today(), new Time(10, 10)));
     }
                                       
     @Test
     public void shouldFetchMessageTextWithTemplateKeyAndDispatchSMS() throws ContentNotFoundException {
-        String phoneNumber = "phoneNumber";
+        String phoneNumber = "0TenDigits";
         String language = "language";
         String templateKey = "templateKey";
         String smsText = "smsMessage";
         final StringContent stringContent = createStringContent(smsText);
         when(mockCMSLiteService.getStringContent(language, templateKey)).thenReturn(stringContent);
+        when(mockCountryCodeAppender.apply(phoneNumber)).thenReturn("233" + phoneNumber);
         smsGateway.dispatchSMS(templateKey, language, phoneNumber);
-        verify(mockSMSService).sendSMS(phoneNumber, smsText);
+        verify(mockSMSService).sendSMS("233" + phoneNumber, smsText);
     }
 
     @Test
@@ -64,8 +69,10 @@ public class SMSGatewayTest extends BaseUnitTest{
         final String phoneNumber = "phoneNumber";
         final StringContent stringContent = createStringContent(smsText);
         when(mockCMSLiteService.getStringContent(anyString(), eq(templateKey))).thenReturn(stringContent);
+        when(mockCountryCodeAppender.apply(phoneNumber)).thenReturn("233" + phoneNumber);
+
         smsGateway.dispatchSMS(templateKey, new HashMap<String, String>(){{put("${RTKey}", "RTValue");}}, phoneNumber);
-        verify(mockSMSService).sendSMS(phoneNumber, "smsMessage-RTValue");
+        verify(mockSMSService).sendSMS("233" + phoneNumber, "smsMessage-RTValue");
     }
 
     @Test
