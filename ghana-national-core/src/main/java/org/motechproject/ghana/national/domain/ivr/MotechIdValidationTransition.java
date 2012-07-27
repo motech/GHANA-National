@@ -5,7 +5,6 @@ import org.motechproject.decisiontree.FlowSession;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
-import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
@@ -23,9 +22,6 @@ import static org.motechproject.ghana.national.domain.mobilemidwife.Language.EN;
 import static org.motechproject.ghana.national.domain.mobilemidwife.Language.valueOf;
 
 public class MotechIdValidationTransition extends Transition {
-
-    @Value("#{ghanaNationalProperties['callcenter.number']}")
-    private String callCenterPhoneNumber;
 
     @Value("#{ghanaNationalProperties['callcenter.dtmf.timeout']}")
     private String callCenterDtmfTimeout;
@@ -52,9 +48,7 @@ public class MotechIdValidationTransition extends Transition {
     private MobileMidwifeService mobileMidwifeService;
 
     @Autowired
-    private IVRCallbackUrlBuilder ivrCallbackUrlBuilder;
-
-    private ConnectToCallCenter connectToCallCenter = new ConnectToCallCenter();
+    private ConnectToCallCenterTree connectToCallCenterTree;
 
     @JsonProperty
     int pendingRetries;
@@ -103,10 +97,9 @@ public class MotechIdValidationTransition extends Transition {
             node.setTransitionTimeout(callCenterDtmfTimeout);
             node.setTransitionFinishOnKey(callCenterFinishOnKey);
             node.addTransitionPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));
-            String dialStatusHandlerUrl = ivrCallbackUrlBuilder.callCenterDialStatusUrl();
-            node.addTransition("0", connectToCallCenter.getAsTransition(callCenterPhoneNumber, dialStatusHandlerUrl));
-            node.addTransition("*", connectToCallCenter.getAsTransition(callCenterPhoneNumber, dialStatusHandlerUrl));
-            node.addTransition("timeout", new Transition().setDestinationNode(connectToCallCenter.getAsNode(callCenterPhoneNumber, dialStatusHandlerUrl)));
+            node.addTransition("0", connectToCallCenterTree.getAsTransition(valueOf(language)));
+            node.addTransition("*", connectToCallCenterTree.getAsTransition(valueOf(language)));
+            node.addTransition("timeout", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language))));
             node.addTransition("?", new MotechIdValidationTransition(language, pendingRetries - 1));
         }
         return node;

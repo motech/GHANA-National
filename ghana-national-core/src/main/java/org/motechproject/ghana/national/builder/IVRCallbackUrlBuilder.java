@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.builder;
 
 import org.motechproject.MotechException;
+import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -26,8 +27,7 @@ public class IVRCallbackUrlBuilder {
         }
     }
 
-    public String callCenterDialStatusUrl(){
-        return  "http://" + host + ":" + port + "/" + contextPath + "/ivr/dial/callback";
-
+    public String callCenterDialStatusUrl(Language language){
+        return  "http://" + host + ":" + port + "/" + contextPath + "/ivr/dial/" + language.name() + "/callback";
     }
 }

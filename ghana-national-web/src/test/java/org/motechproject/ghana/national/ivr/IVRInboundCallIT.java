@@ -77,7 +77,7 @@ public class IVRInboundCallIT {
         verboiceStub.expect(expectedActions, response);
 
         response = verboiceStub.handleTimeout(response);
-        expectedActions = new TwiML().addAction(new TwiML.Exit());
+        expectedActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
         verboiceStub.expect(expectedActions, response);
     }
 

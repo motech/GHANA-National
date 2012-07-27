@@ -2,10 +2,9 @@ package org.motechproject.ghana.national.tools.seed.data;
 
 import org.motechproject.decisiontree.model.*;
 import org.motechproject.decisiontree.repository.AllTrees;
-import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
-import org.motechproject.ghana.national.domain.ivr.ConnectToCallCenter;
+import org.motechproject.ghana.national.domain.ivr.ConnectToCallCenterTree;
 import org.motechproject.ghana.national.domain.ivr.MotechIdValidationTransition;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.tools.seed.Seed;
@@ -21,9 +20,6 @@ import static org.motechproject.ghana.national.domain.mobilemidwife.Language.*;
 
 @Component
 public class InboundDecisionTreeSeed extends Seed {
-    @Value("#{ghanaNationalProperties['callcenter.number']}")
-    private String callCenterPhoneNumber;
-
     @Value("#{ghanaNationalProperties['callcenter.dtmf.timeout']}")
     private String callCenterDtmfTimeout;
 
@@ -33,10 +29,9 @@ public class InboundDecisionTreeSeed extends Seed {
     @Value("#{ghanaNationalProperties['callcenter.no.of.digits.in.motech.id']}")
     private String noOfDigitsInMotechId;
 
-    private ConnectToCallCenter connectToCallCenter = new ConnectToCallCenter();
-
     @Autowired
-    private IVRCallbackUrlBuilder ivrCallbackUrlBuilder;
+    private ConnectToCallCenterTree connectToCallCenterTree;
+
     @Autowired
     AllTrees allTrees;
     @Autowired
@@ -53,7 +48,7 @@ public class InboundDecisionTreeSeed extends Seed {
     private Node chooseLanguageNodeWithRetry(){
         Node chooseLanguageFirstChance = chooseLanguageNode();
         Node chooseLanguageSecondChance = chooseLanguageNode();
-        chooseLanguageSecondChance.getTransitions().put("timeout", new Transition().setDestinationNode(new Node()));
+        chooseLanguageSecondChance.getTransitions().put("timeout", connectToCallCenterTree.getAsTransition(EN));
         chooseLanguageFirstChance.getTransitions().put("timeout", new Transition().setDestinationNode(chooseLanguageSecondChance));
         return chooseLanguageFirstChance;
     }
@@ -65,7 +60,7 @@ public class InboundDecisionTreeSeed extends Seed {
         transitions.put("2", new Transition().setDestinationNode(chooseActionNode(KAS)));
         transitions.put("3", new Transition().setDestinationNode(chooseActionNode(NAN)));
         transitions.put("4", new Transition().setDestinationNode(chooseActionNode(FAN)));
-        transitions.put("?", connectToCallCenter.getAsTransition(callCenterPhoneNumber, ivrCallbackUrlBuilder.callCenterDialStatusUrl()));
+        transitions.put("?", connectToCallCenterTree.getAsTransition(EN));
         node.setTransitionNumDigits("1");
         node.setTransitionTimeout(callCenterDtmfTimeout);
         node.setTransitions(transitions);
@@ -77,7 +72,7 @@ public class InboundDecisionTreeSeed extends Seed {
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
         transitions.put("1", new Transition().setDestinationNode(validateMotechIdNode(language, 3)));
         transitions.put("timeout", new Transition().setDestinationNode(new Node()));
-        transitions.put("?", connectToCallCenter.getAsTransition(callCenterPhoneNumber, ivrCallbackUrlBuilder.callCenterDialStatusUrl()));
+        transitions.put("?", connectToCallCenterTree.getAsTransition(language));
         node.setTransitionNumDigits("1");
         node.setTransitionTimeout(callCenterDtmfTimeout);
         node.setTransitionFinishOnKey(callCenterFinishOnKey);

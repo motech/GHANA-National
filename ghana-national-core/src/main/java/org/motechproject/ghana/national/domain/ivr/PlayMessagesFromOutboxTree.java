@@ -8,6 +8,7 @@ import org.motechproject.decisiontree.model.*;
 import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.IVRClipManager;
+import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
@@ -36,22 +37,16 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 public class PlayMessagesFromOutboxTree {
 
     @Autowired
-    AllPatientsOutbox allPatientsOutbox;
+    private AllPatientsOutbox allPatientsOutbox;
 
     @Autowired
-    IVRClipManager ivrClipManager;
+    private IVRClipManager ivrClipManager;
 
     @Autowired
-    RetryService retryService;
+    private RetryService retryService;
 
     @Autowired
-    IVRCallbackUrlBuilder ivrCallbackUrlBuilder;
-
-    private ConnectToCallCenter connectToCallCenter = new ConnectToCallCenter();
-
-
-    @Value("#{ghanaNationalProperties['callcenter.number']}")
-    private String callCenterPhoneNumber;
+    private ConnectToCallCenterTree connectToCallCenterTree;
 
     @Value("#{ghanaNationalProperties['callcenter.dtmf.timeout']}")
     private String callCenterDtmfTimeout;
@@ -155,7 +150,7 @@ public class PlayMessagesFromOutboxTree {
             transitions.put(i + 1 + "", new Transition().setDestinationNode(transitionNode));
         }
         transitions.put("timeout", new Transition().setDestinationNode(new Node()));
-        transitions.put("?", connectToCallCenter.getAsTransition(callCenterPhoneNumber, ivrCallbackUrlBuilder.callCenterDialStatusUrl()));
+        transitions.put("?", connectToCallCenterTree.getAsTransition(valueOf(language)));
 
 
         rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingClips.get(0), valueOf(language))))
