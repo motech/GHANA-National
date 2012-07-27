@@ -25,7 +25,7 @@ public class AllIvrChannelMappings extends MotechBaseRepository<IVRChannelMappin
     }
 
     public List<IVRChannelMapping> allMappings(){
-        return allMappings;
+        return allMappings.isEmpty() ? super.getAll() : allMappings;
     }
 
     @View(name = "find_by_phone_number_pattern", map = "function(doc) { if(doc.type === 'IVRChannelMapping') emit(doc.phoneNumberPattern, doc) }")
