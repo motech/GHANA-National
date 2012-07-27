@@ -139,7 +139,7 @@ public class PregnancyServiceTest {
         verify(mockAllSchedulesAndMessages).unEnroll(patientMRSId, Patient.ancCarePrograms);
         verify(mockAllAppointmentsAndMessages).remove(mockPatient);
         verify(mockAllEncounters).persistEncounter(argumentCaptor.capture());
-        verify(mockMobileMidwifeService).unRegister(request.getPatient().getMotechId());
+        verify(mockMobileMidwifeService, never()).unRegister(request.getPatient().getMotechId());
         assertReflectionEquals(expectedEncounter, argumentCaptor.getValue());
     }
 
