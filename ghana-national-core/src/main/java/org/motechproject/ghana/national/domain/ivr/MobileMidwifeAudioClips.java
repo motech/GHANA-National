@@ -5,10 +5,10 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 public enum MobileMidwifeAudioClips {
-    CHILD_CARE_WEEK_1(asList("b_wk1a", "b_wk1b", "b_wk1c"), asList("b_wK1a_prompt", "b_wK1b_prompt", "b_wK1c_prompt")),
-    CHILD_CARE_WEEK_2(asList("b_wk2a", "b_wk2b", "b_wk2c"), asList("b_wK2a_prompt", "b_wK2b_prompt", "b_wK2c_prompt")),
-    CHILD_CARE_WEEK_3(asList("b_wk3a", "b_wk3b", "b_wk3c"), asList("b_wK3a_prompt", "b_wK3b_prompt", "b_wK3c_prompt")),
-    CHILD_CARE_WEEK_4(asList("b_wk4a", "b_wk4b", "b_wk4c"), asList("b_wK4a_prompt", "b_wK4b_prompt", "b_wK4c_prompt")),
+    CHILD_CARE_WEEK_1(asList("b_wk1a"), asList("b_repeat_prompt")),
+    CHILD_CARE_WEEK_2(asList("b_wk2a"), asList("b_repeat_prompt")),
+    CHILD_CARE_WEEK_3(asList("b_wk3a"), asList("b_repeat_prompt")),
+    CHILD_CARE_WEEK_4(asList("b_wk4a"), asList("b_repeat_prompt")),
     CHILD_CARE_WEEK_5(asList("b_wk5"), asList("b_repeat_prompt")),
     CHILD_CARE_WEEK_6(asList("b_wk6"), asList("b_repeat_prompt")),
     CHILD_CARE_WEEK_7(asList("b_wk7"), asList("b_repeat_prompt")),
