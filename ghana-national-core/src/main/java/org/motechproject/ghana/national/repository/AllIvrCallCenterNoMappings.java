@@ -1,14 +1,11 @@
 package org.motechproject.ghana.national.repository;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
-import org.joda.time.DateTime;
 import org.motechproject.dao.MotechBaseRepository;
 import org.motechproject.ghana.national.domain.IVRCallCenterNoMapping;
-import org.motechproject.ghana.national.domain.IVRChannelMapping;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
@@ -30,7 +27,7 @@ public class AllIvrCallCenterNoMappings extends MotechBaseRepository<IVRCallCent
         allMappings = super.getAll();
     }
 
-    public List<IVRCallCenterNoMapping> allMappings(){
+    public List<IVRCallCenterNoMapping> allMappings() {
         return allMappings.isEmpty() ? super.getAll() : allMappings;
     }
 

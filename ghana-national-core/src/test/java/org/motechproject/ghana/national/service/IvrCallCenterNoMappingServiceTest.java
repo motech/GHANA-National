@@ -8,14 +8,13 @@ import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.repository.AllIvrCallCenterNoMappings;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.isNotNull;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -44,7 +43,7 @@ public class IvrCallCenterNoMappingServiceTest {
         assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday, new Time(10, 30)), is(equalTo("phone_no1")));
         assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday, new Time(10, 31)), is(equalTo("phone_no2")));
         assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday, new Time(11, 30)), is(equalTo("phone_no2")));
-        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday, new Time(9, 30)), is(equalTo("phone_no1")));
+        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday, new Time(9, 30)), is(nullValue()));
         assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Tuesday, new Time(10, 30)), is(equalTo("phone_no3")));
     }
 }

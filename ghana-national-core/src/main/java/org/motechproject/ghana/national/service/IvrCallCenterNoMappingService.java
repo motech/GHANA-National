@@ -31,7 +31,7 @@ public class IvrCallCenterNoMappingService {
                 return mapping.getPhoneNumber();
         }
         logger.warn("Unable to find a call center number for the provided criteria, " + language + ", " + dayOfWeek + ", " + time + ". Returning the first call center no: " + allMappings.get(0).getPhoneNumber());
-        return allMappings.get(0).getPhoneNumber();
+        return null;
     }
 
     private boolean fallsBetweenIncludingBounds(Time time, Time startTime, Time endTime) {

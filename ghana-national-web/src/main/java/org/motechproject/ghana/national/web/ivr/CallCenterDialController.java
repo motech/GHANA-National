@@ -2,10 +2,8 @@ package org.motechproject.ghana.national.web.ivr;
 
 
 import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
-import org.motechproject.ghana.national.domain.IVRCallCenterNoMapping;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
-import org.motechproject.ghana.national.domain.ivr.VerboiceDialStatus;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.service.IvrCallCenterNoMappingService;
 import org.motechproject.model.DayOfWeek;
@@ -14,7 +12,11 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Arrays;
 import java.util.List;
@@ -69,16 +71,28 @@ public class CallCenterDialController {
     private String waitAndDial(String language) {
         DayOfWeek dayOfWeek = DayOfWeek.getDayOfWeek(DateUtil.today().dayOfWeek().get());
         String callCenterPhoneNumber = ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.valueOf(language), dayOfWeek, new Time(DateUtil.now().toLocalTime()));
+        return (callCenterPhoneNumber != null) ? callCenterBusy(language, callCenterPhoneNumber) : callCenterClosed(language);
+    }
 
+    private String callCenterClosed(String language) {
+        String url = ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language));
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        xml = xml + "<Response>\n";
+        xml = xml + "    <Play>" + url + "</Play>\n";
+        xml = xml + "</Response>";
+        return xml;
+    }
+
+    private String callCenterBusy(String language, String callCenterPhoneNumber) {
         String url = ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_BUSY.getFileName(), valueOf(language));
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         xml = xml + "<Response>\n";
         xml = xml + "    <Play>" + url + "</Play>\n";
         xml = xml + "    <Pause length=\"" + callCenterRedialIntervalInSec + "\"/>";
         xml = xml + "    <Dial callerId=\"" + callCenterPhoneNumber + "\" action=\"" + ivrCallbackUrlBuilder.callCenterDialStatusUrl(valueOf(language)) + "\">" + callCenterPhoneNumber + "</Dial>";
-        return xml + "</Response>";
+        xml = xml + "</Response>";
+        return xml;
     }
-
 
     private String playTwiml(List<String> urls) {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
