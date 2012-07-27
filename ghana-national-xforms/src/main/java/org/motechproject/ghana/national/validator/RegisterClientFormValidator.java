@@ -1,10 +1,12 @@
 package org.motechproject.ghana.national.validator;
 
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.ghana.national.bean.RegisterANCForm;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.helper.FormWithHistoryInput;
 import org.motechproject.ghana.national.validator.patient.*;
 import org.motechproject.mobileforms.api.domain.FormBean;
@@ -16,6 +18,7 @@ import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +29,10 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
 
     @Autowired
     private org.motechproject.ghana.national.validator.FormValidator formValidator;
+
+    @Autowired
+    private MobileMidwifeValidator mobileMidwifeValidator;
+
 
     @Override
     @LoginAsAdmin
@@ -44,8 +51,8 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         PatientValidator validators = patientValidator(formBean, formBean.getRegistrationMode(), formBean.getDateOfBirth(), formBean.getSex(), formBean.getRegistrantType(), formBean.getMotherMotechId());
         List<FormError> patientValidationErrors = getDependentValidator().validate(patient, group.getFormBeans(), allForms, validators);
         formErrors.addAll(patientValidationErrors);
-
         formErrors.addAll(formValidator.validateNHISExpiry(formBean.getNhisExpires()));
+        formErrors.addAll(validateMobileMidwifeIfEnrolled(formBean));
 
         return formErrors;
     }
@@ -70,6 +77,10 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         return validators;
     }
 
+    private List<FormError> validateMobileMidwifeIfEnrolled(RegisterClientForm formBean) {
+        MobileMidwifeEnrollment midwifeEnrollment = formBean.createMobileMidwifeEnrollment(formBean.getMotechId());
+        return midwifeEnrollment != null ? mobileMidwifeValidator.validateTime(midwifeEnrollment) : Collections.<FormError>emptyList();
+    }
 
     DependentValidator getDependentValidator() {
         return new DependentValidator();

@@ -42,12 +42,15 @@ public class RegisterClientFormValidatorTest extends BaseUnitTest{
     private MotechIdVerhoeffValidator mockMotechIdVerhoeffValidator;
     @Mock
     private FormValidator formValidator;
+    @Mock
+    private MobileMidwifeValidator mobileMidwifeValidator;
 
     @Before
     public void setUp() {
         initMocks(this);
         registerClientFormValidator = new RegisterClientFormValidator();
         ReflectionTestUtils.setField(registerClientFormValidator, "formValidator", formValidator);
+        ReflectionTestUtils.setField(registerClientFormValidator, "mobileMidwifeValidator", mobileMidwifeValidator);
     }
 
     @Test
@@ -61,6 +64,7 @@ public class RegisterClientFormValidatorTest extends BaseUnitTest{
         registerClientForm.setRegistrantType(PatientType.CHILD_UNDER_FIVE);
         registerClientForm.setDateOfBirth(DateUtil.newDate(2004, 1, 1).toDate());
         registerClientForm.setFormname("registerPatient");
+        registerClientForm.setDate(DateUtil.today().toDate());
 
         Patient patientsMotherMock = mock(Patient.class);
         when(formValidator.getPatient(mothersMotechId)).thenReturn(patientsMotherMock);
@@ -91,6 +95,7 @@ public class RegisterClientFormValidatorTest extends BaseUnitTest{
         registerClientForm.setMotechId("motechId");
         registerClientForm.setFormname("registerPatient");
         registerClientForm.setDateOfBirth(DateUtil.newDate(1999, 9, 9).toDate());
+        registerClientForm.setDate(DateUtil.today().toDate());
 
         when(formValidator.getPatient(registerClientForm.getMotechId())).thenReturn(patient);
 
@@ -109,6 +114,8 @@ public class RegisterClientFormValidatorTest extends BaseUnitTest{
         registerClientForm.setDateOfBirth(DateUtil.newDate(1999, 9, 9).toDate());
         registerClientForm.setRegistrantType(PatientType.OTHER);
         registerClientForm.setAddHistory(false);
+        registerClientForm.setDate(DateUtil.today().toDate());
+
         Patient patientMock = mock(Patient.class);
         when(formValidator.getPatient(motechId)).thenReturn(patientMock);
         when(patientMock.dateOfBirth()).thenReturn(DateUtil.newDate(2000,12,12).toDateTimeAtCurrentTime());
@@ -128,6 +135,7 @@ public class RegisterClientFormValidatorTest extends BaseUnitTest{
         registerClientForm.setRegistrantType(PatientType.PREGNANT_MOTHER);
         registerClientForm.setFormname("registerPatient");
         registerClientForm.setDateOfBirth(DateUtil.newDate(1999, 9, 9).toDate());
+        registerClientForm.setDate(DateUtil.today().toDate());
 
         List<FormBean> formBeans = Arrays.<FormBean>asList(registerClientForm);
         assertThat(registerClientFormValidator.validate(registerClientForm, new FormBeanGroup(formBeans), formBeans), not(hasItem(new FormError("motechId", "in use"))));
@@ -143,11 +151,13 @@ public class RegisterClientFormValidatorTest extends BaseUnitTest{
         registerClientForm.setFormname("registerPatient");
         registerClientForm.setDateOfBirth(DateUtil.newDate(1999, 9, 9).toDate());
         registerClientForm.setRegistrantType(PatientType.CHILD_UNDER_FIVE);
+        registerClientForm.setDate(DateUtil.today().toDate());
+
         List<FormBean> formBeans = Arrays.<FormBean>asList(registerClientForm);
         registerClientFormValidator.validate(registerClientForm, new FormBeanGroup(formBeans), formBeans);
         verify(formValidator).validateIfStaffExists(eq(staffId));
     }
-
+    
     @Test
     public void shouldVerifyIfFacilityIdIsValidOrNot() {
         String facilityId = "21";
@@ -157,6 +167,7 @@ public class RegisterClientFormValidatorTest extends BaseUnitTest{
         registerClientForm.setFormname("registerPatient");
         registerClientForm.setDateOfBirth(DateUtil.newDate(1999, 9, 9).toDate());
         registerClientForm.setRegistrantType(PatientType.CHILD_UNDER_FIVE);
+        registerClientForm.setDate(DateUtil.today().toDate());
 
         List<FormBean> formBeans = Arrays.<FormBean>asList(registerClientForm);
         registerClientFormValidator.validate(registerClientForm, new FormBeanGroup(formBeans), formBeans);

@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DeliveryFormHandler{
+public class DeliveryFormHandler {
 
     Logger log = LoggerFactory.getLogger(DeliveryFormHandler.class);
 
@@ -43,8 +43,8 @@ public class DeliveryFormHandler{
     public void handleFormEvent(DeliveryForm deliveryForm) {
         try {
             PregnancyDeliveryRequest deliveryRequest = createDeliveryRequest(deliveryForm);
-            if(pregnancyService.isDeliverySuccessful(deliveryRequest) && !deliveryRequest.getMaternalDeath())
-                mobileMidwifeService.rollover(deliveryForm.getMotechId(),deliveryForm.getDate());
+            if (pregnancyService.isDeliverySuccessful(deliveryRequest) && !deliveryRequest.getMaternalDeath())
+                mobileMidwifeService.rollover(deliveryForm.getMotechId(), deliveryForm.getDate());
             else
                 mobileMidwifeService.unRegister(deliveryForm.getMotechId());
             pregnancyService.handleDelivery(deliveryRequest);
