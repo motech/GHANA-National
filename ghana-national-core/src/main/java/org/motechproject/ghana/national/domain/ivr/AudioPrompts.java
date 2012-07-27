@@ -23,7 +23,7 @@ public enum AudioPrompts {
     IPT_DUE("prompt_IR3", AlertWindow.DUE, asList(ANC_IPT_VACCINE.getName())),
     PNC_MOTHER_DUE("prompt_IR4", AlertWindow.DUE, asList(PNC_MOTHER_1.getName(), PNC_MOTHER_2.getName(), PNC_MOTHER_3.getName())),
     PNC_CHILD_DUE("prompt_IR5", AlertWindow.DUE, asList(PNC_CHILD_1.getName(), PNC_CHILD_2.getName(), PNC_CHILD_3.getName())),
-    OTHER_VACCINE_DUE("prompt_IR6", AlertWindow.DUE, asList(CWC_BCG.getName(), CWC_MEASLES_VACCINE.getName(), CWC_OPV_0.getName(), CWC_OPV_OTHERS.getName(), CWC_PENTA.getName(), CWC_ROTAVIRUS.getName(), CWC_PNEUMOCOCCAL.getName(),CWC_YELLOW_FEVER.getName())),
+    OTHER_VACCINE_DUE("prompt_IR6", AlertWindow.DUE, asList(CWC_BCG.getName(), CWC_MEASLES_VACCINE.getName(), CWC_OPV_0.getName(), CWC_OPV_OTHERS.getName(), CWC_PENTA.getName(), CWC_ROTAVIRUS.getName(), CWC_PNEUMOCOCCAL.getName(), CWC_YELLOW_FEVER.getName())),
     IPTi_DUE("prompt_IR7", AlertWindow.DUE, asList(CWC_IPT_VACCINE.getName())),
 
     ANC_LATE("prompt_IO1", AlertWindow.OVERDUE, asList(ANC_DELIVERY.getName())),
@@ -31,7 +31,7 @@ public enum AudioPrompts {
     IPT_LATE("prompt_IO3", AlertWindow.OVERDUE, asList(ANC_IPT_VACCINE.getName())),
     PNC_MOTHER_LATE("prompt_IO4", AlertWindow.OVERDUE, asList(PNC_MOTHER_1.getName(), PNC_MOTHER_2.getName(), PNC_MOTHER_3.getName())),
     PNC_CHILD_LATE("prompt_IO5", AlertWindow.OVERDUE, asList(PNC_CHILD_1.getName(), PNC_CHILD_2.getName(), PNC_CHILD_3.getName())),
-    OTHER_VACCINE_LATE("prompt_IO6", AlertWindow.OVERDUE, asList(CWC_BCG.getName(), CWC_MEASLES_VACCINE.getName(), CWC_OPV_0.getName(), CWC_OPV_OTHERS.getName(), CWC_PENTA.getName(), CWC_ROTAVIRUS.getName(),CWC_PNEUMOCOCCAL.getName(), CWC_YELLOW_FEVER.getName())),
+    OTHER_VACCINE_LATE("prompt_IO6", AlertWindow.OVERDUE, asList(CWC_BCG.getName(), CWC_MEASLES_VACCINE.getName(), CWC_OPV_0.getName(), CWC_OPV_OTHERS.getName(), CWC_PENTA.getName(), CWC_ROTAVIRUS.getName(), CWC_PNEUMOCOCCAL.getName(), CWC_YELLOW_FEVER.getName())),
     IPTi_LATE("prompt_IO7", AlertWindow.OVERDUE, asList(CWC_IPT_VACCINE.getName()));
 
     private String fileName;
@@ -63,7 +63,7 @@ public enum AudioPrompts {
     public static List<String> getPromptNamesFor(String scheduleName) {
         List<String> promptNames = new ArrayList<String>();
         for (AudioPrompts prompt : values()) {
-            if(prompt.scheduleNames != null && prompt.scheduleNames.contains(scheduleName))
+            if (prompt.scheduleNames != null && prompt.scheduleNames.contains(scheduleName))
                 promptNames.add(prompt.fileName);
         }
         return promptNames;

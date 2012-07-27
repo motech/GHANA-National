@@ -100,7 +100,7 @@ public class AllPatientsOutboxTest extends BaseUnitTest {
 
     @Test
     public void shouldAddMobileMidwifeVoiceMessageToOutboxForAGivenExternalId() {
-        final MobileMidwifeAudioClips clipName = MobileMidwifeAudioClips.PREGNANCY_WEEK_7_EN;
+        final MobileMidwifeAudioClips clipName = MobileMidwifeAudioClips.PREGNANCY_WEEK_7;
         Date expirationTimeInMillis = DateUtil.newDateTime(new Date(DateTimeUtils.currentTimeMillis())).plus(Period.weeks(1)).toDate();
 
         allPatientsOutbox.addMobileMidwifeMessage(patient.getMotechId(), clipName, Period.weeks(1));
