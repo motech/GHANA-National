@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.repository;
 import org.motechproject.MotechException;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.service.CMSLiteService;
+import org.motechproject.ghana.national.configuration.CountryCodeAppender;
 import org.motechproject.ghana.national.domain.SMSPayload;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
 import org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher;
@@ -28,6 +29,9 @@ public class SMSGateway {
     @Autowired
     private CMSLiteService cmsLiteService;
 
+    @Autowired
+    private CountryCodeAppender countryCodeAppender;
+
     private String getSMSTemplate(String language, String key) {
         try {
             return cmsLiteService.getStringContent(language, key).getValue();
@@ -45,7 +49,7 @@ public class SMSGateway {
     }
 
     public void dispatchSMS(String templateKey, Map<String, String> templateValues, String phoneNumber) {
-        smsService.sendSMS(phoneNumber, SMSPayload.fill(getSMSTemplate(templateKey), templateValues));
+        dispatchSMS(phoneNumber, SMSPayload.fill(getSMSTemplate(templateKey), templateValues));
     }
 
     public void dispatchSMS(String templateKey, String language, String phoneNumber) {
@@ -53,7 +57,12 @@ public class SMSGateway {
     }
 
     public void dispatchSMS(String phoneNumber, String message) {
+        phoneNumber = applyCountryCode(phoneNumber);
         smsService.sendSMS(phoneNumber, message);
+    }
+
+    private String applyCountryCode(String phoneNumber) {
+        return countryCodeAppender.apply(phoneNumber);
     }
 
     private String defaultLanguage() {

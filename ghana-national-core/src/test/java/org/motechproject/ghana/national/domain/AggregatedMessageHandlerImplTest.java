@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.ghana.national.messagegateway.domain.Payload;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
-import org.motechproject.sms.api.service.SmsService;
+import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
@@ -20,13 +20,13 @@ public class AggregatedMessageHandlerImplTest {
     @Mock
     private AllPatientsOutbox mockAllPatientsOutbox;
     @Mock
-    private SmsService mockSMSService;
+    private SMSGateway mockSMSGateway;
     private AggregatedMessageHandlerImpl aggregatedMessageHandler;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        aggregatedMessageHandler = new AggregatedMessageHandlerImpl(mockSMSService, mockAllPatientsOutbox);
+        aggregatedMessageHandler = new AggregatedMessageHandlerImpl(mockSMSGateway, mockAllPatientsOutbox);
     }
 
     @Test
@@ -49,6 +49,6 @@ public class AggregatedMessageHandlerImplTest {
         verify(mockAllPatientsOutbox).addCareMessage(motechId, careClipName, Period.weeks(1), AlertWindow.DUE, scheduleWindowStart);
         verify(mockAllPatientsOutbox).addMobileMidwifeMessage(motechId, mmClipName, Period.weeks(2));
         verify(mockAllPatientsOutbox).addAppointmentMessage(motechId, appointmentClipName, Period.weeks(3));
-        verify(mockSMSService).sendSMS(phoneNumber, smsText);
+        verify(mockSMSGateway).dispatchSMS(phoneNumber, smsText);
     }
 }

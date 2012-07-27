@@ -129,16 +129,16 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
         String patientId = "1234568";
         Language language = Language.EN;
         String campaignName = "PREGNANCY_SMS";
-        DateTime enrollmentDateTime = now();
+        DateTime now = now();
         String messageStartWeek = "40";
         String messageKey = "PREGNANCY-cw40-Thursday";
 
 
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(enrollmentDateTime).setPatientId(patientId)
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now).setPatientId(patientId)
                 .setServiceType(ServiceType.PREGNANCY).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber("9845312345").setMessageStartWeek(messageStartWeek);
 
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
-        when(mockMobileMidwifeWeekCalculator.getMessageKey(campaignName,enrollmentDateTime.toLocalDate(),Integer.parseInt(messageStartWeek),null)).thenReturn(messageKey);
+        when(mockMobileMidwifeWeekCalculator.getMessageKey(campaignName,now.toLocalDate(),Integer.parseInt(messageStartWeek),null)).thenReturn(messageKey);
         when(mockMobileMidwifeWeekCalculator.hasProgramEnded(campaignName,messageKey)).thenReturn(true);
 
         MotechEvent lastEvent = motechEvent(patientId, campaignName, mobileMidwifeEnrollment.getEnrollmentDateTime()).setLastEvent(true);
@@ -147,7 +147,7 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
         ArgumentCaptor<DateTime> dateArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
         verify(mockMobileMidwifeService).rollover(idArgumentCaptor.capture(),dateArgumentCaptor.capture());
         assertThat(idArgumentCaptor.getValue(), is(equalTo(patientId)));
-        assertThat(dateArgumentCaptor.getValue().toLocalDate(), is(equalTo(enrollmentDateTime.toLocalDate())));
+        assertThat(dateArgumentCaptor.getValue().toLocalDate(), is(equalTo(now.plusWeeks(1).toLocalDate())));
     }
 
     @Test

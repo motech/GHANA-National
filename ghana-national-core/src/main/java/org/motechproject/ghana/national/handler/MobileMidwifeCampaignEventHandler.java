@@ -71,7 +71,7 @@ public class MobileMidwifeCampaignEventHandler {
 
             if (mobileMidwifeWeekCalculator.hasProgramEnded(campaignName,messageKey)) {
                 if(enrollment.getServiceType().equals(ServiceType.PREGNANCY))
-                    mobileMidwifeService.rollover(patientId, DateUtil.now());
+                    mobileMidwifeService.rollover(patientId, DateUtil.now().plusWeeks(1));
                 else
                     mobileMidwifeService.unRegister(patientId);
             }

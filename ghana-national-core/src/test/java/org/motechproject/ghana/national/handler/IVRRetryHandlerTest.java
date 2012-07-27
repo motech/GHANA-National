@@ -8,16 +8,18 @@ import org.motechproject.ghana.national.builder.IVRRequestBuilder;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.repository.IVRGateway;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
+import org.motechproject.model.Time;
 import org.motechproject.scheduler.domain.MotechEvent;
+import org.motechproject.testing.utils.BaseUnitTest;
+import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.retry.EventKeys.EXTERNAL_ID;
 
-public class IVRRetryHandlerTest {
+public class IVRRetryHandlerTest extends BaseUnitTest{
     @Mock
     private IVRGateway ivrGateway;
     @Mock
@@ -34,6 +36,7 @@ public class IVRRetryHandlerTest {
 
     @Test
     public void shouldPlaceAnOutboundIvrCallWhileRetrying(){
+        super.mockCurrentDate(DateUtil.newDateTime(DateUtil.today(), new Time(6, 0)));
         final String motechId = "motechId";
         MotechEvent event = new MotechEvent("some_subject", new HashMap<String, Object>(){{
             put(EXTERNAL_ID, motechId);
@@ -47,5 +50,16 @@ public class IVRRetryHandlerTest {
         verify(ivrGateway).placeCall(phoneNumber, new HashMap<String, String>(){{
             put(IVRRequestBuilder.CALLBACK_URL, "url");
         }});
+    }
+
+    @Test
+    public void shouldNotPlaceOutboundIVRRetryCallInBlackoutPeriod(){
+        super.mockCurrentDate(DateUtil.newDateTime(DateUtil.today(), new Time(4, 0)));
+
+        MotechEvent event = new MotechEvent("");
+        ivrRetryHandler.handlerIVRRetry(event);
+        verify(ivrGateway, never()).placeCall(anyString(), anyMap());
+
+
     }
 }
