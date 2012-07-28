@@ -44,13 +44,14 @@ public class MobileMidwifeMigrationSeed extends Seed {
 
     @Override
     protected void load() {
+        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
         List<MobileMidwifeEnrollment> mobileMidwifeEnrollments = mobileMidwifeSource.getPatients();
         List<Map<String, Object>> enrollments = mobileMidwifeEnrollmentData();
         List<MobileMidwifeEnrollment> nonVoiceEnrollments = filterDataForDirectSchedules(mobileMidwifeEnrollments);
-        addMobileMidwifeEnrollmentDataToDB(nonVoiceEnrollments, enrollments);
+        addMobileMidwifeEnrollmentDataToDB(nonVoiceEnrollments, enrollments, "abc");
 //        List<MobileMidwifeEnrollment> voiceEnrollments = (List<MobileMidwifeEnrollment>) CollectionUtils.removeAll(mobileMidwifeEnrollments, nonVoiceEnrollments);
         mobileMidwifeEnrollments.removeAll(nonVoiceEnrollments);
-        addMobileMidwifeEnrollmentDataToDB(migrateEnrollmentsForVoice(mobileMidwifeEnrollments), enrollments);
+        addMobileMidwifeEnrollmentDataToDB(migrateEnrollmentsForVoice(mobileMidwifeEnrollments), enrollments, "def");
     }
 
     List<MobileMidwifeEnrollment> migrateEnrollmentsForVoice(List<MobileMidwifeEnrollment> voiceEnrollments) {
@@ -59,11 +60,11 @@ public class MobileMidwifeMigrationSeed extends Seed {
         List<MobileMidwifeEnrollment> validEnrollments = filter(and(having(on(MobileMidwifeEnrollment.class).getMedium(), equalTo(Medium.VOICE)),
                 or(having(on(MobileMidwifeEnrollment.class).getPhoneOwnership(), equalTo(PhoneOwnership.HOUSEHOLD)), having(on(MobileMidwifeEnrollment.class).getPhoneOwnership(), equalTo(PhoneOwnership.PERSONAL)))),
                 voiceEnrollments);
-        for(MobileMidwifeEnrollment enrollment : validEnrollments){
-            if(enrollment.getDayOfWeek()==null)
+        for (MobileMidwifeEnrollment enrollment : validEnrollments) {
+            if (enrollment.getDayOfWeek() == null)
                 enrollment.setDayOfWeek(DayOfWeek.Sunday);
-            if(enrollment.getTimeOfDay()==null)
-                enrollment.setTimeOfDay(new Time(8,0));
+            if (enrollment.getTimeOfDay() == null)
+                enrollment.setTimeOfDay(new Time(8, 0));
         }
         Group<MobileMidwifeEnrollment> midwifeEnrollmentGroup = group(validEnrollments, by(on(MobileMidwifeEnrollment.class).getDayOfWeek()), by(on(MobileMidwifeEnrollment.class).getTimeOfDay().getHour()));
         for (Group<MobileMidwifeEnrollment> groupedByDays : midwifeEnrollmentGroup.subgroups()) {
@@ -71,14 +72,20 @@ public class MobileMidwifeMigrationSeed extends Seed {
                 int step = 0;
                 List<MobileMidwifeEnrollment> mobileMidwifeEnrollments = groupedByHour.findAll();
                 for (int i = 1; i <= mobileMidwifeEnrollments.size(); i++) {
-                    if (i % 20 == 0) step += 5;
                     MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollments.get(i - 1);
+                    int hour = mobileMidwifeEnrollment.getTimeOfDay().getHour();
+                    if (i % 119 == 0) {
+                        hour += (i/120 + 1);
+                        step = 0;
+                    }
+                    if (i % 20 == 0) step += 5;
                     Time timeOfDay = mobileMidwifeEnrollment.getTimeOfDay();
-                    if(timeOfDay!=null){
+                    if (timeOfDay != null) {
                         mobileMidwifeEnrollment.setTimeOfDay(timeOfDay);
                         fixedEnrollments.add(mobileMidwifeEnrollment);
                         timeOfDay.setMinute(step);
-                    }else{
+                        timeOfDay.setHour(hour);
+                    } else {
                         System.out.println("Invalid: " + mobileMidwifeEnrollment.getPatientId());
                     }
                 }
@@ -92,7 +99,8 @@ public class MobileMidwifeMigrationSeed extends Seed {
                 mobileMidwifeEnrollments);
     }
 
-    private void addMobileMidwifeEnrollmentDataToDB(List<MobileMidwifeEnrollment> mobileMidwifeEnrollments, List<Map<String, Object>> enrollments) {
+    private void addMobileMidwifeEnrollmentDataToDB(List<MobileMidwifeEnrollment> mobileMidwifeEnrollments, List<Map<String, Object>> enrollments, String x) {
+        log.info("Calling again ****************************** " + x);
         MobileMidwifeEnrollment mobileMidwifeEnrollment = null;
         try {
             for (int i = 0; i < enrollments.size(); i++) {
@@ -123,12 +131,12 @@ public class MobileMidwifeMigrationSeed extends Seed {
                                     + " under " + mobileMidwifeEnrollment.getServiceType().getDisplayName() + " campaign");
                         }
                     } else {
-                        log.info("No schedule to migrate for " + patientMotechId);
+                        log.debug("No schedule to migrate for " + patientMotechId);
                     }
                 }
             }
         } catch (Exception e) {
-            log.info("Exception occurred while adding data to DB for enrollment: " + mobileMidwifeEnrollment.toString());
+            log.error("Exception occurred while adding data to DB for enrollment: " + mobileMidwifeEnrollment.toString(), e);
         }
     }
 
@@ -184,14 +192,23 @@ public class MobileMidwifeMigrationSeed extends Seed {
         });
     }
 
-    private void sortMessagesByDate(List<Map<String, Object>> newList) {
+    private void sortMessagesByDate(final List<Map<String, Object>> newList) {
+
+
         Collections.sort(newList, new Comparator<Map<String, Object>>() {
             @Override
             public int compare(Map<String, Object> o1, Map<String, Object> o2) {
                 try {
+//                    log.info("**************************" + dateFormat.parse((String) o1.get("scheduled_date")) + "  ****  " + dateFormat.parse((String) o2.get("scheduled_date")));
                     return (dateFormat.parse((String) o1.get("scheduled_date")).after(dateFormat.parse((String) o2.get("scheduled_date")))) ? -1 : 1;
                 } catch (ParseException e) {
                     return 0;
+                } catch (RuntimeException re) {
+                    log.info("**************************" + newList, re);
+                    throw re;
+                } catch (Throwable re) {
+                    log.info("**************************" + newList, re);
+                    throw re;
                 }
             }
         });
