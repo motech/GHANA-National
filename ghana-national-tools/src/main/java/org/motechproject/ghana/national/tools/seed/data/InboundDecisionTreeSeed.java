@@ -30,9 +30,6 @@ public class InboundDecisionTreeSeed extends Seed {
     private String noOfDigitsInMotechId;
 
     @Autowired
-    private ConnectToCallCenterTree connectToCallCenterTree;
-
-    @Autowired
     AllTrees allTrees;
     @Autowired
     private IVRClipManager ivrClipManager;
@@ -48,7 +45,7 @@ public class InboundDecisionTreeSeed extends Seed {
     private Node chooseLanguageNodeWithRetry(){
         Node chooseLanguageFirstChance = chooseLanguageNode();
         Node chooseLanguageSecondChance = chooseLanguageNode();
-        chooseLanguageSecondChance.getTransitions().put("timeout", connectToCallCenterTree.getAsTransition(EN));
+        chooseLanguageSecondChance.getTransitions().put("timeout", new ConnectToCallCenterTree(EN));
         chooseLanguageFirstChance.getTransitions().put("timeout", new Transition().setDestinationNode(chooseLanguageSecondChance));
         return chooseLanguageFirstChance;
     }
@@ -60,7 +57,7 @@ public class InboundDecisionTreeSeed extends Seed {
         transitions.put("2", new Transition().setDestinationNode(chooseActionNode(KAS)));
         transitions.put("3", new Transition().setDestinationNode(chooseActionNode(NAN)));
         transitions.put("4", new Transition().setDestinationNode(chooseActionNode(FAN)));
-        transitions.put("?", connectToCallCenterTree.getAsTransition(EN));
+        transitions.put("?", new ConnectToCallCenterTree(EN));
         node.setTransitionNumDigits("1");
         node.setTransitionTimeout(callCenterDtmfTimeout);
         node.setTransitions(transitions);
@@ -72,7 +69,7 @@ public class InboundDecisionTreeSeed extends Seed {
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
         transitions.put("1", new Transition().setDestinationNode(validateMotechIdNode(language, 3)));
         transitions.put("timeout", new Transition().setDestinationNode(new Node()));
-        transitions.put("?", connectToCallCenterTree.getAsTransition(language));
+        transitions.put("?", new ConnectToCallCenterTree(language));
         node.setTransitionNumDigits("1");
         node.setTransitionTimeout(callCenterDtmfTimeout);
         node.setTransitionFinishOnKey(callCenterFinishOnKey);

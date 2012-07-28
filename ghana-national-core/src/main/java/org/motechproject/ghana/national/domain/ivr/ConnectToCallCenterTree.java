@@ -1,5 +1,7 @@
 package org.motechproject.ghana.national.domain.ivr;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.motechproject.decisiontree.FlowSession;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.DialPrompt;
 import org.motechproject.decisiontree.model.Node;
@@ -15,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConnectToCallCenterTree {
+public class ConnectToCallCenterTree extends Transition{
 
     @Autowired
     private IVRCallbackUrlBuilder ivrCallbackUrlBuilder;
@@ -26,8 +28,20 @@ public class ConnectToCallCenterTree {
     @Autowired
     private IvrCallCenterNoMappingService ivrCallCenterNoMappingService;
 
-    public Transition getAsTransition(Language language) {
-        return new Transition().setDestinationNode(getAsNode(language));
+    @JsonProperty
+    private Language language;
+
+    // Required for Ektorp
+    public ConnectToCallCenterTree() {
+    }
+
+    public ConnectToCallCenterTree(Language language) {
+        this.language = language;
+    }
+
+    @Override
+    public Node getDestinationNode(String input, FlowSession session) {
+        return getAsNode(language);
     }
 
     public Node getAsNode(Language language) {
@@ -35,7 +49,7 @@ public class ConnectToCallCenterTree {
         String callCenterPhoneNumber = ivrCallCenterNoMappingService.getCallCenterPhoneNumber(language, dayOfWeek, new Time(DateUtil.now().toLocalTime()));
 
         if(callCenterPhoneNumber == null) {
-            return new Node().addTransitionPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.value(), Language.EN)));
+            return new Node().addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.value(), Language.EN)));
         }
 
         DialPrompt callCenterDialPrompt = new DialPrompt(callCenterPhoneNumber);

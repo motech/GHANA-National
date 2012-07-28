@@ -28,8 +28,6 @@ public class IVRInboundCallIT {
     private static final String TIMEOUT_IN_SEC = "20";
     private static final String ANYTHING = null;
     private static final String FINISH_ON_KEY = "#";
-    private String callCenterPhoneNumber = "0111111111";
-
 
     @Mock
     private static RetryService retryServiceMock;
@@ -51,6 +49,7 @@ public class IVRInboundCallIT {
         testAppServer.addCareMessageToOutbox(patientWithMM.getMotechId(), AudioPrompts.PNC_MOTHER_DUE.value(), now.plus(Period.days(1)));
         testAppServer.addAppointmentMessageToOutbox(patientWithMM.getMotechId(), AudioPrompts.ANC_DUE.value());
         testAppServer.addMobileMidwifeMessageToOutbox(patientWithMM.getMotechId(), MobileMidwifeAudioClips.PREGNANCY_WEEK_7);
+
     }
 
     @Before
@@ -77,31 +76,16 @@ public class IVRInboundCallIT {
         verboiceStub.expect(expectedActions, response);
 
         response = verboiceStub.handleTimeout(response);
-        expectedActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
-        verboiceStub.expect(expectedActions, response);
+        validateConnectToCallCenter(verboiceStub, response);
     }
 
-
-    @Test
-    public void shouldConnectToCallCenterIfTherUserEntersAnInvalidOptionOtherThanTheLanguageOptions(){
-        String response = verboiceStub.handleIncomingCall();
-        String invalidLanguageOption = "5";
-        TwiML expectedActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
-        response = verboiceStub.handle(response, invalidLanguageOption);
-        verboiceStub.expect(expectedActions, response);
-
-        response = verboiceStub.handleIncomingCall();
-        invalidLanguageOption = "*";
-        expectedActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
-        response = verboiceStub.handle(response, invalidLanguageOption);
-        verboiceStub.expect(expectedActions, response);
-
-        response = verboiceStub.handleIncomingCall();
-        invalidLanguageOption = "#";
-        expectedActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
-        response = verboiceStub.handle(response, invalidLanguageOption);
-        verboiceStub.expect(expectedActions, response);
+    private void validateConnectToCallCenter(VerboiceStub verboiceStub, String response) {
+        TwiML callCenterDial = new TwiML().addAction(new TwiML.Dial());
+        TwiML callCenterClosed = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.CALL_CENTER_DIAL_FAILED), "EN")));
+        if(!verboiceStub.matches(callCenterDial, response))
+            verboiceStub.expect(callCenterClosed, response);
     }
+
 
     @Test
     public void shouldConnectToCallCenterIfUserOptedForItOrUserGaveAnInvalidOptionWhileSelectingAction() {
@@ -109,23 +93,24 @@ public class IVRInboundCallIT {
         String englishLanguageOption = "1";
         response = verboiceStub.handle(response, englishLanguageOption);
 
-        TwiML expectedActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
-
         String connectToCallCenterOption = "0";
         String responseForConnectToCallCenterOption = verboiceStub.handle(response, connectToCallCenterOption);
-        verboiceStub.expect(expectedActions, responseForConnectToCallCenterOption);
+        validateConnectToCallCenter(verboiceStub, responseForConnectToCallCenterOption);
 
         connectToCallCenterOption = "2";
         responseForConnectToCallCenterOption = verboiceStub.handle(response, connectToCallCenterOption);
-        verboiceStub.expect(expectedActions, responseForConnectToCallCenterOption);
+        validateConnectToCallCenter(verboiceStub, responseForConnectToCallCenterOption);
+
 
         connectToCallCenterOption = "iv";
         responseForConnectToCallCenterOption = verboiceStub.handle(response, connectToCallCenterOption);
-        verboiceStub.expect(expectedActions, responseForConnectToCallCenterOption);
+        validateConnectToCallCenter(verboiceStub, responseForConnectToCallCenterOption);
+
 
         connectToCallCenterOption = "*";
         responseForConnectToCallCenterOption = verboiceStub.handle(response, connectToCallCenterOption);
-        verboiceStub.expect(expectedActions, responseForConnectToCallCenterOption);
+        validateConnectToCallCenter(verboiceStub, responseForConnectToCallCenterOption);
+
     }
 
     @Test
@@ -134,9 +119,6 @@ public class IVRInboundCallIT {
         String englishLanguageOption = "1";
         response = verboiceStub.handle(response, englishLanguageOption);
 
-        String callCenterPhoneNumber = "0111111111";
-        TwiML expectedActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
-
         String listenToMMMessages = "1";
         response = verboiceStub.handle(response, listenToMMMessages);
 
@@ -144,11 +126,11 @@ public class IVRInboundCallIT {
 
         String connectToCallCenterOption = "0";
         String responseForConnectToCallCenterOption = verboiceStub.handle(response, connectToCallCenterOption);
-        verboiceStub.expect(expectedActions, responseForConnectToCallCenterOption);
+        validateConnectToCallCenter(verboiceStub, responseForConnectToCallCenterOption);
 
         connectToCallCenterOption = "*";
         responseForConnectToCallCenterOption = verboiceStub.handle(response, connectToCallCenterOption);
-        verboiceStub.expect(expectedActions, responseForConnectToCallCenterOption);
+        validateConnectToCallCenter(verboiceStub, responseForConnectToCallCenterOption);
     }
 
     @Test
@@ -169,7 +151,7 @@ public class IVRInboundCallIT {
         expectedActions = new TwiML().addAction(new TwiML.Exit());
         verboiceStub.expect(expectedActions, response);
     }
-    
+
     @Test
     public void shouldRetryAskingToEnterMotechIdIfUserHadNotProviedAnInputWithin20Seconds(){
         String response = verboiceStub.handleIncomingCall();
@@ -241,6 +223,24 @@ public class IVRInboundCallIT {
         response = verboiceStub.handle(response, patientWithMMAndNoMessagesInOutbox.getMotechId());
         expectedActions = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(noMessagesPrompt, "EN")));
         verboiceStub.expect(expectedActions, response);
+    }
+
+    @Test
+    public void shouldConnectToCallCenterIfTherUserEntersAnInvalidOptionOtherThanTheLanguageOptions(){
+        String response = verboiceStub.handleIncomingCall();
+        String invalidLanguageOption = "5";
+        response = verboiceStub.handle(response, invalidLanguageOption);
+        validateConnectToCallCenter(verboiceStub, response);
+
+        response = verboiceStub.handleIncomingCall();
+        invalidLanguageOption = "*";
+        response = verboiceStub.handle(response, invalidLanguageOption);
+        validateConnectToCallCenter(verboiceStub, response);
+
+        response = verboiceStub.handleIncomingCall();
+        invalidLanguageOption = "#";
+        response = verboiceStub.handle(response, invalidLanguageOption);
+        validateConnectToCallCenter(verboiceStub, response);
     }
 
     @Test
@@ -356,7 +356,7 @@ public class IVRInboundCallIT {
         String timeOutResponse = verboiceStub.handleTimeout(response);
         verboiceStub.expect(expectedConnectToCallCenterActions, timeOutResponse);
     }
-    
+
     @Test
     public void shouldConnectToCallCenterIfUserProvidesAnInvalidInput_Or_OptsForItWhileListeningToMMMessages(){
 
@@ -388,10 +388,9 @@ public class IVRInboundCallIT {
 
         verboiceStub.expect(expectedActions, response);
 
-        TwiML expectedConnectToCallCenterActions = new TwiML().addAction(new TwiML.Dial(callCenterPhoneNumber, callCenterPhoneNumber));
         // invalid input
         String invalidInputResponse = verboiceStub.handle(response, "invalid");
-        verboiceStub.expect(expectedConnectToCallCenterActions, invalidInputResponse);
+        validateConnectToCallCenter(verboiceStub, invalidInputResponse);
 
         // play second message from first message menu
         String playSecondMessageOption = "2";
@@ -408,7 +407,7 @@ public class IVRInboundCallIT {
 
         // invalid input
         invalidInputResponse = verboiceStub.handle(secondMessageResponse, "invalid");
-        verboiceStub.expect(expectedConnectToCallCenterActions, invalidInputResponse);
+        validateConnectToCallCenter(verboiceStub, invalidInputResponse);
     }
 
     @Test

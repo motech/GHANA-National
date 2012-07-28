@@ -69,4 +69,15 @@ public class VerboiceStub {
         }
         return null;
     }
+
+    public boolean matches(TwiML expectedActions, String xml) {
+        TwiML actualActions = null;
+        try {
+            actualActions = new TwiML(xml);
+        } catch (Exception e) {
+            fail("Not a valid twiml, " + xml);
+        }
+        return actualActions.equals(expectedActions);
+
+    }
 }

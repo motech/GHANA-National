@@ -6,7 +6,6 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ghana.national.domain.IVRClipManager;
-import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.ExecuteAsOpenMRSAdmin;
@@ -97,8 +96,8 @@ public class MotechIdValidationTransition extends Transition {
             node.setTransitionTimeout(callCenterDtmfTimeout);
             node.setTransitionFinishOnKey(callCenterFinishOnKey);
             node.addTransitionPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));
-            node.addTransition("0", connectToCallCenterTree.getAsTransition(valueOf(language)));
-            node.addTransition("*", connectToCallCenterTree.getAsTransition(valueOf(language)));
+            node.addTransition("0", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language))));
+            node.addTransition("*", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language))));
             node.addTransition("timeout", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language))));
             node.addTransition("?", new MotechIdValidationTransition(language, pendingRetries - 1));
         }

@@ -15,10 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.filter;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-
 public class TwiML {
     private List<Action> actions = new ArrayStack<Action>();
 
@@ -50,7 +46,7 @@ public class TwiML {
                     }
                 }
             } else if ("Dial".equals(actionNode.getNodeName())) {
-                actions.add(new Dial(actionNode.getTextContent(), attributes.getNamedItem("callerId").getTextContent()));
+                actions.add(new Dial());
             } else if ("Redirect".equals(actionNode.getNodeName())) {
                 actions.add(new Redirect(actionNode.getTextContent()));
             } else if ("Hangup".equals(actionNode.getNodeName())){
@@ -148,52 +144,14 @@ public class TwiML {
     }
 
     public static class Dial implements Action {
-        private String phoneNumber;
-
-        private String callerId;
-
         public Dial() {
-        }
-
-        public Dial(String phoneNumber, String callerId) {
-            this.phoneNumber = phoneNumber;
-            this.callerId = callerId;
-        }
-
-        public String getPhoneNumber() {
-            return phoneNumber;
-        }
-
-        public String getCallerId() {
-            return callerId;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-
-            Dial dial = (Dial) o;
-
-            if (callerId != null ? !callerId.equals(dial.callerId) : dial.callerId != null) return false;
-            if (phoneNumber != null ? !phoneNumber.equals(dial.phoneNumber) : dial.phoneNumber != null) return false;
-
             return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = phoneNumber != null ? phoneNumber.hashCode() : 0;
-            result = 31 * result + (callerId != null ? callerId.hashCode() : 0);
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return "Dial{" +
-                    "phoneNumber='" + phoneNumber + '\'' +
-                    ", callerId='" + callerId + '\'' +
-                    '}';
         }
     }
 

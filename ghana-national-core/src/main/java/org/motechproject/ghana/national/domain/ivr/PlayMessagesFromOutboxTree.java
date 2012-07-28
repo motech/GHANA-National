@@ -5,10 +5,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.motechproject.MotechException;
 import org.motechproject.decisiontree.FlowSession;
 import org.motechproject.decisiontree.model.*;
-import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.IVRClipManager;
-import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
@@ -150,7 +148,7 @@ public class PlayMessagesFromOutboxTree {
             transitions.put(i + 1 + "", new Transition().setDestinationNode(transitionNode));
         }
         transitions.put("timeout", new Transition().setDestinationNode(new Node()));
-        transitions.put("?", connectToCallCenterTree.getAsTransition(valueOf(language)));
+        transitions.put("?", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language))));
 
 
         rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingClips.get(0), valueOf(language))))
