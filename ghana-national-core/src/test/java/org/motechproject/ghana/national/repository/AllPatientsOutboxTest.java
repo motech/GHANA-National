@@ -100,7 +100,7 @@ public class AllPatientsOutboxTest extends BaseUnitTest {
 
     @Test
     public void shouldAddMobileMidwifeVoiceMessageToOutboxForAGivenExternalId() {
-        final MobileMidwifeAudioClips clipName = MobileMidwifeAudioClips.PREGNANCY_WEEK_7_EN;
+        final MobileMidwifeAudioClips clipName = MobileMidwifeAudioClips.PREGNANCY_WEEK_7;
         Date expirationTimeInMillis = DateUtil.newDateTime(new Date(DateTimeUtils.currentTimeMillis())).plus(Period.weeks(1)).toDate();
 
         allPatientsOutbox.addMobileMidwifeMessage(patient.getMotechId(), clipName, Period.weeks(1));
@@ -169,7 +169,7 @@ public class AllPatientsOutboxTest extends BaseUnitTest {
         final String motechId = "1234567";
         String patientId = "patientId";
         MRSPatient mrsPatient = mock(MRSPatient.class);
-        final OutboundVoiceMessage outboundVoiceMessage1 = buildOutboxMessage(motechId, AlertType.MOBILE_MIDWIFE.name(), MobileMidwifeAudioClips.CHILD_CARE_WEEK_1_EN, "mm");
+        final OutboundVoiceMessage outboundVoiceMessage1 = buildOutboxMessage(motechId, AlertType.MOBILE_MIDWIFE.name(), MobileMidwifeAudioClips.CHILD_CARE_WEEK_1, "mm");
         final OutboundVoiceMessage outboundVoiceMessage2 = buildOutboxMessage(motechId, AlertType.CARE.name(), AudioPrompts.fileNameForCareSchedule(TT_VACCINATION.getName(), AlertWindow.DUE), "care");
         final OutboundVoiceMessage outboundVoiceMessage3 = buildOutboxMessage(motechId, AlertType.CARE.name(), AudioPrompts.fileNameForCareSchedule(ANC_DELIVERY.getName(), AlertWindow.DUE), "anc");
 
