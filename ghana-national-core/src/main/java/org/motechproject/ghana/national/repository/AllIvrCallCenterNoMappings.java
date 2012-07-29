@@ -31,7 +31,7 @@ public class AllIvrCallCenterNoMappings extends MotechBaseRepository<IVRCallCent
     }
 
     public List<IVRCallCenterNoMapping> allMappings(){
-        return allMappings;
+        return allMappings.isEmpty() ? super.getAll() : allMappings;
     }
 
     @View(name = "find_by_lang_day_and_time", map = "function(doc) { if(doc.type === 'IVRCallCenterNoMapping') emit([doc.language, doc.dayOfWeek, doc.startTime, doc.endTime], doc) }")
