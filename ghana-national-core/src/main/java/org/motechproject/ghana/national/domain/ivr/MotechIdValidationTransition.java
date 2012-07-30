@@ -25,8 +25,8 @@ public class MotechIdValidationTransition extends Transition {
     @Value("#{ghanaNationalProperties['callcenter.dtmf.timeout']}")
     private String callCenterDtmfTimeout;
 
-    @Value("#{ghanaNationalProperties['callcenter.dtmf.finishonkey']}")
-    private String callCenterFinishOnKey;
+    @Value("#{ghanaNationalProperties['callcenter.no.of.digits.in.motech.id']}")
+    private String noOfDigitsInMotechId;
 
     @JsonProperty
     String language;
@@ -58,6 +58,27 @@ public class MotechIdValidationTransition extends Transition {
 
     private Logger logger = LoggerFactory.getLogger(MotechIdValidationTransition.class);
 
+
+    public MotechIdValidationTransition clone(int pendingRetries) {
+        MotechIdValidationTransition newTransition = new MotechIdValidationTransition(getLanguage(), pendingRetries);
+        newTransition.callCenterDtmfTimeout = getCallCenterDtmfTimeout();
+        newTransition.noOfDigitsInMotechId = getNoOfDigitsInMotechId();
+        newTransition.playMessagesFromOutboxTree = getPlayMessagesFromOutboxTree();
+        newTransition.executeAsOpenMRSAdmin = getExecuteAsOpenMRSAdmin();
+        newTransition.patientService = getPatientService();
+        newTransition.ivrClipManager = getIvrClipManager();
+        newTransition.mobileMidwifeService = getMobileMidwifeService();
+        newTransition.connectToCallCenterTree = getConnectToCallCenterTree();
+        return newTransition;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public int getPendingRetries() {
+        return pendingRetries;
+    }
 
     public MotechIdValidationTransition(String language, int pendingRetries) {
         this.language = language;
@@ -94,12 +115,14 @@ public class MotechIdValidationTransition extends Transition {
         Node node = new Node();
         if (pendingRetries != 1) {
             node.setTransitionTimeout(callCenterDtmfTimeout);
-            node.setTransitionFinishOnKey(callCenterFinishOnKey);
+            // As requested by david, we expect 7 digits for motech id instead of finish on key
+            //  node.setTransitionFinishOnKey(callCenterFinishOnKey);
+            node.setTransitionNumDigits(noOfDigitsInMotechId);
             node.addTransitionPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));
             node.addTransition("0", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language))));
             node.addTransition("*", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language))));
             node.addTransition("timeout", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language))));
-            node.addTransition("?", new MotechIdValidationTransition(language, pendingRetries - 1));
+            node.addTransition("?", this.clone(this.pendingRetries - 1));
         }
         return node;
     }
@@ -111,5 +134,37 @@ public class MotechIdValidationTransition extends Transition {
     private boolean hasValidMobileMidwifeVoiceRegistration(String patientId) {
         MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findActiveBy(trimInputForTrailingHash(patientId));
         return midwifeEnrollment != null && midwifeEnrollment.getMedium().equals(Medium.VOICE);
+    }
+
+    public String getCallCenterDtmfTimeout() {
+        return callCenterDtmfTimeout;
+    }
+
+    public String getNoOfDigitsInMotechId() {
+        return noOfDigitsInMotechId;
+    }
+
+    public PlayMessagesFromOutboxTree getPlayMessagesFromOutboxTree() {
+        return playMessagesFromOutboxTree;
+    }
+
+    public ExecuteAsOpenMRSAdmin getExecuteAsOpenMRSAdmin() {
+        return executeAsOpenMRSAdmin;
+    }
+
+    public PatientService getPatientService() {
+        return patientService;
+    }
+
+    public IVRClipManager getIvrClipManager() {
+        return ivrClipManager;
+    }
+
+    public MobileMidwifeService getMobileMidwifeService() {
+        return mobileMidwifeService;
+    }
+
+    public ConnectToCallCenterTree getConnectToCallCenterTree() {
+        return connectToCallCenterTree;
     }
 }
