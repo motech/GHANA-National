@@ -118,7 +118,7 @@ public class AggregationStrategyImpl implements AggregationStrategy {
         }
         String facilityName = minus(defaultMessagesList.get(0).getText(), standardMessage);
         List<SMSPayload> smsPayloads = (filteredMessages.isEmpty()) ? defaultMessagesList : aggregateMessages(filteredMessages, facilityName);
-        List<String> phoneNumbers = allFacilities.getFacilityByMotechId(smsPayloads.get(0).getUniqueId()).findAllPhoneNumbers();
+        List<String> phoneNumbers = allFacilities.getFacilityByMotechId(smsPayloads.get(0).getUniqueId()).getPhoneNumbers();
 
         List<SMSPayload> smsList = new ArrayList<SMSPayload>();
         for (SMSPayload smsPayload : smsPayloads) {
