@@ -10,6 +10,10 @@ public class OldGhanaFacility {
     private String additionalPhoneNumber2;
     private String additionalPhoneNumber3;
 
+    public OldGhanaFacility(String name, String id) {
+        this.name = name;
+        this.id = id;
+    }
     public OldGhanaFacility(String name, String id, String phoneNumber, String additionalPhoneNumber1, String additionalPhoneNumber2, String additionalPhoneNumber3) {
         this.name = name;
         this.id = id;
@@ -46,10 +50,10 @@ public class OldGhanaFacility {
     public OldGhanaFacility() {
     }
 
-    public static OldGhanaFacility findByName(List<OldGhanaFacility> oldGhanaFacilities, String facilityName) {
+    public static String findOpenmrsFacilityIdByName(List<OldGhanaFacility> oldGhanaFacilities, String facilityName) {
         for (OldGhanaFacility oldGhanaFacility : oldGhanaFacilities) {
             if (facilityName.equals(oldGhanaFacility.getName())) {
-                return oldGhanaFacility;
+                return oldGhanaFacility.getId();
             }
         }
         return null;

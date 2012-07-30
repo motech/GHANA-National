@@ -17,10 +17,10 @@ public class FacilitySource extends BaseSeedSource {
                     public OldGhanaFacility mapRow(ResultSet resultSet, int rowNum) throws SQLException {
                         return new OldGhanaFacility(resultSet.getString("name"),
                                 String.valueOf(resultSet.getInt("facility_id")),
-                                String.valueOf(resultSet.getInt("phone_number")),
-                                String.valueOf(resultSet.getInt("additional_phone_number1")),
-                                String.valueOf(resultSet.getInt("additional_phone_number2")),
-                                String.valueOf(resultSet.getInt("additional_phone_number3")));
+                                String.valueOf(resultSet.getString("phone_number")),
+                                String.valueOf(resultSet.getString("additional_phone_number1")),
+                                String.valueOf(resultSet.getString("additional_phone_number2")),
+                                String.valueOf(resultSet.getString("additional_phone_number3")));
                     }
                 });
     }

@@ -33,16 +33,17 @@ public class FacilitySeed extends Seed {
         try {
             final List<Facility> facilities = facilities();
             List<OldGhanaFacility> oldGhanaFacilities = project(facilities, OldGhanaFacility.class, on(Facility.class).mrsFacility().getName(), on(Facility.class).mrsFacility().getId());
-            for (OldGhanaFacility oldGhanaFacility : facilitySource.getMotechFacilityNameAndIds()) {
-                String openmrsFacilityId = OldGhanaFacility.findByName(oldGhanaFacilities, oldGhanaFacility.getName()).getId();
-                Facility existingFacility = allFacilities.findByMrsFacilityId(openmrsFacilityId);
+            List<OldGhanaFacility> oldGhanaFacilityList = facilitySource.getMotechFacilityNameAndIds();
+            for (OldGhanaFacility oldGhanaFacility : oldGhanaFacilityList) {
+                String openmrsFacilityId = OldGhanaFacility.findOpenmrsFacilityIdByName(oldGhanaFacilities, oldGhanaFacility.getName());
                 Facility newFacility = new Facility()
                         .mrsFacilityId(openmrsFacilityId)
                         .motechId(oldGhanaFacility.getId())
                         .phoneNumber(oldGhanaFacility.getPhoneNumber())
-                        .additionalPhoneNumber1(oldGhanaFacility.getAdditionalPhoneNumber1())
-                        .additionalPhoneNumber2(oldGhanaFacility.getAdditionalPhoneNumber2())
-                        .additionalPhoneNumber3(oldGhanaFacility.getAdditionalPhoneNumber3());
+                        .additionalPhoneNumber1((oldGhanaFacility.getAdditionalPhoneNumber1() == null || oldGhanaFacility.getAdditionalPhoneNumber1().equalsIgnoreCase("null")) ? " " : oldGhanaFacility.getAdditionalPhoneNumber1())
+                        .additionalPhoneNumber2((oldGhanaFacility.getAdditionalPhoneNumber2() == null || oldGhanaFacility.getAdditionalPhoneNumber2().equalsIgnoreCase("null")) ? " " : oldGhanaFacility.getAdditionalPhoneNumber2())
+                        .additionalPhoneNumber3((oldGhanaFacility.getAdditionalPhoneNumber3() == null || oldGhanaFacility.getAdditionalPhoneNumber3().equalsIgnoreCase("null")) ? " " : oldGhanaFacility.getAdditionalPhoneNumber3());
+                Facility existingFacility = allFacilities.findByMrsFacilityId(openmrsFacilityId);
                 if (existingFacility == null) {
                     allFacilities.saveLocally(newFacility);
                 } else {
