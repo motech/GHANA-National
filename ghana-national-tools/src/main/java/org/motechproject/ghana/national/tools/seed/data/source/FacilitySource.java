@@ -11,11 +11,16 @@ import java.util.List;
 @Repository
 public class FacilitySource extends BaseSeedSource {
     public List<OldGhanaFacility> getMotechFacilityNameAndIds() {
-        return jdbcTemplate.query("select loc.name, fac.facility_id from motechmodule_facility fac, location loc where loc.location_id = fac.location_id",
+        return jdbcTemplate.query("select loc.name, fac.facility_id, fac.phone_number, fac.additional_phone_number1, fac.additional_phone_number2, fac.additional_phone_number3 from motechmodule_facility fac, location loc where loc.location_id = fac.location_id",
                 new RowMapper<OldGhanaFacility>() {
                     @Override
                     public OldGhanaFacility mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-                        return new OldGhanaFacility(resultSet.getString("name"), String.valueOf(resultSet.getInt("facility_id")));
+                        return new OldGhanaFacility(resultSet.getString("name"),
+                                String.valueOf(resultSet.getInt("facility_id")),
+                                String.valueOf(resultSet.getInt("phone_number")),
+                                String.valueOf(resultSet.getInt("additional_phone_number1")),
+                                String.valueOf(resultSet.getInt("additional_phone_number2")),
+                                String.valueOf(resultSet.getInt("additional_phone_number3")));
                     }
                 });
     }

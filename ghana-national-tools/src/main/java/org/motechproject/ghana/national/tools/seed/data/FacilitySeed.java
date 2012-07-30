@@ -32,12 +32,21 @@ public class FacilitySeed extends Seed {
     protected void load() {
         try {
             final List<Facility> facilities = facilities();
-            List<OldGhanaFacility> oldGhanaFacilities = project(facilities, OldGhanaFacility.class,
-                    on(Facility.class).mrsFacility().getName(), on(Facility.class).mrsFacility().getId());
+            List<OldGhanaFacility> oldGhanaFacilities = project(facilities, OldGhanaFacility.class, on(Facility.class).mrsFacility().getName(), on(Facility.class).mrsFacility().getId());
             for (OldGhanaFacility oldGhanaFacility : facilitySource.getMotechFacilityNameAndIds()) {
-                String openmrsfacilityid = OldGhanaFacility.findByName(oldGhanaFacilities, oldGhanaFacility.getName()).getId();
-                if (allFacilities.findByMrsFacilityId(openmrsfacilityid) == null) {
-                    allFacilities.saveLocally(new Facility().mrsFacilityId(openmrsfacilityid).motechId(oldGhanaFacility.getId()));
+                String openmrsFacilityId = OldGhanaFacility.findByName(oldGhanaFacilities, oldGhanaFacility.getName()).getId();
+                Facility existingFacility = allFacilities.findByMrsFacilityId(openmrsFacilityId);
+                Facility newFacility = new Facility()
+                        .mrsFacilityId(openmrsFacilityId)
+                        .motechId(oldGhanaFacility.getId())
+                        .phoneNumber(oldGhanaFacility.getPhoneNumber())
+                        .additionalPhoneNumber1(oldGhanaFacility.getAdditionalPhoneNumber1())
+                        .additionalPhoneNumber2(oldGhanaFacility.getAdditionalPhoneNumber2())
+                        .additionalPhoneNumber3(oldGhanaFacility.getAdditionalPhoneNumber3());
+                if (existingFacility == null) {
+                    allFacilities.saveLocally(newFacility);
+                } else {
+                    allFacilities.updateLocally(newFacility, existingFacility);
                 }
             }
         } catch (Exception e) {
