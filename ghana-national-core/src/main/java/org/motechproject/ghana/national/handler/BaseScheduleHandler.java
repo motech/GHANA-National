@@ -142,7 +142,7 @@ public abstract class BaseScheduleHandler {
         Patient patient = patientService.patientByOpenmrsId(milestoneEvent.getExternalId());
         Facility facility = facilityService.getFacility(patient.getMrsPatient().getFacility().getId());
         String windowName = AlertWindow.byPlatformName(milestoneEvent.getWindowName()).getName();
-        for (String phoneNumber : facility.getPhoneNumbers()) {
+        for (String phoneNumber : facility.findAllPhoneNumbers()) {
             smsGateway.dispatchSMS(smsTemplateKey, patientDetailsMap(patient, windowName, milestoneEvent.getMilestoneAlert().getMilestoneName(), null), phoneNumber);
         }
     }

@@ -392,7 +392,7 @@ public class BaseScheduleHandlerTest {
 
         List<String> allPhoneNumbers = captor.getAllValues();
         assertEquals(2, allPhoneNumbers.size());
-        assertEquals(facility.getPhoneNumbers(), allPhoneNumbers);
+        assertEquals(facility.findAllPhoneNumbers(), allPhoneNumbers);
         assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, patientMotechId);
             put(WINDOW, "Overdue");

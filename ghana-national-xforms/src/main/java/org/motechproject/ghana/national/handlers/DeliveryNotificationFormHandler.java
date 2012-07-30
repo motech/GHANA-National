@@ -62,7 +62,7 @@ public class DeliveryNotificationFormHandler{
         if (patient.getMrsPatient().getFacility() != null) {
             Facility facility = facilityService.getFacility(patient.getMrsPatient().getFacility().getId());
 
-            for (String phoneNumber : facility.getPhoneNumbers()) {
+            for (String phoneNumber : facility.findAllPhoneNumbers()) {
                 smsGateway.dispatchSMS(DELIVERY_NOTIFICATION_SMS_KEY, new SMSTemplate().fillPatientDetails(patient)
                         .fillDeliveryTime(deliveryTime).getRuntimeVariables(), phoneNumber);
             }

@@ -31,9 +31,6 @@ public class Facility extends MotechBaseDataObject {
     @JsonIgnore
     private MRSFacility mrsFacility;
 
-    @JsonIgnore
-    private List<String> phoneNumbers;
-
     public Facility() {
     }
 
@@ -148,7 +145,7 @@ public class Facility extends MotechBaseDataObject {
         return motechId;
     }
 
-    public List<String> getPhoneNumbers() {
+    public List<String> findAllPhoneNumbers() {
         List<String> phoneNumbers = new ArrayList<String>();
         if (emptyToNull(phoneNumber) != null) {
             phoneNumbers.add(phoneNumber);

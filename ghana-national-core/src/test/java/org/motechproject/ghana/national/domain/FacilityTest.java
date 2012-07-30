@@ -14,7 +14,7 @@ public class FacilityTest {
         String phoneNumber = "phoneNumber";
         String phoneNumber1 = "phoneNumber1";
         Facility facility=new Facility().phoneNumber(phoneNumber).additionalPhoneNumber1(phoneNumber1);
-        assertThat(facility.getPhoneNumbers(), is(Arrays.asList(phoneNumber, phoneNumber1)));
+        assertThat(facility.findAllPhoneNumbers(), is(Arrays.asList(phoneNumber, phoneNumber1)));
 
     }
 }

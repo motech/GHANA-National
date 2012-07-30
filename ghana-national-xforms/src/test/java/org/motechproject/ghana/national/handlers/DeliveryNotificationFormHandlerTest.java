@@ -116,7 +116,7 @@ public class DeliveryNotificationFormHandlerTest {
 
         List<String> allPhoneNumbers = captor.getAllValues();
         assertEquals(2, allPhoneNumbers.size());
-        assertEquals(facility.getPhoneNumbers(), allPhoneNumbers);
+        assertEquals(facility.findAllPhoneNumbers(), allPhoneNumbers);
         assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, motechId);
             put(FIRST_NAME, firstName);
