@@ -5,7 +5,7 @@ import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
 import org.motechproject.model.MotechBaseDataObject;
 
-@TypeDiscriminator("doc.type === 'FormUpload'")
+@TypeDiscriminator("doc.type === 'FormUploadLog'")
 public class FormUploadLog extends MotechBaseDataObject {
     @JsonProperty
     private DateTime dateTime;

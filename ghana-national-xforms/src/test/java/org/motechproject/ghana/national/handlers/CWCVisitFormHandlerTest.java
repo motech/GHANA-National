@@ -119,4 +119,55 @@ public class CWCVisitFormHandlerTest {
         assertEquals(cwcVisitForm.getCommunity(), actualCWCVisit.getCommunity());
         assertEquals(cwcVisitForm.getMaleInvolved(), actualCWCVisit.getMaleInvolved());
     }
+
+    @Test
+    public void shouldCreateCWCVisitEncounterWithoutNonMandatoryFields() {
+        final CWCVisitForm cwcVisitForm = new CWCVisitForm();
+        cwcVisitForm.setStaffId("465");
+        String motechId = "2321465";
+        String staffId = "staffId";
+        String motechFacilityId = "232465";
+        cwcVisitForm.setFacilityId(motechFacilityId);
+        cwcVisitForm.setStaffId(staffId);
+        cwcVisitForm.setMotechId(motechId);
+        cwcVisitForm.setDate(new Date());
+        cwcVisitForm.setSerialNumber("4ds65");
+        cwcVisitForm.setImmunizations("NONGIVEN");
+        cwcVisitForm.setComments("comments");
+        cwcVisitForm.setCwcLocation("location");
+        cwcVisitForm.setHouse("house");
+        cwcVisitForm.setCommunity("community");
+        cwcVisitForm.setMaleInvolved(false);
+
+
+        MotechEvent motechEvent = new MotechEvent("form.validation.successful.NurseDataEntry.cwcVisit", new HashMap<String, Object>() {{
+            put("formBean", cwcVisitForm);
+        }});
+
+        MRSUser staff = new MRSUser();
+        staff.id(staffId);
+        MRSFacility mrsFacility = new MRSFacility("111");
+        Facility facility = new Facility(mrsFacility);
+        facility.motechId(motechFacilityId);
+        when(mockFacilityService.getFacilityByMotechId(motechFacilityId)).thenReturn(facility);
+        when(mockStaffService.getUserByEmailIdOrMotechId(staffId)).thenReturn(staff);
+        when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(new Patient(new MRSPatient(motechId, new MRSPerson(), mrsFacility)));
+
+        handler.handleFormEvent(cwcVisitForm);
+
+        ArgumentCaptor<CWCVisit> captor = ArgumentCaptor.forClass(CWCVisit.class);
+        verify(mockChildVisitService).save(captor.capture());
+        CWCVisit actualCWCVisit = captor.getValue();
+        assertEquals(cwcVisitForm.getStaffId(), actualCWCVisit.getStaff().getId());
+        assertEquals(cwcVisitForm.getFacilityId(), actualCWCVisit.getFacility().motechId());
+        assertEquals(cwcVisitForm.getMotechId(), actualCWCVisit.getPatient().getMotechId());
+        assertEquals(cwcVisitForm.getDate(), actualCWCVisit.getDate());
+        assertEquals(cwcVisitForm.getSerialNumber(), actualCWCVisit.getSerialNumber());
+        assertEquals(cwcVisitForm.getWeight(), actualCWCVisit.getWeight());
+        assertEquals(cwcVisitForm.getComments(), actualCWCVisit.getComments());
+        assertEquals(cwcVisitForm.getCwcLocation(), actualCWCVisit.getCwcLocation());
+        assertEquals(cwcVisitForm.getHouse(), actualCWCVisit.getHouse());
+        assertEquals(cwcVisitForm.getCommunity(), actualCWCVisit.getCommunity());
+        assertEquals(cwcVisitForm.getMaleInvolved(), actualCWCVisit.getMaleInvolved());
+    }
 }

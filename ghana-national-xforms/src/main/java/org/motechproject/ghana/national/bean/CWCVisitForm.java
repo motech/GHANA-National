@@ -43,11 +43,8 @@ public class CWCVisitForm extends FormBean {
     private String iptidose;
     private String rotavirusdose;
     private String pneumococcaldose;
-    @Required
     private Double weight;
-    @Required
     private Double muac;
-    @Required
     private Double height;
     @Required
     private Boolean maleInvolved;

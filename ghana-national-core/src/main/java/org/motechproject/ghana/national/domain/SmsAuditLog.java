@@ -7,7 +7,7 @@ import org.motechproject.model.MotechBaseDataObject;
 
 import java.util.List;
 
-@TypeDiscriminator("doc.type === 'SmsAudit'")
+@TypeDiscriminator("doc.type === 'SmsAuditLog'")
 public class SmsAuditLog extends MotechBaseDataObject {
     @JsonProperty
     private DateTime dateTime;
