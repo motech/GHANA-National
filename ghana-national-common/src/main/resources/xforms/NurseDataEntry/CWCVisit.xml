@@ -112,7 +112,7 @@
                 <xf:value>PNEUMOCOCCAL</xf:value>
             </xf:item>
             <xf:item id="12">
-                <xf:label>Non-Given</xf:label>
+                <xf:label>Non-given</xf:label>
                 <xf:value>NONGIVEN</xf:value>
             </xf:item>
         </xf:select>
