@@ -59,7 +59,7 @@ public class AllFacilities extends MotechBaseRepository<Facility> {
         allMotechModuleFacilities.update(facility);
     }
 
-    private void updateLocally(Facility facility, Facility existingFacility) {
+    public void updateLocally(Facility facility, Facility existingFacility) {
         existingFacility.phoneNumber(facility.phoneNumber());
         existingFacility.additionalPhoneNumber1(facility.additionalPhoneNumber1());
         existingFacility.additionalPhoneNumber2(facility.additionalPhoneNumber2());

@@ -28,11 +28,12 @@ public class Facility extends MotechBaseDataObject {
     @JsonProperty
     private String motechId;
 
-    @JsonIgnore
-    private MRSFacility mrsFacility;
-
+    //needs to be here.
     @JsonIgnore
     private List<String> phoneNumbers;
+
+    @JsonIgnore
+    private MRSFacility mrsFacility;
 
     public Facility() {
     }
