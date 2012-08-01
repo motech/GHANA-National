@@ -57,8 +57,10 @@ public class SMSGateway {
     }
 
     public void dispatchSMS(String phoneNumber, String message) {
-        phoneNumber = applyCountryCode(phoneNumber);
-        smsService.sendSMS(phoneNumber, message);
+        if (phoneNumber != null) {
+            phoneNumber = applyCountryCode(phoneNumber);
+            smsService.sendSMS(phoneNumber, message);
+        }
     }
 
     private String applyCountryCode(String phoneNumber) {

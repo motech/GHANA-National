@@ -3,6 +3,7 @@ package org.motechproject.ghana.national.repository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.cmslite.api.model.StringContent;
@@ -98,6 +99,13 @@ public class SMSGatewayTest extends BaseUnitTest{
         assertThat(smsPayloadSentToGateway.getGenerationTime(), is(equalTo(DateUtil.now())));
         assertThat(smsPayloadSentToGateway.getDeliveryStrategy().getClass(), is(typeCompatibleWith(NextMondayDispatcher.class)));
     }
+
+    @Test
+    public void shouldNotSendMessagesForNullPhoneNumbers() {
+        smsGateway.dispatchSMS(null, "sample message");
+        verify(mockSMSService, never()).sendSMS(Matchers.any(String.class), Matchers.any(String.class));
+    }
+
 
     private StringContent createStringContent(String value) {
         StringContent stringContent = mock(StringContent.class);
