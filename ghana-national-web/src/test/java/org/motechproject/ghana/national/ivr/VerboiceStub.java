@@ -7,6 +7,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.motechproject.MotechException;
 
 import java.io.IOException;
+import java.util.Random;
 
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
@@ -22,7 +23,7 @@ public class VerboiceStub {
     }
 
     public String handleIncomingCall() {
-        String callbackUrl = testAppServer.path(VERBOICE_URL + "?type=verboice&ln=en&tree=InboundDecisionTree&trP=Lw");
+        String callbackUrl = testAppServer.path(VERBOICE_URL + "?type=verboice&ln=en&tree=InboundDecisionTree&trP=Lw&CallSid=call_identifier&From=caller_id");
         return hitApp(callbackUrl);
     }
 
@@ -41,7 +42,7 @@ public class VerboiceStub {
 
     private String hitApp(String url) {
         try {
-            return client.execute(new HttpGet(url), new BasicResponseHandler());
+            return client.execute(new HttpGet(url + "&CallSid=call_identifier&From=caller_id"), new BasicResponseHandler());
         } catch (IOException e) {
             throw new MotechException("Unable to hit app, " + url, e);
         }

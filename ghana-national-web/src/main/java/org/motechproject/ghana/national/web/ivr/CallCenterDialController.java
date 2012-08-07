@@ -46,14 +46,14 @@ public class CallCenterDialController {
         this.ivrCallCenterNoMappingService = ivrCallCenterNoMappingService;
     }
 
-    @RequestMapping(value = "/dial/{ln}/callback", method = RequestMethod.POST)
+    @RequestMapping(value = "/dial/{ln}/callback/{callerPhoneNumber}", method = RequestMethod.POST)
     @ResponseBody
-    public String handleCallStatus(@RequestParam("DialCallStatus") String dialCallStatus, @PathVariable("ln") String language) {
+    public String handleCallStatus(@RequestParam("DialCallStatus") String dialCallStatus, @PathVariable("ln") String language, @PathVariable("callerPhoneNumber") String callerPhoneNumber) {
         if (dialCallStatus != null) {
             if (FAILED.getCode().equals(dialCallStatus)) {
                 return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
             } else if (BUSY.getCode().equals(dialCallStatus) || "no-answer".equals(dialCallStatus)) {
-                return waitAndDial(language);
+                return waitAndDial(language, callerPhoneNumber);
             } else if (COMPLETED.getCode().equals(dialCallStatus)) {
                 return hangup();
             }
@@ -68,10 +68,10 @@ public class CallCenterDialController {
                 "</Response>";
     }
 
-    private String waitAndDial(String language) {
+    private String waitAndDial(String language, String callerPhoneNumber) {
         DayOfWeek dayOfWeek = DayOfWeek.getDayOfWeek(DateUtil.today().dayOfWeek().get());
         String callCenterPhoneNumber = ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.valueOf(language), dayOfWeek, new Time(DateUtil.now().toLocalTime()));
-        return (callCenterPhoneNumber != null) ? callCenterBusy(language, callCenterPhoneNumber) : callCenterClosed(language);
+        return (callCenterPhoneNumber != null) ? callCenterBusy(language, callCenterPhoneNumber, callerPhoneNumber) : callCenterClosed(language);
     }
 
     private String callCenterClosed(String language) {
@@ -83,13 +83,13 @@ public class CallCenterDialController {
         return xml;
     }
 
-    private String callCenterBusy(String language, String callCenterPhoneNumber) {
+    private String callCenterBusy(String language, String callCenterPhoneNumber, String callerPhoneNumber) {
         String url = ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_BUSY.getFileName(), valueOf(language));
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         xml = xml + "<Response>\n";
         xml = xml + "    <Play>" + url + "</Play>\n";
         xml = xml + "    <Pause length=\"" + callCenterRedialIntervalInSec + "\"/>";
-        xml = xml + "    <Dial callerId=\"" + callCenterPhoneNumber + "\" action=\"" + ivrCallbackUrlBuilder.callCenterDialStatusUrl(valueOf(language)) + "\">" + callCenterPhoneNumber + "</Dial>";
+        xml = xml + "    <Dial callerId=\"" + callerPhoneNumber + "\" action=\"" + ivrCallbackUrlBuilder.callCenterDialStatusUrl(valueOf(language), callerPhoneNumber) + "\">" + callCenterPhoneNumber + "</Dial>";
         xml = xml + "</Response>";
         return xml;
     }

@@ -27,7 +27,7 @@ public class IVRCallbackUrlBuilder {
         }
     }
 
-    public String callCenterDialStatusUrl(Language language){
-        return  "http://" + host + ":" + port + "/" + contextPath + "/ivr/dial/" + language.name() + "/callback";
+    public String callCenterDialStatusUrl(Language language, String userPhoneNumber){
+        return  "http://" + host + ":" + port + "/" + contextPath + "/ivr/dial/" + language.name() + "/callback/" + userPhoneNumber;
     }
 }
