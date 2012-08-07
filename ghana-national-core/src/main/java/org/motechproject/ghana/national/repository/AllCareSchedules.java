@@ -35,14 +35,18 @@ public class AllCareSchedules {
         if (enrollment(enrollmentRequest) == null) {
             enroll(enrollmentRequest);
         }
-        fulfilCurrentMilestone(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName(), fulfillmentDate, fulfillmentTime);
+        if(enrollment(enrollmentRequest)!=null){
+            fulfilCurrentMilestone(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName(), fulfillmentDate, fulfillmentTime);
+        }
     }
 
     public void enrollOrFulfill(EnrollmentRequest enrollmentRequest, LocalDate fulfillmentDate) {
         if (enrollment(enrollmentRequest) == null) {
             enroll(enrollmentRequest);
         }
-        fulfilCurrentMilestone(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName(), fulfillmentDate);
+        if(enrollment(enrollmentRequest)!=null){
+            fulfilCurrentMilestone(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName(), fulfillmentDate);
+        }
     }
 
     public void enroll(EnrollmentRequest enrollmentRequest) {

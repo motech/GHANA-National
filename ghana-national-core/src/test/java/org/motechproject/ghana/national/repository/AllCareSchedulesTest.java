@@ -53,7 +53,8 @@ public class AllCareSchedulesTest {
         String scheduleName = "scheduleName";
         String externalId = "12";
         EnrollmentRequest anyEnrollmentRequest = new EnrollmentRequest(externalId, scheduleName, new Time(12, 0), new LocalDate(), null, null, null, null, null);
-        when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(null);
+        EnrollmentRecord newEnrollment = mock(EnrollmentRecord.class);
+        when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(null,newEnrollment);
 
         allCareSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
 
@@ -73,6 +74,20 @@ public class AllCareSchedulesTest {
 
         verify(mockScheduleTrackingService, never()).enroll(anyEnrollmentRequest);
         verify(mockScheduleTrackingService).fulfillCurrentMilestone(externalId, scheduleName, null);
+    }
+
+    @Test
+    public void shouldNotFulfillAScheduleIfThereIsNoActiveEnrollment() {
+
+        String scheduleName = "scheduleName";
+        String externalId = "12";
+        EnrollmentRequest anyEnrollmentRequest = new EnrollmentRequest(externalId, scheduleName, new Time(12, 0), new LocalDate(), null, null, null, null, null);
+        when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(null);
+
+        allCareSchedules.enrollOrFulfill(anyEnrollmentRequest, null);
+
+        verify(mockScheduleTrackingService, times(1)).enroll(anyEnrollmentRequest);
+        verify(mockScheduleTrackingService,never()).fulfillCurrentMilestone(externalId, scheduleName, null);
     }
 
     @Test
