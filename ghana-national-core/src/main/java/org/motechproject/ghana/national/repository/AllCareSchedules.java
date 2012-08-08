@@ -35,8 +35,10 @@ public class AllCareSchedules {
         if (enrollment(enrollmentRequest) == null) {
             enroll(enrollmentRequest);
         }
-        if(enrollment(enrollmentRequest)!=null){
+        try {
             fulfilCurrentMilestone(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName(), fulfillmentDate, fulfillmentTime);
+        } catch (InvalidEnrollmentException e) {
+            // For PNCBaby and Mother where defaultment schedule triggers immediately after it gets created.
         }
     }
 
@@ -44,8 +46,10 @@ public class AllCareSchedules {
         if (enrollment(enrollmentRequest) == null) {
             enroll(enrollmentRequest);
         }
-        if(enrollment(enrollmentRequest)!=null){
+        try {
             fulfilCurrentMilestone(enrollmentRequest.getExternalId(), enrollmentRequest.getScheduleName(), fulfillmentDate);
+        } catch (InvalidEnrollmentException e) {
+            // For PNCBaby and Mother where defaultment schedule triggers immediately after it gets created.
         }
     }
 
@@ -106,8 +110,8 @@ public class AllCareSchedules {
     public EnrollmentRecord getActiveEnrollment(String externalId, String scheduleName) {
         return scheduleTrackingService.getEnrollment(externalId, scheduleName);
     }
-    
-    public List<DateTime> getDueWindowAlertTimings(EnrollmentRequest enrollmentRequest){
+
+    public List<DateTime> getDueWindowAlertTimings(EnrollmentRequest enrollmentRequest) {
         return scheduleTrackingService.getAlertTimings(enrollmentRequest).getDueWindowAlertTimings();
     }
 
