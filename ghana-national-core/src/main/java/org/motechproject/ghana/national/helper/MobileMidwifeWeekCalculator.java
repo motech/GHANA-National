@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.helper;
 
 import ch.lambdaj.Lambda;
+import org.apache.log4j.Logger;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
@@ -30,23 +33,25 @@ public class MobileMidwifeWeekCalculator {
 
     CampaignJsonReader campaignJsonReader;
 
+    private static final Logger log = Logger.getLogger(MobileMidwifeWeekCalculator.class);
+
     @Autowired
-    public MobileMidwifeWeekCalculator(CampaignJsonReader campaignJsonReader){
-        this.campaignJsonReader=campaignJsonReader;
+    public MobileMidwifeWeekCalculator(CampaignJsonReader campaignJsonReader) {
+        this.campaignJsonReader = campaignJsonReader;
     }
 
-    public String getMessageKey(String campaignName,LocalDate campaignStartDate, Integer startWeek, String repeatInterval) {
-        Campaign campaign=getCampaign(campaignName);
+    public String getMessageKey(String campaignName, LocalDate campaignStartDate, Integer startWeek, String repeatInterval) {
+        Campaign campaign = getCampaign(campaignName);
         return campaign.getMessageKey(campaignStartDate, startWeek, repeatInterval);
     }
 
-    public Boolean hasProgramEnded(String campaignName,String messageKey){
-        Campaign campaign=getCampaign(campaignName);
+    public Boolean hasProgramEnded(String campaignName, String messageKey) {
+        Campaign campaign = getCampaign(campaignName);
         return campaign.isEnded(messageKey);
     }
 
-    private Campaign getCampaign(String campaignName){
-        Campaign campaign=null;
+    private Campaign getCampaign(String campaignName) {
+        Campaign campaign = null;
         if ("PREGNANCY_VOICE".equals(campaignName))
             campaign = new PregnancyVoiceCampaign();
         else if ("PREGNANCY_SMS".equals(campaignName))
@@ -59,7 +64,7 @@ public class MobileMidwifeWeekCalculator {
         return campaign;
     }
 
-    abstract class VoiceCampaign extends Campaign{
+    abstract class VoiceCampaign extends Campaign {
         public Integer currentOffsetForVoice(LocalDate startTime, Integer startIntervalOffset, String repeatInterval) {
             WallTime repeatIntervalWallTime = new WallTime(repeatInterval);
             int interval = daysBetween(startTime, today()).getDays();
@@ -68,7 +73,7 @@ public class MobileMidwifeWeekCalculator {
         }
     }
 
-    abstract class SMSCampaign extends Campaign{
+    abstract class SMSCampaign extends Campaign {
         public Integer currentOffsetForSMS(LocalDate cycleStartDate, Integer startIntervalOffset) {
             int startOfTheWeek = DayOfWeek.Sunday.getValue();
 
@@ -90,8 +95,9 @@ public class MobileMidwifeWeekCalculator {
 
     }
 
-    abstract class Campaign{
+    abstract class Campaign {
         abstract String getMessageKey(LocalDate startTime, Integer startIntervalOffset, String repeatInterval);
+
         abstract Boolean isEnded(String messageKey);
 
         public MobileMidwifeCampaignRecord getCampaignRecord(String campaignName) {
@@ -99,24 +105,24 @@ public class MobileMidwifeWeekCalculator {
             return mobileMidwifeCampaignRecords.get(0);
         }
 
-        public String getLastApplicableWeekDay(String campaignName){
-            MobileMidwifeCampaignRecord mobileMidwifeCampaignRecord=getCampaignRecord(campaignName);
-            List<String> applicableWeekDays=mobileMidwifeCampaignRecord.getMessages().get(0).getWeekDaysApplicable();
-            return applicableWeekDays.get(applicableWeekDays.size()-1);
+        public String getLastApplicableWeekDay(String campaignName) {
+            MobileMidwifeCampaignRecord mobileMidwifeCampaignRecord = getCampaignRecord(campaignName);
+            List<String> applicableWeekDays = mobileMidwifeCampaignRecord.getMessages().get(0).getWeekDaysApplicable();
+            return applicableWeekDays.get(applicableWeekDays.size() - 1);
         }
 
-        public String getWeek(String campaignName){
-            MobileMidwifeCampaignRecord mobileMidwifeCampaignRecord=getCampaignRecord(campaignName);
-            Period period=new Period().parse(mobileMidwifeCampaignRecord.getMaxDuration(),new PeriodFormatterBuilder()
+        public String getWeek(String campaignName) {
+            MobileMidwifeCampaignRecord mobileMidwifeCampaignRecord = getCampaignRecord(campaignName);
+            Period period = new Period().parse(mobileMidwifeCampaignRecord.getMaxDuration(), new PeriodFormatterBuilder()
                     .appendWeeks().appendSuffix(" week", " weeks")
                     .toFormatter());
-            return period.getWeeks()+"";
+            return period.getWeeks() + "";
         }
 
-        }
+    }
 
 
-    class PregnancyVoiceCampaign extends VoiceCampaign{
+    class PregnancyVoiceCampaign extends VoiceCampaign {
         @Override
         public String getMessageKey(LocalDate startTime, Integer startIntervalOffset, String repeatInterval) {
             return String.valueOf(currentOffsetForVoice(startTime, startIntervalOffset, repeatInterval));
@@ -125,11 +131,11 @@ public class MobileMidwifeWeekCalculator {
         @Override
         public Boolean isEnded(String messageKey) {
             String campaignName = MobileMidwifeCampaign.getName(ServiceType.PREGNANCY, Medium.VOICE);
-            String weekNum=getWeek(campaignName);
-            if(weekNum.equals(messageKey)){
+            String weekNum = getWeek(campaignName);
+            if (weekNum.equals(messageKey)) {
                 return Boolean.TRUE;
             }
-         return Boolean.FALSE;
+            return Boolean.FALSE;
         }
 
 
@@ -144,52 +150,79 @@ public class MobileMidwifeWeekCalculator {
         @Override
         public Boolean isEnded(String messageKey) {
             String campaignName = MobileMidwifeCampaign.getName(ServiceType.CHILD_CARE, Medium.VOICE);
-            String weekNum=getWeek(campaignName);
-            if(weekNum.equals(messageKey)){
+            String weekNum = getWeek(campaignName);
+            if (weekNum.equals(messageKey)) {
                 return Boolean.TRUE;
             }
             return Boolean.FALSE;
         }
     }
 
-    class ChildSMSCampaign extends SMSCampaign{
+    class ChildSMSCampaign extends SMSCampaign {
         @Override
         public String getMessageKey(LocalDate startTime, Integer startIntervalOffset, String repeatInterval) {
             Integer currentWeek = currentOffsetForSMS(startTime, startIntervalOffset);
-            return "CHILD_CARE-cw" + currentWeek + "-" + DayOfWeek.getDayOfWeek(DateUtil.today().getDayOfWeek());
+
+            DayOfWeek dayToday = DayOfWeek.getDayOfWeek(DateUtil.today().getDayOfWeek());
+            String campaignName = MobileMidwifeCampaign.getName(ServiceType.CHILD_CARE, Medium.SMS);
+            MobileMidwifeCampaignRecord mobileMidwifeCampaignRecord = getCampaignRecord(campaignName);
+            List<String> applicableWeekDays = mobileMidwifeCampaignRecord.getMessages().get(0).getWeekDaysApplicable();
+            if (applicableWeekDays.contains(dayToday.name()))
+                return "CHILD_CARE-cw" + currentWeek + "-" + dayToday;
+
+            log.error("Child Care message campaign getMessageKey for invalid week : " + "CHILD_CARE-cw" + currentWeek + "-" + dayToday);
+            return null;
         }
 
         @Override
         public Boolean isEnded(String messageKey) {
             String campaignName = MobileMidwifeCampaign.getName(ServiceType.CHILD_CARE, Medium.SMS);
             MobileMidwifeCampaignRecord mobileMidwifeCampaignRecord = getCampaignRecord(campaignName);
-            String lastApplicableWeekDay=getLastApplicableWeekDay(campaignName);
-            String weekNumber=getWeek(campaignName);
-            if(messageKey.contains(weekNumber) && messageKey.contains(lastApplicableWeekDay)){
-                return Boolean.TRUE;
+            String lastApplicableWeekDay = getLastApplicableWeekDay(campaignName);
+            int weekNumber = Integer.parseInt(getWeek(campaignName));
+            Pattern compliedPattern = Pattern.compile("CHILD_CARE-cw(\\d+).+");
+            Matcher matcher = compliedPattern.matcher(messageKey);
+
+            if (matcher.matches()) {
+                if (Integer.parseInt(matcher.group(1)) >= weekNumber && messageKey.contains(lastApplicableWeekDay)) {
+                    return Boolean.TRUE;
+                }
             }
             return Boolean.FALSE;
         }
     }
 
-    class PregnancySMSCampaign extends SMSCampaign{
+    class PregnancySMSCampaign extends SMSCampaign {
         @Override
         public String getMessageKey(LocalDate startTime, Integer startIntervalOffset, String repeatInterval) {
             Integer currentWeek = currentOffsetForSMS(startTime, startIntervalOffset);
-            return "PREGNANCY-cw" + currentWeek + "-" + DayOfWeek.getDayOfWeek(DateUtil.today().getDayOfWeek());
+
+            DayOfWeek dayToday = DayOfWeek.getDayOfWeek(DateUtil.today().getDayOfWeek());
+            String campaignName = MobileMidwifeCampaign.getName(ServiceType.PREGNANCY, Medium.SMS);
+            MobileMidwifeCampaignRecord mobileMidwifeCampaignRecord = getCampaignRecord(campaignName);
+            List<String> applicableWeekDays = mobileMidwifeCampaignRecord.getMessages().get(0).getWeekDaysApplicable();
+            if (applicableWeekDays.contains(dayToday.name()))
+                return "PREGNANCY-cw" + currentWeek + "-" + dayToday;
+
+            log.error("Pregnancy message campaign getMessageKey for invalid week : " + "PREGNANCY-cw" + currentWeek + "-" + dayToday);
+            return null;
         }
 
         @Override
         public Boolean isEnded(String messageKey) {
             String campaignName = MobileMidwifeCampaign.getName(ServiceType.PREGNANCY, Medium.SMS);
-            String lastApplicableWeekDay=getLastApplicableWeekDay(campaignName);
-            String weekNumber=getWeek(campaignName);
-            if(messageKey.contains(weekNumber) && messageKey.contains(lastApplicableWeekDay)){
-                return Boolean.TRUE;
+            String lastApplicableWeekDay = getLastApplicableWeekDay(campaignName);
+            int weekNumber = Integer.parseInt(getWeek(campaignName));
+
+            Pattern compliedPattern = Pattern.compile("PREGNANCY-cw(\\d+).+");
+            Matcher matcher = compliedPattern.matcher(messageKey);
+
+            if (matcher.matches()) {
+                if (Integer.parseInt(matcher.group(1)) >= weekNumber && messageKey.contains(lastApplicableWeekDay)) {
+                    return Boolean.TRUE;
+                }
             }
             return Boolean.FALSE;
         }
     }
-
-
 }

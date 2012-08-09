@@ -66,16 +66,18 @@ public class MobileMidwifeCampaignEventHandler {
             MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(patientId);
             Integer startWeek = Integer.parseInt(enrollment.messageStartWeekSpecificToServiceType());
 
-            String campaignName=((String) params.get(EventKeys.CAMPAIGN_NAME_KEY));
-            String messageKey = mobileMidwifeWeekCalculator.getMessageKey(campaignName,campaignStartDate, startWeek, repeatInterval);
+            String campaignName = ((String) params.get(EventKeys.CAMPAIGN_NAME_KEY));
+            String messageKey = mobileMidwifeWeekCalculator.getMessageKey(campaignName, campaignStartDate, startWeek, repeatInterval);
 
-            if (mobileMidwifeWeekCalculator.hasProgramEnded(campaignName,messageKey)) {
-                if(enrollment.getServiceType().equals(ServiceType.PREGNANCY))
-                    mobileMidwifeService.rollover(patientId, DateUtil.now().plusWeeks(1));
-                else
-                    mobileMidwifeService.unRegister(patientId);
+            if (messageKey != null) {
+                if (mobileMidwifeWeekCalculator.hasProgramEnded(campaignName, messageKey)) {
+                    if (enrollment.getServiceType().equals(ServiceType.PREGNANCY))
+                        mobileMidwifeService.rollover(patientId, DateUtil.now().plusWeeks(1));
+                    else
+                        mobileMidwifeService.unRegister(patientId);
+                }
+                sendMessage(enrollment, messageKey);
             }
-            sendMessage(enrollment, messageKey);
         } catch (Exception e) {
             logger.error("<MobileMidwifeEvent>: Encountered error while sending alert: ", e);
             throw new EventHandlerException(event, e);
