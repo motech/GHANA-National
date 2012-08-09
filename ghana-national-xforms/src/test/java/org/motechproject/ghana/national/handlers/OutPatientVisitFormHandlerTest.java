@@ -73,7 +73,7 @@ public class OutPatientVisitFormHandlerTest {
         }
     }
     @Test
-    public void shouldPersistEncounterIfPatientIsNotAVisitor() {
+    public void shouldPersistEncounterIfPatientIsRegistered() {
 
         final OutPatientVisitForm form = new OutPatientVisitForm();
         String staffId = "staffId";
@@ -97,7 +97,7 @@ public class OutPatientVisitFormHandlerTest {
         form.setFacilityId(motechFacilityId);
         form.setMotechId(motechId);
         form.setVisitDate(visitDate);
-        form.setVisitor(false);
+        form.setRegistered(true);
         form.setRegistrantType(registrantType);
         String comments = "comments";
         form.setComments(comments);
@@ -143,7 +143,7 @@ public class OutPatientVisitFormHandlerTest {
     }
 
     @Test
-    public void shouldPersistRecordIfPatientIsVisitor() {
+    public void shouldPersistRecordIfPatientIsNotRegistered() {
         final OutPatientVisitForm form = new OutPatientVisitForm();
         String staffId = "staffId";
         String motechFacilityId = "motechFacilityId";
@@ -170,7 +170,7 @@ public class OutPatientVisitFormHandlerTest {
         form.setVisitDate(visitDate);
         form.setDateOfBirth(birthDate);
         form.setRegistrantType(registrantType);
-        form.setVisitor(true);
+        form.setRegistered(false);
         form.setDiagnosis(OutPatientVisitFormHandler.OTHER_DIAGNOSIS);
         form.setOtherDiagnosis(diagnosis);
         form.setSecondDiagnosis(secondDiagnosis);

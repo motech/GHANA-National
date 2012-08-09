@@ -32,7 +32,7 @@ public class OutPatientVisitForm extends FormBean {
     private PatientType registrantType;
 
     @Required
-    private Boolean visitor;
+    private Boolean registered;
 
     @Required
     private Date visitDate;
@@ -110,12 +110,12 @@ public class OutPatientVisitForm extends FormBean {
         this.registrantType = registrantType;
     }
 
-    public Boolean isVisitor() {
-        return visitor;
+    public Boolean isRegistered() {
+        return registered;
     }
 
-    public void setVisitor(Boolean visitor) {
-        this.visitor = visitor;
+    public void setRegistered(Boolean registered) {
+        this.registered = registered;
     }
 
     public Date getVisitDate() {
