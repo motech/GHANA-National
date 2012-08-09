@@ -79,7 +79,7 @@ public class MobileMidwifeCampaignEventHandler {
                 sendMessage(enrollment, messageKey);
             }
         } catch (Exception e) {
-            logger.error("<MobileMidwifeEvent>: Encountered error while sending alert: ", e);
+            logger.error("<MobileMidwifeEvent>: Encountered error while sending alert for patientId " + event.getParameters().get(EventKeys.EXTERNAL_ID_KEY) +  ": ", e);
             throw new EventHandlerException(event, e);
         }
     }
