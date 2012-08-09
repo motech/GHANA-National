@@ -29,7 +29,7 @@ public class OutPatientVisitFormValidator extends FormValidator<OutPatientVisitF
         List<FormError> formErrors = super.validate(formBean, group, allForms);
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        if (Boolean.FALSE.equals(formBean.isVisitor())) {
+        if (Boolean.TRUE.equals(formBean.isRegistered())) {
             Patient patient = formValidator.getPatient(formBean.getMotechId());
             formErrors.addAll(new DependentValidator().validate(patient, group.getFormBeans(),
                     allForms, new ExistsInDb()

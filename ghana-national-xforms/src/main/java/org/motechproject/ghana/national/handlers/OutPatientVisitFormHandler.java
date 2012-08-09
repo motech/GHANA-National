@@ -47,7 +47,7 @@ public class OutPatientVisitFormHandler{
     @ApiSession
     public void handleFormEvent(OutPatientVisitForm outPatientVisitForm) {
         try {
-            if (Boolean.TRUE.equals(outPatientVisitForm.isVisitor())) {
+            if (Boolean.FALSE.equals(outPatientVisitForm.isRegistered())) {
                 persist(outPatientVisitForm);
             } else {
                 persistInMRS(outPatientVisitForm);

@@ -17,7 +17,6 @@ import org.motechproject.mrs.model.MRSPerson;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.Boolean.TRUE;
@@ -51,6 +50,7 @@ public class OutPatientVisitFormValidatorTest {
         when(formBean.getMotechId()).thenReturn(motechId);
         when(formBean.getStaffId()).thenReturn(staffId);
         when(formBean.getFacilityId()).thenReturn(facilityId);
+        when(formBean.isRegistered()).thenReturn(true);
 
         Patient patient = null;
         final List<FormBean> formsUploaded = new ArrayList<FormBean>();

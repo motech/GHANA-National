@@ -8,7 +8,7 @@
                 <serialNumber/>
                 <visitDate/>
                 <registrantType/>
-                <visitor/>
+                <registered/>
                 <motechId/>
                 <dateOfBirth/>
                 <gender/>
@@ -41,24 +41,22 @@
 
         <xf:bind id="registrantType" nodeset="/opvVisit/registrantType" required="true()"
                  type="xsd:string"/>
-        <xf:bind id="visitor" nodeset="/opvVisit/visitor" required="true()" type="xsd:string"/>
+        <xf:bind id="registered" nodeset="/opvVisit/registered" required="true()" type="xsd:string"/>
         <xf:bind action="show" id="motechId" nodeset="/opvVisit/motechId"
                  type="xsd:int" visible="false()" constraint=". &gt; 999999 and . &lt; 10000000"
-                 relevant="/opvVisit/visitor = 'N'"
+                 relevant="/opvVisit/registered = 'Y'"
                  message="MoTeCH ID must be 7 digits long" required="true()"/>
         <xf:bind action="show" constraint=". &lt;= 'today()'" id="dateOfBirth"
                  message="Invalid birthDate: birthDate specified is in the future" nodeset="/opvVisit/dateOfBirth"
-                 required="true()" relevant="/opvVisit/visitor = 'Y'" type="xsd:date" visible="false()"/>
+                 required="true()" relevant="/opvVisit/registered = 'N'" type="xsd:date" visible="false()"/>
         <xf:bind action="show" id="gender"
                  message="Gender is Mandatory" nodeset="/opvVisit/gender"
-                 required="true()" relevant="/opvVisit/visitor = 'Y'" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="insured" nodeset="/opvVisit/insured" required="true()" relevant="/opvVisit/visitor = 'Y'" type="xsd:string" visible="false()"/>
+                 required="true()" relevant="/opvVisit/registered = 'N'" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="insured" nodeset="/opvVisit/insured" required="true()" relevant="/opvVisit/registered = 'N'" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="nhis" nodeset="/opvVisit/nhis"
-                 relevant="/opvVisit/visitor = 'Y' and /opvVisit/insured = 'Y'" type="xsd:string" visible="false()"
-                 required="true()"/>
+                 relevant="/opvVisit/registered = 'N' and /opvVisit/insured = 'Y'" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="nhisExpires" nodeset="/opvVisit/nhisExpires"
-                 relevant="/opvVisit/visitor = 'Y' and /opvVisit/insured = 'Y'" type="xsd:date" visible="false()"
-                 required="true()"/>
+                 relevant="/opvVisit/registered = 'N' and /opvVisit/insured = 'Y'" type="xsd:date" visible="false()"/>
         <xf:bind id="newCase" nodeset="/opvVisit/newCase" required="true()" type="xsd:string"/>
         <xf:bind id="newPatient" nodeset="/opvVisit/newPatient" required="true()" type="xsd:string"/>
         <xf:bind id="diagnosis" nodeset="/opvVisit/diagnosis" required="true()" type="xsd:string"/>
@@ -111,8 +109,8 @@
                 <xf:value>OTHER</xf:value>
             </xf:item>
         </xf:select1>
-        <xf:select1 bind="visitor">
-            <xf:label>Visitor</xf:label>
+        <xf:select1 bind="registered">
+            <xf:label>Registered</xf:label>
             <xf:item id="Y">
                 <xf:label>Yes</xf:label>
                 <xf:value>Y</xf:value>
