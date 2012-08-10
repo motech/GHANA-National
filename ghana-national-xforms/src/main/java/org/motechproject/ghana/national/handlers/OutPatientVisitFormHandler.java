@@ -53,7 +53,7 @@ public class OutPatientVisitFormHandler{
                 persistInMRS(outPatientVisitForm);
             }
         } catch (Exception e) {
-            log.error("Exception occurred while processing Outpatient Visit form", e);
+            log.error("Exception occurred while processing Outpatient Visit form for patientId:"+outPatientVisitForm.getMotechId(), e);
             throw new XFormHandlerException("Exception occurred while processing Outpatient Visit form", e);
         }
     }

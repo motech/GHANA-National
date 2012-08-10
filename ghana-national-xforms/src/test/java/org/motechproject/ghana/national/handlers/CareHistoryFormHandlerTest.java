@@ -72,13 +72,16 @@ public class CareHistoryFormHandlerTest {
     public void shouldLogErrorIncaseOfErrorWhileProcessing() {
         careHistoryFormHandler.log = mock(Logger.class);
         MotechException mockError = mock(MotechException.class);
+        String motechId = "motechId";
         when(mockFacilityService.getFacilityByMotechId(anyString())).thenThrow(mockError);
         try {
-        careHistoryFormHandler.handleFormEvent(new CareHistoryForm());
+            CareHistoryForm careHistoryForm=new CareHistoryForm();
+            careHistoryForm.setMotechId(motechId);
+            careHistoryFormHandler.handleFormEvent(careHistoryForm);
         } catch (XFormHandlerException e) {
             //expected
         }
-        verify(careHistoryFormHandler.log).error("Encountered error while processing care history form", mockError);
+        verify(careHistoryFormHandler.log).error("Encountered error while processing care history form for patientId:"+motechId, mockError);
     }
 
     public static void assertCareHistoryDetails(CareHistoryVO careHistoryVO, CareHistoryForm careHistoryForm, String facilityId) {

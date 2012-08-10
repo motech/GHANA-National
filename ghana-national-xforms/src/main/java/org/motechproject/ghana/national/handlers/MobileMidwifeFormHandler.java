@@ -29,7 +29,7 @@ public class MobileMidwifeFormHandler{
 
             mobileMidwifeService.register(mobileMidwifeForm.createMobileMidwifeEnrollment());
         } catch (Exception e) {
-            log.error("Exception occurred while processing Mobile Midwife form", e);
+            log.error("Exception occurred while processing Mobile Midwife form for patientId:"+mobileMidwifeForm.getMotechId(), e);
             throw new XFormHandlerException("Exception occurred while processing Mobile Midwife form", e);
         }
     }

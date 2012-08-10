@@ -41,7 +41,7 @@ public class ANCVisitFormHandler{
             ANCVisitRequest ancVisit = createANCVisit(ancVisitForm);
             visitService.registerANCVisit(ancVisit);
         } catch (Exception e) {
-            log.error("Encountered error while processing ANC visit form", e);
+            log.error("Encountered error while processing ANC visit form for patientId:"+ancVisitForm.getMotechId(), e);
             throw new XFormHandlerException("Encountered error while processing ANC visit form", e);
         }
     }

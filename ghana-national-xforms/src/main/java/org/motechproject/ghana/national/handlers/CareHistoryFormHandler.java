@@ -30,7 +30,7 @@ public class CareHistoryFormHandler{
             String facilityId = facilityService.getFacilityByMotechId(careHistoryForm.getFacilityId()).getMrsFacilityId();
             careService.addCareHistory(careHistoryForm.careHistoryVO(facilityId));
         } catch (Exception e) {
-            log.error("Encountered error while processing care history form", e);
+            log.error("Encountered error while processing care history form for patientId:"+careHistoryForm.getMotechId(), e);
             throw new XFormHandlerException("Encountered error while processing care history form", e);
         }
     }

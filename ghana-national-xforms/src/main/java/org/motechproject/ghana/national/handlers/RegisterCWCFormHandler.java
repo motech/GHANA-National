@@ -61,7 +61,7 @@ public class RegisterCWCFormHandler{
                 mobileMidwifeService.register(mobileMidwifeEnrollment);
             }
         } catch (Exception e) {
-            log.error("Exception occurred while processing CWC Registration form", e);
+            log.error("Exception occurred while processing CWC Registration form for patientId:"+registerCWCForm.getMotechId(), e);
             throw new XFormHandlerException("Exception occurred while processing CWC Registration form", e);
         }
     }

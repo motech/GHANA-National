@@ -40,11 +40,14 @@ public class ClientDeathFormHandlerTest {
     @Test
     public void shouldRethrowException() throws PatientNotFoundException {
         doThrow(new RuntimeException()).when(mockPatientService).deceasePatient(Matchers.<Date>any(), anyString(), anyString(), anyString());
+        String motechId = "motechId";
         try {
-            clientDeathFormHandler.handleFormEvent(new ClientDeathForm());
+            ClientDeathForm clientDeathForm = new ClientDeathForm();
+            clientDeathForm.setMotechId(motechId);
+            clientDeathFormHandler.handleFormEvent(clientDeathForm);
             fail("Should handle exception");
         } catch (XFormHandlerException e) {
-            assertThat(e.getMessage(), is("Encountered error while processing client death form"));
+            assertThat(e.getMessage(), is("Encountered error while processing client death form for patientId:"+motechId));
         }
     }
 

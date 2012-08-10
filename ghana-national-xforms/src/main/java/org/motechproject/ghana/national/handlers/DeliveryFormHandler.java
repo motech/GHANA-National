@@ -56,7 +56,7 @@ public class DeliveryFormHandler {
             }
 
         } catch (Exception e) {
-            log.error("Encountered error while processing delivery form", e);
+            log.error("Encountered error while processing delivery form for patientId:"+deliveryForm.getMotechId(), e);
             throw new XFormHandlerException("Encountered error while processing delivery form", e);
         }
     }

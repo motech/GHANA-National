@@ -52,7 +52,7 @@ public class DeliveryNotificationFormHandler{
                     deliveryTime.toDate(), new HashSet<MRSObservation>());
             sendDeliveryNotificationMessage(deliveryNotificationForm.getMotechId(), deliveryTime);
         } catch (Exception e) {
-            log.error("Exception occurred while processing Delivery Notification form", e);
+            log.error("Exception occurred while processing Delivery Notification form for patientId:"+deliveryNotificationForm.getMotechId(), e);
             throw new XFormHandlerException("Exception occurred while processing Delivery Notification form", e);
         }
     }

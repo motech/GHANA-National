@@ -36,7 +36,7 @@ public class CWCVisitFormHandler{
         try {
             childVisitService.save(cwcVisitFor(cwcVisitForm));
         } catch (Exception e) {
-            log.error("Encountered error while processing CWC visit form", e);
+            log.error("Encountered error while processing CWC visit form for patientId:"+cwcVisitForm.getMotechId(), e);
             throw new XFormHandlerException("Encountered error while processing CWC visit form", e);
         }
     }

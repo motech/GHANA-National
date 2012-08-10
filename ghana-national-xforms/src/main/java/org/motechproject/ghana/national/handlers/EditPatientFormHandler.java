@@ -43,7 +43,7 @@ public class EditPatientFormHandler{
         try {
             patientService.updatePatient(preparePatient(editClientForm), editClientForm.getStaffId(), editClientForm.getDate());
         } catch (Exception e) {
-            log.error("Encountered exception processing edit patient form", e);
+            log.error("Encountered exception processing edit patient form for patientId:"+editClientForm.getMotechId(), e);
             throw new XFormHandlerException("Encountered exception processing edit patient form", e);
         }
     }

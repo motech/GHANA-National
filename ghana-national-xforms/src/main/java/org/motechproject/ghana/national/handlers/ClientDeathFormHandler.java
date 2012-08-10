@@ -32,7 +32,7 @@ public class ClientDeathFormHandler{
         }
         catch (Exception e) {
             log.error("Encountered error while processing client death form", e);
-            throw new XFormHandlerException("Encountered error while processing client death form", e);
+            throw new XFormHandlerException("Encountered error while processing client death form for patientId:"+clientDeathForm.getMotechId(), e);
         }
 
     }
