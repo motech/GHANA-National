@@ -16,6 +16,7 @@ import java.util.HashMap;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
@@ -98,6 +99,29 @@ public class ScheduleHandlerTest {
     public void shouldHandleOtherOPVVaccinationSchedules(){
         fireScheduleHandler(event(CWC_OPV_OTHERS.getName()));
         verify(careScheduleHandler).handleOpvVaccinationAlert(Matchers.<MilestoneEvent>any());
+    }
+
+    @Test
+    public void shouldHandlePNCChildSchedules(){
+        fireScheduleHandler(event(PNC_CHILD_1.getName()));
+        verify(careScheduleHandler).handlePNCChildAlert(Matchers.<MilestoneEvent>any());
+        reset(careScheduleHandler);
+        fireScheduleHandler(event(PNC_CHILD_2.getName()));
+        verify(careScheduleHandler).handlePNCChildAlert(Matchers.<MilestoneEvent>any());
+        reset(careScheduleHandler);
+        fireScheduleHandler(event(PNC_CHILD_3.getName()));
+        verify(careScheduleHandler).handlePNCChildAlert(Matchers.<MilestoneEvent>any());
+    }
+    @Test
+    public void shouldHandlePNCMotherSchedules(){
+        fireScheduleHandler(event(PNC_MOTHER_1.getName()));
+        verify(careScheduleHandler).handlePNCMotherAlert(Matchers.<MilestoneEvent>any());
+        reset(careScheduleHandler);
+        fireScheduleHandler(event(PNC_MOTHER_1.getName()));
+        verify(careScheduleHandler).handlePNCMotherAlert(Matchers.<MilestoneEvent>any());
+        reset(careScheduleHandler);
+        fireScheduleHandler(event(PNC_MOTHER_1.getName()));
+        verify(careScheduleHandler).handlePNCMotherAlert(Matchers.<MilestoneEvent>any());
     }
 
     @Test

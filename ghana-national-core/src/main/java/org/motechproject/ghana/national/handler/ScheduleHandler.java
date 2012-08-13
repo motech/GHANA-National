@@ -57,10 +57,10 @@ public class ScheduleHandler {
     }
 
     private boolean isPNCChildSchedule(String scheduleName) {
-        return scheduleName.equals(PNC_CHILD_1) || scheduleName.equals(PNC_CHILD_2) || scheduleName.equals(PNC_CHILD_3);
+        return scheduleName.equals(PNC_CHILD_1.getName()) || scheduleName.equals(PNC_CHILD_2.getName()) || scheduleName.equals(PNC_CHILD_3.getName());
     }
 
     private boolean isPNCMotherSchedule(String scheduleName) {
-        return scheduleName.equals(PNC_MOTHER_1) || scheduleName.equals(PNC_MOTHER_2) || scheduleName.equals(PNC_MOTHER_3);
+        return scheduleName.equals(PNC_MOTHER_1.getName()) || scheduleName.equals(PNC_MOTHER_2.getName()) || scheduleName.equals(PNC_MOTHER_3.getName());
     }
 }
