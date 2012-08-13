@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.messagegateway.repositories;
 
+import ch.lambdaj.group.Group;
 import org.motechproject.ghana.national.messagegateway.domain.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,8 @@ import java.sql.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static ch.lambdaj.Lambda.*;
 
 public class EnhancedJdbcMessageStore extends JdbcMessageStore implements Store {
     private Logger logger = LoggerFactory.getLogger(MessageStore.class);
@@ -101,7 +104,7 @@ public class EnhancedJdbcMessageStore extends JdbcMessageStore implements Store 
     }
 
     public Iterator<MessageGroup> iterator() {
-        final Iterator<MessageGroup> iterator = jdbcTemplate.query(getQuery(LIST_MESSAGES_AND_GROUP_INFO),
+        final List<MessageGroup> allMessages = jdbcTemplate.query(getQuery(LIST_MESSAGES_AND_GROUP_INFO),
                 new Object[]{region}, new RowMapper<MessageGroup>() {
             @Override
             public MessageGroup mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -115,21 +118,35 @@ public class EnhancedJdbcMessageStore extends JdbcMessageStore implements Store 
                 messageGroup.setLastReleasedMessageSequenceNumber(resultSet.getInt("LAST_RELEASED_SEQUENCE"));
                 return messageGroup;
             }
-        }).iterator();
+        });
+
+        final Iterator<MessageGroup> messagesByGroupIterator = groupByMessageGroupId(allMessages).iterator();
 
         return new Iterator<MessageGroup>() {
             public boolean hasNext() {
-                return iterator.hasNext();
+                return messagesByGroupIterator.hasNext();
             }
 
             public MessageGroup next() {
-                return iterator.next();
+                return messagesByGroupIterator.next();
             }
 
             public void remove() {
                 throw new UnsupportedOperationException("Cannot remove MessageGroup from this iterator.");
             }
         };
+    }
+
+    List<MessageGroup> groupByMessageGroupId(List<MessageGroup> messages) {
+        Group<MessageGroup> group = group(messages, by(on(SimpleMessageGroup.class).getGroupId()));
+        List<MessageGroup> messageGroups = new ArrayList<>();
+        for (String groupKey : group.keySet()) {
+            List<MessageGroup> groups = group.find(groupKey);
+            List<Message<?>> allMessagesInGroup = flatten(extract(groups, on(MessageGroup.class).getMessages()));
+            messageGroups.add(new SimpleMessageGroup(allMessagesInGroup, groupKey));
+
+        }
+        return messageGroups;
     }
 
     public MessageGroup getMessageGroup(Object groupId) {
