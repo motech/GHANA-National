@@ -131,14 +131,9 @@ public class MobileMidwifeWeekCalculator {
         @Override
         public Boolean isEnded(String messageKey) {
             String campaignName = MobileMidwifeCampaign.getName(ServiceType.PREGNANCY, Medium.VOICE);
-            String weekNum = getWeek(campaignName);
-            if (weekNum.equals(messageKey)) {
-                return Boolean.TRUE;
-            }
-            return Boolean.FALSE;
+            Integer weekNum = Integer.parseInt(getWeek(campaignName));
+            return (Integer.parseInt(messageKey) >= weekNum);
         }
-
-
     }
 
     class ChildVoiceCampaign extends VoiceCampaign {
@@ -150,11 +145,8 @@ public class MobileMidwifeWeekCalculator {
         @Override
         public Boolean isEnded(String messageKey) {
             String campaignName = MobileMidwifeCampaign.getName(ServiceType.CHILD_CARE, Medium.VOICE);
-            String weekNum = getWeek(campaignName);
-            if (weekNum.equals(messageKey)) {
-                return Boolean.TRUE;
-            }
-            return Boolean.FALSE;
+            Integer weekNum = Integer.parseInt(getWeek(campaignName));
+            return (Integer.parseInt(messageKey) >= weekNum);
         }
     }
 

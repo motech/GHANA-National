@@ -29,7 +29,7 @@ public class AllMotechModuleOutPatientVisits {
     }
 
     private String changeGenderFormat(String couchValue) {
-        return couchValue.equals("M") ? "MALE" : "FEMALE";
+        return (couchValue == null) ? null : (couchValue.equals("M") ? "MALE" : "FEMALE");
     }
 
     private Integer booleanToInt(Boolean couchValue) {
