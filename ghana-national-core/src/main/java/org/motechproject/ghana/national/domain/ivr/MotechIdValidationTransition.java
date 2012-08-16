@@ -87,13 +87,14 @@ public class MotechIdValidationTransition extends Transition {
 
     @Override
     public Node getDestinationNode(String input, FlowSession session) {
+        String callerPhoneNumber = (String) session.get("From");
         try {
             if (!isValidMotechId(input)) {
-                return invalidMotechIdTransition();
+                return invalidMotechIdTransition(callerPhoneNumber);
             } else if (hasValidMobileMidwifeVoiceRegistration(input)) {
-                return playMessagesFromOutboxTree.play(input, language);
+                return playMessagesFromOutboxTree.play(input, language, callerPhoneNumber);
             } else {
-                return invalidMotechIdTransition();
+                return invalidMotechIdTransition(callerPhoneNumber);
             }
         }catch (Exception e){
             logger.error("Encountered error while validating user for IVR: " + input, e);
@@ -110,7 +111,7 @@ public class MotechIdValidationTransition extends Transition {
         });
     }
 
-    private Node invalidMotechIdTransition() {
+    private Node invalidMotechIdTransition(String callerPhoneNumber) {
         String invalidMotechIdPromptURL = ivrClipManager.urlFor(INVALID_MOTECH_ID_PROMPT.value(), valueOf(language));
         Node node = new Node();
         if (pendingRetries != 1) {
@@ -119,9 +120,9 @@ public class MotechIdValidationTransition extends Transition {
             //  node.setTransitionFinishOnKey(callCenterFinishOnKey);
             node.setTransitionNumDigits(noOfDigitsInMotechId);
             node.addTransitionPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));
-            node.addTransition("0", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language))));
-            node.addTransition("*", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language))));
-            node.addTransition("timeout", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language))));
+            node.addTransition("0", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language), callerPhoneNumber)));
+            node.addTransition("*", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language), callerPhoneNumber)));
+            node.addTransition("timeout", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language), callerPhoneNumber)));
             node.addTransition("?", this.clone(this.pendingRetries - 1));
         }
         return node;

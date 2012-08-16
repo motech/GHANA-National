@@ -41,10 +41,11 @@ public class ConnectToCallCenterTree extends Transition{
 
     @Override
     public Node getDestinationNode(String input, FlowSession session) {
-        return getAsNode(language);
+        String callerId = session.get("From");
+        return getAsNode(language, callerId);
     }
 
-    public Node getAsNode(Language language) {
+    public Node getAsNode(Language language, String callerPhoneNumber) {
         DayOfWeek dayOfWeek = DayOfWeek.getDayOfWeek(DateUtil.today().dayOfWeek().get());
         String callCenterPhoneNumber = ivrCallCenterNoMappingService.getCallCenterPhoneNumber(language, dayOfWeek, new Time(DateUtil.now().toLocalTime()));
 
@@ -53,8 +54,8 @@ public class ConnectToCallCenterTree extends Transition{
         }
 
         DialPrompt callCenterDialPrompt = new DialPrompt(callCenterPhoneNumber);
-        callCenterDialPrompt.setCallerId(callCenterPhoneNumber);
-        callCenterDialPrompt.setAction(ivrCallbackUrlBuilder.callCenterDialStatusUrl(language));
+        callCenterDialPrompt.setCallerId(callerPhoneNumber);
+        callCenterDialPrompt.setAction(ivrCallbackUrlBuilder.callCenterDialStatusUrl(language, callerPhoneNumber));
         return new Node().addPrompts(callCenterDialPrompt);
     }
 }

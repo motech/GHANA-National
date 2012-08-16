@@ -52,7 +52,7 @@ public class PlayMessagesFromOutboxTree {
     @Value("#{ghanaNationalProperties['callcenter.dtmf.finishonkey']}")
     private String callCenterFinishOnKey;
 
-    public Node play(final String motechId, final String language) {
+    public Node play(final String motechId, final String language, final String userPhoneNumber) {
         List<OutboundVoiceMessage> audioClips = allPatientsOutbox.getAudioFileNames(motechId);
         List<OutboundVoiceMessage> scheduleClips = Lambda.filter(having(on(OutboundVoiceMessage.class).getParameters(), not(hasEntry(TYPE, MOBILE_MIDWIFE.name()))), audioClips);
         List<OutboundVoiceMessage> mmClips = Lambda.filter(having(on(OutboundVoiceMessage.class).getParameters(), hasEntry(TYPE, MOBILE_MIDWIFE.name())), audioClips);
@@ -71,7 +71,7 @@ public class PlayMessagesFromOutboxTree {
         final Node mmNode = new Node();
         for (String mmClipName : mmClipNames) {
             MobileMidwifeAudioClips mobileMidwifeAudioClips = MobileMidwifeAudioClips.valueOf(mmClipName);
-            playMultipleMMClips(mobileMidwifeAudioClips.getClipNames(), mobileMidwifeAudioClips.getPromptClipNames(), mmNode, ivrClipManager, language);
+            playMultipleMMClips(mobileMidwifeAudioClips.getClipNames(), mobileMidwifeAudioClips.getPromptClipNames(), mmNode, ivrClipManager, language, userPhoneNumber);
             lastMMClipShouldHaveAnOptionToPlayThePreviousOne(mmNode, mmNode, getLastMMPrompts(mmNode));
         }
         node.addPrompts(mmNode.getPrompts().get(0));
@@ -132,7 +132,7 @@ public class PlayMessagesFromOutboxTree {
         }
     }
 
-    private void playMultipleMMClips(List<String> pendingClips, List<String> pendingPrompts, Node node, IVRClipManager ivrClipManager, String language) {
+    private void playMultipleMMClips(List<String> pendingClips, List<String> pendingPrompts, Node node, IVRClipManager ivrClipManager, String language, String userPhoneNumber) {
 
         if (CollectionUtils.isEmpty(pendingClips))
             return;
@@ -144,11 +144,11 @@ public class PlayMessagesFromOutboxTree {
 
         for (int i = 1; i < pendingClips.size(); i++) {
             Node transitionNode = new Node();
-            playMultipleMMClips(pendingClips.subList(i, pendingClips.size()), pendingPrompts.subList(i, pendingPrompts.size()), transitionNode, ivrClipManager, language);
+            playMultipleMMClips(pendingClips.subList(i, pendingClips.size()), pendingPrompts.subList(i, pendingPrompts.size()), transitionNode, ivrClipManager, language, userPhoneNumber);
             transitions.put(i + 1 + "", new Transition().setDestinationNode(transitionNode));
         }
         transitions.put("timeout", new Transition().setDestinationNode(new Node()));
-        transitions.put("?", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language))));
+        transitions.put("?", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language), userPhoneNumber)));
 
 
         rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingClips.get(0), valueOf(language))))

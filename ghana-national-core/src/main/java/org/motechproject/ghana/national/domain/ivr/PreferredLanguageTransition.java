@@ -6,7 +6,6 @@ import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
-import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.slf4j.Logger;
@@ -30,8 +29,9 @@ public class PreferredLanguageTransition extends Transition {
     @Override
     public Node getDestinationNode(String input, FlowSession session) {
         try {
-            Language language = getMobileMidwifeLanguage(input);
-            return playMessagesFromOutboxTree.play(input, language.name());
+            MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findActiveBy(trimInputForTrailingHash(input));
+            Language language = midwifeEnrollment != null ? midwifeEnrollment.getLanguage() : Language.EN;
+            return playMessagesFromOutboxTree.play(input, language.name(), midwifeEnrollment.getPhoneNumber());
         }catch (Exception e){
             logger.error("Encountered error while playing clips to the user: " + input, e);
             return new Node().addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(AudioPrompts.ERROR_ALERT.value(), EN)));
@@ -40,11 +40,6 @@ public class PreferredLanguageTransition extends Transition {
 
     private String trimInputForTrailingHash(String input) {
         return input.replaceAll("#", "");
-    }
-
-    private Language getMobileMidwifeLanguage(String patientId) {
-        MobileMidwifeEnrollment midwifeEnrollment = mobileMidwifeService.findActiveBy(trimInputForTrailingHash(patientId));
-        return midwifeEnrollment != null ? midwifeEnrollment.getLanguage() : Language.EN;
     }
 
 }
