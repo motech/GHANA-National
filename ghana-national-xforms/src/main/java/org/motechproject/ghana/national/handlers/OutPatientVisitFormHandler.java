@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.handlers;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.bean.OutPatientVisitForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.OutPatientVisit;
@@ -47,6 +48,12 @@ public class OutPatientVisitFormHandler{
     @ApiSession
     public void handleFormEvent(OutPatientVisitForm outPatientVisitForm) {
         try {
+            // TODO: Remove
+            if (StringUtils.isEmpty(outPatientVisitForm.getMotechId()) && outPatientVisitForm.isRegistered()) {
+                log.info("Ignoring OPV form with Registered = 'Y' and MotechId = null");
+                return;
+            }
+
             if (Boolean.FALSE.equals(outPatientVisitForm.isRegistered())) {
                 persist(outPatientVisitForm);
             } else {
