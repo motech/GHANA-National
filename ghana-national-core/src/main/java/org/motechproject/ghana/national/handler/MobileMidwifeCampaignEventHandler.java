@@ -70,13 +70,13 @@ public class MobileMidwifeCampaignEventHandler {
             String messageKey = mobileMidwifeWeekCalculator.getMessageKey(campaignName, campaignStartDate, startWeek, repeatInterval);
 
             if (messageKey != null) {
+                sendMessage(enrollment, messageKey);
                 if (mobileMidwifeWeekCalculator.hasProgramEnded(campaignName, messageKey)) {
                     if (enrollment.getServiceType().equals(ServiceType.PREGNANCY))
                         mobileMidwifeService.rollover(patientId, DateUtil.now().plusWeeks(1));
                     else
                         mobileMidwifeService.unRegister(patientId);
                 }
-                sendMessage(enrollment, messageKey);
             }
         } catch (Exception e) {
             logger.error("<MobileMidwifeEvent>: Encountered error while sending alert for patientId " + event.getParameters().get(EventKeys.EXTERNAL_ID_KEY) +  ": ", e);
