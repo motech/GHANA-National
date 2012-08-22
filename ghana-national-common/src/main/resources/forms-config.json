@@ -125,7 +125,7 @@
                 }
          ]
     },
-    {    "name":"RegisterMobileMidwife",
+    {    "name":"MMA forms",
          "forms":[
                  {
                          "name":"mobileMidwife",
