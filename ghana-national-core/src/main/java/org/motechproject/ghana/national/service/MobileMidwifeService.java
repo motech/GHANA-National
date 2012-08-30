@@ -3,15 +3,16 @@ package org.motechproject.ghana.national.service;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.repository.AllCampaigns;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
+import org.motechproject.ghana.national.repository.AllPatients;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.model.DayOfWeek;
-import org.motechproject.retry.dao.AllRetries;
 import org.motechproject.retry.service.RetryService;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,15 @@ public class MobileMidwifeService {
     private AllCampaigns allCampaigns;
     private AllPatientsOutbox allPatientsOutbox;
     private RetryService retryService;
+    private AllPatients allPatients;
 
     @Autowired
-    public MobileMidwifeService(AllMobileMidwifeEnrollments allEnrollments, AllCampaigns allCampaigns, AllPatientsOutbox allPatientsOutbox, RetryService retryService) {
+    public MobileMidwifeService(AllMobileMidwifeEnrollments allEnrollments, AllCampaigns allCampaigns, AllPatientsOutbox allPatientsOutbox, RetryService retryService, AllPatients allPatients) {
         this.allEnrollments = allEnrollments;
         this.allCampaigns = allCampaigns;
         this.allPatientsOutbox = allPatientsOutbox;
         this.retryService = retryService;
+        this.allPatients = allPatients;
     }
 
     public void register(MobileMidwifeEnrollment enrollment) {
@@ -81,6 +84,12 @@ public class MobileMidwifeService {
 
     public MobileMidwifeEnrollment findLatestEnrollment(String patientId) {
         return allEnrollments.findLatestEnrollment(patientId);
+    }
+
+    public MobileMidwifeEnrollment findMotherMobileMidwifeEnrollment(String motechId){
+        Patient mother = allPatients.getMother(motechId);
+        MobileMidwifeEnrollment motherMobileMidwifeEnrollment = (mother != null) ? allEnrollments.findActiveBy(mother.getMotechId()) : null;
+        return motherMobileMidwifeEnrollment;
     }
 
     public void rollover(String motechId, DateTime enrollmentDate) {

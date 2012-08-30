@@ -3,26 +3,15 @@ package org.motechproject.ghana.national.handler;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Period;
 import org.motechproject.appointments.api.EventKeys;
-import org.motechproject.ghana.national.domain.AggregationMessageIdentifier;
-import org.motechproject.ghana.national.domain.AlertDetails;
-import org.motechproject.ghana.national.domain.AlertType;
-import org.motechproject.ghana.national.domain.AlertWindow;
-import org.motechproject.ghana.national.domain.Concept;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.SMSTemplate;
-import org.motechproject.ghana.national.domain.SmsTemplateKeys;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.domain.mobilemidwife.PatientMedium;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
-import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
-import org.motechproject.ghana.national.repository.AllObservations;
-import org.motechproject.ghana.national.repository.AllPatientsOutbox;
-import org.motechproject.ghana.national.repository.SMSGateway;
-import org.motechproject.ghana.national.repository.ScheduleJsonReader;
-import org.motechproject.ghana.national.repository.VoiceGateway;
+import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.scheduler.domain.MotechEvent;
@@ -40,7 +29,7 @@ public abstract class BaseScheduleHandler {
     protected AllPatientsOutbox allPatientsOutbox;
     protected FacilityService facilityService;
     protected AllObservations allObservations;
-    protected AllMobileMidwifeEnrollments allMobileMidwifeEnrollments;
+    protected MobileMidwifeService mobileMidwifeService;
     private ScheduleJsonReader scheduleJsonReader;
 
     protected BaseScheduleHandler() {
@@ -48,7 +37,8 @@ public abstract class BaseScheduleHandler {
 
     protected BaseScheduleHandler(PatientService patientService, FacilityService facilityService, SMSGateway smsGateway,
                                   VoiceGateway voiceGateway, AllObservations allObservations,
-                                  AllMobileMidwifeEnrollments allMobileMidwifeEnrollments, AllPatientsOutbox allPatientsOutbox,
+                                  AllPatientsOutbox allPatientsOutbox,
+                                  MobileMidwifeService mobileMidwifeService,
                                   ScheduleJsonReader scheduleJsonReader) {
 
         this.patientService = patientService;
@@ -56,7 +46,7 @@ public abstract class BaseScheduleHandler {
         this.voiceGateway = voiceGateway;
         this.facilityService = facilityService;
         this.allObservations = allObservations;
-        this.allMobileMidwifeEnrollments = allMobileMidwifeEnrollments;
+        this.mobileMidwifeService = mobileMidwifeService;
         this.allPatientsOutbox = allPatientsOutbox;
         this.scheduleJsonReader = scheduleJsonReader;
     }
@@ -81,42 +71,40 @@ public abstract class BaseScheduleHandler {
     }
 
     private void dispatchPatientMessageToAggregator(String smsTemplateKey, AlertDetails alertDetails, Patient patient, AlertType alertType) {
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = allMobileMidwifeEnrollments.findActiveBy(patient.getMotechId());
-        Medium communicationMedium = getCommunicationMedium(mobileMidwifeEnrollment, Medium.SMS);
+        PatientMedium patientMedium = getCommunicationMedium(patient, Medium.SMS);
         if (dueOrLateWindow(alertDetails.getWindow())) {
-            if (Medium.SMS.equals(communicationMedium)) {
+            if (Medium.SMS.equals(patientMedium.getMedium())) {
                 String smsTemplateKeyForWindow = formatTemplateKeyForDueAndLateWindow(smsTemplateKey, alertDetails.getWindow().getPlatformWindowName());
-                dispatchSMSToAggregator(patient.getMotechId(), smsTemplateKeyForWindow, patient, alertDetails, MessageRecipientType.PATIENT);
+                dispatchSMSToAggregator(patient.getMotechId(), smsTemplateKeyForWindow, patientMedium.getPatient(), alertDetails, MessageRecipientType.PATIENT);
             } else {
                 Period messageValidity = scheduleJsonReader.validity(alertDetails.getScheduleName(), alertDetails.getMilestoneName(), alertDetails.getWindow().getPlatformWindowName());
-                dispatchVoiceMessageToAggregator(alertDetails, patient, alertType, messageValidity);
+                dispatchVoiceMessageToAggregator(alertDetails, patientMedium.getPatient(), alertType, messageValidity);
             }
         }
     }
 
     private void dispatchVoiceMessageToAggregator(AlertDetails alertDetails, Patient patient, AlertType alertType, Period messageValidity) {
         if (AlertType.CARE.equals(alertType))
-            voiceGateway.dispatchCareMsgToAggregator(AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId(), messageValidity, alertDetails.getWindow(), alertDetails.getWindowStart());
+            voiceGateway.dispatchCareMsgToAggregator(AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails, patient),     patient.getMotechId(), messageValidity, alertDetails.getWindow(), alertDetails.getWindowStart());
         else if (AlertType.APPOINTMENT.equals(alertType))
-            voiceGateway.dispatchAppointmentMsgToAggregator(AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails), patient.getMotechId(), messageValidity);
+            voiceGateway.dispatchAppointmentMsgToAggregator(AudioPrompts.fileNameForCareSchedule(alertDetails.getScheduleName(), alertDetails.getWindow()), getRecipientIdentifierForAggregation(alertDetails, patient), patient.getMotechId(), messageValidity);
     }
 
     protected void sendInstantMessageToPatient(String smsTemplateKey, final MilestoneEvent milestoneEvent, AlertType alertType) {
         AlertDetails alertDetails = AlertDetails.createFromSchedule(milestoneEvent);
 
         Patient patient = patientService.patientByOpenmrsId(alertDetails.getScheduleId());
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = allMobileMidwifeEnrollments.findActiveBy(patient.getMotechId());
-        Medium communicationMedium = getCommunicationMedium(mobileMidwifeEnrollment, Medium.SMS);
+        PatientMedium patientMedium = getCommunicationMedium(patient, Medium.SMS);
         if (dueOrLateWindow(alertDetails.getWindow())) {
-            if (Medium.SMS.equals(communicationMedium)) {
-                String phoneNumber = patient.receiveSMSOnPhoneNumber(mobileMidwifeEnrollment);
+            if (Medium.SMS.equals(patientMedium.getMedium())) {
+                String phoneNumber = patientService.receiveSMSOnPhoneNumber(patient.getMotechId());
                 if (StringUtils.isNotBlank(phoneNumber)) {
                     String smsTemplateKeyForWindow = formatTemplateKeyForDueAndLateWindow(smsTemplateKey, alertDetails.getWindow().getPlatformWindowName());
                     smsGateway.dispatchSMS(smsTemplateKeyForWindow, patientDetailsMap(patient, alertDetails.getWindow().getName(), alertDetails.getMilestoneName(), null), phoneNumber);
                 }
             } else {
                 Period messageValidity = scheduleJsonReader.validity(alertDetails.getScheduleName(), alertDetails.getMilestoneName(), alertDetails.getWindow().getPlatformWindowName());
-                placeVoiceMessageIntoOutbox(alertDetails, patient, messageValidity, alertType);
+                placeVoiceMessageIntoOutbox(alertDetails, patientMedium.getPatient(), messageValidity, alertType);
             }
         }
     }
@@ -147,25 +135,33 @@ public abstract class BaseScheduleHandler {
         }
     }
 
-    private Medium getCommunicationMedium(MobileMidwifeEnrollment mobileMidwifeEnrollment, Medium defaultMedium) {
+    protected PatientMedium getCommunicationMedium(Patient patient, Medium defaultMedium) {
+        PatientMedium patientMedium =new PatientMedium(patient,defaultMedium);
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeService.findActiveBy(patient.getMotechId());
         if (mobileMidwifeEnrollment != null) {
-            return mobileMidwifeEnrollment.getMedium();
+            patientMedium = new PatientMedium(patient, mobileMidwifeEnrollment.getMedium());
+        } else {
+            mobileMidwifeEnrollment = mobileMidwifeService.findMotherMobileMidwifeEnrollment(patient.getMotechId());
+            if (mobileMidwifeEnrollment != null) {
+                Patient mother = patientService.getMother(patient.getMotechId());
+                patientMedium = new PatientMedium(mother, mobileMidwifeEnrollment.getMedium());
+            }
         }
-        return defaultMedium;
+        return patientMedium;
     }
 
     private void dispatchSMSToAggregator(String motechId, String smsTemplateKey, Patient patient, AlertDetails alertDetails,
                                          MessageRecipientType messageRecipientType) {
 
         String serialNumber = getSerialNumber(patient);
-        String smsIdentifier = getRecipientIdentifierForAggregation(alertDetails);
+        String smsIdentifier = getRecipientIdentifierForAggregation(alertDetails, patient);
 
         smsGateway.dispatchSMSToAggregator(smsTemplateKey, patientDetailsMap(patient, alertDetails.getWindow().getName(),
                 alertDetails.getMilestoneName(), serialNumber), motechId, smsIdentifier, messageRecipientType);
     }
 
-    private String getRecipientIdentifierForAggregation(AlertDetails alertDetails) {
-        return new AggregationMessageIdentifier(alertDetails.getScheduleId(), alertDetails.getScheduleName()).getIdentifier();
+    private String getRecipientIdentifierForAggregation(AlertDetails alertDetails, Patient patient) {
+        return new AggregationMessageIdentifier(patient.getMRSPatientId(), alertDetails.getScheduleName()).getIdentifier();
     }
 
 

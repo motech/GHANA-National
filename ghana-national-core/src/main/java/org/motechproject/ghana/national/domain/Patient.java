@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.care.*;
-import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.vo.CWCCareHistoryVO;
 import org.motechproject.ghana.national.vo.ChildCare;
 import org.motechproject.mrs.model.MRSPatient;
@@ -250,10 +249,5 @@ public class Patient {
     }
 
 
-    public String receiveSMSOnPhoneNumber(MobileMidwifeEnrollment mobileMidwifeEnrollment) {
-        if (mobileMidwifeEnrollment != null) {
-            return mobileMidwifeEnrollment.getPhoneNumber();
-        }
-        return getPhoneNumber();
-    }
+
 }

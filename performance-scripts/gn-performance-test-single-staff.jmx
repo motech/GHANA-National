@@ -41,7 +41,7 @@
           </elementProp>
           <elementProp name="forms_to_be_tested" elementType="Argument">
             <stringProp name="Argument.name">forms_to_be_tested</stringProp>
-            <stringProp name="Argument.value">RegisterClient-other,RegisterANC,ANCVisit</stringProp>
+            <stringProp name="Argument.value">RegisterClient-other</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">RegisterClient-other,RegisterANC,RegisterClient-WithANCAndMMSMS,RegisterClient-WithANCAndMMVoice,RegisterCWC,RegisterClient-WithCWCAndMM,CareHistory-ANC,ClientQuery,GeneralQuery,ANCVisit</stringProp>
           </elementProp>
@@ -57,17 +57,17 @@
           </elementProp>
           <elementProp name="host" elementType="Argument">
             <stringProp name="Argument.name">host</stringProp>
-            <stringProp name="Argument.value">10.16.3.174</stringProp>
+            <stringProp name="Argument.value">localhost</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="port" elementType="Argument">
             <stringProp name="Argument.name">port</stringProp>
-            <stringProp name="Argument.value">80</stringProp>
+            <stringProp name="Argument.value">8080</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="openmrs_port" elementType="Argument">
             <stringProp name="Argument.name">openmrs_port</stringProp>
-            <stringProp name="Argument.value">80</stringProp>
+            <stringProp name="Argument.value">7000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="openmrs_username" elementType="Argument">
@@ -87,12 +87,12 @@
           </elementProp>
           <elementProp name="function_test_module_jar_loc" elementType="Argument">
             <stringProp name="Argument.name">function_test_module_jar_loc</stringProp>
-            <stringProp name="Argument.value">/Users/arvindkumarc/Public/Projects/ghana-national-regression/target/ghana-national-regression-1.0-SNAPSHOT.jar</stringProp>
+            <stringProp name="Argument.value">/Users/sanjanabayya/Projects/ghana-national-regression/target/ghana-national-regression-1.0-SNAPSHOT.jar</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="epi_handy_jar_loc" elementType="Argument">
             <stringProp name="Argument.name">epi_handy_jar_loc</stringProp>
-            <stringProp name="Argument.value">/Users/arvindkumarc/Public/Projects/ghana-national-regression/target/lib/epihandy-midp.jar</stringProp>
+            <stringProp name="Argument.value">/Users/sanjanabayya/Projects/ghana-national-regression/target/lib/epihandy-midp.jar</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -650,8 +650,8 @@ for(int flwIndex=0; flwIndex &lt; Integer.parseInt(vars.get(&quot;no_of_field_wo
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
             <collectionProp name="HTTPFileArgs.files">
-              <elementProp name="${temp_dir}/request_${__threadNum()}_0" elementType="HTTPFileArg">
-                <stringProp name="File.path">${temp_dir}/request_${__threadNum()}_0</stringProp>
+              <elementProp name="${temp_dir}/request_${__threadNum()}" elementType="HTTPFileArg">
+                <stringProp name="File.path">${temp_dir}/request_${__threadNum()}</stringProp>
                 <stringProp name="File.paramname"></stringProp>
                 <stringProp name="File.mimetype"></stringProp>
               </elementProp>
@@ -740,6 +740,7 @@ prev.setResponseData(result);</stringProp>
             </value>
           </objProp>
           <stringProp name="filename"></stringProp>
+          <boolProp name="ResultCollector.success_only_logging">true</boolProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>

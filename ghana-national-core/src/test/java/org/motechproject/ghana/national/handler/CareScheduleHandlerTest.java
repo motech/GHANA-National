@@ -12,6 +12,7 @@ import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.repository.ScheduleJsonReader;
 import org.motechproject.ghana.national.repository.VoiceGateway;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
@@ -67,12 +68,14 @@ public class CareScheduleHandlerTest {
     private AllPatientsOutbox mockAllPatientsOutbox;
     @Mock
     private ScheduleJsonReader mockScheduleJsoneReader;
+    @Mock
+    private MobileMidwifeService mockMobileMidwifeService;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
         careScheduleHandlerSpy = spy(new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSmsGateway,
-                mockVoiceGateway, mockAllObservations, mockAllMobileMidwifeEnrollments, mockAllPatientsOutbox, mockScheduleJsoneReader));
+                mockVoiceGateway, mockAllObservations, mockAllPatientsOutbox, mockMobileMidwifeService, mockScheduleJsoneReader));
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToFacility(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendAggregatedMessageToPatient(Matchers.<String>any(), Matchers.<MilestoneEvent>any());
         doNothing().when(careScheduleHandlerSpy).sendAggregatedSMSToPatientForAppointment(Matchers.<String>any(), Matchers.<MotechEvent>any());

@@ -48,9 +48,6 @@ public class AggregationStrategyImplTest extends BaseUnitTest {
     @Mock
     private PatientService mockPatientService;
 
-    @Mock
-    private AllMobileMidwifeEnrollments mockAllMobileMidwifeEnrollments;
-
     @Before
     public void setUp() throws Exception {
         initMocks(this);
@@ -128,7 +125,7 @@ public class AggregationStrategyImplTest extends BaseUnitTest {
         final String motechId = "motechId";
         String phoneNumber = "PhoneNumber";
         when(mockPatientService.getPatientByMotechId(motechId)).thenReturn(new Patient(new MRSPatient(motechId, new MRSPerson().addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), phoneNumber)), null)));
-        when(mockAllMobileMidwifeEnrollments.findActiveBy(motechId)).thenReturn(null);
+        when(mockPatientService.receiveSMSOnPhoneNumber(motechId)).thenReturn(phoneNumber);
 
         List<Payload> messagesList = new ArrayList<Payload>() {{
             add(SMSPayload.fromText(message1, motechId, null, null, MessageRecipientType.PATIENT));

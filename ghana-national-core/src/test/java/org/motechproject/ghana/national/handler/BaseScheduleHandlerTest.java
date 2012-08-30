@@ -8,31 +8,18 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.EventKeys;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
-import org.motechproject.ghana.national.domain.AggregationMessageIdentifier;
-import org.motechproject.ghana.national.domain.AlertType;
-import org.motechproject.ghana.national.domain.AlertWindow;
-import org.motechproject.ghana.national.domain.Concept;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.PatientAttributes;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.domain.mobilemidwife.PatientMedium;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
-import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
-import org.motechproject.ghana.national.repository.AllObservations;
-import org.motechproject.ghana.national.repository.AllPatientsOutbox;
-import org.motechproject.ghana.national.repository.SMSGateway;
-import org.motechproject.ghana.national.repository.ScheduleJsonReader;
-import org.motechproject.ghana.national.repository.VoiceGateway;
+import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.mrs.model.Attribute;
-import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.model.MRSObservation;
-import org.motechproject.mrs.model.MRSPatient;
-import org.motechproject.mrs.model.MRSPerson;
+import org.motechproject.mrs.model.*;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.scheduletracking.api.domain.Milestone;
@@ -47,28 +34,16 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FIRST_NAME;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.LAST_NAME;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.MILESTONE_NAME;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.MOTECH_ID;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.SERIAL_NUMBER;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.WINDOW;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
 import static org.motechproject.ghana.national.domain.SMSTemplateTest.assertContainsTemplateValues;
-import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_DUE_SMS_KEY;
-import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_IPT;
-import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_LATE_SMS_KEY;
-import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_PNC_BABY;
-import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PNC_CHILD_SMS_KEY;
-import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PREGNANCY_ALERT_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.*;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.now;
 
@@ -87,9 +62,8 @@ public class BaseScheduleHandlerTest {
     @Mock
     private AllPatientsOutbox mockAllPatientsOutbox;
 
-    @Mock
-    private AllMobileMidwifeEnrollments mockAllMobileMidwifeEnrollments;
-
+   @Mock
+   private MobileMidwifeService mockMobileMidwifeService;
     private CareScheduleAlerts careScheduleHandler;
     @Mock
     private ScheduleJsonReader mockScheduleJsonReader;
@@ -98,7 +72,7 @@ public class BaseScheduleHandlerTest {
     public void setUp() throws Exception {
         initMocks(this);
         careScheduleHandler = new CareScheduleAlerts(mockPatientService, mockFacilityService, mockSMSGateway, mockVoiceGateway,
-                mockAllObservations, mockAllMobileMidwifeEnrollments, mockAllPatientsOutbox, mockScheduleJsonReader);
+                mockAllObservations, mockAllPatientsOutbox, mockMobileMidwifeService, mockScheduleJsonReader);
     }
 
     @Test
@@ -106,6 +80,7 @@ public class BaseScheduleHandlerTest {
         String ancVisitKey = "ancVisitKey";
         final String facilityId = "facilityid";
         final String patientId = "patientmotechid";
+        final String patientMRSId = "patientMRSid";
         final String firstName = "firstName";
         final String lastname = "lastname";
         final String visitName = "ancVisit";
@@ -116,7 +91,7 @@ public class BaseScheduleHandlerTest {
         parameters.put(MotechSchedulerService.JOB_ID_KEY, visitName + "3");
 
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(1999, 3, 3).toDate());
-        when(mockPatientService.getPatientByMotechId(patientId)).thenReturn(new Patient(new MRSPatient(patientId, person, new MRSFacility(facilityId))));
+        when(mockPatientService.getPatientByMotechId(patientId)).thenReturn(new Patient(new MRSPatient(patientMRSId,patientId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
         String additionalPhone = "addPhone";
@@ -127,7 +102,7 @@ public class BaseScheduleHandlerTest {
 
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(mockSMSGateway).dispatchSMSToAggregator(eq(ancVisitKey), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientId, visitName).getIdentifier()), eq(MessageRecipientType.FACILITY));
+        verify(mockSMSGateway).dispatchSMSToAggregator(eq(ancVisitKey), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientMRSId, visitName).getIdentifier()), eq(MessageRecipientType.FACILITY));
 
         String actualUniqueId = captor.getValue();
         assertEquals(facility.getMotechId(), actualUniqueId);
@@ -158,6 +133,7 @@ public class BaseScheduleHandlerTest {
     @Test
     public void shouldSendAggregatedSMSToPatientForANCAppointmentUsingPatientContactNumberIfNotRegisteredToMM() {
         final String patientMotechId = "patientmotechid";
+        final String patientMRSId = "patientMRSid";
         final String firstName = "firstName";
         final String lastName = "lastname";
         final String serialNumber = "serialNumber";
@@ -169,13 +145,13 @@ public class BaseScheduleHandlerTest {
         parameters.put(MotechSchedulerService.JOB_ID_KEY, visitName + "3");
 
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastName).dateOfBirth(newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
-        when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123"))));
+        when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(new Patient(new MRSPatient(patientMRSId,patientMotechId, person, new MRSFacility("123"))));
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
         careScheduleHandler.sendAggregatedSMSToPatientForAppointment(PATIENT_IPT, new MotechEvent("subject", parameters));
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(mockSMSGateway).dispatchSMSToAggregator(eq(PATIENT_IPT + PATIENT_LATE_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientMotechId, visitName).getIdentifier()), eq(MessageRecipientType.PATIENT));
+        verify(mockSMSGateway).dispatchSMSToAggregator(eq(PATIENT_IPT + PATIENT_LATE_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientMRSId, visitName).getIdentifier()), eq(MessageRecipientType.PATIENT));
 
         assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, patientMotechId);
@@ -191,6 +167,7 @@ public class BaseScheduleHandlerTest {
     @Test
     public void shouldSendAggregatedSMSToPatientForAppointmentsMobileMidWifeRegisteredPhoneNumber() {
         final String patientMotechId = "patientmotechid";
+        final String patientMRSId = "patientMRSid";
         final String firstName = "firstName";
         final String lastname = "lastname";
         final String serialNumber = "serialNumber";
@@ -202,16 +179,16 @@ public class BaseScheduleHandlerTest {
         parameters.put(EventKeys.VISIT_NAME, visitName);
         parameters.put(MotechSchedulerService.JOB_ID_KEY, visitName + "3");
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
-        when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123"))));
+        when(mockPatientService.getPatientByMotechId(patientMotechId)).thenReturn(new Patient(new MRSPatient(patientMRSId,patientMotechId, person, new MRSFacility("123"))));
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setMedium(Medium.SMS).setPhoneNumber(mmRegisteredPhoneNumber);
-        when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(enrollment);
+        when(mockMobileMidwifeService.findActiveBy(patientMotechId)).thenReturn(enrollment);
 
         careScheduleHandler.sendAggregatedSMSToPatientForAppointment(PATIENT_IPT, new MotechEvent("subject", parameters));
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(mockSMSGateway).dispatchSMSToAggregator(eq(PATIENT_IPT + PATIENT_LATE_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientMotechId, visitName).getIdentifier()), eq(MessageRecipientType.PATIENT));
+        verify(mockSMSGateway).dispatchSMSToAggregator(eq(PATIENT_IPT + PATIENT_LATE_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientMRSId, visitName).getIdentifier()), eq(MessageRecipientType.PATIENT));
 
         assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, patientMotechId);
@@ -228,6 +205,7 @@ public class BaseScheduleHandlerTest {
     @Test
     public void shouldSendAggregatedSMSToPatientUsingPatientContactNumberIfNotRegisteredToMM() {
         final String patientId = "patientid";
+        final String patientMRSId = "patientMRSid";
         final String windowName = WindowName.due.name();
         final String scheduleName = "edd";
         final String milestoneName = "milestone1";
@@ -239,14 +217,14 @@ public class BaseScheduleHandlerTest {
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
         String patientPhoneNumber = "123456";
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
-        when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123"))));
+        when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMRSId,patientMotechId, person, new MRSFacility("123"))));
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
 
         careScheduleHandler.sendAggregatedMessageToPatient(PATIENT_IPT, milestoneEvent);
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(mockSMSGateway).dispatchSMSToAggregator(eq(PATIENT_IPT + PATIENT_DUE_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientId, scheduleName).getIdentifier()), eq(MessageRecipientType.PATIENT));
+        verify(mockSMSGateway).dispatchSMSToAggregator(eq(PATIENT_IPT + PATIENT_DUE_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientMRSId, scheduleName).getIdentifier()), eq(MessageRecipientType.PATIENT));
 
         assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, patientMotechId);
@@ -267,6 +245,7 @@ public class BaseScheduleHandlerTest {
         final String scheduleName = "edd";
         final String milestoneName = "milestone1";
         final String patientMotechId = "patientmotechid";
+        final String patientMRSId = "patientMRSid";
         final String firstName = "firstName";
         final String lastname = "lastname";
         final String serialNumber = "serialNumber";
@@ -275,16 +254,16 @@ public class BaseScheduleHandlerTest {
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
-        when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123"))));
+        when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMRSId,patientMotechId, person, new MRSFacility("123"))));
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
         MobileMidwifeEnrollment enrollment = new MobileMidwifeEnrollment(now()).setMedium(Medium.SMS).setPhoneNumber(mmRegisteredPhoneNumber);
-        when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(enrollment);
+        when(mockMobileMidwifeService.findActiveBy(patientMotechId)).thenReturn(enrollment);
 
         careScheduleHandler.sendAggregatedMessageToPatient(PATIENT_IPT, milestoneEvent);
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(mockSMSGateway).dispatchSMSToAggregator(eq(PATIENT_IPT + PATIENT_LATE_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientId, scheduleName).getIdentifier()), eq(MessageRecipientType.PATIENT));
+        verify(mockSMSGateway).dispatchSMSToAggregator(eq(PATIENT_IPT + PATIENT_LATE_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientMRSId, scheduleName).getIdentifier()), eq(MessageRecipientType.PATIENT));
 
         assertContainsTemplateValues(new HashMap<String, String>() {{
             put(MOTECH_ID, patientMotechId);
@@ -312,7 +291,7 @@ public class BaseScheduleHandlerTest {
         when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(patient);
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(DateTime.now()).setMedium(Medium.VOICE).setLanguage(Language.EN);
 
-        when(mockAllMobileMidwifeEnrollments.findActiveBy(patientMotechId)).thenReturn(mobileMidwifeEnrollment);
+        when(mockMobileMidwifeService.findActiveBy(patientMotechId)).thenReturn(mobileMidwifeEnrollment);
 
         when(mockScheduleJsonReader.validity(scheduleName, milestoneName, windowName)).thenReturn(Period.weeks(1));
         careScheduleHandler.sendAggregatedMessageToPatient(null, milestoneEvent);
@@ -325,6 +304,7 @@ public class BaseScheduleHandlerTest {
         final String patientId = "patientid";
         final String facilityId = "facilityid";
         final String patientMotechId = "patientmotechid";
+        final String patientMRSId = "patientMRSid";
         final String firstName = "firstName";
         final String lastname = "lastname";
         final String serialNumber = "serialNumber";
@@ -333,7 +313,7 @@ public class BaseScheduleHandlerTest {
         final String milestoneName = "milestone1";
 
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate());
-        when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId))));
+        when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMRSId,patientMotechId, person, new MRSFacility(facilityId))));
 
         final String phoneNumber = "phoneNumber";
         String additionalPhoneNumber = "addPhone";
@@ -346,7 +326,7 @@ public class BaseScheduleHandlerTest {
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
-        verify(mockSMSGateway).dispatchSMSToAggregator(eq(PREGNANCY_ALERT_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientId, scheduleName).getIdentifier()), eq(MessageRecipientType.FACILITY));
+        verify(mockSMSGateway).dispatchSMSToAggregator(eq(PREGNANCY_ALERT_SMS_KEY), templateValuesArgCaptor.capture(), captor.capture(), eq(new AggregationMessageIdentifier(patientMRSId, scheduleName).getIdentifier()), eq(MessageRecipientType.FACILITY));
         verify(mockAllObservations).findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName());
         String actualId = captor.getValue();
         assertEquals(facility.getMotechId(), actualId);
@@ -418,6 +398,7 @@ public class BaseScheduleHandlerTest {
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), phoneNumber));
         Patient patient = new Patient(new MRSPatient(patientMotechId, person, new MRSFacility(facilityId)));
         when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(patient);
+        when(mockPatientService.receiveSMSOnPhoneNumber(patientMotechId)).thenReturn(phoneNumber);
 
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
         MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
@@ -438,4 +419,102 @@ public class BaseScheduleHandlerTest {
             put(MILESTONE_NAME, milestoneName);
         }}, templateValuesArgCaptor.getValue());
     }
+
+
+
+    @Test
+    public void shouldSendInstantSMSToPatientMotherIfPatientHasNoContactNumberAndNotRegisteredToMM() {
+        final String patientId = "patientid";
+        final String windowName = WindowName.due.name();
+        final String scheduleName = "edd";
+        final String milestoneName = "milestone1";
+        final String patientMotechId = "patientmotechid";
+        final String motherMotechId = "motherMotechId";
+        final String firstName = "firstName";
+        final String lastname = "lastname";
+        MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
+        String motherPhoneNumber = "123456";
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate());
+        MRSPerson motherperson = new MRSPerson().firstName(firstName + "mother").lastName(lastname + "mother").addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), motherPhoneNumber));
+        when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123"))));
+        when(mockPatientService.getMother(patientMotechId)).thenReturn(new Patient(new MRSPatient(motherMotechId,motherperson,new MRSFacility("123"))));
+        when(mockPatientService.receiveSMSOnPhoneNumber(patientMotechId)).thenReturn(motherPhoneNumber);
+
+        careScheduleHandler.sendInstantMessageToPatient(PATIENT_PNC_BABY, milestoneEvent, AlertType.CARE);
+
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Map> templateValuesArgCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(mockSMSGateway).dispatchSMS(eq(PATIENT_PNC_BABY + "_DUE_SMS_KEY"), templateValuesArgCaptor.capture(), captor.capture());
+
+        assertThat(captor.getValue(),is(equalTo(motherPhoneNumber)));
+
+    }
+
+    @Test
+    public void shouldPlaceMessageInMotherOutboxIfPatientHasNoContactNumberAndNotRegisteredToMM() {
+        final String patientId = "patientid";
+        final String windowName = WindowName.due.name();
+        final String scheduleName = "pnc";
+        final String milestoneName = "milestone1";
+        final String patientMotechId = "patientmotechid";
+        final String motherMotechId = "motherMotechId";
+        final String firstName = "firstName";
+        final String lastname = "lastname";
+        MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
+        String motherPhoneNumber = "123456";
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate());
+        MRSPerson motherperson = new MRSPerson().firstName(firstName + "mother").lastName(lastname + "mother").addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), motherPhoneNumber));
+
+        when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123"))));
+        when(mockPatientService.getMother(patientMotechId)).thenReturn(new Patient(new MRSPatient(motherMotechId,motherperson,new MRSFacility("123"))));
+        when(mockMobileMidwifeService.findActiveBy(patientMotechId)).thenReturn(null);
+        when(mockMobileMidwifeService.findMotherMobileMidwifeEnrollment(patientMotechId)).thenReturn(new MobileMidwifeEnrollment(now()).setMedium(Medium.VOICE));
+        when(mockScheduleJsonReader.validity(scheduleName, milestoneName, windowName)).thenReturn(Period.weeks(1));
+
+        careScheduleHandler.sendInstantMessageToPatient(PATIENT_PNC_BABY, milestoneEvent, AlertType.CARE);
+
+        verify(mockAllPatientsOutbox).addCareMessage(eq(motherMotechId),anyString(),eq(Period.weeks(1)),eq(AlertWindow.DUE),eq(milestoneAlert.getDueDateTime()));
+
+    }
+
+
+    @Test
+    public void shouldReturnMotherMobileMidwifeEnrollmentMediumIfPatientHasNoMMEnrollment() {
+        final String patientMotechId = "patientmotechid";
+        final String motherMotechId = "motherMotechId";
+        final String firstName = "firstName";
+        final String lastname = "lastname";
+        String motherPhoneNumber = "123456";
+        MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate());
+        MRSPerson motherperson = new MRSPerson().firstName(firstName + "mother").lastName(lastname + "mother").addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), motherPhoneNumber));
+        Patient patient = new Patient(new MRSPatient(patientMotechId, person, new MRSFacility("123")));
+        Patient mother = new Patient(new MRSPatient(motherMotechId, motherperson, new MRSFacility("123")));
+
+        when(mockMobileMidwifeService.findActiveBy(patientMotechId)).thenReturn(null);
+        when(mockMobileMidwifeService.findMotherMobileMidwifeEnrollment(patientMotechId)).thenReturn(new MobileMidwifeEnrollment(now()).setMedium(Medium.VOICE));
+        when(mockPatientService.getMother(patientMotechId)).thenReturn(mother);
+
+        PatientMedium actualMedium = careScheduleHandler.getCommunicationMedium(patient, Medium.SMS);
+
+        assertThat(actualMedium.getMedium(),is(equalTo(Medium.VOICE)));
+        assertThat(actualMedium.getPatient().getMotechId(),is(equalTo(motherMotechId)));
+
+    }
+
+    @Test
+    public void shouldReturnSMSAsMediumIfBothMotherAndPatientHaveNoActiveMMEnrollment() {
+        final String patientMotechId = "patientmotechid";
+        final String motherMotechId = "motherMotechId";
+        Patient patient = new Patient(new MRSPatient(patientMotechId, new MRSPerson(), new MRSFacility("123")));
+
+        when(mockMobileMidwifeService.findActiveBy(patientMotechId)).thenReturn(null);
+        when(mockMobileMidwifeService.findMotherMobileMidwifeEnrollment(patientMotechId)).thenReturn(null);
+
+        PatientMedium actualMedium = careScheduleHandler.getCommunicationMedium(patient, Medium.SMS);
+        assertThat(actualMedium.getMedium(),is(equalTo(Medium.SMS)));
+        assertThat(actualMedium.getPatient().getMotechId(),is(equalTo(patientMotechId)));
+    }
+
 }

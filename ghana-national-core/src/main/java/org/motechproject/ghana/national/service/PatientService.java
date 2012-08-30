@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.service;
 
 import org.motechproject.ghana.national.domain.Patient;
-import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
@@ -133,6 +132,25 @@ public class PatientService {
 
     public Patient patientByOpenmrsId(String patientId) {
         return allPatients.patientByOpenmrsId(patientId);
+    }
+
+    public String receiveSMSOnPhoneNumber(String motechId) {
+
+        Patient patient = allPatients.getPatientByMotechId(motechId);
+        MobileMidwifeEnrollment mobileMidwifeEnrollment = allMobileMidwifeEnrollments.findActiveBy(patient.getMotechId());
+        if (mobileMidwifeEnrollment != null) {
+            return mobileMidwifeEnrollment.getPhoneNumber();
+        } else {
+            Patient mother = getMother(motechId);
+
+            MobileMidwifeEnrollment motherMobileMidwifeEnrollment = (mother != null) ? allMobileMidwifeEnrollments.findActiveBy(mother.getMotechId()) : null;
+            String clientPhoneNumber = (patient.getPhoneNumber() != null) ? patient.getPhoneNumber() : mother.getPhoneNumber();
+            return motherMobileMidwifeEnrollment != null ? motherMobileMidwifeEnrollment.getPhoneNumber() : clientPhoneNumber;
+        }
+    }
+
+    public Patient getMother(String motechId){
+        return allPatients.getMother(motechId);
     }
 
 }

@@ -112,6 +112,16 @@ public class AllPatients {
         return openMRSRelationshipAdapter.voidRelationship(child.getId());
     }
 
+    public Patient getMother(String motechId){
+        Patient patient=getPatientByMotechId(motechId);
+        Relationship motherRelationship = getMotherRelationship(patient.getMrsPatient().getPerson());
+        if(motherRelationship!=null){
+            return patientByOpenmrsId(motherRelationship.getPersonA().getPersonId().toString());
+        }
+        return null;
+
+    }
+
     public void deceasePatient(Date dateOfDeath, String patientMotechId, String causeOfDeath, String comment) {
         try {
             patientAdapter.deceasePatient(patientMotechId, causeOfDeath, dateOfDeath, comment);

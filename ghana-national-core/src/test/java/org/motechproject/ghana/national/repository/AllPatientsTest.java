@@ -15,6 +15,7 @@ import org.motechproject.util.DateUtil;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.Relationship;
+import org.openmrs.RelationshipType;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
@@ -260,5 +261,27 @@ public class AllPatientsTest {
         String comment = null;
         allPatients.deceasePatient(dateOfDeath, mrsPatientId, causeOfDeath, comment);
         verify(mockMrsPatientAdapter).deceasePatient(mrsPatientId, causeOfDeath, dateOfDeath, comment);
+    }
+    
+    @Test
+    public void shouldReturnMotherGivenMotechIdOfAPatient() {
+
+        String motechId = "motechId";
+        String motherMotechId ="motherMotechId";
+        String motherPersonId = "1111";
+        String childPersonId = "2222";
+        MRSPerson personMother = new MRSPerson().id(motherPersonId);
+        MRSPerson personChild = new MRSPerson().id(childPersonId);
+        Patient patient=new Patient(new MRSPatient(childPersonId, personChild, new MRSFacility("facilityid")));
+        Patient expectedMother=new Patient(new MRSPatient(motherMotechId, personMother, new MRSFacility("facilityid")));
+        Relationship mockMotherChildRelationShip =new Relationship(new Person(Integer.parseInt(motherPersonId)),new Person(Integer.parseInt(childPersonId)),new RelationshipType(3));
+
+        when(mockMrsPatientAdapter.getPatientByMotechId(motechId)).thenReturn(patient.getMrsPatient());
+        when(mockMrsPatientAdapter.getPatient(motherPersonId)).thenReturn(expectedMother.getMrsPatient());
+        when(mockOpenMRSRelationshipAdapter.getMotherRelationship(childPersonId)).thenReturn(mockMotherChildRelationShip);
+
+        Patient actualMother = allPatients.getMother(motechId);
+        assertThat(actualMother.getMotechId(),is(equalTo(expectedMother.getMotechId())));
+        assertThat(actualMother.getMRSPatientId(),is(equalTo(expectedMother.getMRSPatientId())));
     }
 }

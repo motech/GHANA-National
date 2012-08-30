@@ -1,13 +1,9 @@
 package org.motechproject.ghana.national.handler;
 
 import org.motechproject.ghana.national.domain.AlertType;
-import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
-import org.motechproject.ghana.national.repository.AllObservations;
-import org.motechproject.ghana.national.repository.AllPatientsOutbox;
-import org.motechproject.ghana.national.repository.SMSGateway;
-import org.motechproject.ghana.national.repository.ScheduleJsonReader;
-import org.motechproject.ghana.national.repository.VoiceGateway;
+import org.motechproject.ghana.national.repository.*;
 import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
@@ -27,9 +23,9 @@ public class CareScheduleAlerts extends BaseScheduleHandler implements CareSched
     @Autowired
     public CareScheduleAlerts(PatientService patientService, FacilityService facilityService, SMSGateway smsGateway,
                               VoiceGateway voiceGateway, AllObservations allObservations,
-                              AllMobileMidwifeEnrollments allMobileMidwifeEnrollments, AllPatientsOutbox allPatientsOutbox,
+                              AllPatientsOutbox allPatientsOutbox, MobileMidwifeService mobileMidwifeService,
                               ScheduleJsonReader scheduleJsonReader) {
-        super(patientService, facilityService, smsGateway, voiceGateway, allObservations, allMobileMidwifeEnrollments, allPatientsOutbox, scheduleJsonReader);
+        super(patientService, facilityService, smsGateway, voiceGateway, allObservations, allPatientsOutbox,mobileMidwifeService, scheduleJsonReader);
     }
 
     @Override

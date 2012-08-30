@@ -10,7 +10,6 @@ import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientTy
 import org.motechproject.ghana.national.messagegateway.domain.Payload;
 import org.motechproject.ghana.national.messagegateway.domain.SMSDatum;
 import org.motechproject.ghana.national.repository.AllFacilities;
-import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.openmrs.advice.ApiSession;
@@ -21,28 +20,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-import static ch.lambdaj.Lambda.collect;
-import static ch.lambdaj.Lambda.extract;
-import static ch.lambdaj.Lambda.filter;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.join;
-import static ch.lambdaj.Lambda.joinFrom;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.selectDistinct;
+import static ch.lambdaj.Lambda.*;
 import static ch.lambdaj.group.Groups.by;
 import static ch.lambdaj.group.Groups.group;
 import static java.util.Arrays.asList;
 import static java.util.Locale.getDefault;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.IsNot.not;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FACILITY;
 import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.WINDOW_NAMES;
@@ -61,9 +46,6 @@ public class AggregationStrategyImpl implements AggregationStrategy {
 
     @Autowired
     AllFacilities allFacilities;
-
-    @Autowired
-    AllMobileMidwifeEnrollments allMobileMidwifeEnrollments;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -98,7 +80,7 @@ public class AggregationStrategyImpl implements AggregationStrategy {
         SMSPayload smsPayload = SMSPayload.fromText(builder.toString(), smsPayloadForPatient.get(0).getUniqueId(), DateUtil.now(), null, MessageRecipientType.PATIENT);
 
         Patient patient = patientService.getPatientByMotechId(smsPayload.getUniqueId());
-        String patientPhoneNumber = patient.receiveSMSOnPhoneNumber(allMobileMidwifeEnrollments.findActiveBy(smsPayload.getUniqueId()));
+        String patientPhoneNumber = patientService.receiveSMSOnPhoneNumber(patient.getMotechId());
 
         if (patientPhoneNumber != null)
             return asList(SMSPayload.fromPhoneNoAndText(patientPhoneNumber, smsPayload.getText()));
