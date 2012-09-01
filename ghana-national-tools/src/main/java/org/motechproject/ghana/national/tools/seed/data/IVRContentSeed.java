@@ -12,9 +12,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedInputStream;
 
 @Component("ivrContentSeed")
 public class IVRContentSeed extends Seed {
@@ -27,8 +29,6 @@ public class IVRContentSeed extends Seed {
     @Override
     protected void load() {
         FileInputStream audioInputStream = null;
-        CheckedInputStream checkedInputStream = null;
-
         try {
             File[] files = new File("audio").listFiles();
             assert files != null;
@@ -36,23 +36,45 @@ public class IVRContentSeed extends Seed {
                 if (file.isDirectory()) {
                     Collection<File> audioFiles = FileUtils.listFiles(file, new String[]{"wav"}, false);
                     for (File audioFile : audioFiles) {
-                        if (!cmsLiteService.isStreamContentAvailable(file.getName(), audioFile.getName())) {
-                            audioInputStream = new FileInputStream(audioFile);
-                            checkedInputStream = new CheckedInputStream(audioInputStream, new Adler32());
-                            cmsLiteService.addContent(new StreamContent(file.getName(), audioFile.getName(),
-                                    audioInputStream, String.valueOf(checkedInputStream.getChecksum().getValue()), "audio/x-wav;charset=UTF-8"));
-                            audioInputStream.close();
-                            checkedInputStream.close();
-                        }
+                        String checksum = calculateChecksum(audioFile.getAbsolutePath());
+                        logger.info("file: " + audioFile.getAbsolutePath());
+                        audioInputStream = new FileInputStream(audioFile);
+                        cmsLiteService.addContent(new StreamContent(file.getName(), audioFile.getName(), audioInputStream, checksum, "audio/x-wav;charset=UTF-8"));
+                        audioInputStream.close();
                     }
                 }
             }
-
         } catch (Exception e) {
             logger.error("Exception occurred while uploading audio files to cms", e);
         } finally {
             IOUtils.closeQuietly(audioInputStream);
-            IOUtils.closeQuietly(checkedInputStream);
         }
+    }
+
+    private String calculateChecksum(String fileName) throws IOException, NoSuchAlgorithmException {
+        DigestInputStream digestInputStream = null;
+        byte[] buffer = new byte[4096];
+        FileInputStream fileInputStream = null;
+        StringBuilder checksum = new StringBuilder();
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            fileInputStream = new FileInputStream(fileName);
+            digestInputStream = new DigestInputStream(fileInputStream, messageDigest);
+            while (fileInputStream.read(buffer, 0, buffer.length) != -1) {
+                //read till the end of file to calculate MD5 checksum.
+            }
+            byte[] digest = messageDigest.digest();
+            for (byte aDigest : digest) {
+                String digit = Integer.toHexString(0xff & aDigest);
+                if (digit.length() == 1) {
+                    checksum.append('0');
+                }
+                checksum.append(digit);
+            }
+        } finally {
+            IOUtils.closeQuietly(digestInputStream);
+            IOUtils.closeQuietly(fileInputStream);
+        }
+        return checksum.toString();
     }
 }
