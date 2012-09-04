@@ -5,7 +5,13 @@ import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnroll
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
-import org.motechproject.ghana.national.repository.*;
+import org.motechproject.ghana.national.repository.AllAppointmentsAndMessages;
+import org.motechproject.ghana.national.repository.AllEncounters;
+import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
+import org.motechproject.ghana.national.repository.AllPatientSearch;
+import org.motechproject.ghana.national.repository.AllPatients;
+import org.motechproject.ghana.national.repository.AllSchedulesAndMessages;
+import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.mrs.exception.PatientNotFoundException;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.mrs.model.MRSPatient;
@@ -145,7 +151,8 @@ public class PatientService {
         if (mother == null) {
             return patient.getPhoneNumber();
         }
-        return (patient.getPhoneNumber() != null) ? patient.getPhoneNumber() : getMothersPhoneNumber(mother);
+        String mothersPhoneNumber = getMothersPhoneNumber(mother);
+        return (mothersPhoneNumber != null) ? mothersPhoneNumber : patient.getPhoneNumber();
     }
 
     private String getMothersPhoneNumber(Patient mother) {
