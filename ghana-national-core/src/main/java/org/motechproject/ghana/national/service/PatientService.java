@@ -140,16 +140,20 @@ public class PatientService {
         MobileMidwifeEnrollment mobileMidwifeEnrollment = allMobileMidwifeEnrollments.findActiveBy(patient.getMotechId());
         if (mobileMidwifeEnrollment != null) {
             return mobileMidwifeEnrollment.getPhoneNumber();
-        } else {
-            Patient mother = getMother(motechId);
-
-            MobileMidwifeEnrollment motherMobileMidwifeEnrollment = (mother != null) ? allMobileMidwifeEnrollments.findActiveBy(mother.getMotechId()) : null;
-            String clientPhoneNumber = (patient.getPhoneNumber() != null) ? patient.getPhoneNumber() : mother.getPhoneNumber();
-            return motherMobileMidwifeEnrollment != null ? motherMobileMidwifeEnrollment.getPhoneNumber() : clientPhoneNumber;
         }
+        Patient mother = getMother(motechId);
+        if (mother == null) {
+            return patient.getPhoneNumber();
+        }
+        return (patient.getPhoneNumber() != null) ? patient.getPhoneNumber() : getMothersPhoneNumber(mother);
     }
 
-    public Patient getMother(String motechId){
+    private String getMothersPhoneNumber(Patient mother) {
+        MobileMidwifeEnrollment motherMobileMidwifeEnrollment = allMobileMidwifeEnrollments.findActiveBy(mother.getMotechId());
+        return motherMobileMidwifeEnrollment != null ? motherMobileMidwifeEnrollment.getPhoneNumber() : mother.getPhoneNumber();
+    }
+
+    public Patient getMother(String motechId) {
         return allPatients.getMother(motechId);
     }
 
