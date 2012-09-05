@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.domain.ivr;
+package org.motechproject.ghana.national.domain.ivr.transition;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.motechproject.decisiontree.FlowSession;
@@ -6,6 +6,8 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ghana.national.domain.IVRClipManager;
+import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
+import org.motechproject.ghana.national.domain.ivr.PlayMessagesFromOutboxTree;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.ExecuteAsOpenMRSAdmin;
@@ -47,7 +49,7 @@ public class MotechIdValidationTransition extends Transition {
     private MobileMidwifeService mobileMidwifeService;
 
     @Autowired
-    private ConnectToCallCenterTree connectToCallCenterTree;
+    private ConnectToCallCenterTransition connectToCallCenterTransition;
 
     @JsonProperty
     int pendingRetries;
@@ -68,7 +70,7 @@ public class MotechIdValidationTransition extends Transition {
         newTransition.patientService = getPatientService();
         newTransition.ivrClipManager = getIvrClipManager();
         newTransition.mobileMidwifeService = getMobileMidwifeService();
-        newTransition.connectToCallCenterTree = getConnectToCallCenterTree();
+        newTransition.connectToCallCenterTransition = getConnectToCallCenterTransition();
         return newTransition;
     }
 
@@ -120,9 +122,9 @@ public class MotechIdValidationTransition extends Transition {
             //  node.setTransitionFinishOnKey(callCenterFinishOnKey);
             node.setTransitionNumDigits(noOfDigitsInMotechId);
             node.addTransitionPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));
-            node.addTransition("0", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language), callerPhoneNumber)));
-            node.addTransition("*", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language), callerPhoneNumber)));
-            node.addTransition("timeout", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language), callerPhoneNumber)));
+            node.addTransition("0", new Transition().setDestinationNode(connectToCallCenterTransition.setNurseLine(false).getAsNode(valueOf(language), callerPhoneNumber)));
+            node.addTransition("*", new Transition().setDestinationNode(connectToCallCenterTransition.setNurseLine(true).getAsNode(valueOf(language), callerPhoneNumber)));
+            node.addTransition("timeout", new Transition().setDestinationNode(connectToCallCenterTransition.setNurseLine(false).getAsNode(valueOf(language), callerPhoneNumber)));
             node.addTransition("?", this.clone(this.pendingRetries - 1));
         }
         return node;
@@ -165,7 +167,7 @@ public class MotechIdValidationTransition extends Transition {
         return mobileMidwifeService;
     }
 
-    public ConnectToCallCenterTree getConnectToCallCenterTree() {
-        return connectToCallCenterTree;
+    public ConnectToCallCenterTransition getConnectToCallCenterTransition() {
+        return connectToCallCenterTransition;
     }
 }

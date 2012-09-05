@@ -1,11 +1,15 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
-import org.motechproject.decisiontree.model.*;
+import org.motechproject.decisiontree.model.AudioPrompt;
+import org.motechproject.decisiontree.model.ITransition;
+import org.motechproject.decisiontree.model.Node;
+import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.decisiontree.model.Tree;
 import org.motechproject.decisiontree.repository.AllTrees;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
-import org.motechproject.ghana.national.domain.ivr.ConnectToCallCenterTree;
-import org.motechproject.ghana.national.domain.ivr.MotechIdValidationTransition;
+import org.motechproject.ghana.national.domain.ivr.transition.ConnectToCallCenterTransition;
+import org.motechproject.ghana.national.domain.ivr.transition.MotechIdValidationTransition;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +19,13 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.motechproject.ghana.national.domain.ivr.AudioPrompts.*;
-import static org.motechproject.ghana.national.domain.mobilemidwife.Language.*;
+import static org.motechproject.ghana.national.domain.ivr.AudioPrompts.LANGUAGE_PROMPT;
+import static org.motechproject.ghana.national.domain.ivr.AudioPrompts.MOTECH_ID_PROMPT;
+import static org.motechproject.ghana.national.domain.ivr.AudioPrompts.REASON_FOR_CALL_PROMPT;
+import static org.motechproject.ghana.national.domain.mobilemidwife.Language.EN;
+import static org.motechproject.ghana.national.domain.mobilemidwife.Language.FAN;
+import static org.motechproject.ghana.national.domain.mobilemidwife.Language.KAS;
+import static org.motechproject.ghana.national.domain.mobilemidwife.Language.NAN;
 
 @Component
 public class InboundDecisionTreeSeed extends Seed {
@@ -31,6 +40,7 @@ public class InboundDecisionTreeSeed extends Seed {
 
     @Autowired
     AllTrees allTrees;
+
     @Autowired
     private IVRClipManager ivrClipManager;
 
@@ -38,52 +48,50 @@ public class InboundDecisionTreeSeed extends Seed {
     protected void load() {
         Tree tree = new Tree();
         tree.setName("InboundDecisionTree");
-        tree.setRootNode(chooseLanguageNodeWithRetry());
+        tree.setRootNode(chooseLanguageNode(3));
         allTrees.addOrReplace(tree);
     }
 
-    private Node chooseLanguageNodeWithRetry(){
-        Node chooseLanguageFirstChance = chooseLanguageNode();
-        Node chooseLanguageSecondChance = chooseLanguageNode();
-        chooseLanguageSecondChance.getTransitions().put("timeout", new ConnectToCallCenterTree(EN));
-        chooseLanguageFirstChance.getTransitions().put("timeout", new Transition().setDestinationNode(chooseLanguageSecondChance));
-        return chooseLanguageFirstChance;
+    private Node chooseLanguageNode(int retry) {
+        if (retry != 0) {
+            Node node = prompt(LANGUAGE_PROMPT, EN);
+            Map<String, ITransition> transitions = new HashMap<String, ITransition>();
+            transitions.put("1", new Transition().setDestinationNode(chooseActionNode(EN, 3)));
+            transitions.put("2", new Transition().setDestinationNode(chooseActionNode(KAS, 3)));
+            transitions.put("3", new Transition().setDestinationNode(chooseActionNode(NAN, 3)));
+            transitions.put("4", new Transition().setDestinationNode(chooseActionNode(FAN, 3)));
+            transitions.put("*", new ConnectToCallCenterTransition(true));
+            transitions.put("?", new Transition().setDestinationNode(chooseLanguageNode(retry - 1)));
+            transitions.put("timeout", new Transition().setDestinationNode(chooseLanguageNode(retry - 1)));
+            node.setTransitionNumDigits("1");
+            node.setTransitionTimeout("5");
+            node.setTransitions(transitions);
+            return node;
+        }
+        return new Node();
     }
 
-    private Node chooseLanguageNode() {
-        Node node = prompt(LANGUAGE_PROMPT, EN);
-        Map<String, ITransition> transitions = new HashMap<String, ITransition>();
-        transitions.put("1", new Transition().setDestinationNode(chooseActionNode(EN)));
-        transitions.put("2", new Transition().setDestinationNode(chooseActionNode(KAS)));
-        transitions.put("3", new Transition().setDestinationNode(chooseActionNode(NAN)));
-        transitions.put("4", new Transition().setDestinationNode(chooseActionNode(FAN)));
-        transitions.put("*", new ConnectToCallCenterTree(true));
-        transitions.put("?", new ConnectToCallCenterTree(EN));
-        node.setTransitionNumDigits("1");
-        node.setTransitionTimeout(callCenterDtmfTimeout);
-        node.setTransitions(transitions);
-        return node;
-    }
-
-    private Node chooseActionNode(Language language) {
-        Node node = prompt(REASON_FOR_CALL_PROMPT, language);
-        Map<String, ITransition> transitions = new HashMap<String, ITransition>();
-        transitions.put("1", new Transition().setDestinationNode(validateMotechIdNode(language, 3)));
-        transitions.put("timeout", new Transition().setDestinationNode(new Node()));
-        transitions.put("*", new ConnectToCallCenterTree(true));
-        transitions.put("?", new ConnectToCallCenterTree(language));
-        node.setTransitionNumDigits("1");
-        node.setTransitionTimeout(callCenterDtmfTimeout);
-        node.setTransitionFinishOnKey(callCenterFinishOnKey);
-        node.setTransitions(transitions);
-        return node;
+    private Node chooseActionNode(Language language, int retry) {
+        if (retry != 0) {
+            Node node = prompt(REASON_FOR_CALL_PROMPT, language);
+            Map<String, ITransition> transitions = new HashMap<String, ITransition>();
+            transitions.put("1", new Transition().setDestinationNode(validateMotechIdNode(language, 3)));
+            transitions.put("*", new ConnectToCallCenterTransition(true));
+            transitions.put("timeout", new Transition().setDestinationNode(chooseActionNode(language, retry - 1)));
+            transitions.put("?", new Transition().setDestinationNode(chooseActionNode(language, retry - 1)));
+            node.setTransitionNumDigits("1");
+            node.setTransitionTimeout("5");
+            node.setTransitions(transitions);
+            return node;
+        }
+        return new Node();
     }
 
     private Node validateMotechIdNode(Language language, int pendingRetries) {
         Node node = prompt(MOTECH_ID_PROMPT, language);
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
         MotechIdValidationTransition motechIdValidationTransition = new MotechIdValidationTransition(language.name(), pendingRetries);
-        if(pendingRetries != 0){
+        if (pendingRetries != 0) {
             transitions.put("timeout", new Transition().setDestinationNode(validateMotechIdNode(language, pendingRetries - 1)));
             transitions.put("?", motechIdValidationTransition);
         }
@@ -98,7 +106,6 @@ public class InboundDecisionTreeSeed extends Seed {
     private Node prompt(AudioPrompts clipName, Language language) {
         return new Node().addTransitionPrompts(audioPromptFor(clipName, language));
     }
-
 
     private AudioPrompt audioPromptFor(AudioPrompts prompt, Language language) {
         return new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(prompt.value(), language));

@@ -1,10 +1,12 @@
-package org.motechproject.ghana.national.domain.ivr;
+package org.motechproject.ghana.national.domain.ivr.transition;
 
 import org.motechproject.decisiontree.FlowSession;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ghana.national.domain.IVRClipManager;
+import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
+import org.motechproject.ghana.national.domain.ivr.PlayMessagesFromOutboxTree;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.service.MobileMidwifeService;

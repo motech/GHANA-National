@@ -7,6 +7,7 @@ import org.motechproject.decisiontree.FlowSession;
 import org.motechproject.decisiontree.model.*;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.IVRClipManager;
+import org.motechproject.ghana.national.domain.ivr.transition.ConnectToCallCenterTransition;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
@@ -44,7 +45,7 @@ public class PlayMessagesFromOutboxTree {
     private RetryService retryService;
 
     @Autowired
-    private ConnectToCallCenterTree connectToCallCenterTree;
+    private ConnectToCallCenterTransition connectToCallCenterTransition;
 
     @Value("#{ghanaNationalProperties['callcenter.dtmf.timeout']}")
     private String callCenterDtmfTimeout;
@@ -148,7 +149,7 @@ public class PlayMessagesFromOutboxTree {
             transitions.put(i + 1 + "", new Transition().setDestinationNode(transitionNode));
         }
         transitions.put("timeout", new Transition().setDestinationNode(new Node()));
-        transitions.put("?", new Transition().setDestinationNode(connectToCallCenterTree.getAsNode(valueOf(language), userPhoneNumber)));
+        transitions.put("?", new Transition().setDestinationNode(connectToCallCenterTransition.getAsNode(valueOf(language), userPhoneNumber)));
 
 
         rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingClips.get(0), valueOf(language))))

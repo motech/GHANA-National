@@ -1,4 +1,4 @@
-package org.motechproject.ghana.national.domain.ivr;
+package org.motechproject.ghana.national.domain.ivr.transition;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.motechproject.decisiontree.FlowSession;
@@ -8,6 +8,7 @@ import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.domain.IVRClipManager;
+import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.service.IvrCallCenterNoMappingService;
 import org.motechproject.model.DayOfWeek;
@@ -17,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConnectToCallCenterTree extends Transition {
+public class ConnectToCallCenterTransition extends Transition {
 
     @Autowired
     private IVRCallbackUrlBuilder ivrCallbackUrlBuilder;
@@ -35,14 +36,14 @@ public class ConnectToCallCenterTree extends Transition {
     private boolean nurseLine;
 
     // Required for Ektorp
-    public ConnectToCallCenterTree() {
+    public ConnectToCallCenterTransition() {
     }
 
-    public ConnectToCallCenterTree(Language language) {
+    public ConnectToCallCenterTransition(Language language) {
         this.language = language;
     }
 
-    public ConnectToCallCenterTree(boolean nurseLine) {
+    public ConnectToCallCenterTransition(boolean nurseLine) {
         this.nurseLine = nurseLine;
         this.language = Language.EN;
     }
@@ -65,5 +66,10 @@ public class ConnectToCallCenterTree extends Transition {
         callCenterDialPrompt.setCallerId(callerPhoneNumber);
         callCenterDialPrompt.setAction(ivrCallbackUrlBuilder.callCenterDialStatusUrl(language, callerPhoneNumber, nurseLine));
         return new Node().addPrompts(callCenterDialPrompt);
+    }
+
+    public ConnectToCallCenterTransition setNurseLine(boolean nurseLine) {
+        this.nurseLine = nurseLine;
+        return this;
     }
 }
