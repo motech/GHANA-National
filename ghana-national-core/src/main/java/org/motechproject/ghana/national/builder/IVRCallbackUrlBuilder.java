@@ -19,7 +19,7 @@ public class IVRCallbackUrlBuilder {
     private String contextPath;
 
     public String outboundCallUrl(String patientId) {
-        String url = "http://" + host + ":" + port + "/" + contextPath + "/verboice/ivr?&Digits="+ patientId +"&type=verboice&ln=en&tree=OutboundDecisionTree&trP=Lw";
+        String url = "http://" + host + ":" + port + "/" + contextPath + "/verboice/ivr?&Digits=" + patientId + "&type=verboice&ln=en&tree=OutboundDecisionTree&trP=Lw";
         try {
             return URLEncoder.encode(url, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -27,7 +27,7 @@ public class IVRCallbackUrlBuilder {
         }
     }
 
-    public String callCenterDialStatusUrl(Language language, String userPhoneNumber){
-        return  "http://" + host + ":" + port + "/" + contextPath + "/ivr/dial/" + language.name() + "/callback/" + userPhoneNumber;
+    public String callCenterDialStatusUrl(Language language, String userPhoneNumber, boolean nurseLine) {
+        return "http://" + host + ":" + port + "/" + contextPath + "/ivr/dial/" + language.name() + "/callback/" + userPhoneNumber + "?nurseLine=" + nurseLine;
     }
 }

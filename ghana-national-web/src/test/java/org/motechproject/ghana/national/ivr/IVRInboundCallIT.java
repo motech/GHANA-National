@@ -14,6 +14,7 @@ import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.retry.service.RetryService;
 
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -49,7 +50,6 @@ public class IVRInboundCallIT {
         testAppServer.addCareMessageToOutbox(patientWithMM.getMotechId(), AudioPrompts.PNC_MOTHER_DUE.value(), now.plus(Period.days(1)));
         testAppServer.addAppointmentMessageToOutbox(patientWithMM.getMotechId(), AudioPrompts.ANC_DUE.value());
         testAppServer.addMobileMidwifeMessageToOutbox(patientWithMM.getMotechId(), MobileMidwifeAudioClips.PREGNANCY_WEEK_7);
-
     }
 
     @Before
@@ -86,7 +86,6 @@ public class IVRInboundCallIT {
             verboiceStub.expect(callCenterClosed, response);
     }
 
-
     @Test
     public void shouldConnectToCallCenterIfUserOptedForItOrUserGaveAnInvalidOptionWhileSelectingAction() {
         String response = verboiceStub.handleIncomingCall();
@@ -110,7 +109,6 @@ public class IVRInboundCallIT {
         connectToCallCenterOption = "*";
         responseForConnectToCallCenterOption = verboiceStub.handle(response, connectToCallCenterOption);
         validateConnectToCallCenter(verboiceStub, responseForConnectToCallCenterOption);
-
     }
 
     @Test
@@ -236,11 +234,7 @@ public class IVRInboundCallIT {
         invalidLanguageOption = "*";
         response = verboiceStub.handle(response, invalidLanguageOption);
         validateConnectToCallCenter(verboiceStub, response);
-
-        response = verboiceStub.handleIncomingCall();
-        invalidLanguageOption = "#";
-        response = verboiceStub.handle(response, invalidLanguageOption);
-        validateConnectToCallCenter(verboiceStub, response);
+        assertTrue("pressing * key should redirect to a special nurse line.", response.contains("0208516182"));
     }
 
     @Test
@@ -256,7 +250,7 @@ public class IVRInboundCallIT {
 
         String invalidMotechIdPrompt = fileName(AudioPrompts.INVALID_MOTECH_ID_PROMPT);
         TwiML expectedActions = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzEvMS8x&Digits=timeout")));
         verboiceStub.expect(expectedActions, response);
     }
@@ -274,7 +268,7 @@ public class IVRInboundCallIT {
 
         String invalidMotechIdPrompt = fileName(AudioPrompts.INVALID_MOTECH_ID_PROMPT);
         TwiML expectedActions = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=" + Base64.encodeBase64URLSafeString(("/1/1/" + patientWithoutMobileMidwifeRegistration.getMotechId()).getBytes()) + "&Digits=timeout")));
         verboiceStub.expect(expectedActions, response);
     }
@@ -300,7 +294,7 @@ public class IVRInboundCallIT {
 
         String invalidMotechIdPrompt = fileName(AudioPrompts.INVALID_MOTECH_ID_PROMPT);
         expectedActions = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=" + Base64.encodeBase64URLSafeString(("/1/1/" + invalidMotechId).getBytes()) + "&Digits=timeout")));
 
         verboiceStub.expect(expectedActions, response);
@@ -308,7 +302,7 @@ public class IVRInboundCallIT {
         response = verboiceStub.handle(response, invalidMotechId);
 
         expectedActions = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, FINISH_ON_KEY).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(invalidMotechIdPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzEvMS8xLzE&Digits=timeout")));
 
         verboiceStub.expect(expectedActions, response);

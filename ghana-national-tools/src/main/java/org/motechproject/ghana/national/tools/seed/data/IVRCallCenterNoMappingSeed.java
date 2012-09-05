@@ -87,14 +87,14 @@ public class IVRCallCenterNoMappingSeed extends Seed {
                     new IVRCallCenterNoMapping().phoneNumber("0509039933").language(Language.NAN).dayOfWeek(DayOfWeek.Tuesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
                     new IVRCallCenterNoMapping().phoneNumber("0509039933").language(Language.NAN).dayOfWeek(DayOfWeek.Wednesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
                     new IVRCallCenterNoMapping().phoneNumber("0509039933").language(Language.NAN).dayOfWeek(DayOfWeek.Thursday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
-                    new IVRCallCenterNoMapping().phoneNumber("0509039933").language(Language.NAN).dayOfWeek(DayOfWeek.Friday).startTime(new Time(8, 0)).endTime(new Time(17, 0)));
+                    new IVRCallCenterNoMapping().phoneNumber("0509039933").language(Language.NAN).dayOfWeek(DayOfWeek.Friday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
 
                     //Mon-Fri                       08-17                    Nurses line (when you press star *)                 020 851 6182
-//                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Monday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
-//                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Tuesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
-//                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Wednesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
-//                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Thursday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
-//                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Friday).startTime(new Time(8, 0)).endTime(new Time(17, 0)));
+                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Monday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Tuesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Wednesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Thursday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Friday).startTime(new Time(8, 0)).endTime(new Time(17, 0)));
 
             for (IVRCallCenterNoMapping mapping : ivrCallCenterNoMappings) {
                 allIvrCallCenterNoMappings.add(mapping);

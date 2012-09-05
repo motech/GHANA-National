@@ -23,14 +23,15 @@ public class IvrCallCenterNoMappingService {
         this.allIvrCallCenterNoMappings = allIvrCallCenterNoMappings;
     }
 
-
-    public String getCallCenterPhoneNumber(Language language, DayOfWeek dayOfWeek, Time time){
+    public String getCallCenterPhoneNumber(Language language, DayOfWeek dayOfWeek, Time time, boolean nurseLine){
         List<IVRCallCenterNoMapping> allMappings = allIvrCallCenterNoMappings.allMappings();
         for (IVRCallCenterNoMapping mapping : allMappings) {
-            if(mapping.getLanguage().equals(language) && mapping.getDayOfWeek().equals(dayOfWeek) && fallsBetweenIncludingBounds(time, mapping.getStartTime(), mapping.getEndTime()))
+            if((nurseLine ? mapping.isNurseLine() : language.equals(mapping.getLanguage()))
+                    && mapping.getDayOfWeek().equals(dayOfWeek)
+                    && fallsBetweenIncludingBounds(time, mapping.getStartTime(), mapping.getEndTime()))
                 return mapping.getPhoneNumber();
         }
-        logger.warn("Unable to find a call center number for the provided criteria, " + language + ", " + dayOfWeek + ", " + time + ". Returning the first call center no: " + allMappings.get(0).getPhoneNumber());
+        logger.warn("Unable to find a call center number for the provided criteria, " + language + ", " + dayOfWeek + ", " + time);
         return null;
     }
 

@@ -57,6 +57,7 @@ public class InboundDecisionTreeSeed extends Seed {
         transitions.put("2", new Transition().setDestinationNode(chooseActionNode(KAS)));
         transitions.put("3", new Transition().setDestinationNode(chooseActionNode(NAN)));
         transitions.put("4", new Transition().setDestinationNode(chooseActionNode(FAN)));
+        transitions.put("*", new ConnectToCallCenterTree(true));
         transitions.put("?", new ConnectToCallCenterTree(EN));
         node.setTransitionNumDigits("1");
         node.setTransitionTimeout(callCenterDtmfTimeout);
@@ -69,6 +70,7 @@ public class InboundDecisionTreeSeed extends Seed {
         Map<String, ITransition> transitions = new HashMap<String, ITransition>();
         transitions.put("1", new Transition().setDestinationNode(validateMotechIdNode(language, 3)));
         transitions.put("timeout", new Transition().setDestinationNode(new Node()));
+        transitions.put("*", new ConnectToCallCenterTree(true));
         transitions.put("?", new ConnectToCallCenterTree(language));
         node.setTransitionNumDigits("1");
         node.setTransitionTimeout(callCenterDtmfTimeout);

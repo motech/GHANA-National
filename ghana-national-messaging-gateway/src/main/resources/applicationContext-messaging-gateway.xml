@@ -69,6 +69,4 @@
     </beans:bean>
 
     <beans:import resource="classpath:applicationSmsAPI.xml"/>
-
-
 </beans:beans>

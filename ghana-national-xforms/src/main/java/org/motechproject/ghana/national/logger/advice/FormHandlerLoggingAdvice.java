@@ -7,7 +7,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.motechproject.metrics.MetricsAgent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -27,7 +26,6 @@ public class FormHandlerLoggingAdvice {
     @Pointcut("formAsyncHandlers() || scheduleHandlers()")
     private void asyncHandlers() {
     }
-
 
     @Autowired
     public FormHandlerLoggingAdvice(@Qualifier("backgroundJobMetricAgent") MetricsAgent metricsAgent) {

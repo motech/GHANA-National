@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.domain;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
-import org.joda.time.Weeks;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechBaseDataObject;
@@ -22,6 +21,8 @@ public class IVRCallCenterNoMapping extends MotechBaseDataObject {
     private Time startTime;
     @JsonProperty
     private Time endTime;
+    @JsonProperty
+    private boolean nurseLine;
 
     public IVRCallCenterNoMapping() {
     }
@@ -68,6 +69,15 @@ public class IVRCallCenterNoMapping extends MotechBaseDataObject {
 
     public IVRCallCenterNoMapping endTime(Time endTime) {
         this.endTime = endTime;
+        return this;
+    }
+
+    public boolean isNurseLine() {
+        return nurseLine;
+    }
+
+    public IVRCallCenterNoMapping nurseLine(boolean b) {
+        this.nurseLine = b;
         return this;
     }
 }

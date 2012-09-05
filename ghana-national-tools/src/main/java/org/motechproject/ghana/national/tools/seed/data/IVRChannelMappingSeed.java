@@ -21,6 +21,7 @@ public class IVRChannelMappingSeed extends Seed {
     @Override
     protected void load() {
         try {
+            allIvrChannelMappings.removeAll();
             Map<String, String> ivrChannelMappings = new HashMap<String, String>(){{
                 put("^0(2|5)4[0-9]+$", "MTN");
                 put("^0(2|3)0[0-9]+$", "Vodafone");

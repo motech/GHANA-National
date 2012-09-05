@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConnectToCallCenterTree extends Transition{
+public class ConnectToCallCenterTree extends Transition {
 
     @Autowired
     private IVRCallbackUrlBuilder ivrCallbackUrlBuilder;
@@ -31,12 +31,20 @@ public class ConnectToCallCenterTree extends Transition{
     @JsonProperty
     private Language language;
 
+    @JsonProperty
+    private boolean nurseLine;
+
     // Required for Ektorp
     public ConnectToCallCenterTree() {
     }
 
     public ConnectToCallCenterTree(Language language) {
         this.language = language;
+    }
+
+    public ConnectToCallCenterTree(boolean nurseLine) {
+        this.nurseLine = nurseLine;
+        this.language = Language.EN;
     }
 
     @Override
@@ -47,15 +55,15 @@ public class ConnectToCallCenterTree extends Transition{
 
     public Node getAsNode(Language language, String callerPhoneNumber) {
         DayOfWeek dayOfWeek = DayOfWeek.getDayOfWeek(DateUtil.today().dayOfWeek().get());
-        String callCenterPhoneNumber = ivrCallCenterNoMappingService.getCallCenterPhoneNumber(language, dayOfWeek, new Time(DateUtil.now().toLocalTime()));
+        String callCenterPhoneNumber = ivrCallCenterNoMappingService.getCallCenterPhoneNumber(language, dayOfWeek, new Time(DateUtil.now().toLocalTime()), nurseLine);
 
-        if(callCenterPhoneNumber == null) {
+        if (callCenterPhoneNumber == null) {
             return new Node().addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.value(), Language.EN)));
         }
 
         DialPrompt callCenterDialPrompt = new DialPrompt(callCenterPhoneNumber);
         callCenterDialPrompt.setCallerId(callerPhoneNumber);
-        callCenterDialPrompt.setAction(ivrCallbackUrlBuilder.callCenterDialStatusUrl(language, callerPhoneNumber));
+        callCenterDialPrompt.setAction(ivrCallbackUrlBuilder.callCenterDialStatusUrl(language, callerPhoneNumber, nurseLine));
         return new Node().addPrompts(callCenterDialPrompt);
     }
 }
