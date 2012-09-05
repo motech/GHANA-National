@@ -25,6 +25,7 @@ public class IVRCallCenterNoMappingSeed extends Seed {
     protected void load() {
 
         try {
+            allIvrCallCenterNoMappings.removeAll();
             List<IVRCallCenterNoMapping> ivrCallCenterNoMappings = Arrays.asList(
                     //Mon-Friday	06-08	English	054 434 7552
                     new IVRCallCenterNoMapping().phoneNumber("0544347552").language(Language.EN).dayOfWeek(DayOfWeek.Monday).startTime(new Time(6, 0)).endTime(new Time(8, 0)),
@@ -58,11 +59,11 @@ public class IVRCallCenterNoMappingSeed extends Seed {
                     new IVRCallCenterNoMapping().phoneNumber("0544347552").language(Language.FAN).dayOfWeek(DayOfWeek.Friday).startTime(new Time(6, 0)).endTime(new Time(8, 0)),
 
                     //Mon-Fri	08-17	Fanti	020 851 6183
-                    new IVRCallCenterNoMapping().phoneNumber("0208516183").language(Language.FAN).dayOfWeek(DayOfWeek.Monday).startTime(new Time(8, 1)).endTime(new Time(17, 0)),
-                    new IVRCallCenterNoMapping().phoneNumber("0208516183").language(Language.FAN).dayOfWeek(DayOfWeek.Tuesday).startTime(new Time(8, 1)).endTime(new Time(17, 0)),
-                    new IVRCallCenterNoMapping().phoneNumber("0208516183").language(Language.FAN).dayOfWeek(DayOfWeek.Wednesday).startTime(new Time(8, 1)).endTime(new Time(17, 0)),
-                    new IVRCallCenterNoMapping().phoneNumber("0208516183").language(Language.FAN).dayOfWeek(DayOfWeek.Thursday).startTime(new Time(8, 1)).endTime(new Time(17, 0)),
-                    new IVRCallCenterNoMapping().phoneNumber("0208516183").language(Language.FAN).dayOfWeek(DayOfWeek.Friday).startTime(new Time(8, 1)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039934").language(Language.FAN).dayOfWeek(DayOfWeek.Monday).startTime(new Time(8, 1)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039934").language(Language.FAN).dayOfWeek(DayOfWeek.Tuesday).startTime(new Time(8, 1)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039934").language(Language.FAN).dayOfWeek(DayOfWeek.Wednesday).startTime(new Time(8, 1)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039934").language(Language.FAN).dayOfWeek(DayOfWeek.Thursday).startTime(new Time(8, 1)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039934").language(Language.FAN).dayOfWeek(DayOfWeek.Friday).startTime(new Time(8, 1)).endTime(new Time(17, 0)),
 
                     //Mon-Fri	17-21	Fanti 054 434 7554
                     new IVRCallCenterNoMapping().phoneNumber("0544347554").language(Language.FAN).dayOfWeek(DayOfWeek.Monday).startTime(new Time(17, 1)).endTime(new Time(21, 0)),
@@ -75,18 +76,25 @@ public class IVRCallCenterNoMappingSeed extends Seed {
                     new IVRCallCenterNoMapping().phoneNumber("0544347552").language(Language.FAN).dayOfWeek(DayOfWeek.Saturday).startTime(new Time(8, 0)).endTime(new Time(16, 0)),
 
                     //Mon-Fri	08-17	Kassim	020 639 9908
-                    new IVRCallCenterNoMapping().phoneNumber("0206399908").language(Language.KAS).dayOfWeek(DayOfWeek.Monday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
-                    new IVRCallCenterNoMapping().phoneNumber("0206399908").language(Language.KAS).dayOfWeek(DayOfWeek.Tuesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
-                    new IVRCallCenterNoMapping().phoneNumber("0206399908").language(Language.KAS).dayOfWeek(DayOfWeek.Wednesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
-                    new IVRCallCenterNoMapping().phoneNumber("0206399908").language(Language.KAS).dayOfWeek(DayOfWeek.Thursday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
-                    new IVRCallCenterNoMapping().phoneNumber("0206399908").language(Language.KAS).dayOfWeek(DayOfWeek.Friday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039932").language(Language.KAS).dayOfWeek(DayOfWeek.Monday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039932").language(Language.KAS).dayOfWeek(DayOfWeek.Tuesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039932").language(Language.KAS).dayOfWeek(DayOfWeek.Wednesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039932").language(Language.KAS).dayOfWeek(DayOfWeek.Thursday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039932").language(Language.KAS).dayOfWeek(DayOfWeek.Friday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
 
                     //Mon-Fri	08-17	Nankam	020 639 9906
-                    new IVRCallCenterNoMapping().phoneNumber("0206399906").language(Language.NAN).dayOfWeek(DayOfWeek.Monday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
-                    new IVRCallCenterNoMapping().phoneNumber("0206399906").language(Language.NAN).dayOfWeek(DayOfWeek.Tuesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
-                    new IVRCallCenterNoMapping().phoneNumber("0206399906").language(Language.NAN).dayOfWeek(DayOfWeek.Wednesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
-                    new IVRCallCenterNoMapping().phoneNumber("0206399906").language(Language.NAN).dayOfWeek(DayOfWeek.Thursday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
-                    new IVRCallCenterNoMapping().phoneNumber("0206399906").language(Language.NAN).dayOfWeek(DayOfWeek.Friday).startTime(new Time(8, 0)).endTime(new Time(17, 0)));
+                    new IVRCallCenterNoMapping().phoneNumber("0509039933").language(Language.NAN).dayOfWeek(DayOfWeek.Monday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039933").language(Language.NAN).dayOfWeek(DayOfWeek.Tuesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039933").language(Language.NAN).dayOfWeek(DayOfWeek.Wednesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039933").language(Language.NAN).dayOfWeek(DayOfWeek.Thursday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+                    new IVRCallCenterNoMapping().phoneNumber("0509039933").language(Language.NAN).dayOfWeek(DayOfWeek.Friday).startTime(new Time(8, 0)).endTime(new Time(17, 0)));
+
+                    //Mon-Fri                       08-17                    Nurses line (when you press star *)                 020 851 6182
+//                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Monday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+//                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Tuesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+//                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Wednesday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+//                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Thursday).startTime(new Time(8, 0)).endTime(new Time(17, 0)),
+//                    new IVRCallCenterNoMapping().phoneNumber("0208516182").nurseLine(true).dayOfWeek(DayOfWeek.Friday).startTime(new Time(8, 0)).endTime(new Time(17, 0)));
 
             for (IVRCallCenterNoMapping mapping : ivrCallCenterNoMappings) {
                 allIvrCallCenterNoMappings.add(mapping);
