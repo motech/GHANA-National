@@ -57,8 +57,8 @@ public class InboundDecisionTreeSeed extends Seed {
             Node node = prompt(LANGUAGE_PROMPT, EN);
             Map<String, ITransition> transitions = new HashMap<String, ITransition>();
             transitions.put("1", new Transition().setDestinationNode(chooseActionNode(EN, 3)));
-            transitions.put("2", new Transition().setDestinationNode(chooseActionNode(KAS, 3)));
-            transitions.put("3", new Transition().setDestinationNode(chooseActionNode(NAN, 3)));
+            transitions.put("2", new Transition().setDestinationNode(chooseActionNode(NAN, 3)));
+            transitions.put("3", new Transition().setDestinationNode(chooseActionNode(KAS, 3)));
             transitions.put("4", new Transition().setDestinationNode(chooseActionNode(FAN, 3)));
             transitions.put("*", new ConnectToCallCenterTransition(true));
             transitions.put("?", new Transition().setDestinationNode(chooseLanguageNode(retry - 1)));
