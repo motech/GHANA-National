@@ -4,10 +4,15 @@ import ch.lambdaj.Lambda;
 import org.apache.commons.collections.CollectionUtils;
 import org.motechproject.MotechException;
 import org.motechproject.decisiontree.FlowSession;
-import org.motechproject.decisiontree.model.*;
+import org.motechproject.decisiontree.model.AudioPrompt;
+import org.motechproject.decisiontree.model.ITransition;
+import org.motechproject.decisiontree.model.Node;
+import org.motechproject.decisiontree.model.Prompt;
+import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.ivr.transition.ConnectToCallCenterTransition;
+import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
@@ -27,7 +32,6 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.not;
 import static org.motechproject.ghana.national.domain.AlertType.MOBILE_MIDWIFE;
 import static org.motechproject.ghana.national.domain.ivr.AudioPrompts.NO_MESSAGE_IN_OUTBOX;
-import static org.motechproject.ghana.national.domain.mobilemidwife.Language.valueOf;
 import static org.motechproject.ghana.national.repository.AllPatientsOutbox.AUDIO_CLIP_NAME;
 import static org.motechproject.ghana.national.repository.AllPatientsOutbox.TYPE;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -63,10 +67,10 @@ public class PlayMessagesFromOutboxTree {
         final List<String> mmClipNames = getClipNames(mmClips);
 
         if (isEmpty(audioClips))
-            return node.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(NO_MESSAGE_IN_OUTBOX.value(), valueOf(language))));
+            return node.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(NO_MESSAGE_IN_OUTBOX.value(), Language.valueOf(language))));
 
         for (String scheduleClipName : scheduleClipNames) {
-            node.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(scheduleClipName, valueOf(language))));
+            node.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(scheduleClipName, Language.valueOf(language))));
         }
 
         final Node mmNode = new Node();
@@ -149,11 +153,11 @@ public class PlayMessagesFromOutboxTree {
             transitions.put(i + 1 + "", new Transition().setDestinationNode(transitionNode));
         }
         transitions.put("timeout", new Transition().setDestinationNode(new Node()));
-        transitions.put("?", new Transition().setDestinationNode(connectToCallCenterTransition.getAsNode(valueOf(language), userPhoneNumber)));
+        transitions.put("?", new Transition().setDestinationNode(connectToCallCenterTransition.getAsNode(Language.valueOf(language), userPhoneNumber)));
 
 
-        rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingClips.get(0), valueOf(language))))
-                .addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingPrompts.get(0), valueOf(language))))
+        rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingClips.get(0), Language.valueOf(language))))
+                .addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingPrompts.get(0), Language.valueOf(language))))
                 .setTransitions(transitions);
         rootNode.setTransitionNumDigits("1");
         rootNode.setTransitionTimeout(callCenterDtmfTimeout);

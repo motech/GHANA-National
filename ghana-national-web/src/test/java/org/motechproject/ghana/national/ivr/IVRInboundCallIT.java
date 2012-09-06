@@ -13,12 +13,14 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
 import org.motechproject.retry.service.RetryService;
+import org.motechproject.testing.utils.BaseUnitTest;
+import org.motechproject.util.DateUtil;
 
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class IVRInboundCallIT {
+public class IVRInboundCallIT extends BaseUnitTest {
 
     private static VerboiceStub verboiceStub;
     private static TestAppServer testAppServer;
@@ -59,29 +61,18 @@ public class IVRInboundCallIT {
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
+    public static void shutdown() {
         testAppServer.shutdownApplication();
     }
 
     @Test
-    public void shouldHangupIfUserDoesNotSelectAValidLanguageOptionAfter20SecTheSecondTime() {
+    public void shouldRedirectToCallcenterOnUserWait() {
         String response = verboiceStub.handleIncomingCall();
-        TwiML expectedAction1 = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, "5", null).addPrompt(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.LANGUAGE_PROMPT), "EN"))))
-                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=L3RpbWVvdXQ&Digits=timeout")));
-        TwiML expectedAction2 = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, "5", null).addPrompt(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.LANGUAGE_PROMPT), "EN"))))
-                .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=L3RpbWVvdXQvdGltZW91dA&Digits=timeout")));
-        TwiML expectedAction3 = new TwiML().addAction(new TwiML.Exit());
         String repeatResponse = verboiceStub.handleTimeout(response);
-        verboiceStub.expect(expectedAction1, repeatResponse);
-        String repeatResponse2 = verboiceStub.handleTimeout(repeatResponse);
-        verboiceStub.expect(expectedAction2, repeatResponse2);
-        String repeatResponse3 = verboiceStub.handleTimeout(repeatResponse2);
-        verboiceStub.expect(expectedAction3, repeatResponse3);
+       validateConnectToCallCenter(repeatResponse);
     }
 
-    private void validateConnectToCallCenter(VerboiceStub verboiceStub, String response) {
+    private void validateConnectToCallCenter(String response) {
         TwiML callCenterDial = new TwiML().addAction(new TwiML.Dial());
         TwiML callCenterClosed = new TwiML().addAction(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.CALL_CENTER_DIAL_FAILED), "EN")));
         if (!verboiceStub.matches(callCenterDial, response))
@@ -101,11 +92,11 @@ public class IVRInboundCallIT {
 
         String connectToCallCenterOption = "0";
         String responseForConnectToCallCenterOption = verboiceStub.handle(response, connectToCallCenterOption);
-        validateConnectToCallCenter(verboiceStub, responseForConnectToCallCenterOption);
+        validateConnectToCallCenter(responseForConnectToCallCenterOption);
 
         connectToCallCenterOption = "*";
         responseForConnectToCallCenterOption = verboiceStub.handle(response, connectToCallCenterOption);
-        validateConnectToCallCenter(verboiceStub, responseForConnectToCallCenterOption);
+        validateConnectToCallCenter(responseForConnectToCallCenterOption);
     }
 
     @Test
@@ -116,17 +107,13 @@ public class IVRInboundCallIT {
 
         String reasonForCallPrompt = fileName(AudioPrompts.REASON_FOR_CALL_PROMPT);
         TwiML expectedActions = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, "5", null).addPrompt(new TwiML.Play(testAppServer.clipPath(reasonForCallPrompt, "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(reasonForCallPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzE&Digits=timeout")));
 
         verboiceStub.expect(expectedActions, response);
 
         response = verboiceStub.handleTimeout(response);
-        response = verboiceStub.handleTimeout(response);
-        response = verboiceStub.handleTimeout(response);
-
-        expectedActions = new TwiML().addAction(new TwiML.Exit());
-        verboiceStub.expect(expectedActions, response);
+        validateConnectToCallCenter(response);
     }
 
     @Test
@@ -173,7 +160,7 @@ public class IVRInboundCallIT {
 
         String selectLanguagePrompt = fileName(AudioPrompts.LANGUAGE_PROMPT);
         TwiML expectedActions = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, "5", null).addPrompt(new TwiML.Play(testAppServer.clipPath(selectLanguagePrompt, "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(selectLanguagePrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=Lw&Digits=timeout")));
 
         verboiceStub.expect(expectedActions, response);
@@ -182,7 +169,7 @@ public class IVRInboundCallIT {
 
         String reasonForCallPrompt = fileName(AudioPrompts.REASON_FOR_CALL_PROMPT);
         expectedActions = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, "5", null).addPrompt(new TwiML.Play(testAppServer.clipPath(reasonForCallPrompt, "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(reasonForCallPrompt, "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzE&Digits=timeout")));
 
         verboiceStub.expect(expectedActions, response);
@@ -204,10 +191,11 @@ public class IVRInboundCallIT {
 
     @Test
     public void shouldConnectToCallCenterOnPressingAsterisk() {
+        mockCurrentDate(DateUtil.newDateTime(2012, 9, 5, 10, 0, 0));
         String response = verboiceStub.handleIncomingCall();
         String invalidLanguageOption = "*";
         response = verboiceStub.handle(response, invalidLanguageOption);
-        validateConnectToCallCenter(verboiceStub, response);
+        validateConnectToCallCenter(response);
         assertTrue("pressing * key should redirect to a special nurse line.", response.contains("0208516182"));
     }
 
@@ -358,7 +346,7 @@ public class IVRInboundCallIT {
 
         // invalid input
         String invalidInputResponse = verboiceStub.handle(response, "invalid");
-        validateConnectToCallCenter(verboiceStub, invalidInputResponse);
+        validateConnectToCallCenter(invalidInputResponse);
 
         // play second message from first message menu
         String playSecondMessageOption = "2";
@@ -375,7 +363,7 @@ public class IVRInboundCallIT {
 
         // invalid input
         invalidInputResponse = verboiceStub.handle(secondMessageResponse, "invalid");
-        validateConnectToCallCenter(verboiceStub, invalidInputResponse);
+        validateConnectToCallCenter(invalidInputResponse);
     }
 
     @Test
@@ -520,10 +508,10 @@ public class IVRInboundCallIT {
     public void shouldRetryThreeTimesOnInvalidKeyAtTheStart() {
         String response = verboiceStub.handleIncomingCall();
         TwiML expectedAction1 = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, "5", null).addPrompt(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.LANGUAGE_PROMPT), "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.LANGUAGE_PROMPT), "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzY&Digits=timeout")));
         TwiML expectedAction2 = new TwiML()
-                .addAction(new TwiML.Gather(ANYTHING, "5", null).addPrompt(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.LANGUAGE_PROMPT), "EN"))))
+                .addAction(new TwiML.Gather(ANYTHING, TIMEOUT_IN_SEC, null).addPrompt(new TwiML.Play(testAppServer.clipPath(fileName(AudioPrompts.LANGUAGE_PROMPT), "EN"))))
                 .addAction(new TwiML.Redirect(testAppServer.treePath(INBOUND_DECISION_TREE_NAME, "&trP=LzYvNw&Digits=timeout")));
         TwiML expectedAction3 = new TwiML().addAction(new TwiML.Exit());
         String repeatResponse = verboiceStub.handle(response, "6");
