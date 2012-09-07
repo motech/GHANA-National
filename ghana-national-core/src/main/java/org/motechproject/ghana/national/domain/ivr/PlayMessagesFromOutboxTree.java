@@ -153,7 +153,9 @@ public class PlayMessagesFromOutboxTree {
             transitions.put(i + 1 + "", new Transition().setDestinationNode(transitionNode));
         }
         transitions.put("timeout", new Transition().setDestinationNode(new Node()));
-        transitions.put("?", new Transition().setDestinationNode(connectToCallCenterTransition.getAsNode(Language.valueOf(language), userPhoneNumber)));
+        transitions.put("?", new Transition().setDestinationNode(new Node()));
+        transitions.put("0", new Transition().setDestinationNode(connectToCallCenterTransition.setNurseLine(false).getAsNode(Language.valueOf(language), userPhoneNumber)));
+        transitions.put("*", new Transition().setDestinationNode(connectToCallCenterTransition.setNurseLine(true).getAsNode(Language.valueOf(language), userPhoneNumber)));
 
 
         rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingClips.get(0), Language.valueOf(language))))

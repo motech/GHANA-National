@@ -100,7 +100,7 @@ public class IVRInboundCallIT extends BaseUnitTest {
     }
 
     @Test
-    public void shouldDisconnectTheCallIfUserDoesNotSelectionAnOptionForReasonForTheCall() {
+    public void shouldConnectToCallCenterIfUserDoesNotSelectionAnOptionForReasonForTheCall() {
         String response = verboiceStub.handleIncomingCall();
         String englishLanguageChoice = "1";
         response = verboiceStub.handle(response, englishLanguageChoice);
@@ -193,10 +193,52 @@ public class IVRInboundCallIT extends BaseUnitTest {
     public void shouldConnectToCallCenterOnPressingAsterisk() {
         mockCurrentDate(DateUtil.newDateTime(2012, 9, 5, 10, 0, 0));
         String response = verboiceStub.handleIncomingCall();
-        String invalidLanguageOption = "*";
-        response = verboiceStub.handle(response, invalidLanguageOption);
+        String callcenterButton = "*";
+        response = verboiceStub.handle(response, callcenterButton);
         validateConnectToCallCenter(response);
         assertTrue("pressing * key should redirect to a special nurse line.", response.contains("0208516182"));
+
+        response = verboiceStub.handleIncomingCall();
+        String languageOption = "1";
+        response = verboiceStub.handle(response, languageOption);
+        response = verboiceStub.handle(response, callcenterButton);
+        validateConnectToCallCenter(response);
+        assertTrue("pressing * key should redirect to a special nurse line.", response.contains("0208516182"));
+
+        response = verboiceStub.handleIncomingCall();
+        languageOption = "1";
+        response = verboiceStub.handle(response, languageOption);
+        response = verboiceStub.handle(response, languageOption);
+        response = verboiceStub.handle(response, callcenterButton);
+        response = verboiceStub.handle(response, callcenterButton);
+        validateConnectToCallCenter(response);
+        assertTrue("pressing * key should redirect to a special nurse line.", response.contains("0208516182"));
+    }
+
+    @Test
+    public void shouldConnectToCallCenterOnPressingZero() {
+        mockCurrentDate(DateUtil.newDateTime(2012, 9, 5, 10, 0, 0));
+        String response = verboiceStub.handleIncomingCall();
+        String callcenterButton = "0";
+        response = verboiceStub.handle(response, callcenterButton);
+        validateConnectToCallCenter(response);
+        assertTrue("pressing 0 key should redirect to a language specific call center", response.contains("0206369910"));
+
+        response = verboiceStub.handleIncomingCall();
+        String languageOption = "1";
+        response = verboiceStub.handle(response, languageOption);
+        response = verboiceStub.handle(response, callcenterButton);
+        validateConnectToCallCenter(response);
+        assertTrue("pressing 0 key should redirect to a language specific call center", response.contains("0206369910"));
+
+        response = verboiceStub.handleIncomingCall();
+        languageOption = "1";
+        response = verboiceStub.handle(response, languageOption);
+        response = verboiceStub.handle(response, languageOption);
+        response = verboiceStub.handle(response, callcenterButton);
+        response = verboiceStub.handle(response, callcenterButton);
+        validateConnectToCallCenter(response);
+        assertTrue("pressing 0 key should redirect to a language specific call center", response.contains("0206369910"));
     }
 
     @Test
@@ -314,7 +356,7 @@ public class IVRInboundCallIT extends BaseUnitTest {
     }
 
     @Test
-    public void shouldConnectToCallCenterIfUserProvidesAnInvalidInput_Or_OptsForItWhileListeningToMMMessages() {
+    public void shouldConnectToCallCenterIfUserPressesZero_Or_AsteriskWhileListeningToMMMessages() {
 
         String response = verboiceStub.handleIncomingCall();
         String englishLanguageChoice = "1";
@@ -345,8 +387,13 @@ public class IVRInboundCallIT extends BaseUnitTest {
         verboiceStub.expect(expectedActions, response);
 
         // invalid input
-        String invalidInputResponse = verboiceStub.handle(response, "invalid");
+        String invalidInputResponse = verboiceStub.handle(response, "0");
         validateConnectToCallCenter(invalidInputResponse);
+
+
+        String hangupResponse = verboiceStub.handle(response, "invalid");
+        TwiML expectedXML = new TwiML().addAction(new TwiML.Exit());
+        verboiceStub.expect(expectedXML, hangupResponse);
 
         // play second message from first message menu
         String playSecondMessageOption = "2";
@@ -362,8 +409,12 @@ public class IVRInboundCallIT extends BaseUnitTest {
         verboiceStub.expect(expectedActions, secondMessageResponse);
 
         // invalid input
-        invalidInputResponse = verboiceStub.handle(secondMessageResponse, "invalid");
+        invalidInputResponse = verboiceStub.handle(secondMessageResponse, "*");
         validateConnectToCallCenter(invalidInputResponse);
+
+        hangupResponse = verboiceStub.handle(secondMessageResponse, "invalid");
+        expectedXML = new TwiML().addAction(new TwiML.Exit());
+        verboiceStub.expect(expectedXML, hangupResponse);
     }
 
     @Test
