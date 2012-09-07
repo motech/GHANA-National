@@ -21,7 +21,6 @@ import static org.hamcrest.Matchers.equalTo;
 public class AllStaffs {
 
     private AllStaffTypes allStaffTypes;
-    //todo remove dependency on userAdapter - move to service layer - this class is just an abstraction of couch repo
     private MRSUserAdapter userAdapter;
 
     @Autowired

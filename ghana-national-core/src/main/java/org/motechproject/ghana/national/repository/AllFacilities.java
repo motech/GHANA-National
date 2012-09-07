@@ -28,7 +28,6 @@ import static org.hamcrest.core.Is.is;
 
 @Repository
 public class AllFacilities extends MotechBaseRepository<Facility> {
-    //todo remove dependency on facilityAdapter, allMotechModuleFacilities, move to service layer - this class is just an abstraction of couch repo
     private MRSFacilityAdapter facilityAdapter;
     private AllMotechModuleFacilities allMotechModuleFacilities;
 

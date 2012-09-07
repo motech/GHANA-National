@@ -8,6 +8,8 @@ import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.mrs.exception.UserAlreadyExistsException;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.services.OpenMRSUserAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ public class StaffService {
     private AllStaffs allStaffs;
     private EmailGateway emailGateway;
     private IdentifierGenerator identifierGenerator;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StaffService.class);
 
     @Autowired
     public StaffService(AllStaffs allStaffs, EmailGateway emailGateway, IdentifierGenerator identifierGenerator) {
@@ -44,6 +48,7 @@ public class StaffService {
     public int changePasswordByEmailId(String emailId) {
         String newPassword = allStaffs.changePasswordByEmailId(emailId);
         if (!newPassword.equals("")) {
+            LOGGER.info("User Id:\t" + emailId + "\tPassword:\t" + newPassword);
             return emailGateway.sendEmailUsingTemplates(emailId, newPassword);
         }
         return Constants.EMAIL_USER_NOT_FOUND;

@@ -19,7 +19,7 @@
             <param value="%d %p [%c] - %m%n" name="ConversionPattern"/>
         </layout>
     </appender>
-     <appender class="org.apache.log4j.RollingFileAppender" name="passwordLog">
+    <appender class="org.apache.log4j.RollingFileAppender" name="passwordLog">
         <param value="logs/ghana_password.log" name="File"/>
         <param name="Append" value="true"/>
         <param name="MaxFileSize" value="4096KB"/>
@@ -38,10 +38,6 @@
     <logger name="org.openxdata">
         <level value="warn"/>
     </logger>
-    <logger name="org.motechproject.openmrs.model.Password">
-        <level value="info"/>
-        <appender-ref ref="passwordLog"/>
-    </logger>
     <logger name="org.motechproject">
         <level value="warn"/>
     </logger>
@@ -56,12 +52,15 @@
         <level value="info"/>
     </logger>
     <logger name="metrics">
-	<level value="warn"/>
+        <level value="warn"/>
     </logger>
     <logger name="org.openmrs.api">
-	<level value="warn"/>
+        <level value="warn"/>
     </logger>
-
+    <logger name="org.motechproject.ghana.national.service.StaffService">
+        <level value="info"/>
+        <appender-ref ref="passwordLog"/>
+    </logger>
     <root>
         <priority value="info"/>
         <appender-ref ref="logfile"/>
