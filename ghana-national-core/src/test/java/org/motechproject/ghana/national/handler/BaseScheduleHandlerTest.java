@@ -7,21 +7,35 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.EventKeys;
+import org.motechproject.event.MotechEvent;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.AggregationMessageIdentifier;
+import org.motechproject.ghana.national.domain.AlertType;
+import org.motechproject.ghana.national.domain.AlertWindow;
+import org.motechproject.ghana.national.domain.Concept;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientAttributes;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.PatientMedium;
 import org.motechproject.ghana.national.messagegateway.domain.MessageRecipientType;
-import org.motechproject.ghana.national.repository.*;
+import org.motechproject.ghana.national.repository.AllObservations;
+import org.motechproject.ghana.national.repository.AllPatientsOutbox;
+import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.ghana.national.repository.ScheduleJsonReader;
+import org.motechproject.ghana.national.repository.VoiceGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.mrs.model.*;
+import org.motechproject.mrs.model.Attribute;
+import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSObservation;
+import org.motechproject.mrs.model.MRSPatient;
+import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.scheduler.MotechSchedulerService;
-import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.scheduletracking.api.domain.Milestone;
 import org.motechproject.scheduletracking.api.domain.MilestoneAlert;
 import org.motechproject.scheduletracking.api.domain.WindowName;
@@ -39,11 +53,24 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FIRST_NAME;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.LAST_NAME;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.MILESTONE_NAME;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.MOTECH_ID;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.SERIAL_NUMBER;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.WINDOW;
 import static org.motechproject.ghana.national.domain.SMSTemplateTest.assertContainsTemplateValues;
-import static org.motechproject.ghana.national.domain.SmsTemplateKeys.*;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_DUE_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_IPT;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_LATE_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PATIENT_PNC_BABY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PNC_CHILD_SMS_KEY;
+import static org.motechproject.ghana.national.domain.SmsTemplateKeys.PREGNANCY_ALERT_SMS_KEY;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.now;
 
@@ -123,10 +150,10 @@ public class BaseScheduleHandlerTest {
         final String milestoneName = "milestone1";
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
         when(mockPatientService.patientByOpenmrsId(anyString())).thenReturn(new Patient(new MRSPatient("121", new MRSPerson(), new MRSFacility("123"))));
-        careScheduleHandler.sendAggregatedMessageToPatient(PATIENT_IPT, new MilestoneEvent(patientId, scheduleName, milestoneAlert, WindowName.earliest.name(), null));
+        careScheduleHandler.sendAggregatedMessageToPatient(PATIENT_IPT, new MilestoneEvent(patientId, scheduleName, milestoneAlert, WindowName.earliest.name(), null, null));
         verify(mockSMSGateway, never()).dispatchSMSToAggregator(anyString(), anyMap(), anyString(), anyString(), org.mockito.Matchers.<MessageRecipientType>any());
 
-        careScheduleHandler.sendAggregatedMessageToPatient(PATIENT_IPT, new MilestoneEvent(patientId, scheduleName, milestoneAlert, WindowName.max.name(), null));
+        careScheduleHandler.sendAggregatedMessageToPatient(PATIENT_IPT, new MilestoneEvent(patientId, scheduleName, milestoneAlert, WindowName.max.name(), null, null));
         verify(mockSMSGateway, never()).dispatchSMSToAggregator(anyString(), anyMap(), anyString(), anyString(), org.mockito.Matchers.<MessageRecipientType>any());
     }
 
@@ -214,7 +241,7 @@ public class BaseScheduleHandlerTest {
         final String lastname = "lastname";
         final String serialNumber = "serialNumber";
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
-        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null, null);
         String patientPhoneNumber = "123456";
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
         when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMRSId,patientMotechId, person, new MRSFacility("123"))));
@@ -252,7 +279,7 @@ public class BaseScheduleHandlerTest {
         String mmRegisteredPhoneNumber = "4353543";
         String patientPhoneNumber = "123456";
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
-        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null, null);
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate()).addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), patientPhoneNumber));
         when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(new Patient(new MRSPatient(patientMRSId,patientMotechId, person, new MRSFacility("123"))));
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
@@ -286,7 +313,7 @@ public class BaseScheduleHandlerTest {
         String patientMotechId = "patientmotechid";
         String scheduleName = ScheduleNames.CWC_MEASLES_VACCINE.getName();
         String windowName = WindowName.due.name();
-        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, DateTime.now());
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, DateTime.now(), null);
         Patient patient = new Patient(new MRSPatient(patientId, patientMotechId, new MRSPerson(), null));
         when(mockPatientService.patientByOpenmrsId(patientId)).thenReturn(patient);
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(DateTime.now()).setMedium(Medium.VOICE).setLanguage(Language.EN);
@@ -321,7 +348,7 @@ public class BaseScheduleHandlerTest {
         when(mockFacilityService.getFacility(facilityId)).thenReturn(facility);
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.SERIAL_NUMBER.getName())).thenReturn(new MRSObservation<String>(new Date(), Concept.SERIAL_NUMBER.getName(), serialNumber));
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
-        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null, null);
         careScheduleHandler.sendAggregatedSMSToFacility(PREGNANCY_ALERT_SMS_KEY, milestoneEvent);
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
@@ -362,7 +389,7 @@ public class BaseScheduleHandlerTest {
         final String milestoneName = "milestone1";
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
 
-        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null, null);
 
         careScheduleHandler.sendInstantSMSToFacility(PNC_CHILD_SMS_KEY, milestoneEvent);
 
@@ -401,7 +428,7 @@ public class BaseScheduleHandlerTest {
         when(mockPatientService.receiveSMSOnPhoneNumber(patientMotechId)).thenReturn(phoneNumber);
 
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
-        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null, null);
 
         careScheduleHandler.sendInstantMessageToPatient(PATIENT_PNC_BABY, milestoneEvent, AlertType.CARE);
 
@@ -433,7 +460,7 @@ public class BaseScheduleHandlerTest {
         final String firstName = "firstName";
         final String lastname = "lastname";
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
-        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null, null);
         String motherPhoneNumber = "123456";
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate());
         MRSPerson motherperson = new MRSPerson().firstName(firstName + "mother").lastName(lastname + "mother").addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), motherPhoneNumber));
@@ -462,7 +489,7 @@ public class BaseScheduleHandlerTest {
         final String firstName = "firstName";
         final String lastname = "lastname";
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone(milestoneName, Period.days(1), Period.days(1), Period.days(1), Period.days(1)), DateTime.now());
-        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null);
+        MilestoneEvent milestoneEvent = new MilestoneEvent(patientId, scheduleName, milestoneAlert, windowName, null, null);
         String motherPhoneNumber = "123456";
         MRSPerson person = new MRSPerson().firstName(firstName).lastName(lastname).dateOfBirth(newDate(2000, 1, 1).toDate());
         MRSPerson motherperson = new MRSPerson().firstName(firstName + "mother").lastName(lastname + "mother").addAttribute(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), motherPhoneNumber));

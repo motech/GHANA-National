@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.exception;
 
-import org.motechproject.scheduler.domain.MotechEvent;
+import org.motechproject.event.MotechEvent;
 
 public class EventHandlerException extends RuntimeException {
     public EventHandlerException(MotechEvent motechEvent, Exception e) {

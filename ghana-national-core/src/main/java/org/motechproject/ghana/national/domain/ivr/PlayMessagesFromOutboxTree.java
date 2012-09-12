@@ -52,7 +52,7 @@ public class PlayMessagesFromOutboxTree {
     private ConnectToCallCenterTransition connectToCallCenterTransition;
 
     @Value("#{ghanaNationalProperties['callcenter.dtmf.timeout']}")
-    private String callCenterDtmfTimeout;
+    private Integer callCenterDtmfTimeout;
 
     @Value("#{ghanaNationalProperties['callcenter.dtmf.finishonkey']}")
     private String callCenterFinishOnKey;
@@ -91,15 +91,15 @@ public class PlayMessagesFromOutboxTree {
                 return node;
             }
         });
-        node.setTransitionTimeout("0");
+        node.setMaxTransitionTimeout(0);
         return node;
     }
 
     private void cloneNodeWithoutPrompts(Node sourceNode, Node destinationNode) {
-        destinationNode.setTransitionPrompts(sourceNode.getTransitionPrompts());
-        destinationNode.setTransitionFinishOnKey(sourceNode.getTransitionFinishOnKey());
-        destinationNode.setTransitionNumDigits(sourceNode.getTransitionNumDigits());
-        destinationNode.setTransitionTimeout(sourceNode.getTransitionTimeout());
+        destinationNode.setPrompts((Prompt[])sourceNode.getPrompts().toArray());   //TODO
+        destinationNode.setTransitionKeyEndMarker(sourceNode.getTransitionKeyEndMarker());
+        destinationNode.setMaxTransitionInputDigit(sourceNode.getMaxTransitionInputDigit());
+        destinationNode.setMaxTransitionTimeout(sourceNode.getMaxTransitionTimeout());
         destinationNode.setTransitions(sourceNode.getTransitions());
     }
 
@@ -161,16 +161,16 @@ public class PlayMessagesFromOutboxTree {
         rootNode.addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingClips.get(0), Language.valueOf(language))))
                 .addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(pendingPrompts.get(0), Language.valueOf(language))))
                 .setTransitions(transitions);
-        rootNode.setTransitionNumDigits("1");
-        rootNode.setTransitionTimeout(callCenterDtmfTimeout);
-        rootNode.setTransitionFinishOnKey(callCenterFinishOnKey);
+        rootNode.setMaxTransitionInputDigit(1);
+        rootNode.setMaxTransitionTimeout(callCenterDtmfTimeout);
+        rootNode.setTransitionKeyEndMarker(callCenterFinishOnKey);
 
         for (Prompt prompt : rootNode.getPrompts()) {
             node.addPrompts(prompt);
         }
-        node.setTransitionNumDigits("1");
-        node.setTransitionTimeout(callCenterDtmfTimeout);
-        node.setTransitionFinishOnKey(callCenterFinishOnKey);
+        node.setMaxTransitionInputDigit(1);
+        node.setMaxTransitionTimeout(callCenterDtmfTimeout);
+        node.setTransitionKeyEndMarker(callCenterFinishOnKey);
         node.setTransitions(transitions);
     }
 

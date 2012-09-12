@@ -5,9 +5,9 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.motechproject.event.MotechEvent;
 import org.motechproject.ghana.national.domain.SmsAuditLog;
 import org.motechproject.ghana.national.repository.AllSmsAuditLogs;
-import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.sms.api.constants.EventDataKeys;
 import org.motechproject.sms.http.SmsDeliveryFailureException;
 

@@ -99,7 +99,10 @@ public class ChildVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> requestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(mockAllSchedulesAndMessages).enrollOrFulfill(requestCaptor.capture(), eq(visitDate.toLocalDate()), eq(visitTime));
-        assertEnrollmentRequest(new EnrollmentRequest(patientId, PNC2.scheduleName(), null, visitDate.toLocalDate(), visitTime, visitDate.toLocalDate(), visitTime, null, null)
+        assertEnrollmentRequest(
+                new EnrollmentRequest().setExternalId(patientId)
+                .setScheduleName(PNC2.scheduleName()).setEnrollmentDate(visitDate.toLocalDate())
+                .setReferenceDate(visitDate.toLocalDate()).setReferenceTime(visitTime)
                 , requestCaptor.getValue());
     }
 
@@ -268,7 +271,10 @@ public class ChildVisitServiceTest extends BaseUnitTest {
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
 
         verify(mockAllSchedulesAndMessages).enrollOrFulfill(captor.capture(), eq(visitDate));
-        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, CWC_IPT_VACCINE.getName(), deliveryTime, visitDate, deliveryTime, visitDate, null, ipTiDose.milestoneName(), null), captor.getAllValues().get(0));
+        assertEnrollmentRequest(
+                new EnrollmentRequest().setExternalId(mrsPatientId)
+                .setScheduleName(CWC_IPT_VACCINE.getName()).setPreferredAlertTime(deliveryTime)
+                .setReferenceDate(visitDate).setStartingMilestoneName(ipTiDose.milestoneName()).setReferenceTime(deliveryTime).setEnrollmentDate(visitDate), captor.getAllValues().get(0));
     }
 
     @Test

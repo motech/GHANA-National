@@ -68,7 +68,7 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
     @Before
     public void setUp() {
         preferredAlertTime = new Time(10, 10);
-        EnrollmentAlertService enrollmentAlertService = new EnrollmentAlertService(motechSchedulerService);
+        EnrollmentAlertService enrollmentAlertService = new EnrollmentAlertService(motechSchedulerService, null); //TODO
         EnrollmentDefaultmentService enrollmentDefaultmentService = new EnrollmentDefaultmentService(motechSchedulerService);
         EnrollmentService enrollmentService = new EnrollmentService(allSchedules, allEnrollments, enrollmentAlertService, enrollmentDefaultmentService);
         scheduleTrackingService = new ScheduleTrackingServiceImpl(allSchedules, allEnrollments, enrollmentService, null, enrollmentRecordMapper);
@@ -258,7 +258,11 @@ public abstract class BaseScheduleTrackingTest extends BaseUnitTest {
 
     private EnrollmentRequest enrollmentRequest(String externalId, String scheduleName, Time preferredAlertTime, LocalDate referenceDate, Time referenceTime,
                                                 LocalDate registrationDate, Time registrationTime, String startMilestone, Map<String, String> metadata) {
-        return new EnrollmentRequest(externalId, scheduleName, preferredAlertTime, referenceDate, referenceTime, registrationDate, registrationTime, startMilestone, metadata);
+        return new EnrollmentRequest().setExternalId(externalId)
+                .setScheduleName(scheduleName).setPreferredAlertTime(preferredAlertTime)
+                .setReferenceDate(referenceDate).setReferenceTime(referenceTime)
+                .setEnrollmentDate(registrationDate).setEnrollmentTime(registrationTime)
+                .setStartingMilestoneName(startMilestone).setMetadata(metadata);
     }
 
     protected void fulfillCurrentMilestone(LocalDate fulfillmentDate) {

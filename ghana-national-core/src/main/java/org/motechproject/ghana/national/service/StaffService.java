@@ -36,7 +36,7 @@ public class StaffService {
         Map userData = allStaffs.saveUser(mrsUser);
         final MRSUser openMRSUser = (MRSUser) userData.get(OpenMRSUserAdapter.USER_KEY);
         if (StaffType.Role.isAdmin(openMRSUser.getPerson().attrValue(Constants.PERSON_ATTRIBUTE_TYPE_STAFF_TYPE))) {
-            emailGateway.sendEmailUsingTemplates(openMRSUser.getUserName(), (String) userData.get(OpenMRSUserAdapter.PASSWORD_USER_KEY));
+            emailGateway.sendEmailUsingTemplates(openMRSUser.getUserName(), (String) userData.get(OpenMRSUserAdapter.PASSWORD_KEY));
         }
         return openMRSUser;
     }

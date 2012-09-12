@@ -58,7 +58,7 @@ public class AllSchedulesAndMessagesTest {
 
 
         Time fulfillmentTime = new Time(10, 10);
-        final EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, scheduleName, null, null, null, null, null, null, null);
+        final EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setExternalId(externalId).setScheduleName(scheduleName);
         allSchedulesAndMessages.enrollOrFulfill(enrollmentRequest, fulfillmentDate, fulfillmentTime);
         verify(allCareSchedules).enrollOrFulfill(enrollmentRequest, fulfillmentDate, fulfillmentTime);
         verify(messageGateway).delete(new AggregationMessageIdentifier(externalId, scheduleName).getIdentifier());

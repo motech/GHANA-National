@@ -25,10 +25,10 @@ import static org.motechproject.ghana.national.domain.mobilemidwife.Language.val
 public class MotechIdValidationTransition extends Transition {
 
     @Value("#{ghanaNationalProperties['callcenter.dtmf.timeout']}")
-    private String callCenterDtmfTimeout;
+    private Integer callCenterDtmfTimeout;
 
     @Value("#{ghanaNationalProperties['callcenter.no.of.digits.in.motech.id']}")
-    private String noOfDigitsInMotechId;
+    private Integer noOfDigitsInMotechId;
 
     @JsonProperty
     String language;
@@ -117,11 +117,11 @@ public class MotechIdValidationTransition extends Transition {
         String invalidMotechIdPromptURL = ivrClipManager.urlFor(INVALID_MOTECH_ID_PROMPT.value(), valueOf(language));
         Node node = new Node();
         if (pendingRetries != 1) {
-            node.setTransitionTimeout(callCenterDtmfTimeout);
+            node.setMaxTransitionTimeout(callCenterDtmfTimeout);
             // As requested by david, we expect 7 digits for motech id instead of finish on key
             //  node.setTransitionFinishOnKey(callCenterFinishOnKey);
-            node.setTransitionNumDigits(noOfDigitsInMotechId);
-            node.addTransitionPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));
+            node.setMaxTransitionInputDigit(noOfDigitsInMotechId);
+            node.addPrompts(new AudioPrompt().setAudioFileUrl(invalidMotechIdPromptURL));
             node.addTransition("0", new Transition().setDestinationNode(connectToCallCenterTransition.setNurseLine(false).getAsNode(valueOf(language), callerPhoneNumber)));
             node.addTransition("*", new Transition().setDestinationNode(connectToCallCenterTransition.setNurseLine(true).getAsNode(valueOf(language), callerPhoneNumber)));
             node.addTransition("timeout", new Transition().setDestinationNode(connectToCallCenterTransition.setNurseLine(false).getAsNode(valueOf(language), callerPhoneNumber)));
@@ -139,11 +139,11 @@ public class MotechIdValidationTransition extends Transition {
         return midwifeEnrollment != null && midwifeEnrollment.getMedium().equals(Medium.VOICE);
     }
 
-    public String getCallCenterDtmfTimeout() {
+    public Integer getCallCenterDtmfTimeout() {
         return callCenterDtmfTimeout;
     }
 
-    public String getNoOfDigitsInMotechId() {
+    public Integer getNoOfDigitsInMotechId() {
         return noOfDigitsInMotechId;
     }
 

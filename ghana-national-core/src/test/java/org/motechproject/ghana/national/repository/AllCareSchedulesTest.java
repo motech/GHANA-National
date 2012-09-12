@@ -52,7 +52,7 @@ public class AllCareSchedulesTest {
     public void shouldEnrollAndFulfilIfNoEnrollmentsWereFoundForTheSchedule() {
         String scheduleName = "scheduleName";
         String externalId = "12";
-        EnrollmentRequest anyEnrollmentRequest = new EnrollmentRequest(externalId, scheduleName, new Time(12, 0), new LocalDate(), null, null, null, null, null);
+        EnrollmentRequest anyEnrollmentRequest = new EnrollmentRequest().setExternalId(externalId).setScheduleName(scheduleName).setPreferredAlertTime(new Time(12, 0)).setReferenceDate(new LocalDate());
         EnrollmentRecord newEnrollment = mock(EnrollmentRecord.class);
         when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(null,newEnrollment);
 
@@ -66,7 +66,7 @@ public class AllCareSchedulesTest {
     public void shouldNotEnrollWhileFulfillingIfEnrollmentsWereFoundForTheSchedule() {
         String scheduleName = "scheduleName";
         String externalId = "12";
-        EnrollmentRequest anyEnrollmentRequest = new EnrollmentRequest(externalId, scheduleName, new Time(12, 0), new LocalDate(), null, null, null, null, null);
+        EnrollmentRequest anyEnrollmentRequest = new EnrollmentRequest().setExternalId(externalId).setScheduleName(scheduleName).setPreferredAlertTime(new Time(12, 0)).setReferenceDate(new LocalDate());
         EnrollmentRecord notNullEnrollment = mock(EnrollmentRecord.class);
         when(mockScheduleTrackingService.getEnrollment(externalId, scheduleName)).thenReturn(notNullEnrollment);
 
@@ -78,7 +78,7 @@ public class AllCareSchedulesTest {
 
     @Test
     public void shouldEnrollForSchedule() {
-        EnrollmentRequest request = new EnrollmentRequest("123", "sche", new Time(12, 0), new LocalDate(), null, null, null, null, null);
+        EnrollmentRequest request = new EnrollmentRequest().setExternalId("123").setScheduleName("sche").setPreferredAlertTime(new Time(12, 0)).setReferenceDate(new LocalDate());
         allCareSchedules.enroll(request);
         verify(mockScheduleTrackingService).enroll(request);
     }
@@ -101,7 +101,7 @@ public class AllCareSchedulesTest {
 
     @Test
     public void shouldFetchEnrollmentForSchedule() {
-        EnrollmentRequest request = new EnrollmentRequest("123", "scheduleName", new Time(12, 0), new LocalDate(), null, null, null, null, null);
+        EnrollmentRequest request = new EnrollmentRequest().setExternalId("123").setScheduleName("scheduleName").setPreferredAlertTime(new Time(12, 0)).setReferenceDate(new LocalDate());
         allCareSchedules.enrollment(request);
         verify(mockScheduleTrackingService).getEnrollment(request.getExternalId(), request.getScheduleName());
     }
@@ -136,7 +136,7 @@ public class AllCareSchedulesTest {
 
     @Test
     public void shouldReturnDueAlertsGivenAnEnrollmentRequest() {
-        EnrollmentRequest request = new EnrollmentRequest("123", "scheduleName", new Time(12, 0), new LocalDate(), null, null, null, null, null);
+        EnrollmentRequest request = new EnrollmentRequest().setExternalId("123").setScheduleName("scheduleName").setPreferredAlertTime(new Time(12, 0)).setReferenceDate(new LocalDate());
         MilestoneAlerts mockMilestoneAlerts = mock(MilestoneAlerts.class);
         when(mockScheduleTrackingService.getAlertTimings(request)).thenReturn(mockMilestoneAlerts);
         allCareSchedules.getDueWindowAlertTimings(request);

@@ -28,15 +28,25 @@ public class AllEncounters {
         String staffProviderId = user.getPerson().getId();
         String staffUserId = user.getId();
         String patientId = mrsPatient.getId();
-        MRSEncounter mrsEncounter = new MRSEncounter(staffProviderId, staffUserId, facilityId,
-                dateOfEncounter, patientId, mrsObservations, encounterType);
+        MRSEncounter mrsEncounter = new MRSEncounter.MRSEncounterBuilder().withProviderId(staffProviderId)
+                .withPatientId(patientId)
+                .withFacilityId(facilityId)
+                .withDate(dateOfEncounter)
+                .withObservations(mrsObservations)
+                .withEncounterType(encounterType)
+                .withCreatorId(staffUserId).build();
         return mrsEncounterAdapter.createEncounter(mrsEncounter);
     }
 
     public MRSEncounter persistEncounter(Encounter encounter) {
         MRSUser staff = encounter.getStaff();
-        MRSEncounter mrsEncounter = new MRSEncounter(null, staff.getPerson(), staff, encounter.getFacility(),
-                encounter.getDate(), encounter.getMrsPatient(), encounter.getObservations(), encounter.getType());
+        MRSEncounter mrsEncounter = new MRSEncounter.MRSEncounterBuilder().withProvider(staff.getPerson())
+                .withPatient(encounter.getMrsPatient())
+                .withFacility(encounter.getFacility())
+                .withDate(encounter.getDate())
+                .withObservations(encounter.getObservations())
+                .withEncounterType(encounter.getType())
+                .withCreator(staff).build();
         return mrsEncounterAdapter.createEncounter(mrsEncounter);
     }
 

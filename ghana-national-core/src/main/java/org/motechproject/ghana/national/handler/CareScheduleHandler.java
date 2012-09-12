@@ -1,8 +1,8 @@
 package org.motechproject.ghana.national.handler;
 
+import org.motechproject.event.MotechEvent;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
-import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 
 public interface CareScheduleHandler {

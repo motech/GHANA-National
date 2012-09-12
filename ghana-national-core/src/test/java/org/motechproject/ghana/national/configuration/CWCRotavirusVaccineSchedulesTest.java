@@ -123,12 +123,16 @@ public class CWCRotavirusVaccineSchedulesTest extends BaseScheduleTrackingTest {
     }
 
     private String scheduleAlertForRotavirusEnrolledFromStart(LocalDate birthDate, String milestoneName) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, birthDate, null, null, null, milestoneName, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setExternalId(PATIENT_ID)
+                .setScheduleName(scheduleName).setPreferredAlertTime(preferredAlertTime)
+                .setReferenceDate(birthDate).setStartingMilestoneName(milestoneName);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 
     private String scheduleAlertForRotavirusEnrolledWithHistory(LocalDate lastRotavirusDate, String milestoneName) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, null, null, lastRotavirusDate, null, milestoneName, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setExternalId(PATIENT_ID)
+                .setScheduleName(scheduleName).setPreferredAlertTime(preferredAlertTime)
+                .setEnrollmentDate(lastRotavirusDate).setStartingMilestoneName(milestoneName);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

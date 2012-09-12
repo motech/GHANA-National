@@ -64,7 +64,7 @@ public class ConnectToCallCenterTransition extends Transition {
 
         DialPrompt callCenterDialPrompt = new DialPrompt(callCenterPhoneNumber);
         callCenterDialPrompt.setCallerId(callerPhoneNumber);
-        callCenterDialPrompt.setAction(ivrCallbackUrlBuilder.callCenterDialStatusUrl(language, callerPhoneNumber, nurseLine));
+//        callCenterDialPrompt.setAction(ivrCallbackUrlBuilder.callCenterDialStatusUrl(language, callerPhoneNumber, nurseLine));
         return new Node().addPrompts(callCenterDialPrompt);
     }
 

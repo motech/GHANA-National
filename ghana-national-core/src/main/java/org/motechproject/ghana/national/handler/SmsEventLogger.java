@@ -1,10 +1,10 @@
 package org.motechproject.ghana.national.handler;
 
 import org.joda.time.DateTime;
+import org.motechproject.event.MotechEvent;
+import org.motechproject.event.listener.annotations.MotechListener;
 import org.motechproject.ghana.national.domain.SmsAuditLog;
 import org.motechproject.ghana.national.repository.AllSmsAuditLogs;
-import org.motechproject.scheduler.domain.MotechEvent;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.sms.api.constants.EventDataKeys;
 import org.motechproject.sms.api.constants.EventSubjects;
 import org.motechproject.sms.http.SmsDeliveryFailureException;

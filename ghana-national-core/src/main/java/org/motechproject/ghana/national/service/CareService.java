@@ -382,7 +382,8 @@ public class CareService {
     }
 
     public LocalDate getEnrollmentDateForPregnancySchedules(String scheduleName, LocalDate lastCareTakenDate, String startMilestoneName, LocalDate edd) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(null, scheduleName, null, null, null, lastCareTakenDate, new Time(0, 0), startMilestoneName, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setScheduleName(scheduleName)
+                .setStartingMilestoneName(startMilestoneName).setReferenceDate(lastCareTakenDate).setReferenceTime(new Time(0, 0));
         List<DateTime> dueWindowAlertTimings = allCareSchedules.getDueWindowAlertTimings(enrollmentRequest);
         Pregnancy pregnancy = Pregnancy.basedOnDeliveryDate(edd);
         if (!dueWindowAlertTimings.isEmpty() && dueWindowAlertTimings.get(0).isBeforeNow() && lastCareTakenDate.toDate().after(pregnancy.dateOfConception().toDate()))
@@ -391,7 +392,10 @@ public class CareService {
     }
 
     public Date getEnrollmentDateForChildCareSchedules(String scheduleName, Date lastCareTakenDate, String startMilestoneName, LocalDate dateOfBirth) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(null, scheduleName, null, null, null, newDate(lastCareTakenDate), new Time(0, 0), startMilestoneName, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setScheduleName(scheduleName)
+                .setReferenceDate(newDate(lastCareTakenDate))
+                .setReferenceTime(new Time(0, 0))
+                .setStartingMilestoneName(startMilestoneName);
         List<DateTime> dueWindowAlertTimings = allCareSchedules.getDueWindowAlertTimings(enrollmentRequest);
         if (!dueWindowAlertTimings.isEmpty() && dueWindowAlertTimings.get(0).isBeforeNow() && lastCareTakenDate.after(dateOfBirth.toDate()))
             return getDifferenceOfDates(dueWindowAlertTimings.get(0), DateUtil.newDateTime(lastCareTakenDate)).toDate();

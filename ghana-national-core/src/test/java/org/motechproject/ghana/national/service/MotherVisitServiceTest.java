@@ -111,10 +111,12 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         verify(mockAllCareSchedules, times(1)).enroll(enrollmentRequestCaptor.capture());
         verify(mockAllSchedulesAndMessages, times(1)).enrollOrFulfill(enrollmentRequestCaptor.capture(), eq(visitDate));
 
-        assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, ANC_DELIVERY.getName(), null, pregnancy.dateOfConception(), null, null, null, null, null),
+        assertEnrollmentReqWithoutDeliveryTime(
+                new EnrollmentRequest().setExternalId(mrsPatientId).setScheduleName(ANC_DELIVERY.getName()).setEnrollmentDate(pregnancy.dateOfConception()),
                 enrollmentRequestCaptor.getAllValues().get(0));
-        assertEnrollmentReqWithoutDeliveryTime(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE.getName(), null, visitDate, null,
-                visitDate, null, IPTDose.byValue(ancVisit.getIptdose()).milestone(), null),
+        assertEnrollmentReqWithoutDeliveryTime(
+                new EnrollmentRequest().setExternalId(mrsFacilityId).setScheduleName(ANC_IPT_VACCINE.getName()).setEnrollmentDate(visitDate)
+                .setReferenceDate(visitDate).setStartingMilestoneName(IPTDose.byValue(ancVisit.getIptdose()).milestone()),
                 enrollmentRequestCaptor.getAllValues().get(1));
         verify(mockAllAppointments).updateANCVisitSchedule(patient, DateUtil.newDateTime(ancVisit.getNextANCDate()));
         verify(mockAllAppointmentsAndMessages).fulfillCurrentANCVisit(patient, ancVisit.getDate());
@@ -205,7 +207,11 @@ public class MotherVisitServiceTest extends BaseUnitTest {
 
         ArgumentCaptor<EnrollmentRequest> captor = forClass(EnrollmentRequest.class);
         verify(mockAllSchedulesAndMessages).enrollOrFulfill(captor.capture(), eq(visitDate));
-        assertEnrollmentRequest(new EnrollmentRequest(mrsPatientId, ANC_IPT_VACCINE.getName(), deliveryTime, visitDate, deliveryTime, visitDate, null, dose2.milestone(), null), captor.getAllValues().get(0));
+        assertEnrollmentRequest(
+                new EnrollmentRequest().setExternalId(mrsPatientId).setScheduleName(ANC_IPT_VACCINE.getName())
+                        .setPreferredAlertTime(deliveryTime).setEnrollmentDate(visitDate)
+                .setReferenceDate(visitDate).setReferenceTime(deliveryTime).setStartingMilestoneName(dose2.milestone()),
+                captor.getAllValues().get(0));
     }
 
     @Test

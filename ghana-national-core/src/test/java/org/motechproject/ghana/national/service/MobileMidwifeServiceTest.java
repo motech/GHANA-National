@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.util.DateUtil.*;
 
-public class MobileMidwifeServiceTest extends BaseUnitTest{
+public class MobileMidwifeServiceTest extends BaseUnitTest {
     private MobileMidwifeService service;
     @Mock
     private AllMobileMidwifeEnrollments mockAllMobileMidwifeEnrollments;
@@ -47,7 +47,7 @@ public class MobileMidwifeServiceTest extends BaseUnitTest{
 
     public MobileMidwifeServiceTest() {
         initMocks(this);
-        service = new MobileMidwifeService(mockAllMobileMidwifeEnrollments, mockAllCampaigns, mockAllPatientsOutbox, mockRetryService,mockAllPatients);
+        service = new MobileMidwifeService(mockAllMobileMidwifeEnrollments, mockAllCampaigns, mockAllPatientsOutbox, mockRetryService, mockAllPatients);
     }
 
     @Test
@@ -123,7 +123,7 @@ public class MobileMidwifeServiceTest extends BaseUnitTest{
     }
 
     private void mockNow(final DateTime now) {
-        DateTimeSourceUtil.SourceInstance = new DateTimeSource() {
+        DateTimeSourceUtil.setSourceInstance(new DateTimeSource() {
             @Override
             public DateTimeZone timeZone() {
                 return DateTimeZone.getDefault();
@@ -138,7 +138,7 @@ public class MobileMidwifeServiceTest extends BaseUnitTest{
             public LocalDate today() {
                 return now.toLocalDate();
             }
-        };
+        });
     }
 
     private void verifyCreateNewEnrollment(MobileMidwifeEnrollment enrollment) {
@@ -215,7 +215,7 @@ public class MobileMidwifeServiceTest extends BaseUnitTest{
         assertThat(actualRequest.getUserPreferredDays(), is(asList(dayOfWeek)));
         assertThat(actualRequest.deliverTime(), is(timeOfDay));
         assertEquals(null, actualRequest.startOffset());
-        assertThat(actualRequest.referenceDate(), is(newDate(2012,7,5)));
+        assertThat(actualRequest.referenceDate(), is(newDate(2012, 7, 5)));
     }
 
     private void assertCampaignRequestWith(MobileMidwifeEnrollment enrollment, CampaignRequest actualRequest, LocalDate expectedScheduleStartDate) {

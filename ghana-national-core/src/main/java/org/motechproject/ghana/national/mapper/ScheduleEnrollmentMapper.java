@@ -6,11 +6,18 @@ import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 
 public class ScheduleEnrollmentMapper {
     public EnrollmentRequest map(Patient patient, PatientCare patientCare) {
-        return new EnrollmentRequest(patient.getMRSPatientId(), patientCare.name(),
-                patientCare.preferredTime(), patientCare.startingOn(), patientCare.referenceTime(), patientCare.enrollmentDate(), patientCare.enrollmentTime(), patientCare.milestoneName(), patientCare.metaData());
+        return new EnrollmentRequest().setExternalId(patient.getMRSPatientId())
+                .setScheduleName(patientCare.name())
+                .setPreferredAlertTime(patientCare.preferredTime())
+                .setReferenceDate(patientCare.startingOn())
+                .setReferenceTime(patientCare.referenceTime())
+                .setEnrollmentDate(patientCare.enrollmentDate())
+                .setEnrollmentTime(patientCare.enrollmentTime())
+                .setStartingMilestoneName(patientCare.milestoneName())
+                .setMetadata(patientCare.metaData());
     }
 
     public EnrollmentRequest map(String mrsPatientId, String programName) {
-        return new EnrollmentRequest(mrsPatientId, programName, null, null, null, null, null, null, null);
+        return new EnrollmentRequest().setExternalId(mrsPatientId).setScheduleName(programName);
     }
 }

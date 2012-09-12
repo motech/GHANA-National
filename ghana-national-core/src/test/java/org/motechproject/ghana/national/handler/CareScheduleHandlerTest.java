@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.event.MotechEvent;
 import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllObservations;
@@ -14,7 +15,6 @@ import org.motechproject.ghana.national.repository.VoiceGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.scheduletracking.api.events.MilestoneEvent;
 
 import java.util.HashMap;

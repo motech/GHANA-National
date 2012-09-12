@@ -94,7 +94,9 @@ public class CWCBcgSchedulesTest extends BaseScheduleTrackingTest {
     }
 
     private String scheduleAlertForBCG(LocalDate birthDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, birthDate, null, null, null, null, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setExternalId(PATIENT_ID)
+                .setScheduleName(scheduleName).setPreferredAlertTime(preferredAlertTime)
+                .setReferenceDate(birthDate);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

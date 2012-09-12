@@ -172,12 +172,16 @@ public class CWCOPV1SchedulesTest extends BaseScheduleTrackingTest {
 
 
     private String scheduleAlertForOPV(LocalDate referenceDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, referenceDate, null, referenceDate, null, null, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setExternalId(PATIENT_ID)
+                .setScheduleName(scheduleName).setPreferredAlertTime(preferredAlertTime)
+                .setReferenceDate(referenceDate).setEnrollmentDate(referenceDate);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 
     private String scheduleAlertForOPVEnrolledWithHistory(LocalDate lastPentaDate, String milestoneName) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, null, null, lastPentaDate, null, milestoneName, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setExternalId(PATIENT_ID)
+                .setScheduleName(scheduleName).setPreferredAlertTime(preferredAlertTime)
+                .setEnrollmentDate(lastPentaDate).setStartingMilestoneName(milestoneName);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

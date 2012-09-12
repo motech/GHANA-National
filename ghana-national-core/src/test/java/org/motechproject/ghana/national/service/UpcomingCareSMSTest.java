@@ -71,7 +71,7 @@ public class    UpcomingCareSMSTest {
     }
 
     private EnrollmentRecord enrollment(String enrollmentName, DateTime dueStart, String mileStoneName) {
-        return new EnrollmentRecord("", enrollmentName, mileStoneName, null, null, null, null, dueStart, null, null);
+        return new EnrollmentRecord().setExternalId("").setCurrentMilestoneName(mileStoneName).setDueStart(dueStart).setScheduleName(enrollmentName);
     }
 
     private void mockSuccessSmsTemplateMessages() {

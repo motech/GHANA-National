@@ -4,7 +4,6 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.motechproject.ghana.national.domain.TTVaccineDosage;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.quartz.SchedulerException;
 import org.springframework.test.context.ContextConfiguration;
@@ -94,7 +93,9 @@ public class TTVaccinationSchedulesTest extends BaseScheduleTrackingTest {
 
 
     private String scheduleAlertForTTVaccination(LocalDate firstDosageDate) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(PATIENT_ID, scheduleName, preferredAlertTime, firstDosageDate, null, null, null, null, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setExternalId(PATIENT_ID)
+                .setScheduleName(scheduleName).setPreferredAlertTime(preferredAlertTime)
+                .setReferenceDate(firstDosageDate);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 }

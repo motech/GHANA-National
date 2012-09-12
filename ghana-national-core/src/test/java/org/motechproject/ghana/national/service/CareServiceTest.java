@@ -442,7 +442,8 @@ public class CareServiceTest extends BaseUnitTest {
         MRSObservation<Boolean> pregObs = new MRSObservation<Boolean>(new Date(), PREGNANCY.getName(), Boolean.TRUE);
         pregObs.addDependantObservation(new MRSObservation(new Date(), EDD.getName(), DateUtil.newDate(2012, 12, 1).toDate()));
         pregnancyObservations.add(pregObs);
-        mrsEncounter = new MRSEncounter("providerId", "creator", "facility", new Date(), patientId, pregnancyObservations, EncounterType.PREG_REG_VISIT.value());
+        mrsEncounter = new MRSEncounter.MRSEncounterBuilder().withProviderId("providerId").withCreatorId("creator").withFacilityId("facility")
+        .withDate(new Date()).withPatientId(patientId).withObservations(pregnancyObservations).withEncounterType(EncounterType.PREG_REG_VISIT.value()).build();
 
         when(mockAllEncounters.getLatest(patientMotechId, EncounterType.PREG_REG_VISIT.value())).thenReturn(mrsEncounter);
         CareHistoryVO careHistory = new CareHistoryVO(staffId, facilityId, patientMotechId, date, ancCareHistory, cwcCareHistory);
@@ -899,9 +900,10 @@ public class CareServiceTest extends BaseUnitTest {
     }
 
     private EnrollmentRequest expectedRequest(String externalId, PatientCare patientCare) {
-        return new EnrollmentRequest(externalId, patientCare.name(),
-                patientCare.preferredTime(), patientCare.startingOn(),
-                patientCare.referenceTime(), patientCare.enrollmentDate(), patientCare.enrollmentTime(), patientCare.milestoneName(), patientCare.metaData());
+        return new EnrollmentRequest().setExternalId(externalId).setScheduleName(patientCare.name())
+                .setPreferredAlertTime(patientCare.preferredTime()).setEnrollmentDate(patientCare.enrollmentDate())
+                .setReferenceDate(patientCare.startingOn()).setReferenceTime(patientCare.referenceTime()).setStartingMilestoneName(patientCare.milestoneName())
+                .setMetadata(patientCare.metaData());
     }
 
     private void assertEnrollmentRequests(List<EnrollmentRequest> actualRequests, List<EnrollmentRequest> expectedRequests) {

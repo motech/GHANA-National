@@ -47,7 +47,9 @@ public class AllSchedulesIT extends BaseScheduleTrackingTest {
         mockCurrentDate(today);
         final LocalDate dateOfConception = basedOnDeliveryDate(newDate("22-SEP-2012")).dateOfConception();
 
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(externalId, ANC_IPT_VACCINE.getName(), new Time(10, 10), dateOfConception, null, dateOfConception, null, null, null);
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setExternalId(externalId)
+                .setScheduleName(ANC_IPT_VACCINE.getName()).setPreferredAlertTime(new Time(10, 10))
+                .setReferenceDate(dateOfConception).setEnrollmentDate(dateOfConception);
         scheduleTrackingService.enroll(enrollmentRequest);
 
         mockCurrentDate(newDate("17-MAR-2012"));
@@ -78,14 +80,18 @@ public class AllSchedulesIT extends BaseScheduleTrackingTest {
          final LocalDate patient2ConceptionFallsInDue = testSchedule.referenceDateToStartInLateWindow(ANC_IPT_VACCINE.getName());
          final LocalDate patient3ConceptionFallsInDue = testSchedule.referenceDateToStartInLateWindow(ANC_IPT_VACCINE.getName(), weeks(2));
 
-         scheduleTrackingService.enroll(new EnrollmentRequest(externalId, ANC_IPT_VACCINE.getName(), new Time(10, 10), patient1ConceptionFallsInLate, null,
-                 patient1ConceptionFallsInLate, null, null, PatientTest.facilityMetaData(facilityId)));
-         scheduleTrackingService.enroll(new EnrollmentRequest(externalId2, ANC_IPT_VACCINE.getName(), new Time(10, 10), patient2ConceptionFallsInDue, null,
-                 patient2ConceptionFallsInDue, null, null, PatientTest.facilityMetaData(facilityId)));
-         scheduleTrackingService.enroll(new EnrollmentRequest(externalId3, ANC_IPT_VACCINE.getName(), new Time(10, 10), patient3ConceptionFallsInDue, null,
-                 patient3ConceptionFallsInDue, null, null, PatientTest.facilityMetaData(facilityId2)));
+         scheduleTrackingService.enroll(new EnrollmentRequest().setExternalId(externalId).setScheduleName(ANC_IPT_VACCINE.getName())
+                 .setPreferredAlertTime(new Time(10, 10)).setReferenceDate(patient1ConceptionFallsInLate)
+                 .setEnrollmentDate(patient1ConceptionFallsInLate).setMetadata(PatientTest.facilityMetaData(facilityId)));
+        scheduleTrackingService.enroll(new EnrollmentRequest().setExternalId(externalId2).setScheduleName(ANC_IPT_VACCINE.getName())
+                .setPreferredAlertTime(new Time(10, 10)).setReferenceDate(patient2ConceptionFallsInDue)
+                .setEnrollmentDate(patient2ConceptionFallsInDue).setMetadata(PatientTest.facilityMetaData(facilityId)));
+        scheduleTrackingService.enroll(new EnrollmentRequest().setExternalId(externalId3).setScheduleName(ANC_IPT_VACCINE.getName())
+                .setPreferredAlertTime(new Time(10, 10)).setReferenceDate(patient3ConceptionFallsInDue)
+                .setEnrollmentDate(patient3ConceptionFallsInDue).setMetadata(PatientTest.facilityMetaData(facilityId2)));
 
-         List<EnrollmentRecord> enrollmentRecords = allCareSchedules.defaultersByMetaSearch(FACILITY_META, facilityId);
+
+        List<EnrollmentRecord> enrollmentRecords = allCareSchedules.defaultersByMetaSearch(FACILITY_META, facilityId);
          assertThat(extract(enrollmentRecords, on(EnrollmentRecord.class).getExternalId()), is(asList(externalId2)));
 
          enrollmentRecords = allCareSchedules.defaultersByMetaSearch(FACILITY_META, facilityId2);
@@ -95,9 +101,11 @@ public class AllSchedulesIT extends BaseScheduleTrackingTest {
     @Test
     public void shouldEnrollOnlyIfThereIsNoActiveEnrollment() {
         String externalId1 = "externalId";
-        EnrollmentRequest enrollmentRequestFor1stMilestone = new EnrollmentRequest(externalId1, ScheduleNames.TT_VACCINATION.getName(),null, DateUtil.today(),null,null,null,null,null);
+        EnrollmentRequest enrollmentRequestFor1stMilestone = new EnrollmentRequest().setExternalId(externalId1).setScheduleName(ScheduleNames.TT_VACCINATION.getName()).setReferenceDate(DateUtil.today());
         String externalId2 = "externalId2";
-        EnrollmentRequest existingEnrollmentFor2ndMilestone = new EnrollmentRequest(externalId2, ScheduleNames.TT_VACCINATION.getName(),null, null,null,DateUtil.today(),null, TTVaccineDosage.TT2.getScheduleMilestoneName(),null);
+        EnrollmentRequest existingEnrollmentFor2ndMilestone = new EnrollmentRequest().setExternalId(externalId2)
+                .setScheduleName(ScheduleNames.TT_VACCINATION.getName()).setReferenceDate(DateUtil.today())
+                .setStartingMilestoneName(TTVaccineDosage.TT2.getScheduleMilestoneName());
 
         allCareSchedules.enroll(existingEnrollmentFor2ndMilestone);
 

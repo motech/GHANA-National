@@ -1,9 +1,9 @@
 package org.motechproject.ghana.national.schedule;
 
+import org.motechproject.event.MotechEvent;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduler.domain.CronSchedulableJob;
-import org.motechproject.scheduler.domain.MotechEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
