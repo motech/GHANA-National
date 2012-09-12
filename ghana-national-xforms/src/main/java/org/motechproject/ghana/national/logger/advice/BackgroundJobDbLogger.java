@@ -1,13 +1,12 @@
 package org.motechproject.ghana.national.logger.advice;
 
 import org.joda.time.format.DateTimeFormat;
-import org.motechproject.metrics.MetricsAgentBackend;
+import org.motechproject.event.metrics.MetricsAgentBackend;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.Date;

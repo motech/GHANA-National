@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.motechproject.event.MotechEvent;
+import org.motechproject.event.listener.annotations.MotechListener;
 import org.motechproject.ghana.national.bean.ANCVisitForm;
 import org.motechproject.ghana.national.bean.CWCVisitForm;
 import org.motechproject.ghana.national.bean.CareHistoryForm;
@@ -24,8 +26,6 @@ import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.bean.TTVisitForm;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
-import org.motechproject.scheduler.domain.MotechEvent;
-import org.motechproject.server.event.annotations.MotechListener;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 

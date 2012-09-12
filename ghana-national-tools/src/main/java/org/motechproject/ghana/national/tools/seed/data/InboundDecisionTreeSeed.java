@@ -30,13 +30,13 @@ import static org.motechproject.ghana.national.domain.mobilemidwife.Language.NAN
 @Component
 public class InboundDecisionTreeSeed extends Seed {
     @Value("#{ghanaNationalProperties['callcenter.dtmf.timeout']}")
-    private String callCenterDtmfTimeout;
+    private Integer callCenterDtmfTimeout;
 
     @Value("#{ghanaNationalProperties['callcenter.dtmf.finishonkey']}")
     private String callCenterFinishOnKey;
 
     @Value("#{ghanaNationalProperties['callcenter.no.of.digits.in.motech.id']}")
-    private String noOfDigitsInMotechId;
+    private Integer noOfDigitsInMotechId;
 
     @Autowired
     AllTrees allTrees;
@@ -64,8 +64,8 @@ public class InboundDecisionTreeSeed extends Seed {
             transitions.put("*", new ConnectToCallCenterTransition(true));
             transitions.put("?", new Transition().setDestinationNode(chooseLanguageNode(retry - 1)));
             transitions.put("timeout", new ConnectToCallCenterTransition(EN));
-            node.setTransitionNumDigits("1");
-            node.setTransitionTimeout(callCenterDtmfTimeout);
+            node.setMaxTransitionInputDigit(1);
+            node.setMaxTransitionTimeout(callCenterDtmfTimeout);
             node.setTransitions(transitions);
             return node;
         }
@@ -81,8 +81,8 @@ public class InboundDecisionTreeSeed extends Seed {
             transitions.put("0", new ConnectToCallCenterTransition(language));
             transitions.put("timeout", new ConnectToCallCenterTransition(language));
             transitions.put("?", new Transition().setDestinationNode(chooseActionNode(language, retry - 1)));
-            node.setTransitionNumDigits("1");
-            node.setTransitionTimeout(callCenterDtmfTimeout);
+            node.setMaxTransitionInputDigit(1);
+            node.setMaxTransitionTimeout(callCenterDtmfTimeout);
             node.setTransitions(transitions);
             return node;
         }
@@ -99,14 +99,14 @@ public class InboundDecisionTreeSeed extends Seed {
         }
         // As requested by david, we expect 7 digits for motech id instead of finish on key
         //  node.setTransitionFinishOnKey(callCenterFinishOnKey);
-        node.setTransitionTimeout(callCenterDtmfTimeout);
-        node.setTransitionNumDigits(noOfDigitsInMotechId);
+        node.setMaxTransitionTimeout(callCenterDtmfTimeout);
+        node.setMaxTransitionInputDigit(noOfDigitsInMotechId);
         node.setTransitions(transitions);
         return node;
     }
 
     private Node prompt(AudioPrompts clipName, Language language) {
-        return new Node().addTransitionPrompts(audioPromptFor(clipName, language));
+        return new Node().addPrompts(audioPromptFor(clipName, language));
     }
 
     private AudioPrompt audioPromptFor(AudioPrompts prompt, Language language) {

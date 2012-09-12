@@ -5,11 +5,11 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.motechproject.event.MotechEvent;
 import org.motechproject.ghana.national.domain.FormUploadLog;
 import org.motechproject.ghana.national.repository.AllFormUploadLogs;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
-import org.motechproject.scheduler.domain.MotechEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;

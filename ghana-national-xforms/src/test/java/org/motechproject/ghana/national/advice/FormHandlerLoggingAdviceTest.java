@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.event.MotechEvent;
+import org.motechproject.event.metrics.MetricsAgent;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
@@ -17,14 +19,12 @@ import org.motechproject.ghana.national.repository.AllObservations;
 import org.motechproject.ghana.national.repository.SMSGateway;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
-import org.motechproject.metrics.MetricsAgent;
 import org.motechproject.mobileforms.api.callbacks.FormPublishHandler;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
-import org.motechproject.scheduler.domain.MotechEvent;
 import org.motechproject.scheduletracking.api.domain.Milestone;
 import org.motechproject.scheduletracking.api.domain.MilestoneAlert;
 import org.motechproject.scheduletracking.api.domain.WindowName;
@@ -41,7 +41,9 @@ import java.util.HashMap;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -95,7 +97,7 @@ public class FormHandlerLoggingAdviceTest {
             put("formBeanGroup", new FormBeanGroup(Arrays.<FormBean>asList(registerClientForm)));
         }}));
         MilestoneAlert milestoneAlert = MilestoneAlert.fromMilestone(new Milestone("milestone", Period.ZERO, Period.days(1), Period.hours(12), Period.months(1)), DateTime.now());
-        careScheduleHandler.handlePregnancyAlert(new MilestoneEvent(null, null, milestoneAlert, WindowName.earliest.name(), null));
+        careScheduleHandler.handlePregnancyAlert(new MilestoneEvent(null, null, milestoneAlert, WindowName.earliest.name(), null, null));
 
         verify(metricsAgent, times(2)).stopTimer(anyString(), eq(startTime));
     }

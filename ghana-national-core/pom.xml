@@ -87,6 +87,12 @@
             <groupId>org.motechproject.contrib-ghana-national</groupId>
             <artifactId>motech-retry</artifactId>
             <version>${motech-platform-contrib.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>motech-scheduler</artifactId>
+                    <groupId>org.motechproject</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
@@ -114,6 +120,17 @@
             <groupId>org.motechproject</groupId>
             <artifactId>motech-message-campaign</artifactId>
             <version>0.12-GHANA-NATIONAL-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>motech-scheduler</artifactId>
+                    <groupId>org.motechproject</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <artifactId>motech-scheduler</artifactId>
+            <groupId>org.motechproject</groupId>
+            <version>${motech-platform.version}</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>

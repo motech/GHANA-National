@@ -1,10 +1,10 @@
 package org.motechproject.ghana.national.gateway;
 
 import org.apache.log4j.Logger;
-import org.motechproject.scheduler.domain.MotechEvent;
-import org.motechproject.scheduler.gateway.OutboundEventGateway;
-import org.motechproject.server.event.EventListener;
-import org.motechproject.server.event.EventListenerRegistry;
+import org.motechproject.event.MotechEvent;
+import org.motechproject.event.OutboundEventGateway;
+import org.motechproject.event.listener.EventListener;
+import org.motechproject.event.listener.EventListenerRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;

@@ -2,10 +2,10 @@ package org.motechproject.ghana.national.logger.configuration;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.motechproject.MotechException;
+import org.motechproject.event.metrics.MetricsAgent;
+import org.motechproject.event.metrics.MetricsAgentBackend;
+import org.motechproject.event.metrics.impl.MultipleMetricsAgentImpl;
 import org.motechproject.ghana.national.logger.advice.BackgroundJobDbLogger;
-import org.motechproject.metrics.MetricsAgent;
-import org.motechproject.metrics.MetricsAgentBackend;
-import org.motechproject.metrics.impl.MultipleMetricsAgentImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
 import javax.sql.DataSource;
-import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 
 @Configuration
