@@ -106,7 +106,7 @@ public class CwcFormMapperTest {
         String serialNum = "serial number";
         Double pentaValue = 2.0;
         Double rotavirusDoseValue = 2.0;
-        Double pneumococcalDoseValue= 2.0;
+        Double pneumococcalDoseValue = 2.0;
         Double opvValue = 2.0;
         String name = "name";
         String country = "country";
@@ -124,9 +124,11 @@ public class CwcFormMapperTest {
         observations.add(new MRSObservation<Double>(opvDate, OPV.getName(), opvValue));
         observations.add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), serialNum));
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
-        MRSEncounter mrsEncounter = new MRSEncounter("1", new MRSPerson().id(providerId),
-                new MRSUser().systemId(creatorId), facility, registrationDate, new MRSPatient(patientId, null, null), observations, "type");
-
+        MRSEncounter mrsEncounter = new MRSEncounter.MRSEncounterBuilder().withId("1")
+                .withProvider(new MRSPerson().id(providerId))
+                .withCreator(new MRSUser().systemId(creatorId)).withFacility(facility)
+                .withDate(registrationDate).withPatient(new MRSPatient(patientId, null, null)).withObservations(observations)
+                .withEncounterType("type").build();
         final CWCEnrollmentForm cwcEnrollmentForm = cwcFormMapper.mapEncounterToView(mrsEncounter);
 
         assertThat(cwcEnrollmentForm.getPatientMotechId(), is(equalTo(patientId)));
@@ -175,8 +177,11 @@ public class CwcFormMapperTest {
         String province = "province";
         observations.add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), serialNum));
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
-        MRSEncounter mrsEncounter = new MRSEncounter("1", new MRSPerson().id(providerId),
-                new MRSUser().systemId(creatorId), facility, registrationDate, new MRSPatient(patientId, null, null), observations, "type");
+        MRSEncounter mrsEncounter = new MRSEncounter.MRSEncounterBuilder().withId("1")
+                .withProvider(new MRSPerson().id(providerId))
+                .withCreator(new MRSUser().systemId(creatorId)).withFacility(facility)
+                .withDate(registrationDate).withPatient(new MRSPatient(patientId, null, null)).withObservations(observations)
+                .withEncounterType("type").build();
 
         final CWCEnrollmentForm cwcEnrollmentForm = cwcFormMapper.mapEncounterToView(mrsEncounter);
 

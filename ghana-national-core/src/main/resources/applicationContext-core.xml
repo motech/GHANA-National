@@ -44,16 +44,16 @@
         <constructor-arg value="audit-log"/>
     </bean>
 
-    <beans:import resource="classpath:applicationSchedulerTrackingAPI.xml"/>
-    <beans:import resource="classpath:ivrVerboiceContext.xml"/>
-    <beans:import resource="classpath:applicationContext-email.xml"/>
-    <beans:import resource="classpath:applicationSmsAPI.xml"/>
-    <beans:import resource="classpath:applicationSmsHttp.xml"/>
-    <beans:import resource="classpath:applicationAppointmentsAPI.xml"/>
-    <beans:import resource="classpath:applicationContext-messaging-gateway.xml"/>
-    <beans:import resource="classpath:applicationDecisionTree.xml"/>
-    <beans:import resource="classpath:applicationOutboxAPI.xml"/>
-    <beans:import resource="classpath:applicationContext-retry.xml"/>
+    <beans:import resource="classpath*:applicationSchedulerTrackingAPI.xml"/>
+    <beans:import resource="classpath*:ivrVerboiceContext.xml"/>
+    <beans:import resource="classpath*:applicationContext-email.xml"/>
+    <beans:import resource="classpath*:applicationSmsAPI.xml"/>
+    <beans:import resource="classpath*:applicationSmsHttp.xml"/>
+    <beans:import resource="classpath*:applicationAppointmentsAPI.xml"/>
+    <beans:import resource="classpath*:applicationContext-messaging-gateway.xml"/>
+    <beans:import resource="classpath*:applicationDecisionTree.xml"/>
+    <beans:import resource="classpath*:applicationOutboxAPI.xml"/>
+    <beans:import resource="classpath*:applicationContext-retry.xml"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>

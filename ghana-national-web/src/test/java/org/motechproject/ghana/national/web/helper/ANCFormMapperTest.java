@@ -62,8 +62,11 @@ public class ANCFormMapperTest {
             add(new MRSObservation<Double>(observationDate, TT.getName(), 3.0));
         }};
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
-        MRSEncounter mrsEncounter = new MRSEncounter("1", new MRSPerson().id(providerId),
-                new MRSUser().systemId(creatorId), facility, registrationDate, new MRSPatient(patientId, null, null), observations, "type");
+        MRSEncounter mrsEncounter = new MRSEncounter.MRSEncounterBuilder().withId("1")
+                .withProvider(new MRSPerson().id(providerId))
+                .withCreator(new MRSUser().systemId(creatorId)).withFacility(facility)
+                .withDate(registrationDate).withPatient(new MRSPatient(patientId, null, null)).withObservations(observations)
+                .withEncounterType("type").build();
         ANCEnrollmentForm ancEnrollmentForm = ancFormMapper.convertMRSEncounterToView(mrsEncounter);
 
         assertThat(ancEnrollmentForm.getMotechPatientId(), is(equalTo(patientId)));
@@ -113,8 +116,11 @@ public class ANCFormMapperTest {
             add(new MRSObservation<String>(observationDate, SERIAL_NUMBER.getName(), serialNumber));
         }};
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
-        MRSEncounter mrsEncounter = new MRSEncounter("1", new MRSPerson().id(providerId),
-                new MRSUser().systemId(creatorId), facility, registrationDate, new MRSPatient(patientId, null, null), observations, "type");
+        MRSEncounter mrsEncounter = new MRSEncounter.MRSEncounterBuilder().withId("1")
+                .withProvider(new MRSPerson().id(providerId))
+                .withCreator(new MRSUser().systemId(creatorId)).withFacility(facility)
+                .withDate(registrationDate).withPatient(new MRSPatient(patientId, null, null)).withObservations(observations)
+                .withEncounterType("type").build();
         ANCEnrollmentForm ancEnrollmentForm = ancFormMapper.convertMRSEncounterToView(mrsEncounter);
 
         assertThat(ancEnrollmentForm.getMotechPatientId(), is(equalTo(patientId)));

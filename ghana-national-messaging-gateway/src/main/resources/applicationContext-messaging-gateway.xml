@@ -68,5 +68,5 @@
         <beans:property name="dataSource" ref="aggregatorDataSource"/>
     </beans:bean>
 
-    <beans:import resource="classpath:applicationSmsAPI.xml"/>
+    <beans:import resource="classpath*:applicationSmsAPI.xml"/>
 </beans:beans>
