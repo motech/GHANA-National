@@ -1,7 +1,9 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
-import org.motechproject.decisiontree.model.*;
-import org.motechproject.decisiontree.repository.AllTrees;
+import org.motechproject.decisiontree.core.model.ITransition;
+import org.motechproject.decisiontree.core.model.Node;
+import org.motechproject.decisiontree.core.model.Tree;
+import org.motechproject.decisiontree.core.repository.AllTrees;
 import org.motechproject.ghana.national.domain.ivr.transition.PreferredLanguageTransition;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,19 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:util="http://www.springframework.org/schema/util"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:beans="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:beans="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
-    <context:property-placeholder location="classpath*:*.properties" ignore-unresolvable="true"/>
-    <beans:import resource="classpath*:applicationOpenmrsAPI.xml"/>
-    <beans:import resource="classpath*:applicationScheduler.xml"/>
-    <beans:import resource="classpath*:applicationPlatformServerAPI.xml"/>
-    <beans:import resource="classpath*:applicationMessageCampaign.xml"/>
-    <beans:import resource="classpath*:applicationCmsLiteApi.xml"/>
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
+    <context:property-placeholder location="classpath*:*.properties" ignore-unresolvable="true"/>
+
+    <beans:import resource="classpath:applicationContext-email.xml"/>
+    <beans:import resource="classpath:applicationContext-messaging-gateway.xml"/>
+    <beans:import resource="classpath:applicationMessageCampaign.xml"/>
+    <beans:import resource="classpath:applicationContext-retry.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationOpenmrsAPI.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationScheduler.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationPlatformServerAPI.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationPlatformConfig.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationCmsLiteApi.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationSchedulerTrackingAPI.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/ivrVerboiceContext.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationSmsAPI.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationSmsHttp.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationAppointmentsAPI.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationDecisionTree.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationDecisionTreeCore.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationOutboxAPI.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/outboundScheduleJobChannelAdapter.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/eventQueueConsumer.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/eventQueuePublisher.xml"/>
     <context:annotation-config/>
     <context:spring-configured/>
     <aop:aspectj-autoproxy/>
@@ -23,6 +41,7 @@
     <util:properties id="ghanaNationalProperties" location="classpath:ghana-national.properties"/>
     <util:properties id="textMessageProperties" location="classpath:textMessages.properties"/>
     <util:properties id="messageCampaignProperties" location="classpath:messageCampaign.properties"/>
+    <util:properties id="verboiceProperties" location="classpath:verboice.properties"/>
 
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>
@@ -43,17 +62,6 @@
         <constructor-arg ref="auditLogDbInstance"/>
         <constructor-arg value="audit-log"/>
     </bean>
-
-    <beans:import resource="classpath*:applicationSchedulerTrackingAPI.xml"/>
-    <beans:import resource="classpath*:ivrVerboiceContext.xml"/>
-    <beans:import resource="classpath*:applicationContext-email.xml"/>
-    <beans:import resource="classpath*:applicationSmsAPI.xml"/>
-    <beans:import resource="classpath*:applicationSmsHttp.xml"/>
-    <beans:import resource="classpath*:applicationAppointmentsAPI.xml"/>
-    <beans:import resource="classpath*:applicationContext-messaging-gateway.xml"/>
-    <beans:import resource="classpath*:applicationDecisionTree.xml"/>
-    <beans:import resource="classpath*:applicationOutboxAPI.xml"/>
-    <beans:import resource="classpath*:applicationContext-retry.xml"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>

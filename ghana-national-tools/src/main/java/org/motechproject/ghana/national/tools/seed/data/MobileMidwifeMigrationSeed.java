@@ -6,7 +6,6 @@ import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
-import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.motechproject.ghana.national.tools.seed.data.source.MobileMidwifeSource;
@@ -19,9 +18,18 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.by;
+import static ch.lambdaj.Lambda.filter;
+import static ch.lambdaj.Lambda.group;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.function.matcher.AndMatcher.and;
 import static ch.lambdaj.function.matcher.OrMatcher.or;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -32,9 +40,6 @@ public class MobileMidwifeMigrationSeed extends Seed {
 
     @Autowired
     MobileMidwifeSource mobileMidwifeSource;
-
-    @Autowired
-    AllMobileMidwifeEnrollments allMobileMidwifeEnrollments;
 
     @Autowired
     MobileMidwifeService mobileMidwifeService;

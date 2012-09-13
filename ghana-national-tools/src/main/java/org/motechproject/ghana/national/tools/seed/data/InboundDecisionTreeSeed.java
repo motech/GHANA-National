@@ -1,11 +1,11 @@
 package org.motechproject.ghana.national.tools.seed.data;
 
-import org.motechproject.decisiontree.model.AudioPrompt;
-import org.motechproject.decisiontree.model.ITransition;
-import org.motechproject.decisiontree.model.Node;
-import org.motechproject.decisiontree.model.Transition;
-import org.motechproject.decisiontree.model.Tree;
-import org.motechproject.decisiontree.repository.AllTrees;
+import org.motechproject.decisiontree.core.model.AudioPrompt;
+import org.motechproject.decisiontree.core.model.ITransition;
+import org.motechproject.decisiontree.core.model.Node;
+import org.motechproject.decisiontree.core.model.Transition;
+import org.motechproject.decisiontree.core.model.Tree;
+import org.motechproject.decisiontree.core.repository.AllTrees;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.ivr.transition.ConnectToCallCenterTransition;

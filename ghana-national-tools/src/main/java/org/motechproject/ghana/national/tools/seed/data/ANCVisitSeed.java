@@ -25,7 +25,8 @@ public class ANCVisitSeed extends ScheduleMigrationSeed {
     private PatientService patientService;
 
     @Autowired
-    public ANCVisitSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allSchedules, AllCareSchedules allCareSchedules, AllAppointments allAppointments, PatientService patientService) {
+    public ANCVisitSeed(OldGhanaScheduleSource oldGhanaScheduleSource, AllSchedules allSchedules,
+                        AllCareSchedules allCareSchedules, AllAppointments allAppointments, PatientService patientService) {
         super(allSchedules, oldGhanaScheduleSource, allCareSchedules, FALSE);
         this.allAppointments = allAppointments;
         this.patientService = patientService;

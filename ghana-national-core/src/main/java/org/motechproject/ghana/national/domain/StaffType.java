@@ -33,16 +33,6 @@ public class StaffType extends MotechBaseDataObject {
     }
 
     public enum Role {
-   /*     CALL_CENTER_ADMIN("CallCenter Admin", Constants.SECURITY_ROLE_PROVIDER),
-        COMMUNITY_HEALTH_NURSE("CHN", Constants.SECURITY_ROLE_PROVIDER),
-        COMMUNITY_HEALTH_OPERATOR("CHO", Constants.SECURITY_ROLE_PROVIDER),
-        COMMUNITY_HEALTH_VOLUNTEER("CHV", Constants.SECURITY_ROLE_PROVIDER),
-        MOTECH_FIELD_AGENT("FA", Constants.SECURITY_ROLE_PROVIDER),
-        FACILITY_ADMIN("Facility Admin", Constants.SECURITY_ROLE_PROVIDER),
-        HEALTH_CARE_ADMIN("HealthCare Admin", Constants.SECURITY_ROLE_PROVIDER),
-        HEALTH_EXTENSION_WORKER("HEW", Constants.SECURITY_ROLE_PROVIDER),
-        HEALTH_PROMOTION_OFFICER("HPO", Constants.SECURITY_ROLE_PROVIDER),
-        MOBILE_MIDWIFE_AGENT("MMA", Constants.SECURITY_ROLE_PROVIDER), */
 
         //TODO: All roles will have super admin privileges till staff role login is played <geet/balaji>
 

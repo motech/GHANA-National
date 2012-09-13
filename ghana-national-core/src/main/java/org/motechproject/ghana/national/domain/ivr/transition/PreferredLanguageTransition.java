@@ -1,9 +1,9 @@
 package org.motechproject.ghana.national.domain.ivr.transition;
 
-import org.motechproject.decisiontree.FlowSession;
-import org.motechproject.decisiontree.model.AudioPrompt;
-import org.motechproject.decisiontree.model.Node;
-import org.motechproject.decisiontree.model.Transition;
+import org.motechproject.decisiontree.core.FlowSession;
+import org.motechproject.decisiontree.core.model.AudioPrompt;
+import org.motechproject.decisiontree.core.model.Node;
+import org.motechproject.decisiontree.core.model.Transition;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.ivr.PlayMessagesFromOutboxTree;
