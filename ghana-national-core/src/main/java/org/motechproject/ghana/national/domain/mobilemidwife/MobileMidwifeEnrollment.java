@@ -10,8 +10,6 @@ import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.model.Time;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 
-import java.util.Arrays;
-
 import static org.motechproject.util.DateUtil.setTimeZone;
 
 @TypeDiscriminator("doc.type === 'MobileMidwifeEnrollment'")
@@ -116,8 +114,8 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     }
 
     @JsonIgnore
-    public String messageStartWeekSpecificToServiceType(){
-        if(ServiceType.CHILD_CARE.equals(serviceType)){
+    public String messageStartWeekSpecificToServiceType() {
+        if (ServiceType.CHILD_CARE.equals(serviceType)) {
             return Integer.valueOf(messageStartWeek) - 40 + "";
         }
         return messageStartWeek;
@@ -233,15 +231,15 @@ public class MobileMidwifeEnrollment extends MotechBaseDataObject {
     }
 
     public CampaignRequest createCampaignRequestForTextMessage(LocalDate scheduleStartDate) {
-        return new CampaignRequest(patientId, MobileMidwifeCampaign.getName(serviceType, medium), null, scheduleStartDate, MessageStartWeek.findBy(messageStartWeek).getWeek());
+        return new CampaignRequest(patientId, MobileMidwifeCampaign.getName(serviceType, medium), scheduleStartDate, null);
     }
 
-    public CampaignRequest stopCampaignRequest() {
+    public CampaignRequest campaignRequest() {
         return new CampaignRequest(patientId, MobileMidwifeCampaign.getName(serviceType, medium), null, null);
     }
 
-    public CampaignRequest createCampaignRequestForVoiceMessage(LocalDate nextApplicableDay, DayOfWeek dayOfWeek, Time timeOfDay) {
-        return new CampaignRequest(patientId, MobileMidwifeCampaign.getName(serviceType, medium), nextApplicableDay, timeOfDay, Arrays.asList(dayOfWeek));
+    public CampaignRequest createCampaignRequestForVoiceMessage(LocalDate nextApplicableDay, Time timeOfDay) {
+        return new CampaignRequest(patientId, MobileMidwifeCampaign.getName(serviceType, medium), nextApplicableDay, timeOfDay);
     }
 
     @Override

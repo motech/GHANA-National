@@ -27,7 +27,6 @@ import org.springframework.web.servlet.DispatcherServlet;
 public class TestAppServer {
     public static final int PORT = 8080;
     public static final String GN_CONTEXT_PATH = "/ghana-national-web";
-    private static final String OPENMRS_CONTEXT_PATH = "/openmrs";
 
     private Server applicationServer;
     private DispatcherServlet dispatcherServlet;

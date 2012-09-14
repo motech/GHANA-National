@@ -51,17 +51,17 @@ public class MobileMidwifeWeekCalculator {
     }
 
     private Campaign getCampaign(String campaignName) {
-        Campaign campaign = null;
-        if ("PREGNANCY_VOICE".equals(campaignName))
-            campaign = new PregnancyVoiceCampaign();
-        else if ("PREGNANCY_SMS".equals(campaignName))
-            campaign = new PregnancySMSCampaign();
-        else if ("CHILD_CARE_VOICE".equals(campaignName))
-            campaign = new ChildVoiceCampaign();
-        else if ("CHILD_CARE_SMS".equals(campaignName))
-            campaign = new ChildSMSCampaign();
-
-        return campaign;
+        switch (campaignName) {
+            case "PREGNANCY_VOICE":
+                return new PregnancyVoiceCampaign();
+            case "PREGNANCY_SMS":
+                return new PregnancySMSCampaign();
+            case "CHILD_CARE_VOICE":
+                return new ChildVoiceCampaign();
+            case "CHILD_CARE_SMS":
+                return new ChildSMSCampaign();
+        }
+        return null;
     }
 
     abstract class VoiceCampaign extends Campaign {

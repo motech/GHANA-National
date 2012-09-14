@@ -14,7 +14,6 @@ import org.motechproject.ghana.national.repository.AllPatientsOutbox;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.retry.service.RetryService;
-import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,12 +48,12 @@ public class MobileMidwifeService {
         if (enrollment.campaignApplicable()) {
             LocalDate referenceDate;
             if (enrollment.getMedium().equals(Medium.SMS)) {
-                referenceDate = allCampaigns.nextCycleDateFromToday(enrollment.getServiceType(), Medium.SMS);
-                allCampaigns.start(enrollment.createCampaignRequestForTextMessage(referenceDate));
+//                referenceDate = allCampaigns.nextCycleDateFromToday(enrollment.getServiceType(), Medium.SMS);
+                allCampaigns.start(enrollment.createCampaignRequestForTextMessage(enrollment.getEnrollmentDateTime().toLocalDate()));
             } else if (enrollment.getMedium().equals(Medium.VOICE)) {
                 DayOfWeek applicableDays = enrollment.getDayOfWeek() != null ? enrollment.getDayOfWeek() : DayOfWeek.getDayOfWeek(enrollment.getEnrollmentDateTime().dayOfWeek());
                 referenceDate = getReferenceDate(enrollment.getEnrollmentDateTime(), applicableDays);
-                allCampaigns.start(enrollment.createCampaignRequestForVoiceMessage(referenceDate, applicableDays, enrollment.getTimeOfDay()));
+                allCampaigns.start(enrollment.createCampaignRequestForVoiceMessage(referenceDate, enrollment.getTimeOfDay()));
             }
         }
     }
@@ -70,8 +69,7 @@ public class MobileMidwifeService {
             enrollment.setActive(false);
             allEnrollments.update(enrollment);
             if (enrollment.campaignApplicable()) {
-                CampaignRequest campaignRequest = enrollment.stopCampaignRequest();
-                allCampaigns.stop(campaignRequest);
+                allCampaigns.stop(enrollment.campaignRequest());
                 allPatientsOutbox.removeMobileMidwifeMessages(patientId);
                 retryService.fulfill(patientId, Constants.RETRY_GROUP);
             }

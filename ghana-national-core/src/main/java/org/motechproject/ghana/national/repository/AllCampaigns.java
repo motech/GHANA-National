@@ -1,31 +1,18 @@
 package org.motechproject.ghana.national.repository;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
-import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeCampaign;
-import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
-import org.motechproject.ghana.national.tools.Utility;
-import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
-import org.motechproject.server.messagecampaign.dao.AllMessageCampaigns;
 import org.motechproject.server.messagecampaign.service.MessageCampaignService;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public class AllCampaigns {
 
     private MessageCampaignService campaignService;
-    private AllMessageCampaigns allMessageCampaigns;
 
     @Autowired
-    public AllCampaigns(MessageCampaignService campaignService, AllMessageCampaigns allMessageCampaigns) {
+    public AllCampaigns(MessageCampaignService campaignService) {
         this.campaignService = campaignService;
-        this.allMessageCampaigns = allMessageCampaigns;
     }
 
     public Boolean start(CampaignRequest campaignRequest) {
@@ -36,11 +23,5 @@ public class AllCampaigns {
     public Boolean stop(CampaignRequest enrollRequest) {
         campaignService.stopAll(enrollRequest);
         return true;
-    }
-
-    public LocalDate nextCycleDateFromToday(ServiceType serviceType, Medium medium) {
-        DateTime fromDate = DateUtil.now();
-        List<DayOfWeek> applicableDays = allMessageCampaigns.getApplicableDaysForRepeatingCampaign(MobileMidwifeCampaign.getName(serviceType, medium), serviceType.getServiceName(medium));
-        return Utility.nextApplicableWeekDay(fromDate, applicableDays).toLocalDate();
     }
 }

@@ -47,7 +47,6 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.server.messagecampaign.EventKeys.MESSAGE_CAMPAIGN_FIRED_EVENT_SUBJECT;
 import static org.motechproject.util.DateUtil.newDateTime;
 import static org.motechproject.util.DateUtil.now;
 
@@ -253,9 +252,9 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         parameters.put(EventKeys.CAMPAIGN_NAME_KEY, campaignName);
         parameters.put(EventKeys.EXTERNAL_ID_KEY, externalId);
-        parameters.put(EventKeys.CAMPAIGN_START_DATE, messageStartDate.toLocalDate());
-        if ("PREGNANCY_VOICE".equals(campaignName) || "CHILD_CARE_VOICE".equals(campaignName))
-            parameters.put(EventKeys.CAMPAIGN_REPEAT_INTERVAL, "1 Week");
-        return new MotechEvent(MESSAGE_CAMPAIGN_FIRED_EVENT_SUBJECT, parameters);
+//        parameters.put(EventKeys.CAMPAIGN_START_DATE, messageStartDate.toLocalDate());
+//        if ("PREGNANCY_VOICE".equals(campaignName) || "CHILD_CARE_VOICE".equals(campaignName))
+//            parameters.put(EventKeys.CAMPAIGN_REPEAT_INTERVAL, "1 Week");
+        return new MotechEvent(EventKeys.SEND_MESSAGE, parameters);
     }
 }

@@ -6,7 +6,6 @@ import org.motechproject.server.verboice.VerboiceIVRService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
@@ -19,7 +18,6 @@ public class IVRGateway {
     Logger logger = LoggerFactory.getLogger(IVRGateway.class);
 
     @Autowired
-    @Qualifier("VerboiceIVRService")
     private VerboiceIVRService verboiceIVRService;
 
     @Autowired

@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.handler;
 
-import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.event.MotechEvent;
@@ -30,8 +29,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static org.motechproject.server.messagecampaign.EventKeys.MESSAGE_CAMPAIGN_FIRED_EVENT_SUBJECT;
-
 @Component
 public class MobileMidwifeCampaignEventHandler {
 
@@ -55,31 +52,32 @@ public class MobileMidwifeCampaignEventHandler {
     private MobileMidwifeWeekCalculator mobileMidwifeWeekCalculator;
 
 
-    @MotechListener(subjects = {MESSAGE_CAMPAIGN_FIRED_EVENT_SUBJECT})
+    @MotechListener(subjects = {EventKeys.SEND_MESSAGE})
     public void sendProgramMessage(MotechEvent event) {
         try {
             Map params = event.getParameters();
             String patientId = (String) params.get(EventKeys.EXTERNAL_ID_KEY);
-            LocalDate campaignStartDate = (LocalDate) params.get(EventKeys.CAMPAIGN_START_DATE);
-            String repeatInterval = (String) params.get(EventKeys.CAMPAIGN_REPEAT_INTERVAL);
+//            LocalDate campaignStartDate = (LocalDate) params.get(EventKeys.CAMPAIGN_START_DATE);
+//            String repeatInterval = (String) params.get(EventKeys.CAMPAIGN_REPEAT_INTERVAL);
 
             MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(patientId);
             Integer startWeek = Integer.parseInt(enrollment.messageStartWeekSpecificToServiceType());
 
             String campaignName = ((String) params.get(EventKeys.CAMPAIGN_NAME_KEY));
-            String messageKey = mobileMidwifeWeekCalculator.getMessageKey(campaignName, campaignStartDate, startWeek, repeatInterval);
+            String messageKey = (String) params.get(EventKeys.MESSAGE_KEY);//mobileMidwifeWeekCalculator.getMessageKey(campaignName, campaignStartDate, startWeek, repeatInterval);
 
             if (messageKey != null) {
                 sendMessage(enrollment, messageKey);
                 if (mobileMidwifeWeekCalculator.hasProgramEnded(campaignName, messageKey)) {
-                    if (enrollment.getServiceType().equals(ServiceType.PREGNANCY))
+                    if (enrollment.getServiceType().equals(ServiceType.PREGNANCY)) {
                         mobileMidwifeService.rollover(patientId, DateUtil.now().plusWeeks(1));
-                    else
+                    } else {
                         mobileMidwifeService.unRegister(patientId);
+                    }
                 }
             }
         } catch (Exception e) {
-            logger.error("<MobileMidwifeEvent>: Encountered error while sending alert for patientId " + event.getParameters().get(EventKeys.EXTERNAL_ID_KEY) +  ": ", e);
+            logger.error("<MobileMidwifeEvent>: Encountered error while sending alert for patientId " + event.getParameters().get(EventKeys.EXTERNAL_ID_KEY) + ": ", e);
             throw new EventHandlerException(event, e);
         }
     }

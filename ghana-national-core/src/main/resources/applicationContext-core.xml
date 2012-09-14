@@ -14,8 +14,8 @@
 
     <beans:import resource="classpath:applicationContext-email.xml"/>
     <beans:import resource="classpath:applicationContext-messaging-gateway.xml"/>
-    <beans:import resource="classpath:applicationMessageCampaign.xml"/>
     <beans:import resource="classpath:applicationContext-retry.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationMessageCampaign.xml"/>
     <beans:import resource="classpath:/META-INF/motech/applicationOpenmrsAPI.xml"/>
     <beans:import resource="classpath:/META-INF/motech/applicationScheduler.xml"/>
     <beans:import resource="classpath:/META-INF/motech/applicationPlatformServerAPI.xml"/>

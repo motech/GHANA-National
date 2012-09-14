@@ -6,11 +6,10 @@ import org.motechproject.cmslite.api.model.StringContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
-import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeCampaign;
 import org.motechproject.ghana.national.tools.seed.Seed;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.server.messagecampaign.dao.AllMessageCampaigns;
-import org.motechproject.server.messagecampaign.domain.message.RepeatingCampaignMessage;
+import org.motechproject.server.messagecampaign.domain.message.DayOfWeekCampaignMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeCampaign.getName;
 import static org.motechproject.ghana.national.domain.mobilemidwife.ServiceType.CHILD_CARE;
 import static org.motechproject.ghana.national.domain.mobilemidwife.ServiceType.PREGNANCY;
 import static org.springframework.core.io.support.PropertiesLoaderUtils.loadAllProperties;
@@ -47,8 +47,8 @@ public class MobileMidwifeMessageSeed extends Seed {
 
     private void savePropertiesToCMS(Properties properties, Language language) throws CMSLiteException {
 
-        RepeatingCampaignMessage pregnancyCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(MobileMidwifeCampaign.getName(PREGNANCY, Medium.SMS), PREGNANCY.getServiceName(Medium.SMS));
-        RepeatingCampaignMessage childCareCampaignMessage = (RepeatingCampaignMessage) messageCampaigns.getCampaignMessageByMessageName(MobileMidwifeCampaign.getName(CHILD_CARE, Medium.SMS), CHILD_CARE.getServiceName(Medium.SMS));
+        DayOfWeekCampaignMessage pregnancyCampaignMessage = (DayOfWeekCampaignMessage) messageCampaigns.get(getName(PREGNANCY, Medium.SMS), PREGNANCY.getServiceName(Medium.SMS));
+        DayOfWeekCampaignMessage childCareCampaignMessage = (DayOfWeekCampaignMessage) messageCampaigns.get(getName(CHILD_CARE, Medium.SMS), CHILD_CARE.getServiceName(Medium.SMS));
         Map<String, String> pregnancyDayMap = createDayMap(pregnancyCampaignMessage);
         Map<String, String> childCareDayMap = createDayMap(childCareCampaignMessage);
 
@@ -70,8 +70,8 @@ public class MobileMidwifeMessageSeed extends Seed {
         }
     }
 
-    private Map<String, String> createDayMap(RepeatingCampaignMessage campaignMessage) {
-        List<DayOfWeek> weekDayList = campaignMessage.weekDaysApplicable();
+    private Map<String, String> createDayMap(DayOfWeekCampaignMessage campaignMessage) {
+        List<DayOfWeek> weekDayList = campaignMessage.getDaysOfWeek();
         Map<String, String> weekDayMap = new HashMap<String, String>();
         int count = 0;
         for (DayOfWeek dayOfWeek : weekDayList) {
