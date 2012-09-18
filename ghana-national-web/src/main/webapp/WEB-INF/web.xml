@@ -45,7 +45,7 @@
     </servlet>
     <servlet>
         <servlet-name>resource</servlet-name>
-        <servlet-class>org.motechproject.cmslite.api.web.ResourceServlet</servlet-class>
+        <servlet-class>org.motechproject.cmslite.api.web.ResourceController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>mobileformsDownload</servlet-name>

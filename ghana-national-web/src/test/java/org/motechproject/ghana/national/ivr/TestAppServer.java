@@ -56,7 +56,7 @@ public class TestAppServer {
         return contextURL() + path;
     }
 
-    public String treePath(String treeName, String path){
+    public String treePath(String treeName, String path) {
         return path("/verboice/ivr?type=verboice&ln=en&tree=" + treeName + path);
     }
 

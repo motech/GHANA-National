@@ -1,7 +1,7 @@
 [
     {
         "name" : "PREGNANCY_SMS",
-        "type" : "REPEATING",
+        "type" : "DAY_OF_WEEK",
         "maxDuration" : "40 Weeks",
         "messages" : [
             {
@@ -10,15 +10,15 @@
                 "languages" : ["en"],
                 "messageKey": "PREGNANCY-cw{Offset}-{WeekDay}",
                 "calendarStartOfWeek" : "Sunday",
-                "weekDaysApplicable" : ["Monday" , "Wednesday", "Friday"],
-                "deliverTime" : "10:30"
+                "repeatOn" : ["Monday" , "Wednesday", "Friday"],
+                "startTime" : "10:30"
             }
         ]
     },
 
     {
         "name" : "PREGNANCY_VOICE",
-        "type" : "REPEATING",
+        "type" : "REPEAT_INTERVAL",
         "maxDuration" : "40 Weeks",
         "messages" : [
             {
@@ -26,15 +26,15 @@
                 "formats" : ["IVR"],
                 "languages" : ["en","fa","ka","na"],
                 "messageKey": "{Offset}",
-                "repeatInterval" : "1 Week",
-                "deliverTime" : "0:0"
+                "repeatEvery" : "1 Week",
+                "startTime" : "0:0"
             }
         ]
     },
 
     {
         "name" : "CHILD_CARE_SMS",
-        "type" : "REPEATING",
+        "type" : "DAY_OF_WEEK",
         "maxDuration" : "52 Weeks",
         "messages" : [
             {
@@ -43,15 +43,15 @@
                 "languages" : ["en"],
                 "messageKey": "CHILD_CARE-cw{Offset}-{WeekDay}",
                 "calendarStartOfWeek" : "Sunday",
-                "weekDaysApplicable" : ["Monday"],
-                "deliverTime" : "10:30"
+                "repeatOn" : ["Monday"],
+                "startTime" : "10:30"
             }
         ]
     },
 
     {
         "name" : "CHILD_CARE_VOICE",
-        "type" : "REPEATING",
+        "type" : "REPEAT_INTERVAL",
         "maxDuration" : "52 Weeks",
         "messages" : [
             {
@@ -59,8 +59,8 @@
                 "formats" : ["IVR"],
                 "languages" : ["en","fa","ka","na"],
                 "messageKey": "{Offset}",
-                "repeatInterval" : "1 Week",
-                "deliverTime" : "0:0"
+                "repeatEvery" : "1 Week",
+                "startTime" : "0:0"
             }
         ]
     }
