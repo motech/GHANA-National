@@ -4,8 +4,11 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.motechproject.scheduletracking.api.repository.AllSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
+import org.motechproject.server.config.monitor.ConfigFileMonitor;
 import org.quartz.SchedulerException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -21,6 +24,11 @@ import static org.motechproject.scheduletracking.api.domain.WindowName.late;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-core.xml"})
 public class CWCBcgSchedulesTest extends BaseScheduleTrackingTest {
+
+    @Autowired
+    ConfigFileMonitor configFileMonitor;
+    @Autowired
+    AllSchedules allSchedules;
 
     @Before
     public void setUp() {
