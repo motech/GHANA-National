@@ -286,7 +286,7 @@ public class PNCMotherSchedulesTest extends BaseScheduleTrackingTest {
         scheduleName = pncScheduleName;
         Time referenceTime = new Time(birthDate.getHourOfDay(), birthDate.getMinuteOfHour());
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setExternalId(PATIENT_ID)
-                .setScheduleName(scheduleName).setPreferredAlertTime(preferredAlertTime)
+                .setScheduleName(scheduleName)
                 .setReferenceDate(birthDate.toLocalDate()).setReferenceTime(referenceTime);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }

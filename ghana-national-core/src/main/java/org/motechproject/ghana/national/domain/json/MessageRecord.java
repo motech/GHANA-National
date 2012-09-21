@@ -9,7 +9,7 @@ public class MessageRecord {
     private List<String> languages;
     private String messageKey;
     private String calendarStartOfWeek;
-    private List<String>weekDaysApplicable;
+    private List<String> repeatOn;
     private String deliverTime;
 
     public String getName() {
@@ -52,12 +52,12 @@ public class MessageRecord {
         this.calendarStartOfWeek = calendarStartOfWeek;
     }
 
-    public List<String> getWeekDaysApplicable() {
-        return weekDaysApplicable;
+    public List<String> getRepeatOn() {
+        return repeatOn;
     }
 
-    public void setWeekDaysApplicable(List<String> weekDaysApplicable) {
-        this.weekDaysApplicable = weekDaysApplicable;
+    public void setRepeatOn(List<String> weekDaysApplicable) {
+        this.repeatOn = weekDaysApplicable;
     }
 
     public String getDeliverTime() {
@@ -76,7 +76,7 @@ public class MessageRecord {
                 ", languages=" + languages +
                 ", messageKey='" + messageKey + '\'' +
                 ", calendarStartOfWeek='" + calendarStartOfWeek + '\'' +
-                ", weekDaysApplicable=" + weekDaysApplicable +
+                ", repeatOn=" + repeatOn +
                 ", deliverTime='" + deliverTime + '\'' +
                 '}';
     }

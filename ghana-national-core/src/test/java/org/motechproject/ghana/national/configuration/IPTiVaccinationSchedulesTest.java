@@ -144,7 +144,7 @@ public class IPTiVaccinationSchedulesTest extends BaseScheduleTrackingTest {
     private String scheduleAlertForIptiEnrolledWithHistory(LocalDate lastIPTiDate, String milestoneName) {
         EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setExternalId(PATIENT_ID)
                 .setScheduleName(scheduleName).setPreferredAlertTime(preferredAlertTime)
-                .setReferenceDate(lastIPTiDate).setStartingMilestoneName(milestoneName);
+                .setEnrollmentDate(lastIPTiDate).setStartingMilestoneName(milestoneName);
         return scheduleTrackingService.enroll(enrollmentRequest);
     }
 

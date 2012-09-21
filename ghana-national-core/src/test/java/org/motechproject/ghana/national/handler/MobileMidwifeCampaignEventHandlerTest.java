@@ -6,6 +6,7 @@ import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
 import org.motechproject.event.MotechEvent;
@@ -31,7 +32,6 @@ import org.motechproject.retry.service.RetryService;
 import org.motechproject.server.messagecampaign.EventKeys;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;
 
@@ -52,6 +52,7 @@ import static org.motechproject.util.DateUtil.now;
 
 public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
 
+    @InjectMocks
     MobileMidwifeCampaignEventHandler handler = new MobileMidwifeCampaignEventHandler();
     @Mock
     MobileMidwifeService mockMobileMidwifeService;
@@ -73,15 +74,7 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
     @Before
     public void init() {
         initMocks(this);
-        ReflectionTestUtils.setField(handler, "ivrCallbackUrlBuilder", mockIVRCallbackUrlBuilder);
-        ReflectionTestUtils.setField(handler, "mobileMidwifeService", mockMobileMidwifeService);
-        ReflectionTestUtils.setField(handler, "smsGateway", mockSMSGateway);
-        ReflectionTestUtils.setField(handler, "ivrGateway", mockIVRGateway);
-        ReflectionTestUtils.setField(handler, "allPatientsOutbox", mockAllPatientsOutbox);
-        ReflectionTestUtils.setField(handler, "retryService", mockRetryService);
-        ReflectionTestUtils.setField(handler, "mobileMidwifeWeekCalculator", mockMobileMidwifeWeekCalculator);
         super.mockCurrentDate(now);
-
     }
 
     @Test
@@ -99,10 +92,9 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
         String messageKey = "CHILD_CARE-cw"+ normalizedStartWeek +"-Thursday";
 
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
-        when(mockMobileMidwifeWeekCalculator.getMessageKey(campaignName,enrollmentDateTime.toLocalDate(),Integer.parseInt(normalizedStartWeek),null)).thenReturn(messageKey);
         when(mockMobileMidwifeWeekCalculator.hasProgramEnded(campaignName,messageKey)).thenReturn(false);
 
-        handler.sendProgramMessage(motechEvent(patientId, campaignName, mobileMidwifeEnrollment.getEnrollmentDateTime()));
+        handler.sendProgramMessage(motechEvent(patientId, campaignName, messageKey));
         verify(mockSMSGateway).dispatchSMS(messageKey, language.name(), mobileNumber);
     }
 
@@ -118,12 +110,10 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
 
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(enrollmentDateTime).setPatientId(patientId)
                 .setServiceType(ServiceType.CHILD_CARE).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber("9845312345").setMessageStartWeek(messageStartWeek);
-        String normalizedStartWeek=mobileMidwifeEnrollment.messageStartWeekSpecificToServiceType();
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
-        when(mockMobileMidwifeWeekCalculator.getMessageKey(campaignName,enrollmentDateTime.toLocalDate(),Integer.parseInt(normalizedStartWeek),null)).thenReturn(messageKey);
         when(mockMobileMidwifeWeekCalculator.hasProgramEnded(campaignName,messageKey)).thenReturn(true);
 
-        MotechEvent lastEvent = motechEvent(patientId, campaignName, mobileMidwifeEnrollment.getEnrollmentDateTime());
+        MotechEvent lastEvent = motechEvent(patientId, campaignName, messageKey);
         handler.sendProgramMessage(lastEvent);
 
         ArgumentCaptor<String> idArgumentCaptor = ArgumentCaptor.forClass(String.class);
@@ -133,7 +123,6 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
 
     @Test
     public void shouldRolloverUserIfItIsTheLastEventForPregnancyProgram() throws ContentNotFoundException {
-
         String patientId = "1234568";
         Language language = Language.EN;
         String campaignName = "PREGNANCY_SMS";
@@ -141,15 +130,13 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
         String messageStartWeek = "40";
         String messageKey = "PREGNANCY-cw40-Thursday";
 
-
         MobileMidwifeEnrollment mobileMidwifeEnrollment = new MobileMidwifeEnrollment(now).setPatientId(patientId)
                 .setServiceType(ServiceType.PREGNANCY).setMedium(Medium.SMS).setLanguage(language).setPhoneNumber("9845312345").setMessageStartWeek(messageStartWeek);
 
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
-        when(mockMobileMidwifeWeekCalculator.getMessageKey(campaignName,now.toLocalDate(),Integer.parseInt(messageStartWeek),null)).thenReturn(messageKey);
         when(mockMobileMidwifeWeekCalculator.hasProgramEnded(campaignName,messageKey)).thenReturn(true);
 
-        MotechEvent lastEvent = motechEvent(patientId, campaignName, mobileMidwifeEnrollment.getEnrollmentDateTime()).setLastEvent(true);
+        MotechEvent lastEvent = motechEvent(patientId, campaignName, messageKey).setLastEvent(true);
         handler.sendProgramMessage(lastEvent);
         ArgumentCaptor<String> idArgumentCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<DateTime> dateArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
@@ -184,10 +171,9 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
                 .setServiceType(serviceType).setMedium(Medium.VOICE).setPhoneOwnership(PhoneOwnership.PUBLIC).setLanguage(language).setMessageStartWeek(messageStartWeek).setDayOfWeek(DayOfWeek.Thursday);
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
         when(mockIVRCallbackUrlBuilder.outboundCallUrl(patientId)).thenReturn(url);
-        when(mockMobileMidwifeWeekCalculator.getMessageKey(campaignName,enrollmentDateTime.toLocalDate(),Integer.parseInt(messageStartWeek),"1 Week")).thenReturn(messageStartWeek);
         when(mockMobileMidwifeWeekCalculator.hasProgramEnded(eq(campaignName),anyString())).thenReturn(false);
 
-        handler.sendProgramMessage(motechEvent(patientId, campaignName, mobileMidwifeEnrollment.getEnrollmentDateTime()));
+        handler.sendProgramMessage(motechEvent(patientId, campaignName, messageStartWeek));
 
         verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, MobileMidwifeAudioClips.instance(mobileMidwifeEnrollment.getServiceType().getValue(), messageStartWeek), Period.weeks(1));
         verify(mockRetryService, never()).schedule(eq(new RetryRequest("retry-ivr-every-2hrs-and-30mins", patientId, now)));
@@ -213,11 +199,9 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
                 .setServiceType(serviceType).setMedium(Medium.VOICE).setPhoneNumber("9845312345").setLanguage(language).setMessageStartWeek(messageStartWeek).setDayOfWeek(DayOfWeek.Thursday);
         when(mockMobileMidwifeService.findActiveBy(patientId)).thenReturn(mobileMidwifeEnrollment);
         when(mockIVRCallbackUrlBuilder.outboundCallUrl(patientId)).thenReturn(url);
-        when(mockMobileMidwifeWeekCalculator.getMessageKey(campaignName,enrollmentDateTime.toLocalDate(),Integer.parseInt(messageStartWeek),"1 Week")).thenReturn(messageStartWeek);
         when(mockMobileMidwifeWeekCalculator.hasProgramEnded(eq(campaignName),anyString())).thenReturn(false);
 
-        handler.sendProgramMessage(motechEvent(patientId, campaignName, mobileMidwifeEnrollment.getEnrollmentDateTime()));
-
+        handler.sendProgramMessage(motechEvent(patientId, campaignName, messageStartWeek));
 
         verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, MobileMidwifeAudioClips.instance(mobileMidwifeEnrollment.getServiceType().getValue(), messageStartWeek), Period.weeks(1));
         verify(mockRetryService).schedule(eq(new RetryRequest(Constants.RETRY_FOR_2_HOURS_EVERY_30MIN, patientId, now)));
@@ -236,25 +220,20 @@ public class MobileMidwifeCampaignEventHandlerTest extends BaseUnitTest {
         DateTime currentDateTime = DateUtil.newDateTime(DateUtil.newDate(2012, 7, 10));
         super.mockCurrentDate(currentDateTime);
 
-        handler.sendProgramMessage(motechEvent(patientId, campaignName, mobileMidwifeEnrollment.getEnrollmentDateTime()));
-
+        handler.sendProgramMessage(motechEvent(patientId, campaignName, messageStartWeek));
 
         verify(mockAllPatientsOutbox).addMobileMidwifeMessage(patientId, MobileMidwifeAudioClips.instance(mobileMidwifeEnrollment.getServiceType().getValue(), messageStartWeek), Period.weeks(1));
         verify(mockRetryService).schedule(eq(new RetryRequest(Constants.RETRY_FOR_2_HOURS_EVERY_30MIN, patientId, currentDateTime)));
         verify(mockIVRGateway).placeCall(mobileMidwifeEnrollment.getPhoneNumber(), new HashMap<String, String>() {{
             put(IVRRequestBuilder.CALLBACK_URL, url);
         }});
-
     }
 
-
-    private MotechEvent motechEvent(String externalId, String campaignName, DateTime messageStartDate) {
+    private MotechEvent motechEvent(String externalId, String campaignName, String messageKey) {
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         parameters.put(EventKeys.CAMPAIGN_NAME_KEY, campaignName);
         parameters.put(EventKeys.EXTERNAL_ID_KEY, externalId);
-//        parameters.put(EventKeys.CAMPAIGN_START_DATE, messageStartDate.toLocalDate());
-//        if ("PREGNANCY_VOICE".equals(campaignName) || "CHILD_CARE_VOICE".equals(campaignName))
-//            parameters.put(EventKeys.CAMPAIGN_REPEAT_INTERVAL, "1 Week");
+        parameters.put(EventKeys.MESSAGE_KEY, messageKey);
         return new MotechEvent(EventKeys.SEND_MESSAGE, parameters);
     }
 }

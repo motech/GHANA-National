@@ -901,8 +901,12 @@ public class CareServiceTest extends BaseUnitTest {
 
     private EnrollmentRequest expectedRequest(String externalId, PatientCare patientCare) {
         return new EnrollmentRequest().setExternalId(externalId).setScheduleName(patientCare.name())
-                .setPreferredAlertTime(patientCare.preferredTime()).setEnrollmentDate(patientCare.enrollmentDate())
-                .setReferenceDate(patientCare.startingOn()).setReferenceTime(patientCare.referenceTime()).setStartingMilestoneName(patientCare.milestoneName())
+                .setPreferredAlertTime(patientCare.preferredTime())
+                .setEnrollmentDate(patientCare.enrollmentDate())
+                .setEnrollmentTime(patientCare.enrollmentTime())
+                .setReferenceDate(patientCare.startingOn())
+                .setReferenceTime(patientCare.referenceTime())
+                .setStartingMilestoneName(patientCare.milestoneName())
                 .setMetadata(patientCare.metaData());
     }
 

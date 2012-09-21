@@ -57,23 +57,20 @@ public class MobileMidwifeCampaignEventHandler {
         try {
             Map params = event.getParameters();
             String patientId = (String) params.get(EventKeys.EXTERNAL_ID_KEY);
-//            LocalDate campaignStartDate = (LocalDate) params.get(EventKeys.CAMPAIGN_START_DATE);
-//            String repeatInterval = (String) params.get(EventKeys.CAMPAIGN_REPEAT_INTERVAL);
-
             MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(patientId);
-            Integer startWeek = Integer.parseInt(enrollment.messageStartWeekSpecificToServiceType());
-
             String campaignName = ((String) params.get(EventKeys.CAMPAIGN_NAME_KEY));
-            String messageKey = (String) params.get(EventKeys.MESSAGE_KEY);//mobileMidwifeWeekCalculator.getMessageKey(campaignName, campaignStartDate, startWeek, repeatInterval);
+            String messageKey = (String) params.get(EventKeys.MESSAGE_KEY);
 
-            if (messageKey != null) {
-                sendMessage(enrollment, messageKey);
-                if (mobileMidwifeWeekCalculator.hasProgramEnded(campaignName, messageKey)) {
-                    if (enrollment.getServiceType().equals(ServiceType.PREGNANCY)) {
-                        mobileMidwifeService.rollover(patientId, DateUtil.now().plusWeeks(1));
-                    } else {
-                        mobileMidwifeService.unRegister(patientId);
-                    }
+            if (messageKey == null) {
+                return;
+            }
+
+            sendMessage(enrollment, messageKey);
+            if (mobileMidwifeWeekCalculator.hasProgramEnded(campaignName, messageKey)) {
+                if (enrollment.getServiceType().equals(ServiceType.PREGNANCY)) {
+                    mobileMidwifeService.rollover(patientId, DateUtil.now().plusWeeks(1));
+                } else {
+                    mobileMidwifeService.unRegister(patientId);
                 }
             }
         } catch (Exception e) {

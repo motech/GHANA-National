@@ -81,8 +81,8 @@ public class ScheduleMigrationSeedTest {
         ArgumentCaptor<EnrollmentRequest> captor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(allCareSchedules, times(2)).enroll(captor.capture());
         final List<EnrollmentRequest> enrollmentRequests = captor.getAllValues();
-        assertTTEnrollmentRequest(enrollmentRequests.get(0), expectedTTVaccines.get(0).getVaccinationDate(), "TT3", patientId1, expectedTTVaccines.get(0).getVaccinationDate(), new HashMap<String, String>());
-        assertTTEnrollmentRequest(enrollmentRequests.get(1), expectedTTVaccines.get(1).getVaccinationDate(), "TT2", patientId2, expectedTTVaccines.get(1).getVaccinationDate(), new HashMap<String, String>());
+        assertTTEnrollmentRequest(enrollmentRequests.get(0), expectedTTVaccines.get(0).getVaccinationDate(), "TT3", patientId1, expectedTTVaccines.get(0).getVaccinationDate(), null);
+        assertTTEnrollmentRequest(enrollmentRequests.get(1), expectedTTVaccines.get(1).getVaccinationDate(), "TT2", patientId2, expectedTTVaccines.get(1).getVaccinationDate(), null);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class ScheduleMigrationSeedTest {
         ArgumentCaptor<EnrollmentRequest> enrollmentCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(allCareSchedules).enroll(enrollmentCaptor.capture());
 
-        assertTTEnrollmentRequest(enrollmentCaptor.getValue(), referenceDate.toDateTime(), "IPTi1", "10000", referenceDate.toDateTime(), new HashMap<String, String>());
+        assertTTEnrollmentRequest(enrollmentCaptor.getValue(), referenceDate.toDateTime(), "IPTi1", "10000", referenceDate.toDateTime(), null);
     }
 
     public static void assertTTEnrollmentRequest(EnrollmentRequest enrollmentRequest, DateTime referenceDateTime, String milestoneName, String externalId, DateTime enrollmentDateTime, Map<String, String> metaData) {

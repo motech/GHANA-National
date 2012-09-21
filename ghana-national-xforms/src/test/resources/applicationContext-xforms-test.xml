@@ -21,7 +21,7 @@
 
     <context:property-placeholder location="classpath*:*.properties" ignore-unresolvable="true"/>
     <beans:import resource="classpath*:applicationContext-xforms.xml" />
-    <import resource="classpath:applicationPlatformServerAPI.xml"/>
+    <import resource="classpath:/META-INF/motech/applicationPlatformServerAPI.xml"/>
 
     <beans:import resource="classpath*:applicationContext-core.xml"/>
 

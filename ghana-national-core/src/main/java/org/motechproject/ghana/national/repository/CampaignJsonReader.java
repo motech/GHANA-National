@@ -42,11 +42,11 @@ public class CampaignJsonReader {
     private List<MobileMidwifeCampaignRecord> records(String scheduleDefinitionsDirectoryName, List<String> scheduleDefinitionsFileNames) {
         MotechJsonReader motechJsonReader = new MotechJsonReader();
 
-        List<MobileMidwifeCampaignRecord> campaignRecords= new ArrayList();
+        List<MobileMidwifeCampaignRecord> campaignRecords = new ArrayList<>();
         Type type = new TypeToken<List<MobileMidwifeCampaignRecord>>() {
         }.getType();
         for (String filename : scheduleDefinitionsFileNames) {
-            List<MobileMidwifeCampaignRecord> campaignList = (List<MobileMidwifeCampaignRecord>)motechJsonReader.readFromFile(scheduleDefinitionsDirectoryName + "/" + filename, type);
+            List<MobileMidwifeCampaignRecord> campaignList = (List<MobileMidwifeCampaignRecord>) motechJsonReader.readFromFile(scheduleDefinitionsDirectoryName + "/" + filename, type);
             for (MobileMidwifeCampaignRecord mobileMidwifeCampaignRecord : campaignList) {
                 campaignRecords.add(mobileMidwifeCampaignRecord);
             }

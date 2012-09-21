@@ -56,7 +56,7 @@ public class CareService {
     }
 
     void enrollToCWCCarePrograms(CwcVO cwcVO, Patient patient) {
-        final List<CwcCareHistory> mergedHistories = getCareHistories(cwcVO.getCWCCareHistoryVO(),patient);
+        final List<CwcCareHistory> mergedHistories = getCareHistories(cwcVO.getCWCCareHistoryVO(), patient);
 
         Date lastPentaDate = getLastPentaDate(patient, cwcVO.getCWCCareHistoryVO());
         Date lastIPTiDate = getLastIPTiDate(patient, cwcVO.getCWCCareHistoryVO());
@@ -64,8 +64,8 @@ public class CareService {
         Date lastRotavirusDate = getLastRotavirusDate(patient, cwcVO.getCWCCareHistoryVO());
         Date lastPneumococcalDate = getLastPneumococcalDate(patient, cwcVO.getCWCCareHistoryVO());
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(newDate(cwcVO.getRegistrationDate()),
-                mergedHistories, cwcVO.getCWCCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_PNEUMOCOCCAL.getName(),CWC_ROTAVIRUS.getName(),CWC_PENTA.getName(), CWC_IPT_VACCINE.getName(), CWC_OPV_OTHERS.getName())),
-                lastPentaDate, lastIPTiDate, lastOPVDate, lastRotavirusDate,lastPneumococcalDate);
+                mergedHistories, cwcVO.getCWCCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_PNEUMOCOCCAL.getName(), CWC_ROTAVIRUS.getName(), CWC_PENTA.getName(), CWC_IPT_VACCINE.getName(), CWC_OPV_OTHERS.getName())),
+                lastPentaDate, lastIPTiDate, lastOPVDate, lastRotavirusDate, lastPneumococcalDate);
         patientCares.addAll(patient.pncBabyProgramsToEnrollOnRegistration());
         enrollPatientCares(patientCares, patient);
     }
@@ -94,7 +94,7 @@ public class CareService {
         return lastRotavirusDate;
     }
 
-    private Date getLastPneumococcalDate(Patient patient, CWCCareHistoryVO cwcVO){
+    private Date getLastPneumococcalDate(Patient patient, CWCCareHistoryVO cwcVO) {
         Date lastPneumococcalDate = cwcVO.getLastPneumococcalDate();
         PneumococcalDose nextMilestone = cwcVO.getLastPneumococcal() != null ? getNextOf(PneumococcalDose.byValue(cwcVO.getLastPneumococcal())) : null;
         if (lastPneumococcalDate != null && nextMilestone != null)
@@ -333,16 +333,16 @@ public class CareService {
     }
 
     private void processCWCHistories(CareHistoryVO careHistoryVO, Patient patient) {
-        final List<CwcCareHistory> mergedHistories = getCareHistories(careHistoryVO.getCwcCareHistoryVO(),patient);
+        final List<CwcCareHistory> mergedHistories = getCareHistories(careHistoryVO.getCwcCareHistoryVO(), patient);
 
         Date lastPentaDate = getLastPentaDate(patient, careHistoryVO.getCwcCareHistoryVO());
         Date lastIPTiDate = getLastIPTiDate(patient, careHistoryVO.getCwcCareHistoryVO());
         Date lastOPVDate = getLastOPVDate(patient, careHistoryVO.getCwcCareHistoryVO());
         Date lastRotavirusDate = getLastRotavirusDate(patient, careHistoryVO.getCwcCareHistoryVO());
-        Date lastPneumococcalDate = getLastPneumococcalDate(patient,careHistoryVO.getCwcCareHistoryVO());
+        Date lastPneumococcalDate = getLastPneumococcalDate(patient, careHistoryVO.getCwcCareHistoryVO());
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnHistoryCapture(newDate(careHistoryVO.getDate()),
                 mergedHistories, careHistoryVO.getCwcCareHistoryVO(),
-                activeCareSchedules(patient, Arrays.asList(CWC_PENTA.getName(), CWC_IPT_VACCINE.getName(), CWC_OPV_OTHERS.getName(),CWC_ROTAVIRUS.getName(),CWC_PNEUMOCOCCAL.getName())),
+                activeCareSchedules(patient, Arrays.asList(CWC_PENTA.getName(), CWC_IPT_VACCINE.getName(), CWC_OPV_OTHERS.getName(), CWC_ROTAVIRUS.getName(), CWC_PNEUMOCOCCAL.getName())),
                 lastPentaDate, lastIPTiDate, lastOPVDate, lastRotavirusDate, lastPneumococcalDate);
         patientCares.addAll(patient.pncBabyProgramsToEnrollOnRegistration());
         enrollPatientCares(patientCares, patient);
@@ -382,8 +382,11 @@ public class CareService {
     }
 
     public LocalDate getEnrollmentDateForPregnancySchedules(String scheduleName, LocalDate lastCareTakenDate, String startMilestoneName, LocalDate edd) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setScheduleName(scheduleName)
-                .setStartingMilestoneName(startMilestoneName).setReferenceDate(lastCareTakenDate).setReferenceTime(new Time(0, 0));
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest()
+                .setScheduleName(scheduleName)
+                .setStartingMilestoneName(startMilestoneName)
+                .setReferenceDate(lastCareTakenDate)
+                .setReferenceTime(new Time(0, 0));
         List<DateTime> dueWindowAlertTimings = allCareSchedules.getDueWindowAlertTimings(enrollmentRequest);
         Pregnancy pregnancy = Pregnancy.basedOnDeliveryDate(edd);
         if (!dueWindowAlertTimings.isEmpty() && dueWindowAlertTimings.get(0).isBeforeNow() && lastCareTakenDate.toDate().after(pregnancy.dateOfConception().toDate()))
@@ -392,10 +395,11 @@ public class CareService {
     }
 
     public Date getEnrollmentDateForChildCareSchedules(String scheduleName, Date lastCareTakenDate, String startMilestoneName, LocalDate dateOfBirth) {
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest().setScheduleName(scheduleName)
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest()
+                .setScheduleName(scheduleName)
+                .setStartingMilestoneName(startMilestoneName)
                 .setReferenceDate(newDate(lastCareTakenDate))
-                .setReferenceTime(new Time(0, 0))
-                .setStartingMilestoneName(startMilestoneName);
+                .setReferenceTime(new Time(0, 0));
         List<DateTime> dueWindowAlertTimings = allCareSchedules.getDueWindowAlertTimings(enrollmentRequest);
         if (!dueWindowAlertTimings.isEmpty() && dueWindowAlertTimings.get(0).isBeforeNow() && lastCareTakenDate.after(dateOfBirth.toDate()))
             return getDifferenceOfDates(dueWindowAlertTimings.get(0), DateUtil.newDateTime(lastCareTakenDate)).toDate();

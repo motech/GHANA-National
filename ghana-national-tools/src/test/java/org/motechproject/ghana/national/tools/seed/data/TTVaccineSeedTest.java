@@ -14,8 +14,6 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.util.DateUtil;
 
-import java.util.HashMap;
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.tools.seed.data.ScheduleMigrationSeedTest.assertTTEnrollmentRequest;
@@ -42,7 +40,7 @@ public class TTVaccineSeedTest {
         ttVaccineSeed.enroll(referenceDate, "TT2", patient);
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(allCareSchedules).enroll(enrollmentRequestCaptor.capture());
-        assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT2", "1000", referenceDate, new HashMap<String, String>());
+        assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT2", "1000", referenceDate, null);
     }
 
     @Test
@@ -54,7 +52,7 @@ public class TTVaccineSeedTest {
         ArgumentCaptor<EnrollmentRequest> enrollmentRequestCaptor = ArgumentCaptor.forClass(EnrollmentRequest.class);
         verify(allCareSchedules).enroll(enrollmentRequestCaptor.capture());
         DateTime referenceDate = DateUtil.newDateTime(2012, 2, 1, new Time(10, 10));
-        assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT1", "1000", referenceDate, new HashMap<String, String>());
+        assertTTEnrollmentRequest(enrollmentRequestCaptor.getValue(), referenceDate, "TT1", "1000", referenceDate, null);
     }
 
 }

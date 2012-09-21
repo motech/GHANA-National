@@ -72,7 +72,7 @@ public class Patient {
         return mrsPatient.getPerson().getLastName();
     }
 
-    // Todo : Fix the meta-data for migration
+    // TODO : Fix the meta-data for migration
     public PatientCare patientCareWithoutMetaData(String scheduleName, DateTime referenceDate, DateTime enrollmentDate) {
         return new PatientCare(scheduleName, referenceDate, enrollmentDate, null, null);
     }
