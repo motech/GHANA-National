@@ -9,6 +9,7 @@ import org.motechproject.ghana.national.builder.MobileMidwifeEnrollmentBuilder;
 import org.motechproject.ghana.national.domain.AlertType;
 import org.motechproject.ghana.national.domain.AlertWindow;
 import org.motechproject.ghana.national.domain.ivr.MobileMidwifeAudioClips;
+import org.motechproject.ghana.national.domain.json.MobileMidwifeCampaignRecord;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
 import org.motechproject.ghana.national.domain.mobilemidwife.LearnedFrom;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
@@ -19,18 +20,26 @@ import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.repository.AllCampaigns;
 import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.ghana.national.repository.AllPatientsOutbox;
+import org.motechproject.ghana.national.repository.CampaignJsonReader;
 import org.motechproject.ghana.national.repository.IdentifierGenerator;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.outbox.api.contract.SortKey;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessageStatus;
 import org.motechproject.outbox.api.service.VoiceOutboxService;
+import org.motechproject.server.messagecampaign.EventKeys;
 import org.motechproject.server.messagecampaign.contract.CampaignRequest;
 import org.motechproject.server.messagecampaign.dao.AllMessageCampaigns;
 import org.motechproject.server.messagecampaign.domain.campaign.CampaignEnrollmentStatus;
 import org.motechproject.server.messagecampaign.service.CampaignEnrollmentRecord;
 import org.motechproject.server.messagecampaign.service.CampaignEnrollmentsQuery;
 import org.motechproject.server.messagecampaign.service.MessageCampaignService;
+import org.quartz.CronTrigger;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.SchedulerException;
+import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -38,6 +47,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
@@ -64,6 +74,9 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
     private AllPatientsOutbox allPatientsOutbox;
     @Autowired
     private VoiceOutboxService voiceOutboxService;
+    @Autowired
+    private CampaignJsonReader campaignJsonReader;
+
     @Test
     public void shouldCreateMobileMidwifeEnrollmentAndCreateScheduleIfNotRegisteredAlready() {
 
@@ -74,7 +87,7 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
                 messageStartWeek("20").phoneOwnership(PhoneOwnership.PERSONAL).phoneNumber("0987654321")
                 .active(true).build();
         service.register(enrollment);
-//        verifyCreateNewEnrollment(enrollment, allCampaigns.nextCycleDateFromToday(enrollment.getServiceType(), medium));
+        verifyCreateNewEnrollment(enrollment, new LocalDate());
     }
 
     @Test
@@ -91,9 +104,9 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
         newEnrollment.setEnrollmentDateTime(DateTime.now());
         newEnrollment.setActive(true);
         service.rollover(patientId, DateTime.now());
-//        verifyCreateNewEnrollment(newEnrollment, allCampaigns.nextCycleDateFromToday(newEnrollment.getServiceType(), medium));
+        verifyCreateNewEnrollment(newEnrollment, new LocalDate());
     }
-    
+
     @Test
     public void shouldRemoveMessagesFromOutboxOnUnregister() {
         String patientId = identifierGenerator.newPatientId();
@@ -114,36 +127,40 @@ public class MobileMidwifeServiceIT extends BaseIntegrationTest {
     }
 
     private void verifyCreateNewEnrollment(MobileMidwifeEnrollment expected, LocalDate expectedScheduleStartDate) {
-        assertCampaignSchedule(expected.createCampaignRequestForTextMessage(expectedScheduleStartDate),expected.getServiceType());
+        assertCampaignSchedule(expected.createCampaignRequestForTextMessage(expectedScheduleStartDate));
         assertEnrollment(expected, allEnrollments.findActiveBy(expected.getPatientId()));
     }
 
-    protected void assertCampaignSchedule(CampaignRequest campaignRequest,ServiceType serviceType) {
+    protected void assertCampaignSchedule(CampaignRequest campaignRequest) {
         String externalId = campaignRequest.externalId();
         String campaignName = campaignRequest.campaignName();
         CampaignEnrollmentsQuery campaignEnrollmentQuery = new CampaignEnrollmentsQuery().withExternalId(externalId).withCampaignName(campaignName).havingState(CampaignEnrollmentStatus.ACTIVE);
         CampaignEnrollmentRecord campaignEnrollmentRecord = messageCampaignService.search(campaignEnrollmentQuery).get(0);
-//        assertThat(campaignEnrollmentRecord.getStartDate(), is(campaignRequest.referenceDate()));
         assertThat((String) ReflectionTestUtils.getField(campaignEnrollmentRecord, "externalId"), is(campaignRequest.externalId()));
         assertThat((String) ReflectionTestUtils.getField(campaignEnrollmentRecord, "campaignName"), is(campaignRequest.campaignName()));
 
-//        String messageKey = getMessageKey(campaignName,serviceType);
-//        String jobId = String.format("%s-MessageJob.%s.%s.%s", INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT, campaignName, externalId, messageKey);
-//        try {
-//            JobDetail jobDetail = schedulerFactoryBean.getScheduler().getJobDetail(new JobKey(jobId, "default"));
-//            CronTrigger cronTrigger = (CronTrigger) schedulerFactoryBean.getScheduler().getTrigger(new TriggerKey(jobId, "default"));
-//            assertNotNull(cronTrigger.getCronExpression());
-//            JobDataMap map = jobDetail.getJobDataMap();
-//            assertThat(map.get(EventKeys.EXTERNAL_ID_KEY).toString(), is(externalId));
-//            assertThat(map.get(EventKeys.CAMPAIGN_NAME_KEY).toString(), is(campaignName));
-//            assertThat(map.get("eventType").toString(), is(INTERNAL_REPEATING_MESSAGE_CAMPAIGN_SUBJECT));
-//        } catch (SchedulerException e) {
-//            throw new AssertionError(e);
-//        }
+        String messageKey = getMessageKey(campaignName);
+        String jobId = String.format("%s-MessageJob.%s.%s.%s", EventKeys.SEND_MESSAGE, campaignName, externalId, messageKey);
+        try {
+            JobDetail jobDetail = schedulerFactoryBean.getScheduler().getJobDetail(new JobKey(jobId, "default"));
+            CronTrigger cronTrigger = (CronTrigger) schedulerFactoryBean.getScheduler().getTrigger(new TriggerKey(jobId, "default"));
+            assertNotNull(cronTrigger.getCronExpression());
+            JobDataMap map = jobDetail.getJobDataMap();
+            assertThat(map.get(EventKeys.EXTERNAL_ID_KEY).toString(), is(externalId));
+            assertThat(map.get(EventKeys.CAMPAIGN_NAME_KEY).toString(), is(campaignName));
+            assertThat(map.get("eventType").toString(), is(EventKeys.SEND_MESSAGE));
+        } catch (SchedulerException e) {
+            throw new AssertionError(e);
+        }
     }
 
-//    private String getMessageKey(String campaignName, ServiceType serviceType) {
-//        CampaignMessage message = allMessageCampaigns.getCampaignMessageByMessageName(campaignName, serviceType.getServiceName(Medium.SMS));
-//        return message.messageKey();
-//    }
+    private String getMessageKey(String campaignName) {
+        List<MobileMidwifeCampaignRecord> records = campaignJsonReader.records;
+        for (MobileMidwifeCampaignRecord record : records) {
+            if (campaignName.equals(record.getName())) {
+                return record.getMessages().iterator().next().getMessageKey();
+            }
+        }
+        return null;
+    }
 }

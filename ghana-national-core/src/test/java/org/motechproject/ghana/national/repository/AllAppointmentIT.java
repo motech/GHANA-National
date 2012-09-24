@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.quartz.SchedulerException;
@@ -26,8 +27,8 @@ public class AllAppointmentIT extends BaseUnitTest {
     @Autowired
     AllAppointments allAppointments;
 
-    Patient patient1 = new Patient(new MRSPatient("motechId1", null, null));
-    Patient patient2 = new Patient(new MRSPatient("motechId2", null, null));
+    Patient patient1 = new Patient(new MRSPatient("motechId1", null, new MRSFacility("facilityId1")));
+    Patient patient2 = new Patient(new MRSPatient("motechId2", null, new MRSFacility("facilityId2")));
 
     @Test
     public void testSearchForAppointmentsForCurrentWeek() {

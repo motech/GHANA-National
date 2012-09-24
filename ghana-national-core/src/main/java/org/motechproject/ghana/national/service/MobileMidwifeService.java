@@ -65,14 +65,15 @@ public class MobileMidwifeService {
 
     public void unRegister(String patientId) {
         MobileMidwifeEnrollment enrollment = findActiveBy(patientId);
-        if (enrollment != null) {
-            enrollment.setActive(false);
-            allEnrollments.update(enrollment);
-            if (enrollment.campaignApplicable()) {
-                allCampaigns.stop(enrollment.campaignRequest());
-                allPatientsOutbox.removeMobileMidwifeMessages(patientId);
-                retryService.fulfill(patientId, Constants.RETRY_GROUP);
-            }
+        if (enrollment == null) {
+            return;
+        }
+        enrollment.setActive(false);
+        allEnrollments.update(enrollment);
+        if (enrollment.campaignApplicable()) {
+            allCampaigns.stop(enrollment.campaignRequest());
+            allPatientsOutbox.removeMobileMidwifeMessages(patientId);
+            retryService.fulfill(patientId, Constants.RETRY_GROUP);
         }
     }
 
@@ -86,8 +87,7 @@ public class MobileMidwifeService {
 
     public MobileMidwifeEnrollment findMotherMobileMidwifeEnrollment(String motechId){
         Patient mother = allPatients.getMother(motechId);
-        MobileMidwifeEnrollment motherMobileMidwifeEnrollment = (mother != null) ? allEnrollments.findActiveBy(mother.getMotechId()) : null;
-        return motherMobileMidwifeEnrollment;
+        return (mother != null) ? allEnrollments.findActiveBy(mother.getMotechId()) : null;
     }
 
     public void rollover(String motechId, DateTime enrollmentDate) {

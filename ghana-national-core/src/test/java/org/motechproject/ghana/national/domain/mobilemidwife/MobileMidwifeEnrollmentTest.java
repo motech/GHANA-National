@@ -26,9 +26,6 @@ public class MobileMidwifeEnrollmentTest {
         assertThat(campaignRequest.campaignName(), is("CHILD_CARE_SMS"));
         assertThat(campaignRequest.externalId(), is(patientId));
         assertThat(campaignRequest.referenceDate(), is(DateUtil.today()));
-//        assertThat(campaignRequest.startOffset(), is(MessageStartWeek.findBy(messageStartWeekKey).getWeek()));
-
-//        assertNull(campaignRequest.reminderTime());
         assertThat(campaignRequest.referenceDate(), is(equalTo(registrationTime.toLocalDate())));
     }
 
@@ -49,7 +46,6 @@ public class MobileMidwifeEnrollmentTest {
         assertThat(stopRequest.campaignName(), is("CHILD_CARE_VOICE"));
         assertThat(stopRequest.externalId(), is(patientId));
         assertNull(stopRequest.referenceDate());
-//        assertNull(stopRequest.startOffset());
     }
 
     @Test

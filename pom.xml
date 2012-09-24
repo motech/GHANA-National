@@ -20,7 +20,7 @@
     <properties>
         <spring.version>3.1.0.RELEASE</spring.version>
         <org.ektorp.version>1.3.0</org.ektorp.version>
-        <motech-platform.version>0.13-SNAPSHOT</motech-platform.version>
+        <motech-platform.version>0.14-SNAPSHOT</motech-platform.version>
         <motech-platform-contrib.version>0.13-SNAPSHOT</motech-platform-contrib.version>
         <threads>1</threads>
         <skip>false</skip>
