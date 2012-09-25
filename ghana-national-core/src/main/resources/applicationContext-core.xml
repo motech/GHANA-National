@@ -13,6 +13,9 @@
 
     <context:property-placeholder location="classpath*:*.properties" ignore-unresolvable="true"/>
 
+    <beans:import resource="classpath:/META-INF/motech/eventQueueConsumer.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/eventQueuePublisher.xml"/>
+    <beans:import resource="classpath:/META-INF/motech/applicationPlatformConfig.xml"/>
     <beans:import resource="classpath:/META-INF/motech/applicationSchedulerTrackingAPI.xml"/>
     <beans:import resource="classpath:/META-INF/motech/applicationScheduler.xml"/>
     <beans:import resource="classpath:/META-INF/motech/applicationPlatformServerAPI.xml"/>
@@ -30,9 +33,6 @@
     <beans:import resource="classpath:/META-INF/motech/applicationOutboxAPI.xml"/>
     <beans:import resource="classpath:applicationContext-retry.xml"/>
     <beans:import resource="classpath:/META-INF/motech/outboundScheduleJobChannelAdapter.xml"/>
-    <beans:import resource="classpath:/META-INF/motech/eventQueueConsumer.xml"/>
-    <beans:import resource="classpath:/META-INF/motech/eventQueuePublisher.xml"/>
-    <beans:import resource="classpath:/META-INF/motech/applicationPlatformConfig.xml"/>
 
     <context:annotation-config/>
     <context:spring-configured/>
@@ -60,6 +60,7 @@
             <bean id="httpClientForAuditLog" class="org.ektorp.spring.HttpClientFactoryBean"/>
         </constructor-arg>
     </bean>
+
     <bean id="auditLogDbConnector" class="org.ektorp.impl.StdCouchDbConnector">
         <constructor-arg ref="auditLogDbInstance"/>
         <constructor-arg value="audit-log"/>

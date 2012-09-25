@@ -43,10 +43,6 @@
         <servlet-name>mobileformsDownload</servlet-name>
         <servlet-class>org.motechproject.mobileforms.api.web.FormDownloadServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>resource</servlet-name>
-        <servlet-class>org.motechproject.cmslite.api.web.ResourceController</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>mobileformsDownload</servlet-name>
         <url-pattern>/formdownload</url-pattern>
@@ -58,10 +54,6 @@
     <servlet-mapping>
         <servlet-name>mobileformsUpload</servlet-name>
         <url-pattern>/formupload</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>resource</servlet-name>
-        <url-pattern>/resource/*</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>ghanaNational</servlet-name>

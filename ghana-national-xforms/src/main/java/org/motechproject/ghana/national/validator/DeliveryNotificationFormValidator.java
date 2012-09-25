@@ -33,9 +33,9 @@ public class DeliveryNotificationFormValidator extends FormValidator<DeliveryNot
         final Patient patient = formValidator.getPatient(formBean.getMotechId());
         formErrors.addAll(dependentValidator().validate(patient, group.getFormBeans(),
                 allForms, new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsFemale().onSuccess(new AgeMoreThan(5).onSuccess(new EnrolledToANC(allEncounters).onFailure(new RegANCFormSubmittedInSameUpload())))))
-                                .onFailure(new RegANCFormSubmittedInSameUpload()
-                                        .onFailure(new RegCWCFormSubmittedInSameUpload()
-                                                .onSuccess(new RegClientFormSubmittedForMother())))));
+                .onFailure(new RegANCFormSubmittedInSameUpload()
+                        .onFailure(new RegCWCFormSubmittedInSameUpload()
+                                .onSuccess(new RegClientFormSubmittedForMother())))));
         return formErrors;
     }
 
