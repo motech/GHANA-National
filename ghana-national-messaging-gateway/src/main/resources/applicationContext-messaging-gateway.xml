@@ -14,6 +14,8 @@
 			http://www.springframework.org/schema/integration/spring-integration.xsd">
 
     <annotation-config/>
+    <context:property-placeholder location="classpath:aggregator.properties"/>
+
     <context:component-scan base-package="org.motechproject.ghana.national.messagegateway"/>
 
     <beans:bean id="reaper" class="org.springframework.integration.store.MessageGroupStoreReaper">

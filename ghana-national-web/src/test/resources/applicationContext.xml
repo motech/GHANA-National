@@ -7,7 +7,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-    <context:property-placeholder location="classpath*:*.properties" ignore-unresolvable="true"/>
     <beans:import resource="classpath*:applicationContext-core.xml"/>
     <beans:import resource="classpath*:applicationContext-xforms.xml"/>
     <beans:import resource="classpath*:applicationContext-security.xml"/>
@@ -26,18 +25,6 @@
     <bean id="couchDbConnector" class="org.ektorp.impl.StdCouchDbConnector">
         <constructor-arg ref="couchDbInstance"/>
         <constructor-arg value="${document.name}"/>
-    </bean>
-
-    <!--<bean id="statsdAgent" class="org.motechproject.metrics.impl.LoggingAgentBackendImpl"/>-->
-
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="locations">
-            <list>
-                <value>classpath:openmrs.properties</value>
-                <value>classpath:activemq.properties</value>
-            </list>
-        </property>
-        <property name="ignoreUnresolvablePlaceholders" value="true"/>
     </bean>
 
     <!-- This makes the mobile upload handler to be synchronously invoked for functional tests -->

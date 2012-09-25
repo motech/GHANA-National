@@ -8,11 +8,7 @@
     <http use-expressions="true">
         <form-login login-page="/login.jsp"  authentication-success-handler-ref="authenticationSuccessHandler" authentication-failure-url="/login.jsp?login_error=1"/>
         <intercept-url pattern="/login*"/>
-        <!-- hardcoded until the story for staff role login is played <geet/balaji> -->
         <intercept-url pattern="/admin/**" access="hasAnyRole('System Developer','MoTeCH View Only', 'Create/Edit MoTeCH Data','Provider')" requires-channel="any"/>
-        <!--<intercept-url pattern="/admin/**" access="hasAnyRole('System Developer','Create/Edit MoTeCH Data','Provider')" requires-channel="any"/>-->
-        <!--<intercept-url pattern="/admin/facilities/**" access="hasAnyRole('System Developer','MoTeCH View Only','Provider')" requires-channel="any"/>-->
-        <!--<intercept-url pattern="/security/**" access="hasAnyRole('System Developer','MoTeCH View Only', 'Create/Edit MoTeCH Data')" requires-channel="any"/>-->
         <logout logout-url="/logout" logout-success-url="/login.jsp"/>
     </http>
     <authentication-manager>
