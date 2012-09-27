@@ -13,6 +13,8 @@
     <form:form id="searchPatientForm" action="${fn:escapeXml(form_url)}" method="POST" title="Search for a Patient"
                commandName="searchPatientForm">
         <spring:message code="patient_motech_id" var="patient_motech_id" htmlEscape="false"/>
+        <spring:message code="user_phone" var="user_phone" htmlEscape="false"/>
+        <spring:message code="staff_phone_number_incorrect_msg" var="staff_phone_number_incorrect_msg" htmlEscape="false"/>
         <spring:message code="patient_name" var="patient_name" htmlEscape="false"/>
         <spring:message code="patient_first_name" var="patient_first_name" htmlEscape="false"/>
         <spring:message code="patient_middle_name" var="patient_middle_name" htmlEscape="false"/>
@@ -35,6 +37,14 @@
         <div class="form-field">
             <label class="formLabel" for="name">${fn:escapeXml(patient_name)}:</label>
             <form:input path="name" size="20" label="${fn:escapeXml(patient_name)}"/>
+        </div>
+
+        <div class="form-field">
+            <label class="formLabel" for="name">${fn:escapeXml(user_phone)}:</label>
+            <form:input path="phoneNumber" cssClass="jsNumber" size="20" label="${fn:escapeXml(user_phone)}"/>
+            <span id='phoneNumberError' class='alertText formlyInvalid formlyAlert hide'>
+                ${fn:escapeXml(staff_phone_number_incorrect_msg)}
+            </span>
         </div>
 
         <input type="button" id="searchPatient" value="Search"/>

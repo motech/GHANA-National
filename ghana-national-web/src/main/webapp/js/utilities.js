@@ -1,7 +1,11 @@
 var utilities = new Utilities();
 function Utilities() {
     this.isPhoneNoValid = function(phoneNo) {
-        return ((!phoneNo.match(/[^\d]+/) && phoneNo.charAt(0) == '0') ? phoneNo.length == 10 : false);
+        return ((utilities.isNumber(phoneNo) && phoneNo.charAt(0) == '0') ? phoneNo.length == 10 : false);
+    },
+
+    this.isNumber = function(text) {
+      return !text.match(/[^\d]+/)
     },
 
     this.isNull = function(value) {

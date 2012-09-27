@@ -231,7 +231,8 @@ public class PatientControllerTest {
     public void shouldSearchForPatientByNameOrId() {
         String motechId = "12345";
         String name = "name";
-        SearchPatientForm searchPatientForm = new SearchPatientForm(name, motechId);
+        String phoneNumber = "phoneNumber";
+        SearchPatientForm searchPatientForm = new SearchPatientForm(name, motechId, phoneNumber);
 
         String firstName = "firstName";
         Date dateOfBirth = DateUtil.newDate(2000, 11, 11).toDate();
@@ -240,7 +241,7 @@ public class PatientControllerTest {
         String middleName = "middleName";
         Patient patient = new Patient(new MRSPatient("10", motechId, new MRSPerson().id("39").firstName(firstName).middleName(middleName).lastName(lastName).gender(sex).dateOfBirth(dateOfBirth), null));
 
-        when(mockPatientService.search(name, motechId)).thenReturn(Arrays.asList(patient));
+        when(mockPatientService.search(name, motechId, phoneNumber)).thenReturn(Arrays.asList(patient));
         ModelMap modelMapPassedToTheView = new ModelMap();
 
         String returnedUrl = patientController.search(searchPatientForm, modelMapPassedToTheView);

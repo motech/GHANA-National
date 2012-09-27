@@ -171,7 +171,7 @@ public class PatientController {
     @ApiSession
     @RequestMapping(value = "searchPatients", method = RequestMethod.POST)
     public String search(@Valid final SearchPatientForm searchPatientForm, ModelMap modelMap) {
-        List<Patient> returnedPatient = patientService.search(searchPatientForm.getName(), searchPatientForm.getMotechId());
+        List<Patient> returnedPatient = patientService.search(searchPatientForm.getName(), searchPatientForm.getMotechId(), searchPatientForm.getPhoneNumber());
         modelMap.put(SEARCH_PATIENT_FORM, new SearchPatientForm(convert(returnedPatient, new Converter<Patient, PatientForm>() {
             @Override
             public PatientForm convert(Patient patient) {

@@ -4,6 +4,7 @@ $(document).ready(function() {
     var validate = function(form) {
         formValidator.clearMessages(form);
         formValidator.validateRequiredFields(form);
+        formValidator.validateNumber(form);
 
         return formValidator.hasErrors(form);
     }
@@ -11,7 +12,7 @@ $(document).ready(function() {
     $('#searchPatient').click(function() {
         $('#search-results').hide();
         var patientForm = $('#searchPatientForm');
-        if($('#motechId').val() || $('#name').val()){
+        if($('#motechId').val() || $('#name').val() || $('#phoneNumber').val()) {
             if (!validate(patientForm)) {
                 patientForm.submit();
             }

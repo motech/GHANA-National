@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.repository;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
@@ -16,8 +17,8 @@ import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
-import org.springframework.test.util.ReflectionTestUtils;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -32,19 +33,19 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AllPatientsTest {
 
-    AllPatients allPatients;
+    @InjectMocks
+    AllPatients allPatients = new AllPatients();
 
     @Mock
     MRSPatientAdapter mockMrsPatientAdapter;
     @Mock
     OpenMRSRelationshipAdapter mockOpenMRSRelationshipAdapter;
+    @Mock
+    DataSource dataSource;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        allPatients = new AllPatients();
-        ReflectionTestUtils.setField(allPatients, "patientAdapter", mockMrsPatientAdapter);
-        ReflectionTestUtils.setField(allPatients, "openMRSRelationshipAdapter", mockOpenMRSRelationshipAdapter);
     }
 
     @Test
@@ -171,13 +172,13 @@ public class AllPatientsTest {
     public void shouldSearchPatientByNameOrId() {
         String name = "name";
         String motechId = "id";
+        String phoneNumber = "";
         MRSPatient returnedMrsPatient = new MRSPatient(motechId);
         List<MRSPatient> returnedMrsPatientList = Arrays.asList(returnedMrsPatient);
         when(mockMrsPatientAdapter.search(name, motechId)).thenReturn(returnedMrsPatientList);
-        List<Patient> returnedPatient = allPatients.search(name, motechId);
+        List<Patient> returnedPatient = allPatients.search(name, motechId, phoneNumber);
         assertThat(returnedPatient.size(), is(equalTo(1)));
         assertThat(returnedPatient.get(0).getMrsPatient(), is(equalTo(returnedMrsPatient)));
-
     }
 
     @Test

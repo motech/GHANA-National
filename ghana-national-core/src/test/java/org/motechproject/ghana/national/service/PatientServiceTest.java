@@ -150,12 +150,12 @@ public class PatientServiceTest {
         List<Patient> patientList = Arrays.asList(mock(Patient.class));
         String motechId = "123456";
         String name = "name";
-        when(mockAllPatients.search(name, motechId)).thenReturn(patientList);
-        assertThat(patientService.search(name, motechId), is(equalTo(patientList)));
+        String phoneNumber = "34567";
+        when(mockAllPatients.search(name, motechId, phoneNumber)).thenReturn(patientList);
+        assertThat(patientService.search(name, motechId, phoneNumber), is(equalTo(patientList)));
 
-        when(mockAllPatients.search(name, null)).thenReturn(patientList);
-        assertThat(patientService.search(name, ""), is(equalTo(patientList)));
-
+        when(mockAllPatients.search(name, null, phoneNumber)).thenReturn(patientList);
+        assertThat(patientService.search(name, "", phoneNumber), is(equalTo(patientList)));
     }
 
     @Test

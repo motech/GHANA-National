@@ -15,7 +15,7 @@ function FormValidator() {
         });
     }
     
-    this.validateFieldForMandatoryValue = function(field){
+    this.validateFieldForMandatoryValue = function(field) {
         //select & text
         var val = $(field).val();
         var fieldName = $(field).attr("id");
@@ -105,6 +105,14 @@ function FormValidator() {
                 $("#" + this.name + "DateError").removeClass('hide');
             }
        });
+    };
+
+    this.validateNumber = function(form) {
+          form.find('.jsNumber').each(function() {
+            if(this.value != "" && !utilities.isNumber(this.value)) {
+              $("#" + this.id + "Error").removeClass('hide');
+            }
+          });
     };
 
     this.validateDateAfter = function(form) {

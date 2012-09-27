@@ -79,8 +79,8 @@ public class PatientService {
         return allPatients.getPatientByMotechId(patientId);
     }
 
-    public List<Patient> search(String name, String motechId) {
-        return allPatients.search(emptyToNull(name), emptyToNull(motechId));
+    public List<Patient> search(String name, String motechId, String phoneNumber) {
+        return allPatients.search(emptyToNull(name), emptyToNull(motechId), phoneNumber);
     }
 
     public String updatePatient(Patient patient, String staffId, Date updatedDate) throws ParentNotFoundException {
