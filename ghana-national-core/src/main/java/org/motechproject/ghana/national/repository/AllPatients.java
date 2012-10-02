@@ -157,6 +157,7 @@ public class AllPatients {
             PreparedStatement statement = connection.prepareStatement("select pi.identifier from patient p, person_attribute pa,patient_identifier pi " +
                     "where pa.person_attribute_type_id = 8 " +
                     "and pa.value like ? " +
+                    "and p.voided = 0 " +
                     "and pi.patient_id = p.patient_id " +
                     "and pa.person_id = p.patient_id");
             statement.setString(1, "%" + phoneNumber + "%");
