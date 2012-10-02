@@ -79,7 +79,7 @@ public class MobileMidwifeCampaignEventHandler {
                 }
             }
         } catch (Exception e) {
-            logger.error("<MobileMidwifeEvent>: Encountered error while sending alert for patientId " + event.getParameters().get(EventKeys.EXTERNAL_ID_KEY) +  ": ", e);
+            logger.error("<MobileMidwifeEvent>: Encountered error while sending alert for patientId " + event.getParameters().get(EventKeys.EXTERNAL_ID_KEY) + ": ", e);
             throw new EventHandlerException(event, e);
         }
     }
@@ -97,6 +97,10 @@ public class MobileMidwifeCampaignEventHandler {
     }
 
     private void placeMobileMidwifeMessagesToOutbox(MobileMidwifeEnrollment enrollment, String messageKey) {
-        allPatientsOutbox.addMobileMidwifeMessage(enrollment.getPatientId(), MobileMidwifeAudioClips.instance(enrollment.getServiceType().getValue(), messageKey), Period.weeks(1));
+        try {
+            allPatientsOutbox.addMobileMidwifeMessage(enrollment.getPatientId(), MobileMidwifeAudioClips.instance(enrollment.getServiceType().getValue(), messageKey), Period.weeks(1));
+        } catch (Exception e) {
+            logger.error("Exception in placing audio clip into outbox. MessageKey: " + messageKey, e);
+        }
     }
 }
