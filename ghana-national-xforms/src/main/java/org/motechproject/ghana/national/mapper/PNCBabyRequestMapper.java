@@ -8,8 +8,8 @@ import org.motechproject.ghana.national.service.request.PNCBabyRequest;
 import org.motechproject.mrs.model.MRSUser;
 
 public class PNCBabyRequestMapper {
-    public PNCBabyRequest map(PNCBabyForm pncBabyForm, Patient patient, MRSUser staff, Facility facility) {
 
+    public PNCBabyRequest map(PNCBabyForm pncBabyForm, Patient patient, MRSUser staff, Facility facility) {
         return new PNCBabyRequest()
                 .patient(patient)
                 .facility(facility)

@@ -15,7 +15,7 @@ public class OutPatientVisitService {
         this.allOutPatientVisits = allOutPatientVisits;
     }
 
-    public void registerVisit(OutPatientVisit visit){
+    public void registerVisit(OutPatientVisit visit) {
         allOutPatientVisits.add(visit);
     }
 

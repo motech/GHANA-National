@@ -2,8 +2,8 @@ package org.motechproject.ghana.national.handlers;
 
 import org.motechproject.ghana.national.bean.OutPatientVisitForm;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.OutPatientVisit;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
+import org.motechproject.ghana.national.mapper.OutPatientVisitMapper;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.OutPatientVisitService;
@@ -21,11 +21,21 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.motechproject.ghana.national.domain.Concept.*;
+import static org.motechproject.ghana.national.domain.Concept.ACT_TREATMENT;
+import static org.motechproject.ghana.national.domain.Concept.COMMENTS;
+import static org.motechproject.ghana.national.domain.Concept.MALARIA_RAPID_TEST;
+import static org.motechproject.ghana.national.domain.Concept.NEGATIVE;
+import static org.motechproject.ghana.national.domain.Concept.NEW_CASE;
+import static org.motechproject.ghana.national.domain.Concept.NEW_PATIENT;
+import static org.motechproject.ghana.national.domain.Concept.POSITIVE;
+import static org.motechproject.ghana.national.domain.Concept.PRIMARY_DIAGNOSIS;
+import static org.motechproject.ghana.national.domain.Concept.REFERRED;
+import static org.motechproject.ghana.national.domain.Concept.SECONDARY_DIAGNOSIS;
+import static org.motechproject.ghana.national.domain.Concept.SERIAL_NUMBER;
 import static org.motechproject.ghana.national.domain.EncounterType.OUTPATIENT_VISIT;
 
 @Component
-public class OutPatientVisitFormHandler{
+public class OutPatientVisitFormHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -53,23 +63,13 @@ public class OutPatientVisitFormHandler{
                 persistInMRS(outPatientVisitForm);
             }
         } catch (Exception e) {
-            log.error("Exception occurred while processing Outpatient Visit form for patientId:"+outPatientVisitForm.getMotechId(), e);
+            log.error("Exception occurred while processing Outpatient Visit form for patientId:" + outPatientVisitForm.getMotechId(), e);
             throw new XFormHandlerException("Exception occurred while processing Outpatient Visit form", e);
         }
     }
 
-    private void persist(OutPatientVisitForm formBean) {
-        OutPatientVisit visit = new OutPatientVisit();
-        Integer diagnosis = OTHER_DIAGNOSIS.equals(formBean.getDiagnosis()) ? formBean.getOtherDiagnosis() : formBean.getDiagnosis();
-        Integer secondaryDiagnosis=null;
-        if(formBean.getSecondDiagnosis() != null){
-         secondaryDiagnosis= OTHER_DIAGNOSIS.equals(formBean.getSecondDiagnosis()) ? formBean.getOtherSecondaryDiagnosis() : formBean.getSecondDiagnosis();
-        }
-        visit.setVisitDate(formBean.getVisitDate()).setRegistrantType(formBean.getRegistrantType()).setSerialNumber(formBean.getSerialNumber()).setFacilityId(formBean.getFacilityId())
-                .setStaffId(formBean.getStaffId()).setDateOfBirth(formBean.getDateOfBirth()).setInsured(formBean.getInsured()).setNhis(formBean.getNhis()).setNhisExpires(formBean.getNhisExpires())
-                .setDiagnosis(diagnosis).setNewCase(formBean.getNewCase()).setNewPatient(formBean.getNewPatient()).setSecondDiagnosis(secondaryDiagnosis).setRdtGiven(formBean.getRdtGiven()).setRdtPositive(formBean.getRdtPositive())
-                .setActTreated(formBean.getActTreated()).setReferred(formBean.getReferred()).setComments(formBean.getComments()).setGender(formBean.getGender());
-        outPatientVisitService.registerVisit(visit);
+    private void persist(OutPatientVisitForm visitForm) {
+        outPatientVisitService.registerVisit(new OutPatientVisitMapper().map(visitForm));
     }
 
     private void persistInMRS(OutPatientVisitForm formBean) {

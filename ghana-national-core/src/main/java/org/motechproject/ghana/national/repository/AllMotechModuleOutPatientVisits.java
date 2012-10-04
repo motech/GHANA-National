@@ -4,9 +4,13 @@ import org.motechproject.ghana.national.domain.OutPatientVisit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class AllMotechModuleOutPatientVisits {
@@ -34,5 +38,23 @@ public class AllMotechModuleOutPatientVisits {
 
     private Integer booleanToInt(Boolean couchValue) {
         return (couchValue != null) ? (couchValue ? 1 : 0) : null;
+    }
+
+    public boolean isDuplicate(OutPatientVisit outPatientVisit) {
+        List<String> results = jdbcTemplate.query("SELECT id " +
+                "FROM motechmodule_generaloutpatientencounter " +
+                "WHERE serial_number = ? " +
+                "AND facility_id = ? " +
+                "AND birthdate = ? " +
+                "AND diagnosis = ?",
+                new Object[]{outPatientVisit.getSerialNumber(), outPatientVisit.getFacilityId(),
+                        outPatientVisit.getDateOfBirth(), outPatientVisit.getDiagnosis()}, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getString(1);
+            }
+        });
+
+        return !results.isEmpty();
     }
 }

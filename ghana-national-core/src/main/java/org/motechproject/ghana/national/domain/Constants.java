@@ -39,13 +39,13 @@ public class Constants {
     public static final String PATIENT_IDENTIFIER_TYPE_PATIENT_ID = "MoTeCH Id";
     public static final String PATIENT_IDENTIFIER_TYPE_STAFF_ID = "MoTeCH Staff Id";
     public static final String PATIENT_GENDER_MALE = "M";
-    public static final String PATIENT_GENDER_FEMALE = "F";
     public static final String OBSERVATION_YES = "Y";
 
     public static final String PATTERN_YYYY_MM_DD = "yyyy-MM-dd";
     public static final String PATTERN_DD_MMM_YYYY = "dd MMM yyyy";
 
     public static final String NOT_FOUND = "not found";
+    public static final String IS_DUPLICATE = "is duplicate";
     public static final String INSUFFICIENT_SEARCH_CRITERIA = "Insufficient search criteria provided";
     public static final String IS_NOT_ALIVE = "is not alive";
     public static final String AFTER_DOB = "should be after date of birth";
