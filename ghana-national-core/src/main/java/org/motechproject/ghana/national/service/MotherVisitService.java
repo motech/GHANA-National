@@ -9,7 +9,7 @@ import org.motechproject.ghana.national.domain.TTVaccine;
 import org.motechproject.ghana.national.factory.MotherVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
 import org.motechproject.ghana.national.repository.*;
-import org.motechproject.ghana.national.service.request.ANCVisitRequest;
+import org.motechproject.ghana.national.domain.ANCVisit;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.mrs.model.MRSEncounter;
@@ -49,7 +49,7 @@ public class MotherVisitService {
         factory = new MotherVisitEncounterFactory();
     }
 
-    public MRSEncounter registerANCVisit(ANCVisitRequest ancVisit) throws ObservationNotFoundException {
+    public MRSEncounter registerANCVisit(ANCVisit ancVisit) throws ObservationNotFoundException {
         Set<MRSObservation> mrsObservations = factory.createMRSObservations(ancVisit);
         updateEDD(ancVisit, mrsObservations);
         updateIPT(ancVisit, mrsObservations);
@@ -58,7 +58,7 @@ public class MotherVisitService {
         return allEncounters.persistEncounter(factory.createEncounter(ancVisit, mrsObservations));
     }
 
-    protected void updateTT(ANCVisitRequest ancVisit, Set<MRSObservation> mrsObservations) {
+    protected void updateTT(ANCVisit ancVisit, Set<MRSObservation> mrsObservations) {
         TTVaccine ttVaccine = TTVaccine.createFromANCVisit(ancVisit);
         if (ttVaccine != null) {
             mrsObservations.addAll(factory.createObservationForTT(ttVaccine));
@@ -66,7 +66,7 @@ public class MotherVisitService {
         }
     }
 
-    private void updateIPT(ANCVisitRequest ancVisit, Set<MRSObservation> mrsObservations) {
+    private void updateIPT(ANCVisit ancVisit, Set<MRSObservation> mrsObservations) {
         IPTVaccine iptVaccine = createFromANCVisit(ancVisit);
         if (iptVaccine != null) {
             mrsObservations.addAll(factory.createObservationsForIPT(iptVaccine));
@@ -74,7 +74,7 @@ public class MotherVisitService {
         }
     }
 
-    private void updateEDD(ANCVisitRequest ancVisit, Set<MRSObservation> mrsObservations) throws ObservationNotFoundException {
+    private void updateEDD(ANCVisit ancVisit, Set<MRSObservation> mrsObservations) throws ObservationNotFoundException {
         Patient patient = ancVisit.getPatient();
         Set<MRSObservation> eddObservations = allObservations.updateEDD(ancVisit.getEstDeliveryDate(), patient, ancVisit.getStaff().getId(), ancVisit.getDate());
         if (CollectionUtils.isNotEmpty(eddObservations)) {
@@ -84,9 +84,9 @@ public class MotherVisitService {
         }
     }
 
-    private void updateANCVisit(ANCVisitRequest ancVisitRequest) {
-        allAppointmentsAndMessages.fulfillCurrentANCVisit(ancVisitRequest.getPatient(), ancVisitRequest.getDate());
-        allAppointments.updateANCVisitSchedule(ancVisitRequest.getPatient(), DateUtil.newDateTime(ancVisitRequest.getNextANCDate()));
+    private void updateANCVisit(ANCVisit ancVisit) {
+        allAppointmentsAndMessages.fulfillCurrentANCVisit(ancVisit.getPatient(), ancVisit.getDate());
+        allAppointments.updateANCVisitSchedule(ancVisit.getPatient(), DateUtil.newDateTime(ancVisit.getNextANCDate()));
     }
 
     public void enrollOrFulfillScheduleIPTp(IPTVaccine iptVaccine) {

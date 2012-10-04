@@ -1,48 +1,89 @@
-package org.motechproject.ghana.national.service.request;
+package org.motechproject.ghana.national.domain;
 
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.mrs.model.MRSUser;
 
 import java.util.Date;
 
-public class ANCVisitRequest {
+@TypeDiscriminator("doc.type === 'ANCVisit'")
+public class ANCVisit extends MotechBaseDataObject {
+    @JsonProperty("type")
+    private String type = "ANCVisit";
+    @JsonProperty
     private Date date;
+    @JsonProperty
     private String serialNumber;
+    @JsonProperty
     private String visitNumber;
+    @JsonProperty
     private Date estDeliveryDate;
+    @JsonProperty
     private Integer bpSystolic;
+    @JsonProperty
     private Integer bpDiastolic;
+    @JsonProperty
     private Double weight;
+    @JsonProperty
     private String ttdose;
+    @JsonProperty
     private String iptdose;
+    @JsonProperty
     private Boolean iptReactive;
+    @JsonProperty
     private String itnUse;
+    @JsonProperty
     private Double fht;
+    @JsonProperty
     private Integer fhr;
+    @JsonProperty
     private String urineTestProteinPositive;
+    @JsonProperty
     private String urineTestGlucosePositive;
+    @JsonProperty
     private Double hemoglobin;
+    @JsonProperty
     private String vdrlReactive;
+    @JsonProperty
     private String vdrlTreatment;
+    @JsonProperty
     private String dewormer;
+    @JsonProperty
     private String pmtct;
+    @JsonProperty
     private String preTestCounseled;
+    @JsonProperty
     private String hivTestResult;
+    @JsonProperty
     private String postTestCounseled;
+    @JsonProperty
     private String pmtctTreament;
+    @JsonProperty
     private String location;
+    @JsonProperty
     private String house;
+    @JsonProperty
     private String community;
+    @JsonProperty
     private String referred;
+    @JsonProperty
     private Boolean maleInvolved;
+    @JsonProperty
     private Date nextANCDate;
+    @JsonProperty
     private String comments;
+    @JsonIgnore
+    private Boolean visitor;
+    @JsonIgnore
     private Patient patient;
+    @JsonIgnore
     private MRSUser staff;
+    @JsonIgnore
     private Facility facility;
 
-    public ANCVisitRequest facility(Facility facility) {
+    public ANCVisit facility(Facility facility) {
         this.facility = facility;
         return this;
     }
@@ -51,7 +92,7 @@ public class ANCVisitRequest {
         return date;
     }
 
-    public ANCVisitRequest date(Date date) {
+    public ANCVisit date(Date date) {
         this.date = date;
         return this;
     }
@@ -60,7 +101,7 @@ public class ANCVisitRequest {
         return serialNumber;
     }
 
-    public ANCVisitRequest serialNumber(String serialNumber) {
+    public ANCVisit serialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
         return this;
     }
@@ -69,7 +110,7 @@ public class ANCVisitRequest {
         return visitNumber;
     }
 
-    public ANCVisitRequest visitNumber(String visitNumber) {
+    public ANCVisit visitNumber(String visitNumber) {
         this.visitNumber = visitNumber;
         return this;
     }
@@ -78,7 +119,7 @@ public class ANCVisitRequest {
         return estDeliveryDate;
     }
 
-    public ANCVisitRequest estDeliveryDate(Date estDeliveryDate) {
+    public ANCVisit estDeliveryDate(Date estDeliveryDate) {
         this.estDeliveryDate = estDeliveryDate;
         return this;
     }
@@ -87,7 +128,7 @@ public class ANCVisitRequest {
         return bpSystolic;
     }
 
-    public ANCVisitRequest bpSystolic(Integer bpSystolic) {
+    public ANCVisit bpSystolic(Integer bpSystolic) {
         this.bpSystolic = bpSystolic;
         return this;
     }
@@ -96,7 +137,7 @@ public class ANCVisitRequest {
         return bpDiastolic;
     }
 
-    public ANCVisitRequest bpDiastolic(Integer bpDiastolic) {
+    public ANCVisit bpDiastolic(Integer bpDiastolic) {
         this.bpDiastolic = bpDiastolic;
         return this;
     }
@@ -105,7 +146,7 @@ public class ANCVisitRequest {
         return weight;
     }
 
-    public ANCVisitRequest weight(Double weight) {
+    public ANCVisit weight(Double weight) {
         this.weight = weight;
         return this;
     }
@@ -114,7 +155,7 @@ public class ANCVisitRequest {
         return ttdose;
     }
 
-    public ANCVisitRequest ttdose(String ttdose) {
+    public ANCVisit ttdose(String ttdose) {
         this.ttdose = ttdose;
         return this;
     }
@@ -123,7 +164,7 @@ public class ANCVisitRequest {
         return iptdose;
     }
 
-    public ANCVisitRequest iptdose(String iptdose) {
+    public ANCVisit iptdose(String iptdose) {
         this.iptdose = iptdose;
         return this;
     }
@@ -132,7 +173,7 @@ public class ANCVisitRequest {
         return iptReactive;
     }
 
-    public ANCVisitRequest iptReactive(Boolean iptReactive) {
+    public ANCVisit iptReactive(Boolean iptReactive) {
         this.iptReactive = iptReactive;
         return this;
     }
@@ -141,7 +182,7 @@ public class ANCVisitRequest {
         return itnUse;
     }
 
-    public ANCVisitRequest itnUse(String itnUse) {
+    public ANCVisit itnUse(String itnUse) {
         this.itnUse = itnUse;
         return this;
     }
@@ -150,7 +191,7 @@ public class ANCVisitRequest {
         return fht;
     }
 
-    public ANCVisitRequest fht(Double fht) {
+    public ANCVisit fht(Double fht) {
         this.fht = fht;
         return this;
     }
@@ -159,7 +200,7 @@ public class ANCVisitRequest {
         return fhr;
     }
 
-    public ANCVisitRequest fhr(Integer fhr) {
+    public ANCVisit fhr(Integer fhr) {
         this.fhr = fhr;
         return this;
     }
@@ -168,7 +209,7 @@ public class ANCVisitRequest {
         return urineTestProteinPositive;
     }
 
-    public ANCVisitRequest urineTestProteinPositive(String urineTestProteinPositive) {
+    public ANCVisit urineTestProteinPositive(String urineTestProteinPositive) {
         this.urineTestProteinPositive = urineTestProteinPositive;
         return this;
     }
@@ -177,7 +218,7 @@ public class ANCVisitRequest {
         return urineTestGlucosePositive;
     }
 
-    public ANCVisitRequest urineTestGlucosePositive(String urineTestGlucosePositive) {
+    public ANCVisit urineTestGlucosePositive(String urineTestGlucosePositive) {
         this.urineTestGlucosePositive = urineTestGlucosePositive;
         return this;
     }
@@ -186,7 +227,7 @@ public class ANCVisitRequest {
         return hemoglobin;
     }
 
-    public ANCVisitRequest hemoglobin(Double hemoglobin) {
+    public ANCVisit hemoglobin(Double hemoglobin) {
         this.hemoglobin = hemoglobin;
         return this;
     }
@@ -195,7 +236,7 @@ public class ANCVisitRequest {
         return vdrlReactive;
     }
 
-    public ANCVisitRequest vdrlReactive(String vdrlReactive) {
+    public ANCVisit vdrlReactive(String vdrlReactive) {
         this.vdrlReactive = vdrlReactive;
         return this;
     }
@@ -204,7 +245,7 @@ public class ANCVisitRequest {
         return vdrlTreatment;
     }
 
-    public ANCVisitRequest vdrlTreatment(String vdrlTreatment) {
+    public ANCVisit vdrlTreatment(String vdrlTreatment) {
         this.vdrlTreatment = vdrlTreatment;
         return this;
     }
@@ -213,7 +254,7 @@ public class ANCVisitRequest {
         return dewormer;
     }
 
-    public ANCVisitRequest dewormer(String dewormer) {
+    public ANCVisit dewormer(String dewormer) {
         this.dewormer = dewormer;
         return this;
     }
@@ -222,7 +263,7 @@ public class ANCVisitRequest {
         return pmtct;
     }
 
-    public ANCVisitRequest pmtct(String pmtct) {
+    public ANCVisit pmtct(String pmtct) {
         this.pmtct = pmtct;
         return this;
     }
@@ -231,7 +272,7 @@ public class ANCVisitRequest {
         return preTestCounseled;
     }
 
-    public ANCVisitRequest preTestCounseled(String preTestCounseled) {
+    public ANCVisit preTestCounseled(String preTestCounseled) {
         this.preTestCounseled = preTestCounseled;
         return this;
     }
@@ -240,7 +281,7 @@ public class ANCVisitRequest {
         return hivTestResult;
     }
 
-    public ANCVisitRequest hivTestResult(String hivTestResult) {
+    public ANCVisit hivTestResult(String hivTestResult) {
         this.hivTestResult = hivTestResult;
         return this;
     }
@@ -249,7 +290,7 @@ public class ANCVisitRequest {
         return postTestCounseled;
     }
 
-    public ANCVisitRequest postTestCounseled(String postTestCounseled) {
+    public ANCVisit postTestCounseled(String postTestCounseled) {
         this.postTestCounseled = postTestCounseled;
         return this;
     }
@@ -258,7 +299,7 @@ public class ANCVisitRequest {
         return pmtctTreament;
     }
 
-    public ANCVisitRequest pmtctTreament(String pmtctTreament) {
+    public ANCVisit pmtctTreament(String pmtctTreament) {
         this.pmtctTreament = pmtctTreament;
         return this;
     }
@@ -267,7 +308,7 @@ public class ANCVisitRequest {
         return location;
     }
 
-    public ANCVisitRequest location(String location) {
+    public ANCVisit location(String location) {
         this.location = location;
         return this;
     }
@@ -276,7 +317,7 @@ public class ANCVisitRequest {
         return house;
     }
 
-    public ANCVisitRequest house(String house) {
+    public ANCVisit house(String house) {
         this.house = house;
         return this;
     }
@@ -285,7 +326,7 @@ public class ANCVisitRequest {
         return community;
     }
 
-    public ANCVisitRequest community(String community) {
+    public ANCVisit community(String community) {
         this.community = community;
         return this;
     }
@@ -294,7 +335,7 @@ public class ANCVisitRequest {
         return referred;
     }
 
-    public ANCVisitRequest referred(String referred) {
+    public ANCVisit referred(String referred) {
         this.referred = referred;
         return this;
     }
@@ -303,7 +344,7 @@ public class ANCVisitRequest {
         return maleInvolved;
     }
 
-    public ANCVisitRequest maleInvolved(Boolean maleInvolved) {
+    public ANCVisit maleInvolved(Boolean maleInvolved) {
         this.maleInvolved = maleInvolved;
         return this;
     }
@@ -312,7 +353,7 @@ public class ANCVisitRequest {
         return nextANCDate;
     }
 
-    public ANCVisitRequest nextANCDate(Date nextANCDate) {
+    public ANCVisit nextANCDate(Date nextANCDate) {
         this.nextANCDate = nextANCDate;
         return this;
     }
@@ -321,7 +362,7 @@ public class ANCVisitRequest {
         return comments;
     }
 
-    public ANCVisitRequest comments(String comments) {
+    public ANCVisit comments(String comments) {
         this.comments = comments;
         return this;
     }
@@ -330,7 +371,7 @@ public class ANCVisitRequest {
         return patient;
     }
 
-    public ANCVisitRequest patient(Patient patient) {
+    public ANCVisit patient(Patient patient) {
         this.patient = patient;
         return this;
     }
@@ -339,12 +380,21 @@ public class ANCVisitRequest {
         return staff;
     }
 
-    public ANCVisitRequest staff(MRSUser staff) {
+    public ANCVisit staff(MRSUser staff) {
         this.staff = staff;
         return this;
     }
 
     public Facility getFacility() {
         return facility;
+    }
+
+    public Boolean getVisitor() {
+        return visitor;
+    }
+
+    public ANCVisit visitor(Boolean visitor) {
+        this.visitor = visitor;
+        return this;
     }
 }

@@ -101,6 +101,7 @@ public class ANCVisitForm extends FormBean {
     private Date nextANCDate;
 
     private String comments;
+    private Boolean visitor;
 
     public String getStaffId() {
         return staffId;
@@ -377,5 +378,13 @@ public class ANCVisitForm extends FormBean {
     @Override
     public String groupId() {
         return motechId;
+    }
+
+    public Boolean getVisitor() {
+        return visitor;
+    }
+
+    public void setVisitor(Boolean visitor) {
+        this.visitor = visitor;
     }
 }

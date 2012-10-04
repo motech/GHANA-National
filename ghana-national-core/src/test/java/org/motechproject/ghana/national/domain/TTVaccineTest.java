@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.domain;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.model.Time;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.util.DateUtil;
@@ -15,11 +14,11 @@ public class TTVaccineTest {
 
     @Test
     public void shouldCreateTTVaccineFromANCVisit(){
-        assertNull(TTVaccine.createFromANCVisit(new ANCVisitRequest()));
+        assertNull(TTVaccine.createFromANCVisit(new ANCVisit()));
 
         final DateTime vaccineDate = DateUtil.newDateTime(2000, 1, 1,new Time(10,30));
         Patient patient = new Patient(new MRSPatient("mrsPatientId"));
-        final TTVaccine ancVisit = TTVaccine.createFromANCVisit(new ANCVisitRequest().date(vaccineDate.toDate()).ttdose("1").patient(patient));
+        final TTVaccine ancVisit = TTVaccine.createFromANCVisit(new ANCVisit().date(vaccineDate.toDate()).ttdose("1").patient(patient));
         assertIfTTVaccineAreEqual(ancVisit, new TTVaccine(vaccineDate, TTVaccineDosage.TT1,patient));
     }
 

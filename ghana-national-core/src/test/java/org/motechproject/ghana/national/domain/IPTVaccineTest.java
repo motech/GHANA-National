@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.domain;
 
 import org.junit.Test;
-import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.ghana.national.vo.CWCVisit;
 
 import static junit.framework.Assert.assertNull;
@@ -13,12 +12,12 @@ public class IPTVaccineTest {
 
     @Test
     public void shouldCreateIPTVaccineFromANCVisit () {
-        ANCVisitRequest ancVisit = new ANCVisitRequest().iptdose("NA");
+        ANCVisit ancVisit = new ANCVisit().iptdose("NA");
         assertNull(IPTVaccine.createFromANCVisit(ancVisit));
 
-        ANCVisitRequest ancVisitRequest = new ANCVisitRequest().iptdose("1").iptReactive(true).patient(mock(Patient.class));
+        ANCVisit ancVisitRequest = new ANCVisit().iptdose("1").iptReactive(true).patient(mock(Patient.class));
         assertIPTVaccine(IPTVaccine.createFromANCVisit(ancVisitRequest), ancVisitRequest);
-        ancVisitRequest = new ANCVisitRequest().iptdose("2").iptReactive(false).patient(mock(Patient.class));
+        ancVisitRequest = new ANCVisit().iptdose("2").iptReactive(false).patient(mock(Patient.class));
         assertIPTVaccine(IPTVaccine.createFromANCVisit(ancVisitRequest), ancVisitRequest);
     }
 
@@ -38,7 +37,7 @@ public class IPTVaccineTest {
         assertThat(iptVaccine.getIptDose(), is(IPTDose.byValue(cwcVisit.getIptidose()).value()));
     }
 
-    private void assertIPTVaccine(IPTVaccine iptVaccine, ANCVisitRequest request) {
+    private void assertIPTVaccine(IPTVaccine iptVaccine, ANCVisit request) {
         assertThat(iptVaccine.getGivenTo(), is(request.getPatient()));
         assertThat(iptVaccine.getIptDose(), is(IPTDose.byValue(request.getIptdose()).value()));
         assertThat(iptVaccine.getIptReaction(), is(IPTReaction.byValue(request.getIptReactive())));

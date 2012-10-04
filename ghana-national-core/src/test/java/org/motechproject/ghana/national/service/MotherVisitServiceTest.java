@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.repository.*;
-import org.motechproject.ghana.national.service.request.ANCVisitRequest;
+import org.motechproject.ghana.national.domain.ANCVisit;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.model.Time;
@@ -85,7 +85,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         MRSUser staff = new MRSUser();
         Pregnancy pregnancy = basedOnDeliveryDate(new LocalDate(2012, 12, 23));
         LocalDate visitDate = today().minusDays(10);
-        ANCVisitRequest ancVisit = createTestANCVisit(staff, facility, patient).estDeliveryDate(pregnancy.dateOfDelivery().toDate()).date(visitDate.toDate());
+        ANCVisit ancVisit = createTestANCVisit(staff, facility, patient).estDeliveryDate(pregnancy.dateOfDelivery().toDate()).date(visitDate.toDate());
 
         mockCurrentDate(new LocalDate(2012, 5, 1));
         when(mockAllObservations.updateEDD(ancVisit.getEstDeliveryDate(), patient, ancVisit.getStaff().getId(), ancVisit.getDate()))
@@ -170,7 +170,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
     public void shouldAddObservationAndCreateScheduleForTTVaccine(){
         Patient patient = new Patient(new MRSPatient("100"));
         final DateTime vaccinationDate = DateUtil.newDateTime(2000, 1, 1, new Time(10, 10));
-        ANCVisitRequest ancVisit = new ANCVisitRequest().date(vaccinationDate.toDate()).ttdose("1").patient(patient);
+        ANCVisit ancVisit = new ANCVisit().date(vaccinationDate.toDate()).ttdose("1").patient(patient);
         final HashSet<MRSObservation> observations = new HashSet<MRSObservation>();
         motherVisitService.updateTT(ancVisit, observations);
         assertThat(observations.size(), is(equalTo(1)));
@@ -192,7 +192,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         LocalDate visitDate = today.minusDays(10).toLocalDate();
         Pregnancy pregnancy = basedOnDeliveryDate(new LocalDate(2012, 9, 1));
         IPTDose dose2 = IPTDose.SP2;
-        ANCVisitRequest ancVisit = createTestANCVisit().date(visitDate.toDate()).iptdose(dose2.value().toString()).iptReactive(true)
+        ANCVisit ancVisit = createTestANCVisit().date(visitDate.toDate()).iptdose(dose2.value().toString()).iptReactive(true)
                 .estDeliveryDate(pregnancy.dateOfDelivery().toDate());
         String mrsPatientId = ancVisit.getPatient().getMRSPatientId();
 
@@ -214,7 +214,7 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         mockCurrentDate(new DateTime(2012, 2, 1, deliveryTime.getHour(), deliveryTime.getMinute()));
         LocalDate visitDate = now().minusDays(10).toLocalDate();
 
-        ANCVisitRequest ancVisit = createTestANCVisit().date(visitDate.toDate()).iptdose(null).iptReactive(false).patient(new Patient(new MRSPatient("patientId")));
+        ANCVisit ancVisit = createTestANCVisit().date(visitDate.toDate()).iptdose(null).iptReactive(false).patient(new Patient(new MRSPatient("patientId")));
         motherVisitService.registerANCVisit(ancVisit);
 
         ArgumentCaptor<Encounter> encounterCaptor = forClass(Encounter.class);
@@ -243,12 +243,12 @@ public class MotherVisitServiceTest extends BaseUnitTest {
         assertThat(actual.getPreferredAlertTime(), is(equalTo(expected.getPreferredAlertTime())));
     }
 
-    private ANCVisitRequest createTestANCVisit() {
+    private ANCVisit createTestANCVisit() {
         return createTestANCVisit(new MRSUser(), new Facility(), new Patient(new MRSPatient("patientId", new MRSPerson(), new MRSFacility("fid"))));
     }
 
-    private ANCVisitRequest createTestANCVisit(MRSUser staff, Facility facility, Patient patient) {
-        return new ANCVisitRequest().staff(staff).facility(facility).patient(patient).date(new Date()).serialNumber("4ds65")
+    private ANCVisit createTestANCVisit(MRSUser staff, Facility facility, Patient patient) {
+        return new ANCVisit().staff(staff).facility(facility).patient(patient).date(new Date()).serialNumber("4ds65")
                 .visitNumber("4").estDeliveryDate(DateUtil.newDate(2012, 5, 1).toDate())
                 .bpDiastolic(67).bpSystolic(10).weight(65.67d).comments("comments").ttdose("4").iptdose("3")
                 .iptReactive(true).itnUse("Y").fht(4.3d).fhr(4).urineTestGlucosePositive("0").urineTestProteinPositive("1")

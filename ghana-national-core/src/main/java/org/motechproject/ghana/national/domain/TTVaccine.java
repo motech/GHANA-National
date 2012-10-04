@@ -2,7 +2,6 @@ package org.motechproject.ghana.national.domain;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.motechproject.ghana.national.service.request.ANCVisitRequest;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 
 import static org.motechproject.ghana.national.domain.Constants.NOT_APPLICABLE;
@@ -18,7 +17,7 @@ public class TTVaccine {
         this.patient = patient;
     }
 
-    public static TTVaccine createFromANCVisit(ANCVisitRequest ancVisit) {
+    public static TTVaccine createFromANCVisit(ANCVisit ancVisit) {
         return (!StringUtils.isEmpty(ancVisit.getTtdose()) && !ancVisit.getTtdose().equals(NOT_APPLICABLE))?
                 new TTVaccine(new DateTime(ancVisit.getDate()), TTVaccineDosage.byValue(Integer.parseInt(ancVisit.getTtdose())), ancVisit.getPatient()): null;
     }
