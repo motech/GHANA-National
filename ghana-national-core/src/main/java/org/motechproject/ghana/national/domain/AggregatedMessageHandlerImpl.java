@@ -28,13 +28,13 @@ public class AggregatedMessageHandlerImpl implements AggregatedMessageHandler {
                 SMSPayload sms = (SMSPayload) message;
                 smsGateway.dispatchSMS(sms.getPhoneNumber(), sms.getText());
             } else if (message instanceof VoicePayload) {
-                if(message instanceof CareVoicePayload){
+                if (message instanceof CareVoicePayload) {
                     CareVoicePayload voice = (CareVoicePayload) message;
                     allPatientsOutbox.addCareMessage(voice.getUniqueId(), voice.getClipName(), voice.getValidity(), voice.getScheduleWindow(), voice.getScheduleWindowStart());
-                }else if(message instanceof AppointmentVoicePayload){
+                } else if (message instanceof AppointmentVoicePayload) {
                     AppointmentVoicePayload voice = (AppointmentVoicePayload) message;
                     allPatientsOutbox.addAppointmentMessage(voice.getUniqueId(), voice.getClipName(), voice.getValidity());
-                }else if(message instanceof MobileMidwifeVoicePayload){
+                } else if (message instanceof MobileMidwifeVoicePayload) {
                     MobileMidwifeVoicePayload voice = (MobileMidwifeVoicePayload) message;
                     allPatientsOutbox.addMobileMidwifeMessage(voice.getUniqueId(), voice.getClips(), voice.getValidity());
                 }

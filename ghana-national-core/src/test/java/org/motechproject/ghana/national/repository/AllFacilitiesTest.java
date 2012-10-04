@@ -10,7 +10,6 @@ import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.services.MRSFacilityAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
@@ -37,12 +36,6 @@ public class AllFacilitiesTest extends BaseIntegrationTest {
     MRSFacilityAdapter mockMrsFacilityAdapter;
     @Mock
     AllMotechModuleFacilities mockAllMotechModuleFacilities;
-
-    @Value("#{couchdbProperties['host']}")
-    private String host;
-
-    @Value("#{couchdbProperties['port']}")
-    private String port;
 
     @Autowired
     private AllFacilities allFacilities;

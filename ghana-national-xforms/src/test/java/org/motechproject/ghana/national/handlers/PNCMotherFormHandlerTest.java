@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.PNCMotherForm;
@@ -14,21 +15,30 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.TTVaccine;
 import org.motechproject.ghana.national.domain.TTVaccineDosage;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
-import org.motechproject.ghana.national.service.*;
+import org.motechproject.ghana.national.service.FacilityService;
+import org.motechproject.ghana.national.service.MotherVisitService;
+import org.motechproject.ghana.national.service.PatientService;
+import org.motechproject.ghana.national.service.StaffService;
+import org.motechproject.ghana.national.service.VisitService;
 import org.motechproject.ghana.national.service.request.PNCMotherRequest;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.util.DateUtil;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static junit.framework.Assert.fail;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PNCMotherFormHandlerTest {
-    private PNCMotherFormHandler pncMotherFormHandler;
+
+    @InjectMocks
+    private PNCMotherFormHandler pncMotherFormHandler = new PNCMotherFormHandler();
     @Mock
     private MotherVisitService motherVisitService;
     @Mock
@@ -43,12 +53,6 @@ public class PNCMotherFormHandlerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        pncMotherFormHandler = new PNCMotherFormHandler();
-        ReflectionTestUtils.setField(pncMotherFormHandler, "visitService", visitService);
-        ReflectionTestUtils.setField(pncMotherFormHandler, "motherVisitService", motherVisitService);
-        ReflectionTestUtils.setField(pncMotherFormHandler, "facilityService", facilityService);
-        ReflectionTestUtils.setField(pncMotherFormHandler, "staffService", staffService);
-        ReflectionTestUtils.setField(pncMotherFormHandler, "patientService", patientService);
     }
 
     @Test
