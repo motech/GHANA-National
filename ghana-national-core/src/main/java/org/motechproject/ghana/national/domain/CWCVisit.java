@@ -1,35 +1,61 @@
-package org.motechproject.ghana.national.vo;
+package org.motechproject.ghana.national.domain;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.mrs.model.MRSUser;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class CWCVisit {
-
+@TypeDiscriminator("doc.type === 'CWCVisit'")
+public class CWCVisit extends MotechBaseDataObject {
+    @JsonProperty("type")
+    private String type = "CWCVisit";
+    @JsonIgnore
     private MRSUser staff;
+    @JsonIgnore
     private Facility facility;
+    @JsonProperty
     private Date date;
+    @JsonIgnore
     private Patient patient;
+    @JsonProperty
     private String serialNumber;
+    @JsonProperty
     private List<String> immunizations;
+    @JsonProperty
     private String opvdose;
+    @JsonProperty
     private String pentadose;
+    @JsonProperty
     private String iptidose;
+    @JsonProperty
     private String rotavirusdose;
+    @JsonProperty
     private String pneumococcaldose;
+    @JsonProperty
     private Double weight;
+    @JsonProperty
     private Double muac;
+    @JsonProperty
     private Double height;
+    @JsonProperty
     private Boolean maleInvolved;
+    @JsonProperty
     private String cwcLocation;
+    @JsonProperty
     private String house;
+    @JsonProperty
     private String community;
+    @JsonProperty
     private String comments;
+    @JsonIgnore
+    private Boolean visitor;
+
 
     public MRSUser getStaff() {
         return staff;
@@ -51,7 +77,7 @@ public class CWCVisit {
         return serialNumber;
     }
 
-    public List<String> getImmunizations() {
+    public List getImmunizations() {
         return CollectionUtils.isEmpty(immunizations) ? Collections.EMPTY_LIST : immunizations;
     }
 
@@ -200,6 +226,15 @@ public class CWCVisit {
 
     public CWCVisit pneumococcaldose(String pneumococcaldose) {
         this.pneumococcaldose = pneumococcaldose;
+        return this;
+    }
+
+    public Boolean getVisitor() {
+        return visitor;
+    }
+
+    public CWCVisit visitor(Boolean visitor) {
+        this.visitor = visitor;
         return this;
     }
 }

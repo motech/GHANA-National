@@ -4,7 +4,7 @@ import org.motechproject.ghana.national.domain.Concept;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Encounter;
 import org.motechproject.ghana.national.service.request.PNCBabyRequest;
-import org.motechproject.ghana.national.vo.CWCVisit;
+import org.motechproject.ghana.national.domain.CWCVisit;
 import org.motechproject.mrs.model.MRSConcept;
 import org.motechproject.mrs.model.MRSObservation;
 import org.motechproject.util.DateUtil;

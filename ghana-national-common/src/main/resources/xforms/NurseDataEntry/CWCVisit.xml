@@ -6,6 +6,7 @@
                 <staffId/>
                 <facilityId/>
                 <date/>
+                <visitor/>
                 <motechId/>
                 <serialNumber/>
                 <immunizations/>
@@ -26,25 +27,42 @@
                 <formname>cwcVisit</formname>
             </child>
         </xf:instance>
-        <xf:bind id="staffId" nodeset="/child/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
-        <xf:bind id="facilityId" nodeset="/child/facilityId" required="true()" type="xsd:int" constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
-        <xf:bind constraint=". &lt;= 'today()'" id="date" message="Invalid date: date specified is in the future" nodeset="/child/date" required="true()" type="xsd:date"/>
-        <xf:bind id="motechId" nodeset="/child/motechId" required="true()" type="xsd:int" constraint=". &gt; 999999 and . &lt; 10000000" message="MoTeCH ID must be 7 digits long"/>
-        <xf:bind id="serialNumber" nodeset="/child/serialNumber" type="xsd:string" />
+        <xf:bind id="staffId" nodeset="/child/staffId" required="true()" type="xsd:int" constraint=". &lt; 2147483647"
+                 message="Number too large. Keep under 2147483647"/>
+        <xf:bind id="facilityId" nodeset="/child/facilityId" required="true()" type="xsd:int"
+                 constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
+        <xf:bind constraint=". &lt;= 'today()'" id="date" message="Invalid date: date specified is in the future"
+                 nodeset="/child/date" required="true()" type="xsd:date"/>
+        <xf:bind id="visitor" nodeset="/child/visitor" required="true()" type="xsd:string"/>
+        <xf:bind action="show" relevant="/child/visitor = 'N'" id="motechId" nodeset="/child/motechId" required="true()"
+                 type="xsd:int" constraint=". &gt; 999999 and . &lt; 10000000"
+                 message="MoTeCH ID must be 7 digits long"/>
+        <xf:bind id="serialNumber" nodeset="/child/serialNumber" type="xsd:string"/>
         <xf:bind id="immunizations" nodeset="/child/immunizations" required="true()" type="xsd:string"/>
-        <xf:bind action="show" id="opvdose" nodeset="/child/opvdose" relevant="/child/immunizations = 'OPV'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="pentadose" nodeset="/child/pentadose" relevant="/child/immunizations = 'PENTA'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="rotavirusdose" nodeset="/child/rotavirusdose" relevant="/child/immunizations = 'ROTAVIRUS'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="pneumococcaldose" nodeset="/child/pneumococcaldose" relevant="/child/immunizations = 'PNEUMOCOCCAL'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="iptidose" nodeset="/child/iptidose" relevant="/child/immunizations = 'IPTI'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind constraint=". &gt;= 1 and . &lt;= 80" id="weight" message="Value out of range: must be between 1 and 80" nodeset="/child/weight" type="xsd:decimal"/>
-        <xf:bind constraint=". &gt;= 5 and . &lt;= 25" id="muac" message="Value out of range: must be between 5 and 25"  nodeset="/child/muac" type="xsd:decimal"/>
-        <xf:bind constraint=". &gt;= 26 and . &lt;= 160" id="height" message="Value out of range: must be between 26 and 160" nodeset="/child/height" type="xsd:decimal"/>
+        <xf:bind action="show" id="opvdose" nodeset="/child/opvdose" relevant="/child/immunizations = 'OPV'"
+                 required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="pentadose" nodeset="/child/pentadose" relevant="/child/immunizations = 'PENTA'"
+                 required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="rotavirusdose" nodeset="/child/rotavirusdose"
+                 relevant="/child/immunizations = 'ROTAVIRUS'" required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="pneumococcaldose" nodeset="/child/pneumococcaldose"
+                 relevant="/child/immunizations = 'PNEUMOCOCCAL'" required="true()" type="xsd:string"
+                 visible="false()"/>
+        <xf:bind action="show" id="iptidose" nodeset="/child/iptidose" relevant="/child/immunizations = 'IPTI'"
+                 required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind constraint=". &gt;= 1 and . &lt;= 80" id="weight"
+                 message="Value out of range: must be between 1 and 80" nodeset="/child/weight" type="xsd:decimal"/>
+        <xf:bind constraint=". &gt;= 5 and . &lt;= 25" id="muac" message="Value out of range: must be between 5 and 25"
+                 nodeset="/child/muac" type="xsd:decimal"/>
+        <xf:bind constraint=". &gt;= 26 and . &lt;= 160" id="height"
+                 message="Value out of range: must be between 26 and 160" nodeset="/child/height" type="xsd:decimal"/>
         <xf:bind id="maleInvolved" nodeset="/child/maleInvolved" required="true()" type="xsd:string"/>
         <xf:bind id="cwcLocation" nodeset="/child/cwcLocation" required="true()" type="xsd:string"/>
-        <xf:bind action="show" id="house" nodeset="/child/house" relevant="/child/cwcLocation = '2'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind action="show" id="community" nodeset="/child/community" relevant="/child/cwcLocation = '2'" required="true()" type="xsd:string" visible="false()"/>
-        <xf:bind id="comments" nodeset="/child/comments" type="xsd:string" />
+        <xf:bind action="show" id="house" nodeset="/child/house" relevant="/child/cwcLocation = '2'" required="true()"
+                 type="xsd:string" visible="false()"/>
+        <xf:bind action="show" id="community" nodeset="/child/community" relevant="/child/cwcLocation = '2'"
+                 required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind id="comments" nodeset="/child/comments" type="xsd:string"/>
         <xf:bind id="formtype" nodeset="/child/formtype" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind id="formname" nodeset="/child/formname" required="true()" type="xsd:string" visible="false()"/>
     </xf:model>
@@ -59,6 +77,17 @@
         <xf:input bind="date">
             <xf:label>Visit date</xf:label>
         </xf:input>
+        <xf:select1 bind="visitor">
+            <xf:label>Visitor</xf:label>
+            <xf:item id="1">
+                <xf:label>No</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>Yes</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+        </xf:select1>
         <xf:input bind="motechId">
             <xf:label>MoTeCH ID</xf:label>
         </xf:input>
@@ -68,52 +97,52 @@
         <xf:select bind="immunizations">
             <xf:label>Immunizations</xf:label>
             <xf:item id="1">
+                <xf:label>Non-given</xf:label>
+                <xf:value>NONGIVEN</xf:value>
+            </xf:item>
+            <xf:item id="2">
                 <xf:label>BCG</xf:label>
                 <xf:value>BCG</xf:value>
             </xf:item>
-            <xf:item id="2">
+            <xf:item id="3">
                 <xf:label>OPV</xf:label>
                 <xf:value>OPV</xf:value>
             </xf:item>
-            <xf:item id="3">
+            <xf:item id="4">
                 <xf:label>Penta</xf:label>
                 <xf:value>PENTA</xf:value>
             </xf:item>
-            <xf:item id="4">
+            <xf:item id="5">
                 <xf:label>Yellow Fever</xf:label>
                 <xf:value>YF</xf:value>
             </xf:item>
-            <xf:item id="5">
+            <xf:item id="6">
                 <xf:label>CSM</xf:label>
                 <xf:value>CSM</xf:value>
             </xf:item>
-            <xf:item id="6">
+            <xf:item id="7">
                 <xf:label>Measles</xf:label>
                 <xf:value>MEASLES</xf:value>
             </xf:item>
-            <xf:item id="7">
+            <xf:item id="8">
                 <xf:label>IPTi</xf:label>
                 <xf:value>IPTI</xf:value>
             </xf:item>
-            <xf:item id="8">
+            <xf:item id="9">
                 <xf:label>Vitamin A</xf:label>
                 <xf:value>VITA</xf:value>
             </xf:item>
-            <xf:item id="9">
+            <xf:item id="10">
                 <xf:label>Dewormer</xf:label>
                 <xf:value>DEWORMER</xf:value>
             </xf:item>
-            <xf:item id="10">
+            <xf:item id="11">
                 <xf:label>Rotavirus</xf:label>
                 <xf:value>ROTAVIRUS</xf:value>
             </xf:item>
-            <xf:item id="11">
+            <xf:item id="12">
                 <xf:label>Pneumococcal</xf:label>
                 <xf:value>PNEUMOCOCCAL</xf:value>
-            </xf:item>
-            <xf:item id="12">
-                <xf:label>Non-given</xf:label>
-                <xf:value>NONGIVEN</xf:value>
             </xf:item>
         </xf:select>
         <xf:select1 bind="opvdose">

@@ -3,23 +3,24 @@ package org.motechproject.ghana.national.handlers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.CWCVisitForm;
+import org.motechproject.ghana.national.domain.CWCVisit;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
+import org.motechproject.ghana.national.repository.AllCWCVisitsForVisitor;
 import org.motechproject.ghana.national.service.ChildVisitService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
-import org.motechproject.ghana.national.vo.CWCVisit;
 import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.scheduler.domain.MotechEvent;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -30,12 +31,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CWCVisitFormHandlerTest {
 
-    private CWCVisitFormHandler handler;
+    @InjectMocks
+    private CWCVisitFormHandler handler = new CWCVisitFormHandler();
     @Mock
     private ChildVisitService mockChildVisitService;
     @Mock
@@ -44,15 +47,12 @@ public class CWCVisitFormHandlerTest {
     private StaffService mockStaffService;
     @Mock
     private PatientService mockPatientService;
+    @Mock
+    private AllCWCVisitsForVisitor mockAllCWCVisitsForVisitor;
 
     @Before
     public void setUp() {
         initMocks(this);
-        handler = new CWCVisitFormHandler();
-        ReflectionTestUtils.setField(handler, "childVisitService", mockChildVisitService);
-        ReflectionTestUtils.setField(handler, "facilityService", mockFacilityService);
-        ReflectionTestUtils.setField(handler, "patientService", mockPatientService);
-        ReflectionTestUtils.setField(handler, "staffService", mockStaffService);
     }
 
     @Test
@@ -87,6 +87,7 @@ public class CWCVisitFormHandlerTest {
         cwcVisitForm.setHouse("house");
         cwcVisitForm.setCommunity("community");
         cwcVisitForm.setMaleInvolved(false);
+        cwcVisitForm.setVisitor(false);
 
 
         MotechEvent motechEvent = new MotechEvent("form.validation.successful.NurseDataEntry.cwcVisit", new HashMap<String, Object>() {{
@@ -138,6 +139,7 @@ public class CWCVisitFormHandlerTest {
         cwcVisitForm.setHouse("house");
         cwcVisitForm.setCommunity("community");
         cwcVisitForm.setMaleInvolved(false);
+        cwcVisitForm.setVisitor(false);
 
 
         MotechEvent motechEvent = new MotechEvent("form.validation.successful.NurseDataEntry.cwcVisit", new HashMap<String, Object>() {{
@@ -169,5 +171,16 @@ public class CWCVisitFormHandlerTest {
         assertEquals(cwcVisitForm.getHouse(), actualCWCVisit.getHouse());
         assertEquals(cwcVisitForm.getCommunity(), actualCWCVisit.getCommunity());
         assertEquals(cwcVisitForm.getMaleInvolved(), actualCWCVisit.getMaleInvolved());
+        assertEquals(cwcVisitForm.getVisitor(), actualCWCVisit.getVisitor());
+    }
+
+    @Test
+    public void shouldNotRegisterForANCVisitIfPatientIsAVisitor() {
+        CWCVisitForm cwcVisitForm = new CWCVisitForm();
+        cwcVisitForm.setVisitor(true);
+        handler.handleFormEvent(cwcVisitForm);
+
+        verifyZeroInteractions(mockChildVisitService);
+        verify(mockAllCWCVisitsForVisitor).add(Matchers.<CWCVisit>any());
     }
 }

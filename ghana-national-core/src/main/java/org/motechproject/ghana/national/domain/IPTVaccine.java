@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.domain;
 
 import org.joda.time.LocalDate;
-import org.motechproject.ghana.national.vo.CWCVisit;
 
 import static org.motechproject.util.DateUtil.newDate;
 

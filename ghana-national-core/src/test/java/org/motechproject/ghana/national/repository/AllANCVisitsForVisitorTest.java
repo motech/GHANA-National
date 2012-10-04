@@ -4,9 +4,7 @@ import org.junit.Test;
 import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.domain.ANCVisit;
 import org.motechproject.ghana.national.domain.Facility;
-import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.mrs.model.MRSFacility;
-import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +24,9 @@ public class AllANCVisitsForVisitorTest extends BaseIntegrationTest {
         MRSUser staff = new MRSUser().person(new MRSPerson().firstName("hi"));
         MRSFacility mrsFacility = new MRSFacility("name", "country", "region", "county", "state");
         Facility facility = new Facility(mrsFacility);
-        Patient patient = new Patient(new MRSPatient("1234568", new MRSPerson().firstName("hehe"), mrsFacility));
 
         int initialSize = allANCVisitsForVisitor.getAll().size();
-        allANCVisitsForVisitor.add(new ANCVisit().staff(staff).facility(facility).patient(patient)
+        allANCVisitsForVisitor.add(new ANCVisit().staff(staff).facility(facility).patient(null)
                 .date(new Date()).serialNumber("1234").visitNumber("1")
                 .estDeliveryDate(new Date()).bpDiastolic(100).bpSystolic(60).pmtct("10")
                 .weight(100.0).ttdose("2").iptdose("1").hemoglobin(8.0).dewormer("qwer")

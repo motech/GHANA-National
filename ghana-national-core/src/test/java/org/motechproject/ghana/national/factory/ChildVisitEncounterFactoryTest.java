@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.service.request.PNCBabyRequest;
-import org.motechproject.ghana.national.vo.CWCVisit;
+import org.motechproject.ghana.national.domain.CWCVisit;
 import org.motechproject.mrs.model.*;
 import org.motechproject.util.DateUtil;
 import org.unitils.reflectionassert.ReflectionComparatorMode;

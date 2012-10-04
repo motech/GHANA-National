@@ -4,11 +4,12 @@ import org.motechproject.ghana.national.bean.CWCVisitForm;
 import org.motechproject.ghana.national.domain.Facility;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.XFormHandlerException;
+import org.motechproject.ghana.national.repository.AllCWCVisitsForVisitor;
 import org.motechproject.ghana.national.service.ChildVisitService;
 import org.motechproject.ghana.national.service.FacilityService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.StaffService;
-import org.motechproject.ghana.national.vo.CWCVisit;
+import org.motechproject.ghana.national.domain.CWCVisit;
 import org.motechproject.mrs.model.MRSUser;
 import org.motechproject.openmrs.advice.ApiSession;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
@@ -18,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CWCVisitFormHandler{
+public class CWCVisitFormHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -26,17 +27,24 @@ public class CWCVisitFormHandler{
     @Autowired
     FacilityService facilityService;
     @Autowired
-    private PatientService patientService;
+    PatientService patientService;
     @Autowired
-    private StaffService staffService;
+    StaffService staffService;
+    @Autowired
+    AllCWCVisitsForVisitor allCWCVisitsForVisitor;
 
     @LoginAsAdmin
     @ApiSession
     public void handleFormEvent(CWCVisitForm cwcVisitForm) {
         try {
-            childVisitService.save(cwcVisitFor(cwcVisitForm));
+            CWCVisit cwcVisit = cwcVisitFor(cwcVisitForm);
+            if (!cwcVisit.getVisitor()) {
+                childVisitService.save(cwcVisit);
+            } else {
+                allCWCVisitsForVisitor.add(cwcVisit);
+            }
         } catch (Exception e) {
-            log.error("Encountered error while processing CWC visit form for patientId:"+cwcVisitForm.getMotechId(), e);
+            log.error("Encountered error while processing CWC visit form for patientId:" + cwcVisitForm.getMotechId(), e);
             throw new XFormHandlerException("Encountered error while processing CWC visit form", e);
         }
     }
@@ -51,7 +59,7 @@ public class CWCVisitFormHandler{
                 .height(form.getHeight()).muac(form.getMuac()).maleInvolved(form.getMaleInvolved())
                 .iptidose(form.getIptidose()).pentadose(form.getPentadose()).opvdose(form.getOpvdose())
                 .rotavirusdose(form.getRotavirusdose()).pneumococcaldose(form.getPneumococcaldose()).cwcLocation(form.getCwcLocation())
-                .comments(form.getComments()).house(form.getHouse())
+                .comments(form.getComments()).house(form.getHouse()).visitor(form.getVisitor())
                 .community(form.getCommunity()).immunizations(form.immunizations());
     }
 }

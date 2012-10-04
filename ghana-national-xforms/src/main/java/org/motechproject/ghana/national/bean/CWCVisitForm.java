@@ -53,6 +53,8 @@ public class CWCVisitForm extends FormBean {
     private String house;
     private String community;
 
+    private Boolean visitor;
+
     private String comments;
 
     public String getStaffId() {
@@ -220,5 +222,13 @@ public class CWCVisitForm extends FormBean {
 
     public void setPneumococcaldose(String pneumococcaldose) {
         this.pneumococcaldose = pneumococcaldose;
+    }
+
+    public Boolean getVisitor() {
+        return visitor;
+    }
+
+    public void setVisitor(Boolean visitor) {
+        this.visitor = visitor;
     }
 }

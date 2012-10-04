@@ -10,7 +10,7 @@ import org.motechproject.ghana.national.repository.AllCareSchedules;
 import org.motechproject.ghana.national.repository.AllEncounters;
 import org.motechproject.ghana.national.repository.AllSchedulesAndMessages;
 import org.motechproject.ghana.national.service.request.PNCBabyRequest;
-import org.motechproject.ghana.national.vo.CWCVisit;
+import org.motechproject.ghana.national.domain.CWCVisit;
 import org.motechproject.mrs.model.MRSEncounter;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
