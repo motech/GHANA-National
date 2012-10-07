@@ -60,8 +60,8 @@
         <xf:bind id="newCase" nodeset="/opvVisit/newCase" required="true()" type="xsd:string"/>
         <xf:bind id="newPatient" nodeset="/opvVisit/newPatient" required="true()" type="xsd:string"/>
         <xf:bind id="diagnosis" nodeset="/opvVisit/diagnosis" required="true()" type="xsd:string"/>
-        <xf:bind action="show" constraint=". &gt;= 1 and . &lt;= 76" id="otherDiagnosis"
-                 message="Invalid diagnosis: value must be between 1 and 76" nodeset="/opvVisit/otherDiagnosis"
+        <xf:bind action="show" constraint=". &gt;= 1 and . &lt;= 77" id="otherDiagnosis"
+                 message="Invalid diagnosis: value must be between 1 and 77" nodeset="/opvVisit/otherDiagnosis"
                  relevant="/opvVisit/diagnosis = '78'" required="true()" type="xsd:int" visible="false()"/>
         <xf:bind id="secondDiagnosis" nodeset="/opvVisit/secondDiagnosis" type="xsd:string"/>
         <xf:bind action="show" constraint=". &gt;= 1 and . &lt;= 76" id="otherSecondaryDiagnosis"
@@ -221,6 +221,10 @@
             <xf:item id="78">
                 <xf:label>Other</xf:label>
                 <xf:value>78</xf:value>
+            </xf:item>
+            <xf:item id="77">
+                <xf:label>Review</xf:label>
+                <xf:value>77</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="otherDiagnosis">
