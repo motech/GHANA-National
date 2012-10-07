@@ -43,6 +43,7 @@ public class RegisterCWCFormHandler{
                     registerCWCForm.getLastVitaminADate(),
                     registerCWCForm.getLastVitaminA(),
                     registerCWCForm.getMeaslesDate(),
+                    registerCWCForm.getLastMeasles(),
                     registerCWCForm.getYellowFeverDate(),
                     registerCWCForm.getLastPentaDate(),
                     registerCWCForm.getLastPenta(),

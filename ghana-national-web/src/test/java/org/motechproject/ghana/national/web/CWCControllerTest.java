@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.domain.Constants;
@@ -25,20 +26,30 @@ import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormError;
 import org.motechproject.mrs.exception.ObservationNotFoundException;
 import org.motechproject.util.DateUtil;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ui.ModelMap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CWCControllerTest {
-    CWCController cwcController;
+    @InjectMocks
+    CWCController cwcController = new CWCController();
 
     @Mock
     PatientService mockPatientService;
@@ -47,16 +58,16 @@ public class CWCControllerTest {
     FacilityHelper mockFacilityHelper;
 
     @Mock
-    RegisterCWCFormValidator mockregisterCWCFormValidator;
+    RegisterCWCFormValidator mockRegisterCWCFormValidator;
 
     @Mock
     CareService mockCareService;
 
     @Mock
-    CwcFormMapper mockCwcFormMapper;
+    AllEncounters mockAllEncounters; //needs to be mocked.
 
     @Mock
-    AllEncounters mockAllEncounters;
+    CwcFormMapper mockCwcFormMapper;
 
     @Mock
     FormValidator mockFormValidator;
@@ -64,14 +75,6 @@ public class CWCControllerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        cwcController = new CWCController();
-        ReflectionTestUtils.setField(cwcController, "patientService", mockPatientService);
-        ReflectionTestUtils.setField(cwcController, "facilityHelper", mockFacilityHelper);
-        ReflectionTestUtils.setField(cwcController, "careService", mockCareService);
-        ReflectionTestUtils.setField(cwcController, "cwcFormMapper", mockCwcFormMapper);
-        ReflectionTestUtils.setField(cwcController, "registerCWCFormValidator", mockregisterCWCFormValidator);
-        ReflectionTestUtils.setField(cwcController, "formValidator", mockFormValidator);
-        ReflectionTestUtils.setField(cwcController, "allEncounters", mockAllEncounters);
     }
 
     @Test
@@ -130,12 +133,12 @@ public class CWCControllerTest {
     public void shouldSaveCWCEnrollmentForm() {
         CWCEnrollmentForm cwcEnrollmentForm = createCWCEnrollmentForm();
         ModelMap modelMap = new ModelMap();
-        
+
         when(mockFormValidator.validateIfStaffExists(cwcEnrollmentForm.getStaffId())).thenReturn(Collections.<FormError>emptyList());
         Patient patient = mock(Patient.class);
         when(mockFormValidator.getPatient(cwcEnrollmentForm.getPatientMotechId())).thenReturn(patient);
-        when(patient.dateOfBirth()).thenReturn(DateUtil.newDate(2000,12,12).toDateTimeAtCurrentTime());
-        when(mockregisterCWCFormValidator.validatePatient(patient, cwcEnrollmentForm, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(Collections.<FormError>emptyList());
+        when(patient.dateOfBirth()).thenReturn(DateUtil.newDate(2000, 12, 12).toDateTimeAtCurrentTime());
+        when(mockRegisterCWCFormValidator.validatePatient(patient, cwcEnrollmentForm, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(Collections.<FormError>emptyList());
         cwcEnrollmentForm.setAddHistory(false);
         cwcController.save(cwcEnrollmentForm, modelMap);
         final ArgumentCaptor<CwcVO> captor = ArgumentCaptor.forClass(CwcVO.class);
@@ -154,6 +157,8 @@ public class CWCControllerTest {
         assertThat(cwcEnrollmentForm.getLastPenta(), is(cwcVO.getCWCCareHistoryVO().getLastPenta()));
         assertThat(cwcEnrollmentForm.getLastOPVDate(), is(cwcVO.getCWCCareHistoryVO().getLastOPVDate()));
         assertThat(cwcEnrollmentForm.getLastOPV(), is(cwcVO.getCWCCareHistoryVO().getLastOPV()));
+        assertThat(cwcEnrollmentForm.getLastVitaminA(), is(cwcVO.getCWCCareHistoryVO().getLastVitA()));
+        assertThat(cwcEnrollmentForm.getLastMeasles(), is(cwcVO.getCWCCareHistoryVO().getLastMeasles()));
         assertThat(cwcEnrollmentForm.getLastRotavirus(), is(cwcVO.getCWCCareHistoryVO().getLastRotavirus()));
         assertThat(cwcEnrollmentForm.getLastPneumococcal(), is(cwcVO.getCWCCareHistoryVO().getLastPneumococcal()));
         assertThat(cwcEnrollmentForm.getLastIPTiDate(), is(cwcVO.getCWCCareHistoryVO().getLastIPTiDate()));
@@ -180,7 +185,7 @@ public class CWCControllerTest {
         Patient patient = mock(Patient.class);
         when(mockFormValidator.getPatient(cwcEnrollmentForm.getPatientMotechId())).thenReturn(patient);
         when(patient.dateOfBirth()).thenReturn(DateTime.now());
-        when(mockregisterCWCFormValidator.validatePatient(patient, cwcEnrollmentForm, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(
+        when(mockRegisterCWCFormValidator.validatePatient(patient, cwcEnrollmentForm, Collections.<FormBean>emptyList(), Collections.<FormBean>emptyList())).thenReturn(
                 new ArrayList<FormError>() {{
                     add(new FormError(Constants.CHILD_AGE_PARAMETER, "description1"));
                     add(new FormError(Constants.MOTECH_ID_ATTRIBUTE_NAME, "description2"));
@@ -209,7 +214,7 @@ public class CWCControllerTest {
         Patient patient = mock(Patient.class);
         when(mockFormValidator.getPatient(cwcEnrollmentForm.getPatientMotechId())).thenReturn(patient);
         when(patient.dateOfBirth()).thenReturn(DateTime.now());
-        cwcController.save(cwcEnrollmentForm,modelMap);
+        cwcController.save(cwcEnrollmentForm, modelMap);
         assertTrue(modelMap.containsKey("errors"));
 
         List<String> errorsFromModelMap = (List<String>) modelMap.get("errors");
@@ -217,7 +222,7 @@ public class CWCControllerTest {
         Assert.assertThat(errorsFromModelMap, hasItem("lastOPVDate should be after date of birth"));
         Assert.assertThat(errorsFromModelMap, hasItem("bcgDate should be after date of birth"));
         Assert.assertThat(errorsFromModelMap, hasItem("lastRotavirusDate should be after date of birth"));
-        verify(mockCareService,never()).enroll(Matchers.<ANCVO>any());
+        verify(mockCareService, never()).enroll(Matchers.<ANCVO>any());
     }
 
     private CWCEnrollmentForm createCWCEnrollmentForm() {
@@ -236,6 +241,8 @@ public class CWCControllerTest {
         final int lastPenta = 1;
         final int lastRotavirus = 1;
         final int lastPneumococcal = 1;
+        final int lastMeasles = 1;
+        final String lastVitaminA = "blue";
         final String patientMotechId = "1234567";
         final int lastOPV = 0;
 
@@ -254,6 +261,8 @@ public class CWCControllerTest {
         cwcEnrollmentForm.setMeaslesDate(lastMeaslesDate);
         cwcEnrollmentForm.setYfDate(lastYfDate);
         cwcEnrollmentForm.setLastPentaDate(lastPentaDate);
+        cwcEnrollmentForm.setLastMeasles(lastMeasles);
+        cwcEnrollmentForm.setLastVitaminA(lastVitaminA);
         cwcEnrollmentForm.setLastPenta(lastPenta);
         cwcEnrollmentForm.setLastOPVDate(lastOPVDate);
         cwcEnrollmentForm.setLastOPV(lastOPV);
@@ -268,7 +277,7 @@ public class CWCControllerTest {
         return cwcEnrollmentForm;
     }
 
-}                   
+}
 //
 //Expected: a collection containing <FormError{parameter='lastPentaDate', error='should be after date of birth'}>
 //        got: <[FormError{parameter='bcgDate', error='should be after date of birth'},

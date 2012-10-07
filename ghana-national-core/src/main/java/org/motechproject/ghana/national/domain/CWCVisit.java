@@ -63,6 +63,8 @@ public class CWCVisit extends MotechBaseDataObject {
     private String facilityId;
     @JsonProperty
     private String vitaminadose;
+    @JsonProperty
+    private String measlesDose;
 
     public MRSUser getStaff() {
         return staff;
@@ -261,6 +263,15 @@ public class CWCVisit extends MotechBaseDataObject {
 
     public CWCVisit vitaminadose(String vitaminadose) {
         this.vitaminadose = vitaminadose;
+        return this;
+    }
+
+    public String getMeaslesDose() {
+        return measlesDose;
+    }
+
+    public CWCVisit measlesDose(String measlesDose) {
+        this.measlesDose = measlesDose;
         return this;
     }
 }

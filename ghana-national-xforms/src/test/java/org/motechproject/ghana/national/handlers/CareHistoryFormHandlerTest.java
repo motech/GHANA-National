@@ -94,7 +94,7 @@ public class CareHistoryFormHandlerTest {
                 careHistoryForm.getLastTTDate(), careHistoryVO.getAncCareHistoryVO());
 
         assertCwcCareHistoryDetails(careHistoryForm.getCWCCareHistories(), careHistoryForm.getBcgDate(),
-                careHistoryForm.getLastVitaminADate(), careHistoryForm.getMeaslesDate(), careHistoryForm.getYellowFeverDate(),
+                careHistoryForm.getLastVitaminADate(), careHistoryForm.getMeaslesDate(), careHistoryForm.getLastMeasles(), careHistoryForm.getYellowFeverDate(),
                 careHistoryForm.getLastPentaDate(), careHistoryForm.getLastOPVDate(), careHistoryForm.getLastIPTIDate(),
                 careHistoryForm.getLastRotavirusDate(), careHistoryForm.getLastPneumococcalDate(), careHistoryForm.getLastVitaminA(), careHistoryForm.getLastPenta(), careHistoryForm.getLastOPV(),
                 careHistoryForm.getLastRotavirus(),careHistoryForm.getLastPneumococcal(), careHistoryVO.getCwcCareHistoryVO());

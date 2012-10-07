@@ -15,16 +15,19 @@ public class CwcVO {
     private CWCCareHistoryVO cwcCareHistoryVO;
 
 
-    public CwcVO(String staffId, String facilityId, Date registrationDate, String patientMotechId, List<CwcCareHistory> careHistories, Date bcgDate,
-                 Date vitADate, String lastVitA, Date measlesDate, Date yfDate, Date lastPentaDate, Integer lastPenta, Date lastOPVDate, Integer lastOPV, Date lastIPTiDate,
-                 Integer lastIPTi, Date lastRotavirusDate, Integer lastRotavirus, Integer lastPneumococcal, Date lastPneumococcalDate, String serialNumber, Boolean addCareHistory) {
+    public CwcVO(String staffId, String facilityId, Date registrationDate, String patientMotechId,
+                 List<CwcCareHistory> careHistories, Date bcgDate, Date vitADate, String lastVitA, Date measlesDate,
+                 Integer lastMeasles, Date yfDate, Date lastPentaDate, Integer lastPenta, Date lastOPVDate, Integer lastOPV, Date lastIPTiDate,
+                 Integer lastIPTi, Date lastRotavirusDate, Integer lastRotavirus, Integer lastPneumococcal,
+                 Date lastPneumococcalDate, String serialNumber, Boolean addCareHistory) {
         this.staffId = staffId;
         this.facilityId = facilityId;
         this.registrationDate = registrationDate;
         this.patientMotechId = patientMotechId;
         this.serialNumber = serialNumber;
-        this.cwcCareHistoryVO = new CWCCareHistoryVO(addCareHistory, careHistories, bcgDate, vitADate, lastVitA, measlesDate, yfDate, lastPentaDate, lastPenta, lastOPVDate,
-                lastOPV, lastIPTi, lastIPTiDate, lastRotavirus, lastRotavirusDate,lastPneumococcal,lastPneumococcalDate);
+        this.cwcCareHistoryVO = new CWCCareHistoryVO(addCareHistory, careHistories, bcgDate, vitADate, lastVitA, measlesDate,
+                lastMeasles, yfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTi, lastIPTiDate, lastRotavirus,
+                lastRotavirusDate, lastPneumococcal, lastPneumococcalDate);
     }
 
     public String getStaffId() {

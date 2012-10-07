@@ -15,6 +15,7 @@
                 <rotavirusdose/>
                 <pneumococcaldose/>
                 <vitaminadose/>
+                <measlesdose/>
                 <iptidose/>
                 <weight/>
                 <muac/>
@@ -51,6 +52,9 @@
                  visible="false()"/>
         <xf:bind action="show" id="vitaminadose" nodeset="/child/vitaminadose"
                  relevant="/child/immunizations = 'VITA'" required="true()" type="xsd:string"
+                 visible="false()"/>
+        <xf:bind action="show" id="measlesdose" nodeset="/child/measlesdose"
+                 relevant="/child/immunizations = 'MEASLES'" required="true()" type="xsd:string"
                  visible="false()"/>
         <xf:bind action="show" id="iptidose" nodeset="/child/iptidose" relevant="/child/immunizations = 'IPTI'"
                  required="true()" type="xsd:string" visible="false()"/>
@@ -181,6 +185,17 @@
             <xf:item id="3">
                 <xf:label>Penta 3</xf:label>
                 <xf:value>3</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="measlesdose">
+            <xf:label>Last Measles</xf:label>
+            <xf:item id="1">
+                <xf:label>Measles 1</xf:label>
+                <xf:value>1</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>Measles 2</xf:label>
+                <xf:value>2</xf:value>
             </xf:item>
         </xf:select1>
         <xf:select1 bind="iptidose">

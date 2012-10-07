@@ -86,6 +86,7 @@ public class RegisterCWCFormHandlerTest {
         final int lastOPV = 0;
         final int lastRotavirus = 1;
         final int lastPneumo = 2;
+        Integer lastMeasles = 1;
         final String facilityMotechId = "3232";
         String lastVitA = "blue";
 
@@ -96,6 +97,7 @@ public class RegisterCWCFormHandlerTest {
         registerCWCForm.setBcgDate(lastBCGDate);
         registerCWCForm.setLastVitaminA(lastVitA);
         registerCWCForm.setLastVitaminADate(lastVitADate);
+        registerCWCForm.setLastMeasles(lastMeasles);
         registerCWCForm.setMeaslesDate(lastMeaslesDate);
         registerCWCForm.setYellowFeverDate(lastYfDate);
         registerCWCForm.setLastPentaDate(lastPentaDate);
@@ -126,19 +128,20 @@ public class RegisterCWCFormHandlerTest {
         assertThat(facilityId, is(facilityId));
         assertThat(registartionDate, is(cwcVO.getRegistrationDate()));
         assertThat(patientMotechId, is(cwcVO.getPatientMotechId()));
-        assertCwcCareHistoryDetails(registerCWCForm.getCWCCareHistories(), lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, lastPneumoDate,
+        assertCwcCareHistoryDetails(registerCWCForm.getCWCCareHistories(), lastBCGDate, lastVitADate, lastMeaslesDate, lastMeasles, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, lastPneumoDate,
                 lastRotavirusDate, lastVitA, lastPenta, lastOPV, lastRotavirus, lastPneumo, cwcVO.getCWCCareHistoryVO());
 
         assertMobileMidwifeFormEnrollment(registerCWCForm, mobileMidwifeEnrollmentCaptor.getValue());
     }
 
-    public static void assertCwcCareHistoryDetails(List<CwcCareHistory> cwcCareHistories, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate,
+    public static void assertCwcCareHistoryDetails(List<CwcCareHistory> cwcCareHistories, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Integer lastMeasles, Date lastYfDate, Date lastPentaDate,
                                                    Date lastOPVDate, Date lastIPTiDate, Date lastRotavirusDate, Date lastPneumococcalDate,
                                                    String lastVitA, int lastPenta, int lastOPV, int lastRotavirus, int lastPneumococcal, CWCCareHistoryVO cwcCareHistoryVO) {
         assertThat(cwcCareHistories, is(cwcCareHistoryVO.getCwcCareHistories()));
         assertThat(lastBCGDate, is(cwcCareHistoryVO.getBcgDate()));
         assertThat(lastVitA, is(cwcCareHistoryVO.getLastVitA()));
         assertThat(lastVitADate, is(cwcCareHistoryVO.getVitADate()));
+        assertThat(lastMeasles, is(cwcCareHistoryVO.getLastMeasles()));
         assertThat(lastMeaslesDate, is(cwcCareHistoryVO.getMeaslesDate()));
         assertThat(lastYfDate, is(cwcCareHistoryVO.getYfDate()));
         assertThat(lastPentaDate, is(cwcCareHistoryVO.getLastPentaDate()));

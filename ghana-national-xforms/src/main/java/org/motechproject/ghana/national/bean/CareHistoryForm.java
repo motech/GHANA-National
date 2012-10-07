@@ -52,6 +52,7 @@ public class CareHistoryForm extends FormBean implements FormWithHistoryInput {
     private Integer lastPenta;
     private Integer lastRotavirus;
     private Date lastPentaDate;
+    private Integer lastMeasles;
     private Date measlesDate;
     private Date yellowFeverDate;
     private Integer lastIPTI;
@@ -290,9 +291,17 @@ public class CareHistoryForm extends FormBean implements FormWithHistoryInput {
         List<ANCCareHistory> ancCareHistories = getANCCareHistories();
         List<CwcCareHistory> cwcCareHistories = getCWCCareHistories();
         ANCCareHistoryVO ancCareHistoryVO = new ANCCareHistoryVO(ancCareHistories.size() > 0, ancCareHistories, lastIPT, lastTT, lastIPTDate, lastTTDate);
-        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(cwcCareHistories.size() > 0, cwcCareHistories, bcgDate, lastVitaminADate, lastVitaminA, measlesDate, yellowFeverDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTI, lastIPTIDate, lastRotavirus, lastRotavirusDate, lastPneumococcal, lastPneumococcalDate);
+        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(cwcCareHistories.size() > 0, cwcCareHistories, bcgDate, lastVitaminADate, lastVitaminA, measlesDate, lastMeasles, yellowFeverDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTI, lastIPTIDate, lastRotavirus, lastRotavirusDate, lastPneumococcal, lastPneumococcalDate);
 
         return new CareHistoryVO(staffId, facilityId, motechId, date, ancCareHistoryVO, cwcCareHistoryVO);
+    }
+
+    public Integer getLastMeasles() {
+        return lastMeasles;
+    }
+
+    public void setLastMeasles(Integer lastMeasles) {
+        this.lastMeasles = lastMeasles;
     }
 
     @Override

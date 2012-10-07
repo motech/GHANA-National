@@ -21,6 +21,7 @@
                 <lastRotavirusDate/>
                 <lastPneumococcal/>
                 <lastPneumococcalDate/>
+                <lastMeasles/>
                 <measlesDate/>
                 <yellowFeverDate/>
                 <lastIPTI/>
@@ -72,6 +73,8 @@
         <xf:bind id="lastPneumococcalDate" nodeset="/careHistory/lastPneumococcalDate" type="xsd:date" visible="false()"
                  relevant="/careHistory/addHistory = 'PNEUMOCOCCAL'" action="show" required="true()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
+        <xf:bind id="lastMeasles" nodeset="/careHistory/lastMeasles" type="xsd:string" visible="false()"
+                 relevant="/careHistory/addHistory = 'MEASLES'" action="show" required="true()"/>
         <xf:bind id="measlesDate" nodeset="/careHistory/measlesDate" type="xsd:date" visible="false()"
                  relevant="/careHistory/addHistory = 'MEASLES'" action="show" required="true()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
@@ -271,6 +274,17 @@
         <xf:input bind="lastPneumococcalDate">
             <xf:label>Last Pneumococcal date</xf:label>
         </xf:input>
+        <xf:select1 bind="lastMeasles">
+            <xf:label>Last Measles</xf:label>
+            <xf:item id="1">
+                <xf:label>Measles 1</xf:label>
+                <xf:value>1</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>Measles 2</xf:label>
+                <xf:value>2</xf:value>
+            </xf:item>
+        </xf:select1>
         <xf:input bind="measlesDate">
             <xf:label>Measles date</xf:label>
         </xf:input>

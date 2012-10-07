@@ -88,6 +88,8 @@ public class CWCVisitFormHandlerTest {
         cwcVisitForm.setCommunity("community");
         cwcVisitForm.setMaleInvolved(false);
         cwcVisitForm.setVisitor(false);
+        cwcVisitForm.setMeaslesdose("1");
+        cwcVisitForm.setVitaminadose("Blue");
 
 
         MotechEvent motechEvent = new MotechEvent("form.validation.successful.NurseDataEntry.cwcVisit", new HashMap<String, Object>() {{
@@ -119,6 +121,8 @@ public class CWCVisitFormHandlerTest {
         assertEquals(cwcVisitForm.getHouse(), actualCWCVisit.getHouse());
         assertEquals(cwcVisitForm.getCommunity(), actualCWCVisit.getCommunity());
         assertEquals(cwcVisitForm.getMaleInvolved(), actualCWCVisit.getMaleInvolved());
+        assertEquals(cwcVisitForm.getMeaslesdose(), actualCWCVisit.getMeaslesDose());
+        assertEquals(cwcVisitForm.getVitaminadose(), actualCWCVisit.getVitaminadose());
     }
 
     @Test

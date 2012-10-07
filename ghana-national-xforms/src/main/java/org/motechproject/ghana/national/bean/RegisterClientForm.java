@@ -102,6 +102,7 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
     private String lastIPT;
     private String lastTT;
     private String lastVitaminA;
+    private Integer lastMeasles;
 
     public String getMmRegPhone() {
         return mmRegPhone;
@@ -569,5 +570,13 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
 
     public void setLastVitaminA(String lastVitaminA) {
         this.lastVitaminA = lastVitaminA;
+    }
+
+    public void setLastMeasles(Integer lastMeasles) {
+        this.lastMeasles = lastMeasles;
+    }
+
+    public Integer getLastMeasles() {
+        return lastMeasles;
     }
 }

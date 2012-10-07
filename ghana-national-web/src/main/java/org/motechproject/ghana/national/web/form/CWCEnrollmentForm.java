@@ -32,7 +32,8 @@ public class CWCEnrollmentForm implements FormWithHistoryInput {
     private Integer lastRotavirus;
     private Date lastPneumococcalDate;
     private Integer lastPneumococcal;
-    private String vitA;
+    private String lastVitaminA;
+    private Integer lastMeasles;
 
 
     public FacilityForm getFacilityForm() {
@@ -227,11 +228,19 @@ public class CWCEnrollmentForm implements FormWithHistoryInput {
         }};
     }
 
-    public String getVitA() {
-        return vitA;
+    public String getLastVitaminA() {
+        return lastVitaminA;
     }
 
-    public void setVitA(String vitA) {
-        this.vitA = vitA;
+    public void setLastVitaminA(String lastVitaminA) {
+        this.lastVitaminA = lastVitaminA;
+    }
+
+    public Integer getLastMeasles() {
+        return lastMeasles;
+    }
+
+    public void setLastMeasles(Integer lastMeasles) {
+        this.lastMeasles = lastMeasles;
     }
 }

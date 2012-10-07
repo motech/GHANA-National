@@ -89,6 +89,6 @@ public class GNPatientService {
     @ApiSession
     public void enrollForCWCWithoutHistory(String staffMotechId, String facilityMrsId, String patientMotechId, Date regDate, String serialNumber) {
         careService.enroll(new CwcVO(staffMotechId, facilityMrsId, regDate, patientMotechId,
-                new ArrayList<CwcCareHistory>(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, serialNumber, Boolean.FALSE));
+                new ArrayList<CwcCareHistory>(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, serialNumber, Boolean.FALSE));
     }
 }

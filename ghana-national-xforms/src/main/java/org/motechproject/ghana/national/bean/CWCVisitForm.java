@@ -56,6 +56,7 @@ public class CWCVisitForm extends FormBean {
     private Boolean visitor;
 
     private String comments;
+    private String measlesdose;
 
     public String getStaffId() {
         return staffId;
@@ -238,5 +239,13 @@ public class CWCVisitForm extends FormBean {
 
     public void setVisitor(Boolean visitor) {
         this.visitor = visitor;
+    }
+
+    public String getMeaslesdose() {
+        return measlesdose;
+    }
+
+    public void setMeaslesdose(String measlesdose) {
+        this.measlesdose = measlesdose;
     }
 }

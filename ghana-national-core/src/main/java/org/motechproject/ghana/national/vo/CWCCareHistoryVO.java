@@ -12,6 +12,7 @@ public class CWCCareHistoryVO {
     private Date bcgDate;
     private Date vitADate;
     private Date measlesDate;
+    private Integer lastMeasles;
     private Date yfDate;
     private Date lastPentaDate;
     private Integer lastPenta;
@@ -25,23 +26,26 @@ public class CWCCareHistoryVO {
     private Integer lastIPTi;
     private Date lastPneumococcalDate;
 
-    public CWCCareHistoryVO(Boolean addCareHistory, List<CwcCareHistory> careHistories, Date bcgDate, Date vitADate, String lastVitA, Date measlesDate, Date yfDate, Date lastPentaDate,
-                            Integer lastPenta, Date lastOPVDate, Integer lastOPV, Integer lastIPTi, Date lastIPTiDate, Integer lastRotavirus, Date lastRotavirusDate, Integer lastPneumococcal, Date lastPneumococcalDate) {
+    public CWCCareHistoryVO(Boolean addCareHistory, List<CwcCareHistory> careHistories, Date bcgDate, Date vitADate,
+                            String lastVitA, Date measlesDate, Integer lastMeasles, Date yfDate, Date lastPentaDate,
+                            Integer lastPenta, Date lastOPVDate, Integer lastOPV, Integer lastIPTi, Date lastIPTiDate,
+                            Integer lastRotavirus, Date lastRotavirusDate, Integer lastPneumococcal, Date lastPneumococcalDate) {
         this.addCareHistory = addCareHistory;
-        this.cwcCareHistories=careHistories;
-        this.bcgDate=bcgDate;
-        this.vitADate=vitADate;
+        this.cwcCareHistories = careHistories;
+        this.bcgDate = bcgDate;
+        this.vitADate = vitADate;
         this.lastVitA = lastVitA;
-        this.measlesDate=measlesDate;
-        this.yfDate=yfDate;
-        this.lastPentaDate=lastPentaDate;
-        this.lastPenta=lastPenta;
-        this.lastOPVDate=lastOPVDate;
-        this.lastOPV=lastOPV;
-        this.lastIPTiDate=lastIPTiDate;
-        this.lastIPTi=lastIPTi;
-        this.lastRotavirus=lastRotavirus;
-        this.lastRotavirusDate=lastRotavirusDate;
+        this.measlesDate = measlesDate;
+        this.lastMeasles = lastMeasles;
+        this.yfDate = yfDate;
+        this.lastPentaDate = lastPentaDate;
+        this.lastPenta = lastPenta;
+        this.lastOPVDate = lastOPVDate;
+        this.lastOPV = lastOPV;
+        this.lastIPTiDate = lastIPTiDate;
+        this.lastIPTi = lastIPTi;
+        this.lastRotavirus = lastRotavirus;
+        this.lastRotavirusDate = lastRotavirusDate;
         this.lastPneumococcal = lastPneumococcal;
         this.lastPneumococcalDate = lastPneumococcalDate;
     }
@@ -115,5 +119,9 @@ public class CWCCareHistoryVO {
 
     public String getLastVitA() {
         return lastVitA;
+    }
+
+    public Integer getLastMeasles() {
+        return lastMeasles;
     }
 }

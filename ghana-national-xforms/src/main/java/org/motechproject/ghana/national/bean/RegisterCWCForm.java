@@ -67,6 +67,7 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm implements FormWit
     private Integer lastRotavirus;
     private Integer lastPneumococcal;
     private String lastVitaminA;
+    private Integer lastMeasles;
 
     public void setRegistrationToday(RegistrationToday registrationToday) {
         this.registrationToday = registrationToday;
@@ -288,5 +289,13 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm implements FormWit
 
     public void setLastVitaminA(String lastVitaminA) {
         this.lastVitaminA = lastVitaminA;
+    }
+
+    public Integer getLastMeasles() {
+        return lastMeasles;
+    }
+
+    public void setLastMeasles(Integer lastMeasles) {
+        this.lastMeasles = lastMeasles;
     }
 }

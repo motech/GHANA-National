@@ -64,7 +64,8 @@ public class CareService {
         Date lastRotavirusDate = getLastRotavirusDate(patient, cwcVO.getCWCCareHistoryVO());
         Date lastPneumococcalDate = getLastPneumococcalDate(patient, cwcVO.getCWCCareHistoryVO());
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration(newDate(cwcVO.getRegistrationDate()),
-                mergedHistories, cwcVO.getCWCCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_PNEUMOCOCCAL.getName(), CWC_ROTAVIRUS.getName(), CWC_PENTA.getName(), CWC_IPT_VACCINE.getName(), CWC_OPV_OTHERS.getName())),
+                mergedHistories, cwcVO.getCWCCareHistoryVO(), activeCareSchedules(patient, Arrays.asList(CWC_PNEUMOCOCCAL.getName(),
+                CWC_ROTAVIRUS.getName(), CWC_PENTA.getName(), CWC_IPT_VACCINE.getName(), CWC_OPV_OTHERS.getName())),
                 lastPentaDate, lastIPTiDate, lastOPVDate, lastRotavirusDate, lastPneumococcalDate);
         patientCares.addAll(patient.pncBabyProgramsToEnrollOnRegistration());
         enrollPatientCares(patientCares, patient);
@@ -287,7 +288,7 @@ public class CareService {
         if (capturedHistory != null && cwcCareHistoryVO.getAddCareHistory()) {
             addObservation(capturedHistory, CwcCareHistory.BCG, observations, cwcCareHistoryVO.getBcgDate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(BCG.getName()));
             addObservation(capturedHistory, CwcCareHistory.VITA_A, observations, cwcCareHistoryVO.getVitADate(), VITA.getName(), cwcCareHistoryVO.getLastVitA());
-            addObservation(capturedHistory, CwcCareHistory.MEASLES, observations, cwcCareHistoryVO.getMeaslesDate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(MEASLES.getName()));
+            addObservation(capturedHistory, CwcCareHistory.MEASLES, observations, cwcCareHistoryVO.getMeaslesDate(), MEASLES.getName(), cwcCareHistoryVO.getLastMeasles());
             addObservation(capturedHistory, CwcCareHistory.YF, observations, cwcCareHistoryVO.getYfDate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(YF.getName()));
             addObservation(capturedHistory, CwcCareHistory.ROTAVIRUS, observations, cwcCareHistoryVO.getLastRotavirusDate(), ROTAVIRUS.getName(), cwcCareHistoryVO.getLastRotavirus());
             addObservation(capturedHistory, CwcCareHistory.PENTA, observations, cwcCareHistoryVO.getLastPentaDate(), PENTA.getName(), cwcCareHistoryVO.getLastPenta());

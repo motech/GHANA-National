@@ -42,10 +42,10 @@ public class ChildVisitEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, registrationDate, ROTAVIRUS.getName(), toInteger(cwcVisit.getRotavirusdose()));
         setObservation(mrsObservations, registrationDate, OPV.getName(), toInteger(cwcVisit.getOpvdose()));
         setObservation(mrsObservations, registrationDate, IPTI.getName(), toInteger(cwcVisit.getIptidose()));
+        setObservation(mrsObservations, registrationDate, MEASLES.getName(), toInteger(cwcVisit.getMeaslesDose()));
         setObservation(mrsObservations, registrationDate, VITA.getName(), cwcVisit.getVitaminadose());
         setObservation(mrsObservations, registrationDate, PNEUMOCOCCAL.getName(), toInteger(cwcVisit.getPneumococcaldose()));
         addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate, BCG);
-        addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate, MEASLES);
         addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate, YF);
         addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate, DEWORMER);
         return mrsObservations;
