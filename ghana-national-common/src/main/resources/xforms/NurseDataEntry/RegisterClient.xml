@@ -50,6 +50,7 @@
                 <yellowFeverDate/>
                 <lastIPTi/>
                 <lastIPTiDate/>
+                <lastVitaminA/>
                 <lastVitaminADate/>
                 <whyNoHistory/>
                 <expDeliveryDate/>
@@ -792,6 +793,10 @@
             = 'IPTI' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
+        <xf:bind id="lastVitaminA" nodeset="/patientRegistration/lastVitaminA" type="xsd:string" visible="false()"
+                 relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
+            = 'VITA_A' and /patientRegistration/addHistory = '1'"
+                 action="show" required="true()"/>
         <xf:bind id="lastVitaminADate" nodeset="/patientRegistration/lastVitaminADate" type="xsd:date"
                  visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
@@ -1285,6 +1290,17 @@
         <xf:input bind="lastIPTiDate">
             <xf:label>Last IPTi date</xf:label>
         </xf:input>
+        <xf:select1 bind="lastVitaminA">
+            <xf:label>Last Vitamin A</xf:label>
+            <xf:item id="1">
+                <xf:label>Blue</xf:label>
+                <xf:value>blue</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>Red</xf:label>
+                <xf:value>red</xf:value>
+            </xf:item>
+        </xf:select1>
         <xf:input bind="lastVitaminADate">
             <xf:label>Last Vit A date</xf:label>
         </xf:input>

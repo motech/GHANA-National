@@ -14,6 +14,7 @@
                 <pentadose/>
                 <rotavirusdose/>
                 <pneumococcaldose/>
+                <vitaminadose/>
                 <iptidose/>
                 <weight/>
                 <muac/>
@@ -47,6 +48,9 @@
                  relevant="/child/immunizations = 'ROTAVIRUS'" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="pneumococcaldose" nodeset="/child/pneumococcaldose"
                  relevant="/child/immunizations = 'PNEUMOCOCCAL'" required="true()" type="xsd:string"
+                 visible="false()"/>
+        <xf:bind action="show" id="vitaminadose" nodeset="/child/vitaminadose"
+                 relevant="/child/immunizations = 'VITA'" required="true()" type="xsd:string"
                  visible="false()"/>
         <xf:bind action="show" id="iptidose" nodeset="/child/iptidose" relevant="/child/immunizations = 'IPTI'"
                  required="true()" type="xsd:string" visible="false()"/>
@@ -218,6 +222,17 @@
             <xf:item id="3">
                 <xf:label>Pneumococcal 3</xf:label>
                 <xf:value>3</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="vitaminadose">
+            <xf:label>Vitamin A</xf:label>
+            <xf:item id="1">
+                <xf:label>Blue</xf:label>
+                <xf:value>blue</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>Red</xf:label>
+                <xf:value>red</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="weight">

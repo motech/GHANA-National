@@ -77,14 +77,18 @@
     </xf:select1>
     <xf:select1 bind="vitaminA">
       <xf:label>Vitamin A</xf:label>
-      <xf:item id="Y">
-        <xf:label>Yes</xf:label>
-        <xf:value>Y</xf:value>
-      </xf:item>
       <xf:item id="N">
         <xf:label>No</xf:label>
         <xf:value>N</xf:value>
       </xf:item>
+    <xf:item id="1">
+        <xf:label>Blue</xf:label>
+        <xf:value>blue</xf:value>
+    </xf:item>
+    <xf:item id="2">
+        <xf:label>Red</xf:label>
+        <xf:value>red</xf:value>
+    </xf:item>
     </xf:select1>
     <xf:select1 bind="ttDose">
       <xf:label>TT</xf:label>

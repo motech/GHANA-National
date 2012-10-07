@@ -24,6 +24,7 @@
                 <yellowFeverDate/>
                 <lastIPTi/>
                 <lastIPTiDate/>
+                <lastVitaminA/>
                 <lastVitaminADate/>
                 <enroll/>
                 <consent/>
@@ -498,6 +499,10 @@
         <xf:bind id="addCareHistory" nodeset="/CWCRegistration/addCareHistory"
                  relevant="/CWCRegistration/addHistory ='1'"
                  type="xsd:string" visible="false()" action="show" required="true()"/>
+
+        <xf:bind id="lastVitaminA" nodeset="/CWCRegistration/lastVitaminA" type="xsd:string" visible="false()"
+                 relevant="/CWCRegistration/addCareHistory= 'VITA_A' and /CWCRegistration/addHistory = '1'"
+                 action="show" required="true()"/>
         <xf:bind id="lastVitaminADate" nodeset="/CWCRegistration/lastVitaminADate" type="xsd:date"
                  visible="false()"
                  relevant="/CWCRegistration/addCareHistory = 'VITA_A' and /CWCRegistration/addHistory = '1'"
@@ -777,6 +782,17 @@
         <xf:input bind="lastIPTiDate">
             <xf:label>Last IPT date</xf:label>
         </xf:input>
+        <xf:select1 bind="lastVitaminA">
+            <xf:label>Last Vitamin A</xf:label>
+            <xf:item id="1">
+                <xf:label>Blue</xf:label>
+                <xf:value>blue</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>Red</xf:label>
+                <xf:value>red</xf:value>
+            </xf:item>
+        </xf:select1>
         <xf:input bind="lastVitaminADate">
             <xf:label>Last Vit A date</xf:label>
         </xf:input>

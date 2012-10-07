@@ -63,10 +63,12 @@ public class Constants {
     public static final String PENTA_1 = "Penta 1";
     public static final String PENTA_3 = "Penta 3";
     public static final String PENTA_2 = "Penta 2";
+    public static final String VITAMIN_A_BLUE = "blue";
+    public static final String VITAMIN_A_RED= "red";
     public static final String LAST_ROTAVIRUS = "lastRotavirus";
     public static final String ROTAVIRUS_1 = "Rotavirus 1";
     public static final String ROTAVIRUS_2 = "Rotavirus 2";
-    public static final String LAST_PNEUMOCOCCAL= "lastPneumococcal";
+    public static final String LAST_PNEUMOCOCCAL = "lastPneumococcal";
     public static final String PNEUMOCOCCAL_1 = "Pneumo 1";
     public static final String PNEUMOCOCCAL_2 = "Pneumo 2";
     public static final String PNEUMOCOCCAL_3 = "Pneumo 3";
@@ -95,8 +97,8 @@ public class Constants {
 
     public static final String NOT_APPLICABLE = "NA";
 
-    public static final Integer ANC_IPT_MAX_PREGNANCY_WEEK_FOR_REGISTRATION = 19;  
-    public static final Integer CWC_IPT_MAX_BIRTH_WEEK_FOR_REGISTRATION = 14;  
+    public static final Integer ANC_IPT_MAX_PREGNANCY_WEEK_FOR_REGISTRATION = 19;
+    public static final Integer CWC_IPT_MAX_BIRTH_WEEK_FOR_REGISTRATION = 14;
     public static final Integer CWC_PENTA_MAX_WEEK_FOR_REGISTRATION = 10;
     public static final Integer CWC_ROTAVIRUS_MAX_WEEK_FOR_REGISTRATION = 10;
     public static final Integer CWC_PNEUMOCOCCAL_MAX_WEEK_FOR_REGISTRATION = 10;
@@ -107,7 +109,7 @@ public class Constants {
     public static final int CWC_OPV1_MAX_BIRTH_WEEK_FOR_REGISTRATION = 9;
 
     //retry schedule names
-    public static final String RETRY_GROUP="ivr-retries";
-    public static final String RETRY_FOR_2_HOURS_EVERY_30MIN="retry-call-for-2hrs-every-30min";
-    public static final String RETRY_FOR_6_DAYS_EVERYDAY="retry-call-for-6days-everyday";
+    public static final String RETRY_GROUP = "ivr-retries";
+    public static final String RETRY_FOR_2_HOURS_EVERY_30MIN = "retry-call-for-2hrs-every-30min";
+    public static final String RETRY_FOR_6_DAYS_EVERYDAY = "retry-call-for-6days-everyday";
 }

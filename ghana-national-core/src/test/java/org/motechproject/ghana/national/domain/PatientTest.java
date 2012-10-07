@@ -148,7 +148,7 @@ public class PatientTest extends BaseUnitTest {
         Date lastRotavirusDate = birthdate.plusWeeks(9).toDate();
         Date lastPneumococcalDate = birthdate.plusWeeks(7).toDate();
 
-        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(true, cwcCareHistories, null, null, null, null, lastPentaDate, 1, null, null, 1, lastIPTiDate, 1, lastRotavirusDate,2,lastPneumococcalDate);
+        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(true, cwcCareHistories, null, null, null, null, null, lastPentaDate, 1, null, null, 1, lastIPTiDate, 1, lastRotavirusDate,2,lastPneumococcalDate);
         HashMap<String, String> metaData = facilityMetaData(facilityId);
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnHistoryCapture(enrollmentDate, cwcCareHistories, cwcCareHistoryVO, new ActiveCareSchedules(), lastPentaDate, lastIPTiDate, null, lastRotavirusDate, lastPneumococcalDate);
         assertThat(patientCares, hasItem(new PatientCare(CWC_PENTA.getName(), null, newDate(lastPentaDate), PentaDose.PENTA2.milestoneName(), metaData)));

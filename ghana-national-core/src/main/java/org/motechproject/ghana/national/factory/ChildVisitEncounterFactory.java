@@ -16,6 +16,7 @@ import java.util.Set;
 import static org.motechproject.ghana.national.domain.Concept.*;
 import static org.motechproject.ghana.national.domain.EncounterType.CWC_VISIT;
 import static org.motechproject.ghana.national.domain.EncounterType.PNC_CHILD_VISIT;
+
 public class ChildVisitEncounterFactory extends BaseObservationFactory {
 
     public Encounter createEncounter(CWCVisit cwcVisit) {
@@ -41,18 +42,18 @@ public class ChildVisitEncounterFactory extends BaseObservationFactory {
         setObservation(mrsObservations, registrationDate, ROTAVIRUS.getName(), toInteger(cwcVisit.getRotavirusdose()));
         setObservation(mrsObservations, registrationDate, OPV.getName(), toInteger(cwcVisit.getOpvdose()));
         setObservation(mrsObservations, registrationDate, IPTI.getName(), toInteger(cwcVisit.getIptidose()));
+        setObservation(mrsObservations, registrationDate, VITA.getName(), cwcVisit.getVitaminadose());
         setObservation(mrsObservations, registrationDate, PNEUMOCOCCAL.getName(), toInteger(cwcVisit.getPneumococcaldose()));
-        addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate,BCG);
-        addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate,VITA);
-        addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate,MEASLES);
-        addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate,YF);
-        addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate,DEWORMER);
+        addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate, BCG);
+        addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate, MEASLES);
+        addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate, YF);
+        addImmunizationsOrdered(cwcVisit, mrsObservations, registrationDate, DEWORMER);
         return mrsObservations;
     }
 
-    private void addImmunizationsOrdered(CWCVisit cwcVisit, HashSet<MRSObservation> mrsObservations, Date registrationDate,Concept concept) {
-        if(cwcVisit.getImmunizations().contains(concept.name()))
-        setObservation(mrsObservations, registrationDate, IMMUNIZATIONS_ORDERED.getName(),  new MRSConcept(concept.getName()));
+    private void addImmunizationsOrdered(CWCVisit cwcVisit, HashSet<MRSObservation> mrsObservations, Date registrationDate, Concept concept) {
+        if (cwcVisit.getImmunizations().contains(concept.name()))
+            setObservation(mrsObservations, registrationDate, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(concept.getName()));
     }
 
     public Encounter createEncounter(PNCBabyRequest pncBabyRequest) {

@@ -3,11 +3,23 @@ package org.motechproject.ghana.national.handlers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
-import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.domain.mobilemidwife.*;
+import org.motechproject.ghana.national.domain.Constants;
+import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.ghana.national.domain.PatientAttributes;
+import org.motechproject.ghana.national.domain.PatientType;
+import org.motechproject.ghana.national.domain.RegistrationType;
+import org.motechproject.ghana.national.domain.mobilemidwife.Language;
+import org.motechproject.ghana.national.domain.mobilemidwife.LearnedFrom;
+import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
+import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.domain.mobilemidwife.PhoneOwnership;
+import org.motechproject.ghana.national.domain.mobilemidwife.ReasonToJoin;
+import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.exception.ParentNotFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
@@ -28,23 +40,34 @@ import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.util.DateUtil;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.selectUnique;
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.*;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.FIRST_NAME;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.LAST_NAME;
+import static org.motechproject.ghana.national.configuration.TextMessageTemplateVariables.MOTECH_ID;
 import static org.motechproject.ghana.national.domain.SmsTemplateKeys.REGISTER_SUCCESS_SMS_KEY;
 import static org.motechproject.util.DateUtil.newDate;
 import static org.motechproject.util.DateUtil.newDateTime;
@@ -62,17 +85,12 @@ public class PatientRegistrationFormHandlerTest {
     @Mock
     SMSGateway mockSMSGateway;
 
-    PatientRegistrationFormHandler patientRegistrationFormHandler;
+    @InjectMocks
+    PatientRegistrationFormHandler patientRegistrationFormHandler = new PatientRegistrationFormHandler();
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientRegistrationFormHandler = new PatientRegistrationFormHandler();
-        ReflectionTestUtils.setField(patientRegistrationFormHandler, "patientService", mockPatientService);
-        ReflectionTestUtils.setField(patientRegistrationFormHandler, "facilityService", mockFacilityService);
-        ReflectionTestUtils.setField(patientRegistrationFormHandler, "careService", mockCareService);
-        ReflectionTestUtils.setField(patientRegistrationFormHandler, "mobileMidwifeService", mockMobileMidwifeService);
-        ReflectionTestUtils.setField(patientRegistrationFormHandler, "smsGateway", mockSMSGateway);
     }
 
     @Test
@@ -234,6 +252,7 @@ public class PatientRegistrationFormHandlerTest {
         final int lastIPTi = 1;
         final int lastRotavirus = 1;
         final int lastPneumo= 1;
+        String lastVitA = "blue";
 
         ServiceType serviceType = ServiceType.PREGNANCY;
         ReasonToJoin reasonToJoin = ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH;
@@ -250,7 +269,7 @@ public class PatientRegistrationFormHandlerTest {
         RegisterClientForm registerClientForm = createRegisterClientFormForCWCEnrollment(address, dateofBirth, district, isBirthDateEstimated,
                 motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId,
                 region, registrationMode, sex, subDistrict, phoneNumber, patientType, registartionDate,
-                lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, staffId, lastPenta, lastOPV, lastIPTi, lastRotavirus, lastRotavirusDate, lastPneumo, lastPneumococcalDate);
+                lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, staffId, lastVitA, lastPenta, lastOPV, lastIPTi, lastRotavirus, lastRotavirusDate, lastPneumo, lastPneumococcalDate);
 
         addMobileMidwifeRegistrationDetails(registerClientForm, serviceType, reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, mmRegPhone, phoneOwnership, consent, enroll);
 
@@ -268,7 +287,7 @@ public class PatientRegistrationFormHandlerTest {
         final CwcVO cwcVO = cwcVOArgumentCaptor.getValue();
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
-        assertCWCRegistration(motechFacilityId, facilityId, motechId, registartionDate, lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, staffId, lastPenta, lastOPV, cwcVO, mobileMidwifeEnrollment);
+        assertCWCRegistration(motechFacilityId, facilityId, motechId, registartionDate, lastBCGDate, lastVitADate, lastMeaslesDate, lastYfDate, lastPentaDate, lastOPVDate, lastIPTiDate, staffId, lastVitA, lastPenta, lastOPV, cwcVO, mobileMidwifeEnrollment);
         assertMobileMidwifeRegistration(mobileMidwifeEnrollment, staffId, motechFacilityId, motechId, serviceType, reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, mmRegPhone, phoneOwnership, consent, registartionDate);
     }
 
@@ -352,12 +371,13 @@ public class PatientRegistrationFormHandlerTest {
                                                                         Boolean insured, String lastName, String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId,
                                                                         String region, RegistrationType registrationMode, String sex, String subDistrict, String phoneNumber,
                                                                         PatientType patientType, Date registartionDate, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate,
-                                                                        Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, String staffId, Integer lastPenta, Integer lastOPV, Integer lastIPTi,
+                                                                        Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, String staffId, String lastVitA, Integer lastPenta, Integer lastOPV, Integer lastIPTi,
                                                                         Integer lastRotavirus, Date lastRotavirusDate, Integer lastPneumo, Date lastPneumoDate) {
         RegisterClientForm registerClientForm = createRegisterClientForm(address, dateofBirth, district, birthDateEstimated,
                 motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
         registerClientForm.setDate(registartionDate);
         registerClientForm.setBcgDate(lastBCGDate);
+        registerClientForm.setLastVitaminA(lastVitA);
         registerClientForm.setLastVitaminADate(lastVitADate);
         registerClientForm.setMeaslesDate(lastMeaslesDate);
         registerClientForm.setYellowFeverDate(lastYfDate);
@@ -453,12 +473,12 @@ public class PatientRegistrationFormHandlerTest {
                 equalTo(PatientAttributes.PHONE_NUMBER.getAttribute())))).value(), is(equalTo(phoneNumber)));
     }
 
-
-    private void assertCWCRegistration(String motechFacilityId, String facilityId, String motechId, Date registartionDate, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, String staffId, int lastPenta, int lastOPV, CwcVO cwcVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {
+    private void assertCWCRegistration(String motechFacilityId, String facilityId, String motechId, Date registartionDate, Date lastBCGDate, Date lastVitADate, Date lastMeaslesDate, Date lastYfDate, Date lastPentaDate, Date lastOPVDate, Date lastIPTiDate, String staffId, String lastVitA, int lastPenta, int lastOPV, CwcVO cwcVO, MobileMidwifeEnrollment mobileMidwifeEnrollment) {
         assertThat(facilityId, is(cwcVO.getFacilityId()));
         assertThat(registartionDate, is(cwcVO.getRegistrationDate()));
         assertThat(motechId, is(cwcVO.getPatientMotechId()));
         assertThat(lastBCGDate, is(cwcVO.getCWCCareHistoryVO().getBcgDate()));
+        assertThat(lastVitA, is(cwcVO.getCWCCareHistoryVO().getLastVitA()));
         assertThat(lastVitADate, is(cwcVO.getCWCCareHistoryVO().getVitADate()));
         assertThat(lastMeaslesDate, is(cwcVO.getCWCCareHistoryVO().getMeaslesDate()));
         assertThat(lastYfDate, is(cwcVO.getCWCCareHistoryVO().getYfDate()));

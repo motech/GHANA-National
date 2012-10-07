@@ -91,7 +91,7 @@ public class ANCVisit extends MotechBaseDataObject {
 
     public ANCVisit facility(Facility facility) {
         this.facility = facility;
-        this.facilityId = facility.mrsFacilityId();
+        this.facilityId = (facility != null) ? facility.mrsFacilityId() : null;
         return this;
     }
 
@@ -389,7 +389,7 @@ public class ANCVisit extends MotechBaseDataObject {
 
     public ANCVisit staff(MRSUser staff) {
         this.staff = staff;
-        this.staffId = staff.getSystemId();
+        this.staffId = (staff != null) ? staff.getSystemId() : null;
         return this;
     }
 

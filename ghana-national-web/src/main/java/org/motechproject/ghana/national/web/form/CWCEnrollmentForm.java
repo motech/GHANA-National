@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class CWCEnrollmentForm implements FormWithHistoryInput{
+public class CWCEnrollmentForm implements FormWithHistoryInput {
 
     private String staffId;
     private String patientMotechId;
@@ -32,6 +32,7 @@ public class CWCEnrollmentForm implements FormWithHistoryInput{
     private Integer lastRotavirus;
     private Date lastPneumococcalDate;
     private Integer lastPneumococcal;
+    private String vitA;
 
 
     public FacilityForm getFacilityForm() {
@@ -213,16 +214,24 @@ public class CWCEnrollmentForm implements FormWithHistoryInput{
 
     @Override
     public HashMap<String, Date> getHistoryDatesMap() {
-        return new HashMap<String,Date>() {{
-            put("lastPneumococcalDate",lastPneumococcalDate);
-            put("lastIPTiDate",lastIPTiDate);
-            put("lastOPVDate",lastOPVDate);
-            put("lastPentaDate",lastPentaDate);
-            put("lastRotavirusDate",lastRotavirusDate);
-            put("bcgDate",bcgDate);
-            put("yfDate",yfDate);
-            put("vitADate",vitADate);
-            put("measlesDate",measlesDate);
+        return new HashMap<String, Date>() {{
+            put("lastPneumococcalDate", lastPneumococcalDate);
+            put("lastIPTiDate", lastIPTiDate);
+            put("lastOPVDate", lastOPVDate);
+            put("lastPentaDate", lastPentaDate);
+            put("lastRotavirusDate", lastRotavirusDate);
+            put("bcgDate", bcgDate);
+            put("yfDate", yfDate);
+            put("vitADate", vitADate);
+            put("measlesDate", measlesDate);
         }};
+    }
+
+    public String getVitA() {
+        return vitA;
+    }
+
+    public void setVitA(String vitA) {
+        this.vitA = vitA;
     }
 }

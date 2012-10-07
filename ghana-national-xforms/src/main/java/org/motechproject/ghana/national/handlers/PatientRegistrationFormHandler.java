@@ -108,7 +108,7 @@ public class PatientRegistrationFormHandler {
     private void registerForCWC(RegisterClientForm registerClientForm, String facilityId, String patientMotechId) {
         if (registerClientForm.getRegistrantType().equals(PatientType.CHILD_UNDER_FIVE)) {
             CwcVO cwcVO = new CwcVO(registerClientForm.getStaffId(), facilityId, registerClientForm.getDate(),
-                    patientMotechId, registerClientForm.getCWCCareHistories(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getMeaslesDate(),
+                    patientMotechId, registerClientForm.getCWCCareHistories(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getLastVitaminA(), registerClientForm.getMeaslesDate(),
                     registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
                     registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getLastRotavirusDate(),
                     registerClientForm.getLastRotavirus(), registerClientForm.getLastPneumococcal(), registerClientForm.getLastPneumococcalDate(), registerClientForm.getCwcRegNumber(),

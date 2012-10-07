@@ -61,6 +61,8 @@ public class CWCVisit extends MotechBaseDataObject {
     private String staffId;
     @JsonProperty
     private String facilityId;
+    @JsonProperty
+    private String vitaminadose;
 
     public MRSUser getStaff() {
         return staff;
@@ -150,13 +152,13 @@ public class CWCVisit extends MotechBaseDataObject {
 
     public CWCVisit staff(MRSUser staff) {
         this.staff = staff;
-        this.staffId = staff.getSystemId();
+        this.staffId = (staff != null) ? staff.getSystemId() : null;
         return this;
     }
 
     public CWCVisit facility(Facility facility) {
         this.facility = facility;
-        this.facilityId = facility.mrsFacilityId();
+        this.facilityId = (facility != null) ? facility.mrsFacilityId() : null;
         return this;
     }
 
@@ -250,6 +252,15 @@ public class CWCVisit extends MotechBaseDataObject {
 
     public CWCVisit visitor(Boolean visitor) {
         this.visitor = visitor;
+        return this;
+    }
+
+    public String getVitaminadose() {
+        return vitaminadose;
+    }
+
+    public CWCVisit vitaminadose(String vitaminadose) {
+        this.vitaminadose = vitaminadose;
         return this;
     }
 }

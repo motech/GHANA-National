@@ -105,7 +105,7 @@ public class MotherVisitEncounterFactoryTest {
         Patient patient = new Patient(new MRSPatient("motechId"));
         double temperature = 20D;
         int visitNumber = 1;
-        String vitaminA = "Y";
+        String vitaminA = "NA";
         MRSUser staff = new MRSUser();
         Facility facility = new Facility();
         Date registrationDate = date.toDate();
@@ -119,7 +119,7 @@ public class MotherVisitEncounterFactoryTest {
 
         expectedObservations.add(new MRSObservation<Integer>(registrationDate, TT.getName(), 1));
         expectedObservations.add(new MRSObservation<Integer>(registrationDate, VISIT_NUMBER.getName(), 1));
-        expectedObservations.add(new MRSObservation<Boolean>(registrationDate, VITA.getName(), Boolean.TRUE));
+        expectedObservations.add(new MRSObservation<Boolean>(registrationDate, VITA.getName(), false));
         expectedObservations.add(new MRSObservation<String>(registrationDate, COMMUNITY.getName(), community));
         expectedObservations.add(new MRSObservation<Integer>(registrationDate, FHT.getName(), 120));
         expectedObservations.add(new MRSObservation<String>(registrationDate, COMMENTS.getName(), comment));

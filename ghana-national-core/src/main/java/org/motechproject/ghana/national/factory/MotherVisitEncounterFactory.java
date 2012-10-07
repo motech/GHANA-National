@@ -67,7 +67,10 @@ public class MotherVisitEncounterFactory extends BaseObservationFactory {
 
         setObservation(mrsObservations, registrationDate, TT.getName(), toInteger(pncMotherRequest.getTtDose()));
         setObservation(mrsObservations, registrationDate, VISIT_NUMBER.getName(), pncMotherRequest.getVisit().visitNumber());
-        setObservation(mrsObservations, registrationDate, VITA.getName(), toBoolean(pncMotherRequest.getVitaminA()));
+        if (Constants.VITAMIN_A_BLUE.equals(pncMotherRequest.getVitaminA()) || Constants.VITAMIN_A_RED.equals(pncMotherRequest.getVitaminA()))
+            setObservation(mrsObservations, registrationDate, VITA.getName(), pncMotherRequest.getVitaminA());
+        else
+            setObservation(mrsObservations, registrationDate, VITA.getName(), false);
         setObservation(mrsObservations, registrationDate, COMMENTS.getName(), pncMotherRequest.getComments());
         setObservation(mrsObservations, registrationDate, COMMUNITY.getName(), pncMotherRequest.getCommunity());
         setObservation(mrsObservations, registrationDate, FHT.getName(), toInteger(pncMotherRequest.getFht()));

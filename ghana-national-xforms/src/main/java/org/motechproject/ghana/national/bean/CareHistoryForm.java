@@ -21,7 +21,7 @@ import java.util.List;
 
 import static org.motechproject.ghana.national.FormFieldRegExPatterns.MOTECH_ID_PATTERN;
 
-public class CareHistoryForm extends FormBean implements FormWithHistoryInput{
+public class CareHistoryForm extends FormBean implements FormWithHistoryInput {
 
     @Required
     @MotechId(validator = VerhoeffValidator.class)
@@ -35,11 +35,13 @@ public class CareHistoryForm extends FormBean implements FormWithHistoryInput{
     private Date date;
 
     @Required
-    @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
+    @RegEx(pattern = MOTECH_ID_PATTERN)
+    @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;
 
     @Required
     private String addHistory;
+
     private String lastIPT;
     private Date lastIPTDate;
     private String lastTT;
@@ -54,6 +56,7 @@ public class CareHistoryForm extends FormBean implements FormWithHistoryInput{
     private Date yellowFeverDate;
     private Integer lastIPTI;
     private Date lastIPTIDate;
+    private String lastVitaminA;
     private Date lastVitaminADate;
     private Date lastRotavirusDate;
     private Integer lastPneumococcal;
@@ -243,6 +246,13 @@ public class CareHistoryForm extends FormBean implements FormWithHistoryInput{
         this.lastPneumococcalDate = lastPneumococcalDate;
     }
 
+    public String getLastVitaminA() {
+        return lastVitaminA;
+    }
+
+    public void setLastVitaminA(String lastVitaminA) {
+        this.lastVitaminA = lastVitaminA;
+    }
 
     public List<ANCCareHistory> getANCCareHistories() {
         String[] selectedCareHistories = StringUtils.isNotEmpty(addHistory) ? addHistory.split(" ") : new String[]{};
@@ -280,7 +290,7 @@ public class CareHistoryForm extends FormBean implements FormWithHistoryInput{
         List<ANCCareHistory> ancCareHistories = getANCCareHistories();
         List<CwcCareHistory> cwcCareHistories = getCWCCareHistories();
         ANCCareHistoryVO ancCareHistoryVO = new ANCCareHistoryVO(ancCareHistories.size() > 0, ancCareHistories, lastIPT, lastTT, lastIPTDate, lastTTDate);
-        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(cwcCareHistories.size() > 0, cwcCareHistories, bcgDate, lastVitaminADate, measlesDate, yellowFeverDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTI, lastIPTIDate, lastRotavirus, lastRotavirusDate,lastPneumococcal,lastPneumococcalDate);
+        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(cwcCareHistories.size() > 0, cwcCareHistories, bcgDate, lastVitaminADate, lastVitaminA, measlesDate, yellowFeverDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTI, lastIPTIDate, lastRotavirus, lastRotavirusDate, lastPneumococcal, lastPneumococcalDate);
 
         return new CareHistoryVO(staffId, facilityId, motechId, date, ancCareHistoryVO, cwcCareHistoryVO);
     }
@@ -292,18 +302,18 @@ public class CareHistoryForm extends FormBean implements FormWithHistoryInput{
 
     @Override
     public HashMap<String, Date> getHistoryDatesMap() {
-        return new HashMap<String,Date>() {{
-            put("lastPneumococcalDate",lastPneumococcalDate);
-            put("lastIPTiDate",lastIPTIDate);
-            put("lastOPVDate",lastOPVDate);
-            put("lastPentaDate",lastPentaDate);
-            put("lastRotavirusDate",lastRotavirusDate);
-            put("bcgDate",bcgDate);
-            put("yfDate",yellowFeverDate);
-            put("vitADate",lastVitaminADate);
-            put("measlesDate",measlesDate);
-            put("lastIPTDate",lastIPTDate);
-            put("lastTTDate",lastTTDate);
+        return new HashMap<String, Date>() {{
+            put("lastPneumococcalDate", lastPneumococcalDate);
+            put("lastIPTiDate", lastIPTIDate);
+            put("lastOPVDate", lastOPVDate);
+            put("lastPentaDate", lastPentaDate);
+            put("lastRotavirusDate", lastRotavirusDate);
+            put("bcgDate", bcgDate);
+            put("yfDate", yellowFeverDate);
+            put("vitADate", lastVitaminADate);
+            put("measlesDate", measlesDate);
+            put("lastIPTDate", lastIPTDate);
+            put("lastTTDate", lastTTDate);
         }};
     }
 }

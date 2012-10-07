@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PNCMotherFormHandler{
+public class PNCMotherFormHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     @Autowired

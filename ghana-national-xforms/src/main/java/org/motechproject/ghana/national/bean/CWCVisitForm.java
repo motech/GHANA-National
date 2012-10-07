@@ -42,6 +42,7 @@ public class CWCVisitForm extends FormBean {
     private String iptidose;
     private String rotavirusdose;
     private String pneumococcaldose;
+    private String vitaminadose;
     private Double weight;
     private Double muac;
     private Double height;
@@ -221,6 +222,14 @@ public class CWCVisitForm extends FormBean {
 
     public void setPneumococcaldose(String pneumococcaldose) {
         this.pneumococcaldose = pneumococcaldose;
+    }
+
+    public String getVitaminadose() {
+        return vitaminadose;
+    }
+
+    public void setVitaminadose(String vitaminadose) {
+        this.vitaminadose = vitaminadose;
     }
 
     public Boolean getVisitor() {

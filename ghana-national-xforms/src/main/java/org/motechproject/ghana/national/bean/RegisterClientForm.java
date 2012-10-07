@@ -101,6 +101,7 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
     private Date lastTTDate;
     private String lastIPT;
     private String lastTT;
+    private String lastVitaminA;
 
     public String getMmRegPhone() {
         return mmRegPhone;
@@ -560,5 +561,13 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
                 put("lastIPTDate",lastIPTDate);
             }};
         return map;
+    }
+
+    public String getLastVitaminA() {
+        return lastVitaminA;
+    }
+
+    public void setLastVitaminA(String lastVitaminA) {
+        this.lastVitaminA = lastVitaminA;
     }
 }

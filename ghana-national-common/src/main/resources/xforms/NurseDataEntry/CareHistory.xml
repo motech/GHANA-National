@@ -25,6 +25,7 @@
                 <yellowFeverDate/>
                 <lastIPTI/>
                 <lastIPTIDate/>
+                <lastVitaminA/>
                 <lastVitaminADate/>
                 <formtype>data_entry</formtype>
                 <formname>careHistory</formname>
@@ -82,6 +83,8 @@
         <xf:bind id="lastIPTIDate" nodeset="/careHistory/lastIPTIDate" type="xsd:date" visible="false()"
                  relevant="/careHistory/addHistory = 'IPTI'" action="show" required="true()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
+        <xf:bind id="lastVitaminA" nodeset="/careHistory/lastVitaminA" type="xsd:string" visible="false()"
+                 relevant="/careHistory/addHistory = 'VIT_A'" action="show" required="true()"/>
         <xf:bind id="lastVitaminADate" nodeset="/careHistory/lastVitaminADate" type="xsd:date" visible="false()"
                  relevant="/careHistory/addHistory = 'VITA_A'" action="show" required="true()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
@@ -257,11 +260,11 @@
                 <xf:value>1</xf:value>
             </xf:item>
             <xf:item id="2">
-                <xf:label>Pneumococcal  2</xf:label>
+                <xf:label>Pneumococcal 2</xf:label>
                 <xf:value>2</xf:value>
             </xf:item>
             <xf:item id="3">
-                <xf:label>Pneumococcal  3</xf:label>
+                <xf:label>Pneumococcal 3</xf:label>
                 <xf:value>3</xf:value>
             </xf:item>
         </xf:select1>
@@ -292,6 +295,17 @@
         <xf:input bind="lastIPTIDate">
             <xf:label>Last IPTi date</xf:label>
         </xf:input>
+        <xf:select1 bind="lastVitaminA">
+            <xf:label>Last Vitamin A</xf:label>
+            <xf:item id="1">
+                <xf:label>Blue</xf:label>
+                <xf:value>blue</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>Red</xf:label>
+                <xf:value>red</xf:value>
+            </xf:item>
+        </xf:select1>
         <xf:input bind="lastVitaminADate">
             <xf:label>Last Vit A date</xf:label>
         </xf:input>

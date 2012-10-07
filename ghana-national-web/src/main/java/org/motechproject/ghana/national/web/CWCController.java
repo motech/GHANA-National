@@ -144,6 +144,7 @@ public class CWCController {
                 cwcEnrollmentForm.getCareHistory(),
                 cwcEnrollmentForm.getBcgDate(),
                 cwcEnrollmentForm.getVitADate(),
+                cwcEnrollmentForm.getVitA(),
                 cwcEnrollmentForm.getMeaslesDate(),
                 cwcEnrollmentForm.getYfDate(),
                 cwcEnrollmentForm.getLastPentaDate(),
