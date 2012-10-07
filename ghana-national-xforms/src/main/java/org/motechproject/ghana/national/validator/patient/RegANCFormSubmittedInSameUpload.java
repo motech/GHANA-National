@@ -12,10 +12,10 @@ import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.is;
 import static org.motechproject.ghana.national.domain.Constants.MOTECH_ID_ATTRIBUTE_NAME;
 
-public class RegANCFormSubmittedInSameUpload  extends PatientValidator{
+public class RegANCFormSubmittedInSameUpload extends PatientValidator {
     @Override
     public List<FormError> validate(Patient patient, List<FormBean> formsSubmittedWithinGroup, List<FormBean> allForms) {
         final List<FormBean> registerPatientForms = filter(having(on(FormBean.class).getFormname(), is("registerANC")), formsSubmittedWithinGroup);
-        return registerPatientForms.size() == 1 ? Collections.<FormError>emptyList(): Arrays.asList(new FormError(MOTECH_ID_ATTRIBUTE_NAME, "not registered for ANC"));
+        return registerPatientForms.size() == 1 ? Collections.<FormError>emptyList() : Arrays.asList(new FormError(MOTECH_ID_ATTRIBUTE_NAME, "not registered for ANC"));
     }
 }

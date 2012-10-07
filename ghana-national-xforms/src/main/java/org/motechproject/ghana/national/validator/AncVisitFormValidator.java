@@ -31,12 +31,18 @@ public class AncVisitFormValidator extends FormValidator<ANCVisitForm> {
         errors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         errors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
 
-        Patient patient = formValidator.getPatient(formBean.getMotechId());
-        errors.addAll(dependentValidator().validate(patient,group.getFormBeans(),
-                allForms, new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsFemale().onSuccess(new EnrolledToANC(allEncounters).onFailure(new RegANCFormSubmittedInSameUpload()))))
-                                .onFailure(new RegANCFormSubmittedInSameUpload()
-                                        .onFailure(new RegClientFormSubmittedInSameUpload()
-                                                .onSuccess(new RegClientFormSubmittedForMother())))));
+        if (!formBean.getVisitor()) {
+            Patient patient = formValidator.getPatient(formBean.getMotechId());
+            errors.addAll(dependentValidator().validate(patient, group.getFormBeans(),
+                    allForms, new ExistsInDb()
+                    .onSuccess(new IsAlive()
+                            .onSuccess(new IsFemale()
+                                    .onSuccess(new EnrolledToANC(allEncounters)
+                                            .onFailure(new RegANCFormSubmittedInSameUpload()))))
+                    .onFailure(new RegANCFormSubmittedInSameUpload()
+                            .onFailure(new RegClientFormSubmittedInSameUpload()
+                                    .onSuccess(new RegClientFormSubmittedForMother())))));
+        }
         return errors;
 
     }

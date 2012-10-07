@@ -4,7 +4,10 @@ import org.junit.Test;
 import org.motechproject.ghana.national.BaseIntegrationTest;
 import org.motechproject.ghana.national.domain.ANCVisit;
 import org.motechproject.ghana.national.domain.Facility;
+import org.motechproject.ghana.national.domain.Patient;
+import org.motechproject.mrs.model.Attribute;
 import org.motechproject.mrs.model.MRSFacility;
+import org.motechproject.mrs.model.MRSPatient;
 import org.motechproject.mrs.model.MRSPerson;
 import org.motechproject.mrs.model.MRSUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +24,13 @@ public class AllANCVisitsForVisitorTest extends BaseIntegrationTest {
 
     @Test
     public void shouldSaveANCVisit() {
-        MRSUser staff = new MRSUser().person(new MRSPerson().firstName("hi"));
+        MRSUser staff = new MRSUser().person(new MRSPerson().firstName("hi")).systemId("systemId");
         MRSFacility mrsFacility = new MRSFacility("name", "country", "region", "county", "state");
-        Facility facility = new Facility(mrsFacility);
+        Facility facility = new Facility(mrsFacility).mrsFacilityId("mrsFacilityId");
+        Patient mrsPatient = new Patient(new MRSPatient(null, new MRSPerson().addAttribute(new Attribute("attr", "value")), mrsFacility));
 
         int initialSize = allANCVisitsForVisitor.getAll().size();
-        allANCVisitsForVisitor.add(new ANCVisit().staff(staff).facility(facility).patient(null)
+        allANCVisitsForVisitor.add(new ANCVisit().staff(staff).facility(facility).patient(mrsPatient)
                 .date(new Date()).serialNumber("1234").visitNumber("1")
                 .estDeliveryDate(new Date()).bpDiastolic(100).bpSystolic(60).pmtct("10")
                 .weight(100.0).ttdose("2").iptdose("1").hemoglobin(8.0).dewormer("qwer")

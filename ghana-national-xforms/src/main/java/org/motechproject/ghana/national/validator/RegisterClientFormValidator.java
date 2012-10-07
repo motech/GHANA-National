@@ -1,14 +1,20 @@
 package org.motechproject.ghana.national.validator;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.ghana.national.bean.RegisterANCForm;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
 import org.motechproject.ghana.national.helper.FormWithHistoryInput;
-import org.motechproject.ghana.national.validator.patient.*;
+import org.motechproject.ghana.national.validator.patient.AlwaysValid;
+import org.motechproject.ghana.national.validator.patient.ExistsInDb;
+import org.motechproject.ghana.national.validator.patient.IsFormSubmittedForAChild;
+import org.motechproject.ghana.national.validator.patient.IsFormSubmittedForAFemale;
+import org.motechproject.ghana.national.validator.patient.IsFormSubmittedWithValidHistoryDates;
+import org.motechproject.ghana.national.validator.patient.NotExistsInDb;
+import org.motechproject.ghana.national.validator.patient.PatientValidator;
+import org.motechproject.ghana.national.validator.patient.RegClientFormSubmittedInSameUploadForMotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
@@ -48,7 +54,8 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         formErrors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         formErrors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
 
-        PatientValidator validators = patientValidator(formBean, formBean.getRegistrationMode(), formBean.getDateOfBirth(), formBean.getSex(), formBean.getRegistrantType(), formBean.getMotherMotechId());
+        PatientValidator validators = patientValidator(formBean, formBean.getRegistrationMode(), formBean.getDateOfBirth(),
+                formBean.getSex(), formBean.getRegistrantType(), formBean.getMotherMotechId());
         List<FormError> patientValidationErrors = getDependentValidator().validate(patient, group.getFormBeans(), allForms, validators);
         formErrors.addAll(patientValidationErrors);
         formErrors.addAll(formValidator.validateNHISExpiry(formBean.getNhisExpires()));

@@ -34,16 +34,23 @@ public class CwcVisitFormValidator extends FormValidator<CWCVisitForm> {
         return errors;
     }
 
-    List<FormError>  businessValidations(CWCVisitForm formBean, List<FormBean> formsWithinGroup, List<FormBean> allForms) {
+    List<FormError> businessValidations(CWCVisitForm formBean, List<FormBean> formsWithinGroup, List<FormBean> allForms) {
         List<FormError> errors = new ArrayList<FormError>();
         errors.addAll(formValidator.validateIfStaffExists(formBean.getStaffId()));
         errors.addAll(formValidator.validateIfFacilityExists(formBean.getFacilityId()));
-        Patient patient = formValidator.getPatient(formBean.getMotechId());
-        errors.addAll(dependentValidator().validate(patient, formsWithinGroup,
-                allForms, new ExistsInDb().onSuccess(new IsAlive().onSuccess(new IsAChild().onSuccess(new EnrolledToCWC(allEncounters).onFailure(new RegCWCFormSubmittedInSameUpload()))))
-                                .onFailure(new RegCWCFormSubmittedInSameUpload()
-                                        .onFailure(new RegClientFormSubmittedInSameUpload()
-                                                .onSuccess(new RegClientFormSubmittedForChild())))));
+
+        if (!formBean.getVisitor()) {
+            Patient patient = formValidator.getPatient(formBean.getMotechId());
+            errors.addAll(dependentValidator().validate(patient, formsWithinGroup,
+                    allForms, new ExistsInDb()
+                    .onSuccess(new IsAlive()
+                            .onSuccess(new IsAChild()
+                                    .onSuccess(new EnrolledToCWC(allEncounters)
+                                            .onFailure(new RegCWCFormSubmittedInSameUpload()))))
+                    .onFailure(new RegCWCFormSubmittedInSameUpload()
+                            .onFailure(new RegClientFormSubmittedInSameUpload()
+                                    .onSuccess(new RegClientFormSubmittedForChild())))));
+        }
         return errors;
     }
 

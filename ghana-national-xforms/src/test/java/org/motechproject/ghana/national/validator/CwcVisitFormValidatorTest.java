@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.validator;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.motechproject.ghana.national.bean.CWCVisitForm;
 import org.motechproject.ghana.national.bean.RegisterCWCForm;
@@ -25,11 +26,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.ghana.national.domain.Constants.*;
+import static org.motechproject.ghana.national.domain.Constants.CHILD_AGE_MORE_ERR_MSG;
+import static org.motechproject.ghana.national.domain.Constants.CHILD_AGE_PARAMETER;
+import static org.motechproject.ghana.national.domain.Constants.IS_NOT_ALIVE;
+import static org.motechproject.ghana.national.domain.Constants.MOTECH_ID_ATTRIBUTE_NAME;
+import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
 import static org.motechproject.ghana.national.domain.EncounterType.CWC_REG_VISIT;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class CwcVisitFormValidatorTest {
 
@@ -39,14 +45,12 @@ public class CwcVisitFormValidatorTest {
     @Mock
     private AllEncounters mockAllEncounters;
 
-    private CwcVisitFormValidator validator;
+    @InjectMocks
+    private CwcVisitFormValidator validator= new CwcVisitFormValidator();
 
     @Before
     public void setUp() {
         initMocks(this);
-        validator = new CwcVisitFormValidator();
-        setField(validator, "formValidator", formValidator);
-        setField(validator, "allEncounters", mockAllEncounters);
     }
 
     @Test
@@ -55,6 +59,7 @@ public class CwcVisitFormValidatorTest {
         String motechId = "1231231";
         formBean.setMotechId(motechId);
         formBean.setStaffId("123");
+        formBean.setVisitor(false);
         formBean.setFacilityId("1234");
 
         Patient patient = new Patient(new MRSPatient(motechId, new MRSPerson().dead(false), new MRSFacility("facilityId")));
@@ -106,6 +111,22 @@ public class CwcVisitFormValidatorTest {
         formBeanGroup=new FormBeanGroup(Arrays.<FormBean>asList(registerClientForm, formBean));
         errors = validator.validate(formBean,formBeanGroup, Arrays.<FormBean>asList(formBean, registerCWCForm));
         assertRegCWCDependencyHasNoError(errors);
+    }
+
+    @Test
+    public void shouldNotValidateForPatientIfVisitor() {
+        CWCVisitForm formBean = new CWCVisitForm();
+        String motechId = "motechId";
+        formBean.setMotechId(motechId);
+        formBean.setVisitor(true);
+        formBean.setStaffId("staffId");
+        formBean.setFacilityId("facilityId");
+
+        FormBeanGroup formBeanGroup = new FormBeanGroup(Collections.<FormBean>emptyList());
+        validator.validate(formBean, formBeanGroup, Arrays.<FormBean>asList(formBean));
+        verify(formValidator).validateIfStaffExists(formBean.getStaffId());
+        verify(formValidator).validateIfFacilityExists(formBean.getFacilityId());
+        verifyNoMoreInteractions(formValidator);
     }
 
     private void assertRegCWCDependencyHasNoError(List<FormError> errors) {

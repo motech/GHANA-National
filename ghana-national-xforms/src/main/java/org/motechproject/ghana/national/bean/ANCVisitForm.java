@@ -26,7 +26,6 @@ public class ANCVisitForm extends FormBean {
 
     private Date date;
 
-    @Required
     @RegEx(pattern = MOTECH_ID_PATTERN)
     @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motechId;

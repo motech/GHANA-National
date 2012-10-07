@@ -33,7 +33,7 @@ import static org.motechproject.ghana.national.domain.SmsTemplateKeys.REGISTER_S
 
 
 @Component
-public class PatientRegistrationFormHandler{
+public class PatientRegistrationFormHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -118,9 +118,7 @@ public class PatientRegistrationFormHandler{
         }
     }
 
-    private List<Attribute> getPatientAttributes
-            (RegisterClientForm
-                     registerClientForm) {
+    private List<Attribute> getPatientAttributes(RegisterClientForm registerClientForm) {
         List<Attribute> attributes = new ArrayList<Attribute>();
         attributes.add(new Attribute(PatientAttributes.PHONE_NUMBER.getAttribute(), registerClientForm.getPhoneNumber()));
 

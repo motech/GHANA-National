@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.domain;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
@@ -9,6 +10,7 @@ import org.motechproject.mrs.model.MRSUser;
 import java.util.Date;
 
 @TypeDiscriminator("doc.type === 'ANCVisit'")
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ANCVisit extends MotechBaseDataObject {
     @JsonProperty("type")
     private String type = "ANCVisit";
@@ -82,9 +84,14 @@ public class ANCVisit extends MotechBaseDataObject {
     private MRSUser staff;
     @JsonIgnore
     private Facility facility;
+    @JsonProperty
+    private String staffId;
+    @JsonProperty
+    private String facilityId;
 
     public ANCVisit facility(Facility facility) {
         this.facility = facility;
+        this.facilityId = facility.mrsFacilityId();
         return this;
     }
 
@@ -382,6 +389,7 @@ public class ANCVisit extends MotechBaseDataObject {
 
     public ANCVisit staff(MRSUser staff) {
         this.staff = staff;
+        this.staffId = staff.getSystemId();
         return this;
     }
 
@@ -396,5 +404,13 @@ public class ANCVisit extends MotechBaseDataObject {
     public ANCVisit visitor(Boolean visitor) {
         this.visitor = visitor;
         return this;
+    }
+
+    public String getStaffId() {
+        return staffId;
+    }
+
+    public String getFacilityId() {
+        return facilityId;
     }
 }
