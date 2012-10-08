@@ -171,6 +171,18 @@
                 </div>
             </div>
             <div id="jsMeasles" class="hide">
+
+                <div class="form-field">
+                    <label for="lastMeasles" class="formLabel">
+                        <spring:message code="patient_last_measles"/>
+                        *:
+                    </label>
+                    <form:radiobuttons path="lastMeasles" items="${lastMeasles}" cssClass="jsRequire"/>
+                    <span id='lastMeaslesError' class='alertText formlyInvalid formlyAlert hide'>
+                        <spring:message code="patient_last_measles"/> ${fn:escapeXml(required_msg)}
+                    </span>
+                </div>
+
                 <div id="measlesDateHolder" class="form-field">
                     <label for="measlesDate" class="formLabel">
                         <spring:message code="patient_measles_date"/>
@@ -290,6 +302,17 @@
                 </div>
             </div>
             <div id="jsVitA" class="hide">
+                <div class="form-field">
+                    <label for="lastVitaminA" class="formLabel">
+                        <spring:message code="patient_last_measles"/>
+                        *:
+                    </label>
+                    <form:radiobuttons path="lastVitaminA" items="${lastVitaminA}" cssClass="jsRequire"/>
+                    <span id='lastVitaminAError' class='alertText formlyInvalid formlyAlert hide'>
+                        <spring:message code="patient_last_vita"/> ${fn:escapeXml(required_msg)}
+                    </span>
+                </div>
+
                 <div id="vitADateHolder" class="form-field">
                     <label for="vitADate" class="formLabel">
                         <spring:message code="patient_VitA_date"/>

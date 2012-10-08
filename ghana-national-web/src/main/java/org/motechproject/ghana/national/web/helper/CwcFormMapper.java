@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web.helper;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
 import org.motechproject.ghana.national.domain.RegistrationToday;
@@ -12,9 +13,25 @@ import org.motechproject.mrs.model.MRSFacility;
 import org.motechproject.mrs.model.MRSObservation;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static org.motechproject.ghana.national.domain.Concept.*;
+import static org.motechproject.ghana.national.domain.Concept.BCG;
+import static org.motechproject.ghana.national.domain.Concept.IMMUNIZATIONS_ORDERED;
+import static org.motechproject.ghana.national.domain.Concept.IPTI;
+import static org.motechproject.ghana.national.domain.Concept.MEASLES;
+import static org.motechproject.ghana.national.domain.Concept.OPV;
+import static org.motechproject.ghana.national.domain.Concept.PENTA;
+import static org.motechproject.ghana.national.domain.Concept.PNEUMOCOCCAL;
+import static org.motechproject.ghana.national.domain.Concept.ROTAVIRUS;
+import static org.motechproject.ghana.national.domain.Concept.SERIAL_NUMBER;
+import static org.motechproject.ghana.national.domain.Concept.VITA;
+import static org.motechproject.ghana.national.domain.Concept.YF;
 
 @Component
 public class CwcFormMapper {
@@ -43,19 +60,32 @@ public class CwcFormMapper {
                     cwcEnrollmentForm.setYfDate(observation.getDate());
                     careHistories.add(CwcCareHistory.YF);
                 }
-                if (MEASLES.getName().equals(conceptName)) {
-                    cwcEnrollmentForm.setMeaslesDate(observation.getDate());
-                    careHistories.add(CwcCareHistory.MEASLES);
-                }
                 if (BCG.getName().equals(conceptName)) {
                     cwcEnrollmentForm.setBcgDate(observation.getDate());
                     careHistories.add(CwcCareHistory.BCG);
                 }
-                if (VITA.getName().equals(conceptName)) {
-                    cwcEnrollmentForm.setVitADate(observation.getDate());
-                    careHistories.add(CwcCareHistory.VITA_A);
-                }
             }
+
+            if (VITA.getName().equals(observation.getConceptName())) {
+                cwcEnrollmentForm.setVitADate(observation.getDate());
+                String value = (String) observation.getValue();
+                if (value == null) {
+                    value = Constants.VITAMIN_A_BLUE;
+                }
+                cwcEnrollmentForm.setLastVitaminA(value);
+                careHistories.add(CwcCareHistory.VITA_A);
+            }
+
+            if (MEASLES.getName().equals(observation.getConceptName())) {
+                cwcEnrollmentForm.setMeaslesDate(observation.getDate());
+                Double value = (Double) observation.getValue();
+                if(value == null) {
+                    value = 1.0;
+                }
+                cwcEnrollmentForm.setLastMeasles(value.intValue());
+                careHistories.add(CwcCareHistory.MEASLES);
+            }
+
             if (IPTI.getName().equals(observation.getConceptName())) {
                 cwcEnrollmentForm.setLastIPTiDate(observation.getDate());
                 cwcEnrollmentForm.setLastIPTi(((Double) observation.getValue()).intValue());
@@ -83,6 +113,7 @@ public class CwcFormMapper {
                 cwcEnrollmentForm.setLastOPV(((Double) observation.getValue()).intValue());
                 careHistories.add(CwcCareHistory.OPV);
             }
+
             cwcEnrollmentForm.setCareHistory(careHistories);
             if (SERIAL_NUMBER.getName().equals(observation.getConceptName())) {
                 cwcEnrollmentForm.setSerialNumber((String) observation.getValue());
@@ -96,7 +127,8 @@ public class CwcFormMapper {
         Map<String, Object> map = new HashMap<String, Object>();
 
         List<CwcCareHistory> careHistories = Arrays.asList(CwcCareHistory.BCG, CwcCareHistory.IPTI,
-                CwcCareHistory.MEASLES, CwcCareHistory.OPV, CwcCareHistory.PENTA, CwcCareHistory.VITA_A, CwcCareHistory.YF, CwcCareHistory.ROTAVIRUS,CwcCareHistory.PNEUMOCOCCAL);
+                CwcCareHistory.MEASLES, CwcCareHistory.OPV, CwcCareHistory.PENTA, CwcCareHistory.VITA_A,
+                CwcCareHistory.YF, CwcCareHistory.ROTAVIRUS, CwcCareHistory.PNEUMOCOCCAL);
 
         Map<CwcCareHistory, String> cwcCareHistories = new LinkedHashMap<CwcCareHistory, String>();
         for (CwcCareHistory cwcCareHistory : careHistories) {
@@ -105,7 +137,8 @@ public class CwcFormMapper {
         map.put(Constants.CARE_HISTORIES, cwcCareHistories);
 
         Map<RegistrationToday, String> registrationTodayValues = new LinkedHashMap<RegistrationToday, String>();
-        for (RegistrationToday registrationToday : Arrays.asList(RegistrationToday.TODAY, RegistrationToday.IN_PAST, RegistrationToday.IN_PAST_IN_OTHER_FACILITY)) {
+        for (RegistrationToday registrationToday : Arrays.asList(RegistrationToday.TODAY, RegistrationToday.IN_PAST,
+                RegistrationToday.IN_PAST_IN_OTHER_FACILITY)) {
             registrationTodayValues.put(registrationToday, registrationToday.getDescription());
         }
 
@@ -129,6 +162,14 @@ public class CwcFormMapper {
         map.put(Constants.LAST_ROTAVIRUS, new LinkedHashMap<Integer, String>() {{
             put(1, Constants.ROTAVIRUS_1);
             put(2, Constants.ROTAVIRUS_2);
+        }});
+        map.put(Constants.LAST_VITA, new LinkedHashMap<String, String>() {{
+            put(Constants.VITAMIN_A_BLUE, StringUtils.capitalize(Constants.VITAMIN_A_BLUE));
+            put(Constants.VITAMIN_A_RED, StringUtils.capitalize(Constants.VITAMIN_A_RED));
+        }});
+        map.put(Constants.LAST_MEASLES, new LinkedHashMap<Integer, String>() {{
+            put(1, Constants.MEASLES_1);
+            put(2, Constants.MEASLES_2);
         }});
         map.put(Constants.LAST_PNEUMOCOCCAL, new LinkedHashMap<Integer, String>() {{
             put(1, Constants.PNEUMOCOCCAL_1);

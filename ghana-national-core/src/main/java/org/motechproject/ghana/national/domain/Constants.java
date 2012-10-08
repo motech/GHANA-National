@@ -60,11 +60,15 @@ public class Constants {
     public static final String OPV_3 = "OPV 3";
     public static final String LAST_OPV = "lastOPV";
     public static final String LAST_PENTA = "lastPenta";
+    public static final String LAST_VITA = "lastVitaminA";
+    public static final String LAST_MEASLES = "lastMeasles";
     public static final String PENTA_1 = "Penta 1";
-    public static final String PENTA_3 = "Penta 3";
     public static final String PENTA_2 = "Penta 2";
+    public static final String PENTA_3 = "Penta 3";
+    public static final String MEASLES_1 = "Measles 1";
+    public static final String MEASLES_2 = "Measles 2";
     public static final String VITAMIN_A_BLUE = "blue";
-    public static final String VITAMIN_A_RED= "red";
+    public static final String VITAMIN_A_RED = "red";
     public static final String LAST_ROTAVIRUS = "lastRotavirus";
     public static final String ROTAVIRUS_1 = "Rotavirus 1";
     public static final String ROTAVIRUS_2 = "Rotavirus 2";

@@ -87,7 +87,7 @@
                  relevant="/careHistory/addHistory = 'IPTI'" action="show" required="true()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
         <xf:bind id="lastVitaminA" nodeset="/careHistory/lastVitaminA" type="xsd:string" visible="false()"
-                 relevant="/careHistory/addHistory = 'VIT_A'" action="show" required="true()"/>
+                 relevant="/careHistory/addHistory = 'VITA_A'" action="show" required="true()"/>
         <xf:bind id="lastVitaminADate" nodeset="/careHistory/lastVitaminADate" type="xsd:date" visible="false()"
                  relevant="/careHistory/addHistory = 'VITA_A'" action="show" required="true()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
