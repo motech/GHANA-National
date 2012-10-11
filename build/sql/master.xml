@@ -14,6 +14,8 @@
     <include file="../build/sql/changelog/010.reset_idgen_for_facility.xml"/>
     <include file="../build/sql/changelog/011.create-concept-rotavirus.xml"/>
     <include file="../build/sql/changelog/012.create-concept-pneumococcal.xml"/>
-    <include file="../build/sql/changelog/013.change-concept-type-measles.xml"/>
-    <include file="../build/sql/changelog/014.change-concept-type-vitamin-a.xml"/>
+    <include file="../build/sql/changelog/013.create-concept-measles1.xml"/>
+    <include file="../build/sql/changelog/014.create-concept-measles2.xml"/>
+    <include file="../build/sql/changelog/015.create.concept.vitamin.a.blue.xml"/>
+    <include file="../build/sql/changelog/016.create.concept.vitamin.a.red.xml"/>
 </databaseChangeLog>

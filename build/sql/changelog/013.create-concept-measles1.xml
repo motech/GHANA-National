@@ -1,0 +1,51 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="admin" id="1323410456950-1">
+        <insert tableName="concept">
+            <column name="datatype_id" valueNumeric="1"/>
+            <column name="class_id" valueNumeric="3"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="date_created" value="2012-10-10 00:00:00"/>
+            <column name="uuid" value="459ac2c8-12bf-11e2-892e-0800200c9a66"/>
+        </insert>
+
+        <insert tableName="concept_answer">
+            <column name="concept_id" valueNumeric="984"/>
+            <column name="answer_concept" valueNumeric="((select max(concept_id) from concept))"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="date_created" value="2012-10-10 00:00:00"/>
+            <column name="uuid" value="459ac2c9-12bf-11e2-892e-0800200c9a66"/>
+        </insert>
+
+        <insert tableName="concept_name">
+            <column name="concept_id" valueNumeric="((select max(concept_id) from concept))"/>
+            <column name="name" value="MEASLES VACCINATION 1"/>
+            <column name="locale" value="en"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="date_created" value="2012-10-10 00:00:00"/>
+            <column name="uuid" value="459ac2ca-12bf-11e2-892e-0800200c9a66"/>
+        </insert>
+
+        <insert tableName="concept_word">
+            <column name="concept_id" valueNumeric="((select max(concept_id) from concept))"/>
+            <column name="word" value="MEASLES VACCINATION 1"/>
+            <column name="locale" value="en"/>
+            <column name="concept_name_id" valueNumeric="((select max(concept_name_id) from concept_name))"/>
+        </insert>
+
+        <insert tableName="concept_description">
+            <column name="concept_id" valueNumeric="((select max(concept_id) from concept))"/>
+            <column name="description" value="Vaccination for Measles 1"/>
+            <column name="locale" value="en"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="date_created" value="2012-10-10 00:00:00"/>
+            <column name="uuid" value="459ac2cb-12bf-11e2-892e-0800200c9a66"/>
+        </insert>
+
+        <insert tableName="concept_numeric">
+            <column name="concept_id" valueNumeric="((select max(concept_id) from concept))"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

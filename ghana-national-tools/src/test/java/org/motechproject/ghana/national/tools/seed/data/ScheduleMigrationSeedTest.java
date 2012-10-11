@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.tools.seed.data;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -35,6 +36,7 @@ import static org.motechproject.util.DateUtil.newDateTime;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/testApplicationContext-tools.xml"})
+@Ignore("Migration completed. Please revisit if need to migrate again!")
 public class ScheduleMigrationSeedTest {
     @Autowired
     org.motechproject.scheduletracking.api.repository.AllSchedules allSchedules;
@@ -56,7 +58,7 @@ public class ScheduleMigrationSeedTest {
     }
 
     @Test
-    public void shouldApplyFiltersToEliminateInvalidScheduleRecords(){
+    public void shouldApplyFiltersToEliminateInvalidScheduleRecords() {
         Filter filter = mock(Filter.class);
         ttVaccineSeed.filters = Arrays.asList(filter);
         final List<UpcomingSchedule> upcomingSchedules = Arrays.asList(newUpcomingSchedule("10000", "2012-9-22 10:30:00.0", "TT3").build());
@@ -86,7 +88,7 @@ public class ScheduleMigrationSeedTest {
     }
 
     @Test
-    public void shouldLogErrorIfThereAreMoreThanOneActiveSchedulesInCaseOfInterdependentMilestones(){
+    public void shouldLogErrorIfThereAreMoreThanOneActiveSchedulesInCaseOfInterdependentMilestones() {
         String patientId = "10000";
         List<UpcomingSchedule> upcomingSchedulesFromDb = Arrays.asList(newUpcomingSchedule(patientId, "2012-9-22 10:30:00.0", "TT3").build(),
                 newUpcomingSchedule(patientId, "2012-2-29 10:30:00.0", "TT2").build());
@@ -97,7 +99,7 @@ public class ScheduleMigrationSeedTest {
     }
 
     @Test
-    public void shouldMigrateMoreThanOneActiveSchedulesInCaseOfIndependentMilestones(){
+    public void shouldMigrateMoreThanOneActiveSchedulesInCaseOfIndependentMilestones() {
         String patientId = "10000";
         List<UpcomingSchedule> upcomingSchedulesFromDb = Arrays.asList(newUpcomingSchedule(patientId, "2012-9-22 10:30:00.0", "PNC1").build(),
                 newUpcomingSchedule(patientId, "2012-2-29 10:30:00.0", "PNC2").build());
@@ -129,7 +131,7 @@ public class ScheduleMigrationSeedTest {
     }
 
     @Test
-    public void shouldEnrollIntoIPTIVaccineSchedule(){
+    public void shouldEnrollIntoIPTIVaccineSchedule() {
         DateTime referenceDate = DateUtil.newDateTime(2012, 1, 1, new Time(10, 10));
         Patient patient = new Patient(new MRSPatient("10000", null, null, null));
 
@@ -149,7 +151,7 @@ public class ScheduleMigrationSeedTest {
         assertThat(enrollmentRequest.getMetadata(), is(equalTo(metaData)));
     }
 
-    public static  <K, V> Map<K, V> map(K key, V value) {
+    public static <K, V> Map<K, V> map(K key, V value) {
         Map<K, V> map = new HashMap<K, V>();
         map.put(key, value);
         return map;

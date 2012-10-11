@@ -10,13 +10,13 @@ import java.util.List;
 public abstract class Filter {
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    public List<UpcomingSchedule> filter(List<UpcomingSchedule> schedules){
+    public List<UpcomingSchedule> filter(List<UpcomingSchedule> schedules) {
         log.info("Applying filter, on patient, " + schedules.get(0).getPatientId());
         final List<UpcomingSchedule> schedulesAfterFiltering = filteringLogic(schedules);
-        if(schedulesAfterFiltering.size() < schedules.size()){
+        if (schedulesAfterFiltering.size() < schedules.size()) {
             List<UpcomingSchedule> filteredSchedules = new ArrayList<UpcomingSchedule>();
             for (UpcomingSchedule schedule : schedules) {
-                if(!schedulesAfterFiltering.contains(schedule))
+                if (!schedulesAfterFiltering.contains(schedule))
                     filteredSchedules.add(schedule);
             }
             log.info("Filtered schedules, " + filteredSchedules);

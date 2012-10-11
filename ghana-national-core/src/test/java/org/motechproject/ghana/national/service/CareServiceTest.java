@@ -97,16 +97,19 @@ public class CareServiceTest extends BaseUnitTest {
         final int lastOPV = 0;
         final String serialNumber = "wewew";
         final Integer lastMeasles = 1;
-        CwcVO cwcVO = new CwcVO(staffId, facilityId, registrationDate, patientMotechId, Arrays.asList(CwcCareHistory.values()), lastBCGDate, lastVitADate, lastVitA,
-                lastMeaslesDate, lastMeasles, lastYfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTiDate, lastIPTi, lastRotavirusDate, lastRotavirus, lastPneumococcal, lastPneumococcalDate, serialNumber, true);
+        CwcVO cwcVO = new CwcVO(staffId, facilityId, registrationDate, patientMotechId, Arrays.asList(CwcCareHistory.values()),
+                lastBCGDate, lastVitADate, lastVitA, lastMeaslesDate, lastMeasles, lastYfDate, lastPentaDate, lastPenta,
+                lastOPVDate, lastOPV, lastIPTiDate, lastIPTi, lastRotavirusDate, lastRotavirus, lastPneumococcal,
+                lastPneumococcalDate, serialNumber, true);
 
+        ArgumentCaptor<Set> obsCaptor = ArgumentCaptor.forClass(Set.class);
         setupPatient(patientId, patientMotechId);
 
         final HashSet<MRSObservation> expected = new HashSet<MRSObservation>() {{
             add(new MRSObservation<MRSConcept>(lastBCGDate, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(BCG.getName())));
-            add(new MRSObservation<String>(lastVitADate, VITA.getName(), lastVitA));
-            add(new MRSObservation<Integer>(lastMeaslesDate, MEASLES.getName(), lastMeasles));
+            add(new MRSObservation<MRSConcept>(lastMeaslesDate, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(MEASLES_1.getName())));
             add(new MRSObservation<MRSConcept>(lastYfDate, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(YF.getName())));
+            add(new MRSObservation<MRSConcept>(lastVitADate, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(VITAMIN_A_BLUE.getName())));
             add(new MRSObservation<Integer>(lastRotavirusDate, ROTAVIRUS.getName(), lastRotavirus));
             add(new MRSObservation<Integer>(lastPentaDate, PENTA.getName(), lastPenta));
             add(new MRSObservation<Integer>(lastOPVDate, OPV.getName(), lastOPV));
@@ -118,8 +121,10 @@ public class CareServiceTest extends BaseUnitTest {
         careServiceSpy.enroll(cwcVO);
         doNothing().when(careServiceSpy).enrollToCWCCarePrograms(cwcVO, mockPatient);
 
-        verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffId, facilityId, CWC_REG_VISIT.value(), registrationDate, expected);
+        verify(mockAllEncounters).persistEncounter(eq(mockMRSPatient), eq(staffId), eq(facilityId), eq(CWC_REG_VISIT.value()), eq(registrationDate), obsCaptor.capture());
         verify(careServiceSpy).enrollToCWCCarePrograms(cwcVO, mockPatient);
+        assertReflectionEquals(expected, obsCaptor.getValue(), ReflectionComparatorMode.LENIENT_ORDER);
+
     }
 
     @Test
@@ -132,7 +137,7 @@ public class CareServiceTest extends BaseUnitTest {
         final String serialNumber = "serial number";
 
         CwcVO cwcVO = new CwcVO(staffId, facilityId, registartionDate, patientMotechId, new ArrayList<CwcCareHistory>(), null, null, null,
-                null, null, null, null, null,null, null, null, null, null, null, null, null, serialNumber, false);
+                null, null, null, null, null, null, null, null, null, null, null, null, null, serialNumber, false);
 
         setupPatient(patientId, patientMotechId);
 
@@ -474,7 +479,7 @@ public class CareServiceTest extends BaseUnitTest {
         ANCCareHistoryVO ancCareHistory = new ANCCareHistoryVO(true, Arrays.asList(ANCCareHistory.values()), iptDose.value().toString(), ttDose.getDosage().toString(), iptDate, ttDate);
 
         setupPatient(patientId, patientMotechId);
-        CareHistoryVO careHistory = new CareHistoryVO(staffId, facilityId, patientMotechId, careHistoryCapturedDate.toDate(), ancCareHistory, new CWCCareHistoryVO(false, null, null,null, null, null, null, null, null, null, null, null, null, null, null, null, null, null));
+        CareHistoryVO careHistory = new CareHistoryVO(staffId, facilityId, patientMotechId, careHistoryCapturedDate.toDate(), ancCareHistory, new CWCCareHistoryVO(false, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null));
 
         MRSObservation<Date> eddObservation = new MRSObservation<Date>(ancRegDate.toDate(), EDD.getName(), edd.toDate());
         final MRSObservation activePregnancyObservation = new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY.getName(), true);
@@ -530,7 +535,7 @@ public class CareServiceTest extends BaseUnitTest {
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.PREGNANCY.getName())).thenReturn(null);
 
         careService.addCareHistory(new CareHistoryVO("staffId", "facilityId", patientMotechId, newDate(2012, 2, 2).toDate(),
-                ancCareHistory, new CWCCareHistoryVO(false, null, null, null, null, null,null, null, null, null, null, null, null, null, null, null, null, null)));
+                ancCareHistory, new CWCCareHistoryVO(false, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)));
 
         verify(mockAllCareSchedules, never()).enrollIfNotActive((EnrollmentRequest) any());
     }
@@ -597,7 +602,7 @@ public class CareServiceTest extends BaseUnitTest {
         ANCCareHistoryVO ancCareHistory = new ANCCareHistoryVO(true, Arrays.asList(ANCCareHistory.values()), iptDose, ttDose, iptDate, ttDate);
 
         setupPatient(patientId, patientMotechId);
-        CareHistoryVO careHistory = new CareHistoryVO(staffId, facilityId, patientMotechId, careHistoryCapturedDate.toDate(), ancCareHistory, new CWCCareHistoryVO(false, null,null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null));
+        CareHistoryVO careHistory = new CareHistoryVO(staffId, facilityId, patientMotechId, careHistoryCapturedDate.toDate(), ancCareHistory, new CWCCareHistoryVO(false, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null));
 
         final MRSObservation activePregnancyObservation = new MRSObservation<Boolean>(ancRegDate.toDate(), PREGNANCY.getName(), true);
         MRSObservation<Date> eddObservation = new MRSObservation<Date>(ancRegDate.toDate(), EDD.getName(), edd.toDate());
@@ -776,7 +781,7 @@ public class CareServiceTest extends BaseUnitTest {
         PatientCare patientCare = new PatientCare(CWC_PENTA.getName(), new LocalDate(), registrationDateTime.toLocalDate(), null, null);
 
         CwcVO cwcVO = new CwcVO(null, null, registrationDateTime.toDate(), patientMotechId, asList(CwcCareHistory.PENTA), null, null, null,
-                null, null, null, null, null, null, null, null, null, null, null, null, null,null, true);
+                null, null, null, null, null, null, null, null, null, null, null, null, null, null, true);
         ActiveCareSchedules activeCareSchedules = careService.activeCareSchedules(mockPatient, asList(CWC_PNEUMOCOCCAL.getName(), CWC_ROTAVIRUS.getName(), CWC_PENTA.getName(), CWC_IPT_VACCINE.getName(), CWC_OPV_OTHERS.getName()));
         when(mockPatient.cwcCareProgramToEnrollOnRegistration(registrationDateTime.toLocalDate(), asList(CwcCareHistory.PENTA), cwcVO.getCWCCareHistoryVO(), activeCareSchedules, cwcVO.getCWCCareHistoryVO().getLastPentaDate(), cwcVO.getCWCCareHistoryVO().getLastIPTiDate(), cwcVO.getCWCCareHistoryVO().getLastOPVDate(), cwcVO.getCWCCareHistoryVO().getLastRotavirusDate(), cwcVO.getCWCCareHistoryVO().getLastPneumococcalDate())).thenReturn(asList(patientCare));
 
@@ -802,7 +807,7 @@ public class CareServiceTest extends BaseUnitTest {
         when(mockAllPatients.getPatientByMotechId(patientId)).thenReturn(patient);
         final LocalDate lastIPTiDate = today().minusWeeks(5);
         final LocalDate lastOPVDate = today().minusDays(5);
-        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(true, Arrays.asList(CwcCareHistory.IPTI, CwcCareHistory.OPV), null, null, null, null,null, null, null, null, lastOPVDate.toDate(), 1, 1, lastIPTiDate.toDate(), null, null, null, null);
+        CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(true, Arrays.asList(CwcCareHistory.IPTI, CwcCareHistory.OPV), null, null, null, null, null, null, null, null, lastOPVDate.toDate(), 1, 1, lastIPTiDate.toDate(), null, null, null, null);
         final ANCCareHistoryVO ancCareHistoryVO = new ANCCareHistoryVO(false, Collections.<ANCCareHistory>emptyList(), null, null, null, null);
         CareHistoryVO careHistoryVO = new CareHistoryVO(staffId, facilityId, patientId, date, ancCareHistoryVO, cwcCareHistoryVO);
         careService.addCareHistory(careHistoryVO);
@@ -833,7 +838,7 @@ public class CareServiceTest extends BaseUnitTest {
         final String patientMotechId = "patientMotechId";
         CareService careServiceSpy = spy(careService);
         final LocalDate lastPentaDate = today().minusWeeks(7);
-        CwcVO cwcVO = new CwcVO(staffId, facilityId, date, patientMotechId, asList(CwcCareHistory.PENTA), null, null,null,
+        CwcVO cwcVO = new CwcVO(staffId, facilityId, date, patientMotechId, asList(CwcCareHistory.PENTA), null, null, null,
                 null, null, null, lastPentaDate.toDate(), 1, null, null, null, null, null, null, null, null, null, true);
         PatientCare patientCare = new PatientCare(CWC_PENTA.getName(), new LocalDate(), newDate(date), null, null);
         setupPatient(patientId, patientMotechId);
@@ -859,7 +864,7 @@ public class CareServiceTest extends BaseUnitTest {
         CareService careServiceSpy = spy(careService);
         final LocalDate lastIPTiDate = today().minusWeeks(7);
         CwcVO cwcVO = new CwcVO(staffId, facilityId, date, patientMotechId, asList(CwcCareHistory.PENTA), null, null,
-                null, null, null, null, null, null, null,null, lastIPTiDate.toDate(), 1, null, null, null, null, null, true);
+                null, null, null, null, null, null, null, null, lastIPTiDate.toDate(), 1, null, null, null, null, null, true);
         PatientCare patientCare = new PatientCare(CWC_IPT_VACCINE.getName(), new LocalDate(), newDate(date), null, null);
         setupPatient(patientId, patientMotechId);
         when(mockAllCareSchedules.getDueWindowAlertTimings(Matchers.<EnrollmentRequest>any())).thenReturn(Arrays.<DateTime>asList(newDate(dateOfBirth).plusMonths(3).toDateTimeAtCurrentTime()));

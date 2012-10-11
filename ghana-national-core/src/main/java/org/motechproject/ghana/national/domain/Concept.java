@@ -10,6 +10,10 @@ public enum Concept {
     PNEUMOCOCCAL("PNEUMOCOCCAL"),
     VITA("VITAMIN A"),
     BCG("BACILLE CAMILE-GUERIN VACCINATION"),
+    MEASLES_1("MEASLES VACCINATION 1"),
+    MEASLES_2("MEASLES VACCINATION 2"),
+    VITAMIN_A_BLUE("VITAMIN A BLUE"),
+    VITAMIN_A_RED("VITAMIN A RED"),
     IMMUNIZATIONS_ORDERED("IMMUNIZATIONS ORDERED"),
     CSM("CEREBRO-SPINAL MENINGITIS VACCINATION"),
     GRAVIDA("GRAVIDA"),
@@ -91,5 +95,15 @@ public enum Concept {
 
     public String getName() {
         return name;
+    }
+
+    public static Concept getConceptByName(String name) {
+        Concept[] concepts = Concept.values();
+        for (Concept concept : concepts) {
+            if(concept.getName().equals(name)) {
+                return concept;
+            }
+        }
+        return null;
     }
 }

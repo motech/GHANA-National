@@ -41,7 +41,7 @@ public class ChildVisitEncounterFactoryTest {
         expectedObservations.add(new MRSObservation<String>(today, HOUSE.getName(), "house"));
         expectedObservations.add(new MRSObservation<String>(today, COMMUNITY.getName(), "community"));
         expectedObservations.add(new MRSObservation<Integer>(today, ROTAVIRUS.getName(), 1));
-        expectedObservations.add(new MRSObservation<String>(today, VITA.getName(), "blue"));
+        expectedObservations.add(new MRSObservation<MRSConcept>(today, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(Concept.VITAMIN_A_BLUE.getName())));
         expectedObservations.add(new MRSObservation<MRSConcept>(today, IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(Concept.BCG.getName())));
 
         assertReflectionEquals(expectedObservations, mrsObservations, ReflectionComparatorMode.LENIENT_DATES,
@@ -120,6 +120,6 @@ public class ChildVisitEncounterFactoryTest {
         CWCVisit cwcVisit = new CWCVisit();
         return cwcVisit.staff(staff).facility(facility).patient(patient).date(registrationDate).serialNumber("4ds65")
                 .weight(65.67d).comments("comments").cwcLocation("34").house("house").community("community").maleInvolved(false)
-                .immunizations(asList("BCG","ROTAVIRUS","VITAMIN A")).rotavirusdose("1").vitaminadose("blue");
+                .immunizations(asList("BCG","ROTAVIRUS","VITA")).rotavirusdose("1").vitaminadose("blue");
     }
 }

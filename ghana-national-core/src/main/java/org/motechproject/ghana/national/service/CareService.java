@@ -287,8 +287,8 @@ public class CareService {
 
         if (capturedHistory != null && cwcCareHistoryVO.getAddCareHistory()) {
             addObservation(capturedHistory, CwcCareHistory.BCG, observations, cwcCareHistoryVO.getBcgDate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(BCG.getName()));
-            addObservation(capturedHistory, CwcCareHistory.VITA_A, observations, cwcCareHistoryVO.getVitADate(), VITA.getName(), cwcCareHistoryVO.getLastVitA());
-            addObservation(capturedHistory, CwcCareHistory.MEASLES, observations, cwcCareHistoryVO.getMeaslesDate(), MEASLES.getName(), cwcCareHistoryVO.getLastMeasles());
+            addObservation(capturedHistory, CwcCareHistory.VITA_A, observations, cwcCareHistoryVO.getVitADate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(getVitaminAConceptName(cwcCareHistoryVO)));
+            addObservation(capturedHistory, CwcCareHistory.MEASLES, observations, cwcCareHistoryVO.getMeaslesDate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(getMeaslesConceptName(cwcCareHistoryVO)));
             addObservation(capturedHistory, CwcCareHistory.YF, observations, cwcCareHistoryVO.getYfDate(), IMMUNIZATIONS_ORDERED.getName(), new MRSConcept(YF.getName()));
             addObservation(capturedHistory, CwcCareHistory.ROTAVIRUS, observations, cwcCareHistoryVO.getLastRotavirusDate(), ROTAVIRUS.getName(), cwcCareHistoryVO.getLastRotavirus());
             addObservation(capturedHistory, CwcCareHistory.PENTA, observations, cwcCareHistoryVO.getLastPentaDate(), PENTA.getName(), cwcCareHistoryVO.getLastPenta());
@@ -297,6 +297,22 @@ public class CareService {
             addObservation(capturedHistory, CwcCareHistory.PNEUMOCOCCAL, observations, cwcCareHistoryVO.getLastPneumococcalDate(), PNEUMOCOCCAL.getName(), cwcCareHistoryVO.getLastPneumococcal());
         }
         return observations;
+    }
+
+    private String getVitaminAConceptName(CWCCareHistoryVO cwcCareHistoryVO) {
+        if (Constants.VITAMIN_A_BLUE.equals(cwcCareHistoryVO.getLastVitA()))
+            return VITAMIN_A_BLUE.getName();
+        if (Constants.VITAMIN_A_RED.equals(cwcCareHistoryVO.getLastVitA()))
+             return VITAMIN_A_RED.getName();
+        return null;
+    }
+
+    private String getMeaslesConceptName(CWCCareHistoryVO cwcCareHistoryVO) {
+        if (new Integer(1).equals(cwcCareHistoryVO.getLastMeasles()))
+            return MEASLES_1.getName();
+        if (new Integer(2).equals(cwcCareHistoryVO.getLastMeasles()))
+             return MEASLES_2.getName();
+        return null;
     }
 
     private <T, W> void addObservation(List<W> capturedHistory, W observationType, Set<MRSObservation> observations,

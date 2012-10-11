@@ -29,10 +29,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CWCVisitFormHandlerTest {
@@ -81,7 +78,7 @@ public class CWCVisitFormHandlerTest {
         cwcVisitForm.setWeight(65.67d);
         cwcVisitForm.setHeight(173d);
         cwcVisitForm.setMuac(10d);
-        cwcVisitForm.setImmunizations("LIST LIST LIST");
+        cwcVisitForm.setImmunizations("LIST LIST VITAMIN A");
         cwcVisitForm.setComments("comments");
         cwcVisitForm.setCwcLocation("location");
         cwcVisitForm.setHouse("house");
