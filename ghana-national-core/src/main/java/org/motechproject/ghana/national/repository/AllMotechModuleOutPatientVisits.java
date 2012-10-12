@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.List;
 
 @Repository
@@ -41,14 +42,19 @@ public class AllMotechModuleOutPatientVisits {
     }
 
     public boolean isDuplicate(OutPatientVisit outPatientVisit) {
+        Calendar visitDate = Calendar.getInstance();
+        visitDate.setTime(outPatientVisit.getVisitDate());
         List<String> results = jdbcTemplate.query("SELECT id " +
                 "FROM motechmodule_generaloutpatientencounter " +
                 "WHERE serial_number = ? " +
                 "AND facility_id = ? " +
                 "AND birthdate = ? " +
+                "AND year(visit_date) = ? " +
+                "AND month(visit_date) = ? " +
                 "AND diagnosis = ?",
                 new Object[]{outPatientVisit.getSerialNumber(), outPatientVisit.getFacilityId(),
-                        outPatientVisit.getDateOfBirth(), outPatientVisit.getDiagnosis()}, new RowMapper<String>() {
+                        outPatientVisit.getDateOfBirth(), visitDate.get(Calendar.YEAR),
+                        visitDate.get(Calendar.MONTH) + 1, outPatientVisit.getDiagnosis()}, new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet resultSet, int i) throws SQLException {
                 return resultSet.getString(1);

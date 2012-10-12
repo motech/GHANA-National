@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import static junit.framework.Assert.assertTrue;
@@ -136,13 +137,20 @@ public class AllMotechModuleOutPatientVisitsTest {
         outPatientVisit.setFacilityId(facilityId);
         outPatientVisit.setDateOfBirth(dateOfBirth);
         outPatientVisit.setDiagnosis(diagnosis);
+        Date visitDate = new Date();
+        Calendar instance = Calendar.getInstance();
+        instance.setTime(visitDate);
+        outPatientVisit.setVisitDate(visitDate);
         allMotechModuleOutPatientVisits.isDuplicate(outPatientVisit);
         verify(mockJdbcTemplate).query(eq("SELECT id " +
                 "FROM motechmodule_generaloutpatientencounter " +
                 "WHERE serial_number = ? " +
                 "AND facility_id = ? " +
                 "AND birthdate = ? " +
-                "AND diagnosis = ?"), eq(new Object[]{serialNumber, facilityId, dateOfBirth, diagnosis}), Matchers.<RowMapper<String>>any());
+                "AND year(visit_date) = ? " +
+                "AND month(visit_date) = ? " +
+                "AND diagnosis = ?"), eq(new Object[]{serialNumber, facilityId, dateOfBirth, instance.get(Calendar.YEAR), instance.get(Calendar.MONTH) + 1, diagnosis}),
+                Matchers.<RowMapper<String>>any());
     }
 
     @Test
@@ -156,12 +164,19 @@ public class AllMotechModuleOutPatientVisitsTest {
         outPatientVisit.setFacilityId(facilityId);
         outPatientVisit.setDateOfBirth(dateOfBirth);
         outPatientVisit.setDiagnosis(diagnosis);
+        Date visitDate = new Date();
+        Calendar instance = Calendar.getInstance();
+        instance.setTime(visitDate);
+        outPatientVisit.setVisitDate(visitDate);
         when(mockJdbcTemplate.query(eq("SELECT id " +
                 "FROM motechmodule_generaloutpatientencounter " +
                 "WHERE serial_number = ? " +
                 "AND facility_id = ? " +
                 "AND birthdate = ? " +
-                "AND diagnosis = ?"), eq(new Object[]{serialNumber, facilityId, dateOfBirth, diagnosis}), Matchers.<RowMapper<String>>any())).thenReturn(new ArrayList<String>() {{
+                "AND year(visit_date) = ? " +
+                "AND month(visit_date) = ? " +
+                "AND diagnosis = ?"), eq(new Object[]{serialNumber, facilityId, dateOfBirth, instance.get(Calendar.YEAR), instance.get(Calendar.MONTH) + 1, diagnosis}),
+                Matchers.<RowMapper<String>>any())).thenReturn(new ArrayList<String>() {{
             add("something");
         }});
 
