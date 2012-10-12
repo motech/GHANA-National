@@ -100,6 +100,8 @@ public class CwcFormMapperTest {
         final HashSet<MRSObservation> observations = new HashSet<MRSObservation>();
         MRSConcept yfValue = new MRSConcept(YF.getName());
         MRSConcept bcgValue = new MRSConcept(BCG.getName());
+        MRSConcept vitaValue = new MRSConcept(VITAMIN_A_BLUE.getName());
+        MRSConcept measlesValue = new MRSConcept(MEASLES_1.getName());
 
         Date measlesDate = new Date();
         Date yfDate = new Date();
@@ -116,8 +118,6 @@ public class CwcFormMapperTest {
         Double rotavirusDoseValue = 2.0;
         Double pneumococcalDoseValue = 2.0;
         Double opvValue = 2.0;
-        Double measlesValue = 1.;
-        String vitaValue = "blue";
         String name = "name";
         String country = "country";
         String region = "region";
@@ -125,9 +125,9 @@ public class CwcFormMapperTest {
         String province = "province";
         observations.add(new MRSObservation<MRSConcept>(yfDate, IMMUNIZATIONS_ORDERED.getName(), yfValue));
         observations.add(new MRSObservation<MRSConcept>(bcgDate, IMMUNIZATIONS_ORDERED.getName(), bcgValue));
+        observations.add(new MRSObservation<MRSConcept>(vitaDate, IMMUNIZATIONS_ORDERED.getName(), vitaValue));
+        observations.add(new MRSObservation<MRSConcept>(measlesDate, IMMUNIZATIONS_ORDERED.getName(), measlesValue));
         observations.add(new MRSObservation<Double>(iptiDate, IPTI.getName(), iptiValue));
-        observations.add(new MRSObservation<Double>(measlesDate, MEASLES.getName(), measlesValue));
-        observations.add(new MRSObservation<String>(vitaDate, VITA.getName(), null));
         observations.add(new MRSObservation<Double>(pentaDate, PENTA.getName(), pentaValue));
         observations.add(new MRSObservation<Double>(rotavirusDate, ROTAVIRUS.getName(), rotavirusDoseValue));
         observations.add(new MRSObservation<Double>(pneumococcalDate, PNEUMOCOCCAL.getName(), pneumococcalDoseValue));
@@ -151,8 +151,8 @@ public class CwcFormMapperTest {
         assertThat(cwcEnrollmentForm.getMeaslesDate(), is(equalTo(measlesDate)));
         assertThat(cwcEnrollmentForm.getBcgDate(), is(equalTo(bcgDate)));
         assertThat(cwcEnrollmentForm.getYfDate(), is(equalTo(yfDate)));
-        assertThat(cwcEnrollmentForm.getLastVitaminA(), is(equalTo(vitaValue)));
-        assertThat(cwcEnrollmentForm.getLastMeasles(), is(equalTo(measlesValue.intValue())));
+        assertThat(cwcEnrollmentForm.getLastVitaminA(), is(equalTo("blue")));
+        assertThat(cwcEnrollmentForm.getLastMeasles(), is(equalTo(1)));
         assertThat(cwcEnrollmentForm.getVitADate(), is(equalTo(vitaDate)));
         assertThat(cwcEnrollmentForm.getLastIPTiDate(), is(equalTo(iptiDate)));
         assertThat(cwcEnrollmentForm.getLastIPTi(), is(equalTo(iptiValue.intValue())));

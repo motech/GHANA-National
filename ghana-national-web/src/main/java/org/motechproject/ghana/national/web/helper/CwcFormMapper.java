@@ -24,13 +24,15 @@ import java.util.Set;
 import static org.motechproject.ghana.national.domain.Concept.BCG;
 import static org.motechproject.ghana.national.domain.Concept.IMMUNIZATIONS_ORDERED;
 import static org.motechproject.ghana.national.domain.Concept.IPTI;
-import static org.motechproject.ghana.national.domain.Concept.MEASLES;
+import static org.motechproject.ghana.national.domain.Concept.MEASLES_1;
+import static org.motechproject.ghana.national.domain.Concept.MEASLES_2;
 import static org.motechproject.ghana.national.domain.Concept.OPV;
 import static org.motechproject.ghana.national.domain.Concept.PENTA;
 import static org.motechproject.ghana.national.domain.Concept.PNEUMOCOCCAL;
 import static org.motechproject.ghana.national.domain.Concept.ROTAVIRUS;
 import static org.motechproject.ghana.national.domain.Concept.SERIAL_NUMBER;
-import static org.motechproject.ghana.national.domain.Concept.VITA;
+import static org.motechproject.ghana.national.domain.Concept.VITAMIN_A_BLUE;
+import static org.motechproject.ghana.national.domain.Concept.VITAMIN_A_RED;
 import static org.motechproject.ghana.national.domain.Concept.YF;
 
 @Component
@@ -64,26 +66,17 @@ public class CwcFormMapper {
                     cwcEnrollmentForm.setBcgDate(observation.getDate());
                     careHistories.add(CwcCareHistory.BCG);
                 }
-            }
-
-            if (VITA.getName().equals(observation.getConceptName())) {
-                cwcEnrollmentForm.setVitADate(observation.getDate());
-                String value = (String) observation.getValue();
-                if (value == null) {
-                    value = Constants.VITAMIN_A_BLUE;
+                if (VITAMIN_A_BLUE.getName().equals(conceptName) || VITAMIN_A_RED.getName().equals(conceptName)) {
+                    cwcEnrollmentForm.setVitADate(observation.getDate());
+                    cwcEnrollmentForm.setLastVitaminA(VITAMIN_A_BLUE.getName().equals(conceptName) ?
+                            Constants.VITAMIN_A_BLUE : Constants.VITAMIN_A_RED);
+                    careHistories.add(CwcCareHistory.VITA_A);
                 }
-                cwcEnrollmentForm.setLastVitaminA(value);
-                careHistories.add(CwcCareHistory.VITA_A);
-            }
-
-            if (MEASLES.getName().equals(observation.getConceptName())) {
-                cwcEnrollmentForm.setMeaslesDate(observation.getDate());
-                Double value = (Double) observation.getValue();
-                if(value == null) {
-                    value = 1.0;
+                if (MEASLES_1.getName().equals(conceptName) || MEASLES_2.getName().equals(conceptName)) {
+                    cwcEnrollmentForm.setMeaslesDate(observation.getDate());
+                    cwcEnrollmentForm.setLastMeasles(MEASLES_1.getName().equals(conceptName) ? 1 : 2);
+                    careHistories.add(CwcCareHistory.MEASLES);
                 }
-                cwcEnrollmentForm.setLastMeasles(value.intValue());
-                careHistories.add(CwcCareHistory.MEASLES);
             }
 
             if (IPTI.getName().equals(observation.getConceptName())) {
