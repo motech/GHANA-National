@@ -69,7 +69,7 @@
                  relevant="/ancVisit/iptdose = '1' or /ancVisit/iptdose = '2' or /ancVisit/iptdose = '3'"
                  required="true()" type="xsd:string" visible="false()"/>
         <xf:bind id="itnUse" nodeset="/ancVisit/itnUse" required="true()" type="xsd:string"/>
-        <xf:bind constraint=". &gt;= 12 and . &lt;= 40" id="fht" message="Value out of range: must be between 12 and 40"
+        <xf:bind constraint=". &gt;= 2 and . &lt;= 40" id="fht" message="Value out of range: must be between 2 and 40"
                  nodeset="/ancVisit/fht" type="xsd:decimal"/>
         <xf:bind constraint=". &gt;= 80 and . &lt;= 200" id="fhr"
                  message="Value out of range: must be between 80 and 200" nodeset="/ancVisit/fhr" type="xsd:int"/>
