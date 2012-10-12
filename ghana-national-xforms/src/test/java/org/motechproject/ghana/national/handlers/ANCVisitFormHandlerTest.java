@@ -172,6 +172,6 @@ public class ANCVisitFormHandlerTest {
         handler.handleFormEvent(ancVisitForm);
 
         verifyZeroInteractions(mockMotherVisitService);
-        verify(mockAllANCVisitsForVisitor).add(Matchers.<ANCVisit>any());
+        verify(mockAllANCVisitsForVisitor).save(Matchers.<ANCVisit>any());
     }
 }

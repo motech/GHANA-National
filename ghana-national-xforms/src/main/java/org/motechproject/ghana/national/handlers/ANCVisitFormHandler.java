@@ -41,7 +41,7 @@ public class ANCVisitFormHandler {
             if (!ancVisit.getVisitor()) {
                 motherVisitService.registerANCVisit(ancVisit);
             } else {
-                allANCVisitsForVisitor.add(ancVisit);
+                allANCVisitsForVisitor.save(ancVisit);
             }
         } catch (Exception e) {
             log.error("Encountered error while processing ANC visit form for patientId:" + ancVisitForm.getMotechId(), e);

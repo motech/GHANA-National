@@ -1,92 +1,82 @@
 package org.motechproject.ghana.national.domain;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.mrs.model.MRSUser;
 
 import java.util.Date;
 
-@TypeDiscriminator("doc.type === 'ANCVisit'")
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class ANCVisit extends MotechBaseDataObject {
-    @JsonProperty("type")
-    private String type = "ANCVisit";
-    @JsonProperty
+public class ANCVisit {
     private Date date;
-    @JsonProperty
+    
     private String serialNumber;
-    @JsonProperty
+    
     private String visitNumber;
-    @JsonProperty
+    
     private Date estDeliveryDate;
-    @JsonProperty
+    
     private Integer bpSystolic;
-    @JsonProperty
+    
     private Integer bpDiastolic;
-    @JsonProperty
+    
     private Double weight;
-    @JsonProperty
+    
     private String ttdose;
-    @JsonProperty
+    
     private String iptdose;
-    @JsonProperty
+    
     private Boolean iptReactive;
-    @JsonProperty
+    
     private String itnUse;
-    @JsonProperty
+    
     private Double fht;
-    @JsonProperty
+    
     private Integer fhr;
-    @JsonProperty
+    
     private String urineTestProteinPositive;
-    @JsonProperty
+    
     private String urineTestGlucosePositive;
-    @JsonProperty
+    
     private Double hemoglobin;
-    @JsonProperty
+    
     private String vdrlReactive;
-    @JsonProperty
+    
     private String vdrlTreatment;
-    @JsonProperty
+    
     private String dewormer;
-    @JsonProperty
+    
     private String pmtct;
-    @JsonProperty
+    
     private String preTestCounseled;
-    @JsonProperty
+    
     private String hivTestResult;
-    @JsonProperty
+    
     private String postTestCounseled;
-    @JsonProperty
+    
     private String pmtctTreament;
-    @JsonProperty
+    
     private String location;
-    @JsonProperty
+    
     private String house;
-    @JsonProperty
+    
     private String community;
-    @JsonProperty
+    
     private String referred;
-    @JsonProperty
+    
     private Boolean maleInvolved;
-    @JsonProperty
+    
     private Date nextANCDate;
-    @JsonProperty
+    
     private String comments;
-    @JsonIgnore
+    
     private Boolean visitor;
-    @JsonIgnore
+    
     private Patient patient;
-    @JsonIgnore
+    
     private MRSUser staff;
-    @JsonIgnore
+    
     private Facility facility;
-    @JsonProperty
+    
     private String staffId;
-    @JsonProperty
+    
     private String facilityId;
 
     public ANCVisit facility(Facility facility) {

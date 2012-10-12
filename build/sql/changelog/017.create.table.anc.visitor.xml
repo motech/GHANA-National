@@ -1,0 +1,46 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <property name="now" value="now()" dbms="mysql"/>
+    <changeSet author="admin" id="1323410456950-1">
+        <createTable tableName="anc_visitor">
+            <column name="anc_visitor_id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="serial_number" type="varchar(255)"/>
+            <column name="date_created" type="timestamp"/>
+            <column name="visit_number" type="varchar(255)"/>
+            <column name="est_delivery_date" type="varchar(255)"/>
+            <column name="bp_systolic" type="varchar(255)"/>
+            <column name="bp_diastolic" type="varchar(255)"/>
+            <column name="weight" type="varchar(255)"/>
+            <column name="tt_dose" type="varchar(255)"/>
+            <column name="ipt_dose" type="varchar(255)"/>
+            <column name="ipt_reactive" type="varchar(255)"/>
+            <column name="itn_use" type="varchar(255)"/>
+            <column name="fht" type="varchar(255)"/>
+            <column name="fhr" type="varchar(255)"/>
+            <column name="urine_test_protein_positive" type="varchar(255)"/>
+            <column name="urine_test_glucose_positive" type="varchar(255)"/>
+            <column name="hemoglobin" type="varchar(255)"/>
+            <column name="vdrl_reactive" type="varchar(255)"/>
+            <column name="vdrl_treatment" type="varchar(255)"/>
+            <column name="dewormer" type="varchar(255)"/>
+            <column name="pmtct" type="varchar(255)"/>
+            <column name="pre_test_counseled" type="varchar(255)"/>
+            <column name="hiv_test_result" type="varchar(255)"/>
+            <column name="post_test_counseled" type="varchar(255)"/>
+            <column name="pmtct_treatment" type="varchar(255)"/>
+            <column name="location" type="varchar(255)"/>
+            <column name="house" type="varchar(255)"/>
+            <column name="community" type="varchar(255)"/>
+            <column name="referred" type="varchar(255)"/>
+            <column name="male_involved" type="varchar(255)"/>
+            <column name="next_anc_date" type="varchar(255)"/>
+            <column name="comments" type="varchar(255)"/>
+            <column name="staff_id" type="varchar(255)"/>
+            <column name="facility_id" type="varchar(255)"/>
+        </createTable>
+        <addAutoIncrement tableName="anc_visitor" columnName="anc_visitor_id" columnDataType="int"/>
+    </changeSet>
+</databaseChangeLog>

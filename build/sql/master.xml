@@ -18,4 +18,6 @@
     <include file="../build/sql/changelog/014.create-concept-measles2.xml"/>
     <include file="../build/sql/changelog/015.create.concept.vitamin.a.blue.xml"/>
     <include file="../build/sql/changelog/016.create.concept.vitamin.a.red.xml"/>
+    <include file="../build/sql/changelog/017.create.table.anc.visitor.xml"/>
+    <include file="../build/sql/changelog/018.create.table.cwc.visitor.xml"/>
 </databaseChangeLog>

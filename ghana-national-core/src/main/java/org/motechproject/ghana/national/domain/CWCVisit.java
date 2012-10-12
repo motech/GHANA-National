@@ -1,69 +1,60 @@
 package org.motechproject.ghana.national.domain;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.model.MotechBaseDataObject;
 import org.motechproject.mrs.model.MRSUser;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-@TypeDiscriminator("doc.type === 'CWCVisit'")
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class CWCVisit extends MotechBaseDataObject {
-    @JsonProperty("type")
-    private String type = "CWCVisit";
-    @JsonIgnore
+public class CWCVisit {
+    
     private MRSUser staff;
-    @JsonIgnore
+    
     private Facility facility;
-    @JsonProperty
+    
     private Date date;
-    @JsonIgnore
+    
     private Patient patient;
-    @JsonProperty
+    
     private String serialNumber;
-    @JsonProperty
+    
     private List<String> immunizations;
-    @JsonProperty
+    
     private String opvdose;
-    @JsonProperty
+    
     private String pentadose;
-    @JsonProperty
+    
     private String iptidose;
-    @JsonProperty
+    
     private String rotavirusdose;
-    @JsonProperty
+    
     private String pneumococcaldose;
-    @JsonProperty
+    
     private Double weight;
-    @JsonProperty
+    
     private Double muac;
-    @JsonProperty
+    
     private Double height;
-    @JsonProperty
+    
     private Boolean maleInvolved;
-    @JsonProperty
+    
     private String cwcLocation;
-    @JsonProperty
+    
     private String house;
-    @JsonProperty
+    
     private String community;
-    @JsonProperty
+    
     private String comments;
-    @JsonIgnore
+    
     private Boolean visitor;
-    @JsonProperty
+    
     private String staffId;
-    @JsonProperty
+    
     private String facilityId;
-    @JsonProperty
+    
     private String vitaminadose;
-    @JsonProperty
+    
     private String measlesDose;
 
     public MRSUser getStaff() {
