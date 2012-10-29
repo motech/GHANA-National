@@ -1,7 +1,9 @@
 package org.motechproject.ghana.national.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
+import org.motechproject.ghana.national.domain.Concept;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.factory.ChildVisitEncounterFactory;
 import org.motechproject.ghana.national.mapper.ScheduleEnrollmentMapper;
@@ -26,18 +28,29 @@ public class ChildVisitService extends VisitService {
     }
 
     public MRSEncounter save(CWCVisit cwcVisit) {
-        createPentaSchedule(cwcVisit);
+        updatePentaSchedule(cwcVisit);
+        updateYellowFeverSchedule(cwcVisit);
         return allEncounters.persistEncounter(new ChildVisitEncounterFactory().createEncounter(cwcVisit));
     }
 
-    void createPentaSchedule(CWCVisit cwcVisit) {
-        Patient patient = cwcVisit.getPatient();
-        LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
-
-        if (null == enrollment(patient.getMRSPatientId(), ScheduleNames.PENTA)) {
-            allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patient.pentaPatientCare(), visitDate, milestoneName(cwcVisit)));
+    void updateYellowFeverSchedule(CWCVisit cwcVisit) {
+        if (cwcVisit.getImmunizations().contains(Concept.YF.name())) {
+            Patient patient = cwcVisit.getPatient();
+            LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
+            allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), ScheduleNames.YELLOW_FEVER, visitDate);
         }
-        allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), ScheduleNames.PENTA, visitDate);
+    }
+
+    void updatePentaSchedule(CWCVisit cwcVisit) {
+        if (!StringUtils.isEmpty(cwcVisit.getPentadose())) {
+            Patient patient = cwcVisit.getPatient();
+            LocalDate visitDate = DateUtil.newDate(cwcVisit.getDate());
+
+            if (null == enrollment(patient.getMRSPatientId(), ScheduleNames.PENTA)) {
+                allSchedules.enroll(new ScheduleEnrollmentMapper().map(patient, patient.pentaPatientCare(), visitDate, milestoneName(cwcVisit)));
+            }
+            allSchedules.fulfilCurrentMilestone(patient.getMRSPatientId(), ScheduleNames.PENTA, visitDate);
+        }
     }
 
     private String milestoneName(CWCVisit cwcVisit) {

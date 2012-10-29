@@ -17,6 +17,7 @@ public class Patient {
 
     private String parentId;
 
+
     public Patient() {
     }
 
@@ -79,8 +80,10 @@ public class Patient {
     }
 
     public List<PatientCare> cwcCareProgramToEnrollOnRegistration() {
+        LocalDate referenceDate = DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth());
         return nullSafeList(
-                new PatientCare(BCG, DateUtil.newDate(this.getMrsPatient().getPerson().getDateOfBirth())),
+                new PatientCare(BCG, referenceDate),
+                new PatientCare(YELLOW_FEVER, referenceDate),
                 pentaPatientCare());
     }
 

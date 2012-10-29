@@ -61,6 +61,7 @@ public class PatientTest extends BaseUnitTest {
         Patient patient = new Patient(new MRSPatient(null, new MRSPerson().dateOfBirth(dateOfBirth.toDate()), null));
         List<PatientCare> patientCares = patient.cwcCareProgramToEnrollOnRegistration();
         assertThat(patientCares, hasItem(new PatientCare(BCG, dateOfBirth)));
+        assertThat(patientCares, hasItem(new PatientCare(YELLOW_FEVER, dateOfBirth)));
         assertThat(patientCares, hasItem(new PatientCare(PENTA, dateOfBirth)));
     }
 
