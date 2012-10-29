@@ -87,13 +87,8 @@ public class Patient {
                 pentaPatientCare());
     }
 
-    public PatientCare iptPatientCareEnroll(LocalDate expectedDeliveryDate) {
-        PatientCare patientCareTill19Week = iptPatientCareEnrollOnRegistration(expectedDeliveryDate);
-        return patientCareTill19Week == null ? new PatientCare(ANC_IPT_VACCINE, DateUtil.today()) : patientCareTill19Week;
-    }
-
-    public PatientCare iptPatientCareVisit() {
-        return new PatientCare(ANC_IPT_VACCINE, DateUtil.today());
+    public PatientCare iptPatientCareEnrollOnVisitAfter19Weeks(LocalDate visitDate) {
+        return new PatientCare(ANC_IPT_VACCINE, visitDate);
     }
 
     public PatientCare pentaPatientCare() {
