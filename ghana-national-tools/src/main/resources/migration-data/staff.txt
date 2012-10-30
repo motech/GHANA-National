@@ -9,3 +9,11 @@ CHV,Community Health Volunteer
 HPO,Health Promotion Officer
 FA,Motech Field Agent
 MMA,Mobile Midwife Agent
+Midwife,Private hospital midwife
+Assistant Midwife,Private hospital Assistant Midwife
+Principal Nursing Officer,Private hospital Principal Nursing Officer
+Medical Superintendent,Private hospital Medical Superintendent
+Ward Assistant,Private hospital Ward Assistant
+Nurse,Private hospital Nurse
+Nurse Aid,Private hospital Nurse Aid
+Health Aid,Private hospital Health Aid

@@ -9,7 +9,6 @@ import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
-import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.domain.FormBeanGroup;
 import org.motechproject.mobileforms.api.domain.FormError;
@@ -21,14 +20,22 @@ import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
-import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ghana.national.domain.Constants.AFTER_DOB;
 import static org.motechproject.ghana.national.domain.Constants.NOT_FOUND;
@@ -148,6 +155,7 @@ public class RegisterClientFormValidatorTest extends BaseUnitTest{
         RegisterClientForm registerClientForm = new RegisterClientForm();
         registerClientForm.setStaffId(staffId);
         registerClientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
+        registerClientForm.setMotechId("1234567");
         registerClientForm.setFormname("registerPatient");
         registerClientForm.setDateOfBirth(DateUtil.newDate(1999, 9, 9).toDate());
         registerClientForm.setRegistrantType(PatientType.CHILD_UNDER_FIVE);
@@ -164,6 +172,7 @@ public class RegisterClientFormValidatorTest extends BaseUnitTest{
         RegisterClientForm registerClientForm = new RegisterClientForm();
         registerClientForm.setFacilityId(facilityId);
         registerClientForm.setRegistrationMode(RegistrationType.USE_PREPRINTED_ID);
+        registerClientForm.setMotechId("1234567");
         registerClientForm.setFormname("registerPatient");
         registerClientForm.setDateOfBirth(DateUtil.newDate(1999, 9, 9).toDate());
         registerClientForm.setRegistrantType(PatientType.CHILD_UNDER_FIVE);
@@ -203,6 +212,21 @@ public class RegisterClientFormValidatorTest extends BaseUnitTest{
         List<FormBean> formBeans = Arrays.<FormBean>asList(mockRegisterClientForm);
         List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(formBeans), formBeans);
         assertThat(formErrors, hasItem(new FormError("Sex", Constants.GENDER_ERROR_MSG)));
+    }
+
+    @Test
+    public void shouldReturnErrorIfMotherAndChildIdAreSame() {
+        String motherMotechId = "1234567";
+        when(mockRegisterClientForm.getMotherMotechId()).thenReturn(motherMotechId);
+        when(mockRegisterClientForm.getMotechId()).thenReturn(motherMotechId);
+        when(mockRegisterClientForm.getRegistrantType()).thenReturn(PatientType.CHILD_UNDER_FIVE);
+        when(formValidator.validateIfFacilityExists("212")).thenReturn(new ArrayList<FormError>());
+        when(formValidator.validateIfStaffExists("212")).thenReturn(new ArrayList<FormError>());
+        when(mockRegisterClientForm.getDateOfBirth()).thenReturn(DateUtil.newDate(2000,12,12).toDate());
+        when(mockRegisterClientForm.getRegistrationMode()).thenReturn(RegistrationType.USE_PREPRINTED_ID);
+        List<FormBean> formBeans = Arrays.<FormBean>asList(mockRegisterClientForm);
+        List<FormError> formErrors = registerClientFormValidator.validate(mockRegisterClientForm, new FormBeanGroup(formBeans), formBeans);
+        assertThat(formErrors, hasItem(new FormError("motherMotechId", Constants.MOTHER_CHILD_SAME_ERROR_MSG)));
     }
 
     @Test

@@ -5,6 +5,7 @@ import org.motechproject.model.Time;
 public class Constants {
     //security roles
     public static final String SECURITY_ROLE_SUPER = "System Developer";
+    public static final String SECURITY_ROLE_PROVIDER = "Provider";
 
     //person attributes
     public static final String PERSON_ATTRIBUTE_TYPE_EMAIL = "Email";
@@ -87,6 +88,7 @@ public class Constants {
     public static final String CHILD_AGE_MORE_ERR_MSG = "should be a child under age of 5";
 
     public static final String GENDER_ERROR_MSG = "should be female";
+    public static final String MOTHER_CHILD_SAME_ERROR_MSG = "cannot be same as child";
     // Mobile Midwife
     public static final Time MOBILE_MIDWIFE_MIN_TIMEOFDAY_FOR_VOICE = new Time(5, 0);
     public static final Time MOBILE_MIDWIFE_MAX_TIMEOFDAY_FOR_VOICE = new Time(23, 0);

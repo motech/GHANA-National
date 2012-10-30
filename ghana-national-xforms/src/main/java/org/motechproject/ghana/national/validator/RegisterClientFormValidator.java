@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.validator;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ghana.national.bean.RegisterClientForm;
+import org.motechproject.ghana.national.domain.Constants;
 import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.PatientType;
 import org.motechproject.ghana.national.domain.RegistrationType;
@@ -24,6 +25,7 @@ import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -60,8 +62,19 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
         formErrors.addAll(patientValidationErrors);
         formErrors.addAll(formValidator.validateNHISExpiry(formBean.getNhisExpires()));
         formErrors.addAll(validateMobileMidwifeIfEnrolled(formBean));
-
+        formErrors.addAll(validateIfParentIsNotSame(formBean));
         return formErrors;
+    }
+
+    public List<FormError> validateIfParentIsNotSame(RegisterClientForm registerClientForm) {
+        if(PatientType.CHILD_UNDER_FIVE.equals(registerClientForm.getRegistrantType()) &&
+                RegistrationType.USE_PREPRINTED_ID.equals(registerClientForm.getRegistrationMode()) &&
+                registerClientForm.getMotechId().equals(registerClientForm.getMotherMotechId())) {
+                    return new ArrayList<FormError>() {{
+                        add(new FormError("motherMotechId", Constants.MOTHER_CHILD_SAME_ERROR_MSG));
+                    }};
+        }
+        return new ArrayList<FormError>();
     }
 
     public PatientValidator patientValidator(FormWithHistoryInput formWithHistoryInput, RegistrationType registrationModeFromForm, Date dateOfBirthFromForm, String sexFromForm, PatientType registrantTypeFromForm, String motherMotechIdFromForm) {

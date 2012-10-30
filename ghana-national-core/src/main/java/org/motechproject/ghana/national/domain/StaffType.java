@@ -56,7 +56,15 @@ public class StaffType extends MotechBaseDataObject {
         HEALTH_EXTENSION_WORKER("HEW", Constants.SECURITY_ROLE_SUPER),
         HEALTH_PROMOTION_OFFICER("HPO", Constants.SECURITY_ROLE_SUPER),
         MOBILE_MIDWIFE_AGENT("MMA", Constants.SECURITY_ROLE_SUPER),
-        SUPER_ADMIN("Super Admin", Constants.SECURITY_ROLE_SUPER);
+        SUPER_ADMIN("Super Admin", Constants.SECURITY_ROLE_SUPER),
+        PRIVATE_HOSPITAL_MIDWIFE("Midwife", Constants.SECURITY_ROLE_SUPER),
+        PRIVATE_HOSPITAL_ASSISTANT_MIDWIFE("Assistant Midwife", Constants.SECURITY_ROLE_SUPER),
+        PRIVATE_HOSPITAL_PRINCIPAL_NURSING_OFFICER("Principal Nursing Officer", Constants.SECURITY_ROLE_SUPER),
+        PRIVATE_HOSPITAL_MEDICAL_SUPERINTENDENT("Medical Superintendent", Constants.SECURITY_ROLE_SUPER),
+        PRIVATE_HOSPITAL_WARD_ASSISTANT("Ward Assistant", Constants.SECURITY_ROLE_SUPER),
+        PRIVATE_HOSPITAL_NURSE("Nurse", Constants.SECURITY_ROLE_SUPER),
+        PRIVATE_HOSPITAL_NURSE_AID("Nurse Aid", Constants.SECURITY_ROLE_SUPER),
+        PRIVATE_HOSPITAL_HEALTH_AID("Health Aid", Constants.SECURITY_ROLE_SUPER);
 
         private String key;
         private String securityRole;
@@ -69,7 +77,7 @@ public class StaffType extends MotechBaseDataObject {
         public static String securityRoleFor(String key) {
             for (Role role : values())
                 if (role.key.equalsIgnoreCase(key)) return role.securityRole;
-            return null;
+            return Constants.SECURITY_ROLE_PROVIDER;
         }
 
         public static Boolean isAdmin(String roleName) {
