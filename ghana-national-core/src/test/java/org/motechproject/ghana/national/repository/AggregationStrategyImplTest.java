@@ -1,17 +1,24 @@
 package org.motechproject.ghana.national.repository;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ghana.national.messagegateway.domain.SMS;
+import org.motechproject.testing.utils.BaseUnitTest;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 
-public class AggregationStrategyImplTest {
+public class AggregationStrategyImplTest extends BaseUnitTest{
+
+    @Before
+    public void setUp() throws Exception {
+        super.mockCurrentDate(DateUtil.now());
+    }
 
     @Test
     public void shouldAggregateManySMSBasedOnWindowNames() {
@@ -32,10 +39,9 @@ public class AggregationStrategyImplTest {
             add(SMS.fromText("window3,milestoneName,motechId,serialNumber,firstName,lastName", "ph", null, null, alphabeticalOrder));
         }};
 
-        assertThat(aggregationStrategy.aggregate(messagesList),
-                is(equalTo("window1: firstName lastName, motechId, serialNumber, milestoneName1, milestoneName2" +
-                        "%0Awindow2: firstName lastName, motechId, serialNumber, milestoneName, firstName2 lastName3, " +
-                        "motechId2, serialNumber, milestoneName, firstName2 lastName3, motechId3, serialNumber, milestoneName" +
-                        "%0Awindow3: firstName lastName, motechId, serialNumber, milestoneName")));
+        final List<SMS> aggregatedSMSList = aggregationStrategy.aggregate(messagesList);
+        assertThat(aggregatedSMSList, hasItem(SMS.fromText("window1: firstName lastName, motechId, serialNumber, milestoneName1, milestoneName2", "ph", DateUtil.now(), null, null)));
+        assertThat(aggregatedSMSList, hasItem(SMS.fromText("window2: firstName lastName, motechId, serialNumber, milestoneName, firstName2 lastName3, motechId2, serialNumber, milestoneName, firstName2 lastName3, motechId3, serialNumber, milestoneName", "ph", DateUtil.now(), null, null)));
+        assertThat(aggregatedSMSList, hasItem(SMS.fromText("window3: firstName lastName, motechId, serialNumber, milestoneName", "ph", DateUtil.now(), null, null)));
     }
 }

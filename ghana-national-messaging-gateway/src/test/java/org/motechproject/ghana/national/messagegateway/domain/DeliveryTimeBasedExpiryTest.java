@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.messagegateway.domain;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
+import org.motechproject.ghana.national.messagegateway.repositories.MessageStore;
 import org.motechproject.model.Time;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;

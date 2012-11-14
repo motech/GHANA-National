@@ -52,6 +52,10 @@ public class Utility {
         return value != null ? value : defaultValue;
     }
 
+    public static <V> V nullSafe(List<V> list, int index, V defaultValue) {
+        return list != null && index < list.size() ? list.get(index) : defaultValue;
+    }
+
     public static <T> List<T> nullSafeList(T... items) {
         return nullSafeList(asList(items));
     }

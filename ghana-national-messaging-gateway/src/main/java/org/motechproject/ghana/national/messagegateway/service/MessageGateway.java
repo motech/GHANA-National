@@ -1,8 +1,8 @@
 package org.motechproject.ghana.national.messagegateway.service;
 
 
-import org.motechproject.ghana.national.messagegateway.domain.MessageStore;
 import org.motechproject.ghana.national.messagegateway.domain.Payload;
+import org.motechproject.ghana.national.messagegateway.domain.Store;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.Header;
 import org.springframework.stereotype.Service;
@@ -10,11 +10,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class MessageGateway {
 
-    @Autowired
-    private MessageStore messageStore;
+    private Store messageStore;
+
+    private MessageAggregatorGateway messageAggregatorGateway;
 
     @Autowired
-    private MessageAggregatorGateway messageAggregatorGateway;
+    public MessageGateway(Store messageStore, MessageAggregatorGateway messageAggregatorGateway) {
+        this.messageStore = messageStore;
+        this.messageAggregatorGateway = messageAggregatorGateway;
+    }
 
     public void dispatch(Payload payload, @Header("identifier") String identifier){
         messageAggregatorGateway.dispatch(payload, identifier);
