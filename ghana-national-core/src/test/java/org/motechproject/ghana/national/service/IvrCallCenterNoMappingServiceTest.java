@@ -39,13 +39,13 @@ public class IvrCallCenterNoMappingServiceTest {
                 new IVRCallCenterNoMapping().phoneNumber("phone_no3").language(Language.EN).dayOfWeek(DayOfWeek.Tuesday).startTime(new Time(10, 10)).endTime(new Time(10, 30))
         ));
 
-        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday,  new Time(10, 10), false), is(equalTo("phone_no1")));
-        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday,  new Time(10, 15), false), is(equalTo("phone_no1")));
-        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday,  new Time(10, 30), false), is(equalTo("phone_no1")));
-        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday,  new Time(10, 31), false), is(equalTo("phone_no2")));
-        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday,  new Time(11, 30), false), is(equalTo("phone_no2")));
+        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday,  new Time(10, 10), false).getPhoneNumber(), is(equalTo("phone_no1")));
+        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday,  new Time(10, 15), false).getPhoneNumber(), is(equalTo("phone_no1")));
+        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday,  new Time(10, 30), false).getPhoneNumber(), is(equalTo("phone_no1")));
+        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday,  new Time(10, 31), false).getPhoneNumber(), is(equalTo("phone_no2")));
+        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday,  new Time(11, 30), false).getPhoneNumber(), is(equalTo("phone_no2")));
         assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Monday,  new Time(9,  30), false), is(nullValue()));
-        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Tuesday, new Time(10, 30), false), is(equalTo("phone_no3")));
-        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(null, DayOfWeek.Monday,        new Time(10, 30), true), is(equalTo("phone_no4")));
+        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.EN, DayOfWeek.Tuesday, new Time(10, 30), false).getPhoneNumber(), is(equalTo("phone_no3")));
+        assertThat(ivrCallCenterNoMappingService.getCallCenterPhoneNumber(null, DayOfWeek.Monday,        new Time(10, 30), true).getPhoneNumber(), is(equalTo("phone_no4")));
     }
 }

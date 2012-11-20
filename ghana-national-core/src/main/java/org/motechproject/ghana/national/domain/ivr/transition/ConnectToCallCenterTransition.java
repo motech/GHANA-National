@@ -7,6 +7,7 @@ import org.motechproject.decisiontree.model.DialPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
+import org.motechproject.ghana.national.domain.IVRCallCenterNoMapping;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
@@ -15,6 +16,7 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.Time;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,6 +36,9 @@ public class ConnectToCallCenterTransition extends Transition {
 
     @JsonProperty
     private boolean nurseLine;
+
+    @Value("#{ghanaNationalProperties['sip.channel.name']}")
+    private String sipChannelName;
 
     // Required for Ektorp
     public ConnectToCallCenterTransition() {
@@ -56,14 +61,17 @@ public class ConnectToCallCenterTransition extends Transition {
 
     public Node getAsNode(Language language, String callerPhoneNumber) {
         DayOfWeek dayOfWeek = DayOfWeek.getDayOfWeek(DateUtil.today().dayOfWeek().get());
-        String callCenterPhoneNumber = ivrCallCenterNoMappingService.getCallCenterPhoneNumber(language, dayOfWeek, new Time(DateUtil.now().toLocalTime()), nurseLine);
+        IVRCallCenterNoMapping mapping = ivrCallCenterNoMappingService.getCallCenterPhoneNumber(language, dayOfWeek, new Time(DateUtil.now().toLocalTime()), nurseLine);
 
-        if (callCenterPhoneNumber == null) {
+        if (mapping == null) {
             return new Node().addPrompts(new AudioPrompt().setAudioFileUrl(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.value(), Language.EN)));
         }
 
-        DialPrompt callCenterDialPrompt = new DialPrompt(callCenterPhoneNumber);
+        DialPrompt callCenterDialPrompt = new DialPrompt(mapping.getPhoneNumber());
         callCenterDialPrompt.setCallerId(callerPhoneNumber);
+        if (mapping.isSipChannel()) {
+            callCenterDialPrompt.setChannel(sipChannelName);
+        }
         callCenterDialPrompt.setAction(ivrCallbackUrlBuilder.callCenterDialStatusUrl(language, callerPhoneNumber, nurseLine));
         return new Node().addPrompts(callCenterDialPrompt);
     }

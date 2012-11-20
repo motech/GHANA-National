@@ -47,7 +47,6 @@
 
 
     $callerid = strlen($agi['callerid']) == 9 ? "".$agi['callerid'] : "000".$agi['callerid'];
-    #$callerid = '540923923';
     $callback_url = "http://localhost/ghana-national-web/outgoing/call";
 
     if(($response = HttpClient::quickGet($callback_url."?callerid=".$callerid)) < 0)

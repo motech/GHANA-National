@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.web.ivr;
 
 
 import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
+import org.motechproject.ghana.national.domain.IVRCallCenterNoMapping;
 import org.motechproject.ghana.national.domain.IVRClipManager;
 import org.motechproject.ghana.national.domain.ivr.AudioPrompts;
 import org.motechproject.ghana.national.domain.mobilemidwife.Language;
@@ -34,7 +35,8 @@ public class CallCenterDialController {
     private String callCenterRedialIntervalInSec;
     private IVRCallbackUrlBuilder ivrCallbackUrlBuilder;
     private IvrCallCenterNoMappingService ivrCallCenterNoMappingService;
-
+    @Value("#{ghanaNationalProperties['sip.channel.name']}")
+    private String sipChannelName;
     @Autowired
     public CallCenterDialController(IVRClipManager ivrClipManager,
                                     @Value("#{verboiceProperties['callcenter.redial.interval.sec']}") String redialIntervalInSec,
@@ -73,8 +75,8 @@ public class CallCenterDialController {
 
     private String waitAndDial(String language, String callerPhoneNumber, boolean nurseLine) {
         DayOfWeek dayOfWeek = DayOfWeek.getDayOfWeek(DateUtil.today().dayOfWeek().get());
-        String callCenterPhoneNumber = ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.valueOf(language), dayOfWeek, new Time(DateUtil.now().toLocalTime()), nurseLine);
-        return (callCenterPhoneNumber != null) ? callCenterBusy(language, callCenterPhoneNumber, callerPhoneNumber, nurseLine) : callCenterClosed(language);
+        IVRCallCenterNoMapping mapping = ivrCallCenterNoMappingService.getCallCenterPhoneNumber(Language.valueOf(language), dayOfWeek, new Time(DateUtil.now().toLocalTime()), nurseLine);
+        return (mapping != null) ? callCenterBusy(language, mapping, callerPhoneNumber, nurseLine) : callCenterClosed(language);
     }
 
     private String callCenterClosed(String language) {
@@ -86,13 +88,16 @@ public class CallCenterDialController {
         return xml;
     }
 
-    private String callCenterBusy(String language, String callCenterPhoneNumber, String callerPhoneNumber, boolean nurseLine) {
+    private String callCenterBusy(String language, IVRCallCenterNoMapping mapping, String callerPhoneNumber, boolean nurseLine) {
         String url = ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_BUSY.getFileName(), valueOf(language));
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         xml = xml + "<Response>\n";
         xml = xml + "    <Play>" + url + "</Play>\n";
         xml = xml + "    <Pause length=\"" + callCenterRedialIntervalInSec + "\"/>";
-        xml = xml + "    <Dial callerId=\"" + callerPhoneNumber + "\" action=\"" + ivrCallbackUrlBuilder.callCenterDialStatusUrl(valueOf(language), callerPhoneNumber, nurseLine) + "\">" + callCenterPhoneNumber + "</Dial>";
+        xml = xml + "    <Dial callerId=\"" + callerPhoneNumber + "\" action=\""
+                + ivrCallbackUrlBuilder.callCenterDialStatusUrl(valueOf(language), callerPhoneNumber, nurseLine) + "\""
+                + (mapping.isSipChannel() ? " channel=\"" + sipChannelName + "\">" : ">")
+                + mapping.getPhoneNumber() + "</Dial>";
         xml = xml + "</Response>";
         return xml;
     }

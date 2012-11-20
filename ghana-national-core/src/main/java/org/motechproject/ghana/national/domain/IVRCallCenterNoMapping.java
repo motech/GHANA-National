@@ -23,6 +23,8 @@ public class IVRCallCenterNoMapping extends MotechBaseDataObject {
     private Time endTime;
     @JsonProperty
     private boolean nurseLine;
+    @JsonProperty
+    private boolean sipChannel;
 
     public IVRCallCenterNoMapping() {
     }
@@ -78,6 +80,15 @@ public class IVRCallCenterNoMapping extends MotechBaseDataObject {
 
     public IVRCallCenterNoMapping nurseLine(boolean b) {
         this.nurseLine = b;
+        return this;
+    }
+
+    public boolean isSipChannel() {
+        return sipChannel;
+    }
+
+    public IVRCallCenterNoMapping sipChannel(boolean sipChannel) {
+        this.sipChannel = sipChannel;
         return this;
     }
 }
