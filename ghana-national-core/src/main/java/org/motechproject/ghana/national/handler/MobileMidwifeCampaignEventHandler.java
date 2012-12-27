@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.handler;
 
 import org.motechproject.cmslite.api.model.ContentNotFoundException;
-import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.domain.SMS;
 import org.motechproject.ghana.national.domain.mobilemidwife.Medium;
 import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
@@ -9,8 +8,6 @@ import org.motechproject.ghana.national.service.MobileMidwifeService;
 import org.motechproject.ghana.national.service.PatientService;
 import org.motechproject.ghana.national.service.TextMessageService;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.openmrs.advice.ApiSession;
-import org.motechproject.openmrs.advice.LoginAsAdmin;
 import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.server.messagecampaign.EventKeys;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +27,6 @@ public class MobileMidwifeCampaignEventHandler {
     @Autowired
     private PatientService patientService;
 
-    @LoginAsAdmin
-    @ApiSession
     @MotechListener(subjects = {MESSAGE_CAMPAIGN_SEND_EVENT_SUBJECT})
     public void sendProgramMessage(MotechEvent event) throws ContentNotFoundException {
 
@@ -41,16 +36,15 @@ public class MobileMidwifeCampaignEventHandler {
         MobileMidwifeEnrollment enrollment = mobileMidwifeService.findActiveBy(patientId);
         String messageKey = (String) event.getParameters().get(EventKeys.MESSAGE_KEY);
 
-        sendMessage(patientId, enrollment, messageKey);
+        sendMessage(enrollment, messageKey);
         if (event.isLastEvent()) mobileMidwifeService.unregister(patientId);
     }
 
-    private void sendMessage(String patientId, MobileMidwifeEnrollment enrollment, String messageKey) throws ContentNotFoundException {
-        final Patient patient = patientService.getPatientByMotechId(patientId);
+    public void sendMessage(MobileMidwifeEnrollment enrollment, String messageKey) throws ContentNotFoundException {
 
         if (Medium.SMS.equals(enrollment.getMedium())) {
-            String template = textMessageService.getSMSTemplate(enrollment.getLanguage().name(),messageKey);
-            SMS sms = SMS.fromTemplate(template).fillPatientDetails(patient.getMotechId(), patient.getFirstName(), patient.getLastName());
+            String text = textMessageService.getSMSTemplate(enrollment.getLanguage().name(),messageKey);
+            SMS sms = SMS.fromSMSText(text);
             textMessageService.sendSMS(enrollment.getPhoneNumber(), sms);
         }
     }
