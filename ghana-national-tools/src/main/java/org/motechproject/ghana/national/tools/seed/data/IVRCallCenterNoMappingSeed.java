@@ -33,7 +33,8 @@ public class IVRCallCenterNoMappingSeed extends Seed {
             for (DayOfWeek weekDay : weekDays()) {
                 mappings.add(dayTime(weekDay, "0206369910", Language.EN));
                 mappings.add(dayTime(weekDay, "0509039932", Language.KAS));
-                mappings.add(dayTime(weekDay, "0509039934", Language.FAN));
+                //mappings.add(dayTime(weekDay, "0509039934", Language.FAN));
+                mappings.add(dayTime(weekDay, "0208516183", Language.FAN));
                 mappings.add(dayTime(weekDay, "0509039933", Language.NAN));
                 mappings.add(nurseLine(weekDay, "0208516182"));
                 mappings.add(evening(weekDay, "0544347554", Language.EN));
