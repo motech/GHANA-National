@@ -56,7 +56,7 @@ public class OutPatientVisitFormValidator extends FormValidator<OutPatientVisitF
     private List<FormError> validateIfDuplicateFormExists(OutPatientVisitForm outPatientVisitForm) {
         if (allMotechModuleOutPatientVisits.isDuplicate(new OutPatientVisitMapper().map(outPatientVisitForm))) {
             return new ArrayList<FormError>() {{
-                add(new FormError("OPV Form", IS_DUPLICATE));
+                add(new FormError("OPD Form", IS_DUPLICATE));
             }};
         }
         return new ArrayList<>();
