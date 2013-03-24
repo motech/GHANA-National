@@ -90,7 +90,27 @@
                     <label>Awutu Senya</label>
                     <value>awutu_senya</value>
                 </item>
+                <item id="gomoa_west" parent="cen">
+                    <label>Gomoa West</label>
+                    <value>goamoa_west</value>
+                </item>
                 <item id="cen_other" parent="cen">
+                    <label>Other</label>
+                    <value>Other</value>
+                </item>
+                <item id="dangme_east" parent="ga">
+                    <label>Dangme East</label>
+                    <value>dangme_east</value>
+                </item>
+                <item id="ga_other" parent="ga">
+                    <label>Other</label>
+                    <value>Other</value>
+                </item>
+                <item id="south_tongu" parent="vol">
+                    <label>South Tongu</label>
+                    <value>south_tongu</value>
+                </item>
+                <item id="vol_other" parent="vol">
                     <label>Other</label>
                     <value>Other</value>
                 </item>
