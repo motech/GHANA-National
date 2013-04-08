@@ -137,7 +137,7 @@ public class OutPatientVisitFormValidatorTest {
 
         errors = validator.validate(formBean, new FormBeanGroup(formsUploaded), formsUploaded);
 
-        assertThat(errors, hasItem(new FormError("OPV Form", IS_DUPLICATE)));
+        assertThat(errors, hasItem(new FormError("OPD Form", IS_DUPLICATE)));
 
     }
 
