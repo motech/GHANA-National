@@ -99,7 +99,7 @@
                     <value>Other</value>
                 </item>
                 <item id="dangme_east" parent="ga">
-                    <label>Dangme East</label>
+                    <label>Dangme East (DE)</label>
                     <value>dangme_east</value>
                 </item>
                 <item id="ga_other" parent="ga">
@@ -107,7 +107,7 @@
                     <value>Other</value>
                 </item>
                 <item id="south_tongu" parent="vol">
-                    <label>South Tongu</label>
+                    <label>South Tongu (ST)</label>
                     <value>south_tongu</value>
                 </item>
                 <item id="vol_other" parent="vol">
