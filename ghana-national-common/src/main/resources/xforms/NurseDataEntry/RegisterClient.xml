@@ -99,7 +99,7 @@
                     <value>Other</value>
                 </item>
                 <item id="dangme_east" parent="ga">
-                    <label>Dangme East (DE)</label>
+                    <label>Dangme East</label>
                     <value>dangme_east</value>
                 </item>
                 <item id="ga_other" parent="ga">
@@ -107,7 +107,7 @@
                     <value>Other</value>
                 </item>
                 <item id="south_tongu" parent="vol">
-                    <label>South Tongu (ST)</label>
+                    <label>South Tongu</label>
                     <value>south_tongu</value>
                 </item>
                 <item id="vol_other" parent="vol">
@@ -686,7 +686,7 @@
         <xf:bind id="region" nodeset="/patientRegistration/region" type="xsd:string" required="true()"
                  visible="true()"/>
         <xf:bind action="show" id="district" nodeset="/patientRegistration/district"
-                 relevant="/patientRegistration/region = 'ue' or /patientRegistration/region = 'cen'" visible="false()"
+                 relevant="/patientRegistration/region = 'ue' or /patientRegistration/region = 'cen' or /patientRegistration/region = 'ga'" visible="false()"
                  required="true()" type="xsd:string"/>
         <xf:bind id="subDistrict" nodeset="/patientRegistration/subDistrict" type="xsd:string" action="show"
                  relevant="/patientRegistration/district = 'knd' or /patientRegistration/district = 'kassena_nakana_west' or /patientRegistration/district = 'awutu_senya'"
