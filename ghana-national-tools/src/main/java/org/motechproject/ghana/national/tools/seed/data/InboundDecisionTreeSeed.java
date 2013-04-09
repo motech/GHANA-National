@@ -77,6 +77,7 @@ public class InboundDecisionTreeSeed extends Seed {
             Node node = prompt(REASON_FOR_CALL_PROMPT, language);
             Map<String, ITransition> transitions = new HashMap<String, ITransition>();
             transitions.put("1", new Transition().setDestinationNode(validateMotechIdNode(language, 3)));
+            transitions.put("2", new ConnectToCallCenterTransition(true)); //Added for it to route calls to the callcenter
             transitions.put("*", new ConnectToCallCenterTransition(true));
             transitions.put("0", new ConnectToCallCenterTransition(language));
             transitions.put("timeout", new ConnectToCallCenterTransition(language));
