@@ -43,6 +43,17 @@ public class PNCBabyForm extends FormBean {
     private Boolean bcg;
     private Boolean opv0;
     private String comments;
+    private String ITNusepreviousnight;
+
+    public String getITNusepreviousnight() {
+        return ITNusepreviousnight;
+    }
+
+    public void setITNusepreviousnight(String ITNusepreviousnight) {
+        this.ITNusepreviousnight = ITNusepreviousnight;
+    }
+
+
 
     public String getStaffId() {
         return staffId;

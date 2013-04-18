@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
+import org.apache.xpath.operations.String;
 import org.joda.time.DateTime;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
@@ -43,6 +44,91 @@ public class PNCMotherForm extends FormBean {
     @Required
     private Boolean maleInvolved;
     private String comments;
+
+    private String postpartum;
+    private String postpartumCounceled;
+    private String postpartumAccepted;
+    private String postpartumMethod;
+    private String postpartumFirstuse;
+    private String postpartumMenstruatedafterdelivery;
+    private String DOBChild;
+    private String ITNusedpreviousnight;
+    private String vvf;
+
+
+    public String getPostpartum() {
+        return postpartum;
+    }
+
+    public void setPostpartum(String postpartum) {
+        this.postpartum = postpartum;
+    }
+
+    public String getPostpartumCounceled() {
+        return postpartumCounceled;
+    }
+
+    public void setPostpartumCounceled(String postpartumCounceled) {
+        this.postpartumCounceled = postpartumCounceled;
+    }
+
+    public String getPostpartumAccepted() {
+        return postpartumAccepted;
+    }
+
+    public void setPostpartumAccepted(String postpartumAccepted) {
+        this.postpartumAccepted = postpartumAccepted;
+    }
+
+    public String getPostpartumMethod() {
+        return postpartumMethod;
+    }
+
+    public void setPostpartumMethod(String postpartumMethod) {
+        this.postpartumMethod = postpartumMethod;
+    }
+
+    public String getPostpartumFirstuse() {
+        return postpartumFirstuse;
+    }
+
+    public void setPostpartumFirstuse(String postpartumFirstuse) {
+        this.postpartumFirstuse = postpartumFirstuse;
+    }
+
+    public String getPostpartumMenstruatedafterdelivery() {
+        return postpartumMenstruatedafterdelivery;
+    }
+
+    public void setPostpartumMenstruatedafterdelivery(String postpartumMenstruatedafterdelivery) {
+        this.postpartumMenstruatedafterdelivery = postpartumMenstruatedafterdelivery;
+    }
+
+    public String getDOBChild() {
+        return DOBChild;
+    }
+
+    public void setDOBChild(String DOBChild) {
+        this.DOBChild = DOBChild;
+    }
+
+    public String getITNusedpreviousnight() {
+        return ITNusedpreviousnight;
+    }
+
+    public void setITNusedpreviousnight(String ITNusedpreviousnight) {
+        this.ITNusedpreviousnight = ITNusedpreviousnight;
+    }
+
+    public String getVvf() {
+        return vvf;
+    }
+
+    public void setVvf(String vvf) {
+        this.vvf = vvf;
+    }
+
+
 
     public String getStaffId() {
         return staffId;

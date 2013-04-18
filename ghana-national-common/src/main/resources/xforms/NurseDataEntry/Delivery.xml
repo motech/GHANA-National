@@ -35,6 +35,8 @@
         <child3FirstName/>
         <child3Weight/>
         <sender/>
+        <visitdate/>
+        <edd/>
         <formtype>data_entry</formtype>
         <formname>delivery</formname>
       </delivery>
@@ -71,6 +73,8 @@
     <xf:bind action="show" id="child3FirstName" nodeset="/delivery/child3FirstName" relevant="/delivery/child3Outcome = 'ALIVE'" type="xsd:string" visible="false()" required="false()"/>
     <xf:bind action="show" id="child3Weight" nodeset="/delivery/child3Weight" relevant="/delivery/child3Outcome = 'ALIVE'" required="true()" type="xsd:decimal" visible="false()" constraint=". &gt;= 0.2 and . &lt;= 11" message="Value out of range: must be between 0.2 and 11"/>
     <xf:bind action="show" constraint=". &lt; 2147483647" id="sender" message="Invalid phone number:  number too large" nodeset="/delivery/sender" relevant="/delivery/child1RegistrationType = 'AUTO_GENERATE_ID' or /delivery/child2RegistrationType = 'AUTO_GENERATE_ID' or /delivery/child3RegistrationType = 'AUTO_GENERATE_ID'" required="true()" type="xsd:int" visible="false()"/>
+    <xf:bind id="visitdate" nodeset="/delivery/visitdate" type="xsd:date" />
+    <xf:bind id="edd" nodeset="/delivery/edd" type="xsd:string" />
     <xf:bind id="formtype" nodeset="/delivery/formtype" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind id="formname" nodeset="/delivery/formname" required="true()" type="xsd:string" visible="false()"/>
   </xf:model>
@@ -407,6 +411,12 @@
     </xf:input>
     <xf:input bind="sender">
       <xf:label>Response phone number</xf:label>
+    </xf:input>
+    <xf:input bind="visitdate">
+        <xf:label>Date of arrival</xf:label>
+    </xf:input>
+    <xf:input bind="edd">
+        <xf:label>EDD</xf:label>
     </xf:input>
     <xf:input bind="formtype">
       <xf:label>formType</xf:label>

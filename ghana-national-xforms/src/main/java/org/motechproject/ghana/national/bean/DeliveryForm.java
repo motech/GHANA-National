@@ -67,6 +67,29 @@ public class DeliveryForm extends FormBean {
     @RegEx(pattern = PHONE_NO_PATTERN)
     private String sender;
 
+    private DateTime visitdate;
+    private String edd;
+
+
+    public DateTime getVisitdate() {
+        return visitdate;
+    }
+
+    public void setVisitdate(DateTime visitdate) {
+        this.visitdate = visitdate;
+    }
+
+    public String getEdd() {
+        return edd;
+    }
+
+    public void setEdd(String edd) {
+        this.edd = edd;
+    }
+
+
+
+
     public String getStaffId() {
         return staffId;
     }

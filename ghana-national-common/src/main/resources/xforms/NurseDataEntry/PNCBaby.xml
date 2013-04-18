@@ -21,6 +21,7 @@
         <bcg/>
         <opv0/>
         <comments/>
+        <ITNusepreviousnight/>
         <formtype>data_entry</formtype>
         <formname>pncBabyRequest</formname>
       </pncBabyRequest>
@@ -43,6 +44,7 @@
     <xf:bind id="bcg" nodeset="/pncBabyRequest/bcg" required="true()" type="xsd:string"/>
     <xf:bind id="opv0" nodeset="/pncBabyRequest/opv0" required="true()" type="xsd:string"/>
     <xf:bind id="comments" nodeset="/pncBabyRequest/comments" type="xsd:string"/>
+    <xf:bind id="ITNusepreviousnight" nodeset="/pncBabyRequest/ITNusepreviousnight" type="xsd:string"/>
     <xf:bind id="formtype" nodeset="/pncBabyRequest/formtype" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind id="formname" nodeset="/pncBabyRequest/formname" required="true()" type="xsd:string" visible="false()"/>
   </xf:model>
@@ -174,6 +176,17 @@
     <xf:input bind="comments">
       <xf:label>Comments</xf:label>
     </xf:input>
+    <xf:select1 bind="ITNusepreviousnight">
+        <xf:label>ITN Use The Prevoius Night</xf:label>
+        <xf:item id="Y">
+            <xf:label>Yes</xf:label>
+            <xf:value>Y</xf:value>
+        </xf:item>
+        <xf:item id="N">
+            <xf:label>No</xf:label>
+            <xf:value>N</xf:value>
+        </xf:item>
+    </xf:select1>
     <xf:input bind="formtype">
       <xf:label>formType</xf:label>
     </xf:input>
