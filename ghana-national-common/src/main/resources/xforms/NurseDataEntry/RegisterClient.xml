@@ -917,6 +917,10 @@
                 <xf:label>Child Under 5</xf:label>
                 <xf:value>CHILD_UNDER_FIVE</xf:value>
             </xf:item>
+            <xf:item id="MOTHER_OF_INFANT">
+                <xf:label>Mother of Infant</xf:label>
+                <xf:value>MOTHER_OF_INFANT</xf:value>
+            </xf:item>
             <xf:item id="OTHER">
                 <xf:label>Other</xf:label>
                 <xf:value>OTHER</xf:value>

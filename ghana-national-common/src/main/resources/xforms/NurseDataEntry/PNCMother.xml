@@ -21,15 +21,6 @@
         <temperature/>
         <fht/>
         <comments/>
-        <postpartum/>
-        <postpartumCounceled/>
-        <postpartumAccepted/>
-        <postpartumMethod/>
-        <postpartumFirstuse/>
-        <postpartumMenstruatedafterdelivery/>
-        <DOBChild/>
-        <ITNusedpreviousnight/>
-        <vvf/>
         <formtype>data_entry</formtype>
         <formname>pncMotherRequest</formname>
       </pncmother>
@@ -52,15 +43,6 @@
     <xf:bind constraint=". &gt;= 30 and . &lt;= 48" id="temperature" message="Value out of range: must be between 30 and 48" nodeset="/pncmother/temperature" type="xsd:decimal"/>
     <xf:bind constraint=". &gt;= 2 and . &lt;= 40" id="fht" message="Value out of range: must be between 2 and 40" nodeset="/pncmother/fht" type="xsd:decimal"/>
     <xf:bind id="comments" nodeset="/pncmother/comments" type="xsd:string"/>
-    <xf:bind id="postpartum" nodeset="/pncmother/postpartum"  required="true()" type="xsd:string"/>
-    <xf:bind action="show" id="postpartumCounceled" nodeset="/pncmother/postpartum" relevant="/pncmother/postpartum = 'Counseled'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="postpartumAccepted" nodeset="/pncmother/postpartumAccepted" relevant="/pncmother/postpartum = 'Accepted'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="postpartumMethod" nodeset="/pncmother/postpartumMethod" relevant="/pncmother/postpartum = 'Method'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="postpartumFirstuse" nodeset="/pncmother/postpartumFirstuse" relevant="/pncmother/postpartum = 'First_Ever_Use'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind action="show" id="postpartumMenstruatedafterdelivery" nodeset="/pncmother/postpartumMenstruatedafterdelivery" relevant="/pncmother/postpartum ='Menstruated_After_Delivery'" required="true()" type="xsd:string" visible="false()"/>
-    <xf:bind id="DOBChild" nodeset="/pncmother/DOBChild" type="xsd:datetime" required="true()"/>
-    <xf:bind id="ITNusedpreviousnight" nodeset="/pncmother/ITNusedpreviousnight" type="xsd:string" required="true()"/>
-    <xf:bind id="vvf" nodeset="/pncmother/vvf" type="xsd:string" required="true()"/>
     <xf:bind id="formtype" nodeset="/pncmother/formtype" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind id="formname" nodeset="/pncmother/formname" required="true()" type="xsd:string" visible="false()"/>
   </xf:model>
@@ -236,133 +218,6 @@
     <xf:input bind="comments">
       <xf:label>Comments</xf:label>
     </xf:input>
-    <xf:select1 bind="postpartum">
-        <xf:label>Postpartum Family Planning</xf:label>
-        <xf:item id="1">
-            <xf:label>Counseled</xf:label>
-            <xf:value>Counseled</xf:value>
-        </xf:item>
-        <xf:item id="2">
-            <xf:label>Accepted</xf:label>
-            <xf:value>Accepted</xf:value>
-        </xf:item>
-        <xf:item id="3">
-            <xf:label>Method</xf:label>
-            <xf:value>Method</xf:value>
-        </xf:item>
-        <xf:item id="4">
-            <xf:label>First Ever Use</xf:label>
-            <xf:value>First_Ever_Use</xf:value>
-        </xf:item>
-        <xf:item id="5">
-            <xf:label>Menstruated After Delivery</xf:label>
-            <xf:value>Menstruated_After_Delivery</xf:value>
-        </xf:item>
-    </xf:select1>
-    <xf:select1 bind="postpartumCounceled">
-        <xf:label>Counseled</xf:label>
-        <xf:item id="Y">
-            <xf:label>Yes</xf:label>
-            <xf:value>Y</xf:value>
-        </xf:item>
-        <xf:item id="N">
-            <xf:label>No</xf:label>
-            <xf:value>N</xf:value>
-        </xf:item>
-    </xf:select1>
-    <xf:select1 bind="postpartumAccepted">
-        <xf:label>Accepted</xf:label>
-        <xf:item id="Y">
-            <xf:label>Yes</xf:label>
-            <xf:value>Y</xf:value>
-        </xf:item>
-        <xf:item id="N">
-            <xf:label>No</xf:label>
-            <xf:value>N</xf:value>
-        </xf:item>
-    </xf:select1>
-    <xf:select1 bind="postpartumMethod">
-        <xf:label>Method</xf:label>
-        <xf:item id="1">
-            <xf:label>Depo</xf:label>
-            <xf:value>Depo</xf:value>
-        </xf:item>
-        <xf:item id="2">
-            <xf:label>Condom</xf:label>
-            <xf:value>Condom</xf:value>
-        </xf:item>
-        <xf:item id="3">
-            <xf:label>IUD</xf:label>
-            <xf:value>IUD</xf:value>
-        </xf:item>
-        <xf:item id="4">
-            <xf:label>Implant</xf:label>
-            <xf:value>Implant</xf:value>
-        </xf:item>
-        <xf:item id="5">
-            <xf:label>Pills</xf:label>
-            <xf:value>Pills</xf:value>
-        </xf:item>
-        <xf:item id="6">
-            <xf:label>Natural</xf:label>
-            <xf:value>Natural</xf:value>
-        </xf:item>
-        <xf:item id="7">
-            <xf:label>Others</xf:label>
-            <xf:value>Others</xf:value>
-        </xf:item>
-    </xf:select1>
-    <xf:select1 bind="postpartumFirstuse">
-        <xf:label>First Ever Use</xf:label>
-        <xf:item id="Y">
-            <xf:label>Yes</xf:label>
-            <xf:value>Y</xf:value>
-        </xf:item>
-        <xf:item id="N">
-            <xf:label>No</xf:label>
-            <xf:value>N</xf:value>
-        </xf:item>
-    </xf:select1>
-    <xf:select1 bind="postpartumMenstruatedafterdelivery">
-          <xf:label>Menstruated After Delivery</xf:label>
-          <xf:item id="Y">
-              <xf:label>Yes</xf:label>
-              <xf:value>N</xf:value>
-          </xf:item>
-          <xf:item id="N">
-              <xf:label>No</xf:label>
-              <xf:value>N</xf:value>
-          </xf:item>
-    </xf:select1>
-    <xf:input bind="DOBChild">
-        <xf:label>Child's Date of birth</xf:label>
-    </xf:input>
-    <xf:select1 bind="ITNusedpreviousnight">
-        <xf:label>ITN Use The Previous Night</xf:label>
-        <xf:item id="Y">
-            <xf:label>Yes</xf:label>
-            <xf:value>Y</xf:value>
-        </xf:item>
-        <xf:item id="N">
-            <xf:label>No</xf:label>
-            <xf:value>N</xf:value>
-        </xf:item>
-    </xf:select1>
-    <xf:select1 bind="vvf">
-        <xf:label>VVF</xf:label>
-        <xf:item id="1">
-            <xf:label>Seen</xf:label>
-            <xf:value>Seen</xf:value>
-        </xf:item>
-        <xf:item id="2">
-            <xf:label>Repaired</xf:label>
-            <xf:value>Repaired</xf:value>
-        </xf:item>
-        <xf:item id="3">
-            <xf:label>Referred</xf:label>
-            <xf:value>Referred</xf:value>
-        </xf:item>
-    </xf:select1>
     <xf:input bind="formtype">
       <xf:label>formType</xf:label>
     </xf:input>
