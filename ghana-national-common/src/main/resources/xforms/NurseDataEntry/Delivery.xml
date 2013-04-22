@@ -408,12 +408,6 @@
     <xf:input bind="sender">
       <xf:label>Response phone number</xf:label>
     </xf:input>
-    <xf:input bind="visitdate">
-        <xf:label>Date of arrival</xf:label>
-    </xf:input>
-    <xf:input bind="edd">
-        <xf:label>EDD</xf:label>
-    </xf:input>
     <xf:input bind="formtype">
       <xf:label>formType</xf:label>
     </xf:input>
