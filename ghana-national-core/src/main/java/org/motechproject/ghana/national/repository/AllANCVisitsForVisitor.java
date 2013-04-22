@@ -23,8 +23,9 @@ public class AllANCVisitsForVisitor {
                 "bp_systolic, bp_diastolic, weight, tt_dose, ipt_dose, ipt_reactive, itn_use, fht, fhr, " +
                 "urine_test_protein_positive, urine_test_glucose_positive, hemoglobin, vdrl_reactive, vdrl_treatment, " +
                 "dewormer, pmtct, pre_test_counseled, hiv_test_result, post_test_counseled, pmtct_treatment, location, " +
-                "house, community, referred, male_involved, next_anc_date, comments, staff_id, facility_id) values " +
-                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "house, community, referred, male_involved, next_anc_date, comments, staff_id, facility_id, vdl_treatment, " +
+                "hiv_treatment, gestation_age, counseled_on_fp, births) values " +
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 ancVisit.getSerialNumber(), new Date(), ancVisit.getVisitNumber(), ancVisit.getEstDeliveryDate(),
                 ancVisit.getBpSystolic(), ancVisit.getBpDiastolic(), ancVisit.getWeight(), ancVisit.getTtdose(),
                 ancVisit.getIptdose(), ancVisit.getIptReactive(), ancVisit.getItnUse(), ancVisit.getFht(), ancVisit.getFhr(),
@@ -33,7 +34,8 @@ public class AllANCVisitsForVisitor {
                 ancVisit.getPreTestCounseled(), ancVisit.getHivTestResult(), ancVisit.getPostTestCounseled(),
                 ancVisit.getPmtctTreament(), ancVisit.getLocation(), ancVisit.getHouse(), ancVisit.getCommunity(),
                 ancVisit.getReferred(), ancVisit.getMaleInvolved(), ancVisit.getNextANCDate(), ancVisit.getComments(),
-                ancVisit.getStaffId(), ancVisit.getFacilityId());
+                ancVisit.getStaffId(), ancVisit.getFacilityId(), ancVisit.getVdltreatment(), ancVisit.getHivtreatment(),
+                ancVisit.getGestationage(), ancVisit.getCounseledonfp(), ancVisit.getBirths());
     }
 }
 

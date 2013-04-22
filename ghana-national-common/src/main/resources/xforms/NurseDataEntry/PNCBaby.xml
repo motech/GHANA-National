@@ -20,8 +20,8 @@
         <babyConditionGood/>
         <bcg/>
         <opv0/>
-        <comments/>
         <ITNusepreviousnight/>
+        <comments/>
         <formtype>data_entry</formtype>
         <formname>pncBabyRequest</formname>
       </pncBabyRequest>
@@ -43,8 +43,8 @@
     <xf:bind id="babyConditionGood" nodeset="/pncBabyRequest/babyConditionGood" required="true()" type="xsd:string"/>
     <xf:bind id="bcg" nodeset="/pncBabyRequest/bcg" required="true()" type="xsd:string"/>
     <xf:bind id="opv0" nodeset="/pncBabyRequest/opv0" required="true()" type="xsd:string"/>
-    <xf:bind id="comments" nodeset="/pncBabyRequest/comments" type="xsd:string"/>
     <xf:bind id="ITNusepreviousnight" nodeset="/pncBabyRequest/ITNusepreviousnight" type="xsd:string"/>
+    <xf:bind id="comments" nodeset="/pncBabyRequest/comments" type="xsd:string"/>
     <xf:bind id="formtype" nodeset="/pncBabyRequest/formtype" required="true()" type="xsd:string" visible="false()"/>
     <xf:bind id="formname" nodeset="/pncBabyRequest/formname" required="true()" type="xsd:string" visible="false()"/>
   </xf:model>

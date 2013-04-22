@@ -59,15 +59,15 @@ public class CWCVisitForm extends FormBean {
     private String comments;
     private String measlesdose;
 
-    private Doubble growthmonitoringpercentage;
+    private Double growthmonitoringpercentage;
     private Date    growthmonitoringdate;
 
 
-    public Doubble getGrowthmonitoringpercentage() {
+    public Double getGrowthmonitoringpercentage() {
         return growthmonitoringpercentage;
     }
 
-    public void setGrowthmonitoringpercentage(Doubble growthmonitoringpercentage) {
+    public void setGrowthmonitoringpercentage(Double growthmonitoringpercentage) {
         this.growthmonitoringpercentage = growthmonitoringpercentage;
     }
 
