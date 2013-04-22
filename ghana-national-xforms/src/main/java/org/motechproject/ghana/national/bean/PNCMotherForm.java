@@ -1,6 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
-import org.apache.xpath.operations.String;
+import java.lang.String;
 import org.joda.time.DateTime;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
