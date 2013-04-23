@@ -241,6 +241,10 @@
                     <label>Fante</label>
                     <value>FAN</value>
                 </item>
+                <item id="EWE" parent="PERS_VOICE">
+                    <label>Ewe</label>
+                    <value>EWE</value>
+                </item>
                 <item id="EN" parent="PERS_TEXT">
                     <label>English</label>
                     <value>EN</value>
