@@ -1,6 +1,7 @@
 package org.motechproject.ghana.national.bean;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.map.ser.ArraySerializers;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
@@ -57,6 +58,27 @@ public class CWCVisitForm extends FormBean {
 
     private String comments;
     private String measlesdose;
+
+    private Double growthmonitoringpercentage;
+    private Date    growthmonitoringdate;
+
+
+    public Double getGrowthmonitoringpercentage() {
+        return growthmonitoringpercentage;
+    }
+
+    public void setGrowthmonitoringpercentage(Double growthmonitoringpercentage) {
+        this.growthmonitoringpercentage = growthmonitoringpercentage;
+    }
+
+    public Date getGrowthmonitoringdate() {
+        return growthmonitoringdate;
+    }
+
+    public void setGrowthmonitoringdate(Date growthmonitoringdate) {
+        this.growthmonitoringdate = growthmonitoringdate;
+    }
+
 
     public String getStaffId() {
         return staffId;

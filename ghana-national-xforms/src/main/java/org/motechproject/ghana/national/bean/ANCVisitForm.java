@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
+import java.lang.String;
 import org.motechproject.ghana.national.validator.field.MotechId;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.MaxLength;
@@ -101,6 +102,53 @@ public class ANCVisitForm extends FormBean {
 
     private String comments;
     private Boolean visitor;
+
+    private String vdltreatment;
+    private String hivtreatment;
+    private Integer gestationage;
+    private String counseledonfp;
+    private String births;
+
+    public String getVdltreatment() {
+        return vdltreatment;
+    }
+
+    public void setVdltreatment(String vdltreatment) {
+        this.vdltreatment = vdltreatment;
+    }
+
+    public String getHivtreatment() {
+        return hivtreatment;
+    }
+
+    public void setHivtreatment(String hivtreatment) {
+        this.hivtreatment = hivtreatment;
+    }
+
+    public Integer getGestationage() {
+        return gestationage;
+    }
+
+    public void setGestationage(Integer gestationage) {
+        this.gestationage = gestationage;
+    }
+
+    public String getCounseledonfp() {
+        return counseledonfp;
+    }
+
+    public void setCounseledonfp(String counseledonfp) {
+        this.counseledonfp = counseledonfp;
+    }
+
+    public String getBirths() {
+        return births;
+    }
+
+    public void setBirths(String births) {
+        this.births = births;
+    }
+
 
     public String getStaffId() {
         return staffId;

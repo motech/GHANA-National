@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.bean;
 
+import java.lang.String;
 import org.joda.time.DateTime;
 import org.motechproject.mobileforms.api.domain.FormBean;
 import org.motechproject.mobileforms.api.validator.annotations.RegEx;
@@ -43,6 +44,7 @@ public class PNCMotherForm extends FormBean {
     @Required
     private Boolean maleInvolved;
     private String comments;
+
 
     public String getStaffId() {
         return staffId;

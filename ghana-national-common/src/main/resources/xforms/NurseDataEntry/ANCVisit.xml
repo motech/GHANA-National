@@ -37,6 +37,11 @@
                 <referred/>
                 <maleInvolved/>
                 <nextANCDate/>
+                <vdltreatment/>
+                <hivtreatment/>
+                <gestationage/>
+                <counseledonfp/>
+                <births/>
                 <comments/>
                 <formtype>data_entry</formtype>
                 <formname>ancVisit</formname>
@@ -99,6 +104,11 @@
         <xf:bind id="maleInvolved" nodeset="/ancVisit/maleInvolved" required="true()" type="xsd:string"/>
         <xf:bind constraint=". &gt; 'today()'" id="nextANCDate" message="Invalid date: date must be in the future"
                  nodeset="/ancVisit/nextANCDate" required="true()" type="xsd:date"/>
+        <xf:bind id="vdltreatment" nodeset="/ancVisit/vdltreatment" type="xsd:string"/>
+        <xf:bind id="hivtreatment" nodeset="/ancVisit/hivtreatment" type="xsd:string"/>
+        <xf:bind id="gestationage" nodeset="/ancVisit/gestationage" type="xsd:int"/>
+        <xf:bind id="counseledonfp" nodeset="/ancVisit/counseledonfp" type="xsd:string"/>
+        <xf:bind id="births" nodeset="/ancVisit/births" type="xsd:string"/>
         <xf:bind id="comments" nodeset="/ancVisit/comments" type="xsd:string"/>
         <xf:bind id="formtype" nodeset="/ancVisit/formtype" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind id="formname" nodeset="/ancVisit/formname" required="true()" type="xsd:string" visible="false()"/>
@@ -451,6 +461,57 @@
         <xf:input bind="nextANCDate">
             <xf:label>Next ANC Date</xf:label>
         </xf:input>
+        <xf:select1 bind="vdltreatment">
+            <xf:label>VDL Treatment</xf:label>
+            <xf:item id="Y">
+                <xf:label>Yes</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+            <xf:item id="N">
+                <xf:label>No</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="hivtreatment">
+            <xf:label>HIV Treatment</xf:label>
+            <xf:item id="Y">
+                <xf:label>Yes</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+            <xf:item id="N">
+                <xf:label>No</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:input bind="gestationage">
+            <xf:label>Gestation age</xf:label>
+        </xf:input>
+        <xf:select1 bind="counseledonfp">
+            <xf:label>Counseled on FP</xf:label>
+            <xf:item id="Y">
+                <xf:label>Yes</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+            <xf:item id="N">
+                <xf:label>No</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:select1 bind="births">
+            <xf:label>Births</xf:label>
+            <xf:item id="live">
+                <xf:label>Live</xf:label>
+                <xf:value>1</xf:value>
+            </xf:item>
+            <xf:item id="freshstillbirth">
+                <xf:label>Fresh Still Birth</xf:label>
+                <xf:value>2</xf:value>
+            </xf:item>
+            <xf:item id="maceratedstillbirth">
+                <xf:label>Macerated Still Birth</xf:label>
+                <xf:value>3</xf:value>
+            </xf:item>
+        </xf:select1>
         <xf:input bind="comments">
             <xf:label>Comments</xf:label>
         </xf:input>

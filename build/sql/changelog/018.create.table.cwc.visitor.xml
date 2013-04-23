@@ -27,7 +27,8 @@
             <column name="facility_id" type="varchar(255)"/>
             <column name="vitamin_a_dose" type="varchar(255)"/>
             <column name="measles_dose" type="varchar(255)"/>
-
+            <column name="growth_monitoring_percentage" type="varchar(255)"/>
+            <column name="growth_monitoring_date" type="timestamp"/>
         </createTable>
         <addAutoIncrement tableName="cwc_visitor" columnName="cwc_visitor_id" columnDataType="int"/>
     </changeSet>

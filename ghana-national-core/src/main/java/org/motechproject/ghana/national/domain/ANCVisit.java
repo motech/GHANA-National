@@ -79,6 +79,17 @@ public class ANCVisit {
     
     private String facilityId;
 
+    private String vdltreatment;
+
+    private String hivtreatment;
+
+    private Integer gestationage;
+
+    private String counseledonfp;
+
+    private String births;
+
+
     public ANCVisit facility(Facility facility) {
         this.facility = facility;
         this.facilityId = (facility != null) ? facility.mrsFacilityId() : null;
@@ -402,5 +413,50 @@ public class ANCVisit {
 
     public String getFacilityId() {
         return facilityId;
+    }
+
+    public String getVdltreatment() {
+        return vdltreatment;
+    }
+
+    public ANCVisit vdlTreatment(String vdltreatment) {
+        this.vdltreatment = vdltreatment;
+        return this;
+    }
+
+    public String getHivtreatment() {
+        return hivtreatment;
+    }
+
+    public ANCVisit hivTreatment(String hivtreatment) {
+        this.hivtreatment = hivtreatment;
+        return this;
+    }
+
+    public Integer getGestationage() {
+        return gestationage;
+    }
+
+    public ANCVisit gestationAge(Integer gestationage) {
+        this.gestationage = gestationage;
+        return this;
+    }
+
+    public String getCounseledonfp() {
+        return counseledonfp;
+    }
+
+    public ANCVisit counseledOnFp(String counseledonfp) {
+        this.counseledonfp = counseledonfp;
+        return this;
+    }
+
+    public String getBirths() {
+        return births;
+    }
+
+    public ANCVisit Births(String births) {
+        this.births = births;
+        return this;
     }
 }
