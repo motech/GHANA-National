@@ -63,7 +63,6 @@ public class ANCVisitFormHandler {
                 .preTestCounseled(form.getPreTestCounseled()).hivTestResult(form.getHivTestResult()).postTestCounseled(form.getPostTestCounseled())
                 .pmtctTreament(form.getPmtctTreament()).location(form.getLocation()).house(form.getHouse()).community(form.getCommunity())
                 .referred(form.getReferred()).maleInvolved(form.getMaleInvolved()).nextANCDate(form.getNextANCDate())
-                .comments(form.getComments()).visitor(form.getVisitor()).vdlTreatment(form.getVdltreatment()).hivTreatment(form.getHivtreatment())
-                .gestationAge(form.getGestationage()).counseledOnFp(form.getCounseledonfp()).Births(form.getBirths());
+                .comments(form.getComments()).visitor(form.getVisitor());
     }
 }

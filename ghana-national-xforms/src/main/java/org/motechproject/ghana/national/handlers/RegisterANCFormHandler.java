@@ -41,8 +41,10 @@ public class RegisterANCFormHandler {
                     registerANCForm.getMotechId(), registrationDate, registerANCForm.getRegDateToday(),
                     registerANCForm.getAncRegNumber(), registerANCForm.getEstDeliveryDate(), registerANCForm.getHeight(),
                     registerANCForm.getGravida(), registerANCForm.getParity(), registerANCForm.getAddHistory(), registerANCForm.getDeliveryDateConfirmed(),
-                    registerANCForm.getANCCareHistories(), registerANCForm.getLastIPT(), registerANCForm.getLastTT(),
-                    registerANCForm.getLastIPTDate(), registerANCForm.getLastTTDate(), registerANCForm.getAddHistory());
+                    registerANCForm.getANCCareHistories(), registerANCForm.getLastIPT(), registerANCForm.getLastTT(), registerANCForm.getLastHbLevels(),registerANCForm.getLastMotherVitaminA(),
+                    registerANCForm.getLastIronOrFolate(),registerANCForm.getLastSyphilis(),registerANCForm.getLastMalaria(), registerANCForm.getLastDiarrhea(),registerANCForm.getLastPnuemonia(),
+                    registerANCForm.getLastIPTDate(), registerANCForm.getLastTTDate(), registerANCForm.getLastHbDate(),registerANCForm.getLastMotherVitaminADate(),registerANCForm.getLastIronOrFolateDate(),
+                    registerANCForm.getLastSyphilisDate(),registerANCForm.getLastMalariaDate(),registerANCForm.getLastDiarrheaDate(),registerANCForm.getLastPnuemoniaDate(), registerANCForm.getAddHistory());
 
             careService.enroll(ancvo);
             MobileMidwifeEnrollment mobileMidwifeEnrollment = registerANCForm.createMobileMidwifeEnrollment();

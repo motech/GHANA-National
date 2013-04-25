@@ -154,6 +154,7 @@
                 <xf:label>Pneumococcal</xf:label>
                 <xf:value>PNEUMOCOCCAL</xf:value>
             </xf:item>
+
         </xf:select>
         <xf:select1 bind="lastIPT">
             <xf:label>Last IPT for current ANC</xf:label>

@@ -40,11 +40,6 @@
             <column name="comments" type="varchar(255)"/>
             <column name="staff_id" type="varchar(255)"/>
             <column name="facility_id" type="varchar(255)"/>
-            <column name="vdl_treatment" type="varchar(255)"/>
-            <column name="hiv_treatment" type="varchar(255)"/>
-            <column name="gestation_age" type="int"/>
-            <column name="counseled_on_fp" type="varchar(255)"/>
-            <column name="births" type="varchar(255)"/>
         </createTable>
         <addAutoIncrement tableName="anc_visitor" columnName="anc_visitor_id" columnDataType="int"/>
     </changeSet>

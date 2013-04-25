@@ -61,9 +61,8 @@ public class CWCVisitFormHandler {
                 .rotavirusdose(form.getRotavirusdose()).pneumococcaldose(form.getPneumococcaldose()).cwcLocation(form.getCwcLocation())
                 .comments(form.getComments()).house(form.getHouse()).visitor(form.getVisitor())
                 .community(form.getCommunity()).immunizations(form.immunizations())
-                .vitaminadose(form.getVitaminadose()).measlesDose(form.getMeaslesdose())
-                .growthMonitoringPercentage(form.getGrowthmonitoringpercentage())
-                .growthMonitoringDate(form.getGrowthmonitoringdate());
+                .vitaminadose(form.getVitaminadose()).measlesDose(form.getMeaslesdose());
+
     }
 
 }

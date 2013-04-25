@@ -268,8 +268,18 @@ public class CareService {
     Set<MRSObservation> addObservationsOnANCHistory(ANCCareHistoryVO ancCareHistoryVO) {
         List<ANCCareHistory> capturedHistory = ancCareHistoryVO.getCareHistory();
         Set<MRSObservation> observations = new HashSet<MRSObservation>();
-        addObservation(capturedHistory, ANCCareHistory.IPT_SP, observations, ancCareHistoryVO.getLastIPTDate(), IPT.getName(), safeParseDouble(ancCareHistoryVO.getLastIPT()));
-        addObservation(capturedHistory, ANCCareHistory.TT, observations, ancCareHistoryVO.getLastTTDate(), TT.getName(), safeParseDouble(ancCareHistoryVO.getLastTT()));
+
+        if (capturedHistory != null && ancCareHistoryVO.getAddCareHistory()) {
+            addObservation(capturedHistory, ANCCareHistory.IPT_SP, observations, ancCareHistoryVO.getLastIPTDate(), IPT.getName(), safeParseDouble(ancCareHistoryVO.getLastIPT()));
+            addObservation(capturedHistory, ANCCareHistory.TT, observations, ancCareHistoryVO.getLastTTDate(), TT.getName(), safeParseDouble(ancCareHistoryVO.getLastTT()));
+            addObservation(capturedHistory, ANCCareHistory.HEMOGLOBIN, observations, ancCareHistoryVO.getLastHbDate(), HEMOGLOBIN.getName(), safeParseDouble(ancCareHistoryVO.getLastHbLevels()));
+            addObservation(capturedHistory, ANCCareHistory.VITA, observations, ancCareHistoryVO.getLastMotherVitaminADate(), VITA.getName(), ancCareHistoryVO.getLastMotherVitaminA());
+            addObservation(capturedHistory, ANCCareHistory.IRON_OR_FOLATE, observations, ancCareHistoryVO.getLastIronOrFolateDate(), IRON_OR_FOLATE.getName(), ancCareHistoryVO.getLastIronOrFolate());
+            addObservation(capturedHistory, ANCCareHistory.SYPHILIS, observations, ancCareHistoryVO.getLastSyphilisDate(), SYPHILIS.getName(), ancCareHistoryVO.getLastSyphilis());
+            addObservation(capturedHistory, ANCCareHistory.MALARIA_RAPID_TEST, observations, ancCareHistoryVO.getLastMalariaDate(), MALARIA_RAPID_TEST.getName(), ancCareHistoryVO.getLastMalaria());
+            addObservation(capturedHistory, ANCCareHistory.DIARRHEA, observations, ancCareHistoryVO.getLastDiarrheaDate(), DIARRHEA.getName(), ancCareHistoryVO.getLastDiarrhea());
+            addObservation(capturedHistory, ANCCareHistory.PNEUMOCOCCAL_A, observations, ancCareHistoryVO.getLastPnuemoniaDate(),PNEUMOCOCCAL.getName(), ancCareHistoryVO.getLastPnuemonia());
+        }
         return observations;
     }
 
