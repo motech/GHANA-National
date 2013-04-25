@@ -101,8 +101,10 @@ public class ANCController {
                 ancForm.getMotechPatientId(), ancForm.getRegistrationDate(), ancForm.getRegistrationToday(),
                 ancForm.getSerialNumber(), ancForm.getEstimatedDateOfDelivery(), ancForm.getHeight(),
                 ancForm.getGravida(), ancForm.getParity(), ancForm.getAddHistory(), ancForm.getDeliveryDateConfirmed(),
-                ancForm.getCareHistory(), ancForm.getLastIPT(), ancForm.getLastTT(),
-                ancForm.getLastIPTDate(), ancForm.getLastTTDate(), ancForm.getAddHistory());
+                ancForm.getCareHistory(), ancForm.getLastIPT(), ancForm.getLastTT(), ancForm.getLastHbLevels(), ancForm.getLastMotherVitaminA(), ancForm.getLastIronOrFolate(),
+                ancForm.getLastSyphilis(), ancForm.getLastMalaria(), ancForm.getLastDiarrhea(), ancForm.getLastPnuemonia(), ancForm.getLastIPTDate(), ancForm.getLastTTDate(),
+                ancForm.getLastHbDate(), ancForm.getLastMotherVitaminADate(), ancForm.getLastIronOrFolateDate(), ancForm.getLastSyphilisDate(), ancForm.getLastMalariaDate(),
+                ancForm.getLastDiarrheaDate(), ancForm.getLastPnuemoniaDate(), ancForm.getAddHistory());
     }
 
     private void addCareHistoryValues(ModelMap modelMap) {

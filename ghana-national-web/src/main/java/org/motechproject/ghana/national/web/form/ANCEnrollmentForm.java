@@ -27,6 +27,25 @@ public class ANCEnrollmentForm implements FormWithHistoryInput{
     private Date lastTTDate;
     private Date lastIPTDate;
 
+    //ANC CARE OBSERVATIONS
+    private String lastHbLevels;
+    private String lastMotherVitaminA;
+    private String lastIronOrFolate;
+    private String lastSyphilis;
+    private String lastMalaria;
+    private String lastDiarrhea;
+    private String lastPnuemonia;
+    private Date lastHbDate;
+    private Date lastMotherVitaminADate;
+    private Date lastIronOrFolateDate;
+    private Date lastSyphilisDate;
+    private Date lastMalariaDate;
+    private Date lastDiarrheaDate;
+    private Date lastPnuemoniaDate;
+
+
+
+
     public ANCEnrollmentForm() {
     }
 
@@ -176,11 +195,133 @@ public class ANCEnrollmentForm implements FormWithHistoryInput{
         this.registrationDate = registrationDate;
     }
 
+
+    public String getLastHbLevels() {
+        return lastHbLevels;
+    }
+
+    public void setLastHbLevels(String lastHbLevels) {
+        this.lastHbLevels = lastHbLevels;
+    }
+
+    public String getLastMotherVitaminA() {
+        return lastMotherVitaminA;
+    }
+
+    public void setLastMotherVitaminA(String lastMotherVitaminA) {
+        this.lastMotherVitaminA = lastMotherVitaminA;
+    }
+
+    public String getLastIronOrFolate() {
+        return lastIronOrFolate;
+    }
+
+    public void setLastIronOrFolate(String lastIronOrFolate) {
+        this.lastIronOrFolate = lastIronOrFolate;
+    }
+
+    public String getLastSyphilis() {
+        return lastSyphilis;
+    }
+
+    public void setLastSyphilis(String lastSyphilis) {
+        this.lastSyphilis = lastSyphilis;
+    }
+
+    public String getLastMalaria() {
+        return lastMalaria;
+    }
+
+    public void setLastMalaria(String lastMalaria) {
+        this.lastMalaria = lastMalaria;
+    }
+
+    public String getLastDiarrhea() {
+        return lastDiarrhea;
+    }
+
+    public void setLastDiarrhea(String lastDiarrhea) {
+        this.lastDiarrhea = lastDiarrhea;
+    }
+
+    public String getLastPnuemonia() {
+        return lastPnuemonia;
+    }
+
+    public void setLastPnuemonia(String lastPnuemonia) {
+        this.lastPnuemonia = lastPnuemonia;
+    }
+
+    public Date getLastHbDate() {
+        return lastHbDate;
+    }
+
+    public void setLastHbDate(Date lastHbDate) {
+        this.lastHbDate = lastHbDate;
+    }
+
+    public Date getLastMotherVitaminADate() {
+        return lastMotherVitaminADate;
+    }
+
+    public void setLastMotherVitaminADate(Date lastMotherVitaminADate) {
+        this.lastMotherVitaminADate = lastMotherVitaminADate;
+    }
+
+    public Date getLastIronOrFolateDate() {
+        return lastIronOrFolateDate;
+    }
+
+    public void setLastIronOrFolateDate(Date lastIronOrFolateDate) {
+        this.lastIronOrFolateDate = lastIronOrFolateDate;
+    }
+
+    public Date getLastMalariaDate() {
+        return lastMalariaDate;
+    }
+
+    public void setLastMalariaDate(Date lastMalariaDate) {
+        this.lastMalariaDate = lastMalariaDate;
+    }
+
+    public Date getLastSyphilisDate() {
+        return lastSyphilisDate;
+    }
+
+    public void setLastSyphilisDate(Date lastSyphilisDate) {
+        this.lastSyphilisDate = lastSyphilisDate;
+    }
+
+    public Date getLastDiarrheaDate() {
+        return lastDiarrheaDate;
+    }
+
+    public void setLastDiarrheaDate(Date lastDiarrheaDate) {
+        this.lastDiarrheaDate = lastDiarrheaDate;
+    }
+
+    public Date getLastPnuemoniaDate() {
+        return lastPnuemoniaDate;
+    }
+
+    public void setLastPnuemoniaDate(Date lastPnuemoniaDate) {
+        this.lastPnuemoniaDate = lastPnuemoniaDate;
+    }
+
+
+
     @Override
     public HashMap<String, Date> getHistoryDatesMap(){
         return new HashMap<String, Date>(){{
             put("lastIPTDate",lastIPTDate);
             put("lastTTDate",lastTTDate);
+            put("lastHbDate",lastHbDate);
+            put("lastMotherVitaminADate",lastMotherVitaminADate);
+            put("lastIronOrFolateDate",lastIronOrFolateDate);
+            put("lastSyphilisDate",lastSyphilisDate);
+            put("lastMalariaDate",lastMalariaDate);
+            put("lastDiarrheaDate",lastDiarrheaDate);
+            put("lastPnuemoniaDate",lastPnuemoniaDate);
         }};
     }
 
