@@ -24,6 +24,8 @@
                 <cwcLocation/>
                 <house/>
                 <community/>
+                <growthmonitoringPercentage/>
+                <growthmonitoringDate/>
                 <comments/>
                 <formtype>data_entry</formtype>
                 <formname>cwcVisit</formname>
@@ -70,6 +72,8 @@
                  type="xsd:string" visible="false()"/>
         <xf:bind action="show" id="community" nodeset="/child/community" relevant="/child/cwcLocation = '2'"
                  required="true()" type="xsd:string" visible="false()"/>
+        <xf:bind id="growthmonitoringPercentage" nodeset="/child/growthmonitoringPercentage" type="xsd:decimal"/>
+        <xf:bind id="growthmonitoringDate" nodeset="/child/growthmonitoringDate" type="xsd:date"/>
         <xf:bind id="comments" nodeset="/child/comments" type="xsd:string"/>
         <xf:bind id="formtype" nodeset="/child/formtype" required="true()" type="xsd:string" visible="false()"/>
         <xf:bind id="formname" nodeset="/child/formname" required="true()" type="xsd:string" visible="false()"/>
@@ -298,6 +302,12 @@
         </xf:input>
         <xf:input bind="community">
             <xf:label>Community</xf:label>
+        </xf:input>
+        <xf:input bind="growthmonitoringPercentage">
+            <xf:label>Growth monitoring percent</xf:label>
+        </xf:input>
+        <xf:input bind="growthmonitoringDate">
+            <xf:label>Growth monitoring date</xf:label>
         </xf:input>
         <xf:input bind="comments">
             <xf:label>Comments</xf:label>

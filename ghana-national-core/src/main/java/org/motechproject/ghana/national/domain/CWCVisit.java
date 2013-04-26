@@ -57,6 +57,31 @@ public class CWCVisit {
     
     private String measlesDose;
 
+    private Double growthmonitoringPercentage;
+
+    private Date   growthmonitoringDate;
+
+
+
+    public Double getGrowthmonitoringPercentage() {
+        return growthmonitoringPercentage;
+    }
+
+    public Date getGrowthmonitoringDate() {
+        return growthmonitoringDate;
+    }
+
+
+    public CWCVisit growthmonitoringPercentage(Double growthmonitoringPercentage) {
+        this.growthmonitoringPercentage = growthmonitoringPercentage;
+        return  this;
+    }
+
+    public CWCVisit growthmonitoringDate(Date growthmonitoringDate) {
+        this.growthmonitoringDate = growthmonitoringDate;
+        return this;
+    }
+
 
     public MRSUser getStaff() {
         return staff;
