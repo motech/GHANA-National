@@ -124,6 +124,7 @@ public class ANCController {
         modelMap.put("lastIPT", lastIPTValues);
         modelMap.put("lastTT", lastTTValues);
 
+
         modelMap.mergeAttributes(facilityHelper.locationMap());
     }
 }

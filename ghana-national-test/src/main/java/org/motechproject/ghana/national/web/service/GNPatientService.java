@@ -82,7 +82,7 @@ public class GNPatientService {
     @ApiSession
     public void enrollForANCWithoutHistory(String staffMotechId, String facilityMrsId, String patientMotechId, Date regDate, String serialNumber, Date edd) throws ObservationNotFoundException {
         careService.enroll(new ANCVO(staffMotechId, facilityMrsId, patientMotechId, regDate,
-                RegistrationToday.TODAY, serialNumber, edd, 155.0, 1, 1, Boolean.FALSE, null, null, null, null, null, null, null));
+                RegistrationToday.TODAY, serialNumber, edd, 155.0, 1, 1, Boolean.FALSE, null, null, null, null, null, null, null,null, null, null, null, null, null, null, null, null, null, null, null, null, null));
     }
 
     @LoginAsAdmin
