@@ -224,6 +224,7 @@ public class CareServiceTest extends BaseUnitTest {
         Date ttDate = DateUtil.newDate(estimatedDateOfDelivery).plusWeeks(3).toDate();
         Integer tt = 4;
         Integer ipt = 3;
+
         final ANCVO ancvo = createTestANCVO(ipt.toString(), iptDate, tt.toString(), ttDate, RegistrationToday.IN_PAST, registrationDate, facilityId,
                 staffUserId, patientMotechId, Arrays.asList(ANCCareHistory.values()), estimatedDateOfDelivery, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
@@ -598,13 +599,13 @@ public class CareServiceTest extends BaseUnitTest {
         final String lastPnuemonia = "No";
         final Date ttDate = DateUtil.newDate(2011, 12, 23).toDate();
         final Date iptDate = DateUtil.newDate(2011, 1, 2).toDate();
-        final Date lastHbDate = DateUtil.newDate(2011, 1, 2).toDate();
-        final Date lastMotherVitaminADate  = DateUtil.newDate(2011, 1, 2).toDate();
-        final Date lastIronOrFolateDate  = DateUtil.newDate(2011, 1, 2).toDate();
-        final Date lastSyphilisDate  = DateUtil.newDate(2011, 1, 2).toDate();
-        final Date lastMalariaDate  = DateUtil.newDate(2011, 1, 2).toDate();
-        final Date lastDiarrheaDate  = DateUtil.newDate(2011, 1, 2).toDate();
-        final Date lastPnuemoniaDate  = DateUtil.newDate(2011, 1, 2).toDate();
+        final Date lastHbDate = DateUtil.newDate(2013, 4, 29).toDate();
+        final Date lastMotherVitaminADate  = DateUtil.newDate(2013, 4, 29).toDate();
+        final Date lastIronOrFolateDate  = DateUtil.newDate(2013, 4, 29).toDate();
+        final Date lastSyphilisDate  = DateUtil.newDate(2013, 4, 29).toDate();
+        final Date lastMalariaDate  = DateUtil.newDate(2013, 4, 29).toDate();
+        final Date lastDiarrheaDate  = DateUtil.newDate(2013, 4, 29).toDate();
+        final Date lastPnuemoniaDate  = DateUtil.newDate(2013, 4, 29).toDate();
         String staffId = "staff id";
         String facilityId = "facility id";
         String patientMotechId = "patient motech id";
