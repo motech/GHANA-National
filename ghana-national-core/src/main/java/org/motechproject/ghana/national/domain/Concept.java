@@ -88,7 +88,7 @@ public enum Concept {
     LOCHIA_EXCESS_AMOUNT("LOCHIA EXCESS AMOUNT"),
     SYPHILIS("SYPHILIS TEST (VDRL)"),
     DIARRHEA("DIARRHEA"),
-    IRON_OR_FOLATE("Iron or Folate Level");
+    IRON_OR_FOLATE("IRON OR FOLATE LEVEL");
 
     private String name;
 
