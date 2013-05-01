@@ -156,7 +156,7 @@ public class CareService {
 
         Set<MRSObservation> pregnancyObservations = registerPregnancy(ancVO, patient);
         allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), ANC_REG_VISIT.value(), ancVO.getRegistrationDate(), prepareObservations(ancVO));
-        allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), ancVO.getRegistrationDate(), pregnancyObservations);
+        allEncounters.persistEncounter(patient.getMrsPatient(), ancVO.getStaffId(), ancVO.getFacilityId(), PREG_REG_VISIT.value(), ancVO.getRegistrationDate(), prepareObservations(ancVO));
 
 
         ActiveCareSchedules activeCareSchedules = activeCareSchedules(patient, Arrays.asList(TT_VACCINATION.getName(), ANC_IPT_VACCINE.getName()));
