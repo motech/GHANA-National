@@ -11,23 +11,24 @@ public class ANCCareHistoryVO {
     List<ANCCareHistory> careHistory;
     String lastIPT;
     String lastTT;
-    String lastHbLevels;
-    String lastMotherVitaminA;
-    String lastIronOrFolate;
-    String lastSyphilis;
-    String lastMalaria;
-    String lastDiarrhea;
-    String lastPnuemonia;
+
+    private String lastHbLevels;
+    private String lastMotherVitaminA;
+    private String lastIronOrFolate;
+    private String lastSyphilis;
+    private String lastMalaria;
+    private String lastDiarrhea;
+    private String lastPnuemonia;
 
     Date lastTTDate;
     Date lastIPTDate;
-    Date lastHbDate;
-    Date lastMotherVitaminADate;
-    Date lastIronOrFolateDate;
-    Date lastSyphilisDate;
-    Date lastMalariaDate;
-    Date lastDiarrheaDate;
-    Date lastPnuemoniaDate;
+    private   Date lastHbDate;
+    private Date lastMotherVitaminADate;
+    private Date lastIronOrFolateDate;
+    private Date lastSyphilisDate;
+    private Date lastMalariaDate;
+    private Date lastDiarrheaDate;
+    private Date lastPnuemoniaDate;
 
     public ANCCareHistoryVO(Boolean addCareHistory, List<ANCCareHistory> careHistory, String lastIPT, String lastTT, String lastHbLevels, String lastMotherVitaminA,
             String lastIronOrFolate, String lastSyphilis, String lastMalaria, String lastDiarrhea,String lastPnuemonia, Date lastIPTDate, Date lastTTDate,
