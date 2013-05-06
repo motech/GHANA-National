@@ -264,6 +264,13 @@ public class CareService {
         }
     }
 
+   // private void addObservationIfWithinPregnancyPeriod_New(MRSObservation activePregnancy, Concept concept, Date observationDate, String observationValue, Date edd) {
+
+   //     if (isWithinCurrentPregnancyPeriod(observationDate, edd)) {
+   //         addDependentObservation(activePregnancy, observationDate, concept.getName(), observationValue);
+   //     }
+  //  }
+
     private boolean isWithinCurrentPregnancyPeriod(Date observationDate, Date edd) {
         if (edd != null) {
             LocalDate dateOfConception = Pregnancy.basedOnDeliveryDate(DateUtil.newDate(edd)).dateOfConception();

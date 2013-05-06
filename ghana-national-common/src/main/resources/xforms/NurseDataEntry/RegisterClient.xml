@@ -1663,11 +1663,11 @@
             <xf:label>Has Taken Vita A</xf:label>
             <xf:item id="1">
                 <xf:label>Blue</xf:label>
-                <xf:value>blue</xf:value>
+                <xf:value>1</xf:value>
             </xf:item>
             <xf:item id="2">
                 <xf:label>Red</xf:label>
-                <xf:value>red</xf:value>
+                <xf:value>2</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="lastMotherVitaminADate">

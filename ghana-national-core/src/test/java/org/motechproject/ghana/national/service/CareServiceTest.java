@@ -234,7 +234,7 @@ public class CareServiceTest extends BaseUnitTest {
         Integer tt = 4;
         Integer ipt = 3;
         String lastHbLevels = "12";
-        String lastMotherVitaminA = "Blue";
+        String lastMotherVitaminA = "1";
         String lastIronOrFolate = "Yes";
         String lastSyphilis = "Yes";
         String lastMalaria = "Yes";
@@ -513,7 +513,7 @@ public class CareServiceTest extends BaseUnitTest {
         final Date iptDate = DateUtil.newDate(2011, 1, 2).toDate();
 
         final String lastHbLevels = "12";
-        final String lastMotherVitaminA = "Blue";
+        final String lastMotherVitaminA = "1";
         final String lastIronOrFolate = "Yes";
         final String lastSyphilis = "Yes";
         final String lastMalaria = "Yes";
@@ -612,7 +612,7 @@ public class CareServiceTest extends BaseUnitTest {
         final String ttDose = "1";
         final String iptDose = "2";
         final String lastHbLevels = "12";
-        final String lastMotherVitaminA = "Blue";
+        final String lastMotherVitaminA = "1";
         final String lastIronOrFolate = "Yes";
         final String lastSyphilis = "Yes";
         final String lastMalaria = "Yes";
@@ -680,7 +680,7 @@ public class CareServiceTest extends BaseUnitTest {
         final String ttDose = "1";
         final String iptDose = "2";
         final String lastHbLevels = "12";
-        final String lastMotherVitaminA = "Blue";
+        final String lastMotherVitaminA = "1";
         final String lastIronOrFolate = "Yes";
         final String lastSyphilis = "Yes";
         final String lastMalaria = "Yes";
@@ -761,7 +761,7 @@ public class CareServiceTest extends BaseUnitTest {
         final String ttDose = "1";
         final String iptDose = "2";
         final String lastHbLevels = "12";
-        final String lastMotherVitaminA = "Blue";
+        final String lastMotherVitaminA = "1";
         final String lastIronOrFolate = "Yes";
         final String lastSyphilis = "Yes";
         final String lastMalaria = "Yes";
@@ -815,7 +815,7 @@ public class CareServiceTest extends BaseUnitTest {
         final String ttDose = "1";
         final String iptDose = "2";
         final String lastHbLevels = "12";
-        final String lastMotherVitaminA = "Blue";
+        final String lastMotherVitaminA = "1";
         final String lastIronOrFolate = "Yes";
         final String lastSyphilis = "Yes";
         final String lastMalaria = "Yes";
@@ -870,7 +870,7 @@ public class CareServiceTest extends BaseUnitTest {
         final String ttDose = "1";
         final String iptDose = "2";
         final String lastHbLevels = "12";
-        final String lastMotherVitaminA = "Blue";
+        final String lastMotherVitaminA = "1";
         final String lastIronOrFolate = "Yes";
         final String lastSyphilis = "Yes";
         final String lastMalaria = "Yes";
