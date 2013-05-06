@@ -108,7 +108,7 @@ public class ANCController {
     }
 
     private void addCareHistoryValues(ModelMap modelMap) {
-        modelMap.put("careHistories", Arrays.asList(ANCCareHistory.TT.name(), ANCCareHistory.IPT_SP.name()));
+        modelMap.put("careHistories", Arrays.asList(ANCCareHistory.TT.name(), ANCCareHistory.IPT_SP.name(),ANCCareHistory.HEMOGLOBIN.name(), ANCCareHistory.VITA.name(), ANCCareHistory.IRON_OR_FOLATE.name(), ANCCareHistory.SYPHILIS.name(), ANCCareHistory.MALARIA_RAPID_TEST.name(), ANCCareHistory.DIARRHEA.name(), ANCCareHistory.PNEUMOCOCCAL_A.name()));
         HashMap<Integer, String> lastIPTValues = new LinkedHashMap<Integer, String>();
         lastIPTValues.put(1, "IPT 1");
         lastIPTValues.put(2, "IPT 2");

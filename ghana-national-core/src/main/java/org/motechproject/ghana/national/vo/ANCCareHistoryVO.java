@@ -11,7 +11,6 @@ public class ANCCareHistoryVO {
     List<ANCCareHistory> careHistory;
     String lastIPT;
     String lastTT;
-
     private String lastHbLevels;
     private String lastMotherVitaminA;
     private String lastIronOrFolate;
@@ -22,7 +21,7 @@ public class ANCCareHistoryVO {
 
     Date lastTTDate;
     Date lastIPTDate;
-    private   Date lastHbDate;
+    private Date lastHbDate;
     private Date lastMotherVitaminADate;
     private Date lastIronOrFolateDate;
     private Date lastSyphilisDate;

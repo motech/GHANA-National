@@ -105,7 +105,7 @@ public class PatientRegistrationFormHandler {
 
             careService.enroll(ancVO);
         }
-        if (PatientType.PREGNANT_MOTHER.equals(registerClientForm.getRegistrantType())) {
+        if (PatientType.MOTHER_OF_INFANT.equals(registerClientForm.getRegistrantType())) {
             ANCVO ancVO = new ANCVO(registerClientForm.getStaffId(), facilityId, patientMotechId, registerClientForm.getDate()
                     , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),
                     registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), registerClientForm.getAncCareHistories(), registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
