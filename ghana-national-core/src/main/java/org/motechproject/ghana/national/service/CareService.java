@@ -244,13 +244,13 @@ public class CareService {
             Date edd = getEDD(ancVO.getPatientMotechId());
             addObservationIfWithinPregnancyPeriod(activePregnancy, IPT, ancCareHistoryVO.getLastIPTDate(), safeParseDouble(ancCareHistoryVO.getLastIPT()), edd);
             addObservationIfWithinPregnancyPeriod(activePregnancy, TT, ancCareHistoryVO.getLastTTDate(), safeParseDouble(ancCareHistoryVO.getLastTT()), edd);
-            addObservationIfWithinPregnancyPeriod_New(activePregnancy, HEMOGLOBIN, ancCareHistoryVO.getLastHbDate(), safeToString(ancCareHistoryVO.getLastHbLevels()), edd);
-            addObservationIfWithinPregnancyPeriod_New(activePregnancy, VITA, ancCareHistoryVO.getLastMotherVitaminADate(), safeToString(ancCareHistoryVO.getLastMotherVitaminA()), edd);
-            addObservationIfWithinPregnancyPeriod_New(activePregnancy, IRON_OR_FOLATE, ancCareHistoryVO.getLastIronOrFolateDate(), safeToString(ancCareHistoryVO.getLastIronOrFolate()), edd);
-            addObservationIfWithinPregnancyPeriod_New(activePregnancy, SYPHILIS, ancCareHistoryVO.getLastSyphilisDate(), safeToString(ancCareHistoryVO.getLastSyphilis()), edd);
-            addObservationIfWithinPregnancyPeriod_New(activePregnancy, MALARIA_RAPID_TEST, ancCareHistoryVO.getLastMalariaDate(), safeToString(ancCareHistoryVO.getLastMalaria()), edd);
-            addObservationIfWithinPregnancyPeriod_New(activePregnancy, DIARRHEA, ancCareHistoryVO.getLastDiarrheaDate(), safeToString(ancCareHistoryVO.getLastDiarrhea()), edd);
-            addObservationIfWithinPregnancyPeriod_New(activePregnancy, PNEUMOCOCCAL, ancCareHistoryVO.getLastPnuemoniaDate(), safeToString(ancCareHistoryVO.getLastPnuemonia()), edd);
+            addObservationIfWithinPregnancyPeriod(activePregnancy, HEMOGLOBIN, ancCareHistoryVO.getLastHbDate(), safeParseDouble(ancCareHistoryVO.getLastHbLevels()), edd);
+            addObservationIfWithinPregnancyPeriod(activePregnancy, VITA, ancCareHistoryVO.getLastMotherVitaminADate(), safeParseDouble(ancCareHistoryVO.getLastMotherVitaminA()), edd);
+            addObservationIfWithinPregnancyPeriod(activePregnancy, IRON_OR_FOLATE, ancCareHistoryVO.getLastIronOrFolateDate(), safeParseDouble(ancCareHistoryVO.getLastIronOrFolate()), edd);
+            addObservationIfWithinPregnancyPeriod(activePregnancy, SYPHILIS, ancCareHistoryVO.getLastSyphilisDate(), safeParseDouble(ancCareHistoryVO.getLastSyphilis()), edd);
+            addObservationIfWithinPregnancyPeriod(activePregnancy, MALARIA_RAPID_TEST, ancCareHistoryVO.getLastMalariaDate(), safeParseDouble(ancCareHistoryVO.getLastMalaria()), edd);
+            addObservationIfWithinPregnancyPeriod(activePregnancy, DIARRHEA, ancCareHistoryVO.getLastDiarrheaDate(), safeParseDouble(ancCareHistoryVO.getLastDiarrhea()), edd);
+            addObservationIfWithinPregnancyPeriod(activePregnancy, PNEUMOCOCCAL, ancCareHistoryVO.getLastPnuemoniaDate(), safeParseDouble(ancCareHistoryVO.getLastPnuemonia()), edd);
         }
         Set<MRSObservation> mrsObservations = new HashSet<MRSObservation>();
         mrsObservations.add(activePregnancy);
@@ -262,13 +262,6 @@ public class CareService {
         if (isWithinCurrentPregnancyPeriod(observationDate, edd)) {
             addDependentObservation(activePregnancy, observationDate, concept.getName(), observationValue);
         }
-    }
-
-    private void addObservationIfWithinPregnancyPeriod_New(MRSObservation activePregnancy, Concept concept, Date observationDate, String observationValue, Date edd) {
-
-        if (isWithinCurrentPregnancyPeriod(observationDate, edd)) {
-            addDependentObservation(activePregnancy, observationDate, concept.getName(), observationValue);
-       }
     }
 
     private boolean isWithinCurrentPregnancyPeriod(Date observationDate, Date edd) {
@@ -414,13 +407,13 @@ public class CareService {
 
                 addObservationIfWithinPregnancyPeriod(activePregnancyObservation, TT, ancCareHistoryVO.getLastTTDate(), safeParseDouble(ancCareHistoryVO.getLastTT()), edd);
                 addObservationIfWithinPregnancyPeriod(activePregnancyObservation, IPT, ancCareHistoryVO.getLastIPTDate(), safeParseDouble(ancCareHistoryVO.getLastIPT()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, HEMOGLOBIN, ancCareHistoryVO.getLastHbDate(), safeToString(ancCareHistoryVO.getLastHbLevels()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, VITA, ancCareHistoryVO.getLastMotherVitaminADate(), safeToString(ancCareHistoryVO.getLastMotherVitaminA()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, IRON_OR_FOLATE, ancCareHistoryVO.getLastIronOrFolateDate(), safeToString(ancCareHistoryVO.getLastIronOrFolate()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, SYPHILIS, ancCareHistoryVO.getLastSyphilisDate(), safeToString(ancCareHistoryVO.getLastSyphilis()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, MALARIA_RAPID_TEST, ancCareHistoryVO.getLastMalariaDate(), safeToString(ancCareHistoryVO.getLastMalaria()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, DIARRHEA, ancCareHistoryVO.getLastDiarrheaDate(), safeToString(ancCareHistoryVO.getLastDiarrhea()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, PNEUMOCOCCAL, ancCareHistoryVO.getLastPnuemoniaDate(), safeToString(ancCareHistoryVO.getLastPnuemonia()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, HEMOGLOBIN, ancCareHistoryVO.getLastHbDate(), safeParseDouble(ancCareHistoryVO.getLastHbLevels()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, VITA, ancCareHistoryVO.getLastMotherVitaminADate(), safeParseDouble(ancCareHistoryVO.getLastMotherVitaminA()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, IRON_OR_FOLATE, ancCareHistoryVO.getLastIronOrFolateDate(), safeParseDouble(ancCareHistoryVO.getLastIronOrFolate()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, SYPHILIS, ancCareHistoryVO.getLastSyphilisDate(), safeParseDouble(ancCareHistoryVO.getLastSyphilis()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, MALARIA_RAPID_TEST, ancCareHistoryVO.getLastMalariaDate(), safeParseDouble(ancCareHistoryVO.getLastMalaria()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, DIARRHEA, ancCareHistoryVO.getLastDiarrheaDate(), safeParseDouble(ancCareHistoryVO.getLastDiarrhea()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, PNEUMOCOCCAL, ancCareHistoryVO.getLastPnuemoniaDate(), safeParseDouble(ancCareHistoryVO.getLastPnuemonia()), edd);
                 allEncounters.persistEncounter(patient.getMrsPatient(), careHistoryVO.getStaffId(), careHistoryVO.getFacilityId(), ANC_VISIT.value(), careHistoryVO.getDate(), new HashSet<MRSObservation>() {{
                     add(activePregnancyObservation);
                 }});
@@ -431,13 +424,13 @@ public class CareService {
 
                 addObservationIfWithinPregnancyPeriod(activePregnancyObservation, TT, ancCareHistoryVO.getLastTTDate(), safeParseDouble(ancCareHistoryVO.getLastTT()), edd);
                 addObservationIfWithinPregnancyPeriod(activePregnancyObservation, IPT, ancCareHistoryVO.getLastIPTDate(), safeParseDouble(ancCareHistoryVO.getLastIPT()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, HEMOGLOBIN, ancCareHistoryVO.getLastHbDate(), safeToString(ancCareHistoryVO.getLastHbLevels()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, VITA, ancCareHistoryVO.getLastMotherVitaminADate(), safeToString(ancCareHistoryVO.getLastMotherVitaminA()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, IRON_OR_FOLATE, ancCareHistoryVO.getLastIronOrFolateDate(), safeToString(ancCareHistoryVO.getLastIronOrFolate()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, SYPHILIS, ancCareHistoryVO.getLastSyphilisDate(), safeToString(ancCareHistoryVO.getLastSyphilis()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, MALARIA_RAPID_TEST, ancCareHistoryVO.getLastMalariaDate(), safeToString(ancCareHistoryVO.getLastMalaria()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, DIARRHEA, ancCareHistoryVO.getLastDiarrheaDate(), safeToString(ancCareHistoryVO.getLastDiarrhea()), edd);
-                addObservationIfWithinPregnancyPeriod_New(activePregnancyObservation, PNEUMOCOCCAL, ancCareHistoryVO.getLastPnuemoniaDate(), safeToString(ancCareHistoryVO.getLastPnuemonia()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, HEMOGLOBIN, ancCareHistoryVO.getLastHbDate(), safeParseDouble(ancCareHistoryVO.getLastHbLevels()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, VITA, ancCareHistoryVO.getLastMotherVitaminADate(), safeParseDouble(ancCareHistoryVO.getLastMotherVitaminA()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, IRON_OR_FOLATE, ancCareHistoryVO.getLastIronOrFolateDate(), safeParseDouble(ancCareHistoryVO.getLastIronOrFolate()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, SYPHILIS, ancCareHistoryVO.getLastSyphilisDate(), safeParseDouble(ancCareHistoryVO.getLastSyphilis()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, MALARIA_RAPID_TEST, ancCareHistoryVO.getLastMalariaDate(), safeParseDouble(ancCareHistoryVO.getLastMalaria()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, DIARRHEA, ancCareHistoryVO.getLastDiarrheaDate(), safeParseDouble(ancCareHistoryVO.getLastDiarrhea()), edd);
+                addObservationIfWithinPregnancyPeriod(activePregnancyObservation, PNEUMOCOCCAL, ancCareHistoryVO.getLastPnuemoniaDate(), safeParseDouble(ancCareHistoryVO.getLastPnuemonia()), edd);
                 allEncounters.persistEncounter(patient.getMrsPatient(), careHistoryVO.getStaffId(), careHistoryVO.getFacilityId(), ANC_VISIT.value(), careHistoryVO.getDate(), new HashSet<MRSObservation>() {{
                     add(activePregnancyObservation);
                 }});

@@ -1675,13 +1675,13 @@
         </xf:input>
         <xf:select1 bind="lastIronOrFolate">
             <xf:label>Has Taken Iron or Folate</xf:label>
-            <xf:item id="Y">
+            <xf:item id="1">
                 <xf:label>Yes</xf:label>
-                <xf:value>Y</xf:value>
+                <xf:value>1</xf:value>
             </xf:item>
-            <xf:item id="N">
+            <xf:item id="0">
                 <xf:label>No</xf:label>
-                <xf:value>N</xf:value>
+                <xf:value>0</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="lastIronOrFolateDate">
@@ -1689,13 +1689,13 @@
         </xf:input>
         <xf:select1 bind="lastSyphilis">
             <xf:label>Syphilis Treated</xf:label>
-            <xf:item id="Y">
+            <xf:item id="1">
                 <xf:label>Yes</xf:label>
-                <xf:value>Y</xf:value>
+                <xf:value>1</xf:value>
             </xf:item>
-            <xf:item id="N">
+            <xf:item id="0">
                 <xf:label>No</xf:label>
-                <xf:value>N</xf:value>
+                <xf:value>0</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="lastSyphilisDate">
@@ -1703,13 +1703,13 @@
         </xf:input>
         <xf:select1 bind="lastMalaria">
             <xf:label>Has Malaria Treated</xf:label>
-            <xf:item id="Y">
+            <xf:item id="1">
                 <xf:label>Yes</xf:label>
-                <xf:value>Y</xf:value>
+                <xf:value>1</xf:value>
             </xf:item>
-            <xf:item id="N">
+            <xf:item id="0">
                 <xf:label>No</xf:label>
-                <xf:value>N</xf:value>
+                <xf:value>0</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="lastMalariaDate">
@@ -1717,13 +1717,13 @@
         </xf:input>
         <xf:select1 bind="lastDiarrhea">
             <xf:label>Has Diarrhea Treated</xf:label>
-            <xf:item id="Y">
+            <xf:item id="1">
                 <xf:label>Yes</xf:label>
-                <xf:value>Y</xf:value>
+                <xf:value>1</xf:value>
             </xf:item>
-            <xf:item id="N">
+            <xf:item id="0">
                 <xf:label>No</xf:label>
-                <xf:value>N</xf:value>
+                <xf:value>0</xf:value>
             </xf:item>
         </xf:select1>
         <xf:input bind="lastDiarrheaDate">
