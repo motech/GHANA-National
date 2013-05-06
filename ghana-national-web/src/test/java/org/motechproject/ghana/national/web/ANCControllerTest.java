@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.web;
 
+import junit.framework.Assert;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,11 +81,47 @@ public class ANCControllerTest {
         lastTTValues.put(3, "TT 3");
         lastTTValues.put(4, "TT 4");
         lastTTValues.put(5, "TT 5");
+
+        HashMap<Integer, String> lastVitaAValues = new LinkedHashMap<Integer, String>();
+        lastVitaAValues.put(1, "Blue");
+        lastVitaAValues.put(2, "Red");
+
+        HashMap<Integer, String> lastPneumoValues = new LinkedHashMap<Integer, String>();
+        lastPneumoValues.put(1, "Pneumo 1");
+        lastPneumoValues.put(2, "Pneumo 2");
+        lastPneumoValues.put(3, "Pneumo 3");
+
+        HashMap<Integer, String> lastIronValues = new LinkedHashMap<Integer, String>();
+        lastIronValues.put(1,"Yes");
+        lastIronValues.put(0,"No");
+
+        HashMap<Integer, String> lastSyphValues = new LinkedHashMap<Integer, String>();
+        lastSyphValues.put(1,"Yes");
+        lastSyphValues.put(0,"No");
+
+        HashMap<Integer, String> lastMalariaValues = new LinkedHashMap<Integer, String>();
+        lastMalariaValues.put(1,"Yes");
+        lastMalariaValues.put(0,"No");
+
+        HashMap<Integer, String> lastDiariaValues = new LinkedHashMap<Integer, String>();
+        lastDiariaValues.put(1,"Yes");
+        lastDiariaValues.put(0,"No");
+
+
         assertEquals(ANCController.ENROLL_ANC_URL, ancUrl);
         assertTrue("Form attributes are not equal", reflectionEquals(ancEnrollmentForm, new ANCEnrollmentForm(motechPatientId)));
-        assertTrue(reflectionEquals(modelMap.get("careHistories"), Arrays.asList("TT", "IPT_SP")));
+        assertTrue(reflectionEquals(modelMap.get("careHistories"), Arrays.asList("TT", "IPT_SP", "HEMOGLOBIN", "VITA", "IRON_OR_FOLATE",
+                "SYPHILIS", "MALARIA_RAPID_TEST", "DIARRHEA", "PNEUMOCOCCAL_A")));
         assertTrue(reflectionEquals(modelMap.get("lastIPT"), lastIPTValues));
         assertTrue(reflectionEquals(modelMap.get("lastTT"), lastTTValues));
+        assertTrue(reflectionEquals(modelMap.get("lastHbLevels"),"14"));
+        assertTrue(reflectionEquals(modelMap.get("lastMotherVitaminA"),lastVitaAValues));
+        assertTrue(reflectionEquals(modelMap.get("lastIronOrFolate"),lastIronValues));
+        assertTrue(reflectionEquals(modelMap.get("lastSyphilis"),lastSyphValues));
+        assertTrue(reflectionEquals(modelMap.get("lastMalaria"),lastMalariaValues));
+        assertTrue(reflectionEquals(modelMap.get("lastDiarrhea"),lastDiariaValues));
+        assertTrue(reflectionEquals(modelMap.get("lastPnuemonia"),lastPneumoValues));
+
         verify(mockFacilityHelper).locationMap();
     }
 
@@ -217,6 +254,22 @@ public class ANCControllerTest {
         assertEquals(ancEnrollmentForm.getLastIPTDate(), ancVO.getAncCareHistoryVO().getLastIPTDate());
         assertEquals(ancEnrollmentForm.getLastTT(), ancVO.getAncCareHistoryVO().getLastTT());
         assertEquals(ancEnrollmentForm.getLastTTDate(), ancVO.getAncCareHistoryVO().getLastTTDate());
+
+        assertEquals(ancEnrollmentForm.getLastHbLevels(), ancVO.getAncCareHistoryVO().getLastHbLevels());
+        assertEquals(ancEnrollmentForm.getLastHbDate(), ancVO.getAncCareHistoryVO().getLastHbDate());
+        assertEquals(ancEnrollmentForm.getLastMotherVitaminA(), ancVO.getAncCareHistoryVO().getLastMotherVitaminA());
+        assertEquals(ancEnrollmentForm.getLastMotherVitaminADate(), ancVO.getAncCareHistoryVO().getLastMotherVitaminADate());
+        assertEquals(ancEnrollmentForm.getLastIronOrFolate(), ancVO.getAncCareHistoryVO().getLastIronOrFolate());
+        assertEquals(ancEnrollmentForm.getLastIronOrFolateDate(), ancVO.getAncCareHistoryVO().getLastIronOrFolateDate());
+        assertEquals(ancEnrollmentForm.getLastSyphilis(), ancVO.getAncCareHistoryVO().getLastSyphilis());
+        assertEquals(ancEnrollmentForm.getLastSyphilisDate(), ancVO.getAncCareHistoryVO().getLastSyphilisDate());
+        assertEquals(ancEnrollmentForm.getLastMalaria(), ancVO.getAncCareHistoryVO().getLastMalaria());
+        assertEquals(ancEnrollmentForm.getLastMalariaDate(), ancVO.getAncCareHistoryVO().getLastMalariaDate());
+        assertEquals(ancEnrollmentForm.getLastDiarrhea(), ancVO.getAncCareHistoryVO().getLastDiarrhea());
+        assertEquals(ancEnrollmentForm.getLastDiarrheaDate(), ancVO.getAncCareHistoryVO().getLastDiarrheaDate());
+        assertEquals(ancEnrollmentForm.getLastPnuemonia(), ancVO.getAncCareHistoryVO().getLastPnuemonia());
+        assertEquals(ancEnrollmentForm.getLastPnuemoniaDate(), ancVO.getAncCareHistoryVO().getLastPnuemoniaDate());
+
         assertEquals(ancEnrollmentForm.getMotechPatientId(), ancVO.getPatientMotechId());
         assertEquals(ancEnrollmentForm.getParity(), ancVO.getParity());
         assertEquals(ancEnrollmentForm.getRegistrationToday(), ancVO.getRegistrationToday());
@@ -239,6 +292,20 @@ public class ANCControllerTest {
         ancEnrollmentForm.setLastIPTDate(DateUtil.newDate(2011, 8, 8).toDate());
         ancEnrollmentForm.setLastTT("5");
         ancEnrollmentForm.setLastTTDate(DateUtil.newDate(2011, 7, 6).toDate());
+        ancEnrollmentForm.setLastHbLevels("14");
+        ancEnrollmentForm.setLastHbDate(DateUtil.newDate(2011, 7, 6).toDate());
+        ancEnrollmentForm.setLastMotherVitaminA("1");
+        ancEnrollmentForm.setLastMotherVitaminADate(DateUtil.newDate(2011, 7, 6).toDate());
+        ancEnrollmentForm.setLastIronOrFolate("1");
+        ancEnrollmentForm.setLastIronOrFolateDate(DateUtil.newDate(2011, 7, 6).toDate());
+        ancEnrollmentForm.setLastSyphilis("1");
+        ancEnrollmentForm.setLastSyphilisDate(DateUtil.newDate(2011, 7, 6).toDate());
+        ancEnrollmentForm.setLastMalaria("1");
+        ancEnrollmentForm.setLastMalariaDate(DateUtil.newDate(2011, 7, 6).toDate());
+        ancEnrollmentForm.setLastDiarrhea("1");
+        ancEnrollmentForm.setLastDiarrheaDate(DateUtil.newDate(2011, 7, 6).toDate());
+        ancEnrollmentForm.setLastPnuemonia("1");
+        ancEnrollmentForm.setLastPnuemoniaDate(DateUtil.newDate(2011, 7, 6).toDate());
         ancEnrollmentForm.setMotechPatientId("343423423");
         ancEnrollmentForm.setParity(3);
         ancEnrollmentForm.setRegistrationToday(RegistrationToday.IN_PAST);

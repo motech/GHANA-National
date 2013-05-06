@@ -121,9 +121,40 @@ public class ANCController {
         lastTTValues.put(4, "TT 4");
         lastTTValues.put(5, "TT 5");
 
+        HashMap<Integer, String> lastVitaAValues = new LinkedHashMap<Integer, String>();
+        lastVitaAValues.put(1, "Blue");
+        lastVitaAValues.put(2, "Red");
+
+        HashMap<Integer, String> lastPneumoValues = new LinkedHashMap<Integer, String>();
+        lastPneumoValues.put(1, "Pneumo 1");
+        lastPneumoValues.put(2, "Pneumo 2");
+        lastPneumoValues.put(3, "Pneumo 3");
+
+        HashMap<Integer, String> lastIronValues = new LinkedHashMap<Integer, String>();
+        lastIronValues.put(1,"Yes");
+        lastIronValues.put(0,"No");
+
+        HashMap<Integer, String> lastSyphValues = new LinkedHashMap<Integer, String>();
+        lastSyphValues.put(1,"Yes");
+        lastSyphValues.put(0,"No");
+
+        HashMap<Integer, String> lastMalariaValues = new LinkedHashMap<Integer, String>();
+        lastMalariaValues.put(1,"Yes");
+        lastMalariaValues.put(0,"No");
+
+        HashMap<Integer, String> lastDiariaValues = new LinkedHashMap<Integer, String>();
+        lastDiariaValues.put(1,"Yes");
+        lastDiariaValues.put(0,"No");
+
         modelMap.put("lastIPT", lastIPTValues);
         modelMap.put("lastTT", lastTTValues);
-
+        modelMap.put("lastHbLevels", "14" );
+        modelMap.put("lastMotherVitaminA",lastVitaAValues);
+        modelMap.put("lastIronOrFolate",lastIronValues);
+        modelMap.put("lastSyphilis",lastSyphValues);
+        modelMap.put("lastMalaria",lastMalariaValues);
+        modelMap.put("lastDiarrhea",lastDiariaValues);
+        modelMap.put("lastPnuemonia",lastPneumoValues);
 
         modelMap.mergeAttributes(facilityHelper.locationMap());
     }
