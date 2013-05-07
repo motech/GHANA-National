@@ -567,34 +567,34 @@
                  relevant="/ANCRegistration/enroll = 'Y' and /ANCRegistration/consent = 'Y'"
                  required="true()" type="xsd:string" visible="false()"/>
 
-        <xf:bind action="show" id="lastHbLevels" nodeset="/ANCRegistration/lastHbLevels" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'HEMOGLOBIN' and /ANCRegistration/addHistory = '1'"/>
-        <xf:bind action="show" id="lastHbDate" nodeset="/ANCRegistration/lastHbDate" type="xsd:date"  visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'HEMOGLOBIN' and /ANCRegistration/addHistory = '1'"/>
-        <xf:bind action="show" id="lastMotherVitaminA" nodeset="/ANCRegistration/lastMotherVitaminA" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'VITA' and /ANCRegistration/addHistory = '1'"/>
-        <xf:bind action="show" id="lastMotherVitaminADate" nodeset="/ANCRegistration/lastMotherVitaminADate" type="xsd:date" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'VITA' and /ANCRegistration/addHistory = '1'"/>
-        <xf:bind action="show" id="lastIronOrFolate" nodeset="/ANCRegistration/lastIronOrFolate" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'IRON_OR_FOLATE' and /ANCRegistration/addHistory = '1'"/>
-        <xf:bind action="show" id="lastIronOrFolateDate" nodeset="/ANCRegistration/lastIronOrFolateDate" type="xsd:date" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'IRON_OR_FOLATE' and /ANCRegistration/addHistory = '1'"/>
-        <xf:bind action="show" id="lastSyphilis" nodeset="/ANCRegistration/lastSyphilis" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'SYPHILIS' and /ANCRegistration/addHistory = '1'"/>
-        <xf:bind action="show" id="lastSyphilisDate" nodeset="/ANCRegistration/lastSyphilisDate" type="xsd:date" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'SYPHILIS' and /ANCRegistration/addHistory = '1'"/>
-        <xf:bind action="show" id="lastMalaria" nodeset="/ANCRegistration/lastMalaria" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'MALARIA_RAPID_TEST' and /ANCRegistration/addHistory = '1'"/>
-        <xf:bind action="show" id="lastMalariaDate" nodeset="/ANCRegistration/lastMalariaDate" type="xsd:date" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'MALARIA_RAPID_TEST' and /ANCRegistration/addHistory = '1'"/>
-        <xf:bind action="show" id="lastDiarrhea" nodeset="/ANCRegistration/lastDiarrhea" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'DIARRHEA' and /ANCRegistration/addHistory = '1'"/>
-        <xf:bind action="show" id="lastDiarrheaDate" nodeset="/ANCRegistration/lastDiarrheaDate" type="xsd:date" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'DIARRHEA' and /ANCRegistration/addHistory = '1'"/>
-        <xf:bind action="show" id="lastPnuemonia" nodeset="/ANCRegistration/lastPnuemonia" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL_A' and /ANCRegistration/addHistory = '1'"/>
-        <xf:bind action="show" id="lastPnuemoniaDate" nodeset="/ANCRegistration/lastPnuemoniaDate" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL_A' and /ANCRegistration/addHistory = '1'"/>
+        <xf:bind id="lastHbLevels" nodeset="/ANCRegistration/lastHbLevels" type="xsd:string" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'HEMOGLOBIN' and /ANCRegistration/addHistory = '1'" action="show"/>
+        <xf:bind id="lastHbDate" nodeset="/ANCRegistration/lastHbDate" type="xsd:date"  visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'HEMOGLOBIN' and /ANCRegistration/addHistory = '1'" action="show"/>
+        <xf:bind id="lastMotherVitaminA" nodeset="/ANCRegistration/lastMotherVitaminA" type="xsd:string" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'VITA' and /ANCRegistration/addHistory = '1'" action="show"/>
+        <xf:bind id="lastMotherVitaminADate" nodeset="/ANCRegistration/lastMotherVitaminADate" type="xsd:date" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'VITA' and /ANCRegistration/addHistory = '1'" action="show"/>
+        <xf:bind id="lastIronOrFolate" nodeset="/ANCRegistration/lastIronOrFolate" type="xsd:string" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'IRON_OR_FOLATE' and /ANCRegistration/addHistory = '1'" action="show"/>
+        <xf:bind id="lastIronOrFolateDate" nodeset="/ANCRegistration/lastIronOrFolateDate" type="xsd:date" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'IRON_OR_FOLATE' and /ANCRegistration/addHistory = '1'" action="show"/>
+        <xf:bind id="lastSyphilis" nodeset="/ANCRegistration/lastSyphilis" type="xsd:string" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'SYPHILIS' and /ANCRegistration/addHistory = '1'" action="show"/>
+        <xf:bind id="lastSyphilisDate" nodeset="/ANCRegistration/lastSyphilisDate" type="xsd:date" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'SYPHILIS' and /ANCRegistration/addHistory = '1'" action="show"/>
+        <xf:bind id="lastMalaria" nodeset="/ANCRegistration/lastMalaria" type="xsd:string" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'MALARIA_RAPID_TEST' and /ANCRegistration/addHistory = '1'" action="show"/>
+        <xf:bind id="lastMalariaDate" nodeset="/ANCRegistration/lastMalariaDate" type="xsd:date" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'MALARIA_RAPID_TEST' and /ANCRegistration/addHistory = '1'" action="show"/>
+        <xf:bind id="lastDiarrhea" nodeset="/ANCRegistration/lastDiarrhea" type="xsd:string" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'DIARRHEA' and /ANCRegistration/addHistory = '1'" action="show"/>
+        <xf:bind id="lastDiarrheaDate" nodeset="/ANCRegistration/lastDiarrheaDate" type="xsd:date" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'DIARRHEA' and /ANCRegistration/addHistory = '1'" action="show"/>
+        <xf:bind id="lastPnuemonia" nodeset="/ANCRegistration/lastPnuemonia" type="xsd:string" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL_A' and /ANCRegistration/addHistory = '1'" action="show"/>
+        <xf:bind id="lastPnuemoniaDate" nodeset="/ANCRegistration/lastPnuemoniaDate" type="xsd:string" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL_A' and /ANCRegistration/addHistory = '1'" action="show"/>
 
         <xf:bind id="formtype" nodeset="/ANCRegistration/formtype" required="true()" type="xsd:string"
                  visible="false()"/>
