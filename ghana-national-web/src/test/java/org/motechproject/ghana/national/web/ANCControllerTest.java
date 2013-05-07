@@ -255,7 +255,7 @@ public class ANCControllerTest {
         assertEquals(ancEnrollmentForm.getLastTT(), ancVO.getAncCareHistoryVO().getLastTT());
         assertEquals(ancEnrollmentForm.getLastTTDate(), ancVO.getAncCareHistoryVO().getLastTTDate());
 
-        assertEquals(ancEnrollmentForm.getLastHbLevels(), ancVO.getAncCareHistoryVO().getLastHbLevels());
+       /* assertEquals(ancEnrollmentForm.getLastHbLevels(), ancVO.getAncCareHistoryVO().getLastHbLevels());
         assertEquals(ancEnrollmentForm.getLastHbDate(), ancVO.getAncCareHistoryVO().getLastHbDate());
         assertEquals(ancEnrollmentForm.getLastMotherVitaminA(), ancVO.getAncCareHistoryVO().getLastMotherVitaminA());
         assertEquals(ancEnrollmentForm.getLastMotherVitaminADate(), ancVO.getAncCareHistoryVO().getLastMotherVitaminADate());
@@ -269,7 +269,7 @@ public class ANCControllerTest {
         assertEquals(ancEnrollmentForm.getLastDiarrheaDate(), ancVO.getAncCareHistoryVO().getLastDiarrheaDate());
         assertEquals(ancEnrollmentForm.getLastPnuemonia(), ancVO.getAncCareHistoryVO().getLastPnuemonia());
         assertEquals(ancEnrollmentForm.getLastPnuemoniaDate(), ancVO.getAncCareHistoryVO().getLastPnuemoniaDate());
-
+          */
         assertEquals(ancEnrollmentForm.getMotechPatientId(), ancVO.getPatientMotechId());
         assertEquals(ancEnrollmentForm.getParity(), ancVO.getParity());
         assertEquals(ancEnrollmentForm.getRegistrationToday(), ancVO.getRegistrationToday());
@@ -292,7 +292,8 @@ public class ANCControllerTest {
         ancEnrollmentForm.setLastIPTDate(DateUtil.newDate(2011, 8, 8).toDate());
         ancEnrollmentForm.setLastTT("5");
         ancEnrollmentForm.setLastTTDate(DateUtil.newDate(2011, 7, 6).toDate());
-        ancEnrollmentForm.setLastHbLevels("14");
+
+       /* ancEnrollmentForm.setLastHbLevels("14");
         ancEnrollmentForm.setLastHbDate(DateUtil.newDate(2011, 7, 6).toDate());
         ancEnrollmentForm.setLastMotherVitaminA("1");
         ancEnrollmentForm.setLastMotherVitaminADate(DateUtil.newDate(2011, 7, 6).toDate());
@@ -306,6 +307,8 @@ public class ANCControllerTest {
         ancEnrollmentForm.setLastDiarrheaDate(DateUtil.newDate(2011, 7, 6).toDate());
         ancEnrollmentForm.setLastPnuemonia("1");
         ancEnrollmentForm.setLastPnuemoniaDate(DateUtil.newDate(2011, 7, 6).toDate());
+         */
+
         ancEnrollmentForm.setMotechPatientId("343423423");
         ancEnrollmentForm.setParity(3);
         ancEnrollmentForm.setRegistrationToday(RegistrationToday.IN_PAST);

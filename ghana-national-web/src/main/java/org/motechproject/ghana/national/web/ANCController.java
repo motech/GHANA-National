@@ -132,19 +132,19 @@ public class ANCController {
 
         HashMap<Integer, String> lastIronValues = new LinkedHashMap<Integer, String>();
         lastIronValues.put(1,"Yes");
-        lastIronValues.put(0,"No");
+        lastIronValues.put(222,"No");
 
         HashMap<Integer, String> lastSyphValues = new LinkedHashMap<Integer, String>();
         lastSyphValues.put(1,"Yes");
-        lastSyphValues.put(0,"No");
+        lastSyphValues.put(222,"No");
 
         HashMap<Integer, String> lastMalariaValues = new LinkedHashMap<Integer, String>();
         lastMalariaValues.put(1,"Yes");
-        lastMalariaValues.put(0,"No");
+        lastMalariaValues.put(222,"No");
 
         HashMap<Integer, String> lastDiariaValues = new LinkedHashMap<Integer, String>();
         lastDiariaValues.put(1,"Yes");
-        lastDiariaValues.put(0,"No");
+        lastDiariaValues.put(222,"No");
 
         modelMap.put("lastIPT", lastIPTValues);
         modelMap.put("lastTT", lastTTValues);
