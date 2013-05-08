@@ -969,7 +969,7 @@
                  relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' or /patientRegistration/registrantType = 'MOTHER_OF_INFANT'
                   and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='PNEUMOCOCCAL_A'" action="show"/>
 
-        <xf:bind id="lastPnuemoniaDate" nodeset="/patientRegistration/lastPnuemoniaDate" type="xsd:string" visible="false()"
+        <xf:bind id="lastPnuemoniaDate" nodeset="/patientRegistration/lastPnuemoniaDate" type="xsd:date" visible="false()"
                  relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' or /patientRegistration/registrantType = 'MOTHER_OF_INFANT'
                   and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='PNEUMOCOCCAL_A'" action="show"/>
 
