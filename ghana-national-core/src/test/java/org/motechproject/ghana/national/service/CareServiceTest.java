@@ -210,7 +210,7 @@ public class CareServiceTest extends BaseUnitTest {
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), today, expectedObservations);
     }
 
-  /*  @Test
+    @Test
     public void shouldEnrollToANCWithObservationsRecordedAgainstActivePregnancy_IfTTAndIPTVaccinesTakenDuringActivePregnancyPeriod() throws Exception {
         String facilityId = "facility id";
         String patientId = "patient id";
@@ -259,13 +259,15 @@ public class CareServiceTest extends BaseUnitTest {
         pregnancyObs.addDependantObservation(new MRSObservation<Boolean>(registrationDate, PREGNANCY_STATUS.getName(), true));
         pregnancyObs.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), ipt.doubleValue()));
         pregnancyObs.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), tt.doubleValue()));
-        pregnancyObs.addDependantObservation(new MRSObservation<String>(lastHbDate, HEMOGLOBIN.getName(), lastHbLevels));
+
+       /* pregnancyObs.addDependantObservation(new MRSObservation<String>(lastHbDate, HEMOGLOBIN.getName(), lastHbLevels));
         pregnancyObs.addDependantObservation(new MRSObservation<String>(lastMotherVitaminADate, VITA.getName(), lastMotherVitaminA));
         pregnancyObs.addDependantObservation(new MRSObservation<String>(lastIronOrFolateDate, IRON_OR_FOLATE.getName(), lastIronOrFolate));
         pregnancyObs.addDependantObservation(new MRSObservation<String>(lastSyphilisDate, SYPHILIS.getName(), lastSyphilis));
         pregnancyObs.addDependantObservation(new MRSObservation<String>(lastMalariaDate, MALARIA_RAPID_TEST.getName(), lastMalaria));
         pregnancyObs.addDependantObservation(new MRSObservation<String>(lastDiarrheaDate, DIARRHEA.getName(), lastDiarrhea));
         pregnancyObs.addDependantObservation(new MRSObservation<String>(lastPnuemoniaDate, PNEUMOCOCCAL.getName(), lastPnuemonia));
+        */
 
         final HashSet<MRSObservation> expectedPregnancyObservations = new HashSet<MRSObservation>() {{
             add(pregnancyObs);
@@ -278,7 +280,8 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), ancvo.getSerialNumber()));
             add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastIPTDate(), IPT.getName(), parseDouble(ancvo.getAncCareHistoryVO().getLastIPT())));
             add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), parseDouble(ancvo.getAncCareHistoryVO().getLastTT())));
-            add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastHbDate(), HEMOGLOBIN.getName(), ancvo.getAncCareHistoryVO().getLastHbLevels()));
+
+            /*add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastHbDate(), HEMOGLOBIN.getName(), ancvo.getAncCareHistoryVO().getLastHbLevels()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastMotherVitaminADate(), VITA.getName(), ancvo.getAncCareHistoryVO().getLastMotherVitaminA()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastIronOrFolateDate(), IRON_OR_FOLATE.getName(), ancvo.getAncCareHistoryVO().getLastIronOrFolate()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastSyphilisDate(), SYPHILIS.getName(),ancvo.getAncCareHistoryVO().getLastSyphilis()));
@@ -286,6 +289,7 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastSyphilisDate(), SYPHILIS.getName(), ancvo.getAncCareHistoryVO().getLastSyphilis()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastDiarrheaDate(), DIARRHEA.getName(), ancvo.getAncCareHistoryVO().getLastDiarrhea()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastPnuemoniaDate(), PNEUMOCOCCAL.getName(), ancvo.getAncCareHistoryVO().getLastPnuemonia()));
+            */
         }};
 
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffUserId, facilityId, ANC_REG_VISIT.value(), registrationDate, expectedANCObservations);
@@ -293,7 +297,7 @@ public class CareServiceTest extends BaseUnitTest {
         verify(mockAllEncounters).persistEncounter(eq(mockMRSPatient), eq(staffUserId), eq(facilityId), eq(PREG_REG_VISIT.value()), eq(registrationDate), obsCaptor.capture());
         assertReflectionEquals(expectedPregnancyObservations, obsCaptor.getValue(), ReflectionComparatorMode.LENIENT_ORDER);
 
-    }  */
+    }
 
     @Test
     public void shouldEnrollToANCProgramIfNoVaccinesTakenDuringActivePregnancyPeriod() throws Exception {
@@ -362,7 +366,7 @@ public class CareServiceTest extends BaseUnitTest {
         assertThat(request.getExternalId(), is(patient.getMRSPatientId()));
     }
 
-  /*  @Test
+    @Test
     public void shoulUpdateEddObservationIfFound() throws Exception {
         String facilityId = "facility id";
         String patientId = "patient id";
@@ -398,7 +402,8 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<String>(registrationDate, SERIAL_NUMBER.getName(), ancvo.getSerialNumber()));
             add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastIPTDate(), IPT.getName(), Double.valueOf(ancvo.getAncCareHistoryVO().getLastIPT())));
             add(new MRSObservation<Double>(ancvo.getAncCareHistoryVO().getLastTTDate(), TT.getName(), Double.valueOf(ancvo.getAncCareHistoryVO().getLastTT())));
-            add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastHbDate(), HEMOGLOBIN.getName(), ancvo.getAncCareHistoryVO().getLastHbLevels()));
+
+            /*add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastHbDate(), HEMOGLOBIN.getName(), ancvo.getAncCareHistoryVO().getLastHbLevels()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastMotherVitaminADate(), VITA.getName(), ancvo.getAncCareHistoryVO().getLastMotherVitaminA()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastIronOrFolateDate(), IRON_OR_FOLATE.getName(), ancvo.getAncCareHistoryVO().getLastIronOrFolate()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastSyphilisDate(), SYPHILIS.getName(),ancvo.getAncCareHistoryVO().getLastSyphilis()));
@@ -406,6 +411,7 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastSyphilisDate(), SYPHILIS.getName(), ancvo.getAncCareHistoryVO().getLastSyphilis()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastDiarrheaDate(), DIARRHEA.getName(), ancvo.getAncCareHistoryVO().getLastDiarrhea()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastPnuemoniaDate(), PNEUMOCOCCAL.getName(), ancvo.getAncCareHistoryVO().getLastPnuemonia()));
+           */
         }};
 
         ArgumentCaptor<Set> observationCaptor = ArgumentCaptor.forClass(Set.class);
@@ -417,7 +423,7 @@ public class CareServiceTest extends BaseUnitTest {
 
         assertEquals(ANC_REG_VISIT.value(), encounterTypeCaptor.getAllValues().get(0));
         assertEquals(PREG_REG_VISIT.value(), encounterTypeCaptor.getAllValues().get(1));
-    }     */
+    }
 
     @Test
     public void shouldNotAddObsIfValueNotGiven() throws ObservationNotFoundException {
@@ -505,7 +511,7 @@ public class CareServiceTest extends BaseUnitTest {
         verify(mockAllEncounters).persistEncounter(mockMRSPatient, staffId, facilityId, PATIENT_HISTORY.value(), date, expectedObservations);
     }
 
-  /*  @Test
+    @Test
     public void shouldSaveCareHistoryDetailsWithTTandIPTIfThereIsAnActivePregnancyAndCreateCareScheduleIfNotAlreadyExists() throws ObservationNotFoundException {
         final TTVaccineDosage ttDose = TTVaccineDosage.byValue(Integer.parseInt("1"));
         final IPTDose iptDose = IPTDose.byValue("2");
@@ -554,13 +560,14 @@ public class CareServiceTest extends BaseUnitTest {
         final Set<MRSObservation> expectedHistoryObservations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Double>(ttDate, TT.getName(), ttDose.getDosageAsDouble()));
             add(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose.value().toString())));
-            add(new MRSObservation<String>(lastHbDate, HEMOGLOBIN.getName(), lastHbLevels));
+
+           /* add(new MRSObservation<String>(lastHbDate, HEMOGLOBIN.getName(), lastHbLevels));
             add(new MRSObservation<String>(lastMotherVitaminADate, VITA.getName(), lastMotherVitaminA));
             add(new MRSObservation<String>(lastIronOrFolateDate, IRON_OR_FOLATE.getName(), lastIronOrFolate));
             add(new MRSObservation<String>(lastSyphilisDate, SYPHILIS.getName(), lastSyphilis));
             add(new MRSObservation<String>(lastMalariaDate, MALARIA_RAPID_TEST.getName(), lastMalaria));
             add(new MRSObservation<String>(lastDiarrheaDate, DIARRHEA.getName(), lastDiarrhea));
-            add(new MRSObservation<String>(lastPnuemoniaDate, PNEUMOCOCCAL.getName(), lastPnuemonia));
+            add(new MRSObservation<String>(lastPnuemoniaDate, PNEUMOCOCCAL.getName(), lastPnuemonia));        */
 
         }};
 
@@ -585,7 +592,7 @@ public class CareServiceTest extends BaseUnitTest {
         TTVaccineDosage nextTTDose = Utility.getNextOf(ttDose);
         PatientCare expectedTTCare = PatientCare.forEnrollmentInBetweenProgram(TT_VACCINATION.getName(), newDate(ttDate), nextTTDose.getScheduleMilestoneName(), PatientTest.facilityMetaData(facilityId));
         assertEnrollmentRequests(allValues, asList(expectedRequest(patientId, expectedTTCare)));
-    }    */
+    }
 
     @Test
     public void shouldNotCreateScheduleForCareHistoryIfNotActivePregancyObservationExists() throws ObservationNotFoundException {
@@ -623,7 +630,7 @@ public class CareServiceTest extends BaseUnitTest {
         verify(mockAllCareSchedules, never()).enrollIfNotActive((EnrollmentRequest) any());
     }
 
-   /* @Test
+   @Test
     public void shouldNotSaveCareHistoryDetailsWithTTandIPTIfOutsideRangeOfActivePregnancy() throws ObservationNotFoundException {
         final String ttDose = "1";
         final String iptDose = "2";
@@ -670,13 +677,14 @@ public class CareServiceTest extends BaseUnitTest {
         final Set<MRSObservation> expectedHistoryObservations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Double>(ttDate, TT.getName(), Double.parseDouble(ttDose)));
             add(new MRSObservation<Double>(iptDate, IPT.getName(), Double.parseDouble(iptDose)));
-            add(new MRSObservation<String>(lastHbDate, HEMOGLOBIN.getName(), lastHbLevels));
+
+            /*add(new MRSObservation<String>(lastHbDate, HEMOGLOBIN.getName(), lastHbLevels));
             add(new MRSObservation<String>(lastMotherVitaminADate, VITA.getName(), lastMotherVitaminA));
             add(new MRSObservation<String>(lastIronOrFolateDate, IRON_OR_FOLATE.getName(), lastIronOrFolate));
             add(new MRSObservation<String>(lastSyphilisDate, SYPHILIS.getName(), lastSyphilis));
             add(new MRSObservation<String>(lastMalariaDate, MALARIA_RAPID_TEST.getName(), lastMalaria));
             add(new MRSObservation<String>(lastDiarrheaDate, DIARRHEA.getName(), lastDiarrhea));
-            add(new MRSObservation<String>(lastPnuemoniaDate, PNEUMOCOCCAL.getName(), lastPnuemonia));
+            add(new MRSObservation<String>(lastPnuemoniaDate, PNEUMOCOCCAL.getName(), lastPnuemonia));  */
         }};
 
         ArgumentCaptor<Set> observationCaptor = ArgumentCaptor.forClass(Set.class);
@@ -689,9 +697,9 @@ public class CareServiceTest extends BaseUnitTest {
         assertEquals(PATIENT_HISTORY.value(), encounters.get(0));
 
         assertThat(encounters, not(hasItem(ANC_VISIT.value())));
-    }     */
+    }
 
-  /*  @Test
+    @Test
     public void shouldSaveCareHistoryDetailsWithTTOrIPTIfAnyOneIsWithinTheRangeOfActivePregnancy() throws ObservationNotFoundException {
         final String ttDose = "1";
         final String iptDose = "2";
@@ -742,13 +750,14 @@ public class CareServiceTest extends BaseUnitTest {
         final Set<MRSObservation> expectedHistoryObservations = new HashSet<MRSObservation>() {{
             add(new MRSObservation<Double>(ttDate, TT.getName(), Double.parseDouble(ttDose)));
             add(new MRSObservation<Double>(iptDate, IPT.getName(), Double.parseDouble(iptDose)));
-            add(new MRSObservation<String>(lastHbDate, HEMOGLOBIN.getName(), lastHbLevels));
+
+            /*add(new MRSObservation<String>(lastHbDate, HEMOGLOBIN.getName(), lastHbLevels));
             add(new MRSObservation<String>(lastMotherVitaminADate, VITA.getName(), lastMotherVitaminA));
             add(new MRSObservation<String>(lastIronOrFolateDate, IRON_OR_FOLATE.getName(), lastIronOrFolate));
             add(new MRSObservation<String>(lastSyphilisDate, SYPHILIS.getName(), lastSyphilis));
             add(new MRSObservation<String>(lastMalariaDate, MALARIA_RAPID_TEST.getName(), lastMalaria));
             add(new MRSObservation<String>(lastDiarrheaDate, DIARRHEA.getName(), lastDiarrhea));
-            add(new MRSObservation<String>(lastPnuemoniaDate, PNEUMOCOCCAL.getName(), lastPnuemonia));
+            add(new MRSObservation<String>(lastPnuemoniaDate, PNEUMOCOCCAL.getName(), lastPnuemonia));     */
 
         }};
 
@@ -765,7 +774,7 @@ public class CareServiceTest extends BaseUnitTest {
 
         assertEquals(ANC_VISIT.value(), encounterTypeCaptor.getAllValues().get(0));
         assertEquals(PATIENT_HISTORY.value(), encounterTypeCaptor.getAllValues().get(1));
-    }     */
+    }
 
     @Test
     public void shouldCreateSchedulesForANCProgramRegistration() throws ObservationNotFoundException {
