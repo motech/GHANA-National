@@ -606,7 +606,7 @@
         <xf:bind id="lastPnuemonia" nodeset="/ANCRegistration/lastPnuemonia" type="xsd:string" visible="false()"
                  relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL_A' and /ANCRegistration/addHistory = '1' " action="show"/>
 
-        <xf:bind id="lastPnuemoniaDate" nodeset="/ANCRegistration/lastPnuemoniaDate" type="xsd:string" visible="false()"
+        <xf:bind id="lastPnuemoniaDate" nodeset="/ANCRegistration/lastPnuemoniaDate" type="xsd:date" visible="false()"
                  relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL_A' and /ANCRegistration/addHistory = '1' " action="show"/>
 
         <xf:bind id="formtype" nodeset="/ANCRegistration/formtype" required="true()" type="xsd:string"
