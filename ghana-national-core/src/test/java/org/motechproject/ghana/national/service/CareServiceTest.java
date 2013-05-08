@@ -592,11 +592,27 @@ public class CareServiceTest extends BaseUnitTest {
 
         final TTVaccineDosage ttDose = TTVaccineDosage.byValue(Integer.parseInt("1"));
         final IPTDose iptDose = IPTDose.byValue("2");
+        final String lastHbLevels = "12";
+        final String lastMotherVitaminA = "1";
+        final String lastIronOrFolate = "1";
+        final String lastSyphilis = "1";
+        final String lastMalaria = "1";
+        final String lastDiarrhea = "1";
+        final String lastPnuemonia = "0";
+
         final Date ttDate = DateUtil.newDate(2011, 12, 23).toDate();
         final Date iptDate = DateUtil.newDate(2011, 1, 2).toDate();
+        final Date lastHbDate = DateUtil.newDate(2013, 4, 29).toDate();
+        final Date lastMotherVitaminADate  = DateUtil.newDate(2013, 4, 29).toDate();
+        final Date lastIronOrFolateDate  = DateUtil.newDate(2013, 4, 29).toDate();
+        final Date lastSyphilisDate  = DateUtil.newDate(2013, 4, 29).toDate();
+        final Date lastMalariaDate  = DateUtil.newDate(2013, 4, 29).toDate();
+        final Date lastDiarrheaDate  = DateUtil.newDate(2013, 4, 29).toDate();
+        final Date lastPnuemoniaDate  = DateUtil.newDate(2013, 4, 29).toDate();
+
         String patientId = "patient id";
         String patientMotechId = "patientMotechId";
-        ANCCareHistoryVO ancCareHistory = new ANCCareHistoryVO(true, Arrays.asList(ANCCareHistory.values()), iptDose.value().toString(), ttDose.getDosage().toString(), null, null, null, null, null, null, null, iptDate, ttDate, null, null, null, null, null, null, null);
+        ANCCareHistoryVO ancCareHistory = new ANCCareHistoryVO(true, Arrays.asList(ANCCareHistory.values()), iptDose.value().toString(), ttDose.getDosage().toString(), lastHbLevels.toString(), lastMotherVitaminA.toString(), lastIronOrFolate.toString(), lastSyphilis.toString(), lastMalaria.toString(), lastDiarrhea.toString(), lastPnuemonia.toString(), iptDate, ttDate, lastHbDate, lastMotherVitaminADate, lastIronOrFolateDate, lastSyphilisDate, lastMalariaDate, lastDiarrheaDate, lastPnuemoniaDate);
 
         setupPatient(patientId, patientMotechId);
         when(mockAllObservations.findLatestObservation(patientMotechId, Concept.PREGNANCY.getName())).thenReturn(null);
@@ -789,6 +805,13 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(registrationDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose)));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose)));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastHbDate, HEMOGLOBIN.getName(),lastHbLevels.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastMotherVitaminADate, VITA.getName(), lastMotherVitaminA.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastIronOrFolateDate, IRON_OR_FOLATE.getName(), lastIronOrFolate.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastSyphilisDate, SYPHILIS.getName(), lastSyphilis.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastMalariaDate, MALARIA_RAPID_TEST.getName(), lastMalaria.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastDiarrheaDate, DIARRHEA.getName(), lastDiarrhea.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastPnuemoniaDate, PNEUMOCOCCAL.getName(), lastPnuemonia.toString()));
         Set<MRSObservation> pregnancyObs = new HashSet<MRSObservation>() {{
             add(activePregnancyObservation);
         }};
@@ -843,6 +866,13 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(registrationDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose)));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose)));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastHbDate, HEMOGLOBIN.getName(),lastHbLevels.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastMotherVitaminADate, VITA.getName(), lastMotherVitaminA.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastIronOrFolateDate, IRON_OR_FOLATE.getName(), lastIronOrFolate.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastSyphilisDate, SYPHILIS.getName(), lastSyphilis.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastMalariaDate, MALARIA_RAPID_TEST.getName(), lastMalaria.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastDiarrheaDate, DIARRHEA.getName(), lastDiarrhea.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastPnuemoniaDate, PNEUMOCOCCAL.getName(), lastPnuemonia.toString()));
         Set<MRSObservation> pregnancyObs = new HashSet<MRSObservation>() {{
             add(activePregnancyObservation);
         }};
@@ -898,6 +928,13 @@ public class CareServiceTest extends BaseUnitTest {
         activePregnancyObservation.addDependantObservation(new MRSObservation<Boolean>(registrationDate.toDate(), CONFINEMENT_CONFIRMED.getName(), true));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(ttDate, TT.getName(), parseDouble(ttDose)));
         activePregnancyObservation.addDependantObservation(new MRSObservation<Double>(iptDate, IPT.getName(), parseDouble(iptDose)));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastHbDate, HEMOGLOBIN.getName(),lastHbLevels.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastMotherVitaminADate, VITA.getName(), lastMotherVitaminA.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastIronOrFolateDate, IRON_OR_FOLATE.getName(), lastIronOrFolate.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastSyphilisDate, SYPHILIS.getName(), lastSyphilis.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastMalariaDate, MALARIA_RAPID_TEST.getName(), lastMalaria.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastDiarrheaDate, DIARRHEA.getName(), lastDiarrhea.toString()));
+        activePregnancyObservation.addDependantObservation(new MRSObservation<String>(lastPnuemoniaDate, PNEUMOCOCCAL.getName(), lastPnuemonia.toString()));
         Set<MRSObservation> pregnancyObs = new HashSet<MRSObservation>() {{
             add(activePregnancyObservation);
         }};
