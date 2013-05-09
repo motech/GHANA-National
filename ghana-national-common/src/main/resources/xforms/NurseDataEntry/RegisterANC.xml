@@ -505,7 +505,7 @@
         <xf:bind id="ancRegNumber" nodeset="/ANCRegistration/ancRegNumber" type="xsd:string" required="true()"/>
         <xf:bind id="estDeliveryDate"  nodeset="/ANCRegistration/estDeliveryDate" required="true()" type="xsd:date"/>
         <xf:bind id="deliveryDateConfirmed" nodeset="/ANCRegistration/deliveryDateConfirmed" required="true()"
-                 type="xsd:string"/>
+                 type="xsd:date"/>
         <xf:bind constraint=". &gt;= 60 and . &lt;= 200" id="height"
                  message="Value out of range: must be between 60 and 200" nodeset="/ANCRegistration/height"
                  required="true()" type="xsd:decimal"/>
