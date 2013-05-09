@@ -148,6 +148,17 @@ public class ANCFormMapperTest {
         assertThat(ancEnrollmentForm.getHeight(), is(equalTo(height)));
         assertThat(ancEnrollmentForm.getParity(), is(equalTo(parity.intValue())));
         assertThat(ancEnrollmentForm.getSerialNumber(), is(equalTo(serialNumber)));
+
+
+        assertThat(ancEnrollmentForm.getLastHbLevels(), is(equalTo("14")));
+        assertThat(ancEnrollmentForm.getLastMotherVitaminA(), is(equalTo("1")));
+        assertThat(ancEnrollmentForm.getLastIronOrFolate(), is(equalTo("1")));
+        assertThat(ancEnrollmentForm.getLastSyphilis(), is(equalTo("1")));
+        assertThat(ancEnrollmentForm.getLastMalaria(), is(equalTo("1")));
+        assertThat(ancEnrollmentForm.getLastDiarrhea(), is(equalTo("1")));
+        assertThat(ancEnrollmentForm.getLastPnuemonia(), is(equalTo("1")));
+
+
         assertThat(ancEnrollmentForm.getAddHistory(), is(equalTo(false)));
     }
     
