@@ -96,6 +96,22 @@ public class RegisterANCFormHandlerTest {
         registerANCForm.setLastIPTDate(new Date(2011, 8, 8));
         registerANCForm.setLastTT("5");
         registerANCForm.setLastTTDate(new Date(2011, 7, 6));
+
+        registerANCForm.setLastHbLevels("14");
+        registerANCForm.setLastHbDate(new Date(2011, 7, 6));
+        registerANCForm.setLastMotherVitaminA("1");
+        registerANCForm.setLastMotherVitaminADate(new Date(2011, 7, 6));
+        registerANCForm.setLastIronOrFolate("1");
+        registerANCForm.setLastIronOrFolateDate(new Date(2011, 7, 6));
+        registerANCForm.setLastSyphilis("1");
+        registerANCForm.setLastSyphilisDate(new Date(2011, 7, 6));
+        registerANCForm.setLastMalaria("1");
+        registerANCForm.setLastMalariaDate(new Date(2011, 7, 6));
+        registerANCForm.setLastDiarrhea("1");
+        registerANCForm.setLastDiarrheaDate(new Date(2011, 7, 6));
+        registerANCForm.setLastPnuemonia("0");
+        registerANCForm.setLastPnuemoniaDate(new Date(2011, 7, 6));
+
         registerANCForm.setMotechId("343423423");
         registerANCForm.setParity(3);
         registerANCForm.setRegDateToday(RegistrationToday.IN_PAST);
@@ -113,7 +129,11 @@ public class RegisterANCFormHandlerTest {
         final ANCVO ancVO = captor.getValue();
 
         assertEquals(registerANCForm.getAddHistory(), ancVO.getAddHistory());
-        assertANCCareHistoryDetails(registerANCForm.getANCCareHistories(), registerANCForm.getLastIPT(), registerANCForm.getLastIPTDate(), registerANCForm.getLastTT(), registerANCForm.getLastTTDate(), ancVO.getAncCareHistoryVO());
+        assertANCCareHistoryDetails(registerANCForm.getANCCareHistories(), registerANCForm.getLastIPT(), registerANCForm.getLastIPTDate(), registerANCForm.getLastTT(), registerANCForm.getLastTTDate(),
+                registerANCForm.getLastHbLevels(), registerANCForm.getLastHbDate(), registerANCForm.getLastMotherVitaminA(), registerANCForm.getLastMotherVitaminADate(),
+                registerANCForm.getLastIronOrFolate(), registerANCForm.getLastIronOrFolateDate(), registerANCForm.getLastSyphilis(), registerANCForm.getLastSyphilisDate(),
+                registerANCForm.getLastMalaria(), registerANCForm.getLastMalariaDate(), registerANCForm.getLastDiarrhea(), registerANCForm.getLastDiarrheaDate(),
+                registerANCForm.getLastPnuemonia(), registerANCForm.getLastPnuemoniaDate(), ancVO.getAncCareHistoryVO());
         assertEquals(registerANCForm.getMotechId(), ancVO.getPatientMotechId());
         assertEquals(registerANCForm.getAncRegNumber(), ancVO.getSerialNumber());
         assertEquals(registerANCForm.getDate(), ancVO.getRegistrationDate());
@@ -127,11 +147,28 @@ public class RegisterANCFormHandlerTest {
         assertEquals(mrsFacilityId, ancVO.getFacilityId());
     }
 
-    public static void assertANCCareHistoryDetails(List<ANCCareHistory> addCareHistory, String lastIPT, Date lastIPTDate, String lastTT, Date lastTTDate, ANCCareHistoryVO ancCareHistoryVO) {
+    public static void assertANCCareHistoryDetails(List<ANCCareHistory> addCareHistory, String lastIPT, Date lastIPTDate,  String lastTT, Date lastTTDate, String lastHBLevels, Date lastHbDate,
+                                                  String lastMotherVitaA, Date lastMotherVitaADate, String lastIron, Date lastIronDate, String lastSyphilis, Date lastSyphDate, String lastMalaria, Date lastMalariaDate,
+                                                  String lastDiarhea, Date lastDiarheaDate, String lastPneumonia, Date lastPneumoDate, ANCCareHistoryVO ancCareHistoryVO) {
         assertEquals(addCareHistory, ancCareHistoryVO.getCareHistory());
         assertEquals(lastIPT, ancCareHistoryVO.getLastIPT());
         assertEquals(lastIPTDate, ancCareHistoryVO.getLastIPTDate());
         assertEquals(lastTT, ancCareHistoryVO.getLastTT());
         assertEquals(lastTTDate, ancCareHistoryVO.getLastTTDate());
+        assertEquals(lastHBLevels, ancCareHistoryVO.getLastHbLevels());
+        assertEquals(lastHbDate, ancCareHistoryVO.getLastHbDate());
+        assertEquals(lastMotherVitaA, ancCareHistoryVO.getLastMotherVitaminA());
+        assertEquals(lastMotherVitaADate, ancCareHistoryVO.getLastMotherVitaminADate());
+        assertEquals(lastIron, ancCareHistoryVO.getLastIronOrFolate());
+        assertEquals(lastIronDate, ancCareHistoryVO.getLastIronOrFolateDate());
+        assertEquals(lastSyphilis, ancCareHistoryVO.getLastSyphilis());
+        assertEquals(lastSyphDate, ancCareHistoryVO.getLastSyphilisDate());
+        assertEquals(lastMalaria, ancCareHistoryVO.getLastMalaria());
+        assertEquals(lastMalariaDate, ancCareHistoryVO.getLastMalariaDate());
+        assertEquals(lastDiarhea, ancCareHistoryVO.getLastDiarrhea());
+        assertEquals(lastDiarheaDate, ancCareHistoryVO.getLastDiarrheaDate());
+        assertEquals(lastPneumonia, ancCareHistoryVO.getLastPnuemonia());
+        assertEquals(lastPneumoDate, ancCareHistoryVO.getLastPnuemoniaDate());
+
     }
 }

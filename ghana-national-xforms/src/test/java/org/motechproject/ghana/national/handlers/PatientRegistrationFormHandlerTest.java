@@ -49,6 +49,7 @@ import java.util.Map;
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.Lambda.selectUnique;
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -329,6 +330,23 @@ public class PatientRegistrationFormHandlerTest {
         String lastIPT = "lastIPT";
         String lastTT = "lastTT";
 
+        //New ANC Observation
+
+        String lastHbLevels = "lastHbLevels";
+        String lastMotherVitaminA = "lastMotherVitaminA";
+        String lastIronOrFolate = "lastIronOrFolate";
+        String lastSyphilis = "lastSyphilis";
+        String lastMalaria = "lastMalaria";
+        String lastDiarrhea = "lastDiarrhea";
+        String lastPnuemonia = "lastPnuemonia";
+        Date lastHbDate = new Date(10, 12, 2000);
+        Date lastMotherVitaminADate = new Date(10, 12, 2000);
+        Date lastIronOrFolateDate = new Date(10, 12, 2000);
+        Date lastSyphilisDate = new Date(10, 12, 2000);
+        Date lastMalariaDate = new Date(10, 12, 2000);
+        Date lastDiarrheaDate = new Date(10, 12, 2000);
+        Date lastPnuemoniaDate = new Date(10, 12, 2000);
+
         ServiceType serviceType = ServiceType.PREGNANCY;
         ReasonToJoin reasonToJoin = ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH;
         Medium medium = Medium.SMS;
@@ -345,7 +363,8 @@ public class PatientRegistrationFormHandlerTest {
         RegisterClientForm registerClientForm = createRegisterClientFormForANCEnrollment(address, dateofBirth, district, isBirthDateEstimated,
                 motechFacilityId, firstName, insured, lastName, middleName, null, nhisExpDate, nhisNumber, parentId,
                 region, registrationMode, sex, subDistrict, phoneNumber, patientType, expDeliveryDate, deliveryDateConfirmed,
-                height, gravida, parity, lastIPTDate, lastTTDate, lastIPT, lastTT, staffId, registrationDate);
+                height, gravida, parity, lastIPTDate, lastTTDate, lastHbDate, lastMotherVitaminADate, lastIronOrFolateDate, lastSyphilisDate, lastMalariaDate,
+                lastDiarrheaDate, lastPnuemoniaDate, lastIPT, lastTT, lastHbLevels, lastMotherVitaminA, lastIronOrFolate, lastSyphilis, lastMalaria, lastDiarrhea, lastPnuemonia, staffId, registrationDate);
 
 
         addMobileMidwifeRegistrationDetails(registerClientForm, serviceType, reasonToJoin, medium, dayOfWeek, timeOfDay,
@@ -369,7 +388,8 @@ public class PatientRegistrationFormHandlerTest {
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
         assertANCRegistration(facilityId, motechId, expDeliveryDate, deliveryDateConfirmed, height, gravida, parity,
-                lastIPTDate, lastTTDate, lastIPT, lastTT, staffId, ancVO);
+                lastIPTDate, lastTTDate, lastHbDate, lastMotherVitaminADate, lastIronOrFolateDate, lastSyphilisDate, lastMalariaDate, lastDiarrheaDate, lastPnuemoniaDate,
+                lastIPT, lastTT,lastHbLevels, lastMotherVitaminA, lastIronOrFolate, lastSyphilis,lastMalaria, lastDiarrhea, lastPnuemonia, staffId, ancVO);
         assertMobileMidwifeRegistration(mobileMidwifeEnrollment, staffId, motechFacilityId, motechId, serviceType,
                 reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, mmRegPhone, phoneOwnership, consent, registerClientForm.getDate());
     }
@@ -410,8 +430,10 @@ public class PatientRegistrationFormHandlerTest {
                                                                         String middleName, String motechId, Date nhisExpDate, String nhisNumber, String parentId,
                                                                         String region, RegistrationType registrationMode, String sex, String subDistrict,
                                                                         String phoneNumber, PatientType patientType, Date expDeliveryDate, Boolean deliveryDateConfirmed,
-                                                                        Double height, Integer gravida, Integer parity, Date lastIPTDate, Date lastTTDate,
-                                                                        String lastIPT, String lastTT, String staffId, Date registrationDate) {
+                                                                        Double height, Integer gravida, Integer parity, Date lastIPTDate, Date lastTTDate,  Date lastHbDate,
+                                                                        Date lastMotherVitaADate, Date lastIronDate, Date lastSyphDate, Date lastMalariaDate, Date lastDiarheaDate, Date lastPneumoDate,
+                                                                        String lastIPT, String lastTT, String lastHbLevels, String lastMotherVitaA, String lastIron, String lastSyphilis, String lastMalaria,
+                                                                        String lastDiarhea, String lastPneumonia, String staffId, Date registrationDate) {
         RegisterClientForm registerClientForm = createRegisterClientForm(address, dateofBirth, district, birthDateEstimated,
                 motechFacilityId, firstName, insured, lastName, middleName, motechId, nhisExpDate, nhisNumber, parentId, region, registrationMode, sex, subDistrict, phoneNumber, patientType, staffId);
 
@@ -422,8 +444,26 @@ public class PatientRegistrationFormHandlerTest {
         registerClientForm.setParity(parity);
         registerClientForm.setLastIPTDate(lastIPTDate);
         registerClientForm.setLastTTDate(lastTTDate);
+
+        registerClientForm.setLastHbDate(lastHbDate);
+        registerClientForm.setLastMotherVitaminADate(lastMotherVitaADate);
+        registerClientForm.setLastIronOrFolateDate(lastIronDate);
+        registerClientForm.setLastSyphilisDate(lastSyphDate);
+        registerClientForm.setLastMalariaDate(lastMalariaDate);
+        registerClientForm.setLastDiarrheaDate(lastDiarheaDate);
+        registerClientForm.setLastPnuemoniaDate(lastPneumoDate);
+
         registerClientForm.setLastIPT(lastIPT);
         registerClientForm.setLastTT(lastTT);
+
+        registerClientForm.setLastHbLevels(lastHbLevels);
+        registerClientForm.setLastMotherVitaminA(lastMotherVitaA);
+        registerClientForm.setLastIronOrFolate(lastIron);
+        registerClientForm.setLastSyphilis(lastSyphilis);
+        registerClientForm.setLastMalaria(lastMalaria);
+        registerClientForm.setLastDiarrhea(lastDiarhea);
+        registerClientForm.setLastPnuemonia(lastPneumonia);
+
         registerClientForm.setDate(registrationDate);
 
         return registerClientForm;
@@ -512,7 +552,8 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(motechId, is(mobileMidwifeEnrollment.getPatientId()));
     }
 
-    private void assertANCRegistration(String facilityId, String motechId, Date expDeliveryDate, Boolean deliveryDateConfirmed, Double height, Integer gravida, Integer parity, Date lastIPTDate, Date lastTTDate, String lastIPT, String lastTT, String staffId, ANCVO ancVO) {
+    private void assertANCRegistration(String facilityId, String motechId, Date expDeliveryDate, Boolean deliveryDateConfirmed, Double height, Integer gravida, Integer parity, Date lastIPTDate, Date lastTTDate, Date lastHbDate, Date lastVitaADate, Date lastIronDate, Date lastSyphDate, Date lastMalariaDate, Date lastDiarheaDate, Date lastPneumoDate,
+                                       String lastIPT, String lastTT, String lastHBlevel, String lastMotherVitaA, String lastIron, String lastSyphilis, String lastMalaria, String lastDiarhea, String lastPneumonia, String staffId, ANCVO ancVO) {
         assertThat(ancVO.getFacilityId(), is(facilityId));
         assertThat(ancVO.getPatientMotechId(), is(motechId));
         assertThat(ancVO.getEstimatedDateOfDelivery(), is(expDeliveryDate));
@@ -522,8 +563,28 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(ancVO.getParity(), is(parity));
         assertThat(ancVO.getAncCareHistoryVO().getLastIPTDate(), is(lastIPTDate));
         assertThat(ancVO.getAncCareHistoryVO().getLastTTDate(), is(lastTTDate));
+
+        //added by Freduah
+        assertThat(ancVO.getAncCareHistoryVO().getLastHbDate(), is(lastHbDate));
+        assertThat(ancVO.getAncCareHistoryVO().getLastMotherVitaminADate(), is(lastVitaADate));
+        assertThat(ancVO.getAncCareHistoryVO().getLastIronOrFolateDate(), is(lastIronDate));
+        assertThat(ancVO.getAncCareHistoryVO().getLastSyphilisDate(), is(lastSyphDate));
+        assertThat(ancVO.getAncCareHistoryVO().getLastMalariaDate(), is(lastMalariaDate));
+        assertThat(ancVO.getAncCareHistoryVO().getLastDiarrheaDate(), is(lastDiarheaDate));
+        assertThat(ancVO.getAncCareHistoryVO().getLastPnuemoniaDate(), is(lastPneumoDate));
+
+
         assertThat(ancVO.getAncCareHistoryVO().getLastIPT(), is(lastIPT));
         assertThat(ancVO.getAncCareHistoryVO().getLastTT(), is(lastTT));
+
+        //added by Freduah
+        assertThat(ancVO.getAncCareHistoryVO().getLastHbLevels(), is(lastHBlevel));
+        assertThat(ancVO.getAncCareHistoryVO().getLastMotherVitaminA(), is(lastMotherVitaA));
+        assertThat(ancVO.getAncCareHistoryVO().getLastIronOrFolate(), is(lastIron));
+        assertThat(ancVO.getAncCareHistoryVO().getLastSyphilis(), is(lastSyphilis));
+        assertThat(ancVO.getAncCareHistoryVO().getLastMalaria(), is(lastMalaria));
+        assertThat(ancVO.getAncCareHistoryVO().getLastDiarrhea(), is(lastDiarhea));
+        assertThat(ancVO.getAncCareHistoryVO().getLastPnuemonia(), is(lastPneumonia));
     }
 
     private void addMobileMidwifeRegistrationDetails(RegisterClientForm registerClientForm, ServiceType serviceType, ReasonToJoin reasonToJoin, Medium medium, DayOfWeek dayOfWeek, Time timeOfDay, Language language, LearnedFrom learnedFrom, String phoneNumber, PhoneOwnership phoneOwnership, Boolean consent, boolean enroll) {
