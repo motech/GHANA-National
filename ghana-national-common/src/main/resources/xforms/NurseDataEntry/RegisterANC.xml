@@ -496,7 +496,7 @@
                  constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
         <xf:bind id="facilityId" nodeset="/ANCRegistration/facilityId" required="true()" type="xsd:int"
                  constraint=". &lt; 2147483647" message="Number too large. Keep under 2147483647"/>
-        <xf:bind id="regDateToday" nodeset="/ANCRegistration/regDateToday" required="true()" type="xsd:date"/>
+        <xf:bind id="regDateToday" nodeset="/ANCRegistration/regDateToday" required="true()" type="xsd:string"/>
         <xf:bind constraint=". &lt;= 'today()'" id="date" message="Invalid date: date entered is in the future"
                  relevant="/ANCRegistration/regDateToday = 'IN_PAST' or /ANCRegistration/regDateToday = 'IN_PAST_IN_OTHER_FACILITY'"
                  visible="false()" action="show" nodeset="/ANCRegistration/date" required="true()" type="xsd:date"/>
@@ -505,7 +505,7 @@
         <xf:bind id="ancRegNumber" nodeset="/ANCRegistration/ancRegNumber" type="xsd:string" required="true()"/>
         <xf:bind id="estDeliveryDate"  nodeset="/ANCRegistration/estDeliveryDate" required="true()" type="xsd:date"/>
         <xf:bind id="deliveryDateConfirmed" nodeset="/ANCRegistration/deliveryDateConfirmed" required="true()"
-                 type="xsd:date"/>
+                 type="xsd:Boolean"/>
         <xf:bind constraint=". &gt;= 60 and . &lt;= 200" id="height"
                  message="Value out of range: must be between 60 and 200" nodeset="/ANCRegistration/height"
                  required="true()" type="xsd:decimal"/>
