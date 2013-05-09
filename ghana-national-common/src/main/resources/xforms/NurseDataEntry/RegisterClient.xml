@@ -707,7 +707,7 @@
                  nodeset="/patientRegistration/dateOfBirth"
                  required="true()" type="xsd:date"/>
         <xf:bind id="estimatedBirthDate" nodeset="/patientRegistration/estimatedBirthDate" required="true()"
-                 type="xsd:date"/>
+                 type="xsd:string"/>
         <xf:bind action="show" id="sex" nodeset="/patientRegistration/sex"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' or /patientRegistration/registrantType =
             'OTHER' "
@@ -881,7 +881,7 @@
         <xf:bind action="show" id="deliveryDateConfirmed"
                  nodeset="/patientRegistration/deliveryDateConfirmed"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' " required="true()"
-                 type="xsd:Boolean" visible="false()"/>
+                 type="xsd:string" visible="false()"/>
         <xf:bind id="enroll" nodeset="/patientRegistration/enroll" required="true()" type="xsd:string"/>
         <xf:bind action="show" id="consent" nodeset="/patientRegistration/consent"
                  relevant="/patientRegistration/enroll = 'Y'" required="true()" type="xsd:string"

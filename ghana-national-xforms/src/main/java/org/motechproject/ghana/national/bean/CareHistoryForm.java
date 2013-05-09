@@ -71,6 +71,7 @@ public class CareHistoryForm extends FormBean implements FormWithHistoryInput {
     private String lastMalaria;
     private String lastDiarrhea;
     private String lastPnuemonia;
+
     private Date lastHbDate;
     private Date lastMotherVitaminADate;
     private Date lastIronOrFolateDate;
