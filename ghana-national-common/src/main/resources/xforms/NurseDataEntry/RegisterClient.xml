@@ -707,7 +707,7 @@
                  nodeset="/patientRegistration/dateOfBirth"
                  required="true()" type="xsd:date"/>
         <xf:bind id="estimatedBirthDate" nodeset="/patientRegistration/estimatedBirthDate" required="true()"
-                 type="xsd:string"/>
+                 type="xsd:date"/>
         <xf:bind action="show" id="sex" nodeset="/patientRegistration/sex"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' or /patientRegistration/registrantType =
             'OTHER' "

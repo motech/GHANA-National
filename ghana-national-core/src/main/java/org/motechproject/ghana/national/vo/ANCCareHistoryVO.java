@@ -9,8 +9,8 @@ public class ANCCareHistoryVO {
 
     Boolean addCareHistory;
     List<ANCCareHistory> careHistory;
-    String lastIPT;
-    String lastTT;
+    private String lastIPT;
+    private String lastTT;
     private String lastHbLevels;
     private String lastMotherVitaminA;
     private String lastIronOrFolate;
@@ -19,8 +19,8 @@ public class ANCCareHistoryVO {
     private String lastDiarrhea;
     private String lastPnuemonia;
 
-    Date lastTTDate;
-    Date lastIPTDate;
+    private Date lastTTDate;
+    private Date lastIPTDate;
     private Date lastHbDate;
     private Date lastMotherVitaminADate;
     private Date lastIronOrFolateDate;

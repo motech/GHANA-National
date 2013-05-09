@@ -1,5 +1,7 @@
 package org.motechproject.ghana.national.web.helper;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -60,6 +62,14 @@ public class ANCFormMapperTest {
             add(new MRSObservation<String>(observationDate, SERIAL_NUMBER.getName(), serialNumber));
             add(new MRSObservation<Double>(observationDate, IPT.getName(), 2.0));
             add(new MRSObservation<Double>(observationDate, TT.getName(), 3.0));
+
+            add(new MRSObservation<String>(observationDate, HEMOGLOBIN.getName(), "14"));
+            add(new MRSObservation<String>(observationDate, VITA.getName(), "2"));
+            add(new MRSObservation<String>(observationDate, IRON_OR_FOLATE.getName(), "1"));
+            add(new MRSObservation<String>(observationDate, SYPHILIS.getName(), "1"));
+            add(new MRSObservation<String>(observationDate, MALARIA_RAPID_TEST.getName(), "1"));
+            add(new MRSObservation<String>(observationDate, DIARRHEA.getName(), "1"));
+            add(new MRSObservation<String>(observationDate, PNEUMOCOCCAL.getName(), "1"));
         }};
         MRSFacility facility = new MRSFacility(facilityId, name, country, region, county, province);
         MRSEncounter mrsEncounter = new MRSEncounter("1", new MRSPerson().id(providerId),
@@ -84,6 +94,14 @@ public class ANCFormMapperTest {
         assertThat(ancEnrollmentForm.getSerialNumber(), is(equalTo(serialNumber)));
         assertThat(ancEnrollmentForm.getLastIPT(), is(equalTo("2")));
         assertThat(ancEnrollmentForm.getLastTT(), is(equalTo("3")));
+
+        assertThat(ancEnrollmentForm.getLastHbLevels(), is(equalTo("14")));
+        assertThat(ancEnrollmentForm.getLastMotherVitaminA(), is(equalTo("1")));
+        assertThat(ancEnrollmentForm.getLastIronOrFolate(), is(equalTo("1")));
+        assertThat(ancEnrollmentForm.getLastSyphilis(), is(equalTo("1")));
+        assertThat(ancEnrollmentForm.getLastMalaria(), is(equalTo("1")));
+        assertThat(ancEnrollmentForm.getLastDiarrhea(), is(equalTo("1")));
+        assertThat(ancEnrollmentForm.getLastPnuemonia(), is(equalTo("1")));
 
     }
 
