@@ -116,6 +116,8 @@ public class CareHistoryForm extends FormBean implements FormWithHistoryInput {
         return lastMalaria;
     }
 
+
+
     public void setLastMalaria(String lastMalaria) {
         this.lastMalaria = lastMalaria;
     }
