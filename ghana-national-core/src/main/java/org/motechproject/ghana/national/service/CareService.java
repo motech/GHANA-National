@@ -286,7 +286,7 @@ public class CareService {
             addObservation(capturedHistory, ANCCareHistory.SYPHILIS, observations, ancCareHistoryVO.getLastSyphilisDate(), SYPHILIS.getName(), ancCareHistoryVO.getLastSyphilis());
             addObservation(capturedHistory, ANCCareHistory.MALARIA_RAPID_TEST, observations, ancCareHistoryVO.getLastMalariaDate(), MALARIA_RAPID_TEST.getName(), ancCareHistoryVO.getLastMalaria());
             addObservation(capturedHistory, ANCCareHistory.DIARRHEA, observations, ancCareHistoryVO.getLastDiarrheaDate(), DIARRHEA.getName(), ancCareHistoryVO.getLastDiarrhea());
-            addObservation(capturedHistory, ANCCareHistory.PNEUMOCOCCAL_A, observations, ancCareHistoryVO.getLastPnuemoniaDate(),PNEUMOCOCCAL.getName(), ancCareHistoryVO.getLastPnuemonia());
+            addObservation(capturedHistory, ANCCareHistory.PNEUMOCOCCAL, observations, ancCareHistoryVO.getLastPnuemoniaDate(),PNEUMOCOCCAL.getName(), ancCareHistoryVO.getLastPnuemonia());
         }
         return observations;
     }
