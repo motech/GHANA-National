@@ -111,7 +111,7 @@ public class ANCControllerTest {
         assertEquals(ANCController.ENROLL_ANC_URL, ancUrl);
         assertTrue("Form attributes are not equal", reflectionEquals(ancEnrollmentForm, new ANCEnrollmentForm(motechPatientId)));
         assertTrue(reflectionEquals(modelMap.get("careHistories"), Arrays.asList("TT", "IPT_SP", "HEMOGLOBIN", "VITA", "IRON_OR_FOLATE",
-                "SYPHILIS", "MALARIA_RAPID_TEST", "DIARRHEA", "PNEUMOCOCCAL_A")));
+                "SYPHILIS", "MALARIA_RAPID_TEST", "DIARRHEA", "PNEUMOCOCCAL")));
         assertTrue(reflectionEquals(modelMap.get("lastIPT"), lastIPTValues));
         assertTrue(reflectionEquals(modelMap.get("lastTT"), lastTTValues));
         assertTrue(reflectionEquals(modelMap.get("lastHbLevels"),"14"));

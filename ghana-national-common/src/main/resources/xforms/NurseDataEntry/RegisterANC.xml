@@ -604,10 +604,10 @@
                  relevant="/ANCRegistration/addCareHistory = 'DIARRHEA' and /ANCRegistration/addHistory = '1' " action="show"/>
 
         <xf:bind id="lastPnuemonia" nodeset="/ANCRegistration/lastPnuemonia" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL_A' and /ANCRegistration/addHistory = '1' " action="show"/>
+                 relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL' and /ANCRegistration/addHistory = '1' " action="show"/>
 
         <xf:bind id="lastPnuemoniaDate" nodeset="/ANCRegistration/lastPnuemoniaDate" type="xsd:date" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL_A' and /ANCRegistration/addHistory = '1' " action="show"/>
+                 relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL' and /ANCRegistration/addHistory = '1' " action="show"/>
 
         <xf:bind id="formtype" nodeset="/ANCRegistration/formtype" required="true()" type="xsd:string"
                  visible="false()"/>
@@ -716,7 +716,7 @@
             </xf:item>
             <xf:item id="9">
                 <xf:label>Pneumonia</xf:label>
-                <xf:value>PNEUMOCOCCAL_A</xf:value>
+                <xf:value>PNEUMOCOCCAL</xf:value>
             </xf:item>
         </xf:select>
         <xf:select1 bind="lastIPT">
