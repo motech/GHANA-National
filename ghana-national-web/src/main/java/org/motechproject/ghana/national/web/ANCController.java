@@ -108,7 +108,7 @@ public class ANCController {
     }
 
     private void addCareHistoryValues(ModelMap modelMap) {
-        modelMap.put("careHistories", Arrays.asList(ANCCareHistory.TT.name(), ANCCareHistory.IPT_SP.name(),ANCCareHistory.HEMOGLOBIN.name(), ANCCareHistory.VITA.name(), ANCCareHistory.IRON_OR_FOLATE.name(), ANCCareHistory.SYPHILIS.name(), ANCCareHistory.MALARIA_RAPID_TEST.name(), ANCCareHistory.DIARRHEA.name(), ANCCareHistory.PNEUMOCOCCAL_A.name()));
+        modelMap.put("careHistories", Arrays.asList(ANCCareHistory.TT.name(), ANCCareHistory.IPT_SP.name(),ANCCareHistory.HEMOGLOBIN.name(), ANCCareHistory.VITA.name(), ANCCareHistory.IRON_OR_FOLATE.name(), ANCCareHistory.SYPHILIS.name(), ANCCareHistory.MALARIA_RAPID_TEST.name(), ANCCareHistory.DIARRHEA.name(), ANCCareHistory.PNEUMOCOCCAL.name()));
         HashMap<Integer, String> lastIPTValues = new LinkedHashMap<Integer, String>();
         lastIPTValues.put(1, "IPT 1");
         lastIPTValues.put(2, "IPT 2");
@@ -131,20 +131,20 @@ public class ANCController {
         lastPneumoValues.put(3, "Pneumo 3");
 
         HashMap<Integer, String> lastIronValues = new LinkedHashMap<Integer, String>();
-        lastIronValues.put(1,"Yes");
-        lastIronValues.put(222,"No");
+        lastIronValues.put(1,"Y");
+        lastIronValues.put(0,"N");
 
         HashMap<Integer, String> lastSyphValues = new LinkedHashMap<Integer, String>();
-        lastSyphValues.put(1,"Yes");
-        lastSyphValues.put(222,"No");
+        lastSyphValues.put(1,"Y");
+        lastSyphValues.put(0,"N");
 
         HashMap<Integer, String> lastMalariaValues = new LinkedHashMap<Integer, String>();
-        lastMalariaValues.put(1,"Yes");
-        lastMalariaValues.put(222,"No");
+        lastMalariaValues.put(1,"Y");
+        lastMalariaValues.put(0,"N");
 
         HashMap<Integer, String> lastDiariaValues = new LinkedHashMap<Integer, String>();
         lastDiariaValues.put(1,"Yes");
-        lastDiariaValues.put(222,"No");
+        lastDiariaValues.put(0,"N");
 
         modelMap.put("lastIPT", lastIPTValues);
         modelMap.put("lastTT", lastTTValues);

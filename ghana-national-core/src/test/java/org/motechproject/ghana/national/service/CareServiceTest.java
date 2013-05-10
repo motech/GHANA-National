@@ -283,7 +283,6 @@ public class CareServiceTest extends BaseUnitTest {
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastIronOrFolateDate(), IRON_OR_FOLATE.getName(), ancvo.getAncCareHistoryVO().getLastIronOrFolate()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastSyphilisDate(), SYPHILIS.getName(),ancvo.getAncCareHistoryVO().getLastSyphilis()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastMalariaDate(), MALARIA_RAPID_TEST.getName(), ancvo.getAncCareHistoryVO().getLastMalaria()));
-            add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastSyphilisDate(), SYPHILIS.getName(), ancvo.getAncCareHistoryVO().getLastSyphilis()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastDiarrheaDate(), DIARRHEA.getName(), ancvo.getAncCareHistoryVO().getLastDiarrhea()));
             add(new MRSObservation<String>(ancvo.getAncCareHistoryVO().getLastPnuemoniaDate(), PNEUMOCOCCAL.getName(), ancvo.getAncCareHistoryVO().getLastPnuemonia()));
         }};
@@ -691,11 +690,11 @@ public class CareServiceTest extends BaseUnitTest {
         assertThat(encounters, not(hasItem(ANC_VISIT.value())));
     }     */
 
-  /*  @Test
+   /* @Test
     public void shouldSaveCareHistoryDetailsWithTTOrIPTIfAnyOneIsWithinTheRangeOfActivePregnancy() throws ObservationNotFoundException {
         final String ttDose = "1";
         final String iptDose = "2";
-        final String lastHbLevels = "12";
+        final String lastHbLevels = "14";
         final String lastMotherVitaminA = "1";
         final String lastIronOrFolate = "1";
         final String lastSyphilis = "1";
@@ -765,7 +764,7 @@ public class CareServiceTest extends BaseUnitTest {
 
         assertEquals(ANC_VISIT.value(), encounterTypeCaptor.getAllValues().get(0));
         assertEquals(PATIENT_HISTORY.value(), encounterTypeCaptor.getAllValues().get(1));
-    }     */
+    }  */
 
     @Test
     public void shouldCreateSchedulesForANCProgramRegistration() throws ObservationNotFoundException {
@@ -776,7 +775,7 @@ public class CareServiceTest extends BaseUnitTest {
         Pregnancy pregnancy = basedOnConceptionDate(dateOfConception);
         final String ttDose = "1";
         final String iptDose = "2";
-        final String lastHbLevels = "12";
+        final String lastHbLevels = "14";
         final String lastMotherVitaminA = "1";
         final String lastIronOrFolate = "1";
         final String lastSyphilis = "1";
