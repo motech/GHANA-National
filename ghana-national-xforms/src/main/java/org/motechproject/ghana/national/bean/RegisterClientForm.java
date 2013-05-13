@@ -104,7 +104,6 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
     private String lastVitaminA;
     private Integer lastMeasles;
 
-
     //NEW ANC CARE HISTORY
     private String lastHbLevels;
     private String lastMotherVitaminA;
