@@ -227,12 +227,12 @@ public class PNCMotherSchedulesTest extends BaseScheduleTrackingTest {
 
     @Test
     public void verifyPNC2BabyAlertsIfRegisteredExactlyAt7DaysOfAge() throws SchedulerException {
-        DateTime dateOfBirth = newDateWithTime("30-Jan-2012", "14:25:12");
-        mockToday(newDateWithTime("06-Feb-2012", "14:25:12"));
+        DateTime dateOfBirth = newDateWithTime("30-Jan-2013", "14:25:12");
+        mockToday(newDateWithTime("06-Feb-2013", "14:25:12"));
 
         enrollmentId = scheduleAlertForPNCMother(dateOfBirth, PNC_CHILD_2.getName());
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), Collections.<TestAlert>emptyList());
-        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("11-Feb-2012", "14:25").toDate())));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("11-Feb-2013", "14:25").toDate())));
     }
 
     @Test
