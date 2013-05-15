@@ -709,8 +709,7 @@
         <xf:bind id="estimatedBirthDate" nodeset="/patientRegistration/estimatedBirthDate" required="true()"
                  type="xsd:string"/>
         <xf:bind action="show" id="sex" nodeset="/patientRegistration/sex"
-                 relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' or /patientRegistration/registrantType =
-            'OTHER' "
+                 relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' or /patientRegistration/registrantType = 'OTHER' "
                  required="true()" type="xsd:string" visible="false()"/>
         <xf:bind id="insured" nodeset="/patientRegistration/insured" required="true()" type="xsd:string"/>
         <xf:bind action="show" id="nhis" nodeset="/patientRegistration/nhis"
@@ -720,7 +719,7 @@
                  relevant="/patientRegistration/insured = 'Y'" type="xsd:date" visible="false()"
                  required="false()"/>
         <xf:bind action="show" id="motherMotechId" nodeset="/patientRegistration/motherMotechId"
-                 relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' or /patientRegistration/registrantType = 'MOTHER_OF_INFANT' " type="xsd:int"
+                 relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE'" type="xsd:int"
                  visible="false()" constraint=". &gt; 999999 and . &lt; 10000000"
                  message="MoTeCH ID must be 7 digits long" required="false()"/>
         <xf:bind id="region" nodeset="/patientRegistration/region" type="xsd:string" required="true()"
@@ -766,7 +765,7 @@
                  type="xsd:string" visible="false()" action="show" required="true()"/>
 
         <xf:bind id="addMotherHistory" nodeset="/patientRegistration/addMotherHistory"
-                 relevant="( /patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addHistory = '1') or ( /patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' )"
+                 relevant="(( /patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addHistory = '1') or ( /patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1')) and ( /patientRegistration/registrantType != 'CHILD_UNDER_FIVE' and /patientRegistration/addHistory = '1')"
                  type="xsd:string" visible="false()" action="show" required="true()"/>
 
         <xf:bind id="lastIPT" nodeset="/patientRegistration/lastIPT" type="xsd:string" visible="false()"
@@ -954,7 +953,7 @@
                  relevant="( /patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='PNEUMOCOCCAL_A') or ( /patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='PNEUMOCOCCAL_A' )" action="show"/>
 
         <xf:bind id="lastPnuemoniaDate" nodeset="/patientRegistration/lastPnuemoniaDate" type="xsd:date" visible="false()"
-                 relevant="( /patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='PNEUMOCOCCAL_A') or ( /patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='PNEUMOCOCCAL_A' )" action="show"/>
+                 relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='PNEUMOCOCCAL_A') or ( /patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='PNEUMOCOCCAL_A' )" action="show"/>
 
         <xf:bind id="formtype" nodeset="/patientRegistration/formtype" required="true()" type="xsd:string"
                  visible="false()"/>
