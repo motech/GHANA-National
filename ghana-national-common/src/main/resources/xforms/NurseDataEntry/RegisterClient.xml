@@ -1712,7 +1712,7 @@
             <xf:label>Malaria Treatment Date</xf:label>
         </xf:input>
         <xf:select1 bind="lastDiarrhea">
-            <xf:label>Has Diarrhea Treated</xf:label>
+            <xf:label>Has Diarrhoea Treated</xf:label>
             <xf:item id="Y">
                 <xf:label>Yes</xf:label>
                 <xf:value>Y</xf:value>
@@ -1723,7 +1723,7 @@
             </xf:item>
         </xf:select1>
         <xf:input bind="lastDiarrheaDate">
-            <xf:label>Diarrhea Treatment Date</xf:label>
+            <xf:label>Diarrhoea Treatment Date</xf:label>
         </xf:input>
         <xf:select1 bind="lastPnuemonia">
             <xf:label>Has Pnuemonia Treated</xf:label>

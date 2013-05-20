@@ -36,14 +36,19 @@ public class IVRCallCenterNoMappingSeed extends Seed {
                 //mappings.add(dayTime(weekDay, "0509039934", Language.FAN));
                 mappings.add(dayTime(weekDay, "0208516183", Language.FAN));
                 mappings.add(dayTime(weekDay, "0509039933", Language.NAN));
+
                 mappings.add(nurseLine(weekDay, "0208516182"));
                 mappings.add(evening(weekDay, "0544347554", Language.EN));
                 mappings.add(evening(weekDay, "0544347554", Language.FAN));
+                mappings.add(evening(weekDay, "0544347554", Language.GD));
+
                 mappings.add(earlyMorning(weekDay, "0544347552", Language.EN));
                 mappings.add(earlyMorning(weekDay, "0544347552", Language.FAN));
+                mappings.add(earlyMorning(weekDay, "0544347552" , Language.GD));
             }
             mappings.add(weekend(DayOfWeek.Saturday, "0544347552", Language.EN));
             mappings.add(weekend(DayOfWeek.Saturday, "0544347552", Language.FAN));
+            mappings.add(weekend(DayOfWeek.Saturday, "0544347552", Language.GD ));
 
             for (IVRCallCenterNoMapping mapping : mappings) {
                 allIvrCallCenterNoMappings.add(mapping);

@@ -46,6 +46,8 @@ public class PregnancyTerminationForm extends FormBean {
     private Boolean postAbortionFPAccepted;
     private String comments;
 
+
+
     public String getStaffId() {
         return staffId;
     }

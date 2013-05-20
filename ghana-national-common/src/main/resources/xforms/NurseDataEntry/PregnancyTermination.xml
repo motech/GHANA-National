@@ -85,8 +85,12 @@
                 <xf:value>2</xf:value>
             </xf:item>
             <xf:item id="3">
-                <xf:label>Other</xf:label>
+                <xf:label>EOU</xf:label>
                 <xf:value>3</xf:value>
+            </xf:item>
+            <xf:item id="4">
+                <xf:label>Other</xf:label>
+                <xf:value>4</xf:value>
             </xf:item>
         </xf:select1>
         <xf:select bind="complications">
