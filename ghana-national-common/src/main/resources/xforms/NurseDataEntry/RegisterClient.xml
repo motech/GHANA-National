@@ -765,7 +765,7 @@
                  type="xsd:string" visible="false()" action="show" required="true()"/>
 
         <xf:bind id="addMotherHistory" nodeset="/patientRegistration/addMotherHistory"
-                 relevant="/patientRegistration/addHistory = '1' and /patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/registrantType = 'MOTHER_OF_INFANT' "
+                 relevant="/patientRegistration/addHistory = '1' and (/patientRegistration/registrantType = 'PREGNANT_MOTHER' or /patientRegistration/registrantType = 'MOTHER_OF_INFANT' )"
                  type="xsd:string" visible="false()" action="show" required="true()"/>
 
         <xf:bind id="lastIPT" nodeset="/patientRegistration/lastIPT" type="xsd:string" visible="false()"
@@ -868,7 +868,7 @@
 
         <xf:bind action="show" id="whyNoHistory" nodeset="/patientRegistration/whyNoHistory"
                  relevant="/patientRegistration/addHistory = '0' and /patientRegistration/registrantType = 'CHILD_UNDER_FIVE'
-            and /patientRegistration/registrantType = 'PREGNANT_MOTHER'"
+            and /patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/registrantType = 'MOTHER_OF_INFANT'"
                  required="true()" visible="false()" type="xsd:int"/>
 
         <xf:bind action="show" id="expDeliveryDate" nodeset="/patientRegistration/expDeliveryDate"
@@ -1249,39 +1249,39 @@
         </xf:select>
         <xf:select bind="addChildHistory">
             <xf:label>Add Care History</xf:label>
-            <xf:item id="3">
+            <xf:item id="1">
                 <xf:label>Vit A (Ch)</xf:label>
                 <xf:value>VITA_A</xf:value>
             </xf:item>
-            <xf:item id="4">
+            <xf:item id="2">
                 <xf:label>IPTi (Ch)</xf:label>
                 <xf:value>IPTI</xf:value>
             </xf:item>
-            <xf:item id="5">
+            <xf:item id="3">
                 <xf:label>BCG</xf:label>
                 <xf:value>BCG</xf:value>
             </xf:item>
-            <xf:item id="6">
+            <xf:item id="4">
                 <xf:label>OPV</xf:label>
                 <xf:value>OPV</xf:value>
             </xf:item>
-            <xf:item id="7">
+            <xf:item id="5">
                 <xf:label>Penta</xf:label>
                 <xf:value>PENTA</xf:value>
             </xf:item>
-            <xf:item id="8">
+            <xf:item id="6">
                 <xf:label>Measles</xf:label>
                 <xf:value>MEASLES</xf:value>
             </xf:item>
-            <xf:item id="9">
+            <xf:item id="7">
                 <xf:label>YF</xf:label>
                 <xf:value>YF</xf:value>
             </xf:item>
-            <xf:item id="10">
+            <xf:item id="8">
                 <xf:label>Rotavirus</xf:label>
                 <xf:value>ROTAVIRUS</xf:value>
             </xf:item>
-            <xf:item id="11">
+            <xf:item id="9">
                 <xf:label>Pneumococcal</xf:label>
                 <xf:value>PNEUMOCOCCAL</xf:value>
             </xf:item>
