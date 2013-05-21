@@ -198,7 +198,7 @@ public class PNCBabySchedulesTest extends BaseScheduleTrackingTest{
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 alert(late, newDateWithTime("22-Mar-2013", "09:44").toDate())
         ));
-        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("27-Mar-2012", "09:45").toDate())));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("27-Mar-2013", "09:45").toDate())));
     }
 
     @Test
