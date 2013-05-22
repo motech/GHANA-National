@@ -1209,7 +1209,7 @@
             </xf:item>
         </xf:select1>
         <xf:select bind="addMotherHistory">
-            <xf:label>Add Care History</xf:label>
+            <xf:label>Add Mother Care History</xf:label>
             <xf:item id="1">
                 <xf:label>IPT</xf:label>
                 <xf:value>IPT_SP</xf:value>
