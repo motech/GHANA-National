@@ -21,7 +21,11 @@ public enum Language{
 
     GD("Ga Adangme", Arrays.asList(new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.HOUSEHOLD),
                                    new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.PERSONAL),
-                                   new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.PUBLIC)));
+                                   new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.PUBLIC))),
+
+    EWE("Ewe", Arrays.asList(new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.HOUSEHOLD),
+                             new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.PERSONAL),
+                             new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.PUBLIC)));
 
     private String displayName;
     private List<MediumAndPhoneOwnership> applicableFor;

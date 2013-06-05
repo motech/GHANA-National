@@ -24,7 +24,7 @@
             {
                 "name" : "Pregnancy Voice Message",
                 "formats" : ["IVR"],
-                "languages" : ["en","fa","ka","na","gd"],
+                "languages" : ["en","fa","ka","na","gd","ewe"],
                 "messageKey": "{Offset}",
                 "repeatInterval" : "1 Week",
                 "deliverTime" : "0:0"
@@ -57,7 +57,7 @@
             {
                 "name" : "Child Care Voice Message",
                 "formats" : ["IVR"],
-                "languages" : ["en","fa","ka","na","gd"],
+                "languages" : ["en","fa","ka","na","gd","ewe"],
                 "messageKey": "{Offset}",
                 "repeatInterval" : "1 Week",
                 "deliverTime" : "0:0"

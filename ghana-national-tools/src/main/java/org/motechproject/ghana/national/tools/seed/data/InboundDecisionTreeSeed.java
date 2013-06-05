@@ -27,6 +27,7 @@ import static org.motechproject.ghana.national.domain.mobilemidwife.Language.FAN
 import static org.motechproject.ghana.national.domain.mobilemidwife.Language.KAS;
 import static org.motechproject.ghana.national.domain.mobilemidwife.Language.NAN;
 import static org.motechproject.ghana.national.domain.mobilemidwife.Language.GD;
+import static org.motechproject.ghana.national.domain.mobilemidwife.Language.EWE;
 
 @Component
 public class InboundDecisionTreeSeed extends Seed {
@@ -63,6 +64,7 @@ public class InboundDecisionTreeSeed extends Seed {
             transitions.put("4", new Transition().setDestinationNode(chooseActionNode(FAN, 3)));
 
             transitions.put("5", new Transition().setDestinationNode(chooseActionNode(GD, 3)));
+            transitions.put("6", new Transition().setDestinationNode(chooseActionNode(EWE, 3)));
 
             transitions.put("0", new ConnectToCallCenterTransition(EN));
             transitions.put("*", new ConnectToCallCenterTransition(true));
