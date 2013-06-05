@@ -30,6 +30,10 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
     private String motechId;
     @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
     private String motherMotechId;
+
+    @RegEx(pattern = MOTECH_ID_PATTERN) @MotechId(validator = MotechIdVerhoeffValidator.class)
+    private String childMotechId;
+
     @Required
     private PatientType registrantType;
     @Required @MaxLength(size = 50) @RegEx(pattern = NAME_PATTERN)
@@ -267,6 +271,11 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
         return motherMotechId;
     }
 
+    public String getChildMotechId() {
+        return childMotechId;
+    }
+
+
     public PatientType getRegistrantType() {
         return registrantType;
     }
@@ -337,6 +346,10 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
 
     public void setMotherMotechId(String motherMotechId) {
         this.motherMotechId = motherMotechId;
+    }
+
+    public void setChildMotechId(String childMotechId) {
+        this.childMotechId = childMotechId;
     }
 
     public void setRegistrantType(PatientType registrantType) {

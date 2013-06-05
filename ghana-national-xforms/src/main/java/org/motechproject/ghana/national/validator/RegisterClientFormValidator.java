@@ -79,10 +79,12 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
 
     public PatientValidator patientValidator(FormWithHistoryInput formWithHistoryInput, RegistrationType registrationModeFromForm, Date dateOfBirthFromForm, String sexFromForm, PatientType registrantTypeFromForm, String motherMotechIdFromForm) {
         Patient patientsMother = null;
+
         if(motherMotechIdFromForm != null)
             patientsMother = formValidator.getPatient(motherMotechIdFromForm);
 
-        String mothersMotechId = "Mothers motech Id";
+            String mothersMotechId = "Mothers motech Id";
+
 
         PatientValidator validators = new AlwaysValid();
         //do not inline
@@ -92,7 +94,7 @@ public class RegisterClientFormValidator extends FormValidator<RegisterClientFor
             .onSuccess(true, new IsFormSubmittedForAFemale(sexFromForm), PatientType.PREGNANT_MOTHER.equals(registrantTypeFromForm))
             .onSuccess(new IsFormSubmittedWithValidHistoryDates(dateOfBirthFromForm, formWithHistoryInput))
             .onSuccess(true, new ExistsInDb(patientsMother, new FormError(mothersMotechId, NOT_FOUND))
-                    .onFailure(new RegClientFormSubmittedInSameUploadForMotechId(motherMotechIdFromForm, new FormError(mothersMotechId, NOT_FOUND))), PatientType.CHILD_UNDER_FIVE.equals(registrantTypeFromForm) && !StringUtils.isEmpty(motherMotechIdFromForm));
+                 .onFailure(new RegClientFormSubmittedInSameUploadForMotechId(motherMotechIdFromForm, new FormError(mothersMotechId, NOT_FOUND))), PatientType.CHILD_UNDER_FIVE.equals(registrantTypeFromForm) && !StringUtils.isEmpty(motherMotechIdFromForm));
 
         return validators;
     }

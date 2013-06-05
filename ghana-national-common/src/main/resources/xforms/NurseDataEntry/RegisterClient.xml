@@ -20,6 +20,7 @@
                 <nhis/>
                 <nhisExpires/>
                 <motherMotechId/>
+                <childMotechId/>
                 <region/>
                 <district/>
                 <subDistrict/>
@@ -722,6 +723,12 @@
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE'" type="xsd:int"
                  visible="false()" constraint=". &gt; 999999 and . &lt; 10000000"
                  message="MoTeCH ID must be 7 digits long" required="false()"/>
+
+        <xf:bind action="show" id="childMotechId" nodeset="/patientRegistration/childMotechId"
+                 relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT'" type="xsd:int"
+                 visible="false()" constraint=". &gt; 999999 and . &lt; 10000000"  message="MoTeCH ID must be 7 digits long"
+                 required="false()"/>
+
         <xf:bind id="region" nodeset="/patientRegistration/region" type="xsd:string" required="true()"
                  visible="true()"/>
         <xf:bind action="show" id="district" nodeset="/patientRegistration/district"
@@ -765,7 +772,7 @@
                  type="xsd:string" visible="false()" action="show" required="true()"/>
 
         <xf:bind id="addMotherHistory" nodeset="/patientRegistration/addMotherHistory"
-                 relevant="( /patientRegistration/addHistory = '1' and /patientRegistration/registrantType = 'PREGNANT_MOTHER') or (/patientRegistration/addHistory = '1' and /patientRegistration/registrantType = 'MOTHER_OF_INFANT' )"
+                 relevant="(/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addHistory = '1') or (/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1')"
                  type="xsd:string" visible="false()" action="show" required="true()"/>
 
         <xf:bind id="lastIPT" nodeset="/patientRegistration/lastIPT" type="xsd:string" visible="false()"
@@ -1065,6 +1072,11 @@
         <xf:input bind="motherMotechId">
             <xf:label>Mother's MoTeCH ID</xf:label>
         </xf:input>
+
+        <xf:input bind="childMotechId">
+            <xf:label>Child's MoTeCH ID</xf:label>
+        </xf:input>
+
         <xf:select1 bind="region">
             <xf:label>Region</xf:label>
             <xf:item id="ue">
@@ -1213,7 +1225,7 @@
             </xf:item>
         </xf:select1>
         <xf:select bind="addMotherHistory">
-            <xf:label>Add Mother Care History</xf:label>
+            <xf:label>Add Care History</xf:label>
             <xf:item id="1">
                 <xf:label>IPT</xf:label>
                 <xf:value>IPT_SP</xf:value>

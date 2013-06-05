@@ -76,6 +76,18 @@ public class PatientRegistrationFormHandler {
             registerForCWC(registerClientForm, facilityId, savedPatient.getMotechId());
             registerForANC(registerClientForm, facilityId, savedPatient.getMotechId());
 
+
+            //added for Child's motech id.
+            Patient patient1 = new Patient(mrsPatient, registerClientForm.getChildMotechId());
+            final Patient savedPatient1 = patientService.registerPatient(patient1, registerClientForm.getStaffId(), registerClientForm.getDate());
+
+            if (registerClientForm.getChildMotechId() != null){
+                registerForMobileMidwifeProgram(registerClientForm, savedPatient1.getMotechId());
+                registerForCWC(registerClientForm, facilityId, savedPatient1.getMotechId());
+                registerForANC(registerClientForm, facilityId, savedPatient1.getMotechId());
+            }
+
+
             if (registerClientForm.getSender() != null) {
                 smsGateway.dispatchSMS(REGISTER_SUCCESS_SMS_KEY,
                         new SMSTemplate().fillPatientDetails(savedPatient).getRuntimeVariables(), registerClientForm.getSender());
