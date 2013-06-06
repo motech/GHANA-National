@@ -203,16 +203,16 @@ public class PNCBabySchedulesTest extends BaseScheduleTrackingTest{
 
     @Test
     public void verifyPNC3BabyAlertsIfRegisteredOnOrAfter5DaysFromChildBirth() throws SchedulerException {
-        DateTime dateOfBirth = newDateWithTime("15-Mar-2012", "09:45");
-        mockToday(newDateWithTime("20-Mar-2012", "10:45:12"));
+        DateTime dateOfBirth = newDateWithTime("15-Mar-2013", "09:45");
+        mockToday(newDateWithTime("20-Mar-2013", "10:45:12"));
 
         enrollmentId = scheduleAlertForPNCBaby(dateOfBirth, PNC_CHILD_3.getName());
         assertTestAlerts(captureAlertsForNextMilestone(enrollmentId), asList(
                 // when seconds are left cause alerts to be missed
-                alert(earliest, newDateWithTime("27-Mar-2012", "09:44").toDate()),
-                alert(late, newDateWithTime("29-Mar-2012", "09:44").toDate())
+                alert(earliest, newDateWithTime("27-Mar-2013", "09:44").toDate()),
+                alert(late, newDateWithTime("29-Mar-2013", "09:44").toDate())
         ));
-        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("05-Apr-2012", "09:45").toDate())));
+        assertThat(getDefaultmentDate(enrollmentId), is(equalTo(newDateWithTime("05-Apr-2013", "09:45").toDate())));
     }
 
     //////////////////////////////////////////// Case: Child is registered exactly 7 days of age ////////////////////////////////////////////////////////
