@@ -78,6 +78,7 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
 
     private String addChildHistory;
     private String addMotherHistory;
+    private String addPMotherHistory;
 
     private Date bcgDate;
     private Date lastOPVDate;
@@ -536,6 +537,16 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
         this.addMotherHistory = addMotherHistory;
     }
 
+    public String getAddPMotherHistory() {
+        return addPMotherHistory;
+    }
+
+    public void setAddPMotherHistory(String addPMotherHistory) {
+        this.addPMotherHistory = addPMotherHistory;
+    }
+
+
+
     public String getAddChildHistory() {
         return addChildHistory;
     }
@@ -660,6 +671,11 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
         List<ANCCareHistory> ancCareHistories = new ArrayList<ANCCareHistory>();
         if (StringUtils.isNotEmpty(addMotherHistory)) {
             for (String value : addMotherHistory.split(" ")) {
+                ancCareHistories.add(ANCCareHistory.valueOf(value));
+            }
+        }
+        else if (StringUtils.isNotEmpty(addPMotherHistory)) {
+            for (String value : addPMotherHistory.split(" ")) {
                 ancCareHistories.add(ANCCareHistory.valueOf(value));
             }
         }
