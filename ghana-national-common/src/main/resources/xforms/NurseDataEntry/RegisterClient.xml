@@ -782,21 +782,47 @@
 
 
         <xf:bind id="lastIPT" nodeset="/patientRegistration/lastIPT" type="xsd:string" visible="false()"
-                 relevant=" ( /patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory = 'IPT_SP' and /patientRegistration/addHistory = '1') or ( /patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addPMotherHistory = 'IPT_SP' and /patientRegistration/addHistory = '1') "
+                 relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory = 'IPT_SP' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
+
+        <xf:bind id="lastIPT" nodeset="/patientRegistration/lastIPT" type="xsd:string" visible="false()"
+                 relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addPMotherHistory = 'IPT_SP' and /patientRegistration/addHistory = '1'"
+                 action="show" required="true()"/>
+
         <xf:bind id="lastIPTDate" nodeset="/patientRegistration/lastIPTDate" type="xsd:date"
                  visible="false()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
-                 relevant="( /patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory = 'IPT_SP' and /patientRegistration/addHistory = '1') or ( /patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addPMotherHistory = 'IPT_SP' and /patientRegistration/addHistory = '1') "
+                 relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory = 'IPT_SP' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
+
+        <xf:bind id="lastIPTDate" nodeset="/patientRegistration/lastIPTDate" type="xsd:date"
+                 visible="false()"
+                 constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
+                 relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addPMotherHistory = 'IPT_SP' and /patientRegistration/addHistory = '1'"
+                 action="show" required="true()"/>
+
+
         <xf:bind id="lastTT" nodeset="/patientRegistration/lastTT" type="xsd:string" visible="false()"
-                 relevant="( /patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory = 'TT' and /patientRegistration/addHistory = '1') or ( /patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addPMotherHistory = 'TT' and /patientRegistration/addHistory = '1') "
+                 relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory = 'TT' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
+
+        <xf:bind id="lastTT" nodeset="/patientRegistration/lastTT" type="xsd:string" visible="false()"
+                 relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addPMotherHistory = 'TT' and /patientRegistration/addHistory = '1'"
+                 action="show" required="true()"/>
+
+
         <xf:bind id="lastTTDate" nodeset="/patientRegistration/lastTTDate" type="xsd:date" visible="false()"
                  action="show" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"
-                 relevant="( /patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory = 'TT' and /patientRegistration/addHistory = '1') or ( /patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addPMotherHistory = 'TT' and /patientRegistration/addHistory = '1') "
+                 relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory = 'TT' and /patientRegistration/addHistory = '1'"
                  required="true()"/>
+
+        <xf:bind id="lastTTDate" nodeset="/patientRegistration/lastTTDate" type="xsd:date" visible="false()"
+                 action="show" constraint=". &lt;= 'today()'"
+                 message="Invalid date: date specified is in the future"
+                 relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addPMotherHistory = 'TT' and /patientRegistration/addHistory = '1'"
+                 required="true()"/>
+
 
 
         <xf:bind id="lastHbLevels" nodeset="/patientRegistration/lastHbLevels" type="xsd:string" visible="false()"
