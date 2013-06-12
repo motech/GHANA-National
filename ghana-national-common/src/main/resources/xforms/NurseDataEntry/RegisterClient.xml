@@ -1308,19 +1308,19 @@
         <xf:select bind="addPMotherHistory">
             <xf:label>Add Care History</xf:label>
             <xf:item id="1">
-                <xf:label>IPT</xf:label>
+                <xf:label>?IPT</xf:label>
                 <xf:value>IPT_SP</xf:value>
             </xf:item>
             <xf:item id="2">
-                <xf:label>TT</xf:label>
+                <xf:label>?TT</xf:label>
                 <xf:value>TT</xf:value>
             </xf:item>
             <xf:item id="3">
-                <xf:label>HB Levels</xf:label>
+                <xf:label>?HB Levels</xf:label>
                 <xf:value>HEMOGLOBIN</xf:value>
             </xf:item>
             <xf:item id="4">
-                <xf:label>VITA A</xf:label>
+                <xf:label>?VITA A</xf:label>
                 <xf:value>VITA</xf:value>
             </xf:item>
             <xf:item id="5">
