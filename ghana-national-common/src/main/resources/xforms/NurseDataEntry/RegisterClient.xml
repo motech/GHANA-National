@@ -781,15 +781,15 @@
                  type="xsd:string" visible="false()" action="show" required="true()"/>
 
 
-        <xf:bind id="lastIPT" nodeset="/patientRegistration/lastIPT" type="xsd:string" visible="false()"
+        <xf:bind id="lastIPT" nodeset="/patientRegistration/lastIPT" type="xsd:string" visible="true()"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory = 'IPT_SP' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
 
         <xf:bind id="lastIPT" nodeset="/patientRegistration/lastIPT" type="xsd:string" visible="true()"
                  relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addPMotherHistory = 'IPT_SP' and /patientRegistration/addHistory = '1'"
-                 action="show" required="true()">LastIPT</xf:bind>
+                 action="show" required="true()"/>
 
-        <xf:bind id="lastIPTDate" nodeset="/patientRegistration/lastIPTDate" type="xsd:date" visible="false()"
+        <xf:bind id="lastIPTDate" nodeset="/patientRegistration/lastIPTDate" type="xsd:date" visible="true()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory = 'IPT_SP' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
@@ -797,19 +797,19 @@
         <xf:bind id="lastIPTDate" nodeset="/patientRegistration/lastIPTDate" type="xsd:date" visible="true()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"
                  relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addPMotherHistory = 'IPT_SP' and /patientRegistration/addHistory = '1'"
-                 action="show" required="true()">LastIPT Date</xf:bind>
+                 action="show" required="true()"/>
 
 
-        <xf:bind id="lastTT" nodeset="/patientRegistration/lastTT" type="xsd:string" visible="false()"
+        <xf:bind id="lastTT" nodeset="/patientRegistration/lastTT" type="xsd:string" visible="true()"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory = 'TT' and /patientRegistration/addHistory = '1'"
                  action="show" required="true()"/>
 
         <xf:bind id="lastTT" nodeset="/patientRegistration/lastTT" type="xsd:string" visible="true()"
                  relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addPMotherHistory = 'TT' and /patientRegistration/addHistory = '1'"
-                 action="show" required="true()">LastTT</xf:bind>
+                 action="show" required="true()"/>
 
 
-        <xf:bind id="lastTTDate" nodeset="/patientRegistration/lastTTDate" type="xsd:date" visible="false()"
+        <xf:bind id="lastTTDate" nodeset="/patientRegistration/lastTTDate" type="xsd:date" visible="true()"
                  action="show" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"
                  relevant="/patientRegistration/registrantType = 'PREGNANT_MOTHER' and /patientRegistration/addMotherHistory = 'TT' and /patientRegistration/addHistory = '1'"
@@ -818,35 +818,35 @@
         <xf:bind id="lastTTDate" nodeset="/patientRegistration/lastTTDate" type="xsd:date" visible="true()"  action="show" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"
                  relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addPMotherHistory = 'TT' and /patientRegistration/addHistory = '1'"
-                 required="true()">LastTT Date</xf:bind>
+                 required="true()"/>
 
-        <xf:bind id="lastHbLevels" nodeset="/patientRegistration/lastHbLevels" type="xsd:string" visible="false()"
+        <xf:bind id="lastHbLevels" nodeset="/patientRegistration/lastHbLevels" type="xsd:string" visible="true()"
                  relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='HEMOGLOBIN'" action="show"/>
 
         <xf:bind id="lastHbLevels" nodeset="/patientRegistration/lastHbLevels" type="xsd:string" visible="true()"
                  relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addPMotherHistory='HEMOGLOBIN'"
-                 action="show">HB Level</xf:bind>
+                 action="show"/>
 
-        <xf:bind id="lastHbDate" nodeset="/patientRegistration/lastHbDate" type="xsd:date"  visible="false()"
+        <xf:bind id="lastHbDate" nodeset="/patientRegistration/lastHbDate" type="xsd:date"  visible="true()"
                  relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='HEMOGLOBIN'" action="show"/>
 
         <xf:bind id="lastHbDate" nodeset="/patientRegistration/lastHbDate" type="xsd:date"  visible="true()"
                  relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addPMotherHistory='HEMOGLOBIN'"
-                 action="show">HB Level Date</xf:bind>
+                 action="show"/>
 
-        <xf:bind id="lastMotherVitaminA" nodeset="/patientRegistration/lastMotherVitaminA" type="xsd:string" visible="false()"
+        <xf:bind id="lastMotherVitaminA" nodeset="/patientRegistration/lastMotherVitaminA" type="xsd:string" visible="true()"
                  relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='VITA'"  action="show"/>
 
         <xf:bind id="lastMotherVitaminA" nodeset="/patientRegistration/lastMotherVitaminA" type="xsd:string" visible="true()"
                  relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addPMotherHistory='VITA'"
-                 action="show">Has Taken Vita A</xf:bind>
+                 action="show"/>
 
-        <xf:bind id="lastMotherVitaminADate" nodeset="/patientRegistration/lastMotherVitaminADate" type="xsd:date" visible="false()"
+        <xf:bind id="lastMotherVitaminADate" nodeset="/patientRegistration/lastMotherVitaminADate" type="xsd:date" visible="true()"
                  relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='VITA'" action="show"/>
 
         <xf:bind id="lastMotherVitaminADate" nodeset="/patientRegistration/lastMotherVitaminADate" type="xsd:date" visible="true()"
                  relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addPMotherHistory='VITA'"
-                 action="show">Vita A Date</xf:bind>
+                 action="show"/>
 
 
 
@@ -1751,6 +1751,7 @@
                 <xf:value ref="value"/>
             </xf:itemset>
         </xf:select1>
+
         <xf:input bind="lastHbLevels">
             <xf:label>HB Level</xf:label>
         </xf:input>
@@ -1845,6 +1846,8 @@
         <xf:input bind="lastPnuemoniaDate">
             <xf:label>Pnuemonia Treatment Date</xf:label>
         </xf:input>
+
+
         <xf:input bind="formtype">
             <xf:label>formType</xf:label>
         </xf:input>
