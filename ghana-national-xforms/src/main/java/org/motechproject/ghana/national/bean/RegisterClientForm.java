@@ -125,6 +125,172 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
     private Date lastDiarrheaDate;
     private Date lastPnuemoniaDate;
 
+    //NEW ANC CARE FOR MOTHER_OF_INFANT
+    private Date lastmIPTDate;
+    private Date lastmTTDate;
+    private String lastmIPT;
+    private String lastmTT;
+    private String lastmHbLevels;
+    private String lastmMotherVitaminA;
+    private String lastmIronOrFolate;
+    private String lastmSyphilis;
+    private String lastmMalaria;
+    private String lastmDiarrhea;
+    private String lastmPnuemonia;
+    private Date lastmHbDate;
+    private Date lastmMotherVitaminADate;
+    private Date lastmIronOrFolateDate;
+    private Date lastmSyphilisDate;
+    private Date lastmMalariaDate;
+    private Date lastmDiarrheaDate;
+    private Date lastmPnuemoniaDate;
+
+
+    //getters and setters
+    public Date getLastmIPTDate() {
+        return lastmIPTDate;
+    }
+
+    public void setLastmIPTDate(Date lastmIPTDate) {
+        this.lastmIPTDate = lastmIPTDate;
+    }
+
+    public Date getLastmTTDate() {
+        return lastmTTDate;
+    }
+
+    public void setLastmTTDate(Date lastmTTDate) {
+        this.lastmTTDate = lastmTTDate;
+    }
+
+    public String getLastmIPT() {
+        return lastmIPT;
+    }
+
+    public void setLastmIPT(String lastmIPT) {
+        this.lastmIPT = lastmIPT;
+    }
+
+    public String getLastmTT() {
+        return lastmTT;
+    }
+
+    public void setLastmTT(String lastmTT) {
+        this.lastmTT = lastmTT;
+    }
+
+    public String getLastmHbLevels() {
+        return lastmHbLevels;
+    }
+
+    public void setLastmHbLevels(String lastmHbLevels) {
+        this.lastmHbLevels = lastmHbLevels;
+    }
+
+    public String getLastmMotherVitaminA() {
+        return lastmMotherVitaminA;
+    }
+
+    public void setLastmMotherVitaminA(String lastmMotherVitaminA) {
+        this.lastmMotherVitaminA = lastmMotherVitaminA;
+    }
+
+    public String getLastmIronOrFolate() {
+        return lastmIronOrFolate;
+    }
+
+    public void setLastmIronOrFolate(String lastmIronOrFolate) {
+        this.lastmIronOrFolate = lastmIronOrFolate;
+    }
+
+    public String getLastmSyphilis() {
+        return lastmSyphilis;
+    }
+
+    public void setLastmSyphilis(String lastmSyphilis) {
+        this.lastmSyphilis = lastmSyphilis;
+    }
+
+    public String getLastmMalaria() {
+        return lastmMalaria;
+    }
+
+    public void setLastmMalaria(String lastmMalaria) {
+        this.lastmMalaria = lastmMalaria;
+    }
+
+    public String getLastmDiarrhea() {
+        return lastmDiarrhea;
+    }
+
+    public void setLastmDiarrhea(String lastmDiarrhea) {
+        this.lastmDiarrhea = lastmDiarrhea;
+    }
+
+    public String getLastmPnuemonia() {
+        return lastmPnuemonia;
+    }
+
+    public void setLastmPnuemonia(String lastmPnuemonia) {
+        this.lastmPnuemonia = lastmPnuemonia;
+    }
+
+    public Date getLastmHbDate() {
+        return lastmHbDate;
+    }
+
+    public void setLastmHbDate(Date lastmHbDate) {
+        this.lastmHbDate = lastmHbDate;
+    }
+
+    public Date getLastmMotherVitaminADate() {
+        return lastmMotherVitaminADate;
+    }
+
+    public void setLastmMotherVitaminADate(Date lastmMotherVitaminADate) {
+        this.lastmMotherVitaminADate = lastmMotherVitaminADate;
+    }
+
+    public Date getLastmIronOrFolateDate() {
+        return lastmIronOrFolateDate;
+    }
+
+    public void setLastmIronOrFolateDate(Date lastmIronOrFolateDate) {
+        this.lastmIronOrFolateDate = lastmIronOrFolateDate;
+    }
+
+    public Date getLastmSyphilisDate() {
+        return lastmSyphilisDate;
+    }
+
+    public void setLastmSyphilisDate(Date lastmSyphilisDate) {
+        this.lastmSyphilisDate = lastmSyphilisDate;
+    }
+
+    public Date getLastmMalariaDate() {
+        return lastmMalariaDate;
+    }
+
+    public void setLastmMalariaDate(Date lastmMalariaDate) {
+        this.lastmMalariaDate = lastmMalariaDate;
+    }
+
+    public Date getLastmDiarrheaDate() {
+        return lastmDiarrheaDate;
+    }
+
+    public void setLastmDiarrheaDate(Date lastmDiarrheaDate) {
+        this.lastmDiarrheaDate = lastmDiarrheaDate;
+    }
+
+    public Date getLastmPnuemoniaDate() {
+        return lastmPnuemoniaDate;
+    }
+
+    public void setLastmPnuemoniaDate(Date lastmPnuemoniaDate) {
+        this.lastmPnuemoniaDate = lastmPnuemoniaDate;
+    }
+
 
     public String getLastHbLevels() {
         return lastHbLevels;
@@ -730,15 +896,15 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
          }};
         if(registrantType.equals(PatientType.MOTHER_OF_INFANT))
             map = new HashMap<String, Date>(){{
-                put("lastTTDate",lastTTDate);
-                put("lastIPTDate",lastIPTDate);
-                put("lastHbDate",lastHbDate);
-                put("lastMotherVitaminADate",lastMotherVitaminADate);
-                put("lastIronOrFolateDate",lastIronOrFolateDate);
-                put("lastSyphilisDate",lastSyphilisDate);
-                put("lastMalariaDate",lastMalariaDate);
-                put("lastDiarrheaDate",lastDiarrheaDate);
-                put("lastPnuemoniaDate",lastPnuemoniaDate);
+                put("lastTTDate",lastmTTDate);
+                put("lastIPTDate",lastmIPTDate);
+                put("lastHbDate",lastmHbDate);
+                put("lastMotherVitaminADate",lastmMotherVitaminADate);
+                put("lastIronOrFolateDate",lastmIronOrFolateDate);
+                put("lastSyphilisDate",lastmSyphilisDate);
+                put("lastMalariaDate",lastmMalariaDate);
+                put("lastDiarrheaDate",lastmDiarrheaDate);
+                put("lastPnuemoniaDate",lastmPnuemoniaDate);
          }};
         return map;
     }
