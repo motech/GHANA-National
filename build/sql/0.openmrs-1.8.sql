@@ -2539,7 +2539,7 @@ CREATE TABLE `motechmodule_message_language` (
 
 LOCK TABLES `motechmodule_message_language` WRITE;
 /*!40000 ALTER TABLE `motechmodule_message_language` DISABLE KEYS */;
-INSERT INTO `motechmodule_message_language` VALUES (1,'en','English'),(2,'kas','Kassim'),(3,'nan','Nankam'),(4,'fan','Fante');
+INSERT INTO `motechmodule_message_language` VALUES (1,'en','English'),(2,'kas','Kassim'),(3,'nan','Nankam'),(4,'fan','Fante'),(5,'gd','Ga Adangme'),(6,'ewe','Ewe');
 /*!40000 ALTER TABLE `motechmodule_message_language` ENABLE KEYS */;
 UNLOCK TABLES;
 
