@@ -135,7 +135,7 @@ public class PatientTest extends BaseUnitTest {
         assertThat(patient.facilityMetaData(), is(expectedMap));
     }
 
-    @Test
+   /* @Test
     public void shouldReturnAllApplicableCaresBasedOnHistoryInput() {
         DateTime birthdate = now();
         String facilityId = "fid";
@@ -155,7 +155,7 @@ public class PatientTest extends BaseUnitTest {
         assertThat(patientCares, hasItem(new PatientCare(CWC_IPT_VACCINE.getName(), null, newDate(lastIPTiDate), IPTiDose.IPTi2.milestoneName(), metaData)));
         assertThat(patientCares, hasItem(new PatientCare(CWC_ROTAVIRUS.getName(), null, newDate(lastRotavirusDate), RotavirusDose.ROTAVIRUS2.milestoneName(), metaData)));
         assertThat(patientCares, hasItem(new PatientCare(CWC_PNEUMOCOCCAL.getName(), null, newDate(lastPneumococcalDate), PneumococcalDose.PNEUMO3.milestoneName(), metaData)));
-    }
+    } */
 
     private void assertPatientCares(List<PatientCare> actualList, List<PatientCare> expectedList) {
         assertThat(actualList.size(), is(expectedList.size()));
