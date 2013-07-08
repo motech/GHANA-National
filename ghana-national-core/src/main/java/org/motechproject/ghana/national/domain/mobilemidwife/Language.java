@@ -18,11 +18,9 @@ public enum Language{
     FAN("Fante", Arrays.asList(new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.PERSONAL),
                                new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.HOUSEHOLD),
                                new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.PUBLIC))),
-
     GD("Ga Adangme", Arrays.asList(new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.HOUSEHOLD),
                                    new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.PERSONAL),
                                    new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.PUBLIC))),
-
     EWE("Ewe", Arrays.asList(new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.HOUSEHOLD),
                              new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.PERSONAL),
                              new MediumAndPhoneOwnership(Medium.VOICE, PhoneOwnership.PUBLIC)));

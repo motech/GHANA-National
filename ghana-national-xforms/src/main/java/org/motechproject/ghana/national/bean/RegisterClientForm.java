@@ -134,16 +134,11 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
     private String lastmMotherVitaminA;
     private String lastmIronOrFolate;
     private String lastmSyphilis;
-    private String lastmMalaria;
-    private String lastmDiarrhea;
-    private String lastmPnuemonia;
     private Date lastmHbDate;
     private Date lastmMotherVitaminADate;
     private Date lastmIronOrFolateDate;
     private Date lastmSyphilisDate;
-    private Date lastmMalariaDate;
-    private Date lastmDiarrheaDate;
-    private Date lastmPnuemoniaDate;
+
 
 
     //getters and setters
@@ -211,30 +206,6 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
         this.lastmSyphilis = lastmSyphilis;
     }
 
-    public String getLastmMalaria() {
-        return lastmMalaria;
-    }
-
-    public void setLastmMalaria(String lastmMalaria) {
-        this.lastmMalaria = lastmMalaria;
-    }
-
-    public String getLastmDiarrhea() {
-        return lastmDiarrhea;
-    }
-
-    public void setLastmDiarrhea(String lastmDiarrhea) {
-        this.lastmDiarrhea = lastmDiarrhea;
-    }
-
-    public String getLastmPnuemonia() {
-        return lastmPnuemonia;
-    }
-
-    public void setLastmPnuemonia(String lastmPnuemonia) {
-        this.lastmPnuemonia = lastmPnuemonia;
-    }
-
     public Date getLastmHbDate() {
         return lastmHbDate;
     }
@@ -266,31 +237,6 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
     public void setLastmSyphilisDate(Date lastmSyphilisDate) {
         this.lastmSyphilisDate = lastmSyphilisDate;
     }
-
-    public Date getLastmMalariaDate() {
-        return lastmMalariaDate;
-    }
-
-    public void setLastmMalariaDate(Date lastmMalariaDate) {
-        this.lastmMalariaDate = lastmMalariaDate;
-    }
-
-    public Date getLastmDiarrheaDate() {
-        return lastmDiarrheaDate;
-    }
-
-    public void setLastmDiarrheaDate(Date lastmDiarrheaDate) {
-        this.lastmDiarrheaDate = lastmDiarrheaDate;
-    }
-
-    public Date getLastmPnuemoniaDate() {
-        return lastmPnuemoniaDate;
-    }
-
-    public void setLastmPnuemoniaDate(Date lastmPnuemoniaDate) {
-        this.lastmPnuemoniaDate = lastmPnuemoniaDate;
-    }
-
 
     public String getLastHbLevels() {
         return lastHbLevels;
@@ -881,6 +827,11 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
             put("yfDate",yellowFeverDate);
             put("vitADate",lastVitaminADate);
             put("measlesDate",measlesDate);
+            put("lastMalariaDate",lastMalariaDate);
+            put("lastPnuemoniaDate",lastPnuemoniaDate);
+            put("lastMalariaDate",lastMalariaDate);
+            put("lastDiarrheaDate",lastDiarrheaDate);
+            put("lastPnuemoniaDate",lastPnuemoniaDate);
         }};
        if(registrantType.equals(PatientType.PREGNANT_MOTHER))
             map = new HashMap<String, Date>(){{
@@ -890,9 +841,6 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
                 put("lastMotherVitaminADate",lastMotherVitaminADate);
                 put("lastIronOrFolateDate",lastIronOrFolateDate);
                 put("lastSyphilisDate",lastSyphilisDate);
-                put("lastMalariaDate",lastMalariaDate);
-                put("lastDiarrheaDate",lastDiarrheaDate);
-                put("lastPnuemoniaDate",lastPnuemoniaDate);
          }};
         if(registrantType.equals(PatientType.MOTHER_OF_INFANT))
             map = new HashMap<String, Date>(){{
@@ -902,9 +850,6 @@ public class RegisterClientForm extends MobileMidWifeIncludeForm implements Form
                 put("lastMotherVitaminADate",lastmMotherVitaminADate);
                 put("lastIronOrFolateDate",lastmIronOrFolateDate);
                 put("lastSyphilisDate",lastmSyphilisDate);
-                put("lastMalariaDate",lastmMalariaDate);
-                put("lastDiarrheaDate",lastmDiarrheaDate);
-                put("lastPnuemoniaDate",lastmPnuemoniaDate);
          }};
         return map;
     }

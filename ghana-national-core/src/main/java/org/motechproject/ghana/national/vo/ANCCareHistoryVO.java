@@ -15,9 +15,6 @@ public class ANCCareHistoryVO {
     private String lastMotherVitaminA;
     private String lastIronOrFolate;
     private String lastSyphilis;
-    private String lastMalaria;
-    private String lastDiarrhea;
-    private String lastPnuemonia;
 
     private Date lastTTDate;
     private Date lastIPTDate;
@@ -25,13 +22,10 @@ public class ANCCareHistoryVO {
     private Date lastMotherVitaminADate;
     private Date lastIronOrFolateDate;
     private Date lastSyphilisDate;
-    private Date lastMalariaDate;
-    private Date lastDiarrheaDate;
-    private Date lastPnuemoniaDate;
+
 
     public ANCCareHistoryVO(Boolean addCareHistory, List<ANCCareHistory> careHistory, String lastIPT, String lastTT, String lastHbLevels, String lastMotherVitaminA,
-            String lastIronOrFolate, String lastSyphilis, String lastMalaria, String lastDiarrhea,String lastPnuemonia, Date lastIPTDate, Date lastTTDate,
-            Date lastHbDate, Date lastMotherVitaminADate, Date lastIronOrFolateDate, Date lastSyphilisDate, Date lastMalariaDate, Date lastDiarrheaDate, Date lastPnuemoniaDate) {
+            String lastIronOrFolate, String lastSyphilis, Date lastIPTDate, Date lastTTDate, Date lastHbDate, Date lastMotherVitaminADate, Date lastIronOrFolateDate, Date lastSyphilisDate) {
         this.addCareHistory = addCareHistory;
         this.careHistory=careHistory;
         this.lastIPT=lastIPT;
@@ -40,18 +34,12 @@ public class ANCCareHistoryVO {
         this.lastMotherVitaminA=lastMotherVitaminA;
         this.lastIronOrFolate=lastIronOrFolate;
         this.lastSyphilis=lastSyphilis;
-        this.lastMalaria=lastMalaria;
-        this.lastDiarrhea=lastDiarrhea;
-        this.lastPnuemonia=lastPnuemonia;
         this.lastIPTDate=lastIPTDate;
         this.lastTTDate=lastTTDate;
         this.lastHbDate=lastHbDate;
         this.lastMotherVitaminADate=lastMotherVitaminADate;
         this.lastIronOrFolateDate=lastIronOrFolateDate;
         this.lastSyphilisDate=lastSyphilisDate;
-        this.lastMalariaDate=lastMalariaDate;
-        this.lastDiarrheaDate=lastDiarrheaDate;
-        this.lastPnuemoniaDate=lastPnuemoniaDate;
     }
 
     public List<ANCCareHistory> getCareHistory() {
@@ -91,18 +79,6 @@ public class ANCCareHistoryVO {
         return lastSyphilis;
     }
 
-    public String getLastMalaria() {
-        return lastMalaria;
-    }
-
-    public String getLastDiarrhea() {
-        return lastDiarrhea;
-    }
-
-    public String getLastPnuemonia() {
-        return lastPnuemonia;
-    }
-
     public Date getLastHbDate() {
         return lastHbDate;
     }
@@ -117,18 +93,6 @@ public class ANCCareHistoryVO {
 
     public Date getLastSyphilisDate() {
         return lastSyphilisDate;
-    }
-
-    public Date getLastMalariaDate() {
-        return lastMalariaDate;
-    }
-
-    public Date getLastDiarrheaDate() {
-        return lastDiarrheaDate;
-    }
-
-    public Date getLastPnuemoniaDate() {
-        return lastPnuemoniaDate;
     }
 
     public Boolean getAddCareHistory() {

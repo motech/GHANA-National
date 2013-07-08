@@ -111,9 +111,9 @@ public class PatientRegistrationFormHandler {
             ANCVO ancVO = new ANCVO(registerClientForm.getStaffId(), facilityId, patientMotechId, registerClientForm.getDate()
                     , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),
                     registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), registerClientForm.getAncCareHistories(), registerClientForm.getLastIPT(), registerClientForm.getLastTT(),
-                    registerClientForm.getLastHbLevels(),registerClientForm.getLastMotherVitaminA(),registerClientForm.getLastIronOrFolate(),registerClientForm.getLastSyphilis(),registerClientForm.getLastMalaria(),registerClientForm.getLastDiarrhea(),
-                    registerClientForm.getLastPnuemonia(), registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate(),registerClientForm.getLastHbDate(),registerClientForm.getLastMotherVitaminADate(),registerClientForm.getLastIronOrFolateDate(),
-                    registerClientForm.getLastSyphilisDate(), registerClientForm.getLastMalariaDate(), registerClientForm.getLastDiarrheaDate(),registerClientForm.getLastPnuemoniaDate(), registerClientForm.getAddHistory());
+                    registerClientForm.getLastHbLevels(),registerClientForm.getLastMotherVitaminA(),registerClientForm.getLastIronOrFolate(),registerClientForm.getLastSyphilis(), registerClientForm.getLastIPTDate(), registerClientForm.getLastTTDate(),
+                    registerClientForm.getLastHbDate(),registerClientForm.getLastMotherVitaminADate(),registerClientForm.getLastIronOrFolateDate(),
+                    registerClientForm.getLastSyphilisDate(), registerClientForm.getAddHistory());
 
             careService.enroll(ancVO);
         }
@@ -121,9 +121,9 @@ public class PatientRegistrationFormHandler {
             ANCVO ancVO = new ANCVO(registerClientForm.getStaffId(), facilityId, patientMotechId, registerClientForm.getDate()
                     , RegistrationToday.TODAY, registerClientForm.getAncRegNumber(), registerClientForm.getExpDeliveryDate(), registerClientForm.getHeight(), registerClientForm.getGravida(),
                     registerClientForm.getParity(), registerClientForm.getAddHistory(), registerClientForm.getDeliveryDateConfirmed(), registerClientForm.getAncCareHistories(), registerClientForm.getLastmIPT(), registerClientForm.getLastmTT(),
-                    registerClientForm.getLastmHbLevels(),registerClientForm.getLastmMotherVitaminA(),registerClientForm.getLastmIronOrFolate(),registerClientForm.getLastmSyphilis(),registerClientForm.getLastmMalaria(),registerClientForm.getLastmDiarrhea(),
-                    registerClientForm.getLastmPnuemonia(), registerClientForm.getLastmIPTDate(), registerClientForm.getLastmTTDate(),registerClientForm.getLastmHbDate(),registerClientForm.getLastmMotherVitaminADate(),registerClientForm.getLastmIronOrFolateDate(),
-                    registerClientForm.getLastmSyphilisDate(), registerClientForm.getLastmMalariaDate(), registerClientForm.getLastmDiarrheaDate(),registerClientForm.getLastmPnuemoniaDate(), registerClientForm.getAddHistory());
+                    registerClientForm.getLastmHbLevels(),registerClientForm.getLastmMotherVitaminA(),registerClientForm.getLastmIronOrFolate(),registerClientForm.getLastmSyphilis(),registerClientForm.getLastmIPTDate(), registerClientForm.getLastmTTDate(),
+                    registerClientForm.getLastmHbDate(),registerClientForm.getLastmMotherVitaminADate(),registerClientForm.getLastmIronOrFolateDate(),
+                    registerClientForm.getLastmSyphilisDate(), registerClientForm.getAddHistory());
 
             careService.enroll(ancVO);
         }
@@ -135,9 +135,9 @@ public class PatientRegistrationFormHandler {
             CwcVO cwcVO = new CwcVO(registerClientForm.getStaffId(), facilityId, registerClientForm.getDate(),
                     patientMotechId, registerClientForm.getCWCCareHistories(), registerClientForm.getBcgDate(), registerClientForm.getLastVitaminADate(), registerClientForm.getLastVitaminA(), registerClientForm.getMeaslesDate(),
                     registerClientForm.getLastMeasles(), registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
-                    registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getLastRotavirusDate(),
-                    registerClientForm.getLastRotavirus(), registerClientForm.getLastPneumococcal(), registerClientForm.getLastPneumococcalDate(), registerClientForm.getCwcRegNumber(),
-                    registerClientForm.getAddHistory());
+                    registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getLastRotavirusDate(), registerClientForm.getLastRotavirus(),
+                    registerClientForm.getLastPneumococcal(), registerClientForm.getLastPneumococcalDate(), registerClientForm.getLastMalaria(), registerClientForm.getLastMalariaDate(),
+                    registerClientForm.getLastPnuemonia(), registerClientForm.getLastPnuemoniaDate(), registerClientForm.getLastmDiarrhea(), registerClientForm.getLastmDiarrheaDate(), registerClientForm.getCwcRegNumber(), registerClientForm.getAddHistory());
 
             careService.enroll(cwcVO);
         }

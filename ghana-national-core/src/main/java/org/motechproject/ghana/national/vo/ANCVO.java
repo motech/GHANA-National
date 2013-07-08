@@ -25,8 +25,8 @@ public class ANCVO {
     public ANCVO(String staffId, String facilityId, String motechPatientId, Date registrationDate, RegistrationToday registrationToday, String serialNumber,
                  Date estimatedDateOfDelivery, Double height, Integer gravida, Integer parity, Boolean addHistory, Boolean deliveryDateConfirmed,
                  List<ANCCareHistory> careHistory, String lastIPT, String lastTT,String lastHbLevels, String lastMotherVitaminA,
-                 String lastIronOrFolate, String lastSyphilis, String lastMalaria, String lastDiarrhea,String lastPnuemonia, Date lastIPTDate, Date lastTTDate,
-                 Date lastHbDate, Date lastMotherVitaminADate, Date lastIronOrFolateDate, Date lastSyphilisDate, Date lastMalariaDate, Date lastDiarrheaDate, Date lastPnuemoniaDate, Boolean addCareHistory) {
+                 String lastIronOrFolate, String lastSyphilis, Date lastIPTDate, Date lastTTDate,
+                 Date lastHbDate, Date lastMotherVitaminADate, Date lastIronOrFolateDate, Date lastSyphilisDate, Boolean addCareHistory) {
         this.staffId = staffId;
         this.facilityId = facilityId;
         this.motechPatientId = motechPatientId;
@@ -39,8 +39,8 @@ public class ANCVO {
         this.parity = parity;
         this.addHistory = addHistory;
         this.deliveryDateConfirmed = deliveryDateConfirmed;
-        this.ancCareHistoryVO = new ANCCareHistoryVO(addCareHistory, careHistory, lastIPT, lastTT, lastHbLevels, lastMotherVitaminA, lastIronOrFolate, lastSyphilis, lastMalaria, lastDiarrhea,
-                lastPnuemonia, lastIPTDate, lastTTDate,lastHbDate, lastMotherVitaminADate, lastIronOrFolateDate, lastSyphilisDate, lastMalariaDate, lastDiarrheaDate, lastPnuemoniaDate );
+        this.ancCareHistoryVO = new ANCCareHistoryVO(addCareHistory, careHistory, lastIPT, lastTT, lastHbLevels, lastMotherVitaminA, lastIronOrFolate, lastSyphilis,
+                lastIPTDate, lastTTDate,lastHbDate, lastMotherVitaminADate, lastIronOrFolateDate, lastSyphilisDate );
     }
 
     public String getStaffId() {

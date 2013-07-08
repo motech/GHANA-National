@@ -98,12 +98,6 @@
                 <lastmIronOrFolateDate/>
                 <lastmSyphilis/>
                 <lastmSyphilisDate/>
-                <lastmMalaria/>
-                <lastmMalariaDate/>
-                <lastmDiarrhea/>
-                <lastmDiarrheaDate/>
-                <lastmPnuemonia/>
-                <lastmPnuemoniaDate/>
 
                 <formtype>data_entry</formtype>
                 <formname>registerPatient</formname>
@@ -867,7 +861,6 @@
                  relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addPMotherHistory='VITA'"
                  action="show"/>
 
-
         <xf:bind id="lastIronOrFolate" nodeset="/patientRegistration/lastIronOrFolate" type="xsd:string" visible="false()"
                  relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='IRON_OR_FOLATE'" action="show"/>
 
@@ -891,43 +884,6 @@
 
         <xf:bind id="lastmSyphilisDate" nodeset="/patientRegistration/lastmSyphilisDate" type="xsd:date" visible="false()"
                  relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addPMotherHistory='SYPHILIS'" action="show"/>
-
-        <xf:bind id="lastMalaria" nodeset="/patientRegistration/lastMalaria" type="xsd:string" visible="false()"
-                 relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='MALARIA_RAPID_TEST'" action="show"/>
-
-        <xf:bind id="lastmMalaria" nodeset="/patientRegistration/lastmMalaria" type="xsd:string" visible="false()"
-                 relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addPMotherHistory='MALARIA_RAPID_TEST'" action="show"/>
-
-        <xf:bind id="lastMalariaDate" nodeset="/patientRegistration/lastMalariaDate" type="xsd:date" visible="false()"
-                 relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='MALARIA_RAPID_TEST'" action="show"/>
-
-        <xf:bind id="lastmMalariaDate" nodeset="/patientRegistration/lastmMalariaDate" type="xsd:date" visible="false()"
-                 relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addPMotherHistory='MALARIA_RAPID_TEST'" action="show"/>
-
-        <xf:bind id="lastDiarrhea" nodeset="/patientRegistration/lastDiarrhea" type="xsd:string" visible="false()"
-                 relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='DIARRHEA'" action="show"/>
-
-        <xf:bind id="lastmDiarrhea" nodeset="/patientRegistration/lastmDiarrhea" type="xsd:string" visible="false()"
-                 relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addPMotherHistory='DIARRHEA'" action="show"/>
-
-        <xf:bind id="lastDiarrheaDate" nodeset="/patientRegistration/lastDiarrheaDate" type="xsd:date" visible="false()"
-                 relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='DIARRHEA'" action="show"/>
-
-        <xf:bind id="lastmDiarrheaDate" nodeset="/patientRegistration/lastmDiarrheaDate" type="xsd:date" visible="false()"
-                 relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addPMotherHistory='DIARRHEA'" action="show"/>
-
-        <xf:bind id="lastPnuemonia" nodeset="/patientRegistration/lastPnuemonia" type="xsd:string" visible="false()"
-                 relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='PNEUMOCOCCAL_A'" action="show"/>
-
-        <xf:bind id="lastmPnuemonia" nodeset="/patientRegistration/lastmPnuemonia" type="xsd:string" visible="false()"
-                 relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addPMotherHistory='PNEUMOCOCCAL_A'" action="show"/>
-
-        <xf:bind id="lastPnuemoniaDate" nodeset="/patientRegistration/lastPnuemoniaDate" type="xsd:date" visible="false()"
-                 relevant="/patientRegistration/registrantType ='PREGNANT_MOTHER' and /patientRegistration/addHistory = '1' and /patientRegistration/addMotherHistory='PNEUMOCOCCAL_A'" action="show"/>
-
-        <xf:bind id="lastmPnuemoniaDate" nodeset="/patientRegistration/lastmPnuemoniaDate" type="xsd:date" visible="false()"
-                 relevant="/patientRegistration/registrantType = 'MOTHER_OF_INFANT' and /patientRegistration/addHistory = '1' and /patientRegistration/addPMotherHistory='PNEUMOCOCCAL_A'" action="show"/>
-
 
         <xf:bind id="bcgDate" nodeset="/patientRegistration/bcgDate" type="xsd:date" visible="false()"
                  relevant="/patientRegistration/registrantType = 'CHILD_UNDER_FIVE' and /patientRegistration/addChildHistory
@@ -1010,6 +966,25 @@
             = 'VITA_A' and /patientRegistration/addHistory = '1' "
                  action="show" required="true()" constraint=". &lt;= 'today()'"
                  message="Invalid date: date specified is in the future"/>
+
+        <xf:bind id="lastMalaria" nodeset="/patientRegistration/lastMalaria" type="xsd:string" visible="false()"
+                 relevant="/patientRegistration/registrantType ='CHILD_UNDER_FIVE' and /patientRegistration/addHistory = '1' and /patientRegistration/addChildHistory='MALARIA_RAPID_TEST'" action="show"/>
+
+        <xf:bind id="lastMalariaDate" nodeset="/patientRegistration/lastMalariaDate" type="xsd:date" visible="false()"
+                 relevant="/patientRegistration/registrantType ='CHILD_UNDER_FIVE' and /patientRegistration/addHistory = '1' and /patientRegistration/addChildHistory='MALARIA_RAPID_TEST'" action="show"/>
+
+        <xf:bind id="lastDiarrhea" nodeset="/patientRegistration/lastDiarrhea" type="xsd:string" visible="false()"
+                 relevant="/patientRegistration/registrantType ='CHILD_UNDER_FIVE' and /patientRegistration/addHistory = '1' and /patientRegistration/addChildHistory='DIARRHEA'" action="show"/>
+
+        <xf:bind id="lastDiarrheaDate" nodeset="/patientRegistration/lastDiarrheaDate" type="xsd:date" visible="false()"
+                 relevant="/patientRegistration/registrantType ='CHILD_UNDER_FIVE' and /patientRegistration/addHistory = '1' and /patientRegistration/addChildHistory='DIARRHEA'" action="show"/>
+
+        <xf:bind id="lastPnuemonia" nodeset="/patientRegistration/lastPnuemonia" type="xsd:string" visible="false()"
+                 relevant="/patientRegistration/registrantType ='CHILD_UNDER_FIVE' and /patientRegistration/addHistory = '1' and /patientRegistration/addChildHistory='PNEUMOCOCCAL_A'" action="show"/>
+
+        <xf:bind id="lastPnuemoniaDate" nodeset="/patientRegistration/lastPnuemoniaDate" type="xsd:date" visible="false()"
+                 relevant="/patientRegistration/registrantType ='CHILD_UNDER_FIVE' and /patientRegistration/addHistory = '1' and /patientRegistration/addChildHistory='PNEUMOCOCCAL_A'" action="show"/>
+
 
         <xf:bind action="show" id="whyNoHistory" nodeset="/patientRegistration/whyNoHistory"
                  relevant="/patientRegistration/addHistory = '0' and /patientRegistration/registrantType = 'PREGNANT_MOTHER'
@@ -1355,6 +1330,7 @@
                 <xf:value>PNEUMOCOCCAL_A</xf:value>
             </xf:item>
         </xf:select>
+
         <xf:select bind="addPMotherHistory">
             <xf:label>Add Care History</xf:label>
             <xf:item id="1">
@@ -1433,7 +1409,20 @@
                 <xf:label>Pneumococcal</xf:label>
                 <xf:value>PNEUMOCOCCAL</xf:value>
             </xf:item>
+            <xf:item id="10">
+                <xf:label>Malaria</xf:label>
+                <xf:value>MALARIA_RAPID_TEST</xf:value>
+            </xf:item>
+            <xf:item id="11">
+                <xf:label>Diarrhea</xf:label>
+                <xf:value>DIARRHEA</xf:value>
+            </xf:item>
+            <xf:item id="12">
+                <xf:label>Pneumonia</xf:label>
+                <xf:value>PNEUMOCOCCAL_A</xf:value>
+            </xf:item>
         </xf:select>
+
         <xf:select1 bind="lastIPT">
             <xf:label>Last IPT</xf:label>
             <xf:item id="1">
@@ -1894,9 +1883,6 @@
             <xf:label>Pnuemonia Treatment Date</xf:label>
         </xf:input>
 
-
-
-
         <xf:input bind="lastmHbLevels">
             <xf:label>HB Level</xf:label>
         </xf:input>
@@ -1944,52 +1930,6 @@
         </xf:select1>
         <xf:input bind="lastmSyphilisDate">
             <xf:label>Syphilis Date</xf:label>
-        </xf:input>
-        <xf:select1 bind="lastmMalaria">
-            <xf:label>Has Malaria Treated</xf:label>
-            <xf:item id="Y">
-                <xf:label>Yes</xf:label>
-                <xf:value>Y</xf:value>
-            </xf:item>
-            <xf:item id="N">
-                <xf:label>No</xf:label>
-                <xf:value>N</xf:value>
-            </xf:item>
-        </xf:select1>
-        <xf:input bind="lastmMalariaDate">
-            <xf:label>Malaria Treatment Date</xf:label>
-        </xf:input>
-        <xf:select1 bind="lastmDiarrhea">
-            <xf:label>Has Diarrhoea Treated</xf:label>
-            <xf:item id="Y">
-                <xf:label>Yes</xf:label>
-                <xf:value>Y</xf:value>
-            </xf:item>
-            <xf:item id="N">
-                <xf:label>No</xf:label>
-                <xf:value>N</xf:value>
-            </xf:item>
-        </xf:select1>
-        <xf:input bind="lastmDiarrheaDate">
-            <xf:label>Diarrhoea Treatment Date</xf:label>
-        </xf:input>
-        <xf:select1 bind="lastmPnuemonia">
-            <xf:label>Has Pnuemonia Treated</xf:label>
-            <xf:item id="1">
-                <xf:label>Pneumo 1</xf:label>
-                <xf:value>1</xf:value>
-            </xf:item>
-            <xf:item id="2">
-                <xf:label>Pneumo 2</xf:label>
-                <xf:value>2</xf:value>
-            </xf:item>
-            <xf:item id="3">
-                <xf:label>Pneumo 3</xf:label>
-                <xf:value>3</xf:value>
-            </xf:item>
-        </xf:select1>
-        <xf:input bind="lastmPnuemoniaDate">
-            <xf:label>Pnuemonia Treatment Date</xf:label>
         </xf:input>
 
         <xf:select1 bind="lastmIPT">

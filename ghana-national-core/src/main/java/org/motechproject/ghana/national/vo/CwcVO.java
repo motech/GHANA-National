@@ -18,8 +18,8 @@ public class CwcVO {
     public CwcVO(String staffId, String facilityId, Date registrationDate, String patientMotechId,
                  List<CwcCareHistory> careHistories, Date bcgDate, Date vitADate, String lastVitA, Date measlesDate,
                  Integer lastMeasles, Date yfDate, Date lastPentaDate, Integer lastPenta, Date lastOPVDate, Integer lastOPV, Date lastIPTiDate,
-                 Integer lastIPTi, Date lastRotavirusDate, Integer lastRotavirus, Integer lastPneumococcal,
-                 Date lastPneumococcalDate, String serialNumber, Boolean addCareHistory) {
+                 Integer lastIPTi, Date lastRotavirusDate, Integer lastRotavirus, Integer lastPneumococcal, Date lastPneumococcalDate, String lastMalaria, Date lastMalariaDate,
+                 String lastPnuemonia, Date lastPnuemoniaDate, String lastmDiarrhea, Date lastmDiarrheaDate, String serialNumber, Boolean addCareHistory) {
         this.staffId = staffId;
         this.facilityId = facilityId;
         this.registrationDate = registrationDate;
@@ -27,7 +27,8 @@ public class CwcVO {
         this.serialNumber = serialNumber;
         this.cwcCareHistoryVO = new CWCCareHistoryVO(addCareHistory, careHistories, bcgDate, vitADate, lastVitA, measlesDate,
                 lastMeasles, yfDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTi, lastIPTiDate, lastRotavirus,
-                lastRotavirusDate, lastPneumococcal, lastPneumococcalDate);
+                lastRotavirusDate, lastPneumococcal, lastPneumococcalDate, lastMalaria, lastMalariaDate, lastPnuemonia, lastPnuemoniaDate,
+                lastmDiarrhea, lastmDiarrheaDate);
     }
 
     public String getStaffId() {

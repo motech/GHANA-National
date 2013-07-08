@@ -89,7 +89,8 @@ public enum Concept {
     SYPHILIS("SYPHILIS TEST (VDRL)"),
     DIARRHEA("DIARRHEA"),
     IRON_OR_FOLATE("IRON OR FOLATE LEVEL"),
-    IPT_SP("IPT_SP");
+    IPT_SP("IPT_SP"),
+    PNEUMONIA("Pneumonia");
 
     private String name;
 

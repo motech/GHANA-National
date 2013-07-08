@@ -133,6 +133,8 @@ public class CareService {
             put(Concept.OPV.getName(), CwcCareHistory.OPV);
             put(Concept.ROTAVIRUS.getName(), CwcCareHistory.ROTAVIRUS);
             put(Concept.PNEUMOCOCCAL.getName(), CwcCareHistory.PNEUMOCOCCAL);
+            put(Concept.MALARIA_RAPID_TEST.getName(), CwcCareHistory.MALARIA);
+            put(Concept.PNEUMONIA.getName(), CwcCareHistory.PNEUMONIA);
         }};
 
         for (MRSObservation mrsObservation : existingHistory) {
@@ -313,6 +315,9 @@ public class CareService {
             addObservation(capturedHistory, CwcCareHistory.OPV, observations, cwcCareHistoryVO.getLastOPVDate(), OPV.getName(), cwcCareHistoryVO.getLastOPV());
             addObservation(capturedHistory, CwcCareHistory.IPTI, observations, cwcCareHistoryVO.getLastIPTiDate(), IPTI.getName(), cwcCareHistoryVO.getLastIPTi());
             addObservation(capturedHistory, CwcCareHistory.PNEUMOCOCCAL, observations, cwcCareHistoryVO.getLastPneumococcalDate(), PNEUMOCOCCAL.getName(), cwcCareHistoryVO.getLastPneumococcal());
+            addObservation(capturedHistory, CwcCareHistory.MALARIA, observations, cwcCareHistoryVO.getMeaslesDate(), MALARIA_RAPID_TEST.getName(), cwcCareHistoryVO.getLastMalaria());
+            addObservation(capturedHistory, CwcCareHistory.PNEUMONIA, observations, cwcCareHistoryVO.getLastPnuemoniaDate(), PNEUMONIA.getName(), cwcCareHistoryVO.getLastPnuemonia());
+            addObservation(capturedHistory, CwcCareHistory.DIARRHOEA, observations, cwcCareHistoryVO.getLastmDiarrheaDate(), DIARRHEA.getName(), cwcCareHistoryVO.getLastmDiarrhea());
         }
         return observations;
     }

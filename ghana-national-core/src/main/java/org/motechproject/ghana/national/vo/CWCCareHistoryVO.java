@@ -25,11 +25,19 @@ public class CWCCareHistoryVO {
     private Date lastIPTiDate;
     private Integer lastIPTi;
     private Date lastPneumococcalDate;
+    private String lastMalaria;
+    private String lastPnuemonia;
+    private Date lastMalariaDate;
+    private Date lastPnuemoniaDate;
+    private String lastmDiarrhea;
+    private Date lastmDiarrheaDate;
 
     public CWCCareHistoryVO(Boolean addCareHistory, List<CwcCareHistory> careHistories, Date bcgDate, Date vitADate,
                             String lastVitA, Date measlesDate, Integer lastMeasles, Date yfDate, Date lastPentaDate,
                             Integer lastPenta, Date lastOPVDate, Integer lastOPV, Integer lastIPTi, Date lastIPTiDate,
-                            Integer lastRotavirus, Date lastRotavirusDate, Integer lastPneumococcal, Date lastPneumococcalDate) {
+                            Integer lastRotavirus, Date lastRotavirusDate, Integer lastPneumococcal, Date lastPneumococcalDate,
+                            String lastMalaria, Date lastMalariaDate, String lastPnuemonia, Date lastPnuemoniaDate, String lastmDiarrhea,
+                            Date lastmDiarrheaDate) {
         this.addCareHistory = addCareHistory;
         this.cwcCareHistories = careHistories;
         this.bcgDate = bcgDate;
@@ -48,6 +56,12 @@ public class CWCCareHistoryVO {
         this.lastRotavirusDate = lastRotavirusDate;
         this.lastPneumococcal = lastPneumococcal;
         this.lastPneumococcalDate = lastPneumococcalDate;
+        this.lastMalaria = lastMalaria;
+        this.lastMalariaDate = lastMalariaDate;
+        this.lastPnuemonia = lastPnuemonia;
+        this.lastPnuemoniaDate = lastPnuemoniaDate;
+        this.lastmDiarrhea = lastmDiarrhea;
+        this.lastmDiarrheaDate = lastmDiarrheaDate;
     }
 
     public CWCCareHistoryVO() {
@@ -123,5 +137,29 @@ public class CWCCareHistoryVO {
 
     public Integer getLastMeasles() {
         return lastMeasles;
+    }
+
+    public String getLastMalaria() {
+        return lastMalaria;
+    }
+
+    public String getLastPnuemonia() {
+        return lastPnuemonia;
+    }
+
+    public Date getLastMalariaDate() {
+        return lastMalariaDate;
+    }
+
+    public Date getLastPnuemoniaDate() {
+        return lastPnuemoniaDate;
+    }
+
+    public String getLastmDiarrhea() {
+        return lastmDiarrhea;
+    }
+
+    public Date getLastmDiarrheaDate() {
+        return lastmDiarrheaDate;
     }
 }
