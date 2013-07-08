@@ -118,10 +118,6 @@ public class ANCControllerTest {
         assertTrue(reflectionEquals(modelMap.get("lastMotherVitaminA"),lastVitaAValues));
         assertTrue(reflectionEquals(modelMap.get("lastIronOrFolate"),lastIronValues));
         assertTrue(reflectionEquals(modelMap.get("lastSyphilis"),lastSyphValues));
-        assertTrue(reflectionEquals(modelMap.get("lastMalaria"),lastMalariaValues));
-        assertTrue(reflectionEquals(modelMap.get("lastDiarrhea"),lastDiariaValues));
-        assertTrue(reflectionEquals(modelMap.get("lastPnuemonia"),lastPneumoValues));
-
         verify(mockFacilityHelper).locationMap();
     }
 
@@ -263,12 +259,6 @@ public class ANCControllerTest {
         assertEquals(ancEnrollmentForm.getLastIronOrFolateDate(), ancVO.getAncCareHistoryVO().getLastIronOrFolateDate());
         assertEquals(ancEnrollmentForm.getLastSyphilis(), ancVO.getAncCareHistoryVO().getLastSyphilis());
         assertEquals(ancEnrollmentForm.getLastSyphilisDate(), ancVO.getAncCareHistoryVO().getLastSyphilisDate());
-        assertEquals(ancEnrollmentForm.getLastMalaria(), ancVO.getAncCareHistoryVO().getLastMalaria());
-        assertEquals(ancEnrollmentForm.getLastMalariaDate(), ancVO.getAncCareHistoryVO().getLastMalariaDate());
-        assertEquals(ancEnrollmentForm.getLastDiarrhea(), ancVO.getAncCareHistoryVO().getLastDiarrhea());
-        assertEquals(ancEnrollmentForm.getLastDiarrheaDate(), ancVO.getAncCareHistoryVO().getLastDiarrheaDate());
-        assertEquals(ancEnrollmentForm.getLastPnuemonia(), ancVO.getAncCareHistoryVO().getLastPnuemonia());
-        assertEquals(ancEnrollmentForm.getLastPnuemoniaDate(), ancVO.getAncCareHistoryVO().getLastPnuemoniaDate());
 
         assertEquals(ancEnrollmentForm.getMotechPatientId(), ancVO.getPatientMotechId());
         assertEquals(ancEnrollmentForm.getParity(), ancVO.getParity());
@@ -300,12 +290,6 @@ public class ANCControllerTest {
         ancEnrollmentForm.setLastIronOrFolateDate(DateUtil.newDate(2011, 7, 6).toDate());
         ancEnrollmentForm.setLastSyphilis("1");
         ancEnrollmentForm.setLastSyphilisDate(DateUtil.newDate(2011, 7, 6).toDate());
-        ancEnrollmentForm.setLastMalaria("1");
-        ancEnrollmentForm.setLastMalariaDate(DateUtil.newDate(2011, 7, 6).toDate());
-        ancEnrollmentForm.setLastDiarrhea("1");
-        ancEnrollmentForm.setLastDiarrheaDate(DateUtil.newDate(2011, 7, 6).toDate());
-        ancEnrollmentForm.setLastPnuemonia("1");
-        ancEnrollmentForm.setLastPnuemoniaDate(DateUtil.newDate(2011, 7, 6).toDate());
         ancEnrollmentForm.setMotechPatientId("343423423");
         ancEnrollmentForm.setParity(3);
         ancEnrollmentForm.setRegistrationToday(RegistrationToday.IN_PAST);

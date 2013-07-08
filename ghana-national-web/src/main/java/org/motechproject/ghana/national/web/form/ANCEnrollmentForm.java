@@ -32,16 +32,11 @@ public class ANCEnrollmentForm implements FormWithHistoryInput{
     private String lastMotherVitaminA;
     private String lastIronOrFolate;
     private String lastSyphilis;
-    private String lastMalaria;
-    private String lastDiarrhea;
-    private String lastPnuemonia;
     private Date lastHbDate;
     private Date lastMotherVitaminADate;
     private Date lastIronOrFolateDate;
     private Date lastSyphilisDate;
-    private Date lastMalariaDate;
-    private Date lastDiarrheaDate;
-    private Date lastPnuemoniaDate;
+
 
 
 
@@ -228,30 +223,6 @@ public class ANCEnrollmentForm implements FormWithHistoryInput{
         this.lastSyphilis = lastSyphilis;
     }
 
-    public String getLastMalaria() {
-        return lastMalaria;
-    }
-
-    public void setLastMalaria(String lastMalaria) {
-        this.lastMalaria = lastMalaria;
-    }
-
-    public String getLastDiarrhea() {
-        return lastDiarrhea;
-    }
-
-    public void setLastDiarrhea(String lastDiarrhea) {
-        this.lastDiarrhea = lastDiarrhea;
-    }
-
-    public String getLastPnuemonia() {
-        return lastPnuemonia;
-    }
-
-    public void setLastPnuemonia(String lastPnuemonia) {
-        this.lastPnuemonia = lastPnuemonia;
-    }
-
     public Date getLastHbDate() {
         return lastHbDate;
     }
@@ -276,13 +247,6 @@ public class ANCEnrollmentForm implements FormWithHistoryInput{
         this.lastIronOrFolateDate = lastIronOrFolateDate;
     }
 
-    public Date getLastMalariaDate() {
-        return lastMalariaDate;
-    }
-
-    public void setLastMalariaDate(Date lastMalariaDate) {
-        this.lastMalariaDate = lastMalariaDate;
-    }
 
     public Date getLastSyphilisDate() {
         return lastSyphilisDate;
@@ -290,22 +254,6 @@ public class ANCEnrollmentForm implements FormWithHistoryInput{
 
     public void setLastSyphilisDate(Date lastSyphilisDate) {
         this.lastSyphilisDate = lastSyphilisDate;
-    }
-
-    public Date getLastDiarrheaDate() {
-        return lastDiarrheaDate;
-    }
-
-    public void setLastDiarrheaDate(Date lastDiarrheaDate) {
-        this.lastDiarrheaDate = lastDiarrheaDate;
-    }
-
-    public Date getLastPnuemoniaDate() {
-        return lastPnuemoniaDate;
-    }
-
-    public void setLastPnuemoniaDate(Date lastPnuemoniaDate) {
-        this.lastPnuemoniaDate = lastPnuemoniaDate;
     }
 
 
@@ -319,9 +267,6 @@ public class ANCEnrollmentForm implements FormWithHistoryInput{
             put("lastMotherVitaminADate",lastMotherVitaminADate);
             put("lastIronOrFolateDate",lastIronOrFolateDate);
             put("lastSyphilisDate",lastSyphilisDate);
-            put("lastMalariaDate",lastMalariaDate);
-            put("lastDiarrheaDate",lastDiarrheaDate);
-            put("lastPnuemoniaDate",lastPnuemoniaDate);
         }};
     }
 
