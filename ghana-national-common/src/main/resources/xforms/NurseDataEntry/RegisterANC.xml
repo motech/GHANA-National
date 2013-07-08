@@ -591,24 +591,6 @@
         <xf:bind id="lastSyphilisDate" nodeset="/ANCRegistration/lastSyphilisDate" type="xsd:date" visible="false()"
                  relevant="/ANCRegistration/addCareHistory = 'SYPHILIS' and /ANCRegistration/addHistory = '1' " action="show"/>
 
-        <xf:bind id="lastMalaria" nodeset="/ANCRegistration/lastMalaria" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'MALARIA_RAPID_TEST' and /ANCRegistration/addHistory = '1' " action="show"/>
-
-        <xf:bind id="lastMalariaDate" nodeset="/ANCRegistration/lastMalariaDate" type="xsd:date" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'MALARIA_RAPID_TEST' and /ANCRegistration/addHistory = '1' " action="show"/>
-
-        <xf:bind id="lastDiarrhea" nodeset="/ANCRegistration/lastDiarrhea" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'DIARRHEA' and /ANCRegistration/addHistory = '1' " action="show"/>
-
-        <xf:bind id="lastDiarrheaDate" nodeset="/ANCRegistration/lastDiarrheaDate" type="xsd:date" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'DIARRHEA' and /ANCRegistration/addHistory = '1' " action="show"/>
-
-        <xf:bind id="lastPnuemonia" nodeset="/ANCRegistration/lastPnuemonia" type="xsd:string" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL' and /ANCRegistration/addHistory = '1' " action="show"/>
-
-        <xf:bind id="lastPnuemoniaDate" nodeset="/ANCRegistration/lastPnuemoniaDate" type="xsd:date" visible="false()"
-                 relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL' and /ANCRegistration/addHistory = '1' " action="show"/>
-
         <xf:bind id="formtype" nodeset="/ANCRegistration/formtype" required="true()" type="xsd:string"
                  visible="false()"/>
         <xf:bind id="formname" nodeset="/ANCRegistration/formname" required="true()" type="xsd:string"
@@ -977,52 +959,6 @@
         </xf:select1>
         <xf:input bind="lastSyphilisDate">
             <xf:label>Syphilis Date</xf:label>
-        </xf:input>
-        <xf:select1 bind="lastMalaria">
-            <xf:label>Has Malaria Treated</xf:label>
-            <xf:item id="Y">
-                <xf:label>Yes</xf:label>
-                <xf:value>Y</xf:value>
-            </xf:item>
-            <xf:item id="N">
-                <xf:label>No</xf:label>
-                <xf:value>N</xf:value>
-            </xf:item>
-        </xf:select1>
-        <xf:input bind="lastMalariaDate">
-            <xf:label>Malaria Treatment Date</xf:label>
-        </xf:input>
-        <xf:select1 bind="lastDiarrhea">
-            <xf:label>Has Diarrhoea Treated</xf:label>
-            <xf:item id="Y">
-                <xf:label>Yes</xf:label>
-                <xf:value>Y</xf:value>
-            </xf:item>
-            <xf:item id="N">
-                <xf:label>No</xf:label>
-                <xf:value>N</xf:value>
-            </xf:item>
-        </xf:select1>
-        <xf:input bind="lastDiarrheaDate">
-            <xf:label>Diarrhoea Treatment Date</xf:label>
-        </xf:input>
-        <xf:select1 bind="lastPnuemonia">
-            <xf:label>Has Pnuemonia Treated</xf:label>
-            <xf:item id="1">
-                <xf:label>Pneumo 1</xf:label>
-                <xf:value>1</xf:value>
-            </xf:item>
-            <xf:item id="2">
-                <xf:label>Pneumo 2</xf:label>
-                <xf:value>2</xf:value>
-            </xf:item>
-            <xf:item id="3">
-                <xf:label>Pneumo 3</xf:label>
-                <xf:value>3</xf:value>
-            </xf:item>
-        </xf:select1>
-        <xf:input bind="lastPnuemoniaDate">
-            <xf:label>Pnuemonia Treatment Date</xf:label>
         </xf:input>
 
         <xf:input bind="formtype">

@@ -158,6 +158,12 @@ public class CWCController {
                 cwcEnrollmentForm.getLastRotavirus(),
                 cwcEnrollmentForm.getLastPneumococcal(),
                 cwcEnrollmentForm.getLastPneumococcalDate(),
+                cwcEnrollmentForm.getLastMalaria(),
+                cwcEnrollmentForm.getLastMalariaDate(),
+                cwcEnrollmentForm.getLastPnuemonia(),
+                cwcEnrollmentForm.getLastPnuemoniaDate(),
+                cwcEnrollmentForm.getLastDiarrhea(),
+                cwcEnrollmentForm.getLastDiarrheaDate(),
                 cwcEnrollmentForm.getSerialNumber(),
                 cwcEnrollmentForm.getAddHistory()));
         modelMap.addAttribute("success", "Client registered for CWC successfully.");

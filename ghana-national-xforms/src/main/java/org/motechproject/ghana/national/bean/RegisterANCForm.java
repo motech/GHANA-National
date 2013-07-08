@@ -376,9 +376,6 @@ public class RegisterANCForm extends MobileMidWifeIncludeForm implements FormWit
             put("lastMotherVitaminADate",lastMotherVitaminADate);
             put("lastIronOrFolateDate",lastIronOrFolateDate);
             put("lastSyphilisDate",lastSyphilisDate);
-            put("lastMalariaDate",lastMalariaDate);
-            put("lastDiarrheaDate",lastDiarrheaDate);
-            put("lastPnuemoniaDate",lastPnuemoniaDate);
         }};
     }
 }

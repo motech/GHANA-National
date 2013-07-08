@@ -27,6 +27,14 @@
                 <lastIPTiDate/>
                 <lastVitaminA/>
                 <lastVitaminADate/>
+
+                <lastMalaria/>
+                <lastMalariaDate/>
+                <lastDiarrhea/>
+                <lastDiarrheaDate/>
+                <lastPnuemonia/>
+                <lastPnuemoniaDate/>
+
                 <enroll/>
                 <consent/>
                 <serviceType/>
@@ -567,6 +575,26 @@
                  relevant="/CWCRegistration/addCareHistory
             = 'YF' and /CWCRegistration/addHistory = '1'"
                  action="show" required="true()"/>
+
+        <xf:bind id="lastMalaria" nodeset="/CWCRegistration/lastMalaria" type="xsd:string" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'MALARIA_RAPID_TEST' and /ANCRegistration/addHistory = '1' " action="show"/>
+
+        <xf:bind id="lastMalariaDate" nodeset="/CWCRegistration/lastMalariaDate" type="xsd:date" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'MALARIA_RAPID_TEST' and /ANCRegistration/addHistory = '1' " action="show"/>
+
+        <xf:bind id="lastDiarrhea" nodeset="/CWCRegistration/lastDiarrhea" type="xsd:string" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'DIARRHEA' and /ANCRegistration/addHistory = '1' " action="show"/>
+
+        <xf:bind id="lastDiarrheaDate" nodeset="/CWCRegistration/lastDiarrheaDate" type="xsd:date" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'DIARRHEA' and /ANCRegistration/addHistory = '1' " action="show"/>
+
+        <xf:bind id="lastPnuemonia" nodeset="/CWCRegistration/lastPnuemonia" type="xsd:string" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL' and /ANCRegistration/addHistory = '1' " action="show"/>
+
+        <xf:bind id="lastPnuemoniaDate" nodeset="/CWCRegistration/lastPnuemoniaDate" type="xsd:date" visible="false()"
+                 relevant="/ANCRegistration/addCareHistory = 'PNEUMOCOCCAL' and /ANCRegistration/addHistory = '1' " action="show"/>
+
+
         <xf:bind id="enroll" nodeset="/CWCRegistration/enroll" required="true()" type="xsd:string"/>
         <xf:bind action="show" id="consent" nodeset="/CWCRegistration/consent" relevant="/CWCRegistration/enroll = 'Y'"
                  required="true()" type="xsd:string" visible="false()"/>
@@ -811,6 +839,56 @@
         <xf:input bind="lastVitaminADate">
             <xf:label>Last Vit A date</xf:label>
         </xf:input>
+
+
+        <xf:select1 bind="lastMalaria">
+            <xf:label>Has Malaria Treated</xf:label>
+            <xf:item id="Y">
+                <xf:label>Yes</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+            <xf:item id="N">
+                <xf:label>No</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:input bind="lastMalariaDate">
+            <xf:label>Malaria Treatment Date</xf:label>
+        </xf:input>
+        <xf:select1 bind="lastDiarrhea">
+            <xf:label>Has Diarrhoea Treated</xf:label>
+            <xf:item id="Y">
+                <xf:label>Yes</xf:label>
+                <xf:value>Y</xf:value>
+            </xf:item>
+            <xf:item id="N">
+                <xf:label>No</xf:label>
+                <xf:value>N</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:input bind="lastDiarrheaDate">
+            <xf:label>Diarrhoea Treatment Date</xf:label>
+        </xf:input>
+        <xf:select1 bind="lastPnuemonia">
+            <xf:label>Has Pnuemonia Treated</xf:label>
+            <xf:item id="1">
+                <xf:label>Pneumo 1</xf:label>
+                <xf:value>1</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>Pneumo 2</xf:label>
+                <xf:value>2</xf:value>
+            </xf:item>
+            <xf:item id="3">
+                <xf:label>Pneumo 3</xf:label>
+                <xf:value>3</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:input bind="lastPnuemoniaDate">
+            <xf:label>Pnuemonia Treatment Date</xf:label>
+        </xf:input>
+
+
         <xf:select1 bind="enroll">
             <xf:label>Enroll to Mobile Midwife?</xf:label>
             <xf:item id="Y">
