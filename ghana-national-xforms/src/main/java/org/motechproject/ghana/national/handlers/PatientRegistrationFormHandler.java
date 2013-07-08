@@ -137,7 +137,7 @@ public class PatientRegistrationFormHandler {
                     registerClientForm.getLastMeasles(), registerClientForm.getYellowFeverDate(), registerClientForm.getLastPentaDate(), registerClientForm.getLastPenta(), registerClientForm.getLastOPVDate(),
                     registerClientForm.getLastOPV(), registerClientForm.getLastIPTiDate(), registerClientForm.getLastIPTi(), registerClientForm.getLastRotavirusDate(), registerClientForm.getLastRotavirus(),
                     registerClientForm.getLastPneumococcal(), registerClientForm.getLastPneumococcalDate(), registerClientForm.getLastMalaria(), registerClientForm.getLastMalariaDate(),
-                    registerClientForm.getLastPnuemonia(), registerClientForm.getLastPnuemoniaDate(), registerClientForm.getLastmDiarrhea(), registerClientForm.getLastmDiarrheaDate(), registerClientForm.getCwcRegNumber(), registerClientForm.getAddHistory());
+                    registerClientForm.getLastPnuemonia(), registerClientForm.getLastPnuemoniaDate(), registerClientForm.getLastDiarrhea(), registerClientForm.getLastDiarrheaDate(), registerClientForm.getCwcRegNumber(), registerClientForm.getAddHistory());
 
             careService.enroll(cwcVO);
         }
