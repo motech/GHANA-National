@@ -388,8 +388,8 @@ public class PatientRegistrationFormHandlerTest {
         final MobileMidwifeEnrollment mobileMidwifeEnrollment = mobileMidwifeEnrollmentArgumentCaptor.getValue();
 
         assertANCRegistration(facilityId, motechId, expDeliveryDate, deliveryDateConfirmed, height, gravida, parity,
-                lastIPTDate, lastTTDate, lastHbDate, lastMotherVitaminADate, lastIronOrFolateDate, lastSyphilisDate, lastMalariaDate, lastDiarrheaDate, lastPnuemoniaDate,
-                lastIPT, lastTT,lastHbLevels, lastMotherVitaminA, lastIronOrFolate, lastSyphilis,lastMalaria, lastDiarrhea, lastPnuemonia, staffId, ancVO);
+                lastIPTDate, lastTTDate, lastHbDate, lastMotherVitaminADate, lastIronOrFolateDate, lastSyphilisDate,
+                lastIPT, lastTT,lastHbLevels, lastMotherVitaminA, lastIronOrFolate, lastSyphilis, staffId, ancVO);
         assertMobileMidwifeRegistration(mobileMidwifeEnrollment, staffId, motechFacilityId, motechId, serviceType,
                 reasonToJoin, medium, dayOfWeek, timeOfDay, language, learnedFrom, mmRegPhone, phoneOwnership, consent, registerClientForm.getDate());
     }
@@ -552,8 +552,8 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(motechId, is(mobileMidwifeEnrollment.getPatientId()));
     }
 
-    private void assertANCRegistration(String facilityId, String motechId, Date expDeliveryDate, Boolean deliveryDateConfirmed, Double height, Integer gravida, Integer parity, Date lastIPTDate, Date lastTTDate, Date lastHbDate, Date lastVitaADate, Date lastIronDate, Date lastSyphDate, Date lastMalariaDate, Date lastDiarheaDate, Date lastPneumoDate,
-                                       String lastIPT, String lastTT, String lastHBlevel, String lastMotherVitaA, String lastIron, String lastSyphilis, String lastMalaria, String lastDiarhea, String lastPneumonia, String staffId, ANCVO ancVO) {
+    private void assertANCRegistration(String facilityId, String motechId, Date expDeliveryDate, Boolean deliveryDateConfirmed, Double height, Integer gravida, Integer parity, Date lastIPTDate, Date lastTTDate, Date lastHbDate, Date lastVitaADate, Date lastIronDate, Date lastSyphDate,
+                                       String lastIPT, String lastTT, String lastHBlevel, String lastMotherVitaA, String lastIron, String lastSyphilis, String staffId, ANCVO ancVO) {
         assertThat(ancVO.getFacilityId(), is(facilityId));
         assertThat(ancVO.getPatientMotechId(), is(motechId));
         assertThat(ancVO.getEstimatedDateOfDelivery(), is(expDeliveryDate));
@@ -569,11 +569,6 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(ancVO.getAncCareHistoryVO().getLastMotherVitaminADate(), is(lastVitaADate));
         assertThat(ancVO.getAncCareHistoryVO().getLastIronOrFolateDate(), is(lastIronDate));
         assertThat(ancVO.getAncCareHistoryVO().getLastSyphilisDate(), is(lastSyphDate));
-        assertThat(ancVO.getAncCareHistoryVO().getLastMalariaDate(), is(lastMalariaDate));
-        assertThat(ancVO.getAncCareHistoryVO().getLastDiarrheaDate(), is(lastDiarheaDate));
-        assertThat(ancVO.getAncCareHistoryVO().getLastPnuemoniaDate(), is(lastPneumoDate));
-
-
         assertThat(ancVO.getAncCareHistoryVO().getLastIPT(), is(lastIPT));
         assertThat(ancVO.getAncCareHistoryVO().getLastTT(), is(lastTT));
 
@@ -582,9 +577,6 @@ public class PatientRegistrationFormHandlerTest {
         assertThat(ancVO.getAncCareHistoryVO().getLastMotherVitaminA(), is(lastMotherVitaA));
         assertThat(ancVO.getAncCareHistoryVO().getLastIronOrFolate(), is(lastIron));
         assertThat(ancVO.getAncCareHistoryVO().getLastSyphilis(), is(lastSyphilis));
-        assertThat(ancVO.getAncCareHistoryVO().getLastMalaria(), is(lastMalaria));
-        assertThat(ancVO.getAncCareHistoryVO().getLastDiarrhea(), is(lastDiarhea));
-        assertThat(ancVO.getAncCareHistoryVO().getLastPnuemonia(), is(lastPneumonia));
     }
 
     private void addMobileMidwifeRegistrationDetails(RegisterClientForm registerClientForm, ServiceType serviceType, ReasonToJoin reasonToJoin, Medium medium, DayOfWeek dayOfWeek, Time timeOfDay, Language language, LearnedFrom learnedFrom, String phoneNumber, PhoneOwnership phoneOwnership, Boolean consent, boolean enroll) {
