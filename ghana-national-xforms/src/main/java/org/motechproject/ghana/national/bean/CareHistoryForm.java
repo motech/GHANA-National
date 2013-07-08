@@ -422,7 +422,7 @@ public class CareHistoryForm extends FormBean implements FormWithHistoryInput {
     public CareHistoryVO careHistoryVO(String facilityId) {
         List<ANCCareHistory> ancCareHistories = getANCCareHistories();
         List<CwcCareHistory> cwcCareHistories = getCWCCareHistories();
-        ANCCareHistoryVO ancCareHistoryVO = new ANCCareHistoryVO(ancCareHistories.size() > 0, ancCareHistories, lastIPT, lastTT, lastHbLevels, lastMotherVitaminA, lastIronOrFolate, lastSyphilis, lastMalaria, lastDiarrhea, lastPnuemonia, lastIPTDate, lastTTDate, lastHbDate, lastMotherVitaminADate, lastIronOrFolateDate, lastSyphilisDate, lastMalariaDate, lastDiarrheaDate, lastPnuemoniaDate);
+        ANCCareHistoryVO ancCareHistoryVO = new ANCCareHistoryVO(ancCareHistories.size() > 0, ancCareHistories, lastIPT, lastTT, lastHbLevels, lastMotherVitaminA, lastIronOrFolate, lastSyphilis, lastIPTDate, lastTTDate, lastHbDate, lastMotherVitaminADate, lastIronOrFolateDate, lastSyphilisDate);
         CWCCareHistoryVO cwcCareHistoryVO = new CWCCareHistoryVO(cwcCareHistories.size() > 0, cwcCareHistories, bcgDate, lastVitaminADate, lastVitaminA, measlesDate, lastMeasles, yellowFeverDate, lastPentaDate, lastPenta, lastOPVDate, lastOPV, lastIPTI, lastIPTIDate, lastRotavirus, lastRotavirusDate, lastPneumococcal, lastPneumococcalDate, lastMalaria, lastMalariaDate, lastPnuemonia, lastPnuemoniaDate, lastDiarrhea, lastDiarrheaDate);
 
         return new CareHistoryVO(staffId, facilityId, motechId, date, ancCareHistoryVO, cwcCareHistoryVO);
