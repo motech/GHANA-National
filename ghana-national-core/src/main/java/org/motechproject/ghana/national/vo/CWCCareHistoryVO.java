@@ -29,15 +29,15 @@ public class CWCCareHistoryVO {
     private String lastPnuemonia;
     private Date lastMalariaDate;
     private Date lastPnuemoniaDate;
-    private String lastmDiarrhea;
-    private Date lastmDiarrheaDate;
+    private String lastDiarrhea;
+    private Date lastDiarrheaDate;
 
     public CWCCareHistoryVO(Boolean addCareHistory, List<CwcCareHistory> careHistories, Date bcgDate, Date vitADate,
                             String lastVitA, Date measlesDate, Integer lastMeasles, Date yfDate, Date lastPentaDate,
                             Integer lastPenta, Date lastOPVDate, Integer lastOPV, Integer lastIPTi, Date lastIPTiDate,
                             Integer lastRotavirus, Date lastRotavirusDate, Integer lastPneumococcal, Date lastPneumococcalDate,
-                            String lastMalaria, Date lastMalariaDate, String lastPnuemonia, Date lastPnuemoniaDate, String lastmDiarrhea,
-                            Date lastmDiarrheaDate) {
+                            String lastMalaria, Date lastMalariaDate, String lastPnuemonia, Date lastPnuemoniaDate, String lastDiarrhea,
+                            Date lastDiarrheaDate) {
         this.addCareHistory = addCareHistory;
         this.cwcCareHistories = careHistories;
         this.bcgDate = bcgDate;
@@ -60,8 +60,8 @@ public class CWCCareHistoryVO {
         this.lastMalariaDate = lastMalariaDate;
         this.lastPnuemonia = lastPnuemonia;
         this.lastPnuemoniaDate = lastPnuemoniaDate;
-        this.lastmDiarrhea = lastmDiarrhea;
-        this.lastmDiarrheaDate = lastmDiarrheaDate;
+        this.lastDiarrhea = lastDiarrhea;
+        this.lastDiarrheaDate = lastDiarrheaDate;
     }
 
     public CWCCareHistoryVO() {
@@ -156,10 +156,10 @@ public class CWCCareHistoryVO {
     }
 
     public String getLastmDiarrhea() {
-        return lastmDiarrhea;
+        return lastDiarrhea;
     }
 
     public Date getLastmDiarrheaDate() {
-        return lastmDiarrheaDate;
+        return lastDiarrheaDate;
     }
 }

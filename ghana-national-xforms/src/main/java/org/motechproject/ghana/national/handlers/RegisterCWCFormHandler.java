@@ -55,6 +55,12 @@ public class RegisterCWCFormHandler{
                     registerCWCForm.getLastRotavirus(),
                     registerCWCForm.getLastPneumococcal(),
                     registerCWCForm.getLastPneumococcalDate(),
+                    registerCWCForm.getLastMalaria(),
+                    registerCWCForm.getLastMalariaDate(),
+                    registerCWCForm.getLastPnuemonia(),
+                    registerCWCForm.getLastPnuemoniaDate(),
+                    registerCWCForm.getLastDiarrhea(),
+                    registerCWCForm.getLastDiarrheaDate(),
                     registerCWCForm.getSerialNumber(),
                     registerCWCForm.getAddHistory()));
 

@@ -69,6 +69,14 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm implements FormWit
     private String lastVitaminA;
     private Integer lastMeasles;
 
+    private String lastMalaria;
+    private String lastDiarrhea;
+    private String lastPnuemonia;
+    private Date lastMalariaDate;
+    private Date lastDiarrheaDate;
+    private Date lastPnuemoniaDate;
+
+
     public void setRegistrationToday(RegistrationToday registrationToday) {
         this.registrationToday = registrationToday;
     }
@@ -245,6 +253,55 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm implements FormWit
         this.lastPneumococcal = lastPneumococcal;
     }
 
+    public String getLastMalaria() {
+        return lastMalaria;
+    }
+
+    public void setLastMalaria(String lastMalaria) {
+        this.lastMalaria = lastMalaria;
+    }
+
+    public String getLastDiarrhea() {
+        return lastDiarrhea;
+    }
+
+    public void setLastDiarrhea(String lastDiarrhea) {
+        this.lastDiarrhea = lastDiarrhea;
+    }
+
+    public String getLastPnuemonia() {
+        return lastPnuemonia;
+    }
+
+    public void setLastPnuemonia(String lastPnuemonia) {
+        this.lastPnuemonia = lastPnuemonia;
+    }
+
+    public Date getLastMalariaDate() {
+        return lastMalariaDate;
+    }
+
+    public void setLastMalariaDate(Date lastMalariaDate) {
+        this.lastMalariaDate = lastMalariaDate;
+    }
+
+    public Date getLastDiarrheaDate() {
+        return lastDiarrheaDate;
+    }
+
+    public void setLastDiarrheaDate(Date lastDiarrheaDate) {
+        this.lastDiarrheaDate = lastDiarrheaDate;
+    }
+
+    public Date getLastPnuemoniaDate() {
+        return lastPnuemoniaDate;
+    }
+
+    public void setLastPnuemoniaDate(Date lastPnuemoniaDate) {
+        this.lastPnuemoniaDate = lastPnuemoniaDate;
+    }
+
+
     public MobileMidwifeEnrollment createMobileMidwifeEnrollment() {
         if(isEnrolledForMobileMidwifeProgram()) {
             MobileMidwifeEnrollment enrollment = fillEnrollment(new MobileMidwifeEnrollment(newDateTime(getRegistrationDate())));
@@ -280,6 +337,10 @@ public class RegisterCWCForm extends MobileMidWifeIncludeForm implements FormWit
             put("yfDate", yellowFeverDate);
             put("vitADate", lastVitaminADate);
             put("measlesDate", measlesDate);
+            put("lastMalariaDate",lastMalariaDate);
+            put("lastDiarrheaDate",lastDiarrheaDate);
+            put("lastPnuemoniaDate", lastPnuemoniaDate);
+
         }};
     }
 
