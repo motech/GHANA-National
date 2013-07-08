@@ -91,8 +91,7 @@ public class CareHistoryFormHandlerTest {
         assertThat(careHistoryVO.getDate(), is(equalTo(careHistoryForm.getDate())));
         assertANCCareHistoryDetails(careHistoryForm.getANCCareHistories(), careHistoryForm.getLastIPT(), careHistoryForm.getLastIPTDate(), careHistoryForm.getLastTT(),
                 careHistoryForm.getLastTTDate(), careHistoryForm.getLastHbLevels(), careHistoryForm.getLastHbDate(), careHistoryForm.getLastMotherVitaminA(), careHistoryForm.getLastMotherVitaminADate(),
-                careHistoryForm.getLastIronOrFolate(), careHistoryForm.getLastIronOrFolateDate(), careHistoryForm.getLastSyphilis(), careHistoryForm.getLastSyphilisDate(),
-                careHistoryForm.getLastMalaria(), careHistoryForm.getLastMalariaDate(), careHistoryForm.getLastDiarrhea(), careHistoryForm.getLastDiarrheaDate(), careHistoryForm.getLastPnuemonia(), careHistoryForm.getLastPnuemoniaDate(), careHistoryVO.getAncCareHistoryVO());
+                careHistoryForm.getLastIronOrFolate(), careHistoryForm.getLastIronOrFolateDate(), careHistoryForm.getLastSyphilis(), careHistoryForm.getLastSyphilisDate(), careHistoryVO.getAncCareHistoryVO());
 
         assertCwcCareHistoryDetails(careHistoryForm.getCWCCareHistories(), careHistoryForm.getBcgDate(),
                 careHistoryForm.getLastVitaminADate(), careHistoryForm.getMeaslesDate(), careHistoryForm.getLastMeasles(), careHistoryForm.getYellowFeverDate(),
