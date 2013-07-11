@@ -11,4 +11,11 @@ public class SeedAudioFiles {
         SeedLoader seedLoader = (SeedLoader) context.getBean("seedAudioFiles");
         seedLoader.load();
     }
+
+    public static void newaudio(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML);
+        SeedLoader seedLoader = (SeedLoader) context.getBean("newSeedAudioFiles");
+        seedLoader.load();
+    }
+
 }
