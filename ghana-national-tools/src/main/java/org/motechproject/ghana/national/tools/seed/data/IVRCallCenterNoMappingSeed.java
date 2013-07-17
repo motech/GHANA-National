@@ -50,6 +50,7 @@ public class IVRCallCenterNoMappingSeed extends Seed {
                 mappings.add(earlyMorning(weekDay, "0206369910", Language.GD));
                 mappings.add(earlyMorning(weekDay, "0544347552", Language.EWE ));
             }
+
             mappings.add(weekend(DayOfWeek.Saturday, "0544347552", Language.EN));
             mappings.add(weekend(DayOfWeek.Saturday, "0544347552", Language.FAN));
             mappings.add(weekend(DayOfWeek.Saturday, "0206369910", Language.GD ));
