@@ -1,6 +1,8 @@
 package org.motechproject.ghana.national.web.ivr;
 
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 import org.motechproject.ghana.national.builder.IVRCallbackUrlBuilder;
 import org.motechproject.ghana.national.domain.IVRCallCenterNoMapping;
 import org.motechproject.ghana.national.domain.IVRClipManager;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import static org.motechproject.ghana.national.domain.ivr.VerboiceDialStatus.BUSY;
@@ -56,7 +59,21 @@ public class CallCenterDialController {
                                    @RequestParam("nurseLine") boolean nurseLine) {
         if (dialCallStatus != null) {
             if (FAILED.getCode().equals(dialCallStatus)) {
-                return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
+
+                Calendar cal = Calendar.getInstance();
+                DateTime dt = DateTime.now();
+                int day = cal.get(Calendar.DAY_OF_WEEK);
+                int hr = dt.getHourOfDay();
+               if(day >= Calendar.MONDAY && day <= Calendar.FRIDAY) {
+                   if(hr >= 8 && hr <= 17){
+                       return waitAndDial(language, callerPhoneNumber, nurseLine);
+                   }
+                }
+                else
+               {
+                   return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
+               }
+
             } else if (BUSY.getCode().equals(dialCallStatus) || "no-answer".equals(dialCallStatus)) {
                 return waitAndDial(language, callerPhoneNumber, nurseLine);
             } else if (COMPLETED.getCode().equals(dialCallStatus)) {
