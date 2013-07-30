@@ -60,19 +60,7 @@ public class CallCenterDialController {
         if (dialCallStatus != null) {
             if (FAILED.getCode().equals(dialCallStatus)) {
 
-                Calendar cal = Calendar.getInstance();
-                DateTime dt = DateTime.now();
-                int day = cal.get(Calendar.DAY_OF_WEEK);
-                int hr = dt.getHourOfDay();
-               if(day >= Calendar.MONDAY && day <= Calendar.FRIDAY) {
-                   if(hr >= 8 && hr <= 17){
-                       return waitAndDial(language, callerPhoneNumber, nurseLine);
-                   }
-                }
-                else
-               {
                    return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
-               }
 
             } else if (BUSY.getCode().equals(dialCallStatus) || "no-answer".equals(dialCallStatus)) {
                 return waitAndDial(language, callerPhoneNumber, nurseLine);
