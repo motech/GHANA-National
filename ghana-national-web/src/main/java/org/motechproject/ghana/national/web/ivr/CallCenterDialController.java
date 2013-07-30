@@ -59,9 +59,7 @@ public class CallCenterDialController {
                                    @RequestParam("nurseLine") boolean nurseLine) {
         if (dialCallStatus != null) {
             if (FAILED.getCode().equals(dialCallStatus)) {
-
-                   return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
-
+                return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
             } else if (BUSY.getCode().equals(dialCallStatus) || "no-answer".equals(dialCallStatus)) {
                 return waitAndDial(language, callerPhoneNumber, nurseLine);
             } else if (COMPLETED.getCode().equals(dialCallStatus)) {
