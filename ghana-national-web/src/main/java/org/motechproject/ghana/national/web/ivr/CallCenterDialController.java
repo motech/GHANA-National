@@ -58,6 +58,7 @@ public class CallCenterDialController {
                                    @PathVariable("callerPhoneNumber") String callerPhoneNumber,
                                    @RequestParam("nurseLine") boolean nurseLine) {
         if (dialCallStatus != null) {
+
             if (FAILED.getCode().equals(dialCallStatus)) {
 
                 Calendar cal = Calendar.getInstance();
