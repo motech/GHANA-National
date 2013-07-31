@@ -59,7 +59,22 @@ public class CallCenterDialController {
                                    @RequestParam("nurseLine") boolean nurseLine) {
         if (dialCallStatus != null) {
             if (FAILED.getCode().equals(dialCallStatus)) {
-                return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
+
+                Calendar cal = Calendar.getInstance();
+                int day = cal.get(Calendar.DAY_OF_WEEK);
+                int hr = cal.get(Calendar.HOUR_OF_DAY);
+                if(day >= Calendar.MONDAY && day <= Calendar.SATURDAY) {
+                    if(hr >= 7 && hr <= 21){
+
+                        return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
+                    }
+                }
+                else
+                {
+                    return waitAndDial(language, callerPhoneNumber, nurseLine);
+
+                }
+
             } else if (BUSY.getCode().equals(dialCallStatus) || "no-answer".equals(dialCallStatus)) {
                 return waitAndDial(language, callerPhoneNumber, nurseLine);
             } else if (COMPLETED.getCode().equals(dialCallStatus)) {
