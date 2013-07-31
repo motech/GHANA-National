@@ -72,7 +72,6 @@ public class CallCenterDialController {
                 else
                 {
                     return waitAndDial(language, callerPhoneNumber, nurseLine);
-
                 }
 
             } else if (BUSY.getCode().equals(dialCallStatus) || "no-answer".equals(dialCallStatus)) {
