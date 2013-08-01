@@ -65,7 +65,7 @@ public class CallCenterDialController {
                 int day = cal.get(Calendar.DAY_OF_WEEK);
                 int hr = cal.get(Calendar.HOUR_OF_DAY);
                 if(day >= Calendar.MONDAY && day <= Calendar.SATURDAY) {
-                    if(hr >= 7 && hr <= 21){
+                    if(hr >= 1 && hr <= 21){
 
                         return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
                     }
