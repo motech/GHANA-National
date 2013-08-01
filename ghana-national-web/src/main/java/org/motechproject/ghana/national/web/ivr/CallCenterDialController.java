@@ -63,16 +63,13 @@ public class CallCenterDialController {
 
                 Calendar cal = Calendar.getInstance();
                 int day = cal.get(Calendar.DAY_OF_WEEK);
-                int hr = cal.get(Calendar.HOUR_OF_DAY);
                 if(day >= Calendar.MONDAY && day <= Calendar.SATURDAY) {
-                    if(hr >= 1 && hr <= 21){
 
-                        return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
-                    }
+                    return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
                 }
                 else
                 {
-                    return waitAndDial(language, callerPhoneNumber, nurseLine);
+                    return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
                 }
 
             } else if (BUSY.getCode().equals(dialCallStatus) || "no-answer".equals(dialCallStatus)) {
