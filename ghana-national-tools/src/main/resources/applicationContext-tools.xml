@@ -49,9 +49,19 @@
         <constructor-arg>
             <list>
                 <ref bean="inboundDecisionTreeSeed"/>
+                <ref bean="ivrCallCenterNoMappingSeed"/>
             </list>
         </constructor-arg>
     </bean>
+
+    <bean id="mmScheduleMigrator" class="org.motechproject.ghana.national.tools.seed.SeedLoader">
+        <constructor-arg>
+            <list>
+                <ref bean="mobileMidwifeMigrationSeed"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
 
     <bean id="scheduleMigrator" class="org.motechproject.ghana.national.tools.seed.SeedLoader">
         <constructor-arg>
