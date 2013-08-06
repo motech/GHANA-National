@@ -66,11 +66,16 @@ public class CallCenterDialController {
                 if(cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ||  cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY
                     || cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
 
-                    return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
+                    // if (time >= 8:00 && time <= 17:00) {
+                    return waitAndDial(language, callerPhoneNumber, nurseLine);
+                    // } else  {
+                    // return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
+                   // }
                 }
                 else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
                 {
-                    return waitAndDial(language, callerPhoneNumber, nurseLine);
+                    return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
+                    //return waitAndDial(language, callerPhoneNumber, nurseLine);
                 }
 
             } else if (BUSY.getCode().equals(dialCallStatus) || "no-answer".equals(dialCallStatus)) {

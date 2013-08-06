@@ -109,8 +109,7 @@ public class MobileMidwifeController {
         modelMap.put("mobileMidwifeUnEnrollForm", form);
         modelMap.mergeAttributes(facilityHelper.locationMap());
         return MOBILE_MIDWIFE_UNREGISTER_URL;
-    }                                                SSH read/write - git@github.com
-
+    }
 
 
     @ApiSession
