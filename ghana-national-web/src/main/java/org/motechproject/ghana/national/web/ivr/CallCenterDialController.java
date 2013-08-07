@@ -62,15 +62,17 @@ public class CallCenterDialController {
             if (FAILED.getCode().equals(dialCallStatus)) {
 
                 Calendar cal = Calendar.getInstance();
-                int day = cal.get(Calendar.DAY_OF_WEEK);
+                int hr_of_day = cal.get(Calendar.HOUR_OF_DAY);
+
                 if(cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ||  cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY
                     || cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
 
-                    // if (time >= 8:00 && time <= 17:00) {
-                    return waitAndDial(language, callerPhoneNumber, nurseLine);
-                    // } else  {
-                    // return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
-                   // }
+                    if (hr_of_day >= 7 && hr_of_day <= 19) {
+                       return waitAndDial(language, callerPhoneNumber, nurseLine);
+                    }
+                    else  {
+                     return playTwiml(Arrays.asList(ivrClipManager.urlFor(AudioPrompts.CALL_CENTER_DIAL_FAILED.getFileName(), valueOf(language))));
+                    }
                 }
                 else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
                 {
