@@ -57,6 +57,7 @@
         <xf:bind constraint=". &gt;= 60 and . &lt;= 300" id="bpSystolic"
                  message="Value out of range: must be between 60 and 300" nodeset="/ancVisit/bpSystolic"
                  type="xsd:int"/>
+
         <xf:bind constraint=". &gt;= 30 and . &lt;= 140" id="bpDiastolic"
                  message="Value out of range: Must be between 30 and 140" nodeset="/ancVisit/bpDiastolic"
                  type="xsd:int"/>
