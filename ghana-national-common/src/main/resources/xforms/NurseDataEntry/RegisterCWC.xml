@@ -93,6 +93,14 @@
                     <label>Fante</label>
                     <value>FAN</value>
                 </item>
+                <item id="GD" parent="PERS_VOICE">
+                    <label>Ga Adangme</label>
+                    <value>GD</value>
+                </item>
+                <item id="EWE" parent="PERS_VOICE">
+                    <label>Ewe</label>
+                    <value>EWE</value>
+                </item>
                 <item id="EN" parent="PERS_TEXT">
                     <label>English</label>
                     <value>EN</value>
@@ -113,6 +121,14 @@
                     <label>Fante</label>
                     <value>FAN</value>
                 </item>
+                <item id="GD" parent="HSE_VOICE">
+                    <label>Ga Adangme</label>
+                    <value>GD</value>
+                </item>
+                <item id="EWE" parent="HSE_VOICE">
+                    <label>Ewe</label>
+                    <value>EWE</value>
+                </item>
                 <item id="EN" parent="HSE_TEXT">
                     <label>English</label>
                     <value>EN</value>
@@ -132,6 +148,14 @@
                 <item id="FAN" parent="PUB_VOICE">
                     <label>Fante</label>
                     <value>FAN</value>
+                </item>
+                <item id="GD" parent="PUB_VOICE">
+                    <label>Ga Adangme</label>
+                    <value>GD</value>
+                </item>
+                <item id="EWE" parent="PUB_VOICE">
+                    <label>Ewe</label>
+                    <value>EWE</value>
                 </item>
             </dynamiclist>
         </xf:instance>
