@@ -18,7 +18,7 @@
         <module>ghana-national-test</module>
     </modules>
     <properties>
-        <spring.version>3.1.0.RELEASE</spring.version>
+        <spring.version>5.5.7</spring.version>
         <org.ektorp.version>1.2.2</org.ektorp.version>
         <motech-platform.version>0.12-GHANA-NATIONAL-SNAPSHOT</motech-platform.version>
         <motech-platform-contrib.version>0.12-SNAPSHOT</motech-platform-contrib.version>
